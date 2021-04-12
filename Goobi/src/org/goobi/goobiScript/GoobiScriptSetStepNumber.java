@@ -1,6 +1,6 @@
 package org.goobi.goobiScript;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,7 +22,21 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public String getAction() {
+        return "setStepNumber";
+    }
+    
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript allow to change the order number of a specific workflow step.");
+        addParameterToSampleCall(sb, "steptitle", "Scanning", "Title of the workflow step to be changed");
+        addParameterToSampleCall(sb, "number", "4", "Order number that the workflow step shall have in the order of all workflow steps");
+        return sb.toString();
+    }
+    
+    @Override
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {

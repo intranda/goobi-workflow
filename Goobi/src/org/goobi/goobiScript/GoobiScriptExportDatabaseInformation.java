@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import org.goobi.beans.Process;
@@ -19,14 +19,26 @@ import com.google.common.collect.ImmutableList;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import io.goobi.workflow.xslt.XsltPreparatorXmlLog;
+import io.goobi.workflow.xslt.XsltPreparatorDocket;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class GoobiScriptExportDatabaseInformation extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public String getAction() {
+        return "exportDatabaseInformation";
+    }
+    
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript exports all database contents of the selected Goobi process to an internal XML file that is stored in the process folder.");
+        return sb.toString();
+    }
+    
+    @Override
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         // add all valid commands to list
@@ -86,7 +98,7 @@ public class GoobiScriptExportDatabaseInformation extends AbstractIGoobiScript i
                             gsr.setResultType(GoobiScriptResultType.ERROR);
                         }
                         try {
-                            Document doc = new XsltPreparatorXmlLog().createExtendedDocument(p);
+                            Document doc = new XsltPreparatorDocket().createExtendedDocument(p);
                             XMLOutputter outp = new XMLOutputter();
                             outp.setFormat(Format.getPrettyFormat());
                             outp.output(doc, os);

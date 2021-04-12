@@ -1,8 +1,8 @@
--- MySQL dump 10.17  Distrib 10.3.22-MariaDB, for debian-linux-gnu (x86_64)
+-- MariaDB dump 10.19  Distrib 10.4.18-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: goobi
 -- ------------------------------------------------------
--- Server version	10.3.22-MariaDB-0+deb10u1
+-- Server version	10.4.18-MariaDB-1:10.4.18+maria~bionic
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -128,6 +128,14 @@ CREATE TABLE `benutzer` (
   `superadmin` tinyint(1) DEFAULT NULL,
   `displayInstitutionColumn` tinyint(1) DEFAULT NULL,
   `dashboardPlugin` varchar(255) DEFAULT NULL,
+  `processses_sort_field` varchar(255) DEFAULT NULL,
+  `processes_sort_order` varchar(255) DEFAULT NULL,
+  `tasks_sort_field` varchar(255) DEFAULT NULL,
+  `tasks_sort_order` varchar(255) DEFAULT NULL,
+  `displayLastEditionDate` tinyint(1) DEFAULT 0,
+  `displayLastEditionUser` tinyint(1) DEFAULT 0,
+  `displayLastEditionTask` tinyint(1) DEFAULT 0,
+  `dashboard_configuration` text DEFAULT NULL,
   PRIMARY KEY (`BenutzerID`),
   KEY `FK6564F1FD78EC6B0F` (`ldapgruppenID`),
   KEY `id_x_login` (`BenutzerID`,`login`(50))
@@ -140,7 +148,7 @@ CREATE TABLE `benutzer` (
 
 LOCK TABLES `benutzer` WRITE;
 /*!40000 ALTER TABLE `benutzer` DISABLE KEYS */;
-INSERT INTO `benutzer` VALUES (1,'Detlev','Engel','testadmin','',1,'Göttingen','de','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,NULL,'ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'Ip20Qnq/Tv4473DtxJe3Ig==','CUUSVkEer/VFb8WjxvH5jG30q55BGQ1RUTE2aalPNgA=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended'),(2,'Wolfgang','Fürstlich','testscanning','',1,'Göttingen','de','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,NULL,'ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'ybu5U6WVNRqDjPNjs54XCw==','u2tbeDKQ4xyeCgOyHNi4Bd7oBIGeLQynUx80oTmIJG4=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended'),(3,'Veronika','Lichthaus','testqc','',1,'Göttingen','de','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,NULL,'ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'2xYgOsQvn2q1WUpmxmw7dA==','MNw4D1PVxPUX+C+CjIc/OaAXY6mF7mqaOC12tXmbsgQ=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended'),(4,'André','Hermelich','testimaging','',1,'Göttingen','de','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,NULL,'ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'Q/yoV/TZrPtKSoG/++fHJw==','0z3w8lffi+uAEeg7vBmQcYu86B/NrQqO6btt87nZPiw=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended'),(5,'Christine','Gross','testmetadata','',1,'Göttingen','de','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,NULL,'ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'zDC6nHAP9pElEVuUit8w2Q==','lHWk9VVpQi/NuEz3BS07Hpno0BS7+bV+nL89QJDudTs=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended'),(6,'Cecilia','von Darst','testprojectmanagement','',1,'Göttingen','de','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,NULL,'ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'Xiv1CN7kuoAdOGcRvrVymQ==','o2rh4wXTNmM6NgEL9JJYad7jVxlXxHf0DShihBxzo20=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended');
+INSERT INTO `benutzer` VALUES (1,'Detlev','Engel','testadmin','',1,'Göttingen','de','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,NULL,'ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'Ip20Qnq/Tv4473DtxJe3Ig==','CUUSVkEer/VFb8WjxvH5jG30q55BGQ1RUTE2aalPNgA=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended',NULL,NULL,NULL,NULL,0,0,0,NULL),(2,'Wolfgang','Fürstlich','testscanning','',1,'Göttingen','de','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,NULL,'ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'ybu5U6WVNRqDjPNjs54XCw==','u2tbeDKQ4xyeCgOyHNi4Bd7oBIGeLQynUx80oTmIJG4=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended',NULL,NULL,NULL,NULL,0,0,0,NULL),(3,'Veronika','Lichthaus','testqc','',1,'Göttingen','de','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,NULL,'ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'2xYgOsQvn2q1WUpmxmw7dA==','MNw4D1PVxPUX+C+CjIc/OaAXY6mF7mqaOC12tXmbsgQ=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended',NULL,NULL,NULL,NULL,0,0,0,NULL),(4,'André','Hermelich','testimaging','',1,'Göttingen','de','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,NULL,'ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'Q/yoV/TZrPtKSoG/++fHJw==','0z3w8lffi+uAEeg7vBmQcYu86B/NrQqO6btt87nZPiw=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended',NULL,NULL,NULL,NULL,0,0,0,NULL),(5,'Christine','Gross','testmetadata','',1,'Göttingen','de','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,NULL,'ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'zDC6nHAP9pElEVuUit8w2Q==','lHWk9VVpQi/NuEz3BS07Hpno0BS7+bV+nL89QJDudTs=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended',NULL,NULL,NULL,NULL,0,0,0,NULL),(6,'Cecilia','von Darst','testprojectmanagement','',1,'Göttingen','de','/css/default.css',0,0,10,7200,2,NULL,'',0,0,0,0,0,0,0,0,0,0,0,0,NULL,'ctrl+shift',0,0,0,0,0,0,0,0,0,0,NULL,NULL,'Xiv1CN7kuoAdOGcRvrVymQ==','o2rh4wXTNmM6NgEL9JJYad7jVxlXxHf0DShihBxzo20=',NULL,NULL,1,NULL,NULL,'intranda_dashboard_extended',NULL,NULL,NULL,NULL,0,0,0,NULL);
 /*!40000 ALTER TABLE `benutzer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -154,7 +162,7 @@ DROP TABLE IF EXISTS `benutzereigenschaften`;
 CREATE TABLE `benutzereigenschaften` (
   `benutzereigenschaftenID` int(11) NOT NULL AUTO_INCREMENT,
   `Titel` varchar(255) DEFAULT NULL,
-  `Wert` varchar(255) DEFAULT NULL,
+  `Wert` text DEFAULT NULL,
   `IstObligatorisch` tinyint(1) DEFAULT 0,
   `DatentypenID` int(11) DEFAULT NULL,
   `Auswahl` varchar(255) DEFAULT NULL,
@@ -245,7 +253,7 @@ CREATE TABLE `databaseversion` (
 
 LOCK TABLES `databaseversion` WRITE;
 /*!40000 ALTER TABLE `databaseversion` DISABLE KEYS */;
-INSERT INTO `databaseversion` VALUES (35);
+INSERT INTO `databaseversion` VALUES (41);
 /*!40000 ALTER TABLE `databaseversion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -384,6 +392,28 @@ LOCK TABLES `institution_configuration` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `jobTypes`
+--
+
+DROP TABLE IF EXISTS `jobTypes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `jobTypes` (
+  `jobTypes` text COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `jobTypes`
+--
+
+LOCK TABLES `jobTypes` WRITE;
+/*!40000 ALTER TABLE `jobTypes` DISABLE KEYS */;
+INSERT INTO `jobTypes` VALUES ('[]');
+/*!40000 ALTER TABLE `jobTypes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `ldapgruppen`
 --
 
@@ -452,11 +482,11 @@ DROP TABLE IF EXISTS `metadata`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `metadata` (
   `processid` int(11) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
+  `name` varchar(190) DEFAULT NULL,
   `value` text CHARACTER SET utf8 DEFAULT NULL,
   `print` text CHARACTER SET utf8 DEFAULT NULL,
   KEY `id` (`processid`),
-  KEY `metadataname` (`name`(191)),
+  KEY `metadataname` (`name`),
   FULLTEXT KEY `idx_metadata_value` (`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -640,7 +670,7 @@ DROP TABLE IF EXISTS `projekte`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `projekte` (
   `ProjekteID` int(11) NOT NULL AUTO_INCREMENT,
-  `Titel` varchar(255) DEFAULT NULL,
+  `titel` varchar(190) DEFAULT NULL,
   `useDmsImport` tinyint(1) DEFAULT 0,
   `dmsImportTimeOut` int(11) DEFAULT NULL,
   `dmsImportRootPath` varchar(255) DEFAULT NULL,
@@ -673,6 +703,7 @@ CREATE TABLE `projekte` (
   `metsRightsLicense` varchar(255) DEFAULT NULL,
   `srurl` varchar(255) DEFAULT NULL,
   `institution_id` int(11) NOT NULL,
+  `project_identifier` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ProjekteID`),
   KEY `FKC8539A94327F143A` (`ProjekteID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
@@ -684,7 +715,7 @@ CREATE TABLE `projekte` (
 
 LOCK TABLES `projekte` WRITE;
 /*!40000 ALTER TABLE `projekte` DISABLE KEYS */;
-INSERT INTO `projekte` VALUES (1,'Beispielprojekt',1,3600000,'/opt/digiverso/viewer/hotfolder/','/opt/digiverso/viewer/hotfolder/','/opt/digiverso/viewer/success/','/opt/digiverso/viewer/error/',0,'Mets','Mets','Example Library','http://www.example.net/mylogo.png','http://www.example.net','mailto:digitisation@example.net','http://catalog.example.net/A?function=search&request=$(meta.CatalogIDDigital)','http://presentation.example.net/ppnresolver?id=$(meta.CatalogIDDigital)','http://catalog.example.net/A?function=search&request=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/ppnresolver?id=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/metsresolver?id=$(meta.CatalogIDDigital)','http://presentation.example.net/metsresolver?id=$(meta.topstruct.CatalogIDDigital)',NULL,NULL,'2015-01-01 00:00:00','2018-12-31 00:00:00',20000,100,0,NULL,NULL,NULL,NULL,NULL,1),(2,'SampleProject',1,3600000,'/opt/digiverso/viewer/hotfolder/','/opt/digiverso/viewer/hotfolder/','/opt/digiverso/viewer/success/','/opt/digiverso/viewer/error/',0,'Mets','Mets','Example Library','http://www.example.net/mylogo.png','http://www.example.net','mailto:digitisation@example.net','http://catalog.example.net/A?function=search&request=$(meta.CatalogIDDigital)','http://presentation.example.net/ppnresolver?id=$(meta.CatalogIDDigital)','http://catalog.example.net/A?function=search&request=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/ppnresolver?id=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/metsresolver?id=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/metsresolver?id=$(meta.CatalogIDDigital)',NULL,NULL,'2015-01-01 00:00:00','2018-12-31 00:00:00',20000,100,0,NULL,NULL,NULL,NULL,NULL,1);
+INSERT INTO `projekte` VALUES (1,'Beispielprojekt',1,3600000,'/opt/digiverso/viewer/hotfolder/','/opt/digiverso/viewer/hotfolder/','/opt/digiverso/viewer/success/','/opt/digiverso/viewer/error/',0,'Mets','Mets','Example Library','http://www.example.net/mylogo.png','http://www.example.net','mailto:digitisation@example.net','http://catalog.example.net/A?function=search&request=$(meta.CatalogIDDigital)','http://presentation.example.net/ppnresolver?id=$(meta.CatalogIDDigital)','http://catalog.example.net/A?function=search&request=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/ppnresolver?id=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/metsresolver?id=$(meta.CatalogIDDigital)','http://presentation.example.net/metsresolver?id=$(meta.topstruct.CatalogIDDigital)',NULL,NULL,'2015-01-01 00:00:00','2018-12-31 00:00:00',20000,100,0,NULL,NULL,NULL,NULL,NULL,1,NULL),(2,'SampleProject',1,3600000,'/opt/digiverso/viewer/hotfolder/','/opt/digiverso/viewer/hotfolder/','/opt/digiverso/viewer/success/','/opt/digiverso/viewer/error/',0,'Mets','Mets','Example Library','http://www.example.net/mylogo.png','http://www.example.net','mailto:digitisation@example.net','http://catalog.example.net/A?function=search&request=$(meta.CatalogIDDigital)','http://presentation.example.net/ppnresolver?id=$(meta.CatalogIDDigital)','http://catalog.example.net/A?function=search&request=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/ppnresolver?id=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/metsresolver?id=$(meta.topstruct.CatalogIDDigital)','http://presentation.example.net/metsresolver?id=$(meta.CatalogIDDigital)',NULL,NULL,'2015-01-01 00:00:00','2018-12-31 00:00:00',20000,100,0,NULL,NULL,NULL,NULL,NULL,1,NULL);
 /*!40000 ALTER TABLE `projekte` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -697,12 +728,12 @@ DROP TABLE IF EXISTS `prozesse`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `prozesse` (
   `ProzesseID` int(11) NOT NULL AUTO_INCREMENT,
-  `Titel` varchar(255) DEFAULT NULL,
+  `titel` varchar(190) DEFAULT NULL,
   `ausgabename` varchar(255) DEFAULT NULL,
   `IstTemplate` tinyint(1) DEFAULT 0,
   `swappedOut` tinyint(1) DEFAULT 0,
   `inAuswahllisteAnzeigen` tinyint(1) DEFAULT 0,
-  `sortHelperStatus` varchar(255) DEFAULT NULL,
+  `sortHelperStatus` varchar(20) DEFAULT NULL,
   `sortHelperImages` int(11) DEFAULT NULL,
   `sortHelperArticles` int(11) DEFAULT NULL,
   `erstellungsdatum` datetime DEFAULT NULL,
@@ -719,8 +750,8 @@ CREATE TABLE `prozesse` (
   KEY `project` (`ProjekteID`),
   KEY `FKC55ACC6DD0F4FC05` (`docketID`),
   KEY `batchID` (`batchID`),
-  KEY `Titel` (`Titel`(50)),
-  KEY `status` (`sortHelperStatus`(20))
+  KEY `status` (`sortHelperStatus`),
+  KEY `Titel` (`titel`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -743,7 +774,7 @@ DROP TABLE IF EXISTS `prozesseeigenschaften`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `prozesseeigenschaften` (
   `prozesseeigenschaftenID` int(11) NOT NULL AUTO_INCREMENT,
-  `Titel` varchar(255) DEFAULT NULL,
+  `titel` varchar(190) DEFAULT NULL,
   `WERT` text DEFAULT NULL,
   `IstObligatorisch` tinyint(1) DEFAULT 0,
   `DatentypenID` int(11) DEFAULT NULL,
@@ -774,7 +805,7 @@ DROP TABLE IF EXISTS `schritte`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `schritte` (
   `SchritteID` int(11) NOT NULL AUTO_INCREMENT,
-  `Titel` varchar(255) DEFAULT NULL,
+  `titel` varchar(190) DEFAULT NULL,
   `Prioritaet` int(11) DEFAULT 0,
   `Reihenfolge` int(11) DEFAULT NULL,
   `Bearbeitungsstatus` int(11) DEFAULT 0,
@@ -824,12 +855,12 @@ CREATE TABLE `schritte` (
   PRIMARY KEY (`SchritteID`),
   KEY `FKD7200736815A56DA` (`ProzesseID`),
   KEY `FKD72007365B4F6962` (`BearbeitungsBenutzerID`),
-  KEY `Titel` (`Titel`(50)),
-  KEY `processid_x_title` (`ProzesseID`,`Titel`(50)),
-  KEY `id_x_title` (`SchritteID`,`Titel`(50)),
-  KEY `processid_x_title_x_user` (`SchritteID`,`Titel`(50),`BearbeitungsBenutzerID`),
   KEY `priority_x_status` (`Prioritaet`,`Bearbeitungsstatus`),
-  KEY `stepstatus` (`Bearbeitungsstatus`)
+  KEY `stepstatus` (`Bearbeitungsstatus`),
+  KEY `Titel` (`titel`),
+  KEY `processid_x_title` (`ProzesseID`,`titel`),
+  KEY `id_x_title` (`SchritteID`,`titel`),
+  KEY `processid_x_title_x_user` (`SchritteID`,`titel`,`BearbeitungsBenutzerID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -979,6 +1010,113 @@ LOCK TABLES `user_email_configuration` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `vocabulary`
+--
+
+DROP TABLE IF EXISTS `vocabulary`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `vocabulary` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vocabulary`
+--
+
+LOCK TABLES `vocabulary` WRITE;
+/*!40000 ALTER TABLE `vocabulary` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vocabulary` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vocabulary_record`
+--
+
+DROP TABLE IF EXISTS `vocabulary_record`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `vocabulary_record` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `vocabulary_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vocabulary_record`
+--
+
+LOCK TABLES `vocabulary_record` WRITE;
+/*!40000 ALTER TABLE `vocabulary_record` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vocabulary_record` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vocabulary_record_data`
+--
+
+DROP TABLE IF EXISTS `vocabulary_record_data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `vocabulary_record_data` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `record_id` int(10) unsigned NOT NULL,
+  `vocabulary_id` int(10) unsigned NOT NULL,
+  `definition_id` int(10) unsigned NOT NULL,
+  `label` varchar(255) DEFAULT NULL,
+  `language` varchar(255) DEFAULT NULL,
+  `value` text DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vocabulary_record_data`
+--
+
+LOCK TABLES `vocabulary_record_data` WRITE;
+/*!40000 ALTER TABLE `vocabulary_record_data` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vocabulary_record_data` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vocabulary_structure`
+--
+
+DROP TABLE IF EXISTS `vocabulary_structure`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `vocabulary_structure` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `vocabulary_id` int(10) unsigned NOT NULL,
+  `label` varchar(255) DEFAULT NULL,
+  `language` varchar(255) DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `validation` text DEFAULT NULL,
+  `required` tinyint(1) DEFAULT NULL,
+  `mainEntry` tinyint(1) DEFAULT NULL,
+  `distinctive` tinyint(1) DEFAULT NULL,
+  `selection` text DEFAULT NULL,
+  `titleField` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vocabulary_structure`
+--
+
+LOCK TABLES `vocabulary_structure` WRITE;
+/*!40000 ALTER TABLE `vocabulary_structure` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vocabulary_structure` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `vorlagen`
 --
 
@@ -1012,7 +1150,7 @@ DROP TABLE IF EXISTS `vorlageneigenschaften`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `vorlageneigenschaften` (
   `vorlageneigenschaftenID` int(11) NOT NULL AUTO_INCREMENT,
-  `Titel` varchar(255) DEFAULT NULL,
+  `titel` varchar(190) DEFAULT NULL,
   `WERT` text DEFAULT NULL,
   `IstObligatorisch` tinyint(1) DEFAULT 0,
   `DatentypenID` int(11) DEFAULT NULL,
@@ -1067,7 +1205,7 @@ DROP TABLE IF EXISTS `werkstueckeeigenschaften`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `werkstueckeeigenschaften` (
   `werkstueckeeigenschaftenID` int(11) NOT NULL AUTO_INCREMENT,
-  `Titel` varchar(255) DEFAULT NULL,
+  `titel` varchar(190) DEFAULT NULL,
   `WERT` text DEFAULT NULL,
   `IstObligatorisch` tinyint(1) DEFAULT 0,
   `DatentypenID` int(11) DEFAULT NULL,
@@ -1098,4 +1236,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-02 20:44:01
+-- Dump completed on 2021-03-16 11:39:04

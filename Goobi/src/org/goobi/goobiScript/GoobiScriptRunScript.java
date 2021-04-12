@@ -1,6 +1,6 @@
 package org.goobi.goobiScript;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import org.goobi.beans.Process;
@@ -21,7 +21,21 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public String getAction() {
+        return "runScript";
+    }
+    
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript allows to execute on specific or all scripts that are assiged to an existing workflow step.");
+        addParameterToSampleCall(sb, "steptitle", "Update XMP Headers", "Title of the workflow step which has scripts that shall be executed");
+        addParameterToSampleCall(sb, "script", "Write headers", "Name of a specific scripts to be executed. If this parameter is missing then all scripts of the defined task are executed.");
+        return sb.toString();
+    }
+    
+    @Override
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {

@@ -3,7 +3,7 @@ package org.goobi.production.cli;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -36,7 +36,7 @@ import de.sub.goobi.helper.Helper;
 public class WebInterfaceConfig {
 
     public static List<String> getCredencials(String requestIp, String requestPassword) {
-        ArrayList<String> allowed = new ArrayList<String>();
+        ArrayList<String> allowed = new ArrayList<>();
         try {
             XMLConfiguration config = new XMLConfiguration();
             config.setDelimiterParsingDisabled(true);
@@ -56,7 +56,7 @@ public class WebInterfaceConfig {
                 }
             }
         } catch (Exception e) {
-            allowed = new ArrayList<String>();
+            allowed = new ArrayList<>();
         }
         return allowed;
 

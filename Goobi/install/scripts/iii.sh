@@ -495,7 +495,7 @@ case "$ACTION" in
 		prepare
 		if [ ${VERBOSE} == "1" ]; then echo "Creating JPEG from JP2 or TIFF files"; fi
 
-		FOLDER=$(echo ${WORKINGPATH} | sed "s|master_||" | sed "s|_media|_jpg|") 
+		FOLDER=$(echo ${WORKINGPATH} | sed -re 's/master_//' -e 's/_master|_media/_jpg/')
 
 		if [ ! -d $FOLDER ] ; then
 			mkdir $FOLDER;
@@ -570,7 +570,7 @@ case "$ACTION" in
 		if [ ${VERBOSE} == "1" ]; then echo "Creating JPEG from TIFF files"; fi
 		if [ "$#" -lt "3" ]; then echo "Wrong number of arguments, expecting 3, got $#."; exit 1; fi
 
-		FOLDER=$(echo ${WORKINGPATH} | sed "s|master_||" | sed "s|_media|_jpg|") 
+		FOLDER=$(echo ${WORKINGPATH} | sed -re 's/master_//' -e 's/_master|_media/_jpg/')
 
 		if [ ! -d $FOLDER ] ; then
 			mkdir $FOLDER;

@@ -1,6 +1,6 @@
 package org.goobi.goobiScript;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import org.apache.commons.lang.SystemUtils;
@@ -23,7 +23,19 @@ public class GoobiScriptUpdateImagePath extends AbstractIGoobiScript implements 
     public final static String DIRECTORY_SUFFIX = "_tif";
 
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public String getAction() {
+        return "updateImagePath";
+    }
+    
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript updates the path to the image files within the METS files.");
+        return sb.toString();
+    }
+    
+    @Override
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         // add all valid commands to list

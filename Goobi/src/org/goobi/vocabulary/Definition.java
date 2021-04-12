@@ -52,6 +52,9 @@ public class Definition {
     @NonNull
     private boolean distinctive;
 
+    @NonNull
+    private boolean titleField;
+
     // possible values to select
     private List<String> selecteableValues;
 
@@ -87,6 +90,14 @@ public class Definition {
             list.add(new SelectItem(s, s, null));
         }
         return list;
+    }
+
+    @JsonIgnore
+    public String getIdAsString() {
+        if (id==null) {
+            return "";
+        }
+        return String.valueOf(id);
     }
 
 }

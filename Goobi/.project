@@ -3,7 +3,6 @@
 	<name>Goobi</name>
 	<comment></comment>
 	<projects>
-		<project>goobi-plugin-import-intranda</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

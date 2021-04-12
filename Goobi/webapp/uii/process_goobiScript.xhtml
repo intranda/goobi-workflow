@@ -20,7 +20,7 @@
 
     <ui:define name="content">
 
-		<c:if test="#{LoginForm.hasRole('Workflow_Processes') and LoginForm.hasRole('Workflow_Processes_Allow_GoobiScript')}">
+		<c:if test="#{LoginForm.hasRole('Workflow_Processes') and LoginForm.hasAnyGoobiScriptRole}">
 	        <div class="row">
 	            <div class="col-sm-12">
 	                <div class="box box-color box-bordered">

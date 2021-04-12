@@ -43,6 +43,7 @@
                                 <div class="form-control form-control--select">
                                     <h:selectOneMenu
                                         id="mytyp"
+                                        styleClass="focusable"
                                         pt:aria-label="#{msgs.typ}"
                                         value="#{Metadaten.tempTyp}"
                                         required="true">
@@ -114,6 +115,7 @@
                                     <div class="form-control form-control--select">
                                         <h:selectOneMenu
                                             id="mySelect1"
+                                            styleClass="focusable"
                                             value="#{Metadaten.metadatum.selectedItem}"
                                             disabled="#{Metadaten.metadatum.disableMetadataField}"
                                             readonly="#{Metadaten.nurLesenModus}">
@@ -143,6 +145,7 @@
                                                 <div class="form-control form-control--select">
                                                     <h:selectOneMenu
                                                         id="selectNoDante"
+                                                        styleClass="focusable"
                                                         disabled="#{Metadaten.metadatum.disableIdentifierField or (Metadaten.outputType == 'readonly')}"
                                                         value="#{Metadaten.metadatum.normDatabase}"
                                                         readonly="#{Metadaten.nurLesenModus}">

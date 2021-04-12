@@ -2,7 +2,7 @@ package org.goobi.goobiScript;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -21,7 +21,25 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public String getAction() {
+        return "deleteProcess";
+    }
+    
+    @Override
+    public boolean isVisible() {
+        return false;
+    }
+    
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript allows you to delete existing processes.");
+        addParameterToSampleCall(sb, "contentOnly", "false", "Define here if just the content shall be deleted (true) or the the entire process from the database as well (false).");
+        return sb.toString();
+    }
+    
+    @Override
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (parameters.get("contentOnly") == null || parameters.get("contentOnly").equals("")) {

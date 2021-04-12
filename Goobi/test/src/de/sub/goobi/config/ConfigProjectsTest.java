@@ -54,7 +54,7 @@ public class ConfigProjectsTest {
     @Test
     public void testParamString() throws IOException {
         ConfigProjects cp = new ConfigProjects("default");
-        String fixture = cp.getParamString("createNewProcess.opac.catalogue");
+        String fixture = cp.getParamString("/createNewProcess/opac/catalogue");
         assertNotNull(fixture);
         assertEquals("LOC", fixture);
     }
@@ -62,7 +62,7 @@ public class ConfigProjectsTest {
     @Test
     public void testParamStringWithDefault() throws IOException {
         ConfigProjects cp = new ConfigProjects("default");
-        String fixture = cp.getParamString("createNewProcess.opac.catalogue", "GBV");
+        String fixture = cp.getParamString("createNewProcess/opac/catalogue", "GBV");
         assertNotNull(fixture);
         assertEquals("LOC", fixture);
 
@@ -75,7 +75,7 @@ public class ConfigProjectsTest {
     @Test
     public void testParamBoolean() throws IOException {
         ConfigProjects cp = new ConfigProjects("default");
-        boolean fixture = cp.getParamBoolean("createNewProcess.opac[@use]");
+        boolean fixture = cp.getParamBoolean("createNewProcess/opac/@use");
         assertTrue(fixture);
 
     }
@@ -90,7 +90,7 @@ public class ConfigProjectsTest {
     @Test
     public void testParamList() throws IOException {
         ConfigProjects cp = new ConfigProjects("default");
-        List<String> fixture = cp.getParamList("createNewProcess.itemlist.item");
+        List<String> fixture = cp.getParamList("createNewProcess/itemlist/item");
         assertNotNull(fixture);
         assertEquals(1, fixture.size());
 

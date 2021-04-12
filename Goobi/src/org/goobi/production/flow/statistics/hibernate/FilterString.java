@@ -29,6 +29,7 @@ public class FilterString {
     public static final String STEPPROPERTY = "stepproperty:";
     public static final String STEP = "step:";
     public static final String STEPINWORK = "stepinwork:";
+    public static final String STEPINFLIGHT = "stepinflight:";
     public static final String STEPLOCKED = "steplocked:";
     public static final String STEPOPEN = "stepopen:";
     public static final String STEPDONE = "stepdone:";
@@ -46,6 +47,10 @@ public class FilterString {
     public static final String STEPERROR = "steperror:";
     public static final String STEPDEACTIVATED = "stepdeactivated:";
     public static final String INSTITUTION = "institution";
+
+    public static final String PROCESS_DATE = "processdate";
+    public static final String STEP_START_DATE = "stepstartdate";
+    public static final String STEP_FINISH_DATE = "stepfinishdate";
 
     // german
     public static final String PROZESSEIGENSCHAFT = "prozesseigenschaft:";

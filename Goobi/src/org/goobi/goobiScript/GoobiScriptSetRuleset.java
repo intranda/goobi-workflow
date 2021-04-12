@@ -1,6 +1,6 @@
 package org.goobi.goobiScript;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import org.goobi.beans.Process;
@@ -21,7 +21,20 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
     private Ruleset regelsatz;
 
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public String getAction() {
+        return "setRuleset";
+    }
+    
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript allows to assign a specific ruleset to the processes.");
+        addParameterToSampleCall(sb, "ruleset", "Newspapers", "Use the internal name of the ruleset here, not the name of the xml file where the ruleset is located.");
+        return sb.toString();
+    }
+    
+    @Override
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (parameters.get("ruleset") == null || parameters.get("ruleset").equals("")) {

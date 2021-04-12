@@ -1,7 +1,7 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -21,7 +21,21 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public String getAction() {
+        return "addStep";
+    }
+    
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript allows to add a new workflow step into the workflow.");
+        addParameterToSampleCall(sb, "steptitle", "Scanning", "Title of the workflow step to add");
+        addParameterToSampleCall(sb, "number", "5", "This number defines where in the workflow this new step is ordered into.");
+        return sb.toString();
+    }
+    
+    @Override
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {

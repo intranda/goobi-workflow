@@ -447,19 +447,19 @@ class ProcessMysqlHelper implements Serializable {
         if (!includeProcessId) {
             return "(Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen, sortHelperStatus,"
                     + "sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, MetadatenKonfigurationID, sortHelperDocstructs,"
-                    + "sortHelperMetadata, batchID, docketID, mediaFolderExists)" + " VALUES ";
+                    + "sortHelperMetadata, batchID, docketID, mediaFolderExists, pauseAutomaticExecution)" + " VALUES ";
         } else {
             return "(ProzesseID, Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen, sortHelperStatus,"
                     + "sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, MetadatenKonfigurationID, sortHelperDocstructs,"
-                    + "sortHelperMetadata, batchID, docketID, mediaFolderExists)" + " VALUES ";
+                    + "sortHelperMetadata, batchID, docketID, mediaFolderExists, pauseAutomaticExecution)" + " VALUES ";
         }
     }
 
     private static String generateValueQuery(boolean includeProcessId) {
         if (!includeProcessId) {
-            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        } else {
             return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        } else {
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
     }
 
@@ -479,7 +479,7 @@ class ProcessMysqlHelper implements Serializable {
             Object[] param = { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
                     o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(), o.getRegelsatz().getId(),
                     o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatch() == null ? null : o.getBatch().getBatchId(),
-                            o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists() };
+                            o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution() };
 
             return param;
         } else {
@@ -487,7 +487,7 @@ class ProcessMysqlHelper implements Serializable {
                     o.isInAuswahllisteAnzeigen(), o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime,
                     o.getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
                     o.getBatch() == null ? null : o.getBatch().getBatchId(), o.getDocket() == null ? null : o.getDocket().getId(),
-                            o.isMediaFolderExists() };
+                            o.isMediaFolderExists(), o.isPauseAutomaticExecution() };
 
             return param;
         }
@@ -512,7 +512,7 @@ class ProcessMysqlHelper implements Serializable {
         //        sql.append(" wikifield = ?,");
         sql.append(" batchID = ?,");
         sql.append(" docketID = ?,");
-        sql.append(" mediaFolderExists = ?");
+        sql.append(" mediaFolderExists = ?, pauseAutomaticExecution = ?");
         sql.append(" WHERE ProzesseID = " + o.getId());
 
         Object[] param = generateParameter(o, false, false);
@@ -561,6 +561,8 @@ class ProcessMysqlHelper implements Serializable {
         p.setProcessLog(getLogEntriesForProcess(p.getId()));
 
         p.setMediaFolderExists(rs.getBoolean("mediaFolderExists"));
+
+        p.setPauseAutomaticExecution(rs.getBoolean("pauseAutomaticExecution"));
 
         return p;
     }

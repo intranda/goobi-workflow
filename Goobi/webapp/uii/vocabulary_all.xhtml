@@ -50,8 +50,23 @@
                         </div>
                         <div class="box-content nopadding">
                             <div class="dataTables_wrapper">
-                                <div class="dataTables_length">
+                                <div class="dataTables_length" style="margin-bottom: 10px;">
                                     <h:outputText value="#{msgs.treffer}: #{vocabularyBean.paginator.totalResults}" />
+                                </div>
+
+                                <div class="dataTables_filter">
+                                    <!-- show field definitions -->
+                                    <h:commandLink id="tableShowFieldDefinitions"
+                                        styleClass="btn searchfieldbuttongroup hidden-xs"
+                                        action="#{NavigationForm.Reload}"
+                                        >
+                                        <i class="fa #{NavigationForm.uiStatus.vocabulary_fields eq 'show'?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                                        <h:outputText styleClass="font-size-s"
+                                            value="#{msgs.vocabularyManager_showFieldDefinitions}" />
+                                        <f:setPropertyActionListener
+                                            target="#{NavigationForm.uiStatus.vocabulary_fields}"
+                                            value="#{NavigationForm.uiStatus.vocabulary_fields eq 'show'?'hide':'show'}" />
+                                    </h:commandLink>
                                 </div>
 
                                 <x:dataTable
@@ -72,13 +87,10 @@
                                         </f:facet>
                                         <h:outputText value="#{item.description}" />
                                     </h:column>
-
-
-                                    <h:column>
+                                    <h:column rendered="#{NavigationForm.uiStatus.vocabulary_fields eq 'show'}">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.vocabularyManager_definition}" />
-                                        </f:facet>
-										
+                                        </f:facet>										
 										<ui:repeat var="definition" value="#{item.struct}">
 											<h:outputText value="#{definition.label}" />
 											<h:outputText styleClass="font-light" value=" [#{definition.type}]" />

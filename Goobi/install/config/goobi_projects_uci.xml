@@ -6,11 +6,11 @@
         <!-- ZVDD -->
         <item docstruct="topstruct" isnotdoctype="periodical\|multivolume" metadata="_dateDigitization" multiselect="true" required="true" ughbinding="true">
                                         Datum der Digitalisierung
-                                        <select label="2020"> 2020</select>
+                                        <select label="2021"> 2021</select>
                                 </item>
         <item docstruct="firstchild" isdoctype="periodical\|multivolume" metadata="_dateDigitization" multiselect="true" required="true" ughbinding="true">
                                         Datum der Digitalisierung
-                                        <select label="2020"> 2020</select>
+                                        <select label="2021"> 2021</select>
                                 </item>
         <item docstruct="topstruct" isnotdoctype="periodical\|multivolume" metadata="_electronicEdition" multiselect="true" required="true" ughbinding="true">
                                         Electronic ed.

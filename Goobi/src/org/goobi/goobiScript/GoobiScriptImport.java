@@ -1,7 +1,7 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import org.goobi.beans.Batch;
@@ -21,18 +21,35 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.MassImportForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScript {
+    @Setter
     private MassImportForm mi;
     private Batch batch = null;
     private List<Record> records;
 
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public String getAction() {
+        return "import";
+    }
+
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript is used to execute mass imports of data using an existing mass import plugin.");
+        addParameterToSampleCall(sb, "plugin", "plugin_intranda_import_myplugin", "Define the plugin identifier to use here.");
+        addParameterToSampleCall(sb, "identifiers", "1,2,3,4,5", "Define the identifiers to use for the import. These are comma separated.");
+        addParameterToSampleCall(sb, "template", "13", "Define here the identifier of the process template to use for the mass import.");
+        addParameterToSampleCall(sb, "projectId", "2", "In case another project shall be used define the project identifier here. This parameter is optional.");
+        return sb.toString();
+    }
+
+    @Override
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
-        mi = (MassImportForm) Helper.getManagedBeanValue("#{MassImportForm}");
 
         if (parameters.get("plugin") == null || parameters.get("plugin").equals("")) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "plugin");

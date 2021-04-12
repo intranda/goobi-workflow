@@ -42,9 +42,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.jms.JMSException;
-import javax.naming.ConfigurationException;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
@@ -60,16 +57,10 @@ import org.apache.http.ssl.SSLContexts;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.api.mail.SendMail;
-import org.goobi.api.mq.ExternalScriptTicket;
-import org.goobi.api.mq.GenericAutomaticStepHandler;
-import org.goobi.api.mq.QueueType;
-import org.goobi.api.mq.TaskTicket;
-import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
-import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
@@ -134,12 +125,9 @@ public class HelperSchritte {
 
         currentStep.setBearbeitungszeitpunkt(myDate);
         try {
-            LoginBean lf = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-            if (lf != null) {
-                User ben = lf.getMyBenutzer();
-                if (ben != null) {
-                    currentStep.setBearbeitungsbenutzer(ben);
-                }
+            User ben = Helper.getCurrentUser();
+            if (ben != null) {
+                currentStep.setBearbeitungsbenutzer(ben);
             }
         } catch (Exception e) {
 
@@ -191,7 +179,7 @@ public class HelperSchritte {
         List<Step> automatischeSchritte = new ArrayList<>();
         List<Step> stepsToFinish = new ArrayList<>();
         SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.DONE);
-        HistoryManager.addHistory(myDate, new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(),
+        HistoryManager.addHistory(myDate, Integer.valueOf(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(),
                 HistoryEventType.stepDone.getValue(), processId);
 
         /* prüfen, ob es Schritte gibt, die parallel stattfinden aber noch nicht abgeschlossen sind */
@@ -256,6 +244,9 @@ public class HelperSchritte {
 
         try {
             int numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(po.getImagesOrigDirectory(true)));
+            if (numberOfFiles == 0) {
+                numberOfFiles = StorageProvider.getInstance().getNumberOfFiles(Paths.get(po.getImagesTifDirectory(true)));
+            }
             if (numberOfFiles > 0 && po.getSortHelperImages() != numberOfFiles) {
                 ProcessManager.updateImages(numberOfFiles, processId);
             }
@@ -284,67 +275,13 @@ public class HelperSchritte {
             if (logger.isDebugEnabled()) {
                 logger.debug("Starting scripts for step with stepId " + automaticStep.getId() + " and processId " + automaticStep.getProcessId());
             }
-            if (automaticStep.getMessageQueue() == QueueType.EXTERNAL_QUEUE) {
-                // check if this is a script-step and has no additional plugin set
-                if (!automaticStep.getAllScriptPaths().isEmpty() && StringUtils.isBlank(automaticStep.getStepPlugin())) {
-                    // put this to the external queue and continue
-                    addStepScriptsToExternalQueue(automaticStep);
-                    continue;
-                }
-            }
-            if (automaticStep.getMessageQueue() == QueueType.SLOW_QUEUE || automaticStep.getMessageQueue() == QueueType.FAST_QUEUE) {
-                TaskTicket t = new TaskTicket(GenericAutomaticStepHandler.HANDLERNAME);
-                t.setStepId(automaticStep.getId());
-                t.setProcessId(automaticStep.getProzess().getId());
-                t.setStepName(automaticStep.getTitel());
-                try {
-                    TicketGenerator.submitInternalTicket(t, automaticStep.getMessageQueue());
-                } catch (JMSException e) {
-                    logger.error("Error adding TaskTicket to queue", e);
-                }
-            } else {
-                ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
-                myThread.start();
-            }
+            ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
+            myThread.startOrPutToQueue();
         }
         for (Step finish : stepsToFinish) {
             CloseStepObjectAutomatic(finish);
         }
 
-    }
-
-    public void addStepScriptsToExternalQueue(Step automaticStep) {
-        ExternalScriptTicket t = new ExternalScriptTicket();
-        t.setStepId(automaticStep.getId());
-        t.setProcessId(automaticStep.getProzess().getId());
-        t.setStepName(automaticStep.getTitel());
-        // put all scriptPaths to properties (with replaced Goobi-variables!)
-        List<List<String>> listOfScripts = new ArrayList<List<String>>();
-        List<String> scriptNames = new ArrayList<String>();
-        for (Entry<String, String> entry : automaticStep.getAllScripts().entrySet()) {
-            String script = entry.getValue();
-            try {
-                scriptNames.add(entry.getKey());
-                List<String> params = createShellParamsForBashScript(automaticStep, script);
-                listOfScripts.add(params);
-            } catch (PreferencesException | ReadException | WriteException | IOException | InterruptedException | SwapException
-                    | DAOException e) {
-                logger.error("error trying to put script-step to external queue: ", e);
-            }
-        }
-        try {
-            t.setJwt(JwtHelper.createChangeStepToken(automaticStep));
-        } catch (ConfigurationException e) {
-            logger.error(e);
-        }
-        t.setScripts(listOfScripts);
-        t.setScriptNames(scriptNames);
-        try {
-            TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE);
-        } catch (JMSException e) {
-            // TODO Auto-generated catch block
-            logger.error(e);
-        }
     }
 
     public void updateProcessStatus(int processId) {
@@ -381,6 +318,11 @@ public class HelperSchritte {
     }
 
     public ShellScriptReturnValue executeAllScriptsForStep(Step step, boolean automatic) {
+        if (automatic && step.getProzess().isPauseAutomaticExecution()) {
+            ShellScriptReturnValue returnCode = new ShellScriptReturnValue(1, "Automatic execution is disabled", "");
+            //            reOpenStep(step);
+            return returnCode;
+        }
         List<String> scriptpaths = step.getAllScriptPaths();
         int count = 1;
         int size = scriptpaths.size();
@@ -404,14 +346,14 @@ public class HelperSchritte {
                     case 99:
 
                         break;
-                    // return code 98: re-open task
+                        // return code 98: re-open task
                     case 98:
                         reOpenStep(step);
                         break;
-                    // return code 0: script returned without error
+                        // return code 0: script returned without error
                     case 0:
                         break;
-                    // everything else: error
+                        // everything else: error
                     default:
                         errorStep(step);
                         break outerloop;
@@ -607,7 +549,7 @@ public class HelperSchritte {
             return new ShellScriptReturnValue(-1, null, null);
         }
 
-        List<String> parameterList = new ArrayList<String>();
+        List<String> parameterList = new ArrayList<>();
         try {
             parameterList = createShellParamsForBashScript(step, script);
         } catch (Exception e) {
@@ -654,13 +596,14 @@ public class HelperSchritte {
                     if (rueckgabe.getReturnCode() != 99 && rueckgabe.getReturnCode() != 98) {
                         step.setEditTypeEnum(StepEditType.AUTOMATIC);
                         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                        step.setBearbeitungsende(new Date());
                         SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.ERROR);
                         StepManager.saveStep(step);
                         Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
                                 "Script for '" + step.getTitel() + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode()
-                                        + ". The script returned: " + rueckgabe.getErrorText());
+                                + ". The script returned: " + rueckgabe.getErrorText());
                         logger.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
-                                + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
+                        + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
                     }
                 }
             }
@@ -691,6 +634,11 @@ public class HelperSchritte {
     }
 
     public boolean executeDmsExport(Step step, boolean automatic) {
+        if (automatic && step.getProzess().isPauseAutomaticExecution()) {
+            //            reOpenStep(step);
+            return false;
+        }
+
         IExportPlugin dms = null;
         if (StringUtils.isNotBlank(step.getStepPlugin())) {
             try {
@@ -698,7 +646,7 @@ public class HelperSchritte {
             } catch (Exception e) {
                 logger.error("Can't load export plugin, use default plugin for process with ID " + step.getProcessId(), e);
                 dms = new ExportDms(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
-                //                dms = new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
+                //                dms = new AutomaticDmsExport(ConfigurationHelper.isAutomaticExportWithImages());
             }
         }
         if (dms == null) {
@@ -717,7 +665,7 @@ public class HelperSchritte {
                 CloseStepObjectAutomatic(step);
             } else {
                 Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
-                        + "' was cancelled because of validation errors: " + dms.getProblems().toString());
+                + "' was cancelled because of validation errors: " + dms.getProblems().toString());
                 errorStep(step);
             }
             return validate;
@@ -734,6 +682,7 @@ public class HelperSchritte {
     public void errorStep(Step step) {
         SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.ERROR);
         step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+        step.setBearbeitungsende(new Date());
         step.setEditTypeEnum(StepEditType.AUTOMATIC);
         try {
             StepManager.saveStep(step);

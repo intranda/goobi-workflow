@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.api.rest.AuthorizationFilter;
@@ -18,6 +17,7 @@ import org.goobi.production.plugin.interfaces.IRestGuiPlugin;
 import org.goobi.production.plugin.interfaces.IRestPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.Helper;
 import lombok.extern.log4j.Log4j2;
 import spark.Service;
 import spark.route.ServletRoutes;
@@ -61,8 +61,8 @@ public class SparkListener implements SparkApplication {
                     }
                     q.attribute("tokenAuthorized", true);
                 } else {
-                    HttpSession session = hreq.getSession();
-                    LoginBean userBean = (LoginBean) session.getAttribute("LoginForm");
+                    LoginBean userBean = Helper.getLoginBeanFromSession(hreq.getSession());
+
                     q.attribute("user", userBean.getMyBenutzer());
                 }
 

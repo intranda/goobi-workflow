@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,8 +22,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 
 import org.goobi.beans.PluginInfo;
 import org.goobi.production.plugin.interfaces.IPlugin;
@@ -43,11 +44,12 @@ import net.xeoh.plugins.base.util.PluginManagerUtil;
  *
  */
 
-@ManagedBean
-@SessionScoped
+@ViewScoped
 @Log4j2
-public class PluginsBean {
+@Named
+public class PluginsBean implements Serializable {
 
+    private static final long serialVersionUID = 9152658727528258005L;
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     @Getter
@@ -69,7 +71,7 @@ public class PluginsBean {
         try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(pluginsFolder)) {
             for (Path pluginDir : dirStream) {
                 if (Files.isDirectory(pluginDir)) {
-                    List<PluginInfo> dirList = new ArrayList<PluginInfo>();
+                    List<PluginInfo> dirList = new ArrayList<>();
                     try (DirectoryStream<Path> pluginStream = Files.newDirectoryStream(pluginDir)) {
                         for (Path pluginP : pluginStream) {
                             if (pluginP.getFileName().toString().endsWith("jar")) {

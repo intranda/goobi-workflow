@@ -33,7 +33,7 @@
                                         id="edit"
                                         pt:aria-label="#{msgs.bearbeiten}"
                                         title="#{msgs.prozessdetailsBearbeiten}"
-                                        action="#{ProzessverwaltungForm.Reload}"
+                                        action="#{ProzessverwaltungForm.reload}"
                                         rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
                                         styleClass="btn btn-mini"
                                         rel="tooltip">
@@ -49,7 +49,7 @@
                                     <h:commandLink
                                         id="reload"
                                         pt:aria-label="#{msgs.reload}"
-                                        action="#{ProzessverwaltungForm.Reload}"
+                                        action="#{ProzessverwaltungForm.reload}"
                                         styleClass="btn btn-mini"
                                         title="#{msgs.reload}"
                                         rel="tooltip">
@@ -142,7 +142,7 @@
                                         id="myModal-#{count}"
                                         tabindex="-1"
                                         role="dialog"
-                                        aria-labelledby="myModalLabel">
+                                        aria-labelledby="myModalLabel2">
                                         <div
                                             class="modal-dialog"
                                             role="document">
@@ -158,7 +158,7 @@
                                                     </a>
                                                     <h4
                                                         class="modal-title"
-                                                        id="myModalLabel">
+                                                        id="myModalLabel2">
                                                         <h:outputText value="#{msgs.metseditorOpen}" />
                                                     </h4>
                                                 </div>
@@ -369,6 +369,8 @@
 
                                     <h:outputText value="#{msgs.istTemplate}:" />
                                     <i class="fa #{ProzessverwaltungForm.myProzess.istTemplate?'fa-check-square-o':'fa-square-o'}"></i>
+                                    <h:outputText value="#{msgs.pauseAutomaticExecution}:" />
+                                    <i class="fa #{ProzessverwaltungForm.myProzess.pauseAutomaticExecution?'fa-check-square-o':'fa-square-o'}"></i>
 
                                     <h:outputText
                                         value="#{msgs.id}:"
@@ -437,10 +439,10 @@
 
                     <div class="box box-color orange box-bordered">
                         <div class="box-title">
-                            <h3>
+                            <h2>
                                 <i class="fa fa-table"></i>
                                 <h:outputText value="#{msgs.prozess}" />
-                            </h3>
+                            </h2>
                         </div>
                         <div class="box-content nopadding">
 
@@ -475,10 +477,10 @@
 
                             <intranda:formInputDropDown
                                 id="docket"
-                                label="#{msgs.docket}"
+                                label="#{msgs.docket}name"
                                 field="#{ProzessverwaltungForm.docketSelection}"
                                 help="#{msgs.helpProcessDocket}"
-                                name="docket"
+                                name="docket_name"
                                 selectItems="#{ProzessverwaltungForm.docketSelectionList}"
                                 fieldStyle="form-control"
                                 required="true" />
@@ -497,6 +499,13 @@
                                 field="#{ProzessverwaltungForm.myProzess.istTemplate}"
                                 help="#{msgs.helpProcessTemplate}"
                                 name="template" />
+
+                            <intranda:formInputCheckBox
+                                id="pauseAutomaticExecution"
+                                label="#{msgs.pauseAutomaticExecution}"
+                                field="#{ProzessverwaltungForm.myProzess.pauseAutomaticExecution}"
+                                help="#{msgs.helpProcessPauseAutomaticExecution}"
+                                name="pauseAutomaticExecution" />
 
 
                             <h:panelGroup>
@@ -550,7 +559,7 @@
                                             id="deleteContentModal"
                                             tabindex="-1"
                                             role="dialog"
-                                            aria-labelledby="myModalLabel">
+                                            aria-labelledby="myModalLabel3">
                                             <div
                                                 class="modal-dialog"
                                                 role="document">
@@ -558,7 +567,7 @@
                                                     <div class="modal-header">
                                                         <h4
                                                             class="modal-title"
-                                                            id="myModalLabel">
+                                                            id="myModalLabel3">
                                                             <h:outputText value="#{msgs.contentLoeschen}" />
                                                         </h4>
                                                     </div>
@@ -587,7 +596,7 @@
                                             id="deleteModal"
                                             tabindex="-1"
                                             role="dialog"
-                                            aria-labelledby="myModalLabel">
+                                            aria-labelledby="myModalLabel1">
                                             <div
                                                 class="modal-dialog"
                                                 role="document">
@@ -595,7 +604,7 @@
                                                     <div class="modal-header">
                                                         <h4
                                                             class="modal-title"
-                                                            id="myModalLabel">
+                                                            id="myModalLabel1">
                                                             <h:outputText value="#{msgs.loeschen}" />
                                                         </h4>
                                                     </div>

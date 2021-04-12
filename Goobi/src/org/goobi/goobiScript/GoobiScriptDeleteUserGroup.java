@@ -1,7 +1,7 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,7 +25,23 @@ public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements 
     private Usergroup myGroup = null;
 
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public String getAction() {
+        return "deleteUserGroup";
+    }
+    
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript allows to remove a user group from a workflow step where it was assigned to.");
+        addParameterToSampleCall(sb, "steptitle", "Scanning", "Title of the workflow step to adapt");
+        addParameterToSampleCall(sb, "group", "Photographers", "Name of the user group that shall be removed from the workflow step");
+        return sb.toString();
+
+        //return "---\\naction: deleteUserGroup\\nsteptitle: TITLE_STEP\\ngroup: GROUP_NAME";
+    }
+    
+    @Override
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {

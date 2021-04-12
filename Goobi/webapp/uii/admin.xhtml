@@ -29,7 +29,7 @@
                                     <label class="control-label">#{msgs.message}:</label>
                                 </div>
                                 <div class="col-sm-9">
-                                    <h:inputTextarea styleClass="form-control" value="#{SessionForm.bitteAusloggen}">
+                                    <h:inputTextarea styleClass="form-control focusable" value="#{SessionForm.bitteAusloggen}">
                                     	<f:passThroughAttribute
 		                                     name="aria-label"
 		                                     value="#{msgs.message}" />
@@ -40,7 +40,7 @@
                             <hr class="margin-top-regular margin-bottom-regular" />
 
                             <div class="margin-top-regular">
-                                <h:commandLink styleClass="btn btn-primary font-size-s pull-right" value="#{msgs.uebernehmen}" action="admin.xhtml" />
+                                <h:commandLink styleClass="btn btn-primary font-size-s pull-right" value="#{msgs.uebernehmen}" action="#{SessionForm.publishAdminMessage}" />
                             </div>
 
                         </div>

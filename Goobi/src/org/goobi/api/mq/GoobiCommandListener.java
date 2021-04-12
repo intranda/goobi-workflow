@@ -94,6 +94,8 @@ public class GoobiCommandListener {
                         switch (newStatus) {
                             case "error":
                                 step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                                step.setBearbeitungszeitpunkt(new Date());
+                                step.setBearbeitungsende(step.getBearbeitungszeitpunkt());
                                 StepManager.saveStep(step);
                                 break;
                             case "done":
@@ -102,6 +104,10 @@ public class GoobiCommandListener {
                                     ExternalMQManager.insertResult(new ExternalCommandResult(t.getProcessId(), t.getStepId(), scriptName));
                                 }
                                 new HelperSchritte().CloseStepObjectAutomatic(step);
+                                break;
+                            case "paused":
+                                // Step was paused when the workernode tried to run it. Persist this to schritte table
+                                StepManager.setStepPaused(stepId, true);
                                 break;
                         }
                     }

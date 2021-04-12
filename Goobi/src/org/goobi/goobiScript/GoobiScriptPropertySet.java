@@ -1,6 +1,6 @@
 package org.goobi.goobiScript;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -19,7 +19,21 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public String getAction() {
+        return "propertySet";
+    }
+    
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript allows to set a process property to a specific value.");
+        addParameterToSampleCall(sb, "name", "Opening angle", "Name of the property to be changed. If the property does not exist already it is created here.");
+        addParameterToSampleCall(sb, "value", "90°", "Value that the property shall be set to");
+        return sb.toString();
+    }
+    
+    @Override
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (StringUtils.isBlank(parameters.get("name"))) {

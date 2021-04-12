@@ -1,6 +1,6 @@
 package org.goobi.goobiScript;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -19,7 +19,20 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptPropertyDelete extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public String getAction() {
+        return "propertyDelete";
+    }
+    
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript allows you to delete an existing property.");
+        addParameterToSampleCall(sb, "name", "Opening angle", "Define the name of the property that shall be deleted (e.g. `Opening angle`).");
+        return sb.toString();
+    }
+    
+    @Override
+    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (StringUtils.isBlank(parameters.get("name"))) {

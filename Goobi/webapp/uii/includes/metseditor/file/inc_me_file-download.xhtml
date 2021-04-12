@@ -31,7 +31,7 @@
                             </div>
                             <div class="col-9">
                                 <div class="form-control form-control--select">
-                                    <h:selectOneMenu id="currentFolder2" pt:aria-label="#{msgs.directory}" value="#{Metadaten.fileManipulation.currentFolder}">
+                                    <h:selectOneMenu id="currentFolder2" styleClass="focusable" pt:aria-label="#{msgs.directory}" value="#{Metadaten.fileManipulation.currentFolder}">
                                         <f:selectItems  
                                             value="#{Metadaten.allTifFolders}" 
                                             var="folder" 
@@ -50,7 +50,7 @@
                             </div>
                             <div class="col-9">
                                 <div class="form-control form-control--select">
-                                    <h:selectOneMenu value="#{Metadaten.fileManipulation.imageSelection}" id="imageSelection" pt:aria-label="#{msgs.datei}">
+                                    <h:selectOneMenu value="#{Metadaten.fileManipulation.imageSelection}" id="imageSelection" styleClass="focusable" pt:aria-label="#{msgs.datei}">
                                         <f:selectItems value="#{Metadaten.allPages}" var="page" itemLabel="#{page.label}" itemValue="#{page.physicalPageNo}" />
                                     </h:selectOneMenu>
                                 </div>

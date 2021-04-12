@@ -210,6 +210,15 @@
                                 rendered="#{LoginForm.hasRole('Admin_Queue')}"
                                 icon="fa fa-spinner box-icon-fix-menu-up3"
                                 fontclass="margin-left-10" />
+                                
+                            <!-- Jobtypes -->
+                            <intranda:menuItem
+                                id="a37b"
+                                label="#{msgs.menu_administration_jobtypes}"
+                                action="admin_jobtypes_all"
+                                rendered="#{LoginForm.hasRole('Admin_Jobtypes')}"
+                                icon="fa fa-gears box-icon-fix-menu-up3"
+                                fontclass="margin-left-10" />
 
                             <!-- Plugins overview -->
                             <intranda:menuItem
@@ -225,6 +234,13 @@
                                 action="#{vocabularyBean.FilterKein}"
                                 rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
                                 icon="fa fa-database box-icon-fix-menu-up3 "
+                                fontclass="margin-left-10" />
+                                
+                            <!-- SWAGGER-API -->
+                            <intranda:menuItem id="a153" 
+                                label="#{msgs.apiDescription}"
+                                action="restApi.xhtml"
+                                icon="fa fa-terminal box-icon-fix-menu-up3 "
                                 fontclass="margin-left-10" />
 
                             <!-- Superadmin -->
@@ -338,6 +354,7 @@
 
                         <li class="dropdown language-select">
                             <a
+                                href="#"
                                 id="nav-language"
                                 pt:aria-label="#{msgs.spracheAendern}"
                                 data-toggle="dropdown"

@@ -36,7 +36,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.User;
 import org.goobi.io.WebDavFilter;
@@ -169,11 +170,14 @@ public class WebDav implements Serializable {
              * existieren
              */
             if (aktuellerBenutzer.isMitMassendownload()) {
-                Path projekt = Paths.get(userHome + myProzess.getProjekt().getTitel());
-                FilesystemHelper.createDirectoryForUser(projekt.toString(), aktuellerBenutzer.getLogin());
+                String projekt = Paths.get(userHome + myProzess.getProjekt().getTitel()).toString();
+                if (!ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
+                    projekt = projekt.replaceAll(" ", "__");
+                }
+                FilesystemHelper.createDirectoryForUser(projekt, aktuellerBenutzer.getLogin());
 
-                projekt = Paths.get(userHome + DONEDIRECTORYNAME);
-                FilesystemHelper.createDirectoryForUser(projekt.toString(), aktuellerBenutzer.getLogin());
+                String doneDir = Paths.get(userHome + DONEDIRECTORYNAME).toString();
+                FilesystemHelper.createDirectoryForUser(doneDir, aktuellerBenutzer.getLogin());
             }
 
         } catch (Exception ioe) {
