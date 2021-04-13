@@ -145,12 +145,11 @@
                                 <div class="col-auto mr-auto"></div>
                                 <div class="col-auto">
                                     <button
-                                        aria-label="#{msgs.neuesMetadatumAnlegen}"
                                         class="btn btn--gray"
                                         jsf:action="#{Metadaten.Hinzufuegen}"
                                         jsf:rendered="#{Item.metadataAddable}"
-                                        title="#{msgs.neuesMetadatumAnlegen}"
                                         type="button">
+                                        #{msgs.neuesMetadatumAnlegen}
                                         <f:setPropertyActionListener
                                             value="#{Item}"
                                             target="#{Metadaten.currentGroup}" />
@@ -161,12 +160,11 @@
                                     </button>
 
                                     <button
-                                        aria-label="#{msgs.mets_corporate_createCorporate}"
                                         class="btn btn--gray"
                                         jsf:action="#{Metadaten.AddCorporate}"
                                         jsf:rendered="#{Item.corporateAddable}"
-                                        title="#{msgs.mets_corporate_createCorporate}"
                                         type="button">
+                                        #{msgs.mets_corporate_createCorporate}
                                         <f:setPropertyActionListener
                                             value="#{Item}"
                                             target="#{Metadaten.currentGroup}" />
@@ -177,34 +175,26 @@
                                     </button>
 
                                     <button
-                                        aria-label="#{msgs.neuePersonAnlegen}"
                                         class="btn btn--gray"
                                         jsf:action="#{Metadaten.HinzufuegenPerson}"
                                         jsf:rendered="#{Item.personAddable}"
-                                        title="#{msgs.neuePersonAnlegen}"
                                         type="button">
+                                        #{msgs.neuePersonAnlegen}
                                         <f:setPropertyActionListener
                                             value="#{Item}"
                                             target="#{Metadaten.currentGroup}" />
-                                        <f:passThroughAttribute
-                                            name="data-toggle"
-                                            value="tooltip" />
                                         <f:ajax render=":pageContentCenter" />
                                     </button>
 
                                     <button
-                                        aria-label="#{msgs.AddNewGroup}"
                                         class="btn btn--gray"
                                         jsf:action="#{Metadaten.AddGroup}"
                                         jsf:rendered="#{Item.groupAddable}"
-                                        title="#{msgs.AddNewGroup}"
                                         type="button">
+                                        #{msgs.AddNewGroup}
                                         <f:setPropertyActionListener
                                             value="#{Item}"
                                             target="#{Metadaten.currentGroup}" />
-                                        <f:passThroughAttribute
-                                            name="data-toggle"
-                                            value="tooltip" />
                                         <f:ajax render=":pageContentCenter" />
                                     </button>                                    
                                 </div>
