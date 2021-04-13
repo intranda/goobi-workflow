@@ -174,7 +174,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         _columns.handles.left = parseInt( $( '#pageContentLeft .ui-resizable-handle' ).css( 'left' ) );
         _columns.handles.right = parseInt( $( '#pageContentRight .ui-resizable-handle' ).css( 'right' ) );
 
-        sessionStorage.setItem( 'columnWidths', JSON.stringify( _columns ) );
+        sessionStorage.setItem( 'wf_columnWidths', JSON.stringify( _columns ) );
     }
     
     /**
@@ -199,8 +199,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         if ( _debug ) {
             console.log( 'EXECUTE: _getSavedWidths');
         }
-        if ( sessionStorage.getItem( 'columnWidths' ) != undefined ) {
-            _columns = JSON.parse( sessionStorage.getItem( 'columnWidths' ) );
+        if ( sessionStorage.getItem( 'wf_columnWidths' ) != undefined ) {
+            _columns = JSON.parse( sessionStorage.getItem( 'wf_columnWidths' ) );
             if (_defaults.displayImageArea) {
                 if ($( window ).outerWidth() < _columns.left +  _columns.center + _columns.right || _columns.right == null) {
                     $( '#pageContentLeft' ).outerWidth(Math.floor(_columns.left) );
