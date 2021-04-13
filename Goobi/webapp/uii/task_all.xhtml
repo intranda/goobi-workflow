@@ -42,7 +42,9 @@
                                 <x:aliasBeansScope>
                                     <x:aliasBean alias="#{Form}" value="#{AktuelleSchritteForm}" />
                                     <x:aliasBean alias="#{label}" value="#{msgs.filterTasks}" />
-                                    <ui:include src="includes/task/list_searchAndSave.xhtml" />
+                                    <f:subview id="sub1">
+                                        <ui:include src="includes/task/list_searchAndSave.xhtml" />
+                                    </f:subview>
                                 </x:aliasBeansScope>
 
                                 <ui:include src="includes/task/list_filterAndDisplay.xhtml" />
