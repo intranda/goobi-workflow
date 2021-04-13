@@ -7,7 +7,8 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
     xmlns:p="http://primefaces.org/ui"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -89,12 +90,13 @@
                     <div class="row">
                         <div class="col-auto mr-auto"></div>
                         <div class="col-auto">
-                            <h:commandLink 
-                                id="importFiles2" 
-                                styleClass="btn btn--gray" 
-                                value="#{msgs.importFiles}"
-                                action="#{Metadaten.fileManipulation.importFiles}"
-                                onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" />
+                            <button 
+                                jsf:id="importFiles2" 
+                                class="btn btn--gray" 
+                                jsf:action="#{Metadaten.fileManipulation.importFiles}"
+                                onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" >
+                                #{msgs.importFiles}
+                            </button>
                         </div>
                     </div>
                 </div>

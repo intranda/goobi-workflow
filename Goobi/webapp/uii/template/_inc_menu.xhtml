@@ -7,7 +7,8 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<composite:interface />
 
@@ -215,11 +216,11 @@
 							</p:themeSwitcher>
 						</li>
 						<li>
-							<h:commandLink id="showHelp" action="#{NavigationForm.Reload}" title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}" rel="tooltip">
+							<button jsf:id="showHelp" jsf:action="#{NavigationForm.Reload}" title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}" jsf:rel="tooltip" class="btn">
 								<i class="fa #{not NavigationForm.showHelp?'fa-question':'fa-question-circle'}"></i>
 								<!--                                 <f:passThroughAttribute name="data-toggle" value="tooltip" /> -->
 								<f:setPropertyActionListener target="#{NavigationForm.showHelp}" value="#{not NavigationForm.showHelp}" />
-							</h:commandLink>
+							</button>
 						</li>
 						
 						<li class="dropdown language-select">
@@ -230,14 +231,14 @@
 							<ul class="dropdown-menu pull-right">
 								<ui:repeat var="availableLanguage" value="#{SpracheForm.supportedLocales}" id="plugin4">
 									<li>
-										<h:commandLink id="locale" styleClass="text_head" action="#{SpracheForm.SpracheUmschalten}" title="#{availableLanguage.displayLanguageTranslated}">
+										<button jsf:id="locale" class="dropdown-item text_head" jsf:action="#{SpracheForm.SpracheUmschalten}" title="#{availableLanguage.displayLanguageTranslated}">
 											<f:param name="locale" value="#{availableLanguage.id}" />
 											<f:setPropertyActionListener value="#{null}" target="#{SessionForm.dateFormatter}"/>
 											<h:graphicImage value="template/img/flags/#{availableLanguage.id}.gif" />
 											<span> 
 												<h:outputText value="#{msgs[availableLanguage.displayLanguageSelf]}" />
 											</span>
-										</h:commandLink>
+										</button>
 									</li>
 								</ui:repeat>
 							</ul>
@@ -271,11 +272,11 @@
 							</h:panelGroup>
 
 							<li>
-								<h:commandLink id="showEasyRead" action="#{NavigationForm.Reload}" title="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}" rel="tooltip">
+								<button jsf:id="showEasyRead" class="dropdown-item" jsf:action="#{NavigationForm.Reload}" title="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}" jsf:rel="tooltip">
 									<i class="fa fa-eye-slash margin-right-5"/>
 									<h:outputText value="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}"/>
 									<f:setPropertyActionListener target="#{NavigationForm.showEasyRead}" value="#{not NavigationForm.showEasyRead}" />
-								</h:commandLink>
+								</button>
 							</li>
 
 							<!-- logout -->

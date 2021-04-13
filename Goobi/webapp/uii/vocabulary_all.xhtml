@@ -7,7 +7,8 @@
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -56,9 +57,9 @@
 
                                 <div class="dataTables_filter">
                                     <!-- show field definitions -->
-                                    <h:commandLink id="tableShowFieldDefinitions"
-                                        styleClass="btn searchfieldbuttongroup hidden-xs"
-                                        action="#{NavigationForm.Reload}"
+                                    <button jsf:id="tableShowFieldDefinitions"
+                                        class="btn searchfieldbuttongroup hidden-xs"
+                                        jsf:action="#{NavigationForm.Reload}"
                                         >
                                         <i class="fa #{NavigationForm.uiStatus.vocabulary_fields eq 'show'?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
                                         <h:outputText styleClass="font-size-s"
@@ -66,7 +67,7 @@
                                         <f:setPropertyActionListener
                                             target="#{NavigationForm.uiStatus.vocabulary_fields}"
                                             value="#{NavigationForm.uiStatus.vocabulary_fields eq 'show'?'hide':'show'}" />
-                                    </h:commandLink>
+                                    </button>
                                 </div>
 
                                 <x:dataTable
@@ -105,12 +106,12 @@
                                             <h:outputText value="#{msgs.auswahl}" />
                                         </f:facet>
                                         <!-- edit vocabulary -->
-                                        <h:commandLink
-                                            id="edit"
-                                            styleClass="btn margin-right-5"
-                                            rel="tooltip"
-                                            action="#{vocabularyBean.editVocabulary}"
-                                            rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}"
+                                        <button
+                                            jsf:id="edit"
+                                            class="btn margin-right-5"
+                                            jsf:rel="tooltip"
+                                            jsf:action="#{vocabularyBean.editVocabulary}"
+                                            jsf:rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}"
                                             title="#{msgs.vocabularyManager_editVocabulary}">
                                             <i class="fa fa-pencil"></i>
                                             <f:passThroughAttribute
@@ -122,14 +123,14 @@
                                             <f:setPropertyActionListener
                                                 target="#{vocabularyBean.currentVocabulary}"
                                                 value="#{item}" />
-                                        </h:commandLink>
+                                        </button>
 
                                         <!-- edit records -->
-                                        <h:commandLink
-                                            id="editRecords"
-                                            styleClass="btn margin-right-5"
-                                            rel="tooltip"
-                                            action="#{vocabularyBean.editRecords}"
+                                        <button
+                                            jsf:id="editRecords"
+                                            class="btn margin-right-5"
+                                            jsf:rel="tooltip"
+                                            jsf:action="#{vocabularyBean.editRecords}"
                                             title="#{msgs.vocabularyManager_editRecords}">
                                             <i class="fa fa-list-ul"></i>
                                             <f:passThroughAttribute
@@ -141,19 +142,19 @@
                                             <f:setPropertyActionListener
                                                 target="#{vocabularyBean.currentVocabulary}"
                                                 value="#{item}" />
-                                        </h:commandLink>
+                                        </button>
                                     </x:column>
                                 </x:dataTable>
 
 
                                 <div class="dataTables_info">
-                                    <h:commandLink
-                                        id="new"
-                                        styleClass="btn btn-primary font-size-s"
-                                        action="#{vocabularyBean.newVocabulary}">
+                                    <button
+                                        jsf:id="new"
+                                        class="btn btn-primary font-size-s"
+                                        jsf:action="#{vocabularyBean.newVocabulary}">
                                         <i class="fa fa-plus margin-right-5"></i>
                                         <h:outputText value="#{msgs.vocabularyManager_addNewVocabulary}" />
-                                    </h:commandLink>
+                                    </button>
                                 </div>
                                 <div class="dataTables_paginate">
                                     <!-- paginator -->

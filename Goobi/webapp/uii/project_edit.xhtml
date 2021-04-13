@@ -1,4 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+<ui:composition xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
     <ui:param name="myPageTitle" value="#{ProjekteForm.myProjekt.id == null?msgs.neuesProjektAnlegen:msgs.projektBearbeiten}" />
 
@@ -225,19 +225,19 @@
 
                                                         <div class="form-actions">
                                                             <!-- Speichern-Schaltknopf -->
-                                                            <h:commandLink id="saveFileformat" styleClass="btn btn-success pull-right font-size-s margin-bottom-most" action="#{ProjekteForm.filegroupSave}" title="#{msgs.uebernehmen}">
+                                                            <button jsf:id="saveFileformat" class="btn btn-success pull-right font-size-s margin-bottom-most" jsf:action="#{ProjekteForm.filegroupSave}" title="#{msgs.uebernehmen}">
                                                                 <i class="fa fa-save margin-right-5"></i>
                                                                 <h:outputText value="#{msgs.uebernehmen}" />
                                                                 <f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="tab4" />
 
-                                                            </h:commandLink>
+                                                            </button>
 
                                                             <!-- Abbrechen-Schaltknopf -->
-                                                            <h:commandLink id="cancelFileformat" styleClass="btn margin-sides-10 font-size-s pull-right" immediate="true" action="#{ProjekteForm.filegroupCancel}">
+                                                            <button jsf:id="cancelFileformat" class="btn margin-sides-10 font-size-s pull-right" jsf:immediate="true" jsf:action="#{ProjekteForm.filegroupCancel}">
                                                                 <h:outputText value="#{msgs.abbrechen}" />
                                                                 <f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="tab4" />
                                                                 <f:ajax render=":myform" />
-                                                            </h:commandLink>
+                                                            </button>
                                                         </div>
 
                                                     </div>
@@ -263,31 +263,31 @@
                                                                     <h:outputText value="#{item.name}" />
 
                                                                     <!-- Löschen-Schaltknopf -->
-                                                                    <h:commandLink id="delete" styleClass="btn btn-danger pull-right" title="#{msgs.filegroupLoeschen}" rel="tooltip" action="#{ProjekteForm.filegroupDelete}">
+                                                                    <button jsf:id="delete" class="btn btn-danger pull-right" title="#{msgs.filegroupLoeschen}" jsf:rel="tooltip" jsf:action="#{ProjekteForm.filegroupDelete}">
                                                                         <i class="fa fa-trash-o"></i>
                                                                         <f:setPropertyActionListener target="#{ProjekteForm.myFilegroup}" value="#{item}" />
                                                                         <f:ajax render=":myform" />
-                                                                    </h:commandLink>
+                                                                    </button>
 
                                                                     <!-- Edit-Schaltknopf -->
-                                                                    <h:commandLink id="edit" styleClass="btn btn-primary pull-right margin-right-5" title="#{msgs.filegroupBearbeiten}" rel="tooltip" action="#{ProjekteForm.filegroupEdit}">
+                                                                    <button jsf:id="edit" class="btn btn-primary pull-right margin-right-5" title="#{msgs.filegroupBearbeiten}" jsf:rel="tooltip" jsf:action="#{ProjekteForm.filegroupEdit}">
                                                                         <i class="fa fa-edit"></i>
                                                                         <f:setPropertyActionListener target="#{ProjekteForm.myFilegroup}" value="#{item}" />
                                                                         <f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="filegroups" />
                                                                         <f:ajax render=":myform" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                 </h:column>
 
                                                             </x:dataTable>
 
                                                             <div class="dataTables_info">
                                                                 <!-- Neu-Schaltknopf -->
-                                                                <h:commandLink id="newFileformat" styleClass="btn btn-primary font-size-s" action="#{ProjekteForm.filegroupAdd}" immediate="true">
+                                                                <button jsf:id="newFileformat" class="btn btn-primary font-size-s" jsf:action="#{ProjekteForm.filegroupAdd}" jsf:immediate="true">
                                                                     <i class="fa fa-plus margin-right-5"></i>
                                                                     <h:outputText value="#{msgs.filegroupHinzufuegen}" />
                                                                     <f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="filegroups" />
                                                                     <f:ajax render=":myform" />
-                                                                </h:commandLink>
+                                                                </button>
 
                                                             </div>
 

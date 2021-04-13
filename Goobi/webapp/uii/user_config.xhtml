@@ -8,7 +8,8 @@
     xmlns:of="http://omnifaces.org/functions"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -54,83 +55,89 @@
                             </h2>
                             <ul class="tabs">
                                 <li class="#{NavigationForm.uiStatus.user_config ne 'tab2' and NavigationForm.uiStatus.user_config ne 'tab3' and NavigationForm.uiStatus.user_config ne 'tab4' and NavigationForm.uiStatus.user_config ne 'tab5' and NavigationForm.uiStatus.user_config ne 'tab6'?'active':''}">
-                                    <h:commandLink
-                                        action="#{NavigationForm.Reload}"
-                                        id="tab1"
-                                        value="#{msgs.uebersicht}">
+                                    <button
+                                        class="button-tab"
+                                        jsf:action="#{NavigationForm.Reload}"
+                                        jsf:id="tab1">
+                                        #{msgs.uebersicht}
                                         <f:setPropertyActionListener
                                             target="#{NavigationForm.uiStatus.user_config}"
                                             value="" />
                                         <f:ajax
                                             render=":myform"
                                             execute=":myform" />
-                                    </h:commandLink>
+                                    </button>
                                 </li>
                                 <li class="#{NavigationForm.uiStatus.user_config eq 'tab2'?'active':''}">
-                                    <h:commandLink
-                                        action="#{NavigationForm.Reload}"
-                                        id="tab2"
-                                        value="#{msgs.user_config_display_general}">
+                                    <button
+                                        class="button-tab"
+                                        jsf:action="#{NavigationForm.Reload}"
+                                        jsf:id="tab2">
+                                        #{msgs.user_config_display_general}
                                         <f:setPropertyActionListener
                                             target="#{NavigationForm.uiStatus.user_config}"
                                             value="tab2" />
                                         <f:ajax
                                             render=":myform"
                                             execute=":myform" />
-                                    </h:commandLink>
+                                    </button>
                                 </li>
                                 <li class="#{NavigationForm.uiStatus.user_config eq 'tab3'?'active':''}">
-                                    <h:commandLink
-                                        action="#{NavigationForm.Reload}"
-                                        id="tab3"
-                                        value="#{msgs.user_config_display_processes}">
+                                    <button
+                                        class="button-tab"
+                                        jsf:action="#{NavigationForm.Reload}"
+                                        jsf:id="tab3">
+                                        #{msgs.user_config_display_processes}
                                         <f:setPropertyActionListener
                                             target="#{NavigationForm.uiStatus.user_config}"
                                             value="tab3" />
                                         <f:ajax
                                             render=":myform"
                                             execute=":myform" />
-                                    </h:commandLink>
+                                    </button>
                                 </li>
                                 <li class="#{NavigationForm.uiStatus.user_config eq 'tab4'?'active':''}">
-                                    <h:commandLink
-                                        action="#{NavigationForm.Reload}"
-                                        id="tab4"
-                                        value="#{msgs.user_config_display_tasks}">
+                                    <button
+                                        class="button-tab"
+                                        jsf:action="#{NavigationForm.Reload}"
+                                        jsf:id="tab4">
+                                        #{msgs.user_config_display_tasks}
                                         <f:setPropertyActionListener
                                             target="#{NavigationForm.uiStatus.user_config}"
                                             value="tab4" />
                                         <f:ajax
                                             render=":myform"
                                             execute=":myform" />
-                                    </h:commandLink>
+                                    </button>
                                 </li>
                                 <li class="#{NavigationForm.uiStatus.user_config eq 'tab5'?'active':''}">
-                                    <h:commandLink
-                                        action="#{NavigationForm.Reload}"
-                                        id="tab5"
-                                        value="#{msgs.user_config_metseditor}">
+                                    <button
+                                        class="button-tab"
+                                        jsf:action="#{NavigationForm.Reload}"
+                                        jsf:id="tab5">
+                                        #{msgs.user_config_metseditor}
                                         <f:setPropertyActionListener
                                             target="#{NavigationForm.uiStatus.user_config}"
                                             value="tab5" />
                                         <f:ajax
                                             render=":myform"
                                             execute=":myform" />
-                                    </h:commandLink>
+                                    </button>
                                 </li>
                                 <h:panelGroup rendered="#{NavigationForm.emailActive}">
                                     <li class="#{NavigationForm.uiStatus.user_config eq 'tab6'?'active':''}">
-                                        <h:commandLink
-                                            action="#{NavigationForm.Reload}"
-                                            id="tab6"
-                                            value="#{msgs.mail_notification_user_config_mail}">
+                                        <button
+                                            class="btn"
+                                            jsf:action="#{NavigationForm.Reload}"
+                                            jsf:id="tab6">
+                                            #{msgs.mail_notification_user_config_mail}
                                             <f:setPropertyActionListener
                                                 target="#{NavigationForm.uiStatus.user_config}"
                                                 value="tab6" />
                                             <f:ajax
                                                 render=":myform"
                                                 execute=":myform" />
-                                        </h:commandLink>
+                                        </button>
                                     </li>
                                 </h:panelGroup>
                             </ul>
@@ -715,13 +722,13 @@
 
                             <div class="form-actions">
                                 <!-- Save -->
-                                <h:commandLink
-                                    styleClass="btn btn-success submitOnEnter pull-right margin-bottom-most font-size-s"
-                                    id="absenden"
-                                    action="#{LoginForm.BenutzerkonfigurationSpeichern}">
+                                <button
+                                    class="btn btn-success submitOnEnter pull-right margin-bottom-most font-size-s"
+                                    jsf:id="absenden"
+                                    jsf:action="#{LoginForm.BenutzerkonfigurationSpeichern}">
                                     <i class="fa fa-save margin-right-5"></i>
                                     <h:outputText value="#{msgs.speichern}" />
-                                </h:commandLink>
+                                </button>
 
                                 <!-- Cancel -->
                                 <h:link

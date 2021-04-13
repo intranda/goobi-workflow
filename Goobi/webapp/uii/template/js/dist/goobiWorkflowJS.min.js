@@ -90,8 +90,9 @@ var goobiWorkflowJS = ( function() {
         }
         
         $( '[data-toggle="tooltip"]' ).tooltip( {
-            trigger: 'hover'
+            trigger: 'hover focus'
         } );
+        $( '[data-toggle-second="tooltip"]' ).tooltip();
         $( '[data-toggle="popover"]' ).popover({
             html: true
         });

@@ -8,7 +8,8 @@
     template="/uii/template/template.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -55,11 +56,11 @@
                                 <h:outputText value="#{msgs.metadatenImportieren}" />
                             </h2>
                             <div class="actions">
-                                <h:commandLink
-                                    id="expand1"
-                                    pt:aria-label="#{msgs.expandImportMetadata}"
-                                    styleClass="btn btn-mini"
-                                    action="#{NavigationForm.Reload}">
+                                <button
+                                    jsf:id="expand1"
+                                    aria-label="#{msgs.expandImportMetadata}"
+                                    class="btn btn-mini"
+                                    jsf:action="#{NavigationForm.Reload}">
                                     <i class="fa #{NavigationForm.uiStatus.new_process_box1 eq 'full'?'fa-compress':'fa-expand'}" />
                                     <f:setPropertyActionListener
                                         target="#{NavigationForm.uiStatus.new_process_box1}"
@@ -67,7 +68,7 @@
                                     <f:ajax
                                         render="@form"
                                         execute="@form" />
-                                </h:commandLink>
+                                </button>
                             </div>
                         </div>
                         <div class="box-content nopadding">
@@ -95,14 +96,14 @@
                                         </div>
                                         <ui:include src="#{ProzesskopieForm.pluginGui}" />
                                         <div class="control-label col-sm-2">
-                                            <h:commandLink
-                                                action="#{ProzesskopieForm.OpacAuswerten}"
-                                                id="performOpacQuery"
+                                            <button
+                                                jsf:action="#{ProzesskopieForm.OpacAuswerten}"
+                                                jsf:id="performOpacQuery"
                                                 title="#{msgs.opacAbfragen}"
-                                                styleClass="btn btn-blue pull-right font-size-s"
+                                                class="btn btn-blue pull-right font-size-s"
                                                 type="submit">
                                                 <h:outputText value="#{msgs.uebernehmen}" />
-                                            </h:commandLink>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -125,13 +126,14 @@
                                             </h:selectOneMenu>
                                         </div>
                                         <div class="control-label col-sm-2">
-                                            <h:commandLink
-                                                action="#{ProzesskopieForm.TemplateAuswahlAuswerten}"
-                                                rendered="#{ProzesskopieForm.useTemplates}"
+                                            <button
+                                            	id="evaluation"
+                                                jsf:action="#{ProzesskopieForm.TemplateAuswahlAuswerten}"
+                                                jsf:rendered="#{ProzesskopieForm.useTemplates}"
                                                 title="#{msgs.AuswaehlenAusVorhandenenProzessen}"
-                                                styleClass="btn btn-blue pull-right font-size-s">
+                                                class="btn btn-blue pull-right font-size-s">
                                                 <h:outputText value="#{msgs.uebernehmen}" />
-                                            </h:commandLink>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -243,11 +245,11 @@
                                 <h:outputText value="#{msgs.prozessDetails}" />
                             </h3>
                             <div class="actions">
-                                <h:commandLink
-                                    id="expand2"
-                                    pt:aria-label="#{msgs.expandProcessDetails}"
-                                    styleClass="btn btn-mini"
-                                    action="#{NavigationForm.Reload}">
+                                <button
+                                    jsf:id="expand2"
+                                    aria-label="#{msgs.expandProcessDetails}"
+                                    class="btn btn-mini"
+                                    jsf:action="#{NavigationForm.Reload}">
                                     <i class="fa #{NavigationForm.uiStatus.new_process_box2 eq 'full'?'fa-compress':'fa-expand'}" />
                                     <f:setPropertyActionListener
                                         target="#{NavigationForm.uiStatus.new_process_box2}"
@@ -255,7 +257,7 @@
                                     <f:ajax
                                         render="@form"
                                         execute="@form" />
-                                </h:commandLink>
+                                </button>
                             </div>
                         </div>
                         <div class="box-content nopadding">
@@ -373,34 +375,34 @@
                                     <i class="fa fa-arrow-circle-o-right margin-left-5"></i>
                                 </h:commandLink>
 
-                                <h:commandLink
-                                    styleClass="btn btn-success font-size-s pull-right"
-                                    id="absenden"
-                                    action="#{ProzesskopieForm.NeuenProzessAnlegen}"
-                                    rendered="#{ProzesskopieForm.prozessKopie.eigenschaftenSize eq 0 and !ProzesskopieForm.enableFileUpload}">
+                                <button
+                                    class="btn btn-success font-size-s pull-right"
+                                    jsf:id="absenden"
+                                    jsf:action="#{ProzesskopieForm.NeuenProzessAnlegen}"
+                                    jsf:rendered="#{ProzesskopieForm.prozessKopie.eigenschaftenSize eq 0 and !ProzesskopieForm.enableFileUpload}">
                                     <i class="fa fa-save margin-right-5"></i>
                                     <h:outputText value="#{msgs.speichern}" />
-                                </h:commandLink>
+                                </button>
 
                                 <!-- Cancel -->
-                                <h:commandLink
-                                    id="cancel"
-                                    styleClass="btn margin-sides-10 font-size-s pull-right"
-                                    action="process_all"
-                                    immediate="true">
+                                <button
+                                    jsf:id="cancel"
+                                    class="btn margin-sides-10 font-size-s pull-right"
+                                    jsf:action="process_all"
+                                    jsf:immediate="true">
                                     <h:outputText value="#{msgs.abbrechen}" />
-                                </h:commandLink>
+                                </button>
 
                                 <!-- Generate -->
-                                <h:commandLink
-                                    id="generateTitle"
-                                    styleClass="btn font-size-s"
-                                    action="#{ProzesskopieForm.CalcProzesstitel}">
+                                <button
+                                    jsf:id="generateTitle"
+                                    class="btn font-size-s"
+                                    jsf:action="#{ProzesskopieForm.CalcProzesstitel}">
                                     <h:outputText value="#{msgs.generieren}" />
                                     <f:ajax
                                         execute="@form"
                                         render="@form" />
-                                </h:commandLink>
+                                </button>
 
                             </div>
                         </div>
