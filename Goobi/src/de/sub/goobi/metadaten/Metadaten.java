@@ -3966,6 +3966,7 @@ public class Metadaten implements Serializable {
     public String getOpacKatalog() {
         if (StringUtils.isBlank(opacKatalog)) {
             opacKatalog = getAllOpacCatalogues().get(0);
+            currentCatalogue = catalogues.get(0);
         }
         return this.opacKatalog;
     }

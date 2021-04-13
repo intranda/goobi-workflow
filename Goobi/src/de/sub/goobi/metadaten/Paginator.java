@@ -74,10 +74,7 @@ public class Paginator {
     /**
      * Perform pagination.
      * 
-     * <<<<<<< HEAD
-     * 
-     * @throws IllegalArgumentException Thrown if invalid config parameters have been set. =======
-     * @throws IllegalArgumentException Thrown if invalid config parameters have been set. >>>>>>> refs/heads/develop
+     * @throws IllegalArgumentException Thrown if invalid config parameters have been set.
      */
     @SuppressWarnings("rawtypes")
     public void run() throws IllegalArgumentException {
@@ -337,10 +334,8 @@ public class Paginator {
     /**
      * Give a list of page numbers to select pages to actually paginate.
      * 
-     * <<<<<<< HEAD
+     * @param selectedPages Array numbers, each pointing to a given page set via <code>setPagesToPaginate</code>
      * 
-     * @param selectedPages Array numbers, each pointing to a given page set via <code>setPagesToPaginate</code> =======
-     * @param selectedPages Array numbers, each pointing to a given page set via <code>setPagesToPaginate</code> >>>>>>> refs/heads/develop
      * @return This object for fluent interfacing.
      */
     public Paginator setPageSelection(int[] selectedPages) {

@@ -4,7 +4,8 @@
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:x="http://myfaces.apache.org/tomahawk">
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
     <div class="row">
         <div class="col-sm-12">
             <h3>
@@ -46,19 +47,20 @@
                             <f:facet name="header">
                                 <h:outputText value="#{msgs.auswahl}" />
                             </f:facet>
-                            <h:commandLink
-                                action="#{messageQueueBean.clearQueue}"
-                                rel="tooltip"
+                            <button
+                                jsf:action="#{messageQueueBean.clearQueue}"
+                                jsf:rel="tooltip"
+                                class="btn"
                                 onclick="preventDoubleSubmit(this);"
                                 title="#{msgs.message_queue_cancel_ticket}">
-                                <i class="btn fa fa-trash-o" />
+                                <i class="fa fa-trash-o" />
                                 <f:setPropertyActionListener
                                     target="#{messageQueueBean.queueType}"
                                     value="goobi_slow" />
                                 <f:setPropertyActionListener
                                     target="#{messageQueueBean.messageType}"
                                     value="#{entry.key}" />
-                            </h:commandLink>
+                            </button>
 
                         </x:column>
 
@@ -123,13 +125,14 @@
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.auswahl}" />
                                 </f:facet>
-                                <h:commandLink
-                                    action="#{messageQueueBean.deleteMessage(ticket)}"
-                                    rel="tooltip"
+                                <button
+                                    jsf:action="#{messageQueueBean.deleteMessage(ticket)}"
+                                    jsf:rel="tooltip"
+                                    class="btn"
                                     onclick="preventDoubleSubmit(this);"
                                     title="#{msgs.message_queue_cancel_ticket}">
-                                    <i class="btn fa fa-trash-o" />
-                                </h:commandLink>
+                                    <i class="fa fa-trash-o" />
+                                </button>
                             </x:column>
                         </x:dataTable>
                     </h:panelGroup>
@@ -186,19 +189,20 @@
                             <f:facet name="header">
                                 <h:outputText value="#{msgs.auswahl}" />
                             </f:facet>
-                            <h:commandLink
-                                action="#{messageQueueBean.clearQueue}"
-                                rel="tooltip"
+                            <button
+                                jsf:action="#{messageQueueBean.clearQueue}"
+                                jsf:rel="tooltip"
+                                class="btn"
                                 onclick="preventDoubleSubmit(this);"
                                 title="#{msgs.message_queue_cancel_ticket}">
-                                <i class="btn fa fa-trash-o" />
+                                <i class="fa fa-trash-o" />
                                 <f:setPropertyActionListener
                                     target="#{messageQueueBean.queueType}"
                                     value="goobi_fast" />
                                 <f:setPropertyActionListener
                                     target="#{messageQueueBean.messageType}"
                                     value="#{entry.key}" />
-                            </h:commandLink>
+                            </button>
 
                         </x:column>
 
@@ -269,13 +273,14 @@
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.auswahl}" />
                                 </f:facet>
-                                <h:commandLink
-                                    action="#{messageQueueBean.deleteMessage(ticket)}"
-                                    rel="tooltip"
+                                <button
+                                	class="btn"
+                                    jsf:action="#{messageQueueBean.deleteMessage(ticket)}"
+                                    jsf:rel="tooltip"
                                     onclick="preventDoubleSubmit(this);"
                                     title="#{msgs.message_queue_cancel_ticket}">
-                                    <i class="btn fa fa-trash-o" />
-                                </h:commandLink>
+                                    <i class="fa fa-trash-o" />
+                                </button>
                             </x:column>
                         </x:dataTable>
                     </h:panelGroup>

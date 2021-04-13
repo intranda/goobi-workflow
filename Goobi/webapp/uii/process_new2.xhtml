@@ -7,7 +7,8 @@
 	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<ui:param name="myPageTitle" value="#{msgs.einenNeuenProzessAnlegen}" />
 
@@ -199,13 +200,13 @@
 													<f:passThroughAttribute name="data-toggle" value="tooltip" />
 												</h:selectOneMenu>
 												<!-- delete file -->
-												<h:commandLink styleClass="btn font-size-s folderselectionbutton" 
-													action="#{ProzesskopieForm.uploadedFiles.remove(image)}" 
+												<button id="deleteFile" class="btn font-size-s folderselectionbutton" 
+													jsf:action="#{ProzesskopieForm.uploadedFiles.remove(image)}" 
 													title="#{msgs.damageDocDeleteFile}">
 													<i class="fa fa-trash "/>
 													<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													<f:ajax render=":imageform" />
-												</h:commandLink>
+												</button>
 											</div>
 											<div class="comment">
 												<h:inputTextarea value="#{image.descriptionText}" title="#{msgs.damageDocComment}"
@@ -223,18 +224,19 @@
 							<!-- area for buttons to -->
 							<div class="form-actions">
 								<!-- Save -->
-								<h:commandLink
-									styleClass="btn btn-success font-size-s pull-right"
-									id="absenden" action="#{ProzesskopieForm.NeuenProzessAnlegen}">
+								<button
+									class="btn btn-success font-size-s pull-right"
+									jsf:id="absenden" jsf:action="#{ProzesskopieForm.NeuenProzessAnlegen}">
 									<i class="fa fa-save margin-right-5"></i>
 									<h:outputText value="#{msgs.speichern}" />
-								</h:commandLink>
+								</button>
 
 								<!-- Cancel -->
-								<h:commandLink id="cancel"
-									styleClass="btn margin-sides-10 font-size-s pull-right"
-									action="process_all" value="#{msgs.abbrechen}" immediate="true">
-								</h:commandLink>
+								<button jsf:id="cancel"
+									class="btn margin-sides-10 font-size-s pull-right"
+									jsf:action="process_all" jsf:immediate="true">
+									#{msgs.abbrechen}
+								</button>
 
 								<!-- Go back -->
 								<h:commandLink styleClass="btn font-size-s" id="back"

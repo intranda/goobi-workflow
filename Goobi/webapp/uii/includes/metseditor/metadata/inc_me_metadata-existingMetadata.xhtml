@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -41,16 +42,16 @@
                     <div class="row">
                         <div class="col-auto mr-auto"></div>
                         <div class="col-auto">
-                            <h:commandLink
-                                id="addMetadata"
-                                styleClass="btn btn--gray"
-                                value="#{msgs.neuesMetadatumAnlegen}"
-                                action="#{Metadaten.Hinzufuegen}">
+                            <button
+                                jsf:id="addMetadata"
+                                class="btn btn--gray"
+                                jsf:action="#{Metadaten.Hinzufuegen}">
+                                #{msgs.neuesMetadatumAnlegen}
                                 <f:ajax render=":pageContentCenter" />
                                 <f:setPropertyActionListener
                                         value=""
                                         target="#{Metadaten.currentGroup}" />
-                            </h:commandLink>
+                            </button>
                         </div>
                     </div>
                 </ui:fragment>

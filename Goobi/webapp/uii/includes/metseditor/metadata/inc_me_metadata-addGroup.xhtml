@@ -7,7 +7,8 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -276,15 +277,15 @@
                     <div class="row">
                         <div class="col-auto mr-auto"></div>
                         <div class="col-auto">
-                            <h:commandLink
-                                id="cancelGroup"
-                                styleClass="btn btn--gray"
-                                action="#{Metadaten.Abbrechen}"
-                                value="#{msgs.abbrechen}"
-                                immediate="true"
-                                role="button">
+                            <button
+                                jsf:id="cancelGroup"
+                                class="btn btn--gray"
+                                jsf:action="#{Metadaten.Abbrechen}"
+                                jsf:immediate="true"
+                                type="button">
+                                #{msgs.abbrechen}
                                 <f:ajax render=":pageContentCenter" />
-                            </h:commandLink>
+                            </button>
                             <h:commandButton
                                 id="sqaveGroup"
                                 styleClass="btn btn--gray"

@@ -70,10 +70,12 @@
 }
 
 /* active and hover Links in box header */
+.box.box-color .box-title .tabs > li.active > button,
 .box.box-color .box-title .tabs > li.active > a {
 	color: #2a2a2a;
 }
 
+.box.box-color .box-title .tabs > li.active > button:hover,
 .box.box-color .box-title .tabs > li > a:hover {
 	color: #2a2a2a;   
 }

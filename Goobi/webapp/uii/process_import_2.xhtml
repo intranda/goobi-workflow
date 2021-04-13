@@ -119,10 +119,10 @@
 
                                 <div class="form-actions">
                                     <!-- Save -->
-                                    <h:commandLink styleClass="btn btn-success pull-right font-size-s margin-bottom-most" id="absenden" action="#{MassImportForm.convertData}"  onclick="goobiWorkflowJS.progress.displayProgressBar()">
+                                    <button class="btn btn-success pull-right font-size-s margin-bottom-most" jsf:id="absenden" jsf:action="#{MassImportForm.convertData}"  onclick="goobiWorkflowJS.progress.displayProgressBar()">
                                         <i class="fa fa-save margin-right-5"/>
                                         <h:outputText value="#{msgs.speichern}" />
-                                    </h:commandLink>
+                                    </button>
 
                                     <!-- Cancel -->
                                     <h:link id="cancel" styleClass="btn pull-right font-size-s margin-sides-10" outcome="process_all" value="#{msgs.abbrechen}" />

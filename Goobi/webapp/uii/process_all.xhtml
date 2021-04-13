@@ -9,7 +9,8 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -69,13 +70,13 @@
                                                 <div
                                                     class="dataTables_length"
                                                     style="margin-bottom: 10px;">
-                                                    <h:commandLink
-                                                        class="font-black"
-                                                        action="#{ProzessverwaltungForm.generateFilterWithIdentfiers}"
+                                                    <button
+                                                        class="expandbutton font-black"
+                                                        jsf:action="#{ProzessverwaltungForm.generateFilterWithIdentfiers}"
                                                         title="#{msgs.process_generateFilterQueryForHits}">
                                                         <i class="btn fa fa-filter margin-right-5" />
                                                         <h:outputText value="#{msgs.treffer}: #{ProzessverwaltungForm.paginator.totalResults}" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </div>
                                             </div>
 
@@ -125,27 +126,31 @@
                                                         <!-- Header -->
                                                         <h:outputText value="#{msgs.auswahl2}" />
 
-                                                        <h:commandLink
-                                                            action="#{ProzessverwaltungForm.SelectionAll}"
-                                                            id="selectall"
-                                                            title="#{msgs.alleAuswaehlen}">
+                                                        <button
+                                                            jsf:action="#{ProzessverwaltungForm.SelectionAll}"
+                                                            jsf:id="selectall"
+                                                            title="#{msgs.alleAuswaehlen}"
+                                                            class="button-link">
                                                             <i class="fa fa-check-square-o font-black margin-left-5" />
-                                                        </h:commandLink>
-                                                        <h:commandLink
-                                                            action="#{ProzessverwaltungForm.SelectionNone}"
-                                                            id="selectnone"
-                                                            title="#{msgs.auswahlEntfernen}">
+                                                        </button>
+                                                        <button
+                                                            jsf:action="#{ProzessverwaltungForm.SelectionNone}"
+                                                            jsf:id="selectnone"
+                                                            title="#{msgs.auswahlEntfernen}"
+                                                            class="button-link">
                                                             <i class="fa fa-square-o font-black margin-left-5" />
-                                                        </h:commandLink>
+                                                        </button>
                                                     </x:div>
                                                 </f:facet>
-                                                <h:commandLink>
+                                                <button
+                                                	jsf:id="selected"
+                                                	class="button-link">
                                                     <i class="font-black #{item.selected?'fa fa-check-square-o':'fa fa-square-o'}" />
                                                     <f:setPropertyActionListener
                                                         target="#{item.selected}"
                                                         value="#{item.selected?false:true}" />
                                                     <f:ajax render=":myform" />
-                                                </h:commandLink>
+                                                </button>
                                             </x:column>
 
                                             <!-- +++++++++++++++++  ProzessID ++++++++++++++++++++++++ -->
@@ -153,9 +158,9 @@
                                                 styleClass="tableColumnOverflow width80"
                                                 rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processId']}">
                                                 <f:facet name="header">
-                                                    <h:commandLink
-                                                        styleClass="font-black-block"
-                                                        action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                    <button
+                                                        class="button-link font-black-block"
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
                                                         <h:outputText value="#{msgs.id}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='idDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='idAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -163,7 +168,7 @@
                                                             target="#{ProzessverwaltungForm.sortierung}"
                                                             value="#{ProzessverwaltungForm.sortierung=='idAsc'?'idDesc':'idAsc'}" />
                                                         <f:ajax render=":myform" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </f:facet>
                                                 <h:outputText value="#{item.id}" />
                                             </x:column>
@@ -241,9 +246,10 @@
                                                 styleClass="tableColumnOverflow width80"
                                                 rendered="#{ProzessverwaltungForm.anzeigeAnpassen['batchId'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
                                                 <f:facet name="header">
-                                                    <h:commandLink
-                                                        styleClass="font-black-block"
-                                                        action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                    <button
+                                                        class="button-link font-black-block"
+                                                        style="width: 100%; text-align: left"
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
                                                         <h:outputText value="#{msgs.batch}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='batchDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='batchAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -251,7 +257,7 @@
                                                             target="#{ProzessverwaltungForm.sortierung}"
                                                             value="#{ProzessverwaltungForm.sortierung=='batchAsc'?'batchDesc':'batchAsc'}" />
                                                         <f:ajax render=":myform" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </f:facet>
                                                 <h:outputText
                                                     value="#{item.batch.batchId}"
@@ -267,9 +273,10 @@
                                                 id="ajaxcolumn"
                                                 styleClass="tableColumnOverflow maxWidth300">
                                                 <f:facet name="header">
-                                                    <h:commandLink
-                                                        styleClass="font-black-block"
-                                                        action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                    <button
+                                                        class="button-link font-black-block"
+                                                        style="width: 100%; text-align: left"
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
                                                         <h:outputText
                                                             value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessTitel:msgs.titel}" />
                                                         <span
@@ -278,7 +285,7 @@
                                                             target="#{ProzessverwaltungForm.sortierung}"
                                                             value="#{ProzessverwaltungForm.sortierung=='titelAsc'?'titelDesc':'titelAsc'}" />
                                                         <f:ajax render=":myform" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </f:facet>
 
                                                 <ui:include src="includes/ajaxPlusMinusButton.xhtml" />
@@ -431,9 +438,10 @@
                                                 styleClass="tableColumnOverflow width150"
                                                 rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}">
                                                 <f:facet name="header">
-                                                    <h:commandLink
-                                                        styleClass="font-black-block"
-                                                        action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                    <button
+                                                        class="button-link font-black-block"
+                                                        style="width: 100%; text-align: left"
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
                                                         <h:outputText value="#{msgs.vorgangsdatum}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='vorgangsdatumDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='vorgangsdatumAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -441,7 +449,7 @@
                                                             target="#{ProzessverwaltungForm.sortierung}"
                                                             value="#{ProzessverwaltungForm.sortierung=='vorgangsdatumAsc'?'vorgangsdatumDesc':'vorgangsdatumAsc'}" />
                                                         <f:ajax render=":myform" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </f:facet>
 
                                                 <h:outputText value="#{item.erstellungsdatumAsString}">
@@ -452,9 +460,10 @@
                                             <!-- +++++++++++++++++  Status ++++++++++++++++++++++++ -->
                                             <x:column styleClass="tableColumnOverflow width200">
                                                 <f:facet name="header">
-                                                    <h:commandLink
-                                                        styleClass="font-black-block"
-                                                        action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                    <button
+                                                        class="button-link font-black-block"
+                                                        style="width: 100%; text-align: left"
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
                                                         <h:outputText value="#{msgs.status}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='fortschrittDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='fortschrittAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -462,7 +471,7 @@
                                                             target="#{ProzessverwaltungForm.sortierung}"
                                                             value="#{ProzessverwaltungForm.sortierung=='fortschrittAsc'?'fortschrittDesc':'fortschrittAsc'}" />
                                                         <f:ajax render=":myform" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </f:facet>
 
                                                 <h:panelGroup
@@ -573,9 +582,10 @@
                                             <x:column styleClass="tableColumnOverflow maxWidth120">
                                                 <f:facet name="header">
                                                     <!-- Header -->
-                                                    <h:commandLink
-                                                        styleClass="font-black-block"
-                                                        action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                                    <button
+                                                        class="button-link font-black-block"
+                                                        style="width: 100%; text-align: left"
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                                                         title="#{msgs.projekt}">
                                                         <h:outputText value="#{msgs.projekt}" />
                                                         <span
@@ -584,7 +594,7 @@
                                                             target="#{ProzessverwaltungForm.sortierung}"
                                                             value="#{ProzessverwaltungForm.sortierung=='projektAsc'?'projektDesc':'projektAsc'}" />
                                                         <f:ajax render=":myform" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </f:facet>
                                                 <h:outputText value="#{item.projekt.titel}" />
                                             </x:column>
@@ -594,9 +604,10 @@
                                                 rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['institution']}">
                                                 <f:facet name="header">
                                                     <!-- Header -->
-                                                    <h:commandLink
-                                                        styleClass="font-black-block"
-                                                        action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                                    <button
+                                                        class="button-link font-black-block"
+                                                        style="width: 100%; text-align: left"
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
                                                         title="#{msgs.institution}">
                                                         <h:outputText value="#{msgs.institution}" />
                                                         <span
@@ -605,7 +616,7 @@
                                                             target="#{ProzessverwaltungForm.sortierung}"
                                                             value="#{ProzessverwaltungForm.sortierung=='institutionAsc'?'institutionDesc':'institutionAsc'}" />
                                                         <f:ajax render=":myform" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </f:facet>
                                                 <h:outputText value="#{item.projekt.institution.shortName}" />
                                             </x:column>
@@ -671,15 +682,16 @@
                                                 </f:facet>
 
                                                 <!-- Bearbeiten-Schaltknopf -->
-                                                <h:commandLink
-                                                    action="#{ProzessverwaltungForm.editProcess}"
-                                                    id="edit"
-                                                    pt:aria-label="#{msgs.bearbeiten}"
-                                                    rendered="#{LoginForm.hasRole('Workflow_General_Details')}"
-                                                    rel="tooltip"
+                                                <button
+                                                    jsf:action="#{ProzessverwaltungForm.editProcess}"
+                                                    jsf:id="edit"
+                                                    aria-label="#{msgs.bearbeiten}"
+                                                    jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details')}"
+                                                    jsf:rel="tooltip"
                                                     onclick="preventDoubleSubmit(this);"
-                                                    title="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}">
-                                                    <i class="btn fa fa-pencil" />
+                                                    title="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}"
+                                                    class="btn button-schaltknopf">
+                                                    <i class="fa fa-pencil" />
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip" />
@@ -689,24 +701,25 @@
                                                     <x:updateActionListener
                                                         property="#{ProzessverwaltungForm.modusBearbeiten}"
                                                         value="" />
-                                                </h:commandLink>
+                                                </button>
 
                                                 <!-- Duplicate process template -->
-                                                <h:commandLink
-                                                    pt:aria-label="#{msgs.duplicateWorkflow}"
-                                                    action="#{ProzessverwaltungForm.cloneProcess}"
-                                                    rel="tooltip"
-                                                    rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates_Clone') and (ProzessverwaltungForm.modusAnzeige=='vorlagen')}"
+                                                <button
+                                                    class="btn button-schaltknopf"
+                                                    aria-label="#{msgs.duplicateWorkflow}"
+                                                    jsf:action="#{ProzessverwaltungForm.cloneProcess}"
+                                                    jsf:rel="tooltip"
+                                                    jsf:rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates_Clone') and (ProzessverwaltungForm.modusAnzeige=='vorlagen')}"
                                                     title="#{msgs.duplicateWorkflow}"
                                                     onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-                                                    <i class="btn fa fa-clipboard" />
+                                                    <i class="fa fa-clipboard" />
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip" />
                                                     <x:updateActionListener
                                                         property="#{ProzessverwaltungForm.myProzess}"
                                                         value="#{item}" />
-                                                </h:commandLink>
+                                                </button>
 
                                                 <!-- Metadaten-Schaltknopf - Read only -->
                                                 <h:commandLink
@@ -834,13 +847,13 @@
                                                             </div>
                                                             <div class="modal-footer">
 
-                                                                <h:commandLink
+                                                                <button
                                                                     onclick="sessionStorage.removeItem('columnWidths');"
-                                                                    action="#{Metadaten.XMLlesen}"
-                                                                    id="action15a"
+                                                                    jsf:action="#{Metadaten.XMLlesen}"
+                                                                    jsf:id="action15a"
                                                                     title="#{msgs.discard}"
-                                                                    rel="tooltip"
-                                                                    styleClass="btn btn-lightred pull-left">
+                                                                    jsf:rel="tooltip"
+                                                                    class="btn btn-lightred pull-left">
                                                                     <i class="fa fa-trash-o margin-right-10"></i>
                                                                     <h:outputText value="#{msgs.discard}" />
                                                                     <f:passThroughAttribute
@@ -873,15 +886,15 @@
                                                                     <f:setPropertyActionListener
                                                                         value="#{null}"
                                                                         target="#{NavigationForm.uiStatus.mets_toc5}" />
-                                                                </h:commandLink>
+                                                                </button>
 
-                                                                <h:commandLink
+                                                                <button
                                                                     onclick="sessionStorage.removeItem('columnWidths');"
-                                                                    action="#{Metadaten.XMLlesen}"
-                                                                    id="action15b"
+                                                                    jsf:action="#{Metadaten.XMLlesen}"
+                                                                    jsf:id="action15b"
                                                                     title="#{msgs.overwrite}"
-                                                                    rel="tooltip"
-                                                                    styleClass="btn btn-green">
+                                                                    jsf:rel="tooltip"
+                                                                    class="btn btn-green">
                                                                     <i class="fa fa-floppy-o margin-right-10"></i>
                                                                     <h:outputText value="#{msgs.overwrite}" />
                                                                     <f:passThroughAttribute
@@ -914,7 +927,7 @@
                                                                     <f:setPropertyActionListener
                                                                         value="#{null}"
                                                                         target="#{NavigationForm.uiStatus.mets_toc5}" />
-                                                                </h:commandLink>
+                                                                </button>
 
                                                             </div>
                                                         </div>
@@ -923,48 +936,50 @@
 
 
                                                 <!-- DMS-Export-Schaltknopf -->
-                                                <h:commandLink
-                                                    action="#{ProzessverwaltungForm.ExportDMS}"
-                                                    id="action21"
-                                                    pt:aria-label="#{msgs.importDms}"
-                                                    rel="tooltip"
+                                                <button
+                                                    jsf:action="#{ProzessverwaltungForm.ExportDMS}"
+                                                    jsf:id="action21"
+                                                    aria-label="#{msgs.importDms}"
+                                                    jsf:rel="tooltip"
                                                     onclick="preventDoubleSubmit(this);"
                                                     title="#{msgs.importDms}"
-                                                    styleClass="font-light"
-                                                    rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
-                                                    <i class="btn fa fa-globe" />
+                                                    class="btn"
+                                                    style="padding-top: 1px; padding-bottom: 1px"
+                                                    jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
+                                                    <i class="fa fa-globe" />
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip" />
                                                     <x:updateActionListener
                                                         property="#{ProzessverwaltungForm.myProzess}"
                                                         value="#{item}" />
-                                                </h:commandLink>
+                                                </button>
 
                                                 <!-- DMS-Export-Schaltknopf greyed -->
-                                                <h:commandLink
-                                                    action="#{ProzessverwaltungForm.ExportDMS}"
-                                                    disabled="true"
-                                                    rel="tooltip"
+                                                <button
+                                                    jsf:action="#{ProzessverwaltungForm.ExportDMS}"
+                                                    jsf:disabled="true"
+                                                    jsf:rel="tooltip"
                                                     title="#{msgs.importDms}"
-                                                    rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !item.displayDMSButton}">
-                                                    <i class="btn font-light fa fa-globe" />
+                                                    jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !item.displayDMSButton}"
+                                                    class="btn">
+                                                    <i class="font-light fa fa-globe" />
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip" />
                                                     <x:updateActionListener
                                                         property="#{ProzessverwaltungForm.myProzess}"
                                                         value="#{item}" />
-                                                </h:commandLink>
+                                                </button>
 
                                                 <!-- ProzessKopie-Schaltknopf -->
-                                                <h:commandLink
-                                                    action="#{ProzesskopieForm.Prepare}"
-                                                    id="action22"
-                                                    rel="tooltip"
+                                                <button
+                                                    jsf:action="#{ProzesskopieForm.Prepare}"
+                                                    jsf:id="action22"
+                                                    jsf:rel="tooltip"
                                                     onclick="preventDoubleSubmit(this);"
                                                     title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen}"
-                                                    rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() eq 1}">
+                                                    jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() eq 1}">
                                                     <i class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} " />
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
@@ -972,7 +987,7 @@
                                                     <x:updateActionListener
                                                         property="#{ProzesskopieForm.prozessVorlage}"
                                                         value="#{item}" />
-                                                </h:commandLink>
+                                                </button>
 
                                                 <h:panelGroup
                                                     rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() gt 1}">
@@ -980,30 +995,17 @@
                                                         class="btn-group"
                                                         title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen}"
                                                         data-toggle="tooltip">
-                                                        <a
+                                                        <div class="dropdown">
+                                                        <button
                                                             class="btn #{item.containsUnreachableSteps?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
-                                                            style="padding-left: 4px; padding-right: 4px;"
+                                                            style="margin: 0; padding-left: 4px; padding-right: 4px;"
                                                             data-toggle="dropdown"> <span class="caret"></span>
-                                                        </a>
-                                                        <h:commandLink
-                                                            pt:aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
-                                                            action="#{ProzesskopieForm.Prepare}"
-                                                            rel="tooltip">
-                                                            <i
-                                                                class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} "
-                                                                style="padding-left: 7px; padding-right: 7px;" />
-                                                            <f:passThroughAttribute
-                                                                name="data-toggle"
-                                                                value="tooltip" />
-                                                            <x:updateActionListener
-                                                                property="#{ProzesskopieForm.prozessVorlage}"
-                                                                value="#{item}" />
-                                                        </h:commandLink>
+                                                        </button>
                                                         <ul class="dropdown-menu  pull-right">
                                                             <ui:repeat
                                                                 var="proj"
                                                                 value="#{ProzesskopieForm.availableProjects}">
-                                                                <li><h:commandLink action="#{ProzesskopieForm.Prepare}">
+                                                                <li><button jsf:id="prepare" jsf:action="#{ProzesskopieForm.Prepare}" class="dropdown-item">
                                                                         <h:outputText value="#{proj.titel}" />
                                                                         <x:updateActionListener
                                                                             property="#{item.projekt}"
@@ -1011,29 +1013,44 @@
                                                                         <x:updateActionListener
                                                                             property="#{ProzesskopieForm.prozessVorlage}"
                                                                             value="#{item}" />
-                                                                    </h:commandLink></li>
+                                                                    </button></li>
                                                             </ui:repeat>
                                                         </ul>
+                                                        <button
+                                                        	jsf:id="copyProcessTempalte"
+                                                        	class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} "
+                                                            aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
+                                                            jsf:action="#{ProzesskopieForm.Prepare}"
+                                                            jsf:rel="tooltip">
+                                                            <f:passThroughAttribute
+                                                                name="data-toggle"
+                                                                value="tooltip" />
+                                                            <x:updateActionListener
+                                                                property="#{ProzesskopieForm.prozessVorlage}"
+                                                                value="#{item}" />
+                                                        </button>
+                                                        </div>
                                                     </div>
                                                 </h:panelGroup>
 
                                                 <!-- MassenImport -->
-                                                <h:commandLink
-                                                    action="#{MassImportForm.Prepare}"
-                                                    id="action222"
-                                                    rel="tooltip"
+                                                <button
+                                                	class="btn"
+                                                    jsf:action="#{MassImportForm.Prepare}"
+                                                    jsf:id="action222"
+                                                    jsf:rel="tooltip"
                                                     title="#{msgs.MassenImport}"
                                                     onclick="preventDoubleSubmit(this);"
-                                                    rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() eq 1}">
+                                                    jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() eq 1}">
                                                     <i
-                                                        class="btn fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} " />
+                                                        class="fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} " />
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip" />
                                                     <x:updateActionListener
                                                         property="#{MassImportForm.template}"
                                                         value="#{item}" />
-                                                </h:commandLink>
+                                                </button>
 
                                                 <h:panelGroup
                                                     rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() gt 1}">
@@ -1046,11 +1063,13 @@
                                                             style="padding-left: 4px; padding-right: 4px;"
                                                             data-toggle="dropdown"> <span class="caret"></span>
                                                         </a>
-                                                        <h:commandLink
-                                                            action="#{MassImportForm.Prepare}"
-                                                            rel="tooltip">
+                                                        <button
+                                                        	jsf:id="massImportPrepare"
+                                                            jsf:action="#{MassImportForm.Prepare}"
+                                                            jsf:rel="tooltip"
+                                                            class="btn">
                                                             <i
-                                                                class="btn fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} "
+                                                                class="fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} "
                                                                 style="padding-left: 7px; padding-right: 7px;" />
                                                             <f:passThroughAttribute
                                                                 name="data-toggle"
@@ -1058,12 +1077,12 @@
                                                             <x:updateActionListener
                                                                 property="#{MassImportForm.template}"
                                                                 value="#{item}" />
-                                                        </h:commandLink>
+                                                        </button>
                                                         <ul class="dropdown-menu  pull-right">
                                                             <ui:repeat
                                                                 var="proj"
                                                                 value="#{ProzesskopieForm.availableProjects}">
-                                                                <li><h:commandLink action="#{MassImportForm.Prepare}">
+                                                                <li><button jsf:action="#{MassImportForm.Prepare}" jsf:id="prepare" class="dropdown-item">
                                                                         <h:outputText value="#{proj.titel}" />
                                                                         <x:updateActionListener
                                                                             property="#{item.projekt}"
@@ -1074,7 +1093,7 @@
                                                                         <x:updateActionListener
                                                                             property="#{MassImportForm.template}"
                                                                             value="#{item}" />
-                                                                    </h:commandLink></li>
+                                                                    </button></li>
                                                             </ui:repeat>
                                                         </ul>
                                                     </div>
@@ -1087,56 +1106,59 @@
                                                         class="btn-group margin-left-10"
                                                         title="#{msgs.additionalOptions}"
                                                         data-toggle="tooltip">
-
-                                                        <a
+                                                        <div class="dropdown">
+                                                        <button
                                                             aria-label="#{msgs.additionalOptions}"
-                                                            href="#"
+                                                            type="button"
                                                             class="btn dropdown-toggle fa fa-cog"
                                                             data-toggle="dropdown"> <span class="caret"></span>
-                                                        </a>
+                                                        </button>
                                                         <ul class="dropdown-menu pull-right">
 
                                                             <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Linking')}">
                                                                 <li>
-                                                                    <!-- Download-Schaltknopf --> <h:commandLink
-                                                                        action="#{ProzessverwaltungForm.DownloadToHome}"
-                                                                        id="action16"
+                                                                    <!-- Download-Schaltknopf --> <button
+                                                                        jsf:action="#{ProzessverwaltungForm.DownloadToHome}"
+                                                                        jsf:id="action16"
                                                                         title="#{msgs.imHomeVerzeichnisVerlinken}"
-                                                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and !item.imageFolderInUse}">
+                                                                        jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and !item.imageFolderInUse}"
+                                                                        class="dropdown-item">
                                                                         <i class="fa fa-cloud-download margin-right-10" />
                                                                         <h:outputText value="#{msgs.imHomeVerzeichnisVerlinken}" />
                                                                         <x:updateActionListener
                                                                             property="#{ProzessverwaltungForm.myProzess}"
                                                                             value="#{item}" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                 </li>
                                                                 <li>
-                                                                    <!-- Download-Schaltknopf --> <h:commandLink
-                                                                        action="#{ProzessverwaltungForm.DownloadToHome}"
-                                                                        id="action17"
+                                                                    <!-- Download-Schaltknopf --> <button
+                                                                        jsf:action="#{ProzessverwaltungForm.DownloadToHome}"
+                                                                        jsf:id="action17"
                                                                         title="#{msgs.imHomeVerzeichnisVerlinkenTrotzBearbeitung}"
                                                                         onclick="if (!confirm('#{msgs.warningAdminBeforeLinking}')) return false"
-                                                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and item.imageFolderInUse}">
+                                                                        jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and item.imageFolderInUse}"
+                                                                        class="dropdown-item">
                                                                         <i class="fa fa-cloud-download margin-right-10" />
                                                                         <h:outputText value="#{msgs.imHomeVerzeichnisVerlinkenTrotzBearbeitung}" />
                                                                         <x:updateActionListener
                                                                             property="#{ProzessverwaltungForm.myProzess}"
                                                                             value="#{item}" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                 </li>
                                                                 <li>
-                                                                    <!-- Upload-Schaltknopf --> <h:commandLink
-                                                                        action="#{ProzessverwaltungForm.UploadFromHome}"
-                                                                        id="action18"
+                                                                    <!-- Upload-Schaltknopf --> <button
+                                                                        jsf:action="#{ProzessverwaltungForm.UploadFromHome}"
+                                                                        jsf:id="action18"
                                                                         title="#{msgs.ausHomeverzeichnisEntfernen}"
                                                                         onclick="if (!confirm('#{msgs.ausHomeverzeichnisEntfernen}')) return false"
-                                                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+                                                                        jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
+                                                                        class="dropdown-item">
                                                                         <i class="fa fa-cloud-upload margin-right-10" />
                                                                         <h:outputText value="#{msgs.ausHomeverzeichnisEntfernen}" />
                                                                         <x:updateActionListener
                                                                             property="#{ProzessverwaltungForm.myProzess}"
                                                                             value="#{item}" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                 </li>
                                                             </h:panelGroup>
 
@@ -1144,74 +1166,80 @@
                                                                 rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Download')}">
                                                                 <li>
                                                                     <!-- XML Export-Button --> 
-                                                                    <h:commandLink
-                                                                        id="ubid119"
-                                                                        action="#{item.downloadXML}"
+                                                                    <button
+                                                                        jsf:id="ubid119"
+                                                                        jsf:action="#{item.downloadXML}"
                                                                         title="#{msgs.createXML}"
-                                                                        onclick="preventDoubleSubmit(this);">
+                                                                        onclick="preventDoubleSubmit(this);"
+                                                                        class="dropdown-item">
                                                                         <i class="fa fa-file-code-o margin-right-10" />
                                                                         <h:outputText value="#{msgs.createXML}" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                 </li>
                                                                 <li>
                                                                     <!-- Docket Export --> 
-                                                                    <h:commandLink
-                                                                        id="ubid1119"
-                                                                        action="#{item.downloadDocket}"
+                                                                    <button
+                                                                        jsf:id="ubid1119"
+                                                                        jsf:action="#{item.downloadDocket}"
                                                                         onclick="preventDoubleSubmit(this);"
-                                                                        title="#{msgs.process_generateDocket}">
+                                                                        title="#{msgs.process_generateDocket}"
+                                                                        class="dropdown-item">
                                                                         <i class="fa fa-print margin-right-10" />
                                                                         <h:outputText value="#{msgs.process_generateDocket}" />
-                                                                    </h:commandLink>
+                                                                    </button>
 
                                                                 </li>
                                                                 <li>
-                                                                    <!-- Mets-Export-Button --> <h:commandLink
-                                                                        action="#{ProzessverwaltungForm.ExportMets}"
-                                                                        id="action19"
+                                                                    <!-- Mets-Export-Button --> <button
+                                                                        jsf:action="#{ProzessverwaltungForm.ExportMets}"
+                                                                        jsf:id="action19"
                                                                         title="#{msgs.exportMets}"
                                                                         onclick="preventDoubleSubmit(this);"
-                                                                        rendered="#{item.displayMETSButton}">
+                                                                        jsf:rendered="#{item.displayMETSButton}"
+                                                                        class="dropdown-item">
                                                                         <i class="fa fa-floppy-o margin-right-10" />
                                                                         <h:outputText value="#{msgs.exportMets}" />
                                                                         <x:updateActionListener
                                                                             property="#{ProzessverwaltungForm.myProzess}"
                                                                             value="#{item}" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                 </li>
                                                                 <li>
-                                                                    <!-- PDF-Export-Button --> <h:commandLink
-                                                                        action="#{ProzessverwaltungForm.ExportPdf}"
-                                                                        id="action20"
+                                                                    <!-- PDF-Export-Button --> <button
+                                                                        jsf:action="#{ProzessverwaltungForm.ExportPdf}"
+                                                                        jsf:id="action20"
                                                                         title="#{msgs.exportPdf}"
                                                                         onclick="preventDoubleSubmit(this);"
-                                                                        rendered="#{item.displayPDFButton}">
+                                                                        jsf:rendered="#{item.displayPDFButton}"
+                                                                        class="dropdown-item">
                                                                         <i class="fa fa-file-pdf-o margin-right-10" />
                                                                         <h:outputText value="#{msgs.process_generatePdfForEntireObject}" />
                                                                         <x:updateActionListener
                                                                             property="#{ProzessverwaltungForm.myProzess}"
                                                                             value="#{item}" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                 </li>
 
                                                                 <li>
-                                                                    <!-- simplified-Metadata-Export-Button --> <h:commandLink
-                                                                        action="#{ProzessverwaltungForm.generateSimplifiedMetadataFile}"
-                                                                        id="action23"
+                                                                    <!-- simplified-Metadata-Export-Button --> <button
+                                                                        jsf:action="#{ProzessverwaltungForm.generateSimplifiedMetadataFile}"
+                                                                        jsf:id="action23"
                                                                         title="#{msgs.process_generateSimplifiedMetadata}"
-                                                                        onclick="preventDoubleSubmit(this);">
+                                                                        onclick="preventDoubleSubmit(this);"
+                                                                        class="dropdown-item">
                                                                         <i class="fa fa-file-pdf-o margin-right-10" />
                                                                         <h:outputText value="#{msgs.process_generateSimplifiedMetadata}" />
                                                                         <x:updateActionListener
                                                                             property="#{ProzessverwaltungForm.myProzess}"
                                                                             value="#{item}" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                 </li>
 
                                                             </h:panelGroup>
 
 
                                                         </ul>
+                                                        </div>
                                                     </div>
                                                 </h:panelGroup>
                                             </x:column>
@@ -1228,15 +1256,15 @@
                                             <!--                                         <i class="fa fa-plus margin-right-5"></i> -->
                                             <!--                                         <h:outputText value="#{msgs.einenNeuenProzessAnlegen}" /> -->
                                             <!--                                     </h:commandLink> -->
-                                            <h:commandLink
-                                                action="#{ProzessverwaltungForm.NeuVorlage}"
-                                                immediate="true"
-                                                styleClass="btn btn-primary font-size-s"
-                                                rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and ProzessverwaltungForm.modusAnzeige=='vorlagen'}"
-                                                id="new2">
+                                            <button
+                                                jsf:action="#{ProzessverwaltungForm.NeuVorlage}"
+                                                jsf:immediate="true"
+                                                class="btn btn-primary font-size-s"
+                                                jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and ProzessverwaltungForm.modusAnzeige=='vorlagen'}"
+                                                jsf:id="new2">
                                                 <i class="fa fa-plus margin-right-5"></i>
                                                 <h:outputText value="#{msgs.eineNeueProzessvorlageAnlegen}" />
-                                            </h:commandLink>
+                                            </button>
                                         </div>
                                         <div class="dataTables_paginate">
                                             <!-- paginator -->

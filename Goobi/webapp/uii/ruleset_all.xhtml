@@ -1,6 +1,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core" template="/uii/template/template.html" xmlns:o="http://omnifaces.org/ui"
-	xmlns:of="http://omnifaces.org/functions" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:of="http://omnifaces.org/functions" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
 	<ui:param name="myPageTitle" value="#{msgs.regelsaetze}" />
 
@@ -54,23 +54,23 @@
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
 										<!-- Bearbeiten-Schaltknopf -->
-										<h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip" action="ruleset_edit" title="#{msgs.regelsatzBearbeiten}">
+										<button jsf:id="edit" class="btn margin-right-5" jsf:rel="tooltip" jsf:action="ruleset_edit" title="#{msgs.regelsatzBearbeiten}">
 											<i class="fa fa-pencil"></i>
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
 											<f:passThroughAttribute name="aria-label" value="#{msgs.regelsatzBearbeiten}" />
 											<f:passThroughAttribute name="role" value="button" />
 											<f:setPropertyActionListener target="#{RegelsaetzeForm.myRegelsatz}" value="#{item}" />
-										</h:commandLink>
+										</button>
 									</x:column>
 
 								</x:dataTable>
 
 								<div class="dataTables_info">
 									<!-- Neu-Schaltknopf -->
-									<h:commandLink id="newRuleset"  styleClass="btn btn-primary font-size-s" action="#{RegelsaetzeForm.Neu}" immediate="true">
+									<button jsf:id="newRuleset"  class="btn btn-primary font-size-s" jsf:action="#{RegelsaetzeForm.Neu}" jsf:immediate="true">
 										<i class="fa fa-plus margin-right-5"></i>
 										<h:outputText value="#{msgs.neuenRegelsatzAnlegen}" />
-									</h:commandLink>
+									</button>
 								</div>
 								<div class="dataTables_paginate">
 									<!-- paginator -->
