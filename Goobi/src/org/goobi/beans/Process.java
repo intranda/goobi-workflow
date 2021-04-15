@@ -1190,13 +1190,13 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             try {
                 ff.write(metadataFileName);
             } catch (UGHException e) {
-                //error writing. restore backung and rethrow error
+                //error writing. restore backup and rethrow error
                 Path meta = Paths.get(metadataFileName);
                 Path lastBackup = Paths.get(metadataFileName + ".1");
                 if ((!Files.exists(meta) || Files.size(meta) == 0) && Files.exists(lastBackup)) {
                     Files.copy(lastBackup, meta, StandardCopyOption.REPLACE_EXISTING);
-                    throw e;
                 }
+                throw e;
             }
         }
         Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile, false);
