@@ -89,51 +89,61 @@
 										styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
 										var="item" value="#{SessionForm.gsm.shortGoobiScriptResults}">
 	
-										<x:column styleClass="tableColumnWidthSmall" headerstyleClass="#{SessionForm.gsm.sort eq 'id desc'?'sorting_desc':SessionForm.gsm.sort=='id'?'sorting_asc':'sorting'}">
+										<x:column styleClass="tableColumnWidthSmall">
 											<f:facet name="header">
-												<button jsf:id="sortProcessId" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="font-black-block">
+												<button jsf:id="sortProcessId" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block">
 													<h:outputText value="#{msgs.goobiScript_processId}" />
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'id'?'id desc':'id'}" />
+	                                            	<span
+                                                            class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'id desc'?'fa-sort-desc':SessionForm.gsm.sort=='id'?'fa-sort-asc':'fa-sort'}"></span>
 	                                            </button>
 											</f:facet>
 											<h:outputText value="#{item.processId}" />
 										</x:column>
 	
-										<x:column styleClass="tableColumnWidthMid" headerstyleClass="#{SessionForm.gsm.sort eq 'title desc'?'sorting_desc':SessionForm.gsm.sort=='title'?'sorting_asc':'sorting'}">
+										<x:column styleClass="tableColumnWidthMid">
 											<f:facet name="header">
-												<button jsf:id="sortProcessTitle" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="font-black-block">
+												<button jsf:id="sortProcessTitle" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block">
 													<h:outputText value="#{msgs.goobiScript_processTitle}" />
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'title'?'title desc':'title'}" />
+	                                            	<span
+                                                            class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'title desc'?'fa-sort-desc':SessionForm.gsm.sort=='title'?'fa-sort-asc':'fa-sort'}"></span>
 	                                            </button>
 											</f:facet>
 											<h:outputText value="#{item.processTitle}" title="#{item.processTitle}" />
 										</x:column>
 										
-										<x:column styleClass="tableColumnOverflow maxWidth300" headerstyleClass="#{SessionForm.gsm.sort eq 'command desc'?'sorting_desc':SessionForm.gsm.sort=='command'?'sorting_asc':'sorting'}">
+										<x:column styleClass="tableColumnOverflow maxWidth300">
 											<f:facet name="header">
-												<button jsf:id="sortCommand" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="font-black-block">
+												<button jsf:id="sortCommand" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block">
 													<h:outputText value="#{msgs.goobiScript_command}" />
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'command'?'command desc':'command'}" />
+	                                            	<span
+                                                            class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'command desc'?'fa-sort-desc':SessionForm.gsm.sort=='command'?'fa-sort-asc':'fa-sort'}"></span>
 	                                            </button>
 											</f:facet>
 											<h:outputText value="#{item.command}" title="#{item.command}" />
 										</x:column>
 										
-										<x:column styleClass="tableColumnMaxWidthMid" headerstyleClass="#{SessionForm.gsm.sort eq 'user desc'?'sorting_desc':SessionForm.gsm.sort=='user'?'sorting_asc':'sorting'}">
+										<x:column styleClass="tableColumnMaxWidthMid">
 											<f:facet name="header">
-												<button jsf:id="sortUser" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="font-black-block">
+												<button jsf:id="sortUser" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block">
 													<h:outputText value="#{msgs.goobiScript_user}" />
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'user'?'user desc':'user'}" />
+	                                            	<span
+                                                            class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'user desc'?'fa-sort-desc':SessionForm.gsm.sort=='user'?'fa-sort-asc':'fa-sort'}"></span>
 	                                            </button>
 											</f:facet>
 											<h:outputText value="#{item.username}" title="#{item.username}" />
 										</x:column>
 										
-										<x:column styleClass="tableColumnMaxWidthMid" headerstyleClass="#{SessionForm.gsm.sort eq 'timestamp desc'?'sorting_desc':SessionForm.gsm.sort=='timestamp'?'sorting_asc':'sorting'}">
+										<x:column styleClass="tableColumnMaxWidthMid">
 											<f:facet name="header">
-												<button jsf:id="sortTimestamp" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="font-black-block">
+												<button jsf:id="sortTimestamp" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block">
 													<h:outputText value="#{msgs.goobiScript_timestamp}" />
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'timestamp'?'timestamp desc':'timestamp'}" />
+	                                            	<span
+                                                            class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'timestamp desc'?'fa-sort-desc':SessionForm.gsm.sort=='timestamp'?'fa-sort-asc':'fa-sort'}"></span>
 	                                            </button>
 											</f:facet>
 											<h:outputText value="#{item.formattedTimestamp}" title="#{item.formattedTimestamp}"  >
@@ -141,11 +151,13 @@
 											</h:outputText>
 										</x:column>
 										
-										<x:column headerstyleClass="#{SessionForm.gsm.sort eq 'status desc'?'sorting_desc':SessionForm.gsm.sort=='status'?'sorting_asc':'sorting'}">
+										<x:column>
 											<f:facet name="header">
-												<button jsf:id="sortResultType" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="font-black-block">
+												<button jsf:id="sortResultType" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block">
 													<h:outputText value="#{msgs.goobiScript_resultType}" />
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'status'?'status desc':'status'}" />
+	                                            	<span
+                                                            class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'status desc'?'fa-sort-desc':SessionForm.gsm.sort=='status'?'fa-sort-asc':'fa-sort'}"></span>
 	                                            </button>
 											</f:facet>
 											<span class="badge #{item.resultType eq 'OK'?'badge-intranda-green':item.resultType eq 'WAITING'?'badge-intranda-orange':item.resultType eq 'RUNNING'?'badge-intranda-blue':'badge-intranda-red'}">
@@ -154,11 +166,13 @@
 			                                </span>
 										</x:column>
 										
-										<x:column headerstyleClass="#{SessionForm.gsm.sort eq 'description desc'?'sorting_desc':SessionForm.gsm.sort=='description'?'sorting_asc':'sorting'}">
+										<x:column>
 											<f:facet name="header">
-												<button jsf:id="sortResultMessage" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="font-black-block">
+												<button jsf:id="sortResultMessage" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block">
 													<h:outputText value="#{msgs.goobiScript_resultMessage}" />
 	                                            	<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'description'?'description desc':'description'}" />
+	                                            	<span
+                                                            class="pull-right table-sort-icon fa #{SessionForm.gsm.sort eq 'description desc'?'fa-sort-desc':SessionForm.gsm.sort=='description'?'fa-sort-asc':'fa-sort'}"></span>
 	                                            </button>
 											</f:facet>
 											<h:outputText value="#{item.resultMessage} #{item.errorText}" />

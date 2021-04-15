@@ -152,15 +152,15 @@
 	                                                </li>
 	                                                <li class="action-intent-li">
 	                                                    <!-- GoobiScript für Treffer der Seite - modal rendern  -->
-	                                                    <button jsf:id="resultsModalRender" class="btn text_head" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptPage}" pt:data-modalid="goobiScriptModal">
+	                                                    <button jsf:id="resultsModalRender" class="expandbutton text_head" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptPage}" pt:data-modalid="goobiScriptModal">
 	                                                    	<f:ajax render="goobiScriptModalWrapper" execute="goobiScriptfield" onevent="renderModal"/>
-	                                                    	<span class="margin-right-10 fa fa-angle-right" />
+	                                                    	<span class="btn margin-right-10 fa fa-angle-right" />
 	                                                      		<h:outputText value="#{msgs.trefferDieserSeite}" />
 	                                                    </button>
 	                                                </li>
 	                                                <li class="action-intent-li">
 	                                                    <!-- GoobiScript für alle Treffer - modal rendern  -->
-	                                                    <button jsf:id="allModalRender" class="text_head" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptHits}" pt:data-modalid="goobiScriptModal">
+	                                                    <button jsf:id="allModalRender" class="expandbutton text_head" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptHits}" pt:data-modalid="goobiScriptModal">
 	                                                    	<f:ajax render="goobiScriptModalWrapper" execute="goobiScriptfield" onevent="renderModal"/>
 	                                                    	<span class="btn margin-right-10 fa fa-angle-right" />
 	                                                      		<h:outputText value="#{msgs.gesamtesTrefferset}" />
