@@ -1052,37 +1052,28 @@
                                                         value="#{item}" />
                                                 </button>
 
-                                                <h:panelGroup
-                                                    rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() gt 1}">
+                                                <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() gt 1}">
                                                     <div
                                                         class="btn-group"
                                                         title="#{msgs.MassenImport}"
                                                         data-toggle="tooltip">
-                                                        <a
-                                                            class="btn #{item.containsUnreachableSteps?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
-                                                            style="padding-left: 4px; padding-right: 4px;"
-                                                            data-toggle="dropdown"> <span class="caret"></span>
-                                                        </a>
-                                                        <button
-                                                        	jsf:id="massImportPrepare"
-                                                            jsf:action="#{MassImportForm.Prepare}"
-                                                            jsf:rel="tooltip"
-                                                            class="btn">
-                                                            <i
-                                                                class="fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} "
-                                                                style="padding-left: 7px; padding-right: 7px;" />
-                                                            <f:passThroughAttribute
-                                                                name="data-toggle"
-                                                                value="tooltip" />
-                                                            <x:updateActionListener
-                                                                property="#{MassImportForm.template}"
-                                                                value="#{item}" />
-                                                        </button>
-                                                        <ul class="dropdown-menu  pull-right">
+
+                                                        <div class="dropdown">
+                                                            <button
+                                                                class="btn #{item.containsUnreachableSteps?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
+                                                                style="margin: 0; padding-left: 4px; padding-right: 4px;"
+                                                                data-toggle="dropdown">
+                                                                <span class="caret"></span>
+                                                            </button>
+                                                            <ul class="dropdown-menu  pull-right">
                                                             <ui:repeat
                                                                 var="proj"
                                                                 value="#{ProzesskopieForm.availableProjects}">
-                                                                <li><button jsf:action="#{MassImportForm.Prepare}" jsf:id="prepare" class="dropdown-item">
+                                                                <li>
+                                                                    <button
+                                                                        jsf:action="#{MassImportForm.Prepare}"
+                                                                        jsf:id="prepare"
+                                                                        class="dropdown-item">
                                                                         <h:outputText value="#{proj.titel}" />
                                                                         <x:updateActionListener
                                                                             property="#{item.projekt}"
@@ -1093,9 +1084,24 @@
                                                                         <x:updateActionListener
                                                                             property="#{MassImportForm.template}"
                                                                             value="#{item}" />
-                                                                    </button></li>
+                                                                    </button>
+                                                                </li>
                                                             </ui:repeat>
                                                         </ul>
+                                                            <button
+                                                                class="btn fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} "
+                                                                jsf:id="massImportPrepare"
+                                                                jsf:action="#{MassImportForm.Prepare}"
+                                                                jsf:rel="tooltip"
+                                                                >                                                                
+                                                                <f:passThroughAttribute
+                                                                    name="data-toggle"
+                                                                    value="tooltip" />
+                                                                <x:updateActionListener
+                                                                    property="#{MassImportForm.template}"
+                                                                    value="#{item}" />
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </h:panelGroup>
 
