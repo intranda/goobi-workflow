@@ -1,15 +1,14 @@
 package org.goobi.goobiScript;
 
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
-
-import com.google.common.collect.ImmutableList;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -23,7 +22,7 @@ public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoob
     public String getAction() {
         return "deleteStep";
     }
-    
+
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
@@ -31,77 +30,55 @@ public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoob
         addParameterToSampleCall(sb, "steptitle", "Image upload", "Define the name of the step that shall get deleted.");
         return sb.toString();
     }
-    
+
     @Override
-    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
+    public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
-            return false;
+            return new ArrayList<>();
         }
 
         // add all valid commands to list
-        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
+        List<GoobiScriptResult> newList = new ArrayList<>();
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, parameters, username, starttime);
             newList.add(gsr);
         }
-        gsm.setGoobiScriptResults(newList.build());
-
-        return true;
+        return newList;
     }
 
     @Override
-    public void execute() {
-        DeleteStepThread et = new DeleteStepThread();
-        et.start();
-    }
+    public void execute(GoobiScriptResult gsr) {
 
-    class DeleteStepThread extends Thread {
-        @Override
-        public void run() {
-            // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    log.error("Problem while waiting for running GoobiScripts", e);
-                }
-            }
+        // execute all jobs that are still in waiting state
+        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+        gsr.setProcessTitle(p.getTitel());
+        gsr.setResultType(GoobiScriptResultType.RUNNING);
+        gsr.updateTimestamp();
 
-            // execute all jobs that are still in waiting state
-            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
+        if (p.getSchritte() != null) {
+            for (Iterator<Step> iterator = p.getSchritte().iterator(); iterator.hasNext();) {
+                Step s = iterator.next();
+                if (s.getTitel().equals(parameters.get("steptitle"))) {
+                    p.getSchritte().remove(s);
 
-                    if (p.getSchritte() != null) {
-                        for (Iterator<Step> iterator = p.getSchritte().iterator(); iterator.hasNext();) {
-                            Step s = iterator.next();
-                            if (s.getTitel().equals(parameters.get("steptitle"))) {
-                                p.getSchritte().remove(s);
-
-                                StepManager.deleteStep(s);
-                                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                        "Deleted step '" + parameters.get("steptitle") + "' from process using GoobiScript.", username);
-                                log.info("Deleted step '" + parameters.get("steptitle") + "' from process using GoobiScript for process with ID "
-                                        + p.getId());
-                                gsr.setResultMessage("Deleted step '" + parameters.get("steptitle") + "' from process.");
-                                gsr.setResultType(GoobiScriptResultType.OK);
-                                break;
-                            }
-                        }
-                    }
-                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
-                        gsr.setResultType(GoobiScriptResultType.OK);
-                        gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
-                    }
-                    gsr.updateTimestamp();
+                    StepManager.deleteStep(s);
+                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                            "Deleted step '" + parameters.get("steptitle") + "' from process using GoobiScript.", username);
+                    log.info("Deleted step '" + parameters.get("steptitle") + "' from process using GoobiScript for process with ID "
+                            + p.getId());
+                    gsr.setResultMessage("Deleted step '" + parameters.get("steptitle") + "' from process.");
+                    gsr.setResultType(GoobiScriptResultType.OK);
+                    break;
                 }
             }
         }
+        if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+            gsr.setResultType(GoobiScriptResultType.OK);
+            gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+        }
+        gsr.updateTimestamp();
     }
 }
