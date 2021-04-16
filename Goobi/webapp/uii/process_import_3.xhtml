@@ -1,7 +1,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param name="myPageTitle" value="#{msgs.MassImport}" />
 
@@ -30,16 +31,16 @@
                         <div class="box-content">
                              <ul class="action-ul">
                                 <li class="action-li">
-                                    <h:commandLink id="utid21" action="#{MassImportForm.downloadDocket}">
-                                        <span class="btn margin-right-10 fa fa-print fa-lg width-40" />
+                                    <button jsf:id="utid21" class="btn" jsf:action="#{MassImportForm.downloadDocket}">
+                                        <span class="margin-right-10 fa fa-print fa-lg width-40" />
                                         <h:outputText value="#{msgs.process_generateDocket}" />
-                                    </h:commandLink>
+                                    </button>
                                 </li>
                                 <li class="action-li">
-                                    <h:commandLink id="utid20" action="#{MassImportForm.Prepare}">
-                                        <span class="btn margin-right-10 fa fa-file-o fa-lg width-40" />
+                                    <button jsf:id="utid20" class="btn" jsf:action="#{MassImportForm.Prepare}">
+                                        <span class="margin-right-10 fa fa-file-o fa-lg width-40" />
                                         <h:outputText value="#{msgs.weiterenVorgangAnlegen}" />
-                                    </h:commandLink>
+                                    </button>
 
                                 </li>
                             </ul>

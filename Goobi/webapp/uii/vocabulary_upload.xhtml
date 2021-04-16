@@ -8,7 +8,8 @@
     template="/uii/template/template.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -159,25 +160,25 @@
                                         </h:panelGroup>
                                     </h:panelGroup>
                                     <!-- Save -->
-                                    <h:commandLink
-                                        rendered="#{vocabularyBean.headerOrder.size() gt 0}"
-                                        styleClass="btn btn-success pull-right font-size-s margin-bottom-most"
-                                        id="absenden"
+                                    <button
+                                        jsf:rendered="#{vocabularyBean.headerOrder.size() gt 0}"
+                                        class="btn btn-success pull-right font-size-s margin-bottom-most"
+                                        jsf:id="absenden"
                                         type="submit"
-                                        action="#{vocabularyBean.importRecords}">
+                                        jsf:action="#{vocabularyBean.importRecords}">
                                         <i class="fa fa-save margin-right-5"></i>
                                         <h:outputText value="#{msgs.vocabularyManager_excelImport_importRecords}" />
-                                    </h:commandLink>
+                                    </button>
 
                                     <!-- Cancel -->
-                                    <h:commandLink
-                                        styleClass="btn btn-cancel pull-right font-size-s margin-bottom-most margin-sides-10"
-                                        id="abbrechen"
+                                    <button
+                                        class="btn btn-cancel pull-right font-size-s margin-bottom-most margin-sides-10"
+                                        jsf:id="abbrechen"
                                         type="cancel"
-                                        action="#{vocabularyBean.editVocabulary}"
-                                        immediate="true">
+                                        jsf:action="#{vocabularyBean.editVocabulary}"
+                                        jsf:immediate="true">
                                         <h:outputText value="#{msgs.abbrechen}" />
-                                    </h:commandLink>
+                                    </button>
 
                                 </h:form>
                             </h:panelGroup>

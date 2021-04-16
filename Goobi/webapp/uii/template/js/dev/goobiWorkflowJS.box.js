@@ -16,8 +16,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             }
 
             // write box status to session storage
-            if ( sessionStorage.getItem( 'boxStatus' ) == null ) {
-                sessionStorage.setItem( 'boxStatus', JSON.stringify( _status ) );
+            if ( sessionStorage.getItem( 'wf_boxStatus' ) == null ) {
+                sessionStorage.setItem( 'wf_boxStatus', JSON.stringify( _status ) );
             }
 
             // execute box methods
@@ -34,7 +34,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 console.log( 'EXECUTE: goobiWorkflowJS.box.getBoxStatus' );
             }
             
-            var status = JSON.parse( sessionStorage.getItem( 'boxStatus' ) );
+            var status = JSON.parse( sessionStorage.getItem( 'wf_boxStatus' ) );
             
             if ( status != null ) {
                 $.each( status, function( element, status ) {
@@ -60,7 +60,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             console.log( 'EXECUTE: _setBoxStatus' );
         }
 
-        var status = JSON.parse( sessionStorage.getItem( 'boxStatus' ) );
+        var status = JSON.parse( sessionStorage.getItem( 'wf_boxStatus' ) );
 
         $( '.module__box--collapsable' ).each( function() {
             var currId = $( this ).attr( 'id' );
@@ -74,7 +74,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             }
         } );
 
-        sessionStorage.setItem( 'boxStatus', JSON.stringify( status ) );
+        sessionStorage.setItem( 'wf_boxStatus', JSON.stringify( status ) );
     }
 
     /**

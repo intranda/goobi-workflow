@@ -105,7 +105,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private String httpMethod;
     @Getter
     @Setter
-    private String[] possibleHttpMethods = new String[] { "POST", "PUT", "PATCH" };
+    private String[] possibleHttpMethods = new String[] { "POST", "PUT", "PATCH", "GET" };
     @Getter
     @Setter
     private String httpJsonBody;

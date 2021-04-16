@@ -55,7 +55,7 @@ public class GoobiScriptMoveWorkflowBackward extends AbstractIGoobiScript implem
         List<Step> tempList = new ArrayList<>(p.getSchritteList());
         Collections.reverse(tempList);
         for (Step step : tempList) {
-            if (step.getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
+            if (step.getBearbeitungsstatusEnum() != StepStatus.LOCKED && step.getBearbeitungsstatusEnum() != StepStatus.DEACTIVATED) {
                 step.setEditTypeEnum(StepEditType.ADMIN);
                 step.setBearbeitungszeitpunkt(new Date());
                 step.setBearbeitungsstatusDown();

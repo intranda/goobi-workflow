@@ -5,7 +5,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
     </composite:interface>
@@ -69,18 +70,18 @@
 
                                 <div class="dataTables_info">
                                     <!-- Neu-Schaltknopf -->
-                                    <h:commandLink
-                                        action="#{ProzessverwaltungForm.VorlageNeu}"
-                                        id="newTemplate"
-                                        rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates_Create')}"
-                                        styleClass="btn btn-lightgrey font-size-s margin-top-5"
+                                    <button
+                                        jsf:action="#{ProzessverwaltungForm.VorlageNeu}"
+                                        jsf:id="newTemplate"
+                                        jsf:rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates_Create')}"
+                                        class="btn btn-lightgrey font-size-s margin-top-5"
                                         title="#{msgs.vorlageHinzufuegen}">
                                         <i class="fa fa-plus margin-right-5"></i>
                                         <h:outputText value="#{msgs.vorlageHinzufuegen}" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                    </h:commandLink>
+                                    </button>
                                 </div>
                             </div>
                         </div>

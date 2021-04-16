@@ -6,7 +6,8 @@
 	xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<ui:param name="myPageTitle"
 		value="#{BenutzergruppenForm.myBenutzergruppe.id == null?msgs.neueBenutzergruppeAnlegen:msgs.benutzergruppeBearbeiten}" />
@@ -64,8 +65,8 @@
 										<div class="col-sm-6" style="border-right:0px solid #ccc;padding-right:10px;">
 											<h3 tabindex="0">#{msgs.usergroup_assignedRoles}</h3>
 											<ui:repeat var="role" value="#{BenutzergruppenForm.myBenutzergruppe.userRoles}" varStatus="row">
-				                            	<h:commandLink action="#{BenutzergruppenForm.removeRole}"
-				                            		styleClass="remove_role_#{role} badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
+				                            	<button jsf:action="#{BenutzergruppenForm.removeRole}"
+				                            		class="remove_role_#{role} badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
 					                            		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
 					                            		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' : 
 					                            		fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' : 
@@ -78,14 +79,14 @@
 													<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
 													<i class="fa fa-trash margin-left-5"></i>
 													 <f:ajax render="myform:rolediv" />
-												</h:commandLink>
+												</button>
 				                            </ui:repeat>
 										</div>
 										<div class="col-sm-6" style="border-left:1px solid #ccc;padding-left:10px;">
 											<h3 tabindex="0">#{msgs.usergroup_availableRoles}</h3>
 											<ui:repeat var="role" value="#{BenutzergruppenForm.allAvailableRoles}" varStatus="row">
-				                            	<h:commandLink action="#{BenutzergruppenForm.addRole}"
-				                            		styleClass="add_role_#{role} badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
+				                            	<button jsf:action="#{BenutzergruppenForm.addRole}"
+				                            		class="add_role_#{role} badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
 					                            		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
 					                            		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' : 
                                                         fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' : 
@@ -98,16 +99,16 @@
 													<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
 													<i class="fa fa-plus margin-left-5"></i>
 													<f:ajax render="myform:rolediv" />
-												</h:commandLink>
+												</button>
 				                            </ui:repeat>
 										
 											<div class="input-group" style="margin-top:10px;">
                                       			<h:inputText id="userRoles" value="#{BenutzergruppenForm.tempRole}" styleClass="form-control"/>
                                       			<div class="input-group-addon" style="padding:4px;"  >
-		                                            <h:commandLink tabindex="-1" title="#{msgs.usergroup_addRole}" action="#{BenutzergruppenForm.addRole}" style="margin-right:5px;">
+		                                            <button class="btn" tabindex="-1" title="#{msgs.usergroup_addRole}" jsf:action="#{BenutzergruppenForm.addRole}" style="margin-right:5px;">
 		                                                <i class="fa fa-plus font-black" style="margin-left: 3px" />
 		                                                
-		                                            </h:commandLink>
+		                                            </button>
 		                                        </div>
                                   			</div>
 										</div>
