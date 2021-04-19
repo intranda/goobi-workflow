@@ -290,7 +290,9 @@
                     $('.popover.fade.right.in').remove();
                 }
                 setTimeout(scrollDownScrollDowns(), 100);
-                setTimeout(updateGoobiScriptIndicator, 500);
+                if(typeof updateGoobiScriptIndicator !== 'undefined') {
+                	setTimeout(updateGoobiScriptIndicator, 500);
+                }
             });
 
             $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function () {
