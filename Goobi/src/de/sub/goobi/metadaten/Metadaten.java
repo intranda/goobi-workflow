@@ -1694,7 +1694,7 @@ public class Metadaten implements Serializable {
             // }
             this.myProzess.writeMetadataFile(this.gdzfile);
         } catch (Exception e) {
-            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
+            Helper.setFehlerMeldung("Metafile is not writable.", e);
             logger.error(e);
             return "Metadaten";
         }
@@ -3884,6 +3884,7 @@ public class Metadaten implements Serializable {
     public String getOpacKatalog() {
         if (StringUtils.isBlank(opacKatalog)) {
             opacKatalog = getAllOpacCatalogues().get(0);
+            currentCatalogue = catalogues.get(0);
         }
         return this.opacKatalog;
     }

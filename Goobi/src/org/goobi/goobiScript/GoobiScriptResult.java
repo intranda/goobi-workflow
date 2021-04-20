@@ -1,6 +1,7 @@
 package org.goobi.goobiScript;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.goobi.production.enums.GoobiScriptResultType;
 
@@ -19,8 +20,9 @@ public class GoobiScriptResult {
     private String username;
     private String errorText;
     private long starttime;
+    private Map<String, String> parameters;
 
-    public GoobiScriptResult(Integer id, String command, String username, long starttime) {
+    public GoobiScriptResult(Integer id, String command, Map<String, String> parameters, String username, long starttime) {
         this.processId = id;
         this.command = command;
         this.processTitle = "";
@@ -29,9 +31,10 @@ public class GoobiScriptResult {
         this.username = username;
         this.resultType = GoobiScriptResultType.WAITING;
         this.starttime = starttime;
+        this.parameters = parameters;
     }
 
-    public GoobiScriptResult(Integer id, String command, String username) {
+    public GoobiScriptResult(Integer id, String command, Map<String, String> parameters, String username) {
         this.processId = id;
         this.command = command;
         this.processTitle = "";
@@ -40,6 +43,7 @@ public class GoobiScriptResult {
         this.username = username;
         this.resultType = GoobiScriptResultType.WAITING;
         this.starttime = System.currentTimeMillis();
+        this.parameters = parameters;
     }
 
     public void updateTimestamp() {

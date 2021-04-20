@@ -446,6 +446,8 @@ public class HelperSchritte {
                 case "PATCH":
                     resp = executor.execute(Request.Patch(url).bodyString(bodyStr, ContentType.APPLICATION_JSON)).returnResponse();
                     break;
+                case "GET":
+                    resp = executor.execute(Request.Get(url)).returnResponse();
                 default:
                     //TODO: error to process log
                     break;

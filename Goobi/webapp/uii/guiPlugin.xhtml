@@ -56,8 +56,8 @@
     <ui:define name="content">
     <main>
 		<h:form prependId="false">
-			<button jsf:id="restPluginFinishLink" jsf:action="#{AktuelleSchritteForm.myPlugin.finish}" style="display:none;"></button>
-            <button jsf:id="restPluginCloseStepLink" jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}" style="display:none;"></button>
+			<h:commandLink id="restPluginFinishLink" action="#{AktuelleSchritteForm.myPlugin.finish}" style="display:none;"></h:commandLink>
+            <h:commandLink id="restPluginCloseStepLink" action="#{AktuelleSchritteForm.SchrittDurchBenutzerAbschliessen}" style="display:none;"></h:commandLink>
 		</h:form>
 		<app id="root"></app>
 		<script>

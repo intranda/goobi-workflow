@@ -4,7 +4,8 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<composite:interface>
 		<composite:attribute name="paginator"/>
@@ -17,18 +18,18 @@
 
 			<div class="pull-right">
 
-				<h:commandLink styleClass="btn font-size-s margin-sides-10"
-                    pt:aria-label="#{msgs.firstPage}"
-					action="#{cc.attrs.paginator.cmdMoveFirst}" id="navfirst">
+				<button class="btn font-size-s margin-sides-10"
+                    aria-label="#{msgs.firstPage}"
+					jsf:action="#{cc.attrs.paginator.cmdMoveFirst}" jsf:id="navfirst">
 					<i class="fa fa-angle-double-left"></i>
 					<f:ajax render=":myform" />
-				</h:commandLink>
-				<h:commandLink styleClass="btn btn-primary font-size-s navigator-previous"
-					action="#{cc.attrs.paginator.cmdMovePrevious}" id="navprev">
+				</button>
+				<button class="btn btn-primary font-size-s navigator-previous"
+					jsf:action="#{cc.attrs.paginator.cmdMovePrevious}" jsf:id="navprev">
 					<i class="fa fa-angle-left"></i>
 					<h:outputText value=" #{msgs.pagePrevious}"/>
 					<f:ajax render=":myform" />
-				</h:commandLink>
+				</button>
 
 				<div class="margin-sides-10">
 					<!-- aktuelle Seite anzeigen -->
@@ -51,18 +52,18 @@
 					</x:commandButton>
 				</div>
 
-				<h:commandLink styleClass="btn btn-primary font-size-s navigator-next"
-					action="#{cc.attrs.paginator.cmdMoveNext}" id="navnext">
+				<button class="btn btn-primary font-size-s navigator-next"
+					jsf:action="#{cc.attrs.paginator.cmdMoveNext}" jsf:id="navnext">
 					<h:outputText value="#{msgs.pageNext} "/>
 							<i class="fa fa-angle-right"></i>
 					<f:ajax render=":myform" />
-				</h:commandLink>
-				<h:commandLink styleClass="btn font-size-s margin-sides-10"
-                    pt:aria-label="#{msgs.lastPage}"
-					action="#{cc.attrs.paginator.cmdMoveLast}" id="navlast">
+				</button>
+				<button class="btn font-size-s margin-sides-10"
+                    aria-label="#{msgs.lastPage}"
+					jsf:action="#{cc.attrs.paginator.cmdMoveLast}" jsf:id="navlast">
 					<i class="fa fa-angle-double-right"></i>
 					<f:ajax render=":myform" />
-				</h:commandLink>
+				</button>
 			</div>
 		</h:panelGroup>
 

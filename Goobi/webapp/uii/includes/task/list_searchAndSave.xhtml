@@ -15,13 +15,13 @@
 				<span class="input-group-addon">
 					<i class="fa fa-search"></i>
 				</span>
-				<h:inputText id="searchField" pt:aria-label="search" styleClass="form-control searchfield" value="#{Form.filter}">
+				<h:inputText id="searchField" pt:aria-label="search" styleClass="form-control searchfield" value="#{Form.filter}" onkeypress="return submitEnter('searchform:sub1:FilterAlle2',event)">
 					<f:passThroughAttribute name="placeholder" value="#{label}" />
 				</h:inputText>
 				<div class="input-group-btn">
 					<button jsf:id="FilterAlle2" style="text-align: center; padding-top: 0px; padding-buttom: 0px" jsf:forceId="true" class="btn" jsf:action="#{Form.FilterAlleStart}" >
                         #{msgs.search}
-                    </button>
+                    </button>                    
 				</div>
 			</div>
 			<x:commandButton type="submit" id="FilterAlle" forceId="true" style="display: none;" action="#{Form.FilterAlleStart}" />
