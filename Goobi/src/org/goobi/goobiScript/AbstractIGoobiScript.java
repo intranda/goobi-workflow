@@ -1,9 +1,9 @@
 package org.goobi.goobiScript;
 
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.Helper;
 
 public abstract class AbstractIGoobiScript implements IGoobiScript {
@@ -12,12 +12,11 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
     protected Map<String, String> parameters;
     protected String command;
     protected String username;
-    protected GoobiScriptManager gsm;
     protected long starttime;
-    
+
     /**
      * Return if this GoobiScript shall be publicly visible in the user interface
-     *  
+     * 
      * @return boolean about if the GoobiScript shall be visible
      */
     @Override
@@ -56,12 +55,12 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
      * @param value the default value for the parameter
      * @param comment a documentation for the parameter as comment
      */
-    protected void addParameterToSampleCall(StringBuilder sb,String parameter, String value, String comment) {
+    protected void addParameterToSampleCall(StringBuilder sb, String parameter, String value, String comment) {
         sb.append("\\n\\n# ");
         sb.append(comment);
         sb.append("\\n");
         sb.append(parameter + ": " + value);
-    }    
+    }
 
     /**
      * method to append a description about a parameter as yaml to a given yaml StringBuilder
@@ -70,10 +69,10 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
      * @param parameter the name of the parameter
      * @param value the default value for the parameter
      */
-    protected void addParameterToSampleCall(StringBuilder sb,String parameter, String value) {
+    protected void addParameterToSampleCall(StringBuilder sb, String parameter, String value) {
         sb.append("\\n\\n");
         sb.append(parameter + ": " + value);
-    }    
+    }
 
     public AbstractIGoobiScript() {
         super();
@@ -89,15 +88,13 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
      * @return true if the initialisation could be done without any validation issues
      */
     @Override
-    public boolean prepare(List<Integer> processes, String command, Map<String, String> parameters) {
+    public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         this.processes = processes;
         this.parameters = parameters;
         this.command = command;
-        SessionForm sf =  Helper.getSessionBean();
-        gsm =sf.getGsm();
         username = Helper.getCurrentUser().getNachVorname();
         starttime = System.currentTimeMillis();
-        return true;
+        return new ArrayList<>();
     }
 
     /**
@@ -108,17 +105,9 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
      */
     public boolean getParameterAsBoolean(String name) {
         boolean value = false;
-        if (parameters.get(name) != null && parameters.get(name).equals("true")){
+        if (parameters.get(name) != null && parameters.get(name).equals("true")) {
             value = true;
         }
         return value;
     }
-    
-    /**
-     * Main method of the GoobiScript where the processing of the job is executed
-     */
-    @Override
-    public void execute() {
-    }   
-    
 }

@@ -66,6 +66,7 @@ import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
 import ugh.dl.MetadataGroupType;
 import ugh.dl.MetadataType;
+import ugh.dl.NamePart;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.dl.Reference;
@@ -863,26 +864,23 @@ public class MetadatenHelper implements Comparator<Object> {
             metadataList.put("DocStruct", Collections.singletonList(ds.getType().getName()));
             if (ds.getType().isAnchor() && ds.getAllChildren() != null) {
                 DocStruct volume = ds.getAllChildren().get(0);
-                if (volume.getAllMetadata() != null) {
-                    for (Metadata md : volume.getAllMetadata()) {
-                        if (includeAuthority) {
-                            addAuthorityFromMeta(metadataList, md);
-                        }
-                        if (StringUtils.isNotBlank(md.getValue())) {
-                            if (metadataList.containsKey(md.getType().getName())) {
-                                List<String> oldValue = metadataList.get(md.getType().getName());
-                                oldValue.add(md.getValue());
-                                metadataList.put(md.getType().getName(), oldValue);
-                            } else {
-                                List<String> list = new ArrayList<>();
-                                list.add(md.getValue());
-                                metadataList.put(md.getType().getName(), list);
-                            }
-                        }
-                    }
-                }
-                if (volume.getAllPersons() != null) {
-                    for (Person p : volume.getAllPersons()) {
+                getMetadataFromDocstruct(includeAuthority, metadataList, volume);
+            }
+            getMetadataFromDocstruct(includeAuthority, metadataList, ds);
+
+            ds = gdzfile.getDigitalDocument().getPhysicalDocStruct();
+            getMetadataFromDocstruct(includeAuthority, metadataList, ds);
+        } catch (PreferencesException e) {
+            logger.error(e);
+        }
+        return metadataList;
+    }
+
+    private static void getMetadataFromDocstruct(boolean includeAuthority, Map<String, List<String>> metadataList, DocStruct ds) {
+        if (ds.getAllMetadataGroups() != null) {
+            for (MetadataGroup mg : ds.getAllMetadataGroups()) {
+                if (mg.getPersonList() != null) {
+                    for (Person p : mg.getPersonList()) {
                         if (includeAuthority) {
                             addAuthorityFromPerson(metadataList, p);
                         }
@@ -899,128 +897,138 @@ public class MetadatenHelper implements Comparator<Object> {
                         }
                     }
                 }
-            }
-            if (ds.getAllMetadataGroups() != null) {
-                for (MetadataGroup mg : ds.getAllMetadataGroups()) {
-                    if (mg.getPersonList() != null) {
-                        for (Person p : mg.getPersonList()) {
-                            if (includeAuthority) {
-                                addAuthorityFromPerson(metadataList, p);
-                            }
-                            if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
-                                if (metadataList.containsKey(p.getType().getName())) {
-                                    List<String> oldValue = metadataList.get(p.getType().getName());
-                                    oldValue.add(p.getFirstname() + " " + p.getLastname());
-                                    metadataList.put(p.getType().getName(), oldValue);
-                                } else {
-                                    List<String> list = new ArrayList<>();
-                                    list.add(p.getFirstname() + " " + p.getLastname());
-                                    metadataList.put(p.getType().getName(), list);
-                                }
-                            }
+                if (mg.getMetadataList() != null) {
+                    for (Metadata md : mg.getMetadataList()) {
+                        if (includeAuthority) {
+                            addAuthorityFromMeta(metadataList, md);
                         }
-                    }
-                    if (mg.getMetadataList() != null) {
-                        for (Metadata md : mg.getMetadataList()) {
-                            if (includeAuthority) {
-                                addAuthorityFromMeta(metadataList, md);
-                            }
-                            if (StringUtils.isNotBlank(md.getValue())) {
-                                if (metadataList.containsKey(md.getType().getName())) {
-                                    List<String> oldValue = metadataList.get(md.getType().getName());
-                                    oldValue.add(md.getValue());
-                                    metadataList.put(md.getType().getName(), oldValue);
-                                } else {
-                                    List<String> list = new ArrayList<>();
-                                    list.add(md.getValue());
-                                    metadataList.put(md.getType().getName(), list);
-                                }
+                        if (StringUtils.isNotBlank(md.getValue())) {
+                            if (metadataList.containsKey(md.getType().getName())) {
+                                List<String> oldValue = metadataList.get(md.getType().getName());
+                                oldValue.add(md.getValue());
+                                metadataList.put(md.getType().getName(), oldValue);
+                            } else {
+                                List<String> list = new ArrayList<>();
+                                list.add(md.getValue());
+                                metadataList.put(md.getType().getName(), list);
                             }
                         }
                     }
                 }
-            }
-            if (ds.getAllMetadata() != null) {
-                for (Metadata md : ds.getAllMetadata()) {
-                    if (includeAuthority) {
-                        addAuthorityFromMeta(metadataList, md);
-                    }
-                    if (StringUtils.isNotBlank(md.getValue())) {
-                        if (metadataList.containsKey(md.getType().getName())) {
-                            List<String> oldValue = metadataList.get(md.getType().getName());
-                            oldValue.add(md.getValue());
-                            metadataList.put(md.getType().getName(), oldValue);
-                        } else {
-                            List<String> list = new ArrayList<>();
-                            list.add(md.getValue());
-                            metadataList.put(md.getType().getName(), list);
+                if (mg.getCorporateList() != null) {
+                    for (Corporate c : mg.getCorporateList()) {
+                        if (includeAuthority) {
+                            addAuthorityFromMeta(metadataList, c);
                         }
-                    }
-                }
-            }
-            if (ds.getAllPersons() != null) {
-                for (Person p : ds.getAllPersons()) {
-                    if (includeAuthority) {
-                        addAuthorityFromPerson(metadataList, p);
-                    }
-                    if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
-                        if (metadataList.containsKey(p.getType().getName())) {
-                            List<String> oldValue = metadataList.get(p.getType().getName());
-                            oldValue.add(p.getFirstname() + " " + p.getLastname());
-                            metadataList.put(p.getType().getName(), oldValue);
-                        } else {
-                            List<String> list = new ArrayList<>();
-                            list.add(p.getFirstname() + " " + p.getLastname());
-                            metadataList.put(p.getType().getName(), list);
+                        StringBuilder corporate = new StringBuilder();
+                        if (StringUtils.isNotBlank(c.getMainName())) {
+                            corporate.append(c.getMainName());
+                            corporate.append(" ");
                         }
-                    }
-                }
-            }
+                        for (NamePart namePart : c.getSubNames()) {
+                            if (StringUtils.isNotBlank(namePart.getValue())) {
 
-            ds = gdzfile.getDigitalDocument().getPhysicalDocStruct();
-            if (ds.getAllMetadata() != null) {
-                for (Metadata md : ds.getAllMetadata()) {
-                    if (includeAuthority) {
-                        addAuthorityFromMeta(metadataList, md);
-                    }
-                    if (StringUtils.isNotBlank(md.getValue())) {
-                        if (metadataList.containsKey(md.getType().getName())) {
-                            List<String> oldValue = metadataList.get(md.getType().getName());
-                            oldValue.add(md.getValue());
-                            metadataList.put(md.getType().getName(), oldValue);
-                        } else {
-                            List<String> list = new ArrayList<>();
-                            list.add(md.getValue());
-                            metadataList.put(md.getType().getName(), list);
+                                corporate.append(namePart.getValue());
+                                corporate.append(" ");
+
+                            }
+                        }
+                        if (StringUtils.isNotBlank(c.getPartName())) {
+                            corporate.append(c.getPartName());
+                        }
+                        String val = corporate.toString().trim();
+                        if (StringUtils.isNotBlank(val)) {
+
+                            if (metadataList.containsKey(c.getType().getName())) {
+                                List<String> oldValue = metadataList.get(c.getType().getName());
+                                oldValue.add(val);
+                                metadataList.put(c.getType().getName(), oldValue);
+                            } else {
+                                List<String> list = new ArrayList<>();
+                                list.add(val);
+                                metadataList.put(c.getType().getName(), list);
+                            }
                         }
                     }
                 }
             }
-            if (ds.getAllPersons() != null) {
-
-                for (Person p : ds.getAllPersons()) {
-                    if (includeAuthority) {
-                        addAuthorityFromPerson(metadataList, p);
-                    }
-                    if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
-                        if (metadataList.containsKey(p.getType().getName())) {
-                            List<String> oldValue = metadataList.get(p.getType().getName());
-                            oldValue.add(p.getFirstname() + " " + p.getLastname());
-                            metadataList.put(p.getType().getName(), oldValue);
-                        } else {
-                            List<String> list = new ArrayList<>();
-                            list.add(p.getFirstname() + " " + p.getLastname());
-                            metadataList.put(p.getType().getName(), list);
-                        }
-                    }
-                }
-            }
-
-        } catch (PreferencesException e) {
-            logger.error(e);
         }
-        return metadataList;
+
+        if (ds.getAllCorporates() != null) {
+            for (Corporate c : ds.getAllCorporates()) {
+                if (includeAuthority) {
+                    addAuthorityFromMeta(metadataList, c);
+                }
+                StringBuilder corporate = new StringBuilder();
+                if (StringUtils.isNotBlank(c.getMainName())) {
+                    corporate.append(c.getMainName());
+                    corporate.append(" ");
+                }
+                for (NamePart namePart : c.getSubNames()) {
+                    if (StringUtils.isNotBlank(namePart.getValue())) {
+
+                        corporate.append(namePart.getValue());
+                        corporate.append(" ");
+
+                    }
+                }
+                if (StringUtils.isNotBlank(c.getPartName())) {
+                    corporate.append(c.getPartName());
+                }
+                String val = corporate.toString().trim();
+                if (StringUtils.isNotBlank(val)) {
+
+                    if (metadataList.containsKey(c.getType().getName())) {
+                        List<String> oldValue = metadataList.get(c.getType().getName());
+                        oldValue.add(val);
+                        metadataList.put(c.getType().getName(), oldValue);
+                    } else {
+                        List<String> list = new ArrayList<>();
+                        list.add(val);
+                        metadataList.put(c.getType().getName(), list);
+                    }
+                }
+            }
+        }
+
+        if (ds.getAllMetadata() != null) {
+            for (Metadata md : ds.getAllMetadata()) {
+                if (includeAuthority) {
+                    addAuthorityFromMeta(metadataList, md);
+                }
+                if (StringUtils.isNotBlank(md.getValue())) {
+                    if (metadataList.containsKey(md.getType().getName())) {
+                        List<String> oldValue = metadataList.get(md.getType().getName());
+                        oldValue.add(md.getValue());
+                        metadataList.put(md.getType().getName(), oldValue);
+                    } else {
+                        List<String> list = new ArrayList<>();
+                        list.add(md.getValue());
+                        metadataList.put(md.getType().getName(), list);
+                    }
+                }
+            }
+        }
+        if (ds.getAllPersons() != null) {
+            for (Person p : ds.getAllPersons()) {
+                if (includeAuthority) {
+                    addAuthorityFromPerson(metadataList, p);
+                }
+                if (StringUtils.isNotBlank(p.getFirstname()) || StringUtils.isNotBlank(p.getLastname())) {
+                    if (metadataList.containsKey(p.getType().getName())) {
+                        List<String> oldValue = metadataList.get(p.getType().getName());
+                        oldValue.add(p.getFirstname() + " " + p.getLastname());
+                        metadataList.put(p.getType().getName(), oldValue);
+                    } else {
+                        List<String> list = new ArrayList<>();
+                        list.add(p.getFirstname() + " " + p.getLastname());
+                        metadataList.put(p.getType().getName(), list);
+                    }
+                }
+            }
+        }
     }
+
 
     private static void addAuthorityFromPerson(Map<String, List<String>> metadataList, Person p) {
         if (StringUtils.isNotBlank(p.getAuthorityID())) {

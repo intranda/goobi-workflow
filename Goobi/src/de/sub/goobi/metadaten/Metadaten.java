@@ -1748,7 +1748,7 @@ public class Metadaten implements Serializable {
             // }
             this.myProzess.writeMetadataFile(this.gdzfile);
         } catch (Exception e) {
-            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
+            Helper.setFehlerMeldung("Metafile is not writable.", e);
             logger.error(e);
             return "Metadaten";
         }
