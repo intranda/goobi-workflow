@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="#{SpracheForm.locale}" xmlns="http://www.w3.org/1999/xhtml" 
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
-    xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html" 
     xmlns:c="http://java.sun.com/jstl/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk" 
@@ -158,8 +158,12 @@
 	                                            <img src="template/img/goobi/ajaxloader2.gif" />
 	                                        </li>
 	
-											<h:panelGroup rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResults.size() gt 0}">
-	                                        	<li class="#{SessionForm.gsm.goobiScriptHasResults('ERROR')?'background-color-F':'background-color-D'}">
+											<ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResults.size() gt 0}">
+                                                <o:socket channel="goobiscriptUpdateChannel" >
+                                                    <f:ajax render="goobiScriptResults2" event="update"/>
+                                                </o:socket>
+                                                <o:commandScript name="updateGoobiScriptIndicator" render="goobiScriptResults2" />
+	                                        	<li class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'}">
 		                                            <button jsf:action="process_goobiScript" jsf:id="goobiScriptResults2" class="button-transparent">
 		                                                    <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}"></i>
 		                                                    <div class="details">
@@ -168,7 +172,7 @@
 		                                                    </div>
 		                                                </button>
 		                                        </li>
-	                                        </h:panelGroup>
+	                                        </ui:fragment>
 	                                        
 	                                        
 	                                        <h:panelGroup rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
@@ -242,13 +246,16 @@
             // goobiWorkflowJS.init(goobiWorkflowConfig);
         </script>
         <script>
+     // <![CDATA[
             jsf.ajax.addOnEvent(function (data) {
                 var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
                 var ajaxloader = document.getElementById("ajaxloader");
+                var source = data.source;
+                var noLoaderGif = source.type == "hidden" && source.id.indexOf("header") == 0;
 
                 switch (ajaxstatus) {
                     case "begin": // This is called right before ajax request is been sent.
-                    	if(ajaxloader) {
+                    	if(ajaxloader && !noLoaderGif) {
                         	ajaxloader.style.display = 'block';
                     	}
                         break;
@@ -283,6 +290,9 @@
                     $('.popover.fade.right.in').remove();
                 }
                 setTimeout(scrollDownScrollDowns(), 100);
+                if(typeof updateGoobiScriptIndicator !== 'undefined') {
+                	setTimeout(updateGoobiScriptIndicator, 500);
+                }
             });
 
             $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function () {
@@ -298,11 +308,13 @@
                     myButton.click();
                 }
             });
-
+            
             window.myfaces = window.myfaces || {};
             myfaces.config = myfaces.config || {};
             //set the config part
             myfaces.config.no_portlet_env = true;
+
+         // ]]>
         </script>
     </f:view>
 </h:body>
