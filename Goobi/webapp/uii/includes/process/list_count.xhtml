@@ -41,7 +41,7 @@
 									<h:outputText value="#{msgs.relativeAnzahl}" />
 								</f:facet>
 								<div class="progress margin-bottom-no">
-									<div class="progress-bar progress-bar-success" style="width:#{item.relImages * 1}%" title="#{item.images} #{msgs.images}" data-toggle="tooltip"></div>
+									<div class="progress-bar progress-bar-success" style="width:#{item.relImages * 1}%" title="#{item.images} #{msgs.images}" data-toggle="tooltip" aria-label="#{item.relImages * 1}% #{item.images} #{msgs.images}"></div>
 	                            </div>
 							</x:column>
 							
@@ -57,7 +57,7 @@
 									<h:outputText value="#{msgs.relativeAnzahl}" />
 								</f:facet>
 								<div class="progress margin-bottom-no">
-	                                <div class="progress-bar progress-bar-warning" style="width:#{item.relDocstructs * 1}%" title="#{item.docstructs} #{msgs.docstructs}" data-toggle="tooltip"></div>
+	                                <div class="progress-bar progress-bar-warning" style="width:#{item.relDocstructs * 1}%" title="#{item.docstructs} #{msgs.docstructs}" data-toggle="tooltip" aria-label="#{item.relDocstructs * 1}% #{item.docstructs} #{msgs.docstructs}"></div>
 	                            </div>
 							</x:column>
 		
@@ -73,7 +73,7 @@
 									<h:outputText value="#{msgs.relativeAnzahl}" />
 								</f:facet>
 								<div class="progress margin-bottom-no">
-	                               <div class="progress-bar progress-bar-danger" style="width: #{item.relMetadata * 1}%" title="#{item.relMetadata} #{msgs.metadata}" data-toggle="tooltip"></div>
+	                               <div class="progress-bar progress-bar-danger" style="width: #{item.relMetadata * 1}%" title="#{item.relMetadata} #{msgs.metadata}" data-toggle="tooltip" aria-label="#{item.relMetadata * 1}% #{item.relMetadata} #{msgs.metadata}"></div>
 	                            </div>
 							</x:column>
 										                

@@ -111,6 +111,7 @@
                                         <!-- +++++++++++++++++  Display as table ++++++++++++++++++++++++ -->
                                         <x:dataTable
                                             id="processTable"
+                                            role="grid"
                                             rowIndexVar="count"
                                             styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
                                             var="item"
@@ -161,7 +162,8 @@
                                                     <button
                                                         class="button-link font-black-block"
                                                         style="width: 100%; text-align: left"
-                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                                        aria-sort="#{ProzessverwaltungForm.sortierung=='idDesc'?'descending':ProzessverwaltungForm.sortierung=='idAsc'?'ascending':'none'}">
                                                         <h:outputText value="#{msgs.id}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='idDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='idAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -479,7 +481,8 @@
                                                     rendered="#{item.fortschritt3 gt 0}"
                                                     data-toggle="tooltip"
                                                     styleClass="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-done'):('progress-bar-success'))}"
-                                                    style="width: #{item.fortschritt3}%;line-height:15px;">
+                                                    style="width: #{item.fortschritt3}%;line-height:15px;"
+                                                    pt:aria-label="#{item.fortschritt3}% #{msgs.statusAbgeschlossen}">
                                                     <h:outputText value="&#160;" />
                                                     <f:passThroughAttribute
                                                         name="data-trigger"
@@ -505,7 +508,8 @@
                                                     rendered="#{item.fortschritt2 gt 0}"
                                                     data-toggle="tooltip"
                                                     styleClass="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-open'):('progress-bar-warning'))}"
-                                                    style="width: #{item.fortschritt2}%;line-height:15px;">
+                                                    style="width: #{item.fortschritt2}%;line-height:15px;"
+                                                    pt:aria-label="#{item.fortschritt2}% #{msgs.statusOffen} / #{msgs.statusInBearbeitung}">
                                                     <h:outputText value="&#160;" />
                                                     <f:passThroughAttribute
                                                         name="data-trigger"
@@ -531,7 +535,8 @@
                                                     rendered="#{item.fortschrittError gt 0}"
                                                     data-toggle="tooltip"
                                                     styleClass="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-error'):('progress-bar-danger progressbar-status-error'))} "
-                                                    style="width: #{item.fortschrittError}%;line-height:15px;">
+                                                    style="width: #{item.fortschrittError}%;line-height:15px;"
+                                                    pt:aria-label="#{item.fortschrittError}% #{msgs.statusError}">
                                                     <h:outputText value="&#160;" />
                                                     <f:passThroughAttribute
                                                         name="data-trigger"
@@ -557,7 +562,8 @@
                                                     rendered="#{item.fortschritt1 gt 0}"
                                                     data-toggle="tooltip"
                                                     styleClass="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-locked'):('progress-bar-danger'))} "
-                                                    style="width: #{item.fortschritt1}%;line-height:15px;">
+                                                    style="width: #{item.fortschritt1}%;line-height:15px;"
+                                                    pt:aria-label="#{item.fortschritt1}% #{msgs.statusGesperrt}">
                                                     <h:outputText value="&#160;" />
                                                     <f:passThroughAttribute
                                                         name="data-trigger"
