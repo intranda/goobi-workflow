@@ -163,7 +163,8 @@
                                                         class="button-link font-black-block"
                                                         style="width: 100%; text-align: left"
                                                         jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
-                                                        aria-sort="#{ProzessverwaltungForm.sortierung=='idDesc'?'descending':ProzessverwaltungForm.sortierung=='idAsc'?'ascending':'none'}">
+                                                        aria-label="#{msgs.defaultSortField} #{msgs.id} #{ProzessverwaltungForm.sortierung=='idDesc'? msgs.defaultSortFieldDesc : ProzessverwaltungForm.sortierung=='idAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                                        aria-sort="#{ProzessverwaltungForm.sortierung=='idDesc'? 'descending' : ProzessverwaltungForm.sortierung=='idAsc'? 'ascending' :'none'}">
                                                         <h:outputText value="#{msgs.id}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='idDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='idAsc'?'fa-sort-asc':'fa-sort'}"></span>
