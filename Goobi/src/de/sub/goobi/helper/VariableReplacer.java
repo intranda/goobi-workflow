@@ -513,7 +513,8 @@ public class VariableReplacer {
 
         List<String> iifUrls = new ArrayList<>(images.size());
 
-        String hostname = "http://localhost:8080/goobi";// TODO get it from config
+        String hostname = ConfigurationHelper.getInstance().getGoobiUrl();
+
         String foldername = folder.getFileName().toString();
 
         String api = hostname + "/api";

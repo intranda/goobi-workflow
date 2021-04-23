@@ -340,6 +340,10 @@ public class ConfigurationHelper implements Serializable {
 
     // URLs
 
+    public String getGoobiUrl() {
+        return getLocalString("goobiUrl");
+    }
+
     public String getGoobiContentServerUrl() {
         return getLocalString("goobiContentServerUrl");
     }
