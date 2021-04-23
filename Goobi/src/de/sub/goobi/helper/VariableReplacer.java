@@ -103,8 +103,8 @@ public class VariableReplacer {
     private static Pattern pProjectName = Pattern.compile("\\$?(?:\\(|\\{)projectname(?:\\}|\\))");
     private static Pattern pProjectIdentifier = Pattern.compile("\\$?(?:\\(|\\{)projectidentifier(?:\\}|\\))");
 
-    private static Pattern piiifMediaFolder = Pattern.compile("\\$?(?:\\(|\\{)iiifMediaFolder(?:\\}|\\))");
-    private static Pattern piiifMasterFolder = Pattern.compile("\\$?(?:\\(|\\{)iiifMasterFolder(?:\\}|\\))");
+    public static Pattern piiifMediaFolder = Pattern.compile("\\$?(?:\\(|\\{)iiifMediaFolder(?:\\}|\\))");
+    public static Pattern piiifMasterFolder = Pattern.compile("\\$?(?:\\(|\\{)iiifMasterFolder(?:\\}|\\))");
 
     private DigitalDocument dd;
     private Prefs prefs;
@@ -533,7 +533,7 @@ public class VariableReplacer {
             }
         }
         String response = iifUrls.toString();
-        response = response.substring(1, response.length() -1);
+        response = response.substring(1, response.length() - 1);
         return response;
     }
 }
