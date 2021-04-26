@@ -203,8 +203,8 @@ public class LoginBean implements Serializable {
         try {
             this.myBenutzer = UserManager.getUserById(LoginID);
             /* in der Session den Login speichern */
-            Helper.getSessionBean().sessionBenutzerAktualisieren((HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false),
-                    this.myBenutzer);
+            HttpSession session = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
+            Helper.getSessionBean().sessionBenutzerAktualisieren(session, this.myBenutzer);
             roles = this.myBenutzer.getAllUserRoles();
         } catch (DAOException e) {
             Helper.setFehlerMeldung("could not read database", e.getMessage());

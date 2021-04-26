@@ -200,6 +200,9 @@ public class SessionForm implements Serializable {
         if (!gefunden) {
             sessionAdd(insession);
         }
+        // Remove this code to reproduce the ghost users
+        /**/org.goobi.managedbeans.LoginBean login = de.sub.goobi.helper.Helper.getLoginBean();
+        /**/sessionBenutzerAktualisieren(insession, login.getMyBenutzer());
         sessionsAufraeumen(insession.getMaxInactiveInterval());
     }
 
