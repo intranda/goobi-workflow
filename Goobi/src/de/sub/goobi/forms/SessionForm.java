@@ -67,6 +67,8 @@ public class SessionForm implements Serializable {
      * 
      */
     private static final long serialVersionUID = 8457947420232054227L;
+    private static final String LOGGED_OUT = " - ausgeloggt - ";
+    private static final String NOT_LOGGED_IN = " - ";
     @SuppressWarnings("rawtypes")
     private List<Map> alleSessions = Collections.synchronizedList(new ArrayList<Map>());
     private SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
@@ -116,10 +118,11 @@ public class SessionForm implements Serializable {
         Map map = new HashMap<>();
         map.put("id", insession.getId());
         map.put("created", this.formatter.format(new Date()));
+        map.put("sessionTimeout", insession.getMaxInactiveInterval());
         map.put("last", this.formatter.format(new Date()));
-        map.put("last2", Long.valueOf(System.currentTimeMillis()));
-        map.put("user", " - ");
-        map.put("userid", Integer.valueOf(0));
+        map.put("last2", System.currentTimeMillis());
+        map.put("user", NOT_LOGGED_IN);
+        map.put("userid", 0);
         map.put("session", insession);
         map.put("browserIcon", "none.png");
         //        FacesContext context = FacesContextHelper.getCurrentFacesContext();
@@ -173,11 +176,18 @@ public class SessionForm implements Serializable {
     }
 
     @SuppressWarnings("rawtypes")
-    private void sessionsAufraeumen(int time) {
+    private void sessionsAufraeumen() {
         List<Map> temp = new ArrayList<>(this.alleSessions);
         for (Map map : temp) {
-            long differenz = System.currentTimeMillis() - ((Long) map.get("last2")).longValue();
-            if (differenz / 1000 > time || map.get("address") == null || (map.get("user").equals("- ausgeloggt - "))) {
+            long userTimeout = (long)(map.get("sessionTimeout"));
+            long loginTimestamp = (long)(map.get("last2"));
+            long now = System.currentTimeMillis();
+            long sessionDuration = (now - loginTimestamp) / 1000;
+            boolean overTimeout = sessionDuration > userTimeout;
+            boolean notLoggedIn = map.get("user").equals(NOT_LOGGED_IN);
+            boolean loggedOut = map.get("user").equals(LOGGED_OUT);
+            boolean noAddress = map.get("address") == null;
+            if (overTimeout || notLoggedIn || loggedOut || noAddress) {
                 this.alleSessions.remove(map);
             }
         }
@@ -191,7 +201,7 @@ public class SessionForm implements Serializable {
             for (Map map : alleSessions) {
                 if (map.get("id").equals(insession.getId())) {
                     map.put("last", this.formatter.format(new Date()));
-                    map.put("last2", Long.valueOf(System.currentTimeMillis()));
+                    map.put("last2", System.currentTimeMillis());
                     gefunden = true;
                     break;
                 }
@@ -200,10 +210,7 @@ public class SessionForm implements Serializable {
         if (!gefunden) {
             sessionAdd(insession);
         }
-        // Remove this code to reproduce the ghost users
-        /**/org.goobi.managedbeans.LoginBean login = de.sub.goobi.helper.Helper.getLoginBean();
-        /**/sessionBenutzerAktualisieren(insession, login.getMyBenutzer());
-        sessionsAufraeumen(insession.getMaxInactiveInterval());
+        sessionsAufraeumen();
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -216,9 +223,10 @@ public class SessionForm implements Serializable {
                         insession.setAttribute("User", inBenutzer.getNachVorname());
                         map.put("user", inBenutzer.getNachVorname());
                         map.put("userid", inBenutzer.getId());
+                        map.put("sessionTimeout", inBenutzer.getSessiontimeout());
                         insession.setMaxInactiveInterval(inBenutzer.getSessiontimeout());
                     } else {
-                        map.put("user", "- ausgeloggt - ");
+                        map.put("user", LOGGED_OUT);
                         map.put("userid", Integer.valueOf(0));
                     }
                     break;

@@ -454,8 +454,8 @@ public class User implements DatabaseObject {
     }
 
     public void setSessiontimeoutInMinutes(Integer sessiontimeout) {
-        if (sessiontimeout.intValue() < 1) {
-            this.sessiontimeout = 1 * 60;
+        if (sessiontimeout.intValue() < 5) {
+            this.sessiontimeout = 5 * 60;
         } else {
             this.sessiontimeout = sessiontimeout * 60;
         }
