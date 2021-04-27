@@ -318,6 +318,10 @@
             <version>2.4</version>
             <exclusions>
                 <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>javax.media</groupId>
                     <artifactId>jai-core</artifactId>
                 </exclusion>
