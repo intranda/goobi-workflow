@@ -209,10 +209,17 @@ public class ScriptThreadWithoutHibernate extends Thread {
         // put all scriptPaths to properties (with replaced Goobi-variables!)
         List<List<String>> listOfScripts = new ArrayList<>();
         List<String> scriptNames = new ArrayList<>();
+        int counter = 0;
         for (Entry<String, String> entry : automaticStep.getAllScripts().entrySet()) {
+            counter++;
             String script = entry.getValue();
             try {
-                scriptNames.add(entry.getKey());
+                String scriptName = entry.getKey();
+                if (scriptName == null) {
+                    scriptNames.add("Script " + counter);
+                } else {
+                    scriptNames.add(entry.getKey());
+                }
                 List<String> params = HelperSchritte.createShellParamsForBashScript(automaticStep, script);
                 listOfScripts.add(params);
             } catch (PreferencesException | ReadException | WriteException | IOException | InterruptedException | SwapException | DAOException e) {
