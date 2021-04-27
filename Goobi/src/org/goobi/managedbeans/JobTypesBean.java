@@ -138,6 +138,7 @@ public class JobTypesBean implements Serializable {
                 StepManager.setStepPaused(step.getId(), false);
             }
         } catch (DAOException e) {
+            log.error("error persisting jobTypes", e);
             Helper.setFehlerMeldung(Helper.getTranslation("errorPersistingJobTypes"));
         }
     }
