@@ -131,11 +131,13 @@ public class JobTypesBean implements Serializable {
         try {
             List<String> restartStepnames = this.jobTypesCache.applyAndPersist(jobTypes);
             // Restart the steps.
-            List<Step> restartSteps = StepManager.getPausedSteps(restartStepnames);
-            for (Step step : restartSteps) {
-                ScriptThreadWithoutHibernate scriptThread = new ScriptThreadWithoutHibernate(step);
-                scriptThread.startOrPutToQueue();
-                StepManager.setStepPaused(step.getId(), false);
+            if (!restartStepnames.isEmpty()) {
+                List<Step> restartSteps = StepManager.getPausedSteps(restartStepnames);
+                for (Step step : restartSteps) {
+                    ScriptThreadWithoutHibernate scriptThread = new ScriptThreadWithoutHibernate(step);
+                    scriptThread.startOrPutToQueue();
+                    StepManager.setStepPaused(step.getId(), false);
+                }
             }
         } catch (DAOException e) {
             log.error("error persisting jobTypes", e);
