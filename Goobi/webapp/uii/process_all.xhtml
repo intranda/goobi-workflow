@@ -253,7 +253,9 @@
                                                     <button
                                                         class="button-link font-black-block"
                                                         style="width: 100%; text-align: left"
-                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                                        aria-label="#{msgs.defaultSortField} #{msgs.batch} #{ProzessverwaltungForm.sortierung=='batchDesc'? msgs.defaultSortFieldDesc : ProzessverwaltungForm.sortierung=='batchAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                                        aria-sort="#{ProzessverwaltungForm.sortierung=='batchDesc'? 'descending' : ProzessverwaltungForm.sortierung=='batchAsc'? 'ascending' :'none'}">
                                                         <h:outputText value="#{msgs.batch}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='batchDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='batchAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -280,7 +282,9 @@
                                                     <button
                                                         class="button-link font-black-block"
                                                         style="width: 100%; text-align: left"
-                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                                        aria-label="#{msgs.defaultSortField} #{msgs.titel} #{ProzessverwaltungForm.sortierung=='titelDesc'? msgs.defaultSortFieldDesc : ProzessverwaltungForm.sortierung=='titelAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                                        aria-sort="#{ProzessverwaltungForm.sortierung=='titleDesc'? 'descending' : ProzessverwaltungForm.sortierung=='titleAsc'? 'ascending' :'none'}">
                                                         <h:outputText
                                                             value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessTitel:msgs.titel}" />
                                                         <span
@@ -445,7 +449,9 @@
                                                     <button
                                                         class="button-link font-black-block"
                                                         style="width: 100%; text-align: left"
-                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                                        aria-label="#{msgs.defaultSortField} #{msgs.vorgangsdatum} #{ProzessverwaltungForm.sortierung=='vorgangsdatumDesc'? msgs.defaultSortFieldDesc : ProzessverwaltungForm.sortierung=='vorgangsdatumAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                                        aria-sort="#{ProzessverwaltungForm.sortierung=='vorgangsdatumDesc'? 'descending' : ProzessverwaltungForm.sortierung=='vorgangsdatumAsc'? 'ascending' :'none'}">
                                                         <h:outputText value="#{msgs.vorgangsdatum}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='vorgangsdatumDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='vorgangsdatumAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -467,7 +473,9 @@
                                                     <button
                                                         class="button-link font-black-block"
                                                         style="width: 100%; text-align: left"
-                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                                        aria-label="#{msgs.defaultSortField} #{msgs.status} #{ProzessverwaltungForm.sortierung=='fortschrittDesc'? msgs.defaultSortFieldDesc : ProzessverwaltungForm.sortierung=='fortschrittAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                                        aria-sort="#{ProzessverwaltungForm.sortierung=='fortschrittDesc'? 'descending' : ProzessverwaltungForm.sortierung=='fortschrittAsc'? 'ascending' :'none'}">
                                                         <h:outputText value="#{msgs.status}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='fortschrittDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='fortschrittAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -594,7 +602,9 @@
                                                         class="button-link font-black-block"
                                                         style="width: 100%; text-align: left"
                                                         jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
-                                                        title="#{msgs.projekt}">
+                                                        title="#{msgs.projekt}"
+                                                        aria-label="#{msgs.defaultSortField} #{msgs.projekt} #{ProzessverwaltungForm.sortierung=='projektDesc'? msgs.defaultSortFieldDesc : ProzessverwaltungForm.sortierung=='projektAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                                        aria-sort="#{ProzessverwaltungForm.sortierung=='projektDesc'? 'descending' : ProzessverwaltungForm.sortierung=='projektAsc'? 'ascending' :'none'}">
                                                         <h:outputText value="#{msgs.projekt}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='projektDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='projektAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -616,7 +626,9 @@
                                                         class="button-link font-black-block"
                                                         style="width: 100%; text-align: left"
                                                         jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
-                                                        title="#{msgs.institution}">
+                                                        title="#{msgs.institution}"
+                                                        aria-label="#{msgs.defaultSortField} #{msgs.institution} #{ProzessverwaltungForm.sortierung=='institutionDesc'? msgs.defaultSortFieldDesc : ProzessverwaltungForm.sortierung=='institutionAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                                        aria-sort="#{ProzessverwaltungForm.sortierung=='institutionDesc'? 'descending' : ProzessverwaltungForm.sortierung=='institutionAsc'? 'ascending' :'none'}">
                                                         <h:outputText value="#{msgs.institution}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='institutionDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='institutionAsc'?'fa-sort-asc':'fa-sort'}"></span>
