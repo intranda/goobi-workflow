@@ -2,7 +2,6 @@ package org.goobi.api.rest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -11,6 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.goobi.api.rest.model.RestUserInfo;
+import org.goobi.beans.SessionInfo;
 
 import de.sub.goobi.forms.SessionForm;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,34 +40,20 @@ public class CurrentUsers {
         }
     }
 
-    // Reads the current sessions and generates a user list
     private List<RestUserInfo> generateUserList() {
-        // Read the sessions and create the list
-        List sessions = this.sessionForm.getAlleSessions();
-        int length = sessions.size();
+
+        List<SessionInfo> sessions = this.sessionForm.getAlleSessions();
         List<RestUserInfo> ruiList = new ArrayList<>();
-        RestUserInfo user;
 
-        // Handle all current users
-        for (int x = 0; x < length; x++) {
+        for (int index = 0; index < sessions.size(); index++) {
+            RestUserInfo user = new RestUserInfo();
+            SessionInfo session = sessions.get(index);
 
-            // Create the current user's object
-            user = new RestUserInfo();
-            Map<String, String> userMap = (Map<String, String>) (sessions.get(x));
-
-            // Set the user's values
-            user.setUser(userMap.get("user"));
-
-            user.setAddress(userMap.get("address"));
-
-            String browser = userMap.get("browserIcon");
-            // Cast the "browser.png" to "Browser" example: "firefox.png" -> "Firefox"
-            browser = Character.toString((char) (browser.charAt(0) - 32)) + browser.substring(1, browser.length() - 4);
-            user.setBrowser(browser);
-
-            user.setCreated(userMap.get("created"));
-
-            user.setLast(userMap.get("last"));
+            user.setUser(session.getUserName());
+            user.setAddress(session.getUserIpAddress());
+            user.setBrowser(session.getBrowserName());
+            user.setCreated(session.getSessionCreatedFormatted());
+            user.setLast(session.getLastAccessFormatted());
             ruiList.add(user);
         }
         return (ruiList);
