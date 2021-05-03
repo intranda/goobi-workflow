@@ -14,6 +14,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.goobi.beans.Browser;
 import org.goobi.beans.SessionInfo;
 import org.goobi.beans.User;
 import org.goobi.goobiScript.GoobiScriptManager;
@@ -115,6 +116,7 @@ public class SessionForm implements Serializable {
     @Inject
     @Push
     PushContext adminMessageChannel;
+
     @Inject
     @Getter
     private GoobiScriptManager gsm;
@@ -200,46 +202,20 @@ public class SessionForm implements Serializable {
         }
         sessionInfo.setUserIpAddress(address);
 
-        String browser = this.request.getHeader("User-Agent");
-        if (browser == null) {
-            browser = "-";
+        String browserName = this.request.getHeader("User-Agent");
+        if (browserName == null) {
+            browserName = "-";
         }
         List<String> monitoringChecks = ConfigurationHelper.getInstance().getExcludeMonitoringAgentNames();
         for (String agent : monitoringChecks) {
-            if (browser.contains(agent)) {
+            if (browserName.contains(agent)) {
                 return;
             }
         }
-        sessionInfo.setBrowserName(browser);
+        sessionInfo.setBrowserName(browserName);
 
-        String[] browserNames = new String[] {
-                "Firefox",
-                "MSIE",
-                "Opera",
-                "Safari",
-                "Chrome",
-                "Konqueror",
-                "Netscape",
-                "Gecko"
-        };
-        String[] browserIcons = new String[] {
-                "firefox.png",
-                "ie.png",
-                "opera.png",
-                "safari.png",
-                "chrome.png",
-                "konqueror.png",
-                "netscape.png",
-                "mozilla.png"
-        };
-        String browserIcon = "none.png";
-        for (int index = 0; index < browserNames.length; index++) {
-            if (browser.contains(browserNames[index])) {
-                browserIcon = browserIcons[index];
-                break;
-            }
-        }
-        sessionInfo.setBrowserIconFileName(browserIcon);
+        Browser browser = Browser.parseBrowser(browserName);
+        sessionInfo.setBrowserIconFileName(Browser.getIconFileName(browser));
 
         this.sessions.add(sessionInfo);
     }
