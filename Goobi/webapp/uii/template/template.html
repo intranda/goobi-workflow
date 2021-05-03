@@ -131,6 +131,7 @@
                     <div class="container-fluid">
 
                         <h:form id="header">
+                            <o:socket channel="developerMessageChannel" connected="#{DevModeBean.developerMode}" onmessage="() => window.location.reload()" />
                         	<header>
 	                            <div class="page-header">
                                     <h:panelGroup id="globalWarningMessage">

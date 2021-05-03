@@ -357,44 +357,38 @@
                                                                                 rel="tooltip" />
                                                                         </h:panelGroup>
 
-                                                                        <h:panelGroup
-                                                                            rendered="#{step.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}">
+                                                                        <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}">
                                                                             <li
                                                                                 class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
                                                                                 rel="tooltip"
                                                                                 title="#{step.bearbeitungsstatusEnum.title} #{step.editTypeEnum.title}" />
                                                                         </h:panelGroup>
-                                                                        <h:panelGroup
-                                                                            rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}">
+                                                                        <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}">
                                                                             <li
                                                                                 class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
                                                                                 rel="tooltip"
                                                                                 title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}" />
                                                                         </h:panelGroup>
 
-                                                                        <h:panelGroup
-                                                                            rendered="#{step.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}">
+                                                                        <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}">
                                                                             <li
                                                                                 class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
                                                                                 rel="tooltip"
                                                                                 title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}" />
                                                                         </h:panelGroup>
-                                                                        <h:panelGroup
-                                                                            rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}">
+                                                                        <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}">
                                                                             <li
                                                                                 class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
                                                                                 rel="tooltip"
                                                                                 title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}" />
                                                                         </h:panelGroup>
-                                                                        <h:panelGroup
-                                                                            rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and !HelperForm.anonymized}">
+                                                                        <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and !HelperForm.anonymized}">
                                                                             <li
                                                                                 class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
                                                                                 rel="tooltip"
                                                                                 title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}" />
                                                                         </h:panelGroup>
-                                                                        <h:panelGroup
-                                                                            rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and HelperForm.anonymized}">
+                                                                        <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and HelperForm.anonymized}">
                                                                             <li
                                                                                 class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
                                                                                 rel="tooltip"
@@ -406,6 +400,13 @@
                                                                                 class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
                                                                                 title="#{step.bearbeitungsstatusEnum.title}"
                                                                                 rel="tooltip" />
+                                                                        </h:panelGroup>
+
+                                                                        <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'INFLIGHT'}">
+                                                                            <li
+                                                                                class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+                                                                                title="#{msgs.statusInFlight}"
+                                                                                data-toggle="tooltip"></li>
                                                                         </h:panelGroup>
                                                                     </ul>
                                                                     <h:outputText

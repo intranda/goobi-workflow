@@ -21,6 +21,7 @@
 			
 			
 			<div id="login-body" class="login-body" style="margin-bottom:5px;">
+                <h:outputText style="color:red;" value="Developer Mode ON" rendered="#{DevModeBean.developerMode}" />
 				<ui:fragment rendered="#{!LoginForm.oidcAutoRedirect}">
 					<h2>
 						<h:outputText value="#{msgs.login}" />
@@ -130,7 +131,8 @@
                 </ui:fragment>
 			</div>
 			<a style="color: #FFFFFF;" href="https://goobi.io/">Goobi workflow - developed by intranda</a>
-			<h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{msgs.version} #{HelperForm.version}" />
+			
+            <h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{msgs.version} #{HelperForm.version}" />
 
 		</div>
     </main>
