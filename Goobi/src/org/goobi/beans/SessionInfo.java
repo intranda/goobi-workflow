@@ -34,6 +34,7 @@ public class SessionInfo implements Serializable {
      * The id of the HTTP session object
      */
     @Getter
+    @JsonIgnore
     @Setter
     private String sessionId;
 
@@ -41,6 +42,7 @@ public class SessionInfo implements Serializable {
      * The time stamp when the session was created (in milliseconds)
      */
     @Getter
+    @JsonIgnore
     @Setter
     private long sessionCreatedTimestamp;
 
@@ -55,6 +57,7 @@ public class SessionInfo implements Serializable {
      * The time stamp of the last access of the user in the GUI (in milliseconds)
      */
     @Getter
+    @JsonIgnore
     @Setter
     private long lastAccessTimestamp;
 
@@ -69,6 +72,7 @@ public class SessionInfo implements Serializable {
      * The user id
      */
     @Getter
+    @JsonIgnore
     @Setter
     private int userId;
 
@@ -90,6 +94,7 @@ public class SessionInfo implements Serializable {
      * The timeout of the user in seconds
      */
     @Getter
+    @JsonIgnore
     @Setter
     private int userTimeout;
 
@@ -104,6 +109,7 @@ public class SessionInfo implements Serializable {
      * The file name of the fitting browser icon image
      */
     @Getter
+    @JsonIgnore
     @Setter
     private String browserIconFileName;
 

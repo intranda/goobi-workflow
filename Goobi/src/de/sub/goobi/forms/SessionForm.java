@@ -27,10 +27,7 @@ import lombok.Getter;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information.
- *          - https://goobi.io
- *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi-workflow
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -48,11 +45,13 @@ import lombok.Getter;
  * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
-
+ * 
  * Die Klasse SessionForm für den überblick über die aktuell offenen Sessions
  * 
  * @author Steffen Hankiewicz
+ * @author Maurice Mueller
  * @version 1.00 - 16.01.2005
+ * @version 2.00 - 03.05.2021
  */
 
 @Named("SessionForm")
@@ -74,17 +73,45 @@ public class SessionForm implements Serializable {
      */
     private static final String NOT_LOGGED_IN = " - ";
 
+    /**
+     * The list of current sessions (represented by SessionInfo objects)
+     */
     private List<SessionInfo> sessions = Collections.synchronizedList(new ArrayList<>());
-    private SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+
+    /**
+     * The formatter that is used for time representation strings
+     */
+    private SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss");
+
+    /**
+     * The formatter that is used for date representation strings
+     */
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE', ' dd. MMMM yyyy");
+
+    /**
+     * The formatter that is used for date- and time representation strings
+     */
     private SimpleDateFormat fullFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-    private String aktuelleZeit = this.formatter.format(new Date());
-    private String bitteAusloggen = "";
+
+    /**
+     * The string representation of the current time
+     */
+    private String currentTime = this.timeFormatter.format(new Date());
+
+    /**
+     * The request object of the current session
+     */
+    @Inject
+    private HttpServletRequest request;
+
+    /**
+     * A message that can be shown when a user should be logged out.
+     */
+    private String logoutMessage = "";
+
     @Getter
     private String sessionListErrorTime = "";
 
-    @Inject
-    private HttpServletRequest request;
     @Inject
     @Push
     PushContext adminMessageChannel;
@@ -93,39 +120,44 @@ public class SessionForm implements Serializable {
     private GoobiScriptManager gsm;
 
     /**
+     * Returns a list of all currently existing sessions, represented by a list of SessionInfo objects
+     *
+     * @return The list of SessionInfo objects
+     */
+    public List<SessionInfo> getSessions() {
+        if (this.sessions != null) {
+            return this.sessions;
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    /**
+     * Returns the SessionInfo object with the specified id
+     *
+     * @param id The id of the requested SessionInfo object
+     * @return The SessionInfo object with that id
+     */
+    public SessionInfo getSessionInfoById(String id) {
+        for (int session = 0; session < this.sessions.size(); session++) {
+            if (this.sessions.get(session).getSessionId().equals(id)) {
+                return this.sessions.get(session);
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns the number of currently existing sessions
      *
      * @return The number of sessions
      */
-    public int getAktiveSessions() {
-        if (this.sessions == null) {
-            return 0;
-        } else {
+    public int getNumberOfSessions() {
+        if (this.sessions != null) {
             return this.sessions.size();
+        } else {
+            return 0;
         }
-    }
-
-    public String getAktuelleZeit() {
-        return this.aktuelleZeit;
-    }
-
-    /**
-     * Returns a list of all currently existing sessions,
-     * represented by a list of SessionInfo objects
-     *
-     * @return The list of SessionInfo objects
-     */
-    public List<SessionInfo> getAlleSessions() {
-        try {
-            return this.sessions;
-        } catch (RuntimeException runtimeException) {
-            runtimeException.printStackTrace();
-            return null;
-        }
-    }
-
-    public void publishAdminMessage() {
-        adminMessageChannel.send("update");
     }
 
     /**
@@ -133,7 +165,7 @@ public class SessionForm implements Serializable {
      *
      * @param newSession The new session to add to the other sessions
      */
-    private void sessionAdd(HttpSession newSession) {
+    private void addSession(HttpSession newSession) {
 
         SessionInfo sessionInfo = new SessionInfo();
         long now = System.currentTimeMillis();
@@ -141,9 +173,9 @@ public class SessionForm implements Serializable {
         sessionInfo.setSession(newSession);
         sessionInfo.setSessionId(newSession.getId());
         sessionInfo.setSessionCreatedTimestamp(now);
-        sessionInfo.setSessionCreatedFormatted(this.formatter.format(now));
+        sessionInfo.setSessionCreatedFormatted(this.timeFormatter.format(now));
         sessionInfo.setLastAccessTimestamp(now);
-        sessionInfo.setLastAccessFormatted(this.formatter.format(now));
+        sessionInfo.setLastAccessFormatted(this.timeFormatter.format(now));
         sessionInfo.setUserName(NOT_LOGGED_IN);
         sessionInfo.setUserId(0);
         sessionInfo.setUserTimeout(newSession.getMaxInactiveInterval());
@@ -180,25 +212,25 @@ public class SessionForm implements Serializable {
         }
         sessionInfo.setBrowserName(browser);
 
-        String[] browserNames = new String[]{
-            "Gecko",
-            "Firefox",
-            "MSIE",
-            "Opera",
-            "Safari",
-            "Chrome",
-            "Konqueror",
-            "Netscape"
+        String[] browserNames = new String[] {
+                "Firefox",
+                "MSIE",
+                "Opera",
+                "Safari",
+                "Chrome",
+                "Konqueror",
+                "Netscape",
+                "Gecko"
         };
-        String[] browserIcons = new String[]{
-            "mozilla.png",
-            "firefox.png",
-            "ie.png",
-            "opera.png",
-            "safari.png",
-            "chrome.png",
-            "konqueror.png",
-            "netscape.png"
+        String[] browserIcons = new String[] {
+                "firefox.png",
+                "ie.png",
+                "opera.png",
+                "safari.png",
+                "chrome.png",
+                "konqueror.png",
+                "netscape.png",
+                "mozilla.png"
         };
         String browserIcon = "none.png";
         for (int index = 0; index < browserNames.length; index++) {
@@ -213,17 +245,81 @@ public class SessionForm implements Serializable {
     }
 
     /**
-     * Removes all unused sessions. All sessions where the user is null,
-     * the user has no name, the user is logged out or the IP address
-     * is null, are unused.
+     * Updates the time information about a session
+     *
+     * @param updatedSession The concerning session to update
      */
-    private void sessionsAufraeumen() {
+    public void updateSessionLastAccess(HttpSession updatedSession) {
+        if (this.sessions == null || updatedSession == null) {
+            return;
+        }
+
+        String id = updatedSession.getId();
+        SessionInfo knownSession = this.getSessionInfoById(id);
+        if (knownSession == null) {
+            this.addSession(updatedSession);
+            return;
+        }
+
+        long now = System.currentTimeMillis();
+        knownSession.setLastAccessTimestamp(now);
+        knownSession.setLastAccessFormatted(this.timeFormatter.format(now));
+    }
+
+    /**
+     * Updates the user information about a session in dependence of a certain user
+     *
+     * @param updatedSession The session to update
+     * @param updatedUser The concerning user
+     */
+    public void updateSessionUserName(HttpSession updatedSession, User updatedUser) {
+        if (this.sessions == null || updatedSession == null) {
+            return;
+        }
+
+        String id = updatedSession.getId();
+        SessionInfo knownSession = this.getSessionInfoById(id);
+
+        if (knownSession == null) {
+            SessionInfo newSession = new SessionInfo();
+            newSession.setUserName(LOGGED_OUT);
+            newSession.setUserId(0);
+            newSession.setSessionId("-1");
+            this.sessions.add(newSession);
+            this.removeAbandonedSessions();
+            return;
+        }
+
+        if (updatedUser == null) {
+            knownSession.setUserName(LOGGED_OUT);
+            updatedSession.setAttribute("User", LOGGED_OUT);
+            knownSession.setUserId(0);
+            this.removeAbandonedSessions();
+            return;
+        }
+
+        String name = updatedUser.getNachVorname();
+        int timeout = updatedUser.getSessiontimeout();
+
+        knownSession.setUserName(name);
+        updatedSession.setAttribute("User", name);
+        knownSession.setUserId(updatedUser.getId());
+        knownSession.setUserTimeout(timeout);
+        updatedSession.setMaxInactiveInterval(timeout);
+        this.removeAbandonedSessions();
+    }
+
+    /**
+     * Removes all unused sessions. All sessions where the user is null, the user has no name, the user is logged out or the IP address is null, are
+     * unused.
+     */
+    private void removeAbandonedSessions() {
         for (int index = 0; index < this.sessions.size(); index++) {
 
             SessionInfo session = this.sessions.get(index);
             String userName = session.getUserName();
-            long userTimeout = (long)(session.getUserTimeout());
-            long loginTimestamp = (long)(session.getLastAccessTimestamp());
+            long userTimeout = (long) (session.getUserTimeout());
+            long loginTimestamp = (long) (session.getLastAccessTimestamp());
             long now = System.currentTimeMillis();
             long sessionDuration = (now - loginTimestamp) / 1000;
 
@@ -240,100 +336,16 @@ public class SessionForm implements Serializable {
     }
 
     /**
-     * Updates the time information about a session
+     * Returns the current time, formatted as HH:MM:SS
      *
-     * @param updatedSession The concerning session to update
+     * @return The current time as string representation
      */
-    public void sessionAktualisieren(HttpSession updatedSession) {
-        if (this.sessions == null || updatedSession == null) {
-            return;
-        }
-
-        String id = updatedSession.getId();
-        SessionInfo knownSession = this.getSessionInfoById(id);
-        if (knownSession == null) {
-            this.sessionAdd(updatedSession);
-            return;
-        }
-
-        long now = System.currentTimeMillis();
-        knownSession.setLastAccessTimestamp(now);
-        knownSession.setLastAccessFormatted(this.formatter.format(now));
+    public String getCurrentTime() {
+        return this.currentTime;
     }
 
     /**
-     * Updates the user information about a session in dependence of a certain user
-     *
-     * @param updatedSession The session to update
-     * @param updatedUser The concerning user
-     */
-    public void sessionBenutzerAktualisieren(HttpSession updatedSession, User updatedUser) {
-        if (this.sessions == null || updatedSession == null) {
-            return;
-        }
-
-        String id = updatedSession.getId();
-        SessionInfo knownSession = this.getSessionInfoById(id);
-
-        if (knownSession == null) {
-            SessionInfo newSession = new SessionInfo();
-            newSession.setUserName(LOGGED_OUT);
-            newSession.setUserId(0);
-            newSession.setSessionId("-1");
-            this.sessions.add(newSession);
-            this.sessionsAufraeumen();
-            return;
-        }
-
-        if (updatedUser == null) {
-            knownSession.setUserName(LOGGED_OUT);
-            updatedSession.setAttribute("User", LOGGED_OUT);
-            knownSession.setUserId(0);
-            this.sessionsAufraeumen();
-            return;
-        }
-
-        String name = updatedUser.getNachVorname();
-        int timeout = updatedUser.getSessiontimeout();
-
-        knownSession.setUserName(name);
-        updatedSession.setAttribute("User", name);
-        knownSession.setUserId(updatedUser.getId());
-        knownSession.setUserTimeout(timeout);
-        updatedSession.setMaxInactiveInterval(timeout);
-        this.sessionsAufraeumen();
-    }
-
-    /**
-     * Returns the SessionInfo object with the specified id
-     *
-     * @param id The id of the requested SessionInfo object
-     * @return The SessionInfo object with that id
-     */
-    public SessionInfo getSessionInfoById(String id) {
-        for (int session = 0; session < this.sessions.size(); session++) {
-            if (this.sessions.get(session).getSessionId().equals(id)) {
-                return this.sessions.get(session);
-            }
-        }
-        return null;
-    }
-
-    public String getBitteAusloggen() {
-        return this.bitteAusloggen;
-    }
-
-    public void setBitteAusloggen(String bitteAusloggen) {
-        this.bitteAusloggen = bitteAusloggen;
-    }
-
-    public String sendLogoutMessage() {
-        return "admin";
-    }
-
-    /**
-     * Returns the current date and time in dependence
-     * of the current locale settings
+     * Returns the current date and time in dependence of the current locale settings
      *
      * @return The formatted date string
      */
@@ -349,8 +361,39 @@ public class SessionForm implements Serializable {
         return dateFormatter.format(new Date());
     }
 
-    public void setDateFormatter(SimpleDateFormat dateFormatter) {
-        this.dateFormatter = dateFormatter;
+    /**
+     * Sets the formatter for the date string representation
+     *
+     * @param formatter The formatter for the date representation
+     */
+    public void setDateFormatter(SimpleDateFormat formatter) {
+        this.dateFormatter = formatter;
+    }
+
+    /**
+     * Sets the logout message
+     *
+     * @param message The new logout message
+     */
+    public void setLogoutMessage(String message) {
+        this.logoutMessage = message;
+    }
+
+    /**
+     * Returns the current logout message
+     *
+     * @return The logout message
+     */
+    public String getLogoutMessage() {
+        return this.logoutMessage;
+    }
+
+    public String sendLogoutMessage() {
+        return "admin";
+    }
+
+    public void publishAdminMessage() {
+        adminMessageChannel.send("update");
     }
 
 }

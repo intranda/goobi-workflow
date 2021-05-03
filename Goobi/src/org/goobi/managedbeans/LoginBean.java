@@ -106,7 +106,7 @@ public class LoginBean implements Serializable {
 
         this.myBenutzer = null;
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-        Helper.getSessionBean().sessionBenutzerAktualisieren(mySession, this.myBenutzer);
+        Helper.getSessionBean().updateSessionUserName(mySession, this.myBenutzer);
         if (mySession != null) {
             mySession.invalidate();
         }
@@ -181,7 +181,7 @@ public class LoginBean implements Serializable {
                     HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
 
                     /* in der Session den Login speichern */
-                    Helper.getSessionBean().sessionBenutzerAktualisieren(mySession, b);
+                    Helper.getSessionBean().updateSessionUserName(mySession, b);
                     this.myBenutzer = b;
                     this.myBenutzer.lazyLoad();
                     roles = myBenutzer.getAllUserRoles();
@@ -204,7 +204,7 @@ public class LoginBean implements Serializable {
             this.myBenutzer = UserManager.getUserById(LoginID);
             /* in der Session den Login speichern */
             HttpSession session = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-            Helper.getSessionBean().sessionBenutzerAktualisieren(session, this.myBenutzer);
+            Helper.getSessionBean().updateSessionUserName(session, this.myBenutzer);
             roles = this.myBenutzer.getAllUserRoles();
         } catch (DAOException e) {
             Helper.setFehlerMeldung("could not read database", e.getMessage());

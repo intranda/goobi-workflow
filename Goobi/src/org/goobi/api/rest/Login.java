@@ -72,7 +72,7 @@ public class Login {
                     userBean.setRoles(user.getAllUserRoles());
                     userBean.setMyBenutzer(user);
                     //add the user to the sessionform that holds information about all logged in users
-                    sessionForm.sessionBenutzerAktualisieren(servletRequest.getSession(), user);
+                    sessionForm.updateSessionUserName(servletRequest.getSession(), user);
                 } else {
                     if (!nonce.equals(jwt.getClaim("nonce").asString())) {
                         log.error("nonce does not match. Not logging user in");
@@ -116,7 +116,7 @@ public class Login {
         userBean.setRoles(user.getAllUserRoles());
         userBean.setMyBenutzer(user);
         //add the user to the sessionform that holds information about all logged in users
-        sessionForm.sessionBenutzerAktualisieren(servletRequest.getSession(), user);
+        sessionForm.updateSessionUserName(servletRequest.getSession(), user);
         servletResponse.sendRedirect("/goobi/index.xhtml");
         return "";
     }

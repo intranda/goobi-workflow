@@ -35,10 +35,10 @@
     <ui:define name="metseditorContent">
         <h:panelGroup id="logoutContainer">
             <h:panelGroup
-                rendered="#{SessionForm.bitteAusloggen != ''}"
+                rendered="#{SessionForm.logoutMessage != ''}"
                 styleClass="alert alert-danger">
                 <i class="fa fa-exclamation-triangle" />
-                <h:outputText value="#{SessionForm.bitteAusloggen}" />
+                <h:outputText value="#{SessionForm.logoutMessage}" />
             </h:panelGroup>
         </h:panelGroup>
         <o:socket channel="adminMessageChannel">
