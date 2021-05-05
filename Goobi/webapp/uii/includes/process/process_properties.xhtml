@@ -8,7 +8,8 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
     </composite:interface>
@@ -93,7 +94,7 @@
 
                                             <tr>
                                                 <td><span
-                                                    title="{process.#{proc.name}}"
+                                                    title="#{proc.name}"
                                                     data-toggle="tooltip"
                                                     rel="tooltip">#{proc.name}</span></td>
                                                 <td><h:outputText
@@ -103,6 +104,7 @@
                                                         value="#{proc.readValue}"
                                                         rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean' and proc.type.name != 'html'}" />
                                                     <h:outputLink
+                                                        pt:aria-label="#{proc.name}"
                                                         value="#{proc.readValue}"
                                                         title="#{proc.readValue}"
                                                         target="_blank"
@@ -120,12 +122,13 @@
                                                         </h:panelGroup>
                                                     </h:panelGroup></td>
                                                 <c:if test="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-                                                    <td><h:commandLink
-                                                            action="process_edit"
+                                                    <td><button
+                                                            class="button-link button-schaltknopf"
+                                                            jsf:action="process_edit"
                                                             title="#{msgs.bearbeiten}"
-                                                            id="editProperty"
-                                                            pt:aria-label="#{msgs.bearbeiten}"
-                                                            rendered="#{proc.type.name != 'metadata'}">
+                                                            jsf:id="editProperty"
+                                                            aria-label="#{msgs.bearbeiten}"
+                                                            jsf:rendered="#{proc.type.name != 'metadata'}">
                                                             <i class="btn fa fa-pencil"></i>
                                                             <f:passThroughAttribute
                                                                 name="data-toggle"
@@ -139,11 +142,12 @@
                                                             <x:updateActionListener
                                                                 property="#{ProzessverwaltungForm.modusBearbeiten}"
                                                                 value="eigenschaft" />
-                                                        </h:commandLink> <h:commandLink
-                                                            action="#{ProzessverwaltungForm.duplicateProperty}"
+                                                        </button> <button
+                                                            jsf:action="#{ProzessverwaltungForm.duplicateProperty}"
+                                                            class="button-link button-schaltknopf"
                                                             title="#{msgs.duplicate}"
-                                                            id="duplicateProperty"
-                                                            rendered="#{proc.type.name != 'metadata'}">
+                                                            jsf:id="duplicateProperty"
+                                                            jsf:rendered="#{proc.type.name != 'metadata'}">
                                                             <i
                                                                 class="btn fa fa-plus margin-right-5"
                                                                 title="#{msgs.duplicate}"></i>
@@ -156,7 +160,7 @@
                                                             <x:updateActionListener
                                                                 property="#{ProzessverwaltungForm.container}"
                                                                 value="0" />
-                                                        </h:commandLink></td>
+                                                        </button></td>
                                                 </c:if>
                                             </tr>
                                         </h:panelGroup>
@@ -188,6 +192,7 @@
                                                         value="#{process_item.readValue}"
                                                         rendered="#{process_item.type.name != 'link' and process_item.type.name != 'boolean' and process_item.type.name != 'html'}" />
                                                     <h:outputLink
+                                                        pt:aria-label="#{process_item.name}"
                                                         value="#{process_item.readValue}"
                                                         title="#{process_item.readValue}"
                                                         target="_blank"
@@ -208,11 +213,12 @@
                                                     rendered="#{propInd == 0}"
                                                     id="cont">
                                                     <td rowspan="#{ProzessverwaltungForm.containers[container].propertyListSizeString}">
-                                                        <!-- edit container --> <h:commandLink
-                                                            action="process_edit"
-                                                            rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and process_item.type.name != 'metadata'}"
+                                                        <!-- edit container --> <button
+                                                            class="button-link button-schaltknopf"
+                                                            jsf:action="process_edit"
+                                                            jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and process_item.type.name != 'metadata'}"
                                                             title="#{msgs.bearbeiten}"
-                                                            id="editProperty2">
+                                                            jsf:id="editProperty2">
                                                             <i
                                                                 class="btn fa fa-pencil"
                                                                 title="#{msgs.bearbeiten}"></i>
@@ -225,10 +231,12 @@
                                                             <x:updateActionListener
                                                                 property="#{ProzessverwaltungForm.modusBearbeiten}"
                                                                 value="eigenschaft" />
-                                                        </h:commandLink> <!-- duplicate container --> <h:commandLink
-                                                            id="duplicateProperty2"
-                                                            rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and process_item.type.name != 'metadata'}"
-                                                            action="#{ProzessverwaltungForm.duplicateContainer}"
+                                                        </button> <!-- duplicate container --> <button
+                                                            class="button-link button-schaltknopf"
+                                                            jsf:id="duplicateProperty2"
+                                                            aria-label="#{msgs.duplicate}"
+                                                            jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and process_item.type.name != 'metadata'}"
+                                                            jsf:action="#{ProzessverwaltungForm.duplicateContainer}"
                                                             title="#{msgs.duplicate}">
                                                             <i class="btn fa fa-plus margin-right-5"></i>
                                                             <f:passThroughAttribute
@@ -237,7 +245,7 @@
                                                             <x:updateActionListener
                                                                 property="#{ProzessverwaltungForm.container}"
                                                                 value="#{container}" />
-                                                        </h:commandLink>
+                                                        </button>
                                                     </td>
                                                 </h:panelGroup>
 
@@ -248,12 +256,12 @@
                             </table>
                             <div class="dataTables_info">
                                 <!-- Neu-Schaltknopf -->
-                                <h:commandLink
-                                    action="#{ProzessverwaltungForm.createNewProperty}"
-                                    id="newProperty"
-                                    rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+                                <button
+                                    jsf:action="#{ProzessverwaltungForm.createNewProperty}"
+                                    jsf:id="newProperty"
+                                    jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
                                     title="#{msgs.eigenschaftHinzufuegen}"
-                                    styleClass="btn btn-lightgrey font-size-s">
+                                    class="btn btn-lightgrey font-size-s">
                                     <x:updateActionListener
                                         property="#{ProzessverwaltungForm.container}"
                                         value="0" />
@@ -265,7 +273,7 @@
                                     <f:passThroughAttribute
                                         name="data-toggle"
                                         value="tooltip" />
-                                </h:commandLink>
+                                </button>
                             </div>
                         </div>
 
@@ -523,39 +531,39 @@
                                     <div class="form-actions">
 
                                         <!-- Save -->
-                                        <h:commandLink
-                                            id="save"
-                                            styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
-                                            action="#{ProzessverwaltungForm.saveCurrentProperty}">
+                                        <button
+                                            jsf:id="save"
+                                            class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                                            jsf:action="#{ProzessverwaltungForm.saveCurrentProperty}">
                                             <i class="fa fa-save margin-right-5"></i>
                                             <x:updateActionListener
                                                 property="#{ProzessverwaltungForm.modusBearbeiten}"
                                                 value="" />
                                             <h:outputText value="#{msgs.speichern}" />
-                                        </h:commandLink>
+                                        </button>
 
-                                        <h:commandLink
-                                            id="cancel"
-                                            styleClass="btn margin-sides-10 font-size-s pull-right"
-                                            immediate="true"
-                                            action="#{NavigationForm.Reload}">
+                                        <button
+                                            jsf:id="cancel"
+                                            class="btn margin-sides-10 font-size-s pull-right"
+                                            jsf:immediate="true"
+                                            jsf:action="#{NavigationForm.Reload}">
                                             <h:outputText value="#{msgs.abbrechen}" />
                                             <x:updateActionListener
                                                 property="#{ProzessverwaltungForm.modusBearbeiten}"
                                                 value="" />
-                                        </h:commandLink>
+                                        </button>
 
-                                        <h:commandLink
-                                            id="delete"
-                                            styleClass="btn btn-danger font-size-s"
-                                            action="#{ProzessverwaltungForm.deleteProperty}"
+                                        <button
+                                            jsf:id="delete"
+                                            class="btn btn-danger font-size-s"
+                                            jsf:action="#{ProzessverwaltungForm.deleteProperty}"
                                             onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false">
                                             <x:updateActionListener
                                                 property="#{ProzessverwaltungForm.modusBearbeiten}"
                                                 value="" />
                                             <i class="fa fa-trash-o margin-right-5" />
                                             <h:outputText value="#{msgs.loeschen}" />
-                                        </h:commandLink>
+                                        </button>
 
                                     </div>
                                 </h:panelGroup>

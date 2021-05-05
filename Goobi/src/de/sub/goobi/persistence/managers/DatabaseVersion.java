@@ -43,13 +43,16 @@ import org.goobi.beans.Institution;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.LogType;
+import org.goobi.vocabulary.Definition;
+import org.goobi.vocabulary.VocabRecord;
+import org.goobi.vocabulary.Vocabulary;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 38;
+    public static final int EXPECTED_VERSION = 42;
     private static final Logger logger = LogManager.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -273,12 +276,170 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 38.");
                 }
                 updateToVersion38();
-            case 999:
+
+            case 38:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 39.");
+                }
+                updateToVersion39();
+            case 39:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 40.");
+                }
+                updateToVersion40();
+            case 40:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 41.");
+                }
+                updateToVersion41();
+            case 41:
+                updateToVersion42();
+            default:
+
+
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+
+    }
+
+    private static void updateToVersion42() {
+        if (!DatabaseVersion.checkIfColumnExists("prozesse", "pauseAutomaticExecution")) {
+            DatabaseVersion.runSql("ALTER TABLE prozesse add column pauseAutomaticExecution tinyint(1) DEFAULT false");
+        }
+    }
+
+    private static void updateToVersion41() {
+        if (!checkIfTableExists("externalQueueJobTypes")) {
+            DatabaseVersion.runSql("CREATE TABLE jobTypes(jobTypes text)");
+            DatabaseVersion.runSql("INSERT INTO jobTypes (jobTypes) VALUES ('[]')");
+        }
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "dashboard_configuration")) {
+            DatabaseVersion.runSql("ALTER TABLE benutzer add column dashboard_configuration text");
+        }
+        if (!DatabaseVersion.checkIfColumnExists("schritte", "paused")) {
+            DatabaseVersion.runSql("ALTER TABLE schritte ADD paused tinyint(1) NOT NULL DEFAULT 0;");
+        }
+    }
+
+    private static void updateToVersion40() {
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "displayLastEditionDate")) {
+            DatabaseVersion.runSql("ALTER TABLE benutzer add column displayLastEditionDate tinyint(1) DEFAULT false");
+        }
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "displayLastEditionUser")) {
+            DatabaseVersion.runSql("ALTER TABLE benutzer add column displayLastEditionUser tinyint(1) DEFAULT false");
+        }
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "displayLastEditionTask")) {
+            DatabaseVersion.runSql("ALTER TABLE benutzer add column displayLastEditionTask tinyint(1) DEFAULT false");
+        }
+
+    }
+
+    private static void updateToVersion39() {
+        if (!DatabaseVersion.checkIfTableExists("vocabulary_structure")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("CREATE TABLE IF NOT EXISTS `vocabulary_structure` (");
+            sql.append(" `id` int(10) unsigned NOT NULL AUTO_INCREMENT,");
+            sql.append(" `vocabulary_id` int(10) unsigned NOT NULL,");
+            sql.append(" `label` varchar(255) DEFAULT NULL,");
+            sql.append(" `language` varchar(255) DEFAULT NULL,");
+            sql.append(" `type` varchar(255) DEFAULT NULL,");
+            sql.append(" `validation` text DEFAULT NULL,");
+            sql.append("`required` tinyint(1), ");
+            sql.append("`mainEntry` tinyint(1), ");
+            sql.append("`distinctive` tinyint(1), ");
+            sql.append(" `selection` text DEFAULT NULL,");
+            sql.append("  PRIMARY KEY (`id`)");
+            sql.append(" ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+            DatabaseVersion.runSql(sql.toString());
+        }
+
+        if (!DatabaseVersion.checkIfColumnExists("vocabulary_structure", "titleField")) {
+            DatabaseVersion.runSql("ALTER TABLE vocabulary_structure add column titleField tinyint(1) DEFAULT false");
+            DatabaseVersion.runSql("UPDATE vocabulary_structure set titleField = true WHERE mainEntry = true");
+        }
+
+        if (!DatabaseVersion.checkIfTableExists("vocabulary")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("CREATE TABLE IF NOT EXISTS `vocabulary` (");
+            sql.append(" `id` int(10) unsigned NOT NULL AUTO_INCREMENT,");
+            sql.append(" `title` varchar(255) DEFAULT NULL,");
+            sql.append(" `description` varchar(255) DEFAULT NULL,");
+            sql.append("  PRIMARY KEY (`id`)");
+            sql.append(" ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+            DatabaseVersion.runSql(sql.toString());
+        }
+
+        if (!DatabaseVersion.checkIfTableExists("vocabulary_record")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("CREATE TABLE IF NOT EXISTS `vocabulary_record` (");
+            sql.append(" `id` int(10) unsigned NOT NULL AUTO_INCREMENT,");
+            sql.append(" `vocabulary_id` int(10) unsigned NOT NULL,");
+            sql.append("  PRIMARY KEY (`id`)");
+            sql.append(" ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+            DatabaseVersion.runSql(sql.toString());
+        }
+        if (!DatabaseVersion.checkIfTableExists("vocabulary_record_data")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("CREATE TABLE IF NOT EXISTS `vocabulary_record_data` (");
+            sql.append(" `id` int(10) unsigned NOT NULL AUTO_INCREMENT,");
+            sql.append(" `record_id` int(10) unsigned NOT NULL,");
+            sql.append(" `vocabulary_id` int(10) unsigned NOT NULL,");
+            sql.append(" `definition_id` int(10) unsigned NOT NULL,");
+            sql.append(" `label` varchar(255) DEFAULT NULL,");
+            sql.append(" `language` varchar(255) DEFAULT NULL,");
+            sql.append(" `value` text DEFAULT NULL,");
+            sql.append("  PRIMARY KEY (`id`)");
+            sql.append(" ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+            DatabaseVersion.runSql(sql.toString());
+
+        }
+
+        if (DatabaseVersion.checkIfTableExists("vocabularies")) {
+            String allVocabularies = "SELECT * FROM vocabularies";
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                QueryRunner runner = new QueryRunner();
+                List<Vocabulary> vocabularyList = runner.query(connection, allVocabularies, VocabularyManager.resultSetToVocabularyListHandler);
+                String insert = "INSERT INTO vocabulary_record (id,  vocabulary_id) VALUES (?,?)";
+                String insertField =
+                        "INSERT INTO vocabulary_record_data (record_id,vocabulary_id, definition_id, label, language, value) VALUES (?,?,?,?,?,?)";
+
+                for (Vocabulary vocabulary : vocabularyList) {
+                    DatabaseVersion.runSql("INSERT INTO vocabulary(id, title, description) VALUES (" + vocabulary.getId() + ",'"
+                            + vocabulary.getTitle() + "', '" + vocabulary.getDescription() + "')");
+                    for (Definition def : vocabulary.getStruct()) {
+                        VocabularyManager.saveDefinition(vocabulary.getId(), def);
+                    }
+                    VocabularyManager.loadRecordsForVocabulary(vocabulary);
+
+                    for (VocabRecord rec : vocabulary.getRecords()) {
+                        runner.insert(connection, insert, MySQLHelper.resultSetToIntegerHandler, rec.getId(), vocabulary.getId());
+
+                        for (org.goobi.vocabulary.Field field : rec.getFields()) {
+                            int fieldId = runner.insert(connection, insertField, MySQLHelper.resultSetToIntegerHandler, rec.getId(),
+                                    vocabulary.getId(), field.getDefinition().getId(), field.getLabel(), field.getLanguage(), field.getValue());
+                            field.setId(fieldId);
+                        }
+                    }
+                }
+                DatabaseVersion.runSql("drop table vocabularyRecords");
+                DatabaseVersion.runSql("drop table vocabularies");
+
+            } catch (SQLException e) {
+                logger.error(e);
+            } finally {
+                if (connection != null) {
+                    try {
+                        MySQLHelper.closeConnection(connection);
+                    } catch (SQLException e) {
+                    }
+                }
+            }
         }
     }
 
@@ -1619,9 +1780,8 @@ public class DatabaseVersion {
                 }
             } else {
                 String sql = "SELECT column_name FROM information_schema.columns WHERE table_schema = ? AND table_name = ? AND column_name = ?";
-                String value =
-                        new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName,
-                                columnName);
+                String value = new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringHandler, connection.getCatalog(), tableName,
+                        columnName);
                 return StringUtils.isNotBlank(value);
             }
         } catch (SQLException e) {
@@ -1648,6 +1808,7 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
+            // logger.debug(sql);
             new QueryRunner().update(connection, sql);
         } catch (SQLException e) {
             logger.error(e);

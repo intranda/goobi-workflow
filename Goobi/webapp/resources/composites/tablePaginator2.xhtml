@@ -3,7 +3,8 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:x="http://myfaces.apache.org/tomahawk">
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<composite:interface>
 		<composite:attribute name="paginator"/>
@@ -16,17 +17,17 @@
 
 			<div class="pull-right">
 
-				<h:commandLink styleClass="btn margin-sides-10 font-size-s"
-					action="#{cc.attrs.paginator.cmdMoveFirst}" id="navfirst2">
+				<button class="btn margin-sides-10 font-size-s"
+					jsf:action="#{cc.attrs.paginator.cmdMoveFirst}" jsf:id="navfirst2">
 					<i class="fa fa-angle-double-left"></i>
 					<f:ajax render=":myform" />
-				</h:commandLink>
-				<h:commandLink styleClass="btn btn-primary font-size-s"
-					action="#{cc.attrs.paginator.cmdMovePrevious}" id="navprev2">
+				</button>
+				<button class="btn btn-primary font-size-s"
+					jsf:action="#{cc.attrs.paginator.cmdMovePrevious}" jsf:id="navprev2">
 					<i class="fa fa-angle-left"></i>
 							#{msgs.pagePrevious}
 					<f:ajax render=":myform" />
-				</h:commandLink>
+				</button>
 
 				<div class="margin-sides-10">
 					<!-- aktuelle Seite anzeigen -->
@@ -48,17 +49,17 @@
 						forceId="true" value="go" style="display:none" />
 				</div>
 
-				<h:commandLink styleClass="btn btn-primary font-size-s"
-					action="#{cc.attrs.paginator.cmdMoveNext}" id="navnext2">
+				<button class="btn btn-primary font-size-s"
+					jsf:action="#{cc.attrs.paginator.cmdMoveNext}" jsf:id="navnext2">
 							#{msgs.pageNext}
 							<i class="fa fa-angle-right"></i>
 					<f:ajax render=":myform" />
-				</h:commandLink>
-				<h:commandLink styleClass="btn margin-sides-10 font-size-s"
-					action="#{cc.attrs.paginator.cmdMoveLast}" id="navlast2">
+				</button>
+				<button class="btn margin-sides-10 font-size-s"
+					jsf:action="#{cc.attrs.paginator.cmdMoveLast}" jsf:id="navlast2">
 					<i class="fa fa-angle-double-right"></i>
 					<f:ajax render=":myform" />
-				</h:commandLink>
+				</button>
 			</div>
 		</h:panelGroup>
 

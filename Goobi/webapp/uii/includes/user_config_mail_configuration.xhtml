@@ -9,7 +9,8 @@
     xmlns:of="http://omnifaces.org/functions"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
     </composite:interface>
@@ -95,11 +96,11 @@ td span i.fa {
             var="proj"
             varStatus="status">
             <h4>
-                <h:commandLink
-                    styleClass="font-black btn--line"
-                    rendered="#{NavigationForm.uiStatus[proj.projectName] ne 'down'}"
+                <button
+                    class="button-no-style font-black btn--line"
+                    jsf:rendered="#{NavigationForm.uiStatus[proj.projectName] ne 'down'}"
                     title="#{item.titel}"
-                    id="displayDetails">
+                    jsf:id="displayDetails">
                     <span>
                         <i class="fa fa-caret-right margin-right-5"></i>
                         <h:outputText value="#{proj.projectName}" />
@@ -108,14 +109,14 @@ td span i.fa {
                         target="#{NavigationForm.uiStatus[proj.projectName]}"
                         value="down" />
                     <f:ajax render="@form" />
-                </h:commandLink>
+                </button>
 
 
-                <h:commandLink
-                    styleClass="font-black btn--line"
-                    rendered="#{NavigationForm.uiStatus[proj.projectName] eq 'down'}"
+                <button
+                    class="button-no-style font-black btn--line"
+                    jsf:rendered="#{NavigationForm.uiStatus[proj.projectName] eq 'down'}"
                     title="#{item.titel}"
-                    id="hideDetails">
+                    jsf:id="hideDetails">
                     <span>
                         <i class="fa fa-caret-down margin-right-5"></i>
                         <h:outputText value="#{proj.projectName}" />
@@ -124,7 +125,7 @@ td span i.fa {
                         target="#{NavigationForm.uiStatus[proj.projectName]}"
                         value="none" />
                     <f:ajax render="@form" />
-                </h:commandLink>
+                </button>
 
             </h4>
 
@@ -152,110 +153,124 @@ td span i.fa {
                         <f:facet name="header">
                             <h:outputText value="#{msgs.mail_notification_taskActive_open}" />
                         </f:facet>
-                        <h:commandLink>
+                        <button jsf:id="stepOpen" jsf:class="btn">
                             <f:ajax render="@this" />
                             <i class=" fa #{step.open?'fa-check-square-o' : 'fa-square-o'}" />
                             <f:setPropertyActionListener
                                 value="#{!step.open}"
                                 target="#{step.open}" />
-                        </h:commandLink>
+                        </button>
                         <f:facet name="footer">
-                            <h:commandLink
-                                action="#{proj.activateAllOpenSteps}"
+                            <button
+                                jsf:action="#{proj.activateAllOpenSteps}"
+                                jsf:id="activateAll"
                                 title="#{msgs.alleAuswaehlen}">
                                 <i class="fa fa-check-square-o "></i>
                                 <f:ajax render="@form" />
-                            </h:commandLink>
-                            <h:commandLink
-                                action="#{proj.deactivateAllOpenSteps}"
+                            </button>
+                            <button
+                                jsf:action="#{proj.deactivateAllOpenSteps}"
+                                jsf:id="deactivateAll"
                                 title="#{msgs.auswahlEntfernen}">
                                 <i class="fa fa-square-o  margin-left-5"></i>
                                 <f:ajax render="@form" />
-                            </h:commandLink>
+                            </button>
                         </f:facet>
                     </x:column>
                     <x:column>
                         <f:facet name="header">
                             <h:outputText value="#{msgs.mail_notification_taskActive_inWork}" />
                         </f:facet>
-                        <h:commandLink disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}">
+                        <button jsf:disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}" jsf:id="stepInWork" class="btn">
                             <f:ajax render="@this" />
                             <i class=" fa #{step.inWork?'fa-check-square-o' : 'fa-square-o'}" />
                             <f:setPropertyActionListener
                                 value="#{!step.inWork}"
                                 target="#{step.inWork}" />
-                        </h:commandLink>
+                        </button>
                         <f:facet name="footer">
-                            <h:commandLink
-                                disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"
-                                action="#{proj.activateAllInWorkSteps}"
+                            <button
+                                jsf:disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                                jsf:action="#{proj.activateAllInWorkSteps}"
+                                class="btn"
+                                jsf:id="selectAll"
                                 title="#{msgs.alleAuswaehlen}">
                                 <i class="fa fa-check-square-o"></i>
                                 <f:ajax render="@form" />
-                            </h:commandLink>
-                            <h:commandLink
-                                disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"
-                                action="#{proj.deactivateAllInWorkSteps}"
+                            </button>
+                            <button
+                                jsf:disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                                jsf:action="#{proj.deactivateAllInWorkSteps}"
+                                class="btn"
+                                jsf:id="deselectAll"
                                 title="#{msgs.auswahlEntfernen}">
                                 <i class="fa fa-square-o margin-left-5"></i>
                                 <f:ajax render="@form" />
-                            </h:commandLink>
+                            </button>
                         </f:facet>
                     </x:column>
                     <x:column>
                         <f:facet name="header">
                             <h:outputText value="#{msgs.mail_notification_taskActive_done}" />
                         </f:facet>
-                        <h:commandLink disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}">
+                        <button jsf:disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}" class="btn" jsf:id="stepDone">
                             <f:ajax render="@this" />
                             <i class=" fa #{step.done?'fa-check-square-o' : 'fa-square-o'}" />
                             <f:setPropertyActionListener
                                 value="#{!step.done}"
                                 target="#{step.done}" />
-                        </h:commandLink>
+                        </button>
 
                         <f:facet name="footer">
-                            <h:commandLink
-                                disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"
-                                action="#{proj.activateAllDoneSteps}"
+                            <button
+                                jsf:disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                                jsf:action="#{proj.activateAllDoneSteps}"
+                                class="btn"
+                                jsf:id="selectAll2"
                                 title="#{msgs.alleAuswaehlen}">
                                 <i class="fa fa-check-square-o "></i>
                                 <f:ajax render="@form" />
-                            </h:commandLink>
-                            <h:commandLink
-                                disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"
-                                action="#{proj.deactivateAllDoneSteps}"
+                            </button>
+                            <button
+                                jsf:disabled="#{!LoginForm.hasRole('Admin_All_Mail_Notifications')}"
+                                jsf:action="#{proj.deactivateAllDoneSteps}"
+                                class="btn"
+                                jsf:id="deselectAll2"
                                 title="#{msgs.auswahlEntfernen}">
                                 <i class="fa fa-square-o  margin-left-5"></i>
                                 <f:ajax render="@form" />
-                            </h:commandLink>
+                            </button>
                         </f:facet>
                     </x:column>
                     <x:column>
                         <f:facet name="header">
                             <h:outputText value="#{msgs.mail_notification_taskActive_error}" />
                         </f:facet>
-                        <h:commandLink>
+                        <button jsf:id="stepError" class="btn">
                             <f:ajax render="@this" />
                             <i class=" fa #{step.error?'fa-check-square-o' : 'fa-square-o'}" />
                             <f:setPropertyActionListener
                                 value="#{!step.error}"
                                 target="#{step.error}" />
-                        </h:commandLink>
+                        </button>
 
                         <f:facet name="footer">
-                            <h:commandLink 
-                                action="#{proj.activateAllErrorSteps}"
+                            <button 
+                                jsf:action="#{proj.activateAllErrorSteps}"
+                                jsf:id="selectAll3"
+                                class="btn"
                                 title="#{msgs.alleAuswaehlen}">
                                 <i class="fa fa-check-square-o "></i>
                                 <f:ajax render="@form" />
-                            </h:commandLink>
-                            <h:commandLink
-                                action="#{proj.deactivateAllErrorSteps}"
+                            </button>
+                            <button
+                                jsf:action="#{proj.deactivateAllErrorSteps}"
+                                jsf:id="deselectAll3"
+                                class="btn"
                                 title="#{msgs.auswahlEntfernen}">
                                 <i class="fa fa-square-o  margin-left-5"></i>
                                 <f:ajax render="@form" />
-                            </h:commandLink>
+                            </button>
                         </f:facet>
                     </x:column>
                 </h:dataTable>

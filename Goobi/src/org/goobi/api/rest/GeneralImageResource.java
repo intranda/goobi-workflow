@@ -31,6 +31,8 @@ import de.unigoettingen.sub.commons.contentlib.exceptions.IllegalRequestExceptio
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageInfoBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @Path("/image/file/{path}")
 @ContentServerBinding
@@ -44,7 +46,7 @@ public class GeneralImageResource extends ImageResource {
             String directory, String filename) {
         super(context, request, response, directory, filename);
     }
-
+    
     public GeneralImageResource(@Context ContainerRequestContext context,
             @Context HttpServletRequest request,
             @Context HttpServletResponse response,
@@ -87,10 +89,15 @@ public class GeneralImageResource extends ImageResource {
     public static String getGoobiURIPrefix() {
         return GeneralImageResource.class.getAnnotation(Path.class).value();
     }
-
+    
     @GET
     @Path("/info.json")
-    @Produces({ MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
+    @Operation(summary="Returns information about an image", description="Returns information about the image in JSON or JSONLD format")
+    @ApiResponse(responseCode="200", description="OK")
+    @ApiResponse(responseCode="400", description="Bad Request")
+    @ApiResponse(responseCode="404", description="Not Found")
+    @ApiResponse(responseCode="500", description="Internal error")
+    @Produces({ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON})
     @ContentServerImageInfoBinding
     @Override
     public ImageInformation getInfoAsJson() throws ContentLibException {

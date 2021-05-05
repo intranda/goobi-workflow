@@ -91,42 +91,7 @@ public class PropertyParser {
 
     @SuppressWarnings("unchecked")
     public List<String> getDisplayableMetadataForStep(Step step) {
-        String stepTitle = step.getTitel();
-        String projectTitle = step.getProzess().getProjekt().getTitel();
-        String workflowTitle = "";
-
-        if (step.getProzess().isIstTemplate()) {
-            return Collections.emptyList();
-        }
-
-        for (Processproperty p : step.getProzess().getEigenschaften()) {
-            if (p.getTitel().equals("Template")) {
-                workflowTitle = p.getWert();
-            }
-        }
-        StringBuilder xpath = new StringBuilder();
-        // get all metadata
-        xpath.append("/metadata");
-        // limit by project
-        xpath.append("[not(./project) or ./project='*' or ./project='");
-        xpath.append(projectTitle);
-        xpath.append("']");
-        // limit by step
-        xpath.append("[./showStep/@name='");
-        xpath.append(stepTitle);
-        xpath.append("']");
-        // limit by workflow
-        if (StringUtils.isNotBlank(workflowTitle)) {
-            xpath.append("[not(./workflow) or ./workflow='*' or ./workflow='");
-            xpath.append(workflowTitle);
-            xpath.append("']");
-        } else {
-            xpath.append("[not(./workflow) or ./workflow='*']");
-        }
-        // get name attribute
-        xpath.append("/@name");
-
-        return Arrays.asList(config.getStringArray(xpath.toString()));
+        return buildStringList(null, step);
     }
 
     /**
@@ -138,13 +103,26 @@ public class PropertyParser {
 
     @SuppressWarnings("unchecked")
     public List<String> getDisplayableMetadataForProcess(Process process) {
-        String projectTitle = process.getProjekt().getTitel();
-        String workflowTitle = "";
+        return buildStringList(process, null);
+    }
 
+    /**
+     * Is needed by getDisplayableMetadataForStep() and getDisplayableMetadataForProcess(). It builds the String list with all needed text for the
+     * current step or process
+     * 
+     * @param process The current process
+     * @param step A current step of a process
+     * @return The list of information strings
+     */
+    private static List<String> buildStringList(Process process, Step step) {
+        if (process == null) {
+            process = step.getProzess();
+        }
         if (process.isIstTemplate()) {
             return Collections.emptyList();
         }
 
+        String workflowTitle = "";
         for (Processproperty p : process.getEigenschaften()) {
             if (p.getTitel().equals("Template")) {
                 workflowTitle = p.getWert();
@@ -154,14 +132,20 @@ public class PropertyParser {
         // get all metadata
         xpath.append("/metadata");
         // limit by project
-        xpath.append("[not(./project) or ./project='*' or ./project='");
-        xpath.append(projectTitle);
-        xpath.append("']");
+        xpath.append("[not(./project) or ./project='*' or ./project=");
+        xpath.append(PropertyParser.getEscapedProperty(process.getProjekt().getTitel()));
+        xpath.append("]");
+        if (step != null) {
+            // limit by step
+            xpath.append("[./showStep/@name=");
+            xpath.append(PropertyParser.getEscapedProperty(step.getTitel()));
+            xpath.append("]");
+        }
         // limit by workflow
         if (StringUtils.isNotBlank(workflowTitle)) {
-            xpath.append("[not(./workflow) or ./workflow='*' or ./workflow='");
-            xpath.append(workflowTitle);
-            xpath.append("']");
+            xpath.append("[not(./workflow) or ./workflow='*' or ./workflow=");
+            xpath.append(PropertyParser.getEscapedProperty(workflowTitle));
+            xpath.append("]");
         } else {
             xpath.append("[not(./workflow) or ./workflow='*']");
         }
@@ -169,6 +153,21 @@ public class PropertyParser {
         xpath.append("/@name");
 
         return Arrays.asList(config.getStringArray(xpath.toString()));
+    }
+
+    /**
+     * Escapes single quotes in the text parameter. When there are no single quotes, the normal text is returned in quotes. Otherwise the concat()
+     * function is used and returned with the escaped single quotes.
+     * 
+     * @param text The text where the single quotes may occur
+     * @return The escaped text
+     */
+    public static String getEscapedProperty(String text) {
+        if (!text.contains("'")) {
+            return "'" + text + "'";
+        } else {
+            return "concat('" + text.replace("'", "',\"'\",'") + "')";
+        }
     }
 
     public List<ProcessProperty> getPropertiesForStep(Step mySchritt) {

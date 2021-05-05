@@ -16,7 +16,7 @@ public interface StorageProviderInterface {
 
     public Integer getNumberOfFiles(String inDir);
 
-    public Integer getNumberOfFiles(Path dir, final String suffix);
+    public Integer getNumberOfFiles(Path dir, final String... suffix);
 
     public List<Path> listFiles(String folder);
 

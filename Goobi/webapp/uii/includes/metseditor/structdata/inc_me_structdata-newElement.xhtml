@@ -7,7 +7,8 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -37,7 +38,7 @@
                     <!-- PLACEMENT SELECTION -->
                     <h:selectOneRadio
                         id="auswahlElementWohin"
-                        styleClass="select-radio"
+                        styleClass="select-radio focusableChildCss"
                         forceId="true"
                         layout="pageDirection"
                         value="#{Metadaten.neuesElementWohin}">
@@ -54,9 +55,9 @@
                             itemValue="4"
                             itemLabel="#{msgs.alsLetztesKindDesAktuellenElements}" />
                         <f:ajax
-                            render="@form"
+                            render="struct"
                             event="change"
-                            execute="@form" />
+                            execute="struct" />
                     </h:selectOneRadio>
 
                     <hr />
@@ -72,18 +73,18 @@
                                     pt:aria-label="#{msgs.firstPage}"
                                     scrollHeight="300"
                                     id="pagestart1"
-                                    styleClass="form-control"
+                                    styleClass="form-control focusableChildCss"
                                     value="#{Metadaten.pagesStart}"
                                     completeMethod="#{Metadaten.autocomplete}" />
                             </div>
                             <div class="col-3">
-                                <h:commandLink
-                                    id="takePreviousImage"
-                                    pt:aria-label="#{msgs.previousImage}"
-                                    styleClass="btn btn--icon-white"
-                                    action="#{Metadaten.CurrentStartpage}"
+                                <button
+                                    jsf:id="takePreviousImage"
+                                    aria-label="#{msgs.previousImage}"
+                                    class="btn btn--icon-white"
+                                    jsf:action="#{Metadaten.CurrentStartpage}"
                                     title="#{msgs.mets_takePreviousImage}"
-                                    role="button">
+                                    type="button">
                                     <i
                                         class="fa fa-angle-left fa-lg"
                                         aria-hidden="true"></i>
@@ -94,14 +95,14 @@
                                         name="data-toggle"
                                         value="tooltip" />
                                     <f:ajax render="pagestart1" />
-                                </h:commandLink>
-                                <h:commandLink
-                                    id="takeCurrentImage"
-                                    pt:aria-label="#{msgs.lw_currentImage}"
-                                    styleClass="btn btn--icon-gray"
-                                    action="#{Metadaten.CurrentStartpage}"
+                                </button>
+                                <button
+                                    jsf:id="takeCurrentImage"
+                                    aria-label="#{msgs.lw_currentImage}"
+                                    class="btn btn--icon-gray"
+                                    jsf:action="#{Metadaten.CurrentStartpage}"
                                     title="#{msgs.mets_takeCurrentImage}"
-                                    role="button">
+                                    type="button">
                                     <i
                                         class="fa fa-picture-o"
                                         aria-hidden="true"></i>
@@ -112,14 +113,14 @@
                                         name="data-toggle"
                                         value="tooltip" />
                                     <f:ajax render="pagestart1" />
-                                </h:commandLink>
-                                <h:commandLink
-                                    id="takeNextImage"
-                                    pt:aria-label="#{msgs.nextImage}"
-                                    styleClass="btn btn--icon-white"
-                                    action="#{Metadaten.CurrentStartpage}"
+                                </button>
+                                <button
+                                    jsf:id="takeNextImage"
+                                    aria-label="#{msgs.nextImage}"
+                                    class="btn btn--icon-white"
+                                    jsf:action="#{Metadaten.CurrentStartpage}"
                                     title="#{msgs.mets_takeNextImage}"
-                                    role="button">
+                                    type="button">
                                     <i
                                         class="fa fa-angle-right fa-lg"
                                         aria-hidden="true"></i>
@@ -130,7 +131,7 @@
                                         name="data-toggle"
                                         value="tooltip" />
                                     <f:ajax render="pagestart1" />
-                                </h:commandLink>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -146,19 +147,19 @@
                                     scrollHeight="300"
                                     id="pageend1"
                                     pt:aria-label="#{msgs.lastPage}"
-                                    styleClass="form-control"
+                                    styleClass="form-control focusableChildCss"
                                     forceId="true"
                                     value="#{Metadaten.pagesEnd}"
                                     completeMethod="#{Metadaten.autocomplete}" />
                             </div>
                             <div class="col-3">
-                                <h:commandLink
-                                    id="takePreviousImage2"
-                                    pt:aria-label="#{msgs.previousImage}"
-                                    styleClass="btn btn--icon-white"
-                                    action="#{Metadaten.CurrentEndpage}"
+                                <button
+                                    jsf:id="takePreviousImage2"
+                                    aria-label="#{msgs.previousImage}"
+                                    class="btn btn--icon-white"
+                                    jsf:action="#{Metadaten.CurrentEndpage}"
                                     title="#{msgs.mets_takePreviousImage}"
-                                    role="button">
+                                    type="button">
                                     <i
                                         class="fa fa-angle-left fa-lg"
                                         aria-hidden="true"></i>
@@ -169,14 +170,14 @@
                                         name="data-toggle"
                                         value="tooltip" />
                                     <f:ajax render="pageend1" />
-                                </h:commandLink>
-                                <h:commandLink
-                                    id="takeCurrentImage2"
-                                    pt:aria-label="#{msgs.lw_currentImage}"
-                                    styleClass="btn btn--icon-gray"
-                                    action="#{Metadaten.CurrentEndpage}"
+                                </button>
+                                <button
+                                    jsf:id="takeCurrentImage2"
+                                    aria-label="#{msgs.lw_currentImage}"
+                                    class="btn btn--icon-gray"
+                                    jsf:action="#{Metadaten.CurrentEndpage}"
                                     title="#{msgs.mets_takeCurrentImage}"
-                                    role="button">
+                                    type="button">
                                     <i
                                         class="fa fa-picture-o"
                                         aria-hidden="true"></i>
@@ -187,14 +188,14 @@
                                         name="data-toggle"
                                         value="tooltip" />
                                     <f:ajax render="pageend1" />
-                                </h:commandLink>
-                                <h:commandLink
-                                    id="takeNextImage2"
-                                    pt:aria-label="#{msgs.nextImage}"
-                                    styleClass="btn btn--icon-white"
-                                    action="#{Metadaten.CurrentEndpage}"
+                                </button>
+                                <button
+                                    jsf:id="takeNextImage2"
+                                    aria-label="#{msgs.nextImage}"
+                                    class="btn btn--icon-white"
+                                    jsf:action="#{Metadaten.CurrentEndpage}"
                                     title="#{msgs.mets_takeNextImage}"
-                                    role="button">
+                                    type="button">
                                     <i
                                         class="fa fa-angle-right fa-lg"
                                         aria-hidden="true"></i>
@@ -205,7 +206,7 @@
                                         name="data-toggle"
                                         value="tooltip" />
                                     <f:ajax render="pageend1" />
-                                </h:commandLink>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -223,18 +224,19 @@
                                     scrollHeight="300"
                                     id="pageArea"
                                     pt:aria-label="#{msgs.pageArea}"
-                                    styleClass="form-control"
+                                    styleClass="form-control focusableChildCss"
                                     forceId="true"
                                     value="#{Metadaten.pageArea}"
                                     completeMethod="#{Metadaten.autocomplete}" />
                             </div>
                             <div class="col-3">
                                 <!-- or create new page area -->
-                                <h:commandLink rendered="#{not Metadaten.pageAreaEditionMode}"
-                                    styleClass="btn btn--icon-gray"
-                                    role="button"
+                                <button jsf:rendered="#{not Metadaten.pageAreaEditionMode}"
+                                    class="btn btn--icon-gray"
+                                    type="button"
                                     title="#{msgs.mets_createPageArea}"
-                                    action="#{Metadaten.addPageAreaAndAssignToDocststuct}">
+                                    aria-label="#{msgs.mets_createPageArea}"
+                                    jsf:action="#{Metadaten.addPageAreaAndAssignToDocststuct}">
                                     <i
                                         class="fa fa-crop"
                                         aria-hidden="true"></i>
@@ -242,13 +244,20 @@
                                     <f:passThroughAttribute
                                         name="data-renderimage"
                                         value="true" />
-                                </h:commandLink>
+                                    <f:passThroughAttribute
+		                                name="data-toggle"
+		                                value="tooltip" />
+		                            <f:passThroughAttribute
+		                                name="data-placement"
+		                                value="top" />
+                                </button>
                                 
-                                <h:commandLink rendered="#{Metadaten.pageAreaEditionMode}"
-                                    styleClass="btn btn--icon-red cancel-area-edition"
-                                    role="button"
+                                <button jsf:rendered="#{Metadaten.pageAreaEditionMode}"
+                                    class="btn btn--icon-red cancel-area-edition"
+                                    type="button"
                                     title="#{msgs.mets_cancelPageArea}"
-                                    action="#{Metadaten.cancelPageAreaEdition}">
+                                    aria-label="#{msgs.mets_cancelPageArea}"
+                                    jsf:action="#{Metadaten.cancelPageAreaEdition}">
                                     <i
                                         class="fa fa-ban"
                                         aria-hidden="true"></i>
@@ -256,7 +265,13 @@
                                     <f:passThroughAttribute
                                         name="data-renderimage"
                                         value="true" />
-                                </h:commandLink>
+                                    <f:passThroughAttribute
+		                                name="data-toggle"
+		                                value="tooltip" />
+		                            <f:passThroughAttribute
+		                                name="data-placement"
+		                                value="top" />
+                                </button>
 
                             </div>
 
@@ -291,12 +306,13 @@
                                             itemValue="#{item.value.name}"
                                             var="item" />
                                         <f:ajax
-                                            render="@form"
+                                            render="struct"
                                             event="change"
-                                            execute="@form" />
+                                            execute="struct" />
                                     </x:selectOneMenu>
                                     <x:selectOneMenu
                                         id="auswahlAddable2"
+                                        styleClass="focusable"
                                         forceId="true"
                                         value="#{Metadaten.addDocStructType2}"
                                         rendered="#{Metadaten.neuesElementWohin gt 2}">
@@ -306,9 +322,9 @@
                                             itemValue="#{item.value.name}"
                                             var="item" />
                                         <f:ajax
-                                            render="@form"
+                                            render="struct"
                                             event="change"
-                                            execute="@form" />
+                                            execute="struct" />
                                     </x:selectOneMenu>
                                 </div>
                             </div>
@@ -355,25 +371,25 @@
                         <div class="row">
                             <div class="col-auto mr-auto">
                             
-                				<h:commandLink styleClass="btn">
+                				<button jsf:id="fastPagination" class="btn">
                 					<i class="fa #{Metadaten.enableFastPagination == false?'fa fa-square-o':'fa fa-check-square-o'}" />
 					                <h:outputText value="#{msgs.mets_easyPagination}" 
 					                	styleClass="structdata__easyPagination" />
 					                <f:setPropertyActionListener value="#{not Metadaten.enableFastPagination}" 
 					                	target="#{Metadaten.enableFastPagination}" />
-					            </h:commandLink>
+					            </button>
                             
                             </div>
                             <div class="col-auto">
-                                <h:commandLink
-                                    id="add"
-                                    styleClass="btn btn--gray"
-                                    action="#{Metadaten.KnotenAdd}"
-                                    value="#{msgs.strukturelementHinzufuegen}">
+                                <button
+                                    jsf:id="add"
+                                    class="btn btn--gray"
+                                    jsf:action="#{Metadaten.KnotenAdd}">
+                                    #{msgs.strukturelementHinzufuegen}
                                     <f:ajax
                                         render="@form :treeform :messages"
                                         execute="@form" />
-                                </h:commandLink>
+                                </button>
                             </div>
                         </div>
                     </div>

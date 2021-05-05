@@ -99,7 +99,7 @@ public class JobCreation {
 
         CopyProcess cp = new CopyProcess();
         cp.setProzessVorlage(vorlage);
-        cp.metadataFile = metsfilename;
+        cp.setMetadataFile(metsfilename);
         cp.Prepare(io);
         cp.getProzessKopie().setTitel(processTitle);
         logger.trace("testing title");
@@ -114,7 +114,7 @@ public class JobCreation {
                     for (Step s : steps) {
                         if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) && s.isTypAutomatisch()) {
                             ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(s);
-                            myThread.start();
+                            myThread.startOrPutToQueue();
                         }
                     }
                     if (StorageProvider.getInstance().isFileExists(metsAnchorFile)) {

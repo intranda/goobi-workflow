@@ -8,11 +8,12 @@
     template="/uii/template/template.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
-        value="#{msgs.vocabularyManager_uploadVocabulary}" />
+        value="#{msgs.vocabularyManager_uploadVocabulary}: #{vocabularyBean.currentVocabulary.title}" />
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb
@@ -36,6 +37,11 @@
 
     <ui:define name="content">
 
+    <style>
+        .select-radio input[type=radio] {
+            margin-left: 20px !important;
+        }        
+    </style>
 
         <ui:fragment rendered="#{LoginForm.hasRole('Admin_Vocabulary')}">
             <div class="row" role="main">
@@ -81,19 +87,22 @@
                                     prependId="false"
                                     styleClass="form-horizontal form-bordered">
 
-                                    <h:selectBooleanCheckbox
-                                        value="#{vocabularyBean.removeExistingEntries}"
-                                        label="#{msgs.vocabularyManager_excelImport_removeExisting}">
-                                       	<f:passThroughAttribute
-	                                    	name="aria-label"
-	                                    	value="#{msgs.vocabularyManager_excelImport_removeExisting}" />
-                                        <h:outputLabel
-                                            value="#{msgs.vocabularyManager_excelImport_removeExisting}"
-                                            styleClass="margin-right-5" />
+                                        <h:selectOneRadio
+                                            value="#{vocabularyBean.importType}" style="padding-left:30px"
+                                            styleClass="select-radio">
+                                            <f:selectItem 
+                                                itemLabel="#{msgs.vocabularyManager_excelImport_removeExisting}"
+                                                itemValue="remove" />
+                                            <f:selectItem
+                                                itemLabel="#{msgs.vocabularyManager_excelImport_addNew}"
+                                                itemValue="add" />
+                                            <f:selectItem
+                                                itemLabel="#{msgs.vocabularyManager_excelImport_mergeExisting}"
+                                                itemValue="merge" />
                                         <f:ajax
                                             execute="@this"
                                             render="vocabularyWarning" />
-                                    </h:selectBooleanCheckbox>
+                                        </h:selectOneRadio>
 
                                     <x:dataTable
                                         id="headerAssignment"
@@ -133,7 +142,7 @@
                                     <br />
                                     <h:panelGroup id="vocabularyWarning">
                                         <h:panelGroup
-                                            rendered="#{vocabularyBean.headerOrder.size() gt 0 and vocabularyBean.removeExistingEntries}"
+                                            rendered="#{vocabularyBean.headerOrder.size() gt 0 and vocabularyBean.importType == 'remove'}"
                                             styleClass="alert alert-danger block">
                                             <h:outputText
                                                 value="#{vocabularyBean.filename}"
@@ -142,7 +151,7 @@
                                         </h:panelGroup>
 
                                         <h:panelGroup
-                                            rendered="#{vocabularyBean.headerOrder.size() gt 0 and !vocabularyBean.removeExistingEntries}"
+                                            rendered="#{vocabularyBean.headerOrder.size() gt 0 and vocabularyBean.importType != 'remove'}"
                                             styleClass="alert alert-warning block">
                                             <h:outputText
                                                 value="#{vocabularyBean.filename}"
@@ -151,25 +160,25 @@
                                         </h:panelGroup>
                                     </h:panelGroup>
                                     <!-- Save -->
-                                    <h:commandLink
-                                        rendered="#{vocabularyBean.headerOrder.size() gt 0}"
-                                        styleClass="btn btn-success pull-right font-size-s margin-bottom-most"
-                                        id="absenden"
+                                    <button
+                                        jsf:rendered="#{vocabularyBean.headerOrder.size() gt 0}"
+                                        class="btn btn-success pull-right font-size-s margin-bottom-most"
+                                        jsf:id="absenden"
                                         type="submit"
-                                        action="#{vocabularyBean.importRecords}">
+                                        jsf:action="#{vocabularyBean.importRecords}">
                                         <i class="fa fa-save margin-right-5"></i>
                                         <h:outputText value="#{msgs.vocabularyManager_excelImport_importRecords}" />
-                                    </h:commandLink>
+                                    </button>
 
                                     <!-- Cancel -->
-                                    <h:commandLink
-                                        styleClass="btn btn-cancel pull-right font-size-s margin-bottom-most margin-sides-10"
-                                        id="abbrechen"
+                                    <button
+                                        class="btn btn-cancel pull-right font-size-s margin-bottom-most margin-sides-10"
+                                        jsf:id="abbrechen"
                                         type="cancel"
-                                        action="#{vocabularyBean.editVocabulary}"
-                                        immediate="true">
+                                        jsf:action="#{vocabularyBean.editVocabulary}"
+                                        jsf:immediate="true">
                                         <h:outputText value="#{msgs.abbrechen}" />
-                                    </h:commandLink>
+                                    </button>
 
                                 </h:form>
                             </h:panelGroup>

@@ -1,7 +1,7 @@
 var goobiWorkflowJS = ( function( goobiWorkflow ) {
     'use strict';
     
-    var _debug = false;
+    var _debug = true;
     var _columns = {
         left: 0,
         center: 0,
@@ -46,6 +46,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             _setFlexibleRowColumns();
             // set initial position of toc actions
             $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
+            
+            //set tabIndex
+            _setTabindex();
         },
         /**
          * @description Method to set the correct height of the object view column.
@@ -62,6 +65,21 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             
         }
     };
+    
+    /**
+     * @description Method to add Tabindex to elements.
+     * @method _setTabindex
+     */
+    function _setTabindex(){
+    	if ( _debug ) {
+    		console.log( ' EXECUTE: _setTabindex' );
+    	}
+    	$(".focusableChildCss input").addClass("focusable");
+    	$(".focusable").attr("tabindex", "0");
+     	$(".focusableChild input").attr("tabindex", "0");	//tabindex 0 not working??
+     	$(".notFocusable").attr("tabindex", "-1");
+     	$(".notFocusableChild").children().attr("tabindex","-1");
+    }
     
     /**
      * @description Method to set the resizable elements.
@@ -111,6 +129,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         }).on( 'resize', function( event ) {
             event.stopPropagation();
         } );
+        
+        $( '#pageContentLeft .ui-resizable-handle' ).attr('tabindex', '-1');
+        $( '#pageContentRight .ui-resizable-handle' ).attr('tabindex', '-1');
     }
     
     /**
@@ -130,7 +151,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             $( '#pageContentCenter').css( 'width', '80%' );
         }
         $( '#pageContentLeft .ui-resizable-handle' ).css( 'left', $( '#pageContentLeft' ).outerWidth() );
+        $( '#pageContentLeft .ui-resizable-handle' ).attr('tabindex', '-1');
         $( '#pageContentRight .ui-resizable-handle' ).css( 'right', $( '#pageContentRight' ).outerWidth() - 7 );
+        $( '#pageContentRight .ui-resizable-handle' ).attr('tabindex', '-1');
         $( '#structureActions' ).css( 'left', $( '#pageContentLeft' ).width() - 45 );
         _setColumnWidth();
         _getSavedWidths();
@@ -151,7 +174,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         _columns.handles.left = parseInt( $( '#pageContentLeft .ui-resizable-handle' ).css( 'left' ) );
         _columns.handles.right = parseInt( $( '#pageContentRight .ui-resizable-handle' ).css( 'right' ) );
 
-        sessionStorage.setItem( 'columnWidths', JSON.stringify( _columns ) );
+        sessionStorage.setItem( 'wf_columnWidths', JSON.stringify( _columns ) );
     }
     
     /**
@@ -176,8 +199,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         if ( _debug ) {
             console.log( 'EXECUTE: _getSavedWidths');
         }
-        if ( sessionStorage.getItem( 'columnWidths' ) != undefined ) {
-            _columns = JSON.parse( sessionStorage.getItem( 'columnWidths' ) );
+        if ( sessionStorage.getItem( 'wf_columnWidths' ) != undefined ) {
+            _columns = JSON.parse( sessionStorage.getItem( 'wf_columnWidths' ) );
             if (_defaults.displayImageArea) {
                 if ($( window ).outerWidth() < _columns.left +  _columns.center + _columns.right || _columns.right == null) {
                     $( '#pageContentLeft' ).outerWidth(Math.floor(_columns.left) );

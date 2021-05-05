@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @XmlRootElement
-public class VocabRecord implements DatabaseObject {
+public class VocabRecord implements DatabaseObject, Comparable<VocabRecord> {
     private Integer id;
     private Integer vocabularyId;
     private List<Field> fields = new ArrayList<>();
@@ -43,5 +43,31 @@ public class VocabRecord implements DatabaseObject {
     @Override
     public void lazyLoad() {
     }
+
+
+    public  List<Field> getMainFields() {
+        List<Field> answer = new ArrayList<>();
+        for (Field field : fields) {
+            if (field.getDefinition().isTitleField()) {
+                answer.add(field);
+            }
+        }
+        return answer;
+    }
+
+    public String getFieldValue(Definition definition) {
+        for (Field field : fields) {
+            if (field.getDefinition().equals(definition)) {
+                return field.getValue();
+            }
+        }
+        return "";
+    }
+
+    @Override
+    public int compareTo(VocabRecord o) {
+        return getTitle().compareTo(o.getTitle());
+    }
+
 
 }

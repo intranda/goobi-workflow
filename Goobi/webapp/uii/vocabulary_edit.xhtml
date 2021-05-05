@@ -7,7 +7,8 @@
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -52,11 +53,11 @@
                             
                             <div class="actions">
 	                             <!-- download all records as csv/excel -->
-	                             <h:commandLink
-	                                 id="downloadRecords"
-	                                 styleClass="btn margin-right-5"
-	                                 rel="tooltip"
-	                                 action="#{vocabularyBean.downloadRecords}"
+	                             <button
+	                                 jsf:id="downloadRecords"
+	                                 class="btn margin-right-5"
+	                                 jsf:rel="tooltip"
+	                                 jsf:action="#{vocabularyBean.downloadRecords}"
 	                                 title="#{msgs.vocabularyManager_downloadRecords}">
 	                                 <i class="fa fa-download"></i>
 	                                 <f:passThroughAttribute
@@ -65,14 +66,14 @@
 	                                 <f:passThroughAttribute
 	                                     name="aria-label"
 	                                     value="#{msgs.vocabularyManager_downloadRecords}" />
-	                             </h:commandLink>
+	                             </button>
 	                             
 	                             <!-- import all records from excel -->
-	                             <h:commandLink
-	                                 id="uploadRecords"
-	                                 styleClass="btn margin-right-5"
-	                                 rel="tooltip"
-	                                 action="#{vocabularyBean.uploadRecords}"
+	                             <button
+	                                 jsf:id="uploadRecords"
+	                                 class="btn margin-right-5"
+	                                 jsf:rel="tooltip"
+	                                 jsf:action="#{vocabularyBean.uploadRecords}"
 	                                 title="#{msgs.vocabularyManager_uploadRecords}">
 	                                 <i class="fa fa-upload"></i>
 	                                 <f:passThroughAttribute
@@ -81,7 +82,7 @@
 	                                 <f:passThroughAttribute
 	                                     name="aria-label"
 	                                     value="#{msgs.vocabularyManager_uploadRecords}" />
-	                             </h:commandLink>
+	                             </button>
 							</div>                            
                         </div>
                         <div class="box-content nopadding">
@@ -268,6 +269,23 @@
 	                                    </f:facet>
 	                                </h:column>
 	
+ <h:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{msgs.vocabularyManager_titleField}" />
+                                        </f:facet>
+                                        <h:selectBooleanCheckbox value="#{definition.titleField}">
+                                        <f:passThroughAttribute
+                                                 name="aria-label"
+                                                 value="#{msgs.vocabularyManager_titleField}" />
+                                         </h:selectBooleanCheckbox>
+                                        <f:facet name="footer">
+                                            <h:outputText
+                                                styleClass="help-block font-normal font-light"
+                                                rendered="#{NavigationForm.showHelp}"
+                                                value="#{msgs.help_vocabulary_fieldTitleField}" />
+                                        </f:facet>
+                                    </h:column>    
+    
 	                                <h:column>
 	                                    <f:facet name="header">
 	                                        <h:outputText value="#{msgs.vocabularyManager_select}" />
@@ -295,74 +313,74 @@
 	                                        <h:outputText value="#{msgs.auswahl}" />
 	                                    </f:facet>
 	                                    <div class="input-group-btn">
-	                                        <h:commandLink
-	                                            id="delete"
-	                                            styleClass="btn btn-danger"
+	                                        <button
+	                                            jsf:id="delete"
+	                                            class="btn btn-danger"
 	                                            style="height:25px;margin-left:5px; border:0; padding-top:3px;"
 	                                            title="#{msgs.vocabularyManager_deleteDefinition}"
-	                                            action="#{vocabularyBean.deleteDefinition}"
+	                                            jsf:action="#{vocabularyBean.deleteDefinition}"
 	                                            onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
-	                                            immediate="true">
+	                                            jsf:immediate="true">
 	                                            <f:setPropertyActionListener
 	                                                target="#{vocabularyBean.currentDefinition}"
 	                                                value="#{definition}" />
 	                                            <i
 	                                                class="fa fa-trash-o font-bold"
 	                                                style="color: white;"></i>
-	                                        </h:commandLink>
+	                                        </button>
 	
 	                                    </div>
 	                                </x:column>
 	                            </x:dataTable>
 	
-	                            <h:commandLink
-	                                id="new_def"
-	                                styleClass="btn btn-primary font-size-s"
+	                            <button
+	                                jsf:id="new_def"
+	                                class="btn btn-primary font-size-s"
 	                                style="margin-top:10px; margin-left:5px; margin-bottom:10px; background: #368ee0;"
-	                                action="#{vocabularyBean.addDefinition}"
+	                                jsf:action="#{vocabularyBean.addDefinition}"
 	                                title="#{msgs.vocabularyManager_addDefinition}">
 	                                <i
 	                                    aria-hidden="true"
 	                                    class="fa fa-plus margin-right-5"></i>
 	                                <h:outputText value="#{msgs.vocabularyManager_addDefinition}" />
-	                            </h:commandLink>
+	                            </button>
                             </div>
                             
                             
                             
                             <div class="form-actions">
                             	<!-- Save -->
-					            <h:commandLink
-					                styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+					            <button
+					                class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
 					                style="margin-top:10px; margin-left:5px;"
-					                id="absenden"
+					                jsf:id="absenden"
 					                type="submit"
-					                action="#{vocabularyBean.saveVocabulary}">
+					                jsf:action="#{vocabularyBean.saveVocabulary}">
 					                <i class="fa fa-save margin-right-5"></i>
 					                <h:outputText value="#{msgs.speichern}" />
-					            </h:commandLink>
+					            </button>
 					
 					            <!-- Cancel -->
-					            <h:commandLink
-					                styleClass="btn btn-cancel submitOnEnter pull-right font-size-s margin-bottom-most"
+					            <button
+					                class="btn btn-cancel submitOnEnter pull-right font-size-s margin-bottom-most"
 					                style="margin-top:10px;"
-					                id="abbrechen"
-					                type="cancel"
-					                action="#{vocabularyBean.cancelEdition}"
-					                immediate="true">
+					                jsf:id="abbrechen"
+					                jsf:type="cancel"
+					                jsf:action="#{vocabularyBean.cancelEdition}"
+					                jsf:immediate="true">
 					                <h:outputText value="#{msgs.abbrechen}" />
-					            </h:commandLink>
+					            </button>
 					
-					            <h:commandLink
-					                id="delete"
-					                action="#{vocabularyBean.deleteVocabulary}"
+					            <button
+					                jsf:id="delete"
+					                jsf:action="#{vocabularyBean.deleteVocabulary}"
 					                style="margin-top:10px;"
-					                styleClass="btn btn-danger font-size-s"
+					                class="btn btn-danger font-size-s"
 					                onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
-					                rendered="#{vocabularyBean.currentVocabulary.id != null}">
+					                jsf:rendered="#{vocabularyBean.currentVocabulary.id != null}">
 					                <i class="fa fa-trash-o margin-right-5"></i>
 					                <h:outputText value="#{msgs.loeschen}" />
-					            </h:commandLink>
+					            </button>
                             </div>
                             
                         </div>

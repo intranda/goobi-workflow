@@ -29,17 +29,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -50,19 +52,21 @@ import org.goobi.beans.Batch;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.goobiScript.GoobiScriptImport;
+import org.goobi.goobiScript.GoobiScriptManager;
+import org.goobi.goobiScript.GoobiScriptResult;
 import org.goobi.production.enums.ImportFormat;
 import org.goobi.production.enums.ImportReturnValue;
 import org.goobi.production.enums.ImportType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.helper.JobCreation;
 import org.goobi.production.importer.DocstructElement;
-import org.goobi.production.importer.GoobiHotfolder;
 import org.goobi.production.importer.ImportObject;
 import org.goobi.production.importer.Record;
 import org.goobi.production.plugin.ImportPluginLoader;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.goobi.production.plugin.interfaces.IImportPluginVersion2;
+import org.goobi.production.plugin.interfaces.IImportPluginVersion3;
 import org.goobi.production.properties.ImportProperty;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -75,16 +79,23 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import io.goobi.workflow.xslt.GeneratePdfFromXslt;
+import io.goobi.workflow.xslt.XsltToPdf;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.Prefs;
 
-@ManagedBean(name = "MassImportForm")
+@Named("MassImportForm")
 @SessionScoped
 @Log4j2
-public class MassImportForm {
+public class MassImportForm implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 4780655212251185461L;
+
+    @Inject
+    private GoobiScriptManager goobiScriptManager;
     // private List<String> recordList = new ArrayList<String>();
     private ImportFormat format = null;
     // private List<String> usablePlugins = new ArrayList<String>();
@@ -153,9 +164,17 @@ public class MassImportForm {
     @Getter
     private Batch batch;
 
+    @Inject
+    private NavigationForm bean;
+
     public MassImportForm() {
 
         // usablePlugins = ipl.getTitles();
+
+    }
+
+    @PostConstruct
+    public void init() {
         this.usablePluginsForRecords = this.ipl.getPluginsForType(ImportType.Record);
         this.usablePluginsForIDs = this.ipl.getPluginsForType(ImportType.ID);
         this.usablePluginsForFiles = this.ipl.getPluginsForType(ImportType.FILE);
@@ -179,9 +198,6 @@ public class MassImportForm {
 
         initializePossibleDigitalCollections();
         // get navigationBean to set current tab and load the first selected plugin
-        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
-        NavigationForm bean = (NavigationForm) requestMap.get("NavigationForm");
 
         if (!usablePluginsForRecords.isEmpty()) {
             // select fist plugin
@@ -294,11 +310,15 @@ public class MassImportForm {
 
         if (testForData()) {
             // if the mass import plugin can be run as GoobiScript do it
+            if (plugin instanceof IImportPluginVersion3) {
+                IImportPluginVersion3 plugin3 = (IImportPluginVersion3) this.plugin;
+                plugin3.setWorkflowName(template.getTitel());
+            }
             if (this.plugin instanceof IImportPluginVersion2) {
                 IImportPluginVersion2 plugin2 = (IImportPluginVersion2) this.plugin;
                 if (plugin2.isRunnableAsGoobiScript()) {
                     GoobiScriptImport igs = new GoobiScriptImport();
-
+                    igs.setMi(this);
                     String myIdentifiers = "";
                     if (StringUtils.isNotEmpty(this.idList)) {
                         List<String> ids = this.plugin.splitIds(this.idList);
@@ -311,7 +331,7 @@ public class MassImportForm {
                         for (Record r : recordList) {
                             myIdentifiers += r.getId() + ",";
                         }
-                        igs.setRecords(plugin2.generateRecordsFromFile());
+                        igs.setRecords(recordList);
                     } else if (StringUtils.isNotEmpty(this.records)) {
                         List<Record> recordList = this.plugin.splitRecords(this.records);
                         for (Record r : recordList) {
@@ -341,12 +361,16 @@ public class MassImportForm {
                     myParameters.put("plugin", plugin2.getTitle());
                     myParameters.put("projectId", String.valueOf(this.template.getProjectId()));
 
-                    boolean scriptCallIsValid = igs.prepare(new ArrayList<Integer>(),
+                    List<GoobiScriptResult> newScripts = igs.prepare(new ArrayList<Integer>(),
                             "action:import plugin:" + plugin2.getTitle() + " template:" + this.template.getId() + " identifiers:" + myIdentifiers,
                             myParameters);
-                    if (scriptCallIsValid) {
+                    for (GoobiScriptResult gsr : newScripts) {
+                        gsr.setCustomGoobiScriptImpl(igs);
+                    }
+                    if (!newScripts.isEmpty()) {
                         Helper.setMeldung("Import has started");
-                        igs.execute();
+                        goobiScriptManager.enqueueScripts(newScripts);
+                        goobiScriptManager.startWork();
                     }
                     return "";
                 }
@@ -570,17 +594,6 @@ public class MassImportForm {
         return l;
     }
 
-    @Deprecated
-    public String getHotfolderPathForPlugin(int pluginId) {
-        for (GoobiHotfolder hotfolder : GoobiHotfolder.getInstances()) {
-            if (hotfolder.getTemplate() == pluginId) {
-                return hotfolder.getFolderAsString();
-            }
-        }
-
-        return null;
-    }
-
     /**
      * 
      * @return current format
@@ -717,7 +730,7 @@ public class MassImportForm {
             // write docket to servlet output stream
             try {
                 ServletOutputStream out = response.getOutputStream();
-                GeneratePdfFromXslt ern = new GeneratePdfFromXslt();
+                XsltToPdf ern = new XsltToPdf();
                 ern.startExport(this.processList, out, xsltfile.toString());
                 out.flush();
             } catch (IOException e) {

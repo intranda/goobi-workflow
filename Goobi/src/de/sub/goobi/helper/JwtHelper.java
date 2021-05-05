@@ -86,6 +86,24 @@ public class JwtHelper {
     }
 
     /**
+     * Verifies the String token and returns a decoded JWT
+     * 
+     * @param token
+     * @return
+     * @throws ConfigurationException
+     */
+    public static DecodedJWT verifyTokenAndReturnClaims(String token) throws ConfigurationException {
+        String secret = ConfigurationHelper.getInstance().getJwtSecret();
+        if (secret == null) {
+            throw new ConfigurationException(
+                    "Could not get JWT secret from configuration. Please configure the key 'jwtSecret' in the file goobi_config.properties");
+        }
+        Algorithm algorithm = Algorithm.HMAC256(secret);
+        JWTVerifier verifier = JWT.require(algorithm).withIssuer("Goobi").build();
+        return verifier.verify(token);
+    }
+
+    /**
      * Creates a JSON web token that has the claims "changeStepAllowed"=true, "stepId"=step.getId() and is valid for 37 hours
      * 
      * @param step
@@ -104,6 +122,32 @@ public class JwtHelper {
                 .withIssuer("Goobi")
                 .withClaim("stepId", step.getId())
                 .withClaim("changeStepAllowed", true)
+                .withExpiresAt(expiryDate)
+                .sign(algorithm);
+        return token;
+    }
+
+    /**
+     * Creates an API token that allows using the Goobi REST API when the pathRegex matches the API path and the used HTTP Method <br>
+     * is in the methods array passed to this function.
+     * 
+     * @param pathRegex
+     * @param methods
+     * @return A signed JWT
+     * @throws ConfigurationException
+     */
+    public static String createApiToken(String pathRegex, String[] methods) throws ConfigurationException {
+        String secret = ConfigurationHelper.getInstance().getJwtSecret();
+        if (secret == null) {
+            throw new ConfigurationException(
+                    "Could not get JWT secret from configuration. Please configure the key 'jwtSecret' in the file goobi_config.properties");
+        }
+        Algorithm algorithm = Algorithm.HMAC256(secret);
+        Date expiryDate = new DateTime().plusHours(37).toDate();
+        String token = JWT.create()
+                .withIssuer("Goobi")
+                .withClaim("api_path", pathRegex)
+                .withArrayClaim("api_methods", methods)
                 .withExpiresAt(expiryDate)
                 .sign(algorithm);
         return token;

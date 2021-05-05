@@ -7,7 +7,8 @@
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<ui:param name="myPageTitle" value="#{msgs.benutzergruppen}" />
 
@@ -78,15 +79,16 @@
 														</div>
 														<div class="box-content">
 															<ui:repeat var="role" value="#{item.userRoles}" varStatus="row">
-									                        	<h:outputText value="#{msgs[('roles_').concat(role)]}" 
+									                        	<h:outputText value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('roles_').concat(role)]}" 
 									                        	styleClass="badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
 								                            		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
 								                            		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' : 
 								                            		fn:startsWith(role,'Workflow_Processes') ? 'badge-light-blue' : 
+                                                                    fn:startsWith(role,'goobiscript_') ? 'badge-light-blue' : 
 								                            		fn:startsWith(role,'Workflow_') ? 'badge-light-purple' : 
 								                            		fn:startsWith(role,'Task_') ? 'badge-light-orange' : 
-								                            		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' : 
-								                            		'badge-light-greengrey'}" />
+								                            		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' :
+                                                                    'badge-light-greengrey'}" />
 															</ui:repeat>
 														</div>
 													</div>
@@ -107,8 +109,8 @@
 										</f:facet>
 
 										<!-- Bearbeiten-Schaltknopf -->
-										<h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip"
-											action="usergroup_edit"
+										<button jsf:id="edit" class="btn margin-right-5" jsf:rel="tooltip"
+											jsf:action="usergroup_edit"
 											title="#{msgs.benutzergruppeBearbeiten}">
 											<i class="fa fa-pencil"></i>
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -116,17 +118,17 @@
 											<f:setPropertyActionListener
 												target="#{BenutzergruppenForm.myBenutzergruppe}"
 												value="#{item}" />
-										</h:commandLink>
+										</button>
 
 
                                         <!-- Duplicate user group -->
-                                        <h:commandLink action="#{BenutzergruppenForm.cloneUsergroup}" styleClass="btn" rel="tooltip" title="#{msgs.duplicateUsergroup}"
+                                        <button jsf:action="#{BenutzergruppenForm.cloneUsergroup}" class="btn" jsf:rel="tooltip" title="#{msgs.duplicateUsergroup}"
                                             onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                             <i class="fa fa-clipboard" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:passThroughAttribute name="aria-label" value="#{msgs.duplicateUsergroup}" />
                                             <x:updateActionListener property="#{BenutzergruppenForm.myBenutzergruppe}" value="#{item}" />
-                                        </h:commandLink>
+                                        </button>
 
 
 									</x:column>
@@ -134,11 +136,11 @@
 								</x:dataTable>
 								<div class="dataTables_info" style="float: left;">
 									<!-- Neu-Schaltknopf -->
-									<h:commandLink id="newUserGroup" styleClass="btn btn-primary font-size-s"
-										action="#{BenutzergruppenForm.Neu}" immediate="true">
+									<button jsf:id="newUserGroup" class="btn btn-primary font-size-s"
+										jsf:action="#{BenutzergruppenForm.Neu}" jsf:immediate="true">
 										<i class="fa fa-plus margin-right-5"></i>
 										<h:outputText value="#{msgs.neueBenutzergruppeAnlegen}" />
-									</h:commandLink>
+									</button>
 								</div>
 								<div class="dataTables_paginate">
 									<!-- paginator -->

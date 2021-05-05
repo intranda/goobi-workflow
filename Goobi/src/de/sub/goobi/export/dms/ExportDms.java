@@ -31,9 +31,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.Logger; //?? <- works?
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger; //?? <- works?
 //import lombok.extern.log4j.Log4j2;		//doesnt work?
 import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
@@ -41,7 +43,6 @@ import org.goobi.beans.User;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
 
-import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.download.ExportMets;
 import de.sub.goobi.helper.FilesystemHelper;
@@ -67,7 +68,6 @@ import ugh.exceptions.WriteException;
 
 public class ExportDms extends ExportMets implements IExportPlugin {
     private static final Logger logger = LogManager.getLogger(ExportDms.class);
-    protected ConfigProjects cp;
     protected boolean exportWithImages = true;
     protected boolean exportFulltext = true;
     protected List<String> problems = new ArrayList<>();
@@ -113,7 +113,6 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             MetadataTypeNotAllowedException, ExportFileException, UghHelperException, SwapException, DAOException, TypeNotAllowedForParentException {
 
         this.myPrefs = myProzess.getRegelsatz().getPreferences();
-        this.cp = new ConfigProjects(myProzess.getProjekt().getTitel());
         String atsPpnBand = myProzess.getTitel();
 
         /*
@@ -371,7 +370,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         /*
          * -------------------------------- dann den Ausgangspfad ermitteln --------------------------------
          */
-        Path tifOrdner = Paths.get(myProzess.getImagesTifDirectory(true));
+        Path tifOrdner = Paths.get(myProzess.getImagesTifDirectory(false));
 
         /*
          * -------------------------------- jetzt die Ausgangsordner in die Zielordner kopieren --------------------------------
@@ -388,7 +387,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 /*
                  * wenn kein Agora-Import, dann den Ordner mit Benutzerberechtigung neu anlegen
                  */
-                User myBenutzer = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+                User myBenutzer = Helper.getCurrentUser();
                 try {
                     if (myBenutzer == null) {
                         StorageProvider.getInstance().createDirectories(zielTif);
@@ -402,31 +401,15 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             }
 
             /* jetzt den eigentlichen Kopiervorgang */
-            //            List<Path> files = NIOFileUtils.listFiles(myProzess.getImagesTifDirectory(true), NIOFileUtils.DATA_FILTER);
-            //            for (Path file : files) {
-            //                Path target = Paths.get(zielTif.toString(), file.getFileName().toString());
-            //                Files.copy(file, target, NIOFileUtils.STANDARD_COPY_OPTIONS);
-            //
-            //                //for 3d object files look for "helper files" with the same base name and copy them as well
-            //                if(NIOFileUtils.objectNameFilter.accept(file)) {
-            //                    List<Path> helperFiles = NIOFileUtils.listFiles(myProzess.getImagesTifDirectory(true),
-            //                            new NIOFileUtils.ObjectHelperNameFilter(file));
-            //                    for (Path helperFile : helperFiles) {
-            //                        Path helperTarget = Paths.get(zielTif.toString(), helperFile.getFileName().toString());
-            //                        if(Files.isDirectory(helperFile)) {
-            //                            FileUtils.copyDirectory(helperFile.toFile(), helperTarget.toFile());
-            //                        } else {
-            //                            Files.copy(helperFile, helperTarget, NIOFileUtils.STANDARD_COPY_OPTIONS);
-            //                        }
-            //                    }
-            //                }
-            //            }
-
-            //deep copy of the tiff dir using walk file tree
-            List<Path> files = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(true), NIOFileUtils.DATA_FILTER);
+            List<Path> files = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(false), NIOFileUtils.DATA_FILTER);
             for (Path file : files) {
                 Path target = Paths.get(zielTif.toString(), file.getFileName().toString());
                 StorageProvider.getInstance().copyFile(file, target);
+
+                //for 3d object files look for "helper files" with the same base name and copy them as well
+                if (NIOFileUtils.objectNameFilter.accept(file)) {
+                    copy3DObjectHelperFiles(myProzess, zielTif, file);
+                }
             }
         }
 
@@ -448,6 +431,35 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * @param myProzess
+     * @param zielTif
+     * @param file
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws SwapException
+     * @throws DAOException
+     */
+    public void copy3DObjectHelperFiles(Process myProzess, Path zielTif, Path file)
+            throws IOException, InterruptedException, SwapException, DAOException {
+        Path tiffDirectory = Paths.get(myProzess.getImagesTifDirectory(true));
+        String baseName = FilenameUtils.getBaseName(file.getFileName().toString());
+        List<Path> helperFiles = StorageProvider.getInstance()
+                .listDirNames(tiffDirectory.toString())
+                .stream()
+                .filter(dirName -> dirName.equals(baseName))
+                .map(filename -> tiffDirectory.resolve(filename))
+                .collect(Collectors.toList());
+        for (Path helperFile : helperFiles) {
+            Path helperTarget = Paths.get(zielTif.toString(), helperFile.getFileName().toString());
+            if (StorageProvider.getInstance().isDirectory(helperFile)) {
+                StorageProvider.getInstance().copyDirectory(helperFile, helperTarget);
+            } else {
+                StorageProvider.getInstance().copyFile(helperFile, helperTarget);
             }
         }
     }

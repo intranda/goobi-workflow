@@ -61,72 +61,33 @@ public class Paginator {
     }
 
     private int[] selectedPages;
-
     private Metadatum[] pagesToPaginate;
-
     private Mode paginationMode = Paginator.Mode.PAGES;
-
     private Scope paginationScope = Paginator.Scope.FROMFIRST;
-
     private String paginationStartValue = "uncounted";
-
     private Type paginationType = Paginator.Type.UNCOUNTED;
-
     private boolean fictitiousPagination = false;
-
     private String prefix = null;
     private String suffix = null;
-
-    private String doublePageDiscriminator = " ";
-
-    //	public static void main(String[] args) throws Exception {
-    //		Prefs prefs = new Prefs();
-    //		prefs.loadPrefs("C:\\opt\\digiverso\\ruleset.xml");
-    //		int[] pageSelection = { 0 };
-    //		MetadatumImpl[] alleSeitenNeu = new MetadatumImpl[4];
-    //		MetadataType mdt = prefs.getMetadataTypeByName("logicalPageNumber");
-    //		Metadata pageNo0 = new Metadata(mdt);
-    //		Metadata pageNo1 = new Metadata(mdt);
-    //		Metadata pageNo2 = new Metadata(mdt);
-    //		Metadata pageNo3 = new Metadata(mdt);
-    //		alleSeitenNeu[0] = new MetadatumImpl(pageNo0, 0, prefs, null, null);
-    //		alleSeitenNeu[1] = new MetadatumImpl(pageNo1, 1, prefs, null, null);
-    //		alleSeitenNeu[2] = new MetadatumImpl(pageNo2, 2, prefs, null, null);
-    //		alleSeitenNeu[3] = new MetadatumImpl(pageNo3, 3, prefs, null, null);
-    //
-    //		Scope scope = Scope.FROMFIRST;
-    //		Type type = Type.ARABIC;
-    //		Mode mode = Mode.DOUBLE_PAGES;
-    //		boolean fictitious = true;
-    //		String paginierungWert = "1";
-    //		Paginator p = new Paginator().setPageSelection(pageSelection).setPagesToPaginate(alleSeitenNeu).setPaginationScope(scope)
-    //		        .setPaginationType(type).setPaginationMode(mode).setFictitious(fictitious).setPaginationStartValue(paginierungWert);
-    //		// p.setPrefix(paginationPrefix);
-    //		// p.setSuffix(paginationSuffix);
-    //		p.run();
-    //
-    //		for (MetadatumImpl page : alleSeitenNeu) {
-    //			System.out.println(page.getIdentifier() + ": " + page.getMd().getValue());
-    //		}
-    //	}
+    private String doublePageDiscriminator = "-";
 
     /**
      * Perform pagination.
      * 
-     * @throws IllegalArgumentException Thrown if invalid config parameters have been set.
+     * <<<<<<< HEAD
+     * 
+     * @throws IllegalArgumentException Thrown if invalid config parameters have been set. =======
+     * @throws IllegalArgumentException Thrown if invalid config parameters have been set. >>>>>>> refs/heads/develop
      */
     @SuppressWarnings("rawtypes")
     public void run() throws IllegalArgumentException {
-
         assertSelectionIsNotNull();
         assertValidPaginationStartValue();
-
         List sequence = createPaginationSequence();
         if (StringUtils.isNotBlank(prefix) || StringUtils.isNotBlank(suffix)) {
             sequence = addPrefixAndSuffixToSequence(sequence);
         }
         applyPaginationSequence(sequence);
-
     }
 
     @SuppressWarnings("rawtypes")
@@ -162,12 +123,11 @@ public class Paginator {
 
     @SuppressWarnings("rawtypes")
     private List createPaginationSequence() {
-
         int increment = determineIncrementFromPaginationMode();
         int start = determinePaginationBaseValue();
 
         int end = 0;
-        if (paginationMode.equals(Mode.DOUBLE_PAGES)) {
+        if (paginationMode.equals(Mode.DOUBLE_PAGES) || paginationMode.equals(Paginator.Mode.RECTOVERSO_FOLIATION)) {
             end = determinePaginationEndValue(2, start) +1;
             doublePageDiscriminator = "-";
         } else {
@@ -222,7 +182,6 @@ public class Paginator {
             }
             newSequence.add(sb.toString());
         }
-
         return newSequence;
     }
 
@@ -245,7 +204,6 @@ public class Paginator {
             toggle = !toggle;
             rectoversoSequence.add(label + (toggle ? "r" : "v"));
         }
-
         sequence = rectoversoSequence;
         return sequence;
     }
@@ -273,7 +231,6 @@ public class Paginator {
             foliationSequence.add(o);
             foliationSequence.add(o);
         }
-
         sequence = foliationSequence;
         return sequence;
     }
@@ -293,6 +250,15 @@ public class Paginator {
                 break;
             case ROMAN:
                 sequence = new RomanNumberSequence(start, end, increment);
+                // if start value is lower case, convert all to lower case
+                if (paginationStartValue.toLowerCase().equals(paginationStartValue)) {
+                    List sequenceSmall = new ArrayList<String>();
+                    for (Object rno : sequence) {
+                        rno = ((String) rno).toLowerCase();
+                        sequenceSmall.add(((String) rno).toLowerCase());
+                    }
+                    sequence = sequenceSmall;
+                }
                 break;
             case ARABIC:
                 sequence = new IntegerSequence(start, end, increment);
@@ -356,9 +322,7 @@ public class Paginator {
             } catch (NumberFormatException e) {
             }
         }
-
         return paginationBaseValue;
-
     }
 
     /**
@@ -373,7 +337,10 @@ public class Paginator {
     /**
      * Give a list of page numbers to select pages to actually paginate.
      * 
-     * @param selectedPages Array numbers, each pointing to a given page set via <code>setPagesToPaginate</code>
+     * <<<<<<< HEAD
+     * 
+     * @param selectedPages Array numbers, each pointing to a given page set via <code>setPagesToPaginate</code> =======
+     * @param selectedPages Array numbers, each pointing to a given page set via <code>setPagesToPaginate</code> >>>>>>> refs/heads/develop
      * @return This object for fluent interfacing.
      */
     public Paginator setPageSelection(int[] selectedPages) {
@@ -384,7 +351,10 @@ public class Paginator {
     /**
      * Give page objects to apply new page labels on.
      * 
-     * @param newPaginated Array of page objects.
+     * <<<<<<< HEAD
+     * 
+     * @param newPaginated Array of page objects. =======
+     * @param newPaginated Array of page objects. >>>>>>> refs/heads/develop
      * @return This object for fluent interfacing.
      */
     public Paginator setPagesToPaginate(Metadatum[] newPaginated) {
@@ -395,7 +365,10 @@ public class Paginator {
     /**
      * Set pagination mode.
      * 
-     * @param paginationMode Mode of counting pages.
+     * <<<<<<< HEAD
+     * 
+     * @param paginationMode Mode of counting pages. =======
+     * @param paginationMode Mode of counting pages. >>>>>>> refs/heads/develop
      * @return This object for fluent interfacing.
      */
     public Paginator setPaginationMode(Mode paginationMode) {
@@ -406,7 +379,10 @@ public class Paginator {
     /**
      * Set scope of pagination.
      * 
-     * @param paginationScope Set which pages from a selection get labeled.
+     * <<<<<<< HEAD
+     * 
+     * @param paginationScope Set which pages from a selection get labeled. =======
+     * @param paginationScope Set which pages from a selection get labeled. >>>>>>> refs/heads/develop
      * @return This object for fluent interfacing.
      */
     public Paginator setPaginationScope(Scope paginationScope) {
@@ -415,9 +391,12 @@ public class Paginator {
     }
 
     /**
-     * Set start value of pagination. Counting up starts here depending on the pagination mode set.
+     * <<<<<<< HEAD Set start value of pagination. Counting up starts here depending on the pagination mode set.
      * 
-     * @param paginationStartValue May contain arabic or roman number.
+     * @param paginationStartValue May contain arabic or roman number. ======= Set start value of pagination. Counting up starts here depending on the
+     *            pagination mode set.
+     * 
+     * @param paginationStartValue May contain arabic or roman number. >>>>>>> refs/heads/develop
      * @return This object for fluent interfacing.
      */
     public Paginator setPaginationStartValue(String paginationStartValue) {
@@ -428,7 +407,10 @@ public class Paginator {
     /**
      * Determine weather arabic or roman numbers should be used when counting.
      * 
-     * @param paginationType Set style of pagination numbers.
+     * <<<<<<< HEAD
+     * 
+     * @param paginationType Set style of pagination numbers. =======
+     * @param paginationType Set style of pagination numbers. >>>>>>> refs/heads/develop
      * @return This object for fluent interfacing.
      */
     public Paginator setPaginationType(Type paginationType) {
@@ -437,9 +419,12 @@ public class Paginator {
     }
 
     /**
-     * Enable or disable fictitious pagination using square bracktes around numbers.
+     * <<<<<<< HEAD Enable or disable fictitious pagination using square bracktes around numbers.
      * 
-     * @param b True, fictitious pagination. False, regular pagination.
+     * @param b True, fictitious pagination. False, regular pagination. ======= Enable or disable fictitious pagination using square bracktes around
+     *            numbers.
+     * 
+     * @param b True, fictitious pagination. False, regular pagination. >>>>>>> refs/heads/develop
      * @return This object for fluent interfacing.
      */
     public Paginator setFictitious(boolean b) {

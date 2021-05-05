@@ -230,7 +230,9 @@ public class UserManager implements IManager, Serializable {
         r.setProcessListDefaultSortOrder(rs.getString("processes_sort_order"));
         r.setTaskListDefaultSortingField(rs.getString("tasks_sort_field"));
         r.setTaskListDefaultSortOrder(rs.getString("tasks_sort_order"));
-
+        r.setDisplayLastEditionDate(rs.getBoolean("displayLastEditionDate"));
+        r.setDisplayLastEditionUser(rs.getBoolean("displayLastEditionUser"));
+        r.setDisplayLastEditionTask(rs.getBoolean("displayLastEditionTask"));
         try {
             r.setLdapGruppe(LdapManager.getLdapById(rs.getInt("ldapgruppenID")));
             if (rs.wasNull()) {
@@ -246,6 +248,7 @@ public class UserManager implements IManager, Serializable {
         r.setDisplayInstitutionColumn(rs.getBoolean("displayInstitutionColumn"));
         r.setDashboardPlugin(rs.getString("dashboardPlugin"));
         r.setSsoId(rs.getString("ssoId"));
+        r.setDashboardConfiguration(rs.getString("dashboard_configuration"));
         return r;
     }
 

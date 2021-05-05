@@ -82,7 +82,8 @@
                             <ui:fragment rendered="#{Metadaten.image.type == 'object'}">
                             	<div
                                     id="mainImage"
-                                    class="image__main-image">
+                                    class="image__main-image"
+                                    style="z-index: -1">
                                     <!-- AJAX LOADER -->
                                     <div id="imageLoader">
                                         <img src="template/img/goobi/ajaxloader2.gif" />
@@ -95,9 +96,8 @@
                                 <audio
                                     class="audioplayer"
                                     id="audioplayer"
-                                    controls="true"
-                                    played="length"
-                                    preload="auto"
+                                    controls="controls"
+                                    preload="none"
                                     src="#{Metadaten.image.objectUrl}">
                                 </audio>
                             </ui:fragment>
@@ -106,9 +106,8 @@
                                 <video
                                     class="videoplayer"
                                     id="videoplayer"
-                                    controls="true"
-                                    played="length"
-                                    preload="auto"
+                                    controls="controls"
+                                    preload="none"
                                     src="#{Metadaten.image.objectUrl}">
                                 </video>
                             </ui:fragment>
@@ -127,7 +126,8 @@
                                 <!-- MAIN IMAGE CONTAINER -->
                                 <div
                                     id="mainImage"
-                                    class="image__main-image">
+                                    class="image__main-image"
+                                    style="z-index: -1">
                                     <!-- AJAX LOADER -->
                                     <div id="imageLoader">
                                         <img src="template/img/goobi/ajaxloader2.gif" />

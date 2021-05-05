@@ -131,7 +131,6 @@ public class ConfigurationHelper implements Serializable {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public Iterator<String> getLocalKeys(String prefix) {
         Iterator<String> it = configLocal.getKeys(prefix);
         if (!it.hasNext()) {
@@ -155,6 +154,25 @@ public class ConfigurationHelper implements Serializable {
     private boolean getLocalBoolean(String inPath, boolean inDefault) {
         try {
             return configLocal.getBoolean(inPath, config.getBoolean(inPath, inDefault));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return inDefault;
+        }
+    }
+
+    private String[] getLocalStringArray(String inPath, String[] inDefault) {
+        try {
+            String[] local = configLocal.getStringArray(inPath);
+            if (local == null || local.length == 0) {
+                String[] global = config.getStringArray(inPath);
+                if (global == null || local.length == 0) {
+                    return inDefault;
+                } else {
+                    return global;
+                }
+            } else {
+                return local;
+            }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return inDefault;
@@ -291,7 +309,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getProcessImportDirectoryName() {
-        return getLocalString("process.folder._import", "import");
+        return getLocalString("process.folder.import", "import");
     }
 
     public String getProcessExportDirectoryName() {
@@ -400,6 +418,18 @@ public class ConfigurationHelper implements Serializable {
 
     public String getS3Endpoint() {
         return getLocalString("S3Endpoint", "");
+    }
+
+    public int getS3ConnectionRetries() {
+        return getLocalInt("S3ConnectionRetry", 10);
+    }
+
+    public int getS3ConnectionTimeout() {
+        return getLocalInt("S3ConnectionTimeout", 10000);
+    }
+
+    public int getS3SocketTimeout() {
+        return getLocalInt("S3SocketTimeout", 10000);
     }
 
     // process creation
@@ -757,6 +787,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("ExportInTemporaryFile", false);
     }
 
+    public boolean isExportCreateUUIDsAsFileIDs() {
+        return getLocalBoolean("ExportCreateUUID", true);
+    }
+
     public boolean isExportCreateTechnicalMetadata() {
         return getLocalBoolean("ExportCreateTechnicalMetadata", false);
     }
@@ -902,12 +936,14 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isShowSecondLogField() {
         return getLocalBoolean("ProcessLogShowSecondField", false);
-
     }
 
     public boolean isShowThirdLogField() {
         return getLocalBoolean("ProcessLogShowThirdField", false);
+    }
 
+    public boolean isProcesslistShowEditionData() {
+        return getLocalBoolean("ProcesslistShowEditionData", false);
     }
 
     public List<String> getExcludeMonitoringAgentNames() {
@@ -1024,6 +1060,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("useLocalSQS", false);
     }
 
+    public String[] getHistoryImageSuffix() {
+        return getLocalStringArray("historyImageSuffix", new String[] { ".tif" });
+    }
+
     public String getQueueName(QueueType type) {
         String configName = type.getConfigName();
         String queueName = System.getenv(configName);
@@ -1031,6 +1071,10 @@ public class ConfigurationHelper implements Serializable {
             return getLocalString(configName, type.getName());
         }
         return queueName;
+    }
+
+    public boolean isDeveloping() {
+        return getLocalBoolean("developing", false);
     }
 
     /**

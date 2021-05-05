@@ -57,6 +57,7 @@ import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -133,7 +134,7 @@ public class NIOFileUtils implements StorageProviderInterface {
     }
 
     @Override
-    public Integer getNumberOfFiles(Path dir, final String suffix) {
+    public Integer getNumberOfFiles(Path dir, final String... suffixes) {
         int anzahl = 0;
         if (Files.isDirectory(dir)) {
             /* --------------------------------
@@ -142,7 +143,7 @@ public class NIOFileUtils implements StorageProviderInterface {
             anzahl = list(dir.toString(), new DirectoryStream.Filter<Path>() {
                 @Override
                 public boolean accept(Path path) {
-                    return path.getFileName().endsWith(suffix);
+                    return Arrays.stream(suffixes).anyMatch(suffix -> path.getFileName().toString().endsWith(suffix));
                 }
             }
 
@@ -153,7 +154,7 @@ public class NIOFileUtils implements StorageProviderInterface {
              * --------------------------------*/
             List<String> children = this.list(dir.toString());
             for (String child : children) {
-                anzahl += getNumberOfFiles(Paths.get(dir.toString(), child), suffix);
+                anzahl += getNumberOfFiles(Paths.get(dir.toString(), child), suffixes);
             }
         }
         return anzahl;

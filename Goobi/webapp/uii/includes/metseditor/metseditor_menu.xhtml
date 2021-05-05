@@ -22,7 +22,7 @@
             <ul class="clean">
                 <ui:fragment rendered="#{LoginForm.hasRole('Task_Mets_Pagination')}">
                     <li class="#{Metadaten.modusAnsicht == 'Paginierung' ? 'active' : ''}">
-                        <h:commandLink action="#{Metadaten.AnsichtAendern}" id="gotoPagination">
+                        <h:commandLink styleClass="focusable" action="#{Metadaten.AnsichtAendern}" id="gotoPagination">
                             #{msgs.paginierung}
                             <x:updateActionListener value="Paginierung" property="#{Metadaten.modusAnsicht}" />
                             <f:ajax render="@form :pageContentCenter" />
@@ -32,7 +32,7 @@
 
                 <ui:fragment rendered="#{LoginForm.hasRole('Task_Mets_Structure')}">
                     <li class="#{Metadaten.modusAnsicht == 'Strukturdaten' ? 'active' : ''}">
-                        <h:commandLink action="#{Metadaten.AnsichtAendern}" id="gotoStructure">
+                        <h:commandLink styleClass="focusable" action="#{Metadaten.AnsichtAendern}" id="gotoStructure">
                             #{msgs.strukturdaten}
                             <x:updateActionListener value="Strukturdaten" property="#{Metadaten.modusAnsicht}" />
                             <f:ajax render="@form :pageContentCenter" />
@@ -42,7 +42,7 @@
 
                 <ui:fragment rendered="#{LoginForm.hasRole('Task_Mets_Metadata')}">
                     <li class="#{Metadaten.modusAnsicht == 'Metadaten' ? 'active' : ''}">
-                        <h:commandLink action="#{Metadaten.AnsichtAendern}" id="gotoMetadata">
+                        <h:commandLink styleClass="focusable" action="#{Metadaten.AnsichtAendern}" id="gotoMetadata">
                             #{msgs.metadaten}
                             <x:updateActionListener value="Metadaten" property="#{Metadaten.modusAnsicht}" />
                             <f:ajax render="@form :pageContentCenter" />
@@ -52,7 +52,7 @@
 
                 <ui:fragment rendered="#{LoginForm.hasRole('Task_Mets_Files')}">
                     <li class="#{Metadaten.modusAnsicht == 'File' ? 'active' : ''}">
-                        <h:commandLink action="#{Metadaten.AnsichtAendern}" id="gotoFile">
+                        <h:commandLink styleClass="focusable" action="#{Metadaten.AnsichtAendern}" id="gotoFile">
                             #{msgs.fileManipulation}
                             <x:updateActionListener value="File" property="#{Metadaten.modusAnsicht}" />
                              <f:ajax render="@form :pageContentCenter" />

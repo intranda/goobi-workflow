@@ -77,6 +77,7 @@ import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.GoobiScript;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.helper.VariableReplacer;
@@ -98,9 +99,9 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
-import io.goobi.workflow.xslt.GeneratePdfFromXslt;
-import io.goobi.workflow.xslt.XsltPreparatorSimplifiedMetadata;
-import io.goobi.workflow.xslt.XsltPreparatorXmlLog;
+import io.goobi.workflow.xslt.XsltPreparatorDocket;
+import io.goobi.workflow.xslt.XsltPreparatorMetadata;
+import io.goobi.workflow.xslt.XsltToPdf;
 import lombok.Getter;
 import lombok.Setter;
 import ugh.dl.ContentFile;
@@ -118,8 +119,14 @@ import ugh.exceptions.WriteException;
 public class Process implements Serializable, DatabaseObject, Comparable<Process> {
     private static final Logger logger = LogManager.getLogger(Process.class);
     private static final long serialVersionUID = -6503348094655786275L;
+    @Getter
+    @Setter
     private Integer id;
+    @Getter
+    @Setter
     private String titel;
+    @Getter
+    @Setter
     private String ausgabename;
     private Boolean istTemplate;
     private Boolean inAuswahllisteAnzeigen;
@@ -130,6 +137,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private List<Masterpiece> werkstuecke;
     private List<Template> vorlagen;
     private List<Processproperty> eigenschaften;
+    @Getter
+    @Setter
     private String sortHelperStatus;
     private Integer sortHelperImages;
     private Integer sortHelperArticles;
@@ -174,6 +183,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Setter
     private boolean mediaFolderExists = false;
 
+    //    @Inject
+    //    private LoginBean loginForm;
+
     private List<StringPair> metadataList = new ArrayList<>();
     private String representativeImage = null;
 
@@ -195,6 +207,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Getter
     private boolean showFileDeletionButton;
 
+    @Getter
+    private boolean pauseAutomaticExecution;
+
     private static final Object xmlWriteLock = new Object();
 
     public Process() {
@@ -208,26 +223,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     }
 
-    /*
-     * Getter und Setter
-     */
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getSortHelperStatus() {
-        return this.sortHelperStatus;
-    }
-
-    public void setSortHelperStatus(String sortHelperStatus) {
-        this.sortHelperStatus = sortHelperStatus;
-    }
-
     public boolean isIstTemplate() {
         if (this.istTemplate == null) {
             this.istTemplate = Boolean.valueOf(false);
@@ -239,14 +234,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.istTemplate = istTemplate;
     }
 
-    public String getTitel() {
-        return this.titel;
-    }
-
-    public void setTitel(String inTitel) {
-        this.titel = inTitel.trim();
-    }
-
     public List<Step> getSchritte() {
         if ((this.schritte == null || schritte.isEmpty()) && id != null) {
             schritte = StepManager.getStepsForProcess(id);
@@ -256,6 +243,15 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public void setSchritte(List<Step> schritte) {
         this.schritte = schritte;
+    }
+
+    public boolean containsStepOfOrder(int order) {
+        for (int i = 0; i < this.schritte.size(); i++) {
+            if (this.schritte.get(i).getReihenfolge() == order) {
+                return true;
+            }
+        }
+        return false;
     }
 
     //    public List<HistoryEvent> getHistory() {
@@ -297,14 +293,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.werkstuecke = werkstuecke;
     }
 
-    public String getAusgabename() {
-        return this.ausgabename;
-    }
-
-    public void setAusgabename(String ausgabename) {
-        this.ausgabename = ausgabename;
-    }
-
     public List<Processproperty> getEigenschaften() {
         if ((eigenschaften == null || eigenschaften.isEmpty()) && id != null) {
             eigenschaften = PropertyManager.getProcessPropertiesForProcess(id);
@@ -340,33 +328,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public long getSekundenGesperrt() {
         return this.msp.getLockSekunden(this.id) % 60;
     }
-
-    /*
-     * Metadaten- und ImagePfad
-     */
-    //    private static final DirectoryStream.Filter<Path> filterMediaFolder = new DirectoryStream.Filter<Path>() {
-    //        @Override
-    //        public boolean accept(Path path) {
-    //            String name = path.getFileName().toString();
-    //            return (name.endsWith("_" + DIRECTORY_SUFFIX) && !name.startsWith(DIRECTORY_PREFIX + "_"));
-    //        }
-    //    };
-    //
-    //    private static final DirectoryStream.Filter<Path> filterMasterFolder = new DirectoryStream.Filter<Path>() {
-    //        @Override
-    //        public boolean accept(Path path) {
-    //            String name = path.getFileName().toString();
-    //            return (name.endsWith("_" + DIRECTORY_SUFFIX) && name.startsWith(DIRECTORY_PREFIX + "_"));
-    //        }
-    //    };
-
-    //    private static final DirectoryStream.Filter<Path> filterSourceFolder = new DirectoryStream.Filter<Path>() {
-    //        @Override
-    //        public boolean accept(Path path) {
-    //            String name = path.getFileName().toString();
-    //            return (name.endsWith("_" + "source"));
-    //        }
-    //    };
 
     public String getImagesTifDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
         if (this.imagesTiffDirectory != null && StorageProvider.getInstance().isDirectory(Paths.get(this.imagesTiffDirectory))) {
@@ -576,7 +537,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrTxtDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     @Deprecated
@@ -586,27 +547,27 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrPdfDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrXmlDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getImportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getExportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException, InterruptedException, SwapException, DAOException {
@@ -923,7 +884,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public Step getAktuellerSchritt() {
         for (Step step : getSchritteList()) {
-            if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN || step.getBearbeitungsstatusEnum() == StepStatus.INWORK) {
+            if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN || step.getBearbeitungsstatusEnum() == StepStatus.INWORK
+                    || step.getBearbeitungsstatusEnum() == StepStatus.INFLIGHT) {
                 return step;
             }
         }
@@ -1228,13 +1190,13 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             try {
                 ff.write(metadataFileName);
             } catch (UGHException e) {
-                //error writing. restore backung and rethrow error
+                //error writing. restore backup and rethrow error
                 Path meta = Paths.get(metadataFileName);
                 Path lastBackup = Paths.get(metadataFileName + ".1");
                 if ((!Files.exists(meta) || Files.size(meta) == 0) && Files.exists(lastBackup)) {
                     Files.copy(lastBackup, meta, StandardCopyOption.REPLACE_EXISTING);
-                    throw e;
                 }
+                throw e;
             }
         }
         Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile, false);
@@ -1404,6 +1366,22 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.swappedOut = inSwappedOut;
     }
 
+    /**
+     * starts generation of xml logfile for current process
+     */
+
+    public void downloadXML() {
+        XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
+        try {
+            String ziel = Helper.getCurrentUser().getHomeDir() + getTitel() + "_log.xml";
+            xmlExport.startExport(this, ziel);
+        } catch (IOException e) {
+            Helper.setFehlerMeldung("could not write logfile to home directory: ", e);
+        } catch (InterruptedException e) {
+            Helper.setFehlerMeldung("could not execute command to write logfile to home directory", e);
+        }
+    }
+
     public String downloadDocket() {
 
         if (logger.isDebugEnabled()) {
@@ -1430,8 +1408,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             // write run note to servlet output stream
             try {
                 ServletOutputStream out = response.getOutputStream();
-                GeneratePdfFromXslt ern = new GeneratePdfFromXslt();
-                ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorXmlLog());
+                XsltToPdf ern = new XsltToPdf();
+                ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorDocket());
                 out.flush();
             } catch (IOException e) {
                 logger.error("IOException while exporting run note", e);
@@ -1471,8 +1449,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 //                }
 
                 ServletOutputStream out = response.getOutputStream();
-                GeneratePdfFromXslt ern = new GeneratePdfFromXslt();
-                ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorSimplifiedMetadata());
+                XsltToPdf ern = new XsltToPdf();
+                ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorMetadata());
                 out.flush();
             } catch (IOException e) {
                 logger.error("IOException while exporting simplefied metadata", e);
@@ -1485,7 +1463,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public Step getFirstOpenStep() {
 
         for (Step s : getSchritteList()) {
-            if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) || s.getBearbeitungsstatusEnum().equals(StepStatus.INWORK)) {
+            if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) || s.getBearbeitungsstatusEnum().equals(StepStatus.INWORK)
+                    || s.getBearbeitungsstatusEnum() == StepStatus.INFLIGHT) {
                 return s;
             }
         }
@@ -1594,12 +1573,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.bhelp.ScanvorlagenKopieren(this, p);
         this.bhelp.WerkstueckeKopieren(this, p);
         this.bhelp.EigenschaftenKopieren(this, p);
+        LoginBean loginForm = Helper.getLoginBean();
 
         for (Step step : p.getSchritteList()) {
 
             step.setBearbeitungszeitpunkt(p.getErstellungsdatum());
             step.setEditTypeEnum(StepEditType.AUTOMATIC);
-            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
             if (loginForm != null) {
                 step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
             }
@@ -1635,7 +1614,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public void addLogEntry() {
-
         if (uploadedFile != null) {
             saveUploadedFile();
         } else {
@@ -1644,10 +1622,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             entry.setCreationDate(new Date());
             entry.setType(LogType.USER);
             entry.setProcessId(id);
-            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-            if (loginForm != null) {
-                entry.setUserName(loginForm.getMyBenutzer().getNachVorname());
-            }
+            LoginBean loginForm = Helper.getLoginBean();
+            entry.setUserName(loginForm.getMyBenutzer().getNachVorname());
             entry.setContent(content);
             content = "";
 
@@ -2260,6 +2236,118 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             return folder;
         }
         return null;
+    }
+
+    /**
+     * Get the date of the last finished step
+     */
+
+    public String getLastStatusChangeDate() {
+        Date date = null;
+        if (ConfigurationHelper.getInstance().isProcesslistShowEditionData()) {
+            if (schritte != null) {
+                for (Step step : schritte) {
+                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && step.getBearbeitungsende() != null) {
+                        if (date == null) {
+                            date = step.getBearbeitungsende();
+                        } else if (date.before(step.getBearbeitungsende())) {
+                            date = step.getBearbeitungsende();
+                        }
+                    }
+                }
+            }
+        }
+        return date == null ? "" : Helper.getDateAsFormattedString(date);
+    }
+
+    /**
+     * Get the user name of the last finished step
+     */
+
+    public String getLastStatusChangeUser() {
+        String username = "";
+        if (ConfigurationHelper.getInstance().isProcesslistShowEditionData()) {
+            Step task = null;
+            if (schritte != null) {
+                for (Step step : schritte) {
+                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && step.getBearbeitungsende() != null) {
+                        if (task == null) {
+                            task = step;
+                        } else if (task.getBearbeitungsende().before(step.getBearbeitungsende())) {
+                            task = step;
+                        }
+                    }
+                }
+            }
+            if (task != null) {
+                if (task.getEditTypeEnum() == StepEditType.AUTOMATIC || task.getEditTypeEnum() == StepEditType.ADMIN) {
+                    username = Helper.getTranslation(task.getEditTypeEnum().getTitle());
+                } else if (task.getBearbeitungsbenutzer() != null) {
+                    username = task.getBearbeitungsbenutzer().getNachVorname();
+                }
+            }
+        }
+        return username;
+    }
+
+    /**
+     * Get the name of the last finished task
+     * 
+     */
+
+    public String getLastStatusChangeTask() {
+        String taskname = "";
+        if (ConfigurationHelper.getInstance().isProcesslistShowEditionData()) {
+            Step task = null;
+            if (schritte != null) {
+                for (Step step : schritte) {
+                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && step.getBearbeitungsende() != null) {
+                        if (task == null) {
+                            task = step;
+                        } else if (task.getBearbeitungsende().before(step.getBearbeitungsende())) {
+                            task = step;
+                        }
+                    }
+                }
+            }
+            if (task != null) {
+                taskname = task.getNormalizedTitle();
+            }
+        }
+        return taskname;
+    }
+
+    public void setPauseAutomaticExecution(boolean pauseAutomaticExecution) {
+        List<Step> automaticTasks = new ArrayList<>();
+
+        if (this.pauseAutomaticExecution && !pauseAutomaticExecution) {
+            // search any open tasks; check if they are automatic tasks; start them
+            for (Step step : schritte) {
+                if (step.isTypAutomatisch()) {
+                    switch (step.getBearbeitungsstatusEnum()) {
+                        case DEACTIVATED:
+                        case DONE:
+                        case ERROR:
+                        case LOCKED:
+                            break;
+                        case INFLIGHT:
+                        case INWORK:
+                        case OPEN:
+                            automaticTasks.add(step);
+                    }
+                }
+            }
+        }
+        this.pauseAutomaticExecution = pauseAutomaticExecution;
+        if (!automaticTasks.isEmpty()) {
+            for (Step step : automaticTasks) {
+                //We need to set the process in the step to this process, so the step doesn't fetch the process from 
+                //the DB when it checks if automatic execution is paused
+                step.setProzess(this);
+                ScriptThreadWithoutHibernate script = new ScriptThreadWithoutHibernate(step);
+                script.startOrPutToQueue();
+            }
+        }
     }
 
 }

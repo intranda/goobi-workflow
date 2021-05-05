@@ -8,7 +8,8 @@
     xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -113,13 +114,13 @@
                         <!-- // Box for action area -->
 
                         <h:form styleClass="margin-top-most">
-                            <h:commandLink
-                                styleClass="btn btn-blue pull-right font-size-s"
-                                id="absenden"
-                                action="#{AktuelleSchritteForm.myPlugin.cancel}">
+                            <button
+                                class="btn btn-blue pull-right font-size-s"
+                                jsf:id="absenden"
+                                jsf:action="#{AktuelleSchritteForm.myPlugin.cancel}">
                                 <i class="fa fa-check margin-right-5"></i>
                                 <h:outputText value="#{msgs.pluginLeave}" />
-                            </h:commandLink>
+                            </button>
                         </h:form>
 
                     </div>

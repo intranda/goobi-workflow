@@ -5,7 +5,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
     </composite:interface>
@@ -16,12 +17,12 @@
 
         <style>
 #changeTemplate {
-	color: #fff;
+    color: #fff;
 }
 
 #changeTemplate:hover {
-	background: #fff;
-	color: #368ee0;
+    background: #fff;
+    color: #368ee0;
 }
 </style>
 
@@ -36,24 +37,26 @@
                         </h3>
 
                         <div class="actions">
-                            <h:panelGroup
-                                rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Template_Change')}">
+                            <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Template_Change')}">
                                 <div
                                     title="#{msgs.process_changeTemplate}"
                                     class="btn-group"
                                     data-toggle="tooltip">
-                                    <a
+                                    <div class="dropdown">
+                                    <button
                                         id="changeTemplate"
-                                        class="btn btn-mini dropdown-toggle"
+                                        class="btn btn-mini dropdown-toggle focusable"
                                         data-toggle="dropdown"> <i class="fa fa-exchange margin-right-5" /> <span class="caret"></span>
-                                    </a>
+                                    </button>
                                     <ul class="dropdown-menu pull-right">
                                         <ui:repeat
                                             var="template"
                                             value="#{ProzessverwaltungForm.availableProcessTemplates}">
-                                            <li><h:commandLink
-                                                    action="#{ProzessverwaltungForm.changeTemplate}"
-                                                    title="#{msgs.process_changeTemplate}">
+                                            <li><button
+                                            		jsf:id="changeTemplate"
+                                                    jsf:action="#{ProzessverwaltungForm.changeTemplate}"
+                                                    title="#{msgs.process_changeTemplate}"
+                                                    class="dropdown-item">
                                                     <h:outputText value="#{template.titel}" />
                                                     <x:updateActionListener
                                                         property="#{ProzessverwaltungForm.template}"
@@ -64,9 +67,10 @@
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip" />
-                                                </h:commandLink></li>
+                                                </button></li>
                                         </ui:repeat>
                                     </ul>
+                                    </div>
                                 </div>
                             </h:panelGroup>
                         </div>
@@ -83,7 +87,7 @@
                                 var="item"
                                 value="#{ProzessverwaltungForm.myProzess.schritteList}">
 
-                                <!-- ===================== Reihenfolge ====================== -->
+                                <!-- ===================== Order ====================== -->
                                 <x:column
                                     id="ordercolumn"
                                     style="min-width:80px;">
@@ -93,14 +97,15 @@
                                     <h:outputText
                                         value="#{item.reihenfolge}"
                                         styleClass="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
-                                    <!-- Schaltknopf: Reihenfolge nach oben -->
-                                    <h:commandLink
-                                        id="up"
-                                        action="#{ProzessverwaltungForm.reihenfolgeUp}"
-                                        title="#{msgs.moveTaskUp}"
-                                        pt:aria-label="#{msgs.moveTaskUp}"
-                                        rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
-                                        <i class="fa fa-chevron-up font-light margin-left-10" />
+                                    <!-- Button: count order number 1 down -->
+                                    <button
+                                        jsf:id="down"
+                                        jsf:action="#{ProzessverwaltungForm.decrementOrder}"
+                                        title="#{msgs.process_countTaskOrderNumberDown}"
+                                        aria-label="#{msgs.process_countTaskOrderNumberDown}"
+                                        jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+                                        class="margin-left-10 button-link">
+                                        <i class="fa fa-minus-circle font-light" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -108,14 +113,49 @@
                                             property="#{ProzessverwaltungForm.mySchritt}"
                                             value="#{item}" />
                                         <f:ajax render="@form" />
-                                    </h:commandLink>
-                                    <!-- Schaltknopf: Reihenfolge nach unten -->
-                                    <h:commandLink
-                                        id="down"
-                                        action="#{ProzessverwaltungForm.reihenfolgeDown}"
-                                        title="#{msgs.moveTaskDown}"
-                                        pt:aria-label="#{msgs.moveTaskDown}"
-                                        rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
+                                    </button>
+                                    <!-- Button: count order number 1 up -->
+                                    <button
+                                        jsf:id="up"
+                                        jsf:action="#{ProzessverwaltungForm.incrementOrder}"
+                                        title="#{msgs.process_countTaskOrderNumberUp}"
+                                        aria-label="#{msgs.process_countTaskOrderNumberUp}"
+                                        class="button-link margin-left-2"
+                                        jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
+                                        <i class="fa fa-plus-circle font-light" />
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <x:updateActionListener
+                                            property="#{ProzessverwaltungForm.mySchritt}"
+                                            value="#{item}" />
+                                        <f:ajax render="@form" />
+                                    </button>
+									<!-- Button: reorder step - move down -->
+                                    <button
+                                        jsf:id="down_exchange"
+                                        jsf:action="#{ProzessverwaltungForm.exchangeTaskOrderDownwards}"
+                                        title="#{msgs.process_moveTaskUp}"
+                                        aria-label="#{msgs.process_moveTaskUp}"
+                                        jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+                                        class="button-link margin-left-10">
+                                        <i class="fa fa-chevron-up font-light" />
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <x:updateActionListener
+                                            property="#{ProzessverwaltungForm.mySchritt}"
+                                            value="#{item}" />
+                                        <f:ajax render="@form" />
+                                    </button>
+									<!-- Button: reorder step - move up -->
+                                    <button
+                                        jsf:id="up_exchange"
+                                        jsf:action="#{ProzessverwaltungForm.exchangeTaskOrderUpwards}"
+                                        title="#{msgs.process_moveTaskDown}"
+                                        aria-label="#{msgs.process_moveTaskDown}"
+                                        class="button-link"
+                                        jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                         <i class="fa fa-chevron-down font-light" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
@@ -124,7 +164,7 @@
                                             property="#{ProzessverwaltungForm.mySchritt}"
                                             value="#{item}" />
                                         <f:ajax render="@form" />
-                                    </h:commandLink>
+                                    </button>
                                 </x:column>
                                 <!-- ===================== // Reihenfolge ====================== -->
 
@@ -136,16 +176,14 @@
 
                                     <h:panelGroup id="possibleActions1">
 
-                                        <h:commandLink
-                                            id="expandbutton1"
-                                            styleClass="font-black">
+                                        <button
+                                            jsf:id="expandbutton1"
+                                            class="font-black button-link">
                                             <h:panelGroup rendered="#{!item.panelAusgeklappt}">
-                                                <i
-                                                    class="fa fa-angle-right margin-right-5 #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
+                                                <i class="fa fa-angle-right margin-right-5 #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
                                             </h:panelGroup>
                                             <h:panelGroup rendered="#{item.panelAusgeklappt}">
-                                                <i
-                                                    class="fa fa-angle-down margin-right-5 #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
+                                                <i class="fa fa-angle-down margin-right-5 #{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
                                             </h:panelGroup>
                                             <x:updateActionListener
                                                 value="#{item.panelAusgeklappt?false:true}"
@@ -166,7 +204,7 @@
                                             <h:outputText
                                                 value="#{item.titelLokalisiert}"
                                                 styleClass="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'?'font-light':''}" />
-                                        </h:commandLink>
+                                        </button>
 
                                         <h:panelGroup
                                             styleClass="margin-top-10 block"
@@ -175,7 +213,8 @@
                                             <div class="box box-small box-color box-bordered">
                                                 <div class="box-title">
                                                     <h3>
-                                                        <i class="fa fa-table"></i> #{msgs.eigenschaften}
+                                                        <i class="fa fa-table"></i>
+                                                        #{msgs.eigenschaften}
                                                     </h3>
                                                 </div>
                                                 <div class="box-content nopadding">
@@ -194,26 +233,29 @@
                                                             </h:panelGroup>
 
                                                             <h:panelGroup rendered="#{item.prioritaet == 1}">
-                                                                <span class="badge badge-intranda-orange"> <i class="fa fa-lightbulb-o"></i>
+                                                                <span class="badge badge-intranda-orange">
+                                                                    <i class="fa fa-lightbulb-o"></i>
                                                                     #{msgs.badgePriority1}
                                                                 </span>
                                                             </h:panelGroup>
 
                                                             <h:panelGroup rendered="#{item.prioritaet == 2}">
-                                                                <span class="badge badge-intranda-orange"> <i class="fa fa-lightbulb-o"></i>
+                                                                <span class="badge badge-intranda-orange">
+                                                                    <i class="fa fa-lightbulb-o"></i>
                                                                     #{msgs.badgePriority2}
                                                                 </span>
                                                             </h:panelGroup>
 
-                                                            <h:panelGroup
-                                                                rendered="#{item.prioritaet gt 2 and AktuelleSchritteForm.batchHelper.currentStep.prioritaet lt 10}">
-                                                                <span class="badge badge-intranda-orange"> <i class="fa fa-lightbulb-o"></i>
+                                                            <h:panelGroup rendered="#{item.prioritaet gt 2 and AktuelleSchritteForm.batchHelper.currentStep.prioritaet lt 10}">
+                                                                <span class="badge badge-intranda-orange">
+                                                                    <i class="fa fa-lightbulb-o"></i>
                                                                     #{msgs.badgePriority3}
                                                                 </span>
                                                             </h:panelGroup>
 
                                                             <h:panelGroup rendered="#{item.prioritaet gt 9}">
-                                                                <span class="badge badge-intranda-red"> <i class="fa fa-bullhorn"></i>
+                                                                <span class="badge badge-intranda-red">
+                                                                    <i class="fa fa-bullhorn"></i>
                                                                     #{msgs.badgeCorrection}
                                                                 </span>
                                                             </h:panelGroup>
@@ -473,11 +515,16 @@
                                                 rel="tooltip"
                                                 data-toggle="tooltip"></li>
                                         </h:panelGroup>
-
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'}">
                                             <li
                                                 class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
                                                 title="#{msgs.statusDeactivated}"
+                                                data-toggle="tooltip"></li>
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'INFLIGHT'}">
+                                            <li
+                                                class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
+                                                title="#{msgs.statusInFlight}"
                                                 data-toggle="tooltip"></li>
                                         </h:panelGroup>
 
@@ -486,13 +533,15 @@
                                         value="#{item.bearbeitungsstatusEnum.title}"
                                         rendered="#{NavigationForm.showEasyRead}" />
                                     <!-- Bearbeitungsstatus hoch und runter -->
-                                    <h:commandLink
-                                        id="statusDown"
-                                        action="#{ProzessverwaltungForm.SchrittStatusDown}"
-                                        rel="tooltip"
+                                    <button
+                                        type="button"
+                                        class="button-link"
+                                        jsf:id="statusDown"
+                                        jsf:action="#{ProzessverwaltungForm.SchrittStatusDown}"
+                                        jsf:rel="tooltip"
                                         title="#{msgs.statusRunterSetzen}"
-                                        pt:aria-label="#{msgs.statusRunterSetzen}"
-                                        rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
+                                        aria-label="#{msgs.statusRunterSetzen}"
+                                        jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                         <i class="fa fa-chevron-left font-light margin-left-5"></i>
                                         <x:updateActionListener
                                             property="#{ProzessverwaltungForm.mySchrittReload}"
@@ -501,16 +550,18 @@
                                             name="data-toggle"
                                             value="tooltip" />
                                         <f:ajax render="@form" />
-                                    </h:commandLink>
+                                    </button>
 
                                     <!-- Bearbeitungsstatus hoch und runter -->
-                                    <h:commandLink
-                                        id="statusUp"
-                                        action="#{ProzessverwaltungForm.SchrittStatusUp}"
-                                        rel="tooltip"
+                                    <button
+                                        type="button"
+                                        class="button-link"
+                                        jsf:id="statusUp"
+                                        jsf:action="#{ProzessverwaltungForm.SchrittStatusUp}"
+                                        jsf:rel="tooltip"
                                         title="#{msgs.statusHoeherSetzen}"
-                                        pt:aria-label="#{msgs.statusHoeherSetzen}"
-                                        rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
+                                        aria-label="#{msgs.statusHoeherSetzen}"
+                                        jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                         <i class="fa fa-chevron-right font-light margin-left-5"></i>
                                         <x:updateActionListener
                                             property="#{ProzessverwaltungForm.mySchrittReload}"
@@ -519,7 +570,7 @@
                                             name="data-toggle"
                                             value="tooltip" />
                                         <f:ajax render="@form" />
-                                    </h:commandLink>
+                                    </button>
 
 
                                 </x:column>
@@ -529,12 +580,13 @@
                                         <h:outputText value="#{msgs.auswahl}" />
                                     </f:facet>
                                     <!-- Bearbeiten-Schaltknopf -->
-                                    <h:commandLink
-                                        id="editStep"
-                                        pt:aria-label="#{msgs.detailsDesSchritts}"
-                                        action="process_edit_step"
-                                        title="#{msgs.detailsDesSchritts}">
-                                        <i class="btn fa fa-pencil margin-right-5"></i>
+                                    <button
+                                        jsf:id="editStep"
+                                        aria-label="#{msgs.detailsDesSchritts}"
+                                        jsf:action="process_edit_step"
+                                        title="#{msgs.detailsDesSchritts}"
+                                        class="btn button-schaltknopf margin-right-5">
+                                        <i class="fa fa-pencil"></i>
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -544,16 +596,17 @@
                                         <x:updateActionListener
                                             property="#{ProzessverwaltungForm.modusBearbeiten}"
                                             value="" />
-                                    </h:commandLink>
+                                    </button>
 
-                                    <h:commandLink
-                                        id="runPlugin"
+                                    <button
+                                        jsf:id="runPlugin"
                                         title="#{msgs.executePlugin}"
-                                        pt:aria-label="#{msgs.executePlugin}"
-                                        rendered="#{item.stepPlugin != '' and item.stepPlugin != null}"
-                                        action="#{ProzessverwaltungForm.startPlugin}"
-                                        onclick="preventDoubleSubmit(this);">
-                                        <span class="btn fa fa-puzzle-piece margin-right-5"></span>
+                                        aria-label="#{msgs.executePlugin}"
+                                        jsf:rendered="#{item.stepPlugin != '' and item.stepPlugin != null}"
+                                        jsf:action="#{ProzessverwaltungForm.startPlugin}"
+                                        onclick="preventDoubleSubmit(this);"
+                                        class="button-link blue">
+                                        <span class="btn fa fa-puzzle-piece" style="font-size: 12px"></span>
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
@@ -563,48 +616,49 @@
                                         <x:updateActionListener
                                             property="#{ProzessverwaltungForm.mySchrittReload}"
                                             value="#{item}" />
-                                    </h:commandLink>
+                                    </button>
 
-                                    <h:commandLink
-                                        id="executeScript"
+                                    <button
+                                        jsf:id="executeScript"
                                         title="#{msgs.executeScripts}"
-                                        pt:aria-label="#{msgs.executeScripts}"
-                                        rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}"
-                                        action="#{HelperForm.executeScriptsForStep(item.id)}"
-                                        onclick="preventDoubleSubmit(this);">
+                                        aria-label="#{msgs.executeScripts}"
+                                        jsf:rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}"
+                                        jsf:action="#{HelperForm.executeScriptsForStep(item.id)}"
+                                        onclick="preventDoubleSubmit(this);"
+                                        class="button-link blue">
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
                                         <span class="btn fa fa-cog margin-right-5"></span>
-                                    </h:commandLink>
+                                    </button>
 
-                                    <h:commandLink
-                                        id="executeHttp"
+                                    <button
+                                        jsf:id="executeHttp"
                                         title="#{msgs.executeHttpCalls}"
-                                        rendered="#{item.httpStep}"
-                                        action="#{HelperForm.executeHttpCallForStep(item.id)}"
-                                        onclick="preventDoubleSubmit(this);">
+                                        jsf:rendered="#{item.httpStep}"
+                                        jsf:action="#{HelperForm.executeHttpCallForStep(item.id)}"
+                                        onclick="preventDoubleSubmit(this);"
+                                        class="button-link blue">
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
                                         <span class="btn fa fa-cog margin-right-5"></span>
-                                    </h:commandLink>
-
+                                    </button>
                                 </h:column>
 
                             </x:dataTable>
 
                             <div class="dataTables_info">
                                 <!-- Neu-Schaltknopf -->
-                                <h:commandLink
-                                    id="addStepLink"
-                                    styleClass="btn btn-primary font-size-s margin-right-5"
-                                    action="#{ProzessverwaltungForm.SchrittNeu}"
+                                <button
+                                    jsf:id="addStepLink"
+                                    class="btn btn-primary font-size-s margin-right-5"
+                                    jsf:action="#{ProzessverwaltungForm.SchrittNeu}"
                                     title="#{msgs.schrittHinzufuegen}"
-                                    rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and (ProzessverwaltungForm.myProzess.titel != '')}">
+                                    jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and (ProzessverwaltungForm.myProzess.titel != '')}">
                                     <i class="fa fa-plus margin-right-5"></i>
                                     <h:outputText value="#{msgs.schrittHinzufuegen}" />
-                                </h:commandLink>
+                                </button>
                             </div>
                         </div>
 

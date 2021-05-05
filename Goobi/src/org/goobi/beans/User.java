@@ -247,6 +247,22 @@ public class User implements DatabaseObject {
     @Setter
     private String taskListDefaultSortOrder = "Desc";
 
+    @Getter
+    @Setter
+    private boolean displayLastEditionDate = false;
+
+    @Getter
+    @Setter
+    private boolean displayLastEditionUser = false;
+
+    @Getter
+    @Setter
+    private boolean displayLastEditionTask = false;
+
+    @Getter
+    @Setter
+    private String dashboardConfiguration;
+
     @Override
     public void lazyLoad() {
         try {

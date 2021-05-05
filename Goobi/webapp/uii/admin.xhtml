@@ -1,4 +1,5 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+                xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param name="myPageTitle" value="#{msgs.administrationsaufgaben}" />
 
@@ -29,7 +30,7 @@
                                     <label class="control-label">#{msgs.message}:</label>
                                 </div>
                                 <div class="col-sm-9">
-                                    <h:inputTextarea styleClass="form-control" value="#{SessionForm.bitteAusloggen}">
+                                    <h:inputTextarea styleClass="form-control focusable" value="#{SessionForm.bitteAusloggen}">
                                     	<f:passThroughAttribute
 		                                     name="aria-label"
 		                                     value="#{msgs.message}" />
@@ -40,7 +41,9 @@
                             <hr class="margin-top-regular margin-bottom-regular" />
 
                             <div class="margin-top-regular">
-                                <h:commandLink styleClass="btn btn-primary font-size-s pull-right" value="#{msgs.uebernehmen}" action="admin.xhtml" />
+                                <button class="btn btn-primary font-size-s pull-right" jsf:action="admin.xhtml" >
+                                    #{msgs.uebernehmen}
+                                </button>
                             </div>
 
                         </div>

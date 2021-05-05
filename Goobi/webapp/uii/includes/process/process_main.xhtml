@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
     </composite:interface>
@@ -29,14 +30,14 @@
 
                                 <div class="actions">
 
-                                    <h:commandLink
-                                        id="edit"
-                                        pt:aria-label="#{msgs.bearbeiten}"
+                                    <button
+                                        jsf:id="edit"
+                                        aria-label="#{msgs.bearbeiten}"
                                         title="#{msgs.prozessdetailsBearbeiten}"
-                                        action="#{ProzessverwaltungForm.Reload}"
-                                        rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
-                                        styleClass="btn btn-mini"
-                                        rel="tooltip">
+                                        jsf:action="#{ProzessverwaltungForm.reload}"
+                                        jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+                                        class="btn btn-mini"
+                                        jsf:rel="tooltip">
                                         <i class="fa fa-pencil"></i>
                                         <x:updateActionListener
                                             property="#{ProzessverwaltungForm.modusBearbeiten}"
@@ -44,20 +45,20 @@
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                    </h:commandLink>
+                                    </button>
 
-                                    <h:commandLink
-                                        id="reload"
+                                    <button
+                                        jsf:id="reload"
                                         pt:aria-label="#{msgs.reload}"
-                                        action="#{ProzessverwaltungForm.Reload}"
-                                        styleClass="btn btn-mini"
+                                        jsf:action="#{ProzessverwaltungForm.reload}"
+                                        class="btn btn-mini"
                                         title="#{msgs.reload}"
-                                        rel="tooltip">
+                                        jsf:rel="tooltip">
                                         <i class="fa fa-refresh"></i>
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                    </h:commandLink>
+                                    </button>
 
                                     <!-- Metadaten-Schaltknopf -->
                                     <h:commandLink
@@ -142,7 +143,7 @@
                                         id="myModal-#{count}"
                                         tabindex="-1"
                                         role="dialog"
-                                        aria-labelledby="myModalLabel">
+                                        aria-labelledby="myModalLabel2">
                                         <div
                                             class="modal-dialog"
                                             role="document">
@@ -158,7 +159,7 @@
                                                     </a>
                                                     <h4
                                                         class="modal-title"
-                                                        id="myModalLabel">
+                                                        id="myModalLabel2">
                                                         <h:outputText value="#{msgs.metseditorOpen}" />
                                                     </h4>
                                                 </div>
@@ -167,13 +168,13 @@
                                                 </div>
                                                 <div class="modal-footer">
 
-                                                    <h:commandLink
+                                                    <button
                                                         onclick="sessionStorage.removeItem('columnWidths');"
-                                                        action="#{Metadaten.XMLlesen}"
-                                                        id="action15a"
+                                                        jsf:action="#{Metadaten.XMLlesen}"
+                                                        jsf:id="action15a"
                                                         title="#{msgs.discard}"
-                                                        rel="tooltip"
-                                                        styleClass="btn btn-lightred pull-left">
+                                                        jsf:rel="tooltip"
+                                                        class="btn btn-lightred pull-left">
                                                         <i class="fa fa-trash-o margin-right-10"></i>
                                                         <h:outputText value="#{msgs.discard}" />
                                                         <f:passThroughAttribute
@@ -206,15 +207,15 @@
                                                         <f:setPropertyActionListener
                                                             value="#{null}"
                                                             target="#{NavigationForm.uiStatus.mets_toc5}" />
-                                                    </h:commandLink>
+                                                    </button>
 
-                                                    <h:commandLink
+                                                    <button
                                                         onclick="sessionStorage.removeItem('columnWidths');"
-                                                        action="#{Metadaten.XMLlesen}"
-                                                        id="action15b"
+                                                        jsf:action="#{Metadaten.XMLlesen}"
+                                                        jsf:id="action15b"
                                                         title="#{msgs.overwrite}"
-                                                        rel="tooltip"
-                                                        styleClass="btn btn-green">
+                                                        jsf:rel="tooltip"
+                                                        class="btn btn-green">
                                                         <i class="fa fa-floppy-o margin-right-10"></i>
                                                         <h:outputText value="#{msgs.overwrite}" />
                                                         <f:passThroughAttribute
@@ -247,7 +248,7 @@
                                                         <f:setPropertyActionListener
                                                             value="#{null}"
                                                             target="#{NavigationForm.uiStatus.mets_toc5}" />
-                                                    </h:commandLink>
+                                                    </button>
 
                                                 </div>
                                             </div>
@@ -255,88 +256,88 @@
                                     </div>
 
                                     <!-- DMS-Export-Schaltknopf -->
-                                    <h:commandLink
-                                        action="#{ProzessverwaltungForm.ExportDMS}"
-                                        id="action21"
-                                        pt:aria-label="#{msgs.importDms}"
-                                        styleClass="btn btn-mini font-light"
+                                    <button
+                                        jsf:action="#{ProzessverwaltungForm.ExportDMS}"
+                                        jsf:id="action21"
+                                        aria-label="#{msgs.importDms}"
+                                        class="btn btn-mini font-light"
                                         title="#{msgs.importDms}"
-                                        rel="tooltip"
-                                        rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.myProzess.displayDMSButton}">
+                                        jsf:rel="tooltip"
+                                        jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.myProzess.displayDMSButton}">
                                         <i class="fa fa-globe"></i>
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                    </h:commandLink>
+                                    </button>
 
                                     <!-- DMS-Export-Schaltknopf greyed -->
-                                    <h:commandLink
-                                        action="#{ProzessverwaltungForm.ExportDMS}"
-                                        styleClass="btn btn-mini"
-                                        disabled="true"
+                                    <button
+                                        jsf:action="#{ProzessverwaltungForm.ExportDMS}"
+                                        class="btn btn-mini"
+                                        jsf:disabled="true"
                                         title="#{msgs.importDms}"
-                                        rel="tooltip"
-                                        rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !ProzessverwaltungForm.myProzess.displayDMSButton}">
+                                        jsf:rel="tooltip"
+                                        jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !ProzessverwaltungForm.myProzess.displayDMSButton}">
                                         <i class="font-light fa fa-globe"></i>
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                    </h:commandLink>
+                                    </button>
 
                                     <!-- download database related data for the process -->
-                                    <h:commandLink
-                                        action="#{ProzessverwaltungForm.downloadProcessDatebaseInformation}"
-                                        id="action23"
-                                        styleClass="btn btn-mini"
+                                    <button
+                                        jsf:action="#{ProzessverwaltungForm.downloadProcessDatebaseInformation}"
+                                        jsf:id="action23"
+                                        class="btn btn-mini"
                                         title="#{msgs.exportDatabaseInformation}"
-                                        pt:aria-label="#{msgs.exportDatabaseInformation}"
-                                        rel="tooltip"
-                                        rendered="#{LoginForm.hasRole('Admin_Export_Processdata')}">
+                                        aria-label="#{msgs.exportDatabaseInformation}"
+                                        jsf:rel="tooltip"
+                                        jsf:rendered="#{LoginForm.hasRole('Admin_Export_Processdata')}">
                                         <i class="fa fa-file-archive-o"></i>
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                    </h:commandLink>
+                                    </button>
                                     <!-- download database related data for the process -->
-                                    <h:commandLink
-                                        action="#{ProzessverwaltungForm.reImportProcess}"
-                                        id="action25"
-                                        styleClass="btn btn-mini"
+                                    <button
+                                        jsf:action="#{ProzessverwaltungForm.reImportProcess}"
+                                        jsf:id="action25"
+                                        class="btn btn-mini"
                                         title="#{msgs.reImportDatabaseInformation}"
-                                        pt:aria-label="#{msgs.reImportDatabaseInformation}"
-                                        rel="tooltip"
-                                        rendered="#{ProzessverwaltungForm.renderReimport}">
+                                        aria-label="#{msgs.reImportDatabaseInformation}"
+                                        jsf:rel="tooltip"
+                                        jsf:rendered="#{ProzessverwaltungForm.renderReimport}">
                                         <i class="fa fa-cloud-download"></i>
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                    </h:commandLink>
+                                    </button>
                                     <ui:fragment rendered="#{ProzessverwaltungForm.paginator != null}">
-                                        <h:commandLink
-                                            action="#{ProzessverwaltungForm.previousEntry}"
-                                            styleClass="btn btn-mini"
+                                        <button
+                                            jsf:action="#{ProzessverwaltungForm.previousEntry}"
+                                            class="btn btn-mini"
                                             title="#{msgs.previousProcess}"
                                             pt:aria-label="#{msgs.previousProcess}"
-                                            rel="tooltip"
-                                            disabled="#{not ProzessverwaltungForm.hasPreviousEntry}">
+                                            jsf:rel="tooltip"
+                                            jsf:disabled="#{not ProzessverwaltungForm.hasPreviousEntry}">
                                             <i class="fa fa-angle-left #{not ProzessverwaltungForm.hasPreviousEntry?'font-light':''}" />
                                             <f:passThroughAttribute
                                                 name="data-toggle"
                                                 value="tooltip" />
-                                        </h:commandLink>
+                                        </button>
 
-                                        <h:commandLink
-                                            action="#{ProzessverwaltungForm.nextEntry}"
-                                            styleClass="btn btn-mini"
+                                        <button
+                                            jsf:action="#{ProzessverwaltungForm.nextEntry}"
+                                            class="btn btn-mini"
                                             pt:aria-label="#{msgs.nextProcess}"
                                             title="#{msgs.nextProcess}"
-                                            rel="tooltip"
-                                            disabled="#{not ProzessverwaltungForm.hasNextEntry}">
+                                            jsf:rel="tooltip"
+                                            jsf:disabled="#{not ProzessverwaltungForm.hasNextEntry}">
                                             <i class="fa fa-angle-right #{not ProzessverwaltungForm.hasNextEntry?'font-light':''}" />
                                             <f:passThroughAttribute
                                                 name="data-toggle"
                                                 value="tooltip" />
-                                        </h:commandLink>
+                                        </button>
                                     </ui:fragment>
                                 </div>
 
@@ -369,6 +370,8 @@
 
                                     <h:outputText value="#{msgs.istTemplate}:" />
                                     <i class="fa #{ProzessverwaltungForm.myProzess.istTemplate?'fa-check-square-o':'fa-square-o'}"></i>
+                                    <h:outputText value="#{msgs.pauseAutomaticExecution}:" />
+                                    <i class="fa #{ProzessverwaltungForm.myProzess.pauseAutomaticExecution?'fa-check-square-o':'fa-square-o'}"></i>
 
                                     <h:outputText
                                         value="#{msgs.id}:"
@@ -437,10 +440,10 @@
 
                     <div class="box box-color orange box-bordered">
                         <div class="box-title">
-                            <h3>
+                            <h2>
                                 <i class="fa fa-table"></i>
                                 <h:outputText value="#{msgs.prozess}" />
-                            </h3>
+                            </h2>
                         </div>
                         <div class="box-content nopadding">
 
@@ -475,10 +478,10 @@
 
                             <intranda:formInputDropDown
                                 id="docket"
-                                label="#{msgs.docket}"
+                                label="#{msgs.docket}name"
                                 field="#{ProzessverwaltungForm.docketSelection}"
                                 help="#{msgs.helpProcessDocket}"
-                                name="docket"
+                                name="docket_name"
                                 selectItems="#{ProzessverwaltungForm.docketSelectionList}"
                                 fieldStyle="form-control"
                                 required="true" />
@@ -498,59 +501,66 @@
                                 help="#{msgs.helpProcessTemplate}"
                                 name="template" />
 
+                            <intranda:formInputCheckBox
+                                id="pauseAutomaticExecution"
+                                label="#{msgs.pauseAutomaticExecution}"
+                                field="#{ProzessverwaltungForm.myProzess.pauseAutomaticExecution}"
+                                help="#{msgs.helpProcessPauseAutomaticExecution}"
+                                name="pauseAutomaticExecution" />
+
 
                             <h:panelGroup>
                                 <div class="form-actions">
 
                                     <!-- Save -->
-                                    <h:commandLink
-                                        styleClass="btn btn-success pull-right font-size-s margin-bottom-most"
-                                        id="absenden"
-                                        action="#{ProzessverwaltungForm.Speichern}">
+                                    <button
+                                        class="btn btn-success pull-right font-size-s margin-bottom-most"
+                                        jsf:id="absenden"
+                                        jsf:action="#{ProzessverwaltungForm.Speichern}">
                                         <i class="fa fa-save margin-right-5"></i>
                                         <x:updateActionListener
                                             property="#{ProzessverwaltungForm.modusBearbeiten}"
                                             value="" />
                                         <h:outputText value="#{msgs.speichern}" />
-                                    </h:commandLink>
+                                    </button>
 
-                                    <h:commandLink
-                                        id="cancel"
-                                        styleClass="btn margin-sides-10 font-size-s pull-right"
-                                        immediate="true"
-                                        action="#{NavigationForm.Reload}"
-                                        rendered="#{ProzessverwaltungForm.myProzess.id != null}">
+                                    <button
+                                        jsf:id="cancel"
+                                        class="btn margin-sides-10 font-size-s pull-right"
+                                        jsf:immediate="true"
+                                        jsf:action="#{NavigationForm.Reload}"
+                                        jsf:rendered="#{ProzessverwaltungForm.myProzess.id != null}">
                                         <h:outputText value="#{msgs.abbrechen}" />
                                         <x:updateActionListener
                                             property="#{ProzessverwaltungForm.modusBearbeiten}"
                                             value="" />
-                                    </h:commandLink>
+                                    </button>
 
                                     <h:panelGroup rendered="#{ProzessverwaltungForm.myProzess.id != null}">
 
-                                        <a
-                                            href="#"
+                                        <button
+                                            type="button"
                                             class="btn btn-danger font-size-s margin-right-5"
                                             data-toggle="modal"
                                             data-target="#deleteContentModal"> <i class="fa fa-trash-o margin-right-5"></i> <h:outputText
                                                 value="#{msgs.contentLoeschen}" />
-                                        </a>
+                                        </button>
 
-                                        <a
+                                        <button
                                             id="delete"
-                                            href="#"
+                                            type="button"
                                             class="btn btn-danger font-size-s"
                                             data-toggle="modal"
                                             data-target="#deleteModal"> <i class="fa fa-trash-o margin-right-5"></i> <h:outputText
                                                 value="#{msgs.loeschen}" />
-                                        </a>
+                                        </button>
 
                                         <div
                                             class="modal fade"
                                             id="deleteContentModal"
                                             tabindex="-1"
                                             role="dialog"
-                                            aria-labelledby="myModalLabel">
+                                            aria-labelledby="myModalLabel3">
                                             <div
                                                 class="modal-dialog"
                                                 role="document">
@@ -558,7 +568,7 @@
                                                     <div class="modal-header">
                                                         <h4
                                                             class="modal-title"
-                                                            id="myModalLabel">
+                                                            id="myModalLabel3">
                                                             <h:outputText value="#{msgs.contentLoeschen}" />
                                                         </h4>
                                                     </div>
@@ -572,12 +582,12 @@
                                                             class="btn"
                                                             data-dismiss="modal"
                                                             aria-hidden="true">#{msgs.abbrechen}</button>
-                                                        <h:commandLink
-                                                            styleClass="btn btn-danger"
-                                                            action="#{ProzessverwaltungForm.ContentLoeschen}">
+                                                        <button
+                                                            class="btn btn-danger"
+                                                            jsf:action="#{ProzessverwaltungForm.ContentLoeschen}">
                                                             <i class="fa fa-trash-o margin-right-5"></i>
                                                             <h:outputText value="#{msgs.loeschen}" />
-                                                        </h:commandLink>
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -587,7 +597,7 @@
                                             id="deleteModal"
                                             tabindex="-1"
                                             role="dialog"
-                                            aria-labelledby="myModalLabel">
+                                            aria-labelledby="myModalLabel1">
                                             <div
                                                 class="modal-dialog"
                                                 role="document">
@@ -595,7 +605,7 @@
                                                     <div class="modal-header">
                                                         <h4
                                                             class="modal-title"
-                                                            id="myModalLabel">
+                                                            id="myModalLabel1">
                                                             <h:outputText value="#{msgs.loeschen}" />
                                                         </h4>
                                                     </div>
@@ -614,13 +624,13 @@
                                                             class="btn"
                                                             data-dismiss="modal"
                                                             aria-hidden="true">#{msgs.abbrechen}</button>
-                                                        <h:commandLink
-                                                            styleClass="btn btn-danger"
-                                                            id="confirmDelete"
-                                                            action="#{ProzessverwaltungForm.Loeschen}">
+                                                        <button
+                                                            class="btn btn-danger"
+                                                            jsf:id="confirmDelete"
+                                                            jsf:action="#{ProzessverwaltungForm.Loeschen}">
                                                             <i class="fa fa-trash-o margin-right-5"></i>
                                                             <h:outputText value="#{msgs.loeschen}" />
-                                                        </h:commandLink>
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>

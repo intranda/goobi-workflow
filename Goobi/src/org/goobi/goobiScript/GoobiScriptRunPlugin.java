@@ -1,7 +1,8 @@
 package org.goobi.goobiScript;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
@@ -12,8 +13,6 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 
-import com.google.common.collect.ImmutableList;
-
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
@@ -23,89 +22,79 @@ import lombok.extern.log4j.Log4j2;
 public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public String getAction() {
+        return "runPlugin";
+    }
+
+    @Override
+    public String getSampleCall() {
+        StringBuilder sb = new StringBuilder();
+        addNewActionToSampleCall(sb, "This GoobiScript allow to run a plugin that is assigned to a workflow step.");
+        addParameterToSampleCall(sb, "steptitle", "Catalogue update",
+                "Title of the workflow step which has a plugin assigned that shall be executed");
+        return sb.toString();
+    }
+
+    @Override
+    public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
-            return false;
+            return new ArrayList<>();
         }
 
         // add all valid commands to list
-        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
+        List<GoobiScriptResult> newList = new ArrayList<>();
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, parameters, username, starttime);
             newList.add(gsr);
         }
-        gsm.setGoobiScriptResults(newList.build());
-        return true;
+        return newList;
     }
 
     @Override
-    public void execute() {
-        SetStepStatusThread et = new SetStepStatusThread();
-        et.start();
-    }
+    public void execute(GoobiScriptResult gsr) {
+        String steptitle = parameters.get("steptitle");
 
-    class SetStepStatusThread extends Thread {
+        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+        gsr.setProcessTitle(p.getTitel());
+        gsr.setResultType(GoobiScriptResultType.RUNNING);
+        gsr.updateTimestamp();
+        for (Step step : p.getSchritteList()) {
+            if (step.getTitel().equalsIgnoreCase(steptitle)) {
+                Step so = StepManager.getStepById(step.getId());
 
-        @Override
-        public void run() {
-            String steptitle = parameters.get("steptitle");
+                if (so.getStepPlugin() != null && !so.getStepPlugin().isEmpty()) {
+                    IStepPlugin myPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, so.getStepPlugin());
 
-            // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    log.error("Problem while waiting for running GoobiScripts", e);
-                }
-            }
+                    if (myPlugin != null) {
+                        myPlugin.initialize(so, "");
 
-            // execute all jobs that are still in waiting state
-            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
-                    for (Step step : p.getSchritteList()) {
-                        if (step.getTitel().equalsIgnoreCase(steptitle)) {
-                            Step so = StepManager.getStepById(step.getId());
+                        if (myPlugin.getPluginGuiType() == PluginGuiType.NONE) {
+                            myPlugin.execute();
+                            myPlugin.finish();
 
-                            if (so.getStepPlugin() != null && !so.getStepPlugin().isEmpty()) {
-                                IStepPlugin myPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, so.getStepPlugin());
-
-                                if (myPlugin != null) {
-                                    myPlugin.initialize(so, "");
-
-                                    if (myPlugin.getPluginGuiType() == PluginGuiType.NONE) {
-                                        myPlugin.execute();
-                                        myPlugin.finish();
-
-                                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                                "Plugin for step '" + steptitle + "' executed using GoobiScript.", username);
-                                        log.info("Plugin for step '" + steptitle + "' executed using GoobiScript for process with ID " + p.getId());
-                                        gsr.setResultMessage("Plugin for step '" + steptitle + "' executed successfully.");
-                                        gsr.setResultType(GoobiScriptResultType.OK);
-                                    } else {
-                                        gsr.setResultMessage("Plugin for step '" + steptitle + "' cannot be executed as it has a GUI.");
-                                        gsr.setResultType(GoobiScriptResultType.ERROR);
-                                    }
-                                }
-                            } else {
-                                gsr.setResultMessage("Plugin for step '" + steptitle + "' cannot be executed as it is not Plugin workflow step.");
-                                gsr.setResultType(GoobiScriptResultType.ERROR);
-                            }
+                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                                    "Plugin for step '" + steptitle + "' executed using GoobiScript.", username);
+                            log.info("Plugin for step '" + steptitle + "' executed using GoobiScript for process with ID " + p.getId());
+                            gsr.setResultMessage("Plugin for step '" + steptitle + "' executed successfully.");
+                            gsr.setResultType(GoobiScriptResultType.OK);
+                        } else {
+                            gsr.setResultMessage("Plugin for step '" + steptitle + "' cannot be executed as it has a GUI.");
+                            gsr.setResultType(GoobiScriptResultType.ERROR);
                         }
                     }
-                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
-                        gsr.setResultType(GoobiScriptResultType.OK);
-                        gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
-                    }
-                    gsr.updateTimestamp();
+                } else {
+                    gsr.setResultMessage("Plugin for step '" + steptitle + "' cannot be executed as it is not Plugin workflow step.");
+                    gsr.setResultType(GoobiScriptResultType.ERROR);
                 }
             }
         }
+        if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+            gsr.setResultType(GoobiScriptResultType.OK);
+            gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+        }
+        gsr.updateTimestamp();
     }
 }

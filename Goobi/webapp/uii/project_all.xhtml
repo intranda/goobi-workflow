@@ -1,6 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:o="http://omnifaces.org/ui"
-	xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<ui:param name="myPageTitle" value="#{msgs.projekte}" />
 
@@ -19,7 +20,7 @@
 				<div class="col-sm-12">
 					<div class="box box-color box-bordered">
 						<div class="box-title">
-							<h2 tabindex="0">
+							<h2>
 								<i class="fa fa-compass"></i>
 								<h:outputText value="#{myPageTitle}" />
 							</h2>
@@ -79,33 +80,33 @@
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
 										<!-- Bearbeiten-Schaltknopf -->
-										<h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip" action="project_edit">
+										<button jsf:id="edit" class="btn margin-right-5" jsf:rel="tooltip" jsf:action="project_edit">
 											<i class="fa fa-pencil"></i>
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
 											<f:passThroughAttribute name="aria-label" value="#{msgs.projektBearbeiten}" />
 											<f:setPropertyActionListener target="#{ProjekteForm.myProjekt}" value="#{item}" />
 											<f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="" />
-										</h:commandLink>
+										</button>
 										
 										<!-- Duplicate project -->
-										<h:commandLink id="clone" action="#{ProjekteForm.cloneProject}" styleClass="btn" 
-											title="#{msgs.duplicateProject}" rel="tooltip"
+										<button jsf:id="clone" jsf:action="#{ProjekteForm.cloneProject}" class="btn" 
+											title="#{msgs.duplicateProject}" jsf:rel="tooltip"
 											onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
-											<i class="fa fa-clipboard" title="#{msgs.duplicateProject}" rel="tooltip"/>
+											<i class="fa fa-clipboard" title="#{msgs.duplicateProject}" jsf:rel="tooltip"/>
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
 											<f:setPropertyActionListener target="#{ProjekteForm.myProjekt}" value="#{item}" />
-										</h:commandLink>
+										</button>
 									</x:column>
 
 								</x:dataTable>
 
 								<div class="dataTables_info">
 									<!-- Neu-Schaltknopf -->
-									<h:commandLink id="newProject" styleClass="btn btn-primary font-size-s" action="#{ProjekteForm.Neu}" immediate="true">
+									<button jsf:id="newProject" class="btn btn-primary font-size-s" jsf:action="#{ProjekteForm.Neu}" jsf:immediate="true">
 										<i class="fa fa-plus margin-right-5"></i>
 										<h:outputText value="#{msgs.neuesProjektAnlegen}" />
 										<f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="" />
-									</h:commandLink>
+									</button>
 								</div>
 								<div class="dataTables_paginate">
 									<!-- paginator -->
