@@ -31,6 +31,7 @@ import org.goobi.production.plugin.interfaces.IPlugin;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import net.xeoh.plugins.base.PluginManager;
 import net.xeoh.plugins.base.impl.PluginManagerFactory;
@@ -43,20 +44,20 @@ import net.xeoh.plugins.base.util.PluginManagerUtil;
  *
  */
 
-
 @ViewScoped
 @Log4j2
 @Named
 public class PluginsBean implements Serializable {
 
-
     private static final long serialVersionUID = 9152658727528258005L;
-
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     @Getter
     private Map<String, List<PluginInfo>> plugins;
 
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    @Getter
+    @Setter
+    private String mode = "installed";
 
     public PluginsBean() {
         this.plugins = getPluginsFromFS();

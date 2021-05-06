@@ -35,54 +35,133 @@
 						</h2>
 					</div>
 					<div class="box-content ">
-						<div class="dataTables_wrapper">
-							<h:form id="plugins_form">
-								<ui:repeat var="folder"
-									value="#{pluginsBean.plugins.keySet().toArray()}">
-									
-									<h3 class="folder--line">
-										<h:outputText value="#{folder} #{msgs.plugins}" styleClass="text #{not pluginsBean.plugins[folder].isEmpty()?'':'font-light'}"/>
-									</h3>
-
-									<x:dataTable
-										rendered="#{not pluginsBean.plugins[folder].isEmpty()}"
-										styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
-										var="pluginInfo" value="#{pluginsBean.plugins[folder]}">
-										<x:column styleClass="">
-											<f:facet name="header">
-												<h:outputText value="#{msgs.filename}" />
-											</f:facet>
-											<h:outputText value="#{pluginInfo.filename}" />
-										</x:column>
-										<x:column style="width: 300px;">
-											<f:facet name="header">
-												<h:outputText value="#{msgs.containedPlugins}" />
-											</f:facet>
-											<h:outputText rendered="#{not pluginInfo.containedPlugins.isEmpty()}" value="#{pluginInfo.containedPlugins}" />
-										</x:column>
-										<x:column style="width: 300px;">
-											<f:facet name="header">
-												<h:outputText value="#{msgs.pluginsUsedInWorkflows}" />
-											</f:facet>
-											<h:outputText rendered="#{not pluginInfo.pluginsUsedInWorkflows.isEmpty()}" value="#{pluginInfo.pluginsUsedInWorkflows}" />
-										</x:column>
-										<x:column styleClass="tableColumnOverflow width200">
-											<f:facet name="header">
-												<h:outputText value="#{msgs.gitHash}" />
-											</f:facet>
-											<h:outputText value="#{pluginInfo.gitHash}" />
-										</x:column>
-										<x:column styleClass="tableColumnOverflow width200">
-											<f:facet name="header">
-												<h:outputText value="#{msgs.buildDate}" />
-											</f:facet>
-											<h:outputText value="#{pluginInfo.buildDate}" />
-										</x:column>
-
-									</x:dataTable>
-								</ui:repeat>
-							</h:form>
-						</div>
+						<h:form id="plugins_tabform">
+							<ul class="nav nav-tabs">
+								<li role="presentation"
+									class="#{pluginsBean.mode eq 'installed' ? 'active' : ''}">
+									<h:commandLink>
+										<h:outputText value="#{msgs.installed}" />
+										<f:ajax render="pluginsTabContent @form" />
+										<f:setPropertyActionListener value="installed" target="#{pluginsBean.mode}"></f:setPropertyActionListener>
+									</h:commandLink>
+								</li>
+								<li role="presentation"
+									class="#{pluginsBean.mode eq 'installNew' ? 'active' : ''}">
+									<h:commandLink>
+										<h:outputText value="#{msgs.installNew}" />
+										<f:ajax render="pluginsTabContent @form" />
+										<f:setPropertyActionListener value="installNew" target="#{pluginsBean.mode}"></f:setPropertyActionListener>
+									</h:commandLink>
+								</li>
+							</ul>
+						</h:form>
+						<h:panelGroup id="pluginsTabContent">
+							<h:panelGroup layout="block" rendered="#{pluginsBean.mode eq 'installNew'}">
+								<h3>#{msgs.installNewPlugin}</h3>
+								<h:form enctype="multipart/form-data">
+									<h:inputFile value="#{pluginInstallBean.uploadedPluginFile}" rendered="#{pluginInstallBean.pluginInstaller.pluginInfo eq null}">
+										<f:ajax listener="#{pluginInstallBean.parseUploadedPlugin}" render="@form"/>
+									</h:inputFile>
+									<ui:fragment rendered="#{pluginInstallBean.pluginInstaller.pluginInfo != null}">
+										<div class="row">
+											<div class="col-md-12">
+												<table class="table">
+													<tr>
+														<th>Plugin identifier</th>
+														<td>#{pluginInstallBean.pluginInstaller.pluginInfo.name}</td>
+													</tr>
+													<tr>
+														<th>Plugin type</th>
+														<td>#{pluginInstallBean.pluginInstaller.pluginInfo.type}</td>
+													</tr>
+													<tr>
+														<th>Plugin version</th>
+														<td>#{pluginInstallBean.pluginInstaller.pluginInfo.versions[0].pluginVersion}</td>
+													</tr>
+													<tr>
+														<th>Goobi version</th>
+														<td>#{pluginInstallBean.pluginInstaller.pluginInfo.versions[0].publicGoobiVersion}</td>
+													</tr>
+												</table>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-12">
+												<h4>Konflikte</h4>
+											</div>
+											<ui:repeat var="conflict" value="#{pluginInstallBean.pluginInstaller.check.conflicts.values()}">
+												<div class="col-md-6">
+													<pre>#{conflict.localVersion}</pre>
+												</div>
+												<div class="col-md-6">
+													<pre>#{conflict.archiveVersion}</pre>
+												</div>
+											</ui:repeat>
+										</div>
+										<hr />
+										<div class="row">
+											<div class="col-md-12">
+												<h:commandLink styleClass="btn btn-primary pull-right" action="#{pluginInstallBean.pluginInstaller.install}">
+													Install
+													<f:ajax render="@form"/>
+												</h:commandLink>
+												<h:commandLink action="#{pluginInstallBean.cancelInstall}" styleClass="btn">Cancel</h:commandLink>
+											</div>
+										</div>
+									</ui:fragment>
+								</h:form>
+							</h:panelGroup>
+							<h:panelGroup layout="block" rendered="#{pluginsBean.mode eq 'installed'}">
+								<h:form id="plugins_form">
+									<ui:repeat var="folder"
+										value="#{pluginsBean.plugins.keySet().toArray()}">
+										
+										<ui:fragment rendered="#{not pluginsBean.plugins[folder].isEmpty()}">
+											<h3 class="folder--line" tabindex="0">
+												<h:outputText value="#{folder} #{msgs.plugins}" styleClass="text"/>
+											</h3>
+										</ui:fragment>
+	
+										<x:dataTable
+											rendered="#{not pluginsBean.plugins[folder].isEmpty()}"
+											styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+											var="pluginInfo" value="#{pluginsBean.plugins[folder]}">
+											<x:column styleClass="">
+												<f:facet name="header">
+													<h:outputText value="#{msgs.filename}" />
+												</f:facet>
+												<h:outputText value="#{pluginInfo.filename}" />
+											</x:column>
+											<x:column style="width: 300px;">
+												<f:facet name="header">
+													<h:outputText value="#{msgs.containedPlugins}" />
+												</f:facet>
+												<h:outputText rendered="#{not pluginInfo.containedPlugins.isEmpty()}" value="#{pluginInfo.containedPlugins}" />
+											</x:column>
+											<x:column style="width: 300px;">
+												<f:facet name="header">
+													<h:outputText value="#{msgs.pluginsUsedInWorkflows}" />
+												</f:facet>
+												<h:outputText rendered="#{not pluginInfo.pluginsUsedInWorkflows.isEmpty()}" value="#{pluginInfo.pluginsUsedInWorkflows}" />
+											</x:column>
+											<x:column styleClass="tableColumnOverflow width200">
+												<f:facet name="header">
+													<h:outputText value="#{msgs.gitHash}" />
+												</f:facet>
+												<h:outputText value="#{pluginInfo.gitHash}" />
+											</x:column>
+											<x:column styleClass="tableColumnOverflow width200">
+												<f:facet name="header">
+													<h:outputText value="#{msgs.buildDate}" />
+												</f:facet>
+												<h:outputText value="#{pluginInfo.buildDate}" />
+											</x:column>
+	
+										</x:dataTable>
+									</ui:repeat>
+								</h:form>
+							</h:panelGroup>
+						</h:panelGroup>
 					</div>
 				</div>
 			</div>
