@@ -59,6 +59,10 @@ public class PluginsBean implements Serializable {
     @Setter
     private String mode = "installed";
 
+    @Getter
+    @Setter
+    private String conflicts_mode = "show_file_difference";
+
     public PluginsBean() {
         this.plugins = getPluginsFromFS();
     }

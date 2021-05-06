@@ -6,7 +6,8 @@
 	xmlns:of="http://omnifaces.org/functions"
 	template="/uii/template/template.html"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
 	<ui:param name="myPageTitle"
 		value="#{msgs.menu_administration_plugins}" />
@@ -40,7 +41,7 @@
 								<li role="presentation"
 									class="#{pluginsBean.mode eq 'installed' ? 'active' : ''}">
 									<h:commandLink>
-										<h:outputText value="#{msgs.installed}" />
+										<h:outputText value="#{msgs.install_plugin_installed}" />
 										<f:ajax render="pluginsTabContent @form" />
 										<f:setPropertyActionListener value="installed" target="#{pluginsBean.mode}"></f:setPropertyActionListener>
 									</h:commandLink>
@@ -48,7 +49,7 @@
 								<li role="presentation"
 									class="#{pluginsBean.mode eq 'installNew' ? 'active' : ''}">
 									<h:commandLink>
-										<h:outputText value="#{msgs.installNew}" />
+										<h:outputText value="#{msgs.install_plugin_install_new}" />
 										<f:ajax render="pluginsTabContent @form" />
 										<f:setPropertyActionListener value="installNew" target="#{pluginsBean.mode}"></f:setPropertyActionListener>
 									</h:commandLink>
@@ -57,7 +58,7 @@
 						</h:form>
 						<h:panelGroup id="pluginsTabContent">
 							<h:panelGroup layout="block" rendered="#{pluginsBean.mode eq 'installNew'}">
-								<h3>#{msgs.installNewPlugin}</h3>
+								<h3>#{msgs.install_plugin_install_new}</h3>
 								<h:form enctype="multipart/form-data">
 									<h:inputFile value="#{pluginInstallBean.uploadedPluginFile}" rendered="#{pluginInstallBean.pluginInstaller.pluginInfo eq null}">
 										<f:ajax listener="#{pluginInstallBean.parseUploadedPlugin}" render="@form"/>
@@ -87,25 +88,89 @@
 										</div>
 										<div class="row">
 											<div class="col-md-12">
-												<h4>Konflikte</h4>
+												<h4>#{msgs.install_plugin_conflicts}</h4>
 											</div>
+											<h:form id="plugins_tabform">
+												<ul class="nav nav-tabs">
+													<li role="presentation"
+														class="#{pluginsBean.conflicts_mode eq 'show_file_difference' ? 'active' : ''}">
+														<h:commandLink>
+															<h:outputText value="#{msgs.install_plugin_show_file_difference}" />
+															<f:ajax render="pluginsTabContent @form" />
+															<f:setPropertyActionListener value="show_file_difference" target="#{pluginsBean.conflicts_mode}"></f:setPropertyActionListener>
+														</h:commandLink>
+													</li>
+													<li role="presentation"
+														class="#{pluginsBean.conflicts_mode eq 'edit_existing_file' ? 'active' : ''}">
+														<h:commandLink>
+															<h:outputText value="#{msgs.install_plugin_edit_existing_file}" />
+															<f:ajax render="pluginsTabContent @form" />
+															<f:setPropertyActionListener value="edit_existing_file" target="#{pluginsBean.conflicts_mode}"></f:setPropertyActionListener>
+														</h:commandLink>
+													</li>
+													<li role="presentation"
+														class="#{pluginsBean.conflicts_mode eq 'edit_uploaded_file' ? 'active' : ''}">
+														<h:commandLink>
+															<h:outputText value="#{msgs.install_plugin_edit_uploaded_file}" />
+															<f:ajax render="pluginsTabContent @form" />
+															<f:setPropertyActionListener value="edit_uploaded_file" target="#{pluginsBean.conflicts_mode}"></f:setPropertyActionListener>
+														</h:commandLink>
+													</li>
+												</ul>
+											</h:form>
 											<ui:repeat var="conflict" value="#{pluginInstallBean.pluginInstaller.check.conflicts.values()}">
 												<div class="col-md-6">
-													<pre>#{conflict.localVersion}</pre>
+													<h5>#{msgs.install_plugin_existing_file}</h5>
 												</div>
 												<div class="col-md-6">
-													<pre>#{conflict.archiveVersion}</pre>
+													<h5>#{msgs.install_plugin_uploaded_file}</h5>
 												</div>
+												<ui:fragment rendered="#{pluginsBean.conflicts_mode eq 'show_file_difference'}">
+													<div class="col-md-6">
+														<pre>#{conflict.localVersion}</pre>
+													</div>
+													<div class="col-md-6">
+														<pre>#{conflict.archiveVersion}</pre>
+													</div>
+												</ui:fragment>
+												<ui:fragment rendered="#{pluginsBean.conflicts_mode eq 'edit_existing_file'}">
+													<div class="col-md-6">
+														<x:inputTextarea id="textarea_edit_existing_file" style="resize: none;" pt:aria-label="textarea_edit_existing_file" forceId="true" styleClass="form-control" value="#{conflict.localVersion}" />
+													</div>
+													<script type="text/javascript">
+														var textarea = document.getElementById('textarea_edit_existing_file');
+														textarea.style.height = (textarea.scrollHeight + 10) + 'px';
+													</script>
+													<div class="col-md-6">
+														<pre>#{conflict.archiveVersion}</pre>
+													</div>
+												</ui:fragment>
+												<ui:fragment rendered="#{pluginsBean.conflicts_mode eq 'edit_uploaded_file'}">
+													<div class="col-md-6">
+														<pre>#{conflict.localVersion}</pre>
+													</div>
+													<script type="text/javascript">
+														var textarea = document.getElementById('textarea_edit_uploaded_file');
+														textarea.style.height = (textarea.scrollHeight + 10) + 'px';
+													</script>
+													<div class="col-md-6">
+														<x:inputTextarea id="textarea_edit_uploaded_file" style="resize: none;" pt:aria-label="textarea_edit_uploaded_file" forceId="true" styleClass="form-control" value="#{conflict.archiveVersion}" />
+													</div>
+												</ui:fragment>
 											</ui:repeat>
 										</div>
 										<hr />
 										<div class="row">
 											<div class="col-md-12">
 												<h:commandLink styleClass="btn btn-primary pull-right" action="#{pluginInstallBean.pluginInstaller.install}">
-													Install
+													#{msgs.install_plugin_install_uploaded_configuration}
 													<f:ajax render="@form"/>
 												</h:commandLink>
-												<h:commandLink action="#{pluginInstallBean.cancelInstall}" styleClass="btn">Cancel</h:commandLink>
+												<h:commandLink styleClass="btn btn-primary pull-right" action="#{pluginInstallBean.pluginInstaller.install}">
+													#{msgs.install_plugin_install_existing_configuration}
+													<f:ajax render="@form"/>
+												</h:commandLink>
+												<h:commandLink action="#{pluginInstallBean.cancelInstall}" styleClass="btn">#{msgs.cancel}</h:commandLink>
 											</div>
 										</div>
 									</ui:fragment>
