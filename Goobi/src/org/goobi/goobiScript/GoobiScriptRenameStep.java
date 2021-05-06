@@ -1,15 +1,14 @@
 package org.goobi.goobiScript;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
-
-import com.google.common.collect.ImmutableList;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -25,7 +24,7 @@ public class GoobiScriptRenameStep extends AbstractIGoobiScript implements IGoob
     public String getAction() {
         return "renameStep";
     }
-    
+
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
@@ -34,80 +33,57 @@ public class GoobiScriptRenameStep extends AbstractIGoobiScript implements IGoob
         addParameterToSampleCall(sb, "newStepName", "Image upload", "Define how the title of the workflow step shall be from now on.");
         return sb.toString();
     }
-    
+
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (StringUtils.isBlank(parameters.get("oldStepName"))) {
             Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "oldStepName");
-            return false;
+            return new ArrayList<>();
         }
         if (StringUtils.isBlank(parameters.get("newStepName"))) {
             Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "newStepName");
-            return false;
+            return new ArrayList<>();
         }
 
         // add all valid commands to list
-        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
+        List<GoobiScriptResult> newList = new ArrayList<>();
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, parameters, username, starttime);
             newList.add(gsr);
         }
-        gsm.setGoobiScriptResults(newList.build());
-        return true;
+        return newList;
     }
 
     @Override
-    public void execute() {
-        RenameStepThread et = new RenameStepThread();
-        et.start();
-    }
+    public void execute(GoobiScriptResult gsr) {
+        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+        String processTitle = p.getTitel();
+        gsr.setProcessTitle(processTitle);
+        gsr.setResultType(GoobiScriptResultType.RUNNING);
+        gsr.updateTimestamp();
 
-    class RenameStepThread extends Thread {
-        @Override
-        public void run() {
-            // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
+        String oldStepName = parameters.get("oldStepName");
+        String newStepName = parameters.get("newStepName");
+        for (Step step : p.getSchritte()) {
+            if (step.getTitel().equalsIgnoreCase(oldStepName)) {
+                step.setTitel(newStepName);
                 try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    log.error("Problem while waiting for running GoobiScripts", e);
+                    StepManager.saveStep(step);
+                } catch (DAOException e) {
+                    log.error(e);
                 }
-            }
-            // execute all jobs that are still in waiting state
-            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    String processTitle = p.getTitel();
-                    gsr.setProcessTitle(processTitle);
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
 
-                    String oldStepName = parameters.get("oldStepName");
-                    String newStepName = parameters.get("newStepName");
-                    for (Step step : p.getSchritte()) {
-                        if (step.getTitel().equalsIgnoreCase(oldStepName)) {
-                            step.setTitel(newStepName);
-                            try {
-                                StepManager.saveStep(step);
-                            } catch (DAOException e) {
-                                log.error(e);
-                            }
-
-                            log.info("Step title changed using GoobiScript for process with ID " + p.getId());
-                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                    "Step title changed '" + oldStepName + " to  '" + newStepName + "' using GoobiScript.", username);
-                            gsr.setResultMessage("Step title changed successfully.");
-                        }
-                    }
-                    gsr.setResultType(GoobiScriptResultType.OK);
-
-                    gsr.updateTimestamp();
-                }
+                log.info("Step title changed using GoobiScript for process with ID " + p.getId());
+                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                        "Step title changed '" + oldStepName + " to  '" + newStepName + "' using GoobiScript.", username);
+                gsr.setResultMessage("Step title changed successfully.");
             }
         }
+        gsr.setResultType(GoobiScriptResultType.OK);
 
+        gsr.updateTimestamp();
     }
 
 }

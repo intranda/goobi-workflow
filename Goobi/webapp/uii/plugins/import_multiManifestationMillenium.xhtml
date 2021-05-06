@@ -1,5 +1,5 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk">
+    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk">
 
     <composite:interface>
     </composite:interface>
@@ -49,14 +49,14 @@
 
                     </div>
                     <div class="col-sm-2">
-                        <h:commandLink action="#{MassImportForm.plugin.addDocstruct}">
-                            <span class="btn fa fa-plus" />
-                        </h:commandLink>
+                        <button jsf:action="#{MassImportForm.plugin.addDocstruct}" class="btn">
+                            <span class=" fa fa-plus" />
+                        </button>
 
-                        <h:commandLink action="#{MassImportForm.plugin.deleteDocstruct}" rendered="#{MassImportForm.docstructssize > 1}">
-                            <span class="btn fa fa-minus" />
+                        <button jsf:action="#{MassImportForm.plugin.deleteDocstruct}" class="btn" jsf:rendered="#{MassImportForm.docstructssize > 1}">
+                            <span class=" fa fa-minus" />
                             <x:updateActionListener property="#{MassImportForm.plugin.docstruct}" value="#{docstruct}" />
-                        </h:commandLink>
+                        </button>
                     </div>
                 </div>
             </x:dataList>

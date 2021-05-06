@@ -1,5 +1,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core" >
+    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
     </composite:interface>
@@ -79,99 +80,100 @@
 									<h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'FULL'}">
 										<li class="action-li">
 											<!-- Plugin Button only for Plugins without any gui or with full gui -->
-											<h:commandLink action="#{AktuelleSchritteForm.runPlugin}" onclick="preventDoubleSubmit(this);">
+											<button jsf:id="runPluginFull" jsf:action="#{AktuelleSchritteForm.runPlugin}" onclick="preventDoubleSubmit(this);">
 												<span class="btn btn-lightgrey margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
 												<h:outputText value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
 												<x:updateActionListener property="#{NavigationForm.uiStatus.pluginSimulation}" value="#{false}" />
-											</h:commandLink>
+											</button>
 										</li>
 									</h:panelGroup>
 									
 									<!-- Plugin - NONE -->
 									<h:panelGroup rendered="#{AktuelleSchritteForm.myPlugin !=null and AktuelleSchritteForm.myPlugin.pluginGuiType == 'NONE'}">
 										<li class="action-li">
-											<h:commandLink action="#{AktuelleSchritteForm.runPlugin}" onclick="preventDoubleSubmit(this);">
+											<button jsf:id="runPluginNone" jsf:action="#{AktuelleSchritteForm.runPlugin}" onclick="preventDoubleSubmit(this);">
 												<span class="btn btn-lightgrey margin-right-10 fa fa-puzzle-piece fa-lg width-40" />
 												<h:outputText value="#{msgs.plugin}: #{msgs[('plugin_').concat(AktuelleSchritteForm.myPlugin.title)]}" />
-											</h:commandLink>
+											</button>
 										</li>
 									</h:panelGroup>
 									
 									<!-- Modul-Schaltknopf -->
 									<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typModulName != null and AktuelleSchritteForm.batchHelper.currentStep.typModulName != ''}">
 										<li class="action-li">
-											<h:commandLink
-												action="#{AktuelleSchritteForm.executeModule}"
+											<button
+												jsf:id="executeModule"
+												jsf:action="#{AktuelleSchritteForm.executeModule}"
 												title="#{msgs.modulStarten} (#{AktuelleSchritteForm.batchHelper.currentStep.typModulName})" onclick="preventDoubleSubmit(this);">
 												<span class="btn btn-lightgrey margin-right-10 fa fa-cog fa-lg width-40" />
 												<h:outputText value="#{msgs.modulStarten} (#{AktuelleSchritteForm.batchHelper.currentStep.typModulName})" />
-											</h:commandLink>
+											</button>
 										</li>
 									</h:panelGroup>
 									
                                 <!-- Script 1 -->
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad != ''}">
 									<li class="action-li">
-								        <h:commandLink id="executeScript"
-		                                    action="#{AktuelleSchritteForm.batchHelper.executeScript}"
+								        <button jsf:id="executeScript"
+		                                    jsf:action="#{AktuelleSchritteForm.batchHelper.executeScript}"
 		                                    title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname1}" onclick="preventDoubleSubmit(this);">
 		                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.script}"
 		                                        value="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname1}" />
 		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
 		                                    <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.batchHelper.currentStep.scriptname1}" />
-		                                </h:commandLink>
+		                                </button>
 										</li>
 									</h:panelGroup>
 									
 								<!-- Script 2 -->
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad2 != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad2 != ''}">
 									<li class="action-li">
-								        <h:commandLink id="executeScript2"
-		                                    action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname2}" onclick="preventDoubleSubmit(this);">
+								        <button jsf:id="executeScript2"
+		                                    jsf:action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname2}" onclick="preventDoubleSubmit(this);">
 		                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.script}"
 		                                        value="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname2}" />
 		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
 		                                    <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.batchHelper.currentStep.scriptname2}" />
-		                                </h:commandLink>
+		                                </button>
 									</li>
 								</h:panelGroup>
 									
 								<!-- Script 3 -->
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad3 != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad3 != ''}">
 									<li class="action-li">
-									    <h:commandLink id="executeScript3"
-		                                    action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname3}" onclick="preventDoubleSubmit(this);">
+									    <button jsf:id="executeScript3"
+		                                    jsf:action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname3}" onclick="preventDoubleSubmit(this);">
 		                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.script}"
 		                                        value="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname3}" />
 		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
 		                                    <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.batchHelper.currentStep.scriptname3}" />
-		                                </h:commandLink>
+		                                </button>
 									</li>
 								</h:panelGroup>
 									
 								<!-- Script 4 -->
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad4 != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad4 != ''}">
 									<li class="action-li">
-									    <h:commandLink id="executeScript4"
-		                                    action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname4}" onclick="preventDoubleSubmit(this);">
+									    <button jsf:id="executeScript4"
+		                                    jsf:action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname4}" onclick="preventDoubleSubmit(this);">
 		                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.script}"
 		                                        value="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname4}" />
 		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
 		                                    <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.batchHelper.currentStep.scriptname4}" />
-		                                </h:commandLink>
+		                                </button>
 									</li>
 								</h:panelGroup>
 									
 								<!-- Script 5 -->
 								<h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad5 != null and AktuelleSchritteForm.batchHelper.currentStep.typAutomatischScriptpfad5 != ''}">
 									<li class="action-li">
-									    <h:commandLink id="executeScript5"
-		                                    action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname5}" onclick="preventDoubleSubmit(this);">
+									    <button jsf:id="executeScript5"
+		                                    jsf:action="#{AktuelleSchritteForm.executeScript}" title="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname5}" onclick="preventDoubleSubmit(this);">
 		                                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.batchHelper.script}"
 		                                        value="#{AktuelleSchritteForm.batchHelper.currentStep.scriptname5}" />
 		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-wrench fa-lg width-40" />
 		                                    <h:outputText value="#{msgs.scriptAusfuehren}: #{AktuelleSchritteForm.batchHelper.currentStep.scriptname5}" />
-		                                </h:commandLink>
+		                                </button>
 									</li>
 								</h:panelGroup>
 
@@ -182,10 +184,10 @@
 		                                <h:outputText styleClass="alert alert-warning alert-dismissable margin-bottom-10" value="#{msgs.timeoutWarningDMS}" />
 		
 		                                <!-- Upload-Schaltknopf -->
-		                                <h:commandLink action="#{AktuelleSchritteForm.batchHelper.ExportDMS}" title="#{msgs.importDms}" id="export" onclick="preventDoubleSubmit(this);">
+		                                <button jsf:action="#{AktuelleSchritteForm.batchHelper.ExportDMS}" title="#{msgs.importDms}" jsf:id="export" onclick="preventDoubleSubmit(this);">
 		                                    <span class="btn btn-lightgrey margin-right-10 fa fa-globe fa-lg width-40" />
 		                                    <h:outputText value="#{msgs.importDms}" />
-		                                </h:commandLink>
+		                                </button>
 									</li>
 								</h:panelGroup>
 									
@@ -223,23 +225,23 @@
 									
                                 <!-- Bearbeitung abbrechen-Schaltknopf -->
                                 <li class="action-li">
-	                                <h:commandLink id="cancel"
-	                                    action="#{AktuelleSchritteForm.batchHelper.BatchDurchBenutzerZurueckgeben}"
+	                                <button jsf:id="cancel"
+	                                    jsf:action="#{AktuelleSchritteForm.batchHelper.BatchDurchBenutzerZurueckgeben}"
 	                                    title="#{msgs.cancelBatchEdition}">
 	                                    <span class="btn btn-lightred margin-right-10 fa fa-reply fa-lg width-40" />
 	                                    <h:outputText value="#{msgs.cancelBatchEdition}" />
-	                                </h:commandLink>
+	                                </button>
 								</li>
 								
                                 <!-- Abschliessen-Schaltknopf -->
                                  <h:panelGroup rendered="#{AktuelleSchritteForm.enableFinalizeButton}">
                                     <li class="action-li">
-    	                                <h:commandLink id="finished"
-    	                                    action="#{AktuelleSchritteForm.batchHelper.BatchDurchBenutzerAbschliessen}"
+    	                                <button jsf:id="finished"
+    	                                    jsf:action="#{AktuelleSchritteForm.batchHelper.BatchDurchBenutzerAbschliessen}"
     	                                    title="#{msgs.finishBatchEdition}">
     	                                    <span class="btn btn-green margin-right-10 fa fa-check fa-lg width-40" />
     	                                    <h:outputText value="#{msgs.finishBatchEdition}" />
-    	                                </h:commandLink>
+    	                                </button>
                                     </li>
                                 </h:panelGroup>
                                 </ul>

@@ -7,7 +7,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -70,10 +71,10 @@
                             </div>
                         </ui:repeat>
                         <div class="text-right">
-                                <h:commandLink
-                                    id="vocabularySearchAction"
-                                    styleClass="btn btn--white btn--loader"
-                                    action="#{Metadaten.currentMetadataToPerformSearch.searchVocabulary}">
+                                <button
+                                    jsf:id="vocabularySearchAction"
+                                    class="btn btn--white btn--loader"
+                                    jsf:action="#{Metadaten.currentMetadataToPerformSearch.searchVocabulary}">
                                     <i
                                         class="fa fa-search"
                                         aria-hidden="true"></i>
@@ -91,7 +92,7 @@
                                     <f:ajax
                                         execute="@form"
                                         render="vocabularySearchlist" />
-                                </h:commandLink>
+                                </button>
                             </div>
                         
                         
@@ -123,15 +124,16 @@
 	                                        </div>
 	
 	                                        <div class="col-1">
-	                                            <h:commandLink
-	                                                styleClass="btn btn--icon-green"
-	                                                action="#{Metadaten.currentMetadataToPerformSearch.getData}">
+	                                            <button
+	                                            	jsf:id="check"
+	                                                class="btn btn--icon-green"
+	                                                jsf:action="#{Metadaten.currentMetadataToPerformSearch.getData}">
 	                                                <f:setPropertyActionListener
 	                                                    value="#{record}"
 	                                                    target="#{Metadaten.currentMetadataToPerformSearch.selectedVocabularyRecord}" />
 	
 	                                                <i class="fa fa-check" />
-	                                            </h:commandLink>
+	                                            </button>
 	                                        </div>
 	                                    </div>
 	

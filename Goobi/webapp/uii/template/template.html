@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="#{SpracheForm.locale}" xmlns="http://www.w3.org/1999/xhtml" 
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
-    xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html" 
     xmlns:c="http://java.sun.com/jstl/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk" 
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:o="http://omnifaces.org/ui">
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 <h:head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -130,6 +131,7 @@
                     <div class="container-fluid">
 
                         <h:form id="header">
+                            <o:socket channel="developerMessageChannel" connected="#{DevModeBean.developerMode}" onmessage="() => window.location.reload()" />
                         	<header>
 	                            <div class="page-header">
                                     <h:panelGroup id="globalWarningMessage">
@@ -157,29 +159,33 @@
 	                                            <img src="template/img/goobi/ajaxloader2.gif" />
 	                                        </li>
 	
-											<h:panelGroup rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResults.size() gt 0}">
-	                                        	<li class="#{SessionForm.gsm.goobiScriptHasResults('ERROR')?'background-color-F':'background-color-D'}">
-		                                            <h:commandLink action="process_goobiScript" id="goobiScriptResults2">
+											<ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResults.size() gt 0}">
+                                                <o:socket channel="goobiscriptUpdateChannel" >
+                                                    <f:ajax render="goobiScriptResults2" event="update"/>
+                                                </o:socket>
+                                                <o:commandScript name="updateGoobiScriptIndicator" render="goobiScriptResults2" />
+	                                        	<li class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'}">
+		                                            <button jsf:action="process_goobiScript" jsf:id="goobiScriptResults2" class="button-transparent">
 		                                                    <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}"></i>
 		                                                    <div class="details">
 		                                                        <span class="big">#{msgs.goobiScript_isActive}</span>
 		                                                        <span>#{SessionForm.gsm.numberOfFinishedScripts} / #{SessionForm.gsm.goobiScriptResults.size()}</span>
 		                                                    </div>
-		                                                </h:commandLink>
+		                                                </button>
 		                                        </li>
-	                                        </h:panelGroup>
+	                                        </ui:fragment>
 	                                        
 	                                        
 	                                        <h:panelGroup rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
 	                                            <li class='background-color-A'>
-	                                                <h:commandLink action="currentUsers" id="currentUsers">
+	                                                <button jsf:action="currentUsers" jsf:id="currentUsers" class="button-no-style">
 	                                                    <i class="fa fa-users" style="margin-top:3px;"></i>
 	                                                    <div class="details">
 	                                                        <span>#{msgs.aktiveBenutzer}</span>
 	                                                        <span class="big">#{SessionForm.aktiveSessions}</span>
 	                                                        <f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="" />
 	                                                    </div>
-	                                                </h:commandLink>
+	                                                </button>
 	                                            </li>
 	                                        </h:panelGroup>
 	                                        <li class='background-color-A'>
@@ -241,13 +247,16 @@
             // goobiWorkflowJS.init(goobiWorkflowConfig);
         </script>
         <script>
+     // <![CDATA[
             jsf.ajax.addOnEvent(function (data) {
                 var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
                 var ajaxloader = document.getElementById("ajaxloader");
+                var source = data.source;
+                var noLoaderGif = source.type == "hidden" && source.id.indexOf("header") == 0;
 
                 switch (ajaxstatus) {
                     case "begin": // This is called right before ajax request is been sent.
-                    	if(ajaxloader) {
+                    	if(ajaxloader && !noLoaderGif) {
                         	ajaxloader.style.display = 'block';
                     	}
                         break;
@@ -282,6 +291,9 @@
                     $('.popover.fade.right.in').remove();
                 }
                 setTimeout(scrollDownScrollDowns(), 100);
+                if(typeof updateGoobiScriptIndicator !== 'undefined') {
+                	setTimeout(updateGoobiScriptIndicator, 500);
+                }
             });
 
             $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function () {
@@ -297,11 +309,13 @@
                     myButton.click();
                 }
             });
-
+            
             window.myfaces = window.myfaces || {};
             myfaces.config = myfaces.config || {};
             //set the config part
             myfaces.config.no_portlet_env = true;
+
+         // ]]>
         </script>
     </f:view>
 </h:body>

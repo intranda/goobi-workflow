@@ -9,7 +9,8 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     template="/uii/template/template_metseditor.html"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -63,24 +64,24 @@
                         </div>
                         <div class="modal-footer">
 
-                            <h:commandLink
-                                id="discard"
-                                styleClass="btn btn-lightred pull-left"
-                                action="#{Metadaten.discard}"
+                            <button
+                                jsf:id="discard"
+                                class="btn btn-lightred pull-left"
+                                jsf:action="#{Metadaten.discard}"
                                 title="#{msgs.discard}">
                                 <i class="fa fa-trash-o margin-right-5"></i>
                                 <h:outputText value="#{msgs.discard}" />
-                            </h:commandLink>
+                            </button>
 
-                            <h:commandLink
-                                id="overwrite"
-                                styleClass="btn btn-green"
-                                action="#{Metadaten.XMLschreiben}"
+                            <button
+                                jsf:id="overwrite"
+                                class="btn btn-green"
+                                jsf:action="#{Metadaten.XMLschreiben}"
                                 onclick="goobiWorkflowJS.progress.displayProgressBar()"
                                 title="#{msgs.overwrite}">
                                 <i class="fa fa-floppy-o margin-right-5"></i>
                                 <h:outputText value="#{msgs.overwrite}" />
-                            </h:commandLink>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -376,14 +377,14 @@
             <h:inputHidden
                 id="groupIndex"
                 value="#{Metadaten.groupIndex}" />
-            <h:commandLink
-                id="updatePluginButton"
+            <button
+                jsf:id="updatePluginButton"
                 style="display:none;"
-                action="#{Metadaten.loadCurrentPlugin}">
+                jsf:action="#{Metadaten.loadCurrentPlugin}">
                 <f:ajax
                     execute="rowType rowIndex groupIndex"
                     render="processModalContent" />
-            </h:commandLink>
+            </button>
             <!-- Modal -->
             <div
                 class="modal fade"
@@ -451,16 +452,17 @@
                                         id="input" />
                                 </div>
 
-                                <h:commandLink
-                                    styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10"
-                                    action="#{Metadaten.search}"
+                                <button
+                                	jsf:id="metadataSearch"
+                                    class="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10"
+                                    jsf:action="#{Metadaten.search}"
                                     title="#{msgs.search}">
                                     <i class="fa fa-search margin-right-5"></i>
                                     <h:outputText value="#{msgs.search}" />
                                     <f:ajax
                                         execute="@form"
                                         render="list" />
-                                </h:commandLink>
+                                </button>
 
                                 <script>
                                 $('input[id*="input"]' ).on('focus',function() {
@@ -527,9 +529,10 @@
                                         <h:panelGroup
                                             layout="block"
                                             class="col-sm-1">
-                                            <h:commandLink
-                                                styleClass="btn btn-green margin-left-5"
-                                                action="#{Metadaten.currentMetadataToPerformSearch.getData}">
+                                            <button
+                                            	jsf:id="getData"
+                                                class="btn btn-green margin-left-5"
+                                                jsf:action="#{Metadaten.currentMetadataToPerformSearch.getData}">
                                                 <f:setPropertyActionListener
                                                     value="#{normdataList}"
                                                     target="#{Metadaten.currentMetadataToPerformSearch.currentData}" />
@@ -543,7 +546,7 @@
                                                     value=""
                                                     target="#{Metadaten.rowIndex}" />
                                                 <i class="fa fa-check" />
-                                            </h:commandLink>
+                                            </button>
                                         </h:panelGroup>
                                     </div>
                                 </x:dataList>
@@ -657,14 +660,15 @@
                                             <div class="row">
                                                 <div class="col-sm-12">
                                                     <div class="searchgroup-container clearfloat">
-                                                        <h:commandLink
-                                                            action="#{Metadaten.currentMetadataToPerformSearch.searchRequest.deleteSearchGroup(globStatus.index)}"
-                                                            styleClass="fa fa-times"
+                                                        <button
+                                                        	jsf:id="searchRequest"
+                                                            jsf:action="#{Metadaten.currentMetadataToPerformSearch.searchRequest.deleteSearchGroup(globStatus.index)}"
+                                                            class="button-no-style fa fa-times"
                                                             style="position:absolute; top:5px; right:21px;">
                                                             <f:ajax
                                                                 execute=":normdataForm:processes_search"
                                                                 render=":normdataForm:processes_search" />
-                                                        </h:commandLink>
+                                                        </button>
                                                         <ui:repeat
                                                             var="filter"
                                                             value="#{group.filters}"
@@ -694,13 +698,14 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="shrink">
-                                                                    <h:commandLink
-                                                                        action="#{group.deleteFilter(status.index)}"
-                                                                        styleClass="fa fa-trash pull-right">
+                                                                    <button
+                                                                    	jsf:id="deleteFilter"
+                                                                        jsf:action="#{group.deleteFilter(status.index)}"
+                                                                        class="fa fa-trash pull-right">
                                                                         <f:ajax
                                                                             execute=":normdataForm:processes_search"
                                                                             render=":normdataForm:processes_search" />
-                                                                    </h:commandLink>
+                                                                    </button>
                                                                 </div>
 
                                                                 <div class="clearfix"></div>
@@ -730,12 +735,12 @@
                                                                 </h:panelGroup>
                                                                 <div class="#{group.numFilters gt 1 ? 'col-sm-4' : 'col-sm-12'}">
                                                                     <div class="new-filter-btn">
-                                                                        <h:commandLink action="#{group.newFilter}">
+                                                                        <button jsf:action="#{group.newFilter}" jsf:id="newFilter" class="button-no-style">
                                                                             <f:ajax
                                                                                 execute=":normdataForm:processes_search"
                                                                                 render=":normdataForm:processes_search" />
 								                               			#{msgs.NORM_newFilter}
-								                               		</h:commandLink>
+								                               		</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -769,12 +774,12 @@
                                                 </h:panelGroup>
                                                 <div class="#{Metadaten.currentMetadataToPerformSearch.searchRequest.numGroups gt 1 ? 'col-sm-4' : 'col-sm-12'}">
                                                     <div class="new-filter-btn">
-                                                        <h:commandLink action="#{Metadaten.currentMetadataToPerformSearch.searchRequest.newGroup}">
+                                                        <button jsf:action="#{Metadaten.currentMetadataToPerformSearch.searchRequest.newGroup}" jsf:id="newGroup" class="button-no-style">
                                                             <f:ajax
                                                                 execute=":normdataForm:processes_search"
                                                                 render=":normdataForm:processes_search" />
 				                               			#{msgs.NORM_newGroup}
-				                               		</h:commandLink>
+				                               		</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -784,16 +789,17 @@
 
 
 
-                                <h:commandLink
-                                    styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10"
-                                    action="#{Metadaten.currentMetadataToPerformSearch.search}"
+                                <button
+                                    class="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10"
+                                    jsf:action="#{Metadaten.currentMetadataToPerformSearch.search}"
+                                    jsf:id="search"
                                     title="#{msgs.search}">
                                     <i class="fa fa-search margin-right-5"></i>
                                     <h:outputText value="#{msgs.search}" />
                                     <f:ajax
                                         execute="@form"
                                         render="processResults" />
-                                </h:commandLink>
+                                </button>
 
                                 <script>
 	                                $('input[id*="geonamesSearch"]' ).on('focus',function() {
@@ -843,9 +849,10 @@
                                                 <f:facet name="header">
                                                     <h:outputText value="#{msgs.action}" />
                                                 </f:facet>
-                                                <h:commandLink
-                                                    styleClass="btn btn-primary fa fa-check"
-                                                    action="#{Metadaten.currentMetadataToPerformSearch.linkProcess(process)}" />
+                                                <button
+                                                    class="btn btn-primary fa fa-check"
+                                                    jsf:action="#{Metadaten.currentMetadataToPerformSearch.linkProcess(process)}">
+                                                </button>
                                             </h:column>
                                         </h:dataTable>
 
@@ -914,16 +921,17 @@
                                 </div>
 
 
-                                <h:commandLink
-                                    styleClass="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10"
-                                    action="#{Metadaten.search}"
+                                <button
+                                	jsf:id="geoNameSearch"
+                                    class="btn btn-grey pull-right margin-right-10 margin-top-10 margin-bottom-10"
+                                    jsf:action="#{Metadaten.search}"
                                     title="#{msgs.search}">
                                     <i class="fa fa-search margin-right-5"></i>
                                     <h:outputText value="#{msgs.search}" />
                                     <f:ajax
                                         execute="@form"
                                         render="geonamesList" />
-                                </h:commandLink>
+                                </button>
 
                                 <script>
                                     $('input[id*="geonamesSearch"]' ).on('focus',function() {
@@ -1061,9 +1069,10 @@
 
                                         </div>
                                         <div class="col-sm-1">
-                                            <h:commandLink
-                                                action="#{Metadaten.currentMetadataToPerformSearch.getData}"
-                                                styleClass="btn btn-green margin-left-5">
+                                            <button
+                                            	jsf:id="getData"
+                                                jsf:action="#{Metadaten.currentMetadataToPerformSearch.getData}"
+                                                class="btn btn-green margin-left-5">
                                                 <f:setPropertyActionListener
                                                     value="#{geonames}"
                                                     target="#{Metadaten.currentMetadataToPerformSearch.currentToponym}" />
@@ -1071,7 +1080,7 @@
                                                     value=""
                                                     target="#{Metadaten.geonamesSearchValue}" />
                                                 <i class="fa fa-check" />
-                                            </h:commandLink>
+                                            </button>
                                         </div>
                                     </div>
                                 </x:dataList>
@@ -1136,16 +1145,17 @@
                                         id="danteInput" />
                                 </div>
                                 <div class="col-sm-4">
-                                    <h:commandLink
-                                        styleClass="btn btn-grey pull-right margin-right-10 "
-                                        action="#{Metadaten.search}"
+                                    <button
+                                        class="btn btn-grey pull-right margin-right-10 "
+                                        jsf:action="#{Metadaten.search}"
+                                        jsf:id="search2"
                                         title="#{msgs.search}">
                                         <i class="fa fa-search margin-right-5"></i>
                                         <h:outputText value="#{msgs.search}" />
                                         <f:ajax
                                             execute="@form"
                                             render="resultList" />
-                                    </h:commandLink>
+                                    </button>
                                 </div>
                                 <script>
                                 $('input[id*="danteInput"]' ).on('focus',function() {
@@ -1229,9 +1239,10 @@
                                         <h:panelGroup
                                             layout="block"
                                             class="col-sm-1">
-                                            <h:commandLink
-                                                styleClass="btn btn-green margin-left-5"
-                                                action="#{Metadaten.currentMetadataToPerformSearch.getData}">
+                                            <button
+                                            	jsf:id="gndSearchGetData"
+                                                class="btn btn-green margin-left-5"
+                                                jsf:action="#{Metadaten.currentMetadataToPerformSearch.getData}">
                                                 <f:setPropertyActionListener
                                                     value="#{normdataRecord}"
                                                     target="#{Metadaten.currentMetadataToPerformSearch.selectedRecord}" />
@@ -1242,7 +1253,7 @@
                                                     value=""
                                                     target="#{Metadaten.gndSearchValue}" />
                                                 <i class="fa fa-check" />
-                                            </h:commandLink>
+                                            </button>
                                         </h:panelGroup>
                                     </div>
                                 </x:dataList>

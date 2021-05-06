@@ -105,7 +105,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private String httpMethod;
     @Getter
     @Setter
-    private String[] possibleHttpMethods = new String[] { "POST", "PUT", "PATCH" };
+    private String[] possibleHttpMethods = new String[] { "POST", "PUT", "PATCH", "GET" };
     @Getter
     @Setter
     private String httpJsonBody;
@@ -139,6 +139,10 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     @Getter
     private QueueType messageQueue;
+
+    //    @Getter
+    //    @Setter
+    //    private String messageId;
 
     public Step() {
         this.titel = "";
@@ -482,25 +486,47 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public void setBearbeitungsstatusUp() {
-        if (getBearbeitungsstatusEnum() == StepStatus.ERROR) {
-            this.bearbeitungsstatus = StepStatus.DONE.getValue();
-            SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.DONE);
-        } else if (getBearbeitungsstatusEnum() != StepStatus.DONE) {
-            this.bearbeitungsstatus = Integer.valueOf(this.bearbeitungsstatus.intValue() + 1);
-            SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
+        switch (getBearbeitungsstatusEnum()) {
+            case ERROR:
+            case INFLIGHT:
+            case INWORK:
+                bearbeitungsstatus = StepStatus.DONE.getValue();
+                SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.DONE);
+                break;
+            case OPEN:
+                bearbeitungsstatus = 2;
+                SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
+                break;
+            case LOCKED:
+                bearbeitungsstatus = 1;
+                SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
+                break;
+            case DONE:
+            case DEACTIVATED:
+            default:
         }
-
     }
 
     public void setBearbeitungsstatusDown() {
-        if (getBearbeitungsstatusEnum() == StepStatus.ERROR) {
-            this.bearbeitungsstatus = StepStatus.OPEN.getValue();
-            SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.OPEN);
-        } else if (getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
-            this.bearbeitungsstatus = Integer.valueOf(this.bearbeitungsstatus.intValue() - 1);
-            if (bearbeitungsstatus != 0) {
+        switch (getBearbeitungsstatusEnum()) {
+            case DONE:
+                bearbeitungsstatus = 2;
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
-            }
+                break;
+            case ERROR:
+            case INFLIGHT:
+            case INWORK:
+                bearbeitungsstatus = 1;
+                SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
+                break;
+
+            case OPEN:
+                bearbeitungsstatus = 0;
+                SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
+                break;
+            case LOCKED:
+            case DEACTIVATED:
+            default:
         }
     }
 

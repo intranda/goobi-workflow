@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
     </composite:interface>
@@ -27,27 +28,27 @@
 
                     <div class="actions">
 
-                        <h:commandLink
-                            id="reloadStep"
-                            pt:aria-label="#{msgs.reload}"
-                            action="#{ProzessverwaltungForm.reload}"
-                            styleClass="btn btn-mini"
+                        <button
+                            jsf:id="reloadStep"
+                            aria-label="#{msgs.reload}"
+                            jsf:action="#{ProzessverwaltungForm.reload}"
+                            class="btn btn-mini"
                             title="#{msgs.reload}"
-                            rel="tooltip">
+                            jsf:rel="tooltip">
                             <i class="fa fa-refresh"></i>
                             <f:passThroughAttribute
                                 name="data-toggle"
                                 value="tooltip" />
-                        </h:commandLink>
+                        </button>
 
-                        <h:commandLink
-                            id="editStep"
+                        <button
+                            jsf:id="editStep"
                             title="#{msgs.bearbeiten}"
-                            pt:aria-label="#{msgs.bearbeiten}"
-                            action="#{NavigationForm.Reload}"
-                            rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
-                            styleClass="btn btn-mini"
-                            rel="tooltip">
+                            aria-label="#{msgs.bearbeiten}"
+                            jsf:action="#{NavigationForm.Reload}"
+                            jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+                            class="btn btn-mini"
+                            jsf:rel="tooltip">
                             <i class="fa fa-pencil"></i>
                             <f:passThroughAttribute
                                 name="data-toggle"
@@ -55,7 +56,7 @@
                             <x:updateActionListener
                                 property="#{ProzessverwaltungForm.modusBearbeiten}"
                                 value="schritt" />
-                        </h:commandLink>
+                        </button>
                     </div>
 
                 </div>
@@ -699,39 +700,39 @@
                     <div class="form-actions">
 
                         <!-- Save -->
-                        <h:commandLink
-                            styleClass="btn btn-success pull-right font-size-s margin-bottom-most"
-                            id="absenden"
-                            action="#{ProzessverwaltungForm.SchrittUebernehmen}">
+                        <button
+                            class="btn btn-success pull-right font-size-s margin-bottom-most"
+                            jsf:id="absenden"
+                            jsf:action="#{ProzessverwaltungForm.SchrittUebernehmen}">
                             <i class="fa fa-save margin-right-5"></i>
                             <h:outputText value="#{msgs.speichern}" />
                             <x:updateActionListener
                                 property="#{ProzessverwaltungForm.modusBearbeiten}"
                                 value="" />
-                        </h:commandLink>
+                        </button>
 
 
                         <!-- Cancel -->
-                        <h:commandLink
-                            id="cancel"
-                            styleClass="btn margin-sides-10 font-size-s pull-right"
-                            action="#{NavigationForm.Reload}"
-                            value="#{msgs.abbrechen}"
-                            immediate="true">
+                        <button
+                            jsf:id="cancel"
+                            class="btn margin-sides-10 font-size-s pull-right"
+                            jsf:action="#{NavigationForm.Reload}"
+                            jsf:immediate="true">
+                            #{msgs.abbrechen}
                             <x:updateActionListener
                                 property="#{ProzessverwaltungForm.modusBearbeiten}"
                                 value="" />
-                        </h:commandLink>
+                        </button>
 
-                        <h:commandLink
-                            id="delete"
-                            action="#{ProzessverwaltungForm.SchrittLoeschen}"
-                            styleClass="btn btn-danger font-size-s"
+                        <button
+                            jsf:id="delete"
+                            jsf:action="#{ProzessverwaltungForm.SchrittLoeschen}"
+                            class="btn btn-danger font-size-s"
                             onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
-                            rendered="#{ProzessverwaltungForm.mySchritt.id != null}">
+                            jsf:rendered="#{ProzessverwaltungForm.mySchritt.id != null}">
                             <i class="fa fa-trash-o margin-right-5"></i>
                             <h:outputText value="#{msgs.loeschen}" />
-                        </h:commandLink>
+                        </button>
 
                     </div>
                 </div>

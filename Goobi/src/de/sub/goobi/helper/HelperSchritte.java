@@ -318,6 +318,11 @@ public class HelperSchritte {
     }
 
     public ShellScriptReturnValue executeAllScriptsForStep(Step step, boolean automatic) {
+        if (automatic && step.getProzess().isPauseAutomaticExecution()) {
+            ShellScriptReturnValue returnCode = new ShellScriptReturnValue(1, "Automatic execution is disabled", "");
+            //            reOpenStep(step);
+            return returnCode;
+        }
         List<String> scriptpaths = step.getAllScriptPaths();
         int count = 1;
         int size = scriptpaths.size();
@@ -441,6 +446,8 @@ public class HelperSchritte {
                 case "PATCH":
                     resp = executor.execute(Request.Patch(url).bodyString(bodyStr, ContentType.APPLICATION_JSON)).returnResponse();
                     break;
+                case "GET":
+                    resp = executor.execute(Request.Get(url)).returnResponse();
                 default:
                     //TODO: error to process log
                     break;
@@ -629,6 +636,11 @@ public class HelperSchritte {
     }
 
     public boolean executeDmsExport(Step step, boolean automatic) {
+        if (automatic && step.getProzess().isPauseAutomaticExecution()) {
+            //            reOpenStep(step);
+            return false;
+        }
+
         IExportPlugin dms = null;
         if (StringUtils.isNotBlank(step.getStepPlugin())) {
             try {

@@ -7,7 +7,8 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -47,13 +48,13 @@
                     rowIndexVar="rowIndex">
 
                     <div class="btn-area duplicate pull-right">
-                        <h:commandLink
-                            id="grpdelete"
-                            pt:aria-label="#{msgs.mets_deleteMetadataGroup}"
-                            styleClass="btn btn--icon"
-                            action="#{Metadaten.deleteGroup}"
+                        <button
+                            jsf:id="grpdelete"
+                            aria-label="#{msgs.mets_deleteMetadataGroup}"
+                            class="btn btn--icon"
+                            jsf:action="#{Metadaten.deleteGroup}"
                             title="#{msgs.mets_deleteMetadataGroup}"
-                            role="button">
+                            type="button">
                             <i
                                 class="fa fa-lg fa-trash-o"
                                 aria-hidden="true"></i>
@@ -69,14 +70,14 @@
                             <f:ajax
                                 execute="@form"
                                 render="@form" />
-                        </h:commandLink>
-                        <h:commandLink
-                            id="grpduplicate"
-                            pt:aria-label="#{msgs.mets_duplicateMetadataGroup}"
-                            styleClass="btn btn--icon"
-                            action="#{Metadaten.CopyGroup}"
+                        </button>
+                        <button
+                            jsf:id="grpduplicate"
+                            aria-label="#{msgs.mets_duplicateMetadataGroup}"
+                            class="btn btn--icon"
+                            jsf:action="#{Metadaten.CopyGroup}"
                             title="#{msgs.mets_duplicateMetadataGroup}"
-                            role="button">
+                            type="button">
                             <i
                                 class="fa fa-lg fa-copy"
                                 aria-hidden="true"></i>
@@ -92,7 +93,7 @@
                             <f:ajax
                                 execute="@form"
                                 render="@form" />
-                        </h:commandLink>
+                        </button>
                     </div>
 
                     <h2 class="module__box-subtitle">
@@ -146,14 +147,14 @@
                     <div class="row">
                         <div class="col-auto mr-auto"></div>
                         <div class="col-auto">
-                            <h:commandLink
-                                id="addGroup"
-                                styleClass="btn btn--gray"
-                                value="#{msgs.AddNewGroup}"
-                                action="#{Metadaten.AddGroup}"
-                                role="button">
+                            <button
+                                jsf:id="addGroup"
+                                class="btn btn--gray"
+                                jsf:action="#{Metadaten.AddGroup}"
+                                type="button">
+                                #{msgs.AddNewGroup}
                                 <f:ajax render=":pageContentCenter" />
-                            </h:commandLink>
+                            </button>
                         </div>
                     </div>
                 </h:panelGroup>

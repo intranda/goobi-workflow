@@ -278,14 +278,13 @@ public class GoobiScriptTest {
 
         PowerMock.expectLastCall().anyTimes();
 
-
         PowerMock.replay(Helper.class);
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: swapProzessesIn");
     }
 
     @Test
-    public void testExecuteAddUserAction() throws Exception{
+    public void testExecuteAddUserAction() throws Exception {
 
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
@@ -307,7 +306,6 @@ public class GoobiScriptTest {
         Helper.addMessageToProcessLog(EasyMock.anyInt(), EasyMock.anyObject(LogType.class), EasyMock.anyString());
 
         PowerMock.expectLastCall().anyTimes();
-
 
         PowerMock.replay(Helper.class);
 

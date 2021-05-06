@@ -3,7 +3,8 @@
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:x="http://myfaces.apache.org/tomahawk">
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<composite:interface />
 
@@ -11,104 +12,109 @@
 		<div class="dataTables_filter">
 			<div id="filterTableColumns" class="btn-group" data-toggle="tooltip" title="#{msgs.selectTableColumns}">
 				<!-- show columns -->
-				<a href="#" class="btn dropdown-toggle searchfieldbuttongroup focusable" data-toggle="dropdown"> 
-					<i class="fa fa-columns margin-right-5" /> <span class="caret"></span>
-				</a>
+				<div class="dropdown">
+                <button type="button" class="btn dropdown-toggle searchfieldbuttongroup focusable" data-toggle="dropdown"> 
+                    <span class="fa fa-columns margin-right-5" /> <span class="caret"></span>
+                </button>
 				<ul class="dropdown-menu">
 					<li>
 						<!-- ID --> 
-						<h:commandLink id="processId" action="#{NavigationForm.Reload}">
+						<button jsf:id="processId" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
 							<i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['processId']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
 							<h:outputText value="#{msgs.id}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['processId']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['processId']}" />
-						</h:commandLink>
+						</button>
 					</li>
 					<li>
 						<!-- Batch ID --> 
-						<h:commandLink id="batchId" action="#{NavigationForm.Reload}">
+						<button jsf:id="batchId" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
 							<i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['batchId']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
 							<h:outputText value="#{msgs.batch}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['batchId']}" />
-						</h:commandLink>
+						</button>
 					</li>
 					<li>
 						<!-- modules --> 
-						<h:commandLink id="modules" action="#{NavigationForm.Reload}">
+						<button jsf:id="modules" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
 							<i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['modules']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
 							<h:outputText value="#{msgs.module}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['modules']}" />
-						</h:commandLink>
+						</button>
 					</li>
 					<li>
 						<!-- process date --> 
-						<h:commandLink id="processDate" action="#{NavigationForm.Reload}">
+						<button jsf:id="processDate" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
 							<i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['processDate']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
 							<h:outputText value="#{msgs.vorgangsdatum}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['processDate']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['processDate']}" />
-						</h:commandLink>
+						</button>
 					</li>
 					<li>
 						<!-- lockings --> 
-						<h:commandLink id="lockings" action="#{NavigationForm.Reload}">
+						<button jsf:id="lockings" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
 							<i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['lockings']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
 							<h:outputText value="#{msgs.sperrungen}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['lockings']}" />
-						</h:commandLink>
+						</button>
 					</li>
 				</ul>
+                </div>
 			</div>
 
 			<div class="btn-group" data-toggle="tooltip" title="#{msgs.anzeigeAnpassen}">
-				<a href="#" class="btn dropdown-toggle searchfieldbuttongroup focusable" data-toggle="dropdown"> <i class="fa fa-wrench margin-right-5" />
+                <div class="dropdown">
+				<button type="button" class="btn dropdown-toggle searchfieldbuttongroup focusable" data-toggle="dropdown"> 
+                    <span class="fa fa-wrench margin-right-5" />
 					<span class="caret"></span>
-				</a>
+				</button>
 
 				<!-- show or hide depending on filter -->
 				<ul class="dropdown-menu">
 					<li>
 						<!-- automatic tasks --> 
-						<h:commandLink id="showAutomaticTasks" action="#{AktuelleSchritteForm.FilterAlleStart}">
+						<button jsf:id="showAutomaticTasks" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
 							<i class="fa #{AktuelleSchritteForm.showAutomaticTasks?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
 							<h:outputText value="#{msgs.showAutomaticTasks}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.showAutomaticTasks}" value="#{not AktuelleSchritteForm.showAutomaticTasks}" />
-						</h:commandLink>
+						</button>
 					</li>
 					<li>
 						<!-- correction tasks --> 
-						<h:commandLink id="hideCorrectionTasks" action="#{AktuelleSchritteForm.FilterAlleStart}">
+						<button jsf:id="hideCorrectionTasks" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
 							<i class="fa #{AktuelleSchritteForm.hideCorrectionTasks?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
 							<h:outputText value="#{msgs.hideCorrectionTasks}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.hideCorrectionTasks}" value="#{not AktuelleSchritteForm.hideCorrectionTasks}" />
-						</h:commandLink>
+						</button>
 					</li>
 					<li>
 						<!-- own tasks --> 
-						<h:commandLink id="onlyOwnSteps" action="#{AktuelleSchritteForm.FilterAlleStart}">
+						<button jsf:id="onlyOwnSteps" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
 							<i class="fa #{AktuelleSchritteForm.nurEigeneSchritte?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
 							<h:outputText value="#{msgs.nurEigeneAufgabenAnzeigen}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.nurEigeneSchritte}" value="#{not AktuelleSchritteForm.nurEigeneSchritte}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.nurOffeneSchritte}" value="#{false}" />
-						</h:commandLink>
+						</button>
 					</li>
 					<li>
 						<!-- open tasks --> 
-						<h:commandLink id="onlyOpenSteps" action="#{AktuelleSchritteForm.FilterAlleStart}">
+						<button jsf:id="onlyOpenSteps" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
 							<i class="fa #{AktuelleSchritteForm.nurOffeneSchritte?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
 							<h:outputText value="#{msgs.nurOffeneAufgabenAnzeigen}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.nurOffeneSchritte}" value="#{not AktuelleSchritteForm.nurOffeneSchritte}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.nurEigeneSchritte}" value="#{false}" />
-						</h:commandLink>
+						</button>
 					</li>
 					<li>
 						<!-- hide tasks from other users --> 
-						<h:commandLink id="hideStepsFromOtherUsers" action="#{AktuelleSchritteForm.FilterAlleStart}">
+						<button jsf:id="hideStepsFromOtherUsers" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}" class="dropdown-item">
 							<i class="fa #{not AktuelleSchritteForm.hideStepsFromOtherUsers?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
 							<h:outputText value="#{msgs.showTasksFromOtherUsers}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.hideStepsFromOtherUsers}" value="#{not AktuelleSchritteForm.hideStepsFromOtherUsers}" />
-						</h:commandLink>
+						</button>
 					</li>
 					
 				</ul>
+                </div>
 			</div>
 		</div>
 	</composite:implementation>

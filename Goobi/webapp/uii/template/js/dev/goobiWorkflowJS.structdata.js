@@ -20,16 +20,16 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             }
 
             // check session storage for tab status
-            if (sessionStorage.getItem('structdataTabStatus') == null || sessionStorage.getItem('structdataTabStatus') == undefined) {
-                sessionStorage.setItem('structdataTabStatus', JSON.stringify(_tabStatusDefault));
-                _tabStatus = sessionStorage.getItem('structdataTabStatus');
+            if (sessionStorage.getItem('wf_structdataTabStatus') == null || sessionStorage.getItem('wf_structdataTabStatus') == undefined) {
+                sessionStorage.setItem('wf_structdataTabStatus', JSON.stringify(_tabStatusDefault));
+                _tabStatus = sessionStorage.getItem('wf_structdataTabStatus');
                 
                 // check page assignment tab status
                 _getPageAssignmentTabStatus();
                 _setPageAssignmentTabStatus();
             }
             else {
-                _tabStatus = sessionStorage.getItem('structdataTabStatus');
+                _tabStatus = sessionStorage.getItem('wf_structdataTabStatus');
                 
                 // check page assignment tab status
                 _getPageAssignmentTabStatus();
@@ -77,7 +77,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 else {
                     status[index] = false;
                 }
-                sessionStorage.setItem('structdataTabStatus', JSON.stringify(status));
+                sessionStorage.setItem('wf_structdataTabStatus', JSON.stringify(status));
             });
         });
     }

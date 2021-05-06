@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -41,13 +42,13 @@
                     <div class="row">
                         <div class="col-auto mr-auto"></div>
                         <div class="col-auto">
-                            <h:commandLink
-                                id="addCorporate"
-                                styleClass="btn btn--gray"
-                                value="#{msgs.mets_corporate_createCorporate}"
-                                action="#{Metadaten.AddCorporate}">
+                            <button
+                                jsf:id="addCorporate"
+                                class="btn btn--gray"
+                                jsf:action="#{Metadaten.AddCorporate}">
+                                #{msgs.mets_corporate_createCorporate}
                                 <f:ajax render=":pageContentCenter" />
-                            </h:commandLink>
+                            </button>
                         </div>
                     </div>
                 </ui:fragment>
