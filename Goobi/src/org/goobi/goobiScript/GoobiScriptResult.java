@@ -21,6 +21,7 @@ public class GoobiScriptResult {
     private String errorText;
     private long starttime;
     private Map<String, String> parameters;
+    private IGoobiScript customGoobiScriptImpl;
 
     public GoobiScriptResult(Integer id, String command, Map<String, String> parameters, String username, long starttime) {
         this.processId = id;
