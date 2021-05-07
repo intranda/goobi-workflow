@@ -32,7 +32,6 @@ import java.util.Set;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -1240,7 +1239,12 @@ class StepMysqlHelper implements Serializable {
         try (Connection connection = MySQLHelper.getInstance().getConnection()) {
             String sql = "SELECT jobTypes FROM jobTypes LIMIT 1";
             QueryRunner run = new QueryRunner();
-            return run.query(connection, sql, new ScalarHandler<String>(1));
+            return run.query(connection, sql, rs -> {
+                if (rs.next()) {
+                    return rs.getString(1);
+                }
+                return "[]";
+            });
         }
     }
 
