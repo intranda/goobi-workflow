@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,7 +23,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.text.diff.StringsComparator;
+
 import org.goobi.production.plugin.PluginInstallConflict.ResolveTactic;
+
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -35,14 +39,13 @@ import org.jdom2.xpath.XPathFactory;
 import com.google.common.collect.Sets;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
 @Data
 @Log4j2
-@AllArgsConstructor
 public class PluginInstaller {
+    private static final String LINEBREAK = System.getProperty("line.separator");
     public final static Set<String> endingWhitelist = Sets.newHashSet(".js", ".css", ".jar");
     public final static Set<String> pathBlacklist = Sets.newHashSet("pom.xml");
     private static Namespace pomNs = Namespace.getNamespace("pom", "http://maven.apache.org/POM/4.0.0");
@@ -60,6 +63,8 @@ public class PluginInstaller {
     private Path goobiDirectory;
     private PluginInstallInfo pluginInfo;
     private PluginPreInstallCheck check;
+
+    public List<String[]> difference;
 
     public void install() {
         try (Stream<Path> walkStream = Files.walk(this.extractedArchivePath)) {
@@ -88,6 +93,22 @@ public class PluginInstaller {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    /**
+     * A constructor to get a plugin installer object.
+     *
+     * @param extractedArchivePath The path to the extracted archive
+     * @param goobiDirectory The goobi root directory
+     * @param pluginInfo The plugin information object
+     * @param check The check object containing file differences and more information
+     */
+    public PluginInstaller(Path extractedArchivePath, Path goobiDirectory, PluginInstallInfo pluginInfo, PluginPreInstallCheck check) {
+        this.extractedArchivePath = extractedArchivePath;
+        this.goobiDirectory = goobiDirectory;
+        this.pluginInfo = pluginInfo;
+        this.check = check;
+        this.findDifferencesInAllFiles();
     }
 
     public static PluginInstaller createFromExtractedArchive(Path extractedArchivePath) throws JDOMException, IOException {
@@ -193,5 +214,63 @@ public class PluginInstaller {
     private static String getFileEnding(Path p) {
         String filename = p.getFileName().toString();
         return filename.substring(filename.lastIndexOf('.'));
+    }
+
+    /**
+     * Iterates over all files that contain conflicts and generates the arrays with the differences
+     */
+    private void findDifferencesInAllFiles() {
+        Object[] objects = this.check.getConflicts().values().toArray();
+
+        // Initialize the list for the difference-texts in the GUI
+        this.difference = new ArrayList<>();
+
+        for (int file = 0; file < objects.length; file++) {
+            // Get the conflict of the concerning file
+            PluginInstallConflict conflict = (PluginInstallConflict) (objects[file]);
+
+            // Get the code lines from the both files
+            String[] existingLines = conflict.getLocalVersion().split(LINEBREAK);
+            String[] uploadedLines = conflict.getArchiveVersion().split(LINEBREAK);
+            this.findDifferencesInFile(existingLines, uploadedLines, file);
+
+        }
+    }
+
+    /**
+     * Extracts all differences between the existing file and the uploaded file and stores it into the arrays differenceExisting and
+     * differenceUploaded.
+     *
+     * @param existingLines The code lines in the existing file
+     * @param uploadedLines The code lines in the uploaded file
+     * @param fileIndex The index of the file to know which element in the array should be written
+     */
+    private void findDifferencesInFile(String[] existingLines, String[] uploadedLines, int fileIndex) {
+
+        FileCommandVisitor fileCommandVisitor = new FileCommandVisitor();
+
+        // Check all lines in the file
+        for (int line = 0; line < existingLines.length || line < uploadedLines.length; line++) {
+
+            // When one of the files is over, the other one is compared with empty lines
+            String left = line < existingLines.length ? existingLines[line] : "" + LINEBREAK + "<br />";
+            String right = line < uploadedLines.length ? uploadedLines[line] : "" + LINEBREAK + "<br />";
+
+            StringsComparator comparator = new StringsComparator(left, right);
+
+            if (comparator.getScript().getLCSLength() > (Integer.max(left.length(), right.length()) * 0.4)) {
+                // Only compare two lines with each other when they have at least 40% commonality
+                comparator.getScript().visit(fileCommandVisitor);
+            } else {
+                // When the lines have too many differences (more than 40%), compare both with empty lines
+                StringsComparator leftComparator = new StringsComparator(left, LINEBREAK);
+                leftComparator.getScript().visit(fileCommandVisitor);
+                StringsComparator rightComparator = new StringsComparator(LINEBREAK, right);
+                rightComparator.getScript().visit(fileCommandVisitor);
+            }
+        }
+        log.error(fileCommandVisitor.getLeft());
+        log.error(fileCommandVisitor.getRight());
+        this.difference.add(new String[] { fileCommandVisitor.getLeft(), fileCommandVisitor.getRight() });
     }
 }

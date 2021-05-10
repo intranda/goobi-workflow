@@ -118,7 +118,7 @@
 													</li>
 												</ul>
 											</h:form>
-											<ui:repeat var="conflict" value="#{pluginInstallBean.pluginInstaller.check.conflicts.values()}">
+											<ui:repeat var="conflict" value="#{pluginInstallBean.pluginInstaller.difference}">
 												<div class="col-md-6">
 													<h5>#{msgs.install_plugin_existing_file}</h5>
 												</div>
@@ -127,34 +127,34 @@
 												</div>
 												<ui:fragment rendered="#{pluginsBean.conflicts_mode eq 'show_file_difference'}">
 													<div class="col-md-6">
-														<pre>#{conflict.localVersion}</pre>
+														<pre>#{conflict[0]}</pre>
 													</div>
 													<div class="col-md-6">
-														<pre>#{conflict.archiveVersion}</pre>
+														#{conflict[1]}
 													</div>
 												</ui:fragment>
 												<ui:fragment rendered="#{pluginsBean.conflicts_mode eq 'edit_existing_file'}">
 													<div class="col-md-6">
-														<x:inputTextarea id="textarea_edit_existing_file" style="resize: none;" pt:aria-label="textarea_edit_existing_file" forceId="true" styleClass="form-control" value="#{conflict.localVersion}" />
+														<x:inputTextarea id="textarea_edit_existing_file" style="resize: none;" pt:aria-label="textarea_edit_existing_file" forceId="true" styleClass="form-control" value="#{conflict[0]}" />
 													</div>
 													<script type="text/javascript">
 														var textarea = document.getElementById('textarea_edit_existing_file');
 														textarea.style.height = (textarea.scrollHeight + 10) + 'px';
 													</script>
 													<div class="col-md-6">
-														<pre>#{conflict.archiveVersion}</pre>
+														<pre>#{conflict[1]}</pre>
 													</div>
 												</ui:fragment>
 												<ui:fragment rendered="#{pluginsBean.conflicts_mode eq 'edit_uploaded_file'}">
 													<div class="col-md-6">
-														<pre>#{conflict.localVersion}</pre>
+														<pre>#{conflict[0]}</pre>
 													</div>
 													<script type="text/javascript">
 														var textarea = document.getElementById('textarea_edit_uploaded_file');
 														textarea.style.height = (textarea.scrollHeight + 10) + 'px';
 													</script>
 													<div class="col-md-6">
-														<x:inputTextarea id="textarea_edit_uploaded_file" style="resize: none;" pt:aria-label="textarea_edit_uploaded_file" forceId="true" styleClass="form-control" value="#{conflict.archiveVersion}" />
+														<x:inputTextarea id="textarea_edit_uploaded_file" style="resize: none;" pt:aria-label="textarea_edit_uploaded_file" forceId="true" styleClass="form-control" value="#{conflict[1]}" />
 													</div>
 												</ui:fragment>
 											</ui:repeat>
