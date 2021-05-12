@@ -26,7 +26,7 @@
                         <!-- onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';"> -->
                         <i class="fa fa-angle-double-left" aria-hidden="true"></i>
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
-                        <f:ajax execute="@form" render="@form" />
+                        <f:ajax execute="@form" render="thumbnailsForm" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
                     </button>
                 </li>
@@ -41,7 +41,7 @@
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span>#{Metadaten.pagesRTL?msgs.pageNext:msgs.pagePrevious}</span>
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
-                        <f:ajax execute="@form" render="@form" />
+                        <f:ajax execute="@form" render="thumbnailsForm" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
                     </button>
                 </li>
@@ -61,7 +61,7 @@
                         <span>#{Metadaten.pagesRTL?msgs.pagePrevious:msgs.pageNext}</span>
                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
-                        <f:ajax execute="@form" render="@form" />
+                        <f:ajax execute="@form" render="thumbnailsForm" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
                     </button>
                 </li>
@@ -76,7 +76,7 @@
                         <!-- onclick="document.getElementById('menu-form:scrollToThumb').value = 'true';"> -->
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                         <x:updateActionListener value="true" property="#{NavigationForm.uiStatus.mets_scrollToThumb}" />
-                        <f:ajax execute="@form" render="@form" />
+                        <f:ajax execute="@form" render="thumbnailsForm" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
                     </button>
                 </li>
@@ -86,24 +86,6 @@
                 </li>
                 </ul>
                  <ul class="clean">
-<!-- 
-                 <li class="no-hover">
-                                   <p:autoComplete 
-                        id="thumbAutocomplete" 
-                        styleClass="form-control" 
-                        scrollHeight="300" 
-                        forceId="true"
-                        value="#{Metadaten.bildNummerGeheZuCompleteString}" 
-                        completeMethod="#{Metadaten.autocomplete}"
-                        onkeypress="return goobiWorkflow.setAutocompleteListHandler( 'goButtonThumbs', event )"
-              
-                            />
-                    <h:commandButton id="goButtonThumbs" value="go" action="#{Metadaten.loadImageInThumbnailList}">
-                        <f:ajax execute="@form" render="@form" />
-                        <f:passThroughAttribute name="data-renderimage" value="true" />
-                    </h:commandButton>
-</li>
-                    -->
                 <!-- SELECT SIZE -->
                 <ui:fragment rendered="#{Metadaten.sizeOfImageList gt 0 and Metadaten.treeProperties.showThumbnails}">
                     <li class="no-hover">

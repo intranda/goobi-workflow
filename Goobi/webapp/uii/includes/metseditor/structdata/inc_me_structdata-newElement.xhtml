@@ -55,9 +55,9 @@
                             itemValue="4"
                             itemLabel="#{msgs.alsLetztesKindDesAktuellenElements}" />
                         <f:ajax
-                            render="@form"
+                            render="struct"
                             event="change"
-                            execute="@form" />
+                            execute="struct" />
                     </h:selectOneRadio>
 
                     <hr />
@@ -306,9 +306,9 @@
                                             itemValue="#{item.value.name}"
                                             var="item" />
                                         <f:ajax
-                                            render="@form"
+                                            render="struct"
                                             event="change"
-                                            execute="@form" />
+                                            execute="struct" />
                                     </x:selectOneMenu>
                                     <x:selectOneMenu
                                         id="auswahlAddable2"
@@ -322,9 +322,9 @@
                                             itemValue="#{item.value.name}"
                                             var="item" />
                                         <f:ajax
-                                            render="@form"
+                                            render="struct"
                                             event="change"
-                                            execute="@form" />
+                                            execute="struct" />
                                     </x:selectOneMenu>
                                 </div>
                             </div>
