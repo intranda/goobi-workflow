@@ -224,6 +224,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
                 listOfScripts.add(params);
             } catch (PreferencesException | ReadException | WriteException | IOException | InterruptedException | SwapException | DAOException e) {
                 logger.error("error trying to put script-step to external queue: ", e);
+                return;
             }
         }
         try {

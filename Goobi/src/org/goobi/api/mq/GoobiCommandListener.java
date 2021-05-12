@@ -84,12 +84,16 @@ public class GoobiCommandListener {
         String token = t.getJwt();
         Integer stepId = t.getStepId();
         Integer processId = t.getProcessId();
+        Step step = StepManager.getStepById(stepId);
+        if (step == null) {
+            log.error("GoobiCommandListener: Could not find step with ID " + stepId);
+            return;
+        }
         switch (command) {
             case "changeStep":
                 try {
                     if (JwtHelper.verifyChangeStepToken(token, stepId)) {
                         // change step
-                        Step step = StepManager.getStepById(stepId);
                         String newStatus = t.getNewStatus();
                         switch (newStatus) {
                             case "error":
