@@ -294,8 +294,8 @@ public class SessionForm implements Serializable {
 
             SessionInfo session = this.sessions.get(index);
             String userName = session.getUserName();
-            long userTimeout = (long) (session.getUserTimeout());
-            long loginTimestamp = (long) (session.getLastAccessTimestamp());
+            long userTimeout = (session.getUserTimeout());
+            long loginTimestamp = (session.getLastAccessTimestamp());
             long now = System.currentTimeMillis();
             long sessionDuration = (now - loginTimestamp) / 1000;
 
@@ -353,6 +353,7 @@ public class SessionForm implements Serializable {
      */
     public void setLogoutMessage(String message) {
         this.logoutMessage = message;
+        this.publishAdminMessage();
     }
 
     /**
