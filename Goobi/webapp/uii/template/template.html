@@ -28,50 +28,50 @@
     <title><h:outputText value="#{HelperForm.applicationHeaderTitle} - #{HelperForm.version}" /></title>
 
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="template/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="template/css/bootstrap-slider.css" />
+    <link rel="stylesheet" href="template/css/bootstrap.min.css?v=#{HelperForm.buildVersion}" />
+    <link rel="stylesheet" href="template/css/bootstrap-slider.css?v=#{HelperForm.buildVersion}" />
     <!-- Theme CSS -->
-    <link rel="stylesheet" href="template/css/style.css?v=1" />
+    <link rel="stylesheet" href="template/css/style.css?v=#{HelperForm.buildVersion}" />
     <!-- Font Awesome CSS -->
-    <link rel="stylesheet" href="template/css/font-awesome.css" />
+    <link rel="stylesheet" href="template/css/font-awesome.css?v=#{HelperForm.buildVersion}" />
     <!-- Color CSS -->
-    <link rel="stylesheet" href="template/css/themes.css" />
+    <link rel="stylesheet" href="template/css/themes.css?v=#{HelperForm.buildVersion}" />
     <!-- intranda -->
-    <link rel="stylesheet" href="template/css/intranda.css?v=1" />
-    <!-- <link rel="stylesheet" href="template/css/dist/goobiWorkflow.min.css" /> -->
+    <link rel="stylesheet" href="template/css/intranda.css?v=#{HelperForm.buildVersion}" />
+    <!-- <link rel="stylesheet" href="template/css/dist/goobiWorkflow.min.css?v=#{HelperForm.buildVersion}" /> -->
 
     <script src="template/js/intranda.js?v=1.2"></script>
     <!-- jQuery -->
-    <h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+    <h:outputScript library="primefaces" name="jquery/jquery.js?v=#{HelperForm.buildVersion}" target="head" />
     <!-- Mobile nav swipe -->
-    <script src="template/js/plugins/touchwipe/touchwipe.min.js"></script>
+    <script src="template/js/plugins/touchwipe/touchwipe.min.js?v=#{HelperForm.buildVersion}"></script>
     <!-- Nice Scroll -->
-    <script src="template/js/plugins/nicescroll/jquery.nicescroll.min.js"></script>
+    <script src="template/js/plugins/nicescroll/jquery.nicescroll.min.js?v=#{HelperForm.buildVersion}"></script>
     <!-- imagesLoaded -->
-    <script src="template/js/plugins/imagesLoaded/jquery.imagesloaded.min.js"></script>
+    <script src="template/js/plugins/imagesLoaded/jquery.imagesloaded.min.js?v=#{HelperForm.buildVersion}"></script>
     <!-- jQuery UI -->
-    <script src="template/js/plugins/jquery-ui/jquery-ui.js"></script>
+    <script src="template/js/plugins/jquery-ui/jquery-ui.js?v=#{HelperForm.buildVersion}"></script>
     <!-- slimScroll -->
-    <script src="template/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="template/js/plugins/slimscroll/jquery.slimscroll.min.js?v=#{HelperForm.buildVersion}"></script>
     <!-- Bootstrap -->
-    <script src="template/js/bootstrap.min.js"></script>
-    <script src="template/js/bootstrap-slider.js"></script>
+    <script src="template/js/bootstrap.min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/bootstrap-slider.js?v=#{HelperForm.buildVersion}"></script>
     <!-- Bootbox -->
-    <script src="template/js/plugins/bootbox/jquery.bootbox.js"></script>
+    <script src="template/js/plugins/bootbox/jquery.bootbox.js?v=#{HelperForm.buildVersion}"></script>
     <!-- Bootbox -->
-    <script src="template/js/plugins/form/jquery.form.min.js"></script>
+    <script src="template/js/plugins/form/jquery.form.min.js?v=#{HelperForm.buildVersion}"></script>
     <!-- Validation -->
-    <script src="template/js/plugins/validation/jquery.validate.min.js"></script>
-    <script src="template/js/plugins/validation/additional-methods.min.js"></script>
+    <script src="template/js/plugins/validation/jquery.validate.min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/plugins/validation/additional-methods.min.js?v=#{HelperForm.buildVersion}"></script>
 	<!-- shortcuts -->
-	<script src="template/js/jquery.hotkeys.js"></script>
+	<script src="template/js/jquery.hotkeys.js?v=#{HelperForm.buildVersion}"></script>
     <!-- Theme framework -->
-    <!-- <script src="template/js/eakroko.js"></script> -->
+    <!-- <script src="template/js/eakroko.js?v=#{HelperForm.buildVersion}"></script> -->
     <!-- Theme scripts -->
-    <script src="template/js/application.js?v=1"></script>
+    <script src="template/js/application.js?v=#{HelperForm.buildVersion}"></script>
 
     <!--[if lte IE 9]>
-	<script src="template/js/plugins/placeholder/jquery.placeholder.min.js"></script>
+	<script src="template/js/plugins/placeholder/jquery.placeholder.min.js?v=#{HelperForm.buildVersion}"></script>
 		<script>
 			$(document).ready(function() {
 				$('input, textarea').placeholder();
@@ -86,7 +86,7 @@
 	<!-- WCAG compatibility CSS -->
 
 	<ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.renderAccessibilityCss}">
-		<link rel="stylesheet" href="template/css/accessibility.css" />
+		<link rel="stylesheet" href="template/css/accessibility.css?v=#{HelperForm.buildVersion}" />
 	</ui:fragment>
 
     <!-- CUSTOM CSS -->
@@ -131,12 +131,13 @@
                     <div class="container-fluid">
 
                         <h:form id="header">
+                            <o:socket channel="developerMessageChannel" connected="#{DevModeBean.developerMode}" onmessage="() => window.location.reload()" />
                         	<header>
 	                            <div class="page-header">
                                     <h:panelGroup id="globalWarningMessage">
-    	                                <h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
+    	                                <h:panelGroup rendered="#{SessionForm.logoutMessage != ''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
     	                                    <i class="fa fa-exclamation-triangle margin-right-10" />
-    	                                    <h:outputText value="#{SessionForm.bitteAusloggen}" />
+    	                                    <h:outputText value="#{SessionForm.logoutMessage}" />
     	                                </h:panelGroup>
                                     </h:panelGroup>
                                     <o:socket channel="adminMessageChannel">
@@ -181,7 +182,7 @@
 	                                                    <i class="fa fa-users" style="margin-top:3px;"></i>
 	                                                    <div class="details">
 	                                                        <span>#{msgs.aktiveBenutzer}</span>
-	                                                        <span class="big">#{SessionForm.aktiveSessions}</span>
+	                                                        <span class="big">#{SessionForm.numberOfSessions}</span>
 	                                                        <f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="" />
 	                                                    </div>
 	                                                </button>
@@ -191,7 +192,7 @@
 	                                            <i class="fa fa-calendar" style="margin-top:3px;"></i>
 	                                            <div class="details">
 	                                                <span class="big">
-	                                                    <h:outputText value="#{SessionForm.aktuelleZeit}" />
+	                                                    <h:outputText value="#{SessionForm.currentTime}" />
 	                                                    <a tabindex="-1" href="#{HelperForm.itmPathAsUrl}" target="self" aria-label="itm">
 														<div style="height: 12px;width: 20px;display: inline-block;"></div>
 														</a>
@@ -239,7 +240,7 @@
         </c:if>
 
         <!-- JAVASCRIPT -->
-        <script src="template/js/dist/goobiWorkflowJS.min.js"></script>
+        <script src="template/js/dist/goobiWorkflowJS.min.js?v=#{HelperForm.buildVersion}"></script>
         <script>
             // goobiWorkflowConfig = {};
 

@@ -1821,8 +1821,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         } else {
             resetHitsCount();
             GoobiScript gs = new GoobiScript();
-            return gs.execute(this.paginator.getIdList(), this.goobiScript, goobiScriptManager);
-
+            gs.execute(this.paginator.getIdList(), this.goobiScript, goobiScriptManager);
+            return "process_all?faces-redirect=true";
         }
     }
 
@@ -1841,7 +1841,8 @@ public class ProcessBean extends BasicBean implements Serializable {
             for (Process p : (List<Process>) paginator.getList()) {
                 idList.add(p.getId());
             }
-            return gs.execute(idList, this.goobiScript, goobiScriptManager);
+            gs.execute(idList, this.goobiScript, goobiScriptManager);
+            return "process_all?faces-redirect=true";
         }
     }
 
@@ -1862,7 +1863,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 }
             }
             GoobiScript gs = new GoobiScript();
-            return gs.execute(idList, this.goobiScript, goobiScriptManager);
+            gs.execute(idList, this.goobiScript, goobiScriptManager);
+            return "process_all?faces-redirect=true";
         }
     }
 

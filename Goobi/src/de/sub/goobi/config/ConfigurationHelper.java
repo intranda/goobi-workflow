@@ -950,7 +950,6 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("ProcesslistShowEditionData", false);
     }
 
-
     public List<String> getExcludeMonitoringAgentNames() {
         return getLocalList("excludeMonitoringAgentName");
     }
@@ -1076,6 +1075,10 @@ public class ConfigurationHelper implements Serializable {
             return getLocalString(configName, type.getName());
         }
         return queueName;
+    }
+
+    public boolean isDeveloping() {
+        return getLocalBoolean("developing", false);
     }
 
     /**

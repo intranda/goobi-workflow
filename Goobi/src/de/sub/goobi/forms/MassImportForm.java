@@ -364,6 +364,9 @@ public class MassImportForm implements Serializable {
                     List<GoobiScriptResult> newScripts = igs.prepare(new ArrayList<Integer>(),
                             "action:import plugin:" + plugin2.getTitle() + " template:" + this.template.getId() + " identifiers:" + myIdentifiers,
                             myParameters);
+                    for (GoobiScriptResult gsr : newScripts) {
+                        gsr.setCustomGoobiScriptImpl(igs);
+                    }
                     if (!newScripts.isEmpty()) {
                         Helper.setMeldung("Import has started");
                         goobiScriptManager.enqueueScripts(newScripts);
