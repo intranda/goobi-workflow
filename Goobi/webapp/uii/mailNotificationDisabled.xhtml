@@ -116,11 +116,11 @@
                 <h:form id="header">
                     <div class="page-header">
                         <h:panelGroup
-                            rendered="#{SessionForm.bitteAusloggen!=''}"
+                            rendered="#{SessionForm.logoutMessage!=''}"
                             styleClass="alert alert-danger block"
                             style="line-height:40px;font-size:24px;">
                             <i class="fa fa-exclamation-triangle margin-right-10" />
-                            <h:outputText value="#{SessionForm.bitteAusloggen}" />
+                            <h:outputText value="#{SessionForm.logoutMessage}" />
                         </h:panelGroup>
                         <div class="pull-left">
                             <h1>
@@ -141,7 +141,7 @@
                                     <i class="fa fa-calendar"></i>
                                     <div class="details">
                                         <span class="big">
-                                            <h:outputText value="#{SessionForm.aktuelleZeit}" />
+                                            <h:outputText value="#{SessionForm.currentTime}" />
                                             <a
                                                 href="#{HelperForm.itmPathAsUrl}"
                                                 target="self"
