@@ -141,11 +141,11 @@
                 id="contentArea"
                 class="col-xs-12 col-sm-6">
                 <h:panelGroup
-                    rendered="#{SessionForm.bitteAusloggen!=''}"
+                    rendered="#{SessionForm.logoutMessage!=''}"
                     styleClass="alert alert-danger block margin-top-regular"
                     style="line-height:40px;font-size:24px;">
                     <i class="fa fa-exclamation-triangle margin-right-10 " />
-                    <h:outputText value="#{SessionForm.bitteAusloggen}" />
+                    <h:outputText value="#{SessionForm.logoutMessage}" />
                 </h:panelGroup>
 
                 <h:messages
