@@ -48,7 +48,9 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         }
 
         String jwt = requestContext.getHeaderString("jwt");
-
+        if (StringUtils.isBlank(jwt)) {
+            jwt =  req.getParameter("jwt");
+        }
         String pathInfo = req.getPathInfo();
         if (pathInfo == null) {
             requestContext.abortWith(Response.status(Response.Status.NOT_FOUND).entity("Not found\n").build());

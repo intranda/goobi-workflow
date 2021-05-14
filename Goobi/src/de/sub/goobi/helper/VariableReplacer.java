@@ -28,6 +28,8 @@ package de.sub.goobi.helper;
  */
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.MatchResult;
@@ -100,6 +102,9 @@ public class VariableReplacer {
     private static Pattern pProjectId = Pattern.compile("\\$?(?:\\(|\\{)projectid(?:\\}|\\))");
     private static Pattern pProjectName = Pattern.compile("\\$?(?:\\(|\\{)projectname(?:\\}|\\))");
     private static Pattern pProjectIdentifier = Pattern.compile("\\$?(?:\\(|\\{)projectidentifier(?:\\}|\\))");
+
+    public static Pattern piiifMediaFolder = Pattern.compile("\\$?(?:\\(|\\{)iiifMediaFolder(?:\\}|\\))");
+    public static Pattern piiifMasterFolder = Pattern.compile("\\$?(?:\\(|\\{)iiifMasterFolder(?:\\}|\\))");
 
     private DigitalDocument dd;
     private Prefs prefs;
@@ -274,6 +279,10 @@ public class VariableReplacer {
             inString = pSourcePath.matcher(inString).replaceAll(sourcePath);
             inString = pOcrBasisPath.matcher(inString).replaceAll(ocrBasisPath);
             inString = pOcrPlaintextPath.matcher(inString).replaceAll(ocrPlaintextPath);
+
+            inString = piiifMediaFolder.matcher(inString).replaceAll(getIiifImageUrls(process, "media"));
+            inString = piiifMasterFolder.matcher(inString).replaceAll(getIiifImageUrls(process, "master"));
+
         } catch (IOException | InterruptedException | SwapException | DAOException e) {
             logger.error(e);
         }
@@ -357,7 +366,6 @@ public class VariableReplacer {
                 logger.error(e);
             }
         }
-
 
         return inString;
     }
@@ -480,5 +488,52 @@ public class VariableReplacer {
             results.add(m.toMatchResult());
         }
         return results;
+    }
+
+    private String getIiifImageUrls(Process process, String folderName) {
+        //      http://localhost:8080/goobi/api/process/image/308938/master__AC03804780_MixedContentTest_media/00000001.tif/info.json
+        //          http://localhost:8080/goobi/api/process/image/308938/master__AC03804780_MixedContentTest_media/00000001.tif/full/max/0/default.jpg
+        Path folder = null;
+        if ("media".equals(folderName)) {
+            try {
+                folder = Paths.get(process.getImagesTifDirectory(false));
+            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+                logger.error(e);
+                return "";
+            }
+        } else {
+            try {
+                folder = Paths.get(process.getImagesOrigDirectory(false));
+            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+                logger.error(e);
+                return "";
+            }
+        }
+        List<String> images = StorageProvider.getInstance().list(folder.toString());
+
+        List<String> iifUrls = new ArrayList<>(images.size());
+
+        String hostname = ConfigurationHelper.getInstance().getGoobiUrl();
+
+        String foldername = folder.getFileName().toString();
+
+        String api = hostname + "/api";
+        String restPath = "/process/image/" + process.getId() + "/" + foldername + "/";
+        String suffix = "/full/max/0/default.jpg";
+
+        for (String imageName : images) {
+            String path = restPath + imageName + suffix;
+            try {
+                String jwtToken = JwtHelper.createApiToken(path, new String[] { "GET" });
+                String iiifUri = "\"" + api + path + "?jwt=" + jwtToken + "\"";
+                iifUrls.add(iiifUri);
+            } catch (ConfigurationException e) {
+                logger.error(e);
+                return "";
+            }
+        }
+        String response = iifUrls.toString();
+        response = response.substring(1, response.length() - 1);
+        return response;
     }
 }
