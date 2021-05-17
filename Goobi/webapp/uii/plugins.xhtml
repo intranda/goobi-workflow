@@ -93,14 +93,6 @@
 											<h:form id="plugins_tabform">
 												<ul class="nav nav-tabs">
 													<li role="presentation"
-														class="#{pluginsBean.conflicts_mode eq 'show_file_difference' ? 'active' : ''}">
-														<h:commandLink>
-															<h:outputText value="#{msgs.install_plugin_show_file_difference}" />
-															<f:ajax render="pluginsTabContent @form" />
-															<f:setPropertyActionListener value="show_file_difference" target="#{pluginsBean.conflicts_mode}"></f:setPropertyActionListener>
-														</h:commandLink>
-													</li>
-													<li role="presentation"
 														class="#{pluginsBean.conflicts_mode eq 'edit_existing_file' ? 'active' : ''}">
 														<h:commandLink>
 															<h:outputText value="#{msgs.install_plugin_edit_existing_file}" />
@@ -118,44 +110,60 @@
 													</li>
 												</ul>
 											</h:form>
-											<ui:repeat var="conflict" value="#{pluginInstallBean.pluginInstaller.difference}">
+											<ui:repeat var="conflict" value="#{pluginInstallBean.pluginInstaller.check.conflicts.values()}">
 												<div class="col-md-6">
-													<h5>#{msgs.install_plugin_existing_file}</h5>
+													<h5>#{msgs.install_plugin_conflicts}</h5>
 												</div>
-												<div class="col-md-6">
-													<h5>#{msgs.install_plugin_uploaded_file}</h5>
-												</div>
-												<ui:fragment rendered="#{pluginsBean.conflicts_mode eq 'show_file_difference'}">
-													<div class="col-md-6">
-														<pre>#{conflict[0]}</pre>
-													</div>
-													<div class="col-md-6">
-														#{conflict[1]}
-													</div>
-												</ui:fragment>
 												<ui:fragment rendered="#{pluginsBean.conflicts_mode eq 'edit_existing_file'}">
 													<div class="col-md-6">
-														<x:inputTextarea id="textarea_edit_existing_file" style="resize: none;" pt:aria-label="textarea_edit_existing_file" forceId="true" styleClass="form-control" value="#{conflict[0]}" />
+														<h5>#{msgs.install_plugin_existing_file}</h5>
+													</div>
+												</ui:fragment>
+												<ui:fragment rendered="#{pluginsBean.conflicts_mode eq 'edit_uploaded_file'}">
+													<div class="col-md-6">
+														<h5>#{msgs.install_plugin_uploaded_file}</h5>
+													</div>
+												</ui:fragment>
+												<div class="col-md-6">
+													<ui:repeat var="line" value="#{conflict.spanTags}" varStatus="lineStatus">
+														<div>
+															<ui:repeat var="spanTag" value="#{conflict.spanTags.get(lineStatus.index)}">
+																<ui:fragment rendered="#{spanTag.type eq 'LINE_NUMBER'}">
+																	<span style="color: rgb(128, 128, 128);width: 20px;display: inline-block">#{spanTag.text}</span>
+																</ui:fragment>
+																<ui:fragment rendered="#{spanTag.type eq 'KEEP'}">
+																	<span style="">#{spanTag.text}</span>
+																</ui:fragment>
+																<ui:fragment rendered="#{spanTag.type eq 'INDENTION'}">
+																	<span style="width: 20px; display: inline-block">#{spanTag.text}</span>
+																</ui:fragment>
+																<ui:fragment rendered="#{spanTag.type eq 'INSERTION'}">
+																	<span style="background-color: rgb(64, 255, 64)">#{spanTag.text}</span>
+																</ui:fragment>
+																<ui:fragment rendered="#{spanTag.type eq 'DELETION'}">
+																	<span style="background-color: rgb(255, 64, 64)">#{spanTag.text}</span>
+																</ui:fragment>
+															</ui:repeat>
+														</div>
+													</ui:repeat>
+												</div>
+												<ui:fragment rendered="#{pluginsBean.conflicts_mode eq 'edit_existing_file'}">
+													<div class="col-md-6">
+														<x:inputTextarea id="textarea_edit_existing_file" style="resize: none;" pt:aria-label="textarea_edit_existing_file" forceId="true" styleClass="form-control" value="#{conflict.existingVersion}" />
 													</div>
 													<script type="text/javascript">
 														var textarea = document.getElementById('textarea_edit_existing_file');
 														textarea.style.height = (textarea.scrollHeight + 10) + 'px';
 													</script>
-													<div class="col-md-6">
-														<pre>#{conflict[1]}</pre>
-													</div>
 												</ui:fragment>
 												<ui:fragment rendered="#{pluginsBean.conflicts_mode eq 'edit_uploaded_file'}">
 													<div class="col-md-6">
-														<pre>#{conflict[0]}</pre>
+														<x:inputTextarea id="textarea_edit_uploaded_file" style="resize: none;" pt:aria-label="textarea_edit_uploaded_file" forceId="true" styleClass="form-control" value="#{conflict.uploadedVersion}" />
 													</div>
 													<script type="text/javascript">
 														var textarea = document.getElementById('textarea_edit_uploaded_file');
 														textarea.style.height = (textarea.scrollHeight + 10) + 'px';
 													</script>
-													<div class="col-md-6">
-														<x:inputTextarea id="textarea_edit_uploaded_file" style="resize: none;" pt:aria-label="textarea_edit_uploaded_file" forceId="true" styleClass="form-control" value="#{conflict[1]}" />
-													</div>
 												</ui:fragment>
 											</ui:repeat>
 										</div>

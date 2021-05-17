@@ -64,8 +64,6 @@ public class PluginInstaller {
     private PluginInstallInfo pluginInfo;
     private PluginPreInstallCheck check;
 
-    public List<String[]> difference;
-
     public void install() {
         try (Stream<Path> walkStream = Files.walk(this.extractedArchivePath)) {
             walkStream.filter(Files::isRegularFile)
@@ -175,7 +173,7 @@ public class PluginInstaller {
                                 String localVersion = Files.readAllLines(installPath).stream().collect(Collectors.joining("\n"));
                                 String archiveVersion = Files.readAllLines(p).stream().collect(Collectors.joining("\n"));
                                 PluginInstallConflict conflict = new PluginInstallConflict(installPath.toString(), ResolveTactic.unknown,
-                                        "", localVersion, archiveVersion);
+                                        "", localVersion, archiveVersion, new ArrayList<>());
                                 conflicts.put(relativePath.toString(), conflict);
                             } catch (IOException e) {
                                 //TODO: handle error
@@ -222,17 +220,15 @@ public class PluginInstaller {
     private void findDifferencesInAllFiles() {
         Object[] objects = this.check.getConflicts().values().toArray();
 
-        // Initialize the list for the difference-texts in the GUI
-        this.difference = new ArrayList<>();
-
         for (int file = 0; file < objects.length; file++) {
             // Get the conflict of the concerning file
             PluginInstallConflict conflict = (PluginInstallConflict) (objects[file]);
 
             // Get the code lines from the both files
-            String[] existingLines = conflict.getLocalVersion().split(LINEBREAK);
-            String[] uploadedLines = conflict.getArchiveVersion().split(LINEBREAK);
-            this.findDifferencesInFile(existingLines, uploadedLines, file);
+            String[] existingLines = conflict.getExistingVersion().split(LINEBREAK);
+            String[] uploadedLines = conflict.getUploadedVersion().split(LINEBREAK);
+            List<List<SpanTag>> content = PluginInstaller.findDifferencesInFile(existingLines, uploadedLines);
+            conflict.setSpanTags(content);
 
         }
     }
@@ -243,34 +239,50 @@ public class PluginInstaller {
      *
      * @param existingLines The code lines in the existing file
      * @param uploadedLines The code lines in the uploaded file
-     * @param fileIndex The index of the file to know which element in the array should be written
+     * @return The list of text components in the file
      */
-    private void findDifferencesInFile(String[] existingLines, String[] uploadedLines, int fileIndex) {
+    private static List<List<SpanTag>> findDifferencesInFile(String[] existingLines, String[] uploadedLines) {
 
-        FileCommandVisitor fileCommandVisitor = new FileCommandVisitor();
+        List<List<SpanTag>> fileContent = new ArrayList<>();
 
-        // Check all lines in the file
-        for (int line = 0; line < existingLines.length || line < uploadedLines.length; line++) {
+        // Check all lines in the files
+        for (int lineNumber = 0; lineNumber < existingLines.length || lineNumber < uploadedLines.length; lineNumber++) {
 
             // When one of the files is over, the other one is compared with empty lines
-            String left = line < existingLines.length ? existingLines[line] : "" + LINEBREAK + "<br />";
-            String right = line < uploadedLines.length ? uploadedLines[line] : "" + LINEBREAK + "<br />";
+            String left = lineNumber < existingLines.length ? existingLines[lineNumber] : "";
+            String right = lineNumber < uploadedLines.length ? uploadedLines[lineNumber] : "";
 
             StringsComparator comparator = new StringsComparator(left, right);
 
             if (comparator.getScript().getLCSLength() > (Integer.max(left.length(), right.length()) * 0.4)) {
                 // Only compare two lines with each other when they have at least 40% commonality
-                comparator.getScript().visit(fileCommandVisitor);
+                fileContent.add(PluginInstaller.findDifferencesInLine(left, right, lineNumber));
             } else {
                 // When the lines have too many differences (more than 40%), compare both with empty lines
-                StringsComparator leftComparator = new StringsComparator(left, LINEBREAK);
-                leftComparator.getScript().visit(fileCommandVisitor);
-                StringsComparator rightComparator = new StringsComparator(LINEBREAK, right);
-                rightComparator.getScript().visit(fileCommandVisitor);
+                fileContent.add(PluginInstaller.findDifferencesInLine(left, "", lineNumber));
+                fileContent.add(PluginInstaller.findDifferencesInLine("", right, lineNumber));
             }
         }
-        log.error(fileCommandVisitor.getLeft());
-        log.error(fileCommandVisitor.getRight());
-        this.difference.add(new String[] { fileCommandVisitor.getLeft(), fileCommandVisitor.getRight() });
+        return fileContent;
+    }
+
+    /**
+     * Extracts all differences between the left string and the right string and returns the differences.
+     *
+     * @param left The line in the existing file (the "left" line)
+     * @param right The line in the uploaded file (the "right" line)
+     * @param lineIndex The index of the line. This will be incremented to have a line number beginning with 1.
+     * @return The list of SpanTag objects that represents the whole line in a file
+     */
+    private static List<SpanTag> findDifferencesInLine(String left, String right, int lineIndex) {
+        FileCommandVisitor visitor = new FileCommandVisitor();
+        StringsComparator comparator = new StringsComparator(left, right);
+        comparator.getScript().visit(visitor);
+        List<SpanTag> lineContent = new ArrayList<>();
+        lineContent.add(new SpanTag(String.valueOf(lineIndex + 1), SpanTag.LINE_NUMBER));
+        lineContent.add(new SpanTag("", SpanTag.INDENTION));
+        lineContent.addAll(visitor.getSpanTags());
+        visitor.resetSpanTags();
+        return lineContent;
     }
 }

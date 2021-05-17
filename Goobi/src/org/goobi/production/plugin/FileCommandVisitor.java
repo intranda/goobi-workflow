@@ -1,5 +1,8 @@
 package org.goobi.production.plugin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 
 import org.apache.commons.text.diff.CommandVisitor;
@@ -11,71 +14,80 @@ import org.apache.commons.text.diff.CommandVisitor;
  */
 public class FileCommandVisitor implements CommandVisitor<Character> {
 
-    private static final String PATTERN = "${text}";
-    private static final String DELETION = "<span style=\"background-color: #FB504B\">" + PATTERN + "</span>";
-    private static final String INSERTION = "<span style=\"background-color: #45EA85\">" + PATTERN + "</span>";
-    private static final String HTML_LINEBREAK = "<br />";
-    private static final String JAVA_LINEBREAK = System.getProperty("line.separator");
+    private List<SpanTag> spanTags;
 
-    @Getter
-    private String left = "";
-    @Getter
-    private String right = "";
+    private String currentMode = SpanTag.KEEP;
+    private String currentText = "";
+
+    public FileCommandVisitor() {
+        this.resetSpanTags();
+    }
 
     /**
-     * Keeps the character in both strings. Replaces java line breaks with HTML line breaks.
+     * Adds a kept character to the result.
      *
      * @param character The character that was kept
      */
     @Override
     public void visitKeepCommand(Character character) {
-        if (character == null) {
-            return;
-        }
-        String toAppend = this.replaceLineBreak(character);
-        this.left += toAppend;
-        this.right += toAppend;
+        String string = this.escapeCharacter(character);
+        this.spanTags.add(new SpanTag(string, SpanTag.KEEP));
+        this.currentMode = SpanTag.KEEP;
     }
 
     /**
-     * Adds an inserted character to the right string. Replaces java line breaks with HTML line breaks.
+     * Adds an inserted character to the result.
      *
      * @param character The character that was inserted
      */
     @Override
     public void visitInsertCommand(Character character) {
-        if (character == null) {
-            return;
-        }
-        String toAppend = this.replaceLineBreak(character);
-        this.right += INSERTION.replace(PATTERN, "" + toAppend);
+        String string = this.escapeCharacter(character);
+        this.spanTags.add(new SpanTag(string, SpanTag.INSERTION));
+        this.currentMode = SpanTag.INSERTION;
     }
 
     /**
-     * Adds a deleted character to the left string. Replaces java line breaks with HTML line breaks.
+     * Adds a deleted character to the result.
      *
      * @param character The character that was deleted
      */
     @Override
     public void visitDeleteCommand(Character character) {
-        if (character == null) {
-            return;
-        }
-        String toAppend = this.replaceLineBreak(character);
-        this.left += DELETION.replace(PATTERN, "" + toAppend);
+        String string = this.escapeCharacter(character);
+        this.spanTags.add(new SpanTag(string, SpanTag.DELETION));
+        this.currentMode = SpanTag.DELETION;
     }
 
     /**
-     * Converts the character to a string. When it is a line break, it is replaced by the HTML typical line break.
-     * 
+     * Converts the character to a string. Special characters will be escaped.
+     *
      * @param character The character to convert and replace
-     * @return The string containing the character or a replaced HTML line break
+     * @return The string containing the (replaced) character
      */
-    private String replaceLineBreak(Character character) {
-        String result = "" + character;
-        if (result.equals(JAVA_LINEBREAK)) {
-            result = HTML_LINEBREAK;
+    private String escapeCharacter(Character character) {
+        if (character == null) {
+            return "";
         }
-        return result;
+        //if (character == '\t') {
+            //return "    ";
+        //}
+        return String.valueOf(character);
+    }
+
+    /**
+     * Returns the list of span tag elements containing the differences for a line
+     *
+     * @return The list of span tag elements
+     */
+    public List<SpanTag> getSpanTags() {
+        return this.spanTags;
+    }
+
+    /**
+     * Resets the list of span tags
+     */
+    public void resetSpanTags() {
+        this.spanTags = new ArrayList<>();
     }
 }

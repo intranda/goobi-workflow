@@ -61,7 +61,7 @@ public class PluginsBean implements Serializable {
 
     @Getter
     @Setter
-    private String conflicts_mode = "show_file_difference";
+    private String conflicts_mode = "edit_existing_file";
 
     public PluginsBean() {
         this.plugins = getPluginsFromFS();
