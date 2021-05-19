@@ -1,0 +1,253 @@
+<alto-editor>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="bigImage"></div>
+        </div>
+        <div class="col-md-6">
+            <div class="alto-edit">
+                <div each={line in lines} class="altoline {}" >
+                    <span each={word in line.words}>
+                        <span onkeyup={keyup} 
+                            onkeydown={keydown} 
+                            onfocus={lockWord} 
+                        	onblur={unlockWord}
+                            onmousemove={highlightWord} 
+                            contenteditable="true" 
+                            spellcheck="false">{word.value}</span>&nbsp;
+                    </span>
+                <br>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div class="image-navigation">
+                    <button type="button" class="btn btn--icon-blue" onclick="document.querySelector('#prevImage').click()">
+                        prev image
+                    </button>
+                    <button type="button" class="btn btn--icon-blue" onclick="document.querySelector('#nextImage').click()">
+                        next image
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn--icon-blue pull-right">Speichern</button>
+            </div>
+        </div>
+    </div>
+
+<style>
+    .altoline {
+        overflow-wrap: anywhere;
+        padding-bottom: 5px;
+    }
+    .alto-edit {
+        max-height: 82vh;
+        overflow-y: scroll;
+    }
+    #bigImage {
+        height: 82vh;
+    }
+    .btn {
+        padding: 0 7px;
+    }
+    .actions {
+        margin-top: 15px;
+    }
+    .image-navigation {
+        display: flex;
+        justify-content: center;
+    }
+    .image-navigation .btn {
+        margin: 0 4px;
+    }
+    .line-marker {
+        border: 1px solid red;
+    }
+    .line-marker {
+        border: 2px solid blue;
+    }
+    .word-marker {
+        border: 2px solid red;
+    }
+</style>
+
+<script>
+    this.on('before-mount', () => {
+        this.lines = []; 
+        let altoDiv = document.querySelector("#jsonAlto")
+        let altoJson = altoDiv.innerText;
+        this.alto = JSON.parse(altoJson);
+        this.lines = this.alto.lines;
+        console.log(this.alto)
+        this.changes = {};
+        this.oldPos = {};
+    })
+    
+    this.on('mount', () => {
+    	this.initOpenseadragon()
+    })
+    
+    lockWord(e) {
+    	this.wordLocked = true;
+    	this.highlightWord(e)
+    }
+    
+    unlockWord(e) {
+    	this.wordLocked = false;
+    }
+    
+    highlightWord(e) {
+    	if(this.wordLocked && e.type === "mousemove") {
+    		return;
+    	}
+    	var add = 14;
+    	var box = this.alto.lineMap[e.item.word.lineId];
+    	var rect = new OpenSeadragon.Rect((box.x)-add, (box.y)-add, (box.width)+add*2, (box.height)+add*2);
+    	this.viewImage.overlays.unDraw("line");
+        this.viewImage.overlays.drawRect(rect, "line");
+
+        box = e.item.word
+    	var rect = new OpenSeadragon.Rect((box.x)-add, (box.y)-add, (box.width)+add*2, (box.height)+add*2);
+    	this.viewImage.overlays.unDraw("word");
+        this.viewImage.overlays.drawRect(rect, "word");
+        
+    }
+    
+    keyup(e) {
+        let text = e.target.innerText;
+        if(text.indexOf("\n") >= 0) {
+            text = text.replace("\n", "") 
+            e.target.innerText = text;
+        }
+        let word = e.item.word
+        this.changes[word.id] = {action: "changeContent", value: text};
+        let currentPos = window.getSelection().getRangeAt(0).startOffset;
+        this.oldPos = {position: currentPos, wordId: word.id};
+    }
+    
+    keydown(e) {
+    	let word = e.item.word
+    	let currentPos = window.getSelection().getRangeAt(0).startOffset;
+    	if(e.key == "ArrowLeft") {
+        	if(this.oldPos.wordId == word.id && this.oldPos.position == 0 && !e.shiftKey) {
+        		e.preventDefault();
+        		var previousOuterSpan = e.target.parentElement.previousElementSibling;
+        		if(previousOuterSpan) {
+            		let prevWordSpan = previousOuterSpan.children[0];
+            		let range = new Range();
+            		range.setStart(prevWordSpan, 1);
+            		
+            		document.getSelection().removeAllRanges();
+            	    document.getSelection().addRange(range);
+        		} else {
+        			var previousLineDiv = e.target.parentElement.parentElement.previousElementSibling;
+        			if(previousLineDiv) {
+        				let lineWords = previousLineDiv.children;
+        				let prevWordSpan = lineWords[lineWords.length-2].children[0];
+        				let range = new Range();
+        				range.setStart(prevWordSpan, 1);
+                		
+                		document.getSelection().removeAllRanges();
+                	    document.getSelection().addRange(range);
+        			}
+        		}
+        	}
+        }
+    	if(e.key == "ArrowRight") {
+    		if(e.target.innerText.length -1 == currentPos) {
+    			e.preventDefault();
+    			let range = new Range();
+				range.setStart(e.target.lastChild, e.target.innerText.length);
+        		
+        		document.getSelection().removeAllRanges();
+        	    document.getSelection().addRange(range);
+        	    currentPos = 0;
+    		} else if(e.target.innerText.length == currentPos) {
+    			e.preventDefault();
+    			var nextOuterSpan = e.target.parentElement.nextElementSibling;
+        		if(nextOuterSpan.localName == "span") {
+            		let nextWordSpan = nextOuterSpan.children[0];
+            		let range = new Range();
+            		range.setStart(nextWordSpan, 0);
+            		
+            		document.getSelection().removeAllRanges();
+            	    document.getSelection().addRange(range);
+        		} else {
+        			var nextLineDiv = e.target.parentElement.parentElement.nextElementSibling;
+        			if(nextLineDiv) {
+        				let lineWords = nextLineDiv.children;
+        				let nextWordSpan = lineWords[0].children[0];
+        				let range = new Range();
+        				range.setStart(nextWordSpan, 0);
+                		
+                		document.getSelection().removeAllRanges();
+                	    document.getSelection().addRange(range);
+        			}
+        		}
+    		}
+    	}
+    	this.oldPos = {position: currentPos, wordId: word.id};
+    }
+    
+    save() {
+    	let altoInput = document.querySelector("#altoChanges");
+    }
+    
+    initOpenseadragon() {
+    	var configViewer = {
+        	global: {
+                divId: 'bigImage',
+                useTiles: true,
+                footerHeight: 0,
+                adaptContainerHeight: false,
+                zoomSlider: "#zoomSlider",
+                zoomSliderHandle: "#zoomSlider .zoom-slider-handle",
+                zoomSliderLabel: "#zoomSliderLabel input",
+                overlayGroups: [
+                	{
+                        name : "line",
+                        styleClass : "line-marker",
+                        interactive: false
+                    },
+                    {
+                        name : "word",
+                        styleClass : "word-marker",
+                        interactive: false
+                    }
+                ]
+            },
+            image: {
+                mimeType: "image/jpeg",
+                tileSource: document.querySelector('#tileSource').value
+            }
+        };                                               
+        
+        this.viewImage = new ImageView.Image( configViewer );
+        this.viewImage.load()
+        .then(function(image) {
+            image.onFirstTileLoaded()
+            .then(function() {                                                  
+                $('#ajaxloader_image').fadeOut(800);
+            })
+            .catch(function() {
+                $('#ajaxloader_image').fadeOut(800);
+            })
+        })
+        .catch(function(error){
+            console.error( 'Error opening image', error );
+            $('#ajaxloader_image').fadeOut(800);
+            $('#' + configViewer.global.divId).html( 'Failed to load image: "' + error + '"' );
+        });
+        
+        this.on('before-unmount', () => {
+        	this.viewImage.close();
+        })
+    }
+    
+
+</script>
+</alto-editor>

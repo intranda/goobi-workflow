@@ -59,6 +59,14 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                                 // init thumbnails
                                 goobiWorkflowJS.thumbnails.init();
                             }
+                            // reload alto-editor
+                            var altoEditorElement = document.querySelector('alto-editor')
+                            if(altoEditorElement) {
+                            	altoEditorElement._tag.unmount(true)
+                            	if(typeof riot !== "undefined") {
+                            		riot.mount("alto-editor");
+                            	}
+                            }
                             // get box status
                             goobiWorkflowJS.box.getBoxStatus();
                             // init buttons

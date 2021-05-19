@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -62,11 +63,13 @@ import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.Process;
+import org.goobi.beans.SimpleAlto;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.OrderedKeyMap;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
+import org.jdom2.JDOMException;
 
 import com.google.gson.Gson;
 
@@ -967,7 +970,7 @@ public class Metadaten implements Serializable {
 
     public String Loeschen() {
         HoldingElement he = curMetadatum.getMd().getParent();
-        if (he!= null) {
+        if (he != null) {
             he.removeMetadata(curMetadatum.getMd(), true);
         } else {
             // we have a default metadata field, clear it
@@ -984,7 +987,7 @@ public class Metadaten implements Serializable {
 
     public String delete() {
         HoldingElement he = currentMetadata.getParent();
-        if (he!= null) {
+        if (he != null) {
             he.removeMetadata(currentMetadata, true);
         } else {
             // we have a default metadata field, clear it
@@ -1000,7 +1003,7 @@ public class Metadaten implements Serializable {
 
     public String deletePerson() {
         HoldingElement he = currentPerson.getParent();
-        if (he!= null) {
+        if (he != null) {
             he.removePerson(currentPerson, false);
         } else {
             // we have a default field, clear it
@@ -1017,7 +1020,7 @@ public class Metadaten implements Serializable {
 
     public String LoeschenPerson() {
         HoldingElement he = curPerson.getP().getParent();
-        if (he!= null) {
+        if (he != null) {
             he.removePerson(this.curPerson.getP(), false);
         } else {
             // we have a default field, clear it
@@ -1036,7 +1039,7 @@ public class Metadaten implements Serializable {
 
     public String deleteCorporate() {
         HoldingElement he = currentCorporate.getParent();
-        if (he!= null) {
+        if (he != null) {
             he.removeCorporate(currentCorporate, false);
         } else {
             // we have a default field, clear it
@@ -1668,7 +1671,7 @@ public class Metadaten implements Serializable {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -3578,6 +3581,18 @@ public class Metadaten implements Serializable {
         return ocrResult;
     }
 
+    public String getJsonAlto() throws SwapException, DAOException, IOException, InterruptedException, JDOMException {
+        String ocrFileNew = image.getTooltip().substring(0, image.getTooltip().lastIndexOf("."));
+        Path altoFile = Paths.get(myProzess.getOcrAltoDirectory(), ocrFileNew + ".xml");
+        if (!Files.exists(altoFile)) {
+            altoFile = altoFile.getParent().resolve(ocrFileNew + ".alto");
+        }
+
+        SimpleAlto alto = SimpleAlto.readAlto(altoFile);
+
+        return new Gson().toJson(alto);
+    }
+
     public String getOcrAddress() {
         int startseite = -1;
         int endseite = -1;
@@ -4344,7 +4359,7 @@ public class Metadaten implements Serializable {
                 }
             } else {
                 Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString()
-                + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
+                        + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
             }
         }
 
@@ -4959,7 +4974,6 @@ public class Metadaten implements Serializable {
         }
         return false;
     }
-
 
     /**
      * Check if {@link MetadataType} can be duplicated in current {@link DocStruct}
