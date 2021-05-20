@@ -31,6 +31,7 @@ import java.util.Date;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.goobi.vocabulary.UploadVocabJob;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -84,7 +85,8 @@ public class JobManager implements ServletContextListener {
         initializeJob(new HistoryAnalyserJob(), "dailyHistoryAnalyser", sched);
         // initializeJobNonConfigured(new DelayJob(), 1, sched);
         initializeJob(new DelayJob(), "dailyDelayJob", sched);
-
+        
+        initializeJob(new UploadVocabJob(), "dailyVocabJob", sched);
     }
 
     /**
