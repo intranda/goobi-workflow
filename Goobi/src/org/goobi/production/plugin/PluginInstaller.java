@@ -169,11 +169,12 @@ public class PluginInstaller {
                         }
                         Path installPath = goobiDirectory.resolve(relativePath);
                         if (checkForConflict(installPath, p)) {
+                            log.error("Conflicting file!");
                             try {
                                 String localVersion = Files.readAllLines(installPath).stream().collect(Collectors.joining("\n"));
                                 String archiveVersion = Files.readAllLines(p).stream().collect(Collectors.joining("\n"));
                                 PluginInstallConflict conflict = new PluginInstallConflict(installPath.toString(), ResolveTactic.unknown,
-                                        "", localVersion, archiveVersion, new ArrayList<>());
+                                        "", localVersion, archiveVersion, new ArrayList<>(), new ArrayList<>());
                                 conflicts.put(relativePath.toString(), conflict);
                             } catch (IOException e) {
                                 //TODO: handle error
@@ -186,6 +187,7 @@ public class PluginInstaller {
         }
         PluginPreInstallCheck checkReport = new PluginPreInstallCheck(extractedPluginPath, info, conflicts, null);
         checkReport.setConflicts(conflicts);
+        log.error("number of conflicts: " + conflicts.values().toArray().length);
         return checkReport;
     }
 
@@ -254,8 +256,8 @@ public class PluginInstaller {
 
             StringsComparator comparator = new StringsComparator(left, right);
 
-            if (comparator.getScript().getLCSLength() > (Integer.max(left.length(), right.length()) * 0.4)) {
-                // Only compare two lines with each other when they have at least 40% commonality
+            if (comparator.getScript().getLCSLength() > (Integer.max(left.length(), right.length()) * 0.6)) {
+                // Only compare two lines with each other when they have at least 60% commonality
                 fileContent.add(PluginInstaller.findDifferencesInLine(left, right, lineNumber));
             } else {
                 // When the lines have too many differences (more than 40%), compare both with empty lines
@@ -280,9 +282,8 @@ public class PluginInstaller {
         comparator.getScript().visit(visitor);
         List<SpanTag> lineContent = new ArrayList<>();
         lineContent.add(new SpanTag(String.valueOf(lineIndex + 1), SpanTag.LINE_NUMBER));
-        lineContent.add(new SpanTag("", SpanTag.INDENTION));
         lineContent.addAll(visitor.getSpanTags());
-        visitor.resetSpanTags();
+        lineContent.add(new SpanTag(visitor.getCurrentText(), visitor.getCurrentMode()));
         return lineContent;
     }
 }

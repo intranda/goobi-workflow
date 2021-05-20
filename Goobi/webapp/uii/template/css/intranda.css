@@ -2459,3 +2459,23 @@ ul>li.yellow, .label-yellow {
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
     border: 1px solid #ccc;
 }
+
+.plugin-installer-code {
+	display: inline-block;
+}
+.plugin-installer-insertion {
+	background-color: rgb(64, 255, 64);
+}
+.plugin-installer-deletion {
+	background-color: rgb(255, 64, 64);
+}
+.plugin-installer-line-number {
+	color: rgb(128, 128, 128);
+}
+.plugin-installer-diff-box {
+	line-height: 1.515em;
+}
+.plugin-installer-text-area {
+	line-height: normal;
+	resize: none;
+}

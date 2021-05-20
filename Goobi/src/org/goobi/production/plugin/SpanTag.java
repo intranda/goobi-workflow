@@ -12,7 +12,7 @@ import lombok.Getter;
 public class SpanTag {
     public static final String LINE_NUMBER = "LINE_NUMBER";
     public static final String KEEP = "KEEP";
-    public static final String INDENTION = "INDENTION";
+    public static final String SPACE = "SPACE";
     public static final String INSERTION = "INSERTION";
     public static final String DELETION = "DELETION";
     /**

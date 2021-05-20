@@ -30,9 +30,7 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
      */
     @Override
     public void visitKeepCommand(Character character) {
-        String string = this.escapeCharacter(character);
-        this.spanTags.add(new SpanTag(string, SpanTag.KEEP));
-        this.currentMode = SpanTag.KEEP;
+        this.handleCharacter(SpanTag.KEEP, character);
     }
 
     /**
@@ -42,9 +40,7 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
      */
     @Override
     public void visitInsertCommand(Character character) {
-        String string = this.escapeCharacter(character);
-        this.spanTags.add(new SpanTag(string, SpanTag.INSERTION));
-        this.currentMode = SpanTag.INSERTION;
+        this.handleCharacter(SpanTag.INSERTION, character);
     }
 
     /**
@@ -54,9 +50,27 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
      */
     @Override
     public void visitDeleteCommand(Character character) {
-        String string = this.escapeCharacter(character);
-        this.spanTags.add(new SpanTag(string, SpanTag.DELETION));
-        this.currentMode = SpanTag.DELETION;
+        this.handleCharacter(SpanTag.DELETION, character);
+    }
+
+    /**
+     * Handles a character. Adds a new SpanTag object and sets the current mode.
+     *
+     * @param mode The mode to use now
+     * @param character The character to handle
+     */
+    private void handleCharacter(String mode, Character character) {
+        if (character == ' ') {
+            mode = SpanTag.SPACE;
+        }
+        if (this.currentMode != mode || mode == SpanTag.SPACE) {
+            if (this.currentText.length() > 0) {
+                this.spanTags.add(new SpanTag(this.currentText, this.currentMode));
+            }
+            this.currentMode = mode;
+            this.currentText = "";
+        }
+        this.currentText += this.escapeCharacter(character);
     }
 
     /**
@@ -89,5 +103,23 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
      */
     public void resetSpanTags() {
         this.spanTags = new ArrayList<>();
+    }
+
+    /**
+     * Returns the current text
+     *
+     * @return The current text
+     */
+    public String getCurrentText() {
+        return this.currentText;
+    }
+
+    /**
+     * Returns the current mode
+     *
+     * @return The current mode
+     */
+    public String getCurrentMode() {
+        return this.currentMode;
     }
 }

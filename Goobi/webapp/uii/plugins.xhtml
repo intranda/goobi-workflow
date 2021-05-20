@@ -125,31 +125,35 @@
 													</div>
 												</ui:fragment>
 												<div class="col-md-6">
+													<ui:repeat var="line" value="#{conflict.lineNumbers}" varStatus="lineStatus">
+														<div>#{line}</div>
+													</ui:repeat>
 													<ui:repeat var="line" value="#{conflict.spanTags}" varStatus="lineStatus">
-														<div>
-															<ui:repeat var="spanTag" value="#{conflict.spanTags.get(lineStatus.index)}">
-																<ui:fragment rendered="#{spanTag.type eq 'LINE_NUMBER'}">
-																	<span style="color: rgb(128, 128, 128);width: 20px;display: inline-block">#{spanTag.text}</span>
-																</ui:fragment>
-																<ui:fragment rendered="#{spanTag.type eq 'KEEP'}">
-																	<span style="">#{spanTag.text}</span>
-																</ui:fragment>
-																<ui:fragment rendered="#{spanTag.type eq 'INDENTION'}">
-																	<span style="width: 20px; display: inline-block">#{spanTag.text}</span>
-																</ui:fragment>
-																<ui:fragment rendered="#{spanTag.type eq 'INSERTION'}">
-																	<span style="background-color: rgb(64, 255, 64)">#{spanTag.text}</span>
-																</ui:fragment>
-																<ui:fragment rendered="#{spanTag.type eq 'DELETION'}">
-																	<span style="background-color: rgb(255, 64, 64)">#{spanTag.text}</span>
-																</ui:fragment>
-															</ui:repeat>
+														<div class="plugin-installer-diff-box">
+															<!-- WARNING: The comment sequences MUST be here to AVOID the white spaces between different span tags! -->
+															<ui:repeat var="spanTag" value="#{conflict.spanTags.get(lineStatus.index)}"><!--
+																--><ui:fragment rendered="#{spanTag.type eq 'LINE_NUMBER'}"><!--
+																	--><span class="plugin-installer-code plugin-installer-line-number">#{spanTag.text}</span><!--
+																--></ui:fragment><!--
+																--><ui:fragment rendered="#{spanTag.type eq 'KEEP'}"><!--
+																	--><span class="plugin-installer-code">#{spanTag.text}</span><!--
+																--></ui:fragment><!--
+																--><ui:fragment rendered="#{spanTag.type eq 'SPACE'}"><!--
+																	--><span class="plugin-installer-code">&#160;</span><!--
+																--></ui:fragment><!--
+																--><ui:fragment rendered="#{spanTag.type eq 'INSERTION'}"><!--
+																	--><span class="plugin-installer-code plugin-installer-insertion">#{spanTag.text}</span><!--
+																--></ui:fragment><!--
+																--><ui:fragment rendered="#{spanTag.type eq 'DELETION'}"><!--
+																	--><span class="plugin-installer-code plugin-installer-deletion">#{spanTag.text}</span><!--
+																--></ui:fragment><!--
+															--></ui:repeat>
 														</div>
 													</ui:repeat>
 												</div>
 												<ui:fragment rendered="#{pluginsBean.conflicts_mode eq 'edit_existing_file'}">
 													<div class="col-md-6">
-														<x:inputTextarea id="textarea_edit_existing_file" style="resize: none;" pt:aria-label="textarea_edit_existing_file" forceId="true" styleClass="form-control" value="#{conflict.existingVersion}" />
+														<x:inputTextarea id="textarea_edit_existing_file" styleClass="plugin-installer-text-area form-control" pt:aria-label="textarea_edit_existing_file" forceId="true" value="#{conflict.existingVersion}" />
 													</div>
 													<script type="text/javascript">
 														var textarea = document.getElementById('textarea_edit_existing_file');
@@ -158,7 +162,7 @@
 												</ui:fragment>
 												<ui:fragment rendered="#{pluginsBean.conflicts_mode eq 'edit_uploaded_file'}">
 													<div class="col-md-6">
-														<x:inputTextarea id="textarea_edit_uploaded_file" style="resize: none;" pt:aria-label="textarea_edit_uploaded_file" forceId="true" styleClass="form-control" value="#{conflict.uploadedVersion}" />
+														<x:inputTextarea id="textarea_edit_uploaded_file" styleClass="plugin-installer-text-area form-control" pt:aria-label="textarea_edit_uploaded_file" forceId="true" value="#{conflict.uploadedVersion}" />
 													</div>
 													<script type="text/javascript">
 														var textarea = document.getElementById('textarea_edit_uploaded_file');

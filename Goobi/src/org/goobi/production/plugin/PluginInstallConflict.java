@@ -14,6 +14,7 @@ public class PluginInstallConflict {
     private String existingVersion;
     private String uploadedVersion;
     private List<List<SpanTag>> spanTags;
+    private List<Integer> lineNumbers;
 
     public static enum ResolveTactic {
         unknown,
