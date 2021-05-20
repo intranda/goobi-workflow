@@ -346,14 +346,14 @@ public class HelperSchritte {
                     case 99:
 
                         break;
-                    // return code 98: re-open task
+                        // return code 98: re-open task
                     case 98:
                         reOpenStep(step);
                         break;
-                    // return code 0: script returned without error
+                        // return code 0: script returned without error
                     case 0:
                         break;
-                    // everything else: error
+                        // everything else: error
                     default:
                         errorStep(step);
                         break outerloop;
@@ -380,27 +380,24 @@ public class HelperSchritte {
             prefs = po.getRegelsatz().getPreferences();
             Fileformat ff = po.readMetadataFile();
             if (ff == null) {
-                logger.error("Metadata file is not readable for process with ID " + step.getProcessId());
+                logger.info("Metadata file is not readable for process with ID " + step.getProcessId());
                 LogEntry le = new LogEntry();
                 le.setProcessId(step.getProzess().getId());
                 le.setContent("Metadata file is not readable");
                 le.setType(LogType.ERROR);
                 le.setUserName("http step");
                 ProcessManager.saveLogEntry(le);
-                errorStep(step);
-                return;
+            } else {
+                dd = ff.getDigitalDocument();
             }
-            dd = ff.getDigitalDocument();
         } catch (Exception e2) {
-            logger.error("An exception occurred while reading the metadata file for process with ID " + step.getProcessId(), e2);
+            logger.info("An exception occurred while reading the metadata file for process with ID " + step.getProcessId(), e2);
             LogEntry le = new LogEntry();
             le.setProcessId(step.getProzess().getId());
             le.setContent("error reading metadata file");
             le.setType(LogType.ERROR);
             le.setUserName("http step");
             ProcessManager.saveLogEntry(le);
-            errorStep(step);
-            return;
         }
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
         String bodyStr = null;
@@ -617,9 +614,9 @@ public class HelperSchritte {
                         StepManager.saveStep(step);
                         Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
                                 "Script for '" + step.getTitel() + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode()
-                                        + ". The script returned: " + rueckgabe.getErrorText());
+                                + ". The script returned: " + rueckgabe.getErrorText());
                         logger.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
-                                + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
+                        + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
                     }
                 }
             }
@@ -638,12 +635,14 @@ public class HelperSchritte {
         Process po = step.getProzess();
         Prefs prefs = null;
         prefs = po.getRegelsatz().getPreferences();
-        Fileformat ff = po.readMetadataFile();
-        if (ff == null) {
-            logger.error("Metadata file is not readable for process with ID " + step.getProcessId());
-            throw new ReadException("Metadata file is not readable for process with ID " + step.getProcessId());
+        try {
+            Fileformat ff = po.readMetadataFile();
+            if (ff != null) {
+                dd = ff.getDigitalDocument();
+            }
+        } catch (IOException e) {
+            logger.info(e);
         }
-        dd = ff.getDigitalDocument();
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
         List<String> parameterList = replacer.replaceBashScript(script);
         return parameterList;
@@ -681,7 +680,7 @@ public class HelperSchritte {
                 CloseStepObjectAutomatic(step);
             } else {
                 Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
-                        + "' was cancelled because of validation errors: " + dms.getProblems().toString());
+                + "' was cancelled because of validation errors: " + dms.getProblems().toString());
                 errorStep(step);
             }
             return validate;
