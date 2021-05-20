@@ -24,6 +24,11 @@
                         <ui:include src="inc_me_image-imageNavigation.xhtml" />
                     </ui:fragment>
 
+                    <input
+                        type="hidden"
+                        id="tileSource"
+                        value="#{Metadaten.image.url}" />
+                        
                     <!-- OCR -->
                     <div id="image__image-container">
 
@@ -54,10 +59,6 @@
                                 type="hidden"
                                 id="persistenceId"
                                 value="#{Metadaten.myProzess.id}" />
-                            <input
-                                type="hidden"
-                                id="tileSource"
-                                value="#{Metadaten.image.url}" />
                             <input
                                 type="hidden"
                                 id="mediaType"

@@ -65,7 +65,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 	                            if(altoEditorElement && altoEditorElement._tag) {
 	                            	altoEditorElement._tag.unmount(true)
 	                            	if(typeof riot !== "undefined") {
-	                            		riot.mount("alto-editor");
+	                            		openAltoEditor();
 	                            	}
 	                            }
                             } 

@@ -27,12 +27,13 @@
                 </li>
                 <ui:fragment rendered="#{Metadaten.showOcrButton}">
                     <li>
+                            <!-- JS function is defined in uii/includes/metseditor/modals/inc_me_modal_altoeditor.xhtml -->
                         <button
+                            onclick="openAltoEditor()"
                             type="button"
                             aria-label="#{msgs.mets_editOcrForCurrentImage}"
                             class="btn btn--icon"
                             title="#{msgs.mets_editOcrForCurrentImage}"
-                            onclick="$('#altoEditBox').modal('show');riot.mount('alto-editor')"
                             role="button"
                             data-toggle="tooltip"
                             data-placement="bottom">

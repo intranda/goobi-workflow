@@ -27,9 +27,9 @@
                 role="document">
                 <h:panelGroup id="altoEditorModalContent" class="modal-content" layout="block">
                     <div class="modal-header">
-                        <h5
+                        <h6
                             class="modal-title"
-                            id="processesSearchBoxLabel">#{msgs.editAlto}</h5>
+                            id="processesSearchBoxLabel">#{msgs.editAlto}</h6>
 
                         <button
                             type="button"
@@ -55,6 +55,24 @@
 
             </div>
         </div>
+        <script>
+        function openAltoEditor() {
+        	$('#altoEditBox').modal('show');
+        	var opts = {
+        		language: "#{SpracheForm.locale.language}",
+        		messages: {
+        			save: '#{msgs.save}',
+        			nextImage: '#{Metadaten.pagesRTL?msgs.previousImage:msgs.nextImage}',
+        			prevImage: '#{Metadaten.pagesRTL?msgs.nextImage:msgs.previousImage}'
+        		},
+        		altoDivSelector: '#jsonAlto',
+        		altoChangesInputSelector: "#altoChanges",
+        		saveAltoButtonSelector: "#saveAltoChanges",
+        		tileSourceSelector: '#tileSource'
+        	}
+        	riot.mount('alto-editor', opts)
+        }
+        </script>
 
     </composite:implementation>
 </ui:composition>

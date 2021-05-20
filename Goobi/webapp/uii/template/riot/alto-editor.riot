@@ -27,15 +27,17 @@
             <div class="col-md-8">
                 <div class="image-navigation">
                     <button type="button" class="btn btn--icon-blue" onclick="document.querySelector('#prevImage').click()">
-                        prev image
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        {msgs['prevImage']}
                     </button>
                     <button type="button" class="btn btn--icon-blue" onclick="document.querySelector('#nextImage').click()">
-                        next image
+                        {msgs['nextImage']}
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
             <div class="col-md-2">
-                <button type="button" class="btn btn--icon-blue pull-right" onclick={save}>Speichern</button>
+                <button type="button" class="btn btn--icon-blue pull-right" onclick={save}>{msgs['save']}</button>
             </div>
         </div>
     </div>
@@ -78,8 +80,10 @@
 
 <script>
     this.on('before-mount', () => {
+    	console.log(this.opts)
+    	this.msgs = this.opts.messages;
         this.lines = []; 
-        let altoDiv = document.querySelector("#jsonAlto")
+        let altoDiv = document.querySelector(opts.altoDivSelector);
         let altoJson = altoDiv.innerText;
         this.alto = JSON.parse(altoJson);
         this.lines = this.alto.lines;
@@ -195,14 +199,14 @@
     }
     
     save() {
-    	let altoInput = document.querySelector("#altoChanges");
+    	let altoInput = document.querySelector(this.opts.altoChangesInputSelector);
     	let changeArr = [];
     	for(let wordId of Object.keys(this.changes)) {
     		let change = this.changes[wordId];
     		changeArr.push({action: change.action, value: change.value, wordId: wordId})
     	}
     	altoInput.value = JSON.stringify(changeArr)
-    	document.querySelector("#saveAltoChanges").click();
+    	document.querySelector(this.opts.saveAltoButtonSelector).click();
     }
     
     initOpenseadragon() {
@@ -230,7 +234,7 @@
             },
             image: {
                 mimeType: "image/jpeg",
-                tileSource: document.querySelector('#tileSource').value
+                tileSource: document.querySelector(this.opts.tileSourceSelector).value
             }
         };                                               
         
