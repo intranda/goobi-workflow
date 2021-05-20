@@ -29,11 +29,13 @@
                     <li>
                         <button
                             type="button"
-                            aria-label="#{msgs.mets_showOcrForCurrentImage}"
+                            aria-label="#{msgs.mets_editOcrForCurrentImage}"
                             class="btn btn--icon"
-                            title="#{msgs.mets_showOcrForCurrentImage}"
+                            title="#{msgs.mets_editOcrForCurrentImage}"
                             onclick="$('#altoEditBox').modal('show');riot.mount('alto-editor')"
-                            role="button">
+                            role="button"
+                            data-toggle="tooltip"
+                            data-placement="bottom">
                             <i
                                 class="fa fa-file-text-o fa-lg"
                                 aria-hidden="true"></i>
@@ -41,21 +43,15 @@
                                 class="fa fa-pencil fa-lg"
                                 aria-hidden="true"></i>
                            
-                            <f:passThroughAttribute
-                                name="data-toggle"
-                                value="tooltip" />
-                            <f:passThroughAttribute
-                                name="data-placement"
-                                value="bottom" />
                         </button>
                     </li>
                     <li class="no-border #{Metadaten.treeProperties.showOcr eq 'true' ? 'active' :''}">
                         <button
                             jsf:id="ocrButton"
-                            aria-label="#{msgs.mets_editOcrForCurrentImage}"
+                            aria-label="#{msgs.mets_showOcrForCurrentImage}"
                             class="btn btn--icon"
                             jsf:action="#{NavigationForm.Reload}"
-                            title="#{msgs.mets_editOcrForCurrentImage}"
+                            title="#{msgs.mets_showOcrForCurrentImage}"
                             role="button">
                             <i
                                 class="fa fa-file-text-o fa-lg"

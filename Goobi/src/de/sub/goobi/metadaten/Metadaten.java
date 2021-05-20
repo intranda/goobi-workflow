@@ -62,6 +62,7 @@ import org.apache.solr.common.util.Pair;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
+import org.goobi.beans.AltoChange;
 import org.goobi.beans.Process;
 import org.goobi.beans.SimpleAlto;
 import org.goobi.managedbeans.LoginBean;
@@ -445,6 +446,10 @@ public class Metadaten implements Serializable {
     @Getter
     @Setter
     private boolean pagesRTL = false;
+
+    @Getter
+    @Setter
+    private String altoChanges;
 
     private List<SelectItem> addableMetadataTypes = new ArrayList<>();
     private List<SelectItem> addableCorporateTypes = new ArrayList<>();
@@ -3582,15 +3587,30 @@ public class Metadaten implements Serializable {
     }
 
     public String getJsonAlto() throws SwapException, DAOException, IOException, InterruptedException, JDOMException {
+        Path altoFile = getCurrentAltoPath();
+
+        SimpleAlto alto = SimpleAlto.readAlto(altoFile);
+
+        return new Gson().toJson(alto);
+    }
+
+    private Path getCurrentAltoPath() throws SwapException, DAOException, IOException, InterruptedException {
         String ocrFileNew = image.getTooltip().substring(0, image.getTooltip().lastIndexOf("."));
         Path altoFile = Paths.get(myProzess.getOcrAltoDirectory(), ocrFileNew + ".xml");
         if (!Files.exists(altoFile)) {
             altoFile = altoFile.getParent().resolve(ocrFileNew + ".alto");
         }
+        return altoFile;
+    }
 
-        SimpleAlto alto = SimpleAlto.readAlto(altoFile);
-
-        return new Gson().toJson(alto);
+    public void saveAlto() {
+        AltoChange[] changes = new Gson().fromJson(this.altoChanges, AltoChange[].class);
+        try {
+            AltoSaver.saveAltoChanges(getCurrentAltoPath(), changes);
+        } catch (JDOMException | IOException | SwapException | DAOException | InterruptedException e) {
+            // TODO Auto-generated catch block
+            logger.error(e);
+        }
     }
 
     public String getOcrAddress() {

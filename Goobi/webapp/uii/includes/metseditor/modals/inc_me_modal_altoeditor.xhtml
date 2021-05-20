@@ -46,7 +46,10 @@
                     <div class="modal-body">
                         <alto-editor></alto-editor>
                     </div>
-                    
+                    <h:inputText value="#{Metadaten.altoChanges}" id="altoChanges" style="display: none;"/>
+                    <h:commandButton id="saveAltoChanges" action="#{Metadaten.saveAlto}" style="display: none;">
+                        <f:ajax execute="altoChanges" render="" />
+                    </h:commandButton>
                 </h:panelGroup>
 
 

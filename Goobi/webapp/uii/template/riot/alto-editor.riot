@@ -35,7 +35,7 @@
                 </div>
             </div>
             <div class="col-md-2">
-                <button type="button" class="btn btn--icon-blue pull-right">Speichern</button>
+                <button type="button" class="btn btn--icon-blue pull-right" onclick={save}>Speichern</button>
             </div>
         </div>
     </div>
@@ -196,6 +196,13 @@
     
     save() {
     	let altoInput = document.querySelector("#altoChanges");
+    	let changeArr = [];
+    	for(let wordId of Object.keys(this.changes)) {
+    		let change = this.changes[wordId];
+    		changeArr.push({action: change.action, value: change.value, wordId: wordId})
+    	}
+    	altoInput.value = JSON.stringify(changeArr)
+    	document.querySelector("#saveAltoChanges").click();
     }
     
     initOpenseadragon() {
@@ -250,24 +257,20 @@
     	if(this.wordLocked && e.type === "mousemove") {
     		return;
     	}
-    	console.log("div onclick")
         var pixel = new OpenSeadragon.Point( event.offsetX, event.offsetY );
     	if(event.target.nodeName !== "CANVAS" || event.ctrlKey) {
-			console.log("not canvas")
     		var canvas = document.querySelector('#bigImage canvas');
 			var rect = canvas.getBoundingClientRect();
 			var x = e.clientX - rect.left; //x position within the element.
 	        var y = e.clientY - rect.top;  //y position within the element.
 	        pixel = new OpenSeadragon.Point(x, y);
         }
-    	console.log(pixel)
         var pos = this.viewImage.viewer.viewport.viewerElementToImageCoordinates( pixel );
         for(let line of this.lines) {
         	if(this.posInRect(pos, line)) {
         		for(let word of line.words) {
         			if(this.posInRect(pos, word)) {
         				let wordElement = document.querySelector('#'+word.id);
-        				console.log(wordElement);
         				if(e.type === "click") {
         					wordElement.focus();
         				} else {
