@@ -338,8 +338,26 @@ public class ConfigurationHelper implements Serializable {
         return getLocalInt("numberOfMetaBackups", 0);
     }
 
+    public String getGoobiAuthorityServerPassword() {
+
+        return getLocalString("goobiAuthorityServerPassword");
+    }
+
+    public int getGoobiAuthorityServerBackupFreq() {
+        return getLocalInt("goobiAuthorityServerUploadFrequency", 0);
+    }
+    
+    public String getUsername() {
+
+        return getLocalString("username");
+    }
+    
     // URLs
 
+    public String getGoobiAuthorityServerUrl() {
+        return getLocalString("goobiAuthorityServerUrl");
+    }
+    
     public String getGoobiUrl() {
         return getLocalString("goobiUrl");
     }

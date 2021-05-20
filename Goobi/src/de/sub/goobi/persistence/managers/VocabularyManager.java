@@ -3,6 +3,7 @@ package de.sub.goobi.persistence.managers;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -483,4 +484,63 @@ public class VocabularyManager implements IManager, Serializable {
         }
 
     }
+    
+    public static void setVocabularyLastAltered(Vocabulary vocabulary) {
+        try {
+            VocabularyMysqlHelper.setVocabularyLastAltered(vocabulary);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+    }
+
+    public static void setVocabularyLastUploaded(Vocabulary vocabulary) {
+        try {
+            VocabularyMysqlHelper.setVocabularyLastUploaded(vocabulary);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+    }
+
+    public static Timestamp getVocabularyLastAltered(Vocabulary vocabulary) {
+        try {
+            return VocabularyMysqlHelper.getVocabularyLastAltered(vocabulary);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+
+        return null;
+    }
+
+    public static Timestamp getVocabularyLastUploaded(Vocabulary vocabulary) {
+        try {
+            return VocabularyMysqlHelper.getVocabularyLastUploaded(vocabulary);
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return null;
+    }
+    
+    public static ResultSetHandler<Timestamp> resultSetGetLastUploadedHandler = new ResultSetHandler<Timestamp>() {
+
+        @Override
+        public Timestamp handle(ResultSet rs) throws SQLException {
+            if (rs.next()) {
+                return rs.getTimestamp("lastUploaded");
+            }
+            return null;
+        }
+
+    };
+    
+    public static ResultSetHandler<Timestamp> resultSetGetLastAlteredHandler = new ResultSetHandler<Timestamp>() {
+
+        @Override
+        public Timestamp handle(ResultSet rs) throws SQLException {
+            if (rs.next()) {
+                return rs.getTimestamp("lastAltered");
+            }
+            return null;
+        }
+
+    };
 }

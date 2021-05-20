@@ -2,6 +2,7 @@ package de.sub.goobi.persistence.managers;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +18,8 @@ import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
+import java.sql.Timestamp;
+import java.util.Calendar;
 
 import com.google.gson.Gson;
 
@@ -810,5 +813,96 @@ class VocabularyMysqlHelper implements Serializable {
             }
         }
 
+    }
+    
+
+    public static Timestamp getVocabularyLastAltered(Vocabulary vocabulary) throws SQLException {
+
+        if (vocabulary == null) {
+            return null;
+        }
+        String sql = "SELECT * FROM vocabularies WHERE vocabId = ? ";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+
+            Timestamp timeAltered = new QueryRunner().query(connection, sql, VocabularyManager.resultSetGetLastAlteredHandler, vocabulary.getId());
+
+            return timeAltered;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void setVocabularyLastAltered(Vocabulary vocabulary) throws SQLException {
+
+        if (vocabulary == null) {
+            return;
+        }
+
+        String updateSql = "UPDATE vocabularies SET lastAltered = ? WHERE vocabularyId = " + vocabulary.getId();
+        Connection connection = null;
+
+        try {
+            Calendar calendar = Calendar.getInstance();
+            Timestamp timeNow = new Timestamp(calendar.getTime().getTime());
+            connection = MySQLHelper.getInstance().getConnection();
+            
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
+            preparedStatement.setTimestamp(1, timeNow);
+            preparedStatement.executeUpdate();
+            
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+
+    }
+
+    public static Timestamp getVocabularyLastUploaded(Vocabulary vocabulary) throws SQLException {
+        if (vocabulary == null) {
+            return null;
+        }
+        String sql = "SELECT * FROM vocabularies WHERE vocabId = ? ";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+           
+            Timestamp timeUploaded = new QueryRunner().query(connection, sql, VocabularyManager.resultSetGetLastUploadedHandler, vocabulary.getId());
+           
+            return timeUploaded;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void setVocabularyLastUploaded(Vocabulary vocabulary) throws SQLException {
+      
+        if (vocabulary == null) {
+            return;
+        }
+
+        String updateSql = "UPDATE vocabularies SET lastUploaded = ? WHERE vocabId = " + vocabulary.getId();
+        Connection connection = null;
+
+        try {
+            Calendar calendar = Calendar.getInstance();
+            Timestamp timeNow = new Timestamp(calendar.getTime().getTime());
+            connection = MySQLHelper.getInstance().getConnection();
+            
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
+            preparedStatement.setTimestamp(1, timeNow);
+            preparedStatement.executeUpdate();
+            
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
     }
 }
