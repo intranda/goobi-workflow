@@ -1,13 +1,14 @@
 <alto-editor>
     <div class="row">
         <div class="col-md-6">
-            <div id="bigImage"></div>
+            <div id="bigImage" onclick={canvasOnClick} onmousemove={canvasOnClick}></div>
         </div>
         <div class="col-md-6">
             <div class="alto-edit">
                 <div each={line in lines} class="altoline {}" >
                     <span each={word in line.words}>
-                        <span onkeyup={keyup} 
+                        <span id={word.id}
+                            onkeyup={keyup} 
                             onkeydown={keydown} 
                             onfocus={lockWord} 
                         	onblur={unlockWord}
@@ -243,11 +244,53 @@
             $('#' + configViewer.global.divId).html( 'Failed to load image: "' + error + '"' );
         });
         
-        this.on('before-unmount', () => {
-        	this.viewImage.close();
-        })
     }
     
+    canvasOnClick(e) {
+    	if(this.wordLocked && e.type === "mousemove") {
+    		return;
+    	}
+    	console.log("div onclick")
+        var pixel = new OpenSeadragon.Point( event.offsetX, event.offsetY );
+    	if(event.target.nodeName !== "CANVAS" || event.ctrlKey) {
+			console.log("not canvas")
+    		var canvas = document.querySelector('#bigImage canvas');
+			var rect = canvas.getBoundingClientRect();
+			var x = e.clientX - rect.left; //x position within the element.
+	        var y = e.clientY - rect.top;  //y position within the element.
+	        pixel = new OpenSeadragon.Point(x, y);
+        }
+    	console.log(pixel)
+        var pos = this.viewImage.viewer.viewport.viewerElementToImageCoordinates( pixel );
+        for(let line of this.lines) {
+        	if(this.posInRect(pos, line)) {
+        		for(let word of line.words) {
+        			if(this.posInRect(pos, word)) {
+        				let wordElement = document.querySelector('#'+word.id);
+        				console.log(wordElement);
+        				if(e.type === "click") {
+        					wordElement.focus();
+        				} else {
+        					e.item = {word: word}
+        					this.highlightWord(e)
+        				}
+        				break;
+        			}
+        		}
+        	}
+        }
+    }
+    
+    posInRect(pos, rect) {
+    	return rect.x < pos.x 
+    		&& rect.x+rect.width>pos.x 
+    		&& rect.y<pos.y 
+    		&& rect.y+rect.height>pos.y;
+    }
+    
+    this.on('before-unmount', () => {
+    	this.viewImage.close();
+    })
 
 </script>
 </alto-editor>

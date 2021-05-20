@@ -61,7 +61,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             }
                             // reload alto-editor
                             var altoEditorElement = document.querySelector('alto-editor')
-                            if(altoEditorElement) {
+                            if(altoEditorElement && altoEditorElement._tag) {
                             	altoEditorElement._tag.unmount(true)
                             	if(typeof riot !== "undefined") {
                             		riot.mount("alto-editor");
