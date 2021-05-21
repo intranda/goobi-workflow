@@ -46,6 +46,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
@@ -71,6 +72,7 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.jdom2.JDOMException;
+import org.omnifaces.util.Faces;
 
 import com.google.gson.Gson;
 
@@ -3984,6 +3986,17 @@ public class Metadaten implements Serializable {
             }
         }
         return result;
+    }
+
+    public void autocompleteJson() throws IOException {
+        String suggest = Faces.getRequestParameter("suggest");
+        List<String> result = autocomplete(suggest);
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        externalContext.setResponseContentType("application/json");
+        externalContext.setResponseCharacterEncoding("UTF-8");
+        externalContext.getResponseOutputWriter().write(new Gson().toJson(result));
+        facesContext.responseComplete();
     }
 
     public boolean getIsNotRootElement() {

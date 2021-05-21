@@ -14,6 +14,22 @@
     </composite:interface>
 
     <composite:implementation>
+        <style>
+            autocomplete {
+                display: inline-block;
+            }
+            .actions {
+                margin-top: 15px;
+            }
+            .image-navigation {
+                display: flex;
+                justify-content: center;
+            }
+            .image-navigation .btn {
+                margin: 0 4px;
+                padding: 0 7px;
+            }
+        </style>
 
         <!-- process search modal #processesSearchBox -->
         <div
@@ -45,32 +61,77 @@
                     </div>
                     <div class="modal-body">
                         <alto-editor></alto-editor>
+                        <div class="actions">
+                            <div class="row">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-8">
+                                    <div class="image-navigation">
+                                        <button type="button" class="btn btn--icon-blue" onclick="document.querySelector('#prevImage').click()">
+                                            <i class="fa fa-angle-left" aria-hidden="true"></i>
+                                            #{Metadaten.pagesRTL?msgs.nextImage:msgs.previousImage}
+                                        </button>
+                                        <autocomplete></autocomplete>
+                                        <h:inputHidden id="autocompleteValue" value="#{Metadaten.bildNummerGeheZuCompleteString}" />
+                                        <button type="button" class="btn btn--icon-blue" onclick="document.querySelector('#nextImage').click()">
+                                            #{Metadaten.pagesRTL?msgs.previousImage:msgs.nextImage}
+                                            <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn--icon-blue pull-right" onclick="saveAltoResults">#{msgs.save}</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <h:inputText value="#{Metadaten.altoChanges}" id="altoChanges" style="display: none;"/>
                     <h:commandButton id="saveAltoChanges" action="#{Metadaten.saveAlto}" style="display: none;">
                         <f:ajax execute="altoChanges" render="" />
                     </h:commandButton>
                 </h:panelGroup>
-
+                <h:commandScript id="altoEditorAutocompleteScript" name="requestAutocomplete" 
+                    action="#{Metadaten.autocompleteJson}" onevent="autocompleted" render="" pt:data-noaction="true" />
+                <h:commandScript 
+                    pt:data-renderimage="true"
+                    name="sendAutocompleteValue"
+                    action="#{Metadaten.BildGeheZu}" 
+                    execute="autocompleteValue" 
+                    render="openseadragonform" />
 
             </div>
         </div>
         <script>
-        function openAltoEditor() {
-        	$('#altoEditBox').modal('show');
+        function autocompleted(e) {
+        	if(e.status === "complete") {
+        		var autocomplete = document.querySelector('autocomplete')._tag
+        		autocomplete.onAutocompleteResponse(JSON.parse(e.responseText))
+        	}
+        }
+        function sendAutocomplete(value) {
+        	requestAutocomplete({suggest: value})
+        }
+        function enterValue(value) {
+        	document.querySelector('#autocompleteValue').value = value;
+        	sendAutocompleteValue();
+        }
+        function openAltoEditor(dontShowModal) {
+        	if(!dontShowModal) {
+        		$('#altoEditBox').modal('show');
+        	}
         	var opts = {
         		language: "#{SpracheForm.locale.language}",
-        		messages: {
-        			save: '#{msgs.save}',
-        			nextImage: '#{Metadaten.pagesRTL?msgs.previousImage:msgs.nextImage}',
-        			prevImage: '#{Metadaten.pagesRTL?msgs.nextImage:msgs.previousImage}'
-        		},
         		altoDivSelector: '#jsonAlto',
         		altoChangesInputSelector: "#altoChanges",
         		saveAltoButtonSelector: "#saveAltoChanges",
         		tileSourceSelector: '#tileSource'
         	}
-        	riot.mount('alto-editor', opts)
+        	riot.mount('alto-editor', opts);
+        	var ocOpts = {
+        		requestAutocomplete: sendAutocomplete,
+        		enterValue: enterValue,
+        		initialValue: document.querySelector('#autocompleteValue').value      		
+        	}
+        	riot.mount('autocomplete', ocOpts);
         }
         </script>
 

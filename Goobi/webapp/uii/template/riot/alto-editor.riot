@@ -21,26 +21,6 @@
             </div>
         </div>
     </div>
-    <div class="actions">
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-8">
-                <div class="image-navigation">
-                    <button type="button" class="btn btn--icon-blue" onclick="document.querySelector('#prevImage').click()">
-                        <i class="fa fa-angle-left" aria-hidden="true"></i>
-                        {msgs['prevImage']}
-                    </button>
-                    <button type="button" class="btn btn--icon-blue" onclick="document.querySelector('#nextImage').click()">
-                        {msgs['nextImage']}
-                        <i class="fa fa-angle-right" aria-hidden="true"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <button type="button" class="btn btn--icon-blue pull-right" onclick={save}>{msgs['save']}</button>
-            </div>
-        </div>
-    </div>
 
 <style>
     .altoline {
@@ -48,24 +28,15 @@
         padding-bottom: 5px;
     }
     .alto-edit {
+        min-height: 82vh;
         max-height: 82vh;
         overflow-y: scroll;
+        border: 1px solid #ddd;
+        padding: 15px;
     }
     #bigImage {
         height: 82vh;
-    }
-    .btn {
-        padding: 0 7px;
-    }
-    .actions {
-        margin-top: 15px;
-    }
-    .image-navigation {
-        display: flex;
-        justify-content: center;
-    }
-    .image-navigation .btn {
-        margin: 0 4px;
+        border: 1px solid #ddd;
     }
     .line-marker {
         border: 1px solid red;
@@ -129,6 +100,7 @@
             e.target.innerText = text;
         }
         let word = e.item.word
+        word.value = e.target.innerText;
         this.changes[word.id] = {action: "changeContent", value: text};
         let currentPos = window.getSelection().getRangeAt(0).startOffset;
         this.oldPos = {position: currentPos, wordId: word.id};
