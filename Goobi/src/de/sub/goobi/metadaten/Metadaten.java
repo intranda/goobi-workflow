@@ -984,7 +984,8 @@ public class Metadaten implements Serializable {
     }
 
     public String deleteGroup() {
-        this.myDocStruct.removeMetadataGroup(this.currentGroup.getMetadataGroup(), true);
+        MetadataGroup mg = currentGroup.getMetadataGroup();
+        mg.getParent().removeMetadataGroup(mg, true);
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -1129,11 +1130,12 @@ public class Metadaten implements Serializable {
     }
 
     public int getSizeOfMetadataGroups() {
-        try {
-            return getAddableMetadataGroupTypes().size();
-        } catch (NullPointerException e) {
+
+        List<MetadataGroupType>   types = this.myDocStruct.getAddableMetadataGroupTypes();
+        if (types == null) {
             return 0;
         }
+        return types.size();
     }
 
     public void setSizeOfMetadataGroups(int i) {
@@ -1722,7 +1724,7 @@ public class Metadaten implements Serializable {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -4426,7 +4428,7 @@ public class Metadaten implements Serializable {
                 }
             } else {
                 Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString()
-                        + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
+                + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
             }
         }
 
