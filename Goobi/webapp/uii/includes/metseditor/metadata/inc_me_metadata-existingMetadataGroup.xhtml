@@ -48,7 +48,7 @@
                     rowIndexVar="rowIndex">
                     <h:panelGroup
                         layout="block"
-                        styleClass="module__box-level-#{Item.level}">
+                        styleClass="module__box-group module__box-level-#{Item.level}">
                         <!--                     <h:outputText value="#{msgs.id}: #{Item.metadataGroupId}" /> -->
                         <!--                     <br/> -->
                         <!--                     <h:outputText value="#{msgs.parentId}: #{Item.parentGroupId}" rendered="#{Item.parentGroupId != null}" /> -->
@@ -57,7 +57,7 @@
                             <button
                                 jsf:id="grpdelete"
                                 aria-label="#{msgs.mets_deleteMetadataGroup}"
-                                class="btn btn--icon"
+                                class="btn btn--icon btn--icon-light"
                                 jsf:action="#{Metadaten.deleteGroup}"
                                 title="#{msgs.mets_deleteMetadataGroup}"
                                 type="button">
@@ -77,7 +77,7 @@
                             <button
                                 jsf:id="grpduplicate"
                                 aria-label="#{msgs.mets_duplicateMetadataGroup}"
-                                class="btn btn--icon"
+                                class="btn btn--icon btn--icon-light"
                                 jsf:action="#{Metadaten.CopyGroup}"
                                 title="#{msgs.mets_duplicateMetadataGroup}"
                                 type="button">
