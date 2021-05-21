@@ -43,9 +43,9 @@ import java.util.Set;
 import javax.faces.model.SelectItem;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.solr.common.util.Pair;
 import org.goobi.beans.Process;
 import org.goobi.beans.Ruleset;
 import org.reflections.Reflections;
@@ -140,7 +140,7 @@ public class MetadatenHelper implements Comparator<Object> {
                 boolean match = false;
                 if ((old.getFirstname() != null && !old.getFirstname().isEmpty()) || (old.getLastname() != null && !old.getLastname().isEmpty())) {
 
-                    if (newDocstruct.getAddableMetadataTypes(true)!= null && newDocstruct.getAddableMetadataTypes(true).size() > 0) {
+                    if (newDocstruct.getAddableMetadataTypes(true) != null && newDocstruct.getAddableMetadataTypes(true).size() > 0) {
                         for (MetadataType mt : newDocstruct.getAddableMetadataTypes(true)) {
                             if (mt.getName().equals(old.getType().getName())) {
                                 match = true;
@@ -363,7 +363,7 @@ public class MetadatenHelper implements Comparator<Object> {
      */
     // FIXME: alphanumerisch
 
-    public Pair<String, String> getImageNumber(DocStruct inStrukturelement, int inPageNumber) {
+    public MutablePair<String, String> getImageNumber(DocStruct inStrukturelement, int inPageNumber) {
         String physical = "";
         String logical = "";
 
@@ -416,8 +416,8 @@ public class MetadatenHelper implements Comparator<Object> {
                 logical = meineSeite.getValue();
             }
         }
-        if (physical.length()>0) {
-            return new Pair<>(physical, logical);
+        if (physical.length() > 0) {
+            return new MutablePair<>(physical, logical);
         } else {
             return null;
         }
@@ -743,7 +743,6 @@ public class MetadatenHelper implements Comparator<Object> {
         return myList;
     }
 
-
     public List<SelectItem> getAddableCorporateRoles(HoldingElement myDocStruct, String inRoleName) {
         List<SelectItem> myList = new ArrayList<>();
 
@@ -1028,7 +1027,6 @@ public class MetadatenHelper implements Comparator<Object> {
             }
         }
     }
-
 
     private static void addAuthorityFromPerson(Map<String, List<String>> metadataList, Person p) {
         if (StringUtils.isNotBlank(p.getAuthorityID())) {
