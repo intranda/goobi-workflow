@@ -70,8 +70,15 @@
                                             <i class="fa fa-angle-left" aria-hidden="true"></i>
                                             #{Metadaten.pagesRTL?msgs.nextImage:msgs.previousImage}
                                         </button>
-                                        <autocomplete></autocomplete>
-                                        <h:inputHidden id="autocompleteValue" value="#{Metadaten.bildNummerGeheZuCompleteString}" />
+                                        <intranda:autocomplete 
+                                        	name="pageAutocomplete" 
+                                        	field="#{Metadaten.bildNummerGeheZuCompleteString}"
+                                        	renderimage="true"
+                                        	placeholder="bla"
+                                        	autocompletefunction="#{Metadaten.autocompleteJson}"
+                                        	afterselectaction="#{Metadaten.BildGeheZu}"
+                                        	execute=""
+                    						render="openseadragonform" />
                                         <button type="button" class="btn btn--icon-blue" onclick="document.querySelector('#nextImage').click()">
                                             #{Metadaten.pagesRTL?msgs.previousImage:msgs.nextImage}
                                             <i class="fa fa-angle-right" aria-hidden="true"></i>
@@ -89,31 +96,10 @@
                         <f:ajax execute="altoChanges" render="" />
                     </h:commandButton>
                 </h:panelGroup>
-                <h:commandScript id="altoEditorAutocompleteScript" name="requestAutocomplete" 
-                    action="#{Metadaten.autocompleteJson}" onevent="autocompleted" render="" pt:data-noaction="true" />
-                <h:commandScript 
-                    pt:data-renderimage="true"
-                    name="sendAutocompleteValue"
-                    action="#{Metadaten.BildGeheZu}" 
-                    execute="autocompleteValue" 
-                    render="openseadragonform" />
 
             </div>
         </div>
         <script>
-        function autocompleted(e) {
-        	if(e.status === "complete") {
-        		var autocomplete = document.querySelector('autocomplete')._tag
-        		autocomplete.onAutocompleteResponse(JSON.parse(e.responseText))
-        	}
-        }
-        function sendAutocomplete(value) {
-        	requestAutocomplete({suggest: value})
-        }
-        function enterValue(value) {
-        	document.querySelector('#autocompleteValue').value = value;
-        	sendAutocompleteValue();
-        }
         function openAltoEditor(dontShowModal) {
         	if(!dontShowModal) {
         		$('#altoEditBox').modal('show');
@@ -126,12 +112,6 @@
         		tileSourceSelector: '#tileSource'
         	}
         	riot.mount('alto-editor', opts);
-        	var ocOpts = {
-        		requestAutocomplete: sendAutocomplete,
-        		enterValue: enterValue,
-        		initialValue: document.querySelector('#autocompleteValue').value      		
-        	}
-        	riot.mount('autocomplete', ocOpts);
         }
         </script>
 

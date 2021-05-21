@@ -3590,8 +3590,10 @@ public class Metadaten implements Serializable {
 
     public String getJsonAlto() throws SwapException, DAOException, IOException, InterruptedException, JDOMException {
         Path altoFile = getCurrentAltoPath();
-
-        SimpleAlto alto = SimpleAlto.readAlto(altoFile);
+        SimpleAlto alto = new SimpleAlto();
+        if (Files.exists(altoFile)) {
+            alto = SimpleAlto.readAlto(altoFile);
+        }
 
         return new Gson().toJson(alto);
     }

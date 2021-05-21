@@ -38,7 +38,7 @@
         color: white;
     }
     input.form-control {
-        width: 100px;
+        width: 150px;
         padding: 2px 6px;
     }
 </style>
@@ -47,7 +47,6 @@
         this.entries = [];
         this.displayEntries = false;
         this.selectedEntryIdx = -1;
-        console.log(this.opts)
         this.currentValue = this.opts.initialValue;
 	})
 	
@@ -84,7 +83,7 @@
 	    	if(val.length > 0 ) {
 				this.opts.requestAutocomplete(val);
 	    	} else {
-	    		this.autocompleteEntries = [];
+	    		this.entries = [];
 	    	}
     	}
     	
