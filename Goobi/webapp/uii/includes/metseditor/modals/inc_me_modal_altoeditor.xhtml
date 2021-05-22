@@ -25,7 +25,7 @@
                 display: flex;
                 justify-content: center;
             }
-            .image-navigation .btn {
+           .actions .btn {
                 margin: 0 4px;
                 padding: 0 7px;
             }
@@ -86,7 +86,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-2">
-                                    <button type="button" class="btn btn--icon-blue pull-right" onclick="saveAltoResults">#{msgs.save}</button>
+                                    <button type="button" class="btn btn--icon-blue pull-right" onclick="saveAltoResults()">#{msgs.save}</button>
                                 </div>
                             </div>
                         </div>
@@ -108,10 +108,14 @@
         		language: "#{SpracheForm.locale.language}",
         		altoDivSelector: '#jsonAlto',
         		altoChangesInputSelector: "#altoChanges",
-        		saveAltoButtonSelector: "#saveAltoChanges",
         		tileSourceSelector: '#tileSource'
         	}
         	riot.mount('alto-editor', opts);
+        }
+        function saveAltoResults() {
+        	let changeJson = document.querySelector('alto-editor')._tag.getChanges();
+        	document.querySelector('#altoChanges').value = changeJson;
+        	document.querySelector('#saveAltoChanges').click();
         }
         </script>
 

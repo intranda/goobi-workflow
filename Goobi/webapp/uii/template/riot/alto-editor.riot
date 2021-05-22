@@ -8,13 +8,14 @@
                 <div each={line in lines} class="altoline {}" >
                     <span each={word in line.words}>
                         <span id={word.id}
+                            class="altoword"
                             onkeyup={keyup} 
                             onkeydown={keydown} 
                             onfocus={lockWord} 
                         	onblur={unlockWord}
                             onmousemove={highlightWord} 
                             contenteditable="true" 
-                            spellcheck="false">{word.value}</span>&nbsp;
+                            spellcheck="false">{word.value}</span>
                     </span>
                 <br>
                 </div>
@@ -26,6 +27,9 @@
     .altoline {
         overflow-wrap: anywhere;
         padding-bottom: 5px;
+    }
+    .altoword {
+        padding: 3px;
     }
     .alto-edit {
         min-height: 82vh;
@@ -94,6 +98,7 @@
     }
     
     keyup(e) {
+    	e.preventUpdate = true;
         let text = e.target.innerText;
         if(text.indexOf("\n") >= 0) {
             text = text.replace("\n", "") 
@@ -107,6 +112,7 @@
     }
     
     keydown(e) {
+    	e.preventUpdate = true;
     	let word = e.item.word
     	let currentPos = window.getSelection().getRangeAt(0).startOffset;
     	if(e.key == "ArrowLeft") {
@@ -170,15 +176,13 @@
     	this.oldPos = {position: currentPos, wordId: word.id};
     }
     
-    save() {
-    	let altoInput = document.querySelector(this.opts.altoChangesInputSelector);
+    getChanges() {
     	let changeArr = [];
     	for(let wordId of Object.keys(this.changes)) {
     		let change = this.changes[wordId];
     		changeArr.push({action: change.action, value: change.value, wordId: wordId})
     	}
-    	altoInput.value = JSON.stringify(changeArr)
-    	document.querySelector(this.opts.saveAltoButtonSelector).click();
+    	return JSON.stringify(changeArr);
     }
     
     initOpenseadragon() {
