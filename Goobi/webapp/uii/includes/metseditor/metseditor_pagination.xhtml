@@ -94,15 +94,17 @@
                                         <h:panelGroup
                                             styleClass="pagination__left__page__item"
                                             rendered="#{page.type != 'div'}"></h:panelGroup>
-                                        <h:outputText styleClass="pagination__left__page__itemLeft"
-											value="#{page.physicalPageNo}: " 
-											title="#{page.imagename}">
-											<f:passThroughAttribute
+                                        <h:outputText
+                                            styleClass="pagination__left__page__itemLeft"
+                                            value="#{page.physicalPageNo}: "
+                                            title="#{page.imagename}">
+                                            <f:passThroughAttribute
                                                 name="data-toggle"
                                                 value="tooltip" />
-										</h:outputText>
-                                        <h:outputText styleClass="pagination__left__page__item"
-                                            value="#{page.logicalPageNo}"/>
+                                        </h:outputText>
+                                        <h:outputText
+                                            styleClass="pagination__left__page__item"
+                                            value="#{page.logicalPageNo}" />
                                         <h:panelGroup
                                             rendered="#{page.type == 'div'}"
                                             styleClass="pagination__left__page__item">
@@ -117,6 +119,12 @@
                                                 <f:passThroughAttribute
                                                     name="data-renderimage"
                                                     value="true" />
+                                                <ui:fragment rendered="#{page.doublePage}">
+                                                    <i
+                                                        class="fa fa-picture-o"
+                                                        style="float: right;"
+                                                        aria-hidden="true"></i>
+                                                </ui:fragment>
                                                 <i
                                                     class="fa fa-picture-o"
                                                     aria-hidden="true"></i>
@@ -142,8 +150,8 @@
                                                     execute="@this"
                                                     render=":pagePaginationList"></f:ajax>
                                                 <f:passThroughAttribute
-	                                                name="data-toggle"
-	                                                value="tooltip" />
+                                                    name="data-toggle"
+                                                    value="tooltip" />
                                                 <i
                                                     class="fa fa-star #{page.representative?'active':''}"
                                                     aria-hidden="true"></i>
@@ -180,7 +188,8 @@
                 <div
                     id="pagRight"
                     class="col-7 pagination__right">
-                    <h:panelGroup layout="block"
+                    <h:panelGroup
+                        layout="block"
                         id="meSetPaginationBox"
                         styleClass="module module__box module__box--gray module__box--collapsable">
                         <div class="module__box-title">
@@ -301,8 +310,7 @@
                                         id="paginationType"
                                         styleClass="focusable"
                                         pt:aria-label="#{msgs.typ}"
-                                        value="#{Metadaten.paginierungArt}"
-                                        >
+                                        value="#{Metadaten.paginierungArt}">
                                         <f:selectItem
                                             itemValue="1"
                                             itemLabel="#{msgs.arabisch}" />
@@ -315,7 +323,9 @@
                                         <f:selectItem
                                             itemValue="6"
                                             itemLabel="#{msgs.paginationFreetext}" />
-                                            <f:ajax execute="@this" render=":meSetPaginationBox" />
+                                        <f:ajax
+                                            execute="@this"
+                                            render=":meSetPaginationBox" />
                                     </h:selectOneMenu>
                                 </div>
                             </div>
@@ -381,7 +391,23 @@
                                     #{msgs.paginationFictitious}
                                 </label>
                             </div>
-
+                            <div class="form-check form-check--block">
+                                <label for="checkboxDoublePage">
+                                    <h:selectBooleanCheckbox
+                                        styleClass="focusable"
+                                        id="checkboxDoublePage"
+                                        value="#{Metadaten.doublePage}" />
+                                    <span>
+                                        <i
+                                            class="fa fa-square-o"
+                                            aria-hidden="true"></i>
+                                        <i
+                                            class="fa fa-check-square-o"
+                                            aria-hidden="true"></i>
+                                    </span>
+                                    #{msgs.paginationDoublePage}
+                                </label>
+                            </div>
                             <hr />
 
                             <!-- PAGINATION ACTIONS -->

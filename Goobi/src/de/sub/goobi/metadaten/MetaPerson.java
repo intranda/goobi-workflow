@@ -49,6 +49,7 @@ import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import lombok.Data;
 import ugh.dl.DocStruct;
+import ugh.dl.HoldingElement;
 import ugh.dl.MetadataType;
 import ugh.dl.NamePart;
 import ugh.dl.Person;
@@ -65,7 +66,7 @@ public class MetaPerson implements SearchableMetadata {
     private Person p;
     private int identifier;
     private Prefs myPrefs;
-    private DocStruct myDocStruct;
+    private HoldingElement myDocStruct;
     private MetadatenHelper mdh;
     private DisplayCase myValues;
     private Metadaten bean;
@@ -99,7 +100,7 @@ public class MetaPerson implements SearchableMetadata {
     /**
      * Allgemeiner Konstruktor ()
      */
-    public MetaPerson(Person p, int inID, Prefs inPrefs, DocStruct inStruct, Process inProcess, Metadaten bean) {
+    public MetaPerson(Person p, int inID, Prefs inPrefs, HoldingElement inStruct, Process inProcess, Metadaten bean) {
         this.myPrefs = inPrefs;
         this.p = p;
         this.identifier = inID;
