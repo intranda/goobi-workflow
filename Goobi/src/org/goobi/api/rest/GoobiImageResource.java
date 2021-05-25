@@ -227,6 +227,11 @@ public class GoobiImageResource {
             this.imageFolder = getImagesFolder(processFolder, folder);
             Path imagePath = imageFolder.resolve(filename);
             this.thumbnailFolder = processFolder.resolve("thumbs");
+
+            //replace image Path with thumbnail path if image file does not exist
+            if(!Files.exists(imagePath) && hasThumbnailDirectories(imageFolder, thumbnailFolder)) {
+                imagePath = getThumbnailPath(imagePath, thumbnailFolder, Optional.empty(), true).orElse(imagePath);
+            }
             URI originalImageURI = Image.toURI(imagePath);
 
             Optional<Dimension> requestedImageSize = getRequestedImageSize(request);
@@ -439,12 +444,12 @@ public class GoobiImageResource {
      */
     private Optional<Path> getThumbnailPath(Path imagePath, Path thumbnailFolder, Optional<Dimension> requestedImageSize, boolean useFallback)
             throws IOException, InterruptedException, SwapException, DAOException {
+        List<String> validThumbnailFolders = getThumbnailFolders(imagePath.getParent(), thumbnailFolder);
         if (imagePath.startsWith(thumbnailFolder)) {
             return Optional.of(imagePath);
         } else if (requestedImageSize.isPresent()) {
             int maxSize = Math.max(requestedImageSize.get().width, requestedImageSize.get().height);
 
-            List<String> validThumbnailFolders = getThumbnailFolders(imagePath.getParent(), thumbnailFolder);
             for (String folderName : validThumbnailFolders) {
                 Integer folderSize = getSize(folderName);
                 if (folderSize >= maxSize) {
@@ -454,12 +459,12 @@ public class GoobiImageResource {
                     }
                 }
             }
-            if (useFallback && !validThumbnailFolders.isEmpty()) {
-                String folderName = validThumbnailFolders.get(validThumbnailFolders.size() - 1);
-                Path thumbPath = thumbnailFolder.resolve(folderName).resolve(replaceSuffix(imagePath.getFileName().toString(), THUMBNAIL_SUFFIX));
-                if (StorageProvider.getInstance().isFileExists(thumbPath) && isYounger(thumbPath, imagePath)) {
-                    return Optional.of(thumbPath);
-                }
+        }
+        if (useFallback && !validThumbnailFolders.isEmpty()) {
+            String folderName = validThumbnailFolders.get(validThumbnailFolders.size() - 1);
+            Path thumbPath = thumbnailFolder.resolve(folderName).resolve(replaceSuffix(imagePath.getFileName().toString(), THUMBNAIL_SUFFIX));
+            if (StorageProvider.getInstance().isFileExists(thumbPath) && isYounger(thumbPath, imagePath)) {
+                return Optional.of(thumbPath);
             }
         }
         return Optional.empty();
@@ -500,10 +505,10 @@ public class GoobiImageResource {
         String requestString = request.getRequestURI();
         requestString = requestString.substring(requestString.indexOf("api/"));
         String[] requestParts = requestString.split("/");
-        if (requestParts.length > 6) {
+        if (requestParts.length > 7) {
             // image size is the 7th path parameter:
             // api/process/image/[id]/[folder]/[imagename]/[region]/[size]/[rotation]/default.jpg
-            String sizeString = requestParts[6];
+            String sizeString = requestParts[7];
             Matcher matcher = Pattern.compile(IIIF_IMAGE_SIZE_REGEX).matcher(sizeString);
             if (matcher.find()) {
                 String xString = matcher.group(1);
@@ -524,11 +529,11 @@ public class GoobiImageResource {
         String requestString = request.getRequestURI();
         requestString = requestString.substring(requestString.indexOf("api/"));
         String[] requestParts = requestString.split("/");
-        if (requestParts.length > 5) {
-            // image size is the 7th path parameter:
+        if (requestParts.length > 6) {
+            // image region is the 6th path parameter:
             // api/process/image/[id]/[folder]/[imagename]/[region]/[size]/[rotation]/default.jpg
-            String sizeString = requestParts[5];
-            Matcher matcher = Pattern.compile(IIIF_IMAGE_REGION_REGEX).matcher(sizeString);
+            String regionString = requestParts[6];
+            Matcher matcher = Pattern.compile(IIIF_IMAGE_REGION_REGEX).matcher(regionString);
             if (matcher.find()) {
                 String widthString = matcher.group(3);
                 String heightString = matcher.group(4);
