@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.solr.common.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.goobi.production.cli.helper.StringPair;
 
 import de.sub.goobi.config.ConfigurationHelper;

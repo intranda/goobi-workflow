@@ -48,6 +48,9 @@
                                 jsf:action="#{Metadaten.AddCorporate}">
                                 #{msgs.mets_corporate_createCorporate}
                                 <f:ajax render=":pageContentCenter" />
+                                <f:setPropertyActionListener
+                                        value=""
+                                        target="#{Metadaten.currentGroup}" />
                             </button>
                         </div>
                     </div>

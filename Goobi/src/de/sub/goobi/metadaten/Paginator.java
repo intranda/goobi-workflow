@@ -74,10 +74,7 @@ public class Paginator {
     /**
      * Perform pagination.
      * 
-     * <<<<<<< HEAD
-     * 
-     * @throws IllegalArgumentException Thrown if invalid config parameters have been set. =======
-     * @throws IllegalArgumentException Thrown if invalid config parameters have been set. >>>>>>> refs/heads/develop
+     * @throws IllegalArgumentException Thrown if invalid config parameters have been set.
      */
     @SuppressWarnings("rawtypes")
     public void run() throws IllegalArgumentException {
@@ -337,10 +334,8 @@ public class Paginator {
     /**
      * Give a list of page numbers to select pages to actually paginate.
      * 
-     * <<<<<<< HEAD
+     * @param selectedPages Array numbers, each pointing to a given page set via <code>setPagesToPaginate</code>
      * 
-     * @param selectedPages Array numbers, each pointing to a given page set via <code>setPagesToPaginate</code> =======
-     * @param selectedPages Array numbers, each pointing to a given page set via <code>setPagesToPaginate</code> >>>>>>> refs/heads/develop
      * @return This object for fluent interfacing.
      */
     public Paginator setPageSelection(int[] selectedPages) {
@@ -351,10 +346,7 @@ public class Paginator {
     /**
      * Give page objects to apply new page labels on.
      * 
-     * <<<<<<< HEAD
-     * 
-     * @param newPaginated Array of page objects. =======
-     * @param newPaginated Array of page objects. >>>>>>> refs/heads/develop
+     * @param newPaginated Array of page objects.
      * @return This object for fluent interfacing.
      */
     public Paginator setPagesToPaginate(Metadatum[] newPaginated) {
@@ -365,10 +357,7 @@ public class Paginator {
     /**
      * Set pagination mode.
      * 
-     * <<<<<<< HEAD
-     * 
-     * @param paginationMode Mode of counting pages. =======
-     * @param paginationMode Mode of counting pages. >>>>>>> refs/heads/develop
+     * @param paginationMode Mode of counting pages.
      * @return This object for fluent interfacing.
      */
     public Paginator setPaginationMode(Mode paginationMode) {
@@ -379,10 +368,7 @@ public class Paginator {
     /**
      * Set scope of pagination.
      * 
-     * <<<<<<< HEAD
-     * 
-     * @param paginationScope Set which pages from a selection get labeled. =======
-     * @param paginationScope Set which pages from a selection get labeled. >>>>>>> refs/heads/develop
+     * @param paginationScope Set which pages from a selection get labeled.
      * @return This object for fluent interfacing.
      */
     public Paginator setPaginationScope(Scope paginationScope) {
@@ -391,12 +377,9 @@ public class Paginator {
     }
 
     /**
-     * <<<<<<< HEAD Set start value of pagination. Counting up starts here depending on the pagination mode set.
+     * Set start value of pagination. Counting up starts here depending on the pagination mode set.
      * 
-     * @param paginationStartValue May contain arabic or roman number. ======= Set start value of pagination. Counting up starts here depending on the
-     *            pagination mode set.
-     * 
-     * @param paginationStartValue May contain arabic or roman number. >>>>>>> refs/heads/develop
+     * @param paginationStartValue May contain arabic or roman number.
      * @return This object for fluent interfacing.
      */
     public Paginator setPaginationStartValue(String paginationStartValue) {
@@ -407,10 +390,7 @@ public class Paginator {
     /**
      * Determine weather arabic or roman numbers should be used when counting.
      * 
-     * <<<<<<< HEAD
-     * 
-     * @param paginationType Set style of pagination numbers. =======
-     * @param paginationType Set style of pagination numbers. >>>>>>> refs/heads/develop
+     * @param paginationType Set style of pagination numbers.
      * @return This object for fluent interfacing.
      */
     public Paginator setPaginationType(Type paginationType) {
@@ -419,12 +399,9 @@ public class Paginator {
     }
 
     /**
-     * <<<<<<< HEAD Enable or disable fictitious pagination using square bracktes around numbers.
+     * Enable or disable fictitious pagination using square bracktes around numbers.
      * 
-     * @param b True, fictitious pagination. False, regular pagination. ======= Enable or disable fictitious pagination using square bracktes around
-     *            numbers.
-     * 
-     * @param b True, fictitious pagination. False, regular pagination. >>>>>>> refs/heads/develop
+     * @param b True, fictitious pagination. False, regular pagination.
      * @return This object for fluent interfacing.
      */
     public Paginator setFictitious(boolean b) {
