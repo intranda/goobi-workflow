@@ -61,17 +61,8 @@ public class GoobiScript {
      * @return
      */
     public String execute(List<Integer> processes, String allScripts, GoobiScriptManager gsm) {
-        YAMLFactory yaml = new YAMLFactory();
-        ObjectMapper mapper = new ObjectMapper();
-        TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
-        };
-        List<Map<String, String>> scripts = new ArrayList<>();
-        try {
-            YAMLParser yamlParser = yaml.createParser(allScripts);
-            scripts = mapper.readValues(yamlParser, typeRef).readAll();
-        } catch (IOException e1) {
-            log.error(e1);
-            Helper.setFehlerMeldung("goobiScriptfield", "Can't parse GoobiScript. Please check your Syntax. Only valid YAML is allowed.");
+        List<Map<String, String>> scripts = parseGoobiscripts(allScripts);
+        if (scripts == null) {
             return "";
         }
         for (Map<String, String> currentScript : scripts) {
@@ -124,6 +115,29 @@ public class GoobiScript {
             }
         }
         return "";
+    }
+
+    /**
+     * Parses YAML to a list of GoobiScript parameter maps
+     * 
+     * @param allScripts
+     * @return
+     */
+    public static List<Map<String, String>> parseGoobiscripts(String allScripts) {
+        YAMLFactory yaml = new YAMLFactory();
+        ObjectMapper mapper = new ObjectMapper();
+        TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
+        };
+        List<Map<String, String>> scripts = new ArrayList<>();
+        try {
+            YAMLParser yamlParser = yaml.createParser(allScripts);
+            scripts = mapper.readValues(yamlParser, typeRef).readAll();
+        } catch (IOException e1) {
+            log.error(e1);
+            Helper.setFehlerMeldung("goobiScriptfield", "Can't parse GoobiScript. Please check your Syntax. Only valid YAML is allowed.");
+            return null;
+        }
+        return scripts;
     }
 
     /**
