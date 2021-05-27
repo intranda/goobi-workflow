@@ -125,31 +125,59 @@
 													</div>
 												</ui:fragment>
 												<div class="col-md-6">
-													<ui:repeat var="line" value="#{conflict.lineNumbers}" varStatus="lineStatus">
-														<div>#{line}</div>
-													</ui:repeat>
-													<ui:repeat var="line" value="#{conflict.spanTags}" varStatus="lineStatus">
-														<div class="plugin-installer-diff-box">
-															<!-- WARNING: The comment sequences MUST be here to AVOID the white spaces between different span tags! -->
-															<ui:repeat var="spanTag" value="#{conflict.spanTags.get(lineStatus.index)}"><!--
-																--><ui:fragment rendered="#{spanTag.type eq 'LINE_NUMBER'}"><!--
-																	--><span class="plugin-installer-code plugin-installer-line-number">#{spanTag.text}</span><!--
-																--></ui:fragment><!--
-																--><ui:fragment rendered="#{spanTag.type eq 'KEEP'}"><!--
-																	--><span class="plugin-installer-code">#{spanTag.text}</span><!--
-																--></ui:fragment><!--
-																--><ui:fragment rendered="#{spanTag.type eq 'SPACE'}"><!--
-																	--><span class="plugin-installer-code">&#160;</span><!--
-																--></ui:fragment><!--
-																--><ui:fragment rendered="#{spanTag.type eq 'INSERTION'}"><!--
-																	--><span class="plugin-installer-code plugin-installer-insertion">#{spanTag.text}</span><!--
-																--></ui:fragment><!--
-																--><ui:fragment rendered="#{spanTag.type eq 'DELETION'}"><!--
-																	--><span class="plugin-installer-code plugin-installer-deletion">#{spanTag.text}</span><!--
-																--></ui:fragment><!--
-															--></ui:repeat>
-														</div>
-													</ui:repeat>
+													<span class="plugin-installer-next-to-eachother-5">
+														<ui:repeat var="line" value="#{conflict.lineNumbers}" varStatus="lineStatus">
+															<div class="plugin-installer-line-number #{conflict.lineTypes.get(lineStatus.index) eq 'insertion' ? 'plugin-installer-line-number-inserted' : ''} #{conflict.lineTypes.get(lineStatus.index) eq 'deletion' ? 'plugin-installer-line-number-deleted' : ''}">&#160;#{line}</div>
+														</ui:repeat>
+													</span>
+													<span class="plugin-installer-next-to-eachother-90">
+														<ui:repeat var="line" value="#{conflict.spanTags}" varStatus="lineStatus">
+															<div class="plugin-installer-diff-box #{conflict.lineTypes.get(lineStatus.index) eq 'insertion' ? 'plugin-installer-inserted-passive' : ''} #{conflict.lineTypes.get(lineStatus.index) eq 'deletion' ? 'plugin-installer-deleted-passive' : ''}">
+																<!-- WARNING: The comment sequences MUST be here to AVOID the white spaces between different span tags! -->
+																<ui:repeat var="spanTag" value="#{conflict.spanTags.get(lineStatus.index)}"><!--
+																	--><ui:fragment rendered="#{spanTag.type eq 'LINE_NUMBER_NORMAL'}"><!--
+																		--><span class="plugin-installer-line-number plugin-installer-line-number-normal">#{spanTag.text}</span><!--
+																	--></ui:fragment><!--
+																	--><ui:fragment rendered="#{spanTag.type eq 'LINE_NUMBER_INSERTED'}"><!--
+																		--><span class="plugin-installer-line-number plugin-installer-line-number-inserted">#{spanTag.text}</span><!--
+																	--></ui:fragment><!--
+																	--><ui:fragment rendered="#{spanTag.type eq 'LINE_NUMBER_DELETED'}"><!--
+																		--><span class="plugin-installer-line-number plugin-installer-line-number-deleted">#{spanTag.text}</span><!--
+																	--></ui:fragment><!--
+																	--><ui:fragment rendered="#{spanTag.type eq 'TEXT_NORMAL'}"><!--
+																		--><span class="plugin-installer-text plugin-installer-normal">#{spanTag.text}</span><!--
+																	--></ui:fragment><!--
+																	--><ui:fragment rendered="#{spanTag.type eq 'TEXT_INSERTED_PASSIVE'}"><!--
+																		--><span class="plugin-installer-text plugin-installer-inserted-passive">#{spanTag.text}</span><!--
+																	--></ui:fragment><!--
+																	--><ui:fragment rendered="#{spanTag.type eq 'TEXT_INSERTED_ACTIVE'}"><!--
+																		--><span class="plugin-installer-text plugin-installer-inserted-active">#{spanTag.text}</span><!--
+																	--></ui:fragment><!--
+																	--><ui:fragment rendered="#{spanTag.type eq 'TEXT_DELETED_PASSIVE'}"><!--
+																		--><span class="plugin-installer-text plugin-installer-deleted-passive">#{spanTag.text}</span><!--
+																	--></ui:fragment><!--
+																	--><ui:fragment rendered="#{spanTag.type eq 'TEXT_DELETED_ACTIVE'}"><!--
+																		--><span class="plugin-installer-text plugin-installer-deleted-active">#{spanTag.text}</span><!--
+																	--></ui:fragment><!--
+																	--><ui:fragment rendered="#{spanTag.type eq 'SPACE_NORMAL'}"><!--
+																		--><span class="plugin-installer-space plugin-installer-normal">&#160;</span><!--
+																	--></ui:fragment><!--
+																	--><ui:fragment rendered="#{spanTag.type eq 'SPACE_INSERTED_PASSIVE'}"><!--
+																		--><span class="plugin-installer-space plugin-installer-inserted-passive">&#160;</span><!--
+																	--></ui:fragment><!--
+																	--><ui:fragment rendered="#{spanTag.type eq 'SPACE_INSERTED_ACTIVE'}"><!--
+																		--><span class="plugin-installer-space plugin-installer-inserted-active">&#160;</span><!--
+																	--></ui:fragment><!--
+																	--><ui:fragment rendered="#{spanTag.type eq 'SPACE_DELETED_PASSIVE'}"><!--
+																		--><span class="plugin-installer-space plugin-installer-deleted-passive">&#160;</span><!--
+																	--></ui:fragment><!--
+																	--><ui:fragment rendered="#{spanTag.type eq 'SPACE_DELETED_ACTIVE'}"><!--
+																		--><span class="plugin-installer-space plugin-installer-deleted-active">&#160;</span><!--
+																	--></ui:fragment><!--
+																--></ui:repeat>
+															</div>
+														</ui:repeat>
+													</span>
 												</div>
 												<ui:fragment rendered="#{pluginsBean.conflicts_mode eq 'edit_existing_file'}">
 													<div class="col-md-6">

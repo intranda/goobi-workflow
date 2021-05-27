@@ -174,7 +174,7 @@ public class PluginInstaller {
                                 String localVersion = Files.readAllLines(installPath).stream().collect(Collectors.joining("\n"));
                                 String archiveVersion = Files.readAllLines(p).stream().collect(Collectors.joining("\n"));
                                 PluginInstallConflict conflict = new PluginInstallConflict(installPath.toString(), ResolveTactic.unknown,
-                                        "", localVersion, archiveVersion, new ArrayList<>(), new ArrayList<>());
+                                        "", localVersion, archiveVersion, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
                                 conflicts.put(relativePath.toString(), conflict);
                             } catch (IOException e) {
                                 //TODO: handle error
@@ -187,7 +187,6 @@ public class PluginInstaller {
         }
         PluginPreInstallCheck checkReport = new PluginPreInstallCheck(extractedPluginPath, info, conflicts, null);
         checkReport.setConflicts(conflicts);
-        log.error("number of conflicts: " + conflicts.values().toArray().length);
         return checkReport;
     }
 
@@ -226,26 +225,24 @@ public class PluginInstaller {
             // Get the conflict of the concerning file
             PluginInstallConflict conflict = (PluginInstallConflict) (objects[file]);
 
-            // Get the code lines from the both files
-            String[] existingLines = conflict.getExistingVersion().split(LINEBREAK);
-            String[] uploadedLines = conflict.getUploadedVersion().split(LINEBREAK);
-            List<List<SpanTag>> content = PluginInstaller.findDifferencesInFile(existingLines, uploadedLines);
-            conflict.setSpanTags(content);
+            PluginInstaller.findDifferencesInFile(conflict);
 
         }
     }
 
     /**
-     * Extracts all differences between the existing file and the uploaded file and stores it into the arrays differenceExisting and
-     * differenceUploaded.
+     * Extracts all differences between the existing file and the uploaded file and stores them and the line numbers in the conflict object.
      *
-     * @param existingLines The code lines in the existing file
-     * @param uploadedLines The code lines in the uploaded file
-     * @return The list of text components in the file
+     * @param conflict The conflict object to store the span tags and the line types in
      */
-    private static List<List<SpanTag>> findDifferencesInFile(String[] existingLines, String[] uploadedLines) {
+    private static void findDifferencesInFile(PluginInstallConflict conflict) {
+        // Get the code lines from the both files
+        String[] existingLines = conflict.getExistingVersion().split(LINEBREAK);
+        String[] uploadedLines = conflict.getUploadedVersion().split(LINEBREAK);
 
         List<List<SpanTag>> fileContent = new ArrayList<>();
+        List<String> lineTypes = new ArrayList<>();
+        List<String> lineNumbers = new ArrayList<>();
 
         // Check all lines in the files
         for (int lineNumber = 0; lineNumber < existingLines.length || lineNumber < uploadedLines.length; lineNumber++) {
@@ -254,18 +251,38 @@ public class PluginInstaller {
             String left = lineNumber < existingLines.length ? existingLines[lineNumber] : "";
             String right = lineNumber < uploadedLines.length ? uploadedLines[lineNumber] : "";
 
-            StringsComparator comparator = new StringsComparator(left, right);
+            // IDEA: The current line in the left file will be compared to all
+            // coming lines in the right file. The first equal line is chosen.
+            // Then the current line in the right file will be compared to all
+            // coming lines in the left file. There the first equal line will
+            // be chosen too. The differences from the current line to the next
+            // line equal to the current line in the other file will be
+            // calculated. In the file in which the difference is lower, all
+            // lines will be skipped and marked as "inserted" or "deleted"
+            // (depending on 'left' or 'right' file). After that the reached
+            // line after the skipped lines is equal to the next line in the
+            // other file and the algorithm continues in step 1.
 
-            if (comparator.getScript().getLCSLength() > (Integer.max(left.length(), right.length()) * 0.6)) {
-                // Only compare two lines with each other when they have at least 60% commonality
-                fileContent.add(PluginInstaller.findDifferencesInLine(left, right, lineNumber));
+            String lineText = String.valueOf(lineNumber + 1);
+            if (left.equals(right)) {
+                // Only accept a line when it is completely equal.
+                // This method is only called to parse the line number, the indentation and the following text correctly.
+                fileContent.add(PluginInstaller.findDifferencesInLine(left, right, lineNumber, "keep"));
+                lineTypes.add("keep");
+                lineNumbers.add(lineText);
             } else {
-                // When the lines have too many differences (more than 40%), compare both with empty lines
-                fileContent.add(PluginInstaller.findDifferencesInLine(left, "", lineNumber));
-                fileContent.add(PluginInstaller.findDifferencesInLine("", right, lineNumber));
+                // Otherwise a deletion line and an insertion line are generated.
+                fileContent.add(PluginInstaller.findDifferencesInLine(left, right, lineNumber, "deletion"));
+                lineTypes.add("deletion");
+                lineNumbers.add(lineText);
+                fileContent.add(PluginInstaller.findDifferencesInLine(left, right, lineNumber, "insertion"));
+                lineTypes.add("insertion");
+                lineNumbers.add(lineText);
             }
         }
-        return fileContent;
+        conflict.setSpanTags(fileContent);
+        conflict.setLineTypes(lineTypes);
+        conflict.setLineNumbers(lineNumbers);
     }
 
     /**
@@ -274,16 +291,25 @@ public class PluginInstaller {
      * @param left The line in the existing file (the "left" line)
      * @param right The line in the uploaded file (the "right" line)
      * @param lineIndex The index of the line. This will be incremented to have a line number beginning with 1.
+     * @param mode The mode "keep", "deletion" or "insertion"
      * @return The list of SpanTag objects that represents the whole line in a file
      */
-    private static List<SpanTag> findDifferencesInLine(String left, String right, int lineIndex) {
-        FileCommandVisitor visitor = new FileCommandVisitor();
+    private static List<SpanTag> findDifferencesInLine(String left, String right, int lineIndex, String mode) {
+        FileCommandVisitor visitor = new FileCommandVisitor(mode);
         StringsComparator comparator = new StringsComparator(left, right);
         comparator.getScript().visit(visitor);
         List<SpanTag> lineContent = new ArrayList<>();
-        lineContent.add(new SpanTag(String.valueOf(lineIndex + 1), SpanTag.LINE_NUMBER));
-        lineContent.addAll(visitor.getSpanTags());
-        lineContent.add(new SpanTag(visitor.getCurrentText(), visitor.getCurrentMode()));
+        if (mode.equals("insertion")) {
+            lineContent.addAll(visitor.getInsertionSpanTags());
+            lineContent.add(new SpanTag(visitor.getCurrentInsertionText(), visitor.getCurrentInsertionMode()));
+        } else if (mode.equals("deletion")) {
+            lineContent.addAll(visitor.getDeltionSpanTags());
+            lineContent.add(new SpanTag(visitor.getCurrentDeletionText(), visitor.getCurrentDeletionMode()));
+        } else if (mode.equals("keep")) {
+            // This is possible because in case of "keep" the text is stored in deletion-text and insertion-text
+            lineContent.addAll(visitor.getDeltionSpanTags());
+            lineContent.add(new SpanTag(visitor.getCurrentDeletionText(), visitor.getCurrentDeletionMode()));
+        }
         return lineContent;
     }
 }
