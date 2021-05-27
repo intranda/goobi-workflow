@@ -50,6 +50,7 @@ public class GoobiScriptPropertyDelete extends AbstractIGoobiScript implements I
 
     @Override
     public void execute(GoobiScriptResult gsr) {
+        Map<String, String> parameters = gsr.getParameters();
         String propertyName = parameters.get("name");
 
         // execute all jobs that are still in waiting state

@@ -54,6 +54,7 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
 
     @Override
     public void execute(GoobiScriptResult gsr) {
+        Map<String, String> parameters = gsr.getParameters();
         HelperSchritte hs = new HelperSchritte();
         String steptitle = parameters.get("steptitle");
         String scriptname = parameters.get("script");

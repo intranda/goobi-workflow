@@ -36,7 +36,6 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 
 @Log4j2
 public class GoobiScript {
-    Map<String, String> myParameters;
     private static final Logger logger = LogManager.getLogger(GoobiScript.class);
     public final static String DIRECTORY_SUFFIX = "_tif";
 
@@ -76,10 +75,9 @@ public class GoobiScript {
             return "";
         }
         for (Map<String, String> currentScript : scripts) {
-            this.myParameters = currentScript;
 
             // in case of a missing action parameter skip this goobiscript
-            String myaction = this.myParameters.get("action");
+            String myaction = currentScript.get("action");
             if (myaction == null || myaction.length() == 0) {
                 Helper.setFehlerMeldung("goobiScriptfield", "Missing action!", "Please select one of the allowed commands.");
                 continue;
@@ -112,7 +110,7 @@ public class GoobiScript {
                     if (optGoobiScript.isPresent()) {
                         IGoobiScript gs = optGoobiScript.get();
                         // initialize the GoobiScript to check if all is valid
-                        List<GoobiScriptResult> scriptResults = gs.prepare(processes, currentScript.toString(), this.myParameters);
+                        List<GoobiScriptResult> scriptResults = gs.prepare(processes, currentScript.toString(), currentScript);
 
                         // just execute the GoobiScript now if the initialisation was valid
                         if (!scriptResults.isEmpty()) {
