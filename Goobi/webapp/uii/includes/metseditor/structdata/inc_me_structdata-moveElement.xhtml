@@ -35,13 +35,12 @@
                     <div class="table__structure">
                         <h:dataTable value="#{Metadaten.strukturBaum3Alle}" var="item">
                             <h:column styleClass="level-#{item.niveau}">
-                                <i class="fa fa-file-o" aria-hidden="true"></i>
-                    
                                 <button 
                                     jsf:id="moveNode" 
                                     class="btn document" 
                                     jsf:action="#{Metadaten.KnotenVerschieben}"
                                     jsf:rendered="#{item.node.einfuegenErlaubt and not item.node.selected}">
+                                    <i class="fa fa-file-o" aria-hidden="true"></i>
                                     <h:outputText value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '') ? item.node.description : item.node.mainTitle}" />               
                     
                                     <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="false" />
@@ -54,8 +53,8 @@
                                     <f:passThroughAttribute name="data-html" value="true" />
                                     <f:passThroughAttribute name="data-content" value="#{item.node.metadataPopup}" />
                                 </button>
-                    
-                                <h:panelGroup rendered="#{not item.node.einfuegenErlaubt || item.node.selected}">                    
+                                <h:panelGroup rendered="#{not item.node.einfuegenErlaubt || item.node.selected}">    
+                                    <i class="fa fa-file-o" aria-hidden="true"></i>                
                                     <h:outputText
                                         value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}"
                                         styleClass="#{item.node.selected ? 'selected' : 'unselected'}">
