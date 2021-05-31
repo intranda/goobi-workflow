@@ -236,14 +236,123 @@ public class PluginInstaller {
      * @param conflict The conflict object to store the span tags and the line types in
      */
     private static void findDifferencesInFile(PluginInstallConflict conflict) {
-        // Get the code lines from the both files
+        // Get the code lines from both files
         String[] existingLines = conflict.getExistingVersion().split(LINEBREAK);
         String[] uploadedLines = conflict.getUploadedVersion().split(LINEBREAK);
 
+        // This list of list of SpanTag objects will contain the span-tags
+        // for the resulting HTML file. The outer list represents the list of
+        // lines, the inner list represents the list of tags in a single line.
         List<List<SpanTag>> fileContent = new ArrayList<>();
         List<String> lineTypes = new ArrayList<>();
         List<String> lineNumbers = new ArrayList<>();
 
+        // IDEA: The current line in the left file will be compared to all
+        // coming lines in the right file. The first equal line is chosen.
+        // Then the current line in the right file will be compared to all
+        // coming lines in the left file. There the first equal line will
+        // be chosen too. The distances from the current line in one of the
+        // files to the other line in the same file (that is equal to the
+        // current line in the other file) will be calculated. This is
+        // repeated for the other file. In the file in which the distance
+        // is lower, all lines will be skipped and marked as "inserted" or
+        // "deleted" (depending on 'left' or 'right' file). After that the
+        // chosen line (after the skipped lines) is equal to the next line
+        // in the other file and the algorithm continues in the beginning.
+
+        // comparator.getScript().getLCSLength() > (Integer.max(left.length(), right.length()) * 0.6)
+        int existingLineIndex = 0;
+        int uploadedLineIndex = 0;
+        int linesInExistingFile = existingLines.length;
+        int linesInUploadedFile = uploadedLines.length;
+        // When two lines have the following commonality, they seem to be the same
+        double commonalityFactor = 0.6;
+
+        while (existingLineIndex < linesInExistingFile || uploadedLineIndex < linesInUploadedFile) {
+
+            if (existingLineIndex >= linesInExistingFile) {
+                // Output all lines in uploaded file as "deleted"
+                while (uploadedLineIndex < linesInUploadedFile) {
+                    fileContent.add(PluginInstaller.findDifferencesInLine("", uploadedLines[uploadedLineIndex], "insertion"));
+                    lineTypes.add("insertion");
+                    lineNumbers.add(String.valueOf(uploadedLineIndex + 1));
+                    uploadedLineIndex++;
+                }
+                break;
+            } else if (uploadedLineIndex >= linesInUploadedFile) {
+                // Output all lines in uploaded file as "inserted"
+                while (existingLineIndex < linesInExistingFile) {
+                    fileContent.add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], "", "deletion"));
+                    lineTypes.add("deletion");
+                    lineNumbers.add(String.valueOf(existingLineIndex + 1));
+                    existingLineIndex++;
+                }
+                break;
+            }
+            // Look for the next line in the existing file that is equal to the current line in the uploaded file
+            int localExistingLineIndex = existingLineIndex;
+            while (localExistingLineIndex < linesInExistingFile - 1) {
+                StringsComparator comparator = new StringsComparator(existingLines[localExistingLineIndex], uploadedLines[uploadedLineIndex]);
+                if (comparator.getScript().getLCSLength() > commonalityFactor * (Integer.max(existingLines[localExistingLineIndex].length(), uploadedLines[uploadedLineIndex].length()))) {
+                    break;
+                }
+                localExistingLineIndex++;
+            }
+            int existingLineDistance = localExistingLineIndex - existingLineIndex;
+
+            // Look for the next line in the uploaded file that is equal to the current line in the existing file
+            int localUploadedLineIndex = uploadedLineIndex;
+            while (localUploadedLineIndex < linesInUploadedFile - 1) {
+                StringsComparator comparator = new StringsComparator(existingLines[existingLineIndex], uploadedLines[localUploadedLineIndex]);
+                if (comparator.getScript().getLCSLength() > commonalityFactor * (Integer.max(existingLines[existingLineIndex].length(), uploadedLines[localUploadedLineIndex].length()))) {
+                    break;
+                }
+                localUploadedLineIndex++;
+            }
+            int uploadedLineDistance = localUploadedLineIndex - uploadedLineIndex;
+
+            if (existingLineDistance < uploadedLineDistance) {
+                // Output all "deleted" lines from the existing file (beginning at the line
+                // after the last used line, ending at the line before the matching line)
+                while (existingLineIndex < localExistingLineIndex) {
+                    fileContent.add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], "", "deletion"));
+                    lineTypes.add("deletion");
+                    lineNumbers.add(String.valueOf(existingLineIndex + 1));
+                    existingLineIndex++;
+                }
+            } else {
+                // Output all "inserted" lines from the uploaded file (beginning at the line
+                // after the last used line, ending at the line before the matching line)
+                while (uploadedLineIndex < localUploadedLineIndex) {
+                    fileContent.add(PluginInstaller.findDifferencesInLine("", uploadedLines[uploadedLineIndex], "insertion"));
+                    lineTypes.add("insertion");
+                    lineNumbers.add(String.valueOf(uploadedLineIndex + 1));
+                    uploadedLineIndex++;
+                }
+            }
+            if (existingLines[existingLineIndex].equals(uploadedLines[uploadedLineIndex])) {
+                // Only output the lines as unchanged lines when they are
+                // completely identical. This method is only called to parse
+                // the line number, the indentation and the following text
+                // correctly for the text area in the GUI.
+                fileContent.add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], "keep"));
+                lineTypes.add("keep");
+                // This could also be the line number in the uploaded file
+                lineNumbers.add(String.valueOf(existingLineIndex + 1));
+            } else {
+                // Otherwise a deleted line and an inserted line are generated.
+                fileContent.add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], "deletion"));
+                lineTypes.add("deletion");
+                lineNumbers.add(String.valueOf(existingLineIndex + 1));
+                fileContent.add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], "insertion"));
+                lineTypes.add("insertion");
+                lineNumbers.add(String.valueOf(uploadedLineIndex + 1));
+            }
+            existingLineIndex++;
+            uploadedLineIndex++;
+        }
+
+        /*
         // Check all lines in the files
         for (int lineNumber = 0; lineNumber < existingLines.length || lineNumber < uploadedLines.length; lineNumber++) {
 
@@ -251,35 +360,24 @@ public class PluginInstaller {
             String left = lineNumber < existingLines.length ? existingLines[lineNumber] : "";
             String right = lineNumber < uploadedLines.length ? uploadedLines[lineNumber] : "";
 
-            // IDEA: The current line in the left file will be compared to all
-            // coming lines in the right file. The first equal line is chosen.
-            // Then the current line in the right file will be compared to all
-            // coming lines in the left file. There the first equal line will
-            // be chosen too. The differences from the current line to the next
-            // line equal to the current line in the other file will be
-            // calculated. In the file in which the difference is lower, all
-            // lines will be skipped and marked as "inserted" or "deleted"
-            // (depending on 'left' or 'right' file). After that the reached
-            // line after the skipped lines is equal to the next line in the
-            // other file and the algorithm continues in step 1.
-
             String lineText = String.valueOf(lineNumber + 1);
             if (left.equals(right)) {
                 // Only accept a line when it is completely equal.
                 // This method is only called to parse the line number, the indentation and the following text correctly.
-                fileContent.add(PluginInstaller.findDifferencesInLine(left, right, lineNumber, "keep"));
+                fileContent.add(PluginInstaller.findDifferencesInLine(left, right, "keep"));
                 lineTypes.add("keep");
                 lineNumbers.add(lineText);
             } else {
                 // Otherwise a deletion line and an insertion line are generated.
-                fileContent.add(PluginInstaller.findDifferencesInLine(left, right, lineNumber, "deletion"));
+                fileContent.add(PluginInstaller.findDifferencesInLine(left, right, "deletion"));
                 lineTypes.add("deletion");
                 lineNumbers.add(lineText);
-                fileContent.add(PluginInstaller.findDifferencesInLine(left, right, lineNumber, "insertion"));
+                fileContent.add(PluginInstaller.findDifferencesInLine(left, right, "insertion"));
                 lineTypes.add("insertion");
                 lineNumbers.add(lineText);
             }
         }
+        */
         conflict.setSpanTags(fileContent);
         conflict.setLineTypes(lineTypes);
         conflict.setLineNumbers(lineNumbers);
@@ -290,11 +388,10 @@ public class PluginInstaller {
      *
      * @param left The line in the existing file (the "left" line)
      * @param right The line in the uploaded file (the "right" line)
-     * @param lineIndex The index of the line. This will be incremented to have a line number beginning with 1.
      * @param mode The mode "keep", "deletion" or "insertion"
      * @return The list of SpanTag objects that represents the whole line in a file
      */
-    private static List<SpanTag> findDifferencesInLine(String left, String right, int lineIndex, String mode) {
+    private static List<SpanTag> findDifferencesInLine(String left, String right, String mode) {
         FileCommandVisitor visitor = new FileCommandVisitor(mode);
         StringsComparator comparator = new StringsComparator(left, right);
         comparator.getScript().visit(visitor);
