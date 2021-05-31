@@ -7,7 +7,7 @@
 # intranda GmbH
 #
 
-TOMCAT_USER="tomcat8"
+TOMCAT_USER="tomcat"
 TOMCAT_GROUP=${TOMCAT_USER}
 
 

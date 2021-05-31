@@ -12,7 +12,7 @@ Verzeichnis="$2"
 sudo /bin/mkdir "$Verzeichnis"
 sudo /bin/chmod g+w "$Verzeichnis"
 sudo chown $Benutzer "$Verzeichnis"
-sudo /bin/chgrp tomcat8 "$Verzeichnis"
+sudo /bin/chgrp tomcat "$Verzeichnis"
 
 #sudo -u $Benutzer /bin/mkdir -m 0775 "$Verzeichnis"
 #sudo /bin/chgrp tomcat "$Verzeichnis" 
