@@ -169,7 +169,6 @@ public class PluginInstaller {
                         }
                         Path installPath = goobiDirectory.resolve(relativePath);
                         if (checkForConflict(installPath, p)) {
-                            log.error("Conflicting file!");
                             try {
                                 String localVersion = Files.readAllLines(installPath).stream().collect(Collectors.joining("\n"));
                                 String archiveVersion = Files.readAllLines(p).stream().collect(Collectors.joining("\n"));
@@ -352,32 +351,6 @@ public class PluginInstaller {
             uploadedLineIndex++;
         }
 
-        /*
-        // Check all lines in the files
-        for (int lineNumber = 0; lineNumber < existingLines.length || lineNumber < uploadedLines.length; lineNumber++) {
-
-            // When one of the files is over, the other one is compared with empty lines
-            String left = lineNumber < existingLines.length ? existingLines[lineNumber] : "";
-            String right = lineNumber < uploadedLines.length ? uploadedLines[lineNumber] : "";
-
-            String lineText = String.valueOf(lineNumber + 1);
-            if (left.equals(right)) {
-                // Only accept a line when it is completely equal.
-                // This method is only called to parse the line number, the indentation and the following text correctly.
-                fileContent.add(PluginInstaller.findDifferencesInLine(left, right, "keep"));
-                lineTypes.add("keep");
-                lineNumbers.add(lineText);
-            } else {
-                // Otherwise a deletion line and an insertion line are generated.
-                fileContent.add(PluginInstaller.findDifferencesInLine(left, right, "deletion"));
-                lineTypes.add("deletion");
-                lineNumbers.add(lineText);
-                fileContent.add(PluginInstaller.findDifferencesInLine(left, right, "insertion"));
-                lineTypes.add("insertion");
-                lineNumbers.add(lineText);
-            }
-        }
-        */
         conflict.setSpanTags(fileContent);
         conflict.setLineTypes(lineTypes);
         conflict.setLineNumbers(lineNumbers);
