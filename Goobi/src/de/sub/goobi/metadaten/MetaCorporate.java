@@ -22,7 +22,7 @@ import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import lombok.Data;
 import ugh.dl.Corporate;
-import ugh.dl.DocStruct;
+import ugh.dl.HoldingElement;
 import ugh.dl.MetadataType;
 import ugh.dl.NamePart;
 import ugh.dl.Prefs;
@@ -39,7 +39,7 @@ public class MetaCorporate implements SearchableMetadata {
     private List<List<NormData>> dataList;
     private List<NormData> currentData;
 
-    private DocStruct docStruct;
+    private HoldingElement docStruct;
     private MetadatenHelper metadatenHelper;
     private boolean showNotHits = false;
 
@@ -70,7 +70,7 @@ public class MetaCorporate implements SearchableMetadata {
      * @param bean
      */
 
-    public MetaCorporate(Corporate corporate, Prefs inPrefs, DocStruct inStruct, Process inProcess, Metadaten bean) {
+    public MetaCorporate(Corporate corporate, Prefs inPrefs, HoldingElement inStruct, Process inProcess, Metadaten bean) {
         this.myPrefs = inPrefs;
         this.corporate = corporate;
         this.docStruct = inStruct;

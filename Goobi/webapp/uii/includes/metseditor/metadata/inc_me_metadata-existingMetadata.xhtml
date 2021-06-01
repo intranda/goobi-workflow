@@ -48,6 +48,9 @@
                                 jsf:action="#{Metadaten.Hinzufuegen}">
                                 #{msgs.neuesMetadatumAnlegen}
                                 <f:ajax render=":pageContentCenter" />
+                                <f:setPropertyActionListener
+                                        value=""
+                                        target="#{Metadaten.currentGroup}" />
                             </button>
                         </div>
                     </div>

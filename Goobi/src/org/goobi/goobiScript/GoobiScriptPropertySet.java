@@ -56,6 +56,7 @@ public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoo
 
     @Override
     public void execute(GoobiScriptResult gsr) {
+        Map<String, String> parameters = gsr.getParameters();
         String propertyName = parameters.get("name");
         String value = parameters.get("value");
 

@@ -299,6 +299,11 @@ button.dropdown-item:hover {
 	background: #fff;
 }
 
+.no-linebreak {
+	display: inline; 
+	white-space: nowrap;
+}
+
 /* ---------- NAVIGATION BUTTONS ----------- */
 
 #navigation .btn {
