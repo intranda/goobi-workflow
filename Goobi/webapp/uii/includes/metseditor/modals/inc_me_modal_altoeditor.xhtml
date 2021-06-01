@@ -28,6 +28,25 @@
            .actions .btn {
                 margin: 0 4px;
                 padding: 0 7px;
+                text-align: center;
+            }
+            #altoEditAutocomplete {
+                line-height: 25px;
+                margin: 0 8px;
+            }
+            .save-messages ul {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                display: inline;
+            }
+            .save-messages ul li {
+                display: inline;
+            }
+            .save-messages ul li.alto-message-info {
+            }
+            .save-messages ul li.alto-message-error {
+                color: red;
             }
         </style>
 
@@ -63,43 +82,115 @@
                         <alto-editor></alto-editor>
                         <div class="actions">
                             <div class="row">
-                                <div class="col-md-2"></div>
-                                <div class="col-md-8">
+                                <div class="col-md-6">
                                     <div class="image-navigation">
+                                        <button 
+                                            onclick="document.querySelector('#imageFirst').click()"
+                                            aria-label="#{msgs.firstImage}"    
+                                            class="btn btn--icon btn--icon-gray" 
+                                            title="#{Metadaten.pagesRTL?msgs.lastImage:msgs.firstImage}"
+                                            type="button">
+                                            <i class="fa fa-angle-double-left" aria-hidden="true"></i>
+                                        </button>
+                                        <button 
+                                            onclick="document.querySelector('#prevImage2').click()"
+                                            aria-label="#{msgs.previousImage}"
+                                            class="btn btn--icon btn--icon-gray" 
+                                            title="#{msgs.mets_navigateTwoImagesLeft}"
+                                            type="button">
+                                            <i class="fa fa-angle-left" aria-hidden="true"></i>
+                                        </button>
                                         <button type="button" class="btn btn--icon-blue" onclick="document.querySelector('#prevImage').click()">
                                             <i class="fa fa-angle-left" aria-hidden="true"></i>
                                             #{Metadaten.pagesRTL?msgs.nextImage:msgs.previousImage}
                                         </button>
-                                        <intranda:autocomplete 
-                                        	name="pageAutocomplete" 
-                                        	field="#{Metadaten.bildNummerGeheZuCompleteString}"
-                                        	renderimage="true"
-                                        	placeholder="bla"
-                                        	autocompletefunction="#{Metadaten.autocompleteJson}"
-                                        	afterselectaction="#{Metadaten.BildGeheZu}"
-                                        	execute=""
-                    						render="openseadragonform" />
-                                        <button type="button" class="btn btn--icon-blue" onclick="document.querySelector('#nextImage').click()">
+                                        <h:panelGroup id="altoEditAutocomplete">
+                                            <span id="altoEditorImageNumberInfo" onclick="altoEditorShowAutocomplete()">
+                                                #{msgs.mets_currentImage} #{Metadaten.imageIndex +1} #{msgs.von} #{Metadaten.sizeOfImageList}
+                                            </span>
+                                            <span style="display:none;" id="altoEditorAutocomplete">
+                                                <intranda:autocomplete 
+                                                	name="pageAutocomplete" 
+                                                	field="#{Metadaten.bildNummerGeheZuCompleteString}"
+                                                	renderimage="true"
+                                                	placeholder="bla"
+                                                	autocompletefunction="#{Metadaten.autocompleteJson}"
+                                                	afterselectaction="#{Metadaten.BildGeheZu}"
+                                                	execute=""
+                            						render="openseadragonform altoEditAutocomplete" />
+                                            </span>
+                                        </h:panelGroup>
+                                        <button type="button" class="btn btn--icon-blue" onclick="checkDirtyAndClick('#nextImage')">
                                             #{Metadaten.pagesRTL?msgs.previousImage:msgs.nextImage}
                                             <i class="fa fa-angle-right" aria-hidden="true"></i>
                                         </button>
+                                        <button 
+                                            onclick="document.querySelector('#nextImage2').click()"
+                                            aria-label="#{msgs.nextImage}"    
+                                            class="btn btn--icon btn--icon-gray"
+                                            title="#{msgs.mets_navigateTwoImagesRight}"
+                                            type="button">
+                                            <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                        </button>
+                    
+                                    <!-- IMAGE LAST -->
+                                        <button 
+                                            onclick="document.querySelector('#imageLast').click()"
+                                            aria-label="#{msgs.lastImage}"    
+                                            class="btn btn--icon btn--icon-gray"
+                                            title="#{Metadaten.pagesRTL?msgs.firstImage:msgs.lastImage}" 
+                                            type="button">
+                                            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
-                                    <button type="button" class="btn btn--icon-blue pull-right" onclick="saveAltoResults()">#{msgs.save}</button>
+                                <div class="col-md-6">
+                                    <div class="pull-right">
+                                        <h:panelGroup id="saveMessages" class="save-messages" pt:data-fadeoutmessages="true">
+                                            <h:inputText value="#{Metadaten.altoChanges}" id="altoChanges" style="display: none;"/>
+                                            <h:messages errorClass="alto-message-error" infoClass="alto-message-info" for="altoChanges" />
+                                        </h:panelGroup>
+                                        <button type="button" class="btn btn--icon-green" onclick="saveAltoResults()">
+                                            <i class="fa fa-floppy-o"></i>
+                                            #{msgs.saveAltoPage}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <h:inputText value="#{Metadaten.altoChanges}" id="altoChanges" style="display: none;"/>
                     <h:commandButton id="saveAltoChanges" action="#{Metadaten.saveAlto}" style="display: none;">
-                        <f:ajax execute="altoChanges" render="" />
+                        <f:ajax execute="altoChanges" render="saveMessages" onevent="altoSaveButtonCallback"/>
                     </h:commandButton>
                 </h:panelGroup>
 
             </div>
         </div>
         <script>
+        function altoSaveButtonCallback(data) {
+        	if(data.status == "success") {
+        		if(!document.querySelector(".alto-message-error")) {
+        			document.querySelector('alto-editor')._tag.saved();
+        		}
+        	}
+        }
+        function checkDirtyAndClick(selector) {
+        	let isDirty = document.querySelector('alto-editor')._tag.isDirty();
+        	console.log("DIRRTY", isDirty)
+        	if(!isDirty || confirm("#{msgs.discardChanges}")) {
+        		document.querySelector(selector).click();
+        	}
+        }
+        function altoEditorShowAutocomplete() {
+        	$('#altoEditorImageNumberInfo').hide();
+        	$('#altoEditorAutocomplete').show();
+        	document.querySelector('#altoEditorAutocomplete autocomplete')._tag.clear();
+        	$('#altoEditorAutocomplete input').focus();
+        	$('#altoEditorAutocomplete input').on('blur', function()  {
+            	$('#altoEditorAutocomplete').hide();
+        		$('#altoEditorImageNumberInfo').show();
+        	})
+        }
         function openAltoEditor(dontShowModal) {
         	if(!dontShowModal) {
         		$('#altoEditBox').modal('show');

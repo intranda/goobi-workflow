@@ -28,6 +28,7 @@
         list-style-type: none;
         background-color: white;
         border: 1px solid #ddd;
+        min-width: 150px;
     }
     .autocomplete .autocomplete-items .autocomplete-item  {
         padding: 3px;
@@ -91,6 +92,12 @@
 	
 	inputBlur(e) {
 		this.hideEntries();
+	}
+	
+	clear(e) {
+		this.currentValue = "";
+		this.entries = [];
+		this.update();
 	}
     
     preventBlur(e) {

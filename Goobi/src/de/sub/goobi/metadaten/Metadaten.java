@@ -46,6 +46,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
@@ -1141,7 +1142,7 @@ public class Metadaten implements Serializable {
 
     public int getSizeOfMetadataGroups() {
 
-        List<MetadataGroupType>   types = this.myDocStruct.getAddableMetadataGroupTypes();
+        List<MetadataGroupType> types = this.myDocStruct.getAddableMetadataGroupTypes();
         if (types == null) {
             return 0;
         }
@@ -3695,9 +3696,13 @@ public class Metadaten implements Serializable {
         AltoChange[] changes = new Gson().fromJson(this.altoChanges, AltoChange[].class);
         try {
             AltoSaver.saveAltoChanges(getCurrentAltoPath(), changes);
+            FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully saved ALTO", null);
+            FacesContext.getCurrentInstance().addMessage("altoChanges", fm);
         } catch (JDOMException | IOException | SwapException | DAOException | InterruptedException e) {
             // TODO Auto-generated catch block
             logger.error(e);
+            FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error saving ALTO", null);
+            FacesContext.getCurrentInstance().addMessage("altoSaveError", fm);
         }
     }
 

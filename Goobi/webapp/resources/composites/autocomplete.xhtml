@@ -41,12 +41,19 @@
 	        	#{cc.attrs.name}_requestAutocomplete({suggest: value})
 	        }
 	        $(document).on('load', function() {
-	        	var ocOpts = {
-	        		requestAutocomplete: #{cc.attrs.name}_sendAutocomplete,
-	        		enterValue: #{cc.attrs.name}_enterValue,
-	        		initialValue: document.querySelector('.#{cc.attrs.name}_autocompleteHiddenInput').value      		
+	        	var ocOpts = function() {
+    	        	return {	
+    	        		requestAutocomplete: #{cc.attrs.name}_sendAutocomplete,
+    	        		enterValue: #{cc.attrs.name}_enterValue,
+    	        		initialValue: document.querySelector('.#{cc.attrs.name}_autocompleteHiddenInput').value      		
+    	        	}
 	        	}
-	        	riot.mount('autocomplete', ocOpts);
+	        	riot.mount('##{cc.attrs.name}_autocompleteRiot', ocOpts());
+    	        if(!window.riot_mounts) {
+    	        	window.riot_mounts = {};
+    	        }
+    	        window.riot_mounts['##{cc.attrs.name}_autocompleteRiot'] = ocOpts;
+    	        console.log(window.riot_mounts)
 	        })
 		</script>
 	</composite:implementation>
