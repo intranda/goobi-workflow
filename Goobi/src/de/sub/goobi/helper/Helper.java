@@ -629,7 +629,7 @@ public class Helper implements Serializable, Observer, ServletContextListener {
     public static SessionForm getSessionBean() {
         SessionForm bean = (SessionForm) getBeanByName("SessionForm", SessionForm.class);
         try {
-            bean.getBitteAusloggen();
+            bean.getLogoutMessage();
         } catch (ContextNotActiveException | NullPointerException e) {
             return null;
         }

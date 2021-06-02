@@ -59,6 +59,34 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                                 // init thumbnails
                                 goobiWorkflowJS.thumbnails.init();
                             }
+                            // reload alto-editor
+                            if(data.source.id != "saveAltoChanges" && data.source.id != "altoEditorAutocompleteScript") {
+                            	console.log(data.source);
+	                            var altoEditorElement = document.querySelector('alto-editor')
+	                            if(altoEditorElement && altoEditorElement._tag) {
+	                            	altoEditorElement._tag.unmount(true)
+	                            	if(typeof riot !== "undefined") {
+	                            		openAltoEditor(true);
+	                            	}
+	                            }
+                            }
+                            // re-mount other riot components
+                            if(window.riot_mounts && typeof riot !== "undefined") {
+                            	for(let key of Object.keys(window.riot_mounts)) {
+                            		if(document.querySelector(key)) {
+                            			if(!document.querySelector(key)._tag) {
+	                            			riot.mount(key, riot_mounts[key]())
+                            			} else {
+                            				let opts = riot_mounts[key]()
+                            				riot.update(key, opts)
+                            			}
+                        			}
+                            	}
+                            }
+                            // fade out messages
+                            setTimeout(function() {
+                            	$('*[data-fadeoutmessages="true"] li').fadeOut(1000);
+                        	}, 1500);
                             // get box status
                             goobiWorkflowJS.box.getBoxStatus();
                             // init buttons

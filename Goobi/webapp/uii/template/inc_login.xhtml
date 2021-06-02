@@ -28,9 +28,9 @@
 					</h2>
 					<h:form styleClass="form-validate" onkeypress="submitOnEnter(event);" id="loginForm" prependId="false">
 						<h:panelGroup id="globalWarningMessage">
-							<h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}" styleClass="alert alert-danger block" style="line-height:18px;font-size:14px;">
+							<h:panelGroup rendered="#{SessionForm.logoutMessage!=''}" styleClass="alert alert-danger block" style="line-height:18px;font-size:14px;">
 					             <i class="fa fa-exclamation-triangle margin-right-10" />
-					             <h:outputText value="#{SessionForm.bitteAusloggen}" />
+					             <h:outputText value="#{SessionForm.logoutMessage}" />
 					         </h:panelGroup>
 				         </h:panelGroup>
 				       

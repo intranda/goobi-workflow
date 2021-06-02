@@ -58,7 +58,7 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
 
     @Override
     public void execute(GoobiScriptResult gsr) {
-
+        Map<String, String> parameters = gsr.getParameters();
         String steptitle = parameters.get("steptitle");
         HelperSchritte hs = new HelperSchritte();
         // execute all jobs that are still in waiting state

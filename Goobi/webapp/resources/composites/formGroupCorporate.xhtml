@@ -55,6 +55,7 @@
                         aria-label="#{msgs.mets_corporate_deleteCorporate}"
                         title="#{msgs.mets_corporate_deleteCorporate}"
                         jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
+                        class="btn--icon-light"
                         type="button">
                         <i
                             class="fa fa-lg fa-trash-o"
@@ -81,7 +82,8 @@
                         title="#{msgs.mets_corporate_copyCorporate}"
                         aria-label="#{msgs.mets_corporate_copyCorporate}"
                         jsf:rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.corporate.corporate.type)}"
-                        type="button">
+                        type="button"
+                         class="btn--icon-light">
                         <i
                             class="fa fa-lg fa-copy"
                             aria-hidden="true"></i>
@@ -104,7 +106,7 @@
                     <ui:fragment rendered="#{cc.attrs.corporate.normdata}">
                         <button
                         	jsf:id="gndSearch"
-                            class="change-icon"
+                            class="change-icon btn--icon-light"
                             title="#{msgs.NORM_gndSearch}"
                             aria-label="#{msgs.NORM_gndSearch}"
                             onclick="$('#gndSearchBox').modal('show');">
@@ -140,7 +142,7 @@
 
                         <button
                         	jsf:id="viafSearch"
-                            class="change-icon viafIndexTrigger"
+                            class="change-icon viafIndexTrigger btn--icon-light"
                             title="#{msgs.NORM_viafSearch}"
                             aria-label="#{msgs.NORM_viafSearch}"
                             onclick="$('#viafSearchBox').modal('show');">
@@ -209,7 +211,7 @@
                         <!-- DELETE -->
                         <button
                             jsf:id="delete"
-                            class="btn"
+                            class="btn btn--icon-light"
                             aria-label="#{msgs.mets_corporate_deleteSubName}"
                             tabindex="-1"
                             jsf:action="#{cc.attrs.corporate.removeSubName(part)}"
@@ -233,7 +235,7 @@
 
                         <button
                             jsf:id="addSubName"
-                            class="btn btn--link"
+                            class="btn btn--link btn--icon-light"
                             aria-label="#{msgs.mets_corporate_addSubName}"
                             jsf:action="#{cc.attrs.corporate.addSubName}"
                             title="#{msgs.mets_corporate_addSubName}">
