@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -45,6 +46,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
@@ -61,12 +64,16 @@ import org.apache.logging.log4j.Logger;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
+import org.goobi.beans.AltoChange;
 import org.goobi.beans.Process;
+import org.goobi.beans.SimpleAlto;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.OrderedKeyMap;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
+import org.jdom2.JDOMException;
+import org.omnifaces.util.Faces;
 
 import com.google.gson.Gson;
 
@@ -443,6 +450,10 @@ public class Metadaten implements Serializable {
     @Setter
     private boolean pagesRTL = false;
 
+    @Getter
+    @Setter
+    private String altoChanges;
+
     private List<SelectItem> addableMetadataTypes = new ArrayList<>();
     private List<SelectItem> addableCorporateTypes = new ArrayList<>();
 
@@ -453,6 +464,9 @@ public class Metadaten implements Serializable {
     @Getter
     @Setter
     private boolean doublePage;
+
+    @Getter
+    private String currentJsonAlto;
 
     public enum MetadataTypes {
         PERSON,
@@ -1131,7 +1145,7 @@ public class Metadaten implements Serializable {
 
     public int getSizeOfMetadataGroups() {
 
-        List<MetadataGroupType>   types = this.myDocStruct.getAddableMetadataGroupTypes();
+        List<MetadataGroupType> types = this.myDocStruct.getAddableMetadataGroupTypes();
         if (types == null) {
             return 0;
         }
@@ -1724,7 +1738,7 @@ public class Metadaten implements Serializable {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -3662,6 +3676,44 @@ public class Metadaten implements Serializable {
         return ocrResult;
     }
 
+    public void loadJsonAlto() throws IOException, JDOMException, SwapException, DAOException, InterruptedException {
+        Path altoFile = getCurrentAltoPath();
+        SimpleAlto alto = new SimpleAlto();
+        if (Files.exists(altoFile)) {
+            alto = SimpleAlto.readAlto(altoFile);
+        }
+
+        this.currentJsonAlto = new Gson().toJson(alto);
+    }
+
+    public String getJsonAlto() {
+        return currentJsonAlto;
+    }
+
+    private Path getCurrentAltoPath() throws SwapException, DAOException, IOException, InterruptedException {
+        String ocrFileNew = image.getTooltip().substring(0, image.getTooltip().lastIndexOf("."));
+        Path altoFile = Paths.get(myProzess.getOcrAltoDirectory(), ocrFileNew + ".xml");
+        if (!Files.exists(altoFile)) {
+            altoFile = altoFile.getParent().resolve(ocrFileNew + ".alto");
+        }
+        return altoFile;
+    }
+
+    public void saveAlto() {
+        AltoChange[] changes = new Gson().fromJson(this.altoChanges, AltoChange[].class);
+        try {
+            AltoSaver.saveAltoChanges(getCurrentAltoPath(), changes);
+            this.loadJsonAlto();
+            FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_INFO, Helper.getTranslation("savedAlto"), null);
+            FacesContext.getCurrentInstance().addMessage("altoChanges", fm);
+        } catch (JDOMException | IOException | SwapException | DAOException | InterruptedException e) {
+            // TODO Auto-generated catch block
+            logger.error(e);
+            FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_ERROR, Helper.getTranslation("errorSavingAlto"), null);
+            FacesContext.getCurrentInstance().addMessage("altoChanges", fm);
+        }
+    }
+
     public String getOcrAddress() {
         int startseite = -1;
         int endseite = -1;
@@ -4033,6 +4085,17 @@ public class Metadaten implements Serializable {
             }
         }
         return result;
+    }
+
+    public void autocompleteJson() throws IOException {
+        String suggest = Faces.getRequestParameter("suggest");
+        List<String> result = autocomplete(suggest);
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        externalContext.setResponseContentType("application/json");
+        externalContext.setResponseCharacterEncoding("UTF-8");
+        externalContext.getResponseOutputWriter().write(new Gson().toJson(result));
+        facesContext.responseComplete();
     }
 
     public boolean getIsNotRootElement() {
@@ -4428,7 +4491,7 @@ public class Metadaten implements Serializable {
                 }
             } else {
                 Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString()
-                + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
+                        + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
             }
         }
 
@@ -4764,6 +4827,14 @@ public class Metadaten implements Serializable {
         if (!allImages.isEmpty() && allImages.size() >= this.imageIndex) {
             setImage(allImages.get(this.imageIndex));
             bildNummer = this.imageIndex;
+            try {
+                this.loadJsonAlto();
+            } catch (IOException | JDOMException | SwapException | DAOException | InterruptedException e) {
+                SimpleAlto alto = new SimpleAlto("Error reading ALTO, see application log for details.");
+
+                this.currentJsonAlto = new Gson().toJson(alto);
+                logger.error(e);
+            }
         }
     }
 

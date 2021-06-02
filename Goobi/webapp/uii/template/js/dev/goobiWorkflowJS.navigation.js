@@ -20,12 +20,33 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         }
     };
     
+    function _checkNavigationBlocked() {
+    	//The objects in window.imageNavBlockers look like this:
+    	//{check: function, confirm: "string"}
+    	//check has to be a function. If check() returns true, a confirm dialog with the
+    	//string in confirm will be shown. If the confirm dialog is dismissed,
+    	//navigation with shortcut keys will be blocked
+    	if(!window.imageNavBlockers) {
+    		return false;
+    	}
+    	let blocked = false;
+    	for(let blocker of window.imageNavBlockers) {
+    		if(blocker.check() && !confirm(blocker.confirm)) {
+    			blocked = true;
+    		}
+    	}
+    	return blocked;
+    }
+    
     function _setImageNavigationButtonEvents() {
         if ( _debug ) {
             console.log( 'EXECUTE: _setImageNavigationButtonEvents' );
         }
         
-        $( document ).bind( 'keyup', _defaults.navigationShortcut + '+right', function() {
+        $( document ).bind( 'keyup', _defaults.navigationShortcut + '+right', function(e) {
+        	if(_checkNavigationBlocked()) {
+        		return;
+        	}
             var myButton = document.getElementById( "nextImage" );
             if ( myButton != null ) {
                 myButton.click();
@@ -33,6 +54,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         } );
         
         $( document ).bind( 'keyup', _defaults.navigationShortcut + '+left', function() {
+        	if(_checkNavigationBlocked()) {
+        		return;
+        	}
             var myButton = document.getElementById( "prevImage" );
             if ( myButton != null ) {
                 myButton.click();
@@ -40,6 +64,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         } );
         
         $( document ).bind( 'keyup', _defaults.navigationShortcut + '+up', function() {
+        	if(_checkNavigationBlocked()) {
+        		return;
+        	}
             var myButton = document.getElementById( "imageNext20" );
             if ( myButton != null ) {
                 myButton.click();
@@ -47,6 +74,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         } );
         
         $( document ).bind( 'keyup', _defaults.navigationShortcut + '+down', function() {
+        	if(_checkNavigationBlocked()) {
+        		return;
+        	}
             var myButton = document.getElementById( "imageBack20" );
             if ( myButton != null ) {
                 myButton.click();
@@ -54,6 +84,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         } );
         
         $( document ).bind( 'keyup', _defaults.navigationShortcut + '+home', function() {
+        	if(_checkNavigationBlocked()) {
+        		return;
+        	}
             var myButton = document.getElementById( "imageFirst" );
             if ( myButton != null ) {
                 myButton.click();
@@ -61,6 +94,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         } );
         
         $( document ).bind( 'keyup', _defaults.navigationShortcut + '+end', function() {
+        	if(_checkNavigationBlocked()) {
+        		return;
+        	}
             var myButton = document.getElementById( "imageLast" );
             if ( myButton != null ) {
                 myButton.click();
