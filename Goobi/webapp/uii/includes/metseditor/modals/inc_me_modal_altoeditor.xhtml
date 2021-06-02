@@ -12,7 +12,13 @@
 
     <composite:interface>
     </composite:interface>
-
+<!--     This is the ALTO-Editor in for the metadata editor in Goobi workflow. -->
+<!--     The files used by this component are: -->
+<!--     alto-editor.riot for the editor UI -->
+<!--     altoEditorUtils.js for the Goobi workflow integration (saving, checking if the editor is dirty, showing messages etc) -->
+<!--     autocomplete.xhtml composite component with autocomplete.riot for the autocomplete in the bottom -->
+    
+<!--     The backing bean is Metadaten.java  -->
     <composite:implementation>
         <style>
             autocomplete {
@@ -167,30 +173,6 @@
             </div>
         </div>
         <script>
-        function altoSaveButtonCallback(data) {
-        	if(data.status == "success") {
-        		if(!document.querySelector(".alto-message-error")) {
-        			document.querySelector('alto-editor')._tag.saved();
-        		}
-        	}
-        }
-        function checkDirtyAndClick(selector) {
-        	let isDirty = document.querySelector('alto-editor')._tag.isDirty();
-        	console.log("DIRRTY", isDirty)
-        	if(!isDirty || confirm("#{msgs.discardChanges}")) {
-        		document.querySelector(selector).click();
-        	}
-        }
-        function altoEditorShowAutocomplete() {
-        	$('#altoEditorImageNumberInfo').hide();
-        	$('#altoEditorAutocomplete').show();
-        	document.querySelector('#altoEditorAutocomplete autocomplete')._tag.clear();
-        	$('#altoEditorAutocomplete input').focus();
-        	$('#altoEditorAutocomplete input').on('blur', function()  {
-            	$('#altoEditorAutocomplete').hide();
-        		$('#altoEditorImageNumberInfo').show();
-        	})
-        }
         function openAltoEditor(dontShowModal) {
         	if(!dontShowModal) {
         		$('#altoEditBox').modal('show');
@@ -203,12 +185,24 @@
         	}
         	riot.mount('alto-editor', opts);
         }
-        function saveAltoResults() {
-        	let changeJson = document.querySelector('alto-editor')._tag.getChanges();
-        	document.querySelector('#altoChanges').value = changeJson;
-        	document.querySelector('#saveAltoChanges').click();
+        function checkDirtyAndClick(selector) {
+        	if(!checkAltoEditorDirty() || confirm("#{msgs.altoEditorDirtyWarning}")) {
+        		document.querySelector(selector).click();
+        	}
         }
+        $(document).on('load', function() {
+        	if(!window.imageNavBlockers) {
+        		window.imageNavBlockers = [];
+        	}
+        	//the window.imageNavBlockers are checked in goobiWorkflowJS.navigation.js
+        	//check has to be a function. If check() returns true, a confirm dialog with the
+        	//string in confirm will be shown. If the confirm dialog is dismissed,
+        	//navigation with shortcut keys will be blocked
+        	window.imageNavBlockers.push({
+        		check: checkAltoEditorDirty, // from altoEditorUtils.js
+        		confirm: "#{msgs.altoEditorDirtyWarning}"
+        	})
+        })
         </script>
-
     </composite:implementation>
 </ui:composition>

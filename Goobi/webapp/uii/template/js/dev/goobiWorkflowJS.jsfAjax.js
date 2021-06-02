@@ -83,8 +83,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                         			}
                             	}
                             }
+                            // fade out messages
                             setTimeout(function() {
-                            	$('span[data-fadeoutmessages="true"] li').fadeOut(1000);
+                            	$('*[data-fadeoutmessages="true"] li').fadeOut(1000);
                         	}, 1500);
                             // get box status
                             goobiWorkflowJS.box.getBoxStatus();

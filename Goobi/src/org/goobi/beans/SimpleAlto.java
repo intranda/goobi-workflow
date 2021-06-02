@@ -31,6 +31,26 @@ public class SimpleAlto {
     private Map<String, SimpleAltoLine> lineMap = new HashMap<>();
     private Map<String, SimpleAltoWord> wordMap = new HashMap<>();
 
+    public SimpleAlto() {
+        super();
+    }
+
+    /**
+     * This constructor should only be used to display error messages, it creates a single line with a single word which holds the error message
+     * 
+     * @param errorMessage
+     */
+    public SimpleAlto(String errorMessage) {
+        SimpleAltoWord word = new SimpleAltoWord();
+        word.setValue(errorMessage);
+        List<SimpleAltoWord> words = new ArrayList<SimpleAltoWord>();
+        words.add(word);
+        SimpleAltoLine line = new SimpleAltoLine();
+        line.setWords(words);
+        lines = new ArrayList<SimpleAltoLine>();
+        lines.add(line);
+    }
+
     public static SimpleAlto readAlto(Path altoPath) throws IOException, JDOMException {
         SAXBuilder sax = new SAXBuilder();
         Document doc = null;

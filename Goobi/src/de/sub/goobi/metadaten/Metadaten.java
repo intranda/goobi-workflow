@@ -465,6 +465,9 @@ public class Metadaten implements Serializable {
     @Setter
     private boolean doublePage;
 
+    @Getter
+    private String currentJsonAlto;
+
     public enum MetadataTypes {
         PERSON,
         CORPORATE,
@@ -3673,14 +3676,18 @@ public class Metadaten implements Serializable {
         return ocrResult;
     }
 
-    public String getJsonAlto() throws SwapException, DAOException, IOException, InterruptedException, JDOMException {
+    public void loadJsonAlto() throws IOException, JDOMException, SwapException, DAOException, InterruptedException {
         Path altoFile = getCurrentAltoPath();
         SimpleAlto alto = new SimpleAlto();
         if (Files.exists(altoFile)) {
             alto = SimpleAlto.readAlto(altoFile);
         }
 
-        return new Gson().toJson(alto);
+        this.currentJsonAlto = new Gson().toJson(alto);
+    }
+
+    public String getJsonAlto() {
+        return currentJsonAlto;
     }
 
     private Path getCurrentAltoPath() throws SwapException, DAOException, IOException, InterruptedException {
@@ -3696,13 +3703,14 @@ public class Metadaten implements Serializable {
         AltoChange[] changes = new Gson().fromJson(this.altoChanges, AltoChange[].class);
         try {
             AltoSaver.saveAltoChanges(getCurrentAltoPath(), changes);
-            FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully saved ALTO", null);
+            this.loadJsonAlto();
+            FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_INFO, Helper.getTranslation("savedAlto"), null);
             FacesContext.getCurrentInstance().addMessage("altoChanges", fm);
         } catch (JDOMException | IOException | SwapException | DAOException | InterruptedException e) {
             // TODO Auto-generated catch block
             logger.error(e);
-            FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error saving ALTO", null);
-            FacesContext.getCurrentInstance().addMessage("altoSaveError", fm);
+            FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_ERROR, Helper.getTranslation("errorSavingAlto"), null);
+            FacesContext.getCurrentInstance().addMessage("altoChanges", fm);
         }
     }
 
@@ -4819,6 +4827,14 @@ public class Metadaten implements Serializable {
         if (!allImages.isEmpty() && allImages.size() >= this.imageIndex) {
             setImage(allImages.get(this.imageIndex));
             bildNummer = this.imageIndex;
+            try {
+                this.loadJsonAlto();
+            } catch (IOException | JDOMException | SwapException | DAOException | InterruptedException e) {
+                SimpleAlto alto = new SimpleAlto("Error reading ALTO, see application log for details.");
+
+                this.currentJsonAlto = new Gson().toJson(alto);
+                logger.error(e);
+            }
         }
     }
 
