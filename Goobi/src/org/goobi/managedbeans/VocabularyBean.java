@@ -33,6 +33,7 @@ import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
+import org.goobi.vocabulary.VocabularyUploader;
 import org.primefaces.event.FileUploadEvent;
 
 import de.sub.goobi.helper.FacesContextHelper;
@@ -147,6 +148,17 @@ public class VocabularyBean extends BasicBean implements Serializable {
             addRecord();
         }
         return "vocabulary_records";
+    }
+
+    public String uploadToServerRecords() {
+        VocabularyManager.getAllRecords(currentVocabulary);
+        Boolean boOK = VocabularyUploader.upload(currentVocabulary);
+        if (boOK) {
+            return "vocabulary_all";
+        } else {
+            Helper.setFehlerMeldung(Helper.getTranslation("ExportError"));
+            return "";
+        }
     }
 
     /**
@@ -316,8 +328,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
         int columnCounter = 0;
         for (Definition definition : definitionList) {
             headerRow.createCell(columnCounter)
-            .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
-                    : definition.getLabel());
+                    .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
+                            : definition.getLabel());
             columnCounter = columnCounter + 1;
         }
 
@@ -640,6 +652,16 @@ public class VocabularyBean extends BasicBean implements Serializable {
         }
         record.setFields(fieldList);
         currentVocabulary.getRecords().add(record);
+    }
+
+    /**
+     * If true, allow uploading of the vocabularies
+     * 
+     * @return
+     */
+    public Boolean useAuthorityServer() {
+
+        return VocabularyUploader.isActive();
     }
 
     /**

@@ -20,6 +20,7 @@ import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -30,6 +31,8 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class VocabularyUploader {
 
+    static String vocabTable = "vocabularies";
+
     static String strURL = ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl();
 
     /**
@@ -38,40 +41,44 @@ public class VocabularyUploader {
      * @return
      */
     public static Boolean isActive() {
-        
+
         String strUsername = ConfigurationHelper.getInstance().getUsername();
         return strURL != null && !strURL.isEmpty() && strUsername != null && !strUsername.isEmpty();
     }
-    
+
     /**
-     * Upload the vocabulary to the authority server. If it is new, create a new vocab on the server,
-     * otherwise update an already existing one. 
+     * Upload the vocabulary to the authority server. If it is new, create a new vocab on the server, otherwise update an already existing one.
      * 
-     *  Updates the "lastUploaded" field in the vocabularies table.
-     *  
+     * Updates the "lastUploaded" field in the vocabularies table.
+     * 
      * @param vocab
      */
-    public static void upload(Vocabulary vocab) {
+    public static Boolean upload(Vocabulary vocab) {
 
+        Boolean boOk = true;
+        
         try {
             //does the vocab already exist?
             String strUsername = ConfigurationHelper.getInstance().getUsername();
 
             if (getVocabulary(strUsername, vocab.getId()) != null) {
 
-                updateVocabulary(vocab);
+                boOk = updateVocabulary(vocab);
 
             } else {
 
-                createNewVocabulary(vocab);
+                boOk = createNewVocabulary(vocab);
             }
-            
+
             //set the lastUploaded time:
             VocabularyManager.setVocabularyLastUploaded(vocab);
-            
+
         } catch (Exception e) {
             log.error(e);
+            boOk = false;
         }
+        
+        return boOk;
     }
 
     private static Vocabulary getVocabulary(String strUsername, Integer vocabId) throws URISyntaxException, JMSException {
@@ -81,16 +88,16 @@ public class VocabularyUploader {
         ClientConfig config = new ClientConfig();
         Client client = ClientBuilder.newClient(config);
 
-        WebTarget target = client.target(strURL).path(strUsername).path("vocabularies").path(strVocabId);
+        WebTarget target = client.target(strURL).path(strUsername).path(vocabTable).path(strVocabId);
 
         Response response = RetryUtils.retry(new JMSException("failed to connect to goobi_authority_server"), Duration.ofSeconds(1), 5, () -> {
             return target.request().accept(MediaType.APPLICATION_JSON).get(Response.class);
         });
 
-        return vocabFromResonse(response);
+        return vocabFromResponse(response);
     }
 
-    private static void updateVocabulary(Vocabulary vocab) throws URISyntaxException, IOException, JMSException {
+    private static Boolean updateVocabulary(Vocabulary vocab) throws URISyntaxException, IOException, JMSException {
 
         String strVocabId = String.valueOf(vocab.getId());
         String strUsername = ConfigurationHelper.getInstance().getUsername();
@@ -99,13 +106,15 @@ public class VocabularyUploader {
         ClientConfig config = new ClientConfig();
         Client client = ClientBuilder.newClient(config);
 
-        WebTarget target = client.target(strURL).path(strUsername).path("vocabularies").path(strVocabId);
+        WebTarget target = client.target(strURL).path(strUsername).path(vocabTable).path(strVocabId);
 
         Response response = RetryUtils.retry(new JMSException("failed to connect to goobi_authority_server"), Duration.ofSeconds(1), 5, () -> {
             return target.request().header(HttpHeaders.AUTHORIZATION, strAuthorization).put(Entity.json(vocab));
         });
 
         System.out.println(response.getStatusInfo());
+        
+       return response.getStatus() == Response.Status.OK.getStatusCode();     
     }
 
     private static String getAuthorizationHeader() {
@@ -114,7 +123,7 @@ public class VocabularyUploader {
         return "Basic " + Base64.getEncoder().encodeToString(strPW.getBytes());
     }
 
-    private static void createNewVocabulary(Vocabulary vocab) throws IOException, URISyntaxException, JMSException {
+    private static Boolean createNewVocabulary(Vocabulary vocab) throws IOException, URISyntaxException, JMSException {
 
         String strUsername = ConfigurationHelper.getInstance().getUsername();
         String strAuthorization = getAuthorizationHeader();
@@ -122,37 +131,50 @@ public class VocabularyUploader {
         ClientConfig config = new ClientConfig();
         Client client = ClientBuilder.newClient(config);
 
-        WebTarget target = client.target(strURL).path(strUsername).path("vocabularies");
+        WebTarget target = client.target(strURL).path(strUsername).path(vocabTable);
 
         Response response = RetryUtils.retry(new JMSException("failed to connect to goobi_authority_server"), Duration.ofSeconds(1), 5, () -> {
             return target.request().header(HttpHeaders.AUTHORIZATION, strAuthorization).post(Entity.json(vocab));
         });
 
         System.out.println(response.getStatusInfo());
+        return response.getStatus() == Response.Status.OK.getStatusCode();     
     }
 
-    private static Vocabulary vocabFromResonse(Response response) {
+    private static Vocabulary vocabFromResponse(Response response) {
 
         Vocabulary vocab = null;
 
-        if (response.getEntity() != null) {
+        try {
+            
+            if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+                return null;
+            }
 
-            vocab = new Vocabulary();
+            if (response.getEntity() != null) {
 
-            String json = response.readEntity(String.class);
-            JSONObject object = new JSONObject(json);
-            vocab.setId(object.getInt("id"));
-            vocab.setTitle(object.getString("title"));
-            vocab.setDescription(object.getString("description"));
+                vocab = new Vocabulary();
 
-            vocab.setStruct(getStruct(object.getJSONArray("struct")));
-            vocab.setRecords(getRecords(object.getJSONArray("records")));
+                String json = response.readEntity(String.class);
 
-        } else {
+                JSONObject object = new JSONObject(json);
+                vocab.setId(object.getInt("id"));
+                vocab.setTitle(object.getString("title"));
+                vocab.setDescription(object.getString("description"));
+
+                vocab.setStruct(getStruct(object.getJSONArray("struct")));
+                vocab.setRecords(getRecords(object.getJSONArray("records")));
+
+            } else {
+                return null;
+            }
+
+            return vocab;
+        } catch (Exception e) {
+
+            log.error(e);
             return null;
         }
-
-        return vocab;
     }
 
     //todo

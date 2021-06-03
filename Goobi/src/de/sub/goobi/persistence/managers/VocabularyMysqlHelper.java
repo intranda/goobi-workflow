@@ -34,6 +34,8 @@ class VocabularyMysqlHelper implements Serializable {
      */
     private static final long serialVersionUID = 5141386688477409583L;
 
+    private static String vocabTable = "vocabulary";
+    
     static Vocabulary getVocabularyByTitle(String title) throws SQLException {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM vocabulary v WHERE v.title = ?");
@@ -236,10 +238,10 @@ class VocabularyMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
 
         if (vocabulary.getId() == null) {
-            sql.append("INSERT INTO vocabularies(title, description, structure) ");
+            sql.append("INSERT INTO " + vocabTable + "(title, description, structure) ");
             sql.append("VALUES (?,?,?)");
         } else {
-            sql.append("UPDATE vocabularies ");
+            sql.append("UPDATE " + vocabTable + " ");
             sql.append("SET title =  ?, description = ?, structure  = ? ");
             sql.append("WHERE vocabId = " + vocabulary.getId());
         }
@@ -588,8 +590,8 @@ class VocabularyMysqlHelper implements Serializable {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT vocabularyRecords.* FROM vocabularyRecords LEFT JOIN vocabularies ON vocabularyRecords.vocabId=vocabularies.vocabId ");
-        sb.append("WHERE vocabularies.vocabId = ? ");
+        sb.append("SELECT vocabularyRecords.* FROM vocabularyRecords LEFT JOIN " + vocabTable + " ON vocabularyRecords.vocabId=" + vocabTable + ".vocabId ");
+        sb.append("WHERE " + vocabTable + ".vocabId = ? ");
         StringBuilder subQuery = new StringBuilder();
 
         if (StringUtils.isNotBlank(vocabulary.getSearchField())) {
@@ -821,7 +823,7 @@ class VocabularyMysqlHelper implements Serializable {
         if (vocabulary == null) {
             return null;
         }
-        String sql = "SELECT * FROM vocabularies WHERE vocabId = ? ";
+        String sql = "SELECT * FROM vocabulary WHERE id = ? ";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -842,7 +844,7 @@ class VocabularyMysqlHelper implements Serializable {
             return;
         }
 
-        String updateSql = "UPDATE vocabularies SET lastAltered = ? WHERE vocabularyId = " + vocabulary.getId();
+        String updateSql = "UPDATE " + vocabTable + " SET lastAltered = ? WHERE id = " + vocabulary.getId();
         Connection connection = null;
 
         try {
@@ -866,7 +868,7 @@ class VocabularyMysqlHelper implements Serializable {
         if (vocabulary == null) {
             return null;
         }
-        String sql = "SELECT * FROM vocabularies WHERE vocabId = ? ";
+        String sql = "SELECT * FROM " + vocabTable + " WHERE id = ? ";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -887,7 +889,7 @@ class VocabularyMysqlHelper implements Serializable {
             return;
         }
 
-        String updateSql = "UPDATE vocabularies SET lastUploaded = ? WHERE vocabId = " + vocabulary.getId();
+        String updateSql = "UPDATE " + vocabTable + " SET lastUploaded = ? WHERE id = " + vocabulary.getId();
         Connection connection = null;
 
         try {
