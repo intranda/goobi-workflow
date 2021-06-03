@@ -64,6 +64,11 @@ public class PluginInstaller {
     private PluginInstallInfo pluginInfo;
     private PluginPreInstallCheck check;
 
+    public void testinstall() {
+        log.error(org.goobi.managedbeans.PluginsBean.staticConflictsMode);
+        log.error(org.goobi.managedbeans.PluginsBean.staticCurrentlyUsedCode);
+    }
+
     public void install() {
         try (Stream<Path> walkStream = Files.walk(this.extractedArchivePath)) {
             walkStream.filter(Files::isRegularFile)

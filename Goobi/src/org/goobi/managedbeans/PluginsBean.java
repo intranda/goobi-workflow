@@ -60,11 +60,23 @@ public class PluginsBean implements Serializable {
     private String mode = "installed";
 
     @Getter
-    @Setter
-    private String conflicts_mode = "edit_existing_file";
+    private String conflictsMode = "edit_existing_file";
+    public static String staticConflictsMode = "edit_existing_file";
+    @Getter
+    private String currentlyUsedCode = "";
+    public static String staticCurrentlyUsedCode;
 
     public PluginsBean() {
         this.plugins = getPluginsFromFS();
+    }
+    public void setConflictsMode(String mode) {
+        this.conflictsMode = mode;
+        PluginsBean.staticConflictsMode = mode;
+    }
+
+    public void setCurrentlyUsedCode(String code) {
+        this.currentlyUsedCode = code;
+        PluginsBean.staticCurrentlyUsedCode = code;
     }
 
     public static Map<String, List<PluginInfo>> getPluginsFromFS() {

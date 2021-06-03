@@ -26,6 +26,11 @@
 
 	<ui:define name="content">
 
+		<link rel="stylesheet" href="template/css/codemirror/codemirror.css"/>
+		<script type="text/javascript" src="template/js/codemirror/codemirror.js"/>
+		<script src="template/js/codemirror/mode/xml/xml.js"/>
+
+
 		<div class="row" role="main">
 			<div class="col-sm-12">
 				<div class="box box-bordered box-color">
@@ -93,19 +98,19 @@
 											<h:form id="plugins_tabform">
 												<ul class="nav nav-tabs">
 													<li role="presentation"
-														class="#{pluginsBean.conflicts_mode eq 'edit_existing_file' ? 'active' : ''}">
+														class="#{pluginsBean.conflictsMode eq 'edit_existing_file' ? 'active' : ''}">
 														<h:commandLink>
 															<h:outputText value="#{msgs.install_plugin_edit_existing_file}" />
 															<f:ajax render="pluginsTabContent @form" />
-															<f:setPropertyActionListener value="edit_existing_file" target="#{pluginsBean.conflicts_mode}"></f:setPropertyActionListener>
+															<f:setPropertyActionListener value="edit_existing_file" target="#{pluginsBean.conflictsMode}"></f:setPropertyActionListener>
 														</h:commandLink>
 													</li>
 													<li role="presentation"
-														class="#{pluginsBean.conflicts_mode eq 'edit_uploaded_file' ? 'active' : ''}">
+														class="#{pluginsBean.conflictsMode eq 'edit_uploaded_file' ? 'active' : ''}">
 														<h:commandLink>
 															<h:outputText value="#{msgs.install_plugin_edit_uploaded_file}" />
 															<f:ajax render="pluginsTabContent @form" />
-															<f:setPropertyActionListener value="edit_uploaded_file" target="#{pluginsBean.conflicts_mode}"></f:setPropertyActionListener>
+															<f:setPropertyActionListener value="edit_uploaded_file" target="#{pluginsBean.conflictsMode}"></f:setPropertyActionListener>
 														</h:commandLink>
 													</li>
 												</ul>
@@ -114,12 +119,12 @@
 												<div class="col-md-6">
 													<h5>#{msgs.install_plugin_conflicts}</h5>
 												</div>
-												<ui:fragment rendered="#{pluginsBean.conflicts_mode eq 'edit_existing_file'}">
+												<ui:fragment rendered="#{pluginsBean.conflictsMode eq 'edit_existing_file'}">
 													<div class="col-md-6">
 														<h5>#{msgs.install_plugin_existing_file}</h5>
 													</div>
 												</ui:fragment>
-												<ui:fragment rendered="#{pluginsBean.conflicts_mode eq 'edit_uploaded_file'}">
+												<ui:fragment rendered="#{pluginsBean.conflictsMode eq 'edit_uploaded_file'}">
 													<div class="col-md-6">
 														<h5>#{msgs.install_plugin_uploaded_file}</h5>
 													</div>
@@ -179,38 +184,25 @@
 														</ui:repeat>
 													</span>
 												</div>
-												<ui:fragment rendered="#{pluginsBean.conflicts_mode eq 'edit_existing_file'}">
-													<div class="col-md-6">
-														<x:inputTextarea id="textarea_edit_existing_file" styleClass="plugin-installer-text-area form-control" pt:aria-label="textarea_edit_existing_file" forceId="true" value="#{conflict.existingVersion}" />
-													</div>
-													<script type="text/javascript">
-														var textarea = document.getElementById('textarea_edit_existing_file');
-														textarea.style.height = (textarea.scrollHeight + 10) + 'px';
-													</script>
-												</ui:fragment>
-												<ui:fragment rendered="#{pluginsBean.conflicts_mode eq 'edit_uploaded_file'}">
-													<div class="col-md-6">
-														<x:inputTextarea id="textarea_edit_uploaded_file" styleClass="plugin-installer-text-area form-control" pt:aria-label="textarea_edit_uploaded_file" forceId="true" value="#{conflict.uploadedVersion}" />
-													</div>
-													<script type="text/javascript">
-														var textarea = document.getElementById('textarea_edit_uploaded_file');
-														textarea.style.height = (textarea.scrollHeight + 10) + 'px';
-													</script>
-												</ui:fragment>
+												<div class="col-md-6">
+													<x:inputTextarea id="textarea_edit_file" pt:aria-label="textarea_edit_file" forceId="true" value="#{pluginsBean.conflictsMode eq 'edit_existing_file'? conflict.existingVersion : conflict.uploadedVersion}" />
+												</div>
+												<script type="text/javascript">
+													initXmlCodeMirror();
+												</script>
 											</ui:repeat>
 										</div>
 										<hr />
 										<div class="row">
 											<div class="col-md-12">
-												<h:commandLink styleClass="btn btn-primary pull-right" action="#{pluginInstallBean.pluginInstaller.install}">
-													#{msgs.install_plugin_install_uploaded_configuration}
+												<h:inputHidden id="currentlyUsedCode" value="#{pluginsBean.currentlyUsedCode}" />
+												<h:commandLink styleClass="btn btn-primary pull-right" action="#{pluginInstallBean.pluginInstaller.testinstall}">
+													#{msgs.install}
 													<f:ajax render="@form"/>
 												</h:commandLink>
-												<h:commandLink styleClass="btn btn-primary pull-right" action="#{pluginInstallBean.pluginInstaller.install}">
-													#{msgs.install_plugin_install_existing_configuration}
-													<f:ajax render="@form"/>
+												<h:commandLink action="#{pluginInstallBean.cancelInstall}" styleClass="btn">
+													#{msgs.cancel}
 												</h:commandLink>
-												<h:commandLink action="#{pluginInstallBean.cancelInstall}" styleClass="btn">#{msgs.cancel}</h:commandLink>
 											</div>
 										</div>
 									</ui:fragment>
@@ -272,6 +264,24 @@
 			</div>
 		</div>
 
+		<script type="text/javascript">
+			var xmlCodeMirror;
+			function initXmlCodeMirror() {
+				loadImages();
+				var xmlTextArea = document.getElementById("textarea_edit_file");
+				if(xmlTextArea) {
+					xmlCodeMirror = CodeMirror.fromTextArea(xmlTextArea, {
+						lineNumbers: true,
+						mode: 'xml'
+					});
+					xmlCodeMirror.setSize("100%", "100%");
+					xmlCodeMirror.on('change', editor => {
+						document.getElementById("currentlyUsedCode").innerHTML = editor.getValue();
+						alert(document.getElementById("currentlyUsedCode").innerHTML);
+					});
+				}
+			}
+		</script>
 	</ui:define>
 
 </ui:composition>
