@@ -1,9 +1,10 @@
 package org.goobi.production.plugin;
 
+import java.lang.reflect.InvocationTargetException;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -29,25 +30,37 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import net.xeoh.plugins.base.PluginManager;
-import net.xeoh.plugins.base.impl.PluginManagerFactory;
-import net.xeoh.plugins.base.util.PluginManagerUtil;
+import java.util.Set;
 
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IPlugin;
+import org.reflections.Reflections;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import net.xeoh.plugins.base.PluginManager;
+import net.xeoh.plugins.base.impl.PluginManagerFactory;
+import net.xeoh.plugins.base.util.PluginManagerUtil;
 
 public class PluginLoader {
 
     public static List<IPlugin> getPluginList(PluginType inType) {
         PluginManagerUtil pmu = initialize(inType);
         Collection<IPlugin> plugins = pmu.getPlugins(IPlugin.class);
-        return new ArrayList<IPlugin>(plugins);
+        return new ArrayList<>(plugins);
     }
 
     public static IPlugin getPluginByTitle(PluginType inType, String inTitle) {
+        // first, check if classes are known in default loader
+        Set<Class<? extends IPlugin>> loadedPlugins = new Reflections("de.intranda.goobi.*").getSubTypesOf(inType.getInterfaz());
+        for (Class<? extends IPlugin> clazz : loadedPlugins) {
+            try {
+                IPlugin plugin = clazz.getDeclaredConstructor().newInstance();
+                if (plugin.getTitle().equals(inTitle)) {
+                    return plugin;
+                }
+            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException e) {
+            }
+        }
         PluginManagerUtil pmu = initialize(inType);
         Collection<IPlugin> plugins = pmu.getPlugins(inType.getInterfaz());
         for (IPlugin p : plugins) {
@@ -66,7 +79,7 @@ public class PluginLoader {
     }
 
     public static List<String> getListOfPlugins(PluginType inType) {
-        List<String> pluginList = new ArrayList<String>();
+        List<String> pluginList = new ArrayList<>();
         PluginManagerUtil pmu = initialize(inType);
         Collection<IPlugin> plugins = pmu.getPlugins(inType.getInterfaz());
         for (IPlugin p : plugins) {
