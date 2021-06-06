@@ -367,6 +367,10 @@ button.dropdown-item:hover {
     text-decoration: none;
 }
 
+#navigation .btn .caret {
+    margin-left: 3px;
+}
+
 /* ------------- Background colors --------------- */
 .background-color-A {
     background: none repeat scroll 0 0 #aaa;
