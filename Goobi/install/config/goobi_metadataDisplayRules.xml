@@ -45,7 +45,7 @@
                <label></label>
             </geonames-->
 
-             <kulturnav ref="CollectionPlace">
+             <kulturnav ref="PlaceOfPublication">
               <source>entityType:Place</source>
               <field></field>
             </kulturnav>
@@ -60,9 +60,11 @@
                <source>entityType:Agent</source>
               <field></field>
             </kulturnav>
-            
+
+            <!-- Restrict to only Samla datasets -->
             <kulturnav ref="person">
-              <source>entityType:Person</source>
+              <!--source>entityType:Person</source-->
+              <source>entity.dataset:e0c682f9-a594-4fe1-8c01-f208f52d79ac%20OR%20334dbe13-d1c0-4149-a0ba-c82e061e21a7</source>
               <field></field>
             </kulturnav>
 

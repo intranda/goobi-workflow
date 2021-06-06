@@ -14,8 +14,8 @@ import java.util.*;
 
 
 /**
- * Import authority data from KulturNav. The endpoint is queried and then
- * data are imported and mapped to the norm labels
+ * Import authority data from KulturNav (https://kulturnav.org/). The endpoint is queried and then
+ * data are imported and mapped to the norm labels which Goobi understands
  *
  * @author Hemed Ali Al Ruwehy
  * 2021-03-03
@@ -24,7 +24,6 @@ public class KulturNavImporter extends JsonDataLoader {
     public static final String BASE_URL = "https://kulturnav.org/";
     public static final String SUMMARY_URL = BASE_URL + "api/summary/";
     private static final Logger logger = LoggerFactory.getLogger(KulturNavImporter.class);
-    private static String sourceForPerson;
 
     public KulturNavImporter() {
     }
@@ -55,7 +54,6 @@ public class KulturNavImporter extends JsonDataLoader {
                 true));
         normDataRecord.setNormdataList(normDataValuesList);
 
-        // TODO Set preferred values based on keys from defaultLabelList
         // Used as preferred values in the search box
         Set<String> valuesForLabel = NormDataUtils.getValuesForLabel(
                 normDataValuesList, "NORM_LABEL", "NORM_ALTLABEL");
@@ -172,15 +170,12 @@ public class KulturNavImporter extends JsonDataLoader {
         return knUrl.toString();
     }
 
-    // TODO: Investigate whether the file is loaded after every
-    //  search request or only if the file content has changed
-
     /**
      * Gets source for metadata name "person" from config file
      */
     public static String getSourceForPerson() {
-        sourceForPerson = readSourceFromDisplayRulesConfig("person");
-        if (sourceForPerson.isEmpty()) { // return default if not found from config
+        String sourceForPerson = readSourceFromDisplayRulesConfig("person");
+        if (sourceForPerson.isEmpty()) { // default
             return "entityType:Agent";
         }
         return sourceForPerson;
@@ -206,7 +201,7 @@ public class KulturNavImporter extends JsonDataLoader {
         List<Item> items = ConfigDisplayRules.getInstance()
                 .getItemsByNameAndType("*", metadataRef, DisplayType.kulturnav);
 
-        if (!items.isEmpty()) {
+        if (!items.isEmpty() & !items.get(0).getSource().isEmpty()) {
             source = items.get(0).getSource();
             if (logger.isDebugEnabled()) {
                 logger.debug("Found source with value {} for metadata {} and display type {}",
@@ -231,5 +226,4 @@ public class KulturNavImporter extends JsonDataLoader {
         // System.out.println(fetchJsonString("https://jambo.uib.no/blackbox/suggest?q=Marcus"));
         // System.out.println(fetchJsonString("https://arbeidsplassen.nav.no/stillinger/api/search"));
     }
-
 }
