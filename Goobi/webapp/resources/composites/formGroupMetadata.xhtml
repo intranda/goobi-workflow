@@ -216,7 +216,7 @@
                     <div class="btn-area duplicate">
                         <!-- DELETE -->
                         <button
-                            class="btn btn--icon-light"
+                            class="btn btn--icon-light metadataButton"
                             jsf:id="actionDelete"
                             aria-label="#{msgs.DELETE_CURRENT_METADATA}"
                             tabindex="0"
@@ -246,7 +246,7 @@
 
                         <!-- COPY -->
                         <button
-                            class="btn btn--icon-light"
+                            class="btn btn--icon-light metadataButton"
                             jsf:id="actionCopy"
                             aria-label="#{msgs.metadatenKopieren}"
                             tabindex="0"
@@ -277,7 +277,7 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'geonames'}">
                             <button
                             	jsf:id="geoname"
-                                class="change-icon geonamesIndexTrigger btn--icon-light"
+                                class="change-icon geonamesIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_geonamesSearch}"
                                 aria-label="#{msgs.NORM_geonamesSearch}"
                                 onclick="$('#geonamesSearchBox').modal('show');"
@@ -310,7 +310,7 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'gnd'}">
                             <button
                             	jsf:id="gnd"
-                                class="change-icon gndIndexTrigger btn--icon-light"
+                                class="change-icon gndIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_gndSearch}"
                                 aria-label="#{msgs.NORM_gndSearch}"
                                 onclick="$('#gndSearchBox').modal('show');"
@@ -344,7 +344,7 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'process'}">
                             <button
                             	jsf:id="openProcessSearchModal2"
-                                class="change-icon processIndexTrigger btn--icon-light"
+                                class="change-icon processIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_processesSearch}"
                                 aria-label="#{msgs.NORM_processesSearch}"
                                 onclick="$('#processesSearchBox').modal('show');"
@@ -370,7 +370,7 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante'}">
                             <button
                             	jsf:id="danteSearch"
-                                class="change-icon danteIndexTrigger btn--icon-light"
+                                class="change-icon danteIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_danteSearch}"
                                 aria-label="#{msgs.NORM_danteSearch}"
                                 onclick="$('#danteSearchBox').modal('show');"
@@ -403,7 +403,7 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'easydb'}">
                             <button
                             	jsf:id="easydbSearch"
-                                class="change-icon easydbIndexTrigger btn--icon-light"
+                                class="change-icon easydbIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_easydbSearch}"
                                 aria-label="#{msgs.NORM_easydbSearch}"
                                 onclick="$('#easydbSearchBox').modal('show');"
@@ -436,7 +436,7 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'viaf'}">
                             <button
                             	jsf:id="viaf"
-                                class="change-icon viafIndexTrigger btn--icon-light"
+                                class="change-icon viafIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_viafSearch}"
                                 aria-label="#{msgs.NORM_viafSearch}"
                                 onclick="$('#viafSearchBox').modal('show');"
@@ -470,7 +470,7 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'vocabularySearch'}">
                             <button
                             	jsf:id="vocabularySearch"
-                                class="btn change-icon vocabularySearchIndexTrigger btn--icon-light"
+                                class="btn change-icon vocabularySearchIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_vocabularySearch}"
                                 aria-label="#{msgs.NORM_vocabularySearch}"
                                 type="button"
