@@ -104,6 +104,7 @@
 
                     <!-- NORMDATA -->
                     <ui:fragment rendered="#{cc.attrs.person.normdata}">
+                        <!--
                         <h:commandLink
                                 styleClass="change-icon"
                                 title="#{msgs.NORM_gndSearch}"
@@ -169,6 +170,7 @@
                                     name="data-toggle"
                                     value="tooltip" />
                         </h:commandLink>
+                        -->
 
                         <!-- KULTURNAV -->
                         <h:commandLink
@@ -180,12 +182,12 @@
                                     class="toggle"
                                     style="width: 16px;"
                                     alt="KN"
-                                    src="template/img/kulturnav-dark.png" />
+                                    src="template/img/import_grey.svg" />
                             <img
                                     class="toggle"
                                     style="width: 16px;"
                                     alt="KN"
-                                    src="template/img/kulturnav.png" />
+                                    src="template/img/import.svg" />
                             <f:setPropertyActionListener
                                     value="#{cc.attrs.person}"
                                     target="#{Metadaten.currentMetadataToPerformSearch}" />

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets:mets OBJID="69" xsi:schemaLocation="http://www.loc.gov/standards/premis/ http://www.loc.gov/standards/premis/v2/premis-v2-0.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/standards/mix/ http://www.loc.gov/standards/mix/mix.xsd" xmlns:mets="http://www.loc.gov/METS/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:dv="http://dfg-viewer.de/" xmlns:xlink="http://www.w3.org/1999/xlink">
+   <mets:metsHdr CREATEDATE="2021-03-29T10:45:49Z">
+      <mets:agent OTHERTYPE="SOFTWARE" ROLE="CREATOR" TYPE="OTHER">
+         <mets:name>Goobi - b336f - 2020-08-02 18:36:20+0000</mets:name>
+         <mets:note>Goobi</mets:note>
+      </mets:agent>
+   </mets:metsHdr>
+   <mets:dmdSec ID="DMDLOG_0000">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:originInfo>
+                  <mods:place>
+                     <mods:placeTerm type="text" valueURI="https://kulturnav.org/api/search/marcus%20selmer">Bergen</mods:placeTerm>
+                  </mods:place>
+                  <mods:dateIssued encoding="iso8601" keyDate="yes">2021</mods:dateIssued>
+               </mods:originInfo>
+               <mods:titleInfo>
+                  <mods:title>Hemed Test Doc</mods:title>
+               </mods:titleInfo>
+               <mods:titleInfo type="uniform">
+                  <mods:title>Hemed Test Doc</mods:title>
+               </mods:titleInfo>
+               <mods:recordInfo>
+                  <mods:recordIdentifier source="gbv-ppn">ubb-hru-01</mods:recordIdentifier>
+               </mods:recordInfo>
+               <mods:classification authority="ivdcc">Etno-folkloristisk arkiv</mods:classification>
+               <mods:language>
+                  <mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>
+               </mods:language>
+               <mods:location>
+                  <mods:physicalLocation>Goobi</mods:physicalLocation>
+               </mods:location>
+               <mods:originInfo>
+                  <mods:place>
+                     <mods:placeTerm type="text">Göttingen</mods:placeTerm>
+                  </mods:place>
+                  <mods:dateCaptured encoding="iso8601">2021</mods:dateCaptured>
+                  <mods:publisher>Goobi</mods:publisher>
+                  <mods:edition>[Electronic ed.]</mods:edition>
+               </mods:originInfo>
+               <mods:physicalDescription>
+                  <mods:digitalOrigin>reformatted digital</mods:digitalOrigin>
+               </mods:physicalDescription>
+               <mods:name type="personal" valueURI="http://kulturnav.org/e031df43-b0d9-455f-8234-ed428e126b86">
+                  <mods:role>
+                     <mods:roleTerm authority="marcrelator" type="code">cmp</mods:roleTerm>
+                  </mods:role>
+                  <mods:namePart type="family">Selmer</mods:namePart>
+                  <mods:namePart type="given">Marcus</mods:namePart>
+                  <mods:displayForm>Selmer, Marcus</mods:displayForm>
+                  <mods:nameIdentifier type="viaf-cluster">http://viaf.org/viaf/47066452</mods:nameIdentifier>
+                  <mods:nameIdentifier type="viaf">http://viaf.org/processed/BIBSYS%7C98033641?httpAccept=text/xml</mods:nameIdentifier>
+               </mods:name>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:amdSec ID="AMD">
+      <mets:rightsMD ID="RIGHTS">
+         <mets:mdWrap MDTYPE="OTHER" MIMETYPE="text/xml" OTHERMDTYPE="DVRIGHTS">
+            <mets:xmlData>
+               <dv:rights>
+                  <dv:owner>Example Library</dv:owner>
+                  <dv:ownerLogo>http://www.example.net/mylogo.png</dv:ownerLogo>
+                  <dv:ownerSiteURL>http://www.example.net</dv:ownerSiteURL>
+                  <dv:ownerContact>mailto:digitisation@example.net</dv:ownerContact>
+                  <dv:sponsorSiteURL>info@intranda.com</dv:sponsorSiteURL>
+               </dv:rights>
+            </mets:xmlData>
+         </mets:mdWrap>
+      </mets:rightsMD>
+      <mets:digiprovMD ID="DIGIPROV">
+         <mets:mdWrap MDTYPE="OTHER" MIMETYPE="text/xml" OTHERMDTYPE="DVLINKS">
+            <mets:xmlData>
+               <dv:links>
+                  <dv:reference>http://catalog.example.net/A?function=search&amp;request=ubb-hru-01</dv:reference>
+                  <dv:presentation>http://presentation.example.net/ppnresolver?id=ubb-hru-01</dv:presentation>
+               </dv:links>
+            </mets:xmlData>
+         </mets:mdWrap>
+      </mets:digiprovMD>
+   </mets:amdSec>
+   <mets:fileSec>
+      <mets:fileGrp USE="PRESENTATION">
+         <mets:file ID="FILE_0001_PRESENTATION" MIMETYPE="image/tiff">
+            <mets:FLocat LOCTYPE="URL" xlink:href="file:///opt/digiverso/viewer/media/ubb-hru-01/00000001.tif"/>
+         </mets:file>
+      </mets:fileGrp>
+      <mets:fileGrp USE="DEFAULT">
+         <mets:file ID="FILE_0001_DEFAULT" MIMETYPE="image/jpeg">
+            <mets:FLocat LOCTYPE="URL" xlink:href="http://presentation.example.net/content/ubb-hru-01/800/0/00000001.jpg"/>
+         </mets:file>
+      </mets:fileGrp>
+   </mets:fileSec>
+   <mets:structMap TYPE="LOGICAL">
+      <mets:div ADMID="AMD" DMDID="DMDLOG_0000" ID="LOG_0000" LABEL="Hemed Test Doc" TYPE="monograph"/>
+   </mets:structMap>
+   <mets:structMap TYPE="PHYSICAL">
+      <mets:div ID="PHYS_0000" TYPE="physSequence">
+         <mets:div ID="PHYS_0001" ORDER="1" ORDERLABEL=" - " TYPE="page">
+            <mets:fptr FILEID="FILE_0001_PRESENTATION"/>
+            <mets:fptr FILEID="FILE_0001_DEFAULT"/>
+         </mets:div>
+      </mets:div>
+   </mets:structMap>
+   <mets:structLink>
+      <mets:smLink xlink:to="PHYS_0001" xlink:from="LOG_0000"/>
+   </mets:structLink>
+</mets:mets>

@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <normdatabases>
+<!--
     <normdatabase name="GND" url="http://d-nb.info/gnd/" abbreviation="gnd" />
     <normdatabase name="geonames" url="http://www.geonames.org/" abbreviation="geonames" />
     <normdatabase name="dante" url="https://dante.gbv.de/" abbreviation="dante" />
     <normdatabase name="viaf" url="http://www.viaf.org/viaf/" abbreviation="viaf" />
     <normdatabase name="easydb" url="https://easydb.prizepapers.gbv.de/" abbreviation="easydb" />
+-->
+    <normdatabase name="samla" url="https://samla.no/" abbreviation="" />
     <normdatabase name="kulturnav" url="https://kulturnav.org/" abbreviation="kulturnav" />
 
     <!--
