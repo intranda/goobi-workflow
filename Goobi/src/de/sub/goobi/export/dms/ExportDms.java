@@ -33,9 +33,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.Logger; //?? <- works?
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger; //?? <- works?
 //import lombok.extern.log4j.Log4j2;		//doesnt work?
 import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
@@ -43,7 +43,6 @@ import org.goobi.beans.User;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
 
-import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.download.ExportMets;
 import de.sub.goobi.helper.FilesystemHelper;
@@ -69,7 +68,6 @@ import ugh.exceptions.WriteException;
 
 public class ExportDms extends ExportMets implements IExportPlugin {
     private static final Logger logger = LogManager.getLogger(ExportDms.class);
-    protected ConfigProjects cp;
     protected boolean exportWithImages = true;
     protected boolean exportFulltext = true;
     protected List<String> problems = new ArrayList<>();
@@ -115,7 +113,6 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             MetadataTypeNotAllowedException, ExportFileException, UghHelperException, SwapException, DAOException, TypeNotAllowedForParentException {
 
         this.myPrefs = myProzess.getRegelsatz().getPreferences();
-        this.cp = new ConfigProjects(myProzess.getProjekt().getTitel());
         String atsPpnBand = myProzess.getTitel();
 
         /*
@@ -373,7 +370,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         /*
          * -------------------------------- dann den Ausgangspfad ermitteln --------------------------------
          */
-        Path tifOrdner = Paths.get(myProzess.getImagesTifDirectory(true));
+        Path tifOrdner = Paths.get(myProzess.getImagesTifDirectory(false));
 
         /*
          * -------------------------------- jetzt die Ausgangsordner in die Zielordner kopieren --------------------------------
@@ -404,7 +401,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             }
 
             /* jetzt den eigentlichen Kopiervorgang */
-            List<Path> files = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(true), NIOFileUtils.DATA_FILTER);
+            List<Path> files = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(false), NIOFileUtils.DATA_FILTER);
             for (Path file : files) {
                 Path target = Paths.get(zielTif.toString(), file.getFileName().toString());
                 StorageProvider.getInstance().copyFile(file, target);

@@ -191,24 +191,18 @@ public class GoobiScriptTest {
     }
 
     @Test
-    public void testExecuteEmptyGoobiScript() {
-        GoobiScript script = new GoobiScript();
-        script.execute(new ArrayList<Integer>(), "---\\n");
-        assertNull(script.myParameters);
+    public void testParseEmptyGoobiScript() {
+        assertNull(GoobiScript.parseGoobiscripts("---\\n"));
     }
 
     @Test
-    public void testExecuteWrongSyntax() {
-        GoobiScript script = new GoobiScript();
-        script.execute(new ArrayList<Integer>(), "---\\naction");
-        assertEquals(0, script.myParameters.size());
+    public void testParseWrongSyntax() {
+        assertEquals(0, GoobiScript.parseGoobiscripts("---\\naction").size());
     }
 
     @Test
-    public void testExecuteUnknownAction() {
-        GoobiScript script = new GoobiScript();
-        script.execute(new ArrayList<Integer>(), "---\\naction: test");
-        assertEquals(1, script.myParameters.size());
+    public void testParseUnknownAction() {
+        assertEquals(1, GoobiScript.parseGoobiscripts("---\\naction: test").size());
     }
 
     @Test
@@ -278,14 +272,13 @@ public class GoobiScriptTest {
 
         PowerMock.expectLastCall().anyTimes();
 
-
         PowerMock.replay(Helper.class);
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: swapProzessesIn");
     }
 
     @Test
-    public void testExecuteAddUserAction() throws Exception{
+    public void testExecuteAddUserAction() throws Exception {
 
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
@@ -307,7 +300,6 @@ public class GoobiScriptTest {
         Helper.addMessageToProcessLog(EasyMock.anyInt(), EasyMock.anyObject(LogType.class), EasyMock.anyString());
 
         PowerMock.expectLastCall().anyTimes();
-
 
         PowerMock.replay(Helper.class);
 

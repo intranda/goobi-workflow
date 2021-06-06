@@ -1,5 +1,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:p="http://primefaces.org/ui">
+    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:p="http://primefaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
     </composite:interface>
@@ -37,20 +38,20 @@
 									</td>
 									
 									<td>
-										<h:commandLink id="editBatchProperty" action="task_batch_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small"
-			                                rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ' and proc.type.name != 'metadata'}">
+										<button jsf:id="editBatchProperty" jsf:action="task_batch_edit" title="#{msgs.bearbeiten}" class="btn btn-small"
+			                                jsf:rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.currentStepAccessCondition ne 'READ' and proc.type.name != 'metadata'}">
 			                                <i class="fa fa-pencil"></i>
 			                                <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.processProperty}" value="#{proc}" />
 	                                        <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}" value="0" />
 	                                        <x:updateActionListener property="#{AktuelleSchritteForm.modusBearbeiten}" value="eigenschaft" />
-			                            </h:commandLink>
+			                            </button>
 			                            
-			                             <h:commandLink id="duplicateBatchProperty" action="#{AktuelleSchritteForm.batchHelper.duplicateProperty}" title="#{msgs.duplicate}" styleClass="btn btn-small margin-left-5"
-	                                            rendered="#{proc.duplicationAllowed and AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.type.name != 'metadata'}">
+			                             <button jsf:id="duplicateBatchProperty" jsf:action="#{AktuelleSchritteForm.batchHelper.duplicateProperty}" title="#{msgs.duplicate}" class="btn btn-small margin-left-5"
+	                                            jsf:rendered="#{proc.duplicationAllowed and AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and proc.type.name != 'metadata'}">
 	                                          <i class="fa fa-plus"></i>
 	                                         <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.processProperty}" value="#{proc}" />
 	                                         <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}" value="0" />
-	                                     </h:commandLink>
+	                                     </button>
 			                            
 			                        </td>
 								</tr>
@@ -88,19 +89,19 @@
                                    	<h:panelGroup rendered="#{propInd ==0}">
                                         <td rowspan="#{AktuelleSchritteForm.containers[container].propertyListSizeString}">
 	                                        <h:panelGroup rendered="#{AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id}">
-			                                    <h:commandLink id="editContainer" action="task_batch_edit" title="#{msgs.bearbeiten}" styleClass="btn btn-small" rendered="#{AktuelleSchritteForm.batchHelper.containerAccess[container] and process_item.type.name != 'metadata'}">
+			                                    <button jsf:id="editContainer" jsf:action="task_batch_edit" title="#{msgs.bearbeiten}" class="btn btn-small" jsf:rendered="#{AktuelleSchritteForm.batchHelper.containerAccess[container] and process_item.type.name != 'metadata'}">
 			                                        <i class="fa fa-pencil"></i>
 			                                        <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}"
                                                         value="#{container}" />
                                                     <x:updateActionListener property="#{AktuelleSchritteForm.modusBearbeiten}" value="eigenschaft" />
-			                                    </h:commandLink>
+			                                    </button>
 			                                
-			                                	<h:commandLink id="duplicateContainer" action="#{AktuelleSchritteForm.batchHelper.duplicateContainer}" title="#{msgs.duplicate}"
-                                                    rendered="#{process_item.duplicationAllowed and AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and process_item.type.name != 'metadata'}" styleClass="btn btn-small margin-left-5">
+			                                	<button jsf:id="duplicateContainer" jsf:action="#{AktuelleSchritteForm.batchHelper.duplicateContainer}" title="#{msgs.duplicate}"
+                                                    jsf:rendered="#{process_item.duplicationAllowed and AktuelleSchritteForm.batchHelper.currentStep.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and process_item.type.name != 'metadata'}" class="btn btn-small margin-left-5">
                                                      <i class="fa fa-plus"></i>
                                                     <x:updateActionListener property="#{AktuelleSchritteForm.batchHelper.container}"
                                                         value="#{container}" />
-                                                </h:commandLink>
+                                                </button>
 				                                
 			                                </h:panelGroup>
 	                                	</td>
@@ -260,22 +261,22 @@
                  <div class="form-actions">
 
 	                <!-- Save -->
-					<h:commandLink id="applyToAllProcesses" styleClass="btn btn-success font-size-s submitOnEnter margin-left-5 pull-right margin-bottom-more block" action="#{AktuelleSchritteForm.batchHelper.saveCurrentPropertyForAll}">
+					<button jsf:id="applyToAllProcesses" class="btn btn-success font-size-s submitOnEnter margin-left-5 pull-right margin-bottom-more block" jsf:action="#{AktuelleSchritteForm.batchHelper.saveCurrentPropertyForAll}">
 	                    <i class="fa fa-save margin-right-5"></i>
 	                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="" />
 	                    <h:outputText value="#{msgs.applyToAllProcesses}" />
-	                </h:commandLink>
+	                </button>
 
-	                <h:commandLink id="applyToThisProcess" styleClass="btn btn-success font-size-s submitOnEnter margin-left-5 pull-right margin-bottom-more block" action="#{AktuelleSchritteForm.batchHelper.saveCurrentProperty}">
+	                <button jsf:id="applyToThisProcess" class="btn btn-success font-size-s submitOnEnter margin-left-5 pull-right margin-bottom-more block" jsf:action="#{AktuelleSchritteForm.batchHelper.saveCurrentProperty}">
 	                    <i class="fa fa-save margin-right-5"></i>
 	                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="" />
 	                    <h:outputText value="#{msgs.applyToThisProcess}" />
-	                </h:commandLink>
+	                </button>
 	
-	                <h:commandLink id="cancelEdition" styleClass="btn pull-right font-size-s margin-bottom-more margin-left-5" immediate="true" action="#{NavigationForm.Reload}">
+	                <button jsf:id="cancelEdition" class="btn pull-right font-size-s margin-bottom-more margin-left-5" jsf:immediate="true" jsf:action="#{NavigationForm.Reload}">
 	                    <h:outputText value="#{msgs.abbrechen}" />
 	                    <f:setPropertyActionListener target="#{AktuelleSchritteForm.modusBearbeiten}" value="" />
-	                </h:commandLink>
+	                </button>
 	            </div>         
             
         </h:form>

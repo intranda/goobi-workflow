@@ -84,12 +84,16 @@ public class GoobiCommandListener {
         String token = t.getJwt();
         Integer stepId = t.getStepId();
         Integer processId = t.getProcessId();
+        Step step = StepManager.getStepById(stepId);
+        if (step == null) {
+            log.error("GoobiCommandListener: Could not find step with ID " + stepId);
+            return;
+        }
         switch (command) {
             case "changeStep":
                 try {
                     if (JwtHelper.verifyChangeStepToken(token, stepId)) {
                         // change step
-                        Step step = StepManager.getStepById(stepId);
                         String newStatus = t.getNewStatus();
                         switch (newStatus) {
                             case "error":
@@ -104,6 +108,10 @@ public class GoobiCommandListener {
                                     ExternalMQManager.insertResult(new ExternalCommandResult(t.getProcessId(), t.getStepId(), scriptName));
                                 }
                                 new HelperSchritte().CloseStepObjectAutomatic(step);
+                                break;
+                            case "paused":
+                                // Step was paused when the workernode tried to run it. Persist this to schritte table
+                                StepManager.setStepPaused(stepId, true);
                                 break;
                         }
                     }

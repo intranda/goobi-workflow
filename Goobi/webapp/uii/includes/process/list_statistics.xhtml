@@ -7,7 +7,8 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
     </composite:interface>
@@ -187,17 +188,17 @@
 
                                 <div class="row">
                                     <div class="col-sm-3">
-                                        <h:commandLink
-                                            id="myStatisticButton"
+                                        <button
+                                            jsf:id="myStatisticButton"
                                             title="#{msgs.calculateStatistics}"
-                                            action="#{ProzessverwaltungForm.statisticsManager.calculate}"
-                                            styleClass="btn btn-lightgrey font-size-s">
+                                            jsf:action="#{ProzessverwaltungForm.statisticsManager.calculate}"
+                                            class="btn btn-lightgrey font-size-s">
                                             <span class="margin-right-10 fa fa-cog"></span>
                                             <h:outputText value="#{msgs.calculateStatistics}" />
                                             <x:updateActionListener
                                                 property="#{ProzessverwaltungForm.showStatistics}"
                                                 value="true" />
-                                        </h:commandLink>
+                                        </button>
                                     </div>
                                     <div class="col-sm-3">
                                         <h:panelGroup rendered="#{ProzessverwaltungForm.statisticsManager.renderLoopOption}">
@@ -262,9 +263,9 @@
                                         <h:outputText
                                             value="#{element.htmlTableRenderer.rendering}"
                                             escape="false" />
-                                        <h:commandLink
-                                            id="createExcel"
-                                            action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}"
+                                        <button
+                                            jsf:id="createExcel"
+                                            jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}"
                                             title="#{msgs.download_excel}">
                                             <span class="btn margin-right-10 fa fa-floppy-o"></span>
                                             <h:outputText value="#{msgs.download_excel}" />
@@ -274,11 +275,11 @@
                                             <f:passThroughAttribute
                                                 name="data-toggle"
                                                 value="tooltip" />
-                                        </h:commandLink>
+                                        </button>
 
-                                        <h:commandLink
-                                            id="createCsv"
-                                            action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}"
+                                        <button
+                                            jsf:id="createCsv"
+                                            jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}"
                                             title="#{msgs.download_csv}">
                                             <span class="btn margin-right-10 fa fa-floppy-o"></span>
                                             <h:outputText value="#{msgs.download_csv}" />
@@ -288,7 +289,7 @@
                                             <f:passThroughAttribute
                                                 name="data-toggle"
                                                 value="tooltip" />
-                                        </h:commandLink>
+                                        </button>
                                     </h:panelGroup>
 
                                     <h:panelGroup rendered="#{ProzessverwaltungForm.statisticsManager.targetResultOutput=='chartAndTable'}">
@@ -310,12 +311,12 @@
                                                 value="#{element.htmlTableRenderer.rendering}"
                                                 escape="false"
                                                 rendered="#{element.dataTable.showableInTable}" />
-                                            <h:commandLink
-                                                id="createExcel2"
-                                                action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}"
+                                            <button
+                                                jsf:id="createExcel2"
+                                                jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsExcel}"
                                                 title="#{msgs.download_excel}"
-                                                rendered="#{element.dataTable.showableInTable}"
-                                                styleClass="margin-right-10">
+                                                jsf:rendered="#{element.dataTable.showableInTable}"
+                                                class="expandbutton margin-right-10">
                                                 <span class="btn margin-right-10 fa fa-floppy-o"></span>
                                                 <h:outputText value="#{msgs.download_excel}" />
                                                 <x:updateActionListener
@@ -324,13 +325,14 @@
                                                 <f:passThroughAttribute
                                                     name="data-toggle"
                                                     value="tooltip" />
-                                            </h:commandLink>
+                                            </button>
 
-                                            <h:commandLink
-                                                id="createCsv2"
-                                                action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}"
+                                            <button
+                                                class="expandbutton"
+                                                jsf:id="createCsv2"
+                                                jsf:action="#{ProzessverwaltungForm.downloadStatisticsAsCsv}"
                                                 title="#{msgs.download_csv}"
-                                                rendered="#{element.dataTable.showableInTable}">
+                                                jsf:rendered="#{element.dataTable.showableInTable}">
                                                 <span class="btn margin-right-10 fa fa-floppy-o"></span>
                                                 <h:outputText value="#{msgs.download_csv}" />
                                                 <x:updateActionListener
@@ -339,7 +341,7 @@
                                                 <f:passThroughAttribute
                                                     name="data-toggle"
                                                     value="tooltip" />
-                                            </h:commandLink>
+                                            </button>
                                         </h:panelGroup>
                                     </h:panelGroup>
                                 </x:dataList>

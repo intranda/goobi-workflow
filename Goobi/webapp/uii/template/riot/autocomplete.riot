@@ -1,0 +1,133 @@
+<autocomplete>
+<div class="autocomplete">
+    <input class="form-control"
+        value={currentValue}  
+        onkeyup={inputKeyup} 
+        onkeydown={inputKeydown} 
+        onfocus={showEntries} 
+        onblur={inputBlur}>
+    <ul class="autocomplete-items" if={entries.length && displayEntries}>
+        <li each={entry in entries}
+            class="autocomplete-item {entry == selectedEntry ? 'selected': ''}" 
+            onmouseover={selectEntry} 
+            onclick={enterValue}
+            onmousedown={preventBlur}>
+            {entry}
+        </li>
+    </ul>
+</div>
+<style>
+    .autocomplete {
+        position: relative;
+    }
+    .autocomplete .autocomplete-items {
+        position: absolute;
+        bottom: 24px;
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        background-color: white;
+        border: 1px solid #ddd;
+        min-width: 150px;
+    }
+    .autocomplete .autocomplete-items .autocomplete-item  {
+        padding: 3px;
+    }
+    .autocomplete .autocomplete-items .autocomplete-item.selected {
+        background-color: #1e74c5;
+        cursor: pointer;
+        color: white;
+    }
+    input.form-control {
+        width: 150px;
+        padding: 2px 6px;
+    }
+</style>
+<script>
+	this.on('before-mount', () => {
+        this.entries = [];
+        this.displayEntries = false;
+        this.selectedEntryIdx = -1;
+        this.currentValue = this.opts.initialValue;
+	})
+	
+	inputKeydown(e) {
+		if(e.key == "Enter") {
+			e.preventDefault();
+    		return false;
+		}
+	}
+	
+	inputKeyup(e) {
+		this.displayEntries=true;
+		this.currentValue = e.target.value;
+    	switch(e.key) {
+    	case "ArrowUp":
+    		if(this.selectedEntryIdx <0) {
+    			this.selectedEntryIdx = this.entries.length-1;
+    		} else {
+    			this.selectedEntryIdx = Math.max(0, this.selectedEntryIdx-1)
+    		}
+    		this.selectedEntry = this.entries[this.selectedEntryIdx];
+    		this.update();
+    		break;
+    	case "ArrowDown":
+			this.selectedEntryIdx = Math.min(this.entries.length-1, this.selectedEntryIdx+1)
+			this.selectedEntry = this.entries[this.selectedEntryIdx];
+    		this.update();
+    		break;
+    	case "Enter":
+    		this.enterValue();
+    		break;
+	    default:
+	    	let val = e.target.value;
+	    	if(val.length > 0 ) {
+				this.opts.requestAutocomplete(val);
+	    	} else {
+	    		this.entries = [];
+	    	}
+    	}
+    	
+    }
+	
+	inputBlur(e) {
+		this.hideEntries();
+	}
+	
+	clear(e) {
+		this.currentValue = "";
+		this.entries = [];
+		this.update();
+	}
+    
+    preventBlur(e) {
+    	e.preventDefault();
+    }
+    
+    selectEntry(e) {
+    	this.selectedEntry = e.item.entry;
+    	this.update();
+    }
+    
+    onAutocompleteResponse(entries) {
+    	this.entries = entries;
+    	this.update();
+    }
+    
+    enterValue() {
+    	if(this.entries.length) {
+        	this.currentValue = this.selectedEntry;
+    	}
+    	this.hideEntries();
+		this.opts.enterValue(this.currentValue);
+    }
+    
+    hideEntries() {
+		this.displayEntries = false;
+    }
+    
+    showEntries() {
+    	this.displayEntries = true;
+    }
+</script>
+</autocomplete>

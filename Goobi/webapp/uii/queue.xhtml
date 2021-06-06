@@ -6,7 +6,8 @@
 	xmlns:of="http://omnifaces.org/functions"
 	template="/uii/template/template.html"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 	<ui:param name="myPageTitle"
 		value="#{msgs.menu_administration_currentQueue}" />
 
@@ -42,7 +43,7 @@
 						<ul class="nav nav-tabs">
 							<li role="presentation"
 								class="#{messageQueueBean.mode eq 'waiting' ? 'active' : ''}">
-								<h:commandLink>
+								<h:commandLink id="queue">
 									<h:outputText value="#{msgs.waiting}" />
 									<f:ajax render="mqTabContent @form" />
 									<f:setPropertyActionListener value="waiting" target="#{messageQueueBean.mode}"></f:setPropertyActionListener>
@@ -50,7 +51,7 @@
 							</li>
 							<li role="presentation"
 								class="#{messageQueueBean.mode eq 'error' ? 'active' : ''}">
-								<h:commandLink>
+								<h:commandLink id="error">
 									<h:outputText value="#{msgs.errors}" />
 									<f:ajax render="mqTabContent @form" />
 									<f:setPropertyActionListener value="error" target="#{messageQueueBean.mode}"></f:setPropertyActionListener>

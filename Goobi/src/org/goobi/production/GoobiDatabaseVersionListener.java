@@ -52,6 +52,10 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                     + DatabaseVersion.EXPECTED_VERSION);
             DatabaseVersion.updateDatabase(currentVersion);
         }
+        // TODO
+        if (!DatabaseVersion.checkIfColumnExists("schritte", "messageId")) {
+            DatabaseVersion.runSql("ALTER TABLE schritte add column messageId varchar(255) DEFAULT NULL");
+        }
 
         checkIndexes();
 

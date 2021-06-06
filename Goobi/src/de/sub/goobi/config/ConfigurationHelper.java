@@ -340,6 +340,10 @@ public class ConfigurationHelper implements Serializable {
 
     // URLs
 
+    public String getGoobiUrl() {
+        return getLocalString("goobiUrl");
+    }
+
     public String getGoobiContentServerUrl() {
         return getLocalString("goobiContentServerUrl");
     }
@@ -787,6 +791,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("ExportInTemporaryFile", false);
     }
 
+    public boolean isExportCreateUUIDsAsFileIDs() {
+        return getLocalBoolean("ExportCreateUUID", true);
+    }
+
     public boolean isExportCreateTechnicalMetadata() {
         return getLocalBoolean("ExportCreateTechnicalMetadata", false);
     }
@@ -942,7 +950,6 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("ProcesslistShowEditionData", false);
     }
 
-
     public List<String> getExcludeMonitoringAgentNames() {
         return getLocalList("excludeMonitoringAgentName");
     }
@@ -1068,6 +1075,10 @@ public class ConfigurationHelper implements Serializable {
             return getLocalString(configName, type.getName());
         }
         return queueName;
+    }
+
+    public boolean isDeveloping() {
+        return getLocalBoolean("developing", false);
     }
 
     /**

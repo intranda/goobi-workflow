@@ -1,14 +1,13 @@
 package org.goobi.goobiScript;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.production.enums.GoobiScriptResultType;
-
-import com.google.common.collect.ImmutableList;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -22,7 +21,7 @@ public class GoobiScriptPropertyDelete extends AbstractIGoobiScript implements I
     public String getAction() {
         return "propertyDelete";
     }
-    
+
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
@@ -30,69 +29,48 @@ public class GoobiScriptPropertyDelete extends AbstractIGoobiScript implements I
         addParameterToSampleCall(sb, "name", "Opening angle", "Define the name of the property that shall be deleted (e.g. `Opening angle`).");
         return sb.toString();
     }
-    
+
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (StringUtils.isBlank(parameters.get("name"))) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "name");
-            return false;
+            return new ArrayList<>();
         }
 
         // add all valid commands to list
-        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
+        List<GoobiScriptResult> newList = new ArrayList<>();
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, parameters, username, starttime);
             newList.add(gsr);
         }
-        gsm.setGoobiScriptResults(newList.build());
-
-        return true;
+        return newList;
     }
 
     @Override
-    public void execute() {
-        TEMPLATEThread et = new TEMPLATEThread();
-        et.start();
-    }
+    public void execute(GoobiScriptResult gsr) {
+        Map<String, String> parameters = gsr.getParameters();
+        String propertyName = parameters.get("name");
 
-    class TEMPLATEThread extends Thread {
-        @Override
-        public void run() {
-            // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    log.error("Problem while waiting for running GoobiScripts", e);
-                }
-            }
-            String propertyName = parameters.get("name");
+        // execute all jobs that are still in waiting state
+        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+        gsr.setProcessTitle(p.getTitel());
+        gsr.setResultType(GoobiScriptResultType.RUNNING);
+        gsr.updateTimestamp();
 
-            // execute all jobs that are still in waiting state
-            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
-
-                    for (Processproperty pp : p.getEigenschaften()) {
-                        if (pp.getTitel().equals(propertyName)) {
-                            PropertyManager.deleteProcessProperty(pp);
-                            gsr.setResultMessage("Property deleted.");
-                            gsr.setResultType(GoobiScriptResultType.OK);
-                            break;
-                        }
-                    }
-                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
-                        gsr.setResultType(GoobiScriptResultType.OK);
-                        gsr.setResultMessage("Property not found: " + propertyName);
-                    }
-                    gsr.updateTimestamp();
-                }
+        for (Processproperty pp : p.getEigenschaften()) {
+            if (pp.getTitel().equals(propertyName)) {
+                PropertyManager.deleteProcessProperty(pp);
+                gsr.setResultMessage("Property deleted.");
+                gsr.setResultType(GoobiScriptResultType.OK);
+                break;
             }
         }
+        if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+            gsr.setResultType(GoobiScriptResultType.OK);
+            gsr.setResultMessage("Property not found: " + propertyName);
+        }
+        gsr.updateTimestamp();
     }
 }

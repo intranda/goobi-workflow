@@ -269,13 +269,27 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     List<VocabRecord> recordList = currentVocabulary.getRecords();
                     Collections.sort(recordList);
                     //                    currentVocabulary.setUrl(vocabularyBase.path("records").path("" + currentVocabulary.getId()).getUri().toString());
-                    ArrayList<Item> itemList = new ArrayList<>(recordList.size());
-                    List<SelectItem> selectItems = new ArrayList<>(recordList.size());
+                    ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
+                    List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
+
+                    String defaultValue = myValues.getItemList().get(0).getLabel();
+                    if (StringUtils.isNotBlank(defaultValue)) {
+                        List<String> defaultitems = new ArrayList<>();
+                        defaultitems.add(defaultValue);
+                        setDefaultItems(defaultitems);
+                    }
+                    itemList.add(new Item(Helper.getTranslation("bitteAuswaehlen"), "", false, "", ""));
+                    selectItems.add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
+
                     for (VocabRecord vr : recordList) {
                         for (Field f : vr.getFields()) {
                             if (f.getDefinition().isMainEntry()) {
                                 selectItems.add(new SelectItem(f.getValue(), f.getValue()));
-                                itemList.add(new Item(f.getValue(), f.getValue(), false, "", ""));
+                                Item item = new Item(f.getValue(), f.getValue(), false, "", "");
+                                if (StringUtils.isNotBlank(defaultValue) && defaultValue.equals(f.getValue())) {
+                                    item.setSelected(true);
+                                }
+                                itemList.add(item);
                                 break;
                             }
                         }

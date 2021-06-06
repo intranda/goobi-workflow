@@ -1,5 +1,13 @@
 <!DOCTYPE html>
-<html lang="#{SpracheForm.locale}" xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:c="http://java.sun.com/jstl/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<html lang="#{SpracheForm.locale}" xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html" 
+    xmlns:c="http://java.sun.com/jstl/core" 
+    xmlns:x="http://myfaces.apache.org/tomahawk" 
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 <h:head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,50 +28,50 @@
     <title><h:outputText value="#{HelperForm.applicationHeaderTitle} - #{HelperForm.version}" /></title>
 
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="template/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="template/css/bootstrap-slider.css" />
+    <link rel="stylesheet" href="template/css/bootstrap.min.css?v=#{HelperForm.buildVersion}" />
+    <link rel="stylesheet" href="template/css/bootstrap-slider.css?v=#{HelperForm.buildVersion}" />
     <!-- Theme CSS -->
-    <link rel="stylesheet" href="template/css/style.css?v=1" />
+    <link rel="stylesheet" href="template/css/style.css?v=#{HelperForm.buildVersion}" />
     <!-- Font Awesome CSS -->
-    <link rel="stylesheet" href="template/css/font-awesome.css" />
+    <link rel="stylesheet" href="template/css/font-awesome.css?v=#{HelperForm.buildVersion}" />
     <!-- Color CSS -->
-    <link rel="stylesheet" href="template/css/themes.css" />
+    <link rel="stylesheet" href="template/css/themes.css?v=#{HelperForm.buildVersion}" />
     <!-- intranda -->
-    <link rel="stylesheet" href="template/css/intranda.css?v=1" />
-    <!-- <link rel="stylesheet" href="template/css/dist/goobiWorkflow.min.css" /> -->
+    <link rel="stylesheet" href="template/css/intranda.css?v=#{HelperForm.buildVersion}" />
+    <!-- <link rel="stylesheet" href="template/css/dist/goobiWorkflow.min.css?v=#{HelperForm.buildVersion}" /> -->
 
     <script src="template/js/intranda.js?v=1.2"></script>
     <!-- jQuery -->
-    <h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+    <h:outputScript library="primefaces" name="jquery/jquery.js?v=#{HelperForm.buildVersion}" target="head" />
     <!-- Mobile nav swipe -->
-    <script src="template/js/plugins/touchwipe/touchwipe.min.js"></script>
+    <script src="template/js/plugins/touchwipe/touchwipe.min.js?v=#{HelperForm.buildVersion}"></script>
     <!-- Nice Scroll -->
-    <script src="template/js/plugins/nicescroll/jquery.nicescroll.min.js"></script>
+    <script src="template/js/plugins/nicescroll/jquery.nicescroll.min.js?v=#{HelperForm.buildVersion}"></script>
     <!-- imagesLoaded -->
-    <script src="template/js/plugins/imagesLoaded/jquery.imagesloaded.min.js"></script>
+    <script src="template/js/plugins/imagesLoaded/jquery.imagesloaded.min.js?v=#{HelperForm.buildVersion}"></script>
     <!-- jQuery UI -->
-    <script src="template/js/plugins/jquery-ui/jquery-ui.js"></script>
+    <script src="template/js/plugins/jquery-ui/jquery-ui.js?v=#{HelperForm.buildVersion}"></script>
     <!-- slimScroll -->
-    <script src="template/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="template/js/plugins/slimscroll/jquery.slimscroll.min.js?v=#{HelperForm.buildVersion}"></script>
     <!-- Bootstrap -->
-    <script src="template/js/bootstrap.min.js"></script>
-    <script src="template/js/bootstrap-slider.js"></script>
+    <script src="template/js/bootstrap.min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/bootstrap-slider.js?v=#{HelperForm.buildVersion}"></script>
     <!-- Bootbox -->
-    <script src="template/js/plugins/bootbox/jquery.bootbox.js"></script>
+    <script src="template/js/plugins/bootbox/jquery.bootbox.js?v=#{HelperForm.buildVersion}"></script>
     <!-- Bootbox -->
-    <script src="template/js/plugins/form/jquery.form.min.js"></script>
+    <script src="template/js/plugins/form/jquery.form.min.js?v=#{HelperForm.buildVersion}"></script>
     <!-- Validation -->
-    <script src="template/js/plugins/validation/jquery.validate.min.js"></script>
-    <script src="template/js/plugins/validation/additional-methods.min.js"></script>
+    <script src="template/js/plugins/validation/jquery.validate.min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/plugins/validation/additional-methods.min.js?v=#{HelperForm.buildVersion}"></script>
 	<!-- shortcuts -->
-	<script src="template/js/jquery.hotkeys.js"></script>
+	<script src="template/js/jquery.hotkeys.js?v=#{HelperForm.buildVersion}"></script>
     <!-- Theme framework -->
-    <!-- <script src="template/js/eakroko.js"></script> -->
+    <!-- <script src="template/js/eakroko.js?v=#{HelperForm.buildVersion}"></script> -->
     <!-- Theme scripts -->
-    <script src="template/js/application.js?v=1"></script>
+    <script src="template/js/application.js?v=#{HelperForm.buildVersion}"></script>
 
     <!--[if lte IE 9]>
-	<script src="template/js/plugins/placeholder/jquery.placeholder.min.js"></script>
+	<script src="template/js/plugins/placeholder/jquery.placeholder.min.js?v=#{HelperForm.buildVersion}"></script>
 		<script>
 			$(document).ready(function() {
 				$('input, textarea').placeholder();
@@ -78,7 +86,7 @@
 	<!-- WCAG compatibility CSS -->
 
 	<ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.renderAccessibilityCss}">
-		<link rel="stylesheet" href="template/css/accessibility.css" />
+		<link rel="stylesheet" href="template/css/accessibility.css?v=#{HelperForm.buildVersion}" />
 	</ui:fragment>
 
     <!-- CUSTOM CSS -->
@@ -123,12 +131,18 @@
                     <div class="container-fluid">
 
                         <h:form id="header">
+                            <o:socket channel="developerMessageChannel" connected="#{DevModeBean.developerMode}" onmessage="() => window.location.reload()" />
                         	<header>
 	                            <div class="page-header">
-	                                <h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
-	                                    <i class="fa fa-exclamation-triangle margin-right-10" />
-	                                    <h:outputText value="#{SessionForm.bitteAusloggen}" />
-	                                </h:panelGroup>
+                                    <h:panelGroup id="globalWarningMessage">
+    	                                <h:panelGroup rendered="#{SessionForm.logoutMessage != ''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
+    	                                    <i class="fa fa-exclamation-triangle margin-right-10" />
+    	                                    <h:outputText value="#{SessionForm.logoutMessage}" />
+    	                                </h:panelGroup>
+                                    </h:panelGroup>
+                                    <o:socket channel="adminMessageChannel">
+                                        <f:ajax event="update" render="globalWarningMessage"/>
+                                    </o:socket>
 	                                <div class="pull-left">
 	                                    <h1>
 	                                        <ui:insert name="title">
@@ -145,36 +159,40 @@
 	                                            <img src="template/img/goobi/ajaxloader2.gif" />
 	                                        </li>
 	
-											<h:panelGroup rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResults.size() gt 0}">
-	                                        	<li class="#{SessionForm.gsm.goobiScriptHasResults('ERROR')?'background-color-F':'background-color-D'}">
-		                                            <h:commandLink action="process_goobiScript" id="goobiScriptResults2">
+											<ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResults.size() gt 0}">
+                                                <o:socket channel="goobiscriptUpdateChannel" >
+                                                    <f:ajax render="goobiScriptResults2" event="update"/>
+                                                </o:socket>
+                                                <o:commandScript name="updateGoobiScriptIndicator" render="goobiScriptResults2" />
+	                                        	<li class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'}">
+		                                            <button jsf:action="process_goobiScript" jsf:id="goobiScriptResults2" class="button-transparent">
 		                                                    <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}"></i>
 		                                                    <div class="details">
 		                                                        <span class="big">#{msgs.goobiScript_isActive}</span>
 		                                                        <span>#{SessionForm.gsm.numberOfFinishedScripts} / #{SessionForm.gsm.goobiScriptResults.size()}</span>
 		                                                    </div>
-		                                                </h:commandLink>
+		                                                </button>
 		                                        </li>
-	                                        </h:panelGroup>
+	                                        </ui:fragment>
 	                                        
 	                                        
 	                                        <h:panelGroup rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
 	                                            <li class='background-color-A'>
-	                                                <h:commandLink action="currentUsers" id="currentUsers">
+	                                                <button jsf:action="currentUsers" jsf:id="currentUsers" class="button-no-style">
 	                                                    <i class="fa fa-users" style="margin-top:3px;"></i>
 	                                                    <div class="details">
 	                                                        <span>#{msgs.aktiveBenutzer}</span>
-	                                                        <span class="big">#{SessionForm.aktiveSessions}</span>
+	                                                        <span class="big pull-left">#{SessionForm.numberOfSessions}</span>
 	                                                        <f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="" />
 	                                                    </div>
-	                                                </h:commandLink>
+	                                                </button>
 	                                            </li>
 	                                        </h:panelGroup>
 	                                        <li class='background-color-A'>
 	                                            <i class="fa fa-calendar" style="margin-top:3px;"></i>
 	                                            <div class="details">
 	                                                <span class="big">
-	                                                    <h:outputText value="#{SessionForm.aktuelleZeit}" />
+	                                                    <h:outputText value="#{SessionForm.currentTime}" />
 	                                                    <a tabindex="-1" href="#{HelperForm.itmPathAsUrl}" target="self" aria-label="itm">
 														<div style="height: 12px;width: 20px;display: inline-block;"></div>
 														</a>
@@ -222,24 +240,31 @@
         </c:if>
 
         <!-- JAVASCRIPT -->
-        <script src="template/js/dist/goobiWorkflowJS.min.js"></script>
+        <script src="template/js/dist/goobiWorkflowJS.min.js?v=#{HelperForm.buildVersion}"></script>
         <script>
             // goobiWorkflowConfig = {};
 
             // goobiWorkflowJS.init(goobiWorkflowConfig);
         </script>
         <script>
+     // <![CDATA[
             jsf.ajax.addOnEvent(function (data) {
                 var ajaxstatus = data.status; // Can be "begin", "complete" and "success"
                 var ajaxloader = document.getElementById("ajaxloader");
+                var source = data.source;
+                var noLoaderGif = source.type == "hidden" && source.id.indexOf("header") == 0;
 
                 switch (ajaxstatus) {
                     case "begin": // This is called right before ajax request is been sent.
-                        ajaxloader.style.display = 'block';
+                    	if(ajaxloader && !noLoaderGif) {
+                        	ajaxloader.style.display = 'block';
+                    	}
                         break;
 
                     case "complete": // This is called right after ajax response is received.
-                        ajaxloader.style.display = 'none';
+                    	if(ajaxloader) {
+                        	ajaxloader.style.display = 'none';
+                    	}
                         break;
 
                     case "success": // This is called when ajax response is successfully processed.
@@ -266,6 +291,9 @@
                     $('.popover.fade.right.in').remove();
                 }
                 setTimeout(scrollDownScrollDowns(), 100);
+                if(typeof updateGoobiScriptIndicator !== 'undefined') {
+                	setTimeout(updateGoobiScriptIndicator, 500);
+                }
             });
 
             $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function () {
@@ -281,11 +309,13 @@
                     myButton.click();
                 }
             });
-
+            
             window.myfaces = window.myfaces || {};
             myfaces.config = myfaces.config || {};
             //set the config part
             myfaces.config.no_portlet_env = true;
+
+         // ]]>
         </script>
     </f:view>
 </h:body>

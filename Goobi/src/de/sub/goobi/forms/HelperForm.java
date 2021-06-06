@@ -186,6 +186,8 @@ public class HelperForm implements Serializable {
         SelectItem inWork = new SelectItem("2", Helper.getTranslation("statusInBearbeitung"));
         ssl.add(inWork);
 
+        ssl.add(new SelectItem("6", Helper.getTranslation("statusInFlight")));
+
         SelectItem finished = new SelectItem("3", Helper.getTranslation("statusAbgeschlossen"));
         ssl.add(finished);
 
@@ -194,6 +196,7 @@ public class HelperForm implements Serializable {
 
         SelectItem deactivated = new SelectItem("5", Helper.getTranslation("statusDeactivated"));
         ssl.add(deactivated);
+
 
         return ssl;
     }

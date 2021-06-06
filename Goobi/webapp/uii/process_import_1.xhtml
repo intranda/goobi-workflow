@@ -1,7 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html"
     xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:p="http://primefaces.org/ui"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param name="myPageTitle" value="#{msgs.MassImport}" />
 
@@ -198,16 +198,16 @@
 
                                 <div class="form-actions" id="actions">
                                     <!-- Save -->
-                                    <h:commandLink styleClass="btn btn-success pull-right font-size-s margin-bottom-most" id="absenden" action="#{MassImportForm.convertData}" rendered="#{!MassImportForm.hasNextPage}" onclick="goobiWorkflowJS.progress.displayProgressBar()">
+                                    <button class="btn btn-success pull-right font-size-s margin-bottom-most" jsf:id="absenden" jsf:action="#{MassImportForm.convertData}" jsf:rendered="#{!MassImportForm.hasNextPage}" onclick="goobiWorkflowJS.progress.displayProgressBar()">
                                         <i class="fa fa-save margin-right-5" />
                                         <h:outputText value="#{msgs.speichern}" />
-                                    </h:commandLink>
+                                    </button>
 
                                     <!-- next page -->
-                                    <h:commandLink styleClass="btn btn-blue pull-right font-size-s margin-bottom-most" id="next" action="#{MassImportForm.nextPage}" rendered="#{MassImportForm.hasNextPage}">
+                                    <button class="btn btn-blue pull-right font-size-s margin-bottom-most" jsf:id="next" jsf:action="#{MassImportForm.nextPage}" jsf:rendered="#{MassImportForm.hasNextPage}">
                                         <h:outputText value="#{msgs.weiter}" />
                                         <i class="fa fa-arrow-circle-o-right margin-left-5" />
-                                    </h:commandLink>
+                                    </button>
 
                                     <!-- Cancel -->
                                     <h:link id="cancel" styleClass="btn margin-sides-10 font-size-s pull-right" outcome="process_all" value="#{msgs.abbrechen}" />

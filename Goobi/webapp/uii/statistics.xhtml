@@ -7,7 +7,8 @@
     template="/uii/template/template.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -323,20 +324,20 @@
 
                                     <div class="actions">
 
-                                        <h:commandLink
-                                            id="resetStatistics"
-                                            action="#{ProjekteForm.resetStatistics}"
-                                            styleClass="btn btn-mini"
+                                        <button
+                                            jsf:id="resetStatistics"
+                                            jsf:action="#{ProjekteForm.resetStatistics}"
+                                            class="btn btn-mini"
                                             title="#{msgs.reload}"
-                                            rel="tooltip">
+                                            jsf:rel="tooltip">
                                             <i
                                                 class="fa fa-refresh"
                                                 title="#{msgs.reload}"
-                                                rel="tooltip" />
+                                                jsf:rel="tooltip" />
                                             <f:passThroughAttribute
                                                 name="data-toggle"
                                                 value="tooltip" />
-                                        </h:commandLink>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -573,13 +574,13 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <h:commandLink
-                                                        id="pcid20"
-                                                        styleClass="btn btn-lightgrey font-size-s pull-right"
-                                                        action="#{ProjekteForm.filegroupEdit}">
+                                                    <button
+                                                        jsf:id="pcid20"
+                                                        class="btn btn-lightgrey font-size-s pull-right"
+                                                        jsf:action="#{ProjekteForm.filegroupEdit}">
                                                         <span class="margin-right-10 fa fa-cog" />
                                                         <h:outputText value="#{msgs.rerender}" />
-                                                    </h:commandLink>
+                                                    </button>
                                                      
                                                 </div>
                                             </div>

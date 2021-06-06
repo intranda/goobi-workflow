@@ -8,7 +8,7 @@ import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.KulturNavImporter;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import lombok.Data;
-import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.geonames.Toponym;
 import org.goobi.api.display.DisplayCase;
@@ -26,33 +26,6 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * <p>
- * Visit the websites for more information.
- * - https://goobi.io
- * - https://www.intranda.com
- * - https://github.com/intranda/goobi-workflow
- * - http://digiverso.com
- * <p>
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * <p>
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * <p>
- * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * <p>
- * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
- * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
- * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
- * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
- * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
- * exception statement from your version.
- */
-
-/**
  * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
  *
  * @author Steffen Hankiewicz
@@ -63,7 +36,7 @@ public class MetaPerson implements SearchableMetadata {
     private Person p;
     private int identifier;
     private Prefs myPrefs;
-    private DocStruct myDocStruct;
+    private HoldingElement myDocStruct;
     private MetadatenHelper mdh;
     private DisplayCase myValues;
     private Metadaten bean;
@@ -98,7 +71,7 @@ public class MetaPerson implements SearchableMetadata {
     /**
      * Allgemeiner Konstruktor ()
      */
-    public MetaPerson(Person p, int inID, Prefs inPrefs, DocStruct inStruct, Process inProcess, Metadaten bean) {
+    public MetaPerson(Person p, int inID, Prefs inPrefs, HoldingElement inStruct, Process inProcess, Metadaten bean) {
         this.myPrefs = inPrefs;
         this.p = p;
         this.identifier = inID;

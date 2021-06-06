@@ -1,14 +1,13 @@
 package org.goobi.goobiScript;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.goobi.beans.Process;
 import org.goobi.beans.Project;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
-
-import com.google.common.collect.ImmutableList;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -24,87 +23,66 @@ public class GoobiScriptSetProject extends AbstractIGoobiScript implements IGoob
     public String getAction() {
         return "setProject";
     }
-    
+
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
         addNewActionToSampleCall(sb, "This GoobiScript allows to assign Goobi processes to another project.");
-        addParameterToSampleCall(sb, "project", "Newspaper_2021", "Define the project where the processes shall belong to. Use the name of the project here.");
+        addParameterToSampleCall(sb, "project", "Newspaper_2021",
+                "Define the project where the processes shall belong to. Use the name of the project here.");
         return sb.toString();
     }
-    
+
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (parameters.get("project") == null || parameters.get("project").equals("")) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "project");
-            return false;
+            return new ArrayList<>();
         }
 
         try {
             List<Project> projects = ProjectManager.getProjects(null, "titel='" + parameters.get("project") + "'", null, null, null);
             if (projects == null || projects.size() == 0) {
                 Helper.setFehlerMeldung("goobiScriptfield", "Could not find project: ", parameters.get("project"));
-                return false;
+                return new ArrayList<>();
             }
             project = projects.get(0);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("goobiScriptfield", "Could not find project: ", parameters.get("project") + " - " + e.getMessage());
             log.error("Exception during assignement of project using GoobiScript", e);
-            return false;
+            return new ArrayList<>();
         }
 
         // add all valid commands to list
-        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
+        List<GoobiScriptResult> newList = new ArrayList<>();
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, parameters, username, starttime);
             newList.add(gsr);
         }
-        gsm.setGoobiScriptResults(newList.build());
-
-        return true;
+        return newList;
     }
 
     @Override
-    public void execute() {
-        SetProjectThread et = new SetProjectThread();
-        et.start();
-    }
-
-    class SetProjectThread extends Thread {
-        @Override
-        public void run() {
-            // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    log.error("Problem while waiting for running GoobiScripts", e);
-                }
-            }
-            // execute all jobs that are still in waiting state
-            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
-                if (gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
-                    p.setProjekt(project);
-                    p.setProjectId(project.getId());
-                    try {
-                        ProcessManager.saveProcess(p);
-                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Project '" + project + "' assigned using GoobiScript.", username);
-                        log.info("Project '" + project + "' assigned using GoobiScript for process with ID " + p.getId());
-                        gsr.setResultMessage("Project  '" + project + "' assigned successfully.");
-                        gsr.setResultType(GoobiScriptResultType.OK);
-                    } catch (DAOException e) {
-                        gsr.setResultMessage("Problem assigning new project: " + e.getMessage());
-                        gsr.setResultType(GoobiScriptResultType.OK);
-                    }
-                    gsr.updateTimestamp();
-                }
-            }
+    public void execute(GoobiScriptResult gsr) {
+        Map<String, String> parameters = gsr.getParameters();
+        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+        gsr.setProcessTitle(p.getTitel());
+        gsr.setResultType(GoobiScriptResultType.RUNNING);
+        gsr.updateTimestamp();
+        p.setProjekt(project);
+        p.setProjectId(project.getId());
+        try {
+            ProcessManager.saveProcess(p);
+            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Project '" + project + "' assigned using GoobiScript.", username);
+            log.info("Project '" + project + "' assigned using GoobiScript for process with ID " + p.getId());
+            gsr.setResultMessage("Project  '" + project + "' assigned successfully.");
+            gsr.setResultType(GoobiScriptResultType.OK);
+        } catch (DAOException e) {
+            gsr.setResultMessage("Problem assigning new project: " + e.getMessage());
+            gsr.setResultType(GoobiScriptResultType.OK);
         }
+        gsr.updateTimestamp();
     }
 }

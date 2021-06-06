@@ -318,6 +318,11 @@ public class HelperSchritte {
     }
 
     public ShellScriptReturnValue executeAllScriptsForStep(Step step, boolean automatic) {
+        if (automatic && step.getProzess().isPauseAutomaticExecution()) {
+            ShellScriptReturnValue returnCode = new ShellScriptReturnValue(1, "Automatic execution is disabled", "");
+            //            reOpenStep(step);
+            return returnCode;
+        }
         List<String> scriptpaths = step.getAllScriptPaths();
         int count = 1;
         int size = scriptpaths.size();
@@ -375,27 +380,24 @@ public class HelperSchritte {
             prefs = po.getRegelsatz().getPreferences();
             Fileformat ff = po.readMetadataFile();
             if (ff == null) {
-                logger.error("Metadata file is not readable for process with ID " + step.getProcessId());
+                logger.info("Metadata file is not readable for process with ID " + step.getProcessId());
                 LogEntry le = new LogEntry();
                 le.setProcessId(step.getProzess().getId());
                 le.setContent("Metadata file is not readable");
                 le.setType(LogType.ERROR);
                 le.setUserName("http step");
                 ProcessManager.saveLogEntry(le);
-                errorStep(step);
-                return;
+            } else {
+                dd = ff.getDigitalDocument();
             }
-            dd = ff.getDigitalDocument();
         } catch (Exception e2) {
-            logger.error("An exception occurred while reading the metadata file for process with ID " + step.getProcessId(), e2);
+            logger.info("An exception occurred while reading the metadata file for process with ID " + step.getProcessId(), e2);
             LogEntry le = new LogEntry();
             le.setProcessId(step.getProzess().getId());
             le.setContent("error reading metadata file");
             le.setType(LogType.ERROR);
             le.setUserName("http step");
             ProcessManager.saveLogEntry(le);
-            errorStep(step);
-            return;
         }
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
         String bodyStr = null;
@@ -441,6 +443,8 @@ public class HelperSchritte {
                 case "PATCH":
                     resp = executor.execute(Request.Patch(url).bodyString(bodyStr, ContentType.APPLICATION_JSON)).returnResponse();
                     break;
+                case "GET":
+                    resp = executor.execute(Request.Get(url)).returnResponse();
                 default:
                     //TODO: error to process log
                     break;
@@ -515,7 +519,14 @@ public class HelperSchritte {
                     JsonPrimitive jPrim = objEntry.getValue().getAsJsonPrimitive();
                     if (jPrim.isString()) {
                         String newVal = replacer.replace(jPrim.getAsString());
-                        obj.addProperty(objEntry.getKey(), newVal);
+                        if (VariableReplacer.piiifMasterFolder.matcher(jPrim.getAsString()).matches()
+                                || VariableReplacer.piiifMediaFolder.matcher(jPrim.getAsString()).matches()) {
+                            Gson gson = new Gson();
+                            JsonArray iiifArr = gson.fromJson("[" + newVal + "]", JsonArray.class);
+                            obj.add(objEntry.getKey(), iiifArr);
+                        } else {
+                            obj.addProperty(objEntry.getKey(), newVal);
+                        }
                     }
                 } else {
                     replaceJsonElement(objEntry.getValue(), replacer);
@@ -529,7 +540,14 @@ public class HelperSchritte {
                     JsonPrimitive jPrim = innerJel.getAsJsonPrimitive();
                     if (jPrim.isString()) {
                         String newVal = replacer.replace(jPrim.getAsString());
-                        jArr.set(i, new JsonPrimitive(newVal));
+                        if (VariableReplacer.piiifMasterFolder.matcher(jPrim.getAsString()).matches()
+                                || VariableReplacer.piiifMediaFolder.matcher(jPrim.getAsString()).matches()) {
+                            Gson gson = new Gson();
+                            JsonArray iiifArr = gson.fromJson("[" + newVal + "]", JsonArray.class);
+                            jArr.set(i, iiifArr);
+                        } else {
+                            jArr.set(i, new JsonPrimitive(newVal));
+                        }
                     }
                 } else {
                     replaceJsonElement(innerJel, replacer);
@@ -617,18 +635,25 @@ public class HelperSchritte {
         Process po = step.getProzess();
         Prefs prefs = null;
         prefs = po.getRegelsatz().getPreferences();
-        Fileformat ff = po.readMetadataFile();
-        if (ff == null) {
-            logger.error("Metadata file is not readable for process with ID " + step.getProcessId());
-            throw new ReadException("Metadata file is not readable for process with ID " + step.getProcessId());
+        try {
+            Fileformat ff = po.readMetadataFile();
+            if (ff != null) {
+                dd = ff.getDigitalDocument();
+            }
+        } catch (IOException e) {
+            logger.info(e);
         }
-        dd = ff.getDigitalDocument();
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
         List<String> parameterList = replacer.replaceBashScript(script);
         return parameterList;
     }
 
     public boolean executeDmsExport(Step step, boolean automatic) {
+        if (automatic && step.getProzess().isPauseAutomaticExecution()) {
+            //            reOpenStep(step);
+            return false;
+        }
+
         IExportPlugin dms = null;
         if (StringUtils.isNotBlank(step.getStepPlugin())) {
             try {

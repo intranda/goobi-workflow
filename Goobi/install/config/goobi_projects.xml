@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <goobiProjects>
 
-    <project name="default">
+    <!--
+    Sequence for determining the right <project> element:
+
+    1.) check if the exact project name was used in the name attribute or a name element
+    2.) check if the project name matches a regular expression in name attribute or a name element
+    3.) check, if a 'default' project was configured
+    4.) use the first <project>
+     -->
+
+
+    <project name="default"> <!-- used as default fallback, if no other name matches -->
+        <name>Example project</name> <!-- used only for the project 'Example project' -->
+        <name>Sample.*</name> <!-- used for any project starting with 'Sample' -->
         <createNewProcess>
             <itemlist>
                 <item from="werk" multiselect="true">
@@ -32,7 +44,7 @@
                 <item docstruct="topstruct" from="werk" isdoctype="periodical" metadata="TSL_ATS" ughbinding="false">TSL</item>
                 <item docstruct="topstruct" from="vorlage" isdoctype="multivolume" metadata="CatalogIDSource" required="true" ughbinding="true">Identifier analogue (c)</item>
                 <item docstruct="topstruct" from="werk" isdoctype="multivolume" metadata="CatalogIDDigital" required="true" ughbinding="true">Identifier digital (c)</item>
-                <item docstruct="topstruct" from="vorlage" isdoctype="monograph" metadata="CatalogIDSource" required="false" ughbinding="true">Identifier analogue (a)</item>
+                <item docstruct="topstruct" from="vorlage" isdoctype="monograph" metadata="CatalogIDSource" required="true" ughbinding="true">Identifier analogue (a)</item>
                 <item docstruct="topstruct" from="werk" isdoctype="monograph" metadata="CatalogIDDigital" required="true" ughbinding="true"> Identifier digital (a)</item>
                 <item docstruct="topstruct" from="vorlage" isdoctype="periodical" metadata="CatalogIDSource" required="true" ughbinding="true">Identifier analogue (b)</item>
                 <item docstruct="topstruct" from="werk" isdoctype="periodical" metadata="CatalogIDDigital" required="true" ughbinding="true"> Identifier digital (b)</item>
@@ -109,6 +121,13 @@
             <templates use="true" />
             <defaultdoctype>monograph</defaultdoctype>
             <metadatageneration use="true" />
+
+            <fileupload use="true">
+                <folder>intern</folder>
+                <folder>export</folder>
+                <folder>master</folder>
+                <folder>media</folder>
+            </fileupload>
         </createNewProcess>
 
 
@@ -129,7 +148,7 @@
 
         <validate>
             <metadata createelementfrom="Author\|Editor\|IllustratorArtist\|Photographer\|Translator\|Creator" docstruct="all" metadata="CreatorsAllOrigin">
-            	Create CreatorsAllOrigin
+                Create CreatorsAllOrigin
             </metadata>
         </validate>
 

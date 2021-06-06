@@ -52,6 +52,8 @@ import org.goobi.beans.Batch;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.goobiScript.GoobiScriptImport;
+import org.goobi.goobiScript.GoobiScriptManager;
+import org.goobi.goobiScript.GoobiScriptResult;
 import org.goobi.production.enums.ImportFormat;
 import org.goobi.production.enums.ImportReturnValue;
 import org.goobi.production.enums.ImportType;
@@ -92,7 +94,8 @@ public class MassImportForm implements Serializable {
      */
     private static final long serialVersionUID = 4780655212251185461L;
 
-
+    @Inject
+    private GoobiScriptManager goobiScriptManager;
     // private List<String> recordList = new ArrayList<String>();
     private ImportFormat format = null;
     // private List<String> usablePlugins = new ArrayList<String>();
@@ -167,7 +170,6 @@ public class MassImportForm implements Serializable {
     public MassImportForm() {
 
         // usablePlugins = ipl.getTitles();
-
 
     }
 
@@ -359,12 +361,16 @@ public class MassImportForm implements Serializable {
                     myParameters.put("plugin", plugin2.getTitle());
                     myParameters.put("projectId", String.valueOf(this.template.getProjectId()));
 
-                    boolean scriptCallIsValid = igs.prepare(new ArrayList<Integer>(),
+                    List<GoobiScriptResult> newScripts = igs.prepare(new ArrayList<Integer>(),
                             "action:import plugin:" + plugin2.getTitle() + " template:" + this.template.getId() + " identifiers:" + myIdentifiers,
                             myParameters);
-                    if (scriptCallIsValid) {
+                    for (GoobiScriptResult gsr : newScripts) {
+                        gsr.setCustomGoobiScriptImpl(igs);
+                    }
+                    if (!newScripts.isEmpty()) {
                         Helper.setMeldung("Import has started");
-                        igs.execute();
+                        goobiScriptManager.enqueueScripts(newScripts);
+                        goobiScriptManager.startWork();
                     }
                     return "";
                 }
@@ -587,8 +593,6 @@ public class MassImportForm implements Serializable {
         }
         return l;
     }
-
-
 
     /**
      * 

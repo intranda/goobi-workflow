@@ -31,10 +31,10 @@ public class SessionFormTest {
     }
 
     @Test
-    public void testGetAktiveSessions() {
+    public void testGetNumberOfSessions() {
         SessionForm form = new SessionForm();
         assertNotNull(form);
-        assertEquals(0, form.getAktiveSessions());
+        assertEquals(0, form.getNumberOfSessions());
 
     }
 
