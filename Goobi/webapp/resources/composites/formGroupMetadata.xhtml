@@ -216,13 +216,14 @@
                     <div class="btn-area duplicate">
                         <!-- DELETE -->
                         <button
-                            class="btn btn--icon-light"
+                            class="btn btn--icon-light metadataButton"
                             jsf:id="actionDelete"
                             aria-label="#{msgs.DELETE_CURRENT_METADATA}"
                             tabindex="0"
                             jsf:action="#{Metadaten.Loeschen}"
                             title="#{msgs.metadatenLoeschen}"
-                            jsf:rendered="#{cc.attrs.metadata.outputType != 'readonly' and cc.attrs.renderDelete == 'true'}">
+                            jsf:rendered="#{cc.attrs.metadata.outputType != 'readonly' and cc.attrs.renderDelete == 'true'}"
+                            type="button">
                             <i
                                 class="fa fa-lg fa-trash-o"
                                 aria-hidden="true"></i>
@@ -245,12 +246,13 @@
 
                         <!-- COPY -->
                         <button
-                            class="btn btn--icon-light"
+                            class="btn btn--icon-light metadataButton"
                             jsf:id="actionCopy"
                             aria-label="#{msgs.metadatenKopieren}"
                             tabindex="0"
                             jsf:action="#{Metadaten.Copy}"
                             title="#{msgs.metadatenKopieren}"
+                            type="button"
                             jsf:rendered="#{cc.attrs.renderDuplicate and cc.attrs.metadata.outputType != 'readonly' and Metadaten.isAddableMetadata(cc.attrs.metadata.md)}">
                             <i
                                 class="fa fa-lg fa-copy"
@@ -275,10 +277,11 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'geonames'}">
                             <button
                             	jsf:id="geoname"
-                                class="change-icon geonamesIndexTrigger btn--icon-light"
+                                class="change-icon geonamesIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_geonamesSearch}"
                                 aria-label="#{msgs.NORM_geonamesSearch}"
-                                onclick="$('#geonamesSearchBox').modal('show');">
+                                onclick="$('#geonamesSearchBox').modal('show');"
+                                type="button">
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
@@ -307,10 +310,11 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'gnd'}">
                             <button
                             	jsf:id="gnd"
-                                class="change-icon gndIndexTrigger btn--icon-light"
+                                class="change-icon gndIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_gndSearch}"
                                 aria-label="#{msgs.NORM_gndSearch}"
-                                onclick="$('#gndSearchBox').modal('show');">
+                                onclick="$('#gndSearchBox').modal('show');"
+                                type="button">
 
                                 <img
                                     class="toggle"
@@ -340,10 +344,11 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'process'}">
                             <button
                             	jsf:id="openProcessSearchModal2"
-                                class="change-icon processIndexTrigger btn--icon-light"
+                                class="change-icon processIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_processesSearch}"
                                 aria-label="#{msgs.NORM_processesSearch}"
-                                onclick="$('#processesSearchBox').modal('show');">
+                                onclick="$('#processesSearchBox').modal('show');"
+                                type="button">
                                 <i
                                     class="fa fa-search"
                                     style="margin-left: 3px" />
@@ -365,10 +370,11 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante'}">
                             <button
                             	jsf:id="danteSearch"
-                                class="change-icon danteIndexTrigger btn--icon-light"
+                                class="change-icon danteIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_danteSearch}"
                                 aria-label="#{msgs.NORM_danteSearch}"
-                                onclick="$('#danteSearchBox').modal('show');">
+                                onclick="$('#danteSearchBox').modal('show');"
+                                type="button">
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
@@ -397,10 +403,11 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'easydb'}">
                             <button
                             	jsf:id="easydbSearch"
-                                class="change-icon easydbIndexTrigger btn--icon-light"
+                                class="change-icon easydbIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_easydbSearch}"
                                 aria-label="#{msgs.NORM_easydbSearch}"
-                                onclick="$('#easydbSearchBox').modal('show');">
+                                onclick="$('#easydbSearchBox').modal('show');"
+                                type="button">
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
@@ -429,10 +436,11 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'viaf'}">
                             <button
                             	jsf:id="viaf"
-                                class="change-icon viafIndexTrigger btn--icon-light"
+                                class="change-icon viafIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_viafSearch}"
                                 aria-label="#{msgs.NORM_viafSearch}"
-                                onclick="$('#viafSearchBox').modal('show');">
+                                onclick="$('#viafSearchBox').modal('show');"
+                                type="button">
 
                                 <img
                                     class="toggle"
@@ -462,11 +470,12 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'vocabularySearch'}">
                             <button
                             	jsf:id="vocabularySearch"
-                                class="btn change-icon vocabularySearchIndexTrigger btn--icon-light"
+                                class="btn change-icon vocabularySearchIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_vocabularySearch}"
                                 aria-label="#{msgs.NORM_vocabularySearch}"
                                 type="button"
-                                jsf:onclick="$('#vocabularySearchBox').modal('show');">
+                                jsf:onclick="$('#vocabularySearchBox').modal('show');"
+                                >
                                 <img
                                     class="toggle"
                                     style="width: 16px;"

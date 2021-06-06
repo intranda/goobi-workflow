@@ -55,7 +55,7 @@
                         aria-label="#{msgs.mets_corporate_deleteCorporate}"
                         title="#{msgs.mets_corporate_deleteCorporate}"
                         jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
-                        class="btn--icon-light"
+                        class="btn btn--icon-light"
                         type="button">
                         <i
                             class="fa fa-lg fa-trash-o"
@@ -83,7 +83,7 @@
                         aria-label="#{msgs.mets_corporate_copyCorporate}"
                         jsf:rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.corporate.corporate.type)}"
                         type="button"
-                         class="btn--icon-light">
+                         class="btn btn--icon-light">
                         <i
                             class="fa fa-lg fa-copy"
                             aria-hidden="true"></i>
@@ -109,9 +109,8 @@
                             class="change-icon btn--icon-light"
                             title="#{msgs.NORM_gndSearch}"
                             aria-label="#{msgs.NORM_gndSearch}"
-                            onclick="$('#gndSearchBox').modal('show');">
-
-
+                            onclick="$('#gndSearchBox').modal('show');"
+                            type="button">
                             <img
                                 class="toggle"
                                 style="width: 16px;"
@@ -145,8 +144,8 @@
                             class="change-icon viafIndexTrigger btn--icon-light"
                             title="#{msgs.NORM_viafSearch}"
                             aria-label="#{msgs.NORM_viafSearch}"
-                            onclick="$('#viafSearchBox').modal('show');">
-
+                            onclick="$('#viafSearchBox').modal('show');"
+                            type="button">
                             <img
                                 class="toggle"
                                 style="width: 16px;"
@@ -235,10 +234,11 @@
 
                         <button
                             jsf:id="addSubName"
-                            class="btn btn--link btn--icon-light"
+                            class="btn btn--icon-light"
                             aria-label="#{msgs.mets_corporate_addSubName}"
                             jsf:action="#{cc.attrs.corporate.addSubName}"
-                            title="#{msgs.mets_corporate_addSubName}">
+                            title="#{msgs.mets_corporate_addSubName}"
+                            type="button">
                             <i
                                 class="fa fa-lg fa-plus"
                                 aria-hidden="true"></i>

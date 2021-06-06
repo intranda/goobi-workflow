@@ -4,12 +4,12 @@
     <artifactId>goobi-core</artifactId>
     <!-- When updating the version, make sure to also update the version in
         the submodules -->
-    <version>21.06</version>
+    <version>21.06.1</version>
     <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <publicVersion>21.06</publicVersion>
+        <publicVersion>21.06.1</publicVersion>
         <jhove.version>1.20.1</jhove.version>
         <jackson.version>2.11.2</jackson.version>
         <jersey.version>2.31</jersey.version>
@@ -844,11 +844,11 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.42</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.poi/ooxml-schemas -->
+        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml-full -->
         <dependency>
             <groupId>org.apache.poi</groupId>
-            <artifactId>ooxml-schemas</artifactId>
-            <version>1.4</version>
+            <artifactId>poi-ooxml-full</artifactId>
+            <version>${poi.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/opensymphony/oscache -->
         <!-- Be careful with updates here -->
@@ -1099,11 +1099,6 @@
             <artifactId>mockito-all</artifactId>
             <version>1.10.19</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>1.21</version>
         </dependency>
         <!-- ################################################################# -->
         <!-- Dependencies coming (mostly temporary) from intranda nexus server -->
