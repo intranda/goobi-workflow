@@ -186,10 +186,10 @@
                                                 
                                                     <button
                                                     	jsf:id="downloadFile"
-                                                        class="log_color_#{entry.type.title}"
+                                                        class="log_file"
                                                         jsf:action="#{process.downloadFile(entry)}"
                                                         title="#{msgs.downloadFile}">
-                                                        <i class="fa #{entry.externalFile ? 'fa-globe' : 'fa-home'} margin-sides-less" />
+                                                        <i class="fa #{entry.externalFile ? 'fa-globe' : 'fa-paperclip'} margin-right-less" />
                                                         <h:outputText value="#{entry.basename}" />
                                                     </button>
 
@@ -197,7 +197,7 @@
                                                     	jsf:id="deleteFile"
                                                         onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false" 
                                                         jsf:rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Processlog_File_Deletion')}"
-                                                        class="log_color_#{entry.type.title} btn-mini pull-right margin-right-10"
+                                                        class="log_file_delete btn-mini pull-right margin-right-10"
                                                         jsf:action="#{process.deleteFile(entry)}"
                                                         title="#{msgs.deleteFile}">
                                                         <i class="fa fa-trash-o" />

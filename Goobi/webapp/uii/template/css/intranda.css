@@ -2225,6 +2225,15 @@ ul>li.yellow, .label-yellow {
 	min-width:140px;
 }
 
+.log_file {
+	background: #368ee0;
+    border: none;
+    color: white;
+    margin-left: 10px;
+}
+.log_file_delete {
+	border: none;
+}
 
 @media only print {
     #left {
