@@ -421,7 +421,7 @@
     <language name="de">Signatur des Archivierungsimagesets</language>
     <language name="en">Shelfmark of archive imageset</language>
     <language name="es">Signatura del juego de imágenes para la
-      preservación
+            preservación
     </language>
   </MetadataType>
   <MetadataType>
@@ -429,7 +429,7 @@
     <language name="de">ImageDescription (TIFF-Header)</language>
     <language name="en">image description of tiff header</language>
     <language name="es">Descripción de la imagen (etiqueta embebida
-      del TIFF)
+            del TIFF)
     </language>
   </MetadataType>
   <MetadataType>
@@ -605,7 +605,7 @@
     <language name="es">Idioma</language>
     <validationExpression>[a-z]{3}</validationExpression>
     <validationErrorMessage name="de">Der Wert muss ein drestelliger iso 639 code sein, gefunden wurde jedoch '{}'.</validationErrorMessage>
-    <validationErrorMessage name="en">The value '{}' does not correspond to a three-letter iso 639 code.</validationErrorMessage>
+    <validationErrorMessage name="en">The value '{}' does not correspond to a three-letter iso 639 code.</validationErrorMessage>    
   </MetadataType>
   <MetadataType>
     <Name>OrigLanguage</Name>
@@ -695,7 +695,7 @@
     <Name>CreatorsAllOrigin</Name>
     <language name="de">Alle Autoren u. Beteiligte (orig.)</language>
     <language name="en">All authors and participants (original
-      version)
+            version)
     </language>
     <language name="es">Todos los autores y participantes (orig.)
     </language>

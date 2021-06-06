@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <goobiProjects>
 
-    <!--
-    Sequence for determining the right <project> element:
+<!-- 
+Sequence for determining the right <project> element:
 
-    1.) check if the exact project name was used in the name attribute or a name element
-    2.) check if the project name matches a regular expression in name attribute or a name element
-    3.) check, if a 'default' project was configured
-    4.) use the first <project>
-     -->
+1.) check if the exact project name was used in the name attribute or a name element
+2.) check if the project name matches a regular expression in name attribute or a name element
+3.) check, if a 'default' project was configured
+4.) use the first <project>
+ -->
 
 
     <project name="default"> <!-- used as default fallback, if no other name matches -->
@@ -121,13 +121,13 @@
             <templates use="true" />
             <defaultdoctype>monograph</defaultdoctype>
             <metadatageneration use="true" />
-
+            
             <fileupload use="true">
                 <folder>intern</folder>
                 <folder>export</folder>
                 <folder>master</folder>
                 <folder>media</folder>
-            </fileupload>
+            </fileupload>            
         </createNewProcess>
 
 
@@ -148,7 +148,7 @@
 
         <validate>
             <metadata createelementfrom="Author\|Editor\|IllustratorArtist\|Photographer\|Translator\|Creator" docstruct="all" metadata="CreatorsAllOrigin">
-                Create CreatorsAllOrigin
+            	Create CreatorsAllOrigin
             </metadata>
         </validate>
 
