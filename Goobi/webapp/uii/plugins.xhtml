@@ -183,7 +183,7 @@
 													</span>
 												</div>
 												<div class="col-md-6">
-													<h:inputTextarea styleClass="textarea_edit_file_source" value="#{pluginsBean.conflictsMode eq 'edit_existing_file' ? conflict.existingVersion : conflict.uploadedVersion}" />
+													<textarea class="textarea_edit_file_source">#{pluginsBean.conflictsMode eq 'edit_existing_file' ? conflict.existingVersion : conflict.uploadedVersion}</textarea>
 													<h:inputText styleClass="textarea_edit_file_destination" value="#{conflict.editedVersion}"></h:inputText>
 												</div>
 												<script type="text/javascript">
@@ -267,7 +267,6 @@
 		<script type="text/javascript">
 			var xmlCodeMirror;
 			function initXmlCodeMirror() {
-				loadImages();
 				//var xmlTextAreaSource = document.getElementById("textarea_edit_file_source");
 				var xmlTextAreaSource = document.querySelector(".textarea_edit_file_source");
 				//var xmlTextAreaDestination = document.getElementById("textarea_edit_file_destination");
