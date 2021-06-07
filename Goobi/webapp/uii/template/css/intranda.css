@@ -2502,3 +2502,7 @@ ul>li.yellow, .label-yellow {
 	display: inline-block;
 	width: 90%;
 }
+/* This does not work: */
+.textarea_edit_file_source .textarea_edit_file_destination {
+	visibility: hidden;
+}

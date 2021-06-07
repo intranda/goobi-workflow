@@ -63,8 +63,8 @@ public class PluginsBean implements Serializable {
     private String conflictsMode = "edit_existing_file";
     public static String staticConflictsMode = "edit_existing_file";
     @Getter
-    private String currentlyUsedCode = "";
-    public static String staticCurrentlyUsedCode;
+    private String currentlyUsedCode = "Some text";
+    public static String staticCurrentlyUsedCode ="Some text";
 
     public PluginsBean() {
         this.plugins = getPluginsFromFS();
@@ -75,6 +75,7 @@ public class PluginsBean implements Serializable {
     }
 
     public void setCurrentlyUsedCode(String code) {
+        log.error("Setting code: " + code);
         this.currentlyUsedCode = code;
         PluginsBean.staticCurrentlyUsedCode = code;
     }

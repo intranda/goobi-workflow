@@ -64,9 +64,13 @@ public class PluginInstaller {
     private PluginInstallInfo pluginInfo;
     private PluginPreInstallCheck check;
 
-    public void testinstall() {
+    public String testinstall() {
         log.error(org.goobi.managedbeans.PluginsBean.staticConflictsMode);
         log.error(org.goobi.managedbeans.PluginsBean.staticCurrentlyUsedCode);
+        Object[] objects = this.check.getConflicts().values().toArray();
+        PluginInstallConflict conflict = (PluginInstallConflict) (objects[0]);
+        log.error(conflict.getEditedVersion());
+        return "";
     }
 
     public void install() {

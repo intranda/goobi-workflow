@@ -95,26 +95,24 @@
 											<div class="col-md-12">
 												<h4>#{msgs.install_plugin_conflicts}</h4>
 											</div>
-											<h:form id="plugins_tabform">
-												<ul class="nav nav-tabs">
-													<li role="presentation"
-														class="#{pluginsBean.conflictsMode eq 'edit_existing_file' ? 'active' : ''}">
-														<h:commandLink>
-															<h:outputText value="#{msgs.install_plugin_edit_existing_file}" />
-															<f:ajax render="pluginsTabContent @form" />
-															<f:setPropertyActionListener value="edit_existing_file" target="#{pluginsBean.conflictsMode}"></f:setPropertyActionListener>
-														</h:commandLink>
-													</li>
-													<li role="presentation"
-														class="#{pluginsBean.conflictsMode eq 'edit_uploaded_file' ? 'active' : ''}">
-														<h:commandLink>
-															<h:outputText value="#{msgs.install_plugin_edit_uploaded_file}" />
-															<f:ajax render="pluginsTabContent @form" />
-															<f:setPropertyActionListener value="edit_uploaded_file" target="#{pluginsBean.conflictsMode}"></f:setPropertyActionListener>
-														</h:commandLink>
-													</li>
-												</ul>
-											</h:form>
+											<ul class="nav nav-tabs">
+												<li role="presentation"
+													class="#{pluginsBean.conflictsMode eq 'edit_existing_file' ? 'active' : ''}">
+													<h:commandLink>
+														<h:outputText value="#{msgs.install_plugin_edit_existing_file}" />
+														<f:ajax render="pluginsTabContent @form" />
+														<f:setPropertyActionListener value="edit_existing_file" target="#{pluginsBean.conflictsMode}"></f:setPropertyActionListener>
+													</h:commandLink>
+												</li>
+												<li role="presentation"
+													class="#{pluginsBean.conflictsMode eq 'edit_uploaded_file' ? 'active' : ''}">
+													<h:commandLink>
+														<h:outputText value="#{msgs.install_plugin_edit_uploaded_file}" />
+														<f:ajax render="pluginsTabContent @form" />
+														<f:setPropertyActionListener value="edit_uploaded_file" target="#{pluginsBean.conflictsMode}"></f:setPropertyActionListener>
+													</h:commandLink>
+												</li>
+											</ul>
 											<ui:repeat var="conflict" value="#{pluginInstallBean.pluginInstaller.check.conflicts.values()}">
 												<div class="col-md-6">
 													<h5>#{msgs.install_plugin_conflicts}</h5>
@@ -185,7 +183,8 @@
 													</span>
 												</div>
 												<div class="col-md-6">
-													<x:inputTextarea id="textarea_edit_file" pt:aria-label="textarea_edit_file" forceId="true" value="#{pluginsBean.conflictsMode eq 'edit_existing_file'? conflict.existingVersion : conflict.uploadedVersion}" />
+													<h:inputTextarea styleClass="textarea_edit_file_source" value="#{pluginsBean.conflictsMode eq 'edit_existing_file' ? conflict.existingVersion : conflict.uploadedVersion}" />
+													<h:inputText styleClass="textarea_edit_file_destination" value="#{conflict.editedVersion}"></h:inputText>
 												</div>
 												<script type="text/javascript">
 													initXmlCodeMirror();
@@ -195,14 +194,15 @@
 										<hr />
 										<div class="row">
 											<div class="col-md-12">
-												<h:inputHidden id="currentlyUsedCode" value="#{pluginsBean.currentlyUsedCode}" />
-												<h:commandLink styleClass="btn btn-primary pull-right" action="#{pluginInstallBean.pluginInstaller.testinstall}">
-													#{msgs.install}
-													<f:ajax render="@form"/>
-												</h:commandLink>
-												<h:commandLink action="#{pluginInstallBean.cancelInstall}" styleClass="btn">
-													#{msgs.cancel}
-												</h:commandLink>
+												<h:commandButton id="install" forcedId="true" styleClass="btn btn-primary pull-right" value="#{msgs.install}" action="#{pluginInstallBean.pluginInstaller.testinstall}" />
+												<h:button forcedId="true" styleClass="btn" value="#{msgs.cancel}" action="#{pluginInstallBean.cancelInstall}" />
+												<!--<h:commandLink styleClass="btn btn-primary pull-right" action="#{pluginInstallBean.pluginInstaller.testinstall}">
+													#{msgs.install} (old)
+													<f:ajax render="@form" execute="@form" />
+												</h:commandLink>-->
+												<!--<h:commandLink action="#{pluginInstallBean.cancelInstall}" styleClass="btn">
+													#{msgs.cancel} (old)
+												</h:commandLink>-->
 											</div>
 										</div>
 									</ui:fragment>
@@ -268,16 +268,25 @@
 			var xmlCodeMirror;
 			function initXmlCodeMirror() {
 				loadImages();
-				var xmlTextArea = document.getElementById("textarea_edit_file");
-				if(xmlTextArea) {
-					xmlCodeMirror = CodeMirror.fromTextArea(xmlTextArea, {
+				//var xmlTextAreaSource = document.getElementById("textarea_edit_file_source");
+				var xmlTextAreaSource = document.querySelector(".textarea_edit_file_source");
+				//var xmlTextAreaDestination = document.getElementById("textarea_edit_file_destination");
+				var xmlTextAreaDestination = document.querySelector(".textarea_edit_file_destination");
+				xmlTextAreaDestination.value = xmlTextAreaSource.value;
+				//alert("xmlTextAreSource.type=" + typeof xmlTextAreaSource);
+				//alert("xmlTextAreDestination.type=" + typeof xmlTextAreaDestination);
+				// IMPORTANT: The &amp;&amp; is the logical AND operator. It must be escaped because this is an XHTML file.
+				if ((typeof xmlTextAreaSource != "undefined") &amp;&amp; (typeof xmlTextAreaDestination != "undefined")) {
+					xmlCodeMirror = CodeMirror.fromTextArea(xmlTextAreaSource, {
 						lineNumbers: true,
 						mode: 'xml'
 					});
 					xmlCodeMirror.setSize("100%", "100%");
 					xmlCodeMirror.on('change', editor => {
-						document.getElementById("currentlyUsedCode").innerHTML = editor.getValue();
-						alert(document.getElementById("currentlyUsedCode").innerHTML);
+						xmlTextAreaDestination.value = editor.getValue();
+						alert("Editor: " + editor.getValue());
+						alert("Source.value: " + xmlTextAreaSource.value);
+						alert("Destination.value: " + xmlTextAreaDestination.value);
 					});
 				}
 			}
