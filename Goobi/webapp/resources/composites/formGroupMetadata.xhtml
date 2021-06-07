@@ -234,8 +234,7 @@
                             title="#{msgs.metadatenLoeschen}"
                             jsf:rendered="#{cc.attrs.metadata.outputType != 'readonly' and cc.attrs.renderDelete == 'true'}"
                             type="button">
-                            <i
-                                class="fa fa-lg fa-trash-o"
+                            <i class="fa fa-lg fa-trash-o"
                                 aria-hidden="true"></i>
                             <x:updateActionListener
                                 property="#{Metadaten.curMetadatum}"
@@ -264,8 +263,7 @@
                             title="#{msgs.metadatenKopieren}"
                             type="button"
                             jsf:rendered="#{cc.attrs.renderDuplicate and cc.attrs.metadata.outputType != 'readonly' and Metadaten.isAddableMetadata(cc.attrs.metadata.md)}">
-                            <i
-                                class="fa fa-lg fa-copy"
+                            <i class="fa fa-lg fa-copy"
                                 aria-hidden="true"></i>
                             <x:updateActionListener
                                 property="#{Metadaten.currentMetadata}"

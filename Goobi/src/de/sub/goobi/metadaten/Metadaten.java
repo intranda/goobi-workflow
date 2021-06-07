@@ -2,20 +2,20 @@ package de.sub.goobi.metadaten;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- *
+ * 
  * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
- *
+ * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
+ * 
  * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
  * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
  * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
@@ -25,34 +25,18 @@ package de.sub.goobi.metadaten;
  * exception statement from your version.
  */
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
-import javax.servlet.http.HttpSession;
-
+import com.google.gson.Gson;
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.*;
+import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.InvalidImagesException;
+import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.persistence.managers.ProcessManager;
+import de.unigoettingen.sub.search.opac.ConfigOpac;
+import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -74,56 +58,31 @@ import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.jdom2.JDOMException;
 import org.omnifaces.util.Faces;
+import ugh.dl.*;
+import ugh.exceptions.*;
 
-import com.google.gson.Gson;
-
-import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.FacesContextHelper;
-import de.sub.goobi.helper.FilesystemHelper;
-import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.HelperComparator;
-import de.sub.goobi.helper.HttpClientHelper;
-import de.sub.goobi.helper.NIOFileUtils;
-import de.sub.goobi.helper.StorageProvider;
-import de.sub.goobi.helper.Transliteration;
-import de.sub.goobi.helper.TreeNode;
-import de.sub.goobi.helper.VariableReplacer;
-import de.sub.goobi.helper.XmlArtikelZaehlen;
-import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.InvalidImagesException;
-import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.persistence.managers.ProcessManager;
-import de.unigoettingen.sub.search.opac.ConfigOpac;
-import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
-import lombok.Getter;
-import lombok.Setter;
-import ugh.dl.Corporate;
-import ugh.dl.DigitalDocument;
-import ugh.dl.DocStruct;
-import ugh.dl.DocStructType;
-import ugh.dl.Fileformat;
-import ugh.dl.HoldingElement;
-import ugh.dl.Metadata;
-import ugh.dl.MetadataGroup;
-import ugh.dl.MetadataGroupType;
-import ugh.dl.MetadataType;
-import ugh.dl.NamePart;
-import ugh.dl.Person;
-import ugh.dl.Prefs;
-import ugh.dl.Reference;
-import ugh.exceptions.DocStructHasNoTypeException;
-import ugh.exceptions.IncompletePersonObjectException;
-import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.TypeNotAllowedAsChildException;
-import ugh.exceptions.TypeNotAllowedForParentException;
-import ugh.exceptions.WriteException;
+import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
+import javax.inject.Named;
+import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
- *
+ * 
  * @author Steffen Hankiewicz
  * @version 1.00 - 17.01.2005
  */
@@ -132,7 +91,7 @@ import ugh.exceptions.WriteException;
 public class Metadaten implements Serializable {
 
     /**
-     *
+     * 
      */
     private static final long serialVersionUID = 2361148967408139027L;
 
@@ -440,9 +399,11 @@ public class Metadaten implements Serializable {
     @Getter
     @Setter
     private String danteSearchValue;
+
     @Getter
     @Setter
     private String kulturnavSearchValue;
+
     @Getter
     private SearchableMetadata currentMetadataToPerformSearch;
     @Getter
@@ -4006,16 +3967,13 @@ public class Metadaten implements Serializable {
         if (currentMetadataToPerformSearch != null) {
             if (currentMetadataToPerformSearch.getMetadataDisplaytype() == DisplayType.dante) {
                 currentMetadataToPerformSearch.setSearchValue(danteSearchValue);
-            }
-            else if (StringUtils.isNotBlank(gndSearchValue)) {
+            } else if (StringUtils.isNotBlank(gndSearchValue)) {
                 currentMetadataToPerformSearch.setSearchOption(searchOption);
                 currentMetadataToPerformSearch.setSearchValue(gndSearchValue);
-            }
-            else if (currentMetadataToPerformSearch.getMetadataDisplaytype() == DisplayType.kulturnav
+            } else if (currentMetadataToPerformSearch.getMetadataDisplaytype() == DisplayType.kulturnav
                     || StringUtils.isNotBlank(kulturnavSearchValue) ) {
                 currentMetadataToPerformSearch.setSearchValue(kulturnavSearchValue);
-            }
-            else {
+            } else {
                 currentMetadataToPerformSearch.setSearchValue(geonamesSearchValue);
             }
             currentMetadataToPerformSearch.search();
@@ -4031,6 +3989,7 @@ public class Metadaten implements Serializable {
         danteSearchValue = "";
         kulturnavSearchValue = "";
     }
+
 
     public String getOpacKatalog() {
         if (StringUtils.isBlank(opacKatalog)) {

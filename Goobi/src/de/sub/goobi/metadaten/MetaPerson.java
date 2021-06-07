@@ -1,5 +1,4 @@
 package de.sub.goobi.metadaten;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  *
@@ -26,7 +25,6 @@ package de.sub.goobi.metadaten;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-
 import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
@@ -54,7 +52,7 @@ import java.util.Objects;
 
 /**
  * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
- *
+ * 
  * @author Steffen Hankiewicz
  * @version 1.00 - 10.01.2005
  */
@@ -83,6 +81,7 @@ public class MetaPerson implements SearchableMetadata {
     // viaf data
     private ViafSearch viafSearch = new ViafSearch();
 
+
     // unused fields, but needed to use the same modals as regular metadata
     private NormDataRecord selectedRecord;
     private List<Toponym> resultList;
@@ -106,6 +105,7 @@ public class MetaPerson implements SearchableMetadata {
         this.bean = bean;
         this.mdh = new MetadatenHelper(inPrefs, null);
         myValues = new DisplayCase(inProcess, p.getType());
+        //                    initializeValues();
 
         List<TagDescription> mainTagList = new ArrayList<>();
         mainTagList.add(new TagDescription("200", "_", "|", "a", null));
