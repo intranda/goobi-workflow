@@ -45,6 +45,7 @@ public class UploadVocabJob extends AbstractGoobiJob {
                 }
 
                 //if so, update authority server
+                VocabularyManager.getAllRecords(vocab);
                 VocabularyUploader.upload(vocab);
 
                 log.debug(String.format("Vocabulary Uploader: %s uploaded.", vocab.getTitle()));

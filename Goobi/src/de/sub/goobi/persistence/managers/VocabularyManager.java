@@ -203,8 +203,8 @@ public class VocabularyManager implements IManager, Serializable {
                 Integer recordId = rs.getInt("record_id");
                 Integer vocabularyId = rs.getInt("vocabulary_id");
                 Integer definitionId = rs.getInt("definition_id");
-                String label=rs.getString("label");
-                String language=rs.getString("language");
+                String label = rs.getString("label");
+                String language = rs.getString("language");
                 String value = rs.getString("value");
 
                 Field field = new Field();
@@ -258,6 +258,7 @@ public class VocabularyManager implements IManager, Serializable {
         }
 
     };
+
     @Deprecated
     private static VocabRecord convertRecord(ResultSet rs) throws SQLException {
 
@@ -293,6 +294,7 @@ public class VocabularyManager implements IManager, Serializable {
     public static void saveVocabulary(Vocabulary vocabulary) {
         try {
             VocabularyMysqlHelper.saveVocabulary(vocabulary);
+            setVocabularyLastAltered(vocabulary);
         } catch (SQLException e) {
             log.error(e);
         }
@@ -306,6 +308,7 @@ public class VocabularyManager implements IManager, Serializable {
         }
 
     }
+
     @Deprecated
     public static void loadRecordsForVocabulary(Vocabulary vocabulary) {
         try {
@@ -326,15 +329,17 @@ public class VocabularyManager implements IManager, Serializable {
     public static void deleteRecord(VocabRecord record) {
         try {
             VocabularyMysqlHelper.deleteRecord(record);
+            setVocabularyLastAltered(record.getVocabularyId());
         } catch (SQLException e) {
             log.error(e);
         }
 
     }
 
-    public static void  deleteAllRecords(Vocabulary vocabulary) {
+    public static void deleteAllRecords(Vocabulary vocabulary) {
         try {
             VocabularyMysqlHelper.deleteAllRecords(vocabulary);
+            setVocabularyLastAltered(vocabulary);
         } catch (SQLException e) {
             log.error(e);
         }
@@ -343,6 +348,7 @@ public class VocabularyManager implements IManager, Serializable {
     public static void saveRecords(Vocabulary vocabulary) {
         try {
             VocabularyMysqlHelper.saveRecords(vocabulary);
+            setVocabularyLastAltered(vocabulary);
         } catch (SQLException e) {
             log.error(e);
         }
@@ -351,14 +357,15 @@ public class VocabularyManager implements IManager, Serializable {
     public static void saveRecord(Integer vocabularyId, VocabRecord record) {
         try {
             VocabularyMysqlHelper.saveRecord(vocabularyId, record);
+            setVocabularyLastAltered(vocabularyId);
         } catch (SQLException e) {
             log.error(e);
         }
     }
 
     /**
-     * Find the vocabulary records which contain a given string in given fields.
-     * This search does not search for exact string match. It does a 'contains'-search
+     * Find the vocabulary records which contain a given string in given fields. This search does not search for exact string match. It does a
+     * 'contains'-search
      * 
      * @param vocabularyName the vocabulary to search for
      * @param searchValue the value to be searched as term that must be contained within the defined field
@@ -377,8 +384,7 @@ public class VocabularyManager implements IManager, Serializable {
     }
 
     /**
-     * Find the vocabulary records which match exactly the given string in the defined fields.
-     * This search does search for exact string match.
+     * Find the vocabulary records which match exactly the given string in the defined fields. This search does search for exact string match.
      * 
      * @param vocabularyName the vocabulary to search for
      * @param searchValue the value to be searched as term that must be identical in the defined field
@@ -406,8 +412,8 @@ public class VocabularyManager implements IManager, Serializable {
     }
 
     /**
-     * Search in the vocabulary for String Pairs which contain the searched terms.
-     * This search does not contain exact matches as it does a contains-search
+     * Search in the vocabulary for String Pairs which contain the searched terms. This search does not contain exact matches as it does a
+     * contains-search
      * 
      * @param vocabularyName the vocabulary to search within
      * @param data the StringPair to use for searching
@@ -425,8 +431,7 @@ public class VocabularyManager implements IManager, Serializable {
     }
 
     /**
-     * Search in the vocabulary for String Pairs which match exactly the searched terms.
-     * This search lists only exact matches.
+     * Search in the vocabulary for String Pairs which match exactly the searched terms. This search lists only exact matches.
      * 
      * @param vocabularyName the vocabulary to search within
      * @param data the StringPair to use for searching
@@ -455,6 +460,8 @@ public class VocabularyManager implements IManager, Serializable {
     public static void saveDefinition(Integer vocabularyId, Definition definition) {
         try {
             VocabularyMysqlHelper.saveDefinition(vocabularyId, definition);
+            Vocabulary vocab = getVocabularyById(vocabularyId);
+            setVocabularyLastAltered(vocabularyId);
         } catch (SQLException e) {
             log.error(e);
         }
@@ -471,6 +478,7 @@ public class VocabularyManager implements IManager, Serializable {
     public static void insertNewRecords(List<VocabRecord> records, Integer vocabularyID) {
         try {
             VocabularyMysqlHelper.insertNewRecords(records, vocabularyID);
+            setVocabularyLastAltered(vocabularyID);
         } catch (SQLException e) {
             log.error(e);
         }
@@ -479,12 +487,18 @@ public class VocabularyManager implements IManager, Serializable {
     public static void batchUpdateRecords(List<VocabRecord> records, Integer vocabularyID) {
         try {
             VocabularyMysqlHelper.batchUpdateRecords(records, vocabularyID);
+            setVocabularyLastAltered(vocabularyID);
         } catch (SQLException e) {
             log.error(e);
         }
 
     }
-    
+
+    private static void setVocabularyLastAltered(int vocabularyId) {
+        Vocabulary vocab = getVocabularyById(vocabularyId);
+        setVocabularyLastAltered(vocab);
+    }
+
     public static void setVocabularyLastAltered(Vocabulary vocabulary) {
         try {
             VocabularyMysqlHelper.setVocabularyLastAltered(vocabulary);
@@ -519,7 +533,7 @@ public class VocabularyManager implements IManager, Serializable {
         }
         return null;
     }
-    
+
     public static ResultSetHandler<Timestamp> resultSetGetLastUploadedHandler = new ResultSetHandler<Timestamp>() {
 
         @Override
@@ -531,7 +545,7 @@ public class VocabularyManager implements IManager, Serializable {
         }
 
     };
-    
+
     public static ResultSetHandler<Timestamp> resultSetGetLastAlteredHandler = new ResultSetHandler<Timestamp>() {
 
         @Override
