@@ -347,9 +347,9 @@ public class ConfigurationHelper implements Serializable {
         return getLocalInt("goobiAuthorityServerUploadFrequency", 0);
     }
     
-    public String getUsername() {
+    public String getGoobiAuthorityServerUser() {
 
-        return getLocalString("username");
+        return getLocalString("goobiAuthorityServerUser");
     }
     
     // URLs

@@ -42,7 +42,7 @@ public class VocabularyUploader {
      */
     public static Boolean isActive() {
 
-        String strUsername = ConfigurationHelper.getInstance().getUsername();
+        String strUsername = ConfigurationHelper.getInstance().getGoobiAuthorityServerUser();
         return strURL != null && !strURL.isEmpty() && strUsername != null && !strUsername.isEmpty();
     }
 
@@ -59,7 +59,7 @@ public class VocabularyUploader {
         
         try {
             //does the vocab already exist?
-            String strUsername = ConfigurationHelper.getInstance().getUsername();
+            String strUsername = ConfigurationHelper.getInstance().getGoobiAuthorityServerUser();
 
             if (getVocabulary(strUsername, vocab.getId()) != null) {
 
@@ -100,7 +100,7 @@ public class VocabularyUploader {
     private static Boolean updateVocabulary(Vocabulary vocab) throws URISyntaxException, IOException, JMSException {
 
         String strVocabId = String.valueOf(vocab.getId());
-        String strUsername = ConfigurationHelper.getInstance().getUsername();
+        String strUsername = ConfigurationHelper.getInstance().getGoobiAuthorityServerUser();
         String strAuthorization = getAuthorizationHeader();
 
         ClientConfig config = new ClientConfig();
@@ -125,7 +125,7 @@ public class VocabularyUploader {
 
     private static Boolean createNewVocabulary(Vocabulary vocab) throws IOException, URISyntaxException, JMSException {
 
-        String strUsername = ConfigurationHelper.getInstance().getUsername();
+        String strUsername = ConfigurationHelper.getInstance().getGoobiAuthorityServerUser();
         String strAuthorization = getAuthorizationHeader();
 
         ClientConfig config = new ClientConfig();

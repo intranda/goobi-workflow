@@ -154,6 +154,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
         VocabularyManager.getAllRecords(currentVocabulary);
         Boolean boOK = VocabularyUploader.upload(currentVocabulary);
         if (boOK) {
+            Helper.setMeldung(Helper.getTranslation("ExportFinished"));
             return "vocabulary_all";
         } else {
             Helper.setFehlerMeldung(Helper.getTranslation("ExportError"));
