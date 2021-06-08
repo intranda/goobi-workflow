@@ -87,6 +87,8 @@ public class JobManager implements ServletContextListener {
         initializeJob(new DelayJob(), "dailyDelayJob", sched);
         
         initializeJob(new UploadVocabJob(), "dailyVocabJob", sched);
+        
+        initializeMinutelyJob(new UploadVocabJob(), "goobiAuthorityServerUploadFrequencyInMinutes", sched);
     }
 
     /**
@@ -117,6 +119,26 @@ public class JobManager implements ServletContextListener {
         }
     }
 
+    /**
+     * initializes given SimpleGoobiJob every specified number of hours
+     * 
+     * @throws SchedulerException
+     */
+    private static void initializeMinutelyJob(IGoobiJob goobiJob, String configuredMinutelyIntervalProperty, Scheduler sched) throws SchedulerException {
+
+        if (ConfigurationHelper.getInstance().getJobStartTime(configuredMinutelyIntervalProperty) != -1) {
+            int intervalInMinutes = (int)ConfigurationHelper.getInstance().getJobStartTime(configuredMinutelyIntervalProperty);
+            
+            log.debug("Initialize job '" + goobiJob.getJobName() + "'");
+            JobDetail jobDetail = new JobDetail(goobiJob.getJobName(), null, goobiJob.getClass());
+
+            Trigger trigger = TriggerUtils.makeMinutelyTrigger(intervalInMinutes);
+            trigger.setStartTime(new Date());
+            trigger.setName(goobiJob.getJobName() + "_minute_trigger");
+            sched.scheduleJob(jobDetail, trigger);
+        }
+    }
+    
     /**
      * initializes given SimpleGoobiJob at given time
      * 
