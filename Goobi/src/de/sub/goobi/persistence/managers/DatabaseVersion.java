@@ -52,7 +52,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 42;
+    public static final int EXPECTED_VERSION = 43;
     private static final Logger logger = LogManager.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -293,7 +293,15 @@ public class DatabaseVersion {
                 }
                 updateToVersion41();
             case 41:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 42.");
+                }
                 updateToVersion42();
+            case 42:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 43.");
+                }
+                updateToVersion43();
             default:
 
 
@@ -306,6 +314,26 @@ public class DatabaseVersion {
 
     }
 
+    private static void updateToVersion43() {
+
+        if (!DatabaseVersion.checkIfColumnExists("vocabulary", "lastAltered")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("ALTER TABLE vocabulary ");
+            sql.append("ADD COLUMN lastAltered DATETIME NOT NULL ");
+            sql.append("DEFAULT '2020-01-01 00:00:01' AFTER description;");
+            DatabaseVersion.runSql(sql.toString());
+        }
+        
+        if (!DatabaseVersion.checkIfColumnExists("vocabulary", "lastUploaded")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("ALTER TABLE vocabulary ");
+            sql.append("ADD COLUMN lastUploaded DATETIME NOT NULL ");
+            sql.append("DEFAULT '2020-01-01 00:00:00' AFTER lastAltered;");
+            DatabaseVersion.runSql(sql.toString());
+        }
+        
+    }
+    
     private static void updateToVersion42() {
         if (!DatabaseVersion.checkIfColumnExists("prozesse", "pauseAutomaticExecution")) {
             DatabaseVersion.runSql("ALTER TABLE prozesse add column pauseAutomaticExecution tinyint(1) DEFAULT false");
@@ -398,22 +426,6 @@ public class DatabaseVersion {
 
         }
 
-        if (!DatabaseVersion.checkIfColumnExists("vocabulary", "lastAltered")) {
-            StringBuilder sql = new StringBuilder();
-            sql.append("ALTER TABLE vocabulary ");
-            sql.append("ADD COLUMN lastAltered DATETIME NOT NULL ");
-            sql.append("DEFAULT '2020-01-01 00:00:01' AFTER description;");
-            DatabaseVersion.runSql(sql.toString());
-        }
-        
-        if (!DatabaseVersion.checkIfColumnExists("vocabulary", "lastUploaded")) {
-            StringBuilder sql = new StringBuilder();
-            sql.append("ALTER TABLE vocabulary ");
-            sql.append("ADD COLUMN lastUploaded DATETIME NOT NULL ");
-            sql.append("DEFAULT '2020-01-01 00:00:00' AFTER lastAltered;");
-            DatabaseVersion.runSql(sql.toString());
-        }
-        
         if (DatabaseVersion.checkIfTableExists("vocabularies")) {
             String allVocabularies = "SELECT * FROM vocabularies";
             Connection connection = null;
