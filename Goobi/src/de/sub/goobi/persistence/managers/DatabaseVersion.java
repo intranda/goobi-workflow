@@ -400,7 +400,7 @@ public class DatabaseVersion {
 
         if (!DatabaseVersion.checkIfColumnExists("vocabulary", "lastAltered")) {
             StringBuilder sql = new StringBuilder();
-            sql.append("ALTER TABLE vocabularies ");
+            sql.append("ALTER TABLE vocabulary ");
             sql.append("ADD COLUMN lastAltered DATETIME NOT NULL ");
             sql.append("DEFAULT '2020-01-01 00:00:01' AFTER description;");
             DatabaseVersion.runSql(sql.toString());
@@ -408,7 +408,7 @@ public class DatabaseVersion {
         
         if (!DatabaseVersion.checkIfColumnExists("vocabulary", "lastUploaded")) {
             StringBuilder sql = new StringBuilder();
-            sql.append("ALTER TABLE vocabularies ");
+            sql.append("ALTER TABLE vocabulary ");
             sql.append("ADD COLUMN lastUploaded DATETIME NOT NULL ");
             sql.append("DEFAULT '2020-01-01 00:00:00' AFTER lastAltered;");
             DatabaseVersion.runSql(sql.toString());
