@@ -289,7 +289,7 @@
                                 class="change-icon geonamesIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_geonamesSearch}"
                                 aria-label="#{msgs.NORM_geonamesSearch}"
-                                onclick="$('#geonamesSearchBox').modal('show');"
+                                jsf:onclick="$('#geonamesSearchBox').modal('show');"
                                 type="button">
                                 <img
                                     class="toggle"
@@ -322,7 +322,7 @@
                                 class="change-icon gndIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_gndSearch}"
                                 aria-label="#{msgs.NORM_gndSearch}"
-                                onclick="$('#gndSearchBox').modal('show');"
+                                jsf:onclick="$('#gndSearchBox').modal('show');"
                                 type="button">
 
                                 <img
@@ -356,7 +356,7 @@
                                 class="change-icon processIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_processesSearch}"
                                 aria-label="#{msgs.NORM_processesSearch}"
-                                onclick="$('#processesSearchBox').modal('show');"
+                                jsf:onclick="$('#processesSearchBox').modal('show');"
                                 type="button">
                                 <i
                                     class="fa fa-search"
@@ -382,7 +382,7 @@
                                 class="change-icon danteIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_danteSearch}"
                                 aria-label="#{msgs.NORM_danteSearch}"
-                                onclick="$('#danteSearchBox').modal('show');"
+                                jsf:onclick="$('#danteSearchBox').modal('show');"
                                 type="button">
                                 <img
                                     class="toggle"
@@ -412,10 +412,10 @@
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'kulturnav'}">
                             <button
                                     jsf:id="kulturnavSearch"
-                                    class="change-icon danteIndexTrigger"
+                                    class="btn change-icon danteIndexTrigger btn--icon-light metadataButton"
                                     title="#{msgs.NORM_kulturnavSearch}"
                                     aria-label="#{msgs.NORM_kulturnavSearch}"
-                                    onclick="$('#kulturnavSearchBox').modal('show');"
+                                    jsf:onclick="$('#kulturnavSearchBox').modal('show');"
                                     type="button">
                                 <img
                                         class="toggle"
@@ -448,7 +448,7 @@
                                 class="change-icon easydbIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_easydbSearch}"
                                 aria-label="#{msgs.NORM_easydbSearch}"
-                                onclick="$('#easydbSearchBox').modal('show');"
+                                jsf:onclick="$('#easydbSearchBox').modal('show');"
                                 type="button">
                                 <img
                                     class="toggle"
@@ -474,14 +474,14 @@
 	                                value="top" />
                             </button>
                         </ui:fragment>
-                        
+
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'viaf'}">
                             <button
                             	jsf:id="viaf"
                                 class="change-icon viafIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_viafSearch}"
                                 aria-label="#{msgs.NORM_viafSearch}"
-                                onclick="$('#viafSearchBox').modal('show');"
+                                jsf:onclick="$('#viafSearchBox').modal('show');"
                                 type="button">
 
                                 <img
@@ -508,7 +508,7 @@
 	                                value="top" />
                             </button>
                         </ui:fragment>
-                        
+
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'vocabularySearch'}">
                             <button
                             	jsf:id="vocabularySearch"
