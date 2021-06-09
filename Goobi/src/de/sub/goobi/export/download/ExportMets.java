@@ -210,8 +210,9 @@ public class ExportMets {
     public boolean startDownload(Process myProzess) throws PreferencesException, WriteException, TypeNotAllowedForParentException, IOException, InterruptedException, SwapException, DAOException, ReadException {
     	this.myPrefs = myProzess.getRegelsatz().getPreferences();
         Fileformat gdzfile = myProzess.readMetadataFile();
-        
-        return downloadMetsFile(myProzess, gdzfile, false);
+        String atsPpnBand = myProzess.getTitel();
+        String targetFileName = atsPpnBand + "_mets.xml";
+        return writeMetsFile(myProzess, targetFileName, gdzfile, false);
     }
 
     /**
@@ -488,255 +489,19 @@ public class ExportMets {
         } else {
             mm.write(targetFileName);
         }
-        Helper.setMeldung(null, myProzess.getTitel() + ": ", "ExportFinished");
-        return true;
-    }
-    
-    protected boolean downloadMetsFile(Process myProzess, Fileformat gdzfile, boolean writeLocalFilegroup)
-            throws PreferencesException, WriteException, IOException, InterruptedException, SwapException, DAOException,
-            TypeNotAllowedForParentException {
-        ConfigurationHelper config = ConfigurationHelper.getInstance();
-        ExportFileformat mm = MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
-        mm.setWriteLocal(writeLocalFilegroup);
-        mm.setCreateUUIDs(config.isExportCreateUUIDsAsFileIDs());
-
-        String imageFolderPath = myProzess.getImagesTifDirectory(true);
-        Path imageFolder = Paths.get(imageFolderPath);
-        /*
-         * before creating mets file, change relative path to absolute -
-         */
-        DigitalDocument dd = gdzfile.getDigitalDocument();
-
-        MetadatenImagesHelper mih = new MetadatenImagesHelper(this.myPrefs, dd);
-
-        if (dd.getFileSet() == null || dd.getFileSet().getAllFiles().isEmpty()) {
-            Helper.setMeldung(myProzess.getTitel() + ": digital document does not contain images; temporarily adding them for mets file creation");
-            mih.createPagination(myProzess, null);
-        } else {
-            mih.checkImageNames(myProzess, imageFolder.getFileName().toString());
-        }
-
-        /*
-         * get the topstruct element of the digital document depending on anchor property
-         */
-        DocStruct topElement = dd.getLogicalDocStruct();
-        if (topElement.getType().isAnchor()) {
-            if (topElement.getAllChildren() == null || topElement.getAllChildren().size() == 0) {
-                throw new PreferencesException(
-                        myProzess.getTitel() + ": the topstruct element is marked as anchor, but does not have any children for physical docstrucs");
-            } else {
-                topElement = topElement.getAllChildren().get(0);
-            }
-        }
-
-        /*
-         * -------------------------------- if the top element does not have any image related, set them all --------------------------------
-         */
-
-        if (config.isExportValidateImages()) {
-
-            if (topElement.getAllToReferences("logical_physical") == null || topElement.getAllToReferences("logical_physical").size() == 0) {
-                if (dd.getPhysicalDocStruct() != null && dd.getPhysicalDocStruct().getAllChildren() != null) {
-                    Helper.setMeldung(myProzess.getTitel()
-                            + ": topstruct element does not have any referenced images yet; temporarily adding them for mets file creation");
-                    for (DocStruct mySeitenDocStruct : dd.getPhysicalDocStruct().getAllChildren()) {
-                        topElement.addReferenceTo(mySeitenDocStruct, "logical_physical");
-                    }
-                } else {
-                    Helper.setFehlerMeldung(myProzess.getTitel() + ": could not find any referenced images, export aborted");
-                    dd = null;
-                    return false;
-                }
-            }
-
-            for (ContentFile cf : dd.getFileSet().getAllFiles()) {
-                String location = cf.getLocation();
-                // If the file's location string shoes no sign of any protocol,
-                // use the file protocol.
-                if (!location.contains("://")) {
-                    if (!location.matches("^[A-Z]:.*") && !location.matches("^\\/.*")) {
-                        //is a relative path
-                        Path f = Paths.get(imageFolder.toString(), location);
-                        location = f.toString();
-                    }
-                    location = "file://" + location;
-                }
-                cf.setLocation(location);
-            }
-        }
-        mm.setDigitalDocument(dd);
-
-        // if configured, extract metadata from files and store them as techMd premis
-        if (config.isExportCreateTechnicalMetadata()) {
-            int counter = 1;
-            for (DocStruct page : dd.getPhysicalDocStruct().getAllChildren()) {
-                Path path = Paths.get(page.getImageName());
-                if (!path.isAbsolute()) {
-                    path = Paths.get(imageFolder.toString(), page.getImageName());
-                }
-                Element techMd = createTechMd(path);
-                if (techMd != null) {
-                    Md md = new Md(techMd);
-                    md.setType("techMD");
-                    md.setId(String.format("AMD_%04d", counter++));
-                    dd.addTechMd(md);
-                    page.setAdmId(md.getId());
-                }
-            }
-        }
-
-        Map<String, String> additionalMetadataMap = config.getExportWriteAdditionalMetadata();
-        if (!additionalMetadataMap.isEmpty()) {
-            String projectMetadataName = additionalMetadataMap.get("Project");
-            String institutionMetadataName = additionalMetadataMap.get("Institution");
-            Prefs prefs = myProzess.getRegelsatz().getPreferences();
-            if (StringUtils.isNotBlank(projectMetadataName)) {
-                MetadataType mdt = prefs.getMetadataTypeByName(projectMetadataName);
-                if (mdt != null) {
-                    try {
-                        ugh.dl.Metadata md = new ugh.dl.Metadata(mdt);
-                        md.setValue(myProzess.getProjekt().getTitel());
-                        topElement.addMetadata(md);
-                    } catch (MetadataTypeNotAllowedException e) {
-                        logger.warn("Configured metadata for project name is unknown or not allowed.");
-                    }
-                    if (topElement.getParent() != null) {
-                        try {
-                            ugh.dl.Metadata md = new ugh.dl.Metadata(mdt);
-                            md.setValue(myProzess.getProjekt().getTitel());
-                            topElement.getParent().addMetadata(md);
-                        } catch (MetadataTypeNotAllowedException e) {
-                            logger.warn("Configured metadata for project name is unknown or not allowed.");
-                        }
-                    }
-                }
-            }
-            if (StringUtils.isNotBlank(institutionMetadataName)) {
-                MetadataType mdt = prefs.getMetadataTypeByName(institutionMetadataName);
-                if (mdt != null) {
-                    try {
-                        ugh.dl.Metadata md = new ugh.dl.Metadata(mdt);
-                        md.setValue(myProzess.getProjekt().getInstitution().getLongName());
-                        topElement.addMetadata(md);
-                    } catch (MetadataTypeNotAllowedException e) {
-                        logger.warn("Configured metadata for institution name is unknown or not allowed.");
-                    }
-                    if (topElement.getParent() != null) {
-                        try {
-                            ugh.dl.Metadata md = new ugh.dl.Metadata(mdt);
-                            md.setValue(myProzess.getProjekt().getInstitution().getLongName());
-                            topElement.getParent().addMetadata(md);
-                        } catch (MetadataTypeNotAllowedException e) {
-                            logger.warn("Configured metadata for institution name is unknown or not allowed.");
-                        }
-                    }
-                }
-            }
-        }
-
-        /*
-         * -------------------------------- wenn Filegroups definiert wurden, werden diese jetzt in die Metsstruktur übernommen
-         * --------------------------------
-         */
-        // Replace all pathes with the given VariableReplacer, also the file
-        // group pathes!
-        VariableReplacer vp = new VariableReplacer(mm.getDigitalDocument(), this.myPrefs, myProzess, null);
-        List<ProjectFileGroup> myFilegroups = myProzess.getProjekt().getFilegroups();
-
-        if (myFilegroups != null && myFilegroups.size() > 0) {
-            for (ProjectFileGroup pfg : myFilegroups) {
-
-                // check if source files exists
-                if (pfg.getFolder() != null && pfg.getFolder().length() > 0) {
-                    String foldername = myProzess.getMethodFromName(pfg.getFolder());
-                    if (foldername != null) {
-                        Path folder = Paths.get(myProzess.getMethodFromName(pfg.getFolder()));
-                        if (folder != null && StorageProvider.getInstance().isFileExists(folder)
-                                && !StorageProvider.getInstance().list(folder.toString()).isEmpty()) {
-                            VirtualFileGroup v = createFilegroup(vp, pfg);
-                            mm.getDigitalDocument().getFileSet().addVirtualFileGroup(v);
-                        }
-                    }
-                } else {
-                    VirtualFileGroup v = createFilegroup(vp, pfg);
-                    mm.getDigitalDocument().getFileSet().addVirtualFileGroup(v);
-                }
-            }
-        }
-
-        // Replace rights and digiprov entries.
-        mm.setRightsOwner(vp.replace(myProzess.getProjekt().getMetsRightsOwner()));
-        mm.setRightsOwnerLogo(vp.replace(myProzess.getProjekt().getMetsRightsOwnerLogo()));
-        mm.setRightsOwnerSiteURL(vp.replace(myProzess.getProjekt().getMetsRightsOwnerSite()));
-        mm.setRightsOwnerContact(vp.replace(myProzess.getProjekt().getMetsRightsOwnerMail()));
-        mm.setDigiprovPresentation(vp.replace(myProzess.getProjekt().getMetsDigiprovPresentation()));
-        mm.setDigiprovReference(vp.replace(myProzess.getProjekt().getMetsDigiprovReference()));
-        mm.setDigiprovPresentationAnchor(vp.replace(myProzess.getProjekt().getMetsDigiprovPresentationAnchor()));
-        mm.setDigiprovReferenceAnchor(vp.replace(myProzess.getProjekt().getMetsDigiprovReferenceAnchor()));
-
-        mm.setMetsRightsLicense(vp.replace(myProzess.getProjekt().getMetsRightsLicense()));
-        mm.setMetsRightsSponsor(vp.replace(myProzess.getProjekt().getMetsRightsSponsor()));
-        mm.setMetsRightsSponsorLogo(vp.replace(myProzess.getProjekt().getMetsRightsSponsorLogo()));
-        mm.setMetsRightsSponsorSiteURL(vp.replace(myProzess.getProjekt().getMetsRightsSponsorSiteURL()));
-
-        mm.setPurlUrl(vp.replace(myProzess.getProjekt().getMetsPurl()));
-        mm.setContentIDs(vp.replace(myProzess.getProjekt().getMetsContentIDs()));
-
-        String pointer = myProzess.getProjekt().getMetsPointerPath();
-        pointer = vp.replace(pointer);
-        mm.setMptrUrl(pointer);
-
-        String anchor = myProzess.getProjekt().getMetsPointerPathAnchor();
-        pointer = vp.replace(anchor);
-        mm.setMptrAnchorUrl(pointer);
-
-        mm.setGoobiID(String.valueOf(myProzess.getId()));
-
-        // if (!ConfigMain.getParameter("ImagePrefix", "\\d{8}").equals("\\d{8}")) {
-        List<String> images = new ArrayList<>();
-        if (config.isExportValidateImages()) {
-            try {
-                images = new MetadatenImagesHelper(this.myPrefs, dd).getDataFiles(myProzess, imageFolderPath);
-
-                int sizeOfPagination = dd.getPhysicalDocStruct().getAllChildren().size();
-                if (images != null) {
-                    int sizeOfImages = images.size();
-                    if (sizeOfPagination == sizeOfImages) {
-                        dd.overrideContentFiles(images);
-                    } else {
-                        String[] param = { String.valueOf(sizeOfPagination), String.valueOf(sizeOfImages) };
-                        Helper.setFehlerMeldung(Helper.getTranslation("imagePaginationError", param));
-                        return false;
-                    }
-                }
-            } catch (IndexOutOfBoundsException e) {
-                logger.error(e);
-                return false;
-            } catch (InvalidImagesException e) {
-                logger.error(e);
-                return false;
-            }
-        } else {
-            // create pagination out of virtual file names
-            dd.addAllContentFiles();
-        }
-        
-        Path tempFile = StorageProvider.getInstance().createTemporaryFile(myProzess.getTitel(), ".xml");
-        mm.write(tempFile.toString());
-        try (InputStream in = StorageProvider.getInstance().newInputStream(tempFile)) {
-        	 FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
-             ExternalContext ec = facesContext.getExternalContext();
-             ec.responseReset();
-             ec.setResponseHeader("Content-Disposition", "attachment; filename=" + myProzess.getTitel() + "_mets.xml");
-             ec.setResponseContentLength((int) StorageProvider.getInstance().getFileSize(tempFile));
-             
-             IOUtils.copy(in, ec.getResponseOutputStream());
-             
-             facesContext.responseComplete();
-        }catch (IOException e) {
-            logger.error(e);
-        }
-        
+		try (InputStream in = StorageProvider.getInstance().newInputStream(Paths.get(targetFileName))) {
+			FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+			ExternalContext ec = facesContext.getExternalContext();
+			ec.responseReset();
+			ec.setResponseHeader("Content-Disposition", "attachment; filename=" + targetFileName);
+			ec.setResponseContentLength((int) StorageProvider.getInstance().getFileSize(Paths.get(targetFileName)));
+			
+			IOUtils.copy(in, ec.getResponseOutputStream());  
+			
+			facesContext.responseComplete();
+		}catch (IOException e) {
+			logger.error(e);
+		}
         Helper.setMeldung(null, myProzess.getTitel() + ": ", "ExportFinished");
         return true;
     }
