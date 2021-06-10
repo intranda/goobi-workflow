@@ -64,15 +64,6 @@ public class PluginInstaller {
     private PluginInstallInfo pluginInfo;
     private PluginPreInstallCheck check;
 
-    public String testinstall() {
-        log.error(org.goobi.managedbeans.PluginsBean.staticConflictsMode);
-        log.error(org.goobi.managedbeans.PluginsBean.staticCurrentlyUsedCode);
-        Object[] objects = this.check.getConflicts().values().toArray();
-        PluginInstallConflict conflict = (PluginInstallConflict) (objects[0]);
-        log.error(conflict.getEditedVersion());
-        return "";
-    }
-
     public void install() {
         try (Stream<Path> walkStream = Files.walk(this.extractedArchivePath)) {
             walkStream.filter(Files::isRegularFile)
@@ -83,7 +74,20 @@ public class PluginInstaller {
                         }
                         Path installPath = goobiDirectory.resolve(relativePath);
                         PluginInstallConflict conflict = this.check.getConflicts().get(relativePath.toString());
+
+                        String fileContent;
+                        if (conflict.getConflictsMode().equals("edit_existing_file")) {
+                            fileContent = conflict.getEditedExistingVersion();
+                        } else {
+                            fileContent = conflict.getEditedUploadedVersion();
+                        }
+                        
                         try {
+                            Charset charset = Charset.forName("UTF-8");
+                            StandardOpenOption truncate = StandardOpenOption.TRUNCATE_EXISTING;
+                            StandardOpenOption create = StandardOpenOption.CREATE;
+                            Files.write(installPath, Arrays.asList(fileContent.split("\n")), charset, truncate, create);
+                            /*
                             if (conflict != null && conflict.getResolveTactic() == ResolveTactic.editedVersion) {
                                 Files.write(installPath, Arrays.asList(conflict.getEditedVersion().split("\n")),
                                         Charset.forName("UTF-8"), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
@@ -91,6 +95,7 @@ public class PluginInstaller {
                                 Files.createDirectories(installPath.getParent());
                                 Files.copy(p, installPath, StandardCopyOption.REPLACE_EXISTING);
                             }
+                            */
                         } catch (IOException e) {
                             // TODO Auto-generated catch block
                             log.error(e);
@@ -181,8 +186,7 @@ public class PluginInstaller {
                             try {
                                 String localVersion = Files.readAllLines(installPath).stream().collect(Collectors.joining("\n"));
                                 String archiveVersion = Files.readAllLines(p).stream().collect(Collectors.joining("\n"));
-                                PluginInstallConflict conflict = new PluginInstallConflict(installPath.toString(), ResolveTactic.unknown,
-                                        "", localVersion, archiveVersion, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+                                PluginInstallConflict conflict = new PluginInstallConflict(installPath.toString(), ResolveTactic.unknown, localVersion, archiveVersion);
                                 conflicts.put(relativePath.toString(), conflict);
                             } catch (IOException e) {
                                 //TODO: handle error

@@ -13,6 +13,7 @@ import javax.servlet.http.Part;
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
+import org.goobi.production.plugin.PluginInstallConflict;
 import org.goobi.production.plugin.PluginInstaller;
 import org.jdom2.JDOMException;
 
@@ -66,7 +67,13 @@ public class PluginInstallBean {
         return "";
     }
 
-    public void cancelInstall() {
+    public String install() {
+        //this.pluginInstaller.install();
+        this.pluginInstaller = null;
+        return "";
+    }
+
+    public String cancelInstall() {
         FileUtils.deleteQuietly(this.currentExtractedPluginPath.toFile());
         try {
             uploadedPluginFile.delete();
@@ -74,6 +81,18 @@ public class PluginInstallBean {
             log.error(e);
         }
         this.pluginInstaller = null;
+        return "";
+    }
+
+    public boolean getAreAllConflictsFixed() {
+        Object[] conflicts = this.pluginInstaller.getCheck().getConflicts().values().toArray();
+        for (int index = 0; index < conflicts.length; index++) {
+            PluginInstallConflict conflict = (PluginInstallConflict)(conflicts[index]);
+            if (!conflict.isFixed()) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

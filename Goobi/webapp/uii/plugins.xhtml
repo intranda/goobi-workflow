@@ -95,114 +95,111 @@
 											<div class="col-md-12">
 												<h4>#{msgs.install_plugin_conflicts}</h4>
 											</div>
-											<ul class="nav nav-tabs">
-												<li role="presentation"
-													class="#{pluginsBean.conflictsMode eq 'edit_existing_file' ? 'active' : ''}">
-													<h:commandLink>
-														<h:outputText value="#{msgs.install_plugin_edit_existing_file}" />
-														<f:ajax render="pluginsTabContent @form" />
-														<f:setPropertyActionListener value="edit_existing_file" target="#{pluginsBean.conflictsMode}"></f:setPropertyActionListener>
-													</h:commandLink>
-												</li>
-												<li role="presentation"
-													class="#{pluginsBean.conflictsMode eq 'edit_uploaded_file' ? 'active' : ''}">
-													<h:commandLink>
-														<h:outputText value="#{msgs.install_plugin_edit_uploaded_file}" />
-														<f:ajax render="pluginsTabContent @form" />
-														<f:setPropertyActionListener value="edit_uploaded_file" target="#{pluginsBean.conflictsMode}"></f:setPropertyActionListener>
-													</h:commandLink>
-												</li>
-											</ul>
 											<ui:repeat var="conflict" value="#{pluginInstallBean.pluginInstaller.check.conflicts.values()}">
-												<div class="col-md-6">
-													<h5>#{msgs.install_plugin_conflicts}</h5>
-												</div>
-												<ui:fragment rendered="#{pluginsBean.conflictsMode eq 'edit_existing_file'}">
+												<ui:fragment rendered="#{!conflict.fixed}">
+													<h:commandButton id="fix" forcedId="true" styleClass="btn btn-primary pull-right" value="#{msgs.fixConflict}" action="#{conflict.fixConflict}" />
+													<h:commandButton id="reset" forcedId="true" styleClass="btn btn-primary pull-right" style="margin-right: 10px;" value="#{msgs.resetEditedVersion}" action="#{conflict.resetEditedVersion}" />
+													<ul class="nav nav-tabs">
+														<li role="presentation"
+															class="#{conflict.conflictsMode eq 'edit_existing_file' ? 'active' : ''}">
+															<h:commandLink>
+																<h:outputText value="#{msgs.install_plugin_edit_existing_file}" />
+																<f:ajax render="pluginsTabContent @form" />
+																<f:setPropertyActionListener value="edit_existing_file" target="#{conflict.conflictsMode}"></f:setPropertyActionListener>
+															</h:commandLink>
+														</li>
+														<li role="presentation"
+															class="#{conflict.conflictsMode eq 'edit_uploaded_file' ? 'active' : ''}">
+															<h:commandLink>
+																<h:outputText value="#{msgs.install_plugin_edit_uploaded_file}" />
+																<f:ajax render="pluginsTabContent @form" />
+																<f:setPropertyActionListener value="edit_uploaded_file" target="#{conflict.conflictsMode}"></f:setPropertyActionListener>
+															</h:commandLink>
+														</li>
+													</ul>
 													<div class="col-md-6">
-														<h5>#{msgs.install_plugin_existing_file}</h5>
+														<h5>#{msgs.install_plugin_conflicts}</h5>
 													</div>
-												</ui:fragment>
-												<ui:fragment rendered="#{pluginsBean.conflictsMode eq 'edit_uploaded_file'}">
+													<ui:fragment rendered="#{conflict.conflictsMode eq 'edit_existing_file'}">
+														<div class="col-md-6">
+															<h5>#{msgs.install_plugin_existing_file}</h5>
+														</div>
+													</ui:fragment>
+													<ui:fragment rendered="#{conflict.conflictsMode eq 'edit_uploaded_file'}">
+														<div class="col-md-6">
+															<h5>#{msgs.install_plugin_uploaded_file}</h5>
+														</div>
+													</ui:fragment>
 													<div class="col-md-6">
-														<h5>#{msgs.install_plugin_uploaded_file}</h5>
+														<span class="plugin-installer-next-to-eachother-5">
+															<ui:repeat var="line" value="#{conflict.lineNumbers}" varStatus="lineStatus">
+																<div class="plugin-installer-line-number #{conflict.lineTypes.get(lineStatus.index) eq 'insertion' ? 'plugin-installer-line-number-inserted' : ''} #{conflict.lineTypes.get(lineStatus.index) eq 'deletion' ? 'plugin-installer-line-number-deleted' : ''}">&#160;#{line}</div>
+															</ui:repeat>
+														</span>
+														<span class="plugin-installer-next-to-eachother-90">
+															<ui:repeat var="line" value="#{conflict.spanTags}" varStatus="lineStatus">
+																<div class="plugin-installer-diff-box #{conflict.lineTypes.get(lineStatus.index) eq 'insertion' ? 'plugin-installer-inserted-passive' : ''} #{conflict.lineTypes.get(lineStatus.index) eq 'deletion' ? 'plugin-installer-deleted-passive' : ''}">
+																	<!-- WARNING: The comment sequences MUST be here to AVOID the white spaces between different span tags! -->
+																	<ui:repeat var="spanTag" value="#{conflict.spanTags.get(lineStatus.index)}"><!--
+																		--><ui:fragment rendered="#{spanTag.type eq 'LINE_NUMBER_NORMAL'}"><!--
+																			--><span class="plugin-installer-line-number plugin-installer-line-number-normal">#{spanTag.text}</span><!--
+																		--></ui:fragment><!--
+																		--><ui:fragment rendered="#{spanTag.type eq 'LINE_NUMBER_INSERTED'}"><!--
+																			--><span class="plugin-installer-line-number plugin-installer-line-number-inserted">#{spanTag.text}</span><!--
+																		--></ui:fragment><!--
+																		--><ui:fragment rendered="#{spanTag.type eq 'LINE_NUMBER_DELETED'}"><!--
+																			--><span class="plugin-installer-line-number plugin-installer-line-number-deleted">#{spanTag.text}</span><!--
+																		--></ui:fragment><!--
+																		--><ui:fragment rendered="#{spanTag.type eq 'TEXT_NORMAL'}"><!--
+																			--><span class="plugin-installer-text plugin-installer-normal">#{spanTag.text}</span><!--
+																		--></ui:fragment><!--
+																		--><ui:fragment rendered="#{spanTag.type eq 'TEXT_INSERTED_PASSIVE'}"><!--
+																			--><span class="plugin-installer-text plugin-installer-inserted-passive">#{spanTag.text}</span><!--
+																		--></ui:fragment><!--
+																		--><ui:fragment rendered="#{spanTag.type eq 'TEXT_INSERTED_ACTIVE'}"><!--
+																			--><span class="plugin-installer-text plugin-installer-inserted-active">#{spanTag.text}</span><!--
+																		--></ui:fragment><!--
+																		--><ui:fragment rendered="#{spanTag.type eq 'TEXT_DELETED_PASSIVE'}"><!--
+																			--><span class="plugin-installer-text plugin-installer-deleted-passive">#{spanTag.text}</span><!--
+																		--></ui:fragment><!--
+																		--><ui:fragment rendered="#{spanTag.type eq 'TEXT_DELETED_ACTIVE'}"><!--
+																			--><span class="plugin-installer-text plugin-installer-deleted-active">#{spanTag.text}</span><!--
+																		--></ui:fragment><!--
+																		--><ui:fragment rendered="#{spanTag.type eq 'SPACE_NORMAL'}"><!--
+																			--><span class="plugin-installer-space plugin-installer-normal">&#160;</span><!--
+																		--></ui:fragment><!--
+																		--><ui:fragment rendered="#{spanTag.type eq 'SPACE_INSERTED_PASSIVE'}"><!--
+																			--><span class="plugin-installer-space plugin-installer-inserted-passive">&#160;</span><!--
+																		--></ui:fragment><!--
+																		--><ui:fragment rendered="#{spanTag.type eq 'SPACE_INSERTED_ACTIVE'}"><!--
+																			--><span class="plugin-installer-space plugin-installer-inserted-active">&#160;</span><!--
+																		--></ui:fragment><!--
+																		--><ui:fragment rendered="#{spanTag.type eq 'SPACE_DELETED_PASSIVE'}"><!--
+																			--><span class="plugin-installer-space plugin-installer-deleted-passive">&#160;</span><!--
+																		--></ui:fragment><!--
+																		--><ui:fragment rendered="#{spanTag.type eq 'SPACE_DELETED_ACTIVE'}"><!--
+																			--><span class="plugin-installer-space plugin-installer-deleted-active">&#160;</span><!--
+																		--></ui:fragment><!--
+																	--></ui:repeat>
+																</div>
+															</ui:repeat>
+														</span>
 													</div>
+													<div class="col-md-6">
+														<textarea class="textarea_edit_file_source">#{conflict.conflictsMode eq 'edit_existing_file' ? conflict.editedExistingVersion : conflict.editedUploadedVersion}</textarea>
+														<h:inputText styleClass="textarea_edit_file_destination" value="conflict.currentVersion}"></h:inputText>
+													</div>
+													<script type="text/javascript">
+														initXmlCodeMirror();
+													</script>
 												</ui:fragment>
-												<div class="col-md-6">
-													<span class="plugin-installer-next-to-eachother-5">
-														<ui:repeat var="line" value="#{conflict.lineNumbers}" varStatus="lineStatus">
-															<div class="plugin-installer-line-number #{conflict.lineTypes.get(lineStatus.index) eq 'insertion' ? 'plugin-installer-line-number-inserted' : ''} #{conflict.lineTypes.get(lineStatus.index) eq 'deletion' ? 'plugin-installer-line-number-deleted' : ''}">&#160;#{line}</div>
-														</ui:repeat>
-													</span>
-													<span class="plugin-installer-next-to-eachother-90">
-														<ui:repeat var="line" value="#{conflict.spanTags}" varStatus="lineStatus">
-															<div class="plugin-installer-diff-box #{conflict.lineTypes.get(lineStatus.index) eq 'insertion' ? 'plugin-installer-inserted-passive' : ''} #{conflict.lineTypes.get(lineStatus.index) eq 'deletion' ? 'plugin-installer-deleted-passive' : ''}">
-																<!-- WARNING: The comment sequences MUST be here to AVOID the white spaces between different span tags! -->
-																<ui:repeat var="spanTag" value="#{conflict.spanTags.get(lineStatus.index)}"><!--
-																	--><ui:fragment rendered="#{spanTag.type eq 'LINE_NUMBER_NORMAL'}"><!--
-																		--><span class="plugin-installer-line-number plugin-installer-line-number-normal">#{spanTag.text}</span><!--
-																	--></ui:fragment><!--
-																	--><ui:fragment rendered="#{spanTag.type eq 'LINE_NUMBER_INSERTED'}"><!--
-																		--><span class="plugin-installer-line-number plugin-installer-line-number-inserted">#{spanTag.text}</span><!--
-																	--></ui:fragment><!--
-																	--><ui:fragment rendered="#{spanTag.type eq 'LINE_NUMBER_DELETED'}"><!--
-																		--><span class="plugin-installer-line-number plugin-installer-line-number-deleted">#{spanTag.text}</span><!--
-																	--></ui:fragment><!--
-																	--><ui:fragment rendered="#{spanTag.type eq 'TEXT_NORMAL'}"><!--
-																		--><span class="plugin-installer-text plugin-installer-normal">#{spanTag.text}</span><!--
-																	--></ui:fragment><!--
-																	--><ui:fragment rendered="#{spanTag.type eq 'TEXT_INSERTED_PASSIVE'}"><!--
-																		--><span class="plugin-installer-text plugin-installer-inserted-passive">#{spanTag.text}</span><!--
-																	--></ui:fragment><!--
-																	--><ui:fragment rendered="#{spanTag.type eq 'TEXT_INSERTED_ACTIVE'}"><!--
-																		--><span class="plugin-installer-text plugin-installer-inserted-active">#{spanTag.text}</span><!--
-																	--></ui:fragment><!--
-																	--><ui:fragment rendered="#{spanTag.type eq 'TEXT_DELETED_PASSIVE'}"><!--
-																		--><span class="plugin-installer-text plugin-installer-deleted-passive">#{spanTag.text}</span><!--
-																	--></ui:fragment><!--
-																	--><ui:fragment rendered="#{spanTag.type eq 'TEXT_DELETED_ACTIVE'}"><!--
-																		--><span class="plugin-installer-text plugin-installer-deleted-active">#{spanTag.text}</span><!--
-																	--></ui:fragment><!--
-																	--><ui:fragment rendered="#{spanTag.type eq 'SPACE_NORMAL'}"><!--
-																		--><span class="plugin-installer-space plugin-installer-normal">&#160;</span><!--
-																	--></ui:fragment><!--
-																	--><ui:fragment rendered="#{spanTag.type eq 'SPACE_INSERTED_PASSIVE'}"><!--
-																		--><span class="plugin-installer-space plugin-installer-inserted-passive">&#160;</span><!--
-																	--></ui:fragment><!--
-																	--><ui:fragment rendered="#{spanTag.type eq 'SPACE_INSERTED_ACTIVE'}"><!--
-																		--><span class="plugin-installer-space plugin-installer-inserted-active">&#160;</span><!--
-																	--></ui:fragment><!--
-																	--><ui:fragment rendered="#{spanTag.type eq 'SPACE_DELETED_PASSIVE'}"><!--
-																		--><span class="plugin-installer-space plugin-installer-deleted-passive">&#160;</span><!--
-																	--></ui:fragment><!--
-																	--><ui:fragment rendered="#{spanTag.type eq 'SPACE_DELETED_ACTIVE'}"><!--
-																		--><span class="plugin-installer-space plugin-installer-deleted-active">&#160;</span><!--
-																	--></ui:fragment><!--
-																--></ui:repeat>
-															</div>
-														</ui:repeat>
-													</span>
-												</div>
-												<div class="col-md-6">
-													<textarea class="textarea_edit_file_source">#{pluginsBean.conflictsMode eq 'edit_existing_file' ? conflict.existingVersion : conflict.uploadedVersion}</textarea>
-													<h:inputText styleClass="textarea_edit_file_destination" value="#{conflict.editedVersion}"></h:inputText>
-												</div>
-												<script type="text/javascript">
-													initXmlCodeMirror();
-												</script>
 											</ui:repeat>
 										</div>
 										<hr />
 										<div class="row">
 											<div class="col-md-12">
-												<h:commandButton id="install" forcedId="true" styleClass="btn btn-primary pull-right" value="#{msgs.install}" action="#{pluginInstallBean.pluginInstaller.testinstall}" />
-												<h:button forcedId="true" styleClass="btn" value="#{msgs.cancel}" action="#{pluginInstallBean.cancelInstall}" />
-												<!--<h:commandLink styleClass="btn btn-primary pull-right" action="#{pluginInstallBean.pluginInstaller.testinstall}">
-													#{msgs.install} (old)
-													<f:ajax render="@form" execute="@form" />
-												</h:commandLink>-->
-												<!--<h:commandLink action="#{pluginInstallBean.cancelInstall}" styleClass="btn">
-													#{msgs.cancel} (old)
-												</h:commandLink>-->
+												<h:commandButton id="install" forcedId="true" styleClass="btn btn-primary pull-right" value="#{msgs.install}" action="#{pluginInstallBean.install}" disabled="#{!pluginInstallBean.areAllConflictsFixed}" />
+												<h:commandButton id="cancel" forcedId="true" styleClass="btn" value="#{msgs.cancel}" action="#{pluginInstallBean.cancelInstall}" />
 											</div>
 										</div>
 									</ui:fragment>
@@ -265,27 +262,25 @@
 		</div>
 
 		<script type="text/javascript">
-			var xmlCodeMirror;
 			function initXmlCodeMirror() {
-				//var xmlTextAreaSource = document.getElementById("textarea_edit_file_source");
-				var xmlTextAreaSource = document.querySelector(".textarea_edit_file_source");
-				//var xmlTextAreaDestination = document.getElementById("textarea_edit_file_destination");
-				var xmlTextAreaDestination = document.querySelector(".textarea_edit_file_destination");
-				xmlTextAreaDestination.value = xmlTextAreaSource.value;
-				//alert("xmlTextAreSource.type=" + typeof xmlTextAreaSource);
-				//alert("xmlTextAreDestination.type=" + typeof xmlTextAreaDestination);
-				// IMPORTANT: The &amp;&amp; is the logical AND operator. It must be escaped because this is an XHTML file.
-				if ((typeof xmlTextAreaSource != "undefined") &amp;&amp; (typeof xmlTextAreaDestination != "undefined")) {
-					xmlCodeMirror = CodeMirror.fromTextArea(xmlTextAreaSource, {
+				var xmlTextAreaSource = document.querySelectorAll(".textarea_edit_file_source");
+				var xmlTextAreaDestination = document.querySelectorAll(".textarea_edit_file_destination");
+				if ((typeof xmlTextAreaSource == "undefined") || (typeof xmlTextAreaDestination == "undefined")) {
+					return;
+				}
+				var xmlCodeMirror = new Array(xmlTextAreaSource.length);
+				for (var index = 0; index &lt; xmlTextAreaSource.length; index++) {
+					if ((typeof xmlTextAreaSource[index] == "undefined") || (typeof xmlTextAreaDestination[index] == "undefined")) {
+						continue;
+					}
+					xmlTextAreaDestination[index].value = xmlTextAreaSource[index].value;
+					xmlCodeMirror[index] = CodeMirror.fromTextArea(xmlTextAreaSource[index], {
 						lineNumbers: true,
 						mode: 'xml'
 					});
-					xmlCodeMirror.setSize("100%", "100%");
-					xmlCodeMirror.on('change', editor => {
-						xmlTextAreaDestination.value = editor.getValue();
-						alert("Editor: " + editor.getValue());
-						alert("Source.value: " + xmlTextAreaSource.value);
-						alert("Destination.value: " + xmlTextAreaDestination.value);
+					xmlCodeMirror[index].setSize("100%", "100%");
+					xmlCodeMirror[index].on('change', editor => {
+						xmlTextAreaDestination[index].value = editor.getValue();
 					});
 				}
 			}
