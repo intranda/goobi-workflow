@@ -200,19 +200,12 @@ public class ExportMets {
         String atsPpnBand = myProzess.getTitel();
         Fileformat gdzfile = myProzess.readMetadataFile();
 
-        String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
+        //String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis); 
+        String zielVerzeichnis = "/tmp/";										//only save file in /tmp/ directory 
 
         String targetFileName = zielVerzeichnis + atsPpnBand + "_mets.xml";
         return writeMetsFile(myProzess, targetFileName, gdzfile, false);
 
-    }
-    
-    public boolean startDownload(Process myProzess) throws PreferencesException, WriteException, TypeNotAllowedForParentException, IOException, InterruptedException, SwapException, DAOException, ReadException {
-    	this.myPrefs = myProzess.getRegelsatz().getPreferences();
-        Fileformat gdzfile = myProzess.readMetadataFile();
-        String atsPpnBand = myProzess.getTitel();
-        String targetFileName = atsPpnBand + "_mets.xml";
-        return writeMetsFile(myProzess, targetFileName, gdzfile, false);
     }
 
     /**
@@ -489,20 +482,26 @@ public class ExportMets {
         } else {
             mm.write(targetFileName);
         }
+        //download File
 		try (InputStream in = StorageProvider.getInstance().newInputStream(Paths.get(targetFileName))) {
 			FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
 			ExternalContext ec = facesContext.getExternalContext();
 			ec.responseReset();
-			ec.setResponseHeader("Content-Disposition", "attachment; filename=" + targetFileName);
+			ec.setResponseHeader("Content-Disposition", "attachment; filename=" + Paths.get(targetFileName).getFileName());
 			ec.setResponseContentLength((int) StorageProvider.getInstance().getFileSize(Paths.get(targetFileName)));
 			
 			IOUtils.copy(in, ec.getResponseOutputStream());  
 			
 			facesContext.responseComplete();
-		}catch (IOException e) {
+			
+			Helper.setMeldung(null, myProzess.getTitel() + ": ", "Download Finished");
+			
+			//delete file from directory
+			StorageProvider.getInstance().deleteDir(Paths.get(targetFileName));
+		}catch (Exception e) {
 			logger.error(e);
 		}
-        Helper.setMeldung(null, myProzess.getTitel() + ": ", "ExportFinished");
+        //Helper.setMeldung(null, myProzess.getTitel() + ": ", "ExportFinished");
         return true;
     }
 

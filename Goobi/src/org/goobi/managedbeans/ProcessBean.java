@@ -990,20 +990,6 @@ public class ProcessBean extends BasicBean implements Serializable {
             logger.error("ExportMETS error", e);
         }
     }
-    
-    public void DownloadMets() {
-    	ExportMets export = new ExportMets();
-    	try {
-    		export.startDownload(this.myProzess);
-    		Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started METS download using 'ExportMets download'.");
-        } catch (Exception e) {
-            String[] parameter = { "METS", this.myProzess.getTitel() };
-
-            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
-            //            ;An error occured while trying to export METS file for: " + this.myProzess.getTitel(), e);
-            logger.error("ExportMETS error", e);
-        }
-    }
 
     public void ExportPdf() {
         ExportPdf export = new ExportPdf();
