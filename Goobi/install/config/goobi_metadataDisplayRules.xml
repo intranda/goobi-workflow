@@ -17,6 +17,18 @@
             <textarea ref="Description">
                 <label></label>
             </textarea>
+
+            <!-- Restrict to specific dataset, try to search for e.g Per -->
+            <kulturnav ref="person">
+                <source>entity.dataset:e0c682f9-a594-4fe1-8c01-f208f52d79ac</source>
+                <field></field>
+            </kulturnav>
+
+            <!-- Get place of publication from KulturNav -->
+            <kulturnav ref="PlaceOfPublication">
+                <source>entityType:Place</source>
+                <field></field>
+            </kulturnav>
             
             <select1 ref="UseAndReproductionLicense">
                 <item selected="true">
