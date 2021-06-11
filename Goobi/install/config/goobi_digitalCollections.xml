@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <DigitalCollections>
   <default>
-	  <DigitalCollection>DefaultCollection</DigitalCollection>
-	  <DigitalCollection>Norsk folkeminnesamling</DigitalCollection>
-	  <DigitalCollection>Norsk Etnologisk gransking</DigitalCollection>
-	  <DigitalCollection>Etno-folkloristisk arkiv</DigitalCollection>
+    <DigitalCollection>DefaultCollection</DigitalCollection>
   </default>
   <project>
     <name>sample_project</name>

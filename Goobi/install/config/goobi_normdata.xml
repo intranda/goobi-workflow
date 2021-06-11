@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <normdatabases>
-<!--
+    <normdatabase name="goobi" url="https://goobi.intranda.com/" abbreviation="" />
+    <normdatabase name="kulturnav" url="https://kulturnav.org/" abbreviation="kulturnav" />
     <normdatabase name="GND" url="http://d-nb.info/gnd/" abbreviation="gnd" />
     <normdatabase name="geonames" url="http://www.geonames.org/" abbreviation="geonames" />
     <normdatabase name="dante" url="https://dante.gbv.de/" abbreviation="dante" />
     <normdatabase name="viaf" url="http://www.viaf.org/viaf/" abbreviation="viaf" />
     <normdatabase name="easydb" url="https://easydb.prizepapers.gbv.de/" abbreviation="easydb" />
+<!--
+    <normdatabase name="REFGEO" url="http://normdata.intranda.com/normdata/refgeo/" abbreviation="intranda Geo Datenbank" />
+    <normdatabase name="REFBIO" url="http://normdata.intranda.com/normdata/refbio/" abbreviation="intranda PND" />
+    <normdatabase name="RVK" url="http://rvk.uni-regensburg.de/index.php?option=com_rvko&amp;view=show&amp;mode=searchNotation&amp;rvkoNotationKey=" abbreviation="rvk" />
 -->
-    <normdatabase name="samla" url="https://samla.no/" abbreviation="" />
-    <normdatabase name="kulturnav" url="https://kulturnav.org/" abbreviation="kulturnav" />
-
-    <!--
-        <normdatabase name="REFGEO" url="http://normdata.intranda.com/normdata/refgeo/" abbreviation="intranda Geo Datenbank" />
-        <normdatabase name="REFBIO" url="http://normdata.intranda.com/normdata/refbio/" abbreviation="intranda PND" />
-        <normdatabase name="RVK" url="http://rvk.uni-regensburg.de/index.php?option=com_rvko&amp;view=show&amp;mode=searchNotation&amp;rvkoNotationKey=" abbreviation="rvk" />
-    -->
 </normdatabases>
