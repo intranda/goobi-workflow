@@ -2,7 +2,7 @@ pipeline {
 
   agent {
     docker {
-      image '3-openjdk-11'
+      image 'maven:3.6-jdk-11'
       registryUrl 'https://nexus.intranda.com:4443'
       registryCredentialsId 'jenkins-docker'
       args '-v $HOME/.m2:/var/maven/.m2:z -u 1000 -ti -e _JAVA_OPTIONS=-Duser.home=/var/maven -e MAVEN_CONFIG=/var/maven/.m2'
