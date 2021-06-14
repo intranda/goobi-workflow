@@ -4,9 +4,11 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.log4j.Log4j2;
 
 @AllArgsConstructor
 @Data
+@Log4j2
 public class PluginInstallConflict {
     private String path;
     private ResolveTactic resolveTactic;
@@ -26,20 +28,30 @@ public class PluginInstallConflict {
         this.resolveTactic = tactic;
         this.existingVersion = existing;
         this.uploadedVersion = uploaded;
-        this.resetEditedVersion();
+        this.resetTextEditor();
         this.fixed = false;
     }
 
-    public void resetEditedVersion() {
+    public void setConflictsMode(String mode) {
+        this.conflictsMode = mode;
+        //this.setCurrentVersion();
+    }
+
+    public void resetTextEditor() {
+        log.error("resetTextEditor()");
         this.editedExistingVersion = this.existingVersion;
         this.editedUploadedVersion = this.uploadedVersion;
     }
 
-    public void setCurrentVersion() {
+    public void setCurrentVersion(String content) {
+        log.error("setCurrentVersion()" + content.substring(0, 10));
+        this.currentVersion = content;
         if (this.conflictsMode.equals("edit_existing_file")) {
-            this.editedExistingVersion = this.currentVersion;
+            this.editedExistingVersion = content;
+            //log.error(this.editedExistingVersion);
         } else {
-            this.editedUploadedVersion = this.currentVersion;
+            this.editedUploadedVersion = content;
+            //log.error(this.editedUploadedVersion);
         }
     }
 

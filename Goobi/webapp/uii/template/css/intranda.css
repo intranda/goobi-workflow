@@ -2514,6 +2514,16 @@ ul>li.yellow, .label-yellow {
 	width: 90%;
 }
 
+.plugin-installer-separator {
+	clear: both;
+	margin-top: 60px;
+	margin-bottom: 60px;
+}
+
 .textarea_edit_file_destination {
 	display: none;
+}
+
+.space-to-bottom {
+	margin-bottom: 40px;
 }
