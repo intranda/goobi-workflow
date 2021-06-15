@@ -451,7 +451,7 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         List<Object> list = configuration.getList("//application/locale-config/supported-locale");
         String[] array = new String[list.size()];
         for (int i = 0; i < list.size(); i++) {
-            array[i] = (String)(list.get(i));
+            array[i] = (String) (list.get(i));
         }
         return array;
     }
@@ -684,6 +684,14 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         String[] languages = Helper.getLanguagesFromFacesConfigXMLFile(sce.getServletContext());
         Helper.createMissingLocalMessageFiles(languages);
         Helper.registerFileChangedService(Paths.get(ConfigurationHelper.getInstance().getPathForLocalMessages()));
+        Helper.checkForJwtSecret();
+    }
+
+    private static void checkForJwtSecret() {
+        String jwtSecret = ConfigurationHelper.getInstance().getJwtSecret();
+        if (jwtSecret == null) {
+            ConfigurationHelper.getInstance().generateAndSaveJwtSecret();
+        }
     }
 
     @Override

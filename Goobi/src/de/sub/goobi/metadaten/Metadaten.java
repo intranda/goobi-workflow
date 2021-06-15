@@ -670,38 +670,62 @@ public class Metadaten implements Serializable {
 
     }
 
+    private MetadataGroup cloneMetadataGroup(MetadataGroup inGroup) throws MetadataTypeNotAllowedException {
+        MetadataGroup mg = new MetadataGroup(inGroup.getType());
+        // copy metadata
+        for (Metadata md : inGroup.getMetadataList()) {
+            Metadata metadata = new Metadata(md.getType());
+            metadata.setValue(md.getValue());
+            if (StringUtils.isNotBlank(md.getAuthorityValue())) {
+                metadata.setAutorityFile(md.getAuthorityID(), md.getAuthorityURI(), md.getAuthorityValue());
+            }
+            mg.addMetadata(metadata);
+        }
+
+        // copy persons
+        for (Person p : inGroup.getPersonList()) {
+            Person person = new Person(p.getType());
+            person.setFirstname(p.getFirstname());
+            person.setLastname(p.getLastname());
+            person.setAutorityFile(p.getAuthorityID(), p.getAuthorityURI(), p.getAuthorityValue());
+            if (p.getAdditionalNameParts() != null && !p.getAdditionalNameParts().isEmpty()) {
+                for (NamePart np : p.getAdditionalNameParts()) {
+                    NamePart newNamePart = new NamePart(np.getType(), np.getValue());
+                    person.addNamePart(newNamePart);
+                }
+            }
+            mg.addPerson(person);
+        }
+
+        // copy corporations
+        for (Corporate c : inGroup.getCorporateList()) {
+            Corporate corporate = new Corporate(c.getType());
+            corporate.setMainName(c.getMainName());
+            if (c.getSubNames() != null) {
+                for (NamePart subName : c.getSubNames()) {
+                    corporate.addSubName(subName);
+                }
+            }
+            corporate.setPartName(c.getPartName());
+            if (c.getAuthorityID() != null && c.getAuthorityURI() != null && c.getAuthorityValue() != null) {
+                corporate.setAutorityFile(c.getAuthorityID(), c.getAuthorityURI(), c.getAuthorityValue());
+            }
+            mg.addCorporate(corporate);
+        }
+
+        // copy sub groups
+        for (MetadataGroup subGroup : inGroup.getAllMetadataGroups()) {
+            MetadataGroup copyOfSubGroup = cloneMetadataGroup(subGroup);
+            mg.addMetadataGroup(copyOfSubGroup);
+        }
+
+        return mg;
+    }
+
     public String CopyGroup() {
-        MetadataGroup newMetadataGroup;
         try {
-            newMetadataGroup = new MetadataGroup(this.currentGroup.getMetadataGroup().getType());
-            for (MetadatumImpl metadataImpl : currentGroup.getMetadataList()) {
-
-                List<Metadata> metadataList = newMetadataGroup.getMetadataList();
-                for (Metadata metadata : metadataList) {
-                    if (metadata.getType().getName().equals(metadataImpl.getMd().getType().getName())) {
-                        metadata.setValue(metadataImpl.getMd().getValue());
-                        if (StringUtils.isNotBlank(metadataImpl.getMd().getAuthorityValue())) {
-                            metadata.setAutorityFile(metadataImpl.getMd().getAuthorityID(), metadataImpl.getMd().getAuthorityURI(),
-                                    metadataImpl.getMd().getAuthorityValue());
-                        }
-                    }
-                }
-            }
-            for (MetaPerson mp : currentGroup.getPersonList()) {
-                if (StringUtils.isNotBlank(mp.getNachname()) || StringUtils.isNotBlank(mp.getVorname())) {
-                    List<Person> newList = newMetadataGroup.getPersonList();
-                    for (Person p : newList) {
-                        if (p.getType().getName().equals(mp.getP().getType().getName())) {
-                            p.setFirstname(mp.getVorname());
-                            p.setLastname(mp.getNachname());
-                            p.setAutorityFile(mp.getP().getAuthorityID(), mp.getP().getAuthorityURI(), mp.getP().getAuthorityValue());
-                        }
-                    }
-
-                }
-            }
-
-            this.myDocStruct.addMetadataGroup(newMetadataGroup);
+            MetadataGroup newMetadataGroup = cloneMetadataGroup(currentGroup.getMetadataGroup());
+            currentGroup.getMetadataGroup().getParent().addMetadataGroup(newMetadataGroup);
         } catch (MetadataTypeNotAllowedException e) {
             logger.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e);
         }
@@ -1738,7 +1762,7 @@ public class Metadaten implements Serializable {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -4491,7 +4515,7 @@ public class Metadaten implements Serializable {
                 }
             } else {
                 Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString()
-                        + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
+                + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
             }
         }
 

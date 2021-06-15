@@ -276,12 +276,12 @@
 
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'geonames'}">
                             <button
-                            	jsf:id="geoname"
-                                class="change-icon geonamesIndexTrigger btn--icon-light metadataButton"
+                                jsf:id="geoname"
+                                type="button"
+                                class="btn change-icon geonamesIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_geonamesSearch}"
                                 aria-label="#{msgs.NORM_geonamesSearch}"
-                                onclick="$('#geonamesSearchBox').modal('show');"
-                                type="button">
+                                jsf:onclick="$('#geonamesSearchBox').modal('show');">
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
@@ -299,23 +299,19 @@
                                     execute="@this"
                                     render=":geonamesModalContent" />
                                 <f:passThroughAttribute
-	                                name="data-toggle"
-	                                value="tooltip" />
-	                            <f:passThroughAttribute
-	                                name="data-placement"
-	                                value="top" />
+                                    name="data-toggle"
+                                    value="tooltip" />
                             </button>
                         </ui:fragment>
 
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'gnd'}">
                             <button
-                            	jsf:id="gnd"
-                                class="change-icon gndIndexTrigger btn--icon-light metadataButton"
+                                jsf:id="gnd"
+                                type="button"
+                                class="btn change-icon gndIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_gndSearch}"
                                 aria-label="#{msgs.NORM_gndSearch}"
-                                onclick="$('#gndSearchBox').modal('show');"
-                                type="button">
-
+                                jsf:onclick="$('#gndSearchBox').modal('show');">
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
@@ -333,22 +329,19 @@
                                     execute="@this"
                                     render=":gndModalContent" />
                                 <f:passThroughAttribute
-	                                name="data-toggle"
-	                                value="tooltip" />
-	                            <f:passThroughAttribute
-	                                name="data-placement"
-	                                value="top" />
+                                    name="data-toggle"
+                                    value="tooltip" />
                             </button>
                         </ui:fragment>
 
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'process'}">
                             <button
-                            	jsf:id="openProcessSearchModal2"
-                                class="change-icon processIndexTrigger btn--icon-light metadataButton"
+                                jsf:id="openProcessSearchModal2"
+                                type="button"
+                                class="btn change-icon processIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_processesSearch}"
                                 aria-label="#{msgs.NORM_processesSearch}"
-                                onclick="$('#processesSearchBox').modal('show');"
-                                type="button">
+                                jsf:onclick="$('#processesSearchBox').modal('show');">
                                 <i
                                     class="fa fa-search"
                                     style="margin-left: 3px" />
@@ -359,22 +352,19 @@
                                     execute="@this"
                                     render=":processModalContent" />
                                 <f:passThroughAttribute
-	                                name="data-toggle"
-	                                value="tooltip" />
-	                            <f:passThroughAttribute
-	                                name="data-placement"
-	                                value="top" />
+                                    name="data-toggle"
+                                    value="tooltip" />
                             </button>
                         </ui:fragment>
 
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'dante'}">
                             <button
-                            	jsf:id="danteSearch"
-                                class="change-icon danteIndexTrigger btn--icon-light metadataButton"
+                                jsf:id="danteSearch"
+                                type="button"
+                                class="btn change-icon danteIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_danteSearch}"
                                 aria-label="#{msgs.NORM_danteSearch}"
-                                onclick="$('#danteSearchBox').modal('show');"
-                                type="button">
+                                jsf:onclick="$('#danteSearchBox').modal('show');">
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
@@ -392,22 +382,19 @@
                                     execute="@this"
                                     render=":danteModalContent" />
                                 <f:passThroughAttribute
-	                                name="data-toggle"
-	                                value="tooltip" />
-	                            <f:passThroughAttribute
-	                                name="data-placement"
-	                                value="top" />
+                                    name="data-toggle"
+                                    value="tooltip" />
                             </button>
                         </ui:fragment>
 
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'easydb'}">
                             <button
-                            	jsf:id="easydbSearch"
-                                class="change-icon easydbIndexTrigger btn--icon-light metadataButton"
+                                jsf:id="easydbSearch"
+                                type="button"
+                                class="btn change-icon easydbIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_easydbSearch}"
                                 aria-label="#{msgs.NORM_easydbSearch}"
-                                onclick="$('#easydbSearchBox').modal('show');"
-                                type="button">
+                                jsf:onclick="$('#easydbSearchBox').modal('show');">
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
@@ -425,23 +412,19 @@
                                     execute="@this"
                                     render=":easydbModalContent" />
                                 <f:passThroughAttribute
-	                                name="data-toggle"
-	                                value="tooltip" />
-	                            <f:passThroughAttribute
-	                                name="data-placement"
-	                                value="top" />
+                                    name="data-toggle"
+                                    value="tooltip" />
                             </button>
                         </ui:fragment>
-                        
+
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'viaf'}">
                             <button
-                            	jsf:id="viaf"
-                                class="change-icon viafIndexTrigger btn--icon-light metadataButton"
+                                jsf:id="viaf"
+                                type="button"
+                                class="btn change-icon viafIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_viafSearch}"
                                 aria-label="#{msgs.NORM_viafSearch}"
-                                onclick="$('#viafSearchBox').modal('show');"
-                                type="button">
-
+                                jsf:onclick="$('#viafSearchBox').modal('show');">
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
@@ -459,23 +442,19 @@
                                     execute="@this"
                                     render=":viafModalContent" />
                                 <f:passThroughAttribute
-	                                name="data-toggle"
-	                                value="tooltip" />
-	                            <f:passThroughAttribute
-	                                name="data-placement"
-	                                value="top" />
+                                    name="data-toggle"
+                                    value="tooltip" />
                             </button>
                         </ui:fragment>
-                        
+
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'vocabularySearch'}">
                             <button
-                            	jsf:id="vocabularySearch"
+                                jsf:id="vocabularySearch"
+                                type="button"
                                 class="btn change-icon vocabularySearchIndexTrigger btn--icon-light metadataButton"
                                 title="#{msgs.NORM_vocabularySearch}"
                                 aria-label="#{msgs.NORM_vocabularySearch}"
-                                type="button"
-                                jsf:onclick="$('#vocabularySearchBox').modal('show');"
-                                >
+                                jsf:onclick="$('#vocabularySearchBox').modal('show');">
                                 <img
                                     class="toggle"
                                     style="width: 16px;"
@@ -493,11 +472,8 @@
                                     execute="@this"
                                     render=":vocabularySearchModalContent" />
                                 <f:passThroughAttribute
-	                                name="data-toggle"
-	                                value="tooltip" />
-	                            <f:passThroughAttribute
-	                                name="data-placement"
-	                                value="top" />
+                                    name="data-toggle"
+                                    value="tooltip" />
                             </button>
                         </ui:fragment>
                     </div>

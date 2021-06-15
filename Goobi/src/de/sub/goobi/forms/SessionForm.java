@@ -94,10 +94,6 @@ public class SessionForm implements Serializable {
      */
     private SimpleDateFormat fullFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
-    /**
-     * The string representation of the current time
-     */
-    private String currentTime = this.timeFormatter.format(new Date());
 
     /**
      * The request object of the current session
@@ -189,7 +185,7 @@ public class SessionForm implements Serializable {
                  this.request = (HttpServletRequest) context.getExternalContext().getRequest();
             }
         }
-        */
+         */
 
         if (this.request == null) {
             this.sessions.add(sessionInfo);
@@ -317,7 +313,7 @@ public class SessionForm implements Serializable {
      * @return The current time as string representation
      */
     public String getCurrentTime() {
-        return this.currentTime;
+        return timeFormatter.format(new Date());
     }
 
     /**
