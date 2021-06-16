@@ -27,6 +27,7 @@ package de.sub.goobi.helper;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
@@ -495,7 +496,7 @@ public class VariableReplacer {
         return results;
     }
 
-    private String getIiifImageUrls(Process process, String folderName) {
+    private String getIiifImageUrls(Process process, String folderName) throws UnsupportedEncodingException {
         //      http://localhost:8080/goobi/api/process/image/308938/master__AC03804780_MixedContentTest_media/00000001.tif/info.json
         //          http://localhost:8080/goobi/api/process/image/308938/master__AC03804780_MixedContentTest_media/00000001.tif/full/max/0/default.jpg
         Path folder = null;
@@ -527,7 +528,7 @@ public class VariableReplacer {
         String suffix = "/full/max/0/default.jpg";
 
         for (String imageName : images) {
-            String path = restPath + URLEncoder.encode(imageName, StandardCharsets.UTF_8).replaceAll("\\+", "%20") + suffix;
+            String path = restPath + URLEncoder.encode(imageName, StandardCharsets.UTF_8.toString()).replaceAll("\\+", "%20") + suffix;
             try {
                 String jwtToken = JwtHelper.createApiToken(path, new String[] { "GET" });
                 URI iiifUri = new URI(api + path + "?jwt=" + jwtToken);
