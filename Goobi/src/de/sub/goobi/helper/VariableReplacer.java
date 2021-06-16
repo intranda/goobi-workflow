@@ -27,6 +27,8 @@ package de.sub.goobi.helper;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,6 +52,9 @@ import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
+
+import com.sun.org.apache.xerces.internal.util.URI;
+import com.sun.org.apache.xerces.internal.util.URI.MalformedURIException;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -522,12 +527,14 @@ public class VariableReplacer {
         String suffix = "/full/max/0/default.jpg";
 
         for (String imageName : images) {
-            String path = restPath + imageName + suffix;
+            String path = restPath + URLEncoder.encode(imageName, StandardCharsets.UTF_8).replaceAll("\\+", "%20") + suffix;
             try {
                 String jwtToken = JwtHelper.createApiToken(path, new String[] { "GET" });
-                String iiifUri = "\"" + api + path + "?jwt=" + jwtToken + "\"";
-                iifUrls.add(iiifUri);
-            } catch (ConfigurationException e) {
+                URI iiifUri = new URI(api + path + "?jwt=" + jwtToken);
+                String iiifUriString = "\"" + iiifUri + "\"";
+
+                iifUrls.add(iiifUriString);
+            } catch (ConfigurationException | MalformedURIException e) {
                 logger.error(e);
                 return "";
             }
