@@ -63,21 +63,29 @@ public class PluginInstaller {
     private Path goobiDirectory;
     private PluginInstallInfo pluginInfo;
     private PluginPreInstallCheck check;
+    private Path uploadedArchiveFile;
 
     public void install() {
-        log.error("path: " + this.extractedArchivePath);
         try (Stream<Path> walkStream = Files.walk(this.extractedArchivePath)) {
-            log.error("walkStream: " + walkStream);
             walkStream.filter(Files::isRegularFile)
-                    .forEach(p -> {
-                        log.error("p: " + p);
-                        Path relativePath = this.extractedArchivePath.relativize(p);
-                        log.error("relativePath: " + relativePath);
+                    .forEach(path -> {
+
+                        Path relativePath = this.extractedArchivePath.relativize(path);
                         if (pathBlacklist.contains(relativePath.toString())) {
                             return;
                         }
+
                         Path installPath = goobiDirectory.resolve(relativePath);
                         PluginInstallConflict conflict = this.check.getConflicts().get(relativePath.toString());
+                        if (conflict == null) {
+                            try {
+                                Files.createDirectories(installPath.getParent());
+                                Files.copy(path, installPath, StandardCopyOption.REPLACE_EXISTING);
+                            } catch (IOException ioException) {
+                                log.error(ioException);
+                            }
+                            return;
+                        }
 
                         String fileContent;
                         if (conflict.getConflictsMode().equals("edit_existing_file")) {
@@ -85,24 +93,41 @@ public class PluginInstaller {
                         } else {
                             fileContent = conflict.getEditedUploadedVersion();
                         }
-                        log.error(fileContent);
-                        /*
+
                         try {
                             Charset charset = Charset.forName("UTF-8");
                             StandardOpenOption truncate = StandardOpenOption.TRUNCATE_EXISTING;
                             StandardOpenOption create = StandardOpenOption.CREATE;
                             Files.write(installPath, Arrays.asList(fileContent.split("\n")), charset, truncate, create);
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            log.error(e);
+                        } catch (IOException ioException) {
+                            log.error(ioException);
                         }
-                        */
                     });
+            this.saveArchiveFile();
         } catch (IOException ioException) {
-            // TODO Auto-generated catch block
             ioException.printStackTrace();
         }
     }
+    private void saveArchiveFile() {
+        try {
+            Path newPath = Paths.get(this.goobiDirectory.toString() + ".installed_plugins");
+            log.error("newPath: " + newPath.toString());
+            if (!Files.exists(newPath)) {
+                Files.createDirectory(newPath);
+            }
+        } catch (Exception exception) {
+            log.error(exception);
+            exception.printStackTrace();
+            return;
+        }
+        try {
+        Files.write(this.uploadedArchiveFile, Files.readAllBytes(this.uploadedArchiveFile));
+        } catch (IOException ioException) {
+            log.error(ioException);
+            ioException.printStackTrace();
+        }
+    }
+
 
     /**
      * A constructor to get a plugin installer object.

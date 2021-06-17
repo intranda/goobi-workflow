@@ -1,5 +1,6 @@
 package org.goobi.managedbeans;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -54,22 +55,33 @@ public class PluginInstallBean {
                 }
                 tarEntry = tarIn.getNextEntry();
             }
-        } catch (IOException e) {
-            log.error(e);
+        } catch (IOException ioException) {
+            log.error(ioException);
         }
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         try {
             this.pluginInstaller = PluginInstaller.createFromExtractedArchive(currentExtractedPluginPath);
-        } catch (JDOMException | IOException e) {
-            // TODO write error to GUI
-            log.error(e);
+        } catch (JDOMException | IOException exception) {
+            log.error(exception);
         }
         return "";
     }
 
     public String install() {
-        Object[] conflicts = this.pluginInstaller.getCheck().getConflicts().values().toArray();
-        log.error("conflicts: " + conflicts);
+        /* DOES NOT WORK BECAUSE this.uploadedPluginFile has no inputStream
+        try {
+            File uploadedArchive = new File(this.uploadedPluginFile.getSubmittedFileName());
+            log.error("uploadedArchive: " + uploadedArchive);
+            log.error("this.uploadedPluginFile: " + this.uploadedPluginFile);
+            InputStream inputStream = this.uploadedPluginFile.getInputStream();
+            log.error("inputStream: " + inputStream);
+            FileUtils.copyInputStreamToFile(inputStream, uploadedArchive);
+            this.pluginInstaller.setUploadedArchiveFile(uploadedArchive.toPath());
+        } catch (IOException ioException) {
+            log.error(ioException);
+            ioException.printStackTrace();
+        }
+        */
         this.pluginInstaller.install();
         this.pluginInstaller = null;
         return "";
