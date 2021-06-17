@@ -38,13 +38,11 @@ public class PluginInstallConflict {
     }
 
     public void resetTextEditor() {
-        log.error("resetTextEditor()");
         this.editedExistingVersion = this.existingVersion;
         this.editedUploadedVersion = this.uploadedVersion;
     }
 
     public void setCurrentVersion(String content) {
-        log.error("setCurrentVersion()" + content.substring(0, 10));
         this.currentVersion = content;
         if (this.conflictsMode.equals("edit_existing_file")) {
             this.editedExistingVersion = content;

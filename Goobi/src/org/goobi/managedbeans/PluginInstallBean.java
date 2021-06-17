@@ -68,7 +68,9 @@ public class PluginInstallBean {
     }
 
     public String install() {
-        //this.pluginInstaller.install();
+        Object[] conflicts = this.pluginInstaller.getCheck().getConflicts().values().toArray();
+        log.error("conflicts: " + conflicts);
+        this.pluginInstaller.install();
         this.pluginInstaller = null;
         return "";
     }

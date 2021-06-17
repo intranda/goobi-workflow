@@ -192,10 +192,10 @@
 															<h:inputTextarea id="textarea_edit_file_destination" styleClass="textarea_edit_file_destination" value="#{conflict.currentVersion}"></h:inputTextarea>
 														</div>
 														<br class="plugin-installer-separator" />
-														<h:commandButton id="fix" forcedId="true" styleClass="btn btn-primary pull-right" value="#{msgs.fixConflict}" action="#{conflict.fixConflict}">
+														<h:commandButton id="fix" forcedId="true" styleClass="btn btn-primary pull-right" value="#{msgs.install_plugin_resolve_conflict}" action="#{conflict.fixConflict}">
 															<f:ajax render="pluginsTabContent @form" execute="@form" />
 														</h:commandButton>
-														<h:commandButton id="reset" forcedId="true" styleClass="btn btn-primary pull-right" style="margin-right: 10px;" value="#{msgs.resetTextEditor}" action="#{conflict.resetTextEditor}">
+														<h:commandButton id="reset" forcedId="true" styleClass="btn btn-primary pull-right" style="margin-right: 10px;" value="#{msgs.install_plugin_reset_text_editor}" action="#{conflict.resetTextEditor}">
 															<f:ajax render="pluginsTabContent @form" execute="@form" />
 														</h:commandButton>
 														<hr class="plugin-installer-separator" />
@@ -210,7 +210,7 @@
 											<div class="col-md-12">
 												<ui:fragment rendered="#{!pluginInstallBean.areAllConflictsFixed}">
 													<div class="alert alert-warning">
-														<h:outputText value="Please fix all conflicts before installing this plugin." />
+														<h:outputText value="#{msgs.install_plugin_resolve_conflicts_before_installation}" />
 													</div>
 												</ui:fragment>
 												<h:commandButton id="install" forcedId="true" styleClass="btn btn-primary pull-right" value="#{msgs.install}" action="#{pluginInstallBean.install}" disabled="#{!pluginInstallBean.areAllConflictsFixed}" />

@@ -65,10 +65,14 @@ public class PluginInstaller {
     private PluginPreInstallCheck check;
 
     public void install() {
+        log.error("path: " + this.extractedArchivePath);
         try (Stream<Path> walkStream = Files.walk(this.extractedArchivePath)) {
+            log.error("walkStream: " + walkStream);
             walkStream.filter(Files::isRegularFile)
                     .forEach(p -> {
+                        log.error("p: " + p);
                         Path relativePath = this.extractedArchivePath.relativize(p);
+                        log.error("relativePath: " + relativePath);
                         if (pathBlacklist.contains(relativePath.toString())) {
                             return;
                         }
@@ -81,29 +85,22 @@ public class PluginInstaller {
                         } else {
                             fileContent = conflict.getEditedUploadedVersion();
                         }
-                        
+                        log.error(fileContent);
+                        /*
                         try {
                             Charset charset = Charset.forName("UTF-8");
                             StandardOpenOption truncate = StandardOpenOption.TRUNCATE_EXISTING;
                             StandardOpenOption create = StandardOpenOption.CREATE;
                             Files.write(installPath, Arrays.asList(fileContent.split("\n")), charset, truncate, create);
-                            /*
-                            if (conflict != null && conflict.getResolveTactic() == ResolveTactic.editedVersion) {
-                                Files.write(installPath, Arrays.asList(conflict.getEditedVersion().split("\n")),
-                                        Charset.forName("UTF-8"), StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
-                            } else {
-                                Files.createDirectories(installPath.getParent());
-                                Files.copy(p, installPath, StandardCopyOption.REPLACE_EXISTING);
-                            }
-                            */
                         } catch (IOException e) {
                             // TODO Auto-generated catch block
                             log.error(e);
                         }
+                        */
                     });
-        } catch (IOException e) {
+        } catch (IOException ioException) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            ioException.printStackTrace();
         }
     }
 
