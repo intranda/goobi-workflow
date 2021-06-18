@@ -87,7 +87,6 @@ public enum HistoryEventType {
 
     ;
 	
-	@Getter
     private int value;
     private String title;
     private Boolean isNumeric;
@@ -103,6 +102,15 @@ public enum HistoryEventType {
         this.isNumeric = inIsNumeric;
         this.isString = inIsString;
         this.groupingExpression = groupingExpression;
+    }
+    
+    /**
+     * return integer value for database savings
+     * 
+     * @return value as integer
+     */
+    public Integer getValue() {
+        return this.value;
     }
 
     /**
