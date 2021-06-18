@@ -26,6 +26,7 @@ package de.sub.goobi.helper.enums;
  * exception statement from your version.
  */
 import de.sub.goobi.helper.Helper;
+import lombok.Getter;
 
 /**
  * Enum of all history event types for all history events for processes
@@ -85,7 +86,8 @@ public enum HistoryEventType {
     color(13, "imagesColorDiff", true, false, null)
 
     ;
-
+	
+	@Getter
     private int value;
     private String title;
     private Boolean isNumeric;
@@ -101,15 +103,6 @@ public enum HistoryEventType {
         this.isNumeric = inIsNumeric;
         this.isString = inIsString;
         this.groupingExpression = groupingExpression;
-    }
-
-    /**
-     * return integer value for database savings
-     * 
-     * @return value as integer
-     */
-    public Integer getValue() {
-        return this.value;
     }
 
     /**
