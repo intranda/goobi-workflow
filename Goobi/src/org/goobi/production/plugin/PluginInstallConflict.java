@@ -12,14 +12,18 @@ import lombok.extern.log4j.Log4j2;
 public class PluginInstallConflict {
     private String path;
     private ResolveTactic resolveTactic;
+    private String archivedVersion;
     private String existingVersion;
     private String uploadedVersion;
-    private String currentVersion;
     private String editedExistingVersion;
     private String editedUploadedVersion;
-    private List<List<SpanTag>> spanTags;
-    private List<String> lineNumbers;
-    private List<String> lineTypes;
+    private List<List<SpanTag>> spanTagsOldNew;
+    private List<String> lineNumbersOldNew;
+    private List<String> lineTypesOldNew;
+    private List<List<SpanTag>> spanTagsOldOld;
+    private List<String> lineNumbersOldOld;
+    private List<String> lineTypesOldOld;
+    private String diffMode = "show_old_and_new_file";
     private String conflictsMode = "edit_existing_file";
     private boolean fixed;
 
@@ -34,7 +38,12 @@ public class PluginInstallConflict {
 
     public void setConflictsMode(String mode) {
         this.conflictsMode = mode;
-        //this.setCurrentVersion();
+    }
+
+
+    public void setDiffMode(String mode) {
+        this.diffMode = mode;
+        log.error(this.diffMode);
     }
 
     public void resetTextEditor() {
@@ -43,13 +52,10 @@ public class PluginInstallConflict {
     }
 
     public void setCurrentVersion(String content) {
-        this.currentVersion = content;
         if (this.conflictsMode.equals("edit_existing_file")) {
             this.editedExistingVersion = content;
-            //log.error(this.editedExistingVersion);
         } else {
             this.editedUploadedVersion = content;
-            //log.error(this.editedUploadedVersion);
         }
     }
 
@@ -59,6 +65,13 @@ public class PluginInstallConflict {
         } else {
             return this.editedUploadedVersion;
         }
+    }
+
+    /* THIS IS NON-PRODUCTIVE CODE */
+    /* IT IS ONLY FOR TESTING PURPOSES */
+    public void setExistingVersion(String content) {
+        this.existingVersion = content;
+        /**/this.archivedVersion = content;
     }
 
     public void fixConflict() {

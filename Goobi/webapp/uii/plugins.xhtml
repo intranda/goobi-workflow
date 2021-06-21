@@ -103,25 +103,48 @@
 													<ui:fragment rendered="#{!conflict.fixed}">
 														<ul class="nav nav-tabs">
 															<li role="presentation"
-																class="#{conflict.conflictsMode eq 'edit_existing_file' ? 'active' : ''}">
+																class="#{conflict.diffMode eq 'show_old_and_new_file' ? 'active' : ''}">
 																<h:commandLink>
-																	<h:outputText value="#{msgs.install_plugin_edit_existing_file}" />
-																	<f:ajax render="pluginsTabContent @form" execute="textarea_edit_file_destination" />
-																	<f:setPropertyActionListener value="edit_existing_file" target="#{conflict.conflictsMode}"></f:setPropertyActionListener>
+																	<h:outputText value="#{msgs.install_plugin_show_old_and_new_file}" />
+																	<f:ajax render="pluginsTabContent @form" />
+																	<f:setPropertyActionListener value="show_old_and_new_file" target="#{conflict.diffMode}"></f:setPropertyActionListener>
 																</h:commandLink>
 															</li>
 															<li role="presentation"
-																class="#{conflict.conflictsMode eq 'edit_uploaded_file' ? 'active' : ''}">
+																class="#{conflict.diffMode eq 'show_default_and_custom_file' ? 'active' : ''}">
+																<h:commandLink>
+																	<h:outputText value="#{msgs.install_plugin_show_default_and_custom_file}" />
+																	<f:ajax render="pluginsTabContent @form" />
+																	<f:setPropertyActionListener value="show_default_and_custom_file" target="#{conflict.diffMode}"></f:setPropertyActionListener>
+																</h:commandLink>
+															</li>
+															<li role="presentation"
+																class="pull-right #{conflict.conflictsMode eq 'edit_uploaded_file' ? 'active' : ''}">
 																<h:commandLink>
 																	<h:outputText value="#{msgs.install_plugin_edit_uploaded_file}" />
 																	<f:ajax render="pluginsTabContent @form" execute="textarea_edit_file_destination" />
 																	<f:setPropertyActionListener value="edit_uploaded_file" target="#{conflict.conflictsMode}"></f:setPropertyActionListener>
 																</h:commandLink>
 															</li>
+															<li role="presentation"
+																class="pull-right #{conflict.conflictsMode eq 'edit_existing_file' ? 'active' : ''}">
+																<h:commandLink>
+																	<h:outputText value="#{msgs.install_plugin_edit_existing_file}" />
+																	<f:ajax render="pluginsTabContent @form" execute="textarea_edit_file_destination" />
+																	<f:setPropertyActionListener value="edit_existing_file" target="#{conflict.conflictsMode}"></f:setPropertyActionListener>
+																</h:commandLink>
+															</li>
 														</ul>
-														<div class="col-md-6">
-															<h5>#{msgs.install_plugin_conflicts}</h5>
-														</div>
+														<ui:fragment rendered="#{conflict.diffMode eq 'show_old_and_new_file'}">
+															<div class="col-md-6">
+																<h5>#{msgs.install_plugin_show_old_and_new_file}</h5>
+															</div>
+														</ui:fragment>
+														<ui:fragment rendered="#{conflict.diffMode eq 'show_default_and_custom_file'}">
+															<div class="col-md-6">
+																<h5>#{msgs.install_plugin_show_default_and_custom_file}</h5>
+															</div>
+														</ui:fragment>
 														<ui:fragment rendered="#{conflict.conflictsMode eq 'edit_existing_file'}">
 															<div class="col-md-6">
 																<h5>#{msgs.install_plugin_existing_file}</h5>
@@ -133,14 +156,23 @@
 															</div>
 														</ui:fragment>
 														<div class="col-md-6">
-															<span class="plugin-installer-next-to-eachother-5">
-																<ui:repeat var="line" value="#{conflict.lineNumbers}" varStatus="lineStatus">
-																	<div class="plugin-installer-line-number #{conflict.lineTypes.get(lineStatus.index) eq 'insertion' ? 'plugin-installer-line-number-inserted' : ''} #{conflict.lineTypes.get(lineStatus.index) eq 'deletion' ? 'plugin-installer-line-number-deleted' : ''}">&#160;#{line}</div>
-																</ui:repeat>
-															</span>
+															<ui:fragment rendered="#{conflict.diffMode eq 'show_old_and_new_file'}">
+																<span class="plugin-installer-next-to-eachother-5">
+																	<ui:repeat var="line" value="#{conflict.lineNumbersOldNew}" varStatus="lineStatus">
+																		<div class="plugin-installer-line-number #{conflict.lineTypesOldNew.get(lineStatus.index) eq 'insertion' ? 'plugin-installer-line-number-inserted' : ''} #{conflict.lineTypesOldNew.get(lineStatus.index) eq 'deletion' ? 'plugin-installer-line-number-deleted' : ''}">&#160;#{line}</div>
+																	</ui:repeat>
+																</span>
+															</ui:fragment>
+															<ui:fragment rendered="#{conflict.diffMode eq 'show_default_and_custom_file'}">
+																<span class="plugin-installer-next-to-eachother-5">
+																	<ui:repeat var="line" value="#{conflict.lineNumbersOldOld}" varStatus="lineStatus">
+																		<div class="plugin-installer-line-number #{conflict.lineTypesOldOld.get(lineStatus.index) eq 'insertion' ? 'plugin-installer-line-number-inserted' : ''} #{conflict.lineTypesOldOld.get(lineStatus.index) eq 'deletion' ? 'plugin-installer-line-number-deleted' : ''}">&#160;#{line}</div>
+																	</ui:repeat>
+																</span>
+															</ui:fragment>
 															<span class="plugin-installer-next-to-eachother-90">
-																<ui:repeat var="line" value="#{conflict.spanTags}" varStatus="lineStatus">
-																	<div class="plugin-installer-diff-box #{conflict.lineTypes.get(lineStatus.index) eq 'insertion' ? 'plugin-installer-inserted-passive' : ''} #{conflict.lineTypes.get(lineStatus.index) eq 'deletion' ? 'plugin-installer-deleted-passive' : ''}">
+																<ui:repeat var="line" value="#{conflict.diffMode eq 'show_old_and_new_file' ? conflict.spanTagsOldNew : conflict.spanTagsOldOld}" varStatus="lineStatus">
+																	<div class="plugin-installer-diff-box #{conflict.diffMode eq 'show_old_and_new_file' &amp;&amp; conflict.lineTypesOldNew.get(lineStatus.index) eq 'insertion' ? 'plugin-installer-inserted-passive' : ''} #{conflict.diffMode eq 'show_old_and_new_file' &amp;&amp; conflict.lineTypesOldNew.get(lineStatus.index) eq 'deletion' ? 'plugin-installer-deleted-passive' : ''} #{conflict.diffMode eq 'show_default_and_custom_file' &amp;&amp; conflict.lineTypesOldOld.get(lineStatus.index) eq 'insertion' ? 'plugin-installer-inserted-passive' : ''} #{conflict.diffMode eq 'show_default_and_custom_file' &amp;&amp; conflict.lineTypesOldOld.get(lineStatus.index) eq 'deletion' ? 'plugin-installer-deleted-passive' : ''}">
 																		<!-- WARNING: The comment sequences MUST be here to AVOID the white spaces between different span tags! -->
 																		<ui:repeat var="spanTag" value="#{conflict.spanTags.get(lineStatus.index)}"><!--
 																			--><ui:fragment rendered="#{spanTag.type eq 'LINE_NUMBER_NORMAL'}"><!--

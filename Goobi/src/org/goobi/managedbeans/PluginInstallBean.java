@@ -37,12 +37,18 @@ public class PluginInstallBean {
 
     private Path currentExtractedPluginPath;
 
+    private InputStream streamToStoreArchiveFile;
+
     public String parseUploadedPlugin() {
         if (currentExtractedPluginPath != null && Files.exists(currentExtractedPluginPath)) {
             FileUtils.deleteQuietly(currentExtractedPluginPath.toFile());
         }
-        try (InputStream input = uploadedPluginFile.getInputStream();
-                TarInputStream tarIn = new TarInputStream(input)) {
+        InputStream input = null;
+        TarInputStream tarIn = null;
+        try {
+            input = uploadedPluginFile.getInputStream();
+            this.streamToStoreArchiveFile = uploadedPluginFile.getInputStream();
+            tarIn = new TarInputStream(input);
             currentExtractedPluginPath = Files.createTempDirectory("plugin_extracted_");
             TarEntry tarEntry = tarIn.getNextEntry();
             while (tarEntry != null) {
@@ -57,6 +63,17 @@ public class PluginInstallBean {
             }
         } catch (IOException ioException) {
             log.error(ioException);
+        } finally {
+            try {
+                input.close();
+            } catch (IOException ioException) {
+                log.error(ioException);
+            }
+            try {
+                tarIn.close();
+            } catch (IOException ioException) {
+                log.error(ioException);
+            }
         }
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         try {
@@ -68,20 +85,14 @@ public class PluginInstallBean {
     }
 
     public String install() {
-        /* DOES NOT WORK BECAUSE this.uploadedPluginFile has no inputStream
         try {
             File uploadedArchive = new File(this.uploadedPluginFile.getSubmittedFileName());
-            log.error("uploadedArchive: " + uploadedArchive);
-            log.error("this.uploadedPluginFile: " + this.uploadedPluginFile);
-            InputStream inputStream = this.uploadedPluginFile.getInputStream();
-            log.error("inputStream: " + inputStream);
-            FileUtils.copyInputStreamToFile(inputStream, uploadedArchive);
+            FileUtils.copyInputStreamToFile(this.streamToStoreArchiveFile, uploadedArchive);
             this.pluginInstaller.setUploadedArchiveFile(uploadedArchive.toPath());
         } catch (IOException ioException) {
             log.error(ioException);
             ioException.printStackTrace();
         }
-        */
         this.pluginInstaller.install();
         this.pluginInstaller = null;
         return "";

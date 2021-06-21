@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.text.diff.StringsComparator;
 
 import org.goobi.production.plugin.PluginInstallConflict.ResolveTactic;
@@ -66,6 +67,7 @@ public class PluginInstaller {
     private Path uploadedArchiveFile;
 
     public void install() {
+        this.saveArchiveFile();
         try (Stream<Path> walkStream = Files.walk(this.extractedArchivePath)) {
             walkStream.filter(Files::isRegularFile)
                     .forEach(path -> {
@@ -103,17 +105,17 @@ public class PluginInstaller {
                             log.error(ioException);
                         }
                     });
-            this.saveArchiveFile();
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
     }
     private void saveArchiveFile() {
+        Path installedPluginsDirectory = Paths.get(this.goobiDirectory.toString() + "/.plugin-packages/");
+        String fileName = this.uploadedArchiveFile.getFileName().toString();
+        Path file = Paths.get(installedPluginsDirectory.toString() + "/" + fileName);
         try {
-            Path newPath = Paths.get(this.goobiDirectory.toString() + ".installed_plugins");
-            log.error("newPath: " + newPath.toString());
-            if (!Files.exists(newPath)) {
-                Files.createDirectory(newPath);
+            if (!Files.exists(installedPluginsDirectory)) {
+                Files.createDirectory(installedPluginsDirectory);
             }
         } catch (Exception exception) {
             log.error(exception);
@@ -121,7 +123,7 @@ public class PluginInstaller {
             return;
         }
         try {
-        Files.write(this.uploadedArchiveFile, Files.readAllBytes(this.uploadedArchiveFile));
+            Files.write(file, IOUtils.toByteArray(Files.newInputStream(this.uploadedArchiveFile)));
         } catch (IOException ioException) {
             log.error(ioException);
             ioException.printStackTrace();
@@ -270,9 +272,15 @@ public class PluginInstaller {
      * @param conflict The conflict object to store the span tags and the line types in
      */
     private static void findDifferencesInFile(PluginInstallConflict conflict) {
+
         // Get the code lines from both files
-        String[] existingLines = conflict.getExistingVersion().split(LINEBREAK);
-        String[] uploadedLines = conflict.getUploadedVersion().split(LINEBREAK);
+        String[] existingLines = conflict.getArchivedVersion().split(LINEBREAK);
+        String[] uploadedLines = new String[0];
+        if (conflict.getDiffMode().equals("show_old_and_new_file")) {
+            uploadedLines = conflict.getUploadedVersion().split(LINEBREAK);
+        } else if (conflict.getDiffMode().equals("show_default_and_custom_file")) {
+            uploadedLines = conflict.getExistingVersion().split(LINEBREAK);
+        }
 
         // This list of list of SpanTag objects will contain the span-tags
         // for the resulting HTML file. The outer list represents the list of
@@ -386,9 +394,15 @@ public class PluginInstaller {
             uploadedLineIndex++;
         }
 
-        conflict.setSpanTags(fileContent);
-        conflict.setLineTypes(lineTypes);
-        conflict.setLineNumbers(lineNumbers);
+        if (conflict.getDiffMode().equals("show_old_and_new_file")) {
+            conflict.setSpanTagsOldNew(fileContent);
+            conflict.setLineTypesOldNew(lineTypes);
+            conflict.setLineNumbersOldNew(lineNumbers);
+        } else if (conflict.getDiffMode().equals("show_default_and_custom_file")) {
+            conflict.setSpanTagsOldOld(fileContent);
+            conflict.setLineTypesOldOld(lineTypes);
+            conflict.setLineNumbersOldOld(lineNumbers);
+        }
     }
 
     /**
