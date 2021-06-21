@@ -488,7 +488,7 @@ public class ExportMets {
         v.setName(projectFileGroup.getName());
         v.setPathToFiles(variableRplacer.replace(projectFileGroup.getPath()));
         v.setMimetype(projectFileGroup.getMimetype());
-        v.setFileSuffix(projectFileGroup.getSuffix());
+        v.setFileSuffix(projectFileGroup.getSuffix().trim());
         v.setFileExtensionsToIgnore(projectFileGroup.getIgnoreMimetypes());
         v.setIgnoreConfiguredMimetypeAndSuffix(projectFileGroup.isUseOriginalFiles());
         if (projectFileGroup.getName().equals("PRESENTATION")) {
