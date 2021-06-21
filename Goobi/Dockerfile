@@ -41,8 +41,6 @@ RUN apt-get update && \
         bc \
         rename \
         file \
-        vim \
-        unzip \
         mysql-client \
         gettext-base && \
     apt-get -y clean && \
