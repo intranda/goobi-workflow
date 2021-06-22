@@ -35,7 +35,7 @@
                         type="button">
                         <i class="fa fa-angle-double-left" aria-hidden="true"></i>
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        <f:ajax execute="@form :pageareas" render="@form :pageareas" />
+                        <f:ajax execute="@form :pageareas" render="@form :pageareas :altoEditAutocomplete" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
                     </button>
                 </li>
@@ -51,7 +51,7 @@
                         type="button">
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        <f:ajax execute="@form :pageareas" render="@form :pageareas" />
+                        <f:ajax execute="@form :pageareas" render="@form :pageareas :altoEditAutocomplete" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
                     </button>
                 </li>
@@ -65,7 +65,7 @@
                         <i class="fa fa-angle-left" aria-hidden="true"></i>
                         <span>#{Metadaten.pagesRTL?msgs.nextImage:msgs.previousImage}</span>
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        <f:ajax execute="@form :pageareas" render="@form :pageareas" />
+                        <f:ajax execute="@form :pageareas" render="@form :pageareas :altoEditAutocomplete" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
                     </button>
                 </li>
@@ -105,7 +105,7 @@
                         <span>#{Metadaten.pagesRTL?msgs.previousImage:msgs.nextImage}</span>
                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        <f:ajax execute="@form :pageareas" render="@form :pageareas" />
+                        <f:ajax execute="@form :pageareas" render="@form :pageareas :altoEditAutocomplete" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
                     </button>
                 </li>
@@ -120,7 +120,7 @@
                         type="button">
                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        <f:ajax execute="@form :pageareas" render="@form :pageareas" />
+                        <f:ajax execute="@form :pageareas" render="@form :pageareas :altoEditAutocomplete" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
                     </button>
                 </li>
@@ -136,7 +136,7 @@
                         type="button">
                         <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                        <f:ajax execute="@form :pageareas" render="@form :pageareas" />
+                        <f:ajax execute="@form :pageareas" render="@form :pageareas :altoEditAutocomplete" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
                     </button>
                 </li>

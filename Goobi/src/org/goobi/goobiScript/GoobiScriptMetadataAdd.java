@@ -74,6 +74,7 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
 
     @Override
     public void execute(GoobiScriptResult gsr) {
+        Map<String, String> parameters = gsr.getParameters();
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
         gsr.setProcessTitle(p.getTitel());
         gsr.setResultType(GoobiScriptResultType.RUNNING);

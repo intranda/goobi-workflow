@@ -26,6 +26,26 @@
                 <li class="separator">
                 </li>
                 <ui:fragment rendered="#{Metadaten.showOcrButton}">
+                    <li>
+                            <!-- JS function is defined in uii/includes/metseditor/modals/inc_me_modal_altoeditor.xhtml -->
+                        <button
+                            onclick="openAltoEditor()"
+                            type="button"
+                            aria-label="#{msgs.mets_editOcrForCurrentImage}"
+                            class="btn btn--icon"
+                            title="#{msgs.mets_editOcrForCurrentImage}"
+                            role="button"
+                            data-toggle="tooltip"
+                            data-placement="bottom">
+                            <i
+                                class="fa fa-file-text-o fa-lg"
+                                aria-hidden="true"></i>
+                                <i
+                                class="fa fa-pencil fa-lg"
+                                aria-hidden="true"></i>
+                           
+                        </button>
+                    </li>
                     <li class="no-border #{Metadaten.treeProperties.showOcr eq 'true' ? 'active' :''}">
                         <button
                             jsf:id="ocrButton"
@@ -48,9 +68,7 @@
                                 value="tooltip" />
                             <f:passThroughAttribute
                                 name="data-placement"
-                                value="top" />
-                           
-
+                                value="bottom" />
                         </button>
                     </li>
                 </ui:fragment>

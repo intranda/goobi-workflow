@@ -12,12 +12,6 @@
     </ui:define>
 
     <ui:define name="content">
-        <script type="text/javascript">
-			window.onload = function() {
-				document.getElementById('titel')
-				.focus();
-			}
-		</script>
         <h:form id="myform" styleClass="form-horizontal form-bordered" onkeypress="submitOnEnter(event);" rendered="#{LoginForm.hasRole('Admin_Projects')}">
 
             <div class="row" role="main">
@@ -212,17 +206,27 @@
                                                         <intranda:formInputText id="name" name="nameName" label="#{msgs.name}" field="#{ProjekteForm.myFilegroup.name}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupName}" fieldStyle="form-control" />
 
                                                         <intranda:formInputText id="url" name="path" label="#{msgs.path}" field="#{ProjekteForm.myFilegroup.path}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupPath}" fieldStyle="form-control" />
-
-                                                        <intranda:formInputText id="mimetype" name="mimetypeName" label="#{msgs.mimetype}" field="#{ProjekteForm.myFilegroup.mimetype}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupMimetype}" fieldStyle="form-control" />
-
-                                                        <intranda:formInputText id="suffix" name="suffixName" label="#{msgs.suffix}" field="#{ProjekteForm.myFilegroup.suffix}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupSuffix}" fieldStyle="form-control" />
-
+                                                        
+                                                        <div id="mime_suffix" jsf:rendered="#{not ProjekteForm.myFilegroup.useOriginalFiles}">
+	                                                        <intranda:formInputText id="mimetype" name="mimetypeName" label="#{msgs.mimetype}" field="#{ProjekteForm.myFilegroup.mimetype}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupMimetype}" fieldStyle="form-control" />
+															
+	                                                        <intranda:formInputText id="suffix" name="suffixName" label="#{msgs.suffix}" field="#{ProjekteForm.myFilegroup.suffix}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupSuffix}" fieldStyle="form-control" />
+	                                                    </div>
+	                                                     
                                                         <intranda:formInputText id="folder" name="folderName" label="#{msgs.validationAgainstFolder}" field="#{ProjekteForm.myFilegroup.folder}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" required="false" help="#{msgs.helpFilegroupValidationAgainstFolder}" fieldStyle="form-control" />
-
-                                                        <intranda:formInputCheckBox id="useOriginalFiles" name="useOriginalFilesName" label="#{msgs.projectfilegroup_useOriginalFiles}" field="#{ProjekteForm.myFilegroup.useOriginalFiles}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpProjectfilegroup_UseOriginalFiles}" />
+                                                        
+                                                        <intranda:formInputCheckBoxAjax
+				                                        id="useOriginalFiles"
+				                                        label="#{msgs.projectfilegroup_useOriginalFiles}"
+				                                        field="#{ProjekteForm.myFilegroup.useOriginalFiles}"
+				                                        help="#{msgs.helpProjectfilegroup_UseOriginalFiles}"
+				                                        name="useOriginalFilesName"
+				                                        ajaxEvent="click"
+				                                        ajaxRender="@form"
+				                                        style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" />
 
                                                         <intranda:formInputText id="ignoreMimetypes" name="ignoreMimetypesName" label="#{msgs.projectfilegroup_ignoreMimetypes}" field="#{ProjekteForm.myFilegroup.ignoreMimetypes}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" required="false" help="#{msgs.helpProjectfilegroup_IgnoreMimetypes}" fieldStyle="form-control" />
-
+														
                                                         <div class="form-actions">
                                                             <!-- Speichern-Schaltknopf -->
                                                             <button jsf:id="saveFileformat" class="btn btn-success pull-right font-size-s margin-bottom-most" jsf:action="#{ProjekteForm.filegroupSave}" title="#{msgs.uebernehmen}">

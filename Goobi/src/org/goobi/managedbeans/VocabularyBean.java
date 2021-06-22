@@ -672,7 +672,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
     private String getCellValue(Cell cell) {
         String value = "";
         if (cell != null) {
-            cell.setCellType(Cell.CELL_TYPE_STRING);
+            cell.setCellType(CellType.STRING);
             value = cell.getStringCellValue();
         }
         return value;

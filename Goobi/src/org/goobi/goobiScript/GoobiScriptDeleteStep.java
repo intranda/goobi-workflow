@@ -51,7 +51,7 @@ public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoob
 
     @Override
     public void execute(GoobiScriptResult gsr) {
-
+        Map<String, String> parameters = gsr.getParameters();
         // execute all jobs that are still in waiting state
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
         gsr.setProcessTitle(p.getTitel());

@@ -27,12 +27,16 @@ package de.unigoettingen.sub.search.opac;
  */
 import java.util.List;
 
+import lombok.Getter;
+
 /**
  * die OpacBeautifier dienen zur Manipulation des Ergebnisses, was als Treffer einer Opacabfrage zurückgegeben wird. Dabei soll die Eigenschaft eines
  * Wertes gesetzt werden, wenn bestimmte Werte in dem opac-Ergebnis auftreten. ================================================================
  */
 public class ConfigOpacCatalogueBeautifier {
+	@Getter
     private ConfigOpacCatalogueBeautifierElement tagElementToChange;
+	@Getter
     private List<ConfigOpacCatalogueBeautifierElement> tagElementsToProof;
 
     public ConfigOpacCatalogueBeautifier(ConfigOpacCatalogueBeautifierElement inChangeElement,
@@ -40,13 +44,4 @@ public class ConfigOpacCatalogueBeautifier {
         this.tagElementToChange = inChangeElement;
         this.tagElementsToProof = inProofElements;
     }
-
-    public ConfigOpacCatalogueBeautifierElement getTagElementToChange() {
-        return this.tagElementToChange;
-    }
-
-    public List<ConfigOpacCatalogueBeautifierElement> getTagElementsToProof() {
-        return this.tagElementsToProof;
-    }
-
 }

@@ -73,8 +73,8 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
 
         for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
             Step s = iterator.next();
-            if (s.getTitel().equals(parameters.get("steptitle"))) {
-                s.setBearbeitungsstatusAsString(parameters.get("status"));
+            if (s.getTitel().equals(gsr.getParameters().get("steptitle"))) {
+                s.setBearbeitungsstatusAsString(gsr.getParameters().get("status"));
                 try {
                     StepManager.saveStep(s);
                     Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Changed status of step '" + s.getTitel() + "' to '"
@@ -94,7 +94,7 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
         }
         if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
             gsr.setResultType(GoobiScriptResultType.OK);
-            gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+            gsr.setResultMessage("Step not found: " + gsr.getParameters().get("steptitle"));
         }
         gsr.updateTimestamp();
     }
