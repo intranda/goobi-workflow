@@ -1196,15 +1196,15 @@
 
                                                                 </li>
                                                                 <li>
-                                                                    <!-- Mets-Export-Button --> <button
-                                                                        jsf:action="#{ProzessverwaltungForm.ExportMets}"
-                                                                        jsf:id="action19"
-                                                                        title="#{msgs.exportMets}"
+                                                                    <!-- Mets-Download-Button --> <button
+                                                                        jsf:action="#{ProzessverwaltungForm.downloadMets}"
+                                                                        jsf:id="action25"
+                                                                        title="#{msgs.downloadMets}"
                                                                         onclick="preventDoubleSubmit(this);"
                                                                         jsf:rendered="#{item.displayMETSButton}"
                                                                         class="dropdown-item">
                                                                         <i class="fa fa-floppy-o margin-right-10" />
-                                                                        <h:outputText value="#{msgs.exportMets}" />
+                                                                        <h:outputText value="#{msgs.downloadMets}" />
                                                                         <x:updateActionListener
                                                                             property="#{ProzessverwaltungForm.myProzess}"
                                                                             value="#{item}" />
