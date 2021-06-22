@@ -1195,26 +1195,9 @@
                                                                     </button>
 
                                                                 </li>
-                                                                <!-- Mets-Export-Button -->
-                                                                <!-- 
-                                                                <li>
-                                                                     <button
-                                                                        jsf:action="#{ProzessverwaltungForm.ExportMets}"
-                                                                        jsf:id="action19"
-                                                                        title="#{msgs.exportMets}"
-                                                                        onclick="preventDoubleSubmit(this);"
-                                                                        jsf:rendered="#{item.displayMETSButton}"
-                                                                        class="dropdown-item">
-                                                                        <i class="fa fa-floppy-o margin-right-10" />
-                                                                        <h:outputText value="#{msgs.exportMets}" />
-                                                                        <x:updateActionListener
-                                                                            property="#{ProzessverwaltungForm.myProzess}"
-                                                                            value="#{item}" />
-                                                                    </button>
-                                                                </li> -->
                                                                 <li>
                                                                     <!-- Mets-Download-Button --> <button
-                                                                        jsf:action="#{ProzessverwaltungForm.ExportMets}"
+                                                                        jsf:action="#{ProzessverwaltungForm.downloadMets}"
                                                                         jsf:id="action25"
                                                                         title="#{msgs.downloadMets}"
                                                                         onclick="preventDoubleSubmit(this);"

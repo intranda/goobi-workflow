@@ -158,8 +158,8 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
-    WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
-    TypeNotAllowedForParentException {
+            WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
+            TypeNotAllowedForParentException {
 
         String benutzerHome = "";
         LoginBean login = Helper.getLoginBean();
@@ -169,6 +169,39 @@ public class ExportMets {
             benutzerHome = myProzess.getProjekt().getDmsImportImagesPath();
         }
         return startExport(myProzess, benutzerHome);
+    }
+
+    public void downloadMets(Process process) throws ReadException, PreferencesException, WriteException, IOException, InterruptedException,
+            SwapException, DAOException, TypeNotAllowedForParentException {
+        this.myPrefs = process.getRegelsatz().getPreferences();
+        String atsPpnBand = process.getTitel();
+        Fileformat gdzfile = process.readMetadataFile();
+
+        //String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis); 
+        Path targetDir = Files.createTempDirectory("mets_export"); //only save file in /tmp/ directory 
+
+        String targetFileName = targetDir.resolve(atsPpnBand + "_mets.xml").toAbsolutePath().toString();
+        writeMetsFile(process, targetFileName, gdzfile, false);
+
+        //download File
+        try (InputStream in = StorageProvider.getInstance().newInputStream(Paths.get(targetFileName))) {
+            FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+            ExternalContext ec = facesContext.getExternalContext();
+            ec.responseReset();
+            ec.setResponseHeader("Content-Disposition", "attachment; filename=" + Paths.get(targetFileName).getFileName());
+            ec.setResponseContentLength((int) StorageProvider.getInstance().getFileSize(Paths.get(targetFileName)));
+
+            IOUtils.copy(in, ec.getResponseOutputStream());
+
+            facesContext.responseComplete();
+
+            Helper.setMeldung(null, process.getTitel() + ": ", "Download Finished");
+
+            //delete file from directory
+            StorageProvider.getInstance().deleteDir(targetDir);
+        } catch (Exception e) {
+            logger.error(e);
+        }
     }
 
     /**
@@ -190,8 +223,8 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
-    WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
-    SwapException, DAOException, TypeNotAllowedForParentException {
+            WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
+            SwapException, DAOException, TypeNotAllowedForParentException {
 
         /*
          * -------------------------------- Read Document --------------------------------
@@ -201,11 +234,10 @@ public class ExportMets {
         Fileformat gdzfile = myProzess.readMetadataFile();
 
         //String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis); 
-        String zielVerzeichnis = "/tmp/";										//only save file in /tmp/ directory 
+        String zielVerzeichnis = Files.createTempDirectory("mets_export").toAbsolutePath().toString(); //only save file in /tmp/ directory 
 
         String targetFileName = zielVerzeichnis + atsPpnBand + "_mets.xml";
         return writeMetsFile(myProzess, targetFileName, gdzfile, false);
-
     }
 
     /**
@@ -482,26 +514,8 @@ public class ExportMets {
         } else {
             mm.write(targetFileName);
         }
-        //download File
-		try (InputStream in = StorageProvider.getInstance().newInputStream(Paths.get(targetFileName))) {
-			FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
-			ExternalContext ec = facesContext.getExternalContext();
-			ec.responseReset();
-			ec.setResponseHeader("Content-Disposition", "attachment; filename=" + Paths.get(targetFileName).getFileName());
-			ec.setResponseContentLength((int) StorageProvider.getInstance().getFileSize(Paths.get(targetFileName)));
-			
-			IOUtils.copy(in, ec.getResponseOutputStream());  
-			
-			facesContext.responseComplete();
-			
-			Helper.setMeldung(null, myProzess.getTitel() + ": ", "Download Finished");
-			
-			//delete file from directory
-			StorageProvider.getInstance().deleteDir(Paths.get(targetFileName));
-		}catch (Exception e) {
-			logger.error(e);
-		}
-        //Helper.setMeldung(null, myProzess.getTitel() + ": ", "ExportFinished");
+
+        Helper.setMeldung(null, myProzess.getTitel() + ": ", "ExportFinished");
         return true;
     }
 
