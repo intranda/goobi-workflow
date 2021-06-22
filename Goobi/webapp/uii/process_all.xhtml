@@ -37,9 +37,9 @@
     </ui:define>
 
     <ui:define name="content">
-    	<link rel="stylesheet" href="template/css/codemirror/codemirror.css"/>
-        <script type="text/javascript" src="template/js/codemirror/codemirror.js"/>
-    	<script src="template/js/codemirror/mode/yaml/yaml.js"/>
+    	<link rel="stylesheet" href="template/css/codemirror/codemirror.css?v=#{HelperForm.buildVersion}"/>
+        <script type="text/javascript" src="template/js/codemirror/codemirror.js?v=#{HelperForm.buildVersion}"/>
+    	<script src="template/js/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}"/>
 
     	<style>
 	        .CodeMirror{
@@ -357,44 +357,38 @@
                                                                                 rel="tooltip" />
                                                                         </h:panelGroup>
 
-                                                                        <h:panelGroup
-                                                                            rendered="#{step.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}">
+                                                                        <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}">
                                                                             <li
                                                                                 class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
                                                                                 rel="tooltip"
                                                                                 title="#{step.bearbeitungsstatusEnum.title} #{step.editTypeEnum.title}" />
                                                                         </h:panelGroup>
-                                                                        <h:panelGroup
-                                                                            rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}">
+                                                                        <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}">
                                                                             <li
                                                                                 class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
                                                                                 rel="tooltip"
                                                                                 title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}" />
                                                                         </h:panelGroup>
 
-                                                                        <h:panelGroup
-                                                                            rendered="#{step.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}">
+                                                                        <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}">
                                                                             <li
                                                                                 class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
                                                                                 rel="tooltip"
                                                                                 title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}" />
                                                                         </h:panelGroup>
-                                                                        <h:panelGroup
-                                                                            rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}">
+                                                                        <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}">
                                                                             <li
                                                                                 class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
                                                                                 rel="tooltip"
                                                                                 title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}" />
                                                                         </h:panelGroup>
-                                                                        <h:panelGroup
-                                                                            rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and !HelperForm.anonymized}">
+                                                                        <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and !HelperForm.anonymized}">
                                                                             <li
                                                                                 class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
                                                                                 rel="tooltip"
                                                                                 title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}" />
                                                                         </h:panelGroup>
-                                                                        <h:panelGroup
-                                                                            rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and HelperForm.anonymized}">
+                                                                        <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and HelperForm.anonymized}">
                                                                             <li
                                                                                 class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
                                                                                 rel="tooltip"
@@ -406,6 +400,13 @@
                                                                                 class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
                                                                                 title="#{step.bearbeitungsstatusEnum.title}"
                                                                                 rel="tooltip" />
+                                                                        </h:panelGroup>
+
+                                                                        <h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'INFLIGHT'}">
+                                                                            <li
+                                                                                class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+                                                                                title="#{msgs.statusInFlight}"
+                                                                                data-toggle="tooltip"></li>
                                                                         </h:panelGroup>
                                                                     </ul>
                                                                     <h:outputText
@@ -975,13 +976,13 @@
 
                                                 <!-- ProzessKopie-Schaltknopf -->
                                                 <button
+                                                    class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} button-schaltknopf"
                                                     jsf:action="#{ProzesskopieForm.Prepare}"
                                                     jsf:id="action22"
                                                     jsf:rel="tooltip"
                                                     onclick="preventDoubleSubmit(this);"
                                                     title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen}"
                                                     jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() eq 1}">
-                                                    <i class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} " />
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip" />
@@ -1036,15 +1037,13 @@
 
                                                 <!-- MassenImport -->
                                                 <button
-                                                	class="btn"
+                                                    class="btn fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} button-schaltknopf"
                                                     jsf:action="#{MassImportForm.Prepare}"
                                                     jsf:id="action222"
                                                     jsf:rel="tooltip"
                                                     title="#{msgs.MassenImport}"
                                                     onclick="preventDoubleSubmit(this);"
                                                     jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() eq 1}">
-                                                    <i
-                                                        class="fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} " />
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip" />

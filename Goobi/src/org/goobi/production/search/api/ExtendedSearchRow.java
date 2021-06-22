@@ -70,7 +70,7 @@ public class ExtendedSearchRow {
         }
 
         else if (fieldName.equals("BATCH") && !fieldValue.isEmpty()) {
-            value = "\"" + FilterString.BATCH + this.fieldValue + "\" ";
+            value = "\"" + this.fieldOperand + FilterString.BATCH + this.fieldValue + "\" ";
         }
 
         else if (fieldName.equals("PROJECT") && !this.projectName.equals(Helper.getTranslation("notSelected"))) {

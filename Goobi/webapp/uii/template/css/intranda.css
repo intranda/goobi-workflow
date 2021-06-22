@@ -299,6 +299,11 @@ button.dropdown-item:hover {
 	background: #fff;
 }
 
+.no-linebreak {
+	display: inline; 
+	white-space: nowrap;
+}
+
 /* ---------- NAVIGATION BUTTONS ----------- */
 
 #navigation .btn {
@@ -360,6 +365,10 @@ button.dropdown-item:hover {
 #navigation .btn:hover {
 	background: #1b67af;
     text-decoration: none;
+}
+
+#navigation .btn .caret {
+    margin-left: 3px;
 }
 
 /* ------------- Background colors --------------- */
@@ -2220,6 +2229,15 @@ ul>li.yellow, .label-yellow {
 	min-width:140px;
 }
 
+.log_file {
+	background: #368ee0;
+    border: none;
+    color: white;
+    margin-left: 10px;
+}
+.log_file_delete {
+	border: none;
+}
 
 @media only print {
     #left {

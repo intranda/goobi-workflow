@@ -128,7 +128,7 @@ set -u
 ##### CHANGE PARAMETERS AS NEEDED #####
 
 ## specify tomcat user and group
-TOMCATUSER=tomcat8
+TOMCATUSER=tomcat
 TOMCATGROUP=$TOMCATUSER
 
 ## how many processes shall run at the same time 

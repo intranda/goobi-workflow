@@ -58,6 +58,7 @@ public class GoobiScriptRenameStep extends AbstractIGoobiScript implements IGoob
 
     @Override
     public void execute(GoobiScriptResult gsr) {
+        Map<String, String> parameters = gsr.getParameters();
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
         String processTitle = p.getTitel();
         gsr.setProcessTitle(processTitle);

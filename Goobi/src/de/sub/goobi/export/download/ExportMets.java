@@ -108,6 +108,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
+import lombok.Getter;
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -127,6 +128,7 @@ import ugh.exceptions.WriteException;
 public class ExportMets {
     protected Helper help = new Helper();
     protected Prefs myPrefs;
+    @Getter
     protected List<String> problems = new ArrayList<>();
 
     protected static final Logger logger = LogManager.getLogger(ExportMets.class);
@@ -481,16 +483,12 @@ public class ExportMets {
         return true;
     }
 
-    public List<String> getProblems() {
-        return problems;
-    }
-
     private VirtualFileGroup createFilegroup(VariableReplacer variableRplacer, ProjectFileGroup projectFileGroup) {
         VirtualFileGroup v = new VirtualFileGroup();
         v.setName(projectFileGroup.getName());
         v.setPathToFiles(variableRplacer.replace(projectFileGroup.getPath()));
         v.setMimetype(projectFileGroup.getMimetype());
-        v.setFileSuffix(projectFileGroup.getSuffix());
+        v.setFileSuffix(projectFileGroup.getSuffix().trim());
         v.setFileExtensionsToIgnore(projectFileGroup.getIgnoreMimetypes());
         v.setIgnoreConfiguredMimetypeAndSuffix(projectFileGroup.isUseOriginalFiles());
         if (projectFileGroup.getName().equals("PRESENTATION")) {

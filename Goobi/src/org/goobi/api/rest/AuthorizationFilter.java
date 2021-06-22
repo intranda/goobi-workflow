@@ -27,6 +27,7 @@ import com.github.jgonian.ipmath.Ipv4Range;
 import com.github.jgonian.ipmath.Ipv6;
 import com.github.jgonian.ipmath.Ipv6Range;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.JwtHelper;
 import lombok.extern.log4j.Log4j2;
@@ -47,13 +48,20 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         }
 
         String jwt = requestContext.getHeaderString("jwt");
-
+        if (StringUtils.isBlank(jwt)) {
+            jwt =  req.getParameter("jwt");
+        }
         String pathInfo = req.getPathInfo();
         if (pathInfo == null) {
             requestContext.abortWith(Response.status(Response.Status.NOT_FOUND).entity("Not found\n").build());
             return;
         }
         String method = requestContext.getMethod();
+
+        // allow /developer/ prefix when devMode is on
+        if (ConfigurationHelper.getInstance().isDeveloping() && pathInfo.startsWith("/developer/")) {
+            return;
+        }
 
         //Always open for image, 3d object, multimedia requests and messages requests
         if (pathInfo.startsWith("/view/object/")

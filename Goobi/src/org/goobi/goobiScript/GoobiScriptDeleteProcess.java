@@ -63,6 +63,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
 
     @Override
     public void execute(GoobiScriptResult gsr) {
+        Map<String, String> parameters = gsr.getParameters();
 
         boolean contentOnly = Boolean.parseBoolean(parameters.get("contentOnly"));
         boolean removeUnknownFiles =

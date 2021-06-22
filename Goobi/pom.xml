@@ -4,18 +4,18 @@
     <artifactId>goobi-core</artifactId>
     <!-- When updating the version, make sure to also update the version in
         the submodules -->
-    <version>21.03.3-SNAPSHOT</version>
+    <version>21.06.6-SNAPSHOT</version>
     <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <publicVersion>21.03.3-SNAPSHOT</publicVersion>
+        <publicVersion>21.06.6-SNAPSHOT</publicVersion>
         <jhove.version>1.20.1</jhove.version>
         <jackson.version>2.11.2</jackson.version>
         <jersey.version>2.31</jersey.version>
         <powermock.version>2.0.7</powermock.version>
         <httpclient.version>4.5.13</httpclient.version>
-        <poi.version>3.17</poi.version>
+        <poi.version>5.0.0</poi.version>
     </properties>
     <repositories>
         <repository>
@@ -38,6 +38,39 @@
         <module>module-war</module>
     </modules>
     <dependencies>
+        <dependency>
+            <groupId>de.intranda.ugh</groupId>
+            <artifactId>ugh-marc</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>de.intranda.ugh</groupId>
+            <artifactId>ugh-lido</artifactId>
+            <version>0.0.7</version>
+        </dependency>        
+        <dependency>
+            <groupId>de.intranda.ugh</groupId>
+            <artifactId>ugh-core</artifactId>
+            <version>4.1.13</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>poi</groupId>
+                    <artifactId>poi</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>bouncycastle</groupId>
+                    <artifactId>bcprov-jdk14</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>    
         <dependency>
             <groupId>org.jboss.weld.servlet</groupId>
             <artifactId>weld-servlet-shaded</artifactId>
@@ -318,6 +351,10 @@
             <version>2.4</version>
             <exclusions>
                 <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>javax.media</groupId>
                     <artifactId>jai-core</artifactId>
                 </exclusion>
@@ -550,16 +587,26 @@
         </dependency>
         <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
         <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.2.8</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/jaxen/jaxen -->
-        <dependency>
-            <groupId>jaxen</groupId>
-            <artifactId>jaxen</artifactId>
-            <version>1.2.0</version>
-        </dependency>
+        <groupId>javax.xml.bind</groupId>
+        <artifactId>jaxb-api</artifactId>
+        <version>2.3.1</version>
+    </dependency>
+    <dependency>
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-core</artifactId>
+        <version>2.3.0.1</version>
+    </dependency>
+    <dependency>
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-impl</artifactId>
+        <version>2.3.1</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/jaxen/jaxen -->
+    <dependency>
+        <groupId>jaxen</groupId>
+        <artifactId>jaxen</artifactId>
+        <version>1.2.0</version>
+    </dependency>
         <!-- https://mvnrepository.com/artifact/org.jboss.logging/jboss-logging -->
         <dependency>
             <groupId>org.jboss.logging</groupId>
@@ -797,11 +844,11 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.42</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.poi/ooxml-schemas -->
+        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml-full -->
         <dependency>
             <groupId>org.apache.poi</groupId>
-            <artifactId>ooxml-schemas</artifactId>
-            <version>1.4</version>
+            <artifactId>poi-ooxml-full</artifactId>
+            <version>${poi.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/opensymphony/oscache -->
         <!-- Be careful with updates here -->
@@ -835,11 +882,11 @@
             <version>${poi.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml-schemas -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml-schemas</artifactId>
-            <version>${poi.version}</version>
-        </dependency>
+<!--         <dependency> -->
+<!--             <groupId>org.apache.poi</groupId> -->
+<!--             <artifactId>poi-ooxml-schemas</artifactId> -->
+<!--             <version>${poi.version}</version> -->
+<!--         </dependency> -->
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-scratchpad -->
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -914,12 +961,7 @@
             <artifactId>xalan</artifactId>
             <version>2.7.2</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans -->
-        <dependency>
-            <groupId>org.apache.xmlbeans</groupId>
-            <artifactId>xmlbeans</artifactId>
-            <version>3.1.0</version>
-        </dependency>
+
         <!-- https://mvnrepository.com/artifact/xerces/xercesImpl -->
         <dependency>
             <groupId>xerces</groupId>
@@ -1058,11 +1100,6 @@
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>1.21</version>
-        </dependency>
         <!-- ################################################################# -->
         <!-- Dependencies coming (mostly temporary) from intranda nexus server -->
         <!-- ################################################################# -->
@@ -1138,23 +1175,13 @@
         </dependency>
         <dependency>
             <groupId>de.intranda.other</groupId>
-            <artifactId>mets</artifactId>
-            <version>1.12</version>
-        </dependency>
-        <dependency>
-            <groupId>de.intranda.other</groupId>
-            <artifactId>mods</artifactId>
-            <version>3.7</version>
-        </dependency>
-        <dependency>
-            <groupId>de.intranda.other</groupId>
             <artifactId>msv</artifactId>
             <version>20090415</version>
         </dependency>
         <dependency>
             <groupId>de.intranda.goobi</groupId>
             <artifactId>normdataimporter</artifactId>
-            <version>1.5.2</version>
+            <version>1.5.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
@@ -1198,14 +1225,9 @@
             <version>1.5</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-solrj</artifactId>
-            <version>7.1.0</version>
-        </dependency>
-        <dependency>
             <groupId>de.intranda.contentserver</groupId>
             <artifactId>ics</artifactId>
-            <version>2.7.2</version>
+            <version>2.8.5</version>
             <exclusions>
                 <exclusion>
                     <artifactId>bcprov-jdk14</artifactId>
@@ -1226,14 +1248,6 @@
                 <exclusion>
                     <groupId>org.eclipse.jetty</groupId>
                     <artifactId>jetty-server</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>de.intranda.other</groupId>
-                    <artifactId>mods</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>de.intranda.other</groupId>
-                    <artifactId>mets</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
@@ -1289,38 +1303,7 @@
             <artifactId>util</artifactId>
             <version>[0.0.1,)</version>
         </dependency>
-        <dependency>
-            <groupId>de.intranda.ugh</groupId>
-            <artifactId>ugh-marc</artifactId>
-            <version>1.2.2</version>
-        </dependency>
-        <dependency>
-            <groupId>de.intranda.ugh</groupId>
-            <artifactId>ugh-core</artifactId>
-            <version>4.1.10</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>poi</groupId>
-                    <artifactId>poi</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>de.intranda.other</groupId>
-                    <artifactId>mods</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>de.intranda.other</groupId>
-                    <artifactId>mets</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+        
         <dependency>
             <groupId>de.intranda.other.jai</groupId>
             <artifactId>jai_codec</artifactId>

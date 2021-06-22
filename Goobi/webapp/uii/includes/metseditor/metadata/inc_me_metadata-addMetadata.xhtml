@@ -6,7 +6,7 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" 
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:p="http://primefaces.org/ui"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -52,7 +52,7 @@
                                         <f:ajax
                                             event="valueChange"
                                             execute="@form"
-                                            render="@form" />
+                                            render="metadataform" />
                                     </h:selectOneMenu>
                                 </div>
 
@@ -173,7 +173,8 @@
                                                 <!--  buttons -->
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'geonames'}">
                                                     <button
-                                                    	jsf:id="geoNames"
+                                                        type="button"
+                                                        jsf:id="geoNames"
                                                         class="btn change-icon geonamesIndexTrigger"
                                                         title="#{msgs.search}"
                                                         onclick="$('#geonamesSearchBox').modal('show');">
@@ -199,7 +200,8 @@
 
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'gnd'}">
                                                     <button
-                                                    	jsf:id="gndSearch"
+                                                        type="button"
+                                                        jsf:id="gndSearch"
                                                         class="btn change-icon gndIndexTrigger"
                                                         title="#{msgs.search}"
                                                         onclick="$('#gndSearchBox').modal('show');">
@@ -226,7 +228,8 @@
 
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'process'}">
                                                     <button
-                                                    	jsf:id="openProcessSearchModal"
+                                                        type="button"
+                                                        jsf:id="openProcessSearchModal"
                                                         class="btn change-icon processIndexTrigger"
                                                         title="#{msgs.search}"
                                                         onclick="$('#processModalContent').modal('show');">
@@ -264,7 +267,8 @@
                                                 style="text-align: center;">
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'dante'}">
                                                     <button
-                                                    	jsf:id="openDanteSearchModal"
+                                                        type="button"
+                                                        jsf:id="openDanteSearchModal"
                                                         class="btn change-icon danteIndexTrigger"
                                                         title="#{msgs.search}"
                                                         onclick="$('#danteSearchBox').modal('show');">
@@ -288,7 +292,8 @@
                                                 </ui:fragment>
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'easydb'}">
                                                     <button
-                                                    	jsf:id="openEasyDbSearchModal"
+                                                        type="button"
+                                                        jsf:id="openEasyDbSearchModal"
                                                         class="btn change-icon easydbIndexTrigger"
                                                         title="#{msgs.search}"
                                                         onclick="$('#easydbSearchBox').modal('show');">
@@ -312,7 +317,8 @@
                                                 </ui:fragment>
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'viaf'}">
                                                     <button
-                                                    	jsf:id="viafSearchButton"
+                                                        type="button"
+                                                        jsf:id="viafSearchButton"
                                                         class="btn change-icon viafIndexTrigger"
                                                         title="#{msgs.search}"
                                                         onclick="$('#viafSearchBox').modal('show');">
@@ -337,7 +343,8 @@
                                                 </ui:fragment>
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'vocabularySearch'}">
                                                     <button
-                                                    	jsf:id="vocabSearch"
+                                                        type="button"
+                                                        jsf:id="vocabSearch"
                                                         class="btn change-icon vocabularySearchIndexTrigger"
                                                         title="#{msgs.search}"
                                                         onclick="$('#vocabularySearchBox').modal('show');">
@@ -391,7 +398,7 @@
                                 action="#{Metadaten.addNewMetadata}"
                                 value="#{msgs.dieAenderungenSpeichern}"
                                 role="button">
-                             </h:commandButton>
+                            </h:commandButton>
                         </div>
                     </div>
                 </div>
