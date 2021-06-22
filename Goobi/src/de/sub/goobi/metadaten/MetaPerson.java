@@ -271,7 +271,9 @@ public class MetaPerson implements SearchableMetadata {
 
     @Override
     public String search() {
-        if (StringUtils.isBlank(searchOption) && StringUtils.isBlank(searchValue)) {
+        if (!isSearchInViaf
+                && StringUtils.isBlank(searchOption)
+                && StringUtils.isBlank(searchValue)) {
             showNotHits = true;
             return "";
         }

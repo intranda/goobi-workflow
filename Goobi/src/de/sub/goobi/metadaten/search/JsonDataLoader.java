@@ -37,7 +37,7 @@ public class JsonDataLoader {
      */
     @SuppressWarnings("unchecked")
     public static List<Map<String, Object>> loadJsonList(String url) {
-        logger.debug("Loading JSON data from: {}", url);
+        logger.debug("Fetching json data from: {}", url);
         List<Map<String, Object>> hits = new ArrayList<>();
         try (InputStreamReader reader = new InputStreamReader(new URL(url).openStream())) {
             // List of hits from the response
