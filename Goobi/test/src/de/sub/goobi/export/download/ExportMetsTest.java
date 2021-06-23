@@ -48,7 +48,7 @@ import ugh.fileformats.mets.MetsModsImportExport;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({MetadatenHelper.class, JwtHelper.class})
-@PowerMockIgnore("javax.management.*")
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
 public class ExportMetsTest {
 
     private Process testProcess = null;

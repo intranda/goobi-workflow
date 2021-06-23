@@ -67,7 +67,7 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 
-@PowerMockIgnore({"javax.net.ssl.*", "javax.management.*"})
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*","javax.net.ssl.*",  "javax.management.*"})
 @RunWith(PowerMockRunner.class)
 
 @PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class, HistoryAnalyserJob.class, StepManager.class })
