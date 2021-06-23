@@ -322,15 +322,15 @@ public class VocabularyBean extends BasicBean implements Serializable {
         List<VocabRecord> recordList = currentVocabulary.getRecords();
 
         Workbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet(StringUtils.isBlank(description) ? title : title + " - " + description);
+        Sheet sheet = wb.createSheet((StringUtils.isBlank(description) ? title : title + " - " + description).replace("/", ""));
 
         // create header
         Row headerRow = sheet.createRow(0);
         int columnCounter = 0;
         for (Definition definition : definitionList) {
             headerRow.createCell(columnCounter)
-                    .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
-                            : definition.getLabel());
+            .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
+                    : definition.getLabel());
             columnCounter = columnCounter + 1;
         }
 
