@@ -680,6 +680,37 @@ public class NIOFileUtils implements StorageProviderInterface {
         return Files.isReadable(path);
     }
 
+    /**
+     * IMPORTANT: This detection of deletion permission works only for Linux/Unix systems. On Windows systems it's much more complicated to detect the
+     * deletion permission.
+     * 
+     * @return deletion permission of given path
+     */
+    @Override
+    public boolean isDeletable(Path path) {
+        Path parent = path.getParent();
+        if (!this.isReadable(parent) || !this.isWritable(parent) || !Files.isExecutable(parent)) {
+            return false;
+        }
+        if (this.isDirectory(path)) {
+            if (!this.isReadable(path) || !this.isWritable(path) || !Files.isExecutable(path)) {
+                return false;
+            }
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path)) {
+                for (Path child : directoryStream) {
+                    // Test whether child is a directory
+                    // If it is a directory, check recursively whether it is deletable
+                    // When it is not deletable, return false. Check other directories else.
+                    if (this.isDirectory(child) && !this.isDeletable(child)) {
+                        return false;
+                    }
+                }
+            } catch (IOException ex) {
+            }
+        }
+        return true;
+    }
+
     @Override
     public long getFileSize(Path path) throws IOException {
         return Files.size(path);
