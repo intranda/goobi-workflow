@@ -28,6 +28,7 @@ package de.sub.goobi.helper;
  */
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -36,6 +37,7 @@ import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.CopyOption;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileStore;
@@ -66,6 +68,8 @@ import java.util.zip.CRC32;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j2;
@@ -77,6 +81,8 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class NIOFileUtils implements StorageProviderInterface {
+
+    private static final Logger logger = LogManager.getLogger(Helper.class);
 
     public static final CopyOption[] STANDARD_COPY_OPTIONS =
             new CopyOption[] { StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES };
@@ -410,21 +416,29 @@ public class NIOFileUtils implements StorageProviderInterface {
                         targetDosAttrs.setSystem(sourceDosAttrs.isSystem());
                     }
                 }
-                FileOwnerAttributeView ownerAttrs = Files.getFileAttributeView(dir, FileOwnerAttributeView.class);
-                if (ownerAttrs != null) {
-                    if (fileStore.supportsFileAttributeView(FileOwnerAttributeView.class)) {
-                        FileOwnerAttributeView targetOwner = Files.getFileAttributeView(targetDir, FileOwnerAttributeView.class);
-                        targetOwner.setOwner(ownerAttrs.getOwner());
+                try {
+                    FileOwnerAttributeView ownerAttrs = Files.getFileAttributeView(dir, FileOwnerAttributeView.class);
+                    if (ownerAttrs != null) {
+                        if (fileStore.supportsFileAttributeView(FileOwnerAttributeView.class)) {
+                            FileOwnerAttributeView targetOwner = Files.getFileAttributeView(targetDir, FileOwnerAttributeView.class);
+                            targetOwner.setOwner(ownerAttrs.getOwner());
+                        }
                     }
+                } catch (AccessDeniedException | FileNotFoundException exception) {
+                    logger.error(exception);
                 }
-                PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
-                if (posixAttrs != null) {
-                    if (fileStore.supportsFileAttributeView(PosixFileAttributeView.class)) {
-                        PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
-                        PosixFileAttributeView targetPosix = Files.getFileAttributeView(targetDir, PosixFileAttributeView.class);
-                        targetPosix.setPermissions(sourcePosix.permissions());
-                        targetPosix.setGroup(sourcePosix.group());
+                try {
+                    PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
+                    if (posixAttrs != null) {
+                        if (fileStore.supportsFileAttributeView(PosixFileAttributeView.class)) {
+                            PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
+                            PosixFileAttributeView targetPosix = Files.getFileAttributeView(targetDir, PosixFileAttributeView.class);
+                            targetPosix.setPermissions(sourcePosix.permissions());
+                            targetPosix.setGroup(sourcePosix.group());
+                        }
                     }
+                } catch (AccessDeniedException | FileNotFoundException exception) {
+                    logger.error(exception);
                 }
                 UserDefinedFileAttributeView userAttrs = Files.getFileAttributeView(dir, UserDefinedFileAttributeView.class);
                 if (userAttrs != null) {
