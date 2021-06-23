@@ -77,7 +77,9 @@
                                     <!-- +++++++++++++++++  ProzessID ++++++++++++++++++++++++ -->
                                     <x:column id="my_tasks_process" rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processId']}">
                                         <f:facet name="header">
-                                            <button jsf:id="sortProcessId" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                            <button jsf:id="sortProcessId" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                            aria-label="#{msgs.defaultSortField} #{msgs.id} #{AktuelleSchritteForm.sortierung=='idDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='idAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            aria-sort="#{AktuelleSchritteForm.sortierung=='idDesc'? 'descending' : AktuelleSchritteForm.sortierung=='idAsc'? 'ascending' :'none'}">
                                                 <h:outputText styleClass="pull-left" value="#{msgs.id}" />
                                                 <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='idDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='idAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}"
@@ -92,7 +94,9 @@
                                     <x:column>
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <button type="button" jsf:id="sortStepTitle" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                            <button type="button" jsf:id="sortStepTitle" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                            aria-label="#{msgs.defaultSortField} #{msgs.arbeitsschritt} #{AktuelleSchritteForm.sortierung=='schrittDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='schrittAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            aria-sort="#{AktuelleSchritteForm.sortierung=='schrittDesc'? 'descending' : AktuelleSchritteForm.sortierung=='schrittAsc'? 'ascending' :'none'}">
                                                 <h:outputText styleClass="pull-left" value="#{msgs.arbeitsschritt}" />
                                                 <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='schrittDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='schrittAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='schrittAsc'?'schrittDesc':'schrittAsc'}" />
@@ -163,7 +167,9 @@
                                     <x:column styleClass="tableColumnMaxWidthLong">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <button type="button" jsf:id="sortProcessTitle" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                            <button type="button" jsf:id="sortProcessTitle" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                            aria-label="#{msgs.defaultSortField} #{msgs.prozessTitel} #{AktuelleSchritteForm.sortierung=='prozessDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='prozessAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            aria-sort="#{AktuelleSchritteForm.sortierung=='prozessDesc'? 'descending' : AktuelleSchritteForm.sortierung=='prozessAsc'? 'ascending' :'none'}">
                                                 <h:outputText styleClass="pull-left" value="#{msgs.prozessTitel}" />
                                                 <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='prozessDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='prozessAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='prozessAsc'?'prozessDesc':'prozessAsc'}" />
@@ -196,7 +202,9 @@
                                     <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processDate']}">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <button type="button" jsf:id="sortDate" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                            <button type="button" jsf:id="sortDate" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                            aria-label="#{msgs.defaultSortField} #{msgs.vorgangsdatum} #{AktuelleSchritteForm.sortierung=='prozessdateDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='prozessdateAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            aria-sort="#{AktuelleSchritteForm.sortierung=='prozessdateDesc'? 'descending' : AktuelleSchritteForm.sortierung=='prozessdateAsc'? 'ascending' :'none'}">
                                                 <h:outputText styleClass="pull-left" value="#{msgs.vorgangsdatum}" />
                                                 <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='prozessdateDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='prozessdateAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='prozessdateAsc'?'prozessdateDesc':'prozessdateAsc'}" />
@@ -211,7 +219,9 @@
                                     <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <button type="button" jsf:id="sortModule" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                            <button type="button" jsf:id="sortModule" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                            aria-label="#{msgs.defaultSortField} #{msgs.module} #{AktuelleSchritteForm.sortierung=='moduleDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='moduleAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            aria-sort="#{AktuelleSchritteForm.sortierung=='moduleDesc'? 'descending' : AktuelleSchritteForm.sortierung=='moduleAsc'? 'ascending' :'none'}">
                                                 <h:outputText styleClass="pull-left" value="#{msgs.module}" />
                                                 <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='modulesDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='modulesAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='modulesAsc'?'modulesDesc':'modulesAsc'}" />
@@ -226,7 +236,9 @@
                                     <x:column >
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <button type="button" jsf:id="sortProject" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                            <button type="button" jsf:id="sortProject" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                            aria-label="#{msgs.defaultSortField} #{msgs.projekt} #{AktuelleSchritteForm.sortierung=='projektDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='projektAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            aria-sort="#{AktuelleSchritteForm.sortierung=='projektDesc'? 'descending' : AktuelleSchritteForm.sortierung=='projektAsc'? 'ascending' :'none'}">
                                                 <h:outputText styleClass="pull-left" value="#{msgs.projekt}" />
                                                 <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='projektDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='projektAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='projektAsc'?'projektDesc':'projektAsc'}" />
@@ -241,7 +253,9 @@
                                             <f:facet name="header">
                                                 <!-- Header -->
                                                 <button class="button-no-style font-black-block" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
-                                                    title="#{msgs.institution}">
+                                                    title="#{msgs.institution}"
+                                                    aria-label="#{msgs.defaultSortField} #{msgs.institution} #{AktuelleSchritteForm.sortierung=='institutionDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='institutionAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            		aria-sort="#{AktuelleSchritteForm.sortierung=='institutionDesc'? 'descending' : AktuelleSchritteForm.sortierung=='institutionAsc'? 'ascending' :'none'}">
                                                     <h:outputText value="#{msgs.institution}"/>
                                                     <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='institutionDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='institutionAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                     <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}"
@@ -255,7 +269,9 @@
                                     <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <button type="button" jsf:id="sortLocking" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                            <button type="button" jsf:id="sortLocking" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                            	aria-label="#{msgs.defaultSortField} #{msgs.sperrungen} #{AktuelleSchritteForm.sortierung=='sperrungenDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='sperrungenAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            aria-sort="#{AktuelleSchritteForm.sortierung=='sperrungenDesc'? 'descending' : AktuelleSchritteForm.sortierung=='sperrungenAsc'? 'ascending' :'none'}">
                                                 <h:outputText styleClass="pull-left" value="#{msgs.sperrungen}" />
                                                 <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='sperrungenDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='sperrungenAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='sperrungenAsc'?'sperrungenDesc':'sperrungenAsc'}" />
@@ -270,7 +286,9 @@
                                     <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <button type="button" jsf:id="sortBatch" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                            <button type="button" jsf:id="sortBatch" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                            aria-label="#{msgs.defaultSortField} #{msgs.batch} #{AktuelleSchritteForm.sortierung=='batchDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='batchAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            aria-sort="#{AktuelleSchritteForm.sortierung=='batchDesc'? 'descending' : AktuelleSchritteForm.sortierung=='batchAsc'? 'ascending' :'none'}">
                                                 <h:outputText styleClass="pull-left" value="#{msgs.batch}" />
                                                 <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='batchDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='batchAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='batchAsc'?'batchDesc':'batchAsc'}" />
@@ -357,7 +375,9 @@
                                     >
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <button jsf:id="sortStatus" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}">
+                                            <button jsf:id="sortStatus" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                            aria-label="#{msgs.defaultSortField} #{msgs.auswahl} #{AktuelleSchritteForm.sortierung=='statusDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='statusAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            aria-sort="#{AktuelleSchritteForm.sortierung=='statusDesc'? 'descending' : AktuelleSchritteForm.sortierung=='statusAsc'? 'ascending' :'none'}">
                                                 <h:outputText styleClass="pull-left" value="#{msgs.auswahl}" />
                                                 <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='statusDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='statusAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='statusDesc'?'statusAsc':'statusDesc'}" />
