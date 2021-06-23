@@ -425,8 +425,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                         }
                     }
                 } catch (AccessDeniedException | FileNotFoundException exception) {
-                    exception.printStackTrace();
-                    logger.error(exception.getMessage());
+                    logger.error(exception);
                 }
                 try {
                     PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
@@ -439,8 +438,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                         }
                     }
                 } catch (AccessDeniedException | FileNotFoundException exception) {
-                    exception.printStackTrace();
-                    logger.error(exception.getMessage());
+                    logger.error(exception);
                 }
                 UserDefinedFileAttributeView userAttrs = Files.getFileAttributeView(dir, UserDefinedFileAttributeView.class);
                 if (userAttrs != null) {
