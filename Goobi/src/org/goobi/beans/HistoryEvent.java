@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import de.sub.goobi.helper.enums.HistoryEventType;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,6 +47,11 @@ public class HistoryEvent implements Serializable {
     private Date date;
     private Double numericValue;
     private String stringValue;
+    /**
+     * Getter and Setter for type as private methods for Hibernate only
+     */
+    @Getter (AccessLevel.PRIVATE)
+    @Setter (AccessLevel.PRIVATE)
     private Integer type;
     private Process process;
 
