@@ -1,7 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
     template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param name="myPageTitle" value="#{msgs.arbeitsschritt}: #{AktuelleSchritteForm.batchHelper.currentStep.titelLokalisiert}" title="#{AktuelleSchritteForm.batchHelper.currentStep.titel}"/>
     
@@ -46,9 +46,9 @@
 		    	                            </h:selectOneMenu>
 			    						</div>
 			    						<div class="col-sm-2">
-			                            	<h:commandLink id="select" styleClass="btn btn-lightgrey pull-right" action="#{NavigationForm.Reload}" title="#{msgs.reload}" >
+			                            	<button jsf:id="select" class="btn btn-lightgrey pull-right" jsf:action="#{NavigationForm.Reload}" title="#{msgs.reload}" >
 			                            		<i class="fa fa-refresh"></i>
-			                            	</h:commandLink>
+			                            	</button>
 	                                	</div>
 	                                </div>
 	                            </div></div></div>

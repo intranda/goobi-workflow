@@ -6,7 +6,7 @@ package org.goobi.managedbeans;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -27,6 +27,7 @@ package org.goobi.managedbeans;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
@@ -36,23 +37,21 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.UserRole;
+import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
@@ -62,13 +61,17 @@ import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
-@ManagedBean(name = "LoginForm")
+@Named("LoginForm")
 @SessionScoped
 @Log4j2
-public class LoginBean {
+public class LoginBean implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6036632431688990910L;
+
     private String login;
     private String passwort;
     private User myBenutzer;
@@ -85,6 +88,9 @@ public class LoginBean {
     @Setter
     private String ssoError;
 
+    // Length needed in "createRandomPassword(int length)"
+    public static final int DEFAULT_PASSWORD_LENGTH = 10;
+
     public LoginBean() {
         super();
         ConfigurationHelper config = ConfigurationHelper.getInstance();
@@ -92,14 +98,15 @@ public class LoginBean {
         this.oidcAutoRedirect = this.useOpenIDConnect && config.isOIDCAutoRedirect();
     }
 
+
     public String Ausloggen() {
         if (this.myBenutzer != null) {
             new MetadatenSperrung().alleBenutzerSperrungenAufheben(this.myBenutzer.getId());
         }
+
         this.myBenutzer = null;
-        SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-        temp.sessionBenutzerAktualisieren(mySession, this.myBenutzer);
+        Helper.getSessionBean().updateSessionUserName(mySession, this.myBenutzer);
         if (mySession != null) {
             mySession.invalidate();
         }
@@ -109,14 +116,14 @@ public class LoginBean {
     public void logoutOpenId() {
         this.Ausloggen();
         ConfigurationHelper config = ConfigurationHelper.getInstance();
-        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
         String applicationPath = ec.getApplicationContextPath();
         HttpServletRequest hreq = (HttpServletRequest) ec.getRequest();
         try {
             if (config.isUseOIDCSSOLogout()) {
                 URIBuilder builder = new URIBuilder(config.getOIDCLogoutEndpoint());
-                builder.addParameter("post_logout_redirect_uri",
-                        hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/uii/logout.xhtml");
+                builder.addParameter("post_logout_redirect_uri", hreq.getScheme() + "://" + hreq.getServerName() + ":"
+                        + hreq.getServerPort() + applicationPath + "/uii/logout.xhtml");
                 ec.redirect(builder.build().toString());
             } else {
                 ec.redirect(applicationPath + "/uii/logout.xhtml");
@@ -140,7 +147,8 @@ public class LoginBean {
             /* prüfen, ob schon ein Benutzer mit dem Login existiert */
             List<User> treffer;
             try {
-                treffer = UserManager.getUsers(null, "login='" + StringEscapeUtils.escapeSql(this.login) + "'", null, null, null);
+                treffer = UserManager.getUsers(null, "login='" + StringEscapeUtils.escapeSql(this.login) + "'", null,
+                        null, null);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("could not read database", e.getMessage());
                 return "";
@@ -155,30 +163,34 @@ public class LoginBean {
                 /* Login vorhanden, nun passwort prüfen */
                 User b = treffer.get(0);
                 if (b.getIsVisible() != null) {
-                    Helper.setFehlerMeldung("login", "", Helper.getTranslation("loginDeleted"));
+                    Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));// previously "loginDeleted"
                     return "";
                 }
-                /* wenn der Benutzer auf inaktiv gesetzt (z.B. arbeitet er nicht mehr hier) wurde, jetzt Meldung anzeigen */
+                /*
+                 * wenn der Benutzer auf inaktiv gesetzt (z.B. arbeitet er nicht mehr hier)
+                 * wurde, jetzt Meldung anzeigen
+                 */
                 if (!b.isIstAktiv()) {
-                    Helper.setFehlerMeldung("login", "", Helper.getTranslation("loginInactive"));
+                    Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));// previously "loginInactive"
                     return "";
                 }
 
                 /* wenn passwort auch richtig ist, den benutzer übernehmen */
                 if (b.istPasswortKorrekt(this.passwort)) {
                     /* jetzt prüfen, ob dieser Benutzer schon in einer anderen Session eingeloggt ist */
-                    SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
                     HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
+
                     /* in der Session den Login speichern */
-                    temp.sessionBenutzerAktualisieren(mySession, b);
+                    Helper.getSessionBean().updateSessionUserName(mySession, b);
                     this.myBenutzer = b;
                     this.myBenutzer.lazyLoad();
                     roles = myBenutzer.getAllUserRoles();
                 } else {
-                    Helper.setFehlerMeldung("passwort", "", Helper.getTranslation("wrongPassword"));
+                    Helper.setFehlerMeldung("passwort", "", Helper.getTranslation("wrongLogin"));// previously "wrongPassword
                 }
             }
         }
+
         return "";
     }
 
@@ -191,10 +203,9 @@ public class LoginBean {
         try {
             this.myBenutzer = UserManager.getUserById(LoginID);
             /* in der Session den Login speichern */
-            SessionForm temp = (SessionForm) Helper.getManagedBeanValue("#{SessionForm}");
-            temp.sessionBenutzerAktualisieren((HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false),
-                    this.myBenutzer);
-            roles = myBenutzer.getAllUserRoles();
+            HttpSession session = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
+            Helper.getSessionBean().updateSessionUserName(session, this.myBenutzer);
+            roles = this.myBenutzer.getAllUserRoles();
         } catch (DAOException e) {
             Helper.setFehlerMeldung("could not read database", e.getMessage());
             return "";
@@ -207,81 +218,49 @@ public class LoginBean {
     }
 
     public String PasswortAendernSpeichern() {
-        /* ist das aktuelle Passwort korrekt angegeben ? */
-        /* ist das neue Passwort beide Male gleich angegeben? */
-        if (!this.passwortAendernNeu1.equals(this.passwortAendernNeu2)) {
-            Helper.setFehlerMeldung("neuesPasswortNichtGleich");
-        } else {
-            try {
-                /* wenn alles korrekt, dann jetzt speichern */
-                if (ConfigurationHelper.getInstance().isUseLdap()) {
 
-                    LdapAuthentication myLdap = new LdapAuthentication();
-                    myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
+        // User has to insert his old password a last time
+        if (this.myBenutzer.istPasswortKorrekt(this.passwortAendernAlt)) {
+
+            // Both new passwords have to be the same
+            if (this.passwortAendernNeu1.equals(this.passwortAendernNeu2)) {
+
+                try {
+                    // Passwords are correct, now the new password can be stored
+
+                    if (AuthenticationType.LDAP.equals(this.myBenutzer.getLdapGruppe().getAuthenticationTypeEnum())
+                            && !myBenutzer.getLdapGruppe().isReadonly()) {
+
+                        LdapAuthentication myLdap = new LdapAuthentication();
+                        myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
+                    }
+                    User currentUser = UserManager.getUserById(this.myBenutzer.getId());
+                    // TODO
+                    // temp.setPasswortCrypt(this.passwortAendernNeu1);
+                    UserBean.saltAndSaveUserPassword(currentUser, this.passwortAendernNeu1);
+
+                    this.myBenutzer = currentUser;
+
+                    Helper.setMeldung("passwortGeaendert");
+                } catch (DAOException e) {
+                    Helper.setFehlerMeldung("could not save", e.getMessage());
+                } catch (NoSuchAlgorithmException e) {
+                    Helper.setFehlerMeldung("ldap errror", e.getMessage());
                 }
-                User temp = UserManager.getUserById(this.myBenutzer.getId());
-                // TODO
-                //                temp.setPasswortCrypt(this.passwortAendernNeu1);
-
-                RandomNumberGenerator rng = new SecureRandomNumberGenerator();
-                Object salt = rng.nextBytes();
-                temp.setPasswordSalt(salt.toString());
-                temp.setEncryptedPassword(temp.getPasswordHash(this.passwortAendernNeu1));
-                UserManager.saveUser(temp);
-                this.myBenutzer = temp;
-
-                Helper.setMeldung("passwortGeaendert");
-            } catch (DAOException e) {
-                Helper.setFehlerMeldung("could not save", e.getMessage());
-            } catch (NoSuchAlgorithmException e) {
-                Helper.setFehlerMeldung("ldap errror", e.getMessage());
+            } else {
+                // New passwords weren't the same
+                Helper.setFehlerMeldung("neuesPasswortNichtGleich");
             }
+        } else {
+            // Old password incorrect
+            Helper.setFehlerMeldung("altesPasswortFalschEingegeben");
         }
         return "";
     }
 
     public String BenutzerkonfigurationSpeichern() {
         try {
-            User temp = UserManager.getUserById(this.myBenutzer.getId());
-            temp.setVorname(myBenutzer.getVorname());
-            temp.setNachname(myBenutzer.getNachname());
-            temp.setTabellengroesse(this.myBenutzer.getTabellengroesse());
-            temp.setSessiontimeout(myBenutzer.getSessiontimeout());
-            temp.setMetadatenSprache(this.myBenutzer.getMetadatenSprache());
-            temp.setDisplayDeactivatedProjects(myBenutzer.isDisplayDeactivatedProjects());
-            temp.setDisplayFinishedProcesses(myBenutzer.isDisplayFinishedProcesses());
-            temp.setDisplaySelectBoxes(myBenutzer.isDisplaySelectBoxes());
-            temp.setDisplayIdColumn(myBenutzer.isDisplayIdColumn());
-            temp.setDisplayBatchColumn(myBenutzer.isDisplayBatchColumn());
-            temp.setDisplayProcessDateColumn(myBenutzer.isDisplayProcessDateColumn());
-            temp.setDisplayLocksColumn(myBenutzer.isDisplayLocksColumn());
-            temp.setDisplaySwappingColumn(myBenutzer.isDisplaySwappingColumn());
-            temp.setDisplayAutomaticTasks(myBenutzer.isDisplayAutomaticTasks());
-            temp.setHideCorrectionTasks(myBenutzer.isHideCorrectionTasks());
-            temp.setDisplayOnlySelectedTasks(myBenutzer.isDisplayOnlySelectedTasks());
-            temp.setDisplayOnlyOpenTasks(myBenutzer.isDisplayOnlyOpenTasks());
-            temp.setEmail(myBenutzer.getEmail());
-            temp.setShortcutPrefix(myBenutzer.getShortcutPrefix());
-            temp.setDisplayModulesColumn(myBenutzer.isDisplayModulesColumn());
-            temp.setMetsEditorTime(myBenutzer.getMetsEditorTime());
-            temp.setMetsDisplayHierarchy(myBenutzer.isMetsDisplayHierarchy());
-            temp.setMetsDisplayPageAssignments(myBenutzer.isMetsDisplayPageAssignments());
-            temp.setMetsDisplayTitle(myBenutzer.isMetsDisplayTitle());
-            temp.setMetsLinkImage(myBenutzer.isMetsLinkImage());
-            temp.setDisplayOtherTasks(myBenutzer.isDisplayOtherTasks());
-            temp.setDisplayGridView(myBenutzer.isDisplayGridView());
-            temp.setMetsDisplayProcessID(myBenutzer.isMetsDisplayProcessID());
-            temp.setDisplayThumbColumn(myBenutzer.isDisplayThumbColumn());
-            temp.setDisplayMetadataColumn(myBenutzer.isDisplayMetadataColumn());
-            temp.setCustomColumns(myBenutzer.getCustomColumns());
-            temp.setCustomCss(myBenutzer.getCustomCss());
-            temp.setMailNotificationLanguage(myBenutzer.getMailNotificationLanguage());
-            temp.setEmailConfiguration(myBenutzer.getEmailConfiguration());
-            temp.setDisplayInstitutionColumn(myBenutzer.isDisplayInstitutionColumn());
-            temp.setDashboardPlugin(myBenutzer.getDashboardPlugin());
-            temp.setSsoId(myBenutzer.getSsoId());
-            UserManager.saveUser(temp);
-            this.myBenutzer = temp;
+            UserManager.saveUser(myBenutzer);
             Helper.setMeldung(null, "", Helper.getTranslation("configurationChanged"));
             Helper.setMeldung("changesAfterLogout");
         } catch (DAOException e) {
@@ -290,9 +269,18 @@ public class LoginBean {
         return "";
     }
 
+    public boolean isUseHeaderLogin() {
+        return ConfigurationHelper.getInstance().isEnableHeaderLogin();
+    }
+
+    public void headerSsoLogin() throws IOException {
+        ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
+        ec.redirect(Helper.getBaseUrl() + "/api/login/header");
+    }
+
     public void openIDLogin() {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
-        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
         byte[] secureBytes = new byte[64];
         new SecureRandomNumberGenerator().getSecureRandom().nextBytes(secureBytes);
         String nonce = Base64.getUrlEncoder().encodeToString(secureBytes);
@@ -304,8 +292,8 @@ public class LoginBean {
             URIBuilder builder = new URIBuilder(config.getOIDCAuthEndpoint());
             builder.addParameter("client_id", config.getOIDCClientID());
             builder.addParameter("response_type", "id_token");
-            builder.addParameter("redirect_uri",
-                    hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/api/login/openid");
+            builder.addParameter("redirect_uri", hreq.getScheme() + "://" + hreq.getServerName() + ":"
+                    + hreq.getServerPort() + applicationPath + "/api/login/openid");
             builder.addParameter("response_mode", "form_post");
             builder.addParameter("scope", "openid");
             builder.addParameter("nonce", nonce);
@@ -331,7 +319,8 @@ public class LoginBean {
             for (String filename : dateien) {
                 Path file = Paths.get(myPfad + filename);
                 try {
-                    if (System.currentTimeMillis() - StorageProvider.getInstance().getLastModifiedDate(file) > 7200000) {
+                    if (System.currentTimeMillis()
+                            - StorageProvider.getInstance().getLastModifiedDate(file) > 7200000) {
                         StorageProvider.getInstance().deleteDir(file);
                     }
                 } catch (IOException e) {
@@ -412,14 +401,29 @@ public class LoginBean {
     }
 
     /**
+     * check if any of the assigned roles is related to GoobiScript
+     * @return
+     */
+    public boolean isHasAnyGoobiScriptRole() {
+        if (roles.contains("Workflow_Processes_Allow_GoobiScript")) {
+            return true;
+        }
+        for (String role : roles) {
+            if (role.startsWith("goobiscript_")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * receive list of custom columns configured by current user which is sent through the VariableReplacer later on
      * 
      * @return List of Strings for each column
      */
     public List<String> getListOfCustomColumns() {
         List<String> myColumns = new ArrayList<>();
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        String fields = login.getMyBenutzer().getCustomColumns();
+        String fields = getMyBenutzer().getCustomColumns();
         // if nothing is configured return empty list
         if (fields == null || fields.trim().length() == 0) {
             return myColumns;

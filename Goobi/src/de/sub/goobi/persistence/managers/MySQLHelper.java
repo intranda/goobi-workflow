@@ -54,7 +54,7 @@ public class MySQLHelper implements Serializable {
     private static MySQLHelper helper = new MySQLHelper();
     private ConnectionManager cm = null;
 
-    protected static final DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+    protected static final DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
     private MySQLHelper() {
         this.cm = new ConnectionManager();
@@ -419,7 +419,7 @@ public class MySQLHelper implements Serializable {
                 answer.put(columnName, rs.getInt(columnName) + "");
             } else if (columnType.startsWith("VARCHAR") || columnType.startsWith("TEXT")) {
                 answer.put(columnName, rs.getString(columnName));
-            } else if (columnType.startsWith("DATETIME")) {
+            } else if (columnType.startsWith("DATETIME") || columnType.startsWith("TIMESTAMP")) {
                 Timestamp date = rs.getTimestamp(columnName);
                 if (date != null) {
                     answer.put(columnName, formatter.print(date.getTime()));

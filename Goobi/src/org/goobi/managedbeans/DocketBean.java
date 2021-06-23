@@ -1,12 +1,14 @@
 package org.goobi.managedbeans;
 
+import java.io.Serializable;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -29,8 +31,8 @@ package org.goobi.managedbeans;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
 import org.goobi.beans.Docket;
 
@@ -41,9 +43,10 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
-@ManagedBean(name = "DocketForm")
+@Named("DocketForm")
 @SessionScoped
-public class DocketBean extends BasicBean {
+public class DocketBean extends BasicBean implements Serializable {
+
     private static final long serialVersionUID = 3006854499230483171L;
     private Docket myDocket = new Docket();
 

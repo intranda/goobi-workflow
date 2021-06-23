@@ -6,7 +6,7 @@ package de.unigoettingen.sub.search.opac;
  * Visit the websites for more information. 
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -27,12 +27,16 @@ package de.unigoettingen.sub.search.opac;
  */
 import java.util.List;
 
+import lombok.Getter;
+
 /**
  * die OpacBeautifier dienen zur Manipulation des Ergebnisses, was als Treffer einer Opacabfrage zurückgegeben wird. Dabei soll die Eigenschaft eines
  * Wertes gesetzt werden, wenn bestimmte Werte in dem opac-Ergebnis auftreten. ================================================================
  */
 public class ConfigOpacCatalogueBeautifier {
+	@Getter
     private ConfigOpacCatalogueBeautifierElement tagElementToChange;
+	@Getter
     private List<ConfigOpacCatalogueBeautifierElement> tagElementsToProof;
 
     public ConfigOpacCatalogueBeautifier(ConfigOpacCatalogueBeautifierElement inChangeElement,
@@ -40,13 +44,4 @@ public class ConfigOpacCatalogueBeautifier {
         this.tagElementToChange = inChangeElement;
         this.tagElementsToProof = inProofElements;
     }
-
-    public ConfigOpacCatalogueBeautifierElement getTagElementToChange() {
-        return this.tagElementToChange;
-    }
-
-    public List<ConfigOpacCatalogueBeautifierElement> getTagElementsToProof() {
-        return this.tagElementsToProof;
-    }
-
 }

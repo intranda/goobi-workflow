@@ -6,7 +6,7 @@ package de.sub.goobi.helper;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -152,6 +152,7 @@ public class BeanHelper {
             stepneu.setHttpStep(step.isHttpStep());
             stepneu.setHttpUrl(step.getHttpUrl());
             stepneu.setHttpMethod(step.getHttpMethod());
+            stepneu.setHttpEscapeBodyJson(step.isHttpEscapeBodyJson());
             stepneu.setHttpJsonBody(step.getHttpJsonBody());
             stepneu.setHttpCloseStep(step.isHttpCloseStep());
             stepneu.setMessageQueue(step.getMessageQueue());

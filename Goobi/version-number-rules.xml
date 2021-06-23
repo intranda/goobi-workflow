@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ruleset comparisonMethod="maven"
+	 xmlns="http://mojo.codehaus.org/versions-maven-plugin/rule/2.0.0" 
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://mojo.codehaus.org/versions-maven-plugin/rule/2.0.0 http://www.mojohaus.org/versions-maven-plugin/xsd/rule-2.0.0.xsd">
+
+	<ignoreVersions>
+		<ignoreVersion type="regex">.*[-_\.](alpha|Alpha|ALPHA|beta|Beta|BETA|rc|RC|M|EA)[-_\.]?[0-9]?.*</ignoreVersion>
+	</ignoreVersions>
+    <rules>
+        <rule groupId="org.glassfish" artifactId="javax.faces">
+            <ignoreVersions>
+                <!-- updating to 2.4.0 currently breaks the file upload - leave at 2.3.8 for now -->
+                <ignoreVersion>2.4.0</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+    </rules>
+</ruleset>

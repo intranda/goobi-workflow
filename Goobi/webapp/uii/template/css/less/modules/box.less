@@ -17,7 +17,7 @@
         align-items: center;
         padding: 7px 15px;
         background-color: @gwblue;
-        h3 {
+        h1, h2, h3 {
             display: flex;
             flex-wrap: wrap;
             flex-grow: 1;
@@ -35,8 +35,11 @@
             .btn {
                 display: none;
                 margin-left: auto;
+                &:focus{
+                	outline-offset: 2px;
+					outline: 5px auto -webkit-focus-ring-color;
+				}
                 &:active, 
-                &:focus, 
                 &:active:focus {
                     color: @white;
                 }
@@ -58,8 +61,11 @@
         .btn {
             color: @white;
             padding-left: 10px;
+            &:focus {
+            	outline-offset: 2px;
+				outline: 5px auto -webkit-focus-ring-color;
+			}
             &:active, 
-            &:focus, 
             &:active:focus {
                 color: @white;
             }
@@ -99,8 +105,9 @@
         .module__box-title-actions {
             .dropdown-menu {
                 border-color: @gray; 
-            }
-	        .btn:hover  {
+            	margin-left:-30px;
+			}
+			.btn:hover  {
                 background: @gwblue;	
             }
         }
@@ -110,11 +117,14 @@
         border-color: @bordergray;
         .module__box-title {
             background-color: @white;
-            h3 {
+            h1, h2, h3 {
                 color: @black;
                 .btn {
+                    &:focus{
+                    	outline-offset: 2px;
+						outline: 5px auto -webkit-focus-ring-color;
+					}
                     &:active, 
-                    &:focus, 
                     &:active:focus {
                         color: @black;
                     }
@@ -124,8 +134,11 @@
         .module__box-title-actions {
             .btn {
                 color: @black;
+                &:focus {
+                	outline-offset: 2px;
+					outline: 5px auto -webkit-focus-ring-color;
+				}
                 &:active, 
-                &:focus, 
                 &:active:focus {
                     color: @black;
                 }
@@ -143,14 +156,72 @@
     }
     &__box--collapsable {
         .module__box-title {
-            h3 {
+            h1, h2, h3 {
                 cursor: pointer;
                 .btn {
                     display: inline-block;
                 }
             }
         }
+		.module__box-subtitle {
+            font-size: 1.5rem;
+        }
     }
+    
+    &__box-group {
+    	border: 1px solid @lightgray;
+    	margin-top: 10px;
+    	hr {
+			margin-right: -7px;
+			margin-left: -10px;
+		}
+		padding: 7px;
+    }
+    &__box-level-0 {
+    	margin-top: 10px;
+		padding-left: 10px;
+    }    
+    &__box-level-1 {
+    	margin-left: 20px;
+		padding-left: 10px;
+    }
+    &__box-level-2 {
+    	margin-left: 40px;
+		padding-left: 10px;
+		
+    }
+    &__box-level-3 {
+    	margin-left: 60px;
+		padding-left: 10px;
+    }
+    &__box-level-4 {
+    	margin-left: 80px;
+    	margin-top: 10px;
+    	border: 1px solid @lightgray;
+		padding-left: 10px;
+		hr {
+			margin-right: 0;
+			margin-left: -10px;
+		}
+    }
+    &__box-level-5 {
+    	margin-left: 100px;
+		padding-left: 10px;
+    }
+    &__box-level-6 {
+    	margin-left: 120px;
+		padding-left: 10px;
+    }
+    &__box-level-7 {
+    	margin-left: 1400px;
+    	margin-top: 10px;
+		padding-left: 10px;
+    }    
+}
+
+.addable {
+	margin-right: 5px;
+	margin-bottom: 5px;
 }
 
 /* BREAKPOINT FOR LARGE DESKTOPS */

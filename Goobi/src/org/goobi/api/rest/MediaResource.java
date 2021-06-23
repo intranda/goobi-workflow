@@ -21,6 +21,8 @@ import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
@@ -30,8 +32,12 @@ public class MediaResource {
     private static final Path metadataFolderPath = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder());
 
     @GET
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @javax.ws.rs.Path("{process}/{folder}/{filename}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Operation(summary="Serves a media resource", description="Serves a media resource consisting of a process name, a directory name and a resource name")
+    @ApiResponse(responseCode="200", description="OK")
+    @ApiResponse(responseCode="500", description="Internal error")
+    
     public Response serveMediaContent(@PathParam("process") String processIdString, @PathParam("folder") String folder,
             @PathParam("filename") String filename) {
 
@@ -43,8 +49,9 @@ public class MediaResource {
         StreamingOutput entity = new StreamingOutput() {
             @Override
             public void write(OutputStream output) throws IOException, WebApplicationException {
-                InputStream in = StorageProvider.getInstance().newInputStream(mediaResource);
-                ReaderWriter.writeTo(in, output);
+                try (InputStream in = StorageProvider.getInstance().newInputStream(mediaResource)) {
+                    ReaderWriter.writeTo(in, output);
+                }
             }
         };
         return Response.ok(entity).build();

@@ -6,7 +6,7 @@ package org.goobi.managedbeans;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -27,6 +27,7 @@ package org.goobi.managedbeans;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,11 +41,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.LogEntry;
@@ -58,6 +61,7 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
+import org.goobi.production.plugin.interfaces.IPushPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.goobi.production.plugin.interfaces.IStepPluginVersion2;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
@@ -65,6 +69,8 @@ import org.goobi.production.properties.AccessCondition;
 import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
+import org.omnifaces.cdi.Push;
+import org.omnifaces.cdi.PushContext;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
@@ -92,9 +98,9 @@ import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Getter;
 import lombok.Setter;
 
-@ManagedBean(name = "AktuelleSchritteForm")
+@Named("AktuelleSchritteForm")
 @SessionScoped
-public class StepBean extends BasicBean {
+public class StepBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 5841566727939692509L;
     private static final Logger logger = LogManager.getLogger(StepBean.class);
     private Process myProzess = new Process();
@@ -142,13 +148,17 @@ public class StepBean extends BasicBean {
     @Getter
     private Map<String, List<String>> displayableMetadataMap;
 
+    @Inject
+    @Push
+    PushContext stepPluginPush;
+
     public StepBean() {
         this.anzeigeAnpassen = new HashMap<>();
 
         /*
          * --------------------- Vorgangsdatum generell anzeigen? -------------------
          */
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+        LoginBean login = Helper.getLoginBean();
         if (login != null && login.getMyBenutzer() != null) {
             this.anzeigeAnpassen.put("lockings", login.getMyBenutzer().isDisplayLocksColumn());
             this.anzeigeAnpassen.put("selectionBoxes", login.getMyBenutzer().isDisplaySelectBoxes());
@@ -163,6 +173,9 @@ public class StepBean extends BasicBean {
             hideStepsFromOtherUsers = !login.getMyBenutzer().isDisplayOtherTasks();
             anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
 
+            if (StringUtils.isNotBlank(login.getMyBenutzer().getTaskListDefaultSortingField())) {
+                sortierung = login.getMyBenutzer().getTaskListDefaultSortingField() + login.getMyBenutzer().getTaskListDefaultSortOrder();
+            }
         } else {
             this.anzeigeAnpassen.put("lockings", false);
             this.anzeigeAnpassen.put("selectionBoxes", false);
@@ -258,10 +271,9 @@ public class StepBean extends BasicBean {
             answer = "prozesse.ProzesseID desc";
         } else if (sortierung.equals("institutionAsc")) {
             answer = "institution.shortName";
-        }else if (sortierung.equals("institutionDesc")) {
+        } else if (sortierung.equals("institutionDesc")) {
             answer = "institution.shortName desc";
         }
-
 
         return answer;
     }
@@ -625,7 +637,7 @@ public class StepBean extends BasicBean {
             temp.setBearbeitungsstatusEnum(StepStatus.ERROR);
             // if (temp.getPrioritaet().intValue() == 0)
             temp.setCorrectionStep();
-            temp.setBearbeitungsende(null);
+            temp.setBearbeitungsende(new Date());
             ErrorProperty se = new ErrorProperty();
 
             se.setTitel(Helper.getTranslation("Korrektur notwendig"));
@@ -681,7 +693,7 @@ public class StepBean extends BasicBean {
             }
             if (temp.isTypAutomatisch()) {
                 ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(temp);
-                myThread.start();
+                myThread.startOrPutToQueue();
             }
 
             StepManager.saveStep(mySchritt);
@@ -799,7 +811,7 @@ public class StepBean extends BasicBean {
 
             if (temp.isTypAutomatisch()) {
                 ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(temp);
-                myThread.start();
+                myThread.startOrPutToQueue();
             }
         } catch (DAOException e) {
         }
@@ -1032,6 +1044,9 @@ public class StepBean extends BasicBean {
             if (myPlugin == null && exportPlugin == null) {
                 Helper.setFehlerMeldung("Plugin could not be found:", this.mySchritt.getStepPlugin());
             } else if (myPlugin != null) {
+                if (myPlugin instanceof IPushPlugin) {
+                    ((IPushPlugin) myPlugin).setPushContext(stepPluginPush);
+                }
                 if (mySchritt.isBatchStep() && mySchritt.isBatchSize()) {
                     myPlugin.initialize(mySchritt, "/task_edit_batch");
                 } else {
@@ -1047,7 +1062,7 @@ public class StepBean extends BasicBean {
     public String runPlugin() {
         //        Helper.setMeldung("Starte Plugin");
         //        Helper.setMeldung(mySchritt.getStepPlugin());
-        if (myPlugin.getPluginGuiType() == PluginGuiType.FULL) {
+        if (myPlugin.getPluginGuiType() == PluginGuiType.FULL || myPlugin.getPluginGuiType() == PluginGuiType.PART_AND_FULL) {
             String mypath = myPlugin.getPagePath();
             if (logger.isDebugEnabled()) {
                 logger.debug("Plugin is full GUI");
@@ -1068,6 +1083,9 @@ public class StepBean extends BasicBean {
     }
 
     public void setMyPlugin(IStepPlugin myPlugin) {
+        if (myPlugin instanceof IPushPlugin) {
+            ((IPushPlugin) myPlugin).setPushContext(stepPluginPush);
+        }
         this.myPlugin = myPlugin;
     }
 
@@ -1143,7 +1161,7 @@ public class StepBean extends BasicBean {
             /*
              * wenn bisher noch keine aktuellen Schritte ermittelt wurden, dann dies jetzt nachholen, damit die Liste vollstÃ¤ndig ist
              */
-            if (this.paginator == null && (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}") != null) {
+            if (this.paginator == null && Helper.getCurrentUser() != null) {
                 FilterAlleStart();
             }
             Integer inParam = Integer.valueOf(param);
@@ -1198,7 +1216,7 @@ public class StepBean extends BasicBean {
         try {
             dms.startExport(this.mySchritt.getProzess());
         } catch (Exception e) {
-            Helper.setFehlerMeldung("Error on export", e.getMessage());
+            Helper.setFehlerMeldung("Error on export", e.getMessage() == null ? "" : e.getMessage());
             logger.error(e);
         }
     }
@@ -1229,7 +1247,7 @@ public class StepBean extends BasicBean {
 
     public void addLogEntry() {
         if (StringUtils.isNotBlank(content)) {
-            User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+            User user = Helper.getCurrentUser();
             LogEntry logEntry = new LogEntry();
             logEntry.setContent(content);
             logEntry.setSecondContent(secondContent);
@@ -1559,6 +1577,9 @@ public class StepBean extends BasicBean {
     public String callStepPlugin() {
         if (mySchritt.getStepPlugin() != null && mySchritt.getStepPlugin().length() > 0) {
             IStepPlugin isp = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
+            if (isp instanceof IPushPlugin) {
+                ((IPushPlugin) isp).setPushContext(stepPluginPush);
+            }
             isp.initialize(mySchritt, "");
             if (isp instanceof IStepPluginVersion2) {
                 IStepPluginVersion2 plugin = (IStepPluginVersion2) isp;

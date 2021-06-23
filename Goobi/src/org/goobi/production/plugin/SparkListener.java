@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.api.rest.AuthorizationFilter;
@@ -15,9 +14,10 @@ import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IPlugin;
 import org.goobi.production.plugin.interfaces.IRestGuiPlugin;
+import org.goobi.production.plugin.interfaces.IRestPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import lombok.extern.log4j.Log4j;
+import de.sub.goobi.helper.Helper;
 import lombok.extern.log4j.Log4j2;
 import spark.Service;
 import spark.route.ServletRoutes;
@@ -38,6 +38,7 @@ public class SparkListener implements SparkApplication {
     private void declareRoutes(Service http) {
         List<IPlugin> plugins = PluginLoader.getPluginList(PluginType.Step);
         plugins.addAll(PluginLoader.getPluginList(PluginType.Dashboard));
+        plugins.addAll(PluginLoader.getPluginList(PluginType.Workflow));
         ServletRoutes.get().clear();
         http.path("/plugins", () -> {
             http.before("/*", (q, r) -> {
@@ -60,8 +61,8 @@ public class SparkListener implements SparkApplication {
                     }
                     q.attribute("tokenAuthorized", true);
                 } else {
-                    HttpSession session = hreq.getSession();
-                    LoginBean userBean = (LoginBean) session.getAttribute("LoginForm");
+                    LoginBean userBean = Helper.getLoginBeanFromSession(hreq.getSession());
+
                     q.attribute("user", userBean.getMyBenutzer());
                 }
 
@@ -70,6 +71,9 @@ public class SparkListener implements SparkApplication {
                 if (p instanceof IRestGuiPlugin) {
                     ((IRestGuiPlugin) p).extractAssets(staticFilesLocation);
                     ((IRestGuiPlugin) p).initRoutes(http);
+                }
+                if (p instanceof IRestPlugin) {
+                    ((IRestPlugin) p).initRoutes(http);
                 }
             }
 

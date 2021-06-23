@@ -6,7 +6,7 @@ package de.sub.goobi.helper;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -36,7 +36,8 @@ import java.util.List;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -93,7 +94,7 @@ public class UghHelper {
             if (all.size() == 0) {
                 try {
                     Metadata md = new Metadata(inMetadataType);
-                    md.setDocStruct(inStruct);
+                    md.setParent(inStruct);
                     inStruct.addMetadata(md);
 
                     return md;
@@ -124,10 +125,10 @@ public class UghHelper {
     public Metadata getMetadata(DocStruct inStruct, Prefs inPrefs, String inMetadataType) throws UghHelperException {
         MetadataType mdt = getMetadataType(inPrefs, inMetadataType);
         List<? extends Metadata> all = inStruct.getAllMetadataByType(mdt);
-        if (all.size() > 0) {
+        if (all.size() == 0) {
             try {
                 Metadata md = new Metadata(mdt);
-                md.setDocStruct(inStruct);
+                md.setParent(inStruct);
                 inStruct.addMetadata(md);
 
                 return md;
@@ -137,7 +138,12 @@ public class UghHelper {
                 }
             }
         }
-        return all.get(0);
+
+        if (all.size() != 0) {
+            return all.get(0);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -151,10 +157,10 @@ public class UghHelper {
     public Metadata getMetadata(DocStruct inStruct, Process inProzess, String inMetadataType) throws UghHelperException {
         MetadataType mdt = getMetadataType(inProzess, inMetadataType);
         List<? extends Metadata> all = inStruct.getAllMetadataByType(mdt);
-        if (all.size() > 0) {
+        if (all.size() == 0) {
             try {
                 Metadata md = new Metadata(mdt);
-                md.setDocStruct(inStruct);
+                md.setParent(inStruct);
                 inStruct.addMetadata(md);
 
                 return md;
@@ -164,7 +170,11 @@ public class UghHelper {
                 }
             }
         }
-        return all.get(0);
+        if (all.size() != 0) {
+            return all.get(0);
+        } else {
+            return null;
+        }
     }
 
     private void addMetadatum(DocStruct inStruct, Prefs inPrefs, String inMetadataType, String inValue) {

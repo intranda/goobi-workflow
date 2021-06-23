@@ -7,7 +7,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -72,9 +73,10 @@
                             <!-- easydb SEARCH ACTION -->
                             <div class="col-2 text-right">
                                 <div class="text-right">
-                                    <h:commandLink
-                                        styleClass="btn btn--white btn--loader"
-                                        action="#{Metadaten.currentMetadataToPerformSearch.search}">
+                                    <button
+                                    	jsf:id="easyDbSearch"
+                                        class="btn btn--white btn--loader"
+                                        jsf:action="#{Metadaten.currentMetadataToPerformSearch.search}">
                                         <i
                                             class="fa fa-search"
                                             aria-hidden="true"></i>
@@ -92,7 +94,7 @@
                                         <f:ajax
                                             execute="@form"
                                             render="easydbList" />
-                                    </h:commandLink>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -133,16 +135,17 @@
                                             </div>
 
                                             <div class="col-2 text-right">
-                                                <h:commandLink
-                                                    styleClass="btn btn--icon-green btn__bottom"
-                                                    action="#{Metadaten.currentMetadataToPerformSearch.getData}">
+                                                <button
+                                                	jsf:id="easyDbbutton3"
+                                                    class="btn btn--icon-green btn__bottom greenCheckButton"
+                                                    jsf:action="#{Metadaten.currentMetadataToPerformSearch.getData}">
                                                     <i
                                                         class="fa fa-check"
                                                         aria-hidden="true"></i>
                                                     <f:setPropertyActionListener
                                                         value="#{easydb}"
                                                         target="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.selectedRecord}" />
-                                                </h:commandLink>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

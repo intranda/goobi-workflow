@@ -6,7 +6,7 @@ package de.sub.goobi.persistence.managers;
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -25,17 +25,23 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
+import org.goobi.beans.JobType;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
 public class StepManager implements IManager, Serializable {
 
+    private static final Gson gson = new Gson();
     private static final long serialVersionUID = -8285339735960375871L;
     private static final Logger logger = LogManager.getLogger(StepManager.class);
 
@@ -51,7 +57,8 @@ public class StepManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution)
+            throws DAOException {
         return getSteps(order, filter, start, count);
     }
 
@@ -134,6 +141,15 @@ public class StepManager implements IManager, Serializable {
     public static int countSteps(String order, String filter) throws DAOException {
         try {
             return StepMysqlHelper.getStepCount(order, filter);
+        } catch (SQLException e) {
+            logger.error(e);
+        }
+        return 0;
+    }
+
+    public static int countAllSteps() {
+        try {
+            return StepMysqlHelper.getAllStepsCount();
         } catch (SQLException e) {
             logger.error(e);
         }
@@ -257,9 +273,43 @@ public class StepManager implements IManager, Serializable {
         return 0.0;
     }
 
+    public static void saveExternalQueueJobTypes(List<JobType> jobTypes) throws DAOException {
+        String jobTypesJson = gson.toJson(jobTypes);
+        try {
+            StepMysqlHelper.saveJobTypes(jobTypesJson);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    public static List<JobType> getExternalQueueJobTypes() throws DAOException {
+        try {
+            String jobTypesJson = StepMysqlHelper.getJobTypes();
+            return gson.fromJson(jobTypesJson, TypeToken.getParameterized(List.class, JobType.class).getType());
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    public static void setStepPaused(int stepId, boolean paused) throws DAOException {
+        try {
+            StepMysqlHelper.setStepPaused(stepId, paused);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
     @Override
     public List<Integer> getIdList(String order, String filter, Institution institution) {
         return null;
+    }
+
+    public static List<Step> getPausedSteps(List<String> restartStepnames) throws DAOException {
+        try {
+            return StepMysqlHelper.getPausedSteps(restartStepnames);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
     }
 
 }

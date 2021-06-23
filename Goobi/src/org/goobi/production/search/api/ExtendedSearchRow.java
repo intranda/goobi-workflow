@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils;
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -70,7 +70,7 @@ public class ExtendedSearchRow {
         }
 
         else if (fieldName.equals("BATCH") && !fieldValue.isEmpty()) {
-            value = "\"" + FilterString.BATCH + this.fieldValue + "\" ";
+            value = "\"" + this.fieldOperand + FilterString.BATCH + this.fieldValue + "\" ";
         }
 
         else if (fieldName.equals("PROJECT") && !this.projectName.equals(Helper.getTranslation("notSelected"))) {
@@ -105,8 +105,14 @@ public class ExtendedSearchRow {
             value = "\"" + this.fieldOperand + FilterString.PROCESSLOG + fieldValue + "\" ";
         }
 
-        else if (fieldName.equals("INSTITUION") && StringUtils.isNotBlank(fieldValue)) {
-            value = "\"" + this.fieldOperand + FilterString.INSTITUTION + fieldValue + "\" ";
+        else if (fieldName.equals("INSTITUTION") && StringUtils.isNotBlank(institutionName)) {
+            value = "\"" + this.fieldOperand + FilterString.INSTITUTION + ":" + institutionName + "\" ";
+        } else if (fieldName.equals("PROCESSDATE") && !fieldValue.isEmpty()) {
+            value = "\"" + FilterString.PROCESS_DATE + this.fieldOperand + fieldValue + "\" ";
+        } else if (fieldName.equals("STEPSTARTDATE") && !fieldValue.isEmpty()) {
+            value = "\"" + FilterString.STEP_START_DATE + this.fieldOperand + fieldValue + "\" ";
+        } else if (fieldName.equals("STEPFINISHDATE") && !fieldValue.isEmpty()) {
+            value = "\"" + FilterString.STEP_FINISH_DATE + this.fieldOperand + fieldValue + "\" ";
         }
 
         return value;

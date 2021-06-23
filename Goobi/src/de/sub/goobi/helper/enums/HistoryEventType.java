@@ -6,7 +6,7 @@ package de.sub.goobi.helper.enums;
  * Visit the websites for more information. 
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -26,6 +26,7 @@ package de.sub.goobi.helper.enums;
  * exception statement from your version.
  */
 import de.sub.goobi.helper.Helper;
+import lombok.Getter;
 
 /**
  * Enum of all history event types for all history events for processes
@@ -85,7 +86,7 @@ public enum HistoryEventType {
     color(13, "imagesColorDiff", true, false, null)
 
     ;
-
+	
     private int value;
     private String title;
     private Boolean isNumeric;
@@ -102,7 +103,7 @@ public enum HistoryEventType {
         this.isString = inIsString;
         this.groupingExpression = groupingExpression;
     }
-
+    
     /**
      * return integer value for database savings
      * 

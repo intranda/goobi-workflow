@@ -15,9 +15,27 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 console.log( 'Initializing: goobiWorkflowJS.thumbnails.init' );
             }
 
+			var promises = [];
+			var activeAdded = false;
             $( '.thumbnails__thumb-canvas' ).each( function( index, el ) {
-                drawOnCanvas( el );
+            	var promise = drawOnCanvas( el );
+            	if(!activeAdded) {
+	                promises.push(promise);
+	                if(el.parentElement.parentElement.parentElement.classList.contains("active")) {
+	                	activeAdded = true;
+	            	}
+	            }
             } );
+            var rightContent = document.querySelector( '#pageContentRight' );
+            if(rightContent.querySelector( '#thumbnails' )) {
+            	rightContent.scrollTo(0,0);
+            }
+        	var activeThumbnail = document.querySelector('.thumbnails__thumb.active');
+        	if(activeThumbnail) {
+	            Promise.all(promises).then( function() {
+	            		activeThumbnail.scrollIntoView({block: "center"});
+	            }); 
+        	}
         },
     };
     
@@ -28,11 +46,11 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
     
     goobiWorkflow.updateSelectedThumbnail = function( element ) {
         var galleryLinks;
-        galleryLinks = document.getElementsByClassName('thumbnails__thumb-image');
+        galleryLinks = document.getElementsByClassName('thumbnails__thumb');
         for (var i = 0; i < galleryLinks.length; i++) {
-            galleryLinks[i].className = "thumbnails__thumb-image";            
+            galleryLinks[i].className = "thumbnails__thumb";            
         }
-        element.parentElement.parentElement.className = "thumbnails__thumb-image img-active";
+        element.parentElement.parentElement.className = "thumbnails__thumb active";
         return true;
     }
     
@@ -42,39 +60,42 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
      * @param {Object} canvas The canvas object to draw on.
      */
     function drawOnCanvas( canvas ) {
-        setTimeout( function() {
-            
-            if ( canvas == null ) {
-                return;
-            }
-            var ctx = canvas.getContext( '2d' );
-            var d = canvas.dataset;
-            
-            if ( !d ) {
-                // fix for ie not supporting element.dataset
-                d = {};
-                d.image_small = canvas.getAttribute( 'data-image_small' );
-                d.image_large = canvas.getAttribute( 'data-image_large' );
-            }
-            
-            var img = new Image();
-            img.onload = function() {
-                var scale = ( canvas.width * 2 ) / this.width;
-                canvas.width = this.width;
-                canvas.height = this.height;
-                ctx.drawImage( img, 0, 0, this.width, this.height );
-                _intrandaImages[ canvas.id ] = {
-                    smallWidth: this.width - 10,
-                    smallHeight: this.height - 10,
-                    largeUrl: d.image_large
-                };
-            };
-            var image = d.image_small;
-            // console.log(image);
-            img.src = image;
-            canvas.addEventListener( 'mouseout', drawOnCanvasMouseOut, false );
-            canvas.addEventListener( 'mousemove', onMouseMove, false );
-        }, 100 );
+    	return new Promise( function(resolve, reject) {
+	        setTimeout( function() {
+	            
+	            if ( canvas == null ) {
+	                return;
+	            }
+	            var ctx = canvas.getContext( '2d' );
+	            var d = canvas.dataset;
+	            
+	            if ( !d ) {
+	                // fix for ie not supporting element.dataset
+	                d = {};
+	                d.image_small = canvas.getAttribute( 'data-image_small' );
+	                d.image_large = canvas.getAttribute( 'data-image_large' );
+	            }
+	            
+	            var img = new Image();
+	            img.onload = function() {
+	                var scale = ( canvas.width * 2 ) / this.width;
+	                canvas.width = this.width;
+	                canvas.height = this.height;
+	                ctx.drawImage( img, 0, 0, this.width, this.height );
+	                _intrandaImages[ canvas.id ] = {
+	                    smallWidth: this.width - 10,
+	                    smallHeight: this.height - 10,
+	                    largeUrl: d.image_large
+	                };
+	                resolve();
+	            };
+	            var image = d.image_small;
+	            // console.log(image);
+	            img.src = image;
+	            canvas.addEventListener( 'mouseout', drawOnCanvasMouseOut, false );
+	            canvas.addEventListener( 'mousemove', onMouseMove, false );
+	        }, 100 );
+	    });
     }
 
     /**

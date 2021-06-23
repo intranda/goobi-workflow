@@ -7,7 +7,8 @@
 	xmlns:x="http://myfaces.apache.org/tomahawk" 
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param name="myPageTitle" value="#{msgs.aktuelleSchritte}" />
 
@@ -18,19 +19,18 @@
 
     <ui:define name="info">
     </ui:define>
-
     <ui:define name="content">
-
+	<main role="main">
 		<c:if test="#{LoginForm.hasRole('Task_List')}">
 
         <div class="row">
             <div class="col-sm-12">
                 <div class="box box-color box-bordered">
                     <div class="box-title">
-                        <h3>
+                        <h2>
                             <i class="fa fa-list"></i>
                             <h:outputText value="#{myPageTitle}" />
-                        </h3>
+                        </h2>
                     </div>
                     <div class="box-content nopadding">
                         <div class="dataTables_wrapper">
@@ -42,7 +42,9 @@
                                 <x:aliasBeansScope>
                                     <x:aliasBean alias="#{Form}" value="#{AktuelleSchritteForm}" />
                                     <x:aliasBean alias="#{label}" value="#{msgs.filterTasks}" />
-                                    <ui:include src="includes/task/list_searchAndSave.xhtml" />
+                                    <f:subview id="sub1">
+                                        <ui:include src="includes/task/list_searchAndSave.xhtml" />
+                                    </f:subview>
                                 </x:aliasBeansScope>
 
                                 <ui:include src="includes/task/list_filterAndDisplay.xhtml" />
@@ -57,43 +59,49 @@
                                             <x:div>
                                                 <!-- Header -->
                                                 <h:outputText value="#{msgs.auswahl2}" styleClass="" />
-                                                <h:commandLink styleClass="font-black" action="#{AktuelleSchritteForm.SelectionNone}" id="selectnone" title="#{msgs.auswahlEntfernen}">
+                                                <button class="button-no-style font-black" jsf:action="#{AktuelleSchritteForm.SelectionNone}" jsf:id="selectnone" title="#{msgs.auswahlEntfernen}">
                                                     <i class="fa fa-square-o" />
-                                                </h:commandLink>
-                                                <h:commandLink styleClass="font-black" action="#{AktuelleSchritteForm.SelectionAll}" id="selectAll" title="#{msgs.alleAuswaehlen}">
+                                                </button>
+                                                <button class="font-black" jsf:action="#{AktuelleSchritteForm.SelectionAll}" jsf:id="selectAll" title="#{msgs.alleAuswaehlen}">
                                                     <i class="fa fa-check-square-o" />
-                                                </h:commandLink>
+                                                </button>
                                             </x:div>
                                         </f:facet>
-                                        <h:commandLink id="selection" styleClass="font-black" style="padding:10px">
+                                        <button jsf:id="selection" class="font-black" style="padding:10px">
                                             <i class="#{item.selected?'fa fa-check-square-o':'fa fa-square-o'}" />
                                             <f:setPropertyActionListener target="#{item.selected}" value="#{item.selected?false:true}" />
                                             <f:ajax render=":myform" />
-                                        </h:commandLink>
+                                        </button>
                                     </x:column>
 
                                     <!-- +++++++++++++++++  ProzessID ++++++++++++++++++++++++ -->
-                                    <x:column id="my_tasks_process" rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processId']}" headerstyleClass="#{AktuelleSchritteForm.sortierung=='idDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='idAsc'?'sorting_asc':'sorting'}">
+                                    <x:column id="my_tasks_process" rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processId']}">
                                         <f:facet name="header">
-                                            <h:commandLink id="sortProcessId" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.id}" />
+                                            <button jsf:id="sortProcessId" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                            aria-label="#{msgs.defaultSortField} #{msgs.id} #{AktuelleSchritteForm.sortierung=='idDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='idAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            aria-sort="#{AktuelleSchritteForm.sortierung=='idDesc'? 'descending' : AktuelleSchritteForm.sortierung=='idAsc'? 'ascending' :'none'}">
+                                                <h:outputText styleClass="pull-left" value="#{msgs.id}" />
+                                                <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='idDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='idAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}"
                                                     value="#{AktuelleSchritteForm.sortierung=='idAsc'?'idDesc':'idAsc'}" />
                                                 <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                            </button>
                                         </f:facet>
                                         <h:outputText value="#{item.prozess.id}" />
                                     </x:column>
                                     
                                     <!-- +++++++++++++++++  Task ++++++++++++++++++++++++ -->
-                                    <x:column headerstyleClass="#{AktuelleSchritteForm.sortierung=='schrittDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='schrittAsc'?'sorting_asc':'sorting'}" >
+                                    <x:column>
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink id="sortStepTitle" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.arbeitsschritt}" />
+                                            <button type="button" jsf:id="sortStepTitle" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                            aria-label="#{msgs.defaultSortField} #{msgs.arbeitsschritt} #{AktuelleSchritteForm.sortierung=='schrittDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='schrittAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            aria-sort="#{AktuelleSchritteForm.sortierung=='schrittDesc'? 'descending' : AktuelleSchritteForm.sortierung=='schrittAsc'? 'ascending' :'none'}">
+                                                <h:outputText styleClass="pull-left" value="#{msgs.arbeitsschritt}" />
+                                                <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='schrittDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='schrittAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='schrittAsc'?'schrittDesc':'schrittAsc'}" />
                                                 <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                            </button>
                                         </f:facet>
 
                                         <ui:include src="includes/ajaxPlusMinusButtonTask.xhtml" />
@@ -156,23 +164,27 @@
 
                                     <!-- ===================== Process ====================== -->
 
-                                    <x:column headerstyleClass="#{AktuelleSchritteForm.sortierung=='prozessDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='prozessAsc'?'sorting_asc':'sorting'}" styleClass="tableColumnMaxWidthLong">
+                                    <x:column styleClass="tableColumnMaxWidthLong">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink id="sortProcessTitle" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.prozessTitel}" />
+                                            <button type="button" jsf:id="sortProcessTitle" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                            aria-label="#{msgs.defaultSortField} #{msgs.prozessTitel} #{AktuelleSchritteForm.sortierung=='prozessDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='prozessAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            aria-sort="#{AktuelleSchritteForm.sortierung=='prozessDesc'? 'descending' : AktuelleSchritteForm.sortierung=='prozessAsc'? 'ascending' :'none'}">
+                                                <h:outputText styleClass="pull-left" value="#{msgs.prozessTitel}" />
+                                                <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='prozessDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='prozessAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='prozessAsc'?'prozessDesc':'prozessAsc'}" />
                                                 <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                            </button>
                                         </f:facet>
 
                                         <!-- Bearbeiten-Schaltknopf: konkrete Prozesse -->
-	                                        <h:commandLink action="process_edit" rel="tooltip" id="edit1" title="#{msgs.prozessBearbeiten}" rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
+	                                        <button jsf:action="process_edit" class="button-no-style" jsf:rel="tooltip" jsf:id="edit1" aria-label="#{msgs.prozessBearbeiten}" title="#{msgs.prozessBearbeiten}" jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details')}">
                                             <i class="fa fa-tasks margin-right-10 btn" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{ProzessverwaltungForm.myProzess}" value="#{item.prozess}" />
+                                            <f:setPropertyActionListener target="#{ProzessverwaltungForm.modusAnzeige}" value="aktuell" />
                                             <f:setPropertyActionListener target="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
-                                        </h:commandLink>
+                                        </button>
                                         <h:outputText value="#{item.prozess.titel}" title="#{item.prozess.titel}" />
                                     </x:column>
 										
@@ -187,84 +199,101 @@
 									</c:forEach>
 
                                     <!-- ===================== Process date ====================== -->
-                                    <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processDate']}" headerstyleClass="#{AktuelleSchritteForm.sortierung=='prozessdateDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='prozessdateAsc'?'sorting_asc':'sorting'}">
+                                    <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['processDate']}">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink id="sortDate" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.vorgangsdatum}" />
+                                            <button type="button" jsf:id="sortDate" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                            aria-label="#{msgs.defaultSortField} #{msgs.vorgangsdatum} #{AktuelleSchritteForm.sortierung=='prozessdateDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='prozessdateAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            aria-sort="#{AktuelleSchritteForm.sortierung=='prozessdateDesc'? 'descending' : AktuelleSchritteForm.sortierung=='prozessdateAsc'? 'ascending' :'none'}">
+                                                <h:outputText styleClass="pull-left" value="#{msgs.vorgangsdatum}" />
+                                                <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='prozessdateDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='prozessdateAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='prozessdateAsc'?'prozessdateDesc':'prozessdateAsc'}" />
                                                 <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                            </button>
                                         </f:facet>
 
                                         <h:outputText value="#{item.prozess.erstellungsdatum}" />
                                     </x:column>
 
                                     <!-- ===================== Modules / Plugins ====================== -->
-                                    <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}" headerstyleClass="#{AktuelleSchritteForm.sortierung=='modulesDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='modulesAsc'?'sorting_asc':'sorting'}">
+                                    <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink id="sortModule" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.module}" />
+                                            <button type="button" jsf:id="sortModule" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                            aria-label="#{msgs.defaultSortField} #{msgs.module} #{AktuelleSchritteForm.sortierung=='moduleDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='moduleAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            aria-sort="#{AktuelleSchritteForm.sortierung=='moduleDesc'? 'descending' : AktuelleSchritteForm.sortierung=='moduleAsc'? 'ascending' :'none'}">
+                                                <h:outputText styleClass="pull-left" value="#{msgs.module}" />
+                                                <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='modulesDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='modulesAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='modulesAsc'?'modulesDesc':'modulesAsc'}" />
                                                 <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                            </button>
                                         </f:facet>
 
                                         <h:outputText value="#{item.typModulName}" />
                                     </x:column>
 
                                     <!-- ===================== Project ====================== -->
-                                    <x:column headerstyleClass="#{AktuelleSchritteForm.sortierung=='projektDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='projektAsc'?'sorting_asc':'sorting'}">
+                                    <x:column >
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink id="sortProject" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.projekt}" />
+                                            <button type="button" jsf:id="sortProject" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                            aria-label="#{msgs.defaultSortField} #{msgs.projekt} #{AktuelleSchritteForm.sortierung=='projektDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='projektAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            aria-sort="#{AktuelleSchritteForm.sortierung=='projektDesc'? 'descending' : AktuelleSchritteForm.sortierung=='projektAsc'? 'ascending' :'none'}">
+                                                <h:outputText styleClass="pull-left" value="#{msgs.projekt}" />
+                                                <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='projektDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='projektAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='projektAsc'?'projektDesc':'projektAsc'}" />
                                                 <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                            </button>
                                         </f:facet>
 
                                         <h:outputText value="#{item.prozess.projekt.titel}" />
                                     </x:column>
                                     <x:column styleClass="tableColumnOverflow maxWidth120"
-                                        rendered="#{AktuelleSchritteForm.anzeigeAnpassen['institution']}"
-                                            headerstyleClass="#{AktuelleSchritteForm.sortierung=='institutionDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='institutionAsc'?'sorting_asc':'sorting'}">
+                                        rendered="#{AktuelleSchritteForm.anzeigeAnpassen['institution']}">
                                             <f:facet name="header">
                                                 <!-- Header -->
-                                                <h:commandLink styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}"
-                                                    title="#{msgs.institution}">
+                                                <button class="button-no-style font-black-block" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                                    title="#{msgs.institution}"
+                                                    aria-label="#{msgs.defaultSortField} #{msgs.institution} #{AktuelleSchritteForm.sortierung=='institutionDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='institutionAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            		aria-sort="#{AktuelleSchritteForm.sortierung=='institutionDesc'? 'descending' : AktuelleSchritteForm.sortierung=='institutionAsc'? 'ascending' :'none'}">
                                                     <h:outputText value="#{msgs.institution}"/>
+                                                    <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='institutionDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='institutionAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                     <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}"
                                                         value="#{AktuelleSchritteForm.sortierung=='institutionAsc'?'institutionDesc':'institutionAsc'}" />
                                                     <f:ajax render=":myform" />
-                                                </h:commandLink>
+                                                </button>
                                             </f:facet>
                                             <h:outputText value="#{item.prozess.projekt.institution.shortName}" />
                                         </x:column>
                                     <!-- ===================== Lockings ====================== -->
-                                    <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}" headerstyleClass="#{AktuelleSchritteForm.sortierung=='sperrungenDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='sperrungenAsc'?'sorting_asc':'sorting'}">
+                                    <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink id="sortLocking" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.sperrungen}" />
+                                            <button type="button" jsf:id="sortLocking" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                            	aria-label="#{msgs.defaultSortField} #{msgs.sperrungen} #{AktuelleSchritteForm.sortierung=='sperrungenDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='sperrungenAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            aria-sort="#{AktuelleSchritteForm.sortierung=='sperrungenDesc'? 'descending' : AktuelleSchritteForm.sortierung=='sperrungenAsc'? 'ascending' :'none'}">
+                                                <h:outputText styleClass="pull-left" value="#{msgs.sperrungen}" />
+                                                <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='sperrungenDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='sperrungenAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='sperrungenAsc'?'sperrungenDesc':'sperrungenAsc'}" />
                                                 <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                            </button>
                                         </f:facet>
 
                                         <h:outputText value="#{item.prozess.benutzerGesperrt.nachVorname}" rendered="#{item.prozess.benutzerGesperrt != null}" />
                                     </x:column>
 
                                     <!-- ===================== Batch ====================== -->
-                                    <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}" headerstyleClass="#{AktuelleSchritteForm.sortierung=='batchDesc'?'sorting_desc':AktuelleSchritteForm.sortierung=='batchAsc'?'sorting_asc':'sorting'}">
+                                    <x:column rendered="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}">
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink id="sortBatch" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.batch}" />
+                                            <button type="button" jsf:id="sortBatch" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                            aria-label="#{msgs.defaultSortField} #{msgs.batch} #{AktuelleSchritteForm.sortierung=='batchDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='batchAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            aria-sort="#{AktuelleSchritteForm.sortierung=='batchDesc'? 'descending' : AktuelleSchritteForm.sortierung=='batchAsc'? 'ascending' :'none'}">
+                                                <h:outputText styleClass="pull-left" value="#{msgs.batch}" />
+                                                <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='batchDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='batchAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='batchAsc'?'batchDesc':'batchAsc'}" />
                                                 <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                            </button>
                                         </f:facet>
                                         <h:outputText value="#{item.prozess.batch.batchId}" rendered="#{item.prozess.batch != null}"/>
                                         <h:outputText value=" (#{item.prozess.batch.batchName})" rendered="#{item.prozess.batch != null and item.prozess.batch.batchName != null}"/>
@@ -342,73 +371,77 @@
                                     </x:column>
 
                                     <!-- ===================== Action ====================== -->
-                                    <x:column style="max-width:60px;" headerstyleClass="#{AktuelleSchritteForm.sortierung=='statusDesc'?'sorting_asc':AktuelleSchritteForm.sortierung=='statusAsc'?'sorting_desc':'sorting'}">
+                                    <x:column style="max-width:60px;" 
+                                    >
                                         <f:facet name="header">
                                             <!-- Header -->
-                                            <h:commandLink id="sortStatus" styleClass="font-black-block" action="#{AktuelleSchritteForm.FilterAlleStart}">
-                                                <h:outputText value="#{msgs.auswahl}" />
+                                            <button jsf:id="sortStatus" class="font-black-block button-link button-sort" jsf:action="#{AktuelleSchritteForm.FilterAlleStart}"
+                                            aria-label="#{msgs.defaultSortField} #{msgs.auswahl} #{AktuelleSchritteForm.sortierung=='statusDesc'? msgs.defaultSortFieldDesc : AktuelleSchritteForm.sortierung=='statusAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            aria-sort="#{AktuelleSchritteForm.sortierung=='statusDesc'? 'descending' : AktuelleSchritteForm.sortierung=='statusAsc'? 'ascending' :'none'}">
+                                                <h:outputText styleClass="pull-left" value="#{msgs.auswahl}" />
+                                                <span class="pull-right table-sort-icon fa #{AktuelleSchritteForm.sortierung=='statusDesc'?'fa-sort-desc':AktuelleSchritteForm.sortierung=='statusAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.sortierung}" value="#{AktuelleSchritteForm.sortierung=='statusDesc'?'statusAsc':'statusDesc'}" />
                                                 <f:ajax render=":myform" />
-                                            </h:commandLink>
+                                            </button>
                                         </f:facet>
 
                                         <!-- Bearbeitung übernehmen-Schaltknopf -->
-                                        <h:commandLink id="take" styleClass="btn btn-primary" rel="tooltip" action="#{AktuelleSchritteForm.SchrittDurchBenutzerUebernehmen}" rendered="#{(item.bearbeitungsstatusEnum == 'OPEN' and !item.batchStep) or (item.bearbeitungsstatusEnum == 'OPEN' and item.batchStep and !item.batchSize)}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
+                                        <button jsf:id="take" aria-label="#{msgs.bearbeitungDiesesSchrittsUebernehmen}" class="btn btn-primary" jsf:rel="tooltip" jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerUebernehmen}" jsf:rendered="#{(item.bearbeitungsstatusEnum == 'OPEN' and !item.batchStep) or (item.bearbeitungsstatusEnum == 'OPEN' and item.batchStep and !item.batchSize)}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
                                             <i class="fa fa-check"></i>
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
-                                        </h:commandLink>
+                                        </button>
 
-                                        <h:commandLink styleClass="btn btn-red" rel="tooltip" action="#{AktuelleSchritteForm.SchrittDurchBenutzerUebernehmen}" rendered="#{(item.bearbeitungsstatusEnum == 'ERROR' and !item.batchStep) or (item.bearbeitungsstatusEnum == 'ERROR' and item.batchStep and !item.batchSize)}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
+                                        <button class="btn btn-red" jsf:rel="tooltip" jsf:action="#{AktuelleSchritteForm.SchrittDurchBenutzerUebernehmen}" jsf:rendered="#{(item.bearbeitungsstatusEnum == 'ERROR' and !item.batchStep) or (item.bearbeitungsstatusEnum == 'ERROR' and item.batchStep and !item.batchSize)}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
                                             <i class="fa fa-check"></i>
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
-                                        </h:commandLink>
+                                        </button>
 
 
                                         <!-- Bearbeiten-Schaltknopf (eigener Schritt) -->
-                                        <h:commandLink action="#{AktuelleSchritteForm.EditStep}" id="view1" styleClass="btn btn-warning" rel="tooltip" rendered="#{(item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and !item.batchStep) or (item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and item.batchStep and !item.batchSize)}" title="#{msgs.inBearbeitungDurch}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname:''}">
-                                            <i class="glyphicon-cogwheel"></i>
+                                        <button jsf:action="#{AktuelleSchritteForm.EditStep}" jsf:id="view1" aria-label="#{msgs.diesenSchrittBearbeiten}" class="btn btn-warning" jsf:rel="tooltip" jsf:rendered="#{(item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and !item.batchStep) or (item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and item.batchStep and !item.batchSize)}" title="#{msgs.inBearbeitungDurch}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname:''}">
+                                            <i class="fa fa-cog"></i>
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
-                                        </h:commandLink>
+                                        </button>
 
                                         <!-- Bearbeiten-Schaltknopf (fremder Schritt) -->
-                                        <h:commandLink action="#{AktuelleSchritteForm.EditStep}" id="view2" styleClass="btn" rel="tooltip" rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id != LoginForm.myBenutzer.id and (!item.batchStep or !item.batchSize)}" title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
-                                            <i class="glyphicon-cogwheel" style="color:#aaaaaa"></i>
+                                        <button jsf:action="#{AktuelleSchritteForm.EditStep}" jsf:id="view2" aria-label="#{msgs.diesenSchrittBearbeiten}" class="btn" jsf:rel="tooltip" jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id != LoginForm.myBenutzer.id and (!item.batchStep or !item.batchSize)}" title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
+                                            <i class="fa fa-cog" style="color:#aaaaaa"></i>
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
-                                        </h:commandLink>
+                                        </button>
 
                                         <!-- edit batch step -->
-                                        <h:commandLink id="batch" styleClass="btn btn-primary" rel="tooltip" action="#{AktuelleSchritteForm.TakeOverBatch}" rendered="#{item.bearbeitungsstatusEnum == 'OPEN' and item.batchStep and item.batchSize}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
+                                        <button jsf:id="batch" class="btn btn-primary" jsf:rel="tooltip" jsf:action="#{AktuelleSchritteForm.TakeOverBatch}" jsf:rendered="#{item.bearbeitungsstatusEnum == 'OPEN' and item.batchStep and item.batchSize}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
                                             <i class="fa fa-check" style="margin-left: -6px"></i>
                                             <i class="fa fa-check" style="margin-left: -5px; margin-right: -6px"></i>
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
-                                        </h:commandLink>
+                                        </button>
                                         
                                         <!-- edit batch step -->
-                                        <h:commandLink id="batch-error" styleClass="btn btn-red" rel="tooltip" action="#{AktuelleSchritteForm.TakeOverBatch}" rendered="#{item.bearbeitungsstatusEnum == 'ERROR' and item.batchStep and item.batchSize}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
+                                        <button jsf:id="batch-error" class="btn btn-red" jsf:rel="tooltip" jsf:action="#{AktuelleSchritteForm.TakeOverBatch}" jsf:rendered="#{item.bearbeitungsstatusEnum == 'ERROR' and item.batchStep and item.batchSize}" title="#{msgs.bearbeitungDiesesSchrittsUebernehmen}">
                                             <i class="fa fa-check" style="margin-left: -6px"></i>
                                             <i class="fa fa-check" style="margin-left: -5px; margin-right: -6px"></i>
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
-                                        </h:commandLink>
+                                        </button>
 
                                         <!-- edit batch step -->
-                                        <h:commandLink id="batchInWork" styleClass="btn btn-warning" rel="tooltip" action="#{AktuelleSchritteForm.BatchesEdit}" rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and item.batchStep and item.batchSize}" title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
-                                            <i class="glyphicon-cogwheels"></i>
+                                        <button jsf:id="batchInWork" class="btn btn-warning" jsf:rel="tooltip" jsf:action="#{AktuelleSchritteForm.BatchesEdit}" jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id == LoginForm.myBenutzer.id and item.batchStep and item.batchSize}" title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
+                                            <i class="fa fa-cogs"></i>
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
-                                        </h:commandLink>
+                                        </button>
 
                                         <!-- edit batch step -->
-                                        <h:commandLink id="batchInWorkOther" styleClass="btn" rel="tooltip" action="#{AktuelleSchritteForm.BatchesEdit}" rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id != LoginForm.myBenutzer.id and item.batchStep and item.batchSize}" title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
-                                             <i class="glyphicon-cogwheels" style="color:#aaaaaa"></i>
+                                        <button jsf:id="batchInWorkOther" class="btn" jsf:rel="tooltip" jsf:action="#{AktuelleSchritteForm.BatchesEdit}" jsf:rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and item.bearbeitungsbenutzer.id != LoginForm.myBenutzer.id and item.batchStep and item.batchSize}" title="#{msgs.inBearbeitungDurch}: #{(item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0 ? item.bearbeitungsbenutzer.nachVorname : '')}">
+                                             <i class="fa fa-cogs" style="color:#aaaaaa"></i>
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt}" value="#{item}" />
-                                        </h:commandLink>
+                                        </button>
                                         
 <!--                                       	<h:panelGroup rendered="#{item.bearbeitungsstatusEnum.title eq 'statusError'}"> -->
 <!--                                             <i class="fa fa-life-ring font-red pull-right" style="font-size:30px;"/> -->
@@ -448,29 +481,29 @@
                                 <h:panelGroup styleClass="pull-right">
                                     <h:outputText value="#{msgs.anzahlDerImagesAllerTreffer}:" />
                                     <h:outputText id="calcNumber" styleClass="margin-left-5 margin-right-5" value="#{AktuelleSchritteForm.allImages}" />
-                                    <h:commandLink id="calc" action="#{AktuelleSchritteForm.calcHomeImages}">
-                                        <i class="btn fa fa-refresh" />
-                                    </h:commandLink>
+                                    <button jsf:id="calc" jsf:action="#{AktuelleSchritteForm.calcHomeImages}" class="btn">
+                                        <i class="fa fa-refresh" />
+                                    </button>
                                 </h:panelGroup>
 
                                 <ul class="action-ul">
                                     <li class="action-li">
-                                        <h:commandLink id="uploadAll" action="#{AktuelleSchritteForm.UploadFromHomeAlle}" title="#{msgs.verzeichnisFertigHochladen}" onclick="if (!confirm('#{msgs.upload}')) return false">
-                                            <span class="btn btn-lightred margin-right-10 fa fa-cloud-upload fa-lg" />
+                                        <button jsf:id="uploadAll" jsf:action="#{AktuelleSchritteForm.UploadFromHomeAlle}" class="btn btn-lightred" title="#{msgs.verzeichnisFertigHochladen}" onclick="if (!confirm('#{msgs.upload}')) return false">
+                                            <span class="margin-right-10 fa fa-cloud-upload fa-lg" />
                                             <h:outputText value="#{msgs.verzeichnisFertigHochladen}" />
-                                        </h:commandLink>
+                                        </button>
                                     </li>
                                     <li class="action-li">
-                                        <h:commandLink id="downloadPage" action="#{AktuelleSchritteForm.DownloadToHomePage}" title="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}" onclick="if (!confirm('#{msgs.upload}')) return false">
-                                            <span class="btn btn-green margin-right-10 fa fa-cloud-download fa-lg" />
+                                        <button jsf:id="downloadPage" jsf:action="#{AktuelleSchritteForm.DownloadToHomePage}" class="btn btn-green" title="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}" onclick="if (!confirm('#{msgs.upload}')) return false">
+                                            <span class="margin-right-10 fa fa-cloud-download fa-lg" />
                                             <h:outputText value="#{msgs.alleTrefferDieserSeiteInMeinHomeverzeichnis}" />
-                                        </h:commandLink>
+                                        </button>
                                     </li>
                                     <li class="action-li">
-                                        <h:commandLink id="downloadAll" action="#{AktuelleSchritteForm.DownloadToHomeHits}" title="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}" onclick="if (!confirm('#{msgs.upload}')) return false">
-                                            <span class="btn btn-green margin-right-10 fa fa-cloud-download fa-lg" />
+                                        <button jsf:id="downloadAll" jsf:action="#{AktuelleSchritteForm.DownloadToHomeHits}" class="btn btn-green" title="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}" onclick="if (!confirm('#{msgs.upload}')) return false">
+                                            <span class="margin-right-10 fa fa-cloud-download fa-lg" />
                                             <h:outputText value="#{msgs.gesamtesTreffersetInMeinHomeverzeichnis}" />
-                                        </h:commandLink>
+                                        </button>
                                     </li>
                                 </ul>
 
@@ -500,7 +533,6 @@
 													});
 								</script>
 		</c:if>
-
+	</main>
     </ui:define>
-
 </ui:composition>

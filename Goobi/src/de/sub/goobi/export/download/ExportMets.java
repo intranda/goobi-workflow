@@ -12,7 +12,7 @@ import java.io.FileNotFoundException;
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -52,6 +52,8 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.zip.DataFormatException;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
@@ -64,6 +66,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -96,6 +99,7 @@ import com.drew.metadata.jpeg.JpegDirectory;
 import com.drew.metadata.png.PngDirectory;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
@@ -108,6 +112,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
+import lombok.Getter;
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -127,6 +132,7 @@ import ugh.exceptions.WriteException;
 public class ExportMets {
     protected Helper help = new Helper();
     protected Prefs myPrefs;
+    @Getter
     protected List<String> problems = new ArrayList<>();
 
     protected static final Logger logger = LogManager.getLogger(ExportMets.class);
@@ -154,16 +160,50 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
-    WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
-    TypeNotAllowedForParentException {
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+            WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
+            TypeNotAllowedForParentException {
+
         String benutzerHome = "";
+        LoginBean login = Helper.getLoginBean();
         if (login != null) {
             benutzerHome = login.getMyBenutzer().getHomeDir();
         } else {
             benutzerHome = myProzess.getProjekt().getDmsImportImagesPath();
         }
         return startExport(myProzess, benutzerHome);
+    }
+
+    public void downloadMets(Process process) throws ReadException, PreferencesException, WriteException, IOException, InterruptedException,
+            SwapException, DAOException, TypeNotAllowedForParentException {
+        this.myPrefs = process.getRegelsatz().getPreferences();
+        String atsPpnBand = process.getTitel();
+        Fileformat gdzfile = process.readMetadataFile();
+
+        //String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis); 
+        Path targetDir = Files.createTempDirectory("mets_export"); //only save file in /tmp/ directory 
+
+        String targetFileName = targetDir.resolve(atsPpnBand + "_mets.xml").toAbsolutePath().toString();
+        writeMetsFile(process, targetFileName, gdzfile, false);
+
+        //download File
+        try (InputStream in = StorageProvider.getInstance().newInputStream(Paths.get(targetFileName))) {
+            FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+            ExternalContext ec = facesContext.getExternalContext();
+            ec.responseReset();
+            ec.setResponseHeader("Content-Disposition", "attachment; filename=" + Paths.get(targetFileName).getFileName());
+            ec.setResponseContentLength((int) StorageProvider.getInstance().getFileSize(Paths.get(targetFileName)));
+
+            IOUtils.copy(in, ec.getResponseOutputStream());
+
+            facesContext.responseComplete();
+
+            Helper.setMeldung(null, process.getTitel() + ": ", "Download Finished");
+
+            //delete file from directory
+            StorageProvider.getInstance().deleteDir(targetDir);
+        } catch (Exception e) {
+            logger.error(e);
+        }
     }
 
     /**
@@ -185,8 +225,8 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
-    WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
-    SwapException, DAOException, TypeNotAllowedForParentException {
+            WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
+            SwapException, DAOException, TypeNotAllowedForParentException {
 
         /*
          * -------------------------------- Read Document --------------------------------
@@ -195,11 +235,11 @@ public class ExportMets {
         String atsPpnBand = myProzess.getTitel();
         Fileformat gdzfile = myProzess.readMetadataFile();
 
-        String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
+        //String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis); 
+        String zielVerzeichnis = Files.createTempDirectory("mets_export").toAbsolutePath().toString(); //only save file in /tmp/ directory 
 
         String targetFileName = zielVerzeichnis + atsPpnBand + "_mets.xml";
         return writeMetsFile(myProzess, targetFileName, gdzfile, false);
-
     }
 
     /**
@@ -209,7 +249,7 @@ public class ExportMets {
      */
     protected String prepareUserDirectory(String inTargetFolder) {
         String target = inTargetFolder;
-        User myBenutzer = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+        User myBenutzer = Helper.getCurrentUser();
         if (myBenutzer != null) {
             try {
                 FilesystemHelper.createDirectoryForUser(target, myBenutzer.getLogin());
@@ -236,9 +276,11 @@ public class ExportMets {
     protected boolean writeMetsFile(Process myProzess, String targetFileName, Fileformat gdzfile, boolean writeLocalFilegroup)
             throws PreferencesException, WriteException, IOException, InterruptedException, SwapException, DAOException,
             TypeNotAllowedForParentException {
-
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
         ExportFileformat mm = MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
         mm.setWriteLocal(writeLocalFilegroup);
+        mm.setCreateUUIDs(config.isExportCreateUUIDsAsFileIDs());
+
         String imageFolderPath = myProzess.getImagesTifDirectory(true);
         Path imageFolder = Paths.get(imageFolderPath);
         /*
@@ -272,7 +314,7 @@ public class ExportMets {
          * -------------------------------- if the top element does not have any image related, set them all --------------------------------
          */
 
-        if (ConfigurationHelper.getInstance().isExportValidateImages()) {
+        if (config.isExportValidateImages()) {
 
             if (topElement.getAllToReferences("logical_physical") == null || topElement.getAllToReferences("logical_physical").size() == 0) {
                 if (dd.getPhysicalDocStruct() != null && dd.getPhysicalDocStruct().getAllChildren() != null) {
@@ -306,7 +348,7 @@ public class ExportMets {
         mm.setDigitalDocument(dd);
 
         // if configured, extract metadata from files and store them as techMd premis
-        if (ConfigurationHelper.getInstance().isExportCreateTechnicalMetadata()) {
+        if (config.isExportCreateTechnicalMetadata()) {
             int counter = 1;
             for (DocStruct page : dd.getPhysicalDocStruct().getAllChildren()) {
                 Path path = Paths.get(page.getImageName());
@@ -324,7 +366,7 @@ public class ExportMets {
             }
         }
 
-        Map<String, String> additionalMetadataMap = ConfigurationHelper.getInstance().getExportWriteAdditionalMetadata();
+        Map<String, String> additionalMetadataMap = config.getExportWriteAdditionalMetadata();
         if (!additionalMetadataMap.isEmpty()) {
             String projectMetadataName = additionalMetadataMap.get("Project");
             String institutionMetadataName = additionalMetadataMap.get("Institution");
@@ -433,7 +475,7 @@ public class ExportMets {
 
         // if (!ConfigMain.getParameter("ImagePrefix", "\\d{8}").equals("\\d{8}")) {
         List<String> images = new ArrayList<>();
-        if (ConfigurationHelper.getInstance().isExportValidateImages()) {
+        if (config.isExportValidateImages()) {
             try {
                 images = new MetadatenImagesHelper(this.myPrefs, dd).getDataFiles(myProzess, imageFolderPath);
 
@@ -459,7 +501,7 @@ public class ExportMets {
             // create pagination out of virtual file names
             dd.addAllContentFiles();
         }
-        if (ConfigurationHelper.getInstance().isExportInTemporaryFile()) {
+        if (config.isExportInTemporaryFile()) {
             Path tempFile = StorageProvider.getInstance().createTemporaryFile(myProzess.getTitel(), ".xml");
             String filename = tempFile.toString();
             mm.write(filename);
@@ -474,12 +516,9 @@ public class ExportMets {
         } else {
             mm.write(targetFileName);
         }
+
         Helper.setMeldung(null, myProzess.getTitel() + ": ", "ExportFinished");
         return true;
-    }
-
-    public List<String> getProblems() {
-        return problems;
     }
 
     private VirtualFileGroup createFilegroup(VariableReplacer variableRplacer, ProjectFileGroup projectFileGroup) {
@@ -487,7 +526,7 @@ public class ExportMets {
         v.setName(projectFileGroup.getName());
         v.setPathToFiles(variableRplacer.replace(projectFileGroup.getPath()));
         v.setMimetype(projectFileGroup.getMimetype());
-        v.setFileSuffix(projectFileGroup.getSuffix());
+        v.setFileSuffix(projectFileGroup.getSuffix().trim());
         v.setFileExtensionsToIgnore(projectFileGroup.getIgnoreMimetypes());
         v.setIgnoreConfiguredMimetypeAndSuffix(projectFileGroup.isUseOriginalFiles());
         if (projectFileGroup.getName().equals("PRESENTATION")) {
@@ -533,7 +572,7 @@ public class ExportMets {
                 buildAudioMetadata(doc, file, object, false);
             } else if (mimeType.startsWith("audio") || mimeType.equals("video/x-mpeg")) {
                 buildAudioMetadata(doc, file, object, true);
-            } else if (mimeType.startsWith("video")) {
+            } else if (mimeType.startsWith("video") || mimeType.equals("application/mxf")) {
                 buildMPEGMetadata(doc, file, object);
             } else {
                 String message = "Data is of type not covered by the premis creation: " + mimeType;
@@ -589,10 +628,10 @@ public class ExportMets {
             addSignificantProperty(doc, object, "Bitrate", bitrate);
         }
         if (width != null) {
-            addSignificantProperty(doc, object, "ImageHeight", width);
+            addSignificantProperty(doc, object, "ImageWidth", width);
         }
         if (height != null) {
-            addSignificantProperty(doc, object, "ImageWidth", height);
+            addSignificantProperty(doc, object, "ImageHeight", height);
         }
 
         Element objectCharacteristics = doc.createElementNS(premisNamespace, "objectCharacteristics");

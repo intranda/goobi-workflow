@@ -7,6 +7,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Date;
 import java.util.Map;
+import java.util.function.LongSupplier;
 
 import javax.naming.ConfigurationException;
 
@@ -27,11 +28,56 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.RSAKeyProvider;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class JwtHelper {
+
+    private final static long rotationDuration = 1000 * 60 * 60 * 24; //24 hours 
+
+    /**
+     * creates a rotated token. Rotation is done by appending a timestamp
+     * 
+     * @param secret
+     * @return
+     */
+    private static Algorithm createSigningAlgorithm(String secret) {
+        long currentTime = System.currentTimeMillis();
+        long rotationTime = (currentTime / rotationDuration) * rotationDuration;
+        Algorithm algorithm = Algorithm.HMAC256(secret + rotationTime);
+        return algorithm;
+    }
+
+    /**
+     * Verifies tokens with rotated keys. Also checks if the last rotated key is valid
+     * 
+     * @param token
+     * @param secret
+     * @return
+     */
+    private static DecodedJWT verifyToken(String token, String secret, LongSupplier currentMillisSupplier) {
+        long currentTime = currentMillisSupplier.getAsLong();
+        int maxRotations = 3;
+        for (int currentRotation = 0; currentRotation < maxRotations; currentRotation++) {
+            long rotationTime = ((currentTime - (rotationDuration * currentRotation)) / rotationDuration) * rotationDuration;
+            try {
+                DecodedJWT jwt = verifyTokenWithRotationTime(token, secret, rotationTime);
+                return jwt;
+            } catch (JWTVerificationException e) {
+                if (currentRotation == maxRotations - 1) {
+                    throw e;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static DecodedJWT verifyTokenWithRotationTime(String token, String secret, long lastRotationTime) {
+        Algorithm algorithm = Algorithm.HMAC256(secret + lastRotationTime);
+        JWTVerifier verifier = JWT.require(algorithm).withIssuer("Goobi").build();
+        DecodedJWT jwt = verifier.verify(token);
+        return jwt;
+    }
 
     public static String createToken(Map<String, String> map, Date expiryDate) throws ConfigurationException {
         String secret = ConfigurationHelper.getInstance().getJwtSecret();
@@ -43,7 +89,7 @@ public class JwtHelper {
             throw new ConfigurationException("Could not generate token from an empty map.");
         }
 
-        Algorithm algorithm = Algorithm.HMAC256(secret);
+        Algorithm algorithm = createSigningAlgorithm(secret);
 
         Builder tokenBuilder = JWT.create().withIssuer("Goobi");
         for (String key : map.keySet()) {
@@ -68,9 +114,7 @@ public class JwtHelper {
             throw new ConfigurationException("Could not validate token from an empty map.");
         }
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
-            JWTVerifier verifier = JWT.require(algorithm).withIssuer("Goobi").build();
-            DecodedJWT jwt = verifier.verify(token);
+            DecodedJWT jwt = verifyToken(token, secret, System::currentTimeMillis);
 
             for (String key : map.keySet()) {
                 String tokenValue = jwt.getClaim(key).asString();
@@ -87,6 +131,22 @@ public class JwtHelper {
     }
 
     /**
+     * Verifies the String token and returns a decoded JWT
+     * 
+     * @param token
+     * @return
+     * @throws ConfigurationException
+     */
+    public static DecodedJWT verifyTokenAndReturnClaims(String token) throws ConfigurationException {
+        String secret = ConfigurationHelper.getInstance().getJwtSecret();
+        if (secret == null) {
+            throw new ConfigurationException(
+                    "Could not get JWT secret from configuration. Please configure the key 'jwtSecret' in the file goobi_config.properties");
+        }
+        return verifyToken(token, secret, System::currentTimeMillis);
+    }
+
+    /**
      * Creates a JSON web token that has the claims "changeStepAllowed"=true, "stepId"=step.getId() and is valid for 37 hours
      * 
      * @param step
@@ -99,12 +159,38 @@ public class JwtHelper {
             throw new ConfigurationException(
                     "Could not get JWT secret from configuration. Please configure the key 'jwtSecret' in the file goobi_config.properties");
         }
-        Algorithm algorithm = Algorithm.HMAC256(secret);
+        Algorithm algorithm = createSigningAlgorithm(secret);
         Date expiryDate = new DateTime().plusHours(37).toDate();
         String token = JWT.create()
                 .withIssuer("Goobi")
                 .withClaim("stepId", step.getId())
                 .withClaim("changeStepAllowed", true)
+                .withExpiresAt(expiryDate)
+                .sign(algorithm);
+        return token;
+    }
+
+    /**
+     * Creates an API token that allows using the Goobi REST API when the pathRegex matches the API path and the used HTTP Method <br>
+     * is in the methods array passed to this function.
+     * 
+     * @param pathRegex
+     * @param methods
+     * @return A signed JWT
+     * @throws ConfigurationException
+     */
+    public static String createApiToken(String pathRegex, String[] methods) throws ConfigurationException {
+        String secret = ConfigurationHelper.getInstance().getJwtSecret();
+        if (secret == null) {
+            throw new ConfigurationException(
+                    "Could not get JWT secret from configuration. Please configure the key 'jwtSecret' in the file goobi_config.properties");
+        }
+        Algorithm algorithm = createSigningAlgorithm(secret);
+        Date expiryDate = new DateTime().plusHours(37).toDate();
+        String token = JWT.create()
+                .withIssuer("Goobi")
+                .withClaim("api_path", pathRegex)
+                .withArrayClaim("api_methods", methods)
                 .withExpiresAt(expiryDate)
                 .sign(algorithm);
         return token;
@@ -117,9 +203,7 @@ public class JwtHelper {
                     "Could not get JWT secret from configuration. Please configure the key 'jwtSecret' in the file goobi_config.properties");
         }
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
-            JWTVerifier verifier = JWT.require(algorithm).withIssuer("Goobi").build();
-            DecodedJWT jwt = verifier.verify(token);
+            DecodedJWT jwt = verifyToken(token, secret, System::currentTimeMillis);
             Integer claimId = jwt.getClaim("stepId").asInt();
             if (claimId == null || !stepId.equals(claimId)) {
                 log.debug("token rejected: step IDs do not match");

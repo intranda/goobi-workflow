@@ -6,7 +6,7 @@ package org.goobi.api.display.helper;
  * Visit the websites for more information. 
  *          - https://goobi.io
  *          - https://www.intranda.com 
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -22,11 +22,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.sub.goobi.config.ConfigNormdata;
+import lombok.Getter;
 
 public class NormDatabase {
 
+	@Getter
     private String path;
 
+	@Getter
     private String abbreviation;
 
     private static List<NormDatabase> allNormdatabases = new ArrayList<NormDatabase>();
@@ -45,14 +48,6 @@ public class NormDatabase {
 
     public static void setAllNormdatabases(List<NormDatabase> allNormdatabases) {
         NormDatabase.allNormdatabases = allNormdatabases;
-    }
-
-    public String getAbbreviation() {
-        return abbreviation;
-    }
-
-    public String getPath() {
-        return path;
     }
 
     //

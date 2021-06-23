@@ -6,7 +6,7 @@ package org.goobi.beans;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -42,7 +42,6 @@ import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 import lombok.Getter;
@@ -93,6 +92,10 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     @Getter
     @Setter
+    transient boolean batchSize;
+
+    @Getter
+    @Setter
     private boolean httpStep;
     @Getter
     @Setter
@@ -102,7 +105,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private String httpMethod;
     @Getter
     @Setter
-    private String[] possibleHttpMethods = new String[] { "POST", "PUT", "PATCH" };
+    private String[] possibleHttpMethods = new String[] { "POST", "PUT", "PATCH", "GET" };
     @Getter
     @Setter
     private String httpJsonBody;
@@ -137,15 +140,47 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     @Getter
     private QueueType messageQueue;
 
+    //    @Getter
+    //    @Setter
+    //    private String messageId;
+
     public Step() {
         this.titel = "";
         this.eigenschaften = new ArrayList<>();
         this.benutzer = new ArrayList<>();
         this.benutzergruppen = new ArrayList<>();
-        this.prioritaet = Integer.valueOf(0);
-        this.reihenfolge = Integer.valueOf(0);
+        this.prioritaet = 0;
+        this.reihenfolge = 0;
         this.httpJsonBody = "";
         setBearbeitungsstatusEnum(StepStatus.LOCKED);
+    }
+
+    // This constructor is needed when creating a new Step
+    public Step(Process process) {
+        this();
+        this.prozess = process;
+
+        // Look for the next available order number
+        List<Step> steps = process.getSchritte();
+        if (steps.size() == 0) {
+            this.reihenfolge = 1;
+            return;
+        }
+
+        // Here the list of steps is NOT empty
+        // Before iterating over all steps, the order of the first step is assumed as the highest one
+        int maximumOrder = steps.get(0).getReihenfolge();
+        // After that a higher one can be found. Here the index begins at 1.
+        Step currentStep;
+        for (int i = 1; i < steps.size(); i++) {
+            currentStep = steps.get(i);
+            if (currentStep.getReihenfolge() > maximumOrder) {
+                maximumOrder = currentStep.getReihenfolge();
+            }
+        }
+
+        // Maximum order + 1 cannot be in use until now
+        this.reihenfolge = maximumOrder + 1;
     }
 
     /*
@@ -451,25 +486,47 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public void setBearbeitungsstatusUp() {
-        if (getBearbeitungsstatusEnum() == StepStatus.ERROR) {
-            this.bearbeitungsstatus = StepStatus.DONE.getValue();
-            SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.DONE);
-        } else if (getBearbeitungsstatusEnum() != StepStatus.DONE) {
-            this.bearbeitungsstatus = Integer.valueOf(this.bearbeitungsstatus.intValue() + 1);
-            SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
+        switch (getBearbeitungsstatusEnum()) {
+            case ERROR:
+            case INFLIGHT:
+            case INWORK:
+                bearbeitungsstatus = StepStatus.DONE.getValue();
+                SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.DONE);
+                break;
+            case OPEN:
+                bearbeitungsstatus = 2;
+                SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
+                break;
+            case LOCKED:
+                bearbeitungsstatus = 1;
+                SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
+                break;
+            case DONE:
+            case DEACTIVATED:
+            default:
         }
-
     }
 
     public void setBearbeitungsstatusDown() {
-        if (getBearbeitungsstatusEnum() == StepStatus.ERROR) {
-            this.bearbeitungsstatus = StepStatus.OPEN.getValue();
-            SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.OPEN);
-        } else if (getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
-            this.bearbeitungsstatus = Integer.valueOf(this.bearbeitungsstatus.intValue() - 1);
-            if (bearbeitungsstatus != 0) {
+        switch (getBearbeitungsstatusEnum()) {
+            case DONE:
+                bearbeitungsstatus = 2;
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
-            }
+                break;
+            case ERROR:
+            case INFLIGHT:
+            case INWORK:
+                bearbeitungsstatus = 1;
+                SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
+                break;
+
+            case OPEN:
+                bearbeitungsstatus = 0;
+                SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
+                break;
+            case LOCKED:
+            case DEACTIVATED:
+            default:
         }
     }
 
@@ -815,24 +872,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
             batchStep = Boolean.valueOf(false);
         }
         this.batchStep = batchStep;
-    }
-
-    public boolean isBatchSize() {
-        if (getProzess().getBatch() != null) {
-            Integer batchNumber = getProzess().getBatch().getBatchId();
-            if (batchNumber != null) {
-                // only steps with same title and batchId
-                String sql = "schritte.titel = '" + titel + "' and prozesse.batchID = " + batchNumber;
-                try {
-                    int number = StepManager.countSteps(null, sql);
-                    if (number > 1) {
-                        return true;
-                    }
-                } catch (DAOException e) {
-                }
-            }
-        }
-        return false;
     }
 
     public String getStepPlugin() {

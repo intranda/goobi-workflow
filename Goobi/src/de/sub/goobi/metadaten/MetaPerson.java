@@ -1,15 +1,13 @@
 package de.sub.goobi.metadaten;
 
-import java.net.URI;
 import java.net.URL;
-import java.net.URLDecoder;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -40,6 +38,8 @@ import org.goobi.api.display.DisplayCase;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.Process;
+import org.goobi.production.cli.helper.StringPair;
+import org.goobi.vocabulary.VocabRecord;
 
 import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.model.NormData;
@@ -48,8 +48,8 @@ import de.intranda.digiverso.normdataimporter.model.TagDescription;
 import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import lombok.Data;
-import lombok.Getter;
 import ugh.dl.DocStruct;
+import ugh.dl.HoldingElement;
 import ugh.dl.MetadataType;
 import ugh.dl.NamePart;
 import ugh.dl.Person;
@@ -66,7 +66,7 @@ public class MetaPerson implements SearchableMetadata {
     private Person p;
     private int identifier;
     private Prefs myPrefs;
-    private DocStruct myDocStruct;
+    private HoldingElement myDocStruct;
     private MetadatenHelper mdh;
     private DisplayCase myValues;
     private Metadaten bean;
@@ -85,17 +85,22 @@ public class MetaPerson implements SearchableMetadata {
     // viaf data
     private ViafSearch viafSearch = new ViafSearch();
 
+
+    // unused fields, but needed to use the same modals as regular metadata
     private List<Toponym> resultList;
     private List<NormDataRecord> normdataList;
     private int totalResults;
-
-    @Getter
     private EasyDBSearch easydbSearch = new EasyDBSearch();
+    private List<StringPair> vocabularySearchFields;
+    private String vocabularyName;
+    private List<VocabRecord> records;
+    private String vocabularyUrl;
+    private VocabRecord selectedVocabularyRecord;
 
     /**
      * Allgemeiner Konstruktor ()
      */
-    public MetaPerson(Person p, int inID, Prefs inPrefs, DocStruct inStruct, Process inProcess, Metadaten bean) {
+    public MetaPerson(Person p, int inID, Prefs inPrefs, HoldingElement inStruct, Process inProcess, Metadaten bean) {
         this.myPrefs = inPrefs;
         this.p = p;
         this.identifier = inID;
@@ -304,18 +309,6 @@ public class MetaPerson implements SearchableMetadata {
         return "";
     }
 
-    private URL convertToURLEscapingIllegalCharacters(String string) {
-        try {
-            String decodedURL = URLDecoder.decode(string, "UTF-8");
-            URL url = new URL(decodedURL);
-            URI uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
-            return uri.toURL();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
     public String getData() {
         String mainValue = null;
 
@@ -375,18 +368,6 @@ public class MetaPerson implements SearchableMetadata {
 
     public boolean isShowNoHitFound() {
         return showNotHits;
-    }
-
-    public String filter(String str) {
-        StringBuilder filtered = new StringBuilder(str.length());
-        for (int i = 0; i < str.length(); i++) {
-            char current = str.charAt(i);
-            // current != 0x152 && current != 0x156
-            if (current != 0x98 && current != 0x9C) {
-                filtered.append(current);
-            }
-        }
-        return filtered.toString();
     }
 
     @Override

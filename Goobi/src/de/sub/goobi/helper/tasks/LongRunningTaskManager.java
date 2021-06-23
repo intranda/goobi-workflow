@@ -6,7 +6,7 @@ package de.sub.goobi.helper.tasks;
  * Visit the websites for more information. 
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -29,9 +29,14 @@ import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class LongRunningTaskManager {
     static LinkedList<LongRunningTask> tasks = new LinkedList<LongRunningTask>();
     private static LongRunningTaskManager lrtm;
+    @Getter
+    @Setter
     static boolean running = false;
     Timer autoRunTimer;
 
@@ -172,14 +177,6 @@ public class LongRunningTaskManager {
                 tasks.remove(lrt);
             }
         }
-    }
-
-    public boolean isRunning() {
-        return running;
-    }
-
-    public void setRunning(boolean running) {
-        LongRunningTaskManager.running = running;
     }
 
 }

@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -37,10 +37,12 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +77,7 @@ import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.GoobiScript;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.helper.VariableReplacer;
@@ -96,9 +99,9 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
-import io.goobi.workflow.xslt.GeneratePdfFromXslt;
-import io.goobi.workflow.xslt.XsltPreparatorSimplifiedMetadata;
-import io.goobi.workflow.xslt.XsltPreparatorXmlLog;
+import io.goobi.workflow.xslt.XsltPreparatorDocket;
+import io.goobi.workflow.xslt.XsltPreparatorMetadata;
+import io.goobi.workflow.xslt.XsltToPdf;
 import lombok.Getter;
 import lombok.Setter;
 import ugh.dl.ContentFile;
@@ -116,8 +119,14 @@ import ugh.exceptions.WriteException;
 public class Process implements Serializable, DatabaseObject, Comparable<Process> {
     private static final Logger logger = LogManager.getLogger(Process.class);
     private static final long serialVersionUID = -6503348094655786275L;
+    @Getter
+    @Setter
     private Integer id;
+    @Getter
+    @Setter
     private String titel;
+    @Getter
+    @Setter
     private String ausgabename;
     private Boolean istTemplate;
     private Boolean inAuswahllisteAnzeigen;
@@ -128,6 +137,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private List<Masterpiece> werkstuecke;
     private List<Template> vorlagen;
     private List<Processproperty> eigenschaften;
+    @Getter
+    @Setter
     private String sortHelperStatus;
     private Integer sortHelperImages;
     private Integer sortHelperArticles;
@@ -156,8 +167,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private final MetadatenSperrung msp = new MetadatenSperrung();
     Helper help = new Helper();
 
-    public static String DIRECTORY_PREFIX = "orig";
-    public static String DIRECTORY_SUFFIX = "images";
     private HashMap<String, String> tempVariableMap = new HashMap<>();
 
     @Getter
@@ -173,6 +182,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Getter
     @Setter
     private boolean mediaFolderExists = false;
+
+    //    @Inject
+    //    private LoginBean loginForm;
 
     private List<StringPair> metadataList = new ArrayList<>();
     private String representativeImage = null;
@@ -195,6 +207,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Getter
     private boolean showFileDeletionButton;
 
+    @Getter
+    private boolean pauseAutomaticExecution;
+
     private static final Object xmlWriteLock = new Object();
 
     public Process() {
@@ -208,26 +223,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     }
 
-    /*
-     * Getter und Setter
-     */
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getSortHelperStatus() {
-        return this.sortHelperStatus;
-    }
-
-    public void setSortHelperStatus(String sortHelperStatus) {
-        this.sortHelperStatus = sortHelperStatus;
-    }
-
     public boolean isIstTemplate() {
         if (this.istTemplate == null) {
             this.istTemplate = Boolean.valueOf(false);
@@ -239,14 +234,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.istTemplate = istTemplate;
     }
 
-    public String getTitel() {
-        return this.titel;
-    }
-
-    public void setTitel(String inTitel) {
-        this.titel = inTitel.trim();
-    }
-
     public List<Step> getSchritte() {
         if ((this.schritte == null || schritte.isEmpty()) && id != null) {
             schritte = StepManager.getStepsForProcess(id);
@@ -256,6 +243,15 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public void setSchritte(List<Step> schritte) {
         this.schritte = schritte;
+    }
+
+    public boolean containsStepOfOrder(int order) {
+        for (int i = 0; i < this.schritte.size(); i++) {
+            if (this.schritte.get(i).getReihenfolge() == order) {
+                return true;
+            }
+        }
+        return false;
     }
 
     //    public List<HistoryEvent> getHistory() {
@@ -297,14 +293,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.werkstuecke = werkstuecke;
     }
 
-    public String getAusgabename() {
-        return this.ausgabename;
-    }
-
-    public void setAusgabename(String ausgabename) {
-        this.ausgabename = ausgabename;
-    }
-
     public List<Processproperty> getEigenschaften() {
         if ((eigenschaften == null || eigenschaften.isEmpty()) && id != null) {
             eigenschaften = PropertyManager.getProcessPropertiesForProcess(id);
@@ -341,71 +329,30 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return this.msp.getLockSekunden(this.id) % 60;
     }
 
-    /*
-     * Metadaten- und ImagePfad
-     */
-    private static final DirectoryStream.Filter<Path> filterMediaFolder = new DirectoryStream.Filter<Path>() {
-        @Override
-        public boolean accept(Path path) {
-            String name = path.getFileName().toString();
-            return (name.endsWith("_" + DIRECTORY_SUFFIX) && !name.startsWith(DIRECTORY_PREFIX + "_"));
-        }
-    };
-
-    private static final DirectoryStream.Filter<Path> filterMasterFolder = new DirectoryStream.Filter<Path>() {
-        @Override
-        public boolean accept(Path path) {
-            String name = path.getFileName().toString();
-            return (name.endsWith("_" + DIRECTORY_SUFFIX) && name.startsWith(DIRECTORY_PREFIX + "_"));
-        }
-    };
-
-    private static final DirectoryStream.Filter<Path> filterSourceFolder = new DirectoryStream.Filter<Path>() {
-        @Override
-        public boolean accept(Path path) {
-            String name = path.getFileName().toString();
-            return (name.endsWith("_" + "source"));
-        }
-    };
-
     public String getImagesTifDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
         if (this.imagesTiffDirectory != null && StorageProvider.getInstance().isDirectory(Paths.get(this.imagesTiffDirectory))) {
             return this.imagesTiffDirectory;
         }
         Path dir = Paths.get(getImagesDirectory());
-        DIRECTORY_SUFFIX = ConfigurationHelper.getInstance().getMediaDirectorySuffix();
-        DIRECTORY_PREFIX = ConfigurationHelper.getInstance().getMasterDirectoryPrefix();
+
         /* nur die _tif-Ordner anzeigen, die nicht mir orig_ anfangen */
 
-        String tifOrdner = "";
-        List<String> verzeichnisse = StorageProvider.getInstance().list(dir.toString(), filterMediaFolder);
+        String mediaFolder = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesMainDirectoryName(), this);
 
-        if (verzeichnisse != null) {
-            for (int i = 0; i < verzeichnisse.size(); i++) {
-                tifOrdner = verzeichnisse.get(i);
-                if (tifOrdner.equals(titel + "_" + DIRECTORY_SUFFIX)) {
-                    break;
+        if (!StorageProvider.getInstance().isDirectory(Paths.get(dir.toString(), mediaFolder)) && useFallBack) {
+            String configuredFallbackFolder = ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName();
+            if (StringUtils.isNotBlank(configuredFallbackFolder)) {
+                String fallback = VariableReplacer.simpleReplace(configuredFallbackFolder, this);
+                if (Files.exists(Paths.get(dir.toString(), fallback))) {
+                    mediaFolder = fallback;
                 }
             }
         }
 
-        if (tifOrdner.equals("") && useFallBack) {
-            String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
-            if (!suffix.equals("")) {
-                List<String> folderList = StorageProvider.getInstance().list(dir.toString());
-                for (String folder : folderList) {
-                    if (folder.endsWith(suffix) && !folder.startsWith(DIRECTORY_PREFIX)) {
-                        tifOrdner = folder;
-                        break;
-                    }
-                }
-            }
-        }
-
-        //if frist fallback fails, fall back to largest thumbs folder if possible
-        if (tifOrdner.equals("") && useFallBack) {
+        //if first fallback fails, fall back to largest thumbs folder if possible
+        if (!StorageProvider.getInstance().isDirectory(Paths.get(dir.toString(), mediaFolder)) && useFallBack) {
             //fall back to largest thumbnail image
-            java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(titel + "_" + DIRECTORY_SUFFIX).entrySet()
+            java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(mediaFolder).entrySet()
                     .stream()
                     .sorted((entry1, entry2) -> entry2.getKey().compareTo(entry2.getKey()))
                     .map(Entry::getValue)
@@ -418,28 +365,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
         }
 
-        if (!tifOrdner.equals("") && useFallBack) {
-            String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
-            if (!suffix.equals("")) {
-                Path tif = Paths.get(tifOrdner);
-                List<String> files = StorageProvider.getInstance().list(getImagesDirectory() + tif.toString());
-                if (files == null || files.size() == 0) {
-                    List<String> folderList = StorageProvider.getInstance().list(dir.toString());
-                    for (String folder : folderList) {
-                        if (folder.endsWith(suffix) && !folder.startsWith(DIRECTORY_PREFIX)) {
-                            tifOrdner = folder;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        if (tifOrdner.equals("")) {
-            tifOrdner = this.titel + "_" + DIRECTORY_SUFFIX;
-        }
-
-        String rueckgabe = getImagesDirectory() + tifOrdner;
+        String rueckgabe = getImagesDirectory() + mediaFolder;
         if (!rueckgabe.endsWith(FileSystems.getDefault().getSeparator())) {
             rueckgabe += FileSystems.getDefault().getSeparator();
         }
@@ -490,34 +416,25 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
             Path dir = Paths.get(getImagesDirectory());
-            DIRECTORY_SUFFIX = ConfigurationHelper.getInstance().getMediaDirectorySuffix();
-            DIRECTORY_PREFIX = ConfigurationHelper.getInstance().getMasterDirectoryPrefix();
+
             /* nur die _tif-Ordner anzeigen, die mit orig_ anfangen */
 
-            String origOrdner = "";
-            List<String> verzeichnisse = StorageProvider.getInstance().list(dir.toString(), filterMasterFolder);
-            for (int i = 0; i < verzeichnisse.size(); i++) {
-                origOrdner = verzeichnisse.get(i);
-            }
+            String masterFolder = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesMasterDirectoryName(), this);
 
-            if (origOrdner.equals("") && useFallBack) {
-                String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
-                if (!suffix.equals("")) {
-                    List<String> folderList = StorageProvider.getInstance().list(dir.toString());
-                    for (String folder : folderList) {
-                        if (folder.endsWith(suffix)) {
-                            origOrdner = folder;
-                            break;
-                        }
+            if (!StorageProvider.getInstance().isDirectory(Paths.get(dir.toString(), masterFolder)) && useFallBack) {
+                String configuredFallbackFolder = ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName();
+                if (StringUtils.isNotBlank(configuredFallbackFolder)) {
+                    String fallback = VariableReplacer.simpleReplace(configuredFallbackFolder, this);
+                    if (Files.exists(Paths.get(dir.toString(), fallback))) {
+                        masterFolder = fallback;
                     }
                 }
             }
 
-            //if frist fallback fails, fall back to largest thumbs folder if possible
-            if (origOrdner.equals("") && useFallBack) {
+            //if first fallback fails, fall back to largest thumbs folder if possible
+            if (!StorageProvider.getInstance().isDirectory(Paths.get(dir.toString(), masterFolder)) && useFallBack) {
                 //fall back to largest thumbnail image
-                java.nio.file.Path largestThumbnailDirectory =
-                        getThumbsDirectories(DIRECTORY_PREFIX + "_" + this.titel + "_" + DIRECTORY_SUFFIX).entrySet()
+                java.nio.file.Path largestThumbnailDirectory = getThumbsDirectories(masterFolder).entrySet()
                         .stream()
                         .sorted((entry1, entry2) -> entry2.getKey().compareTo(entry2.getKey()))
                         .map(Entry::getValue)
@@ -530,31 +447,28 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 }
             }
 
-            if (!origOrdner.equals("") && useFallBack) {
-                String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
-                if (!suffix.equals("")) {
-                    Path tif = Paths.get(getImagesDirectory()).resolve(origOrdner);
-                    List<String> files = StorageProvider.getInstance().list(tif.toString());
-                    if (files == null || files.isEmpty()) {
-                        List<String> folderList = StorageProvider.getInstance().list(dir.toString());
-                        for (String folder : folderList) {
-                            if (folder.endsWith(suffix)) {
-                                origOrdner = folder;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
+            //            if (!origOrdner.equals("") && useFallBack) {
+            //                String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
+            //                if (!suffix.equals("")) {
+            //                    Path tif = Paths.get(getImagesDirectory()).resolve(origOrdner);
+            //                    List<String> files = StorageProvider.getInstance().list(tif.toString());
+            //                    if (files == null || files.isEmpty()) {
+            //                        List<String> folderList = StorageProvider.getInstance().list(dir.toString());
+            //                        for (String folder : folderList) {
+            //                            if (folder.endsWith(suffix)) {
+            //                                origOrdner = folder;
+            //                                break;
+            //                            }
+            //                        }
+            //                    }
+            //                }
+            //            }
 
-            if (origOrdner.equals("")) {
-                origOrdner = DIRECTORY_PREFIX + "_" + this.titel + "_" + DIRECTORY_SUFFIX;
-            }
             String rueckgabe;
-            if (!origOrdner.contains(FileSystems.getDefault().getSeparator())) {
-                rueckgabe = getImagesDirectory() + origOrdner + FileSystems.getDefault().getSeparator();
+            if (!masterFolder.contains(FileSystems.getDefault().getSeparator())) {
+                rueckgabe = getImagesDirectory() + masterFolder + FileSystems.getDefault().getSeparator();
             } else {
-                rueckgabe = origOrdner;
+                rueckgabe = masterFolder;
             }
             if (ConfigurationHelper.getInstance().isUseMasterDirectory() && this.getSortHelperStatus() != "100000000"
                     && ConfigurationHelper.getInstance().isCreateMasterDirectory()) {
@@ -589,19 +503,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public String getSourceDirectory() throws IOException, InterruptedException, SwapException, DAOException {
-        Path dir = Paths.get(getImagesDirectory());
-
-        Path sourceFolder = null;
-        List<String> verzeichnisse = StorageProvider.getInstance().list(dir.toString(), filterSourceFolder);
-        if (verzeichnisse == null || verzeichnisse.isEmpty()) {
-            sourceFolder = Paths.get(dir.toString(), titel + "_source");
-            if (ConfigurationHelper.getInstance().isCreateSourceFolder()) {
-                StorageProvider.getInstance().createDirectories(sourceFolder);
-            }
-        } else {
-            sourceFolder = Paths.get(dir.toString(), verzeichnisse.get(0));
+        Path sourceFolder = Paths.get(getImagesDirectory(),
+                VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesSourceDirectoryName(), this));
+        if (ConfigurationHelper.getInstance().isCreateSourceFolder() && !StorageProvider.getInstance().isDirectory(sourceFolder)) {
+            StorageProvider.getInstance().createDirectories(sourceFolder);
         }
-
         return sourceFolder.toString();
     }
 
@@ -630,31 +536,38 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public String getOcrTxtDirectory() throws SwapException, DAOException, IOException, InterruptedException {
-        return getOcrDirectory() + this.titel + "_txt" + FileSystems.getDefault().getSeparator();
+        return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
+                + FileSystems.getDefault().getSeparator();
     }
 
+    @Deprecated
     public String getOcrWcDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + this.titel + "_wc" + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrPdfDirectory() throws SwapException, DAOException, IOException, InterruptedException {
-        return getOcrDirectory() + this.titel + "_pdf" + FileSystems.getDefault().getSeparator();
+        return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
-        return getOcrDirectory() + this.titel + "_alto" + FileSystems.getDefault().getSeparator();
+        return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrXmlDirectory() throws SwapException, DAOException, IOException, InterruptedException {
-        return getOcrDirectory() + this.titel + "_xml" + FileSystems.getDefault().getSeparator();
+        return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getImportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
-        return getProcessDataDirectory() + "import" + FileSystems.getDefault().getSeparator();
+        return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getExportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
-        return getProcessDataDirectory() + "export" + FileSystems.getDefault().getSeparator();
+        return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException, InterruptedException, SwapException, DAOException {
@@ -971,7 +884,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public Step getAktuellerSchritt() {
         for (Step step : getSchritteList()) {
-            if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN || step.getBearbeitungsstatusEnum() == StepStatus.INWORK) {
+            if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN || step.getBearbeitungsstatusEnum() == StepStatus.INWORK
+                    || step.getBearbeitungsstatusEnum() == StepStatus.INFLIGHT) {
                 return step;
             }
         }
@@ -1273,8 +1187,17 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         synchronized (xmlWriteLock) {
             ff.setDigitalDocument(gdzfile.getDigitalDocument());
-
-            ff.write(metadataFileName);
+            try {
+                ff.write(metadataFileName);
+            } catch (UGHException e) {
+                //error writing. restore backup and rethrow error
+                Path meta = Paths.get(metadataFileName);
+                Path lastBackup = Paths.get(metadataFileName + ".1");
+                if ((!Files.exists(meta) || Files.size(meta) == 0) && Files.exists(lastBackup)) {
+                    Files.copy(lastBackup, meta, StandardCopyOption.REPLACE_EXISTING);
+                }
+                throw e;
+            }
         }
         Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile, false);
 
@@ -1443,6 +1366,22 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.swappedOut = inSwappedOut;
     }
 
+    /**
+     * starts generation of xml logfile for current process
+     */
+
+    public void downloadXML() {
+        XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
+        try {
+            String ziel = Helper.getCurrentUser().getHomeDir() + getTitel() + "_log.xml";
+            xmlExport.startExport(this, ziel);
+        } catch (IOException e) {
+            Helper.setFehlerMeldung("could not write logfile to home directory: ", e);
+        } catch (InterruptedException e) {
+            Helper.setFehlerMeldung("could not execute command to write logfile to home directory", e);
+        }
+    }
+
     public String downloadDocket() {
 
         if (logger.isDebugEnabled()) {
@@ -1469,8 +1408,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             // write run note to servlet output stream
             try {
                 ServletOutputStream out = response.getOutputStream();
-                GeneratePdfFromXslt ern = new GeneratePdfFromXslt();
-                ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorXmlLog());
+                XsltToPdf ern = new XsltToPdf();
+                ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorDocket());
                 out.flush();
             } catch (IOException e) {
                 logger.error("IOException while exporting run note", e);
@@ -1500,18 +1439,18 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
             // write simplified metadata to servlet output stream
             try {
-//            	XsltPreparatorSimplifiedMetadata xslt = new XsltPreparatorSimplifiedMetadata();
-//                try {
-//                	LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-//                    String ziel = login.getMyBenutzer().getHomeDir() + this.getTitel() + "_log.xml";
-//                    xslt.startExport(this, ziel);
-//                } catch (Exception e) {
-//                    Helper.setFehlerMeldung("Could not write logfile to home directory", e);
-//                }
-                
+                //            	XsltPreparatorSimplifiedMetadata xslt = new XsltPreparatorSimplifiedMetadata();
+                //                try {
+                //                	LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
+                //                    String ziel = login.getMyBenutzer().getHomeDir() + this.getTitel() + "_log.xml";
+                //                    xslt.startExport(this, ziel);
+                //                } catch (Exception e) {
+                //                    Helper.setFehlerMeldung("Could not write logfile to home directory", e);
+                //                }
+
                 ServletOutputStream out = response.getOutputStream();
-                GeneratePdfFromXslt ern = new GeneratePdfFromXslt();
-                ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorSimplifiedMetadata());
+                XsltToPdf ern = new XsltToPdf();
+                ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorMetadata());
                 out.flush();
             } catch (IOException e) {
                 logger.error("IOException while exporting simplefied metadata", e);
@@ -1524,7 +1463,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public Step getFirstOpenStep() {
 
         for (Step s : getSchritteList()) {
-            if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) || s.getBearbeitungsstatusEnum().equals(StepStatus.INWORK)) {
+            if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) || s.getBearbeitungsstatusEnum().equals(StepStatus.INWORK)
+                    || s.getBearbeitungsstatusEnum() == StepStatus.INFLIGHT) {
                 return s;
             }
         }
@@ -1547,13 +1487,15 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
 
         try {
-            String folder = this.getImagesTifDirectory(false);
-            folder = folder.substring(0, folder.lastIndexOf("_"));
-            folder = folder + "_" + methodName;
-            if (StorageProvider.getInstance().isFileExists(Paths.get(folder))) {
-                return folder;
-            }
+            String imagefolder = this.getImagesDirectory();
 
+            String foldername = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(methodName), this);
+            if (StringUtils.isNotBlank(foldername)) {
+                String folder = imagefolder + foldername;
+                if (StorageProvider.getInstance().isFileExists(Paths.get(folder))) {
+                    return folder;
+                }
+            }
         } catch (SwapException e) {
 
         } catch (DAOException e) {
@@ -1631,12 +1573,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.bhelp.ScanvorlagenKopieren(this, p);
         this.bhelp.WerkstueckeKopieren(this, p);
         this.bhelp.EigenschaftenKopieren(this, p);
+        LoginBean loginForm = Helper.getLoginBean();
 
         for (Step step : p.getSchritteList()) {
 
             step.setBearbeitungszeitpunkt(p.getErstellungsdatum());
             step.setEditTypeEnum(StepEditType.AUTOMATIC);
-            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
             if (loginForm != null) {
                 step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
             }
@@ -1672,7 +1614,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public void addLogEntry() {
-
         if (uploadedFile != null) {
             saveUploadedFile();
         } else {
@@ -1681,10 +1622,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             entry.setCreationDate(new Date());
             entry.setType(LogType.USER);
             entry.setProcessId(id);
-            LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-            if (loginForm != null) {
-                entry.setUserName(loginForm.getMyBenutzer().getNachVorname());
-            }
+            LoginBean loginForm = Helper.getLoginBean();
+            entry.setUserName(loginForm.getMyBenutzer().getNachVorname());
             entry.setContent(content);
             content = "";
 
@@ -1708,6 +1647,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     /**
      * getter for the representative as IIIF URL of the configured thumbnail size
+     * 
      * @return IIIF URL for the representative thumbnail image
      */
     public String getRepresentativeImage() {
@@ -1717,6 +1657,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     /**
      * convert the path of the representative into a IIIF URL of the given size
+     * 
      * @param thumbnailWidth max width of the image
      * @return IIIF URL for the representative image
      */
@@ -1759,6 +1700,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     /**
      * get the path of the representative as string from the filesystem
+     * 
      * @return path of representative image
      */
     public String getRepresentativeImageAsString() {
@@ -1798,22 +1740,33 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return representativeImage;
     }
 
+    public Map<Path, List<Path>> getAllFolderAndFiles() {
+        Map<Path, List<Path>> folderAndFileMap = new HashMap<>();
+        try {
+            List<Path> imageFolders = StorageProvider.getInstance().listFiles(getImagesDirectory(), NIOFileUtils.folderFilter);
+            List<Path> thumbFolders = StorageProvider.getInstance().listFiles(getThumbsDirectory(), NIOFileUtils.folderFilter);
+            List<Path> ocrFolders = StorageProvider.getInstance().listFiles(getOcrDirectory(), NIOFileUtils.folderFilter);
 
+            for (Path folder : imageFolders) {
+                folderAndFileMap.put(folder, StorageProvider.getInstance().listFiles(folder.toString(), NIOFileUtils.fileFilter));
+                // add subfolders to the list as well (e.g. for LayoutWizzard)
+                for (Path subfolder : StorageProvider.getInstance().listFiles(folder.toString(), NIOFileUtils.folderFilter)) {
+                    folderAndFileMap.put(subfolder, StorageProvider.getInstance().listFiles(subfolder.toString(), NIOFileUtils.fileFilter));
+                }
+            }
+            for (Path folder : thumbFolders) {
+                folderAndFileMap.put(folder, StorageProvider.getInstance().listFiles(folder.toString(), NIOFileUtils.fileFilter));
+            }
+            for (Path folder : ocrFolders) {
+                folderAndFileMap.put(folder, StorageProvider.getInstance().listFiles(folder.toString(), NIOFileUtils.fileFilter));
+            }
+        } catch (IOException | InterruptedException | SwapException | DAOException e) {
 
+            logger.error(e);
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return folderAndFileMap;
+    }
 
     // this method is needed for ajaxPlusMinusButton.xhtml
     public String getTitelLokalisiert() {
@@ -1888,11 +1841,28 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             try {
                 folderList.add(new SelectItem(getExportDirectory(), Helper.getTranslation("process_log_file_exportFolder")));
                 folderList.add(new SelectItem(getImportDirectory(), Helper.getTranslation("process_log_file_importFolder")));
-                folderList.add(new SelectItem(getSourceDirectory(), Helper.getTranslation("process_log_file_sourceFolder")));
+                //                folderList.add(new SelectItem(getSourceDirectory(), Helper.getTranslation("process_log_file_sourceFolder")));
                 folderList.add(new SelectItem(getImagesTifDirectory(false), Helper.getTranslation("process_log_file_mediaFolder")));
                 if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
                     folderList.add(new SelectItem(getImagesOrigDirectory(false), Helper.getTranslation("process_log_file_masterFolder")));
                 }
+
+                Iterator<String> configuredImageFolder = ConfigurationHelper.getInstance().getLocalKeys("process.folder.images");
+                while (configuredImageFolder.hasNext()) {
+                    String keyName = configuredImageFolder.next();
+                    String folderName = keyName.replace("process.folder.images.", "");
+                    if (!"master".equals(folderName) && !"main".equals(folderName)) {
+                        String folder = getConfiguredImageFolder(folderName);
+                        if (StringUtils.isNotBlank(folder) && StorageProvider.getInstance().isFileExists(Paths.get(folder))) {
+                            folderList.add(new SelectItem(folder, Helper.getTranslation(folderName)));
+                        }
+
+                        //                        folderList.add(new SelectItem(getImagesTifDirectory(false), Helper.getTranslation("process_log_file_mediaFolder")));
+                        //                    } else {
+                        //                        folderList.add(new SelectItem(getConfiguredImageFolder(folderName), Helper.getTranslation(folderName)));
+                    }
+                }
+
             } catch (SwapException | DAOException | IOException | InterruptedException e) {
                 logger.error(e);
             }
@@ -2239,6 +2209,145 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.setTitel(newTitle);
 
         return true;
+    }
+
+    /**
+     * get the complete path to a folder as string, or null if the folder name is unknown
+     * 
+     * @param folderName
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws SwapException
+     * @throws DAOException
+     */
+
+    public String getConfiguredImageFolder(String folderName) throws IOException, InterruptedException, SwapException, DAOException {
+        if ("master".equals(folderName)) {
+            return getImagesOrigDirectory(false);
+        } else if ("main".equals(folderName) || "media".equals(folderName)) {
+            return getImagesTifDirectory(false);
+        }
+
+        String imagefolder = this.getImagesDirectory();
+        String foldername = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(folderName), this);
+        if (StringUtils.isNotBlank(foldername)) {
+            String folder = imagefolder + foldername;
+            return folder;
+        }
+        return null;
+    }
+
+    /**
+     * Get the date of the last finished step
+     */
+
+    public String getLastStatusChangeDate() {
+        Date date = null;
+        if (ConfigurationHelper.getInstance().isProcesslistShowEditionData()) {
+            if (schritte != null) {
+                for (Step step : schritte) {
+                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && step.getBearbeitungsende() != null) {
+                        if (date == null) {
+                            date = step.getBearbeitungsende();
+                        } else if (date.before(step.getBearbeitungsende())) {
+                            date = step.getBearbeitungsende();
+                        }
+                    }
+                }
+            }
+        }
+        return date == null ? "" : Helper.getDateAsFormattedString(date);
+    }
+
+    /**
+     * Get the user name of the last finished step
+     */
+
+    public String getLastStatusChangeUser() {
+        String username = "";
+        if (ConfigurationHelper.getInstance().isProcesslistShowEditionData()) {
+            Step task = null;
+            if (schritte != null) {
+                for (Step step : schritte) {
+                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && step.getBearbeitungsende() != null) {
+                        if (task == null) {
+                            task = step;
+                        } else if (task.getBearbeitungsende().before(step.getBearbeitungsende())) {
+                            task = step;
+                        }
+                    }
+                }
+            }
+            if (task != null) {
+                if (task.getEditTypeEnum() == StepEditType.AUTOMATIC || task.getEditTypeEnum() == StepEditType.ADMIN) {
+                    username = Helper.getTranslation(task.getEditTypeEnum().getTitle());
+                } else if (task.getBearbeitungsbenutzer() != null) {
+                    username = task.getBearbeitungsbenutzer().getNachVorname();
+                }
+            }
+        }
+        return username;
+    }
+
+    /**
+     * Get the name of the last finished task
+     * 
+     */
+
+    public String getLastStatusChangeTask() {
+        String taskname = "";
+        if (ConfigurationHelper.getInstance().isProcesslistShowEditionData()) {
+            Step task = null;
+            if (schritte != null) {
+                for (Step step : schritte) {
+                    if (step.getBearbeitungsstatusEnum() == StepStatus.DONE && step.getBearbeitungsende() != null) {
+                        if (task == null) {
+                            task = step;
+                        } else if (task.getBearbeitungsende().before(step.getBearbeitungsende())) {
+                            task = step;
+                        }
+                    }
+                }
+            }
+            if (task != null) {
+                taskname = task.getNormalizedTitle();
+            }
+        }
+        return taskname;
+    }
+
+    public void setPauseAutomaticExecution(boolean pauseAutomaticExecution) {
+        List<Step> automaticTasks = new ArrayList<>();
+
+        if (this.pauseAutomaticExecution && !pauseAutomaticExecution) {
+            // search any open tasks; check if they are automatic tasks; start them
+            for (Step step : schritte) {
+                if (step.isTypAutomatisch()) {
+                    switch (step.getBearbeitungsstatusEnum()) {
+                        case DEACTIVATED:
+                        case DONE:
+                        case ERROR:
+                        case LOCKED:
+                            break;
+                        case INFLIGHT:
+                        case INWORK:
+                        case OPEN:
+                            automaticTasks.add(step);
+                    }
+                }
+            }
+        }
+        this.pauseAutomaticExecution = pauseAutomaticExecution;
+        if (!automaticTasks.isEmpty()) {
+            for (Step step : automaticTasks) {
+                //We need to set the process in the step to this process, so the step doesn't fetch the process from 
+                //the DB when it checks if automatic execution is paused
+                step.setProzess(this);
+                ScriptThreadWithoutHibernate script = new ScriptThreadWithoutHibernate(step);
+                script.startOrPutToQueue();
+            }
+        }
     }
 
 }

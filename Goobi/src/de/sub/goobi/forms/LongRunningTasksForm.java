@@ -6,7 +6,7 @@ package de.sub.goobi.forms;
  * Visit the websites for more information. 
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -32,9 +32,15 @@ import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManag
 import org.goobi.beans.Process;
 import de.sub.goobi.helper.tasks.LongRunningTask;
 import de.sub.goobi.helper.tasks.LongRunningTaskManager;
+import lombok.Getter;
+import lombok.Setter;
 
 public class LongRunningTasksForm {
+	@Getter
+	@Setter
     private Process prozess;
+	@Getter
+	@Setter
     private LongRunningTask task;
     private static final Logger logger = LogManager.getLogger(LongRunningTask.class);
 
@@ -94,23 +100,7 @@ public class LongRunningTasksForm {
     public void removeTask() {
         LongRunningTaskManager.getInstance().removeTask(this.task);
     }
-
-    public Process getProzess() {
-        return this.prozess;
-    }
-
-    public void setProzess(Process prozess) {
-        this.prozess = prozess;
-    }
-
-    public LongRunningTask getTask() {
-        return this.task;
-    }
-
-    public void setTask(LongRunningTask task) {
-        this.task = task;
-    }
-
+    
     public boolean isRunning() {
         return LongRunningTaskManager.getInstance().isRunning();
     }

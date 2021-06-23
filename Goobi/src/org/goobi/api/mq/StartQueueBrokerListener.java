@@ -1,12 +1,17 @@
 package org.goobi.api.mq;
 
+import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.server.RMIServerSocketFactory;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  *          - http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -27,9 +32,13 @@ package org.goobi.api.mq;
  * exception statement from your version.
  */
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jms.JMSException;
+import javax.management.remote.JMXServiceURL;
+import javax.management.remote.rmi.RMIConnectorServer;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -44,19 +53,50 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class StartQueueBrokerListener implements ServletContextListener {
 
+    private RMIConnectorServer rmiServer;
     private BrokerService broker;
     private List<GoobiDefaultQueueListener> listeners = new ArrayList<>();
-    private GoobiDLQListener dlqListener;
+    private GoobiInternalDLQListener dlqListener;
     private GoobiCommandListener commandListener;
+    private GoobiExternalJobQueueDLQListener externalDlqListener;
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         if (config.isStartInternalMessageBroker()) {
+            // JMX/RMI part taken from: https://vafer.org/blog/20061010091658/
+            String address = "localhost";
+            int namingPort = 1099;
+            int protocolPort = 0;
+            try {
+                RMIServerSocketFactory serverFactory = new RMIServerSocketFactoryImpl(InetAddress.getByName(address));
+
+                LocateRegistry.createRegistry(namingPort, null, serverFactory);
+
+                StringBuffer url = new StringBuffer();
+                url.append("service:jmx:");
+                url.append("rmi://").append(address).append(':').append(protocolPort).append("/jndi/");
+                url.append("rmi://").append(address).append(':').append(namingPort).append("/connector");
+
+                Map<String, Object> env = new HashMap<>();
+                env.put(RMIConnectorServer.RMI_SERVER_SOCKET_FACTORY_ATTRIBUTE, serverFactory);
+
+                rmiServer = new RMIConnectorServer(
+                        new JMXServiceURL(url.toString()),
+                        env,
+                        ManagementFactory.getPlatformMBeanServer());
+
+                rmiServer.start();
+
+            } catch (IOException e1) {
+                log.error("error starting JMX connector. Will not start internal MessageBroker. Exception: {}", e1);
+                return;
+            }
             String activeMqConfig = config.getActiveMQConfigPath();
             try {
-                broker = BrokerFactory.createBroker("xbean:file://" + activeMqConfig, true);
+                broker = BrokerFactory.createBroker("xbean:file:" + activeMqConfig, false);
                 broker.setUseJmx(true);
+                broker.start();
 
             } catch (Exception e) {
                 log.error(e);
@@ -72,11 +112,16 @@ public class StartQueueBrokerListener implements ServletContextListener {
                 listener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), QueueType.FAST_QUEUE);
                 this.listeners.add(listener);
 
-                dlqListener = new GoobiDLQListener();
+                dlqListener = new GoobiInternalDLQListener();
                 dlqListener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword(), QueueType.DEAD_LETTER_QUEUE);
 
                 commandListener = new GoobiCommandListener();
                 commandListener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword());
+
+                if (config.isAllowExternalQueue() && "SQS".equalsIgnoreCase(config.getExternalQueueType())) {
+                    externalDlqListener = new GoobiExternalJobQueueDLQListener();
+                    externalDlqListener.register(config.getMessageBrokerUsername(), config.getMessageBrokerPassword());
+                }
             } catch (JMSException e) {
                 log.error(e);
             }
@@ -86,11 +131,14 @@ public class StartQueueBrokerListener implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         try {
-            if (broker != null) {
-                broker.stop();
+            if (rmiServer != null) {
+                rmiServer.stop();
             }
             for (GoobiDefaultQueueListener l : listeners) {
                 l.close();
+            }
+            if (broker != null) {
+                broker.stop();
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block

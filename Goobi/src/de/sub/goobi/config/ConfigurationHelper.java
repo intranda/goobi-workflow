@@ -1,12 +1,14 @@
 package de.sub.goobi.config;
 
+import java.io.IOException;
+import java.io.OutputStream;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -23,7 +25,9 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,8 +40,10 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.goobi.api.mq.QueueType;
 import org.goobi.production.flow.statistics.hibernate.SearchIndexField;
 
 import de.sub.goobi.helper.FacesContextHelper;
@@ -129,8 +135,7 @@ public class ConfigurationHelper implements Serializable {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private Iterator<String> getLocalKeys(String prefix) {
+    public Iterator<String> getLocalKeys(String prefix) {
         Iterator<String> it = configLocal.getKeys(prefix);
         if (!it.hasNext()) {
             it = config.getKeys(prefix);
@@ -142,14 +147,36 @@ public class ConfigurationHelper implements Serializable {
         return configLocal.getString(inPath, config.getString(inPath));
     }
 
-    @SuppressWarnings({ "unchecked" })
     private List<String> getLocalList(String inPath) {
-        return configLocal.getList(inPath, config.getList(inPath));
+        String[] localList = configLocal.getStringArray(inPath);
+        if (localList == null || localList.length == 0) {
+            return Arrays.asList(config.getStringArray(inPath));
+        }
+        return Arrays.asList(localList);
     }
 
     private boolean getLocalBoolean(String inPath, boolean inDefault) {
         try {
             return configLocal.getBoolean(inPath, config.getBoolean(inPath, inDefault));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return inDefault;
+        }
+    }
+
+    private String[] getLocalStringArray(String inPath, String[] inDefault) {
+        try {
+            String[] local = configLocal.getStringArray(inPath);
+            if (local == null || local.length == 0) {
+                String[] global = config.getStringArray(inPath);
+                if (global == null || local.length == 0) {
+                    return inDefault;
+                } else {
+                    return global;
+                }
+            } else {
+                return local;
+            }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return inDefault;
@@ -253,12 +280,54 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("swapPath", "");
     }
 
-    public String getMasterDirectoryPrefix() {
-        return getLocalString("DIRECTORY_PREFIX", "master");
+    public String getProcessImagesMasterDirectoryName() {
+        return getLocalString("process.folder.images.master", "{processtitle}_master");
     }
 
-    public String getMediaDirectorySuffix() {
-        return getLocalString("DIRECTORY_SUFFIX", "media");
+    public String getProcessImagesMainDirectoryName() {
+        return getLocalString("process.folder.images.main", "{processtitle}_media");
+    }
+
+    public String getProcessImagesSourceDirectoryName() {
+        return getLocalString("process.folder.images.source", "{processtitle}_source");
+    }
+
+    public String getProcessImagesFallbackDirectoryName() {
+        return getLocalString("process.folder.images.fallback", ""); // "{processtitle}_jpeg"
+    }
+
+    public String getProcessOcrTxtDirectoryName() {
+        return getLocalString("process.folder.ocr.txt", "{processtitle}_txt");
+    }
+
+    public String getProcessOcrPdfDirectoryName() {
+        return getLocalString("process.folder.ocr.pdf", "{processtitle}_pdf");
+    }
+
+    public String getProcessOcrXmlDirectoryName() {
+        return getLocalString("process.folder.ocr.xml", "{processtitle}_xml");
+    }
+
+    public String getProcessOcrAltoDirectoryName() {
+        return getLocalString("process.folder.ocr.alto", "{processtitle}_alto");
+    }
+
+    public String getProcessImportDirectoryName() {
+        return getLocalString("process.folder.import", "import");
+    }
+
+    public String getProcessExportDirectoryName() {
+        return getLocalString("process.folder.export", "export");
+    }
+
+    /**
+     * Configure naming rule for any additional folder
+     * 
+     * @param folder
+     * @return
+     */
+    public String getAdditionalProcessFolderName(String foldername) {
+        return getLocalString("process.folder.images." + foldername, "");
     }
 
     public boolean isCreateMasterDirectory() {
@@ -273,7 +342,29 @@ public class ConfigurationHelper implements Serializable {
         return getLocalInt("numberOfMetaBackups", 0);
     }
 
+    public String getGoobiAuthorityServerPassword() {
+
+        return getLocalString("goobiAuthorityServerPassword");
+    }
+
+    public int getGoobiAuthorityServerBackupFreq() {
+        return getLocalInt("goobiAuthorityServerUploadFrequency", 0);
+    }
+    
+    public String getGoobiAuthorityServerUser() {
+
+        return getLocalString("goobiAuthorityServerUser");
+    }
+    
     // URLs
+
+    public String getGoobiAuthorityServerUrl() {
+        return getLocalString("goobiAuthorityServerUrl");
+    }
+    
+    public String getGoobiUrl() {
+        return getLocalString("goobiUrl");
+    }
 
     public String getGoobiContentServerUrl() {
         return getLocalString("goobiContentServerUrl");
@@ -353,6 +444,18 @@ public class ConfigurationHelper implements Serializable {
 
     public String getS3Endpoint() {
         return getLocalString("S3Endpoint", "");
+    }
+
+    public int getS3ConnectionRetries() {
+        return getLocalInt("S3ConnectionRetry", 10);
+    }
+
+    public int getS3ConnectionTimeout() {
+        return getLocalInt("S3ConnectionTimeout", 10000);
+    }
+
+    public int getS3SocketTimeout() {
+        return getLocalInt("S3SocketTimeout", 10000);
     }
 
     // process creation
@@ -594,9 +697,9 @@ public class ConfigurationHelper implements Serializable {
 
     // mets editor
 
-    public String getMetsEditorDefaultSuffix() {
-        return getLocalString("MetsEditorDefaultSuffix", "");
-    }
+    //    public String getMetsEditorDefaultSuffix() {
+    //        return getLocalString("MetsEditorDefaultSuffix", "");
+    //    }
 
     public String getMetsEditorDefaultPagination() {
         return getLocalString("MetsEditorDefaultPagination", "uncounted");
@@ -708,6 +811,10 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isExportInTemporaryFile() {
         return getLocalBoolean("ExportInTemporaryFile", false);
+    }
+
+    public boolean isExportCreateUUIDsAsFileIDs() {
+        return getLocalBoolean("ExportCreateUUID", true);
     }
 
     public boolean isExportCreateTechnicalMetadata() {
@@ -855,12 +962,14 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isShowSecondLogField() {
         return getLocalBoolean("ProcessLogShowSecondField", false);
-
     }
 
     public boolean isShowThirdLogField() {
         return getLocalBoolean("ProcessLogShowThirdField", false);
+    }
 
+    public boolean isProcesslistShowEditionData() {
+        return getLocalBoolean("ProcesslistShowEditionData", false);
     }
 
     public List<String> getExcludeMonitoringAgentNames() {
@@ -949,12 +1058,49 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("OIDCIdClaim", "email");
     }
 
+    public String getSsoHeaderName() {
+        return getLocalString("SsoHeaderName", "Casauthn");
+    }
+
+    public boolean isEnableHeaderLogin() {
+        return getLocalBoolean("EnableHeaderLogin", false);
+    }
+
     public boolean isRenderReimport() {
         return getLocalBoolean("renderReimport", false);
     }
 
     public boolean isAllowExternalQueue() {
         return getLocalBoolean("allowExternalQueue", false);
+    }
+
+    public boolean isRenderAccessibilityCss() {
+        return getLocalBoolean("renderAccessibilityCss", false);
+    }
+
+    public String getExternalQueueType() {
+        return getLocalString("externalQueueType", "activeMQ").toUpperCase();
+    }
+
+    public boolean isUseLocalSQS() {
+        return getLocalBoolean("useLocalSQS", false);
+    }
+
+    public String[] getHistoryImageSuffix() {
+        return getLocalStringArray("historyImageSuffix", new String[] { ".tif" });
+    }
+
+    public String getQueueName(QueueType type) {
+        String configName = type.getConfigName();
+        String queueName = System.getenv(configName);
+        if (queueName == null) {
+            return getLocalString(configName, type.getName());
+        }
+        return queueName;
+    }
+
+    public boolean isDeveloping() {
+        return getLocalBoolean("developing", false);
     }
 
     /**
@@ -996,6 +1142,23 @@ public class ConfigurationHelper implements Serializable {
 
     public static void resetConfigurationFile() {
         instance = null;
+    }
+
+    public void generateAndSaveJwtSecret() {
+        String secretString = RandomStringUtils.random(20, 0, 0, true, true, null, new SecureRandom());
+        this.setParameter("jwtSecret", secretString);
+        saveLocalConfig();
+    }
+
+    private void saveLocalConfig() {
+        Path fileLocal = Paths.get(getConfigLocalPath(), CONFIG_FILE_NAME);
+        if (Files.exists(fileLocal)) {
+            try (OutputStream out = Files.newOutputStream(fileLocal)) {
+                configLocal.save(out);
+            } catch (IOException | ConfigurationException e) {
+                logger.error(e);
+            }
+        }
     }
 
 }

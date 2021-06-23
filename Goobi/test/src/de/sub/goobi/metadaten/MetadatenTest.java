@@ -191,7 +191,7 @@ public class MetadatenTest {
         fixture.XMLlesenStart();
 
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null);
+        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
         fixture.setCurrentGroup(mdg);
 
         String value = fixture.CopyGroup();
@@ -274,7 +274,7 @@ public class MetadatenTest {
         md.setValue("test");
 
         fixture.setSelectedMetadatum(md);
-        assertEquals("metseditor_timeout", fixture.Speichern());
+        assertEquals("metseditor_timeout", fixture.addNewMetadata());
 
         fixture.setTempTyp("TitleDocMain");
         md.setValue("title");
@@ -282,7 +282,7 @@ public class MetadatenTest {
         locking.setLocked(1, "1");
         fixture.setMyBenutzerID("1");
 
-        assertEquals("", fixture.Speichern());
+        assertEquals("", fixture.addNewMetadata());
     }
 
     @Test
@@ -294,7 +294,7 @@ public class MetadatenTest {
         fixture.setTempMetadataGroupType("junitgrp");
 
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null);
+        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
         fixture.setSelectedGroup(mdg);
 
         MetadatenSperrung locking = new MetadatenSperrung();
@@ -323,7 +323,7 @@ public class MetadatenTest {
         locking.setLocked(1, "1");
         fixture.setMyBenutzerID("1");
 
-        assertEquals("", fixture.SpeichernPerson());
+        assertEquals("", fixture.addNewPerson());
     }
 
     @Test
@@ -335,7 +335,7 @@ public class MetadatenTest {
         fixture.setTempMetadataGroupType("junitgrp");
 
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null);
+        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
         fixture.setSelectedGroup(mdg);
         fixture.saveGroup();
 
@@ -362,7 +362,7 @@ public class MetadatenTest {
         md.setValue("test");
 
         fixture.setSelectedMetadatum(md);
-        assertEquals("metseditor_timeout", fixture.Speichern());
+        assertEquals("metseditor_timeout", fixture.addNewMetadata());
 
         fixture.setCurMetadatum(md);
 

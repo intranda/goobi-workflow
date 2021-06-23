@@ -6,7 +6,7 @@ package de.unigoettingen.sub.search.opac;
  * Visit the websites for more information. 
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -28,6 +28,9 @@ package de.unigoettingen.sub.search.opac;
 
 import java.io.IOException;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class Catalogue {
 
     public static final String SUB_OPAC = "SUB";
@@ -47,18 +50,30 @@ public class Catalogue {
     public static final String SBB_OPAC = "SBB";
 
     //    private String iktList;
+    @Getter
     private String catalogue;
+    @Getter
     private String description;
+    @Getter
+    @Setter
     private String cbs = "";
 
+    @Getter
     private String dataBase;
+    @Getter
     private String serverAddress;
+    @Getter
     private int port;
 
+    @Getter
     private String charset = "iso-8859-1";
 
+    @Getter
+    @Setter
     private String protocol = "http://";
 
+    @Getter
+    @Setter
     private boolean verbose = false;
 
     public Catalogue(String opac) throws IOException {
@@ -215,59 +230,4 @@ public class Catalogue {
         this.port = 80;
         this.description = "SBB";
     }
-
-    public String getCatalogue() {
-        return this.catalogue;
-    }
-
-    public String getDataBase() {
-        return this.dataBase;
-    }
-
-    public int getPort() {
-        return this.port;
-    }
-
-    public String getServerAddress() {
-        return this.serverAddress;
-    }
-
-    public String getCharset() {
-        return this.charset;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public boolean isVerbose() {
-        return this.verbose;
-    }
-
-    public void setVerbose(boolean verbose) {
-        this.verbose = verbose;
-    }
-
-    /**
-     * @param cbs the cbs to set
-     */
-    public void setCbs(String cbs) {
-        this.cbs = cbs;
-    }
-
-    /**
-     * @return the cbs
-     */
-    public String getCbs() {
-        return this.cbs;
-    }
-
-    public String getProtocol() {
-        return protocol;
-    }
-
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
-    }
-
 }

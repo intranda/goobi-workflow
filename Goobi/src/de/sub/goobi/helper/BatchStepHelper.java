@@ -37,9 +37,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.faces.model.SelectItem;
+import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.LogEntry;
@@ -76,19 +78,37 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class BatchStepHelper {
-
+	
+	@Getter
+	@Setter
     private List<Step> steps;
     private static final Logger logger = LogManager.getLogger(BatchStepHelper.class);
+    @Getter
+    @Setter
     private Step currentStep;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    @Setter
     private List<ProcessProperty> processPropertyList;
+    @Getter
+    @Setter
     private ProcessProperty processProperty;
+    @Getter
     private Map<Integer, PropertyListObject> containers = new TreeMap<>();
+    @Getter
     private Integer container;
+    @Getter
+    @Setter
     private String myProblemStep;
+    @Getter
+    @Setter
     private String mySolutionStep;
+    @Getter
+    @Setter
     private String problemMessage;
+    @Getter
+    @Setter
     private String solutionMessage;
+    @Getter
     private String processName = "";
     @Getter
     @Setter
@@ -99,13 +119,21 @@ public class BatchStepHelper {
     @Getter
     @Setter
     private String thirdContent = "";
+    @Getter
     private HashMap<Integer, Boolean> containerAccess;
 
+    @Getter
+    @Setter
     private String script;
     private WebDav myDav = new WebDav();
+    @Getter
+    @Setter
     private List<String> processNameList = new ArrayList<>();
     @Getter
     private Map<String, List<String>> displayableMetadataMap;
+
+    @Inject
+    private StepBean sb;
 
     public BatchStepHelper(List<Step> steps) {
         this.steps = steps;
@@ -132,33 +160,9 @@ public class BatchStepHelper {
         loadDisplayableMetadata(currentStep);
     }
 
-    public List<Step> getSteps() {
-        return this.steps;
-    }
-
-    public void setSteps(List<Step> steps) {
-        this.steps = steps;
-    }
-
-    public Step getCurrentStep() {
-        return this.currentStep;
-    }
-
-    public void setCurrentStep(Step currentStep) {
-        this.currentStep = currentStep;
-    }
-
     /*
      * properties
      */
-
-    public ProcessProperty getProcessProperty() {
-        return this.processProperty;
-    }
-
-    public void setProcessProperty(ProcessProperty processProperty) {
-        this.processProperty = processProperty;
-    }
 
     public List<ProcessProperty> getProcessProperties() {
         return this.processPropertyList;
@@ -167,19 +171,7 @@ public class BatchStepHelper {
     public int getPropertyListSize() {
         return this.processPropertyList.size();
     }
-
-    public List<String> getProcessNameList() {
-        return this.processNameList;
-    }
-
-    public void setProcessNameList(List<String> processNameList) {
-        this.processNameList = processNameList;
-    }
-
-    public String getProcessName() {
-        return this.processName;
-    }
-
+    
     public void setProcessName(String processName) {
         this.processName = processName;
         for (Step s : this.steps) {
@@ -188,7 +180,6 @@ public class BatchStepHelper {
                 loadProcessProperties(this.currentStep);
                 loadDisplayableMetadata(currentStep);
                 //try to load the same step in step-managed-bean
-                StepBean sb = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
                 sb.setMySchritt(s);
                 break;
             }
@@ -274,9 +265,6 @@ public class BatchStepHelper {
         Helper.setMeldung("Properties saved");
     }
 
-    public HashMap<Integer, Boolean> getContainerAccess() {
-        return containerAccess;
-    }
 
     public int getSizeOfDisplayableMetadata() {
         return displayableMetadataMap.size();
@@ -337,10 +325,6 @@ public class BatchStepHelper {
         }
     }
 
-    public Map<Integer, PropertyListObject> getContainers() {
-        return this.containers;
-    }
-
     public int getContainersSize() {
         if (this.containers == null) {
             return 0;
@@ -362,10 +346,6 @@ public class BatchStepHelper {
             }
         }
         return answer;
-    }
-
-    public Integer getContainer() {
-        return this.container;
     }
 
     public void setContainer(Integer container) {
@@ -485,8 +465,7 @@ public class BatchStepHelper {
         saveStep();
         this.problemMessage = "";
         this.myProblemStep = "";
-        StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
-        return asf.FilterAlleStart();
+        return sb.FilterAlleStart();
     }
 
     public String ReportProblemForAll() {
@@ -498,8 +477,7 @@ public class BatchStepHelper {
         }
         this.problemMessage = "";
         this.myProblemStep = "";
-        StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
-        return asf.FilterAlleStart();
+        return sb.FilterAlleStart();
     }
 
     private void reportProblem() {
@@ -508,7 +486,7 @@ public class BatchStepHelper {
         this.currentStep.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
         this.currentStep.setPrioritaet(Integer.valueOf(10));
         currentStep.setBearbeitungszeitpunkt(new Date());
-        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+        User ben = Helper.getCurrentUser();
         if (ben != null) {
             currentStep.setBearbeitungsbenutzer(ben);
         }
@@ -525,7 +503,7 @@ public class BatchStepHelper {
                 SendMail.getInstance().sendMailToAssignedUser(temp, StepStatus.ERROR);
                 temp.setBearbeitungsstatusEnum(StepStatus.ERROR);
                 temp.setCorrectionStep();
-                temp.setBearbeitungsende(null);
+                temp.setBearbeitungsende(new Date());
                 ErrorProperty se = new ErrorProperty();
 
                 se.setTitel(Helper.getTranslation("Korrektur notwendig"));
@@ -622,9 +600,7 @@ public class BatchStepHelper {
         saveStep();
         this.solutionMessage = "";
         this.mySolutionStep = "";
-
-        StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
-        return asf.FilterAlleStart();
+        return sb.FilterAlleStart();
     }
 
     public String SolveProblemForAll() {
@@ -636,8 +612,7 @@ public class BatchStepHelper {
         this.solutionMessage = "";
         this.mySolutionStep = "";
 
-        StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
-        return asf.FilterAlleStart();
+        return sb.FilterAlleStart();
     }
 
     private void solveProblem() {
@@ -648,7 +623,7 @@ public class BatchStepHelper {
         this.currentStep.setBearbeitungsende(now);
         this.currentStep.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
         currentStep.setBearbeitungszeitpunkt(new Date());
-        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+        User ben = Helper.getCurrentUser();
         if (ben != null) {
             currentStep.setBearbeitungsbenutzer(ben);
         }
@@ -712,38 +687,6 @@ public class BatchStepHelper {
         }
     }
 
-    public String getProblemMessage() {
-        return this.problemMessage;
-    }
-
-    public void setProblemMessage(String problemMessage) {
-        this.problemMessage = problemMessage;
-    }
-
-    public String getMyProblemStep() {
-        return this.myProblemStep;
-    }
-
-    public void setMyProblemStep(String myProblemStep) {
-        this.myProblemStep = myProblemStep;
-    }
-
-    public String getSolutionMessage() {
-        return this.solutionMessage;
-    }
-
-    public void setSolutionMessage(String solutionMessage) {
-        this.solutionMessage = solutionMessage;
-    }
-
-    public String getMySolutionStep() {
-        return this.mySolutionStep;
-    }
-
-    public void setMySolutionStep(String mySolutionStep) {
-        this.mySolutionStep = mySolutionStep;
-    }
-
     /**
      * sets new value for wiki field
      * 
@@ -752,7 +695,7 @@ public class BatchStepHelper {
 
     public void addLogEntry() {
         if (StringUtils.isNotBlank(content)) {
-            User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+            User user = Helper.getCurrentUser();
             LogEntry logEntry = new LogEntry();
             logEntry.setContent(content);
             logEntry.setSecondContent(secondContent);
@@ -771,7 +714,7 @@ public class BatchStepHelper {
 
     public void addLogEntryForAll() {
         if (StringUtils.isNotBlank(content)) {
-            User user = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+            User user = Helper.getCurrentUser();
             for (Step s : this.steps) {
                 LogEntry logEntry = new LogEntry();
                 logEntry.setContent(content);
@@ -793,14 +736,6 @@ public class BatchStepHelper {
     /*
      * actions
      */
-
-    public String getScript() {
-        return this.script;
-    }
-
-    public void setScript(String script) {
-        this.script = script;
-    }
 
     public void executeScript() {
         for (Step step : this.steps) {
@@ -849,7 +784,7 @@ public class BatchStepHelper {
             }
             s.setEditTypeEnum(StepEditType.MANUAL_MULTI);
             currentStep.setBearbeitungszeitpunkt(new Date());
-            User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
+            User ben = Helper.getCurrentUser();
             if (ben != null) {
                 currentStep.setBearbeitungsbenutzer(ben);
             }
@@ -861,8 +796,7 @@ public class BatchStepHelper {
             } catch (DAOException e) {
             }
         }
-        StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
-        return asf.FilterAlleStart();
+        return sb.FilterAlleStart();
     }
 
     public String BatchDurchBenutzerAbschliessen() {
@@ -936,8 +870,7 @@ public class BatchStepHelper {
                 helper.CloseStepObjectAutomatic(so);
             }
         }
-        StepBean asf = (StepBean) Helper.getManagedBeanValue("#{AktuelleSchritteForm}");
-        return asf.FilterAlleStart();
+        return sb.FilterAlleStart();
     }
 
     public List<String> getScriptnames() {
@@ -948,10 +881,5 @@ public class BatchStepHelper {
 
     public List<Integer> getContainerList() {
         return new ArrayList<>(this.containers.keySet());
-    }
-
-    // needed for junit
-    public void setProcessPropertyList(List<ProcessProperty> processPropertyList) {
-        this.processPropertyList = processPropertyList;
     }
 }

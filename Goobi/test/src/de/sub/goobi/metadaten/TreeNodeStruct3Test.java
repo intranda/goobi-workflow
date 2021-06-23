@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.goobi.beans.Process;
 import org.junit.Before;
 import org.junit.Rule;
@@ -48,14 +49,6 @@ public class TreeNodeStruct3Test {
     }
 
     @Test
-    public void testIdentifier() {
-        TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
-        assertNotNull(tree);
-        tree.setIdentifier("1");
-        assertEquals("1", tree.getIdentifier());
-    }
-
-    @Test
     public void testMaintitle() {
         TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
         assertNotNull(tree);
@@ -64,27 +57,21 @@ public class TreeNodeStruct3Test {
     }
 
     @Test
-    public void testPpnDigital() {
-        TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
-        assertNotNull(tree);
-        tree.setPpnDigital("123");
-        assertEquals("123", tree.getPpnDigital());
-    }
-
-    @Test
     public void testFirstImage() {
         TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
         assertNotNull(tree);
-        tree.setFirstImage("fixture");
-        assertEquals("fixture", tree.getFirstImage());
+        tree.setFirstImage(new MutablePair<>("aaa", "bbb"));
+        assertEquals("aaa", tree.getFirstImage().getLeft());
+        assertEquals("bbb", tree.getFirstImage().getLeft());
     }
 
     @Test
     public void testLastImage() {
         TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
         assertNotNull(tree);
-        tree.setLastImage("fixture");
-        assertEquals("fixture", tree.getLastImage());
+        tree.setLastImage(new MutablePair<>("aaa", "bbb"));
+        assertEquals("aaa", tree.getLastImage().getLeft());
+        assertEquals("bbb", tree.getLastImage().getLeft());
     }
 
     @Test
@@ -93,14 +80,6 @@ public class TreeNodeStruct3Test {
         assertNotNull(tree);
         tree.setStruct(docstruct);
         assertEquals(docstruct, tree.getStruct());
-    }
-
-    @Test
-    public void testZblNummer() {
-        TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
-        assertNotNull(tree);
-        tree.setZblNummer("fixture");
-        assertEquals("fixture", tree.getZblNummer());
     }
 
     @Test
@@ -118,29 +97,5 @@ public class TreeNodeStruct3Test {
         assertTrue(tree.isEinfuegenErlaubt());
         tree.setEinfuegenErlaubt(false);
         assertFalse(tree.isEinfuegenErlaubt());
-    }
-
-    @Test
-    public void testZblSeiten() {
-        TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
-        assertNotNull(tree);
-        tree.setZblSeiten("fixture");
-        assertEquals("fixture", tree.getZblSeiten());
-    }
-
-    @Test
-    public void testDateIssued() {
-        TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
-        assertNotNull(tree);
-        tree.setDateIssued("fixture");
-        assertEquals("fixture", tree.getDateIssued());
-    }
-
-    @Test
-    public void testPartNumber() {
-        TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
-        assertNotNull(tree);
-        tree.setPartNumber("fixture");
-        assertEquals("fixture", tree.getPartNumber());
     }
 }

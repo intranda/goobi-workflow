@@ -14,16 +14,17 @@
 	</ui:define>
 
 	<ui:define name="content">
+    <main>
 		<h:form id="activeUser" prependId="false" rendered="#{LoginForm.hasRole('Statistics_CurrentUsers')}">
 
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="box box-color box-bordered">
 						<div class="box-title">
-							<h3>
-								<i class="glyphicon-parents box-icon-fix"></i>
+							<h2>
+								<i class="fa fa-users"></i>
 								<h:outputText value="#{myPageTitle}" />
-							</h3>
+							</h2>
 						</div>
 						<div class="box-content nopadding">
 							<h:panelGroup rendered="#{SessionForm.sessionListErrorTime != ''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
@@ -35,49 +36,49 @@
 								<div class="dataTables_length">
 									<h:panelGrid columns="2">
 										<h:outputText value="#{msgs.aktiveBenutzer}:" />
-										<h:outputText value="#{SessionForm.aktiveSessions}" />
+										<h:outputText value="#{SessionForm.numberOfSessions}" />
 										<h:outputText value="#{msgs.aktuelleZeit}:" />
-										<h:outputText value="#{SessionForm.aktuelleZeit}" />
+										<h:outputText value="#{SessionForm.currentTime}" />
 									</h:panelGrid>
 								</div>
 
-								<!-- Datentabelle -->
-								<x:dataTable id="userTable" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{SessionForm.alleSessions}">
+								<!-- Table of current sessions -->
+								<x:dataTable id="userTable" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{SessionForm.sessions}">
 
 									<h:column>
 										<f:facet name="header">
 											<h:outputText value="#{msgs.benutzer}" />
 										</f:facet>
-										<h:outputText value="#{item.user}" />
+										<h:outputText value="#{item.userName}" />
 									</h:column>
 
 									<h:column rendered="#{LoginForm.hasRole('Statistics_CurrentUsers_Details')}">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.ip}" />
 										</f:facet>
-										<h:outputText value="#{item.address}" />
+										<h:outputText value="#{item.userIpAddress}" />
 									</h:column>
 
 									<h:column>
 										<f:facet name="header">
 											<h:outputText value="#{msgs.browser}" />
 										</f:facet>
-										<h:graphicImage styleClass="margin-right-5" value="template/img/browser/#{item.browserIcon}" />
-										<h:outputText value="#{item.browser}" />
+										<h:graphicImage pt:aria-label="#{msgs.browser}" styleClass="margin-right-5" value="template/img/browser/#{item.browserIconFileName}" />
+										<h:outputText value="#{item.browserName}" />
 									</h:column>
 
 									<h:column rendered="#{LoginForm.hasRole('Statistics_CurrentUsers_Details')}">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.aktivSeit}" />
 										</f:facet>
-										<h:outputText value="#{item.created}" />
+										<h:outputText value="#{item.sessionCreatedFormatted}" />
 									</h:column>
 
 									<h:column>
 										<f:facet name="header">
 											<h:outputText value="#{msgs.letzterZugriff}" />
 										</f:facet>
-										<h:outputText value="#{item.last}" />
+										<h:outputText value="#{item.lastAccessFormatted}" />
 									</h:column>
 
 								</x:dataTable>
@@ -93,6 +94,7 @@
         	$('#activeUser').load('currentUsers.xhtml #activeUser');
         }, 10000); 
         </script>
+        </main>
 	</ui:define>
 
 </ui:composition>

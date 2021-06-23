@@ -24,6 +24,20 @@ body {
 }
 
 /* ------------- General --------------- */
+
+.skip-main {
+	font-size: 0px;
+}
+
+.skip-main:focus {
+	font-size: inherit;
+}
+
+.focusable:focus {
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
 a:hover, a:focus {
     /*     color: #E63A3A; */
     text-decoration: none;
@@ -34,11 +48,20 @@ a:hover, a:focus {
     opacity: 1;
 }
 
+.tooltip-arrow {
+  display:none;
+}
+
 /* ------------- Theme overriding --------------- */
 .form-control {
     height: 25px;
     font-size: 13px;
     padding: 2px 12px;
+}
+
+.form-control:focus {
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
 }
 
 .form-control-file {
@@ -107,9 +130,24 @@ label {
 
 .box .box-title h3 {
     font-size: 15px;
-    line-height: 24px;
 }
 
+.box .box-title h2 {
+    font-size: 15px;
+    line-height: 24px;
+    color: #fff;
+    margin: 3px 0 3px 0;
+    float: left;
+}
+
+/* changes color to dark when in lightgrey box */
+.box.lightgrey div.box-title h2.tableColumnMaxWidthExtraLong{
+	color: #333333;
+}
+
+.box .box-title h2 i {
+	margin: 0 10px 0 5px;
+}
 .box .box-title.box-toggle h3 {
     position: relative;
     display: flex;
@@ -138,6 +176,199 @@ label {
 .progress-bar {
     height: 75%;
     margin-top: 5px;
+}
+
+/* Button styling as link */
+
+.button-link {
+	background: none!important;
+  	border: none;
+  	padding: 0!important;
+}
+
+.button-link-no-hover {
+	background: none!important;
+  	border: none;
+  	padding: 0!important;
+}
+
+.button-no-style {
+	border: none;
+	padding: 0;
+	background: none;
+}
+
+.button-transparent {
+	border: none;
+	padding: 0;
+	background: transparent;
+}
+
+.button-link.blue {
+	color: #1F79CC;
+}
+
+.button-link:hover {
+	color: #2a6496;
+}
+
+/* Button as sort title */
+
+.button-sort {
+	width: 100%;
+	text-align: left;
+	background: none!important;
+  	border: none;
+  	padding: 0!important;
+}
+
+.button-sort:hover {
+	color: #2a6496;
+}
+
+/* expandbuttons */
+
+.expandbutton {
+	background: none!important;
+  	border: none;
+  	padding: 0!important;
+	color: #1F79CC;
+	
+}
+
+.expandbutton:hover {
+	color: #2a6496
+}
+
+/* button as schaltknopf */
+
+.button-schaltknopf {
+	height: 22px; 
+	line-height: 12px; 
+	font-size: 12px;
+	margin-left: 3px;
+}
+
+.button-tab {
+	background: none;
+	border: none;
+	padding: 4px 8px;
+	color: #FFFFFF;
+	
+}
+
+.button-tab:hover,
+li.active > .button-tab {
+	background: #FFFFFF;
+	border: none;
+	padding: 4px 8px;
+	color: #2a2a2a;
+}
+
+/* button dropdown-item */ 
+
+button.dropdown-item {
+	text-align: match-parent;
+	text-align: -webkit-match-parent;
+	display: block;
+	width: 100%;
+	min-width: 280px;
+	height: 100%;
+	border: none;
+	padding: 6px 15px;
+    font-size: 13px;
+    background: none;
+}
+
+button.dropdown-item:hover {
+	color: #262626;
+    text-decoration: none;
+    background: #dddddd;
+}
+
+/* Tabs buttons */
+
+.box.box-color .box-title .tabs  > li > button.button-no-style {
+	color: #fff;
+	padding: 4px 8px;
+}
+
+.box.box-color .box-title .tabs  > li.active > button.button-no-style,
+.box.box-color .box-title .tabs  > li > button.button-no-style:hover {
+	color: #2a2a2a;
+	background: #fff;
+}
+
+.no-linebreak {
+	display: inline; 
+	white-space: nowrap;
+}
+
+/* ---------- NAVIGATION BUTTONS ----------- */
+
+#navigation .btn {
+	background: 0;
+	padding: 11px 10px 9px 10px;
+    display: block;
+    line-height: 20px;
+    color: #fff;
+    position: relative;
+    font-size: 12px;
+}
+
+#navigation .user .icon-nav > li > button {
+	padding: 11px 10px 9px 10px;
+	display: block;
+    line-height: 20px;
+    position: relative;
+}
+
+#navigation .user .icon-nav > li > button:hover,
+#navigation .user .dropdown > button:hover,
+#navigation .main-nav > li > button:hover {
+	background: #1b67af;
+    text-decoration: none;
+}
+
+#navigation .user .icon-nav > li > button img {
+	margin: 0;
+}
+
+#navigation .user .dropdown > button {
+	background: 0;
+	display: block;
+    color: #fff;
+    padding: 7px 12px 6px 12px;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+#navigation .user .dropdown > button img {
+	margin-left: 10px;
+}
+
+#navigation .main-nav > li > button {
+	display: block;
+    padding: 10px 15px;
+    line-height: 20px;
+    color: #fff;
+    font-size: 12px;
+}
+
+#navigation .main-nav > li.active > button,
+#navigation .user .icon-nav > li.active > button {
+	background: #FFF;
+    text-decoration: none;
+    color: #2a2a2a;
+}
+
+#navigation .btn:hover {
+	background: #1b67af;
+    text-decoration: none;
+}
+
+#navigation .btn .caret {
+    margin-left: 3px;
 }
 
 /* ------------- Background colors --------------- */
@@ -237,6 +468,10 @@ label {
     border-left: 1px solid #ddd !important;
 }
 
+.border-light {
+	border: 1px solid #ddd;
+}
+
 /* ------------- Margins --------------- */
 .padding-sides-no {
     padding-right: 0px;
@@ -287,6 +522,15 @@ label {
 .margin-sides-lesser {
     margin-left: 3px;
     margin-right: 3px;
+}
+
+.margin-left-2 {
+	display: inline-block;
+    margin-left: 2px;
+}
+
+.margin-left-2-no-block {
+	margin-left: 2px;
 }
 
 .margin-left-5 {
@@ -467,6 +711,14 @@ label {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap
+}
+
+.box.box-bordered .table.table-bordered {
+    border-right: 1px solid #ddd !important;
+}
+
+.table-border-right {
+    border-right: 1px solid #ddd !important;
 }
 
 .width80 {
@@ -666,7 +918,7 @@ dropdown-menu>li>a {
 	color: #e8860c;	
 }
 
-.font-status-inwork{
+.font-status-inwork, .font-status-inflight{
 	color: #ffbf21;	
 }
 
@@ -845,7 +1097,7 @@ grau: #dddddd
 	background: #e8860c none repeat scroll 0 0;	
 }
 
-.status-inwork{
+.status-inwork, .status-inflight{
 	background: #ffbf21 none repeat scroll 0 0;	
 }
 
@@ -881,7 +1133,7 @@ grau: #dddddd
 	border: 1px solid black;
 }
 
-.easy-read-status-inwork{
+.easy-read-status-inwork, .easy-read-status-inflight{
 	background: #bbb none repeat scroll 0 0;
 	border: 1px solid black;
 }
@@ -1081,6 +1333,12 @@ a.badge:focus {
 }
 
 /* ------------- IMAGE/THUMBNAIL NAVIGATION ------------- */
+
+#viewer_controls_nav .focusable:focus > i {
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
 .image-navigation,
 .thumbnail-navigation {
     padding: 12px 0;
@@ -1315,15 +1573,23 @@ a.badge:focus {
 }
 
 .btn2:focus {
-    outline: 1px dotted;
+	outline-offset: 2px;
+    outline: 5px auto -webkit-focus-ring-color;
 }
 
 .btn:focus {
-    outline: 1px dotted;
+	outline-offset: 2px;
+    outline: 5px auto -webkit-focus-ring-color;
+}
+
+.btn-group .btn:focus {
+	outline-offset: 2px;
+    outline: 5px auto -webkit-focus-ring-color;
 }
 
 a:focus {
-    outline: 1px dotted;
+	outline-offset: 2px;
+    outline: 5px auto -webkit-focus-ring-color;
 }
 
 .btn2:hover {
@@ -1571,6 +1837,12 @@ div[id*=":bookmark"]:hover a.remove-bookmark {
 }
 
 /* Thumbnails */
+
+.goobi-thumbnail-image:focus-within{
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
 .goobi-thumbnail {
     float: left;
     margin: 7px;
@@ -1771,8 +2043,9 @@ ul>li.yellow, .label-yellow {
 }
 
 /* ------------- task --------------- */
-.dataTables_wrapper .dataTables_filter, .dataTables_wrapper #searchForm .dataTables_filter {
-    max-width: 35%;
+
+.dataTables_wrapper .dataTables_filter {
+    display: table;
 }
 
 .dataTables_wrapper .dataTables_filter .input-group.input-group .input-group-addon, .dataTables_wrapper #searchForm .dataTables_filter .input-group.input-group .input-group-addon
@@ -1784,12 +2057,16 @@ ul>li.yellow, .label-yellow {
 .dataTables_wrapper .dataTables_filter .input-group.input-group .form-control.searchfield, .dataTables_wrapper #searchForm .dataTables_filter .input-group.input-group .form-control.searchfield
     {
     width: 100%;
-    min-width: 300px;
+    min-width: 175px;
     height: 28px;
     margin: 0;
     padding: 0 2px;
     border: 1px solid #ccc;
 }
+
+.dataTables_wrapper .dataTables_length {
+    min-width: 140px;
+ }
 
 .dataTables_wrapper .dataTables_filter .input-group.input-group .form-control.searchfield {
     padding: 0;
@@ -1805,8 +2082,10 @@ ul>li.yellow, .label-yellow {
 }
 
 .dataTables_filter input:focus {
-    outline: none;
-    border: none;
+    /*outline: none;
+    border: none;*/
+    outline-offset: 2px;
+    outline: 5px auto -webkit-focus-ring-color;
 }
 
 @media screen and (max-width: 1170px) {
@@ -1950,6 +2229,15 @@ ul>li.yellow, .label-yellow {
 	min-width:140px;
 }
 
+.log_file {
+	background: #368ee0;
+    border: none;
+    color: white;
+    margin-left: 10px;
+}
+.log_file_delete {
+	border: none;
+}
 
 @media only print {
     #left {
@@ -2084,4 +2372,108 @@ ul>li.yellow, .label-yellow {
 }
 
 .logout-box p {
+}
+
+/* file upload button */
+
+.uploader:focus-within {
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
+#upload .ui-widget-content {
+    border: none;
+}
+
+#upload .ui-widget-header {
+    background: #fff none repeat scroll 0 0;
+}
+
+#upload .ui-fileupload-choose {
+    background: #368ee0 none repeat scroll 0 0;
+    color: #fff;
+    text-shadow: none;
+    border: 0 none;
+    padding: 0.3em 1em;
+    font-weight: 400;
+}
+
+#upload .ui-fileupload-buttonbar span.ui-button .ui-button-text {
+    padding: 0.3em 1em;
+}
+
+#upload .ui-fileupload-buttonbar span.ui-button span.ui-button-icon-left{
+    display: none;
+}
+
+#upload .ui-fileupload-files {
+    width: 100%;
+}
+
+.ui-fileupload-content .ui-progressbar {
+    width: 100px;
+    height: 20px;
+    margin: 0px;
+}
+
+#upload .ui-fileupload-files td:first-child {
+    display: none;
+}
+
+.ui-fileupload-choose.ui-state-hover{
+	box-shadow: none !important;
+	border:none !important;
+	background: #1e74c5 !important;
+}
+
+.ui-fileupload-choose.ui-state-focus{
+	box-shadow: none !important;
+	border:none !important;
+	outline-offset: 2px !important;
+    outline: 5px auto -webkit-focus-ring-color !important;
+}
+
+.draganddroparea {
+    border: 2px dashed silver;
+    padding-top: 20px;
+}
+
+#upload .ui-fileupload-preview {
+    display: none;
+}
+
+.table.dataTable th:focus {
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
+.dropdown-toggle:focus {
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
+.btn:focus {
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
+.form-horizontal.form-bordered .form-group [class*="col-"]:focus {
+	outline-offset: 2px;
+	outline: 5px auto -webkit-focus-ring-color;
+}
+
+/*Styling fixes for restApi.xhtml*/
+.swagger-ui .scheme-container .servers {
+	display: none; 
+}
+.swagger-ui .scheme-container .servers-title {
+	display: none; 
+}
+.swagger-ui .info .title small pre {
+	 background-color: transparent;
+	 border: none; 
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+    border: 1px solid #ccc;
 }

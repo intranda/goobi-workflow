@@ -2,7 +2,7 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions"
 	template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<ui:param name="myPageTitle" value="#{msgs.authentication_configuration}" />
 
@@ -16,14 +16,14 @@
 
 	<ui:define name="content">
 		<h:form id="myform" rendered="#{LoginForm.hasRole('Admin_Ldap')}">
-			<div class="row">
+			<div class="row" role="main">
 				<div class="col-sm-12">
 					<div class="box box-color box-bordered">
 						<div class="box-title">
-							<h3>
-								<i class="glyphicon-keys box-icon-fix"></i>
+							<h2>
+								<i class="fa fa-key"></i>
 								<h:outputText value="#{myPageTitle}" />
-							</h3>
+							</h2>
 						</div>
 						<div class="box-content nopadding">
 							<div class="dataTables_wrapper">
@@ -68,23 +68,24 @@
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
 										<!-- Bearbeiten-Schaltknopf -->
-										<h:commandLink id="edit" styleClass="btn margin-right-5" rel="tooltip" action="ldap_edit"
+										<button jsf:id="edit" class="btn margin-right-5" jsf:rel="tooltip" jsf:action="ldap_edit"
 											title="#{msgs.authentication_edit}">
 											<i class="fa fa-pencil"></i>
 											<f:passThroughAttribute name="data-toggle" value="tooltip" />
+											<f:passThroughAttribute name="aria-label" value="#{msgs.projektBearbeiten}" />
 											<f:setPropertyActionListener target="#{LdapGruppenForm.myLdapGruppe}" value="#{item}" />
-										</h:commandLink>
+										</button>
 									</x:column>
 
 								</x:dataTable>
 
 								<div class="dataTables_info">
 									<!-- Neu-Schaltknopf -->
-									<h:commandLink id="new" styleClass="btn btn-primary font-size-s" action="#{LdapGruppenForm.Neu}"
-										immediate="true">
+									<button jsf:id="new" class="btn btn-primary font-size-s" jsf:action="#{LdapGruppenForm.Neu}"
+										jsf:immediate="true">
 										<i class="fa fa-plus margin-right-5"></i>
 										<h:outputText value="#{msgs.authentication_createNew}" />
-									</h:commandLink>
+									</button>
 								</div>
 								<div class="dataTables_paginate">
 									<!-- paginator -->

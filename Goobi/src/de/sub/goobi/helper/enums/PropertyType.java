@@ -1,12 +1,14 @@
 package de.sub.goobi.helper.enums;
 
+import lombok.Getter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information. 
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -66,10 +68,12 @@ public enum PropertyType {
     CommandLink(18, "CommandLink", true, false),
     NoEdit(19, "NoEdit", true, false),
     Filter(20, "Filter", false, false);
-
+	
+	@Getter
     private int id;
     private String name;
-
+    
+    @Getter
     private Boolean showInDisplay;
 
     private PropertyType(int id, String inName, Boolean showInDisplay, Boolean editable) {
@@ -97,23 +101,12 @@ public enum PropertyType {
         return String;
     }
 
-    public Boolean getShowInDisplay() {
-        return showInDisplay;
-    }
-
     //	/**
     //	 * @param id the id to set
     //	 */
     //	public void setId(int id) {
     //		this.id = id;
     //	}
-
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
 
     public static PropertyType getById(int id) {
         for (PropertyType p : PropertyType.values()) {

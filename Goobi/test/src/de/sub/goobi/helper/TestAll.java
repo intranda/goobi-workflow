@@ -6,7 +6,7 @@ package de.sub.goobi.helper;
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -24,7 +24,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ BatchTest.class, FilesystemHelperTest.class, BatchProcessHelperTest.class, BatchStepHelperTest.class, BeanHelperTest.class,
-    CopyFileTest.class, FileUtilsTest.class, HelperTest.class })
+        CopyFileTest.class, FileUtilsTest.class, HelperTest.class, JwtHelperTest.class })
 public class TestAll {
     //    GoobiScriptTest.class,
 }

@@ -6,7 +6,7 @@ package org.goobi.api.display;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -32,10 +32,15 @@ import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.beans.Process;
 
+import lombok.Getter;
+import lombok.Setter;
 import ugh.dl.MetadataType;
 
 public class DisplayCase {
+	@Getter
     private DisplayType displayType = null;
+	@Getter
+	@Setter
     private List<Item> itemList = new ArrayList<>();
     private ConfigDisplayRules configDisplay;
     private Process myProcess;
@@ -72,6 +77,10 @@ public class DisplayCase {
         }
     }
 
+    public void overwriteConfiguredElement(Process inProcess, MetadataType metaType) {
+        configDisplay.overwriteConfiguredElement(myProcess.getProjekt().getTitel(), metaType.getName());
+    }
+
     /**
      * gets items with given bind state
      * 
@@ -99,32 +108,5 @@ public class DisplayCase {
             itemList.add(new Item(metaName, "", false, "", ""));
         }
 
-    }
-
-    /**
-     * 
-     * @return current DisplayType
-     */
-
-    public DisplayType getDisplayType() {
-        return displayType;
-    }
-
-    /**
-     * 
-     * @param itemList ArrayList with items for metadatum
-     */
-
-    public void setItemList(ArrayList<Item> itemList) {
-        this.itemList = itemList;
-    }
-
-    /**
-     * 
-     * @return ArrayList with items for metadatum
-     */
-
-    public List<Item> getItemList() {
-        return itemList;
     }
 }

@@ -6,7 +6,7 @@ package de.sub.goobi.config;
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -117,13 +117,45 @@ public class ConfigurationHelperTest {
     }
 
     @Test
-    public void testGetMasterDirectoryPrefix() {
-        assertEquals("master", ConfigurationHelper.getInstance().getMasterDirectoryPrefix());
+    public void testGetMasterDirectoryName() {
+        assertEquals("{processtitle}_master", ConfigurationHelper.getInstance().getProcessImagesMasterDirectoryName());
     }
 
     @Test
-    public void testGetMediaDirectorySuffix() {
-        assertEquals("media", ConfigurationHelper.getInstance().getMediaDirectorySuffix());
+    public void testGetMediaDirectoryName() {
+        assertEquals("{processtitle}_media", ConfigurationHelper.getInstance().getProcessImagesMainDirectoryName());
+    }
+
+    @Test
+    public void testGetSourceDirectoryName() {
+        assertEquals("{processtitle}_source", ConfigurationHelper.getInstance().getProcessImagesSourceDirectoryName());
+    }
+
+
+    @Test
+    public void testGetProcessOcrTxtDirectoryName() {
+        assertEquals("{processtitle}_txt", ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName());
+    }
+
+    @Test
+    public void testGetProcessOcrPdfDirectoryName() {
+        assertEquals("{processtitle}_pdf", ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName());
+    }
+    @Test
+    public void testGetProcessOcrXmlDirectoryName() {
+        assertEquals("{processtitle}_xml", ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName());
+    }
+    @Test
+    public void testGetProcessOcrAltoDirectoryName() {
+        assertEquals("{processtitle}_alto", ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName());
+    }
+    @Test
+    public void testGetProcessImportDirectoryName() {
+        assertEquals("import", ConfigurationHelper.getInstance().getProcessImportDirectoryName());
+    }
+    @Test
+    public void testGetProcessExportDirectoryName() {
+        assertEquals("export", ConfigurationHelper.getInstance().getProcessExportDirectoryName());
     }
 
     @Test
@@ -317,8 +349,8 @@ public class ConfigurationHelperTest {
     }
 
     @Test
-    public void testGetMetsEditorDefaultSuffix() {
-        assertEquals("jpeg", ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix());
+    public void testGetMetsEditorFallbackFolder() {
+        assertEquals("", ConfigurationHelper.getInstance().getProcessImagesFallbackDirectoryName());
     }
 
     @Test

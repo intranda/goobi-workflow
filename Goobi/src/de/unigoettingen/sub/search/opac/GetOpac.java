@@ -6,7 +6,7 @@ package de.unigoettingen.sub.search.opac;
  * Visit the websites for more information. 
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -48,7 +48,8 @@ import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -59,6 +60,8 @@ import org.xml.sax.XMLReader;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.HttpClientHelper;
+import lombok.Getter;
+import lombok.Setter;
 
 /*******************************************************************************
  * Connects to OPAC system.
@@ -129,9 +132,12 @@ public class GetOpac {
     // TODO: Check if this should really be query specific
     private String data_character_encoding = "iso-8859-1";
 
+    @Getter
+    @Setter
     private Catalogue cat;
 
-    private boolean verbose = false;
+    @Setter
+    private boolean verbose = true;
     private String sorting = SORT_BY_YEAR_OF_PUBLISHING;
 
     // for caching the last query and its result
@@ -481,16 +487,21 @@ public class GetOpac {
             }
             return this.lastOpacResult;
         }
+
         result = retrieveDataFromOPAC(DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL_WITHOUT_LOCAL_DATA + this.data_character_encoding
                 + SEARCH_URL_BEFORE_QUERY + this.sorting + query.getQueryUrl());
 
-        OpacResponseHandler opacResult = parseOpacResponse(result);
+        try {            
+            OpacResponseHandler opacResult = parseOpacResponse(result);
+            // Caching query, result and sessionID
+            this.lastQuery = querySummary;
+            this.lastOpacResult = opacResult;
+            
+            return opacResult;
+        } catch(SAXException e) {
+            throw new SAXException("Response could not be parsed as xml: '" + result + "'", e);
+        }
 
-        // Caching query, result and sessionID
-        this.lastQuery = querySummary;
-        this.lastOpacResult = opacResult;
-
-        return opacResult;
     }
 
     private String xmlFormatPica(String picaXmlRecord) {
@@ -672,14 +683,6 @@ public class GetOpac {
         return ids;
     }
 
-    public Catalogue getCat() {
-        return this.cat;
-    }
-
-    public void setCat(Catalogue opac) {
-        this.cat = opac;
-    }
-
     /***********************************************************************
      * Set requested character encoding for the response of the catalogue system. For goettingen iso-8859-1 and utf-8 work, the default is iso-8859-1.
      * 
@@ -689,16 +692,6 @@ public class GetOpac {
     // TODO: rename this Method to camelCase convention
     public void setData_character_encoding(String data_character_encoding) {
         this.data_character_encoding = data_character_encoding;
-    }
-
-    /***********************************************************************
-     * Set verbose to true to get debug messages printed to .
-     * 
-     * @param verbose True will deliver debug messages to .
-     **********************************************************************/
-
-    public void setVerbose(boolean verbose) {
-        this.verbose = verbose;
     }
 
     public void sortByRelevance() {

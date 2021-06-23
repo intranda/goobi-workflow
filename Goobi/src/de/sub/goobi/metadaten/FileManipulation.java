@@ -16,16 +16,21 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
+import org.goobi.production.cli.helper.OrderedKeyMap;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import lombok.Getter;
+import lombok.Setter;
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -45,25 +50,44 @@ public class FileManipulation {
     }
 
     // insert new file after this page
+    @Getter
+    @Setter
     private String insertPage = "";
 
+    @Getter
+    @Setter
     private String imageSelection = "";
 
     // mode of insert (uncounted or into pagination sequence)
+    @Getter
+    @Setter
     private String insertMode = "uncounted";
-
+    
+    @Getter
+    @Setter
     private Part uploadedFile = null;
 
+    @Getter
+    @Setter
     private String uploadedFileName = null;
 
-    private List<String> selectedFiles = new ArrayList<String>();
+    @Getter
+    @Setter
+    private List<String> selectedFiles = new ArrayList<>();
 
+    @Getter
+    @Setter
     private boolean deleteFilesAfterMove = false;
 
+    @Getter
+    @Setter
     private boolean moveFilesInAllFolder = true;
 
-    private List<String> allImportFolder = new ArrayList<String>();
+    @Setter
+    private List<String> allImportFolder = new ArrayList<>();
 
+    @Getter
+    @Setter
     private String currentFolder = "";
 
     /**
@@ -158,14 +182,6 @@ public class FileManipulation {
         return null;
     }
 
-    public String getUploadedFileName() {
-        return uploadedFileName;
-    }
-
-    public void setUploadedFileName(String uploadedFileName) {
-        this.uploadedFileName = uploadedFileName;
-    }
-
     private void updatePagination(String filename)
             throws TypeNotAllowedForParentException, IOException, InterruptedException, SwapException, DAOException, MetadataTypeNotAllowedException {
         if (!matchesFileConfiguration(filename)) {
@@ -182,7 +198,8 @@ public class FileManipulation {
 
             List<DocStruct> pageList = physical.getAllChildren();
 
-            int indexToImport = Integer.parseInt(insertPage);
+            int indexToImport = Math.max(Integer.parseInt(insertPage)-1, 0);
+            
             DocStructType newPageType = prefs.getDocStrctTypeByName("page");
             DocStruct newPage = doc.createDocStruct(newPageType);
             MetadataType physicalPageNoType = prefs.getMetadataTypeByName("physPageNumber");
@@ -208,7 +225,7 @@ public class FileManipulation {
                     if (insertMode.equalsIgnoreCase("uncounted")) {
                         mdTemp.setValue("uncounted");
                     } else {
-                        // set new logical no. for new and old page 
+                        // set new logical no. for new and old page
                         Metadata oldPageNo = oldPage.getAllMetadataByType(logicalPageNoType).get(0);
                         mdTemp.setValue(oldPageNo.getValue());
                         if (index + 1 < pageList.size()) {
@@ -238,8 +255,8 @@ public class FileManipulation {
                         } else {
                             DocStruct followingPage = pageList.get(index + 1);
                             currentPage.getAllMetadataByType(logicalPageNoType)
-                                    .get(0)
-                                    .setValue(followingPage.getAllMetadataByType(logicalPageNoType).get(0).getValue());
+                            .get(0)
+                            .setValue(followingPage.getAllMetadataByType(logicalPageNoType).get(0).getValue());
                         }
                     }
                 }
@@ -249,46 +266,14 @@ public class FileManipulation {
         }
     }
 
-    public Part getUploadedFile() {
-        return this.uploadedFile;
-    }
-
-    public void setUploadedFile(Part uploadedFile) {
-        this.uploadedFile = uploadedFile;
-    }
-
-    public String getInsertPage() {
-        return insertPage;
-    }
-
-    public void setInsertPage(String insertPage) {
-        this.insertPage = insertPage;
-    }
-
-    public String getInsertMode() {
-        return insertMode;
-    }
-
-    public void setInsertMode(String insertMode) {
-        this.insertMode = insertMode;
-    }
-
     /**
      * download file
      */
 
-    public String getImageSelection() {
-        return imageSelection;
-    }
-
-    public void setImageSelection(String imageSelection) {
-        this.imageSelection = imageSelection;
-    }
-
     public void downloadFile() {
         Path downloadFile = null;
 
-        int imageOrder = Integer.parseInt(imageSelection);
+        int imageOrder = Integer.parseInt(imageSelection) - 1;
         DocStruct page = metadataBean.getDocument().getPhysicalDocStruct().getAllChildren().get(imageOrder);
         String imagename = page.getImageName();
         String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
@@ -366,12 +351,12 @@ public class FileManipulation {
             return;
         }
         List<DocStruct> allPages = metadataBean.getDocument().getPhysicalDocStruct().getAllChildren();
-        List<String> filenamesToMove = new ArrayList<String>();
+        List<String> filenamesToMove = new ArrayList<>();
 
         for (String fileIndex : selectedFiles) {
             try {
                 int index = Integer.parseInt(fileIndex);
-                filenamesToMove.add(allPages.get(index).getImageName());
+                filenamesToMove.add(allPages.get(index - 1).getImageName());
             } catch (NumberFormatException e) {
 
             }
@@ -430,39 +415,22 @@ public class FileManipulation {
             }
         }
         if (deleteFilesAfterMove) {
-            String[] pagesArray = new String[selectedFiles.size()];
-            selectedFiles.toArray(pagesArray);
-            metadataBean.setAlleSeitenAuswahl(pagesArray);
+            OrderedKeyMap<String, PhysicalObject> pageMap = metadataBean.getPageMap();
+            for (String pageName : pageMap.keySet()) {
+                PhysicalObject po = pageMap.get(pageName);
+                if (selectedFiles.contains(pageName)) {
+                    po.setSelected(true);
+                } else {
+                    po.setSelected(false);
+                }
+            }
+
             metadataBean.deleteSeltectedPages();
-            selectedFiles = new ArrayList<String>();
+            selectedFiles = new ArrayList<>();
             deleteFilesAfterMove = false;
         }
 
         metadataBean.retrieveAllImages();
-    }
-
-    public List<String> getSelectedFiles() {
-        return selectedFiles;
-    }
-
-    public void setSelectedFiles(List<String> selectedFiles) {
-        this.selectedFiles = selectedFiles;
-    }
-
-    public boolean isDeleteFilesAfterMove() {
-        return deleteFilesAfterMove;
-    }
-
-    public void setDeleteFilesAfterMove(boolean deleteFilesAfterMove) {
-        this.deleteFilesAfterMove = deleteFilesAfterMove;
-    }
-
-    public boolean isMoveFilesInAllFolder() {
-        return moveFilesInAllFolder;
-    }
-
-    public void setMoveFilesInAllFolder(boolean moveFilesInAllFolder) {
-        this.moveFilesInAllFolder = moveFilesInAllFolder;
     }
 
     /**
@@ -475,16 +443,12 @@ public class FileManipulation {
         String tempDirectory = ConfigurationHelper.getInstance().getTemporaryFolder();
         Path fileuploadFolder = Paths.get(tempDirectory + "fileupload");
 
-        allImportFolder = new ArrayList<String>();
+        allImportFolder = new ArrayList<>();
 
         if (StorageProvider.getInstance().isDirectory(fileuploadFolder)) {
             allImportFolder.addAll(StorageProvider.getInstance().list(fileuploadFolder.toString(), NIOFileUtils.folderFilter));
         }
         return allImportFolder;
-    }
-
-    public void setAllImportFolder(List<String> allImportFolder) {
-        this.allImportFolder = allImportFolder;
     }
 
     public void importFiles() {
@@ -495,14 +459,14 @@ public class FileManipulation {
         }
         String tempDirectory = ConfigurationHelper.getInstance().getTemporaryFolder();
 
-        String masterPrefix = "";
+        //        String masterPrefix = "";
         boolean useMasterFolder = false;
         if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
             useMasterFolder = true;
-            masterPrefix = ConfigurationHelper.getInstance().getMasterDirectoryPrefix();
+            //            masterPrefix = ConfigurationHelper.getInstance().getMasterDirectoryPrefix();
         }
         Process currentProcess = metadataBean.getMyProzess();
-        List<String> importedFilenames = new ArrayList<String>();
+        List<String> importedFilenames = new ArrayList<>();
         for (String importName : selectedFiles) {
             List<Path> subfolderList =
                     StorageProvider.getInstance().listFiles(tempDirectory + "fileupload" + FileSystems.getDefault().getSeparator() + importName);
@@ -510,7 +474,10 @@ public class FileManipulation {
 
                 if (useMasterFolder) {
                     // check if current import folder is master folder
-                    if (subfolder.getFileName().toString().startsWith(masterPrefix)) {
+                    if (subfolder.getFileName()
+                            .toString()
+                            .equals(VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesSourceDirectoryName(),
+                                    metadataBean.getMyProzess()))) {
                         try {
                             String masterFolderName = currentProcess.getImagesOrigDirectory(false);
                             Path masterDirectory = Paths.get(masterFolderName);
@@ -602,15 +569,7 @@ public class FileManipulation {
         // save current state
         metadataBean.Reload();
     }
-
-    public String getCurrentFolder() {
-        return currentFolder;
-    }
-
-    public void setCurrentFolder(String currentFolder) {
-        this.currentFolder = currentFolder;
-    }
-
+    
     private static boolean matchesFileConfiguration(String filename) {
 
         if (filename == null) {

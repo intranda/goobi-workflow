@@ -1,9 +1,12 @@
 package de.unigoettingen.sub.search.opac;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -22,6 +25,8 @@ package de.unigoettingen.sub.search.opac;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+@Getter
+@Setter
 public class ConfigOpacCatalogueBeautifierElement {
     private String tag = "";
     private String subtag = "";
@@ -31,30 +36,6 @@ public class ConfigOpacCatalogueBeautifierElement {
         this.tag = inTag;
         this.subtag = inSubTag;
         this.value = inValue;
-    }
-
-    public String getTag() {
-        return this.tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public String getSubtag() {
-        return this.subtag;
-    }
-
-    public void setSubtag(String subtag) {
-        this.subtag = subtag;
-    }
-
-    public String getValue() {
-        return this.value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     @Override

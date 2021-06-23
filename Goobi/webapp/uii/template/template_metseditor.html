@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html 
+	lang="#{SpracheForm.locale}"
     xmlns="http://www.w3.org/1999/xhtml" 
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
     xmlns:f="http://xmlns.jcp.org/jsf/core" 
@@ -47,14 +48,18 @@
     <link rel="manifest" href="template/img/favicons/manifest.json" />
 
     <!-- CSS ASSETS -->
-    <link rel="stylesheet" href="template/assets/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="template/assets/css/jquery-ui.min.css" />
-    <link rel="stylesheet" href="template/assets/css/jquery-ui.structure.min.css" />
-    <link rel="stylesheet" href="template/assets/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="template/css/plugins/colorbox/colorbox.css" />
+    <link rel="stylesheet" href="template/assets/css/bootstrap.min.css?v=#{HelperForm.buildVersion}" />
+    <link rel="stylesheet" href="template/assets/css/jquery-ui.min.css?v=#{HelperForm.buildVersion}" />
+    <link rel="stylesheet" href="template/assets/css/jquery-ui.structure.min.css?v=#{HelperForm.buildVersion}" />
+    <link rel="stylesheet" href="template/assets/css/font-awesome.min.css?v=#{HelperForm.buildVersion}" />
+    <link rel="stylesheet" href="template/css/plugins/colorbox/colorbox.css?v=#{HelperForm.buildVersion}" />
 
     <!-- CSS -->
-    <link rel="stylesheet" href="template/css/dist/goobiWorkflow.min.css" />
+    <link rel="stylesheet" href="template/css/dist/goobiWorkflow.min.css?v=#{HelperForm.buildVersion}" />
+
+    <ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.renderAccessibilityCss}">
+        <link rel="stylesheet" href="template/css/accessibility.css?v=#{HelperForm.buildVersion}" />
+    </ui:fragment>
 
     <!-- CUSTOM CSS -->
     <style>
@@ -65,6 +70,7 @@
 <ui:insert name="metadata" />
 
 <body class="#{LoginForm.myBenutzer == null?'login':''}">
+<main>
     <f:view locale="#{SpracheForm.locale}">
         <!-- USER NOT LOGGED IN -->
         <ui:fragment rendered="#{LoginForm.myBenutzer==null}">
@@ -75,12 +81,13 @@
         <c:if test="#{LoginForm.myBenutzer!=null}">
 
             <!-- PAGE WRAPPER -->
+            
             <div id="pageWrapper" class="page-wrapper">
                 <!-- MENU -->
                 <div id="pageMenu" class="page-menu">
                     <!-- LOGO -->
-                    <div class="page-menu__logo">
-                        <a href="index.xhtml"></a>
+                    <div id="brand" class="page-menu__logo">
+                        <a aria-label="#{msgs.returnHome}" href="index.xhtml"></a>
                     </div>
     
                     <!-- TOGLLE MOBILE MENU -->
@@ -90,13 +97,13 @@
                     </button>
 
                     <!-- NAVIGATION -->
-                    <nav id="navigation" class="page-menu__navigation" role="navigation">
+                    <nav aria-label="#{msgs.navigation}" id="navigation" class="page-menu__navigation" role="navigation">
                         <!-- METSEDITOR MENU -->
                         <ui:insert name="metseditorMenu" />
                     </nav>
                     
                     <!-- ACTIONS -->
-                    <nav id="navigationActions" class="page-menu__actions">
+                    <nav aria-label="#{msgs.navigation} #{msgs.auswahl}" id="navigationActions" class="page-menu__actions">
                         <!-- METSEDITOR MENU ACTIONS -->
                         <ui:insert name="metseditorMenuActions" />                        
                     </nav>
@@ -120,12 +127,12 @@
                     </div>
                     
                     <!-- CONTENT CENTER -->
-                    <div id="pageContentCenter" class="page-content__center">
+                    <h:panelGroup id="pageContentCenter" styleClass="page-content__center" layout="block">
                         <div class="page-content__center-inner">
                             <!-- METSEDITOR CONTENT -->
                             <ui:insert name="metseditorContent" />                            
                         </div>
-                    </div>
+                    </h:panelGroup>
                     
                     <!-- CONTENT RIGHT -->
                     <ui:fragment rendered="#{Metadaten.bildAnzeigen}">
@@ -143,41 +150,47 @@
                     <img src="template/img/goobi/ajaxloader2.gif" />
                 </div>
             </div>
+            
         </c:if>
     </f:view>
 
     <!-- JAVASCRIPT ASSETS -->
-    <script src="template/assets/js/jquery-3.4.0.min.js"></script>
-    <script src="template/assets/js/jquery-ui.min.js"></script>
-    <script src="template/assets/js/jquery.colorbox-min.js"></script>
-    <script src="template/assets/js/popper.min.js"></script>
-    <script src="template/assets/js/bootstrap.min.js"></script>
-    <script src="template/assets/js/riot.min.js"></script>
-    <script src="template/js/reactiveX/rx.lite.min.js"></script>
-    <script src="template/js/q-promises/q.min.js"></script>
-    <script src='template/js/plugins/tinymce/js/tinymce/tinymce.min.js'></script>
-    <script src="template/js/jquery.hotkeys.js"></script>
+    <script src="template/assets/js/jquery-3.4.0.min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/assets/js/jquery-ui.min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/assets/js/jquery.colorbox-min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/assets/js/popper.min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/assets/js/bootstrap.min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/assets/js/riot.min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/reactiveX/rx.lite.min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/q-promises/q.min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/plugins/tinymce/tinymce.min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/jquery.hotkeys.js?v=#{HelperForm.buildVersion}"></script>
     <!-- OPEN SEADRAGON AND IMAGE VIEW -->
-    <script src="template/js/openseadragon/openseadragon.min.js"></script>
-    <script src="template/js/openseadragon/openseadragon-viewerinputhook.js"></script>
-    <script src="template/js/imageView.min.js"></script>
+    <script src="template/js/openseadragon/openseadragon.min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/openseadragon/openseadragon-viewerinputhook.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/imageView.min.js?v=#{HelperForm.buildVersion}"></script>
     <!-- 3D-MODELS -->
-    <script src="template/js/three/three.min.js"></script>
-    <script src="template/js/three/loaders/OBJLoader.js"></script>
-    <script src="template/js/three/loaders/MTLLoader.js"></script>
-    <script src="template/js/three/loaders/PLYLoader.js"></script>
-    <script src="template/js/three/loaders/STLLoader.js"></script>
-    <script src="template/js/three/loaders/FBXLoader.js"></script>
-    <script src="template/js/three/loaders/TDSLoader.js"></script>
-    <script src="template/js/three/loaders/DRACOLoader.js"></script>
-    <script src="template/js/three/loaders/GLTFLoader.js"></script>
-    <script src="template/js/three/controls/OrbitControls.js"></script>
-    <script src="template/js/three/dependencies/inflate.min.js"></script>
-    <script src="template/js/x3dom/x3dom.js"></script>
-    <script src="template/js/objectView.min.js"></script>
+    <script src="template/js/three/three.min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/three/loaders/OBJLoader.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/three/loaders/MTLLoader.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/three/loaders/PLYLoader.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/three/loaders/STLLoader.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/three/loaders/FBXLoader.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/three/loaders/TDSLoader.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/three/loaders/DRACOLoader.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/three/loaders/GLTFLoader.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/three/controls/OrbitControls.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/three/dependencies/inflate.min.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/x3dom/x3dom.js?v=#{HelperForm.buildVersion}"></script>
+    <script src="template/js/objectView.min.js?v=#{HelperForm.buildVersion}"></script>
     <!-- GOOBI WORKFLOW JS -->
-    <script src="template/js/dist/goobiWorkflowJS.min.js"></script>
+    <script src="template/js/dist/goobiWorkflowJS.min.js?v=#{HelperForm.buildVersion}"></script>
     
+    <!-- ALTO EDITOR -->
+    <script src="template/js/altoEditorUtils.js?v=#{HelperForm.buildVersion}" type="text/javascript"></script>
+    <script src="template/js/riot+compiler.min.js?v=#{HelperForm.buildVersion}" type="text/javascript"></script>
+    <script src="template/riot/alto-editor.riot?v=#{HelperForm.buildVersion}" type="riot/tag"></script>
+    <script src="template/riot/autocomplete.riot?v=#{HelperForm.buildVersion}" type="riot/tag"></script>
     <script>
         goobiWorkflowConfig = {
             currentView: "#{Metadaten.modusAnsicht}",
@@ -194,5 +207,6 @@
             goobiWorkflowJS.init( goobiWorkflowConfig );
         } );
     </script>
+    </main>
 </body>
 </html>

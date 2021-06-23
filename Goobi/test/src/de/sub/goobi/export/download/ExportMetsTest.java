@@ -6,7 +6,7 @@ package de.sub.goobi.export.download;
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -39,6 +39,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.mock.MockProcess;
 import ugh.fileformats.mets.MetsMods;
@@ -46,7 +47,7 @@ import ugh.fileformats.mets.MetsModsImportExport;
 
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(MetadatenHelper.class)
+@PrepareForTest({MetadatenHelper.class, JwtHelper.class})
 @PowerMockIgnore("javax.management.*")
 public class ExportMetsTest {
 
@@ -69,6 +70,10 @@ public class ExportMetsTest {
         EasyMock.expect(MetadatenHelper.getFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class))).andReturn(new MetsMods(testProcess.getRegelsatz().getPreferences())).anyTimes();
         EasyMock.expect(MetadatenHelper.getExportFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class))).andReturn(new MetsModsImportExport(testProcess.getRegelsatz().getPreferences())).anyTimes();
         PowerMock.replay(MetadatenHelper.class);
+
+        PowerMock.mockStatic(JwtHelper.class);
+        EasyMock.expect(JwtHelper.createApiToken(EasyMock.anyString(), EasyMock.anyObject())).andReturn("12356").anyTimes();
+        PowerMock.replay(JwtHelper.class);
     }
 
     @Test

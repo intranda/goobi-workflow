@@ -2904,7 +2904,8 @@ label, input, button, select, textarea {
 #navigation .dropdown-menu > li.dropdown-submenu:hover > a:after, #navigation .dropdown-menu > li.dropdown-submenu:focus > a:after {
   border-left-color: #fff;
 }
-#navigation .dropdown-menu > li > a:hover {
+#navigation .dropdown-menu > li > a:hover,
+#navigation .dropdown-menu > li > button:hover {
   background: #368ee0;
   color: #fff;
   filter: none;
@@ -3522,13 +3523,18 @@ label, input, button, select, textarea {
 .box.box-color .box-title .tabs > li > a:hover {
   color: #368ee0;
 }
+.box.box-color .box-title .actions > button,
 .box.box-color .box-title .actions > a {
   color: #fff;
 }
+
+.box.box-color .box-title .actions > button:hover,
 .box.box-color .box-title .actions > a:hover {
   background: #fff;
   color: #368ee0;
 }
+
+
 .box.box-bordered .table {
   margin-bottom: 0;
 }
@@ -4621,9 +4627,16 @@ label, input, button, select, textarea {
 .table.dataTable.dataTable-grouping .group.collapsed-group:hover {
   cursor: pointer;
 }
+
+.table.dataTable .table-sort-icon {
+	line-height: 17.15px;
+	color: #6B6D6A;
+}
+
 .table.dataTable .sorting_asc {
   background: url("../img/sorting-asc.png") no-repeat right center #eee;
 }
+
 .table.dataTable .sorting_desc {
   background: url("../img/sorting-desc.png") no-repeat right center #eee;
 }

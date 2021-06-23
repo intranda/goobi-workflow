@@ -6,7 +6,7 @@ package org.goobi.managedbeans;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -29,20 +29,27 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.nio.file.FileSystems;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.faces.validator.ValidatorException;
+import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.api.mail.StepConfiguration;
@@ -52,6 +59,8 @@ import org.goobi.beans.Ldap;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
+import org.goobi.production.enums.UserRole;
+import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -65,9 +74,10 @@ import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
-@ManagedBean(name = "BenutzerverwaltungForm")
+@Named("BenutzerverwaltungForm")
 @SessionScoped
-public class UserBean extends BasicBean {
+
+public class UserBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = -3635859455444639614L;
     private User myClass = new User();
     private boolean hideInactiveUsers = true;
@@ -146,13 +156,13 @@ public class UserBean extends BasicBean {
             }
             int num = new UserManager().getHitSize(null, query, null);
             if (num == 0) {
-                if (myClass.getId() == null) {
+                if (myClass.getId() == null && !AuthenticationType.OPENID.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())
+                        && myClass.getPasswort() != null) {
                     myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
-                    //                myClass.setPasswort("");
                 }
                 UserManager.saveUser(this.myClass);
                 paginator.load();
-                return FilterKein();
+                return "user_all";
             } else {
                 Helper.setFehlerMeldung("", Helper.getTranslation("loginBereitsVergeben"));
                 return "";
@@ -203,17 +213,22 @@ public class UserBean extends BasicBean {
      * @return a string indicating the screen showing up after the command has been performed.
      */
     public String Loeschen() {
-        try {
-            UserManager.hideUser(myClass);
-            if (ConfigurationHelper.getInstance().isUseLdap() && !ConfigurationHelper.getInstance().isLdapReadOnly()) {
-                new LdapAuthentication().deleteUser(myClass);
+        User currentUser = Helper.getCurrentUser();
+        if (currentUser.getId() != myClass.getId()) {
+            try {
+                UserManager.hideUser(myClass);
+                if (myClass.getLdapGruppe().getAuthenticationTypeEnum() == AuthenticationType.LDAP && !myClass.getLdapGruppe().isReadonly()) {
+                    new LdapAuthentication().deleteUser(myClass);
+                }
+                paginator.load();
+            } catch (DAOException e) {
+                Helper.setFehlerMeldung("#{msgs.Error_hideUser}", e.getMessage());
+                return "";
             }
-            paginator.load();
-        } catch (DAOException e) {
-            Helper.setFehlerMeldung("Error, could not hide user", e.getMessage());
-            return "";
+            return FilterKein();
         }
-        return FilterKein();
+        Helper.setFehlerMeldung("#{msgs.Error_selfDelete}");
+        return "";
     }
 
     public String AusGruppeLoeschen() {
@@ -333,7 +348,7 @@ public class UserBean extends BasicBean {
         if (this.myClass.getLdapGruppe() != null) {
             return this.myClass.getLdapGruppe().getId();
         } else {
-            return Integer.valueOf(0);
+            return null;
         }
     }
 
@@ -347,8 +362,25 @@ public class UserBean extends BasicBean {
         }
     }
 
+    public void validateAuthenticationSelection(FacesContext context, UIComponent component, Object value) {
+        FacesMessage message = null;
+        if (value == null) {
+            message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid value", Helper.getTranslation("javax.faces.component.UIInput.REQUIRED"));
+        } else {
+            Integer intValue = (Integer) value;
+            if (intValue.intValue() == 0) {
+                message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid value",
+                        Helper.getTranslation("javax.faces.component.UIInput.REQUIRED"));
+            }
+        }
+        if (message != null) {
+            throw new ValidatorException(message);
+        }
+    }
+
     public List<SelectItem> getLdapGruppeAuswahlListe() throws DAOException {
         List<SelectItem> myLdapGruppen = new ArrayList<>();
+        myLdapGruppen.add(new SelectItem(0, Helper.getTranslation("bitteAuswaehlen")));
         List<Ldap> temp = LdapManager.getLdaps("titel", null, null, null,
                 Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
         for (Ldap gru : temp) {
@@ -358,11 +390,11 @@ public class UserBean extends BasicBean {
     }
 
     public String createUser() {
-        if (!Speichern().equals("") && getLdapUsage()) {
+        if (!Speichern().equals("") && AuthenticationType.LDAP.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())) {
             LdapKonfigurationSchreiben();
         }
-        displayMode = "tab2";
-        return "";
+        this.displayMode = "tab2";
+        return "user_edit";
     }
 
     public String LdapKonfigurationSchreiben() {
@@ -374,6 +406,106 @@ public class UserBean extends BasicBean {
             Helper.setFehlerMeldung("Error on writing to database", e);
         }
         return "";
+    }
+
+    public String getCreateNewRandomPasswordForUser() {
+        return createNewRandomPasswordForUser();
+    }
+
+    /**
+     * This method generates a new (random) password for a certain user. It can be called by a button in the user list (visible only for
+     * administrators). The administrator will be asked a last time before this method generates and resets the password. When he/she/it confirms, the
+     * password and salt are generated and reset. At last the new password is shown on screen.
+     * 
+     * @return The next page
+     */
+    public String createNewRandomPasswordForUser() {
+        // Check for administrator rules
+        if (!Helper.getCurrentUser().getAllUserRoles().contains(UserRole.Admin_Users_Change_Passwords.toString())) {
+            Helper.setFehlerMeldung("You are not allowed to change the user's password!");
+            return "user_all";
+        }
+
+        // Get and create user
+        Integer LoginID = Integer.valueOf(Helper.getRequestParameter("ID"));
+        User userToResetPassword;
+        try {
+            userToResetPassword = UserManager.getUserById(LoginID);
+        } catch (DAOException daoe) {
+            Helper.setFehlerMeldung("could not read database", daoe.getMessage());
+            return "user_all";
+        }
+
+        /*
+        // Ask a last time before resetting password
+        if ("REALLY" == "CANCEL") {
+            return "index";
+        }
+        */
+
+        // Create the random password and save it
+        if (userToResetPassword != null) {
+            try {
+                String password = createRandomPassword(LoginBean.DEFAULT_PASSWORD_LENGTH);
+                if (AuthenticationType.LDAP.equals(userToResetPassword.getLdapGruppe().getAuthenticationTypeEnum())
+                        && !userToResetPassword.getLdapGruppe().isReadonly()) {
+
+                    LdapAuthentication myLdap = new LdapAuthentication();
+                    myLdap.changeUserPassword(userToResetPassword, null, password);
+                }
+                saltAndSaveUserPassword(userToResetPassword, password);
+                // Show password on screen
+                Helper.setMeldung("Password of user \"" + userToResetPassword.getNachVorname() + "\" was set to: " + password);
+            } catch (NoSuchAlgorithmException e) {
+                Helper.setFehlerMeldung("ldap errror", e.getMessage());
+            }
+        }
+        return "user_all";
+    }
+
+    /**
+     * This method is to set the user's password with a random salt value.
+     * 
+     * @param user The user with the new password
+     * @param password The new unencrypted password of user
+     */
+    public static void saltAndSaveUserPassword(User user, String password) {
+
+        // Create a salt value
+        RandomNumberGenerator rng = new SecureRandomNumberGenerator();
+        Object salt = rng.nextBytes();
+        user.setPasswordSalt(salt.toString());
+
+        // Create and set new password
+        String encryptedPassword = user.getPasswordHash(password);
+        try {
+            user.setEncryptedPassword(encryptedPassword);
+            // Save salt and password
+            UserManager.saveUser(user);
+        } catch (DAOException daoe) {
+            daoe.printStackTrace();
+            Helper.setFehlerMeldung("Couldn't set password of user \"" + user.getNachVorname() + "!");
+        }
+    }
+
+    /**
+     * This method generates a random String containing small letters. The length is determined by the parameter 'length'. Letters may occur more than
+     * one time.<br />
+     * Examples:<br />
+     * createRandomPassword(10) -> "aherizbobr"<br />
+     * createRandomPassword(4) -> "klww"<br />
+     * 
+     * @param length The length of required password
+     * @return The generated password
+     */
+    public static String createRandomPassword(int length) {
+        Random r = new Random();
+        StringBuilder password = new StringBuilder();
+        while (password.length() < length) {
+            // ASCII interval: [97 + 0, 97 + 25] => [97, 122] => [a, z]
+            password.append((char) (r.nextInt(26) + 'a'));
+        }
+        return password.toString();
     }
 
     public boolean isHideInactiveUsers() {

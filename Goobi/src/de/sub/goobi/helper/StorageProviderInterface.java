@@ -16,7 +16,7 @@ public interface StorageProviderInterface {
 
     public Integer getNumberOfFiles(String inDir);
 
-    public Integer getNumberOfFiles(Path dir, final String suffix);
+    public Integer getNumberOfFiles(Path dir, final String... suffix);
 
     public List<Path> listFiles(String folder);
 
@@ -57,8 +57,20 @@ public interface StorageProviderInterface {
 
     public long checksumMappedFile(String filepath) throws IOException;
 
+    /**
+     * deletes the whole directory, including hidden files.
+     * 
+     * @param dir
+     * @return true, if deleted successfully
+     */
     public boolean deleteDir(Path dir);
 
+    /**
+     * deletes all files and directories in the given directory, including hidden files.
+     * 
+     * @param dir
+     * @return true, if deleted successfully
+     */
     public boolean deleteInDir(Path dir);
 
     public boolean deleteDataInDir(Path dir);
@@ -82,6 +94,8 @@ public interface StorageProviderInterface {
     public boolean isWritable(Path path);
 
     public boolean isReadable(Path path);
+    
+    public boolean isDeletable(Path path);
 
     public long getFileSize(Path path) throws IOException;
 

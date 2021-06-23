@@ -6,7 +6,7 @@ package de.sub.goobi.helper;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -28,6 +28,7 @@ package de.sub.goobi.helper;
  */
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -36,6 +37,7 @@ import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.CopyOption;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileStore;
@@ -57,6 +59,7 @@ import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -65,6 +68,8 @@ import java.util.zip.CRC32;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j2;
@@ -76,6 +81,8 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class NIOFileUtils implements StorageProviderInterface {
+
+    private static final Logger logger = LogManager.getLogger(Helper.class);
 
     public static final CopyOption[] STANDARD_COPY_OPTIONS =
             new CopyOption[] { StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES };
@@ -133,7 +140,7 @@ public class NIOFileUtils implements StorageProviderInterface {
     }
 
     @Override
-    public Integer getNumberOfFiles(Path dir, final String suffix) {
+    public Integer getNumberOfFiles(Path dir, final String... suffixes) {
         int anzahl = 0;
         if (Files.isDirectory(dir)) {
             /* --------------------------------
@@ -142,18 +149,18 @@ public class NIOFileUtils implements StorageProviderInterface {
             anzahl = list(dir.toString(), new DirectoryStream.Filter<Path>() {
                 @Override
                 public boolean accept(Path path) {
-                    return path.getFileName().endsWith(suffix);
+                    return Arrays.stream(suffixes).anyMatch(suffix -> path.getFileName().toString().endsWith(suffix));
                 }
             }
 
-                    ).size();
+            ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
              * --------------------------------*/
             List<String> children = this.list(dir.toString());
             for (String child : children) {
-                anzahl += getNumberOfFiles(Paths.get(dir.toString(), child), suffix);
+                anzahl += getNumberOfFiles(Paths.get(dir.toString(), child), suffixes);
             }
         }
         return anzahl;
@@ -166,7 +173,9 @@ public class NIOFileUtils implements StorageProviderInterface {
         List<Path> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder))) {
             for (Path path : directoryStream) {
-                fileNames.add(path);
+                if (!path.getFileName().toString().startsWith(".")) {
+                    fileNames.add(path);
+                }
             }
         } catch (IOException ex) {
         }
@@ -180,7 +189,9 @@ public class NIOFileUtils implements StorageProviderInterface {
         List<Path> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder), filter)) {
             for (Path path : directoryStream) {
-                fileNames.add(path);
+                if (!path.getFileName().toString().startsWith(".")) {
+                    fileNames.add(path);
+                }
             }
         } catch (IOException ex) {
         }
@@ -194,7 +205,9 @@ public class NIOFileUtils implements StorageProviderInterface {
         List<String> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder))) {
             for (Path path : directoryStream) {
-                fileNames.add(path.getFileName().toString());
+                if (!path.getFileName().toString().startsWith(".")) {
+                    fileNames.add(path.getFileName().toString());
+                }
             }
         } catch (IOException ex) {
         }
@@ -208,7 +221,9 @@ public class NIOFileUtils implements StorageProviderInterface {
         List<String> fileNames = new ArrayList<>();
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(folder), filter)) {
             for (Path path : directoryStream) {
-                fileNames.add(path.getFileName().toString());
+                if (!path.getFileName().toString().startsWith(".")) {
+                    fileNames.add(path.getFileName().toString());
+                }
             }
         } catch (IOException ex) {
         }
@@ -307,7 +322,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 fileOk = true;
             }
             String mimeType = getMimeTypeFromFile(path);
-            if (mimeType.startsWith("audio") || mimeType.startsWith("video")) {
+            if (mimeType.startsWith("audio") || mimeType.startsWith("video") || mimeType.equals("application/mxf")) {
                 return fileOk;
             }
             return false;
@@ -405,21 +420,29 @@ public class NIOFileUtils implements StorageProviderInterface {
                         targetDosAttrs.setSystem(sourceDosAttrs.isSystem());
                     }
                 }
-                FileOwnerAttributeView ownerAttrs = Files.getFileAttributeView(dir, FileOwnerAttributeView.class);
-                if (ownerAttrs != null) {
-                    if (fileStore.supportsFileAttributeView(FileOwnerAttributeView.class)) {
-                        FileOwnerAttributeView targetOwner = Files.getFileAttributeView(targetDir, FileOwnerAttributeView.class);
-                        targetOwner.setOwner(ownerAttrs.getOwner());
+                try {
+                    FileOwnerAttributeView ownerAttrs = Files.getFileAttributeView(dir, FileOwnerAttributeView.class);
+                    if (ownerAttrs != null) {
+                        if (fileStore.supportsFileAttributeView(FileOwnerAttributeView.class)) {
+                            FileOwnerAttributeView targetOwner = Files.getFileAttributeView(targetDir, FileOwnerAttributeView.class);
+                            targetOwner.setOwner(ownerAttrs.getOwner());
+                        }
                     }
+                } catch (AccessDeniedException | FileNotFoundException exception) {
+                    logger.error(exception);
                 }
-                PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
-                if (posixAttrs != null) {
-                    if (fileStore.supportsFileAttributeView(PosixFileAttributeView.class)) {
-                        PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
-                        PosixFileAttributeView targetPosix = Files.getFileAttributeView(targetDir, PosixFileAttributeView.class);
-                        targetPosix.setPermissions(sourcePosix.permissions());
-                        targetPosix.setGroup(sourcePosix.group());
+                try {
+                    PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
+                    if (posixAttrs != null) {
+                        if (fileStore.supportsFileAttributeView(PosixFileAttributeView.class)) {
+                            PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
+                            PosixFileAttributeView targetPosix = Files.getFileAttributeView(targetDir, PosixFileAttributeView.class);
+                            targetPosix.setPermissions(sourcePosix.permissions());
+                            targetPosix.setGroup(sourcePosix.group());
+                        }
                     }
+                } catch (AccessDeniedException | FileNotFoundException exception) {
+                    logger.error(exception);
                 }
                 UserDefinedFileAttributeView userAttrs = Files.getFileAttributeView(dir, UserDefinedFileAttributeView.class);
                 if (userAttrs != null) {
@@ -565,25 +588,16 @@ public class NIOFileUtils implements StorageProviderInterface {
             return true;
         }
         if (Files.isDirectory(dir)) {
-            List<Path> children = this.listFiles(dir.toString());
-            for (Path child : children) {
-                if (Files.isDirectory(child)) {
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
+                for (Path child : directoryStream) {
                     boolean success = deleteDir(child);
                     if (!success) {
                         return false;
                     }
-                } else if (Files.isRegularFile(child)) {
-                    try {
-                        Files.delete(child);
-                    } catch (IOException e) {
-                    }
-
                 }
-            }
-        } else if (Files.isRegularFile(dir)) {
-            try {
-                Files.delete(dir);
             } catch (IOException e) {
+                log.error(e);
+                return false;
             }
         }
         // The directory is now empty so delete it
@@ -595,17 +609,21 @@ public class NIOFileUtils implements StorageProviderInterface {
     }
 
     /**
-     * Deletes all files and subdirectories under dir. But not the dir itself
+     * Deletes all files and subdirectories under dir. But not the dir itself @throws
      */
     @Override
     public boolean deleteInDir(Path dir) {
         if (Files.exists(dir) && Files.isDirectory(dir)) {
-            List<String> children = this.list(dir.toString());
-            for (String child : children) {
-                boolean success = deleteDir(Paths.get(dir.toString(), child));
-                if (!success) {
-                    return false;
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
+                for (Path path : directoryStream) {
+                    boolean success = deleteDir(path);
+                    if (!success) {
+                        return false;
+                    }
                 }
+            } catch (IOException e) {
+                log.error(e);
+                return false;
             }
         }
         return true;
@@ -678,6 +696,37 @@ public class NIOFileUtils implements StorageProviderInterface {
     @Override
     public boolean isReadable(Path path) {
         return Files.isReadable(path);
+    }
+
+    /**
+     * IMPORTANT: This detection of deletion permission works only for Linux/Unix systems. On Windows systems it's much more complicated to detect the
+     * deletion permission.
+     * 
+     * @return deletion permission of given path
+     */
+    @Override
+    public boolean isDeletable(Path path) {
+        Path parent = path.getParent();
+        if (!this.isReadable(parent) || !this.isWritable(parent) || !Files.isExecutable(parent)) {
+            return false;
+        }
+        if (this.isDirectory(path)) {
+            if (!this.isReadable(path) || !this.isWritable(path) || !Files.isExecutable(path)) {
+                return false;
+            }
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path)) {
+                for (Path child : directoryStream) {
+                    // Test whether child is a directory
+                    // If it is a directory, check recursively whether it is deletable
+                    // When it is not deletable, return false. Check other directories else.
+                    if (this.isDirectory(child) && !this.isDeletable(child)) {
+                        return false;
+                    }
+                }
+            } catch (IOException ex) {
+            }
+        }
+        return true;
     }
 
     @Override
@@ -754,14 +803,18 @@ public class NIOFileUtils implements StorageProviderInterface {
     }
 
     /**
-     * This method is used to get the MIME type for a file. For windows and linux the MIME type is detected from the OS.
-     * As it is buggy on MACOS, the fallback will check the file against a list of known extensions
+     * This method is used to get the MIME type for a file. For windows and linux the MIME type is detected from the OS. As it is buggy on MACOS, the
+     * fallback will check the file against a list of known extensions
+     * 
      * @param path
      * @return
      */
 
     public static String getMimeTypeFromFile(Path path) {
-        String mimeType = null;
+        String mimeType = "";
+        if (StorageProvider.getInstance().isDirectory(path)) {
+            return mimeType;
+        }
         try {
             // first try to detect mimetype from OS map
             mimeType = Files.probeContentType(path);
@@ -774,7 +827,10 @@ public class NIOFileUtils implements StorageProviderInterface {
         // we are on a mac, compare against list of known file formats
         if (StringUtils.isBlank(mimeType) || "application/octet-stream".equals(mimeType)) {
             String fileExtension = path.getFileName().toString();
-            fileExtension = fileExtension.substring(fileExtension.lastIndexOf(".")).toLowerCase(); // .tar.gz will not work
+            if (!fileExtension.contains(".")) {
+                return mimeType;
+            }
+            fileExtension = fileExtension.substring(fileExtension.lastIndexOf(".") + 1).toLowerCase(); // .tar.gz will not work
             switch (fileExtension) {
                 case "jpg":
                 case "jpeg":
@@ -811,20 +867,25 @@ public class NIOFileUtils implements StorageProviderInterface {
                 case "mp4":
                     mimeType = "video/mp4";
                     break;
+                case "mxf":
+                    mimeType = "video/mxf";
                 case "ogg":
                     mimeType = "video/ogg";
                     break;
                 case "webm":
-                    mimeType = "video/webm" ;
+                    mimeType = "video/webm";
+                    break;
+                case "mov":
+                    mimeType = "video/quicktime";
                     break;
                 case "avi":
                     mimeType = "video/x-msvideo";
                     break;
                 case "xml":
-                    mimeType = "application/xml" ;
+                    mimeType = "application/xml";
                     break;
                 case "txt":
-                    mimeType = "text/plain" ;
+                    mimeType = "text/plain";
                     break;
                 case "x3d":
                 case "x3dv":

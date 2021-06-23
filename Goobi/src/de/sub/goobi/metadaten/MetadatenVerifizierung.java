@@ -3,10 +3,10 @@ package de.sub.goobi.metadaten;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -31,6 +31,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.lang.StringUtils;
+import org.goobi.beans.Process;
+
+import de.sub.goobi.config.ConfigProjects;
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.UghHelper;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.InvalidImagesException;
+import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.helper.exceptions.UghHelperException;
+import lombok.Getter;
+import ugh.dl.Corporate;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -46,23 +60,13 @@ import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 
-import org.apache.commons.lang.StringUtils;
-import org.goobi.beans.Process;
-
-import de.sub.goobi.config.ConfigProjects;
-import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.UghHelper;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.InvalidImagesException;
-import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.helper.exceptions.UghHelperException;
-
 public class MetadatenVerifizierung {
     UghHelper ughhelp = new UghHelper();
     List<DocStruct> docStructsOhneSeiten;
     Process myProzess;
     boolean autoSave = false;
+    
+    @Getter
     private List<String> problems = new ArrayList<>();
 
     public boolean validate(Process inProzess) {
@@ -154,13 +158,13 @@ public class MetadatenVerifizierung {
 
         if (ConfigurationHelper.getInstance().isMetsEditorValidateImages()) {
 
-            this.docStructsOhneSeiten = new ArrayList<DocStruct>();
+            this.docStructsOhneSeiten = new ArrayList<>();
             this.checkDocStructsOhneSeiten(logicalTop);
             if (this.docStructsOhneSeiten.size() != 0) {
                 for (Iterator<DocStruct> iter = this.docStructsOhneSeiten.iterator(); iter.hasNext();) {
                     DocStruct ds = iter.next();
                     Helper.setFehlerMeldung(inProzess.getTitel() + ": " + Helper.getTranslation("MetadataPaginationStructure")
-                            + ds.getType().getNameByLanguage(metadataLanguage));
+                    + ds.getType().getNameByLanguage(metadataLanguage));
                     problems.add(Helper.getTranslation("MetadataPaginationStructure") + ds.getType().getNameByLanguage(metadataLanguage));
                 }
                 ergebnis = false;
@@ -301,7 +305,7 @@ public class MetadatenVerifizierung {
     }
 
     private List<String> checkSeitenOhneDocstructs(Fileformat inRdf) throws PreferencesException {
-        List<String> rueckgabe = new ArrayList<String>();
+        List<String> rueckgabe = new ArrayList<>();
         DocStruct boundbook = inRdf.getDigitalDocument().getPhysicalDocStruct();
         /* wenn boundbook null ist */
         if (boundbook == null || boundbook.getAllChildren() == null) {
@@ -353,6 +357,12 @@ public class MetadatenVerifizierung {
                         inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                                 + Helper.getTranslation("MetadataIsEmpty"));
                     }
+                } else if (mdt.isCorporate()) {
+                    Corporate c = (Corporate) ll.get(0);
+                    if (StringUtils.isEmpty(c.getMainName())) {
+                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                + Helper.getTranslation("MetadataIsEmpty"));
+                    }
                 } else {
                     Metadata md = ll.get(0);
                     if (md.getValue() == null || md.getValue().equals("")) {
@@ -380,7 +390,7 @@ public class MetadatenVerifizierung {
             //                List<Person> ll = inStruct.getAllPersonsByType(mdt);
             //                int real = 0;
             //                real = ll.size();
-            //                
+            //
             //            }
         }
 
@@ -406,7 +416,7 @@ public class MetadatenVerifizierung {
             }
             if (allowedNumber.equals("1m") && realNumber != 1) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation("MetadataNotOneElement")
-                        + " " + realNumber + Helper.getTranslation("MetadataTimes"));
+                + " " + realNumber + Helper.getTranslation("MetadataTimes"));
             }
             if (allowedNumber.equals("1o") && realNumber > 1) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
@@ -418,7 +428,46 @@ public class MetadatenVerifizierung {
             }
 
         }
-
+        // check fields of each metadata group
+        if (inStruct.getAllMetadataGroups() != null) {
+            for (MetadataGroup mg : inStruct.getAllMetadataGroups()) {
+                for (MetadataType mdt : mg.getType().getMetadataTypeList()) {
+                    int numberOfExistingFields = mg.countMDofthisType(mdt.getName());
+                    String expected = mg.getType().getNumberOfMetadataType(mdt);
+                    if (("1m".equals(expected) || "1o".equals(expected)) && numberOfExistingFields > 1) {
+                        // to many fields
+                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                + Helper.getTranslation("MetadataToManyElements") + " " + numberOfExistingFields + " "
+                                + Helper.getTranslation("MetadataTimes"));
+                    } else if (("1m".equals(expected) || "+".equals(expected)) && numberOfExistingFields == 0) {
+                        // required field empty
+                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                + Helper.getTranslation("MetadataNotEnoughElements"));
+                    } else if ("1m".equals(expected) || "+".equals(expected)) {
+                        // check if first field is filled
+                        if (mdt.getIsPerson()) {
+                            Person p = mg.getPersonByType(mdt.getName()).get(0);
+                            if (StringUtils.isEmpty(p.getFirstname()) && StringUtils.isEmpty(p.getLastname())) {
+                                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                        + Helper.getTranslation("MetadataIsEmpty"));
+                            }
+                        } else if (mdt.isCorporate()) {
+                            Corporate c = mg.getCorporateByType(mdt.getName()).get(0);
+                            if (StringUtils.isEmpty(c.getMainName())) {
+                                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                        + Helper.getTranslation("MetadataIsEmpty"));
+                            }
+                        } else {
+                            Metadata md = mg.getMetadataByType(mdt.getName()).get(0);
+                            if (md.getValue() == null || md.getValue().equals("")) {
+                                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                        + Helper.getTranslation("MetadataIsEmpty"));
+                            }
+                        }
+                    }
+                }
+            }
+        }
         // }
         /* alle Kinder des aktuellen DocStructs durchlaufen */
         if (inStruct.getAllChildren() != null) {
@@ -443,15 +492,16 @@ public class MetadatenVerifizierung {
             Helper.setFehlerMeldung("[" + this.myProzess.getTitel() + "] " + "IOException", e.getMessage());
             return inFehlerList;
         }
-        int count = cp.getParamList("validate.metadata").size();
-        for (int i = 0; i < count; i++) {
+        List<HierarchicalConfiguration> validations = cp.getList("/validate/metadata");
+
+        for (HierarchicalConfiguration val : validations) {
 
             /* Attribute auswerten */
-            String prop_metadatatype = cp.getParamString("validate.metadata(" + i + ")[@metadata]");
-            String prop_doctype = cp.getParamString("validate.metadata(" + i + ")[@docstruct]");
-            String prop_startswith = cp.getParamString("validate.metadata(" + i + ")[@startswith]");
-            String prop_endswith = cp.getParamString("validate.metadata(" + i + ")[@endswith]");
-            String prop_createElementFrom = cp.getParamString("validate.metadata(" + i + ")[@createelementfrom]");
+            String prop_metadatatype = val.getString("@metadata");
+            String prop_doctype = val.getString("@docstruct");
+            String prop_startswith = val.getString("@startswith");
+            String prop_endswith = val.getString("@endswith");
+            String prop_createElementFrom =val.getString("@createelementfrom");
             DocStruct myStruct = inStruct;
             MetadataType mdt = null;
             try {
@@ -476,7 +526,7 @@ public class MetadatenVerifizierung {
             if (mdt != null) {
                 /* ein CreatorsAllOrigin soll erzeugt werden */
                 if (prop_createElementFrom != null) {
-                    ArrayList<MetadataType> listOfFromMdts = new ArrayList<MetadataType>();
+                    ArrayList<MetadataType> listOfFromMdts = new ArrayList<>();
                     StringTokenizer tokenizer = new StringTokenizer(prop_createElementFrom, "|");
                     while (tokenizer.hasMoreTokens()) {
                         String tok = tokenizer.nextToken();
@@ -632,9 +682,32 @@ public class MetadatenVerifizierung {
                 if (StringUtils.isNotBlank(md.getType().getValidationExpression())) {
                     String regularExpression = md.getType().getValidationExpression();
                     if (md.getValue() == null || !md.getValue().matches(regularExpression)) {
-                        errorList.add(Helper.getTranslation("mets_ErrorRegularExpression", md.getType().getNameByLanguage(lang), md.getValue(),
-                                regularExpression));
-
+                        String errorMessage = md.getType().getValidationErrorMessages().get(lang);
+                        if (StringUtils.isNotBlank(errorMessage)) {
+                            errorList.add(errorMessage.replace("{}", md.getValue()));
+                        } else {
+                            errorList.add(Helper.getTranslation("mets_ErrorRegularExpression", md.getType().getNameByLanguage(lang), md.getValue(),
+                                    regularExpression));
+                        }
+                    }
+                }
+            }
+        }
+        List<MetadataGroup> groupList = inStruct.getAllMetadataGroups();
+        if (groupList != null) {
+            for (MetadataGroup mg : groupList) {
+                for (Metadata md : mg.getMetadataList()) {
+                    if (StringUtils.isNotBlank(md.getType().getValidationExpression())) {
+                        String regularExpression = md.getType().getValidationExpression();
+                        if (md.getValue() == null || !md.getValue().matches(regularExpression)) {
+                            String errorMessage = md.getType().getValidationErrorMessages().get(lang);
+                            if (StringUtils.isNotBlank(errorMessage)) {
+                                errorList.add(errorMessage.replace("{}", md.getValue()));
+                            } else {
+                                errorList.add(Helper.getTranslation("mets_ErrorRegularExpression", md.getType().getNameByLanguage(lang), md.getValue(),
+                                        regularExpression));
+                            }
+                        }
                     }
                 }
             }
@@ -706,9 +779,5 @@ public class MetadatenVerifizierung {
 
         }
         return true;
-    }
-
-    public List<String> getProblems() {
-        return problems;
     }
 }

@@ -1,12 +1,14 @@
 package de.sub.goobi.forms;
 
+import java.io.Serializable;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -32,11 +34,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 import org.goobi.beans.Docket;
@@ -55,14 +57,23 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import lombok.Getter;
+import lombok.Setter;
 import ugh.dl.Fileformat;
 
-@ManagedBean(name = "HelperForm")
+@Named("HelperForm")
 @SessionScoped
-public class HelperForm {
+public class HelperForm implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -3225651472111393183L;
 
     private Boolean massImportAllowed = null;
 
+    @Getter
+    @Setter
     private boolean showError = false;
 
     // TODO re-added temporary for compiling issues
@@ -108,7 +119,8 @@ public class HelperForm {
 
     public List<SelectItem> getRegelsaetze() throws DAOException {
         List<SelectItem> myPrefs = new ArrayList<>();
-        List<Ruleset> temp = RulesetManager.getRulesets("titel", null, null, null, Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
+        List<Ruleset> temp = RulesetManager.getRulesets("titel", null, null, null,
+                Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
         for (Iterator<Ruleset> iter = temp.iterator(); iter.hasNext();) {
             Ruleset an = iter.next();
             myPrefs.add(new SelectItem(an, an.getTitel(), null));
@@ -119,7 +131,8 @@ public class HelperForm {
     public List<SelectItem> getDockets() {
         List<SelectItem> answer = new ArrayList<>();
         try {
-            List<Docket> temp = DocketManager.getDockets("name", null, null, null, Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
+            List<Docket> temp = DocketManager.getDockets("name", null, null, null,
+                    Helper.getCurrentUser().isSuperAdmin() ? null : Helper.getCurrentUser().getInstitution());
             for (Docket d : temp) {
                 answer.add(new SelectItem(d, d.getName(), null));
             }
@@ -177,6 +190,8 @@ public class HelperForm {
         SelectItem inWork = new SelectItem("2", Helper.getTranslation("statusInBearbeitung"));
         ssl.add(inWork);
 
+        ssl.add(new SelectItem("6", Helper.getTranslation("statusInFlight")));
+
         SelectItem finished = new SelectItem("3", Helper.getTranslation("statusAbgeschlossen"));
         ssl.add(finished);
 
@@ -185,6 +200,7 @@ public class HelperForm {
 
         SelectItem deactivated = new SelectItem("5", Helper.getTranslation("statusDeactivated"));
         ssl.add(deactivated);
+
 
         return ssl;
     }
@@ -279,16 +295,13 @@ public class HelperForm {
         return !Helper.getCurrentUser().getLdapGruppe().isReadonly();
     }
 
-    public boolean isShowError() {
-        return showError;
-    }
 
     public boolean isUseUii() {
         return ConfigurationHelper.getInstance().isUseIntrandaUi();
     }
 
-    public void setShowError(boolean showError) {
-        this.showError = showError;
+    public boolean isRenderAccessibilityCss() {
+        return ConfigurationHelper.getInstance().isRenderAccessibilityCss();
     }
 
     public void executeScriptsForStep(int id) {
@@ -334,6 +347,23 @@ public class HelperForm {
         } else {
             return result;
         }
+    }
+
+    public List<SelectItem> getTaskListColumnNames() {
+        List<SelectItem> taskList = new ArrayList<>();
+        taskList.add(new SelectItem("id", Helper.getTranslation("id")));
+        taskList.add(new SelectItem("schritt", Helper.getTranslation("arbeitsschritt")));
+        taskList.add(new SelectItem("prozess", Helper.getTranslation("prozessTitel")));
+        taskList.add(new SelectItem("prozessdate", Helper.getTranslation("vorgangsdatum")));
+        taskList.add(new SelectItem("projekt", Helper.getTranslation("projekt")));
+        taskList.add(new SelectItem("institution", Helper.getTranslation("institution")));
+        taskList.add(new SelectItem("sperrungen", Helper.getTranslation("sperrungen")));
+        taskList.add(new SelectItem("batch", Helper.getTranslation("batch")));
+        return taskList;
+    }
+
+    public boolean isShowEditionDataEnabled() {
+        return ConfigurationHelper.getInstance().isProcesslistShowEditionData();
     }
 
 }

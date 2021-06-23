@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -16,13 +17,13 @@
         <ui:fragment rendered="#{Metadaten.modusStrukturelementVerschieben}">
             <div id="meStructdataChangeBox" class="module module__box module__box--white module__box--collapsable structdata__change">
                 <div class="module__box-title">
-                    <h3>
+                    <h1>
                         <i class="fa fa-bars" aria-hidden="true"></i>
                         <span>#{msgs.docstructAnAndereStelleSchieben}</span>
-                        <button type="button" class="btn btn--clean" data-toggle="box-body">
+                        <button type="button" aria-label="#{msgs.minimizeBox}" class="btn btn--clean" data-toggle="box-body">
                             <i class="fa fa-angle-up fa-lg" aria-hidden="true"></i>
                         </button>
-                    </h3>
+                    </h1>
                 </div>
                 <div class="module__box-body">
                     <p>
@@ -34,13 +35,12 @@
                     <div class="table__structure">
                         <h:dataTable value="#{Metadaten.strukturBaum3Alle}" var="item">
                             <h:column styleClass="level-#{item.niveau}">
-                                <i class="fa fa-file-o" aria-hidden="true"></i>
-                    
-                                <h:commandLink 
-                                    id="moveNode" 
-                                    styleClass="document" 
-                                    action="#{Metadaten.KnotenVerschieben}"
-                                    rendered="#{item.node.einfuegenErlaubt and not item.node.selected}">
+                                <button 
+                                    jsf:id="moveNode" 
+                                    class="btn document" 
+                                    jsf:action="#{Metadaten.KnotenVerschieben}"
+                                    jsf:rendered="#{item.node.einfuegenErlaubt and not item.node.selected}">
+                                    <i class="fa fa-file-o" aria-hidden="true"></i>
                                     <h:outputText value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '') ? item.node.description : item.node.mainTitle}" />               
                     
                                     <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="false" />
@@ -51,17 +51,10 @@
                                     <f:passThroughAttribute name="data-toggle" value="popover" />
                                     <f:passThroughAttribute name="data-placement" value="right" />
                                     <f:passThroughAttribute name="data-html" value="true" />
-                                    <f:passThroughAttribute name="data-content" value="&lt;ul class=&quot;table__structure-popover-ul&quot;&gt; 
-                                                                        #{item.node.mainTitle != null and item.node.mainTitle ne ''? ('&lt;li&gt;').concat(msgs.haupttitel).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.mainTitle).concat('&lt;&#47;li&gt;'):''}
-                                                                        #{item.node.identifier != null and item.node.identifier ne ''? ('&lt;li&gt;').concat(msgs.identifier).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.identifier).concat('&lt;&#47;li&gt;'):''}
-                                                                        #{item.node.firstImage != null and item.node.firstImage ne ''? ('&lt;li&gt;').concat(msgs.firstImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.firstImage).concat('&lt;&#47;li&gt;'):''}
-                                                                        #{item.node.lastImage != null and item.node.lastImage ne ''? ('&lt;li&gt;').concat(msgs.lastImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.lastImage).concat('&lt;&#47;li&gt;'):''}
-                                                                        #{item.node.partNumber != null and item.node.partNumber ne ''? ('&lt;li&gt;').concat(msgs.partNumber).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.partNumber).concat('&lt;&#47;li&gt;'):''}
-                                                                        #{item.node.dateIssued != null and item.node.dateIssued ne ''? ('&lt;li&gt;').concat(msgs.dateIssued).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.dateIssued).concat('&lt;&#47;li&gt;'):''}
-                                                                        &lt;&#47;ul&gt;" />
-                                </h:commandLink>
-                    
-                                <h:panelGroup rendered="#{not item.node.einfuegenErlaubt || item.node.selected}">                    
+                                    <f:passThroughAttribute name="data-content" value="#{item.node.metadataPopup}" />
+                                </button>
+                                <h:panelGroup rendered="#{not item.node.einfuegenErlaubt || item.node.selected}">    
+                                    <i class="fa fa-file-o" aria-hidden="true"></i>                
                                     <h:outputText
                                         value="#{not Metadaten.treeProperties.showtitle || (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')?item.node.description:item.node.mainTitle}"
                                         styleClass="#{item.node.selected ? 'selected' : 'unselected'}">
@@ -71,14 +64,7 @@
                                         <f:passThroughAttribute name="data-toggle" value="popover" />
                                         <f:passThroughAttribute name="data-placement" value="right" />
                                         <f:passThroughAttribute name="data-html" value="true" />
-                                        <f:passThroughAttribute name="data-content" value="&lt;ul class=&quot;table__structure-popover-ul&quot;&gt; 
-                                                                        #{item.node.mainTitle != null and item.node.mainTitle ne ''? ('&lt;li&gt;').concat(msgs.haupttitel).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.mainTitle).concat('&lt;&#47;li&gt;'):''}
-                                                                        #{item.node.identifier != null and item.node.identifier ne ''? ('&lt;li&gt;').concat(msgs.identifier).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.identifier).concat('&lt;&#47;li&gt;'):''}
-                                                                        #{item.node.firstImage != null and item.node.firstImage ne ''? ('&lt;li&gt;').concat(msgs.firstImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.firstImage).concat('&lt;&#47;li&gt;'):''}
-                                                                        #{item.node.lastImage != null and item.node.lastImage ne ''? ('&lt;li&gt;').concat(msgs.lastImage).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.lastImage).concat('&lt;&#47;li&gt;'):''}
-                                                                        #{item.node.partNumber != null and item.node.partNumber ne ''? ('&lt;li&gt;').concat(msgs.partNumber).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.partNumber).concat('&lt;&#47;li&gt;'):''}
-                                                                        #{item.node.dateIssued != null and item.node.dateIssued ne ''? ('&lt;li&gt;').concat(msgs.dateIssued).concat(': &lt;&#47;li&gt; &lt;li&gt;').concat(item.node.dateIssued).concat('&lt;&#47;li&gt;'):''}
-                                                                        &lt;&#47;ul&gt;" />
+                                        <f:passThroughAttribute name="data-content" value="#{item.node.metadataPopup}" />
                                     </h:outputText>
                                 </h:panelGroup>
                             </h:column>
@@ -91,16 +77,16 @@
                     <div class="row">
                         <div class="col-auto mr-auto"></div>
                         <div class="col-auto">
-                            <h:commandLink 
-                                id="cancelMove" 
-                                styleClass="btn btn--gray" 
-                                immediate="true"
-                                action="#{NavigationForm.Reload}"
+                            <button 
+                                jsf:id="cancelMove" 
+                                class="btn btn--gray" 
+                                jsf:immediate="true"
+                                jsf:action="#{NavigationForm.Reload}"
                                 title="#{msgs.verschiebenAbbrechen}">
                                 <h:outputText value="#{msgs.abbrechen}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="false" />
-                            </h:commandLink>
+                            </button>
                         </div>
                     </div>
                 </div>

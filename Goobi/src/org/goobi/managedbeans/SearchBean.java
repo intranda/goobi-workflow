@@ -1,12 +1,13 @@
 package org.goobi.managedbeans;
 
+import java.io.Serializable;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -28,16 +29,16 @@ package org.goobi.managedbeans;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.model.SelectItem;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
 import org.goobi.production.enums.UserRole;
 import org.goobi.production.search.api.ExtendedSearchRow;
 
-import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -48,9 +49,17 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Getter;
 
-@ManagedBean(name = "SearchForm")
+@Named("SearchForm")
 @SessionScoped
-public class SearchBean {
+public class SearchBean implements Serializable {
+
+    @Inject
+    private ProcessBean processBean;
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4981330560006133964L;
 
     private List<String> projects = new ArrayList<>(); // proj:
 
@@ -65,11 +74,12 @@ public class SearchBean {
     private List<String> stepPropertyTitles = new ArrayList<>(); // stepeig:
 
     private List<String> stepTitles = new ArrayList<>(); // step:
+
     private List<StepStatus> stepstatus = new ArrayList<>();
 
-    List<ExtendedSearchRow> rowList = new ArrayList<>();
+    private List<ExtendedSearchRow> rowList = new ArrayList<>();
 
-    List<SelectItem> fieldnameList = new ArrayList<>();
+    private List<SelectItem> fieldnameList = new ArrayList<>();
 
     @Getter
     private List<String> institutionNames = new ArrayList<>();
@@ -81,15 +91,14 @@ public class SearchBean {
             this.stepstatus.add(s);
         }
 
-        LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
         Institution inst = null;
-        if (!loginForm.getMyBenutzer().isSuperAdmin()) {
-            inst = loginForm.getMyBenutzer().getInstitution();
+        if (!Helper.getCurrentUser().isSuperAdmin()) {
+            inst = Helper.getCurrentUser().getInstitution();
         }
         // projects
         String projectFilter = "";
 
-        if (!loginForm.hasRole(UserRole.Workflow_Processes_Show_Deactivated_Projects.name())) {
+        if (!Helper.getLoginBean().hasRole(UserRole.Workflow_Processes_Show_Deactivated_Projects.name())) {
             projectFilter = " projectIsArchived = false ";
         }
         this.projects.add(Helper.getTranslation("notSelected"));
@@ -141,7 +150,9 @@ public class SearchBean {
 
         fieldnameList.add(new SelectItem("PROCESSLOG", Helper.getTranslation("processlog")));
 
-
+        fieldnameList.add(new SelectItem("PROCESSDATE", Helper.getTranslation("search_PROCESSDATE")));
+        fieldnameList.add(new SelectItem("STEPSTARTDATE", Helper.getTranslation("search_STEPSTARTDATE")));
+        fieldnameList.add(new SelectItem("STEPFINISHDATE", Helper.getTranslation("search_STEPFINISHDATE")));
 
         metadataTitles.add(Helper.getTranslation("notSelected"));
         metadataTitles.addAll(MetadataManager.getDistinctMetadataNames());
@@ -295,14 +306,20 @@ public class SearchBean {
             search += row.createSearchString();
         }
 
-        ProcessBean form =
-                (ProcessBean) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSessionMap().get("ProzessverwaltungForm");
-        if (form != null) {
-            form.filter = search;
-            form.setModusAnzeige("aktuell");
-            return form.FilterAlleStart();
-        }
-        return "";
+        processBean.setFilter( search);
+        processBean.setModusAnzeige("aktuell");
+        return processBean.FilterAlleStart();
+
     }
+
+    public List<SelectItem> getOperandsForDates() {
+        List<SelectItem> answer = new ArrayList<>();
+        answer.add(new SelectItem("=", Helper.getTranslation("IS")));
+        answer.add(new SelectItem("!=", Helper.getTranslation("IS NOT")));
+        answer.add(new SelectItem(">", Helper.getTranslation("GREATER")));
+        answer.add(new SelectItem("<", Helper.getTranslation("SMALLER")));
+        return answer;
+    }
+
 
 }

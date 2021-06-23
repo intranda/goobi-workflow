@@ -1,71 +1,258 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html"
-    xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:of="http://omnifaces.org/functions"
+	template="/uii/template/template.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
-    <ui:param name="myPageTitle" value="#{msgs.einenNeuenProzessAnlegen}" />
+	<ui:param name="myPageTitle" value="#{msgs.einenNeuenProzessAnlegen}" />
 
-    <ui:define name="breadcrumb">
-        <intranda:breadcrumb id="id2" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-        <intranda:breadcrumb id="templates" label="#{msgs.prozessvorlagen}" action="process_all" navId="a1" />
-        <intranda:breadcrumb id="newProcess2" label="#{msgs.einenNeuenProzessAnlegen}" action="process_new2" />
-        <intranda:breadcrumb id="templateName" label="#{ProzesskopieForm.prozessVorlage.titel}"  action="process_new2" noSeparator="#{true}" />
-    </ui:define>
+	<ui:define name="breadcrumb">
+		<intranda:breadcrumb id="id2"
+			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+			action="index" navId="a0" />
+		<intranda:breadcrumb id="templates" label="#{msgs.prozessvorlagen}"
+			action="process_all" navId="a1" />
+		<intranda:breadcrumb id="newProcess2"
+			label="#{msgs.einenNeuenProzessAnlegen}" action="process_new2" />
+		<intranda:breadcrumb id="templateName"
+			label="#{ProzesskopieForm.prozessVorlage.titel}"
+			action="process_new2" noSeparator="#{true}" />
+	</ui:define>
 
-    <ui:define name="info">
-    </ui:define>
+	<ui:define name="info">
+	</ui:define>
 
-    <ui:define name="content">
-        <h:form styleClass="form-horizontal form-bordered" id="myform">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="box box-color box-bordered">
-                        <div class="box-title">
-                            <h3>
-                            	<i class="fa fa-tasks"></i>
-								<h:outputText value="#{msgs.zusaetzlicheDetails}" />
-                            </h3>
-                        </div>
-                        <div class="box-content nopadding">
-                            <x:dataList var="item" value="#{ProzesskopieForm.prozessKopie.eigenschaftenList}" id="properties">
+	<ui:define name="content">
+		<script type="text/javascript"
+			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/openseadragon/openseadragon.min.js?v=#{HelperForm.buildVersion}"></script>
+		<script type="text/javascript"
+			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/openseadragon/openseadragon-viewerinputhook.js?v=#{HelperForm.buildVersion}"></script>
+		<script type="text/javascript"
+			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/q-promises/q.min.js?v=#{HelperForm.buildVersion}"></script>
+		<script type="text/javascript"
+			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/reactiveX/rx.lite.min.js?v=#{HelperForm.buildVersion}"></script>
+		<script src="template/js/imageView/imageView.image.js?v=#{HelperForm.buildVersion}"></script>
+		<script src="template/js/imageView/imageView.tileSourceResolver.js?v=#{HelperForm.buildVersion}"></script>
+		<script src="template/js/imageView/imageView.measures.js?v=#{HelperForm.buildVersion}"></script>
+		<script src="template/js/imageView/imageView.controls.js?v=#{HelperForm.buildVersion}"></script>
+		<script src="template/js/imageView/imageView.zoomSlider.js?v=#{HelperForm.buildVersion}"></script>
 
-                                <intranda:formInputText id="property" label="#{item.titel}" field="#{item.wert}" help="#{msgs[('help_import_').concat(item.titel)]}" name="id"
-                                    fieldStyle="form-control" required="true" />
+		<style>
+.grid-container {
+	display: grid;
+	grid-template-columns: 35% 65%;
+	grid-template-rows: auto;
+	justify-items: center;
+}
 
-                            </x:dataList>
+.image-area {
+	padding-right: 15px;
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-content: stretch;
+	display: flex;
+	border-top: 1px solid #ddd;
+}
 
-                            <div class="form-actions">
+.image-container {
+	width: 300px;
+	margin: 10px;
+	position: relative;
+	text-align: center;
+}
 
-                                <h:commandLink styleClass="btn btn-success font-size-s pull-right" id="absenden" action="#{ProzesskopieForm.NeuenProzessAnlegen}">
-                                    <i class="fa fa-save margin-right-5"></i>
-                                    <h:outputText value="#{msgs.speichern}" />
-                                </h:commandLink>
+.image {
+	max-width: 300px;
+	margin-top: 40px;
+	margin-bottom: 90px;
+}
+
+.folderselection {
+	width: 100%;
+	position: absolute;
+	bottom: 45px;
+	text-align: left;
+}
+
+.folderselectiondropdown{
+	display:inline; 
+	width:265px; 
+	text-align:left
+}
+
+.folderselectionbutton{
+	margin-left:5px;
+	margin-top: -3px;
+	padding: 4px 9px;
+}
+
+.comment {
+	width: 100%;
+	position: absolute;
+	bottom: 0px;
+}
+
+.commentField {
+	resize: none;
+  	overflow: auto;
+}
+
+</style>
+
+		<main>
+			<div class="row">
+				<div class="col-sm-12 box box-color box-bordered">
+					<div class="box-title">
+						<h2>
+							<i class="fa fa-tasks"></i>
+							<h:outputText value="#{msgs.zusaetzlicheDetails}" />
+						</h2>
+					</div>
+					<div class="box-content nopadding">
+
+						<h:form id="uploadForm" enctype="multipart/form-data"
+							styleClass="form-horizontal form-bordered" prependId="false">
+							
+							<!-- area for all additional properties -->
+							<x:dataList var="item" id="properties"
+								value="#{ProzesskopieForm.prozessKopie.eigenschaftenList}">
+								<intranda:formInputText id="property" label="#{item.titel}"
+									field="#{item.wert}"
+									help="#{msgs[('help_import_').concat(item.titel)]}" name="id"
+									fieldStyle="form-control" required="true" />
+							</x:dataList>
+
+							<!-- area to allow the file upload -->
+							<h:panelGroup id="uploadArea" rendered="#{ProzesskopieForm.enableFileUpload}">
+									
+								<!-- selection of the target folder -->
+								<div class="form-group">
+									<div class="col-sm-3 control-label" tabindex="-1">
+										<h:outputLabel for="folderSelection" value="#{msgs.damageDocFolderSelection}" />
+										<i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip"/>
+									</div>
+									<div class="col-sm-9">
+										<h:selectOneRadio id="folderSelection"
+											value="#{ProzesskopieForm.uploadFolder}"
+											disabledClass="margin-sides-10" enabledClass="margin-sides-10"
+											tabindex="0">
+											<f:selectItems value="#{ProzesskopieForm.configuredFolderNames}" />
+											<f:ajax event="change" execute="@this" />
+										</h:selectOneRadio>
+										<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
+											value="#{msgs.helpDamageDocFolderSelection}" />
+									</div>
+								</div>
+								<!-- // selection of the target folder -->
+								
+								<!-- define a default comment -->
+								<intranda:formInputTextAjax id="defaultComment" label="#{msgs.damageDocDefaultComment}" 
+									field="#{ProzesskopieForm.fileComment}" help="#{msgs.helpDamageDocDefaultComment}" 
+									name="defaultComment" fieldStyle="form-control" required="false" ajaxevent="change" execute="@this"/>
+								
+								<!-- Upload of the files -->
+								<div class="form-group">
+									<div class="col-sm-3 control-label" tabindex="-1">
+										<h:outputLabel for="uploadArea" value="#{msgs.damageDocFileUpload}" />
+									</div>
+									<div class="col-sm-9">
+										<p:fileUpload
+											fileUploadListener="#{ProzesskopieForm.uploadFile}"
+											id="upload" auto="true"
+											mode="advanced" multiple="true" dragDropSupport="true"
+											label="#{msgs.plugin_massupload_selectFiles}"
+											sizeLimit="1000000000000" fileLimit="42000"
+											update=":imageform" />
+										<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
+											value="#{msgs.helpDamageDocFileUpload}" />
+									</div>
+								</div>
+								<!-- // Upload of the files -->
+							</h:panelGroup>
+							<!-- // area to allow the file upload -->
+
+
+							<!-- area to show all uploaded images -->
+							<h:panelGroup layout="block" styleClass="image-area" style="#{ProzesskopieForm.uploadedFiles.size() > 0 ? 'border-bottom:1px solid #ddd': ''}"
+								id="imageform" rendered="#{ProzesskopieForm.enableFileUpload}">
+								
+								<ui:repeat var="image"
+									value="#{ProzesskopieForm.uploadedFiles}">
+
+									<ui:fragment rendered="#{!image.deleted}">
+										<div class="image-container">
+											<img class="image" alt="#{image.tooltip}" title="#{image.tooltip}"
+												src="#{image.thumbnailUrl}" data-toggle="tooltip"/>
+											<div class="folderselection">
+												<h:selectOneMenu value="#{image.foldername}" title="#{msgs.damageDocFolderSelection}"
+													styleClass="form-control folderselectiondropdown">
+													<f:selectItems
+														value="#{ProzesskopieForm.configuredFolderNames}" />
+													<f:ajax event="change" execute="@this" />
+													<f:passThroughAttribute name="data-toggle" value="tooltip" />
+												</h:selectOneMenu>
+												<!-- delete file -->
+												<button id="deleteFile" class="btn font-size-s folderselectionbutton" 
+													jsf:action="#{ProzesskopieForm.uploadedFiles.remove(image)}" 
+													title="#{msgs.damageDocDeleteFile}">
+													<i class="fa fa-trash "/>
+													<f:passThroughAttribute name="data-toggle" value="tooltip" />
+													<f:ajax render=":imageform" />
+												</button>
+											</div>
+											<div class="comment">
+												<h:inputTextarea value="#{image.descriptionText}" title="#{msgs.damageDocComment}"
+													styleClass="form-control commentField">
+													<f:passThroughAttribute name="data-toggle" value="tooltip" />
+													<f:ajax event="change" execute="@this" />
+												</h:inputTextarea>
+											</div>
+										</div>
+									</ui:fragment>
+								</ui:repeat>
+							</h:panelGroup>
+							<!-- // area to show all uploaded images -->
+							
+							<!-- area for buttons to -->
+							<div class="form-actions">
+								<!-- Save -->
+								<button
+									class="btn btn-success font-size-s pull-right"
+									jsf:id="absenden" jsf:action="#{ProzesskopieForm.NeuenProzessAnlegen}">
+									<i class="fa fa-save margin-right-5"></i>
+									<h:outputText value="#{msgs.speichern}" />
+								</button>
 
 								<!-- Cancel -->
-                                <h:commandLink id="cancel" styleClass="btn margin-sides-10 font-size-s pull-right" action="process_all" value="#{msgs.abbrechen}"
-                                    immediate="true">
-                                </h:commandLink>
+								<button jsf:id="cancel"
+									class="btn margin-sides-10 font-size-s pull-right"
+									jsf:action="process_all" jsf:immediate="true">
+									#{msgs.abbrechen}
+								</button>
 
-								<!-- back -->
-                                <h:commandLink styleClass="btn font-size-s" id="back" action="#{ProzesskopieForm.GoToSeite1}">
-                                    <i class="fa fa-arrow-circle-o-left margin-right-5"></i>
-                                    <h:outputText value="#{msgs.zurueck}" />
-                                </h:commandLink>
-                                
-                            </div>
+								<!-- Go back -->
+								<h:commandLink styleClass="btn font-size-s" id="back"
+									action="#{ProzesskopieForm.GoToSeite1}" immediate="true">
+									<i class="fa fa-arrow-circle-o-left margin-right-5"></i>
+									<h:outputText value="#{msgs.zurueck}" />
+								</h:commandLink>
+							</div>
+							<!-- // area for all additional properties -->
+							
+						</h:form>
+					</div>
+				</div>
+			</div>
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </h:form>
-
-    </ui:define>
+		</main>
+	</ui:define>
 
 </ui:composition>
-
-
-
-
-
-

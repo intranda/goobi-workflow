@@ -6,7 +6,7 @@ package de.sub.goobi.helper.servletfilter;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -27,8 +27,14 @@ package de.sub.goobi.helper.servletfilter;
  */
 import java.io.IOException;
 
+import javax.faces.FactoryFinder;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.context.FacesContextFactory;
+import javax.faces.lifecycle.Lifecycle;
+import javax.faces.lifecycle.LifecycleFactory;
+import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -39,7 +45,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.goobi.managedbeans.LoginBean;
 
+import de.sub.goobi.helper.FacesContextHelper;
+
 public class SecurityCheckFilter implements Filter {
+
+    @Inject
+    private LoginBean userBean;
 
     public SecurityCheckFilter() { //called once. no method arguments allowed here!
     }
@@ -58,18 +69,55 @@ public class SecurityCheckFilter implements Filter {
 
         HttpServletRequest hreq = (HttpServletRequest) request;
         String url = hreq.getRequestURI();
-        LoginBean userBean = (LoginBean) hreq.getSession().getAttribute("LoginForm");
         String destination = "index.xhtml";
-        //        if (ConfigurationHelper.getInstance().isUseIntrandaUi()){
-        //			destination = "uii/index.xhtml";
-        //        }
         if (((userBean == null || userBean.getMyBenutzer() == null)) && !url.contains("javax.faces.resource") && !url.contains("wi?")
                 && !url.contains("currentUsers.xhtml") && !url.contains("logout.xhtml") && !url.contains("technicalBackground.xhtml")
                 && !url.contains("mailNotificationDisabled.xhtml") && !url.contains(destination)) {
-            ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+            ExternalContext ec = getFacesContext(request, response).getExternalContext();
+
             ec.redirect(destination);
+
         } else {
             chain.doFilter(request, response);
+        }
+    }
+
+    // Create a new FacesContext if it doesn't exist on first request
+    // idea taken from
+    // https://balusc.omnifaces.org/2006/06/communication-in-jsf.html#AccessingTheFacesContextInsideHttpServletOrFilter
+
+    public static FacesContext getFacesContext(ServletRequest request, ServletResponse response) {
+        // Get current FacesContext.
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+
+        // Check current FacesContext.
+        if (facesContext == null) {
+
+            // Create new Lifecycle.
+            LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+            Lifecycle lifecycle = lifecycleFactory.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
+
+            // Create new FacesContext.
+            FacesContextFactory contextFactory = (FacesContextFactory) FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
+            facesContext =
+                    contextFactory.getFacesContext(((HttpServletRequest) request).getSession().getServletContext(), request, response, lifecycle);
+
+            // Create new View.
+            UIViewRoot view = facesContext.getApplication().getViewHandler().createView(facesContext, "");
+            facesContext.setViewRoot(view);
+
+            // Set current FacesContext.
+            FacesContextWrapper.setCurrentInstance(facesContext);
+        }
+
+        return facesContext;
+    }
+
+
+    // Wrap the protected FacesContext.setCurrentInstance() in a inner class.
+    private static abstract class FacesContextWrapper extends FacesContext {
+        protected static void setCurrentInstance(FacesContext facesContext) {
+            FacesContext.setCurrentInstance(facesContext);
         }
     }
 }

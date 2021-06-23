@@ -6,7 +6,7 @@ package org.goobi.production.flow.jobs;
  * Visit the websites for more information. 
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -31,6 +31,7 @@ import java.util.Date;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.goobi.vocabulary.UploadVocabJob;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -39,7 +40,6 @@ import org.quartz.Trigger;
 import org.quartz.TriggerUtils;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -85,7 +85,10 @@ public class JobManager implements ServletContextListener {
         initializeJob(new HistoryAnalyserJob(), "dailyHistoryAnalyser", sched);
         // initializeJobNonConfigured(new DelayJob(), 1, sched);
         initializeJob(new DelayJob(), "dailyDelayJob", sched);
-
+        
+        initializeJob(new UploadVocabJob(), "dailyVocabJob", sched);
+        
+        initializeMinutelyJob(new UploadVocabJob(), "goobiAuthorityServerUploadFrequencyInMinutes", sched);
     }
 
     /**
@@ -116,6 +119,26 @@ public class JobManager implements ServletContextListener {
         }
     }
 
+    /**
+     * initializes given SimpleGoobiJob every specified number of hours
+     * 
+     * @throws SchedulerException
+     */
+    private static void initializeMinutelyJob(IGoobiJob goobiJob, String configuredMinutelyIntervalProperty, Scheduler sched) throws SchedulerException {
+
+        if (ConfigurationHelper.getInstance().getJobStartTime(configuredMinutelyIntervalProperty) != -1) {
+            int intervalInMinutes = (int)ConfigurationHelper.getInstance().getJobStartTime(configuredMinutelyIntervalProperty);
+            
+            log.debug("Initialize job '" + goobiJob.getJobName() + "'");
+            JobDetail jobDetail = new JobDetail(goobiJob.getJobName(), null, goobiJob.getClass());
+
+            Trigger trigger = TriggerUtils.makeMinutelyTrigger(intervalInMinutes);
+            trigger.setStartTime(new Date());
+            trigger.setName(goobiJob.getJobName() + "_minute_trigger");
+            sched.scheduleJob(jobDetail, trigger);
+        }
+    }
+    
     /**
      * initializes given SimpleGoobiJob at given time
      * 

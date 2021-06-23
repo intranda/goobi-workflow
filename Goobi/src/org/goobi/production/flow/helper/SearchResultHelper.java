@@ -6,7 +6,7 @@ package org.goobi.production.flow.helper;
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -28,12 +28,12 @@ import java.util.List;
 import javax.faces.model.SelectItem;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
@@ -257,7 +257,7 @@ public class SearchResultHelper {
     }
 
     @SuppressWarnings("deprecation")
-    public HSSFWorkbook getResult(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses,
+    public XSSFWorkbook getResult(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses,
             boolean showArchivedProjects) {
         List<SearchColumn> sortedList = new ArrayList<>(columnList.size());
         for (SearchColumn sc : columnList) {
@@ -275,19 +275,19 @@ public class SearchResultHelper {
         @SuppressWarnings("rawtypes")
         List list = search(columnList, filter, order, showClosedProcesses, showArchivedProjects);
 
-        HSSFWorkbook wb = new HSSFWorkbook();
-        HSSFSheet sheet = wb.createSheet("Search results");
+        XSSFWorkbook wb = new XSSFWorkbook();
+        XSSFSheet sheet = wb.createSheet("Search results");
 
         // create title row
         int titleColumnNumber = 0;
-        HSSFRow title = sheet.createRow(0);
+        XSSFRow title = sheet.createRow(0);
         int columnNumber = 0;
         for (SearchColumn sc : columnList) {
-            HSSFCell titleCell = title.createCell(titleColumnNumber++);
+            XSSFCell titleCell = title.createCell(titleColumnNumber++);
             titleCell.setCellValue(Helper.getTranslation(sc.getValue()));
-            HSSFCellStyle cellStyle = wb.createCellStyle();
-            HSSFFont cellFont = wb.createFont();
-            cellFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+            XSSFCellStyle cellStyle = wb.createCellStyle();
+            XSSFFont cellFont = wb.createFont();
+            cellFont.setBold(true);
             cellStyle.setFont(cellFont);
             titleCell.setCellStyle(cellStyle);
         }
@@ -295,10 +295,10 @@ public class SearchResultHelper {
         int rowNumber = 1;
         for (Object obj : list) {
             Object[] objArr = (Object[]) obj;
-            HSSFRow row = sheet.createRow(rowNumber++);
+            XSSFRow row = sheet.createRow(rowNumber++);
             columnNumber = 0;
             for (Object entry : objArr) {
-                HSSFCell cell = row.createCell(columnNumber++);
+                XSSFCell cell = row.createCell(columnNumber++);
                 if (entry != null) {
                     cell.setCellValue(((String) entry).replace("\"", ""));
                 } else {

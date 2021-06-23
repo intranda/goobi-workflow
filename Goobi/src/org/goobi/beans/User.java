@@ -6,7 +6,7 @@ package org.goobi.beans;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -37,7 +37,8 @@ import java.util.Set;
 import javax.faces.model.SelectItem;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
@@ -213,20 +214,54 @@ public class User implements DatabaseObject {
 
     @Setter
     private Institution institution;
-    @Getter @Setter
+    @Getter
+    @Setter
     private Integer institutionId;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean superAdmin;
 
-    @Getter @Setter
-    private boolean displayInstitutionColumn= false;
+    @Getter
+    @Setter
+    private boolean displayInstitutionColumn = false;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private String dashboardPlugin;
     @Getter
     @Setter
     private String ssoId;
+
+    @Getter
+    @Setter
+    private String processListDefaultSortField = "titel";
+    @Getter
+    @Setter
+    private String processListDefaultSortOrder = "Asc";
+
+    @Getter
+    @Setter
+    private String taskListDefaultSortingField = "prioritaet";
+    @Getter
+    @Setter
+    private String taskListDefaultSortOrder = "Desc";
+
+    @Getter
+    @Setter
+    private boolean displayLastEditionDate = false;
+
+    @Getter
+    @Setter
+    private boolean displayLastEditionUser = false;
+
+    @Getter
+    @Setter
+    private boolean displayLastEditionTask = false;
+
+    @Getter
+    @Setter
+    private String dashboardConfiguration;
 
     @Override
     public void lazyLoad() {
@@ -437,6 +472,11 @@ public class User implements DatabaseObject {
         this.css = css;
     }
 
+    public boolean isRenderAccessibilityCss() {
+        //TODO: make this one a persisted property that overwrites the global configuration.
+        return ConfigurationHelper.getInstance().isRenderAccessibilityCss();
+    }
+
     public int getEigenschaftenSize() {
 
         if (this.eigenschaften == null) {
@@ -596,7 +636,6 @@ public class User implements DatabaseObject {
         return emailConfiguration;
     }
 
-
     public List<SelectItem> getAvailableDashboards() {
         List<SelectItem> dashboards = new ArrayList<>();
         Institution institution = Helper.getCurrentUser().getInstitution();
@@ -609,4 +648,52 @@ public class User implements DatabaseObject {
         }
         return dashboards;
     }
+
+    public List<SelectItem> getTaskListColumnNames() {
+        List<SelectItem> taskList = new ArrayList<>();
+        taskList.add(new SelectItem("prioritaet", Helper.getTranslation("prioritaet")));
+        if (isDisplayIdColumn()) {
+            taskList.add(new SelectItem("id", Helper.getTranslation("id")));
+        }
+        taskList.add(new SelectItem("schritt", Helper.getTranslation("arbeitsschritt")));
+        taskList.add(new SelectItem("prozess", Helper.getTranslation("prozessTitel")));
+        if (isDisplayProcessDateColumn()) {
+            taskList.add(new SelectItem("prozessdate", Helper.getTranslation("vorgangsdatum")));
+        }
+        taskList.add(new SelectItem("projekt", Helper.getTranslation("projekt")));
+        if (isDisplayInstitutionColumn()) {
+            taskList.add(new SelectItem("institution", Helper.getTranslation("institution")));
+        }
+        if (isDisplayLocksColumn()) {
+            taskList.add(new SelectItem("sperrungen", Helper.getTranslation("sperrungen")));
+        }
+        if (isDisplayBatchColumn()) {
+            taskList.add(new SelectItem("batch", Helper.getTranslation("batch")));
+        }
+        return taskList;
+    }
+
+    public List<SelectItem> getProcessListColumnNames() {
+        List<SelectItem> taskList = new ArrayList<>();
+        if (isDisplayIdColumn()) {
+            taskList.add(new SelectItem("id", Helper.getTranslation("id")));
+        }
+        if (isDisplayBatchColumn()) {
+            taskList.add(new SelectItem("batch", Helper.getTranslation("batch")));
+        }
+        taskList.add(new SelectItem("titel", Helper.getTranslation("prozessTitel")));
+
+        if (isDisplayProcessDateColumn()) {
+            taskList.add(new SelectItem("vorgangsdatum", Helper.getTranslation("vorgangsdatum")));
+        }
+        taskList.add(new SelectItem("fortschritt", Helper.getTranslation("status")));
+        taskList.add(new SelectItem("projekt", Helper.getTranslation("projekt")));
+
+        if (isDisplayInstitutionColumn()) {
+            taskList.add(new SelectItem("institution", Helper.getTranslation("institution")));
+        }
+
+        return taskList;
+    }
+
 }

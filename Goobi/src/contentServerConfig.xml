@@ -45,7 +45,7 @@
             <settings forceConvertToRGB="true"></settings>
         </type>
     	<type format="default" colorType="default" compression="default" embeddedColorProfile="both" minSize="0" maxSize="0">
-    		<settings allowRenderWithJAI="false" allowSubSampling="true" scaleWithScalr="true" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false" forwardDirectlyIfPossible="true"></settings>
+    		<settings allowRenderWithJAI="false" allowSubSampling="true" scaleWithScalr="false" mergeWithJAI="false" forceConvertToBuffered="false" forceConvertToRGB="false" forwardDirectlyIfPossible="true"></settings>
     	</type>
     </imageTypeSettings>
     
@@ -71,7 +71,7 @@
 		default page size for pdf generation; possible values are 'A4', 'original' 
 		and 'A4Box' * sample: <defaultPdfConfig alwaysUseRenderedImage="true" alwaysCompressToJPEG="true" 
 		metsFileGroup="DEFAULT" writeAsPdfA="true" pagesize="A4"/> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<defaultPdfConfig metsFileGroup="LOCAL" writeAsPdfA="true"
+	<defaultPdfConfig metsFileGroup="LOCAL" writeAsPdfA="false" imageScale="0.5" imageCompression="50"
 		pagesize="original" />
 
 	<!--########################################################## *############################################################# 

@@ -4,7 +4,7 @@
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -36,12 +36,16 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import lombok.Getter;
 
 /**
  * The class ShellScript is intended to run shell scripts (or other system commands).
@@ -55,6 +59,7 @@ public class ShellScript {
 
     private final String command;
     private LinkedList<String> outputChannel, errorChannel;
+    @Getter
     private Integer errorLevel;
 
     /**
@@ -91,15 +96,6 @@ public class ShellScript {
      */
     public LinkedList<String> getStdErr() {
         return errorChannel;
-    }
-
-    /**
-     * Provides the result error level.
-     * 
-     * @return the error level
-     */
-    public Integer getErrorLevel() {
-        return errorLevel;
     }
 
     /**
@@ -163,10 +159,21 @@ public class ShellScript {
                 pb.environment().put("S3_SECRETACCESSKEY", config.getS3SecretAccessKey());
             }
             process = pb.start();
+            InputStream stdOut = process.getInputStream();
+            InputStream stdErr = process.getErrorStream();
 
-            outputChannel = inputStreamToLinkedList(process.getInputStream());
-            errorChannel = inputStreamToLinkedList(process.getErrorStream());
-        } catch (IOException error) {
+            FutureTask<LinkedList<String>> stdOutFuture = new FutureTask<LinkedList<String>>(() -> inputStreamToLinkedList(stdOut));
+            Thread stdoutThread = new Thread(stdOutFuture);
+            stdoutThread.setDaemon(true);
+            stdoutThread.start();
+            FutureTask<LinkedList<String>> stdErrFuture = new FutureTask<LinkedList<String>>(() -> inputStreamToLinkedList(stdErr));
+            Thread stderrThread = new Thread(stdErrFuture);
+            stderrThread.setDaemon(true);
+            stderrThread.start();
+
+            outputChannel = stdOutFuture.get();
+            errorChannel = stdErrFuture.get();
+        } catch (IOException | ExecutionException error) {
             throw new IOException(error.getMessage());
         } finally {
             if (process != null) {
@@ -219,6 +226,15 @@ public class ShellScript {
         }
     }
 
+    /**
+     * Call a shell script/program and write the output of that call as message into the user interface if the output is not empty
+     * 
+     * @param parameter List of parameters to call the shell command
+     * @param processID ID of the process to allow writing of messages into the process log in case of errors
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static ShellScriptReturnValue callShell(List<String> parameter, Integer processID) throws IOException, InterruptedException {
         int returnCode = ShellScript.ERRORLEVEL_ERROR;
         String outputText = "";
@@ -246,7 +262,9 @@ public class ShellScript {
                 //            Helper.setMeldung(line);
             }
             Helper.addMessageToProcessLog(processID, LogType.DEBUG, "Script '" + scriptname + "' was executed with result: " + outputText);
-            Helper.setMeldung(outputText);
+            if (!outputText.isEmpty()) {
+            	Helper.setMeldung(outputText);
+            }
             if (s.getStdErr().size() > 0) {
                 returnCode = ShellScript.ERRORLEVEL_ERROR;
                 for (String line : s.getStdErr()) {

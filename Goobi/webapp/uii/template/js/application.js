@@ -299,7 +299,7 @@ function enlargeImageSize( width ) {
     var newWidth = percentWidth + 10;
 
     if ( newWidth <= 100 ) {
-        sessionStorage.setItem( 'imageSize', newWidth );
+        sessionStorage.setItem( 'wf_imageSize', newWidth );
         $( '[data-change="zoom-out"]' ).attr( 'disabled', false );
         $( '[data-change="zoom-in"]' ).attr( 'disabled', false );
         $( '#metseditorImageContainer' ).css( 'width', newWidth + '%' );
@@ -316,7 +316,7 @@ function decreaseImageSize( width ) {
     var newWidth = percentWidth - 10;
 
     if ( newWidth >= 20 ) {
-        sessionStorage.setItem( 'imageSize', newWidth );
+        sessionStorage.setItem( 'wf_imageSize', newWidth );
         $( '[data-change="zoom-in"]' ).attr( 'disabled', false );
         $( '[data-change="zoom-out"]' ).attr( 'disabled', false );
         $( '#metseditorImageContainer' ).css( 'width', newWidth + '%' );
@@ -350,8 +350,16 @@ $(document).ready(function () {
                     $( '#left' ).toggleClass( 'in' );
                 } );
 
-                /*if ( sessionStorage.getItem( 'imageSize' ) !== null ) {
-                    $( '#metseditorImageContainer' ).css( 'width', sessionStorage.getItem( 'imageSize' ) + '%' );
+        		//$("td, th").attr("tabindex", "0");
+        		//$("td, th").has( "a" ).removeAttr("tabindex", "0");
+                
+                $(".focusable").attr("tabindex", "0");
+                $(".focusableChild input").attr("href", "#")
+                $(".notFocusable").attr("tabindex", "-1");
+        		
+        		
+                /*if ( sessionStorage.getItem( 'wf_imageSize' ) !== null ) {
+                    $( '#metseditorImageContainer' ).css( 'width', sessionStorage.getItem( 'wf_imageSize' ) + '%' );
                 }
                 else {
                     $( '#metseditorImageContainer' ).css( 'width', '80%' );
@@ -400,8 +408,8 @@ $(document).ready(function () {
 
     // change image size
     /*
-    if ( sessionStorage.getItem( 'imageSize' ) !== null ) {
-        $( '#metseditorImageContainer' ).css( 'width', sessionStorage.getItem( 'imageSize' ) + '%' );
+    if ( sessionStorage.getItem( 'wf_imageSize' ) !== null ) {
+        $( '#metseditorImageContainer' ).css( 'width', sessionStorage.getItem( 'wf_imageSize' ) + '%' );
     }
     else {
         $( '#metseditorImageContainer' ).css( 'width', '80%' );
@@ -586,6 +594,9 @@ $(document).ready(function () {
         e.preventDefault();
         $(".breadcrumbs").fadeOut();
     });
+    
+    // add attribute to last a
+    var lasta =   $('.breadcrumbs ul li a:last-child').attr( "aria-current", "page" );
 
     $("#navigation").on('click', '.toggle-mobile', function (e) {
         e.preventDefault();
@@ -1104,8 +1115,8 @@ $( window ).on( 'resize orientationchange', function() {
         resizePageSelectBox();
     }
 
-    if ( $('.dataTable').length > 0 ) {
-        var table = $.fn.dataTable.fnTables(true);
+    if ( $('.dataTable').length > 0 && $.fn.dataTable != undefined) {
+    	var table = $.fn.dataTable.fnTables(true);
         if (table.length > 0) {
             $(table).each(function () {
                 if ($(this).hasClass("dataTable-scroller")) {
@@ -1117,3 +1128,11 @@ $( window ).on( 'resize orientationchange', function() {
         }
     }
 });
+
+function scrollDownScrollDowns() {
+	var allScrollDowns = document.querySelectorAll('[data-scrolldown="true"]');
+    for(var i=0;i < allScrollDowns.length;i++) {
+    	var scrollDown = allScrollDowns[i];
+    	scrollDown.scrollTop = scrollDown.scrollHeight;
+    }
+}

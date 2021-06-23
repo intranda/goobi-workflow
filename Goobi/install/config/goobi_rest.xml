@@ -32,5 +32,13 @@
             <allow netmask="127.0.0.0/8" token="CHANGEME"/>
         </method>
     </endpoint>
+    <endpoint path="/vocabulary/.*">
+        <method name="get">
+            <allow />
+        </method>
+        <method name="post">
+            <allow />
+        </method>
+    </endpoint>
 -->
 </config>

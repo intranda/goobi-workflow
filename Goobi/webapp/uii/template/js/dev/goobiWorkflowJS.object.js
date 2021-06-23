@@ -6,6 +6,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
     var _viewImage = null;
     var _world = null;
     var _mediaType = null;
+    var _preloadedImages = [];
     var _configViewer = {
         global: {
             divId: "mainImage",
@@ -51,7 +52,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         },
         container: {
             id: "mainImage"
-        }
+        },
+        resourcesPath: "template/js/",
     };
     
     goobiWorkflow.object = {
@@ -107,6 +109,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             _mediaType = $( '#mediaType' ).val();
             
             if ( _mediaType == 'image' ) {
+            	goobiWorkflowJS.object.freeJSResources();
                 let imageZoomPersistenzeId = $( '#persistenceId' ).val();
                 if(imageZoomPersistenzeId && imageZoomPersistenzeId.length > 0) {
                     console.log("persist image zoom with id ", imageZoomPersistenzeId);
@@ -159,7 +162,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             else if ( _mediaType == 'object' ) {
                 $( '#imageLoader' ).show();
                 goobiWorkflowJS.layout.setObjectViewHeight();
-                _world = WorldGenerator.create(_worldConfig);
+                _world = WorldGenerator.create(_worldConfig); 
                 _world.loadObject( {
                     url: $( '#objectUrl' ).val(),
                     position: { x: 0, y: 0, z: 0 },
@@ -305,21 +308,39 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                     }
                     _world.dispose();
                 }
+                if(_preloadedImages != []) {
+                	if (_debug) {
+                		console.info( 'freeJSResources: disposing preload');
+                	}
+                	for(var i in _preloadedImages){
+                		_preloadedImages[i].close()
+                	}
+                	_preloadedImages = []
+                	
+                }
 
                 return;
             }
         },
         
         preCache(url, id) {
-            let container = $("<div id='" + id + "'/>")
-            $("body").append(container);
+        	if(!document.querySelector('#'+id)) {
+	            let container = $("<div id='" + id + "' />")
+	            
+	            $("main").append(container);
+        	}
             let viewConfig = {
-                    global: {divId: id, imageControlsActive: false},
+                    global: {divId: id, imageControlsActive: false, tabIndex: -1},
                     image: {tileSource: url}
             }
-            new ImageView.Image(viewConfig).load()
+            var preload = new ImageView.Image(viewConfig)
+            preload.load()
             .catch( error => console.log("error precaching url " + url));
+            _preloadedImages.push(preload)
+            
         }
+        
+        
     };
 
     

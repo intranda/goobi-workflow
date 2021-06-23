@@ -6,7 +6,7 @@ package de.unigoettingen.sub.search.opac;
  * Visit the websites for more information. 
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -33,6 +33,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import lombok.Getter;
+
 public class OpacResponseHandler extends DefaultHandler {
 
     boolean readTitle = false;
@@ -41,10 +43,14 @@ public class OpacResponseHandler extends DefaultHandler {
     String title = "";
     String sessionId = "";
     String cookie = "";
+    @Getter
     String set = "";
+    @Getter
     int numberOfHits = 0;
 
+    @Getter
     ArrayList<String> opacResponseItemPpns = new ArrayList<String>();
+    @Getter
     ArrayList<String> opacResponseItemTitles = new ArrayList<String>();
 
     public OpacResponseHandler() {
@@ -116,27 +122,10 @@ public class OpacResponseHandler extends DefaultHandler {
         }
     }
 
-    public ArrayList<String> getOpacResponseItemPpns() {
-        return this.opacResponseItemPpns;
-    }
-
-    public ArrayList<String> getOpacResponseItemTitles() {
-        return this.opacResponseItemTitles;
-    }
-
     public String getSessionId(String encoding) throws UnsupportedEncodingException {
         if (!this.cookie.equals("")) {
             return URLEncoder.encode(this.sessionId, encoding) + "/COOKIE=" + URLEncoder.encode(this.cookie, encoding);
         }
         return this.sessionId;
     }
-
-    public String getSet() {
-        return this.set;
-    }
-
-    public int getNumberOfHits() {
-        return this.numberOfHits;
-    }
-
 }

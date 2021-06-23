@@ -6,7 +6,9 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -17,57 +19,58 @@
                     id="meStructdataPageAssignmentBox"
                     class="module module__box module__box--white module__box--collapsable">
                     <div class="module__box-title">
-                        <h3>
+                        <h1>
                             <i
                                 class="fa fa-bars"
                                 aria-hidden="true"></i>
                             <span>#{msgs.seitenzuordnung}</span>
                             <button
                                 type="button"
+                                aria-label="#{msgs.minimizeBox}"
                                 class="btn btn--clean closed"
                                 data-toggle="box-body">
                                 <i
                                     class="fa fa-angle-up fa-lg"
                                     aria-hidden="true"></i>
                             </button>
-                        </h3>
+                        </h1>
                     </div>
                     <h:panelGroup
                         id="pageAssignmentGroup"
                         styleClass="module__box-body" style="display: none;" layout="block">
                         <h:panelGroup id="assignments">
                             <p>
-                                <h:commandLink
-                                    styleClass="btn btn--gray btn--margin-right"
-                                    id="metseditor_pages_overview"
-                                    action="#{NavigationForm.Reload}"
-                                    value="#{msgs.metseditor_pages_overview}">
+                                <button
+                                    class="btn btn--gray btn--margin-right"
+                                    jsf:id="metseditor_pages_overview"
+                                    jsf:action="#{NavigationForm.Reload}">
+                                    #{msgs.metseditor_pages_overview}
                                     <f:setPropertyActionListener
                                         target="#{NavigationForm.uiStatus.pageassignment}"
                                         value="" />
                                     <f:ajax render="assignments" />
-                                </h:commandLink>
+                                </button>
 
-                                <h:commandLink
-                                    styleClass="btn btn--gray btn--margin-right"
-                                    id="metseditor_pages_allPages"
-                                    action="#{NavigationForm.Reload}"
-                                    value="#{msgs.metseditor_pages_allPages}">
+                                <button
+                                    class="btn btn--gray btn--margin-right"
+                                    jsf:id="metseditor_pages_allPages"
+                                    jsf:action="#{NavigationForm.Reload}">
+                                    #{msgs.metseditor_pages_allPages}
                                     <f:setPropertyActionListener
                                         target="#{NavigationForm.uiStatus.pageassignment}"
                                         value="tab1" />
                                     <f:ajax render="assignments" />
-                                </h:commandLink>
-                                <h:commandLink
-                                    styleClass="btn btn--gray"
-                                    id="metseditor_pages_quickassign"
-                                    action="#{NavigationForm.Reload}"
-                                    value="#{msgs.metseditor_pages_quickassign}">
+                                </button>
+                                <button
+                                    class="btn btn--gray"
+                                    jsf:id="metseditor_pages_quickassign"
+                                    jsf:action="#{NavigationForm.Reload}">
+                                    #{msgs.metseditor_pages_quickassign}
                                     <f:setPropertyActionListener
                                         target="#{NavigationForm.uiStatus.pageassignment}"
                                         value="tab2" />
                                     <f:ajax render="assignments" />
-                                </h:commandLink>
+                                </button>
     
                             </p>
 
@@ -87,18 +90,20 @@
                                             <p:autoComplete
                                                 scrollHeight="300"
                                                 id="pagestart2"
-                                                styleClass="form-control"
+                                                pt:aria-label="#{msgs.firstPage}"
+                                                styleClass="form-control focusableChildCss"
                                                 forceId="true"
                                                 value="#{Metadaten.pagesStartCurrentElement}"
                                                 completeMethod="#{Metadaten.autocomplete}" />
                                         </div>
                                         <div class="col-3">
-                                            <h:commandLink
-                                                id="takePreviousImage3"
-                                                styleClass="btn btn--icon-white"
-                                                action="#{Metadaten.startpage}"
+                                            <button
+                                                jsf:id="takePreviousImage3"
+                                                aria-label="#{msgs.previousImage}"
+                                                class="btn btn--icon-white"
+                                                jsf:action="#{Metadaten.startpage}"
                                                 title="#{msgs.mets_takePreviousImage}"
-                                                role="button">
+                                                type="button">
                                                 <i
                                                     class="fa fa-angle-left fa-lg"
                                                     aria-hidden="true"></i>
@@ -109,13 +114,14 @@
                                                     name="data-toggle"
                                                     value="tooltip" />
                                                 <f:ajax render="pagestart2" />
-                                            </h:commandLink>
-                                            <h:commandLink
-                                                id="takeCurrentImage3"
-                                                styleClass="btn btn--icon-gray"
-                                                action="#{Metadaten.startpage}"
+                                            </button>
+                                            <button
+                                                jsf:id="takeCurrentImage3"
+                                                aria-label="#{msgs.lw_currentImage}"
+                                                class="btn btn--icon-gray"
+                                                jsf:action="#{Metadaten.startpage}"
                                                 title="#{msgs.mets_takeCurrentImage}"
-                                                role="button">
+                                                type="button">
                                                 <i
                                                     class="fa fa-picture-o"
                                                     aria-hidden="true"></i>
@@ -126,13 +132,14 @@
                                                     name="data-toggle"
                                                     value="tooltip" />
                                                 <f:ajax render="pagestart2" />
-                                            </h:commandLink>
-                                            <h:commandLink
-                                                id="takeNextImage3"
-                                                styleClass="btn btn--icon-white"
-                                                action="#{Metadaten.startpage}"
+                                            </button>
+                                            <button
+                                                jsf:id="takeNextImage3"
+                                                aria-label="#{msgs.nextImage}"
+                                                class="btn btn--icon-white"
+                                                jsf:action="#{Metadaten.startpage}"
                                                 title="#{msgs.mets_takeNextImage}"
-                                                role="button">
+                                                type="button">
                                                 <i
                                                     class="fa fa-angle-right fa-lg"
                                                     aria-hidden="true"></i>
@@ -143,7 +150,7 @@
                                                     name="data-toggle"
                                                     value="tooltip" />
                                                 <f:ajax render="pagestart2" />
-                                            </h:commandLink>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -158,18 +165,20 @@
                                             <p:autoComplete
                                                 scrollHeight="300"
                                                 id="pageend2"
-                                                styleClass="form-control"
+                                                pt:aria-label="#{msgs.lastPage}"
+                                                styleClass="form-control focusableChildCss"
                                                 forceId="true"
                                                 value="#{Metadaten.pagesEndCurrentElement}"
                                                 completeMethod="#{Metadaten.autocomplete}" />
                                         </div>
                                         <div class="col-3">
-                                            <h:commandLink
-                                                id="takePreviousImage4"
-                                                styleClass="btn btn--icon-white"
-                                                action="#{Metadaten.endpage}"
+                                            <button
+                                                jsf:id="takePreviousImage4"
+                                                aria-label="#{msgs.previousImage}"
+                                                class="btn btn--icon-white"
+                                                jsf:action="#{Metadaten.endpage}"
                                                 title="#{msgs.mets_takePreviousImage}"
-                                                role="button">
+                                                type="button">
                                                 <i
                                                     class="fa fa-angle-left fa-lg"
                                                     aria-hidden="true"></i>
@@ -180,13 +189,14 @@
                                                     name="data-toggle"
                                                     value="tooltip" />
                                                 <f:ajax render="pageend2" />
-                                            </h:commandLink>
-                                            <h:commandLink
-                                                id="takeCurrentImage4"
-                                                styleClass="btn btn--icon-gray"
-                                                action="#{Metadaten.endpage}"
+                                            </button>
+                                            <button
+                                                jsf:id="takeCurrentImage4"
+                                                aria-label="#{msgs.lw_currentImage}"
+                                                class="btn btn--icon-gray"
+                                                jsf:action="#{Metadaten.endpage}"
                                                 title="#{msgs.mets_takeCurrentImage}"
-                                                role="button">
+                                                type="button">
                                                 <i
                                                     class="fa fa-picture-o"
                                                     aria-hidden="true"></i>
@@ -197,13 +207,14 @@
                                                     name="data-toggle"
                                                     value="tooltip" />
                                                 <f:ajax render="pageend2" />
-                                            </h:commandLink>
-                                            <h:commandLink
-                                                id="takeNextImage4"
-                                                styleClass="btn btn--icon-white"
-                                                action="#{Metadaten.endpage}"
+                                            </button>
+                                            <button
+                                                jsf:id="takeNextImage4"
+                                                aria-label="#{msgs.nextImage}"
+                                                class="btn btn--icon-white"
+                                                jsf:action="#{Metadaten.endpage}"
                                                 title="#{msgs.mets_takeNextImage}"
-                                                role="button">
+                                                type="button">
                                                 <i
                                                     class="fa fa-angle-right fa-lg"
                                                     aria-hidden="true"></i>
@@ -214,7 +225,7 @@
                                                     name="data-toggle"
                                                     value="tooltip" />
                                                 <f:ajax render="pageend2" />
-                                            </h:commandLink>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -226,10 +237,10 @@
                                     <div class="row">
                                         <div class="col-auto mr-auto"></div>
                                         <div class="col-auto">
-                                            <h:commandLink
-                                                id="setPages2"
-                                                action="#{Metadaten.setPages}"
-                                                styleClass="btn btn--gray">
+                                            <button
+                                                jsf:id="setPages2"
+                                                jsf:action="#{Metadaten.setPages}"
+                                                class="btn btn--gray">
                                                 <h:outputText value="#{msgs.seitenZuweisen}" />
                                                 <f:passThroughAttribute
                                                     name="data-toggle"
@@ -237,7 +248,7 @@
                                                 <f:ajax
                                                     render="assignments :treeform"
                                                     execute="pagestart2 pageend2" />
-                                            </h:commandLink>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -255,6 +266,7 @@
                                                 value="#{msgs.alleSeiten}" />
                                             <x:selectManyListbox
                                                 id="selectPages"
+                                                pt:aria-label="#{msgs.alleSeiten}"
                                                 styleClass="form-control"
                                                 value="#{Metadaten.alleSeitenAuswahl}">
                                                 <f:passThroughAttribute
@@ -268,11 +280,12 @@
                                             </x:selectManyListbox>
                                         </div>
                                         <div class="col-2">
-                                            <h:commandLink
-                                                id="s1"
-                                                action="#{Metadaten.SeitenHinzu}"
-                                                styleClass="btn btn--icon btn--icon-gray"
-                                                style="margin-top: 100px;"
+                                            <button
+                                                jsf:id="s1"
+                                                aria-label="#{msgs.mets_addTheseImages}"
+                                                jsf:action="#{Metadaten.SeitenHinzu}"
+                                                class="btn btn--icon btn--icon-gray"
+                                                style="margin-top: 100px; width: 100%"
                                                 title="#{msgs.mets_addTheseImages}">
                                                 <i
                                                     class="fa fa-arrow-right fa-lg"
@@ -283,11 +296,13 @@
                                                 <f:ajax
                                                     execute="@form"
                                                     render="assignments :treeform" />
-                                            </h:commandLink>
-                                            <h:commandLink
-                                                id="s2"
-                                                action="#{Metadaten.SeitenWeg}"
-                                                styleClass="btn btn--icon btn--icon-gray"
+                                            </button>
+                                            <button
+                                                jsf:id="s2"
+                                                aria-label="#{msgs.mets_removeTheseImages}"
+                                                jsf:action="#{Metadaten.SeitenWeg}"
+                                                class="btn btn--icon btn--icon-gray"
+                                                style="width: 100%"
                                                 title="#{msgs.mets_removeTheseImages}">
                                                 <i
                                                     class="fa fa-arrow-left fa-lg"
@@ -298,7 +313,7 @@
                                                 <f:ajax
                                                     execute="@form"
                                                     render="assignments :treeform" />
-                                            </h:commandLink>
+                                            </button>
                                         </div>
                                         <div class="col-5">
                                             <h:outputText
@@ -306,6 +321,7 @@
                                                 value="#{msgs.zugehoerigeSeiten}" />
                                             <x:selectManyListbox
                                                 id="selectPages2"
+                                                pt:aria-label="#{msgs.zugehoerigeSeiten}"
                                                 styleClass="form-control"
                                                 value="#{Metadaten.structSeitenAuswahl}">
                                                 <f:selectItems value="#{Metadaten.structSeiten}" />
@@ -332,6 +348,7 @@
 
                                             <div class="form-control form-control--select">
                                                 <h:selectOneMenu
+                                                    pt:aria-label="#{msgs.ersteSeite}"
                                                     rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
                                                     value="#{Metadaten.alleSeitenAuswahl_ersteSeite}"
                                                     style="z-index: 99999">
@@ -344,19 +361,20 @@
                                             </div>
                                         </div>
                                         <div class="col-1">
-                                            <h:commandLink
-                                                id="showFirst"
-                                                styleClass="btn btn--icon"
-                                                action="#{Metadaten.BildErsteSeiteAnzeigen}"
+                                            <button
+                                                jsf:id="showFirst"
+                                                aria-label="#{msgs.mets_showThisImage}"
+                                                class="btn btn--icon"
+                                                jsf:action="#{Metadaten.BildErsteSeiteAnzeigen}"
                                                 title="#{msgs.mets_showThisImage}"
-                                                role="button">
+                                                type="button">
                                                 <i
                                                     class="fa fa-eye"
                                                     aria-hidden="true"></i>
                                                 <f:passThroughAttribute
                                                     name="data-toggle"
                                                     value="tooltip" />
-                                            </h:commandLink>
+                                            </button>
                                         </div>
                                     </div>
 
@@ -370,6 +388,7 @@
                                         <div class="col-8">
                                             <div class="form-control form-control--select">
                                                 <h:selectOneMenu
+                                                    pt:aria-label="#{msgs.letzteSeite}"
                                                     rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
                                                     value="#{Metadaten.alleSeitenAuswahl_letzteSeite}">
                                                     <f:selectItems
@@ -381,19 +400,20 @@
                                             </div>
                                         </div>
                                         <div class="col-1">
-                                            <h:commandLink
-                                                id="showLast"
-                                                styleClass="btn btn--icon"
-                                                action="#{Metadaten.BildLetzteSeiteAnzeigen}"
+                                            <button
+                                                jsf:id="showLast"
+                                                aria-label="#{msgs.mets_showThisImage}"
+                                                class="btn btn--icon"
+                                                jsf:action="#{Metadaten.BildLetzteSeiteAnzeigen}"
                                                 title="#{msgs.mets_showThisImage}"
-                                                role="button">
+                                                type="button">
                                                 <i
                                                     class="fa fa-eye"
                                                     aria-hidden="true"></i>
                                                 <f:passThroughAttribute
                                                     name="data-toggle"
                                                     value="tooltip" />
-                                            </h:commandLink>
+                                            </button>
                                         </div>
                                     </div>
 
@@ -403,28 +423,28 @@
                                     <div class="row">
                                         <div class="col-auto mr-auto"></div>
                                         <div class="col-auto">
-                                            <h:commandLink
-                                                id="SeitenStartUndEndeSetzen"
-                                                styleClass="btn btn--gray"
-                                                action="#{Metadaten.SeitenStartUndEndeSetzen}"
-                                                rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
-                                                role="button">
+                                            <button
+                                                jsf:id="SeitenStartUndEndeSetzen"
+                                                class="btn btn--gray"
+                                                jsf:action="#{Metadaten.SeitenStartUndEndeSetzen}"
+                                                jsf:rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
+                                                type="button">
                                                 <h:outputText value="#{msgs.seitenZuweisen}" />
                                                 <f:ajax
                                                     execute="@form"
                                                     render="assignments :treeform" />
-                                            </h:commandLink>
-                                            <h:commandLink
-                                                id="showpagesasajax"
-                                                styleClass="btn btn--gray"
-                                                action="#{Metadaten.AjaxSeitenStartUndEndeSetzen}"
-                                                rendered="#{Metadaten.treeProperties.showpagesasajax==true}"
-                                                role="button">
+                                            </button>
+                                            <button
+                                                jsf:id="showpagesasajax"
+                                                class="btn btn--gray"
+                                                jsf:action="#{Metadaten.AjaxSeitenStartUndEndeSetzen}"
+                                                jsf:rendered="#{Metadaten.treeProperties.showpagesasajax==true}"
+                                                type="button">
                                                 <h:outputText value="#{msgs.seitenZuweisen}" />
                                                 <f:ajax
                                                     execute="@form"
                                                     render="assignments :treeform" />
-                                            </h:commandLink>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

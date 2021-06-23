@@ -6,7 +6,7 @@ package de.sub.goobi.persistence.managers;
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -27,7 +27,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
@@ -178,6 +179,7 @@ public class ProjectManager implements IManager, Serializable {
         Project r = new Project();
         r.setId(rs.getInt("ProjekteID"));
         r.setTitel(rs.getString("Titel"));
+        r.setProjectIdentifier(rs.getString("project_identifier"));
         r.setUseDmsImport(rs.getBoolean("useDmsImport"));
 
         r.setDmsImportTimeOut(rs.getInt("dmsImportTimeOut"));

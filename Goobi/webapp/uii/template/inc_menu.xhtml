@@ -8,13 +8,14 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
     <composite:implementation>
         <h:form id="menu">
-            <a
+            <a	aria-label="intranda Logo"
                 href="index.xhtml"
                 id="brand">&#160;</a>
 
@@ -42,22 +43,24 @@
                                 target="#{AktuelleSchritteForm.filter}"
                                 value="" />
                             <!--                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.hideStepsFromOtherUsers}" value="#{true}" /> -->
-                            <f:setPropertyActionListener
-                                target="#{AktuelleSchritteForm.sortierung}"
-                                value="statusDesc" />
+<!--                             <f:setPropertyActionListener -->
+<!--                                 target="#{AktuelleSchritteForm.sortierung}" -->
+<!--                                 value="statusDesc" /> -->
                         </h:commandLink>
                     </li>
                 </h:panelGroup>
 
                 <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Menu')}">
                     <li class="#{NavigationForm.aktuell == 'a21' or NavigationForm.aktuell == 'a22' or NavigationForm.aktuell == 'a23' or NavigationForm.aktuell == 'a24' or NavigationForm.aktuell == 'a25'?'active':''}">
-                        <a
-                            href="#"
+                        <button
+                            id="nav-workflow"
+                            type="button"
                             data-toggle="dropdown"
-                            class='dropdown-toggle'>
+                            class='dropdown-toggle btn'
+                            aria-haspopup="true">
                             <span>#{msgs.workflow}</span>
                             <span class="caret"></span>
-                        </a>
+                        </button>
                         <ul class="dropdown-menu">
                             <!-- Prozess suchen -->
                             <intranda:menuItem
@@ -129,14 +132,16 @@
 
                 <!-- ################            Administration              ######################-->
                 <h:panelGroup rendered="#{LoginForm.hasRole('Admin_Menu')}">
-                    <li class="#{NavigationForm.aktuell == 'a30' or NavigationForm.aktuell == 'a31' or NavigationForm.aktuell == 'a32' or NavigationForm.aktuell == 'a33' or NavigationForm.aktuell == 'a34' or NavigationForm.aktuell == 'a35' or NavigationForm.aktuell == 'a36' or NavigationForm.aktuell == 'a37' or NavigationForm.aktuell == 'a38' or NavigationForm.aktuell == 'a39'?'active':''}">
-                        <a
-                            href="#"
+                    <li class="#{NavigationForm.aktuell == 'a30' or NavigationForm.aktuell == 'a31' or NavigationForm.aktuell == 'a32' or NavigationForm.aktuell == 'a33' or NavigationForm.aktuell == 'a34' or NavigationForm.aktuell == 'a35' or NavigationForm.aktuell == 'a36' or NavigationForm.aktuell == 'a37' or NavigationForm.aktuell == 'a38' or NavigationForm.aktuell == 'a39' or NavigationForm.aktuell == 'a42' or NavigationForm.aktuell == 'a53'?'active':''}">
+                        <button
+                            id="nav-administration"
+                            type="button"
                             data-toggle="dropdown"
-                            class='dropdown-toggle'>
+                            class='dropdown-toggle btn'
+                            aria-haspopup="true">
                             <span>#{msgs.administration}</span>
                             <span class="caret"></span>
-                        </a>
+                        </button>
                         <ul class="dropdown-menu">
                             <!-- Benutzerverwaltung -->
                             <intranda:menuItem
@@ -144,7 +149,7 @@
                                 label="#{msgs.benutzer}"
                                 action="#{BenutzerverwaltungForm.FilterKein}"
                                 rendered="#{LoginForm.hasRole('Admin_Users')}"
-                                icon="glyphicon-user box-icon-fix-menu-up3 "
+                                icon="fa fa-user box-icon-fix-menu-up3 "
                                 fontclass="margin-left-10" />
 
                             <!-- Benutzergruppen -->
@@ -153,7 +158,7 @@
                                 label="#{msgs.benutzergruppen}"
                                 action="#{BenutzergruppenForm.FilterKein}"
                                 rendered="#{LoginForm.hasRole('Admin_Usergroups')}"
-                                icon="glyphicon-group box-icon-fix-menu-up3 "
+                                icon="fa fa-users box-icon-fix-menu-up3 "
                                 fontclass="margin-left-10" />
 
                             <!-- Projekte -->
@@ -162,7 +167,7 @@
                                 label="#{msgs.projekte}"
                                 action="#{ProjekteForm.FilterKein}"
                                 rendered="#{LoginForm.hasRole('Admin_Projects')}"
-                                icon="glyphicon-compass box-icon-fix-menu-up3 "
+                                icon="fa fa-compass box-icon-fix-menu-up3 "
                                 fontclass="margin-left-10" />
                             <ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin}">
                                 <!-- Institution -->
@@ -197,7 +202,7 @@
                                 label="#{msgs.authentication_configuration}"
                                 action="#{LdapGruppenForm.FilterKein}"
                                 rendered="#{LoginForm.hasRole('Admin_Ldap')}"
-                                icon="glyphicon-keys box-icon-fix-menu-up3 "
+                                icon="fa fa-key box-icon-fix-menu-up3 "
                                 fontclass="margin-left-10" />
 
                             <!-- Message Queue -->
@@ -206,17 +211,40 @@
                                 label="#{msgs.menu_administration_currentQueue}"
                                 action="queue"
                                 rendered="#{LoginForm.hasRole('Admin_Queue')}"
-                                icon="fa fa-exclamation-triangle box-icon-fix-menu-up3"
+                                icon="fa fa-spinner box-icon-fix-menu-up3"
+                                fontclass="margin-left-10" />
+                                
+                            <!-- Jobtypes -->
+                            <intranda:menuItem
+                                id="a37b"
+                                label="#{msgs.menu_administration_jobtypes}"
+                                action="admin_jobtypes_all"
+                                rendered="#{LoginForm.hasRole('Admin_Jobtypes')}"
+                                icon="fa fa-gears box-icon-fix-menu-up3"
                                 fontclass="margin-left-10" />
 
                             <!-- Plugins overview -->
                             <intranda:menuItem
-                                id="a38"
+                                id="a42"
                                 label="#{msgs.menu_administration_plugins}"
                                 action="plugins"
-                                icon="fa fa-exclamation-triangle box-icon-fix-menu-up3"
+                                icon="fa fa-stethoscope box-icon-fix-menu-up3"
                                 fontclass="margin-left-10" />
 
+                            <!-- Vokabularverwaltung -->
+                            <intranda:menuItem id="a53" 
+                            	label="#{msgs.vocabularyManager}"
+                                action="#{vocabularyBean.FilterKein}"
+                                rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
+                                icon="fa fa-database box-icon-fix-menu-up3 "
+                                fontclass="margin-left-10" />
+                                
+                            <!-- SWAGGER-API -->
+                            <intranda:menuItem id="a153" 
+                                label="#{msgs.apiDescription}"
+                                action="restApi.xhtml"
+                                icon="fa fa-terminal box-icon-fix-menu-up3 "
+                                fontclass="margin-left-10" />
 
                             <!-- Superadmin -->
                             <intranda:menuItem
@@ -224,10 +252,9 @@
                                 label="#{msgs.administrationsaufgaben}"
                                 action="admin"
                                 rendered="#{LoginForm.hasRole('Admin_Administrative_Tasks')}"
-                                icon="fa fa-exclamation-triangle box-icon-fix-menu-up3"
+                                icon="fa fa-bullhorn box-icon-fix-menu-up3"
                                 fontclass="margin-left-10" />
-
-
+                                
                             <!-- Admin-Plugins -->
                             <h:panelGroup rendered="#{LoginForm.hasRole('Admin_Plugins')}">
                                 <ui:repeat
@@ -258,13 +285,15 @@
                 <!-- Controlling -->
                 <h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Menu')}">
                     <li class="#{NavigationForm.aktuell == 'a40'  or NavigationForm.aktuell == 'a41' ?'active':''}">
-                        <a
-                            href="#"
+                        <button
+                            id="nav-controlling"
+                            type="button"
                             data-toggle="dropdown"
-                            class='dropdown-toggle'>
+                            class='dropdown-toggle btn'
+                            aria-haspopup="true">
                             <span>#{msgs.controlling}</span>
                             <span class="caret"></span>
-                        </a>
+                        </button>
                         <ul class="dropdown-menu">
                             <intranda:menuItem
                                 id="a40"
@@ -311,65 +340,85 @@
                 </a>
 
                 <div class="user">
-                    <ul class="icon-nav">
+                    <ul class="icon-nav" style="height: 100%">
                         <li>
-                            <h:commandLink
-                                id="showHelp"
-                                action="#{NavigationForm.Reload}"
+                            <button
+                                class="btn"
+                                jsf:id="showHelp"
+                                aria-label="#{msgs.showHelpMessages}"
+                                jsf:action="#{NavigationForm.Reload}"
                                 title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
-                                rel="tooltip">
+                                jsf:rel="tooltip"
+                                data-placement="bottom">
                                 <i class="fa #{not NavigationForm.showHelp?'fa-question':'fa-question-circle'}"></i>
-                                <!--                                 <f:passThroughAttribute name="data-toggle" value="tooltip" /> -->
+                                <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                                 <f:setPropertyActionListener
                                     target="#{NavigationForm.showHelp}"
                                     value="#{not NavigationForm.showHelp}" />
-                            </h:commandLink>
+                            </button>
                         </li>
-
                         <li class="dropdown language-select">
-                            <a
+                        	<div data-toggle="tooltip" title="#{msgs.spracheAendern}" data-placement="bottom">
+	                            <button
+	                                type="button"
+	                                id="nav-language"
+	                                aria-label="#{msgs.spracheAendern}"
+	                                data-toggle="dropdown"
+	                                aria-haspopup="true"
+	                                class="dropdown-toggle btn"
+	                                title="#{msgs.spracheAendern}"
+	                                jsf:rel="tooltip"
+	                                >
+	                                
+	                                <img
+	                                    alt="#{SpracheForm.locale}"
+	                                    src="template/img/flags/#{SpracheForm.locale}.gif" />
+	                                <span></span>
+	                            </button>
+                            <!-- <a
+                                href="#"
+                                id="nav-language"
+                                aria-label="#{msgs.spracheAendern}"
                                 data-toggle="dropdown"
                                 class="dropdown-toggle"
-                                href="#"
                                 title="#{msgs.spracheAendern}">
                                 <img
                                     alt=""
                                     src="template/img/flags/#{SpracheForm.locale}.gif" />
                                 <span></span>
-                            </a>
-                            <ul class="dropdown-menu pull-right">
-                                <ui:repeat
-                                    var="availableLanguage"
-                                    value="#{SpracheForm.supportedLocales}"
-                                    id="plugin4">
-                                    <li>
-                                        <h:commandLink
-                                            id="locale"
-                                            styleClass="text_head"
-                                            action="#{SpracheForm.SpracheUmschalten}"
-                                            title="#{availableLanguage.displayLanguageTranslated}">
-                                            <f:param
-                                                name="locale"
-                                                value="#{availableLanguage.id}" />
-                                            <f:setPropertyActionListener
-                                                value="#{null}"
-                                                target="#{SessionForm.dateFormatter}" />
-                                            <h:graphicImage value="template/img/flags/#{availableLanguage.id}.gif" />
-                                            <span>
-                                                <h:outputText value="#{msgs[availableLanguage.displayLanguageSelf]}" />
-                                            </span>
-                                        </h:commandLink>
-                                    </li>
-                                </ui:repeat>
-                            </ul>
+                            </a> -->
+	                            <ul class="dropdown-menu pull-right">
+	                                <ui:repeat
+	                                    var="availableLanguage"
+	                                    value="#{SpracheForm.supportedLocales}"
+	                                    id="plugin4">
+	                                    <li>
+	                                        <button
+	                                            jsf:id="locale"
+	                                            class="dropdown-item text_head"
+	                                            jsf:action="#{SpracheForm.SpracheUmschalten}"
+	                                            title="#{availableLanguage.displayLanguageTranslated}">
+	                                            <f:param
+	                                                name="locale"
+	                                                value="#{availableLanguage.id}" />
+	                                            <f:setPropertyActionListener
+	                                                value="#{null}"
+	                                                target="#{SessionForm.dateFormatter}" />
+	                                            <h:graphicImage value="template/img/flags/#{availableLanguage.id}.gif" />
+	                                            <span>
+	                                                <h:outputText value="#{msgs[availableLanguage.displayLanguageSelf]}" />
+	                                            </span>
+	                                        </button>
+	                                    </li>
+	                                </ui:repeat>
+	                            </ul>
+	                         </div>
                         </li>
-
-                    </ul>
-
+	                </ul>
                     <div class="dropdown">
-                        <a
-                            href="#"
-                            class='dropdown-toggle'
+                        <button
+                            type="button"
+                            class='dropdown-toggle btn'
                             data-toggle="dropdown"
                             id="toggleUserdata">
                             <h:outputText
@@ -385,7 +434,7 @@
                                     src="#{LoginForm.myBenutzer.imageUrl}"
                                     alt="" />
                             </c:if>
-                        </a>
+                        </button>
 
                         <ul class="dropdown-menu pull-right">
                             <!-- Benutzerkonfiguration -->
@@ -394,7 +443,7 @@
                                 label="#{msgs.benutzerkonfiguration}"
                                 action="user_config"
                                 display="#{NavigationForm.uiStatus.user_config}"
-                                icon="fa fa-cog box-icon-fix-menu-up3" />
+                                icon="fa fa-user-circle-o box-icon-fix-menu-up3" />
 
                             <!-- Passwort aendern -->
                             <h:panelGroup rendered="#{HelperForm.passwordIsChangable}">
@@ -402,33 +451,34 @@
                                     id="a51"
                                     label="#{msgs.passwortAendern}"
                                     action="user_password"
-                                    icon="glyphicon-keys box-icon-fix-menu-up3" />
+                                    icon="fa fa-key box-icon-fix-menu-up3" />
                             </h:panelGroup>
 
                             <li>
-                                <h:commandLink
-                                    id="showEasyRead"
-                                    action="#{NavigationForm.Reload}"
+                                <button
+                                    jsf:id="showEasyRead"
+                                    jsf:action="#{NavigationForm.Reload}"
+                                    class="dropdown-item"
                                     title="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}"
-                                    rel="tooltip">
+                                    jsf:rel="tooltip">
                                     <i class="fa fa-eye-slash margin-right-5" />
                                     <h:outputText value="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}" />
                                     <f:setPropertyActionListener
                                         target="#{NavigationForm.showEasyRead}"
                                         value="#{not NavigationForm.showEasyRead}" />
-                                </h:commandLink>
+                                </button>
                             </li>
 
 			                <!-- logout -->
 							<ui:fragment rendered="#{!LoginForm.useOpenIDConnect}">
 								<intranda:menuItem id="a52" label="#{msgs.logout}"
 									action="#{LoginForm.Ausloggen}"
-									icon="glyphicon-power box-icon-fix-menu" />
+									icon="fa fa-power-off box-icon-fix-menu" />
 							</ui:fragment>
 							<ui:fragment rendered="#{LoginForm.useOpenIDConnect}">
 								<intranda:menuItem id="openIdLogout" label="#{msgs.logout}"
 									action="#{LoginForm.logoutOpenId}"
-									icon="glyphicon-power box-icon-fix-menu" />
+									icon="fa fa-power-off box-icon-fix-menu" />
 							</ui:fragment>
 						</ul>
 					</div>

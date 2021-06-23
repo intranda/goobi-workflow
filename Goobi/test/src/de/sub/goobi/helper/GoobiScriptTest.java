@@ -6,7 +6,7 @@ package de.sub.goobi.helper;
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -191,24 +191,18 @@ public class GoobiScriptTest {
     }
 
     @Test
-    public void testExecuteEmptyGoobiScript() {
-        GoobiScript script = new GoobiScript();
-        script.execute(new ArrayList<Integer>(), "");
-        assertNull(script.myParameters);
+    public void testParseEmptyGoobiScript() {
+        assertNull(GoobiScript.parseGoobiscripts("---\\n"));
     }
 
     @Test
-    public void testExecuteWrongSyntax() {
-        GoobiScript script = new GoobiScript();
-        script.execute(new ArrayList<Integer>(), "action");
-        assertEquals(0, script.myParameters.size());
+    public void testParseWrongSyntax() {
+        assertEquals(0, GoobiScript.parseGoobiscripts("---\\naction").size());
     }
 
     @Test
-    public void testExecuteUnknownAction() {
-        GoobiScript script = new GoobiScript();
-        script.execute(new ArrayList<Integer>(), "action:test");
-        assertEquals(1, script.myParameters.size());
+    public void testParseUnknownAction() {
+        assertEquals(1, GoobiScript.parseGoobiscripts("---\\naction: test").size());
     }
 
     @Test
@@ -226,20 +220,19 @@ public class GoobiScriptTest {
         SessionForm sessionForm = new SessionForm();
         LoginBean loginBean = new LoginBean();
         loginBean.setMyBenutzer(user);
-        EasyMock.expect(Helper.getManagedBeanValue("#{SessionForm}")).andReturn(sessionForm).anyTimes();
-        EasyMock.expect(Helper.getManagedBeanValue("#{LoginForm}")).andReturn(loginBean).anyTimes();
+
         Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
         PowerMock.expectLastCall().anyTimes();
         Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
         PowerMock.replay(Helper.class);
 
         GoobiScript script = new GoobiScript();
-        script.execute(processList, "action:swapSteps");
-        script.execute(processList, "action:swapSteps swap1nr:1");
-        script.execute(processList, "action:swapSteps swap1nr:1 swap2nr:2");
-        script.execute(processList, "action:swapSteps swap1nr:1 swap2nr:2 swap1title:first");
-        script.execute(processList, "action:swapSteps swap1nr:NoNumber swap2nr:2 swap1title:first swap2title:second");
-        script.execute(processList, "action:swapSteps swap1nr:1 swap2nr:2 swap1title:first swap2title:second");
+        script.execute(processList, "---\\naction: swapSteps");
+        script.execute(processList, "---\\naction: swapSteps \\nswap1nr: 1");
+        script.execute(processList, "---\\naction: swapSteps \\nswap1nr: 1 \\nswap2nr: 2");
+        script.execute(processList, "---\\naction: swapSteps \\nswap1nr: 1 \\nswap2nr: 2 \\nswap1title: first");
+        script.execute(processList, "---\\naction: swapSteps \\nswap1nr: NoNumber \\nswap2nr: 2 swap1title: first \\nswap2title: second");
+        script.execute(processList, "---\\naction: swapSteps \\nswap1nr: 1 \\nswap2nr: 2 \\nswap1title: first \\nswap2title: second");
     }
 
     @Test
@@ -254,7 +247,7 @@ public class GoobiScriptTest {
         PowerMock.replay(ProcessManager.class);
 
         GoobiScript script = new GoobiScript();
-        script.execute(processList, "action:swapProzessesOut");
+        script.execute(processList, "---\\naction: swapProzessesOut");
     }
 
     @Test
@@ -272,22 +265,20 @@ public class GoobiScriptTest {
         SessionForm sessionForm = new SessionForm();
         LoginBean loginBean = new LoginBean();
         loginBean.setMyBenutzer(user);
-        EasyMock.expect(Helper.getManagedBeanValue("#{SessionForm}")).andReturn(sessionForm).anyTimes();
-        EasyMock.expect(Helper.getManagedBeanValue("#{LoginForm}")).andReturn(loginBean).anyTimes();
+
         Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
 
         Helper.addMessageToProcessLog(EasyMock.anyInt(), EasyMock.anyObject(LogType.class), EasyMock.anyString());
 
         PowerMock.expectLastCall().anyTimes();
 
-
         PowerMock.replay(Helper.class);
         GoobiScript script = new GoobiScript();
-        script.execute(processList, "action:swapProzessesIn");
+        script.execute(processList, "---\\naction: swapProzessesIn");
     }
 
     @Test
-    public void testExecuteAddUserAction() throws Exception{
+    public void testExecuteAddUserAction() throws Exception {
 
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
@@ -302,8 +293,7 @@ public class GoobiScriptTest {
         SessionForm sessionForm = new SessionForm();
         LoginBean loginBean = new LoginBean();
         loginBean.setMyBenutzer(user);
-        EasyMock.expect(Helper.getManagedBeanValue("#{SessionForm}")).andReturn(sessionForm).anyTimes();
-        EasyMock.expect(Helper.getManagedBeanValue("#{LoginForm}")).andReturn(loginBean).anyTimes();
+
         Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
         Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
 
@@ -311,122 +301,121 @@ public class GoobiScriptTest {
 
         PowerMock.expectLastCall().anyTimes();
 
-
         PowerMock.replay(Helper.class);
 
         GoobiScript script = new GoobiScript();
-        script.execute(processList, "action:addUser");
-        script.execute(processList, "action:addUser steptitle:first");
-        script.execute(processList, "action:addUser steptitle:first username:user");
+        script.execute(processList, "---\\naction: addUser");
+        script.execute(processList, "---\\naction: addUser \\nsteptitle: first");
+        script.execute(processList, "---\\naction: addUser \\nsteptitle: first \\nusername: user");
     }
 
     //@Test
     public void testExecuteAddUserGroupAction() {
         GoobiScript script = new GoobiScript();
-        script.execute(processList, "action:addUserGroup");
-        script.execute(processList, "action:addUserGroup steptitle:first");
+        script.execute(processList, "---\\naction: addUserGroup");
+        script.execute(processList, "---\\naction: addUserGroup \\nsteptitle: first");
 
-        script.execute(processList, "action:addUserGroup steptitle:first group:group");
+        script.execute(processList, "---\\naction: addUserGroup \\nsteptitle: first \\ngroup: group");
     }
 
     //@Test
     public void testExecuteSetTaskPropertyAction() {
         GoobiScript script = new GoobiScript();
-        script.execute(processList, "action:setTaskProperty");
-        script.execute(processList, "action:setTaskProperty steptitle:first");
-        script.execute(processList, "action:setTaskProperty steptitle:first property:test");
-        script.execute(processList, "action:setTaskProperty steptitle:first property:wrong value:wrong");
-        script.execute(processList, "action:setTaskProperty steptitle:first property:readimages value:wrong");
+        script.execute(processList, "---\\naction: setTaskProperty");
+        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first");
+        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: test");
+        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: wrong \\nvalue: wrong");
+        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: readimages \\nvalue: wrong");
 
-        script.execute(processList, "action:setTaskProperty steptitle:first property:readimages value:true");
+        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: readimages \\nvalue: true");
 
-        script.execute(processList, "action:setTaskProperty steptitle:first property:metadata value:false");
-        script.execute(processList, "action:setTaskProperty steptitle:first property:automatic value:false");
-        script.execute(processList, "action:setTaskProperty steptitle:first property:batch value:false");
-        script.execute(processList, "action:setTaskProperty steptitle:first property:writeimages value:false");
-        script.execute(processList, "action:setTaskProperty steptitle:first property:validate value:false");
-        script.execute(processList, "action:setTaskProperty steptitle:first property:exportdms value:false");
+        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: metadata \\nvalue: false");
+        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: automatic \\nvalue: false");
+        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: batch \\nvalue: false");
+        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: writeimages \\nvalue: false");
+        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: validate \\nvalue: false");
+        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: exportdms \\nvalue: false");
 
     }
 
     //@Test
     public void testSetStepStatusAction() {
         GoobiScript script = new GoobiScript();
-        script.execute(processList, "action:setStepStatus");
-        script.execute(processList, "action:setStepStatus steptitle:first");
-        script.execute(processList, "action:setStepStatus steptitle:first status:NotANumber");
-        script.execute(processList, "action:setStepStatus steptitle:first status:1");
+        script.execute(processList, "---\\naction: setStepStatus");
+        script.execute(processList, "---\\naction: setStepStatus \\nsteptitle: first");
+        script.execute(processList, "---\\naction: setStepStatus \\nsteptitle: first \\nstatus: NotANumber");
+        script.execute(processList, "---\\naction: setStepStatus \\nsteptitle: first \\nstatus: 1");
     }
 
     //@Test
     public void testSetStepNumberAction() {
         GoobiScript script = new GoobiScript();
-        script.execute(processList, "action:setStepNumber");
-        script.execute(processList, "action:setStepNumber steptitle:first");
-        script.execute(processList, "action:setStepNumber steptitle:first number:NotANumber");
-        script.execute(processList, "action:setStepNumber steptitle:first number:1");
+        script.execute(processList, "---\\naction: setStepNumber");
+        script.execute(processList, "---\\naction: setStepNumber \\nsteptitle: first");
+        script.execute(processList, "---\\naction: setStepNumber \\nsteptitle: first \\nnumber: NotANumber");
+        script.execute(processList, "---\\naction: setStepNumber \\nsteptitle: first \\nnumber: 1");
     }
 
     //@Test
     public void testAddStepAction() {
         GoobiScript script = new GoobiScript();
-        script.execute(processList, "action:addStep");
-        script.execute(processList, "action:addStep steptitle:third");
-        script.execute(processList, "action:addStep steptitle:third number:NotANumber");
-        script.execute(processList, "action:addStep steptitle:third number:3");
+        script.execute(processList, "---\\naction: addStep");
+        script.execute(processList, "---\\naction: addStep \\nsteptitle: third");
+        script.execute(processList, "---\\naction: addStep \\nsteptitle: third \\nnumber: NotANumber");
+        script.execute(processList, "---\\naction: addStep \\nsteptitle: third \\nnumber: 3");
     }
 
     //@Test
     public void testDeleteStepAction() {
         GoobiScript script = new GoobiScript();
-        script.execute(processList, "action:deleteStep");
-        script.execute(processList, "action:deleteStep steptitle:wrong");
-        script.execute(processList, "action:deleteStep steptitle:third");
+        script.execute(processList, "---\\naction: deleteStep");
+        script.execute(processList, "---\\naction: deleteStep \\nsteptitle: wrong");
+        script.execute(processList, "---\\naction: deleteStep \\nsteptitle: third");
     }
 
     //@Test
     public void testAddShellScriptToStepAction() {
         GoobiScript script = new GoobiScript();
-        script.execute(processList, "action:addShellScriptToStep");
-        script.execute(processList, "action:addShellScriptToStep steptitle:first");
-        script.execute(processList, "action:addShellScriptToStep steptitle:first label:label");
-        script.execute(processList, "action:addShellScriptToStep steptitle:first label:label script:script");
+        script.execute(processList, "---\\naction: addShellScriptToStep");
+        script.execute(processList, "---\\naction: addShellScriptToStep \\nsteptitle: first");
+        script.execute(processList, "---\\naction: addShellScriptToStep \\nsteptitle: first \\nlabel: label");
+        script.execute(processList, "---\\naction: addShellScriptToStep \\nsteptitle: first \\nlabel: label \\nscript: script");
     }
 
     //@Test
     public void testAddModuleToStepAction() {
         GoobiScript script = new GoobiScript();
-        script.execute(processList, "action:addModuleToStep");
-        script.execute(processList, "action:addModuleToStep steptitle:first");
-        script.execute(processList, "action:addModuleToStep steptitle:first module:module");
+        script.execute(processList, "---\\naction: addModuleToStep");
+        script.execute(processList, "---\\naction: addModuleToStep \\nsteptitle: first");
+        script.execute(processList, "---\\naction: addModuleToStep \\nsteptitle: first \\nmodule: module");
     }
 
     //@Test
     public void testSetRulesetAction() {
         GoobiScript script = new GoobiScript();
-        script.execute(processList, "action:setRuleset");
-        script.execute(processList, "action:setRuleset ruleset:ruleset.xml");
+        script.execute(processList, "---\\naction: setRuleset");
+        script.execute(processList, "---\\naction: setRuleset \\nruleset: ruleset.xml");
     }
 
     //@Test
     public void testDeleteProcessAction() {
         GoobiScript script = new GoobiScript();
-        script.execute(processList, "action:deleteProcess");
+        script.execute(processList, "---\\naction: deleteProcess");
 
-        script.execute(processList, "action:deleteProcess contentOnly:true");
-        script.execute(processList, "action:deleteProcess contentOnly:false");
+        script.execute(processList, "---\\naction: deleteProcess \\ncontentOnly: true");
+        script.execute(processList, "---\\naction: deleteProcess \\ncontentOnly: false");
     }
 
     //@Test
     public void testAddPluginToStep() {
         GoobiScript script = new GoobiScript();
-        script.execute(processList, "action:addPluginToStep");
+        script.execute(processList, "---\\naction: addPluginToStep");
 
-        script.execute(processList, "action:addPluginToStep steptitle:");
-        script.execute(processList, "action:addPluginToStep  steptitle:first");
+        script.execute(processList, "---\\naction: addPluginToStep \\nsteptitle: ");
+        script.execute(processList, "---\\naction: addPluginToStep  \\nsteptitle: first");
 
-        script.execute(processList, "action:addPluginToStep  steptitle:first plugin:");
-        script.execute(processList, "action:addPluginToStep  steptitle:first plugin:plugin");
+        script.execute(processList, "---\\naction: addPluginToStep  \\nsteptitle: first \\nplugin: ");
+        script.execute(processList, "---\\naction: addPluginToStep  \\nsteptitle: first \\nplugin: plugin");
 
     }
 

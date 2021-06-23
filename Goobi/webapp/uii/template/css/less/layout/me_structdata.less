@@ -33,7 +33,7 @@
     /* TYPE */
     &__structure-type {
         .col-9 {
-            padding-right: 15px !important;    
+            padding-right: 15px !important;
         }
     }
     /* ADD ELEMENT */
@@ -64,10 +64,13 @@
             font-size: 1.08333rem;
         }
         .btn--icon {
-            &:hover,
-            &:active,
             &:focus {
-                color: @gwblue;
+                outline-offset: 2px;
+				outline: 5px auto -webkit-focus-ring-color;
+            }
+            &:hover,
+            &:active {
+            	color: @gwblue;
             }
         }
     }
@@ -88,6 +91,11 @@
             margin-bottom: 0.5rem;
         }
     }
+
+    &__easyPagination {
+        margin-left: 5px;
+    }
+
     /* QUICKASSIGN */
     &__quickassign {}
     /* COPY OTHER PROCESS */
@@ -112,8 +120,13 @@
 	height: 100%;
 }
 
+.document{
+	padding: 0;
+	line-height: normal;
+}
+
 /* BREAKPOINT FOR LARGE DESKTOPS */
-@media screen and (max-width: @largeBreakpoint) {} 
+@media screen and (max-width: @largeBreakpoint) {}
 
 /* BREAKPOINT FOR DESKTOPS */
 @media screen and (max-width: @mediumBreakpoint) {}

@@ -24,77 +24,114 @@ package de.sub.goobi.metadaten;
  ***************************************************************/
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+
+import javax.faces.model.SelectItem;
 
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.Helper;
+import lombok.Getter;
+import lombok.Setter;
+import ugh.dl.Corporate;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
+import ugh.dl.MetadataType;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
 
 public class MetadataGroupImpl {
-
+    @Getter
+    @Setter
     private List<MetadatumImpl> metadataList = new ArrayList<>();
+    @Getter
+    @Setter
     private List<MetaPerson> personList = new ArrayList<>();
-    private Prefs prefs;
-    private Process process;
+    @Getter
+    @Setter
+    private List<MetaCorporate> corporateList = new ArrayList<>();
+    @Getter
+    @Setter
+    private List<MetadataGroupImpl> groupList = new ArrayList<>();
+
+    @Getter
+    @Setter
+    private Prefs myPrefs;
+    @Getter
+    @Setter
+    private Process myProcess;
+    @Getter
+    @Setter
     private MetadataGroup metadataGroup;
 
-    public MetadataGroupImpl(Prefs myPrefs, Process myProcess, MetadataGroup metadataGroup, Metadaten bean) {
-        this.prefs = myPrefs;
-        this.process = myProcess;
+    @Getter
+    private List<SelectItem> addableMetadata = new ArrayList<>();
+    @Getter
+    private List<SelectItem> addableCorporations = new ArrayList<>();
+    @Getter
+    private List<SelectItem> addablePersons = new ArrayList<>();
+
+    @Getter
+    private String metadataGroupId;
+
+    @Getter
+    private String parentGroupId;
+
+    @Getter
+    private int level;
+
+    public MetadataGroupImpl(Prefs prefs, Process process, MetadataGroup metadataGroup, Metadaten bean, String metadataGroupId, String parentGroupId, int level) {
+        this.myPrefs = prefs;
+        this.myProcess = process;
         this.metadataGroup = metadataGroup;
         int counter = 0;
+        this.metadataGroupId = metadataGroupId;
+        this.parentGroupId = parentGroupId;
+        this.level = level;
+        metadataGroup.checkDefaultDisplayMetadata();
+
         for (Metadata md : metadataGroup.getMetadataList()) {
-            MetadatumImpl mdum = new MetadatumImpl(md, counter++, this.prefs, this.process, bean);
+            MetadatumImpl mdum = new MetadatumImpl(md, counter++, myPrefs, myProcess, bean);
             metadataList.add(mdum);
         }
         for (Person p : metadataGroup.getPersonList()) {
-            MetaPerson mp = new MetaPerson(p, counter++, this.prefs, metadataGroup.getDocStruct(), myProcess, bean);
+            MetaPerson mp = new MetaPerson(p, counter++, myPrefs, metadataGroup.getParent(), myProcess, bean);
             personList.add(mp);
+        }
+
+        for (Corporate corporate : metadataGroup.getCorporateList()) {
+            MetaCorporate mc = new MetaCorporate(corporate, myPrefs, metadataGroup.getParent(), myProcess, bean);
+            corporateList.add(mc);
+        }
+        for (MetadataGroup mg : metadataGroup.getAllMetadataGroups()) {
+            MetadataGroupImpl mgi = new MetadataGroupImpl(myPrefs, process, mg, bean, metadataGroupId+"-" + counter++, metadataGroupId, level+1);
+            groupList.add(mgi);
+        }
+        // get addable metadata, person, corporates and sub groups
+        List<MetadataType> allAddableTypes = metadataGroup.getAddableMetadataTypes(false);
+        if (allAddableTypes != null) {
+            for (MetadataType t : allAddableTypes) {
+                SelectItem si = new SelectItem(t.getName(), getMetadatatypeLanguage(t));
+
+                if (t.isCorporate()) {
+                    addableCorporations.add(si);
+                } else if (t.getIsPerson()) {
+                    addablePersons.add(si);
+                } else {
+                    addableMetadata.add(si);
+                }
+
+            }
         }
     }
 
-    public List<MetaPerson> getPersonList() {
-        return personList;
-    }
-
-    public void setPersonList(List<MetaPerson> personList) {
-        this.personList = personList;
-    }
-
-    public List<MetadatumImpl> getMetadataList() {
-        return metadataList;
-    }
-
-    public void setMetadataList(List<MetadatumImpl> metadataList) {
-        this.metadataList = metadataList;
-    }
-
-    public Prefs getMyPrefs() {
-        return prefs;
-    }
-
-    public void setMyPrefs(Prefs myPrefs) {
-        this.prefs = myPrefs;
-    }
-
-    public Process getMyProcess() {
-        return process;
-    }
-
-    public void setMyProcess(Process myProcess) {
-        this.process = myProcess;
-    }
-
-    public MetadataGroup getMetadataGroup() {
-        return metadataGroup;
-    }
-
-    public void setMetadataGroup(MetadataGroup metadataGroup) {
-        this.metadataGroup = metadataGroup;
+    private String getMetadatatypeLanguage(MetadataType inMdt) {
+        String label = inMdt.getLanguage(Helper.getMetadataLanguage());
+        if (label == null) {
+            label = inMdt.getName();
+        }
+        return label;
     }
 
     public String getName() {
@@ -103,6 +140,37 @@ public class MetadataGroupImpl {
             label = this.metadataGroup.getType().getName();
         }
         return label;
+    }
+
+    public boolean isMetadataAddable() {
+        return !addableMetadata.isEmpty();
+    }
+
+    public boolean isCorporateAddable() {
+        return !addableCorporations.isEmpty();
+    }
+
+    public boolean isPersonAddable() {
+        return !addablePersons.isEmpty();
+    }
+
+    public boolean isGroupAddable() {
+        return metadataGroup.getAddableMetadataGroupTypes() != null;
+    }
+
+    public boolean isHasGroups() {
+        return ! groupList.isEmpty();
+    }
+
+
+    public List<MetadataGroupImpl> getAsFlatList() {
+        List<MetadataGroupImpl> list = new LinkedList<>();
+        list.add(this);
+        for (MetadataGroupImpl child: groupList) {
+            list.addAll(child.getAsFlatList());
+        }
+
+        return list;
     }
 
 }

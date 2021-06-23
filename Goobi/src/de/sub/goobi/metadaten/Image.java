@@ -203,10 +203,14 @@ public @Data class Image {
         this.order = order;
         this.tooltip = imagePath.getFileName().toString();
         if (Type.image.equals(this.type)) {
-            this.bookmarkUrl = createThumbnailUrl(this.imagePath, 1000, getThumbnailFormat(), "");
+            String baseUrl =new HelperForm().getServletPathWithHostAsUrl();
+            this.bookmarkUrl = createThumbnailUrl(this.imagePath, 1000, getThumbnailFormat(), baseUrl);
             this.objectUrl = createIIIFUrl(imagePath);
+            this.thumbnailUrl = createThumbnailUrl(this.imagePath, thumbnailSize, getThumbnailFormat(), baseUrl);
         } else if (Type.unknown.equals(this.type)) {
             this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_NOTFOUND;
+            bookmarkUrl = objectUrl;
+            thumbnailUrl = objectUrl;
         } else if (Type.object.equals(this.type)) {
             this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_3D;
         } else if (Type.audio.equals(this.type)) {
@@ -216,7 +220,6 @@ public @Data class Image {
         } else {
             throw new IOException("Filetype handling not implemented at " + this.imagePath);
         }
-        createThumbnailUrls(thumbnailSize != null ? thumbnailSize : ConfigurationHelper.getInstance().getMetsEditorThumbnailSize());
     }
 
     /**
@@ -465,7 +468,7 @@ public @Data class Image {
      */
     public static String createIIIFUrl(Process process, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
-        sb.append("/api/image/")
+        sb.append("/api/process/image/")
         .append(process.getId())
         .append("/")
         .append(getImageFolderShort(imageFolderName))
@@ -534,7 +537,7 @@ public @Data class Image {
 
     public static String createThumbnailUrl(Process process, int size, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
-        sb.append("/api/image/")
+        sb.append("/api/process/image/")
         .append(process.getId())
         .append("/")
         .append(getImageFolderShort(imageFolderName))
@@ -612,6 +615,8 @@ public @Data class Image {
                     return Type.audio;
                 } else if (mimetype.startsWith("video")
                         && (mimetype.equals("video/mp4") || mimetype.equals("video/webm") || mimetype.equals("video/ogg"))) {
+                    return Type.video;
+                }else if (mimetype.equals("application/mxf")) {
                     return Type.video;
                 }
             }

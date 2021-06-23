@@ -3,10 +3,10 @@ package org.goobi.production.flow.statistics;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -208,7 +208,7 @@ public class StatisticsManager implements Serializable {
             if (targetCalculationUnit != null) {
                 question.setCalculationUnit(targetCalculationUnit);
             }
-            renderingElements = new ArrayList<StatisticsRenderingElement>();
+            renderingElements = new ArrayList<>();
             List<DataTable> myDataTables = question.getDataTables(filterString, filter);
 
             /*

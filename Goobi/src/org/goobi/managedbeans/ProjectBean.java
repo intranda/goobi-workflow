@@ -6,7 +6,7 @@ package org.goobi.managedbeans;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -29,17 +29,18 @@ package org.goobi.managedbeans;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.imageio.ImageIO;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -48,7 +49,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
@@ -83,9 +85,9 @@ import de.sub.goobi.persistence.managers.ProjectManager;
 import lombok.Getter;
 import lombok.Setter;
 
-@ManagedBean(name = "ProjekteForm")
+@Named("ProjekteForm")
 @SessionScoped
-public class ProjectBean extends BasicBean {
+public class ProjectBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 6735912903249358786L;
     private static final Logger logger = LogManager.getLogger(ProjectBean.class);
 
@@ -342,7 +344,7 @@ public class ProjectBean extends BasicBean {
 
     public StatisticsManager getStatisticsManager1() {
         if (this.statisticsManager1 == null) {
-            this.statisticsManager1 = new StatisticsManager(StatisticsMode.PRODUCTION, FacesContext.getCurrentInstance().getViewRoot().getLocale(),
+            this.statisticsManager1 = new StatisticsManager(StatisticsMode.PRODUCTION, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
                     "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
         }
         return this.statisticsManager1;
@@ -354,7 +356,7 @@ public class ProjectBean extends BasicBean {
      */
     public StatisticsManager getStatisticsManager2() {
         if (this.statisticsManager2 == null) {
-            this.statisticsManager2 = new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContext.getCurrentInstance().getViewRoot().getLocale(),
+            this.statisticsManager2 = new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
                     "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
         }
         return this.statisticsManager2;
@@ -366,7 +368,7 @@ public class ProjectBean extends BasicBean {
      */
     public StatisticsManager getStatisticsManager3() {
         if (this.statisticsManager3 == null) {
-            this.statisticsManager3 = new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContext.getCurrentInstance().getViewRoot().getLocale(),
+            this.statisticsManager3 = new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
                     "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
         }
         return this.statisticsManager3;
@@ -378,7 +380,7 @@ public class ProjectBean extends BasicBean {
      */
     public StatisticsManager getStatisticsManager4() {
         if (this.statisticsManager4 == null) {
-            this.statisticsManager4 = new StatisticsManager(StatisticsMode.STORAGE, FacesContext.getCurrentInstance().getViewRoot().getLocale(),
+            this.statisticsManager4 = new StatisticsManager(StatisticsMode.STORAGE, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
                     "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
         }
         return this.statisticsManager4;

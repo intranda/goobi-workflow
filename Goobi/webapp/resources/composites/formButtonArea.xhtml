@@ -1,7 +1,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<composite:interface>
 		<composite:attribute name="object" />
@@ -15,29 +16,22 @@
 		<div class="form-actions">
 
 			<!-- Save -->
-			<h:commandLink styleClass="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most" id="absenden"
-				type="submit" action="#{cc.attrs.form.Speichern}">
+			<button class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most" jsf:id="absenden"
+				type="submit" jsf:action="#{cc.attrs.form.Speichern}">
 				<i class="fa fa-save margin-right-5"></i>
 				<h:outputText value="#{msgs.speichern}" />
-			</h:commandLink>
+			</button>
 
 			<!-- Cancel -->
-			<h:link id="cancel" styleClass="btn margin-sides-10 font-size-s pull-right" outcome="#{cc.attrs.actionCancel}"
-				value="#{msgs.abbrechen}" />
-
-			<!-- 			<h:commandLink id="delete" styleClass="btn btn-danger font-size-s" -->
-			<!-- 				onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false" -->
-			<!-- 				action="#{cc.attrs.form.Loeschen}" > -->
-			<!-- 				<i class="fa fa-trash-o margin-right-5"></i> -->
-			<!-- 				<h:outputText value="#{msgs.loeschen}" /> -->
-			<!-- 			</h:commandLink> -->
+			<button jsf:id="cancel" class="btn margin-sides-10 font-size-s pull-right" jsf:outcome="#{cc.attrs.actionCancel}">
+			#{msgs.abbrechen} </button>
 
 
 			<!-- Delete -->
 			<c:if test="#{cc.attrs.object != null}">
-				<a href="#" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal"> <i
+				<button id="delete" class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteModal"> <i
 					class="fa fa-trash-o margin-right-5" /> <h:outputText value="#{msgs.loeschen}" />
-				</a>
+				</button>
 
 				<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 					<div class="modal-dialog" role="document">
@@ -52,10 +46,10 @@
 							</div>
 							<div class="modal-footer">
 								<button class="btn" data-dismiss="modal" aria-hidden="true">#{msgs.abbrechen}</button>
-								<h:commandLink styleClass="btn btn-danger" action="#{cc.attrs.form.Loeschen}">
+								<button jsf:id="confirmDelete" class="btn btn-danger" jsf:action="#{cc.attrs.form.Loeschen}">
 									<i class="fa fa-trash-o margin-right-5" />
 									<h:outputText value="#{msgs.loeschen}" />
-								</h:commandLink>
+								</button>
 							</div>
 						</div>
 					</div>

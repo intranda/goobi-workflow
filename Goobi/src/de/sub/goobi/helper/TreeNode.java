@@ -6,7 +6,7 @@ package de.sub.goobi.helper;
  * Visit the websites for more information. 
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -30,12 +30,24 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-public class TreeNode {
+import lombok.Getter;
+import lombok.Setter;
 
+public class TreeNode {
+	@Getter
+	@Setter
     protected boolean expanded = false;
-    protected boolean selected = false;
+    @Getter
+	@Setter
+	protected boolean selected = false;
+    @Getter
+    @Setter
     protected String label;
+    @Getter
+    @Setter
     protected String id;
+    @Getter
+    @Setter
     protected List<TreeNode> children;
 
     public TreeNode() {
@@ -155,46 +167,6 @@ public class TreeNode {
     /*                                       
     * Getter und Setter                         
     */
-
-    public List<TreeNode> getChildren() {
-        return this.children;
-    }
-
-    public void setChildren(List<TreeNode> children) {
-        this.children = children;
-    }
-
-    public boolean isExpanded() {
-        return this.expanded;
-    }
-
-    public void setExpanded(boolean expanded) {
-        this.expanded = expanded;
-    }
-
-    public String getId() {
-        return this.id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public boolean isSelected() {
-        return this.selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
-
-    public String getLabel() {
-        return this.label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
 
     public boolean getHasChildren() {
         if (this.children == null || this.children.size() == 0) {

@@ -6,7 +6,7 @@ package de.unigoettingen.sub.search.opac;
  * Visit the websites for more information. 
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -29,16 +29,28 @@ import java.util.List;
 import java.util.Map;
 
 import de.sub.goobi.helper.FacesContextHelper;
+import lombok.Getter;
+import lombok.Setter;
 
 public class ConfigOpacDoctype {
+	@Getter
     private String title = "";
+	@Getter
     private String rulesetType = "";
+	@Getter
     private String tifHeaderType = "";
+	@Getter
     private boolean periodical = false;
+	@Getter
     private boolean multiVolume = false;
+	@Getter
     private boolean containedWork = false;
+	@Getter
     private Map<String, String> labels;
+	@Getter
+	@Setter
     private List<String> mappings;
+	@Getter
     private String rulesetChildType;
 
     public ConfigOpacDoctype(String inTitle, String inRulesetType, String inTifHeaderType, boolean inPeriodical, boolean inMultiVolume,
@@ -52,46 +64,6 @@ public class ConfigOpacDoctype {
         this.labels = inLabels;
         this.mappings = inMappings;
         this.rulesetChildType = rulesetChildType;
-    }
-
-    public String getTitle() {
-        return this.title;
-    }
-
-    public String getRulesetType() {
-        return this.rulesetType;
-    }
-
-    public String getTifHeaderType() {
-        return this.tifHeaderType;
-    }
-
-    public boolean isPeriodical() {
-        return this.periodical;
-    }
-
-    public boolean isMultiVolume() {
-        return this.multiVolume;
-    }
-
-    public boolean isContainedWork() {
-        return this.containedWork;
-    }
-
-    public Map<String, String> getLabels() {
-        return this.labels;
-    }
-
-    public List<String> getMappings() {
-        return this.mappings;
-    }
-
-    public void setMappings(List<String> mappings) {
-        this.mappings = mappings;
-    }
-
-    public String getRulesetChildType() {
-        return rulesetChildType;
     }
 
     public String getLocalizedLabel() {

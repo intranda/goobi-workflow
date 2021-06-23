@@ -3,10 +3,10 @@ package de.sub.goobi.helper.tasks;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -25,18 +25,32 @@ package de.sub.goobi.helper.tasks;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+
 import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 
 import org.goobi.beans.Process;
+
 import de.sub.goobi.helper.Helper;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.AccessLevel;
 
 public class LongRunningTask extends Thread {
     protected static final Logger logger = LogManager.getLogger(LongRunningTask.class);
-
+    
+    @Getter
+    @Setter
     private int statusProgress = 0;
+    @Getter
     private String statusMessage = "";
+    @Getter
+    @Setter
     private String longMessage = "";
+    @Getter
+    @Setter
     private String title = "MasterTask";
+    @Getter
+    @Setter(AccessLevel.PROTECTED)
     private Process prozess;
     private boolean isSingleThread = true;
 
@@ -85,41 +99,6 @@ public class LongRunningTask extends Thread {
     }
 
     /**
-     * Prozess-Getter ================================================================
-     */
-    public Process getProzess() {
-        return this.prozess;
-    }
-
-    /**
-     * Status des Tasks in Angabe von Prozent ================================================================
-     */
-    public int getStatusProgress() {
-        return this.statusProgress;
-    }
-
-    /**
-     * Meldung über den aktuellen Task ================================================================
-     */
-    public String getStatusMessage() {
-        return this.statusMessage;
-    }
-
-    /**
-     * Titel des aktuellen Task ================================================================
-     */
-    public String getTitle() {
-        return this.title;
-    }
-
-    /**
-     * Setter für Fortschritt nur für vererbte Klassen ================================================================
-     */
-    protected void setStatusProgress(int statusProgress) {
-        this.statusProgress = statusProgress;
-    }
-
-    /**
      * Setter für Statusmeldung nur für vererbte Klassen ================================================================
      */
     protected void setStatusMessage(String statusMessage) {
@@ -130,28 +109,6 @@ public class LongRunningTask extends Thread {
                 logger.debug(statusMessage);
             }
         }
-    }
-
-    /**
-     * Setter für Titel nur für vererbte Klassen ================================================================
-     */
-    protected void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
-     * Setter für Prozess nur für vererbte Klassen ================================================================
-     */
-    protected void setProzess(Process prozess) {
-        this.prozess = prozess;
-    }
-
-    public String getLongMessage() {
-        return this.longMessage;
-    }
-
-    public void setLongMessage(String inlongMessage) {
-        this.longMessage = inlongMessage;
     }
 
 }

@@ -87,28 +87,28 @@
  				</h:panelGroup>
 				<!-- Administration -->
 				<h:panelGroup rendered="#{LoginForm.hasRole('Admin_Menu')}">
-					<li class="has-submenu #{NavigationForm.aktuell == 'a30' or NavigationForm.aktuell == 'a31' or NavigationForm.aktuell == 'a32' or NavigationForm.aktuell == 'a33' or NavigationForm.aktuell == 'a34' or NavigationForm.aktuell == 'a35' or NavigationForm.aktuell == 'a36' or NavigationForm.aktuell == 'a37' or NavigationForm.aktuell == 'a38' or NavigationForm.aktuell == 'a39'?'active':''}">
+					<li class="has-submenu #{NavigationForm.aktuell == 'a30' or NavigationForm.aktuell == 'a31' or NavigationForm.aktuell == 'a32' or NavigationForm.aktuell == 'a33' or NavigationForm.aktuell == 'a34' or NavigationForm.aktuell == 'a35' or NavigationForm.aktuell == 'a36' or NavigationForm.aktuell == 'a37' or NavigationForm.aktuell == 'a38' or NavigationForm.aktuell == 'a39' or NavigationForm.aktuell == 'a42' or NavigationForm.aktuell == 'a53'?'active':''}">
 						<a href="#">#{msgs.administration}</a>
 						<ul>
 							<!-- Benutzerverwaltung -->
 							<intranda:menuItem id="a30" label="#{msgs.benutzer}"
 								action="#{BenutzerverwaltungForm.FilterKein}"
 								rendered="#{LoginForm.hasRole('Admin_Users')}"
-								icon="glyphicon-user box-icon-fix-menu-up3 "
+								icon="fa fa-user box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
 
 							<!-- Benutzergruppen -->
 							<intranda:menuItem id="a31" label="#{msgs.benutzergruppen}"
 								action="#{BenutzergruppenForm.FilterKein}"
 								rendered="#{LoginForm.hasRole('Admin_Usergroups')}"
-								icon="glyphicon-group box-icon-fix-menu-up3 "
+								icon="fa fa-users box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
 
 							<!-- Projekte -->
 							<intranda:menuItem id="a32" label="#{msgs.projekte}"
 								action="#{ProjekteForm.FilterKein}"
 								rendered="#{LoginForm.hasRole('Admin_Projects')}"
-								icon="glyphicon-compass box-icon-fix-menu-up3 "
+								icon="fa fa-compass box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
 
 							<!-- Regelsaetze -->
@@ -129,27 +129,35 @@
 							<intranda:menuItem id="a35" label="#{msgs.ldapgruppen}"
 								action="#{LdapGruppenForm.FilterKein}"
 								rendered="#{LoginForm.hasRole('Admin_Ldap')}"
-								icon="glyphicon-keys box-icon-fix-menu-up3 "
+								icon="fa fa-key box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
 
                             <!-- Message Queue -->
                             <intranda:menuItem id="a37" label="#{msgs.menu_administration_currentQueue}"
                                 action="queue"
                                 rendered="#{LoginForm.hasRole('Admin_Queue')}"
-                                icon="fa fa-exclamation-triangle box-icon-fix-menu-up3"
+                                icon="fa fa-spinner box-icon-fix-menu-up3"
                                 fontclass="margin-left-10" />
                                 
                             <!-- Plugins overview -->
-                            <intranda:menuItem id="a38" label="#{msgs.menu_administration_plugins}"
+                            <intranda:menuItem id="a42" label="#{msgs.menu_administration_plugins}"
                                 action="plugins"
-                                icon="fa fa-exclamation-triangle box-icon-fix-menu-up3"
+                                icon="fa fa-stethoscope box-icon-fix-menu-up3"
+                                fontclass="margin-left-10" />
+                            
+                            <!-- Vokabularverwaltung -->
+                            <intranda:menuItem id="a53" 
+                            	label="#{msgs.vocabularyManager}"
+                                action="#{vocabularyBean.FilterKein}"
+                                rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
+                                icon="fa fa-database box-icon-fix-menu-up3 "
                                 fontclass="margin-left-10" />
                                 
 							<!-- Superadmin -->
 							<intranda:menuItem id="a39" label="#{msgs.administrationsaufgaben}"
 								action="admin"
 								rendered="#{LoginForm.hasRole('Admin_Administrative_Tasks')}"
-								icon="fa fa-exclamation-triangle box-icon-fix-menu-up3"
+								icon="fa fa-bullhorn box-icon-fix-menu-up3"
 								fontclass="margin-left-10" />
 								
 							<!-- Admin-Plugins -->

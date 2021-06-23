@@ -18,9 +18,12 @@
             value="#{msgs.metadatenBetrachten} (#{msgs.schreibgeschuetzt})" />
 
         <h:form id="metadataform" prependId="false">
-            <h:panelGroup rendered="#{(not Metadaten.modusHinzufuegen) and (not Metadaten.modusHinzufuegenPerson) and (not Metadaten.modeAddGroup)}">
+            <h:panelGroup rendered="#{(not Metadaten.modusHinzufuegen) and (not Metadaten.modusHinzufuegenPerson) and (not Metadaten.modeAddGroup) and (not Metadaten.modeAddCorporate)}">
                 <!-- EXISTING PERSON -->
                 <ui:include src="metadata/inc_me_metadata-existingPerson.xhtml" />
+                
+                <!-- EXISTING CORPORATE -->
+                <ui:include src="metadata/inc_me_metadata-existingCorporate.xhtml" />
                 
                 <!-- EXISTING METADATA -->
                 <ui:include src="metadata/inc_me_metadata-existingMetadata.xhtml" />
@@ -35,40 +38,11 @@
             <!-- ADD PERSON -->
             <ui:include src="metadata/inc_me_metadata-addPerson.xhtml" />
             
+            <!-- ADD CORPORATE -->
+            <ui:include src="metadata/inc_me_metadata-addCorporate.xhtml" />
+            
             <!-- ADD GROUP -->
             <ui:include src="metadata/inc_me_metadata-addGroup.xhtml" />
-        </h:form>
-        
-        <!-- MODALS -->
-        <h:form
-            id="normdataForm"
-            prependId="false">
-            <h:inputHidden
-                id="rowType"
-                value="#{Metadaten.rowType}" />
-            <h:inputHidden
-                id="rowIndex"
-                value="#{Metadaten.rowIndex}" />
-            <h:inputHidden
-                id="groupIndex"
-                value="#{Metadaten.groupIndex}" />
-            <h:commandLink
-                id="updatePluginButton"
-                style="display:none;"
-                action="#{Metadaten.loadCurrentPlugin}">
-                <f:ajax
-                    execute="rowType rowIndex groupIndex"
-                    render="processModalContent viaf_search easydbModalContent" />
-
-
-            </h:commandLink>
-            <ui:include src="modals/inc_me_modal_dante.xhtml" />
-            <ui:include src="modals/inc_me_modal_easydb.xhtml" />
-            <ui:include src="modals/inc_me_modal_geonames.xhtml" />
-            <ui:include src="modals/inc_me_modal_gnd.xhtml" />
-            <ui:include src="modals/inc_me_modal_processSearch.xhtml" />
-            <ui:include src="modals/inc_me_modal_viaf.xhtml" />
-            
         </h:form>
     </composite:implementation>
 </ui:composition>

@@ -26,15 +26,15 @@
 			onkeypress="submitOnEnter(event);"
 			rendered="#{LoginForm.hasRole('Admin_Dockets')}">
 
-			<div class="row">
+			<div class="row" role="main">
 				<div class="col-sm-12">
 					<div class="box box-color orange box-bordered">
 						<div class="box-title">
-							<h3>
+							<h2>
 								<i class="fa fa-print box-icon-fix"></i>
 								<h:outputText value="#{myPageTitle}" />
 								<h:outputText value=": #{DocketForm.myDocket.name}" rendered="#{DocketForm.myDocket.id != null}" />
-							</h3>
+							</h2>
 						</div>
 						<div class="box-content nopadding">
 
@@ -42,7 +42,7 @@
 								field="#{DocketForm.myDocket.name}" help="#{msgs.helpDocketTitle}"
 								fieldStyle="form-control" />
 
-							<intranda:formInputText id="file" name="file" label="#{msgs.docketFile}"
+							<intranda:formInputText id="file" name="filename" label="#{msgs.docketFile}"
 								field="#{DocketForm.myDocket.file}" help="#{msgs.helpDocketFile}" fieldStyle="form-control" />
 
 							<intranda:formButtonArea id="buttons" form="#{DocketForm}" object="#{DocketForm.myDocket.id}"

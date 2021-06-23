@@ -6,7 +6,7 @@ package de.sub.goobi.persistence.managers;
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -129,7 +129,7 @@ class MetadataMysqlHelper implements Serializable {
             for (String item : valueList) {
                 sql.append("(" + processid + ", ? , ?, ? ),");
                 values.add(metadataName);
-                values.add(item);
+                values.add(item.trim());
                 values.add(sb.toString());
             }
 
@@ -157,7 +157,7 @@ class MetadataMysqlHelper implements Serializable {
     public static List<String> getDistinctMetadataNames() throws SQLException {
         StringBuilder sql = new StringBuilder();
         sql.append(
-                "select distinct name from metadata where name like 'index.%' union select distinct name from metadata where name not like 'index.%'");
+                "select distinct name from metadata where name like 'index.%' union select distinct name from metadata where name not like 'index.%' order by name");
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();

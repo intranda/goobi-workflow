@@ -1,8 +1,5 @@
 package org.goobi.api.display.enums;
 
-import lombok.extern.log4j.Log4j;
-import lombok.extern.log4j.Log4j2;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -25,7 +22,7 @@ import lombok.extern.log4j.Log4j2;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-@Log4j2
+
 public enum DisplayType {
 
     input,
@@ -36,12 +33,14 @@ public enum DisplayType {
     gnd,
     person,
     geonames,
-
+    corporate,
     dante,
     process,
     htmlInput,
     viaf,
-    easydb;
+    easydb,
+    vocabularySearch,
+    vocabularyList;
 
     //    public IMetadataPlugin getPlugin() {
     //        IMetadataPlugin plugin = null;

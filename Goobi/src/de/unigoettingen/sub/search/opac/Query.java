@@ -6,7 +6,7 @@ package de.unigoettingen.sub.search.opac;
  * Visit the websites for more information. 
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -27,8 +27,11 @@ package de.unigoettingen.sub.search.opac;
  */
 import java.net.URLEncoder;
 
+import lombok.Getter;
+
 public class Query {
 
+	@Getter
     private String queryUrl;
     private int queryTermNumber = 0;
 
@@ -71,9 +74,4 @@ public class Query {
 
         this.queryTermNumber++;
     }
-
-    public String getQueryUrl() {
-        return this.queryUrl;
-    }
-
 }

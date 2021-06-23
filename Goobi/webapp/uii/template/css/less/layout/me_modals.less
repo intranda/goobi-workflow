@@ -26,14 +26,20 @@
     background-color: @gwblue;
     button {
         color: @white;
-        &:hover,
-        &:active,
         &:focus {
-            color: @white;
+            outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+        }
+        &:hover,
+        &:active{
+        	color: @white;
         }
     }
     .close {
         padding: 1.3rem 1rem;
+    }
+    h1 {
+    	font-size: 1.6rem;
     }
 }
 
@@ -112,10 +118,13 @@
     margin-bottom: 5px;
     padding-right: 10px;
     text-align: right;
+    display: flex;
+    justify-content: flex-end;   
     img {
         width: 40px;
     }
 }
+
 .modal__viaf-no-hits {
     margin: 0;
     padding: 25px;
@@ -139,10 +148,13 @@
     display: inline-block;
     padding: 5px 10px;
     color: @black;
-    &:hover,
-    &:active,
     &:focus {
-        color: @black;
+        outline-offset: 2px;
+		outline: 5px auto -webkit-focus-ring-color;
+    }
+    &:hover,
+    &:active {
+    	color: @black;
     }
 }
 
@@ -201,9 +213,9 @@
 	align-content: center;
 	justify-content: center;
 	align-items: center;	
-	
+	margin-right: 5px;
 	 img {
-		width: 16px;
+		width: 20px;
 	}
 } 
 

@@ -6,7 +6,7 @@ package de.sub.goobi.helper;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 			- http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -27,7 +27,12 @@ package de.sub.goobi.helper;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.MatchResult;
@@ -38,7 +43,8 @@ import javax.naming.ConfigurationException;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.text.StrTokenizer;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -47,6 +53,9 @@ import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
+
+import com.sun.org.apache.xerces.internal.util.URI;
+import com.sun.org.apache.xerces.internal.util.URI.MalformedURIException;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -98,15 +107,22 @@ public class VariableReplacer {
     private static Pattern pChangeStepToken = Pattern.compile("\\$?(?:\\(|\\{)changesteptoken(?:\\}|\\))");
     private static Pattern pProjectId = Pattern.compile("\\$?(?:\\(|\\{)projectid(?:\\}|\\))");
     private static Pattern pProjectName = Pattern.compile("\\$?(?:\\(|\\{)projectname(?:\\}|\\))");
+    private static Pattern pProjectIdentifier = Pattern.compile("\\$?(?:\\(|\\{)projectidentifier(?:\\}|\\))");
 
-    DigitalDocument dd;
-    Prefs prefs;
-    UghHelper uhelp;
+    public static Pattern piiifMediaFolder = Pattern.compile("\\$?(?:\\(|\\{)iiifMediaFolder(?:\\}|\\))");
+    public static Pattern piiifMasterFolder = Pattern.compile("\\$?(?:\\(|\\{)iiifMasterFolder(?:\\}|\\))");
+
+    private DigitalDocument dd;
+    private Prefs prefs;
+    private UghHelper uhelp;
     // $(meta.abc)
     private final String namespaceMeta = "\\$?(?:\\(|\\{)meta\\.([\\w.-]*)(?:\\}|\\))";
 
     // $(metas.abc)
     private final String namespaceMetaMultiValue = "\\$?(?:\\(|\\{)metas\\.([\\w.-]*)(?:\\}|\\))";
+
+    // $(folder.xyz) or {folder.xyz}
+    private final static String folderExpression = "\\$?(?:\\(|\\{)folder\\.([^)]+)(?:\\}|\\))";
 
     private Process process;
     private Step step;
@@ -146,6 +162,27 @@ public class VariableReplacer {
     }
 
     /**
+     * This method can be used to replace simple variables,like process title or id
+     * 
+     * Access to ruleset, metadata, properties is not possible
+     * 
+     * @param inString
+     * @return replaced string
+     */
+
+    public static String simpleReplace(String inString, Process process) {
+
+        inString = pProcessTitle.matcher(inString).replaceAll(process.getTitel());
+        inString = pProcessId.matcher(inString).replaceAll(String.valueOf(process.getId().intValue()));
+
+        inString = pProjectId.matcher(inString).replaceAll(String.valueOf(process.getProjekt().getId().intValue()));
+        inString = pProjectName.matcher(inString).replaceAll(process.getProjekt().getTitel());
+        inString = pProjectIdentifier.matcher(inString).replaceAll(process.getProjekt().getProjectIdentifier());
+
+        return inString;
+    }
+
+    /**
      * Variablen innerhalb eines Strings ersetzen. Dabei vergleichbar zu Ant die Variablen durchlaufen und aus dem Digital Document holen
      * ================================================================
      */
@@ -175,19 +212,18 @@ public class VariableReplacer {
                 inString = inString.replace(r.group(), getMetadataFromDigitalDocument(MetadataLevel.ALL, r.group(1), true));
             }
         }
-
         // replace paths and files
+        inString = simpleReplace(inString, process);
         try {
-            String processpath = this.process.getProcessDataDirectory().replace("\\", "/");
-            String tifpath = this.process.getImagesTifDirectory(false).replace("\\", "/");
-            String imagepath = this.process.getImagesDirectory().replace("\\", "/");
-            String origpath = this.process.getImagesOrigDirectory(false).replace("\\", "/");
-            String metaFile = this.process.getMetadataFilePath().replace("\\", "/");
-            String ocrBasisPath = this.process.getOcrDirectory().replace("\\", "/");
-            String ocrPlaintextPath = this.process.getOcrTxtDirectory().replace("\\", "/");
-            String sourcePath = this.process.getSourceDirectory().replace("\\", "/");
-            String importPath = this.process.getImportDirectory().replace("\\", "/");
-            String myprefs = ConfigurationHelper.getInstance().getRulesetFolder() + this.process.getRegelsatz().getDatei();
+            String processpath = process.getProcessDataDirectory().replace("\\", "/");
+            String tifpath = process.getImagesTifDirectory(false).replace("\\", "/");
+            String imagepath = process.getImagesDirectory().replace("\\", "/");
+            String origpath = process.getImagesOrigDirectory(false).replace("\\", "/");
+            String ocrBasisPath = process.getOcrDirectory().replace("\\", "/");
+            String ocrPlaintextPath = process.getOcrTxtDirectory().replace("\\", "/");
+            String sourcePath = process.getSourceDirectory().replace("\\", "/");
+            String importPath = process.getImportDirectory().replace("\\", "/");
+            String metaFile = process.getMetadataFilePath().replace("\\", "/");
 
             /* da die Tiffwriter-Scripte einen Pfad ohne endenen Slash haben wollen, wird diese rausgenommen */
             if (tifpath.endsWith(FileSystems.getDefault().getSeparator())) {
@@ -240,6 +276,7 @@ public class VariableReplacer {
             inString = pS3OcrBasisPath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(ocrBasisPath));
             inString = pS3OcrPlainTextPath.matcher(inString).replaceAll(S3FileUtils.string2Prefix(ocrPlaintextPath));
 
+            inString = pMetaFile.matcher(inString).replaceAll(metaFile);
             inString = pTifPath.matcher(inString).replaceAll(tifpath);
             inString = pOrigPath.matcher(inString).replaceAll(origpath);
             inString = pImagePath.matcher(inString).replaceAll(imagepath);
@@ -248,89 +285,92 @@ public class VariableReplacer {
             inString = pSourcePath.matcher(inString).replaceAll(sourcePath);
             inString = pOcrBasisPath.matcher(inString).replaceAll(ocrBasisPath);
             inString = pOcrPlaintextPath.matcher(inString).replaceAll(ocrPlaintextPath);
-            inString = pProcessTitle.matcher(inString).replaceAll(this.process.getTitel());
-            inString = pProcessId.matcher(inString).replaceAll(String.valueOf(this.process.getId().intValue()));
-            inString = pGoobiFolder.matcher(inString).replaceAll(ConfigurationHelper.getInstance().getGoobiFolder());
-            inString = pScriptsFolder.matcher(inString).replaceAll(ConfigurationHelper.getInstance().getScriptsFolder());
 
-            inString = pPrefs.matcher(inString).replaceAll(myprefs);
-            inString = pMetaFile.matcher(inString).replaceAll(metaFile);
-            inString = pProjectId.matcher(inString).replaceAll(String.valueOf(process.getProjekt().getId().intValue()));
-            inString = pProjectName.matcher(inString).replaceAll(process.getProjekt().getTitel());
+            inString = piiifMediaFolder.matcher(inString).replaceAll(getIiifImageUrls(process, "media"));
+            inString = piiifMasterFolder.matcher(inString).replaceAll(getIiifImageUrls(process, "master"));
 
-            if (this.step != null) {
-                String stepId = String.valueOf(this.step.getId());
-                String stepname = this.step.getTitel();
+        } catch (IOException | InterruptedException | SwapException | DAOException e) {
+            logger.error(e);
+        }
+        String myprefs = ConfigurationHelper.getInstance().getRulesetFolder() + this.process.getRegelsatz().getDatei();
 
-                inString = pStepId.matcher(inString).replaceAll(stepId);
-                inString = pStepName.matcher(inString).replaceAll(stepname);
+        inString = pGoobiFolder.matcher(inString).replaceAll(ConfigurationHelper.getInstance().getGoobiFolder());
+        inString = pScriptsFolder.matcher(inString).replaceAll(ConfigurationHelper.getInstance().getScriptsFolder());
+        inString = pPrefs.matcher(inString).replaceAll(myprefs);
 
-                Matcher tokenMatcher = pChangeStepToken.matcher(inString);
-                if (tokenMatcher.find()) {
-                    try {
-                        String token = JwtHelper.createChangeStepToken(step);
-                        inString = tokenMatcher.replaceAll(token);
-                    } catch (ConfigurationException e) {
-                        logger.error(e);
-                    }
+        if (this.step != null) {
+            String stepId = String.valueOf(this.step.getId());
+            String stepname = this.step.getTitel();
+
+            inString = pStepId.matcher(inString).replaceAll(stepId);
+            inString = pStepName.matcher(inString).replaceAll(stepname);
+
+            Matcher tokenMatcher = pChangeStepToken.matcher(inString);
+            if (tokenMatcher.find()) {
+                try {
+                    String token = JwtHelper.createChangeStepToken(step);
+                    inString = tokenMatcher.replaceAll(token);
+                } catch (ConfigurationException e) {
+                    logger.error(e);
                 }
             }
+        }
 
-            // replace WerkstueckEigenschaft, usage: (product.PROPERTYTITLE)
+        // replace WerkstueckEigenschaft, usage: (product.PROPERTYTITLE)
 
-            for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)product\\.([^)]+)(?:\\}|\\))", inString)) {
-                String propertyTitle = r.group(1);
-                for (Masterpiece ws : this.process.getWerkstueckeList()) {
-                    for (Masterpieceproperty we : ws.getEigenschaftenList()) {
-                        if (we.getTitel().equalsIgnoreCase(propertyTitle)) {
-                            inString = inString.replace(r.group(), we.getWert());
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // replace Vorlageeigenschaft, usage: (template.PROPERTYTITLE)
-
-            for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)template\\.([^)]+)(?:\\}|\\))", inString)) {
-                String propertyTitle = r.group(1);
-                for (Template v : this.process.getVorlagenList()) {
-                    for (Templateproperty ve : v.getEigenschaftenList()) {
-                        if (ve.getTitel().equalsIgnoreCase(propertyTitle)) {
-                            inString = inString.replace(r.group(), ve.getWert());
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // replace Prozesseigenschaft, usage: (process.PROPERTYTITLE)
-
-            for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)process\\.([^)]+)(?:\\}|\\))", inString)) {
-                String propertyTitle = r.group(1);
-                List<ProcessProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
-                for (ProcessProperty pe : ppList) {
-                    if (pe.getName().equalsIgnoreCase(propertyTitle)) {
-                        inString = inString.replace(r.group(), pe.getValue() == null ? "" : pe.getValue());
+        for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)product\\.([^)]+)(?:\\}|\\))", inString)) {
+            String propertyTitle = r.group(1);
+            for (Masterpiece ws : this.process.getWerkstueckeList()) {
+                for (Masterpieceproperty we : ws.getEigenschaftenList()) {
+                    if (we.getTitel().equalsIgnoreCase(propertyTitle)) {
+                        inString = inString.replace(r.group(), we.getWert());
                         break;
                     }
                 }
             }
+        }
 
-            for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)db_meta\\.([^)]+)(?:\\}|\\))", inString)) {
-                String metadataName = r.group(1);
-                String value = MetadataManager.getAllValuesForMetadata(process.getId(), metadataName);
-                inString = inString.replace(r.group(), value);
+        // replace Vorlageeigenschaft, usage: (template.PROPERTYTITLE)
+
+        for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)template\\.([^)]+)(?:\\}|\\))", inString)) {
+            String propertyTitle = r.group(1);
+            for (Template v : this.process.getVorlagenList()) {
+                for (Templateproperty ve : v.getEigenschaftenList()) {
+                    if (ve.getTitel().equalsIgnoreCase(propertyTitle)) {
+                        inString = inString.replace(r.group(), ve.getWert());
+                        break;
+                    }
+                }
             }
+        }
 
-        } catch (SwapException e) {
-            logger.error(e);
-        } catch (DAOException e) {
-            logger.error(e);
-        } catch (IOException e) {
-            logger.error(e);
-        } catch (InterruptedException e) {
-            logger.error(e);
+        // replace Prozesseigenschaft, usage: (process.PROPERTYTITLE)
+
+        for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)process\\.([^)]+)(?:\\}|\\))", inString)) {
+            String propertyTitle = r.group(1);
+            List<ProcessProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
+            for (ProcessProperty pe : ppList) {
+                if (pe.getName().equalsIgnoreCase(propertyTitle)) {
+                    inString = inString.replace(r.group(), pe.getValue() == null ? "" : pe.getValue());
+                    break;
+                }
+            }
+        }
+
+        for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)db_meta\\.([^)]+)(?:\\}|\\))", inString)) {
+            String metadataName = r.group(1);
+            String value = MetadataManager.getAllValuesForMetadata(process.getId(), metadataName);
+            inString = inString.replace(r.group(), value);
+        }
+
+        for (MatchResult r : findRegexMatches(folderExpression, inString)) {
+            String folderName = r.group(1);
+            try {
+                String value = process.getConfiguredImageFolder(folderName);
+                inString = inString.replace(r.group(), value);
+            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+                logger.error(e);
+            }
         }
 
         return inString;
@@ -454,5 +494,54 @@ public class VariableReplacer {
             results.add(m.toMatchResult());
         }
         return results;
+    }
+
+    private String getIiifImageUrls(Process process, String folderName) throws UnsupportedEncodingException {
+        //      http://localhost:8080/goobi/api/process/image/308938/master__AC03804780_MixedContentTest_media/00000001.tif/info.json
+        //          http://localhost:8080/goobi/api/process/image/308938/master__AC03804780_MixedContentTest_media/00000001.tif/full/max/0/default.jpg
+        Path folder = null;
+        if ("media".equals(folderName)) {
+            try {
+                folder = Paths.get(process.getImagesTifDirectory(false));
+            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+                logger.error(e);
+                return "";
+            }
+        } else {
+            try {
+                folder = Paths.get(process.getImagesOrigDirectory(false));
+            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+                logger.error(e);
+                return "";
+            }
+        }
+        List<String> images = StorageProvider.getInstance().list(folder.toString());
+
+        List<String> iifUrls = new ArrayList<>(images.size());
+
+        String hostname = ConfigurationHelper.getInstance().getGoobiUrl();
+
+        String foldername = folder.getFileName().toString();
+
+        String api = hostname + "/api";
+        String restPath = "/process/image/" + process.getId() + "/" + foldername + "/";
+        String suffix = "/full/max/0/default.jpg";
+
+        for (String imageName : images) {
+            String path = restPath + URLEncoder.encode(imageName, StandardCharsets.UTF_8.toString()).replaceAll("\\+", "%20") + suffix;
+            try {
+                String jwtToken = JwtHelper.createApiToken(path, new String[] { "GET" });
+                URI iiifUri = new URI(api + path + "?jwt=" + jwtToken);
+                String iiifUriString = "\"" + iiifUri + "\"";
+
+                iifUrls.add(iiifUriString);
+            } catch (ConfigurationException | MalformedURIException e) {
+                logger.error(e);
+                return "";
+            }
+        }
+        String response = iifUrls.toString();
+        response = response.substring(1, response.length() - 1);
+        return response;
     }
 }

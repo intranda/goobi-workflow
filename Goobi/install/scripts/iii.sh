@@ -107,8 +107,9 @@ set -u
 ##  0.70    - new: create_tiffjpeg - convert all tiff and jpg files to tiff/jpeg w/ target folder (convert, not mogrify)
 ##  0.71    - new: added option to copy jpeg files, too at the create_jpeg case...
 ##  0.72    - fix: only check for mail program, when mail notification is activated
+##  0.73    - write_tiffheader and convert_jpeg: skip files if compression is Old-style JPEG
 ##
-#####  VERSION = 0.72
+#####  VERSION = 0.73
 #####
 ####################
 
@@ -127,7 +128,7 @@ set -u
 ##### CHANGE PARAMETERS AS NEEDED #####
 
 ## specify tomcat user and group
-TOMCATUSER=tomcat8
+TOMCATUSER=tomcat
 TOMCATGROUP=$TOMCATUSER
 
 ## how many processes shall run at the same time 
@@ -494,7 +495,7 @@ case "$ACTION" in
 		prepare
 		if [ ${VERBOSE} == "1" ]; then echo "Creating JPEG from JP2 or TIFF files"; fi
 
-		FOLDER=$(echo ${WORKINGPATH} | sed "s|master_||" | sed "s|_media|_jpg|") 
+		FOLDER=$(echo ${WORKINGPATH} | sed -re 's/master_//' -e 's/_master|_media/_jpg/')
 
 		if [ ! -d $FOLDER ] ; then
 			mkdir $FOLDER;
@@ -569,7 +570,7 @@ case "$ACTION" in
 		if [ ${VERBOSE} == "1" ]; then echo "Creating JPEG from TIFF files"; fi
 		if [ "$#" -lt "3" ]; then echo "Wrong number of arguments, expecting 3, got $#."; exit 1; fi
 
-		FOLDER=$(echo ${WORKINGPATH} | sed "s|master_||" | sed "s|_media|_jpg|") 
+		FOLDER=$(echo ${WORKINGPATH} | sed -re 's/master_//' -e 's/_master|_media/_jpg/')
 
 		if [ ! -d $FOLDER ] ; then
 			mkdir $FOLDER;
@@ -637,17 +638,21 @@ case "$ACTION" in
 				if [ "$(tiffinfo ${i} 2>&1 | grep Bits | awk {'print $2'})" != "1" ]; then
 					if [ "${NICEENABLED}" == "1" ]; then
 						if [ "${USEGM}" == "1" ]; then
+							tiffinfo "${i}" 2>/dev/null | grep 'Compression Scheme: Old-style JPEG' -q && { echo "WARNING: ${i} is compressed Old-style JPEG, skipping convert_jpeg."; continue; }
 							nice -n ${NICELEVEL} gm mogrify -depth 8 +matte -colorspace RGB -compress JPEG "${i}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_jpeg. Aborting!" >&2; exit 1; fi
 						else
+							tiffinfo "${i}" 2>/dev/null | grep 'Compression Scheme: Old-style JPEG' -q && { echo "WARNING: ${i} is compressed Old-style JPEG, skipping convert_jpeg."; continue; }
 							nice -n ${NICELEVEL} mogrify -quiet -depth 8 -alpha off -compress JPEG "${i}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_jpeg. Aborting!" >&2; exit 1; fi
 						fi
 					else
 						if [ "${USEGM}" == "1" ]; then
+							tiffinfo "${i}" 2>/dev/null | grep 'Compression Scheme: Old-style JPEG' -q && { echo "WARNING: ${i} is compressed Old-style JPEG, skipping convert_jpeg."; continue; }
 							gm mogrify -depth 8 +matte -colorspace RGB -compress JPEG "${i}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_jpeg. Aborting!" >&2; exit 1; fi
 						else
+							tiffinfo "${i}" 2>/dev/null | grep 'Compression Scheme: Old-style JPEG' -q && { echo "WARNING: ${i} is compressed Old-style JPEG, skipping convert_jpeg."; continue; }
 							mogrify -quiet -depth 8 -alpha off -compress JPEG "${i}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_jpeg. Aborting!" >&2; exit 1; fi
 						fi
@@ -1504,6 +1509,7 @@ case "$ACTION" in
 			## if file extension exists
 			if [ "${tiffiles}" != "0" ] ; then
 				for i in *.tif; do 
+					tiffinfo "${i}" &>/dev/null | grep 'Compression Scheme: Old-style JPEG' -q && { echo "WARNING: ${i} is compressed Old-style JPEG, skipping tiffwriter."; continue; }
 					tiffset -s ImageDescription "$(grep ImageDescription ../tiffwriter.conf | sed 's/ImageDescription=//g')" "${i}" 2>&1 >> /dev/null;
 					if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in write_tiffheader. Aborting!" >&2; exit 1; fi
 					tiffset -s DocumentName "$(grep Documentname ../tiffwriter.conf | sed 's/Documentname=//g')" "${i}" 2>&1 >> /dev/null;

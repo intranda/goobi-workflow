@@ -6,7 +6,7 @@ package de.sub.goobi.helper;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -36,7 +36,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.User;
 import org.goobi.io.WebDavFilter;
@@ -169,11 +170,14 @@ public class WebDav implements Serializable {
              * existieren
              */
             if (aktuellerBenutzer.isMitMassendownload()) {
-                Path projekt = Paths.get(userHome + myProzess.getProjekt().getTitel());
-                FilesystemHelper.createDirectoryForUser(projekt.toString(), aktuellerBenutzer.getLogin());
+                String projekt = Paths.get(userHome + myProzess.getProjekt().getTitel()).toString();
+                if (!ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
+                    projekt = projekt.replaceAll(" ", "__");
+                }
+                FilesystemHelper.createDirectoryForUser(projekt, aktuellerBenutzer.getLogin());
 
-                projekt = Paths.get(userHome + DONEDIRECTORYNAME);
-                FilesystemHelper.createDirectoryForUser(projekt.toString(), aktuellerBenutzer.getLogin());
+                String doneDir = Paths.get(userHome + DONEDIRECTORYNAME).toString();
+                FilesystemHelper.createDirectoryForUser(doneDir, aktuellerBenutzer.getLogin());
             }
 
         } catch (Exception ioe) {

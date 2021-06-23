@@ -1,12 +1,13 @@
 package org.goobi.managedbeans;
 
+import java.io.Serializable;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -29,10 +30,11 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Random;
 
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -45,9 +47,14 @@ import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
-@ManagedBean(name = "StatistikForm")
+@Named("StatistikForm")
 @ApplicationScoped
-public class StatisticsBean {
+
+public class StatisticsBean implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8974769449562593234L;
     private static final Logger logger = LogManager.getLogger(StatisticsBean.class);
     Calendar cal = new GregorianCalendar();
     int n = 200;
@@ -109,14 +116,7 @@ public class StatisticsBean {
      * @throws DAOException
      */
     public Long getAnzahlSchritte() {
-        try {
-
-            return (long) StepManager.countSteps("titel", "");
-        } catch (DAOException e) {
-            logger.error("Hibernate error", e);
-            Helper.setFehlerMeldung("fehlerBeimEinlesen", e);
-            return Long.valueOf(-1);
-        }
+        return (long) StepManager.countAllSteps();
     }
 
     /**

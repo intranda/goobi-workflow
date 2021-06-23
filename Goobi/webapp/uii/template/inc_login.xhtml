@@ -1,33 +1,38 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:p="http://primefaces.org/ui">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<composite:interface>
 	</composite:interface>
 
 	<composite:implementation>
-
+    <main>
 		<div class="wrapper wide" style="height:300px;">
 			<h1>
 				<a href="index.xhtml"><h:outputText escape="false" value="#{HelperForm.applicationHeaderTitle}" /></a>
 			</h1>
 			
 			
-			<div class="login-body" style="margin-bottom:5px;">
+			<div id="login-body" class="login-body" style="margin-bottom:5px;">
+                <h:outputText style="color:red;" value="Developer Mode ON" rendered="#{DevModeBean.developerMode}" />
 				<ui:fragment rendered="#{!LoginForm.oidcAutoRedirect}">
 					<h2>
 						<h:outputText value="#{msgs.login}" />
 					</h2>
 					<h:form styleClass="form-validate" onkeypress="submitOnEnter(event);" id="loginForm" prependId="false">
 						<h:panelGroup id="globalWarningMessage">
-							<h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}" styleClass="alert alert-danger block" style="line-height:18px;font-size:14px;">
+							<h:panelGroup rendered="#{SessionForm.logoutMessage!=''}" styleClass="alert alert-danger block" style="line-height:18px;font-size:14px;">
 					             <i class="fa fa-exclamation-triangle margin-right-10" />
-					             <h:outputText value="#{SessionForm.bitteAusloggen}" />
+					             <h:outputText value="#{SessionForm.logoutMessage}" />
 					         </h:panelGroup>
 				         </h:panelGroup>
-				       	<p:poll interval="30" update="globalWarningMessage" />
 				       
 	                    <h:messages escape="false" globalOnly="false" errorClass="alert alert-danger" infoClass="alert alert-info"
 							warnClass="alert" showDetail="true" showSummary="true" tooltip="true"
@@ -41,7 +46,7 @@
 							</script>
 							<div class="form-group">
 								<div class="email controls">
-									<x:inputText id="login" forceId="true" styleClass="form-control"
+									<x:inputText id="login" pt:aria-label="#{msgs.login}" forceId="true" styleClass="form-control"
 										value="#{LoginForm.login}" >
 										<f:passThroughAttribute name="placeholder" value="#{msgs.login}" />
 									</x:inputText>
@@ -49,7 +54,7 @@
 							</div>
 							<div class="form-group">
 								<div class="pw controls">
-									<x:inputSecret id="passwort" forceId="true" styleClass="form-control"
+									<x:inputSecret id="passwort" pt:aria-label="#{msgs.passwort}" forceId="true" styleClass="form-control"
 										value="#{LoginForm.passwort}"  >
 										<f:passThroughAttribute name="placeholder" value="#{msgs.passwort}" />
 									</x:inputSecret>
@@ -57,18 +62,19 @@
 							</div>
 							<div class="submit">
 								<ui:fragment rendered="#{LoginForm.useOpenIDConnect}">
-									<h:commandLink 
-										action="#{LoginForm.openIDLogin}" 
-										styleClass="float-left btn font-size-s" 
+									<button 
+										jsf:id="openIdLogin"
+										jsf:action="#{LoginForm.openIDLogin}" 
+										class="float-left btn font-size-s" 
 										style="background: #fff; outline: 1px solid #368ee0;">
 										OpenID connect
-									</h:commandLink>
+									</button>
 								</ui:fragment>
-								<h:commandLink id="loginButton" action="#{LoginForm.Einloggen}" style="margin-bottom:20px;"
-									styleClass="btn btn-primary font-size-s pull-right submitOnEnter">
+								<button jsf:id="loginButton" jsf:action="#{LoginForm.Einloggen}" style="margin-bottom:20px;"
+									class="btn btn-primary font-size-s pull-right submitOnEnter">
 									<h:outputText value="#{msgs.einloggen}" />
 									<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a0" />
-								</h:commandLink>
+								</button>
 							</div>
 							<x:commandButton id="LoginAbsenden2" forceId="true" style="display:none" type="submit"
 								action="#{LoginForm.Einloggen}" value="#{msgs.einloggen}">
@@ -77,6 +83,9 @@
 						</h:panelGroup>
 	
 					</h:form>
+                    <o:socket channel="adminMessageChannel">
+                        <f:ajax event="update" render="loginForm openIdForm" />
+                    </o:socket>
 				</ui:fragment>
 				<ui:fragment rendered="#{LoginForm.oidcAutoRedirect}">
 					<h:form id="openIdForm">
@@ -85,13 +94,13 @@
 								<h:outputText value="Redirecting to SSO provider..." />
 							</h2>
 							<p>If this doesn't work, click this button:</p>
-							<h:commandLink 
-								id="openIdLink"
-								action="#{LoginForm.openIDLogin}" 
-								styleClass="float-left btn font-size-s" 
+							<button 
+								jsf:id="openIdLink"
+								jsf:action="#{LoginForm.openIDLogin}" 
+								class="float-left btn font-size-s" 
 								style="background: #fff; outline: 1px solid #368ee0; margin-bottom: 20px;">
 								OpenID connect
-							</h:commandLink>
+							</button>
 							<script>
 								$(document).ready(function() {
 								    console.log($('#openIdForm\\:openIdLink'));
@@ -103,12 +112,30 @@
 						</div>
 					</h:form>
 				</ui:fragment>
+                <ui:fragment rendered="#{LoginForm.useHeaderLogin}">
+                    <h:form id="headerSsoForm">
+                        <button 
+                            jsf:id="headerSsoLink"
+                            jsf:action="#{LoginForm.headerSsoLogin}" 
+                            class="float-left btn font-size-s" 
+                            style="display:none;">
+                        </button>
+                        <script>
+                        $(document).ready(function() {
+                            setTimeout(function() {
+                                $('#headerSsoForm\\:headerSsoLink').click();
+                            }, 300)
+                        })
+                        </script>
+                    </h:form>
+                </ui:fragment>
 			</div>
 			<a style="color: #FFFFFF;" href="https://goobi.io/">Goobi workflow - developed by intranda</a>
-			<h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{msgs.version} #{HelperForm.version}" />
+			
+            <h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{msgs.version} #{HelperForm.version}" />
 
 		</div>
-
+    </main>
 	</composite:implementation>
 	
 

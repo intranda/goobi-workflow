@@ -1,5 +1,6 @@
 package de.sub.goobi.forms;
 
+import java.io.Serializable;
 import java.util.Collections;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Collections;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -31,9 +32,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.api.mail.SendMail;
@@ -43,15 +44,28 @@ import org.goobi.production.plugin.interfaces.IWorkflowPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
+import lombok.Getter;
+import lombok.Setter;
 
-@ManagedBean(name = "NavigationForm")
+@Named("NavigationForm")
 @SessionScoped
-public class NavigationForm {
+public class NavigationForm implements Serializable{
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1781002534164254710L;
+
+    @Getter
+    @Setter
     private List<String> possibleWorkflowPluginNames;
 
+    @Getter
+    @Setter
     private String currentWorkflowPluginName;
 
+    @Getter
+    @Setter
     private IWorkflowPlugin workflowPlugin;
 
     public NavigationForm() {
@@ -74,24 +88,30 @@ public class NavigationForm {
         }
 
     };
-
+    
+    @Getter
+    @Setter
     private String aktuell = "0";
+    @Getter
+    @Setter
     private boolean showHelp = false;
+    @Getter
+    @Setter
     private boolean showEasyRead = false;
+    @Getter
+    @Setter
     private boolean showExpertView = false;
+    @Getter
+    @Setter
     private boolean showSidebar = true;
+    @Getter
+    @Setter
     private String activeTab = "productionStatistics";
+    @Getter
+    @Setter
     private String activeImportTab = "recordImport";
     private HashMap<String, String> uiStatus = new HashMap<>();
     private String currentTheme = "/uii";
-
-    public String getAktuell() {
-        return this.aktuell;
-    }
-
-    public void setAktuell(String aktuell) {
-        this.aktuell = aktuell;
-    }
 
     public String Reload() {
         return "";
@@ -103,54 +123,6 @@ public class NavigationForm {
 
     public String BenutzerBearbeiten() {
         return "BenutzerBearbeiten";
-    }
-
-    public boolean isShowHelp() {
-        return showHelp;
-    }
-
-    public void setShowHelp(boolean showHelp) {
-        this.showHelp = showHelp;
-    }
-
-    public boolean isShowEasyRead() {
-        return showEasyRead;
-    }
-
-    public void setShowEasyRead(boolean showEasyRead) {
-        this.showEasyRead = showEasyRead;
-    }
-
-    public boolean isShowExpertView() {
-        return showExpertView;
-    }
-
-    public void setShowExpertView(boolean showExpertView) {
-        this.showExpertView = showExpertView;
-    }
-
-    public boolean isShowSidebar() {
-        return showSidebar;
-    }
-
-    public void setShowSidebar(boolean showSidebar) {
-        this.showSidebar = showSidebar;
-    }
-
-    public String getActiveTab() {
-        return activeTab;
-    }
-
-    public void setActiveTab(String activeTab) {
-        this.activeTab = activeTab;
-    }
-
-    public String getActiveImportTab() {
-        return activeImportTab;
-    }
-
-    public void setActiveImportTab(String activeImportTab) {
-        this.activeImportTab = activeImportTab;
     }
 
     public HashMap<String, String> getUiStatus() {
@@ -192,30 +164,6 @@ public class NavigationForm {
 
     public boolean isShowThirdLogField() {
         return ConfigurationHelper.getInstance().isShowThirdLogField();
-    }
-
-    public String getCurrentWorkflowPluginName() {
-        return currentWorkflowPluginName;
-    }
-
-    public List<String> getPossibleWorkflowPluginNames() {
-        return possibleWorkflowPluginNames;
-    }
-
-    public IWorkflowPlugin getWorkflowPlugin() {
-        return workflowPlugin;
-    }
-
-    public void setCurrentWorkflowPluginName(String currentWorkflowPluginName) {
-        this.currentWorkflowPluginName = currentWorkflowPluginName;
-    }
-
-    public void setPossibleWorkflowPluginNames(List<String> possibleWorkflowPluginNames) {
-        this.possibleWorkflowPluginNames = possibleWorkflowPluginNames;
-    }
-
-    public void setWorkflowPlugin(IWorkflowPlugin workflowPlugin) {
-        this.workflowPlugin = workflowPlugin;
     }
 
     public String setPlugin(String pluginName) {

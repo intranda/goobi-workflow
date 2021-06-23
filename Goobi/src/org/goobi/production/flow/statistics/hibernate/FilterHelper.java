@@ -6,7 +6,7 @@ package org.goobi.production.flow.statistics.hibernate;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -27,14 +27,16 @@ package org.goobi.production.flow.statistics.hibernate;
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrTokenizer;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.User;
-import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.UserRole;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -65,16 +67,11 @@ public class FilterHelper {
      */
     protected static String limitToUserAccessRights() {
         /* restriction to specific projects if not with admin rights */
-        //        String answer = "";
         StringBuilder sb = new StringBuilder();
-        LoginBean loginForm = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        User aktuellerNutzer = null;
-        if (loginForm != null && loginForm.getMyBenutzer() != null) {
-            aktuellerNutzer = Helper.getCurrentUser();
-        }
+        User aktuellerNutzer = Helper.getCurrentUser();
 
         if (aktuellerNutzer != null) {
-            if (!loginForm.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
+            if (!Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
                 sb.append("prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ");
                 sb.append(aktuellerNutzer.getId());
                 sb.append(")");
@@ -98,11 +95,10 @@ public class FilterHelper {
     public static String limitToUserAssignedSteps(Boolean stepOpenOnly, Boolean userAssignedStepsOnly, Boolean hideStepsFromOtherUsers) {
         /* show only open Steps or those in use by current user */
         /* identify current user */
-        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        if (login == null || login.getMyBenutzer() == null) {
+        User user = Helper.getCurrentUser();
+        if (user == null) {
             return "";
         }
-        User user = login.getMyBenutzer();
         int userId = user.getId();
         StringBuilder answer = new StringBuilder();
 
@@ -230,16 +226,40 @@ public class FilterHelper {
      * @param tok part of filter string to use
      * @param inStatus {@link StepStatus} of searched step
      ****************************************************************************/
-    protected static String filterStepRange(String parameters, StepStatus inStatus, boolean negate) {
+    protected static String filterStepRange(String parameters, StepStatus inStatus, boolean negate, List<String> dateFilter) {
+        StringBuilder sb = new StringBuilder();
         if (!negate) {
-            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge > " + FilterHelper.getStepStart(parameters)
-            + " AND schritte.Reihenfolge < + " + FilterHelper.getStepEnd(parameters) + " AND schritte.Bearbeitungsstatus = "
-            + inStatus.getValue().intValue() + ")";
+            sb.append(" prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge > ");
+            sb.append(FilterHelper.getStepStart(parameters));
+            sb.append(" AND schritte.Reihenfolge < ");
+            sb.append(FilterHelper.getStepEnd(parameters));
+            sb.append(" AND schritte.Bearbeitungsstatus = ");
+            sb.append(inStatus.getValue().intValue());
+            if (!dateFilter.isEmpty()) {
+                for (String date : dateFilter) {
+                    sb.append(" AND ");
+                    sb.append(date);
+                }
+            }
+            sb.append(")");
         } else {
-            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId from schritte where schritte.Reihenfolge > "
-                    + FilterHelper.getStepStart(parameters) + " AND schritte.Reihenfolge < + " + FilterHelper.getStepEnd(parameters)
-                    + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + "))";
+            sb.append(" prozesse.ProzesseID in (select ProzesseID from schritte where schritteID not in (");
+            sb.append("select schritteId from schritte where schritte.Reihenfolge > ");
+            sb.append(FilterHelper.getStepStart(parameters));
+            sb.append(" AND schritte.Reihenfolge < ");
+            sb.append(FilterHelper.getStepEnd(parameters));
+            sb.append(" AND schritte.Bearbeitungsstatus = ");
+            sb.append(inStatus.getValue().intValue());
+            if (!dateFilter.isEmpty()) {
+                for (String date : dateFilter) {
+                    sb.append(" AND ");
+                    sb.append(date);
+                }
+            }
+            sb.append("))");
         }
+
+        return sb.toString();
     }
 
     /**
@@ -248,27 +268,63 @@ public class FilterHelper {
      * @param inStatus {@link StepStatus} of searched step
      * @param parameters part of filter string to use
      ****************************************************************************/
-    protected static String filterStepName(String parameters, StepStatus inStatus, boolean negate) {
-
+    protected static String filterStepName(String parameters, StepStatus inStatus, boolean negate, List<String> dateFilter) {
+        StringBuilder sb = new StringBuilder();
         if (!negate) {
-            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Titel like '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(parameters) + rightTruncationCharacter + "' AND schritte.Bearbeitungsstatus = "
-                    + inStatus.getValue().intValue() + ")";
-
+            sb.append(" prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Titel like '");
+            sb.append(leftTruncationCharacter);
+            sb.append(StringEscapeUtils.escapeSql(parameters));
+            sb.append(rightTruncationCharacter);
+            sb.append("' AND schritte.Bearbeitungsstatus = ");
+            sb.append(inStatus.getValue().intValue());
+            if (!dateFilter.isEmpty()) {
+                for (String date : dateFilter) {
+                    sb.append(" AND ");
+                    sb.append(date);
+                }
+            }
+            sb.append(")");
         } else {
-            return " prozesse.ProzesseID not in (select ProzesseID from schritte where schritte.Titel like '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(parameters) + rightTruncationCharacter + "' AND schritte.Bearbeitungsstatus = "
-                    + inStatus.getValue().intValue() + ")";
-
+            sb.append(" prozesse.ProzesseID not in (select ProzesseID from schritte where schritte.Titel like '");
+            sb.append(leftTruncationCharacter);
+            sb.append(StringEscapeUtils.escapeSql(parameters));
+            sb.append(rightTruncationCharacter);
+            sb.append("' AND schritte.Bearbeitungsstatus = ");
+            sb.append(inStatus.getValue().intValue());
+            if (!dateFilter.isEmpty()) {
+                for (String date : dateFilter) {
+                    sb.append(" AND ");
+                    sb.append(date);
+                }
+            }
+            sb.append(")");
         }
+        return sb.toString();
     }
 
-    protected static String filterAutomaticSteps(String tok, boolean flagSteps) {
+    protected static String filterAutomaticSteps(String tok, boolean flagSteps, List<String> dateFilter) {
+        StringBuilder sb = new StringBuilder();
+
         if (tok.substring(tok.indexOf(":") + 1).equalsIgnoreCase("true")) {
-            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.typAutomatisch = true )";
+            sb.append("prozesse.ProzesseID in (select ProzesseID from schritte where schritte.typAutomatisch = true ");
+            if (!dateFilter.isEmpty()) {
+                for (String date : dateFilter) {
+                    sb.append(" AND ");
+                    sb.append(date);
+                }
+            }
+            sb.append(")");
         } else {
-            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.typAutomatisch = false )";
+            sb.append("prozesse.ProzesseID in (select ProzesseID from schritte where schritte.typAutomatisch = false ");
+            if (!dateFilter.isEmpty()) {
+                for (String date : dateFilter) {
+                    sb.append(" AND ");
+                    sb.append(date);
+                }
+            }
+            sb.append(")");
         }
+        return sb.toString();
     }
 
     /**
@@ -277,14 +333,36 @@ public class FilterHelper {
      * @param parameters part of filter string to use
      * @param inStatus {@link StepStatus} of searched step
      ****************************************************************************/
-    protected static String filterStepMin(String parameters, StepStatus inStatus, boolean negate) {
+    protected static String filterStepMin(String parameters, StepStatus inStatus, boolean negate, List<String> dateFilter) {
+        StringBuilder sb = new StringBuilder();
         if (!negate) {
-            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge >= " + FilterHelper.getStepStart(parameters)
-            + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
+            sb.append(" prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge >= ");
+            sb.append(FilterHelper.getStepStart(parameters));
+            sb.append(" AND schritte.Bearbeitungsstatus = ");
+            sb.append(inStatus.getValue().intValue());
+            if (!dateFilter.isEmpty()) {
+                for (String date : dateFilter) {
+                    sb.append(" AND ");
+                    sb.append(date);
+                }
+            }
+            sb.append(")");
+
         } else {
-            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId from schritte where schritte.Reihenfolge >= "
-                    + FilterHelper.getStepStart(parameters) + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + "))";
+            sb.append(" prozesse.ProzesseID in (select ProzesseID from schritte where schritteID not in (");
+            sb.append("select schritteId from schritte where schritte.Reihenfolge >= ");
+            sb.append(FilterHelper.getStepStart(parameters));
+            sb.append(" AND schritte.Bearbeitungsstatus = ");
+            sb.append(inStatus.getValue().intValue());
+            if (!dateFilter.isEmpty()) {
+                for (String date : dateFilter) {
+                    sb.append(" AND ");
+                    sb.append(date);
+                }
+            }
+            sb.append("))");
         }
+        return sb.toString();
     }
 
     /**
@@ -293,14 +371,36 @@ public class FilterHelper {
      * @param parameters part of filter string to use
      * @param inStatus {@link StepStatus} of searched step
      ****************************************************************************/
-    protected static String filterStepMax(String parameters, StepStatus inStatus, boolean negate) {
+    protected static String filterStepMax(String parameters, StepStatus inStatus, boolean negate, List<String> dateFilter) {
+        StringBuilder sb = new StringBuilder();
+
         if (!negate) {
-            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge <= " + FilterHelper.getStepEnd(parameters)
-            + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
+            sb.append(" prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge <= ");
+            sb.append(FilterHelper.getStepEnd(parameters));
+            sb.append(" AND schritte.Bearbeitungsstatus = ");
+            sb.append(inStatus.getValue().intValue());
+            if (!dateFilter.isEmpty()) {
+                for (String date : dateFilter) {
+                    sb.append(" AND ");
+                    sb.append(date);
+                }
+            }
+            sb.append(")");
         } else {
-            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId from schritte whereschritte.Reihenfolge <= "
-                    + FilterHelper.getStepEnd(parameters) + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + "))";
+            sb.append(" prozesse.ProzesseID in (select ProzesseID from schritte where schritteID not in (select schritteId ");
+            sb.append("from schritte whereschritte.Reihenfolge <= ");
+            sb.append(FilterHelper.getStepEnd(parameters));
+            sb.append(" AND schritte.Bearbeitungsstatus = ");
+            sb.append(inStatus.getValue().intValue());
+            if (!dateFilter.isEmpty()) {
+                for (String date : dateFilter) {
+                    sb.append(" AND ");
+                    sb.append(date);
+                }
+            }
+            sb.append("))");
         }
+        return sb.toString();
     }
 
     /**
@@ -309,14 +409,35 @@ public class FilterHelper {
      * @param parameters part of filter string to use
      * @param inStatus {@link StepStatus} of searched step
      ****************************************************************************/
-    protected static String filterStepExact(String parameters, StepStatus inStatus, boolean negate) {
+    protected static String filterStepExact(String parameters, StepStatus inStatus, boolean negate, List<String> dateFilter) {
+        StringBuilder sb = new StringBuilder();
         if (!negate) {
-            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge = " + FilterHelper.getStepStart(parameters)
-            + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
+            sb.append(" prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge = ");
+            sb.append(FilterHelper.getStepStart(parameters));
+            sb.append(" AND schritte.Bearbeitungsstatus = ");
+            sb.append(inStatus.getValue().intValue());
+
+            if (!dateFilter.isEmpty()) {
+                for (String date : dateFilter) {
+                    sb.append(" AND ");
+                    sb.append(date);
+                }
+            }
+            sb.append(")");
         } else {
-            return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge <> " + FilterHelper.getStepStart(parameters)
-            + " AND schritte.Bearbeitungsstatus = " + inStatus.getValue().intValue() + ")";
+            sb.append(" prozesse.ProzesseID in (select ProzesseID from schritte where schritte.Reihenfolge <> ");
+            sb.append(FilterHelper.getStepStart(parameters));
+            sb.append(" AND schritte.Bearbeitungsstatus = ");
+            sb.append(inStatus.getValue().intValue());
+            if (!dateFilter.isEmpty()) {
+                for (String date : dateFilter) {
+                    sb.append(" AND ");
+                    sb.append(date);
+                }
+            }
+            sb.append(")");
         }
+        return sb.toString();
     }
 
     /**
@@ -412,6 +533,66 @@ public class FilterHelper {
         }
     }
 
+    /**
+     * This method creates a query to filter for a process creation date. step edit date or step finish date. If the entered date is incomplete, the
+     * missing parts are automatically filled with default values based on the selected operand. <br />
+     * 
+     * When the parameter equal or not equal are used, the date format YYYY-MM-DD will search for dates between YYYY-MM-DD 00:00:00 and YYYY-MM-DD
+     * 23:59:59. A year only will get extended to YYYY-01-01T00:00:00Z and YYYY-12-31T23:59:59Z. <br />
+     * 
+     * When a date must be smaller than an search value, the missing date fields are filled with the highest possible value. Missing time is set to
+     * 23:59:59 and the date to 12-31. <br />
+     * 
+     * On searches for dates greater than the search value, the missing date fields are filled with the earliest possible value. The time is set to
+     * 00:00:00 and the day and month to 01-01.
+     * 
+     * @param dateField name of the table column to search in
+     * @param value the date in a specific format, allowed are 'YYYY', 'YYYY-MM-DD', 'YYYY-MM-DDThh:mm:ssZ' and 'YYYY-MM-DD hh:mm:ss'
+     * @param operand the operand, allowed values are = (equals), != (not equals), < (smaller) > (greater)
+     * @return sql sub query
+     */
+
+    protected static String filterDate(String dateField, String value, String operand) {
+
+        if (value.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z")) {
+            value = operand + " '" + value.replace("T", " ").replace("Z", "'");
+        } else if (value.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) {
+            value = operand + " '" + value + "'";
+        } else if (value.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            switch (operand) {
+                case "=":
+                    value = " BETWEEN '" + value + " 00:00:00' AND '" + value + " 23:59:59' ";
+                    break;
+                case "<":
+                    value = " < '" + value + " 23:59:59' ";
+                    break;
+                case ">":
+                    value = " > '" + value + " 00:00:00' ";
+                    break;
+                default:
+                    break;
+            }
+        } else if (value.matches("\\d{4}")) {
+            switch (operand) {
+                case "=":
+                    value = " BETWEEN '" + value + "-01-01 00:00:00' AND '" + value + "-12-31 23:59:59' ";
+                    break;
+                case "!=":
+                    value = " NOT BETWEEN '" + value + "-01-01 00:00:00' AND '" + value + "-12-31 23:59:59' ";
+                    break;
+                case "<":
+                    value = " < '" + value + "-12-31 23:59:59' ";
+                    break;
+                case ">":
+                    value = " > '" + value + "-01-01 00:00:00' ";
+                    break;
+                default:
+                    break;
+            }
+        }
+        return dateField + value;
+    }
+
     protected static String filterProcessProperty(String tok, boolean negate) {
         /* Filtering by signature */
         /* Filtering by signature */
@@ -443,18 +624,26 @@ public class FilterHelper {
     protected static String filterMetadataValue(String tok, boolean negate) {
 
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
-        if (!negate) {
 
-            return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter + "' )";
+        if (!negate) {
+            if (ts.length > 1) {
+                return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter + "' )";
+            } else {
+                return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "') ";
+            }
 
         } else {
-
-            return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter + "' )";
-
+            if (ts.length > 1) {
+                return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter + "' )";
+            } else {
+                return "prozesse.ProzesseID not in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
+                        + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' )";
+            }
         }
     }
 
@@ -618,6 +807,67 @@ public class FilterHelper {
             filter.append(" prozesse.prozesseId not in (select prozesse.prozesseID from prozesse where prozesse.istTemplate = true) ");
         }
 
+        // preparation to filter for step dates
+        StrTokenizer dates = new StrTokenizer(inFilter, ' ', '\"');
+
+        int currentGroupId = 0;
+        StepDateFilterGroup currentDateFilter = new StepDateFilterGroup();
+        Map<Integer, StepDateFilterGroup> groupedDates = new HashMap<>();
+        groupedDates.put(currentGroupId, currentDateFilter);
+        while (dates.hasNext()) {
+            String tok = dates.nextToken().trim();
+            if (tok.equals("(")) {
+                currentGroupId = currentGroupId + 1;
+                currentDateFilter = new StepDateFilterGroup();
+                currentDateFilter.setGroupId(currentGroupId);
+                groupedDates.put(currentGroupId, currentDateFilter);
+            }
+
+            else if (tok.toLowerCase().startsWith(FilterString.STEP_START_DATE)) {
+                filter = checkStringBuilder(filter, true);
+                if (tok.length() > 14) {
+                    tok = tok.substring(13);
+                    String operand = null;
+                    String value = null;
+                    if (tok.startsWith("!=")) {
+                        operand = "!=";
+                        value = tok.substring(2);
+                    } else {
+                        operand = tok.substring(0, 1);
+                        value = tok.substring(1);
+                    }
+                    if (operand.equals(":")) {
+                        operand = "=";
+                    }
+                    String dateSubQuery = FilterHelper.filterDate("schritte.BearbeitungsBeginn", value, operand);
+                    currentDateFilter.addFilter(dateSubQuery);
+                }
+            } else if (tok.toLowerCase().startsWith(FilterString.STEP_FINISH_DATE)) {
+                filter = checkStringBuilder(filter, true);
+                if (tok.length() > 14) {
+                    tok = tok.substring(14);
+                    String operand = null;
+                    String value = null;
+                    if (tok.startsWith("!=")) {
+                        operand = "!=";
+                        value = tok.substring(2);
+                    } else {
+                        operand = tok.substring(0, 1);
+                        value = tok.substring(1);
+                    }
+                    if (operand.equals(":")) {
+                        operand = "=";
+                    }
+                    String dateSubQuery = FilterHelper.filterDate("schritte.BearbeitungsEnde", value, operand);
+                    currentDateFilter.addFilter(dateSubQuery);
+                }
+            } else if (tok.toLowerCase().startsWith("step")) {
+                currentDateFilter.setStepFilterPresent(true);
+            }
+        }
+        currentGroupId = 0;
+        currentDateFilter = groupedDates.get(0);
+
         // to collect and return feedback about erroneous use of filter
         // expressions
 
@@ -651,19 +901,45 @@ public class FilterHelper {
 
         if (!inFilter.isEmpty()) {
             filter = checkStringBuilder(filter, true);
-
             filter.append("(");
         }
+        boolean newFilterGroup = true;
         // this is needed for evaluating a filter string
         while (tokenizer.hasNext()) {
             String tok = tokenizer.nextToken().trim();
             if (tok.equals("(")) {
+                filter = checkStringBuilder(filter, true);
                 filter.append("(");
+                currentGroupId = currentGroupId + 1;
+                currentDateFilter = groupedDates.get(currentGroupId);
+                newFilterGroup = true;
+
             } else if (tok.equals(")")) {
                 filter.append(")");
-            }
+            } else if (tok.toLowerCase().startsWith(FilterString.PROCESS_DATE)) {
+                filter = checkStringBuilder(filter, true);
 
-            else if (tok.toLowerCase().startsWith(FilterString.PROCESSPROPERTY) || tok.toLowerCase().startsWith(FilterString.PROZESSEIGENSCHAFT)) {
+                if (tok.length() > 12) {
+                    tok = tok.substring(11);
+                    String operand = null;
+                    String value = null;
+                    if (tok.startsWith("!=")) {
+                        operand = "!=";
+                        value = tok.substring(2);
+                    } else {
+                        operand = tok.substring(0, 1);
+                        value = tok.substring(1);
+                    }
+                    if (operand.equals(":")) {
+                        operand = "=";
+                    }
+                    filter.append(FilterHelper.filterDate("erstellungsdatum", value, operand));
+                }
+            } else if (tok.toLowerCase().startsWith(FilterString.STEP_START_DATE)) {
+                // skip
+            } else if (tok.toLowerCase().startsWith(FilterString.STEP_FINISH_DATE)) {
+                // skip
+            } else if (tok.toLowerCase().startsWith(FilterString.PROCESSPROPERTY) || tok.toLowerCase().startsWith(FilterString.PROZESSEIGENSCHAFT)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterProcessProperty(tok, false));
             } else if (tok.toLowerCase().startsWith(FilterString.STEPPROPERTY) || tok.toLowerCase().startsWith(FilterString.SCHRITTEIGENSCHAFT)) {
@@ -686,36 +962,37 @@ public class FilterHelper {
                 }
             } else if (tok.toLowerCase().startsWith(FilterString.STEPINWORK) || tok.toLowerCase().startsWith(FilterString.SCHRITTINARBEIT)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(createStepFilters(tok, StepStatus.INWORK, false));
-
+                filter.append(createStepFilters(tok, StepStatus.INWORK, false, currentDateFilter.getDateFilter()));
+            } else if (tok.toLowerCase().startsWith(FilterString.STEPINFLIGHT)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(createStepFilters(tok, StepStatus.INFLIGHT, false, currentDateFilter.getDateFilter()));
                 // new keyword stepLocked implemented
             } else if (tok.toLowerCase().startsWith(FilterString.STEPLOCKED) || tok.toLowerCase().startsWith(FilterString.SCHRITTGESPERRT)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(createStepFilters(tok, StepStatus.LOCKED, false));
+                filter.append(createStepFilters(tok, StepStatus.LOCKED, false, currentDateFilter.getDateFilter()));
 
                 // new keyword stepOpen implemented
             } else if (tok.toLowerCase().startsWith(FilterString.STEPOPEN) || tok.toLowerCase().startsWith(FilterString.SCHRITTOFFEN)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(createStepFilters(tok, StepStatus.OPEN, false));
+                filter.append(createStepFilters(tok, StepStatus.OPEN, false, currentDateFilter.getDateFilter()));
 
                 // new keyword stepDone implemented
             } else if (tok.toLowerCase().startsWith(FilterString.STEPDONE) || tok.toLowerCase().startsWith(FilterString.SCHRITTABGESCHLOSSEN)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(createStepFilters(tok, StepStatus.DONE, false));
+                filter.append(createStepFilters(tok, StepStatus.DONE, false, currentDateFilter.getDateFilter()));
             } else if (tok.toLowerCase().startsWith(FilterString.STEPERROR)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(createStepFilters(tok, StepStatus.ERROR, false));
+                filter.append(createStepFilters(tok, StepStatus.ERROR, false, currentDateFilter.getDateFilter()));
             } else if (tok.toLowerCase().startsWith(FilterString.STEPDEACTIVATED)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(createStepFilters(tok, StepStatus.DEACTIVATED, false));
+                filter.append(createStepFilters(tok, StepStatus.DEACTIVATED, false, currentDateFilter.getDateFilter()));
                 // new keyword stepDoneTitle implemented, replacing so far
                 // undocumented
             } else if (tok.toLowerCase().startsWith(FilterString.STEPDONETITLE)
                     || tok.toLowerCase().startsWith(FilterString.ABGESCHLOSSENERSCHRITTTITEL)) {
-
                 String stepTitel = tok.substring(tok.indexOf(":") + 1);
                 filter = checkStringBuilder(filter, true);
-                filter.append(FilterHelper.filterStepName(stepTitel, StepStatus.DONE, false));
+                filter.append(FilterHelper.filterStepName(stepTitel, StepStatus.DONE, false, currentDateFilter.getDateFilter()));
 
             } else if (tok.toLowerCase().startsWith(FilterString.STEPDONEUSER)
                     || tok.toLowerCase().startsWith(FilterString.ABGESCHLOSSENERSCHRITTBENUTZER)) {
@@ -723,7 +1000,7 @@ public class FilterHelper {
                 filter.append(FilterHelper.filterStepDoneUser(tok));
             } else if (tok.toLowerCase().startsWith(FilterString.STEPAUTOMATIC) || tok.toLowerCase().startsWith(FilterString.SCHRITTAUTOMATISCH)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(FilterHelper.filterAutomaticSteps(tok, flagSteps));
+                filter.append(FilterHelper.filterAutomaticSteps(tok, flagSteps, currentDateFilter.getDateFilter()));
             } else if (tok.toLowerCase().startsWith(FilterString.PROJECT) || tok.toLowerCase().startsWith(FilterString.PROJEKT)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterProject(tok, false));
@@ -790,38 +1067,40 @@ public class FilterHelper {
             else if (tok.toLowerCase().startsWith("-" + FilterString.STEPINWORK)
                     || tok.toLowerCase().startsWith("-" + FilterString.SCHRITTINARBEIT)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(createStepFilters(tok, StepStatus.INWORK, true));
-
+                filter.append(createStepFilters(tok, StepStatus.INWORK, true, currentDateFilter.getDateFilter()));
+            } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPINFLIGHT)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(createStepFilters(tok, StepStatus.INFLIGHT, true, currentDateFilter.getDateFilter()));
                 // new keyword stepLocked implemented
             } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPLOCKED)
                     || tok.toLowerCase().startsWith("-" + FilterString.SCHRITTGESPERRT)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(createStepFilters(tok, StepStatus.LOCKED, true));
+                filter.append(createStepFilters(tok, StepStatus.LOCKED, true, currentDateFilter.getDateFilter()));
 
                 // new keyword stepOpen implemented
             } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPOPEN) || tok.toLowerCase().startsWith("-" + FilterString.SCHRITTOFFEN)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(createStepFilters(tok, StepStatus.OPEN, true));
+                filter.append(createStepFilters(tok, StepStatus.OPEN, true, currentDateFilter.getDateFilter()));
 
                 // new keyword stepDone implemented
             } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPDONE)
                     || tok.toLowerCase().startsWith("-" + FilterString.SCHRITTABGESCHLOSSEN)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(createStepFilters(tok, StepStatus.DONE, true));
+                filter.append(createStepFilters(tok, StepStatus.DONE, true, currentDateFilter.getDateFilter()));
             } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPERROR)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(createStepFilters(tok, StepStatus.ERROR, true));
+                filter.append(createStepFilters(tok, StepStatus.ERROR, true, currentDateFilter.getDateFilter()));
 
             } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPDEACTIVATED)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(createStepFilters(tok, StepStatus.DEACTIVATED, true));
+                filter.append(createStepFilters(tok, StepStatus.DEACTIVATED, true, currentDateFilter.getDateFilter()));
                 // new keyword stepDoneTitle implemented, replacing so far
                 // undocumented
             } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPDONETITLE)
                     || tok.toLowerCase().startsWith("-" + FilterString.ABGESCHLOSSENERSCHRITTTITEL)) {
                 String stepTitel = tok.substring(tok.indexOf(":") + 1);
                 filter = checkStringBuilder(filter, true);
-                filter.append(FilterHelper.filterStepName(stepTitel, StepStatus.DONE, true));
+                filter.append(FilterHelper.filterStepName(stepTitel, StepStatus.DONE, true, currentDateFilter.getDateFilter()));
 
             } else if (tok.toLowerCase().startsWith("-" + FilterString.PROJECT) || tok.toLowerCase().startsWith("-" + FilterString.PROJEKT)) {
                 filter = checkStringBuilder(filter, true);
@@ -875,24 +1154,26 @@ public class FilterHelper {
             else if (tok.toLowerCase().startsWith("|" + FilterString.STEPINWORK)
                     || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTINARBEIT)) {
                 filter = checkStringBuilder(filter, false);
-                filter.append(createStepFilters(tok, StepStatus.INWORK, false));
-
+                filter.append(createStepFilters(tok, StepStatus.INWORK, false, currentDateFilter.getDateFilter()));
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPINFLIGHT)) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(createStepFilters(tok, StepStatus.INFLIGHT, false, currentDateFilter.getDateFilter()));
                 // new keyword stepLocked implemented
             } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPLOCKED)
                     || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTGESPERRT)) {
                 filter = checkStringBuilder(filter, false);
-                filter.append(createStepFilters(tok, StepStatus.LOCKED, false));
+                filter.append(createStepFilters(tok, StepStatus.LOCKED, false, currentDateFilter.getDateFilter()));
 
                 // new keyword stepOpen implemented
             } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPOPEN) || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTOFFEN)) {
                 filter = checkStringBuilder(filter, false);
-                filter.append(createStepFilters(tok, StepStatus.OPEN, false));
+                filter.append(createStepFilters(tok, StepStatus.OPEN, false, currentDateFilter.getDateFilter()));
 
                 // new keyword stepDone implemented
             } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPDONE)
                     || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTABGESCHLOSSEN)) {
                 filter = checkStringBuilder(filter, false);
-                filter.append(createStepFilters(tok, StepStatus.DONE, false));
+                filter.append(createStepFilters(tok, StepStatus.DONE, false, currentDateFilter.getDateFilter()));
 
                 // new keyword stepDoneTitle implemented, replacing so far
                 // undocumented
@@ -900,7 +1181,7 @@ public class FilterHelper {
                     || tok.toLowerCase().startsWith("|" + FilterString.ABGESCHLOSSENERSCHRITTTITEL)) {
                 String stepTitel = tok.substring(tok.indexOf(":") + 1);
                 filter = checkStringBuilder(filter, false);
-                filter.append(FilterHelper.filterStepName(stepTitel, StepStatus.DONE, true));
+                filter.append(FilterHelper.filterStepName(stepTitel, StepStatus.DONE, true, currentDateFilter.getDateFilter()));
 
             } else if (tok.toLowerCase().startsWith("|" + FilterString.PROJECT) || tok.toLowerCase().startsWith("|" + FilterString.PROJEKT)) {
                 filter = checkStringBuilder(filter, false);
@@ -934,6 +1215,24 @@ public class FilterHelper {
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
                 + rightTruncationCharacter + "'");
             }
+
+            if (newFilterGroup && !currentDateFilter.isStepFilterPresent() && !currentDateFilter.getDateFilter().isEmpty()) {
+                newFilterGroup = false;
+                filter = checkStringBuilder(filter, true);
+                boolean isFirst = true;
+                filter.append("( prozesse.ProzesseID in (select ProzesseID from schritte where ");
+                for (String dateFilter : currentDateFilter.getDateFilter()) {
+                    if (isFirst) {
+                        filter.append(dateFilter);
+                        isFirst = false;
+                    } else {
+                        filter.append(" AND ");
+                        filter.append(dateFilter);
+                    }
+                }
+                filter.append(" )) ");
+            }
+
         }
         if (!inFilter.isEmpty()) {
             filter.append(")");
@@ -962,18 +1261,18 @@ public class FilterHelper {
 
                 return " schritte.SchritteID NOT IN (select schritte.SchritteID from schritte where schritte.Titel like '" + leftTruncationCharacter
                         + StringEscapeUtils.escapeSql(stepTitle) + rightTruncationCharacter
-                        + "' AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2))";
+                        + "' AND (schritte.Bearbeitungsstatus = 1 OR schritte.Bearbeitungsstatus = 2 OR schritte.Bearbeitungsstatus = 4))";
 
             } else {
 
                 return " schritte.SchritteID IN (select schritte.SchritteID from schritte where schritte.Titel like '" + leftTruncationCharacter
                         + StringEscapeUtils.escapeSql(stepTitle) + rightTruncationCharacter
-                        + "' AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2))";
+                        + "' AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2 OR schritte.Bearbeitungsstatus = 4))";
 
             }
         }
         return " schritte.SchritteID IN (select ProzesseID from schritte where schritte.Reihenfolge = " + stepReihenfolge
-                + " AND (schritte.Bearbeitungsstatus = 1 OR  schritte.Bearbeitungsstatus = 2))";
+                + " AND (schritte.Bearbeitungsstatus = 1 OR schritte.Bearbeitungsstatus = 2 OR schritte.Bearbeitungsstatus = 4))";
 
     }
 
@@ -983,7 +1282,7 @@ public class FilterHelper {
      * @param parameters
      * @return
      ************************************************************************************/
-    private static String createStepFilters(String filterPart, StepStatus inStatus, boolean negate) {
+    private static String createStepFilters(String filterPart, StepStatus inStatus, boolean negate, List<String> dateFilter) {
         // extracting the substring into parameter (filter parameters e.g. 5,
         // -5,
         // 5-10, 5- or "Qualitätssicherung")
@@ -999,7 +1298,7 @@ public class FilterHelper {
 
             case exact:
                 try {
-                    return FilterHelper.filterStepExact(parameters, inStatus, negate);
+                    return FilterHelper.filterStepExact(parameters, inStatus, negate, dateFilter);
                 } catch (NullPointerException e) {
                     message = "stepdone is preset, don't use 'step' filters";
                 } catch (Exception e) {
@@ -1010,7 +1309,7 @@ public class FilterHelper {
 
             case max:
                 try {
-                    return FilterHelper.filterStepMax(parameters, inStatus, negate);
+                    return FilterHelper.filterStepMax(parameters, inStatus, negate, dateFilter);
                     //                    returnParameters.setCriticalQuery();
                 } catch (NullPointerException e) {
                     message = "stepdone is preset, don't use 'step' filters";
@@ -1021,7 +1320,7 @@ public class FilterHelper {
 
             case min:
                 try {
-                    return FilterHelper.filterStepMin(parameters, inStatus, negate);
+                    return FilterHelper.filterStepMin(parameters, inStatus, negate, dateFilter);
                     //                    returnParameters.setCriticalQuery();
                 } catch (NullPointerException e) {
                     message = "stepdone is preset, don't use 'step' filters";
@@ -1035,7 +1334,7 @@ public class FilterHelper {
                 // myObservable.setMessage("Filter 'stepDone:" + parameters
                 // + "' is not yet implemented and will be ignored!");
                 try {
-                    return FilterHelper.filterStepName(parameters, inStatus, negate);
+                    return FilterHelper.filterStepName(parameters, inStatus, negate, dateFilter);
                 } catch (NullPointerException e) {
                     message = "stepdone is preset, don't use 'step' filters";
                 } catch (Exception e) {
@@ -1045,13 +1344,13 @@ public class FilterHelper {
 
             case range:
                 try {
-                    return FilterHelper.filterStepRange(parameters, inStatus, negate);
+                    return FilterHelper.filterStepRange(parameters, inStatus, negate, dateFilter);
                     //                    returnParameters.setCriticalQuery();
                 } catch (NullPointerException e) {
                     message = "stepdone is preset, don't use 'step' filters";
                 } catch (NumberFormatException e) {
                     try {
-                        return FilterHelper.filterStepName(parameters, inStatus, negate);
+                        return FilterHelper.filterStepName(parameters, inStatus, negate, dateFilter);
                     } catch (NullPointerException e1) {
                         message = "stepdone is preset, don't use 'step' filters";
                     } catch (Exception e1) {

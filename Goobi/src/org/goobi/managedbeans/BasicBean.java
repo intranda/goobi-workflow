@@ -3,10 +3,10 @@ package org.goobi.managedbeans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -27,13 +27,15 @@ package org.goobi.managedbeans;
  */
 import java.io.Serializable;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.User;
 
 import de.sub.goobi.helper.Helper;
 
 public class BasicBean implements Serializable {
     @SuppressWarnings("unused")
+
     private static final Logger logger = LogManager.getLogger(BasicBean.class);
     private static final long serialVersionUID = 2950419497162710096L;
     protected DatabasePaginator paginator;
@@ -58,8 +60,7 @@ public class BasicBean implements Serializable {
 
     public User getUser() {
         if (this.user == null) {
-            LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-            this.user = login.getMyBenutzer();
+            this.user = Helper.getCurrentUser();
         }
         return this.user;
     }
@@ -109,6 +110,6 @@ public class BasicBean implements Serializable {
         //			new BenutzerDAO().save(this.user);
         //		} catch (DAOException e) {
         //			logger.error(e);
-        //		}		
+        //		}
     }
 }

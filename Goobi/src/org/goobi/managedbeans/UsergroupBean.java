@@ -1,7 +1,10 @@
 package org.goobi.managedbeans;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.enterprise.context.SessionScoped;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -9,7 +12,7 @@ import java.util.List;
  * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -28,9 +31,10 @@ import java.util.List;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+
+
 import javax.faces.model.SelectItem;
+import javax.inject.Named;
 
 import org.goobi.beans.Institution;
 import org.goobi.beans.Usergroup;
@@ -41,9 +45,9 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 
-@ManagedBean(name = "BenutzergruppenForm")
+@Named("BenutzergruppenForm")
 @SessionScoped
-public class UsergroupBean extends BasicBean {
+public class UsergroupBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 8051160917458068675L;
     private Usergroup myBenutzergruppe = new Usergroup();
     private String tempRole;
@@ -142,6 +146,7 @@ public class UsergroupBean extends BasicBean {
         for (String role : myBenutzergruppe.getUserRoles()) {
             group.addUserRole(role);
         }
+        group.setInstitution(myBenutzergruppe.getInstitution());
         try {
             UsergroupManager.saveUsergroup(group);
         } catch (DAOException e) {

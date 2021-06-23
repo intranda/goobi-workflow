@@ -10,7 +10,7 @@ import static org.junit.Assert.assertTrue;
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -54,7 +54,7 @@ public class ConfigProjectsTest {
     @Test
     public void testParamString() throws IOException {
         ConfigProjects cp = new ConfigProjects("default");
-        String fixture = cp.getParamString("createNewProcess.opac.catalogue");
+        String fixture = cp.getParamString("/createNewProcess/opac/catalogue");
         assertNotNull(fixture);
         assertEquals("LOC", fixture);
     }
@@ -62,7 +62,7 @@ public class ConfigProjectsTest {
     @Test
     public void testParamStringWithDefault() throws IOException {
         ConfigProjects cp = new ConfigProjects("default");
-        String fixture = cp.getParamString("createNewProcess.opac.catalogue", "GBV");
+        String fixture = cp.getParamString("createNewProcess/opac/catalogue", "GBV");
         assertNotNull(fixture);
         assertEquals("LOC", fixture);
 
@@ -75,7 +75,7 @@ public class ConfigProjectsTest {
     @Test
     public void testParamBoolean() throws IOException {
         ConfigProjects cp = new ConfigProjects("default");
-        boolean fixture = cp.getParamBoolean("createNewProcess.opac[@use]");
+        boolean fixture = cp.getParamBoolean("createNewProcess/opac/@use");
         assertTrue(fixture);
 
     }
@@ -90,7 +90,7 @@ public class ConfigProjectsTest {
     @Test
     public void testParamList() throws IOException {
         ConfigProjects cp = new ConfigProjects("default");
-        List<String> fixture = cp.getParamList("createNewProcess.itemlist.item");
+        List<String> fixture = cp.getParamList("createNewProcess/itemlist/item");
         assertNotNull(fixture);
         assertEquals(1, fixture.size());
 

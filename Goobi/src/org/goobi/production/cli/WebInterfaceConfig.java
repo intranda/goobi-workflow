@@ -3,10 +3,10 @@ package org.goobi.production.cli;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -36,10 +36,11 @@ import de.sub.goobi.helper.Helper;
 public class WebInterfaceConfig {
 
     public static List<String> getCredencials(String requestIp, String requestPassword) {
-        ArrayList<String> allowed = new ArrayList<String>();
+        ArrayList<String> allowed = new ArrayList<>();
         try {
-            XMLConfiguration config = new XMLConfiguration(new Helper().getGoobiConfigDirectory() + "goobi_webapi.xml");
-            config.setListDelimiter('&');
+            XMLConfiguration config = new XMLConfiguration();
+            config.setDelimiterParsingDisabled(true);
+            config.load(new Helper().getGoobiConfigDirectory() + "goobi_webapi.xml");
             config.setReloadingStrategy(new FileChangedReloadingStrategy());
 
             int count = config.getMaxIndex("credentials");
@@ -55,7 +56,7 @@ public class WebInterfaceConfig {
                 }
             }
         } catch (Exception e) {
-            allowed = new ArrayList<String>();
+            allowed = new ArrayList<>();
         }
         return allowed;
 

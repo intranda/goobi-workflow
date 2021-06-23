@@ -6,7 +6,7 @@ package de.sub.goobi.forms;
  * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -292,15 +292,15 @@ public class ProzesskopieFormTest {
         form.setProzessVorlage(template);
         secondStep.setBenutzer(userList);
 
-        AdditionalField field1 = new AdditionalField(form);
+        AdditionalField field1 = new AdditionalField();
         field1.setTitel("TitleDocMain");
         field1.setWert("Test title");
 
-        AdditionalField field2 = new AdditionalField(form);
+        AdditionalField field2 = new AdditionalField();
         field2.setTitel("ListOfCreators");
         field2.setWert("first author");
 
-        AdditionalField field3 = new AdditionalField(form);
+        AdditionalField field3 = new AdditionalField();
         field3.setTitel("Identifier");
         field3.setWert("123");
 
@@ -473,6 +473,8 @@ public class ProzesskopieFormTest {
         MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
         MetadataManager.updateJSONMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
 
+
+
         PowerMock.mockStatic(HistoryAnalyserJob.class);
         EasyMock.expect(HistoryAnalyserJob.updateHistoryForProzess(EasyMock.anyObject(Process.class))).andReturn(true);
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
@@ -482,7 +484,7 @@ public class ProzesskopieFormTest {
         //
         //        PowerMock.mockStatic(FilesystemHelper.class);
         //        FilesystemHelper.createDirectory(EasyMock.anyString());
-
+        EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(null);
         //        EasyMock.expectLastCall().anyTimes();
         PowerMock.replay(ProcessManager.class);
         PowerMock.replay(MetadataManager.class);

@@ -3,6 +3,7 @@ package org.goobi.api.mq;
 import java.util.Date;
 
 import javax.jms.BytesMessage;
+import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -11,16 +12,13 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.naming.ConfigurationException;
 
-import org.apache.activemq.ActiveMQConnection;
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.ActiveMQPrefetchPolicy;
-import org.apache.activemq.RedeliveryPolicy;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.LogType;
 
 import com.google.gson.Gson;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -34,18 +32,14 @@ import lombok.extern.log4j.Log4j;
 public class GoobiCommandListener {
     Gson gson = new Gson();
 
-    private ActiveMQConnection conn;
+    private Connection conn;
 
     public void register(String username, String password) throws JMSException {
-        ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory();
-        conn = (ActiveMQConnection) connFactory.createConnection(username, password);
-        ActiveMQPrefetchPolicy prefetchPolicy = new ActiveMQPrefetchPolicy();
-        prefetchPolicy.setAll(0);
-        conn.setPrefetchPolicy(prefetchPolicy);
-        RedeliveryPolicy policy = conn.getRedeliveryPolicy();
-        policy.setMaximumRedeliveries(0);
+        this.conn = ExternalConnectionFactory.createConnection(username, password);
+        ConfigurationHelper config = ConfigurationHelper.getInstance();
+
         final Session sess = conn.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-        final Destination dest = sess.createQueue(QueueType.COMMAND_QUEUE.toString());
+        final Destination dest = sess.createQueue(config.getQueueName(QueueType.COMMAND_QUEUE));
 
         final MessageConsumer cons = sess.createConsumer(dest);
 
@@ -90,16 +84,22 @@ public class GoobiCommandListener {
         String token = t.getJwt();
         Integer stepId = t.getStepId();
         Integer processId = t.getProcessId();
+        Step step = StepManager.getStepById(stepId);
+        if (step == null) {
+            log.error("GoobiCommandListener: Could not find step with ID " + stepId);
+            return;
+        }
         switch (command) {
             case "changeStep":
                 try {
                     if (JwtHelper.verifyChangeStepToken(token, stepId)) {
                         // change step
-                        Step step = StepManager.getStepById(stepId);
                         String newStatus = t.getNewStatus();
                         switch (newStatus) {
                             case "error":
                                 step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                                step.setBearbeitungszeitpunkt(new Date());
+                                step.setBearbeitungsende(step.getBearbeitungszeitpunkt());
                                 StepManager.saveStep(step);
                                 break;
                             case "done":
@@ -108,6 +108,10 @@ public class GoobiCommandListener {
                                     ExternalMQManager.insertResult(new ExternalCommandResult(t.getProcessId(), t.getStepId(), scriptName));
                                 }
                                 new HelperSchritte().CloseStepObjectAutomatic(step);
+                                break;
+                            case "paused":
+                                // Step was paused when the workernode tried to run it. Persist this to schritte table
+                                StepManager.setStepPaused(stepId, true);
                                 break;
                         }
                     }

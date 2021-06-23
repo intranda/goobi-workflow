@@ -7,7 +7,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -23,7 +24,10 @@
             <div
                 class="modal-dialog"
                 role="document">
-                <div class="modal-content">
+                <h:panelGroup
+                    id="geonamesModalContent"
+                    layout="block"
+                    styleClass="modal-content">
                     <div class="modal-header">
                         <h5
                             class="modal-title"
@@ -63,27 +67,28 @@
 
                             <!-- GEONAMES SEARCH ACTION -->
                             <div class="col-2 text-right">
-                             <h:commandLink
-                                        styleClass="btn btn--white btn--loader"
-                                        action="#{Metadaten.search}">
-                                        <i
-                                            class="fa fa-search"
-                                            aria-hidden="true"></i>
+                                <button
+                                	jsf:id="geonamesSearchButton"
+                                    class="btn btn--white btn--loader"
+                                    jsf:action="#{Metadaten.search}">
+                                    <i
+                                        class="fa fa-search"
+                                        aria-hidden="true"></i>
                                         #{msgs.search}
                                         <span
-                                            class="btn-ajax-loader"
-                                            aria-hidden="true">
-                                            <img
-                                                src="template/img/goobi/ajaxloader2.gif"
-                                                alt="Ajax Button Loader" />
-                                        </span>
-                                        <f:passThroughAttribute
-                                            name="data-toggle"
-                                            value="tooltip" />
-                                        <f:ajax
-                                            execute="@form"
-                                            render="geonamesList" />
-                                    </h:commandLink>
+                                        class="btn-ajax-loader"
+                                        aria-hidden="true">
+                                        <img
+                                            src="template/img/goobi/ajaxloader2.gif"
+                                            alt="Ajax Button Loader" />
+                                    </span>
+                                    <f:passThroughAttribute
+                                        name="data-toggle"
+                                        value="tooltip" />
+                                    <f:ajax
+                                        execute="@form"
+                                        render="geonamesList" />
+                                </button>
                             </div>
                         </div>
 
@@ -94,7 +99,10 @@
                                 showDetail="true"
                                 styleClass="help-inline font-danger" />
 
-                            <h:panelGroup layout="block" styleClass="modal__geonames-list scrollable" rendered="#{Metadaten.currentMetadataToPerformSearch.resultList.size() != 0}">
+                            <h:panelGroup
+                                layout="block"
+                                styleClass="modal__geonames-list scrollable"
+                                rendered="#{Metadaten.currentMetadataToPerformSearch.resultList ne null and Metadaten.currentMetadataToPerformSearch.resultList.size() != 0}">
                                 <x:dataList
                                     value="#{Metadaten.currentMetadataToPerformSearch.resultList}"
                                     var="geonames">
@@ -175,9 +183,10 @@
                                             </div>
 
                                             <div class="col-2 text-right">
-                                                <h:commandLink
-                                                    styleClass="btn btn--icon-green"
-                                                    action="#{Metadaten.currentMetadataToPerformSearch.getData}">
+                                                <button
+                                                	jsf:id="check"
+                                                    class="btn btn--icon-green greenCheckButton"
+                                                    jsf:action="#{Metadaten.currentMetadataToPerformSearch.getData}">
                                                     <f:setPropertyActionListener
                                                         value="#{geonames}"
                                                         target="#{Metadaten.currentMetadataToPerformSearch.currentToponym}" />
@@ -187,7 +196,7 @@
                                                     <i
                                                         class="fa fa-check"
                                                         aria-hidden="true"></i>
-                                                </h:commandLink>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -201,7 +210,7 @@
                                 rendered="#{Metadaten.currentMetadataToPerformSearch != NULL and Metadaten.currentMetadataToPerformSearch.showNoHitFound}" />
                         </h:panelGroup>
                     </div>
-                </div>
+                </h:panelGroup>
             </div>
         </div>
     </composite:implementation>

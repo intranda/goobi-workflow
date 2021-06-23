@@ -1,379 +1,627 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/template/template.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
-    <ui:param name="myPageTitle" value="#{NavigationForm.aktuell == 'a41'?msgs[StatisticalQuestionBean.currentPlugin.title]:msgs.statistik}" />
+    <ui:param
+        name="myPageTitle"
+        value="#{NavigationForm.aktuell == 'a41'?msgs[StatisticalQuestionBean.currentPlugin.title]:msgs.statistik}" />
 
 
     <ui:define name="breadcrumb">
-        <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-        <intranda:breadcrumb id="stat" label="#{myPageTitle}" action="statistics" noSeparator="#{true}" />
+        <intranda:breadcrumb
+            id="index"
+            label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
+            action="index"
+            navId="a0" />
+        <intranda:breadcrumb
+            id="stat"
+            label="#{myPageTitle}"
+            action="statistics"
+            noSeparator="#{true}" />
     </ui:define>
 
     <ui:define name="info">
     </ui:define>
 
     <ui:define name="content">
+            <ui:include src="includes/calendarJavaScript.xhtml" />
 
-        <ui:include src="includes/calendarJavaScript.xhtml" />
-
-        <h:form rendered="#{NavigationForm.aktuell == 'a40' and LoginForm.hasRole('Statistics_General')}" id="myform">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="box box-color lightgrey box-bordered">
-                        <div class="box-title">
-                            <h3>
-                                <i class="glyphicon-compass box-icon-fix"></i>
-                                <h:outputText value="#{msgs.projekt}" />
-                            </h3>
-                        </div>
-                        <div class="box-content">
-
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <h:outputLabel styleClass="control-label" for="project" value="#{msgs.projekt}:" />
-                                </div>
-                                <div class="col-sm-8">
-                                    <h:selectOneMenu id="project" styleClass="form-control" value="#{ProjekteForm.projektAuswahl}" required="true">
-                                        <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" />
-                                        <f:selectItems value="#{ProzessverwaltungForm.projektAuswahlListe}" />
-                                        <f:ajax execute="@form" render="@form" />
-                                    </h:selectOneMenu>
-                                </div>
-                            </div>
-
-                            <h:panelGroup rendered="#{ProjekteForm.myProjekt != null and ProjekteForm.myProjekt.id != null}">
-                                <!-- number of images -->
-                                <div class="row margin-top-regular">
-                                    <div class="col-sm-4">
-                                        <h:outputLabel styleClass="control-label" value="#{msgs.numberImages}:" />
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <h:outputText value="#{ProjekteForm.myProjekt.numberOfPages}" />
-                                    </div>
-                                </div>
-                                <!-- number of volumes -->
-                                <div class="row margin-top-regular">
-                                    <div class="col-sm-4">
-                                        <h:outputLabel styleClass="control-label" value="#{msgs.numberVolumes}:" />
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <h:outputText value="#{ProjekteForm.myProjekt.numberOfVolumes}" />
-                                    </div>
-                                </div>
-                                <!-- startdate -->
-                                <div class="row margin-top-regular">
-                                    <div class="col-sm-4">
-                                        <h:outputLabel styleClass="control-label" value="#{msgs.startdate}:" />
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <h:outputText value="#{ProjekteForm.myProjekt.startDate}" />
-                                    </div>
-                                </div>
-                                <!-- enddate -->
-                                <div class="row margin-top-regular">
-                                    <div class="col-sm-4">
-                                        <h:outputLabel styleClass="control-label" value="#{msgs.enddate}:" />
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <h:outputText value="#{ProjekteForm.myProjekt.endDate}" />
-                                    </div>
-                                </div>
-                            </h:panelGroup>
-                        </div>
-                    </div>
-                </div>
-
-                <h:panelGroup rendered="#{ProjekteForm.myProjekt != null and ProjekteForm.myProjekt.id != null}">
+            <h:form
+                rendered="#{NavigationForm.aktuell == 'a40' and LoginForm.hasRole('Statistics_General')}"
+                id="myform">
+                <div
+                    class="row"
+                    role="main">
                     <div class="col-sm-6">
-                        <div class="box box-bordered">
+                        <div class="box box-color lightgrey box-bordered">
                             <div class="box-title">
-                                <h3>
-                                    <i class="fa fa-calculator"></i>
-                                    <h:outputText value="#{msgs.vorgaben}" />
-                                </h3>
+                                <h2>
+                                    <i class="fa fa-compass"></i>
+                                    <h:outputText value="#{msgs.projekt}" />
+                                </h2>
                             </div>
                             <div class="box-content">
 
-                                <div class="row margin-top-regular">
-                                    <!-- pages per volume -->
-                                    <div class="col-sm-4">
-                                        <h:outputLabel styleClass="control-label" value="#{msgs.imagesPerVolume}:" />
+                                <div class="row">
+                                    <div
+                                        class="col-sm-4">
+                                        <h:outputLabel
+                                            styleClass="control-label"
+                                            for="project"
+                                            value="#{msgs.projekt}:" />
                                     </div>
-                                    <div class="col-sm-2">
-                                        <h:outputText value="#{ProjekteForm.calcImagesPerVolume}" />
-                                    </div>
-                                    <!-- duration -->
-                                    <div class="col-sm-4">
-                                        <h:outputLabel styleClass="control-label" value="#{msgs.durationInMonth}:" />
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <h:outputText value="#{ProjekteForm.calcDuration}" />
-                                    </div>
-                                </div>
-
-                                <!-- throughputPerYear -->
-                                <h:panelGroup rendered="#{ProjekteForm.calcDuration > 11}">
-                                    <div class="row margin-top-regular">
-                                        <div class="col-sm-4">
-                                            <h:outputLabel styleClass="control-label" value="#{msgs.volumesPerYear}:" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <h:outputText value="#{ProjekteForm.calcThroughputPerYear}" />
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <h:outputLabel styleClass="control-label" value="#{msgs.pagesPerYear}:" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <h:outputText value="#{ProjekteForm.calcThroughputPagesPerYear}" />
-                                        </div>
-                                    </div>
-                                </h:panelGroup>
-
-                                <!-- throughputPerQuarter -->
-                                <h:panelGroup rendered="#{ProjekteForm.calcDuration > 2}">
-                                    <div class="row margin-top-regular">
-                                        <div class="col-sm-4">
-                                            <h:outputLabel styleClass="control-label" value="#{msgs.volumesPerQuarter}:" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <h:outputText value="#{ProjekteForm.calcThroughputPerQuarter}" />
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <h:outputLabel styleClass="control-label" value="#{msgs.pagesPerQuarter}:" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <h:outputText value="#{ProjekteForm.calcTroughputPagesPerQuarter}" />
-                                        </div>
-                                    </div>
-                                </h:panelGroup>
-
-                                <!-- throughputPerMonth -->
-                                <h:panelGroup rendered="#{ProjekteForm.calcDuration > 0}">
-                                    <div class="row margin-top-regular">
-                                        <div class="col-sm-4">
-                                            <h:outputLabel styleClass="control-label" value="#{msgs.volumesPerMonth}:" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <h:outputText value="#{ProjekteForm.calcThroughputPerMonth}" />
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <h:outputLabel styleClass="control-label" value="#{msgs.pagesPerMonth}:" />
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <h:outputText value="#{ProjekteForm.calcThroughputPagesPerMonth}" />
-                                        </div>
-                                    </div>
-                                </h:panelGroup>
-
-                                <!-- throughputPerDay -->
-                                <div class="row margin-top-regular">
-                                    <div class="col-sm-4">
-                                        <h:outputLabel styleClass="control-label" value="#{msgs.volumesPerDay}:" />
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <h:outputText value="#{ProjekteForm.calcThroughputPerDay}" />
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <h:outputLabel styleClass="control-label" value="#{msgs.pagesPerDay}:" />
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <h:outputText value="#{ProjekteForm.calcPagesPerDay}" />
+                                    <div class="col-sm-8">
+                                        <h:selectOneMenu
+                                            id="project"
+                                            styleClass="form-control"
+                                            value="#{ProjekteForm.projektAuswahl}"
+                                            required="true">
+                                            <f:selectItem
+                                                itemValue=""
+                                                itemLabel="#{msgs.bitteAuswaehlen}" />
+                                            <f:selectItems value="#{ProzessverwaltungForm.projektAuswahlListe}" />
+                                            <f:ajax
+                                                execute="@form"
+                                                render="@form" />
+                                        </h:selectOneMenu>
                                     </div>
                                 </div>
 
+                                <h:panelGroup rendered="#{ProjekteForm.myProjekt != null and ProjekteForm.myProjekt.id != null}">
+                                    <!-- number of images -->
+                                    <div class="row margin-top-regular">
+                                        <div
+                                            class="col-sm-4"
+                                            >
+                                            <h:outputLabel
+                                                styleClass="control-label"
+                                                value="#{msgs.numberImages}:" />
+                                        </div>
+                                        <div
+                                            class="col-sm-8"
+                                            >
+                                            <h:outputText value="#{ProjekteForm.myProjekt.numberOfPages}" />
+                                        </div>
+                                    </div>
+                                    <!-- number of volumes -->
+                                    <div class="row margin-top-regular">
+                                        <div
+                                            class="col-sm-4"
+                                            >
+                                            <h:outputLabel
+                                                styleClass="control-label"
+                                                value="#{msgs.numberVolumes}:" />
+                                        </div>
+                                        <div
+                                            class="col-sm-8"
+                                            >
+                                            <h:outputText value="#{ProjekteForm.myProjekt.numberOfVolumes}" />
+                                        </div>
+                                    </div>
+                                    <!-- startdate -->
+                                    <div class="row margin-top-regular">
+                                        <div
+                                            class="col-sm-4"
+                                            >
+                                            <h:outputLabel
+                                                styleClass="control-label"
+                                                value="#{msgs.startdate}:" />
+                                        </div>
+                                        <div
+                                            class="col-sm-8"
+                                            >
+                                            <h:outputText value="#{ProjekteForm.myProjekt.startDate}" />
+                                        </div>
+                                    </div>
+                                    <!-- enddate -->
+                                    <div class="row margin-top-regular">
+                                        <div
+                                            class="col-sm-4"
+                                            >
+                                            <h:outputLabel
+                                                styleClass="control-label"
+                                                value="#{msgs.enddate}:" />
+                                        </div>
+                                        <div
+                                            class="col-sm-8"
+                                            >
+                                            <h:outputText value="#{ProjekteForm.myProjekt.endDate}" />
+                                        </div>
+                                    </div>
+                                </h:panelGroup>
                             </div>
                         </div>
                     </div>
-                </h:panelGroup>
-            </div>
 
-            <div class="row">
-                <div class="col-sm-12">
+                    <h:panelGroup rendered="#{ProjekteForm.myProjekt != null and ProjekteForm.myProjekt.id != null}">
+                        <div class="col-sm-6">
+                            <div class="box box-color lightgrey box-bordered">
+                                <div class="box-title">
+                                    <h2>
+                                        <i class="fa fa-calculator"></i>
+                                        <h:outputText value="#{msgs.vorgaben}" />
+                                    </h2>
+                                </div>
+                                <div class="box-content">
 
-                    <h:panelGroup layout="block" styleClass="box box-color lightgrey box-bordered" id="actionform" rendered="#{ProjekteForm.myProjekt != null and ProjekteForm.myProjekt.id != null}">
-                        <div class="box box-color box-bordered">
-                            <div class="box-title">
-                                <h3>
-                                    <i class="fa fa-bar-chart"></i>
-                                    <h:outputText value="#{msgs.statistik}" />
-                                </h3>
-                                
-                                <div class="actions">
-                                
-                               <h:commandLink id="resetStatistics" action="#{ProjekteForm.resetStatistics}" styleClass="btn btn-mini" title="#{msgs.reload}" rel="tooltip">
-                                            <i class="fa fa-refresh" title="#{msgs.reload}" rel="tooltip"/>
-                                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                        </h:commandLink>
+                                    <div class="row margin-top-regular">
+                                        <!-- pages per volume -->
+                                        <div
+                                            class="col-sm-4"
+                                            >
+                                            <h:outputLabel
+                                                styleClass="control-label"
+                                                value="#{msgs.imagesPerVolume}:" />
+                                        </div>
+                                        <div
+                                            class="col-sm-2"
+                                            >
+                                            <h:outputText value="#{ProjekteForm.calcImagesPerVolume}" />
+                                        </div>
+                                        <!-- duration -->
+                                        <div
+                                            class="col-sm-4"
+                                            >
+                                            <h:outputLabel
+                                                styleClass="control-label"
+                                                value="#{msgs.durationInMonth}:" />
+                                        </div>
+                                        <div
+                                            class="col-sm-2"
+                                            >
+                                            <h:outputText value="#{ProjekteForm.calcDuration}" />
+                                        </div>
+                                    </div>
+
+                                    <!-- throughputPerYear -->
+                                    <h:panelGroup rendered="#{ProjekteForm.calcDuration > 11}">
+                                        <div class="row margin-top-regular">
+                                            <div
+                                                class="col-sm-4"
+                                                >
+                                                <h:outputLabel
+                                                    styleClass="control-label"
+                                                    value="#{msgs.volumesPerYear}:" />
+                                            </div>
+                                            <div
+                                                class="col-sm-2"
+                                                >
+                                                <h:outputText value="#{ProjekteForm.calcThroughputPerYear}" />
+                                            </div>
+                                            <div
+                                                class="col-sm-4"
+                                                >
+                                                <h:outputLabel
+                                                    styleClass="control-label"
+                                                    value="#{msgs.pagesPerYear}:" />
+                                            </div>
+                                            <div
+                                                class="col-sm-2"
+                                                >
+                                                <h:outputText value="#{ProjekteForm.calcThroughputPagesPerYear}" />
+                                            </div>
+                                        </div>
+                                    </h:panelGroup>
+
+                                    <!-- throughputPerQuarter -->
+                                    <h:panelGroup rendered="#{ProjekteForm.calcDuration > 2}">
+                                        <div class="row margin-top-regular">
+                                            <div
+                                                class="col-sm-4"
+                                                >
+                                                <h:outputLabel
+                                                    styleClass="control-label"
+                                                    value="#{msgs.volumesPerQuarter}:" />
+                                            </div>
+                                            <div
+                                                class="col-sm-2"
+                                                >
+                                                <h:outputText value="#{ProjekteForm.calcThroughputPerQuarter}" />
+                                            </div>
+                                            <div
+                                                class="col-sm-4"
+                                                >
+                                                <h:outputLabel
+                                                    styleClass="control-label"
+                                                    value="#{msgs.pagesPerQuarter}:" />
+                                            </div>
+                                            <div
+                                                class="col-sm-2"
+                                                >
+                                                <h:outputText value="#{ProjekteForm.calcTroughputPagesPerQuarter}" />
+                                            </div>
+                                        </div>
+                                    </h:panelGroup>
+
+                                    <!-- throughputPerMonth -->
+                                    <h:panelGroup rendered="#{ProjekteForm.calcDuration > 0}">
+                                        <div class="row margin-top-regular">
+                                            <div
+                                                class="col-sm-4"
+                                                >
+                                                <h:outputLabel
+                                                    styleClass="control-label"
+                                                    value="#{msgs.volumesPerMonth}:" />
+                                            </div>
+                                            <div
+                                                class="col-sm-2"
+                                                >
+                                                <h:outputText value="#{ProjekteForm.calcThroughputPerMonth}" />
+                                            </div>
+                                            <div
+                                                class="col-sm-4"
+                                                >
+                                                <h:outputLabel
+                                                    styleClass="control-label"
+                                                    value="#{msgs.pagesPerMonth}:" />
+                                            </div>
+                                            <div
+                                                class="col-sm-2"
+                                                >
+                                                <h:outputText value="#{ProjekteForm.calcThroughputPagesPerMonth}" />
+                                            </div>
+                                        </div>
+                                    </h:panelGroup>
+
+                                    <!-- throughputPerDay -->
+                                    <div class="row margin-top-regular">
+                                        <div
+                                            class="col-sm-4"
+                                            >
+                                            <h:outputLabel
+                                                styleClass="control-label"
+                                                value="#{msgs.volumesPerDay}:" />
+                                        </div>
+                                        <div
+                                            class="col-sm-2"
+                                            >
+                                            <h:outputText value="#{ProjekteForm.calcThroughputPerDay}" />
+                                        </div>
+                                        <div
+                                            class="col-sm-4"
+                                            >
+                                            <h:outputLabel
+                                                styleClass="control-label"
+                                                value="#{msgs.pagesPerDay}:" />
+                                        </div>
+                                        <div
+                                            class="col-sm-2"
+                                            >
+                                            <h:outputText value="#{ProjekteForm.calcPagesPerDay}" />
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
-                        </div>
-                        <div class="box-content nopadding">
-
-                            <ul class="tabs tabs-inline tabs-top">
-                                <li class="#{NavigationForm.activeTab == 'productionStatistics'?'active':''}">
-                                    <h:commandLink id="tab1" action="#{NavigationForm.Reload}" value="#{msgs.productionStatistics}" title="#{msgs.productionStatistics}">
-                                        <f:setPropertyActionListener target="#{NavigationForm.activeTab}" value="productionStatistics" />
-                                    </h:commandLink>
-                                </li>
-
-                                <li class="#{NavigationForm.activeTab == 'productionThroughput'?'active':''}">
-                                    <h:commandLink id="tab2" action="#{NavigationForm.Reload}" value="#{msgs.productionThroughput}" title="#{msgs.productionThroughput}">
-                                        <f:setPropertyActionListener target="#{NavigationForm.activeTab}" value="productionThroughput" />
-                                    </h:commandLink>
-                                </li>
-
-                                <li class="#{NavigationForm.activeTab == 'errorTracking'?'active':''}">
-                                    <h:commandLink id="tab3" action="#{NavigationForm.Reload}" value="#{msgs.errorTracking}" title="#{msgs.errorTracking}">
-                                        <f:setPropertyActionListener target="#{NavigationForm.activeTab}" value="errorTracking" />
-                                    </h:commandLink>
-                                </li>
-
-                                <li class="#{NavigationForm.activeTab == 'storageCalculator'?'active':''}">
-                                    <h:commandLink id="tab4" action="#{NavigationForm.Reload}" value="#{msgs.storageCalculator}" title="#{msgs.storageCalculator}">
-                                        <f:setPropertyActionListener target="#{NavigationForm.activeTab}" value="storageCalculator" />
-                                    </h:commandLink>
-                                </li>
-
-                                <li class="#{NavigationForm.activeTab == 'projektstand'?'active':''}">
-                                    <h:commandLink id="tab5" action="#{NavigationForm.Reload}" value="#{msgs.projektstand}" title="#{msgs.projektstand}">
-                                        <f:setPropertyActionListener target="#{NavigationForm.activeTab}" value="projektstand" />
-                                    </h:commandLink>
-                                </li>
-
-                                <li class="#{NavigationForm.activeTab == 'projectProgress'?'active':''}">
-                                    <h:commandLink id="tab6" action="#{NavigationForm.Reload}" value="#{msgs.projectProgress}" title="#{msgs.projectProgress}">
-                                        <f:setPropertyActionListener target="#{NavigationForm.activeTab}" value="projectProgress" />
-                                    </h:commandLink>
-                                </li>
-                            </ul>
-
-                            <div class="tab-content tab-content-inline tab-content-bottom padding-all-more">
-                                <h:panelGroup layout="block" id="firsttab" class="tab-pane active" rendered="#{NavigationForm.activeTab == 'productionStatistics'}">
-                                    <div>
-                                        <x:aliasBeansScope>
-                                            <x:aliasBean alias="#{Form}" value="#{ProjekteForm}" />
-                                            <x:aliasBean alias="#{Manager}" value="#{ProjekteForm.statisticsManager1}" />
-                                            <f:subview id="id1">
-                                                <ui:include src="includes/statistics/statistic_details.xhtml" />
-                                            </f:subview>
-                                        </x:aliasBeansScope>
-                                    </div>
-                                </h:panelGroup>
-
-                                <h:panelGroup layout="block" id="secondtab" class="tab-pane active" rendered="#{NavigationForm.activeTab == 'productionThroughput'}">
-                                    <div>
-                                        <x:aliasBeansScope>
-                                            <x:aliasBean alias="#{Form}" value="#{ProjekteForm}" />
-                                            <x:aliasBean alias="#{Manager}" value="#{ProjekteForm.statisticsManager2}" />
-
-                                            <f:subview id="id2">
-                                                <ui:include src="includes/statistics/statistic_details.xhtml" />
-                                            </f:subview>
-                                        </x:aliasBeansScope>
-                                    </div>
-                                </h:panelGroup>
-
-                                <h:panelGroup layout="block" id="thirdtab" class="tab-pane active" rendered="#{NavigationForm.activeTab == 'errorTracking'}">
-                                    <div>
-                                        <x:aliasBeansScope>
-                                            <x:aliasBean alias="#{Form}" value="#{ProjekteForm}" />
-                                            <x:aliasBean alias="#{Manager}" value="#{ProjekteForm.statisticsManager3}" />
-                                            <f:subview id="id3">
-                                                <ui:include src="includes/statistics/statistic_details.xhtml" />
-                                            </f:subview>
-                                        </x:aliasBeansScope>
-                                    </div>
-                                </h:panelGroup>
-                                <h:panelGroup layout="block" id="forthtab" class="tab-pane active" rendered="#{NavigationForm.activeTab == 'storageCalculator'}">
-                                    <div>
-                                        <x:aliasBeansScope>
-                                            <x:aliasBean alias="#{Form}" value="#{ProjekteForm}" />
-                                            <x:aliasBean alias="#{Manager}" value="#{ProjekteForm.statisticsManager4}" />
-                                            <f:subview id="id4">
-                                                <ui:include src="includes/statistics/statistic_details.xhtml" />
-                                            </f:subview>
-                                        </x:aliasBeansScope>
-                                    </div>
-                                </h:panelGroup>
-                                <h:panelGroup layout="block" id="fifthtab" class="tab-pane active" rendered="#{NavigationForm.activeTab == 'projektstand'}">
-                                    <h4>
-                                        <h:outputText id="vzid34" value="#{msgs.volumes} (#{ProjekteForm.myProjekt.numberOfVolumes})" />
-                                    </h4>
-
-                                    <h:graphicImage id="vzid36" alt="volumes" title="#{ProjekteForm.myProjekt.titel}" value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectStatVolumes}" />
-
-                                    <h4>
-                                        <h:outputText id="vzid39" value="#{msgs.seiten} (#{ProjekteForm.myProjekt.numberOfPages})" />
-                                    </h4>
-
-                                    <h:graphicImage id="vzid41" alt="images" title="#{ProjekteForm.myProjekt.titel}" value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectStatImages}" />
-                                </h:panelGroup>
-                                <h:panelGroup layout="block" id="sixthtab" class="tab-pane active" rendered="#{NavigationForm.activeTab == 'projectProgress'}">
-
-                                    <h4>
-                                        <h:outputText value="#{msgs.projectProgress}" />
-                                    </h4>
-
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <h:selectManyListbox id="vinput5" value="#{ProjekteForm.projectProgressInterface.selectedSteps}" styleClass="form-control">
-                                                    <f:selectItems value="#{ProjekteForm.projectProgressInterface.selectableSteps}" var="item" itemLabel="#{item}" itemValue="#{item}" />
-                                                </h:selectManyListbox>
-                                                 
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <h:selectOneMenu value="#{ProjekteForm.projectProgressInterface.timeUnit}" styleClass="form-control margin-bottom-regular" converter="StatisticsTimeUnitConverter">
-                                                    <f:selectItems id="pcid11" value="#{ProjekteForm.projectProgressInterface.selectableTimeUnits}" var="unit" itemLabel="#{unit.title}" itemValue="#{unit}" />
-                                                </h:selectOneMenu>
-                                                 
-                                                <h:selectBooleanCheckbox id="pcid13" value="#{ProjekteForm.projectProgressInterface.referenceCurve}" title="#{msgs.refCurve}">
-                                                </h:selectBooleanCheckbox>
-                                                <h:outputLabel id="pcid14" value="#{msgs.refCurve}" for="pcid13" styleClass="font-normal margin-left-5" />
-                                            </div>
-
-                                            <div class="form-group">
-                                                <h:commandLink id="pcid20" styleClass="btn btn-lightgrey font-size-s pull-right" action="#{ProjekteForm.filegroupEdit}">
-                                                    <span class="margin-right-10 fa fa-cog" />
-                                                    <h:outputText value="#{msgs.rerender}" />
-                                                </h:commandLink>
-                                                 
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                    <h:panelGrid columns="4">
-
-
-                                    </h:panelGrid>
-
-                                    <h:panelGroup id="pcid16">
-                                        <x:graphicImage forceId="true" id="vzid36" rendered="#{ProjekteForm.projectProgressImage != ''}" value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectProgressImage}" />
-
-                                    </h:panelGroup>
-                                </h:panelGroup>
-                            </div>
-
                         </div>
                     </h:panelGroup>
                 </div>
 
-            </div>
-        </h:form>
+                <div
+                    class="row"
+                    role="contentinfo">
+                    <div class="col-sm-12">
 
-        <h:panelGroup rendered="#{NavigationForm.aktuell == 'a41' and LoginForm.hasRole('Statistics_General')}">
-            <h:panelGroup rendered="#{StatisticalQuestionBean.currentPlugin.permissions}">
-                <ui:include src="#{StatisticalQuestionBean.currentPlugin.gui}"></ui:include>
+                        <h:panelGroup
+                            layout="block"
+                            styleClass="box box-color lightgrey box-bordered"
+                            id="actionform"
+                            rendered="#{ProjekteForm.myProjekt != null and ProjekteForm.myProjekt.id != null}">
+                            <div class="box box-color box-bordered">
+                                <div class="box-title">
+                                    <h2>
+                                        <i class="fa fa-bar-chart"></i>
+                                        <h:outputText value="#{msgs.statistik}" />
+                                    </h2>
+
+                                    <div class="actions">
+
+                                        <button
+                                            jsf:id="resetStatistics"
+                                            jsf:action="#{ProjekteForm.resetStatistics}"
+                                            class="btn btn-mini"
+                                            title="#{msgs.reload}"
+                                            jsf:rel="tooltip">
+                                            <i
+                                                class="fa fa-refresh"
+                                                title="#{msgs.reload}"
+                                                jsf:rel="tooltip" />
+                                            <f:passThroughAttribute
+                                                name="data-toggle"
+                                                value="tooltip" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-content nopadding">
+
+                                <ul class="tabs tabs-inline tabs-top">
+                                    <li class="#{NavigationForm.activeTab == 'productionStatistics'?'active':''}"><h:commandLink
+                                            id="tab1"
+                                            action="#{NavigationForm.Reload}"
+                                            value="#{msgs.productionStatistics}"
+                                            title="#{msgs.productionStatistics}">
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.activeTab}"
+                                                value="productionStatistics" />
+                                        </h:commandLink></li>
+
+                                    <li class="#{NavigationForm.activeTab == 'productionThroughput'?'active':''}"><h:commandLink
+                                            id="tab2"
+                                            action="#{NavigationForm.Reload}"
+                                            value="#{msgs.productionThroughput}"
+                                            title="#{msgs.productionThroughput}">
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.activeTab}"
+                                                value="productionThroughput" />
+                                        </h:commandLink></li>
+
+                                    <li class="#{NavigationForm.activeTab == 'errorTracking'?'active':''}"><h:commandLink
+                                            id="tab3"
+                                            action="#{NavigationForm.Reload}"
+                                            value="#{msgs.errorTracking}"
+                                            title="#{msgs.errorTracking}">
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.activeTab}"
+                                                value="errorTracking" />
+                                        </h:commandLink></li>
+
+                                    <li class="#{NavigationForm.activeTab == 'storageCalculator'?'active':''}"><h:commandLink
+                                            id="tab4"
+                                            action="#{NavigationForm.Reload}"
+                                            value="#{msgs.storageCalculator}"
+                                            title="#{msgs.storageCalculator}">
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.activeTab}"
+                                                value="storageCalculator" />
+                                        </h:commandLink></li>
+
+                                    <li class="#{NavigationForm.activeTab == 'projektstand'?'active':''}"><h:commandLink
+                                            id="tab5"
+                                            action="#{NavigationForm.Reload}"
+                                            value="#{msgs.projektstand}"
+                                            title="#{msgs.projektstand}">
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.activeTab}"
+                                                value="projektstand" />
+                                        </h:commandLink></li>
+
+                                    <li class="#{NavigationForm.activeTab == 'projectProgress'?'active':''}"><h:commandLink
+                                            id="tab6"
+                                            action="#{NavigationForm.Reload}"
+                                            value="#{msgs.projectProgress}"
+                                            title="#{msgs.projectProgress}">
+                                            <f:setPropertyActionListener
+                                                target="#{NavigationForm.activeTab}"
+                                                value="projectProgress" />
+                                        </h:commandLink></li>
+                                </ul>
+
+                                <div class="tab-content tab-content-inline tab-content-bottom padding-all-more">
+                                    <h:panelGroup
+                                        layout="block"
+                                        id="firsttab"
+                                        class="tab-pane active"
+                                        rendered="#{NavigationForm.activeTab == 'productionStatistics'}">
+                                        <div>
+                                            <x:aliasBeansScope>
+                                                <x:aliasBean
+                                                    alias="#{Form}"
+                                                    value="#{ProjekteForm}" />
+                                                <x:aliasBean
+                                                    alias="#{Manager}"
+                                                    value="#{ProjekteForm.statisticsManager1}" />
+                                                <f:subview id="id1">
+                                                    <ui:include src="includes/statistics/statistic_details.xhtml" />
+                                                </f:subview>
+                                            </x:aliasBeansScope>
+                                        </div>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup
+                                        layout="block"
+                                        id="secondtab"
+                                        class="tab-pane active"
+                                        rendered="#{NavigationForm.activeTab == 'productionThroughput'}">
+                                        <div>
+                                            <x:aliasBeansScope>
+                                                <x:aliasBean
+                                                    alias="#{Form}"
+                                                    value="#{ProjekteForm}" />
+                                                <x:aliasBean
+                                                    alias="#{Manager}"
+                                                    value="#{ProjekteForm.statisticsManager2}" />
+
+                                                <f:subview id="id2">
+                                                    <ui:include src="includes/statistics/statistic_details.xhtml" />
+                                                </f:subview>
+                                            </x:aliasBeansScope>
+                                        </div>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup
+                                        layout="block"
+                                        id="thirdtab"
+                                        class="tab-pane active"
+                                        rendered="#{NavigationForm.activeTab == 'errorTracking'}">
+                                        <div>
+                                            <x:aliasBeansScope>
+                                                <x:aliasBean
+                                                    alias="#{Form}"
+                                                    value="#{ProjekteForm}" />
+                                                <x:aliasBean
+                                                    alias="#{Manager}"
+                                                    value="#{ProjekteForm.statisticsManager3}" />
+                                                <f:subview id="id3">
+                                                    <ui:include src="includes/statistics/statistic_details.xhtml" />
+                                                </f:subview>
+                                            </x:aliasBeansScope>
+                                        </div>
+                                    </h:panelGroup>
+                                    <h:panelGroup
+                                        layout="block"
+                                        id="forthtab"
+                                        class="tab-pane active"
+                                        rendered="#{NavigationForm.activeTab == 'storageCalculator'}">
+                                        <div>
+                                            <x:aliasBeansScope>
+                                                <x:aliasBean
+                                                    alias="#{Form}"
+                                                    value="#{ProjekteForm}" />
+                                                <x:aliasBean
+                                                    alias="#{Manager}"
+                                                    value="#{ProjekteForm.statisticsManager4}" />
+                                                <f:subview id="id4">
+                                                    <ui:include src="includes/statistics/statistic_details.xhtml" />
+                                                </f:subview>
+                                            </x:aliasBeansScope>
+                                        </div>
+                                    </h:panelGroup>
+                                    <h:panelGroup
+                                        layout="block"
+                                        id="fifthtab"
+                                        class="tab-pane active"
+                                        rendered="#{NavigationForm.activeTab == 'projektstand'}">
+                                        <h3>
+                                            <h:outputText
+                                                id="vzid34"
+                                                value="#{msgs.volumes} (#{ProjekteForm.myProjekt.numberOfVolumes})" />
+                                        </h3>
+
+                                        <h:graphicImage
+                                            id="vzid36"
+                                            alt="volumes"
+                                            title="#{ProjekteForm.myProjekt.titel}"
+                                            value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectStatVolumes}" />
+
+                                        <h3>
+                                            <h:outputText
+                                                id="vzid39"
+                                                value="#{msgs.seiten} (#{ProjekteForm.myProjekt.numberOfPages})" />
+                                        </h3>
+
+                                        <h:graphicImage
+                                            id="vzid41"
+                                            alt="images"
+                                            title="#{ProjekteForm.myProjekt.titel}"
+                                            value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectStatImages}" />
+                                    </h:panelGroup>
+                                    <h:panelGroup
+                                        layout="block"
+                                        id="sixthtab"
+                                        class="tab-pane active"
+                                        rendered="#{NavigationForm.activeTab == 'projectProgress'}">
+
+                                        <h3>
+                                            <h:outputText value="#{msgs.projectProgress}" />
+                                        </h3>
+
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <h:selectManyListbox
+                                                        pt:aria-label="#{msgs.schritte}"
+                                                        id="vinput5"
+                                                        value="#{ProjekteForm.projectProgressInterface.selectedSteps}"
+                                                        styleClass="form-control">
+                                                        <f:selectItems
+                                                            value="#{ProjekteForm.projectProgressInterface.selectableSteps}"
+                                                            var="item"
+                                                            itemLabel="#{item}"
+                                                            itemValue="#{item}" />
+                                                        <f:passThroughAttribute
+                                                            name="aria-label"
+                                                            value="#{ProjekteForm.projectProgressInterface.selectedSteps}" />
+                                                    </h:selectManyListbox>
+                                                     
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <h:selectOneMenu
+                                                        value="#{ProjekteForm.projectProgressInterface.timeUnit}"
+                                                        styleClass="form-control margin-bottom-regular"
+                                                        converter="StatisticsTimeUnitConverter">
+                                                        <f:selectItems
+                                                            id="pcid11"
+                                                            value="#{ProjekteForm.projectProgressInterface.selectableTimeUnits}"
+                                                            var="unit"
+                                                            itemLabel="#{unit.title}"
+                                                            itemValue="#{unit}" />
+                                                        <f:passThroughAttribute
+                                                            name="aria-label"
+                                                            value="#{ProjekteForm.projectProgressInterface.selectableTimeUnits}" />
+                                                    </h:selectOneMenu>
+                                                     
+                                                    <h:selectBooleanCheckbox
+                                                        id="pcid13"
+                                                        value="#{ProjekteForm.projectProgressInterface.referenceCurve}"
+                                                        title="#{msgs.refCurve}">
+                                                    </h:selectBooleanCheckbox>
+                                                    <h:outputLabel
+                                                        id="pcid14"
+                                                        value="#{msgs.refCurve}"
+                                                        for="pcid13"
+                                                        styleClass="font-normal margin-left-5" />
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <button
+                                                        jsf:id="pcid20"
+                                                        class="btn btn-lightgrey font-size-s pull-right"
+                                                        jsf:action="#{ProjekteForm.filegroupEdit}">
+                                                        <span class="margin-right-10 fa fa-cog" />
+                                                        <h:outputText value="#{msgs.rerender}" />
+                                                    </button>
+                                                     
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <h:panelGrid columns="4">
+
+
+                                        </h:panelGrid>
+
+                                        <h:panelGroup id="pcid16">
+                                            <x:graphicImage
+                                                pt:aria-label="#{msgs.chart}"
+                                                forceId="true"
+                                                id="vzid36"
+                                                rendered="#{ProjekteForm.projectProgressImage != ''}"
+                                                value="#{HelperForm.servletPathWithHostAsUrl}/imagesTemp/#{ProjekteForm.projectProgressImage}" />
+
+                                        </h:panelGroup>
+                                    </h:panelGroup>
+                                </div>
+
+                            </div>
+                        </h:panelGroup>
+                    </div>
+
+                </div>
+            </h:form>
+
+            <h:panelGroup rendered="#{NavigationForm.aktuell == 'a41' and LoginForm.hasRole('Statistics_General')}">
+                <h:panelGroup rendered="#{StatisticalQuestionBean.currentPlugin.permissions}">
+                    <ui:include src="#{StatisticalQuestionBean.currentPlugin.gui}"></ui:include>
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{!StatisticalQuestionBean.currentPlugin.permissions}">
+                    <h:outputText
+                        styleClass="alert alert-danger alert-dismissable margin-bottom-10 margin-top-10"
+                        value="#{msgs.statisticsMissingPermission}"></h:outputText>
+                </h:panelGroup>
             </h:panelGroup>
-
-            <h:panelGroup rendered="#{!StatisticalQuestionBean.currentPlugin.permissions}">
-                <h:outputText styleClass="alert alert-danger alert-dismissable margin-bottom-10 margin-top-10" value="#{msgs.statisticsMissingPermission}"></h:outputText>
-            </h:panelGroup>
-        </h:panelGroup>
-
     </ui:define>
-
 
 </ui:composition>

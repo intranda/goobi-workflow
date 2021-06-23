@@ -3,10 +3,10 @@ package de.sub.goobi.config;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * 			- https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -26,12 +26,14 @@ package de.sub.goobi.config;
  * exception statement from your version.
  */
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.SubnodeConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
+import org.goobi.beans.Step;
 import org.goobi.production.plugin.interfaces.IPlugin;
 
 import de.sub.goobi.helper.Helper;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -48,19 +50,65 @@ public class ConfigPlugins {
     }
 
     /**
-     * pass back the right configuration file by giving the internal plugin name
+     * pass back the right configuration by giving the internal plugin name
+     * 
+     * @param pluginname Name of the plugin to use for finding the right
+     *                   configuration file in the config folder
      */
     public static XMLConfiguration getPluginConfig(String pluginname) {
         String file = "plugin_" + pluginname + ".xml";
-        XMLConfiguration config;
+        XMLConfiguration config = new XMLConfiguration();
+        config.setDelimiterParsingDisabled(true);
         try {
-            config = new XMLConfiguration(new Helper().getGoobiConfigDirectory() + file);
+            config.load(new Helper().getGoobiConfigDirectory() + file);
         } catch (ConfigurationException e) {
             log.error("Error while reading the configuration file " + file, e);
-            config = new XMLConfiguration();
         }
-        config.setListDelimiter('&');
         config.setReloadingStrategy(new FileChangedReloadingStrategy());
         return config;
     }
+
+    /**
+     * pass back the right sub-configuration by giving the internal plugin name and
+     * the workflow step. this allows to automatically detect the right
+     * sub-configuration for a specific project or step. If no sub-configuration can
+     * be found use the defaults
+     * 
+     * The order of configuration is: 
+     *      1.) project name and step name matches 
+     *      2.) step name matches and project is 
+     *      3.) project name matches and step name is
+     *      4.) project name and step name are
+     * 
+     * @param pluginname Name of the plugin to use for finding the right
+     *                   configuration file in the config folder
+     * @param step       Step to be used to detect the right sub-configuration
+     */
+    public static SubnodeConfiguration getProjectAndStepConfig(String pluginname, Step step) {
+        
+        // find out the project and the configuration file name to load it
+        String projectName = step.getProzess().getProjekt().getTitel();
+        XMLConfiguration xmlConfig = getPluginConfig(pluginname);
+        xmlConfig.setExpressionEngine(new XPathExpressionEngine());
+        xmlConfig.setReloadingStrategy(new FileChangedReloadingStrategy());
+
+        // find out the sub-configuration node for the right project and step 
+        SubnodeConfiguration myconfig = null;
+        try {
+            myconfig = xmlConfig
+                    .configurationAt("//config[./project = '" + projectName + "'][./step = '" + step.getTitel() + "']");
+        } catch (IllegalArgumentException e) {
+            try {
+                myconfig = xmlConfig.configurationAt("//config[./project = '*'][./step = '" + step.getTitel() + "']");
+            } catch (IllegalArgumentException e1) {
+                try {
+                    myconfig = xmlConfig.configurationAt("//config[./project = '" + projectName + "'][./step = '*']");
+                } catch (IllegalArgumentException e2) {
+                    myconfig = xmlConfig.configurationAt("//config[./project = '*'][./step = '*']");
+                }
+            }
+        }
+        return myconfig;
+    }
+
 }
