@@ -52,6 +52,8 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.zip.DataFormatException;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
@@ -64,6 +66,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -96,6 +99,7 @@ import com.drew.metadata.jpeg.JpegDirectory;
 import com.drew.metadata.png.PngDirectory;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
@@ -108,6 +112,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
+import lombok.Getter;
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -127,6 +132,7 @@ import ugh.exceptions.WriteException;
 public class ExportMets {
     protected Helper help = new Helper();
     protected Prefs myPrefs;
+    @Getter
     protected List<String> problems = new ArrayList<>();
 
     protected static final Logger logger = LogManager.getLogger(ExportMets.class);
@@ -154,8 +160,8 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
-    WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
-    TypeNotAllowedForParentException {
+            WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
+            TypeNotAllowedForParentException {
 
         String benutzerHome = "";
         LoginBean login = Helper.getLoginBean();
@@ -165,6 +171,39 @@ public class ExportMets {
             benutzerHome = myProzess.getProjekt().getDmsImportImagesPath();
         }
         return startExport(myProzess, benutzerHome);
+    }
+
+    public void downloadMets(Process process) throws ReadException, PreferencesException, WriteException, IOException, InterruptedException,
+            SwapException, DAOException, TypeNotAllowedForParentException {
+        this.myPrefs = process.getRegelsatz().getPreferences();
+        String atsPpnBand = process.getTitel();
+        Fileformat gdzfile = process.readMetadataFile();
+
+        //String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis); 
+        Path targetDir = Files.createTempDirectory("mets_export"); //only save file in /tmp/ directory 
+
+        String targetFileName = targetDir.resolve(atsPpnBand + "_mets.xml").toAbsolutePath().toString();
+        writeMetsFile(process, targetFileName, gdzfile, false);
+
+        //download File
+        try (InputStream in = StorageProvider.getInstance().newInputStream(Paths.get(targetFileName))) {
+            FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+            ExternalContext ec = facesContext.getExternalContext();
+            ec.responseReset();
+            ec.setResponseHeader("Content-Disposition", "attachment; filename=" + Paths.get(targetFileName).getFileName());
+            ec.setResponseContentLength((int) StorageProvider.getInstance().getFileSize(Paths.get(targetFileName)));
+
+            IOUtils.copy(in, ec.getResponseOutputStream());
+
+            facesContext.responseComplete();
+
+            Helper.setMeldung(null, process.getTitel() + ": ", "Download Finished");
+
+            //delete file from directory
+            StorageProvider.getInstance().deleteDir(targetDir);
+        } catch (Exception e) {
+            logger.error(e);
+        }
     }
 
     /**
@@ -186,8 +225,8 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
-    WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
-    SwapException, DAOException, TypeNotAllowedForParentException {
+            WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
+            SwapException, DAOException, TypeNotAllowedForParentException {
 
         /*
          * -------------------------------- Read Document --------------------------------
@@ -196,11 +235,11 @@ public class ExportMets {
         String atsPpnBand = myProzess.getTitel();
         Fileformat gdzfile = myProzess.readMetadataFile();
 
-        String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
+        //String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis); 
+        String zielVerzeichnis = Files.createTempDirectory("mets_export").toAbsolutePath().toString(); //only save file in /tmp/ directory 
 
         String targetFileName = zielVerzeichnis + atsPpnBand + "_mets.xml";
         return writeMetsFile(myProzess, targetFileName, gdzfile, false);
-
     }
 
     /**
@@ -477,12 +516,9 @@ public class ExportMets {
         } else {
             mm.write(targetFileName);
         }
+
         Helper.setMeldung(null, myProzess.getTitel() + ": ", "ExportFinished");
         return true;
-    }
-
-    public List<String> getProblems() {
-        return problems;
     }
 
     private VirtualFileGroup createFilegroup(VariableReplacer variableRplacer, ProjectFileGroup projectFileGroup) {
@@ -490,7 +526,7 @@ public class ExportMets {
         v.setName(projectFileGroup.getName());
         v.setPathToFiles(variableRplacer.replace(projectFileGroup.getPath()));
         v.setMimetype(projectFileGroup.getMimetype());
-        v.setFileSuffix(projectFileGroup.getSuffix());
+        v.setFileSuffix(projectFileGroup.getSuffix().trim());
         v.setFileExtensionsToIgnore(projectFileGroup.getIgnoreMimetypes());
         v.setIgnoreConfiguredMimetypeAndSuffix(projectFileGroup.isUseOriginalFiles());
         if (projectFileGroup.getName().equals("PRESENTATION")) {

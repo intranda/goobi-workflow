@@ -207,11 +207,11 @@
 
                                                         <intranda:formInputText id="url" name="path" label="#{msgs.path}" field="#{ProjekteForm.myFilegroup.path}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupPath}" fieldStyle="form-control" />
                                                         
-                                                        <div id="mime_suffix" jsf:rendered="#{not ProjekteForm.myFilegroup.useOriginalFiles}">
-	                                                        <intranda:formInputText id="mimetype" name="mimetypeName" label="#{msgs.mimetype}" field="#{ProjekteForm.myFilegroup.mimetype}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupMimetype}" fieldStyle="form-control" />
+                                                        <h:panelGroup id="mime_suffix">
+	                                                        <intranda:formInputText rendered="#{not ProjekteForm.myFilegroup.useOriginalFiles}" id="mimetype" name="mimetypeName" label="#{msgs.mimetype}" field="#{ProjekteForm.myFilegroup.mimetype}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupMimetype}" fieldStyle="form-control" />
 															
-	                                                        <intranda:formInputText id="suffix" name="suffixName" label="#{msgs.suffix}" field="#{ProjekteForm.myFilegroup.suffix}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupSuffix}" fieldStyle="form-control" />
-	                                                    </div>
+	                                                        <intranda:formInputText rendered="#{not ProjekteForm.myFilegroup.useOriginalFiles}" id="suffix" name="suffixName" label="#{msgs.suffix}" field="#{ProjekteForm.myFilegroup.suffix}" style="padding: 6px; border-bottom: 1px solid #ddd;" styleRight="padding-left:10px;background:#f6f6f6;" help="#{msgs.helpFilegroupSuffix}" fieldStyle="form-control" />
+	                                                    </h:panelGroup>
 	                                                     
                                                         <intranda:formInputText id="folder" name="folderName" label="#{msgs.validationAgainstFolder}" field="#{ProjekteForm.myFilegroup.folder}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" required="false" help="#{msgs.helpFilegroupValidationAgainstFolder}" fieldStyle="form-control" />
                                                         
@@ -222,7 +222,7 @@
 				                                        help="#{msgs.helpProjectfilegroup_UseOriginalFiles}"
 				                                        name="useOriginalFilesName"
 				                                        ajaxEvent="click"
-				                                        ajaxRender="@form"
+				                                        ajaxRender=":myform:mime_suffix"
 				                                        style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" />
 
                                                         <intranda:formInputText id="ignoreMimetypes" name="ignoreMimetypesName" label="#{msgs.projectfilegroup_ignoreMimetypes}" field="#{ProjekteForm.myFilegroup.ignoreMimetypes}" style="padding: 6px;" styleRight="padding-left:10px;background:#f6f6f6;" required="false" help="#{msgs.helpProjectfilegroup_IgnoreMimetypes}" fieldStyle="form-control" />

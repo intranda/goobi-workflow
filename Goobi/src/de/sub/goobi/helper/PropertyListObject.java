@@ -31,11 +31,16 @@ import java.util.List;
 
 import org.goobi.production.properties.ProcessProperty;
 
+import lombok.Getter;
+
 public class PropertyListObject implements Serializable {
 
     private static final long serialVersionUID = 1119130003588038047L;
-
+    
+    @Getter
     private List<ProcessProperty> propertyList = new ArrayList<ProcessProperty>();
+    
+    @Getter
     private int containerNumber = 0;
 
     public PropertyListObject() {
@@ -47,14 +52,6 @@ public class PropertyListObject implements Serializable {
 
     public void addToList(ProcessProperty pp) {
         this.propertyList.add(pp);
-    }
-
-    public int getContainerNumber() {
-        return this.containerNumber;
-    }
-
-    public List<ProcessProperty> getPropertyList() {
-        return this.propertyList;
     }
 
     public int getPropertyListSize() {
