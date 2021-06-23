@@ -991,6 +991,20 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
     }
 
+    public void downloadMets() {
+        ExportMets export = new ExportMets();
+        try {
+            export.downloadMets(this.myProzess);
+            Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started METS export using 'ExportMets'.");
+        } catch (Exception e) {
+            String[] parameter = { "METS", this.myProzess.getTitel() };
+
+            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
+            //            ;An error occured while trying to export METS file for: " + this.myProzess.getTitel(), e);
+            logger.error("ExportMETS error", e);
+        }
+    }
+
     public void ExportPdf() {
         ExportPdf export = new ExportPdf();
         try {
@@ -1821,8 +1835,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         } else {
             resetHitsCount();
             GoobiScript gs = new GoobiScript();
-            return gs.execute(this.paginator.getIdList(), this.goobiScript, goobiScriptManager);
-
+            gs.execute(this.paginator.getIdList(), this.goobiScript, goobiScriptManager);
+            return "process_all?faces-redirect=true";
         }
     }
 
@@ -1841,7 +1855,8 @@ public class ProcessBean extends BasicBean implements Serializable {
             for (Process p : (List<Process>) paginator.getList()) {
                 idList.add(p.getId());
             }
-            return gs.execute(idList, this.goobiScript, goobiScriptManager);
+            gs.execute(idList, this.goobiScript, goobiScriptManager);
+            return "process_all?faces-redirect=true";
         }
     }
 
@@ -1862,7 +1877,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 }
             }
             GoobiScript gs = new GoobiScript();
-            return gs.execute(idList, this.goobiScript, goobiScriptManager);
+            gs.execute(idList, this.goobiScript, goobiScriptManager);
+            return "process_all?faces-redirect=true";
         }
     }
 

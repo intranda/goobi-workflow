@@ -100,6 +100,7 @@ public class MassImportForm implements Serializable {
     private ImportFormat format = null;
     // private List<String> usablePlugins = new ArrayList<String>();
     private final ImportPluginLoader ipl = new ImportPluginLoader();
+    @Getter
     private String currentPlugin = "";
 
     private Path importFile = null;
@@ -364,6 +365,9 @@ public class MassImportForm implements Serializable {
                     List<GoobiScriptResult> newScripts = igs.prepare(new ArrayList<Integer>(),
                             "action:import plugin:" + plugin2.getTitle() + " template:" + this.template.getId() + " identifiers:" + myIdentifiers,
                             myParameters);
+                    for (GoobiScriptResult gsr : newScripts) {
+                        gsr.setCustomGoobiScriptImpl(igs);
+                    }
                     if (!newScripts.isEmpty()) {
                         Helper.setMeldung("Import has started");
                         goobiScriptManager.enqueueScripts(newScripts);
@@ -648,13 +652,6 @@ public class MassImportForm implements Serializable {
             plugin.setPrefs(template.getRegelsatz().getPreferences());
             plugin.setForm(this);
         }
-    }
-
-    /**
-     * @return the currentPlugin
-     */
-    public String getCurrentPlugin() {
-        return this.currentPlugin;
     }
 
     public boolean getHasNextPage() {

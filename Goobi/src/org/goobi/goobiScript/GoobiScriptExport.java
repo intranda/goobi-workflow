@@ -50,7 +50,7 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
 
     @Override
     public void execute(GoobiScriptResult gsr) {
-
+        Map<String, String> parameters = gsr.getParameters();
         String exportFulltextParameter = parameters.get("exportOcr");
         String exportImagesParameter = parameters.get("exportImages");
         boolean exportFulltext = exportFulltextParameter.toLowerCase().equals("true");

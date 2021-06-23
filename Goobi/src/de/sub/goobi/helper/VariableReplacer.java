@@ -27,7 +27,12 @@ package de.sub.goobi.helper;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.MatchResult;
@@ -48,6 +53,9 @@ import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
+
+import com.sun.org.apache.xerces.internal.util.URI;
+import com.sun.org.apache.xerces.internal.util.URI.MalformedURIException;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -100,6 +108,9 @@ public class VariableReplacer {
     private static Pattern pProjectId = Pattern.compile("\\$?(?:\\(|\\{)projectid(?:\\}|\\))");
     private static Pattern pProjectName = Pattern.compile("\\$?(?:\\(|\\{)projectname(?:\\}|\\))");
     private static Pattern pProjectIdentifier = Pattern.compile("\\$?(?:\\(|\\{)projectidentifier(?:\\}|\\))");
+
+    public static Pattern piiifMediaFolder = Pattern.compile("\\$?(?:\\(|\\{)iiifMediaFolder(?:\\}|\\))");
+    public static Pattern piiifMasterFolder = Pattern.compile("\\$?(?:\\(|\\{)iiifMasterFolder(?:\\}|\\))");
 
     private DigitalDocument dd;
     private Prefs prefs;
@@ -274,6 +285,10 @@ public class VariableReplacer {
             inString = pSourcePath.matcher(inString).replaceAll(sourcePath);
             inString = pOcrBasisPath.matcher(inString).replaceAll(ocrBasisPath);
             inString = pOcrPlaintextPath.matcher(inString).replaceAll(ocrPlaintextPath);
+
+            inString = piiifMediaFolder.matcher(inString).replaceAll(getIiifImageUrls(process, "media"));
+            inString = piiifMasterFolder.matcher(inString).replaceAll(getIiifImageUrls(process, "master"));
+
         } catch (IOException | InterruptedException | SwapException | DAOException e) {
             logger.error(e);
         }
@@ -357,7 +372,6 @@ public class VariableReplacer {
                 logger.error(e);
             }
         }
-
 
         return inString;
     }
@@ -480,5 +494,54 @@ public class VariableReplacer {
             results.add(m.toMatchResult());
         }
         return results;
+    }
+
+    private String getIiifImageUrls(Process process, String folderName) throws UnsupportedEncodingException {
+        //      http://localhost:8080/goobi/api/process/image/308938/master__AC03804780_MixedContentTest_media/00000001.tif/info.json
+        //          http://localhost:8080/goobi/api/process/image/308938/master__AC03804780_MixedContentTest_media/00000001.tif/full/max/0/default.jpg
+        Path folder = null;
+        if ("media".equals(folderName)) {
+            try {
+                folder = Paths.get(process.getImagesTifDirectory(false));
+            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+                logger.error(e);
+                return "";
+            }
+        } else {
+            try {
+                folder = Paths.get(process.getImagesOrigDirectory(false));
+            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+                logger.error(e);
+                return "";
+            }
+        }
+        List<String> images = StorageProvider.getInstance().list(folder.toString());
+
+        List<String> iifUrls = new ArrayList<>(images.size());
+
+        String hostname = ConfigurationHelper.getInstance().getGoobiUrl();
+
+        String foldername = folder.getFileName().toString();
+
+        String api = hostname + "/api";
+        String restPath = "/process/image/" + process.getId() + "/" + foldername + "/";
+        String suffix = "/full/max/0/default.jpg";
+
+        for (String imageName : images) {
+            String path = restPath + URLEncoder.encode(imageName, StandardCharsets.UTF_8.toString()).replaceAll("\\+", "%20") + suffix;
+            try {
+                String jwtToken = JwtHelper.createApiToken(path, new String[] { "GET" });
+                URI iiifUri = new URI(api + path + "?jwt=" + jwtToken);
+                String iiifUriString = "\"" + iiifUri + "\"";
+
+                iifUrls.add(iiifUriString);
+            } catch (ConfigurationException | MalformedURIException e) {
+                logger.error(e);
+                return "";
+            }
+        }
+        String response = iifUrls.toString();
+        response = response.substring(1, response.length() - 1);
+        return response;
     }
 }

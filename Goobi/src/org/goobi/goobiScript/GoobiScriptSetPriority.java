@@ -61,6 +61,7 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
 
     @Override
     public void execute(GoobiScriptResult gsr) {
+        Map<String, String> parameters = gsr.getParameters();
 
         String st = parameters.get("steptitle");
         if (st == null) {

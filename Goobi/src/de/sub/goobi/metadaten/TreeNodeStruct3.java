@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.solr.common.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.goobi.production.cli.helper.StringPair;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -40,6 +40,8 @@ import ugh.dl.DocStruct;
 
 public class TreeNodeStruct3 extends TreeNode {
 
+	@Getter
+	@Setter
     private DocStruct struct;
 
     private List<StringPair> displayableMetadata = new ArrayList<>();
@@ -49,8 +51,11 @@ public class TreeNodeStruct3 extends TreeNode {
     @Getter
     @Setter
     private Pair<String, String> lastImage;
+    @Setter
     private String mainTitle;
 
+    @Getter
+    @Setter
     private boolean einfuegenErlaubt = true;
 
     /**
@@ -91,32 +96,12 @@ public class TreeNodeStruct3 extends TreeNode {
         return this.mainTitle;
     }
 
-    public void setMainTitle(String mainTitle) {
-        this.mainTitle = mainTitle;
-    }
-
-    public DocStruct getStruct() {
-        return this.struct;
-    }
-
-    public void setStruct(DocStruct struct) {
-        this.struct = struct;
-    }
-
     public String getDescription() {
         return this.label;
     }
 
     public void setDescription(String description) {
         this.label = description;
-    }
-
-    public boolean isEinfuegenErlaubt() {
-        return this.einfuegenErlaubt;
-    }
-
-    public void setEinfuegenErlaubt(boolean einfuegenErlaubt) {
-        this.einfuegenErlaubt = einfuegenErlaubt;
     }
 
     public String getMetadataPopup() {

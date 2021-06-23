@@ -27,8 +27,11 @@ package de.unigoettingen.sub.search.opac;
  */
 import java.net.URLEncoder;
 
+import lombok.Getter;
+
 public class Query {
 
+	@Getter
     private String queryUrl;
     private int queryTermNumber = 0;
 
@@ -71,9 +74,4 @@ public class Query {
 
         this.queryTermNumber++;
     }
-
-    public String getQueryUrl() {
-        return this.queryUrl;
-    }
-
 }

@@ -29,9 +29,14 @@ import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class LongRunningTaskManager {
     static LinkedList<LongRunningTask> tasks = new LinkedList<LongRunningTask>();
     private static LongRunningTaskManager lrtm;
+    @Getter
+    @Setter
     static boolean running = false;
     Timer autoRunTimer;
 
@@ -172,14 +177,6 @@ public class LongRunningTaskManager {
                 tasks.remove(lrt);
             }
         }
-    }
-
-    public boolean isRunning() {
-        return running;
-    }
-
-    public void setRunning(boolean running) {
-        LongRunningTaskManager.running = running;
     }
 
 }

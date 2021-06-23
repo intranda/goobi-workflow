@@ -49,7 +49,7 @@
                     <!-- DELETE -->
                     <button
                         jsf:id="delete"
-                        class="btn btn--icon-light"
+                        class="btn btn--icon-light personButton"
                         aria-label="#{msgs.personendatenLoeschen}"
                         tabindex="0"
                         jsf:action="#{Metadaten.LoeschenPerson}"
@@ -80,7 +80,7 @@
                     <button
                         jsf:id="copy"
                         tabindex="0"
-                        class="btn"
+                        class="btn btn--icon-light personButton"
                         jsf:action="#{Metadaten.KopierenPerson}"
                         title="#{msgs.personendatenKopieren}"
                         aria-label="#{msgs.personendatenKopieren}"
@@ -112,8 +112,7 @@
                         <button
                             jsf:id="gndPerson"
                             type="button"
-                            class="btn change-icon"
-                            style="padding: 0"
+                            class="btn change-icon btn--icon-light personButton"
                             title="#{msgs.NORM_gndSearch}"
                             aria-label="#{msgs.NORM_gndSearch}"
                             jsf:onclick="$('#gndSearchBox').modal('show');">
@@ -144,8 +143,7 @@
                         <button
                             jsf:id="viaf"
                             type="button"
-                            class="btn change-icon viafIndexTrigger"
-                            style="padding: 0"
+                            class="btn change-icon viafIndexTrigger btn--icon-light personButton"
                             title="#{msgs.NORM_viafSearch}"
                             aria-label="#{msgs.NORM_viafSearch}"
                             jsf:onclick="$('#viafSearchBox').modal('show');">
@@ -347,7 +345,8 @@
                         jsf:id="addNamePart"
                         class="btn btn--link"
                         jsf:action="#{cc.attrs.person.addNamePart}"
-                        title="#{msgs.addNamePart}">
+                        title="#{msgs.addNamePart}"
+                        type="button">
                         #{msgs.addNamePart}
                         <f:passThroughAttribute
                             name="data-toggle"

@@ -10,12 +10,12 @@
     <meta name="version" content="#{HelperForm.applicationHeaderTitle} - #{HelperForm.buildVersion}" />
 
     <link rel="shortcut icon" href="#{HelperForm.contextPath}/uii/favicon.ico" />
- 	<link rel="stylesheet" href="#{HelperForm.contextPath}/uii/template/css/style.css?version=1" />
-    <link rel="stylesheet" href="#{HelperForm.contextPath}/uii/template/css/themes.css" />
-    <link rel="stylesheet" href="#{HelperForm.contextPath}/uii/template/css/intranda.css?version=1" />
+ 	<link rel="stylesheet" href="#{HelperForm.contextPath}/uii/template/css/style.css?v=#{HelperForm.buildVersion}" />
+    <link rel="stylesheet" href="#{HelperForm.contextPath}/uii/template/css/themes.css?v=#{HelperForm.buildVersion}" />
+    <link rel="stylesheet" href="#{HelperForm.contextPath}/uii/template/css/intranda.css?v=#{HelperForm.buildVersion}" />
 
     <title><h:outputText value="Goobi #{HelperForm.version}" /></title>
-    <h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+    <h:outputScript library="primefaces" name="jquery/jquery.js?v=#{HelperForm.buildVersion}" target="head" />
 	<meta http-equiv="Refresh" content="0; URL=uii/index.xhtml"/>
 </h:head>
 

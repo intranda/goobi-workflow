@@ -89,7 +89,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
 
     @Override
     public void execute(GoobiScriptResult gsr) {
-
+        Map<String, String> parameters = gsr.getParameters();
         String pluginName = parameters.get("plugin");
         Process template = ProcessManager.getProcessById(Integer.parseInt(parameters.get("template")));
 
