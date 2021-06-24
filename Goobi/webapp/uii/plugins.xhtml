@@ -174,7 +174,7 @@
 																<ui:repeat var="line" value="#{conflict.diffMode eq 'show_old_and_new_file' ? conflict.spanTagsOldNew : conflict.spanTagsOldOld}" varStatus="lineStatus">
 																	<div class="plugin-installer-diff-box #{conflict.diffMode eq 'show_old_and_new_file' &amp;&amp; conflict.lineTypesOldNew.get(lineStatus.index) eq 'insertion' ? 'plugin-installer-inserted-passive' : ''} #{conflict.diffMode eq 'show_old_and_new_file' &amp;&amp; conflict.lineTypesOldNew.get(lineStatus.index) eq 'deletion' ? 'plugin-installer-deleted-passive' : ''} #{conflict.diffMode eq 'show_default_and_custom_file' &amp;&amp; conflict.lineTypesOldOld.get(lineStatus.index) eq 'insertion' ? 'plugin-installer-inserted-passive' : ''} #{conflict.diffMode eq 'show_default_and_custom_file' &amp;&amp; conflict.lineTypesOldOld.get(lineStatus.index) eq 'deletion' ? 'plugin-installer-deleted-passive' : ''}">
 																		<!-- WARNING: The comment sequences MUST be here to AVOID the white spaces between different span tags! -->
-																		<ui:repeat var="spanTag" value="#{conflict.spanTags.get(lineStatus.index)}"><!--
+																		<ui:repeat var="spanTag" value="#{conflict.diffMode eq 'show_old_and_new_file' ? conflict.spanTagsOldNew.get(lineStatus.index) : conflict.spanTagsOldOld.get(lineStatus.index)}"><!--
 																			--><ui:fragment rendered="#{spanTag.type eq 'LINE_NUMBER_NORMAL'}"><!--
 																				--><span class="plugin-installer-line-number plugin-installer-line-number-normal">#{spanTag.text}</span><!--
 																			--></ui:fragment><!--

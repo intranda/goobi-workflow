@@ -77,7 +77,7 @@ public class PluginInstallBean {
         }
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         try {
-            this.pluginInstaller = PluginInstaller.createFromExtractedArchive(currentExtractedPluginPath);
+            this.pluginInstaller = PluginInstaller.createFromExtractedArchive(currentExtractedPluginPath, uploadedPluginFile.getSubmittedFileName());
         } catch (JDOMException | IOException exception) {
             log.error(exception);
         }

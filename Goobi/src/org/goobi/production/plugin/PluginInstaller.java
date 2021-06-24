@@ -25,7 +25,8 @@ import java.util.stream.Stream;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.text.diff.StringsComparator;
-
+import org.apache.tools.tar.TarEntry;
+import org.apache.tools.tar.TarInputStream;
 import org.goobi.production.plugin.PluginInstallConflict.ResolveTactic;
 
 import org.jdom2.Document;
@@ -62,9 +63,11 @@ public class PluginInstaller {
 
     private Path extractedArchivePath;
     private Path goobiDirectory;
+    public static String pluginPackagePath = "/.plugin-packages/";
     private PluginInstallInfo pluginInfo;
     private PluginPreInstallCheck check;
     private Path uploadedArchiveFile;
+    private static String archiveFileName;
 
     public void install() {
         this.saveArchiveFile();
@@ -109,8 +112,9 @@ public class PluginInstaller {
             ioException.printStackTrace();
         }
     }
+
     private void saveArchiveFile() {
-        Path installedPluginsDirectory = Paths.get(this.goobiDirectory.toString() + "/.plugin-packages/");
+        Path installedPluginsDirectory = Paths.get(goobiDirectory.toString() + PluginInstaller.pluginPackagePath);
         String fileName = this.uploadedArchiveFile.getFileName().toString();
         Path file = Paths.get(installedPluginsDirectory.toString() + "/" + fileName);
         try {
@@ -130,7 +134,6 @@ public class PluginInstaller {
         }
     }
 
-
     /**
      * A constructor to get a plugin installer object.
      *
@@ -138,8 +141,9 @@ public class PluginInstaller {
      * @param goobiDirectory The goobi root directory
      * @param pluginInfo The plugin information object
      * @param check The check object containing file differences and more information
+     * @param archiveFileName The name of the uploaded archive because an old one must be loaded to 
      */
-    public PluginInstaller(Path extractedArchivePath, Path goobiDirectory, PluginInstallInfo pluginInfo, PluginPreInstallCheck check) {
+    public PluginInstaller(Path extractedArchivePath, Path goobiDirectory, PluginInstallInfo pluginInfo, PluginPreInstallCheck check, String archiveFileName) {
         this.extractedArchivePath = extractedArchivePath;
         this.goobiDirectory = goobiDirectory;
         this.pluginInfo = pluginInfo;
@@ -147,12 +151,13 @@ public class PluginInstaller {
         this.findDifferencesInAllFiles();
     }
 
-    public static PluginInstaller createFromExtractedArchive(Path extractedArchivePath) throws JDOMException, IOException {
+    public static PluginInstaller createFromExtractedArchive(Path extractedArchivePath, String archiveFileName) throws JDOMException, IOException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         Path goobiFolder = Paths.get(config.getGoobiFolder());
         PluginInstallInfo pluginInfo = parsePlugin(extractedArchivePath);
+        PluginInstaller.archiveFileName = archiveFileName;
         PluginPreInstallCheck check = checkPluginInstall(extractedArchivePath, pluginInfo, goobiFolder);
-        return new PluginInstaller(extractedArchivePath, goobiFolder, pluginInfo, check);
+        return new PluginInstaller(extractedArchivePath, goobiFolder, pluginInfo, check, archiveFileName);
     }
 
     private static PluginInstallInfo parsePlugin(Path pluginFolder) throws JDOMException, IOException {
@@ -207,10 +212,13 @@ public class PluginInstaller {
                         }
                         Path installPath = goobiDirectory.resolve(relativePath);
                         if (checkForConflict(installPath, p)) {
+                            Path archivedArchiveFile = Paths.get(goobiDirectory.toString() + PluginInstaller.pluginPackagePath + PluginInstaller.archiveFileName);
+                            String archivedVersion = PluginInstaller.getContentFromFileInArchive(archivedArchiveFile, p.getFileName().toString());
+                            log.error(p.getFileName());
                             try {
-                                String localVersion = Files.readAllLines(installPath).stream().collect(Collectors.joining("\n"));
-                                String archiveVersion = Files.readAllLines(p).stream().collect(Collectors.joining("\n"));
-                                PluginInstallConflict conflict = new PluginInstallConflict(installPath.toString(), ResolveTactic.unknown, localVersion, archiveVersion);
+                                String existingVersion = Files.readAllLines(installPath).stream().collect(Collectors.joining("\n"));
+                                String uploadedVersion = Files.readAllLines(p).stream().collect(Collectors.joining("\n"));
+                                PluginInstallConflict conflict = new PluginInstallConflict(installPath.toString(), ResolveTactic.unknown, existingVersion, uploadedVersion, archivedVersion);
                                 conflicts.put(relativePath.toString(), conflict);
                             } catch (IOException e) {
                                 //TODO: handle error
@@ -224,6 +232,56 @@ public class PluginInstaller {
         PluginPreInstallCheck checkReport = new PluginPreInstallCheck(extractedPluginPath, info, conflicts, null);
         checkReport.setConflicts(conflicts);
         return checkReport;
+    }
+
+    public static String getContentFromFileInArchive(Path archivePath, String fileName) {
+        log.error(archivePath.getFileName());
+        log.error(fileName);
+        TarInputStream tarInputStream = null;
+        String content = "";
+        try {
+            tarInputStream = new TarInputStream(Files.newInputStream(archivePath));
+            TarEntry tarEntry = tarInputStream.getNextEntry();
+            while (tarEntry != null) {
+                //log.error("filename: " + tarEntry.getFile().getName());
+                log.error("tar entry name: " + tarEntry.getName());
+                if (!tarEntry.isDirectory()) {
+                    java.io.File file = tarEntry.getFile();
+                    if (file == null) {
+                        log.error("file is null");
+                        tarEntry = tarInputStream.getNextEntry();
+                        continue;
+                    }
+                    log.error("file is not null");
+                    if (file.getName().equals(fileName)) {
+                        log.error("File \"" + fileName + "\" was found!");
+                        List<String> lines = Files.readAllLines(tarEntry.getFile().toPath());
+                        StringBuilder string = new StringBuilder();
+                        for (int line = 0; line < lines.size(); line++) {
+                            string.append(lines.get(line));
+                            if (line < lines.size() -1) {
+                                string.append("\n");
+                            }
+                        }
+                        content = string.toString();
+                    }
+                    //break;
+                }
+                tarEntry = tarInputStream.getNextEntry();
+            }
+        } catch (IOException ioException) {
+            log.error(ioException);
+        } finally {
+            try {
+                if (tarInputStream != null) {
+                    tarInputStream.close();
+                }
+            } catch (IOException ioException) {
+                log.error(ioException);
+            }
+        }
+        log.error("Loaded from archive: " + content);
+        return content;
     }
 
     private static boolean checkForConflict(Path installPath, Path p) {
@@ -261,7 +319,8 @@ public class PluginInstaller {
             // Get the conflict of the concerning file
             PluginInstallConflict conflict = (PluginInstallConflict) (objects[file]);
 
-            PluginInstaller.findDifferencesInFile(conflict);
+            PluginInstaller.findDifferencesInFile(conflict, "show_old_and_new_file");
+            PluginInstaller.findDifferencesInFile(conflict, "show_default_and_custom_file");
 
         }
     }
@@ -270,15 +329,16 @@ public class PluginInstaller {
      * Extracts all differences between the existing file and the uploaded file and stores them and the line numbers in the conflict object.
      *
      * @param conflict The conflict object to store the span tags and the line types in
+     * @param diffMode The mode that defines which files are compared
      */
-    private static void findDifferencesInFile(PluginInstallConflict conflict) {
+    private static void findDifferencesInFile(PluginInstallConflict conflict, String diffMode) {
 
         // Get the code lines from both files
         String[] existingLines = conflict.getArchivedVersion().split(LINEBREAK);
         String[] uploadedLines = new String[0];
-        if (conflict.getDiffMode().equals("show_old_and_new_file")) {
+        if (diffMode.equals("show_old_and_new_file")) {
             uploadedLines = conflict.getUploadedVersion().split(LINEBREAK);
-        } else if (conflict.getDiffMode().equals("show_default_and_custom_file")) {
+        } else if (diffMode.equals("show_default_and_custom_file")) {
             uploadedLines = conflict.getExistingVersion().split(LINEBREAK);
         }
 
@@ -394,11 +454,11 @@ public class PluginInstaller {
             uploadedLineIndex++;
         }
 
-        if (conflict.getDiffMode().equals("show_old_and_new_file")) {
+        if (diffMode.equals("show_old_and_new_file")) {
             conflict.setSpanTagsOldNew(fileContent);
             conflict.setLineTypesOldNew(lineTypes);
             conflict.setLineNumbersOldNew(lineNumbers);
-        } else if (conflict.getDiffMode().equals("show_default_and_custom_file")) {
+        } else if (diffMode.equals("show_default_and_custom_file")) {
             conflict.setSpanTagsOldOld(fileContent);
             conflict.setLineTypesOldOld(lineTypes);
             conflict.setLineNumbersOldOld(lineNumbers);

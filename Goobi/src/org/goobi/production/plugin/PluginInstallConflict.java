@@ -27,23 +27,14 @@ public class PluginInstallConflict {
     private String conflictsMode = "edit_existing_file";
     private boolean fixed;
 
-    public PluginInstallConflict(String path, ResolveTactic tactic, String existing, String uploaded) {
+    public PluginInstallConflict(String path, ResolveTactic tactic, String existing, String uploaded, String archived) {
         this.path = path;
         this.resolveTactic = tactic;
         this.existingVersion = existing;
         this.uploadedVersion = uploaded;
+        this.archivedVersion = archived;
         this.resetTextEditor();
         this.fixed = false;
-    }
-
-    public void setConflictsMode(String mode) {
-        this.conflictsMode = mode;
-    }
-
-
-    public void setDiffMode(String mode) {
-        this.diffMode = mode;
-        log.error(this.diffMode);
     }
 
     public void resetTextEditor() {
@@ -65,13 +56,6 @@ public class PluginInstallConflict {
         } else {
             return this.editedUploadedVersion;
         }
-    }
-
-    /* THIS IS NON-PRODUCTIVE CODE */
-    /* IT IS ONLY FOR TESTING PURPOSES */
-    public void setExistingVersion(String content) {
-        this.existingVersion = content;
-        /**/this.archivedVersion = content;
     }
 
     public void fixConflict() {
