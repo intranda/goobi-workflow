@@ -30,7 +30,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class Masterpiece implements Serializable {
     private static final long serialVersionUID = 123266825187246791L;
     private Integer id;
@@ -48,39 +52,11 @@ public class Masterpiece implements Serializable {
      * ##################################################### ####################################################
      */
 
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public Process getProzess() {
         if (prozess == null && processId != null) {
             prozess = ProcessManager.getProcessById(processId);
         }
         return this.prozess;
-    }
-
-    public void setProzess(Process prozess) {
-        this.prozess = prozess;
-    }
-
-    public boolean isPanelAusgeklappt() {
-        return this.panelAusgeklappt;
-    }
-
-    public void setPanelAusgeklappt(boolean panelAusgeklappt) {
-        this.panelAusgeklappt = panelAusgeklappt;
-    }
-
-    public List<Masterpieceproperty> getEigenschaften() {
-        return this.eigenschaften;
-    }
-
-    public void setEigenschaften(List<Masterpieceproperty> eigenschaften) {
-        this.eigenschaften = eigenschaften;
     }
 
     /*
@@ -97,14 +73,6 @@ public class Masterpiece implements Serializable {
     public List<Masterpieceproperty> getEigenschaftenList() {
 
         return getEigenschaften();
-    }
-
-    public Integer getProcessId() {
-        return processId;
-    }
-
-    public void setProcessId(Integer processId) {
-        this.processId = processId;
     }
 
     @Override

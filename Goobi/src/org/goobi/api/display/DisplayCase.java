@@ -32,10 +32,15 @@ import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.beans.Process;
 
+import lombok.Getter;
+import lombok.Setter;
 import ugh.dl.MetadataType;
 
 public class DisplayCase {
+	@Getter
     private DisplayType displayType = null;
+	@Getter
+	@Setter
     private List<Item> itemList = new ArrayList<>();
     private ConfigDisplayRules configDisplay;
     private Process myProcess;
@@ -103,32 +108,5 @@ public class DisplayCase {
             itemList.add(new Item(metaName, "", false, "", ""));
         }
 
-    }
-
-    /**
-     * 
-     * @return current DisplayType
-     */
-
-    public DisplayType getDisplayType() {
-        return displayType;
-    }
-
-    /**
-     * 
-     * @param itemList ArrayList with items for metadatum
-     */
-
-    public void setItemList(ArrayList<Item> itemList) {
-        this.itemList = itemList;
-    }
-
-    /**
-     * 
-     * @return ArrayList with items for metadatum
-     */
-
-    public List<Item> getItemList() {
-        return itemList;
     }
 }
