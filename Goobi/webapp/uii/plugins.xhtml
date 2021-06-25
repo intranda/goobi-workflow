@@ -40,8 +40,8 @@
 								<ui:repeat var="folder"
 									value="#{pluginsBean.plugins.keySet().toArray()}">
 									
-									<h3 class="folder--line">
-										<h:outputText value="#{folder} #{msgs.plugins}" styleClass="text #{not pluginsBean.plugins[folder].isEmpty()?'':'font-light'}"/>
+									<h3 class="folder--line" jsf:id="pluginFolderTitle" jsf:rendered="#{not pluginsBean.plugins[folder].isEmpty()}">
+										<h:outputText value="#{folder} #{msgs.plugins}" styleClass="text"/>
 									</h3>
 
 									<table jsf:id="pluginInfoTable"
