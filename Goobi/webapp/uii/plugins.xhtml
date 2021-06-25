@@ -2,6 +2,7 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
 	template="/uii/template/template.html"
@@ -24,7 +25,6 @@
 	</ui:define>
 
 	<ui:define name="content">
-
 		<div class="row" role="main">
 			<div class="col-sm-12">
 				<div class="box box-bordered box-color">
@@ -44,42 +44,34 @@
 										<h:outputText value="#{folder} #{msgs.plugins}" styleClass="text #{not pluginsBean.plugins[folder].isEmpty()?'':'font-light'}"/>
 									</h3>
 
-									<x:dataTable
-										rendered="#{not pluginsBean.plugins[folder].isEmpty()}"
-										styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
-										var="pluginInfo" value="#{pluginsBean.plugins[folder]}">
-										<x:column styleClass="">
-											<f:facet name="header">
-												<h:outputText value="#{msgs.filename}" />
-											</f:facet>
-											<h:outputText value="#{pluginInfo.filename}" />
-										</x:column>
-										<x:column style="width: 300px;">
-											<f:facet name="header">
-												<h:outputText value="#{msgs.containedPlugins}" />
-											</f:facet>
-											<h:outputText rendered="#{not pluginInfo.containedPlugins.isEmpty()}" value="#{pluginInfo.containedPlugins}" />
-										</x:column>
-										<x:column style="width: 300px;">
-											<f:facet name="header">
-												<h:outputText value="#{msgs.pluginsUsedInWorkflows}" />
-											</f:facet>
-											<h:outputText rendered="#{not pluginInfo.pluginsUsedInWorkflows.isEmpty()}" value="#{pluginInfo.pluginsUsedInWorkflows}" />
-										</x:column>
-										<x:column styleClass="tableColumnOverflow width200">
-											<f:facet name="header">
-												<h:outputText value="#{msgs.gitHash}" />
-											</f:facet>
-											<h:outputText value="#{pluginInfo.gitHash}" />
-										</x:column>
-										<x:column styleClass="tableColumnOverflow width200">
-											<f:facet name="header">
-												<h:outputText value="#{msgs.buildDate}" />
-											</f:facet>
-											<h:outputText value="#{pluginInfo.buildDate}" />
-										</x:column>
-
-									</x:dataTable>
+									<table jsf:id="pluginInfoTable"
+										jsf:rendered="#{not pluginsBean.plugins[folder].isEmpty()}"
+										class="table table-hover table-nomargin dataTable table-bordered responsive">
+                                        <thead>
+                                            <tr>
+                                                <th>#{msgs.filename}</th>
+                                                <th>#{msgs.containedPlugins}</th>
+                                                <th>#{msgs.pluginsUsedInWorkflows}</th>
+                                                <th>#{msgs.gitHash}</th>
+                                                <th>#{msgs.buildDate}</th>
+                                                <th>#{msgs.goobiVersion}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <ui:repeat var="pluginInfo" value="#{pluginsBean.plugins[folder]}">
+                                                <tr>
+                                                    <td><h:outputText value="#{pluginInfo.filename}" /></td>
+                                                    <td style="width: 300px;"><h:outputText rendered="#{not pluginInfo.containedPlugins.isEmpty()}" value="#{pluginInfo.containedPlugins}" /></td>
+                                                    <td style="width: 300px;"><h:outputText rendered="#{not pluginInfo.pluginsUsedInWorkflows.isEmpty()}" value="#{pluginInfo.pluginsUsedInWorkflows}" /></td>
+                                                    <td class="tableColumnOverflow width200"><h:outputText value="#{pluginInfo.gitHash}" /></td>
+                                                    <td class="tableColumnOverFlow width200"><h:outputText value="#{pluginInfo.buildDate}" /></td>
+                                                    <td class="tableColumnOverFlow width200">
+                                                        <h:outputText styleClass="badge #{pluginsBean.getBadgeClassForGoobiVersion(pluginInfo.goobiVersion)}" value="#{pluginInfo.goobiVersion}" />
+                                                    </td>
+                                                </tr>
+                                            </ui:repeat>
+                                        </tbody>
+									</table>
 								</ui:repeat>
 							</h:form>
 						</div>

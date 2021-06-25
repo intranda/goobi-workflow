@@ -14,6 +14,7 @@ public class PluginInfo {
     private String filename;
     private Date buildDate;
     private String gitHash;
+    private String goobiVersion = "N/A";
     private List<String> containedPlugins = new ArrayList<String>();
     private Collection<String> pluginsUsedInWorkflows;
 
