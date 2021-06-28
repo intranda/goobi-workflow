@@ -25,8 +25,10 @@ import java.util.stream.Stream;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.text.diff.StringsComparator;
-import org.apache.tools.tar.TarEntry;
-import org.apache.tools.tar.TarInputStream;
+//import org.apache.tools.tar.TarEntry;
+//import org.apache.tools.tar.TarInputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.goobi.production.plugin.PluginInstallConflict.ResolveTactic;
 
 import org.jdom2.Document;
@@ -237,38 +239,28 @@ public class PluginInstaller {
     public static String getContentFromFileInArchive(Path archivePath, String fileName) {
         log.error(archivePath.getFileName());
         log.error(fileName);
-        TarInputStream tarInputStream = null;
+        TarArchiveInputStream tarInputStream = null;
         String content = "";
         try {
-            tarInputStream = new TarInputStream(Files.newInputStream(archivePath));
-            TarEntry tarEntry = tarInputStream.getNextEntry();
-            while (tarEntry != null) {
-                //log.error("filename: " + tarEntry.getFile().getName());
-                log.error("tar entry name: " + tarEntry.getName());
-                if (!tarEntry.isDirectory()) {
-                    java.io.File file = tarEntry.getFile();
-                    if (file == null) {
-                        log.error("file is null");
-                        tarEntry = tarInputStream.getNextEntry();
-                        continue;
-                    }
-                    log.error("file is not null");
-                    if (file.getName().equals(fileName)) {
-                        log.error("File \"" + fileName + "\" was found!");
-                        List<String> lines = Files.readAllLines(tarEntry.getFile().toPath());
-                        StringBuilder string = new StringBuilder();
-                        for (int line = 0; line < lines.size(); line++) {
-                            string.append(lines.get(line));
-                            if (line < lines.size() -1) {
-                                string.append("\n");
-                            }
+            tarInputStream = new TarArchiveInputStream(Files.newInputStream(archivePath));
+            TarArchiveEntry tarEntry;
+            do {
+                tarEntry = (TarArchiveEntry)(tarInputStream.getNextEntry());
+                if (!(tarEntry == null) && !tarEntry.isDirectory() && tarEntry.getName().endsWith(fileName)) {
+                    log.error("tar entry name: " + tarEntry.getName());
+                    log.error("File \"" + fileName + "\" was found!");
+                    /*List<String> lines = Files.readAllLines(tarEntry.getFile().toPath());
+                    StringBuilder string = new StringBuilder();
+                    for (int line = 0; line < lines.size(); line++) {
+                        string.append(lines.get(line));
+                        if (line < lines.size() -1) {
+                            string.append("\n");
                         }
-                        content = string.toString();
                     }
-                    //break;
+                    content = string.toString();*/
+                    content = "";
                 }
-                tarEntry = tarInputStream.getNextEntry();
-            }
+            } while (tarEntry != null);
         } catch (IOException ioException) {
             log.error(ioException);
         } finally {
