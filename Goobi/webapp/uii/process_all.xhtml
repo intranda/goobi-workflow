@@ -1014,7 +1014,7 @@
                                                     rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() gt 1}">
                                                     <div
                                                         class="btn-group"
-                                                        title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen}"
+                                                        title="#{ProzesskopieForm.isUserInProcessProject(item)?(item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen):msgs.nutzerNichtFuerProjektZugeordnet}"
                                                         data-toggle="tooltip">
                                                         <div class="dropdown">
                                                         <button
@@ -1022,7 +1022,7 @@
                                                             style="margin: 0; padding-left: 4px; padding-right: 4px;"
                                                             data-toggle="dropdown"> <span class="caret"></span>
                                                         </button>
-                                                        <ul class="dropdown-menu  pull-right">
+                                                        <ul class="dropdown-menu pull-right">
                                                             <ui:repeat
                                                                 var="proj"
                                                                 value="#{ProzesskopieForm.availableProjects}">
@@ -1038,9 +1038,10 @@
                                                             </ui:repeat>
                                                         </ul>
                                                         <button
-                                                        	jsf:id="copyProcessTempalte"
-                                                        	class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} "
+                                                            jsf:id="copyProcessTempalte"
+                                                            class="btn fa #{!ProzesskopieForm.isUserInProcessProject(item)?'disabled':''} #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} "
                                                             aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
+                                                            
                                                             jsf:action="#{ProzesskopieForm.Prepare}"
                                                             jsf:rel="tooltip">
                                                             <f:passThroughAttribute

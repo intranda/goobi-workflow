@@ -1653,6 +1653,10 @@ public class ProzesskopieForm implements Serializable {
         return temp;
     }
 
+    public boolean isUserInProcessProject(Process process) throws DAOException {
+        return this.getAvailableProjects().contains(process.getProjekt());
+    }
+
     public IOpacPlugin getOpacPlugin() {
         if (currentCatalogue != null) {
             return currentCatalogue.getOpacPlugin();
