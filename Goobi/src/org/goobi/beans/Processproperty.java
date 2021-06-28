@@ -78,7 +78,10 @@ public class Processproperty implements Serializable, IGoobiProperty, Comparable
 
     @Override
     public Boolean isIstObligatorisch() {
-    	return this.istObligatorisch;
+    	if (this.istObligatorisch == null) {
+            this.istObligatorisch = false;
+        }
+        return this.istObligatorisch;
     }
     
     /**
