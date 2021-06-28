@@ -314,7 +314,7 @@ public class ProzesskopieForm implements Serializable {
                             break;
                         case "export":
                             configuredFolderNames
-                            .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
+                                    .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
                             break;
                         case "master":
                             if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
@@ -741,7 +741,12 @@ public class ProzesskopieForm implements Serializable {
          * wenn noch keine RDF-Datei vorhanden ist (weil keine Opac-Abfrage stattfand, dann jetzt eine anlegen
          */
         if (this.myRdf == null) {
-            createNewFileformat();
+            try {
+                createNewFileformat();
+            } catch (TypeNotAllowedForParentException | TypeNotAllowedAsChildException e) {
+                Helper.setFehlerMeldung(e);
+                return "";
+            }
         }
 
         /*--------------------------------
@@ -973,7 +978,7 @@ public class ProzesskopieForm implements Serializable {
 
     /* =============================================================== */
 
-    private void createNewFileformat() {
+    private void createNewFileformat() throws TypeNotAllowedForParentException, TypeNotAllowedAsChildException {
         Prefs myPrefs = this.prozessKopie.getRegelsatz().getPreferences();
         try {
             DigitalDocument dd = new DigitalDocument();
@@ -1007,10 +1012,10 @@ public class ProzesskopieForm implements Serializable {
                 this.myRdf = ff;
             }
 
-        } catch (TypeNotAllowedForParentException e) {
-            logger.error(e);
-        } catch (TypeNotAllowedAsChildException e) {
-            logger.error(e);
+            //        } catch (TypeNotAllowedForParentException e) {
+            //            logger.error(e);
+            //        } catch (TypeNotAllowedAsChildException e) {
+            //            logger.error(e);
         } catch (PreferencesException e) {
             logger.error(e);
         }
@@ -1079,7 +1084,7 @@ public class ProzesskopieForm implements Serializable {
         return this.docType;
     }
 
-    public void setDocType(String docType) {
+    public void setDocType(String docType) throws TypeNotAllowedForParentException, TypeNotAllowedAsChildException {
         if (this.docType != null && this.docType.equals(docType)) {
             return;
         } else {
@@ -1089,6 +1094,7 @@ public class ProzesskopieForm implements Serializable {
                 Fileformat tmp = myRdf;
 
                 createNewFileformat();
+                
                 try {
                     if (myRdf.getDigitalDocument().getLogicalDocStruct().equals(tmp.getDigitalDocument().getLogicalDocStruct())) {
                         myRdf = tmp;
