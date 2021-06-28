@@ -128,40 +128,65 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Getter
     @Setter
     private String ausgabename;
+    @Setter
     private Boolean istTemplate;
     private Boolean inAuswahllisteAnzeigen;
+    @Setter
     private Project projekt;
+    @Getter
+    @Setter
     private Date erstellungsdatum;
+    @Setter
     private List<Step> schritte;
     //    private List<HistoryEvent> history;
+    @Setter
     private List<Masterpiece> werkstuecke;
+    @Setter
     private List<Template> vorlagen;
+    @Setter
     private List<Processproperty> eigenschaften;
     @Getter
     @Setter
     private String sortHelperStatus;
+    @Setter
     private Integer sortHelperImages;
+    @Setter
     private Integer sortHelperArticles;
+    @Setter
     private Integer sortHelperMetadata;
+    @Setter
     private Integer sortHelperDocstructs;
+    @Getter
+    @Setter
     private Ruleset regelsatz;
     //    private Integer batchID;
+    @Getter
+    @Setter
     private Batch batch;
     private Boolean swappedOut = false;
     private Boolean panelAusgeklappt = false;
     private Boolean selected = false;
+    @Setter
     private Docket docket;
 
     private String imagesTiffDirectory = null;
     private String imagesOrigDirectory = null;
 
+    @Getter
+    @Setter
     private List<LogEntry> processLog = new LinkedList<>();
 
     private BeanHelper bhelp = new BeanHelper();
 
     // temporär
+    @Getter
+    @Setter
     private Integer projectId;
+    @Getter
+    @Setter
     private Integer MetadatenKonfigurationID;
+    @Getter
+    @Setter
     private Integer docketId;
 
     private final MetadatenSperrung msp = new MetadatenSperrung();
@@ -230,19 +255,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return this.istTemplate;
     }
 
-    public void setIstTemplate(boolean istTemplate) {
-        this.istTemplate = istTemplate;
-    }
-
     public List<Step> getSchritte() {
         if ((this.schritte == null || schritte.isEmpty()) && id != null) {
             schritte = StepManager.getStepsForProcess(id);
         }
         return this.schritte;
-    }
-
-    public void setSchritte(List<Step> schritte) {
-        this.schritte = schritte;
     }
 
     public boolean containsStepOfOrder(int order) {
@@ -278,30 +295,18 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return this.vorlagen;
     }
 
-    public void setVorlagen(List<Template> vorlagen) {
-        this.vorlagen = vorlagen;
-    }
-
     public List<Masterpiece> getWerkstuecke() {
         if ((werkstuecke == null || werkstuecke.isEmpty()) && id != null) {
             werkstuecke = MasterpieceManager.getMasterpiecesForProcess(id);
         }
         return this.werkstuecke;
     }
-
-    public void setWerkstuecke(List<Masterpiece> werkstuecke) {
-        this.werkstuecke = werkstuecke;
-    }
-
+    
     public List<Processproperty> getEigenschaften() {
         if ((eigenschaften == null || eigenschaften.isEmpty()) && id != null) {
             eigenschaften = PropertyManager.getProcessPropertiesForProcess(id);
         }
         return this.eigenschaften;
-    }
-
-    public void setEigenschaften(List<Processproperty> eigenschaften) {
-        this.eigenschaften = eigenschaften;
     }
 
     /*
@@ -742,26 +747,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return this.projekt;
     }
 
-    public void setProjekt(Project projekt) {
-        this.projekt = projekt;
-    }
-
-    public Batch getBatch() {
-        return this.batch;
-    }
-
-    public void setBatch(Batch batch) {
-        this.batch = batch;
-    }
-
-    public Ruleset getRegelsatz() {
-        return this.regelsatz;
-    }
-
-    public void setRegelsatz(Ruleset regelsatz) {
-        this.regelsatz = regelsatz;
-    }
-
     public int getSchritteSize() {
 
         return getSchritte().size();
@@ -829,19 +814,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return this.sortHelperArticles;
     }
 
-    public void setSortHelperArticles(Integer sortHelperArticles) {
-        this.sortHelperArticles = sortHelperArticles;
-    }
-
     public Integer getSortHelperImages() {
         if (this.sortHelperImages == null) {
             this.sortHelperImages = 0;
         }
         return this.sortHelperImages;
-    }
-
-    public void setSortHelperImages(Integer sortHelperImages) {
-        this.sortHelperImages = sortHelperImages;
     }
 
     public Integer getSortHelperMetadata() {
@@ -851,19 +828,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return this.sortHelperMetadata;
     }
 
-    public void setSortHelperMetadata(Integer sortHelperMetadata) {
-        this.sortHelperMetadata = sortHelperMetadata;
-    }
-
     public Integer getSortHelperDocstructs() {
         if (this.sortHelperDocstructs == null) {
             this.sortHelperDocstructs = 0;
         }
         return this.sortHelperDocstructs;
-    }
-
-    public void setSortHelperDocstructs(Integer sortHelperDocstructs) {
-        this.sortHelperDocstructs = sortHelperDocstructs;
     }
 
     public boolean isInAuswahllisteAnzeigen() {
@@ -898,14 +867,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public void setSelected(boolean selected) {
         this.selected = selected;
-    }
-
-    public Date getErstellungsdatum() {
-        return this.erstellungsdatum;
-    }
-
-    public void setErstellungsdatum(Date erstellungsdatum) {
-        this.erstellungsdatum = erstellungsdatum;
     }
 
     public String getErstellungsdatumAsString() {
@@ -1520,18 +1481,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return docket;
     }
 
-    public void setDocket(Docket docket) {
-        this.docket = docket;
-    }
-
-    public Integer getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(Integer projectId) {
-        this.projectId = projectId;
-    }
-
     @Override
     public int compareTo(Process arg0) {
 
@@ -1540,22 +1489,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     @Override
     public void lazyLoad() {
-    }
-
-    public Integer getMetadatenKonfigurationID() {
-        return MetadatenKonfigurationID;
-    }
-
-    public void setMetadatenKonfigurationID(Integer metadatenKonfigurationID) {
-        MetadatenKonfigurationID = metadatenKonfigurationID;
-    }
-
-    public Integer getDocketId() {
-        return docketId;
-    }
-
-    public void setDocketId(Integer docketId) {
-        this.docketId = docketId;
     }
 
     @Override
@@ -1603,14 +1536,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
 
         return p;
-    }
-
-    public void setProcessLog(List<LogEntry> processLog) {
-        this.processLog = processLog;
-    }
-
-    public List<LogEntry> getProcessLog() {
-        return processLog;
     }
 
     public void addLogEntry() {
