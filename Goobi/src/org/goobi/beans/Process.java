@@ -128,7 +128,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Getter
     @Setter
     private String ausgabename;
-    @Setter
     private Boolean istTemplate;
     private Boolean inAuswahllisteAnzeigen;
     @Setter
@@ -246,6 +245,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.schritte = new ArrayList<>();
         this.erstellungsdatum = new Date();
 
+    }
+    
+    public void setIstTemplate(boolean istTemplate) {
+        this.istTemplate = istTemplate;
     }
 
     public boolean isIstTemplate() {
