@@ -578,7 +578,7 @@
                                             jsf:id="deletePages"
                                             class="btn btn--icon"
                                             jsf:action="#{Metadaten.deleteSeltectedPages}"
-                                            onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
+                                            jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
                                             title="#{msgs.deleteSeltectedPages}"
                                             type="button">
                                             <span class="fa fa-trash-o fa-lg fa-with-bg" />
@@ -602,7 +602,7 @@
                                             jsf:id="reOrder"
                                             class="btn btn--icon"
                                             jsf:action="#{Metadaten.reOrderPagination}"
-                                            onclick="goobiWorkflowJS.progress.displayProgressBar()"
+                                            jsf:onclick="goobiWorkflowJS.progress.displayProgressBar()"
                                             title="#{msgs.reOrder}"
                                             type="button">
                                             <span class="fa fa-refresh fa-lg fa-with-bg" />

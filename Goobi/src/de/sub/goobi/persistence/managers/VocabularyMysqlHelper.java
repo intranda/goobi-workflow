@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,8 +20,6 @@ import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
-import java.sql.Timestamp;
-import java.util.Calendar;
 
 import com.google.gson.Gson;
 
@@ -35,7 +35,7 @@ class VocabularyMysqlHelper implements Serializable {
     private static final long serialVersionUID = 5141386688477409583L;
 
     private static String vocabTable = "vocabulary";
-    
+
     static Vocabulary getVocabularyByTitle(String title) throws SQLException {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT * FROM vocabulary v WHERE v.title = ?");
@@ -796,17 +796,25 @@ class VocabularyMysqlHelper implements Serializable {
 
     public static void batchUpdateRecords(List<VocabRecord> records, Integer vocabularyID) throws SQLException {
         //        1.) delete old fields;
-        String sql = "DELETE from vocabulary_record_data WHERE record_id IN (?)";
-        List<Integer> idList = new ArrayList<>(records.size());
+        StringBuilder sql = new StringBuilder();
+        sql.append("DELETE from vocabulary_record_data WHERE record_id IN (");
+
+        StringBuilder ids = new StringBuilder();
 
         for (VocabRecord rec : records) {
-            idList.add(rec.getId());
+            if (ids.length() > 0) {
+                ids.append(", ");
+            }
+            ids.append(rec.getId());
         }
+        sql.append(ids.toString());
+        sql.append(")");
+
         Connection connection = null;
         try {
             QueryRunner runner = new QueryRunner();
             connection = MySQLHelper.getInstance().getConnection();
-            runner.execute(connection, sql, idList);
+            runner.execute(connection, sql.toString());
             //        2.) insert new fields;
             fieldsBatchInsertion(records, vocabularyID, connection, runner);
         } finally {
@@ -816,7 +824,7 @@ class VocabularyMysqlHelper implements Serializable {
         }
 
     }
-    
+
 
     public static Timestamp getVocabularyLastAltered(Vocabulary vocabulary) throws SQLException {
 
@@ -851,11 +859,11 @@ class VocabularyMysqlHelper implements Serializable {
             Calendar calendar = Calendar.getInstance();
             Timestamp timeNow = new Timestamp(calendar.getTime().getTime());
             connection = MySQLHelper.getInstance().getConnection();
-            
+
             PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
             preparedStatement.setTimestamp(1, timeNow);
             preparedStatement.executeUpdate();
-            
+
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -872,9 +880,9 @@ class VocabularyMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-           
+
             Timestamp timeUploaded = new QueryRunner().query(connection, sql, VocabularyManager.resultSetGetLastUploadedHandler, vocabulary.getId());
-           
+
             return timeUploaded;
         } finally {
             if (connection != null) {
@@ -884,7 +892,7 @@ class VocabularyMysqlHelper implements Serializable {
     }
 
     public static void setVocabularyLastUploaded(Vocabulary vocabulary) throws SQLException {
-      
+
         if (vocabulary == null) {
             return;
         }
@@ -896,11 +904,11 @@ class VocabularyMysqlHelper implements Serializable {
             Calendar calendar = Calendar.getInstance();
             Timestamp timeNow = new Timestamp(calendar.getTime().getTime());
             connection = MySQLHelper.getInstance().getConnection();
-            
+
             PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
             preparedStatement.setTimestamp(1, timeNow);
             preparedStatement.executeUpdate();
-            
+
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
