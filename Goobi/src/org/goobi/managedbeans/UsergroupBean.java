@@ -2,6 +2,7 @@ package org.goobi.managedbeans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
@@ -44,9 +45,13 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import lombok.Getter;
+import lombok.Setter;
 
 @Named("BenutzergruppenForm")
 @SessionScoped
+@Getter
+@Setter
 public class UsergroupBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 8051160917458068675L;
     private Usergroup myBenutzergruppe = new Usergroup();
@@ -91,14 +96,6 @@ public class UsergroupBean extends BasicBean implements Serializable {
         return FilterKein();
     }
 
-    public String getTempRole() {
-        return tempRole;
-    }
-
-    public void setTempRole(String tempRole) {
-        this.tempRole = tempRole.trim();
-    }
-
     public String addRole() {
         myBenutzergruppe.addUserRole(tempRole);
         tempRole = "";
@@ -120,14 +117,6 @@ public class UsergroupBean extends BasicBean implements Serializable {
     public String FilterKeinMitZurueck() {
         FilterKein();
         return this.zurueck;
-    }
-
-    public Usergroup getMyBenutzergruppe() {
-        return this.myBenutzergruppe;
-    }
-
-    public void setMyBenutzergruppe(Usergroup myBenutzergruppe) {
-        this.myBenutzergruppe = myBenutzergruppe;
     }
 
     public List<String> getAllAvailableRoles() {
