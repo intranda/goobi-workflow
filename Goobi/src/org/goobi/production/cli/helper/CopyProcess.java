@@ -97,27 +97,51 @@ public class CopyProcess {
     UghHelper ughHelp = new UghHelper();
     private BeanHelper bhelp = new BeanHelper();
     private Fileformat myRdf;
+    @Getter
+    @Setter
     private String opacSuchfeld = "12";
+    @Getter
+    @Setter
     private String opacSuchbegriff;
+    @Getter
+    @Setter
     private String opacKatalog;
+    @Getter
+    @Setter
     private Process prozessVorlage = new Process();
+    @Getter
+    @Setter
     private Process prozessKopie = new Process();
     private ConfigOpac co;
     /* komplexe Anlage von Vorgängen anhand der xml-Konfiguration */
+    @Getter
     private boolean useOpac;
+    @Getter
     private boolean useTemplates;
     @Setter
     @Getter
     private String metadataFile;
 
+    @Getter
     private HashMap<String, Boolean> standardFields;
+    @Getter
     private List<AdditionalField> additionalFields;
+    @Getter
+    @Setter
     private List<String> digitalCollections;
+    @Getter
+    @Setter
     private String tifHeader_imagedescription = "";
+    @Getter
+    @Setter
     private String tifHeader_documentname = "";
 
     private String naviFirstPage;
+    @Getter
+    @Setter
     private Integer auswahl;
+    @Getter
+    @Setter
     private String docType;
     private String atstsl = "";
     private List<String> possibleDigitalCollection;
@@ -1031,14 +1055,6 @@ public class CopyProcess {
         }
     }
 
-    public String getDocType() {
-        return this.docType;
-    }
-
-    public void setDocType(String docType) {
-        this.docType = docType;
-    }
-
     public Collection<SelectItem> getArtists() {
         ArrayList<SelectItem> artisten = new ArrayList<>();
         StringTokenizer tokenizer = new StringTokenizer(ConfigurationHelper.getInstance().getTiffHeaderArtists(), "|");
@@ -1051,26 +1067,6 @@ public class CopyProcess {
             tempBol = !tempBol;
         }
         return artisten;
-    }
-
-    public Process getProzessVorlage() {
-        return this.prozessVorlage;
-    }
-
-    public void setProzessVorlage(Process prozessVorlage) {
-        this.prozessVorlage = prozessVorlage;
-    }
-
-    public Integer getAuswahl() {
-        return this.auswahl;
-    }
-
-    public void setAuswahl(Integer auswahl) {
-        this.auswahl = auswahl;
-    }
-
-    public List<AdditionalField> getAdditionalFields() {
-        return this.additionalFields;
     }
 
     /*
@@ -1172,78 +1168,6 @@ public class CopyProcess {
         if (isSingleChoiceCollection()) {
             this.digitalCollections.add(getDigitalCollectionIfSingleChoice());
         }
-    }
-
-    /*
-     * changed, so that on first request list gets set if there is only one choice
-     */
-
-    public List<String> getDigitalCollections() {
-        return this.digitalCollections;
-    }
-
-    public void setDigitalCollections(List<String> digitalCollections) {
-        this.digitalCollections = digitalCollections;
-    }
-
-    public HashMap<String, Boolean> getStandardFields() {
-        return this.standardFields;
-    }
-
-    public boolean isUseOpac() {
-        return this.useOpac;
-    }
-
-    public boolean isUseTemplates() {
-        return this.useTemplates;
-    }
-
-    public String getTifHeader_documentname() {
-        return this.tifHeader_documentname;
-    }
-
-    public void setTifHeader_documentname(String tifHeader_documentname) {
-        this.tifHeader_documentname = tifHeader_documentname;
-    }
-
-    public String getTifHeader_imagedescription() {
-        return this.tifHeader_imagedescription;
-    }
-
-    public void setTifHeader_imagedescription(String tifHeader_imagedescription) {
-        this.tifHeader_imagedescription = tifHeader_imagedescription;
-    }
-
-    public Process getProzessKopie() {
-        return this.prozessKopie;
-    }
-
-    public void setProzessKopie(Process prozessKopie) {
-        this.prozessKopie = prozessKopie;
-    }
-
-    public String getOpacSuchfeld() {
-        return this.opacSuchfeld;
-    }
-
-    public void setOpacSuchfeld(String opacSuchfeld) {
-        this.opacSuchfeld = opacSuchfeld;
-    }
-
-    public String getOpacKatalog() {
-        return this.opacKatalog;
-    }
-
-    public void setOpacKatalog(String opacKatalog) {
-        this.opacKatalog = opacKatalog;
-    }
-
-    public String getOpacSuchbegriff() {
-        return this.opacSuchbegriff;
-    }
-
-    public void setOpacSuchbegriff(String opacSuchbegriff) {
-        this.opacSuchbegriff = opacSuchbegriff;
     }
 
     /*
