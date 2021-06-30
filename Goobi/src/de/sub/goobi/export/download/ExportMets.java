@@ -160,8 +160,8 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
-            WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
-            TypeNotAllowedForParentException {
+    WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
+    TypeNotAllowedForParentException {
 
         String benutzerHome = "";
         LoginBean login = Helper.getLoginBean();
@@ -174,13 +174,13 @@ public class ExportMets {
     }
 
     public void downloadMets(Process process) throws ReadException, PreferencesException, WriteException, IOException, InterruptedException,
-            SwapException, DAOException, TypeNotAllowedForParentException {
+    SwapException, DAOException, TypeNotAllowedForParentException {
         this.myPrefs = process.getRegelsatz().getPreferences();
         String atsPpnBand = process.getTitel();
         Fileformat gdzfile = process.readMetadataFile();
 
-        //String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis); 
-        Path targetDir = Files.createTempDirectory("mets_export"); //only save file in /tmp/ directory 
+        //String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
+        Path targetDir = Files.createTempDirectory("mets_export"); //only save file in /tmp/ directory
 
         String targetFileName = targetDir.resolve(atsPpnBand + "_mets.xml").toAbsolutePath().toString();
         writeMetsFile(process, targetFileName, gdzfile, false);
@@ -225,8 +225,8 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
-            WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
-            SwapException, DAOException, TypeNotAllowedForParentException {
+    WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
+    SwapException, DAOException, TypeNotAllowedForParentException {
 
         /*
          * -------------------------------- Read Document --------------------------------
@@ -235,8 +235,8 @@ public class ExportMets {
         String atsPpnBand = myProzess.getTitel();
         Fileformat gdzfile = myProzess.readMetadataFile();
 
-        //String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis); 
-        String zielVerzeichnis = Files.createTempDirectory("mets_export").toAbsolutePath().toString(); //only save file in /tmp/ directory 
+        //String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
+        String zielVerzeichnis = Files.createTempDirectory("mets_export").toAbsolutePath().toString(); //only save file in /tmp/ directory
 
         String targetFileName = zielVerzeichnis + atsPpnBand + "_mets.xml";
         return writeMetsFile(myProzess, targetFileName, gdzfile, false);
@@ -424,9 +424,12 @@ public class ExportMets {
         VariableReplacer vp = new VariableReplacer(mm.getDigitalDocument(), this.myPrefs, myProzess, null);
         List<ProjectFileGroup> myFilegroups = myProzess.getProjekt().getFilegroups();
 
+        boolean useOriginalFiles = false;
         if (myFilegroups != null && myFilegroups.size() > 0) {
             for (ProjectFileGroup pfg : myFilegroups) {
-
+                if (pfg.isUseOriginalFiles()) {
+                    useOriginalFiles = true;
+                }
                 // check if source files exists
                 if (pfg.getFolder() != null && pfg.getFolder().length() > 0) {
                     String foldername = myProzess.getMethodFromName(pfg.getFolder());
@@ -441,6 +444,39 @@ public class ExportMets {
                 } else {
                     VirtualFileGroup v = createFilegroup(vp, pfg);
                     mm.getDigitalDocument().getFileSet().addVirtualFileGroup(v);
+                }
+            }
+        }
+
+        if (useOriginalFiles) {
+            // check if media folder contains images
+            List<Path> filesInFolder = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(false));
+            if (!filesInFolder.isEmpty()) {
+                // compare image names with files in mets file
+                List<DocStruct> pages = dd.getPhysicalDocStruct().getAllChildren();
+                if (pages != null && pages.size() > 0) {
+                    for (DocStruct page : pages) {
+                        Path completeNameInMets = Paths.get(page.getImageName());
+                        String filenameInMets = completeNameInMets.getFileName().toString();
+                        int dotIndex = filenameInMets.lastIndexOf('.');
+                        if (dotIndex != -1) {
+                            filenameInMets = filenameInMets.substring(0, dotIndex);
+                        }
+                        for (Path imageNameInFolder : filesInFolder) {
+                            String imageName = imageNameInFolder.getFileName().toString();
+                            dotIndex = imageName.lastIndexOf('.');
+                            if (dotIndex != -1) {
+                                imageName = imageName.substring(0, dotIndex);
+                            }
+
+                            if (filenameInMets.toLowerCase().equals(imageName.toLowerCase())) {
+                                // found matching filename
+                                page.setImageName(imageNameInFolder.toString());
+                                break;
+                            }
+                        }
+                    }
+                    // replace filename in mets file
                 }
             }
         }
