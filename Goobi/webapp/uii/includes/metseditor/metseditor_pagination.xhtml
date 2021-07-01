@@ -62,22 +62,6 @@
                             id="paginationList">
                             <!-- HIDDEN BUTTON TO SET REPRESENTATIVE -->
 
-                            <x:inputHidden
-                                id="hiddenRepresentative"
-                                forceId="true"
-                                value="#{Metadaten.currentRepresentativePage}">
-                            </x:inputHidden>
-
-                            <h:commandButton
-                                type="button"
-                                id="useRepresentative"
-                                styleClass="btn btn--vhidden notFocusable"
-                                title="#{msgs.uebernehmen}"
-                                rendered="#{Metadaten.allPages != null and Metadaten.checkForRepresentative and !Metadaten.nurLesenModus}">
-
-                                <f:ajax execute="hiddenRepresentative" />
-                            </h:commandButton>
-
                             <h:panelGroup id="pagePaginationList">
                                 <x:dataList
                                     value="#{Metadaten.allPages}"
