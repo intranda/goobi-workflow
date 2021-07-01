@@ -770,6 +770,7 @@ public class ProzesskopieForm implements Serializable {
                 createNewFileformat();
             } catch (TypeNotAllowedForParentException | TypeNotAllowedAsChildException e) {
                 Helper.setFehlerMeldung(e);
+                ProcessManager.deleteProcess(prozessKopie);               
                 return "";
             }
         }
