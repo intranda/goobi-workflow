@@ -128,7 +128,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Getter
     @Setter
     private String ausgabename;
-    @Setter
     private Boolean istTemplate;
     private Boolean inAuswahllisteAnzeigen;
     @Setter
@@ -248,6 +247,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     }
 
+    public void setIstTemplate(boolean istTemplate) {
+        this.istTemplate = istTemplate;
+    }
+
     public boolean isIstTemplate() {
         if (this.istTemplate == null) {
             this.istTemplate = Boolean.valueOf(false);
@@ -301,7 +304,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         return this.werkstuecke;
     }
-    
+
     public List<Processproperty> getEigenschaften() {
         if ((eigenschaften == null || eigenschaften.isEmpty()) && id != null) {
             eigenschaften = PropertyManager.getProcessPropertiesForProcess(id);
