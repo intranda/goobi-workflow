@@ -39,6 +39,8 @@ import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.goobi.production.plugin.interfaces.IValidatorPlugin;
 import org.goobi.production.plugin.interfaces.IWorkflowPlugin;
 
+import lombok.Getter;
+
 public enum PluginType {
 
     Import(1, "import", IImportPlugin.class),
@@ -54,8 +56,11 @@ public enum PluginType {
     Administration(11, "administration", IAdministrationPlugin.class),
     Workflow(13, "workflow", IWorkflowPlugin.class);
 
+	@Getter
     private int id;
+	@Getter
     private String name;
+	@Getter
     private Class<IPlugin> interfaz;
 
     @SuppressWarnings("unchecked")
@@ -84,17 +89,4 @@ public enum PluginType {
         }
         return null;
     }
-
-    public int getId() {
-        return this.id;
-    }
-
-    public Class<IPlugin> getInterfaz() {
-        return this.interfaz;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
 }

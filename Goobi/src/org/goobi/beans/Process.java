@@ -246,6 +246,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.erstellungsdatum = new Date();
 
     }
+    
+    public void setIstTemplate(boolean istTemplate) {
+        this.istTemplate = istTemplate;
+    }
 
     public void setIstTemplate(boolean istTemplate) {
         this.istTemplate = istTemplate;
@@ -257,6 +261,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         return this.istTemplate;
     }
+
 
     public List<Step> getSchritte() {
         if ((this.schritte == null || schritte.isEmpty()) && id != null) {
@@ -545,7 +550,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrTxtDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     @Deprecated
@@ -555,27 +560,27 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrPdfDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrXmlDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getImportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getExportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException, InterruptedException, SwapException, DAOException {
@@ -2269,7 +2274,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.pauseAutomaticExecution = pauseAutomaticExecution;
         if (!automaticTasks.isEmpty()) {
             for (Step step : automaticTasks) {
-                //We need to set the process in the step to this process, so the step doesn't fetch the process from 
+                //We need to set the process in the step to this process, so the step doesn't fetch the process from
                 //the DB when it checks if automatic execution is paused
                 step.setProzess(this);
                 ScriptThreadWithoutHibernate script = new ScriptThreadWithoutHibernate(step);

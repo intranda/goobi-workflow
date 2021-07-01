@@ -34,6 +34,7 @@ import java.util.List;
 import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 
 import de.sub.goobi.helper.StorageProvider;
+import lombok.Setter;
 
 /**
  * Creates backup for files in a given directory that match a regular expression.
@@ -49,6 +50,7 @@ import de.sub.goobi.helper.StorageProvider;
  * file.xml.6	// the oldest backup, if maximum number was 6
  * </pre>
  */
+@Setter
 public class BackupFileRotation {
 
     private static final Logger logger = LogManager.getLogger(BackupFileRotation.class);
@@ -79,33 +81,6 @@ public class BackupFileRotation {
         for (Path metaFile : metaFiles) {
             createBackupForFile(metaFile.toString());
         }
-    }
-
-    /**
-     * Set the number of backup files to create for each individual original file.
-     * 
-     * @param numberOfBackups Maximum number of backup files
-     */
-    public void setNumberOfBackups(int numberOfBackups) {
-        this.numberOfBackups = numberOfBackups;
-    }
-
-    /**
-     * Set file name matching pattern for original files to create backup files for.
-     * 
-     * @param format Java regular expression string.
-     */
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    /**
-     * Set the directory to find the original files and to place the backup files.
-     * 
-     * @param processDataDirectory A platform specfic filesystem path
-     */
-    public void setProcessDataDirectory(String processDataDirectory) {
-        this.processDataDirectory = processDataDirectory;
     }
 
     private void rename(String oldFileName, String newFileName) {
