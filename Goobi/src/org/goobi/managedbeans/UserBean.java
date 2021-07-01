@@ -97,6 +97,8 @@ public class UserBean extends BasicBean implements Serializable {
     private DatabasePaginator projectPaginator;
     //    @Getter
     //    private DatabasePaginator institutionPaginator;
+    @Getter
+    private boolean unsubscribedProjectsExist;
 
     public String Neu() {
         this.myClass = new User();
@@ -536,8 +538,10 @@ public class UserBean extends BasicBean implements Serializable {
         }
         ProjectManager m = new ProjectManager();
         projectPaginator = new DatabasePaginator("titel", filter, m, "");
+        
+        unsubscribedProjectsExist = projectPaginator.getTotalResults() > 0;
     }
-
+    
     public Integer getCurrentInstitutionID() {
         if (myClass.getInstitution() != null) {
             return myClass.getInstitution().getId();
