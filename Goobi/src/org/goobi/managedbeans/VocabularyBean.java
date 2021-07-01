@@ -33,6 +33,7 @@ import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
+import org.goobi.vocabulary.VocabularyUploader;
 import org.primefaces.event.FileUploadEvent;
 
 import de.sub.goobi.helper.FacesContextHelper;
@@ -147,6 +148,18 @@ public class VocabularyBean extends BasicBean implements Serializable {
             addRecord();
         }
         return "vocabulary_records";
+    }
+
+    public String uploadToServerRecords() {
+        VocabularyManager.getAllRecords(currentVocabulary);
+        Boolean boOK = VocabularyUploader.upload(currentVocabulary);
+        if (boOK) {
+            Helper.setMeldung(Helper.getTranslation("ExportFinished"));
+            return "vocabulary_all";
+        } else {
+            Helper.setFehlerMeldung(Helper.getTranslation("ExportError"));
+            return "";
+        }
     }
 
     /**
@@ -309,7 +322,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
         List<VocabRecord> recordList = currentVocabulary.getRecords();
 
         Workbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet(StringUtils.isBlank(description) ? title : title + " - " + description);
+        Sheet sheet = wb.createSheet((StringUtils.isBlank(description) ? title : title + " - " + description).replace("/", ""));
 
         // create header
         Row headerRow = sheet.createRow(0);
@@ -640,6 +653,16 @@ public class VocabularyBean extends BasicBean implements Serializable {
         }
         record.setFields(fieldList);
         currentVocabulary.getRecords().add(record);
+    }
+
+    /**
+     * If true, allow uploading of the vocabularies
+     * 
+     * @return
+     */
+    public Boolean useAuthorityServer() {
+
+        return VocabularyUploader.isActive();
     }
 
     /**

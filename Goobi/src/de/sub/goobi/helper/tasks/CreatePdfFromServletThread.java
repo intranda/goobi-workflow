@@ -55,6 +55,8 @@ import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
+import lombok.Getter;
+import lombok.Setter;
 
 /*************************************************************************************
  * Creation of PDF-Files as long running task for GoobiContentServerServlet First of all the variables have to be set via the setters after that you
@@ -65,11 +67,21 @@ import de.sub.goobi.metadaten.MetadatenVerifizierung;
  *************************************************************************************/
 public class CreatePdfFromServletThread extends LongRunningTask {
     private static final Logger logger = LogManager.getLogger(CreatePdfFromServletThread.class);
+    @Setter
     private Path targetFolder;
+    @Setter
     private String internalServletPath;
+    @Getter
+    @Setter
     private URL metsURL;
+    @Getter
+    @Setter
     private Path imagePath = null;
+    @Getter
+    @Setter
     private Path pdfPath = null;
+    @Getter
+    @Setter
     private Path altoPath = null;
 
     @Override
@@ -247,74 +259,6 @@ public class CreatePdfFromServletThread extends LongRunningTask {
         }
         setStatusMessage("done");
         setStatusProgress(100);
-    }
-
-    /**************************************************************************************
-     * Setter for targetFolder
-     * 
-     * @param targetFolder the targetFolder to set
-     **************************************************************************************/
-    public void setTargetFolder(Path targetFolder) {
-        this.targetFolder = targetFolder;
-    }
-
-    /**************************************************************************************
-     * Setter for internalServletPath
-     * 
-     * @param internalServletPath the internalServletPath to set
-     **************************************************************************************/
-    public void setInternalServletPath(String internalServletPath) {
-        this.internalServletPath = internalServletPath;
-    }
-
-    public URL getMetsURL() {
-        return this.metsURL;
-    }
-
-    public void setMetsURL(URL metsURL) {
-        this.metsURL = metsURL;
-    }
-
-    /**
-     * @return the imagePath
-     */
-    public Path getImagePath() {
-        return imagePath;
-    }
-
-    /**
-     * @param imagePath the imagePath to set
-     */
-    public void setImagePath(Path imagePath) {
-        this.imagePath = imagePath;
-    }
-
-    /**
-     * @return the pdfPath
-     */
-    public Path getPdfPath() {
-        return pdfPath;
-    }
-
-    /**
-     * @param pdfPath the pdfPath to set
-     */
-    public void setPdfPath(Path pdfPath) {
-        this.pdfPath = pdfPath;
-    }
-
-    /**
-     * @return the altoPath
-     */
-    public Path getAltoPath() {
-        return altoPath;
-    }
-
-    /**
-     * @param altoPath the altoPath to set
-     */
-    public void setAltoPath(Path altoPath) {
-        this.altoPath = altoPath;
     }
 
 }

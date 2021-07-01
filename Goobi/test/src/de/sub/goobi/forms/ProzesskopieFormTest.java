@@ -69,7 +69,7 @@ import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 
-@PowerMockIgnore({"javax.net.ssl.*", "javax.management.*"})
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*","javax.net.ssl.*",  "javax.management.*"})
 @RunWith(PowerMockRunner.class)
 
 @PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class, HistoryAnalyserJob.class, StepManager.class })

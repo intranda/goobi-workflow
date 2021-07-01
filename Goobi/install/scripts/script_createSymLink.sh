@@ -84,7 +84,7 @@ else
 fi
 
 
-ln -s "$SOURCEDIR" "$LINKNAME"
+ln -s "$SOURCEDIR" "$LINKNAME" &&
 sudo /bin/chown -R "$USER" "$SOURCEDIR"
 
 [ ${OCR_LINK_USED} -eq 1 ] && sudo /bin/chown -R "$USER" "$SOURCEDIR/ocr/"

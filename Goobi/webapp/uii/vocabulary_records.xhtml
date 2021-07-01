@@ -108,7 +108,7 @@
                                             <th>
                                                 <button
                                                 	jsf:id="changeOrderId"
-                                                    class="font-black-block button-sort"
+                                                    class="font-black-block button-no-style"
                                                     jsf:action="#{vocabularyBean.currentVocabulary.changeOrder}">
                                                     <h:outputText value="#{msgs.id}"/>
                                                     <span class="pull-right table-sort-icon fa #{vocabularyBean.currentVocabulary.sortfield=='idDesc'?'fa-sort-desc':vocabularyBean.currentVocabulary.sortfield=='idAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -123,7 +123,7 @@
                                                 <th>
                                                     <button
                                                     	jsf:id="changeOrderLabel"
-                                                        class="font-black-block button-sort"
+                                                        class="font-black-block button-no-style"
                                                         jsf:action="#{vocabularyBean.currentVocabulary.changeOrder}">
                                                         <h:outputText value="#{definition.label} #{definition.language != '' ? msgs[definition.language] : ''}" />
 

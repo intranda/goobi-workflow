@@ -26,6 +26,7 @@ package de.sub.goobi.helper.enums;
  * exception statement from your version.
  */
 import de.sub.goobi.helper.Helper;
+import lombok.Getter;
 
 /**
  * Enum for edit type of task steps each one has an integer value, and a title
@@ -52,7 +53,7 @@ public enum StepEditType {
 
     /** automatic = all kinds of automatic steps */
     AUTOMATIC(4, "automatic");
-
+	
     private int value;
     private String title;
 
@@ -63,7 +64,7 @@ public enum StepEditType {
         this.value = inValue;
         this.title = inTitle;
     }
-
+    
     /**
      * return integer value for database savings
      * 

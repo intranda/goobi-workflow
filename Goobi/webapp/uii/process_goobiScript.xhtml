@@ -91,7 +91,9 @@
 	
 										<x:column styleClass="tableColumnWidthSmall">
 											<f:facet name="header">
-												<button jsf:id="sortProcessId" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block">
+												<button jsf:id="sortProcessId" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block"
+												aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_processId} #{SessionForm.gsm.sort=='id desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='id'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            	aria-sort="#{SessionForm.gsm.sort=='id desc'? 'descending' : SessionForm.gsm.sort=='id'? 'ascending' :'none'}">
 													<h:outputText value="#{msgs.goobiScript_processId}" />
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'id'?'id desc':'id'}" />
 	                                            	<span
@@ -103,7 +105,9 @@
 	
 										<x:column styleClass="tableColumnWidthMid">
 											<f:facet name="header">
-												<button jsf:id="sortProcessTitle" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block">
+												<button jsf:id="sortProcessTitle" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block"
+												aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_processTitle} #{SessionForm.gsm.sort=='title desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='title'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            	aria-sort="#{SessionForm.gsm.sort=='title desc'? 'descending' : SessionForm.gsm.sort=='title'? 'ascending' :'none'}">
 													<h:outputText value="#{msgs.goobiScript_processTitle}" />
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'title'?'title desc':'title'}" />
 	                                            	<span
@@ -115,7 +119,9 @@
 										
 										<x:column styleClass="tableColumnOverflow maxWidth300">
 											<f:facet name="header">
-												<button jsf:id="sortCommand" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block">
+												<button jsf:id="sortCommand" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block"
+												aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_command} #{SessionForm.gsm.sort=='command desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='command'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            	aria-sort="#{SessionForm.gsm.sort=='command desc'? 'descending' : SessionForm.gsm.sort=='command'? 'ascending' :'none'}">
 													<h:outputText value="#{msgs.goobiScript_command}" />
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'command'?'command desc':'command'}" />
 	                                            	<span
@@ -127,7 +133,9 @@
 										
 										<x:column styleClass="tableColumnMaxWidthMid">
 											<f:facet name="header">
-												<button jsf:id="sortUser" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block">
+												<button jsf:id="sortUser" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block"
+												aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_user} #{SessionForm.gsm.sort=='user desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='user'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            	aria-sort="#{SessionForm.gsm.sort=='user desc'? 'descending' : SessionForm.gsm.sort=='user'? 'ascending' :'none'}">
 													<h:outputText value="#{msgs.goobiScript_user}" />
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'user'?'user desc':'user'}" />
 	                                            	<span
@@ -139,7 +147,9 @@
 										
 										<x:column styleClass="tableColumnMaxWidthMid">
 											<f:facet name="header">
-												<button jsf:id="sortTimestamp" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block">
+												<button jsf:id="sortTimestamp" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block"
+												aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_timestamp} #{SessionForm.gsm.sort=='timestamp desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='timestamp'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            	aria-sort="#{SessionForm.gsm.sort=='timestamp desc'? 'descending' : SessionForm.gsm.sort=='timestamp'? 'ascending' :'none'}">
 													<h:outputText value="#{msgs.goobiScript_timestamp}" />
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'timestamp'?'timestamp desc':'timestamp'}" />
 	                                            	<span
@@ -153,7 +163,9 @@
 										
 										<x:column>
 											<f:facet name="header">
-												<button jsf:id="sortResultType" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block">
+												<button jsf:id="sortResultType" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block"
+												aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_resultType} #{SessionForm.gsm.sort=='status desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='status'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            	aria-sort="#{SessionForm.gsm.sort=='status desc'? 'descending' : SessionForm.gsm.sort=='status'? 'ascending' :'none'}">
 													<h:outputText value="#{msgs.goobiScript_resultType}" />
 													<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'status'?'status desc':'status'}" />
 	                                            	<span
@@ -168,7 +180,9 @@
 										
 										<x:column>
 											<f:facet name="header">
-												<button jsf:id="sortResultMessage" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block">
+												<button jsf:id="sortResultMessage" jsf:action="#{SessionForm.gsm.goobiScriptSort}" class="button-sort font-black-block"
+												aria-label="#{msgs.defaultSortField} #{msgs.goobiScript_resultMessage} #{SessionForm.gsm.sort=='description desc'? msgs.defaultSortFieldDesc : SessionForm.gsm.sort=='description'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                            	aria-sort="#{SessionForm.gsm.sort=='description desc'? 'descending' : SessionForm.gsm.sort=='description'? 'ascending' :'none'}">
 													<h:outputText value="#{msgs.goobiScript_resultMessage}" />
 	                                            	<f:setPropertyActionListener target="#{SessionForm.gsm.sort}" value="#{SessionForm.gsm.sort eq 'description'?'description desc':'description'}" />
 	                                            	<span

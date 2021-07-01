@@ -20,10 +20,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author Florian Alpers
  *
  */
+@Getter
+@Setter
 public class ObjectInfo {
 
     private ObjectFormat format;
@@ -47,69 +52,4 @@ public class ObjectInfo {
         this.format = ObjectFormat.getByFileExtension(uri.toString().substring(uri.toString().lastIndexOf("/")));
 
     }
-
-    /**
-     * @return the type
-     */
-    public ObjectFormat getFormat() {
-        return format;
-    }
-
-    /**
-     * @param type the type to set
-     */
-    public void setFormat(ObjectFormat format) {
-        this.format = format;
-    }
-
-    /**
-     * @return the uri
-     */
-    public URI getUri() {
-        return uri;
-    }
-
-    /**
-     * @param uri the uri to set
-     */
-    public void setUri(URI uri) {
-        this.uri = uri;
-    }
-
-    /**
-     * @return the center
-     */
-    public Point3D getCenter() {
-        return center;
-    }
-
-    /**
-     * @param center the center to set
-     */
-    public void setCenter(Point3D center) {
-        this.center = center;
-    }
-
-    /**
-     * @return the rotation
-     */
-    public Point3D getRotation() {
-        return rotation;
-    }
-
-    /**
-     * @param rotation the rotation to set
-     */
-    public void setRotation(Point3D rotation) {
-        this.rotation = rotation;
-    }
-
-    public List<URI> getResources() {
-        return resources;
-    }
-
-    public void setResources(List<URI> resources) {
-        this.resources = resources;
-    }
-
 }
