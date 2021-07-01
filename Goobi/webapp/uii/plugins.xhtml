@@ -93,14 +93,12 @@
 											</div>
 										</div>
 										<div class="row">
-											<ui:fragment rendered="#{!pluginInstallBean.areAllConflictsFixed}">
-												<div class="col-md-12">
-													<h4>#{msgs.install_plugin_conflicts}</h4>
-												</div>
-											</ui:fragment>
 											<ui:repeat var="conflict" value="#{pluginInstallBean.pluginInstaller.check.conflicts.values()}">
 												<div class="space-to-bottom">
 													<ui:fragment rendered="#{!conflict.fixed}">
+														<div class="col-md-12">
+															<h4>#{conflict.fileName} (#{msgs.install_plugin_conflict} #{conflict.number}/#{pluginInstallBean.pluginInstaller.check.conflicts.size()})</h4>
+														</div>
 														<ul class="nav nav-tabs">
 															<li role="presentation"
 																class="#{conflict.diffMode eq 'show_old_and_new_file' ? 'active' : ''}">

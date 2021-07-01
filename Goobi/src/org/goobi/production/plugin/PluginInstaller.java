@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,10 +24,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.diff.StringsComparator;
-//import org.apache.tools.tar.TarEntry;
-//import org.apache.tools.tar.TarInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.goobi.production.plugin.PluginInstallConflict.ResolveTactic;
@@ -216,7 +215,6 @@ public class PluginInstaller {
                         if (checkForConflict(installPath, p)) {
                             Path archivedArchiveFile = Paths.get(goobiDirectory.toString() + PluginInstaller.pluginPackagePath + PluginInstaller.archiveFileName);
                             String archivedVersion = PluginInstaller.getContentFromFileInArchive(archivedArchiveFile, p.getFileName().toString());
-                            log.error(p.getFileName());
                             try {
                                 String existingVersion = Files.readAllLines(installPath).stream().collect(Collectors.joining("\n"));
                                 String uploadedVersion = Files.readAllLines(p).stream().collect(Collectors.joining("\n"));
@@ -231,14 +229,20 @@ public class PluginInstaller {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        PluginInstaller.setNumbersForAllConflicts(conflicts.values().toArray());
         PluginPreInstallCheck checkReport = new PluginPreInstallCheck(extractedPluginPath, info, conflicts, null);
         checkReport.setConflicts(conflicts);
         return checkReport;
     }
 
+    public static void setNumbersForAllConflicts(Object[] objects) {
+        for (int index = 0; index < objects.length; index++) {
+            PluginInstallConflict conflict = (PluginInstallConflict)(objects[index]);
+            conflict.setNumber(index + 1);
+        }
+    }
+
     public static String getContentFromFileInArchive(Path archivePath, String fileName) {
-        log.error(archivePath.getFileName());
-        log.error(fileName);
         TarArchiveInputStream tarInputStream = null;
         String content = "";
         try {
@@ -247,18 +251,8 @@ public class PluginInstaller {
             do {
                 tarEntry = (TarArchiveEntry)(tarInputStream.getNextEntry());
                 if (!(tarEntry == null) && !tarEntry.isDirectory() && tarEntry.getName().endsWith(fileName)) {
-                    log.error("tar entry name: " + tarEntry.getName());
-                    log.error("File \"" + fileName + "\" was found!");
-                    /*List<String> lines = Files.readAllLines(tarEntry.getFile().toPath());
-                    StringBuilder string = new StringBuilder();
-                    for (int line = 0; line < lines.size(); line++) {
-                        string.append(lines.get(line));
-                        if (line < lines.size() -1) {
-                            string.append("\n");
-                        }
-                    }
-                    content = string.toString();*/
-                    content = "";
+                    content = IOUtils.toString(tarInputStream, StandardCharsets.UTF_8.name());
+                    break;
                 }
             } while (tarEntry != null);
         } catch (IOException ioException) {
@@ -272,7 +266,6 @@ public class PluginInstaller {
                 log.error(ioException);
             }
         }
-        log.error("Loaded from archive: " + content);
         return content;
     }
 
@@ -326,12 +319,12 @@ public class PluginInstaller {
     private static void findDifferencesInFile(PluginInstallConflict conflict, String diffMode) {
 
         // Get the code lines from both files
-        String[] existingLines = conflict.getArchivedVersion().split(LINEBREAK);
-        String[] uploadedLines = new String[0];
+        String[] existingLines = new String[0];
+        String[] uploadedLines = conflict.getUploadedVersion().split(LINEBREAK);
         if (diffMode.equals("show_old_and_new_file")) {
-            uploadedLines = conflict.getUploadedVersion().split(LINEBREAK);
+            existingLines = conflict.getArchivedVersion().split(LINEBREAK);
         } else if (diffMode.equals("show_default_and_custom_file")) {
-            uploadedLines = conflict.getExistingVersion().split(LINEBREAK);
+            existingLines = conflict.getExistingVersion().split(LINEBREAK);
         }
 
         // This list of list of SpanTag objects will contain the span-tags
@@ -387,7 +380,9 @@ public class PluginInstaller {
             int localExistingLineIndex = existingLineIndex;
             while (localExistingLineIndex < linesInExistingFile - 1) {
                 StringsComparator comparator = new StringsComparator(existingLines[localExistingLineIndex], uploadedLines[uploadedLineIndex]);
-                if (comparator.getScript().getLCSLength() > commonalityFactor * (Integer.max(existingLines[localExistingLineIndex].length(), uploadedLines[uploadedLineIndex].length()))) {
+                int maximumLineLength = Integer.max(existingLines[localExistingLineIndex].length(), uploadedLines[uploadedLineIndex].length());
+                int lcsLength = comparator.getScript().getLCSLength();
+                if (lcsLength > commonalityFactor * maximumLineLength || maximumLineLength == 0) {
                     break;
                 }
                 localExistingLineIndex++;

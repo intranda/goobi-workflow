@@ -26,6 +26,7 @@ public class PluginInstallConflict {
     private String diffMode = "show_old_and_new_file";
     private String conflictsMode = "edit_existing_file";
     private boolean fixed;
+    private int number;
 
     public PluginInstallConflict(String path, ResolveTactic tactic, String existing, String uploaded, String archived) {
         this.path = path;
@@ -35,6 +36,14 @@ public class PluginInstallConflict {
         this.archivedVersion = archived;
         this.resetTextEditor();
         this.fixed = false;
+    }
+
+    public String getFileName() {
+        if (this.path.contains("/")) {
+            return this.path.substring(this.path.lastIndexOf("/") + 1, this.path.length());
+        } else {
+            return this.path;
+        }
     }
 
     public void resetTextEditor() {
