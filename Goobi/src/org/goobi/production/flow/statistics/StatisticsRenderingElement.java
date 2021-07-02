@@ -44,16 +44,22 @@ import de.intranda.commons.chart.renderer.IRenderer;
 import de.intranda.commons.chart.renderer.PieChartRenderer;
 import de.intranda.commons.chart.results.DataTable;
 import de.sub.goobi.config.ConfigurationHelper;
+import lombok.Getter;
 
 public class StatisticsRenderingElement implements Serializable {
 
     private static final long serialVersionUID = 9211752003070422596L;
     private IStatisticalQuestion myQuestion;
+    @Getter
     private DataTable dataTable;
+    @Getter
     private HtmlTableRenderer htmlTableRenderer;
+    @Getter
     private CSVRenderer csvRenderer;
+    @Getter
     private ExcelRenderer excelRenderer;
     private String localImagePath;
+    @Getter
     private String imageUrl;
     private static final Logger logger = LogManager.getLogger(StatisticsRenderingElement.class);
 
@@ -127,24 +133,6 @@ public class StatisticsRenderingElement implements Serializable {
     }
 
     /*************************************************************************************
-     * Getter for dataTable
-     * 
-     * @return the dataTable
-     *************************************************************************************/
-    public DataTable getDataTable() {
-        return dataTable;
-    }
-
-    /*************************************************************************************
-     * Getter for htmlTableRenderer
-     * 
-     * @return the htmlTableRenderer
-     *************************************************************************************/
-    public HtmlTableRenderer getHtmlTableRenderer() {
-        return htmlTableRenderer;
-    }
-
-    /*************************************************************************************
      * Getter for title
      * 
      * @return the title
@@ -152,22 +140,4 @@ public class StatisticsRenderingElement implements Serializable {
     public String getTitle() {
         return dataTable.getName() + " " + dataTable.getSubname();
     }
-
-    /*************************************************************************************
-     * Getter for imageUrl
-     * 
-     * @return the imageUrl
-     *************************************************************************************/
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public CSVRenderer getCsvRenderer() {
-        return csvRenderer;
-    }
-
-    public ExcelRenderer getExcelRenderer() {
-        return excelRenderer;
-    }
-
 }
