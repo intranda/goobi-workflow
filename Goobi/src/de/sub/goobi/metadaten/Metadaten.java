@@ -2497,6 +2497,13 @@ public class Metadaten implements Serializable {
             pi.setImagename(pageStruct.getImageName());
             pi.setCoordinates(coordinates);
         }
+
+        if (StringUtils.isNotBlank(currentRepresentativePage)) {
+            PhysicalObject po = pageMap.get(currentRepresentativePage);
+            po.setRepresentative(true);
+
+        }
+
     }
 
     public void addPageArea() {
