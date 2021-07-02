@@ -1,5 +1,8 @@
 package org.goobi.production.importer;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -23,6 +26,8 @@ package org.goobi.production.importer;
  * exception statement from your version.
  */
 
+@Getter
+@Setter
 public class DocstructElement {
     private String docStruct;
     private int order;
@@ -31,21 +36,4 @@ public class DocstructElement {
         this.docStruct = docStruct;
         this.order = order;
     }
-
-    public String getDocStruct() {
-        return docStruct;
-    }
-
-    public void setDocStruct(String docStruct) {
-        this.docStruct = docStruct;
-    }
-
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
-    }
-
 }
