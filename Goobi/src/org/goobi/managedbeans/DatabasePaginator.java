@@ -36,6 +36,7 @@ import org.goobi.beans.Institution;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.IManager;
+import lombok.Getter;
 
 public class DatabasePaginator implements Serializable {
     private static final long serialVersionUID = 1571881092118205104L;
@@ -43,11 +44,13 @@ public class DatabasePaginator implements Serializable {
     private List<? extends DatabaseObject> results;
     private int pageSize = 10;
     private int page = 0;
+    @Getter
     private int totalResults = 0;
     private String order = "";
     private String filter = new String();
     private IManager manager;
     private String returnPage;
+    @Getter
     private List<Integer> idList;
     private Institution institution;
 
@@ -87,10 +90,6 @@ public class DatabasePaginator implements Serializable {
     // public List<? extends DatabaseObject> getList() {
     // return hasNextPage() ? this.results.subList(0, this.pageSize) : this.results;
     // }
-
-    public int getTotalResults() {
-        return this.totalResults;
-    }
 
     public int getFirstResultNumber() {
         return this.page * this.pageSize + 1;
@@ -214,9 +213,4 @@ public class DatabasePaginator implements Serializable {
         load();
         return returnPage;
     }
-
-    public List<Integer> getIdList() {
-        return idList;
-    }
-
 }

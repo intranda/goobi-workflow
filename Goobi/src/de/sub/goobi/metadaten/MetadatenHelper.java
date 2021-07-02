@@ -463,13 +463,16 @@ public class MetadatenHelper implements Comparator<Object> {
                             if (mdt.getIsPerson()) {
                                 Person p = new Person(mdt);
                                 p.setRole(mdt.getName());
+                                p.setParent(inStruct);
                                 allPersons.add(p);
                             } else if (mdt.isCorporate()) {
                                 Corporate corporate = new Corporate(mdt);
                                 corporate.setRole(mdt.getName());
+                                corporate.setParent(inStruct);
                                 allCorporates.add(corporate);
                             } else {
                                 Metadata md = new Metadata(mdt);
+                                md.setParent(inStruct);
                                 allMetadata.add(md); // add this new metadata
                             }
                         }

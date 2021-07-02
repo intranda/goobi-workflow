@@ -172,46 +172,99 @@ import ugh.exceptions.WriteException;
 public class ProcessBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 2838270843176821134L;
     private static final Logger logger = LogManager.getLogger(ProcessBean.class);
+    @Getter
     private Process myProzess = new Process();
+    @Getter
     private Step mySchritt = new Step();
+    @Getter
     private StatisticsManager statisticsManager;
 
     @Getter
     private List<ProcessCounterObject> myAnzahlList;
+    @Getter
     private HashMap<String, Integer> myAnzahlSummary;
+    @Getter
+    @Setter
     private Processproperty myProzessEigenschaft;
+    @Getter
+    @Setter
     private User myBenutzer;
+    @Getter
+    @Setter
     private Template myVorlage;
+    @Getter
+    @Setter
     private Templateproperty myVorlageEigenschaft;
+    @Getter
+    @Setter
     private Masterpiece myWerkstueck;
+    @Getter
+    @Setter
     private Masterpieceproperty myWerkstueckEigenschaft;
+    @Getter
+    @Setter
     private Usergroup myBenutzergruppe;
+    @Getter
+    @Setter
     private String modusAnzeige = "aktuell";
+    @Getter
+    @Setter
     private String modusBearbeiten = "";
+    @Getter
+    @Setter
     private String goobiScript;
+    @Getter
+    @Setter
     private HashMap<String, Boolean> anzeigeAnpassen;
+    @Getter
+    @Setter
     private String myNewProcessTitle;
+    @Getter
+    @Setter
     private String selectedXslt = "";
+    @Getter
+    @Setter
     private StatisticsRenderingElement myCurrentTable;
+    @Getter
+    @Setter
     private boolean showClosedProcesses = false;
+    @Getter
+    @Setter
     private boolean showArchivedProjects = false;
     private List<ProcessProperty> processPropertyList;
+    @Getter
+    @Setter
     private ProcessProperty processProperty;
+    @Getter
     private Map<Integer, PropertyListObject> containers = new TreeMap<>();
+    @Getter
     private Integer container;
+    @Getter
+    @Setter
     private String userDisplayMode = "";
 
+    @Getter
+    @Setter
     private boolean dispaySearchResult = false;
+    @Getter
+    @Setter
     private List<SearchColumn> searchField = new ArrayList<>();
+    @Setter
     private List<SelectItem> possibleItems = null;
+    @Getter
+    @Setter
     private SearchColumn currentField = null;
     private int order = 0;
 
+    @Getter
+    @Setter
     private boolean showStatistics = false;
 
     private static String DONEDIRECTORYNAME = "fertig/";
 
+    @Getter
     private DatabasePaginator usergroupPaginator;
+    @Getter
     private DatabasePaginator userPaginator;
 
     private List<String> stepPluginList = new ArrayList<>();
@@ -878,10 +931,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         return "";
     }
 
-    public DatabasePaginator getUsergroupPaginator() {
-        return usergroupPaginator;
-    }
-
     private void updateUsergroupPaginator() {
         String filter =
                 " benutzergruppen.BenutzergruppenID not in (select BenutzerGruppenID from schritteberechtigtegruppen where schritteberechtigtegruppen.schritteID = "
@@ -889,10 +938,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         UsergroupManager m = new UsergroupManager();
         usergroupPaginator = new DatabasePaginator("titel", filter, m, "");
 
-    }
-
-    public DatabasePaginator getUserPaginator() {
-        return userPaginator;
     }
 
     private void updateUserPaginator() {
@@ -981,6 +1026,20 @@ public class ProcessBean extends BasicBean implements Serializable {
         ExportMets export = new ExportMets();
         try {
             export.startExport(this.myProzess);
+            Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started METS export using 'ExportMets'.");
+        } catch (Exception e) {
+            String[] parameter = { "METS", this.myProzess.getTitel() };
+
+            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
+            //            ;An error occured while trying to export METS file for: " + this.myProzess.getTitel(), e);
+            logger.error("ExportMETS error", e);
+        }
+    }
+
+    public void downloadMets() {
+        ExportMets export = new ExportMets();
+        try {
+            export.downloadMets(this.myProzess);
             Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started METS export using 'ExportMets'.");
         } catch (Exception e) {
             String[] parameter = { "METS", this.myProzess.getTitel() };
@@ -1281,27 +1340,11 @@ public class ProcessBean extends BasicBean implements Serializable {
      * Getter und Setter
      */
 
-    public Process getMyProzess() {
-        return this.myProzess;
-    }
-
     public void setMyProzess(Process myProzess) {
         this.myProzess = myProzess;
         this.myNewProcessTitle = myProzess.getTitel();
         loadProcessProperties();
         loadDisplayableMetadata();
-    }
-
-    public Processproperty getMyProzessEigenschaft() {
-        return this.myProzessEigenschaft;
-    }
-
-    public void setMyProzessEigenschaft(Processproperty myProzessEigenschaft) {
-        this.myProzessEigenschaft = myProzessEigenschaft;
-    }
-
-    public Step getMySchritt() {
-        return this.mySchritt;
     }
 
     public void setMySchritt(Step mySchritt) {
@@ -1324,60 +1367,12 @@ public class ProcessBean extends BasicBean implements Serializable {
     //        this.mySchrittEigenschaft = mySchrittEigenschaft;
     //    }
 
-    public Template getMyVorlage() {
-        return this.myVorlage;
-    }
-
-    public void setMyVorlage(Template myVorlage) {
-        this.myVorlage = myVorlage;
-    }
-
     public void setMyVorlageReload(Template myVorlage) {
         this.myVorlage = myVorlage;
     }
 
-    public Templateproperty getMyVorlageEigenschaft() {
-        return this.myVorlageEigenschaft;
-    }
-
-    public void setMyVorlageEigenschaft(Templateproperty myVorlageEigenschaft) {
-        this.myVorlageEigenschaft = myVorlageEigenschaft;
-    }
-
-    public Masterpiece getMyWerkstueck() {
-        return this.myWerkstueck;
-    }
-
-    public void setMyWerkstueck(Masterpiece myWerkstueck) {
-        this.myWerkstueck = myWerkstueck;
-    }
-
     public void setMyWerkstueckReload(Masterpiece myWerkstueck) {
         this.myWerkstueck = myWerkstueck;
-    }
-
-    public Masterpieceproperty getMyWerkstueckEigenschaft() {
-        return this.myWerkstueckEigenschaft;
-    }
-
-    public void setMyWerkstueckEigenschaft(Masterpieceproperty myWerkstueckEigenschaft) {
-        this.myWerkstueckEigenschaft = myWerkstueckEigenschaft;
-    }
-
-    public String getModusAnzeige() {
-        return this.modusAnzeige;
-    }
-
-    public void setModusAnzeige(String modusAnzeige) {
-        this.modusAnzeige = modusAnzeige;
-    }
-
-    public String getModusBearbeiten() {
-        return this.modusBearbeiten;
-    }
-
-    public void setModusBearbeiten(String modusBearbeiten) {
-        this.modusBearbeiten = modusBearbeiten;
     }
 
     public String decrementOrder() {
@@ -1485,22 +1480,6 @@ public class ProcessBean extends BasicBean implements Serializable {
             this.myProzess = ProcessManager.getProcessById(this.myProzess.getId());
         }
         return "";
-    }
-
-    public User getMyBenutzer() {
-        return this.myBenutzer;
-    }
-
-    public void setMyBenutzer(User myBenutzer) {
-        this.myBenutzer = myBenutzer;
-    }
-
-    public Usergroup getMyBenutzergruppe() {
-        return this.myBenutzergruppe;
-    }
-
-    public void setMyBenutzergruppe(Usergroup myBenutzergruppe) {
-        this.myBenutzergruppe = myBenutzergruppe;
     }
 
     /*
@@ -1711,10 +1690,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         this.myAnzahlSummary.put("averageImages", allImages / countOfProcessesWithImages);
         this.myAnzahlSummary.put("averageMetadata", allMetadata / countOfProcessesWithMetadata);
         this.myAnzahlSummary.put("averageDocstructs", allDocstructs / countOfProcessesWithDocstructs);
-    }
-
-    public HashMap<String, Integer> getMyAnzahlSummary() {
-        return this.myAnzahlSummary;
     }
 
     private void renderHitNumberImage() {
@@ -1964,59 +1939,17 @@ public class ProcessBean extends BasicBean implements Serializable {
         tiff.ExportStart();
     }
 
-    public String getGoobiScript() {
-        return this.goobiScript;
-    }
-
-    public void setGoobiScript(String goobiScript) {
-        this.goobiScript = goobiScript;
-    }
-
-    public HashMap<String, Boolean> getAnzeigeAnpassen() {
-        return this.anzeigeAnpassen;
-    }
-
-    public void setAnzeigeAnpassen(HashMap<String, Boolean> anzeigeAnpassen) {
-        this.anzeigeAnpassen = anzeigeAnpassen;
-    }
-
-    public String getMyNewProcessTitle() {
-        return this.myNewProcessTitle;
-    }
-
-    public void setMyNewProcessTitle(String myNewProcessTitle) {
-        this.myNewProcessTitle = myNewProcessTitle;
-    }
-
-    public StatisticsManager getStatisticsManager() {
-        return this.statisticsManager;
-    }
-
-    /*************************************************************************************
-     * Getter for showStatistics loadProcessProperties();
-     * 
-     * @return the showStatistics
-     *************************************************************************************/
-    public boolean isShowStatistics() {
-        return this.showStatistics;
-    }
-
-    /**************************************************************************************
-     * Setter for showStatistics
-     * 
-     * @param showStatistics the showStatistics to set
-     **************************************************************************************/
-    public void setShowStatistics(boolean showStatistics) {
-        this.showStatistics = showStatistics;
-    }
-
+    @Getter
     public static class ProcessCounterObject {
         private String title;
         private int metadata;
         private int docstructs;
         private int images;
+        @Setter
         private int relImages;
+        @Setter
         private int relDocstructs;
+        @Setter
         private int relMetadata;
 
         public ProcessCounterObject(String title, int metadata, int docstructs, int images) {
@@ -2025,46 +1958,6 @@ public class ProcessBean extends BasicBean implements Serializable {
             this.metadata = metadata;
             this.docstructs = docstructs;
             this.images = images;
-        }
-
-        public int getImages() {
-            return this.images;
-        }
-
-        public int getMetadata() {
-            return this.metadata;
-        }
-
-        public String getTitle() {
-            return this.title;
-        }
-
-        public int getDocstructs() {
-            return this.docstructs;
-        }
-
-        public int getRelDocstructs() {
-            return this.relDocstructs;
-        }
-
-        public int getRelImages() {
-            return this.relImages;
-        }
-
-        public int getRelMetadata() {
-            return this.relMetadata;
-        }
-
-        public void setRelDocstructs(int relDocstructs) {
-            this.relDocstructs = relDocstructs;
-        }
-
-        public void setRelImages(int relImages) {
-            this.relImages = relImages;
-        }
-
-        public void setRelMetadata(int relMetadata) {
-            this.relMetadata = relMetadata;
         }
     }
 
@@ -2156,24 +2049,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         return answer;
     }
 
-    public void setSelectedXslt(String select) {
-        this.selectedXslt = select;
-    }
-
-    public String getSelectedXslt() {
-        return this.selectedXslt;
-    }
-
     public String downloadDocket() {
         return this.myProzess.downloadDocket();
-    }
-
-    public void setMyCurrentTable(StatisticsRenderingElement myCurrentTable) {
-        this.myCurrentTable = myCurrentTable;
-    }
-
-    public StatisticsRenderingElement getMyCurrentTable() {
-        return this.myCurrentTable;
     }
 
     public void downloadStatisticsAsExcel() {
@@ -2417,30 +2294,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
     }
 
-    public boolean isShowClosedProcesses() {
-        return this.showClosedProcesses;
-    }
-
-    public void setShowClosedProcesses(boolean showClosedProcesses) {
-        this.showClosedProcesses = showClosedProcesses;
-    }
-
-    public void setShowArchivedProjects(boolean showArchivedProjects) {
-        this.showArchivedProjects = showArchivedProjects;
-    }
-
-    public boolean isShowArchivedProjects() {
-        return this.showArchivedProjects;
-    }
-
-    public ProcessProperty getProcessProperty() {
-        return this.processProperty;
-    }
-
-    public void setProcessProperty(ProcessProperty processProperty) {
-        this.processProperty = processProperty;
-    }
-
     public List<ProcessProperty> getProcessProperties() {
         return this.processPropertyList;
     }
@@ -2574,10 +2427,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         return this.processPropertyList.size();
     }
 
-    public Map<Integer, PropertyListObject> getContainers() {
-        return this.containers;
-    }
-
     public List<Integer> getContainerList() {
         return new ArrayList<>(this.containers.keySet());
     }
@@ -2609,10 +2458,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         ProcessProperty pt = this.processProperty.getClone(0);
         this.processPropertyList.add(pt);
         saveProcessProperties();
-    }
-
-    public Integer getContainer() {
-        return this.container;
     }
 
     public void setContainer(Integer container) {
@@ -2706,32 +2551,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         this.processProperty = pp;
     }
 
-    public String getUserDisplayMode() {
-        return userDisplayMode;
-    }
-
-    public void setUserDisplayMode(String userDisplayMode) {
-        this.userDisplayMode = userDisplayMode;
-    }
-
-    public List<SearchColumn> getSearchField() {
-        return searchField;
-    }
-
-    public void setSearchField(List<SearchColumn> searchField) {
-        this.searchField = searchField;
-    }
-
     public int getSizeOfFieldList() {
         return searchField.size();
-    }
-
-    public SearchColumn getCurrentField() {
-        return currentField;
-    }
-
-    public void setCurrentField(SearchColumn currentField) {
-        this.currentField = currentField;
     }
 
     public void addField() {
@@ -2747,18 +2568,6 @@ public class ProcessBean extends BasicBean implements Serializable {
             possibleItems = new SearchResultHelper().getPossibleColumns();
         }
         return possibleItems;
-    }
-
-    public void setPossibleItems(List<SelectItem> possibleItems) {
-        this.possibleItems = possibleItems;
-    }
-
-    public boolean isDispaySearchResult() {
-        return dispaySearchResult;
-    }
-
-    public void setDispaySearchResult(boolean dispaySearchResult) {
-        this.dispaySearchResult = dispaySearchResult;
     }
 
     public void setConfirmLink(boolean confirm) {

@@ -4,16 +4,16 @@
     <artifactId>goobi-core</artifactId>
     <!-- When updating the version, make sure to also update the version in
         the submodules -->
-    <version>21.06.5</version>
+    <version>21.06.6</version>
     <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <publicVersion>21.06.5</publicVersion>
+        <publicVersion>21.06.6</publicVersion>
         <jhove.version>1.20.1</jhove.version>
         <jackson.version>2.11.2</jackson.version>
         <jersey.version>2.31</jersey.version>
-        <powermock.version>2.0.7</powermock.version>
+        <powermock.version>2.0.9</powermock.version>
         <httpclient.version>4.5.13</httpclient.version>
         <poi.version>5.0.0</poi.version>
     </properties>
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>de.intranda.ugh</groupId>
             <artifactId>ugh-lido</artifactId>
-            <version>0.0.7</version>
+            <version>0.0.10</version>
         </dependency>        
         <dependency>
             <groupId>de.intranda.ugh</groupId>
@@ -325,6 +325,12 @@
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>1.6.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.glassfish.web/el-impl -->
         <dependency>
@@ -348,22 +354,20 @@
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>fop</artifactId>
-            <version>2.4</version>
+            <version>2.6</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.servlet</groupId>
                     <artifactId>servlet-api</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>javax.media</groupId>
-                    <artifactId>jai-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.media</groupId>
-                    <artifactId>jai-codec</artifactId>
-                </exclusion>
             </exclusions>
+        </dependency> 
+         <dependency>
+            <groupId>com.github.jai-imageio</groupId>
+            <artifactId>jai-imageio-core</artifactId>
+            <version>1.3.1</version>
         </dependency>
+     
         <!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
         <dependency>
             <groupId>org.freemarker</groupId>
@@ -960,6 +964,12 @@
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
             <version>2.7.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/xerces/xercesImpl -->
@@ -967,6 +977,12 @@
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
             <version>2.9.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- https://mvnrepository.com/artifact/xml-apis/xml-apis-ext -->
         <dependency>
@@ -1069,7 +1085,7 @@
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
-            <version>3.6</version>
+            <version>4.3</version>
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.powermock/powermock-api-easymock -->
@@ -1261,6 +1277,14 @@
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>de.intranda.other.jai</groupId>
+                    <artifactId>jai_imageio</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -1304,21 +1328,6 @@
             <version>[0.0.1,)</version>
         </dependency>
         
-        <dependency>
-            <groupId>de.intranda.other.jai</groupId>
-            <artifactId>jai_codec</artifactId>
-            <version>1.1.2_01</version>
-        </dependency>
-        <dependency>
-            <groupId>de.intranda.other.jai</groupId>
-            <artifactId>jai_core</artifactId>
-            <version>1.1.2_01</version>
-        </dependency>
-        <dependency>
-            <groupId>de.intranda.other.jai</groupId>
-            <artifactId>jai_imageio</artifactId>
-            <version>1.0_01</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
         <dependency>
             <groupId>org.bouncycastle</groupId>

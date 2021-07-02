@@ -22,11 +22,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.sub.goobi.config.ConfigNormdata;
+import lombok.Getter;
 
 public class NormDatabase {
 
+	@Getter
     private String path;
 
+	@Getter
     private String abbreviation;
 
     private static List<NormDatabase> allNormdatabases = new ArrayList<NormDatabase>();
@@ -45,14 +48,6 @@ public class NormDatabase {
 
     public static void setAllNormdatabases(List<NormDatabase> allNormdatabases) {
         NormDatabase.allNormdatabases = allNormdatabases;
-    }
-
-    public String getAbbreviation() {
-        return abbreviation;
-    }
-
-    public String getPath() {
-        return path;
     }
 
     //
