@@ -27,6 +27,7 @@ package org.goobi.production.flow.statistics.enums;
  */
 
 import de.sub.goobi.helper.Helper;
+import lombok.Getter;
 
 /**
  * Enum of all calculation units for the statistics
@@ -40,6 +41,7 @@ public enum CalculationUnit {
     pages("2", "pages"),
     volumesAndPages("3", "volumesAndPages");
 
+	@Getter
     private String id;
     private String title;
 
@@ -52,15 +54,6 @@ public enum CalculationUnit {
     private CalculationUnit(String inId, String inTitle) {
         id = inId;
         title = inTitle;
-    }
-
-    /**
-     * return unique ID for CalculationUnit
-     * 
-     * @return unique ID as String
-     ****************************************************************************/
-    public String getId() {
-        return id;
     }
 
     /**
