@@ -641,25 +641,23 @@
 
                                                             <div
                                                                 class="dataTables_info">
-                                                                <h:panelGroup
-                                                                    rendered="#{BenutzerverwaltungForm.unsubscribedProjectsExist}">
-                                                                    <!-- Neu-Schaltknopf -->
-                                                                    <button
-                                                                        jsf:id="addToProject"
-                                                                        class="btn btn-primary font-size-s"
-                                                                        jsf:action="#{ProjekteForm.FilterKeinMitZurueck}"
-                                                                        jsf:immediate="true">
-                                                                        <i
-                                                                            class="fa fa-plus margin-right-5"></i>
-                                                                        <h:outputText
-                                                                            value="#{msgs.projektHinzufuegen}" />
-                                                                        <f:setPropertyActionListener
-                                                                            target="#{BenutzerverwaltungForm.displayMode}"
-                                                                            value="project" />
-                                                                        <f:ajax
-                                                                            render=":myform" />
-                                                                    </button>
-                                                                </h:panelGroup>
+                                                                <!-- Neu-Schaltknopf -->
+                                                                <button
+                                                                    jsf:id="addToProject"
+                                                                    jsf:rendered="#{BenutzerverwaltungForm.unsubscribedProjectsExist}"
+                                                                    class="btn btn-primary font-size-s"
+                                                                    jsf:action="#{ProjekteForm.FilterKeinMitZurueck}"
+                                                                    jsf:immediate="true">
+                                                                    <i
+                                                                        class="fa fa-plus margin-right-5"></i>
+                                                                    <h:outputText
+                                                                        value="#{msgs.projektHinzufuegen}" />
+                                                                    <f:setPropertyActionListener
+                                                                        target="#{BenutzerverwaltungForm.displayMode}"
+                                                                        value="project" />
+                                                                    <f:ajax
+                                                                        render=":myform" />
+                                                                </button>
                                                             </div>
 
                                                         </div>
