@@ -701,19 +701,28 @@ public class ProzesskopieForm implements Serializable {
         LoginBean loginForm = Helper.getLoginBean();
         for (Step step : this.prozessKopie.getSchritteList()) {
             /*
-             * -------------------------------- always save date and user for each step --------------------------------
+             * -------------------------------- DO NOT always save date and user for each step --------------------------------
              */
-            step.setBearbeitungszeitpunkt(this.prozessKopie.getErstellungsdatum());
-            step.setEditTypeEnum(StepEditType.AUTOMATIC);
-
-            if (loginForm != null) {
-                step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
-            }
+//            step.setBearbeitungszeitpunkt(this.prozessKopie.getErstellungsdatum());
+//            step.setEditTypeEnum(StepEditType.AUTOMATIC);
+//
+//            if (loginForm != null) {
+//                step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
+//            }
 
             /*
              * -------------------------------- only if its done, set edit start and end date --------------------------------
              */
             if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
+                
+                step.setBearbeitungszeitpunkt(this.prozessKopie.getErstellungsdatum());
+                step.setEditTypeEnum(StepEditType.AUTOMATIC);
+
+                if (loginForm != null) {
+                    step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
+                }
+                
+                
                 step.setBearbeitungsbeginn(this.prozessKopie.getErstellungsdatum());
                 // this concerns steps, which are set as done right on creation
                 // bearbeitungsbeginn is set to creation timestamp of process
