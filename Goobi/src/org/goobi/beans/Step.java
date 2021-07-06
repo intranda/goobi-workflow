@@ -68,7 +68,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private Integer bearbeitungsstatus;
     @Getter
     @Setter
-    private Date bearbeitungszeitpunkt;
+    private Date bearbeitungszeitpunkt;   
     @Getter
     @Setter
     private Date bearbeitungsbeginn;
