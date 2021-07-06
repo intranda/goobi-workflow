@@ -17,7 +17,7 @@
             <textarea ref="Description">
                 <label></label>
             </textarea>
-            
+
             <select1 ref="UseAndReproductionLicense">
                 <item selected="true">
                     <label>Nicht ausgewählt</label>
@@ -60,7 +60,7 @@
                     <value>reserved</value>
                 </item>
             </select1>
-            
+
             <select1 ref="RestrictionOnAccessLicense">
                 <item selected="true">
                     <label>OPENACCESS</label>
