@@ -54,14 +54,12 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
+import lombok.Getter;
 
 public class SearchResultHelper {
 
+	@Getter
     private List<SelectItem> possibleColumns = new ArrayList<>();
-
-    public List<SelectItem> getPossibleColumns() {
-        return possibleColumns;
-    }
 
     public SearchResultHelper() {
         List<String> columnWhiteList = ConfigurationHelper.getInstance().getDownloadColumnWhitelist();

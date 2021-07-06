@@ -62,22 +62,6 @@
                             id="paginationList">
                             <!-- HIDDEN BUTTON TO SET REPRESENTATIVE -->
 
-                            <x:inputHidden
-                                id="hiddenRepresentative"
-                                forceId="true"
-                                value="#{Metadaten.currentRepresentativePage}">
-                            </x:inputHidden>
-
-                            <h:commandButton
-                                type="button"
-                                id="useRepresentative"
-                                styleClass="btn btn--vhidden notFocusable"
-                                title="#{msgs.uebernehmen}"
-                                rendered="#{Metadaten.allPages != null and Metadaten.checkForRepresentative and !Metadaten.nurLesenModus}">
-
-                                <f:ajax execute="hiddenRepresentative" />
-                            </h:commandButton>
-
                             <h:panelGroup id="pagePaginationList">
                                 <x:dataList
                                     value="#{Metadaten.allPages}"
@@ -578,7 +562,7 @@
                                             jsf:id="deletePages"
                                             class="btn btn--icon"
                                             jsf:action="#{Metadaten.deleteSeltectedPages}"
-                                            onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
+                                            jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
                                             title="#{msgs.deleteSeltectedPages}"
                                             type="button">
                                             <span class="fa fa-trash-o fa-lg fa-with-bg" />
@@ -602,7 +586,7 @@
                                             jsf:id="reOrder"
                                             class="btn btn--icon"
                                             jsf:action="#{Metadaten.reOrderPagination}"
-                                            onclick="goobiWorkflowJS.progress.displayProgressBar()"
+                                            jsf:onclick="goobiWorkflowJS.progress.displayProgressBar()"
                                             title="#{msgs.reOrder}"
                                             type="button">
                                             <span class="fa fa-refresh fa-lg fa-with-bg" />

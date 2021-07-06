@@ -1,5 +1,7 @@
 package org.goobi.production.properties;
 
+import lombok.Getter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -34,6 +36,7 @@ public enum Type {
     METADATA("metadata"),
     HTML("html");
 
+	@Getter
     private String name;
 
     private Type(String name) {
@@ -67,9 +70,5 @@ public enum Type {
         }
 
         return TEXT;
-    }
-
-    public String getName() {
-        return this.name;
     }
 }

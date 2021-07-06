@@ -100,6 +100,7 @@ public class MassImportForm implements Serializable {
     private ImportFormat format = null;
     // private List<String> usablePlugins = new ArrayList<String>();
     private final ImportPluginLoader ipl = new ImportPluginLoader();
+    @Getter
     private String currentPlugin = "";
 
     private Path importFile = null;
@@ -651,13 +652,6 @@ public class MassImportForm implements Serializable {
             plugin.setPrefs(template.getRegelsatz().getPreferences());
             plugin.setForm(this);
         }
-    }
-
-    /**
-     * @return the currentPlugin
-     */
-    public String getCurrentPlugin() {
-        return this.currentPlugin;
     }
 
     public boolean getHasNextPage() {

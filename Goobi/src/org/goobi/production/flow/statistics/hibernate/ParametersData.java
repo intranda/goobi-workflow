@@ -1,4 +1,7 @@
 package org.goobi.production.flow.statistics.hibernate;
+
+import lombok.Getter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -33,6 +36,7 @@ package org.goobi.production.flow.statistics.hibernate;
  *
  */
 
+@Getter
 public class ParametersData {
     private Boolean flagCriticalQuery = false;
     private Integer exactStepDone;
@@ -45,16 +49,8 @@ public class ParametersData {
         this.exactStepDone = exactStepDone;
     }
 
-    public Boolean getFlagCriticalQuery() {
-        return flagCriticalQuery;
-    }
-
     public void setCriticalQuery() {
         this.flagCriticalQuery = true;
-    }
-
-    public Integer getExactStepDone() {
-        return exactStepDone;
     }
 
     public void setStepDone(Integer exactStepDone) {

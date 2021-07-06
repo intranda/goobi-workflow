@@ -42,12 +42,16 @@ import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.Getter;
+import lombok.Setter;
 
 @Named("DocketForm")
 @SessionScoped
 public class DocketBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = 3006854499230483171L;
+    @Getter
+    @Setter
     private Docket myDocket = new Docket();
 
     public String Neu() {
@@ -109,13 +113,5 @@ public class DocketBean extends BasicBean implements Serializable {
     public String FilterKeinMitZurueck() {
         FilterKein();
         return this.zurueck;
-    }
-
-    public Docket getMyDocket() {
-        return this.myDocket;
-    }
-
-    public void setMyDocket(Docket docket) {
-        this.myDocket = docket;
     }
 }

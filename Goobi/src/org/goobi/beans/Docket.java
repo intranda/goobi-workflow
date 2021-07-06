@@ -27,38 +27,22 @@ package org.goobi.beans;
  */
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class Docket implements Serializable, DatabaseObject {
     private static final long serialVersionUID = 3318701122924599616L;
+    @Getter
+    @Setter
     private Integer id;
+    @Getter
+    @Setter
     private String name;
+    @Getter
+    @Setter
     private String file;
 
     public void lazyLoad() {
         // nothing to load lazy here
     }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getFile() {
-        return file;
-    }
-
-    public void setFile(String file) {
-        this.file = file;
-    }
-
 }

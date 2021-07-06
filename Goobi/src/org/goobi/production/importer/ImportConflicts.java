@@ -1,5 +1,8 @@
 package org.goobi.production.importer;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -22,6 +25,8 @@ package org.goobi.production.importer;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+@Getter
+@Setter
 public class ImportConflicts {
     /**
      * simple POJO class
@@ -41,37 +46,4 @@ public class ImportConflicts {
         this.goobiValue = goobiValue;
         this.productionValue = productionValue;
     }
-
-    public void setStoreidentifier(String storeidentifier) {
-        this.storeidentifier = storeidentifier;
-    }
-
-    public String getStoreidentifier() {
-        return storeidentifier;
-    }
-
-    public void setProperty(String property) {
-        this.property = property;
-    }
-
-    public String getProperty() {
-        return property;
-    }
-
-    public void setGoobiValue(String goobiValue) {
-        this.goobiValue = goobiValue;
-    }
-
-    public String getGoobiValue() {
-        return goobiValue;
-    }
-
-    public void setProductionValue(String productionValue) {
-        this.productionValue = productionValue;
-    }
-
-    public String getProductionValue() {
-        return productionValue;
-    }
-
 }

@@ -72,11 +72,23 @@ public class LoginBean implements Serializable {
      */
     private static final long serialVersionUID = -6036632431688990910L;
 
+    @Getter
+    @Setter
     private String login;
+    @Getter
+    @Setter
     private String passwort;
+    @Getter
+    @Setter
     private User myBenutzer;
+    @Getter
+    @Setter
     private String passwortAendernAlt;
+    @Getter
+    @Setter
     private String passwortAendernNeu1;
+    @Getter
+    @Setter
     private String passwortAendernNeu2;
     @Setter
     private List<String> roles;
@@ -336,30 +348,6 @@ public class LoginBean implements Serializable {
         }
     };
 
-    public String getLogin() {
-        return this.login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPasswort() {
-        return this.passwort;
-    }
-
-    public void setPasswort(String passwort) {
-        this.passwort = passwort;
-    }
-
-    public User getMyBenutzer() {
-        return this.myBenutzer;
-    }
-
-    public void setMyBenutzer(User myClass) {
-        this.myBenutzer = myClass;
-    }
-
     public int getMaximaleBerechtigung() {
         int rueckgabe = 0;
         if (this.myBenutzer != null) {
@@ -370,30 +358,6 @@ public class LoginBean implements Serializable {
             }
         }
         return rueckgabe;
-    }
-
-    public String getPasswortAendernAlt() {
-        return this.passwortAendernAlt;
-    }
-
-    public void setPasswortAendernAlt(String passwortAendernAlt) {
-        this.passwortAendernAlt = passwortAendernAlt;
-    }
-
-    public String getPasswortAendernNeu1() {
-        return this.passwortAendernNeu1;
-    }
-
-    public void setPasswortAendernNeu1(String passwortAendernNeu1) {
-        this.passwortAendernNeu1 = passwortAendernNeu1;
-    }
-
-    public String getPasswortAendernNeu2() {
-        return this.passwortAendernNeu2;
-    }
-
-    public void setPasswortAendernNeu2(String passwortAendernNeu2) {
-        this.passwortAendernNeu2 = passwortAendernNeu2;
     }
 
     public boolean hasRole(String inRole) {

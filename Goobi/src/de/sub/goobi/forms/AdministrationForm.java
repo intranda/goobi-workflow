@@ -37,6 +37,8 @@ import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
 
 import de.sub.goobi.helper.Helper;
+import lombok.Getter;
+import lombok.Setter;
 
 @Named("AdministrationForm")
 @SessionScoped
@@ -44,10 +46,16 @@ public class AdministrationForm implements Serializable {
     private static final long serialVersionUID = 5648439270064158243L;
     public final static String DIRECTORY_SUFFIX = "_tif";
 
+    @Getter
+    @Setter
     private List<String> possibleAdministrationPluginNames;
-
+    
+    @Getter
+    @Setter
     private String currentAdministrationPluginName;
 
+    @Getter
+    @Setter
     private IAdministrationPlugin administrationPlugin;
 
     public AdministrationForm() {
@@ -84,31 +92,7 @@ public class AdministrationForm implements Serializable {
         Helper.setMeldung(
                 "Meldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 3");
     }
-
-    public List<String> getPossibleAdministrationPluginNames() {
-        return possibleAdministrationPluginNames;
-    }
-
-    public void setPossibleAdministrationPluginNames(List<String> possibleAdministrationPluginNames) {
-        this.possibleAdministrationPluginNames = possibleAdministrationPluginNames;
-    }
-
-    public String getCurrentAdministrationPluginName() {
-        return currentAdministrationPluginName;
-    }
-
-    public void setCurrentAdministrationPluginName(String currentAdministrationPluginName) {
-        this.currentAdministrationPluginName = currentAdministrationPluginName;
-    }
-
-    public IAdministrationPlugin getAdministrationPlugin() {
-        return administrationPlugin;
-    }
-
-    public void setAdministrationPlugin(IAdministrationPlugin administrationPlugin) {
-        this.administrationPlugin = administrationPlugin;
-    }
-
+    
     public String setPlugin(String pluginName) {
         currentAdministrationPluginName = pluginName;
         administrationPlugin = (IAdministrationPlugin) PluginLoader.getPluginByTitle(PluginType.Administration, currentAdministrationPluginName);

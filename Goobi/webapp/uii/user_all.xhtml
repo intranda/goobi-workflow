@@ -193,7 +193,7 @@
 													class="btn margin-right-5" jsf:rel="tooltip"
 													title="#{msgs.createNewRandomPassword}"
 													jsf:rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords') and (item.ldapGruppe.authenticationType != 'ldap' or not item.ldapGruppe.readonly)}"
-													onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
+													jsf:onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
 													jsf:action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}">
 													<i class="fa fa-key"></i>
 													<f:passThroughAttribute name="data-toggle" value="tooltip" />

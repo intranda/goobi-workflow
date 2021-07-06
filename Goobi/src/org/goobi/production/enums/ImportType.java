@@ -1,5 +1,8 @@
 package org.goobi.production.enums;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -29,40 +32,16 @@ public enum ImportType {
     FILE("3", "file"),
     FOLDER("4", "folder");
 
+	@Getter
+    @Setter
     private String id;
+	@Getter
+    @Setter
     private String title;
 
     private ImportType(String id, String title) {
         this.id = id;
         this.title = title;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the id
-     */
-    public String getId() {
-        return this.id;
-    }
-
-    /**
-     * @param title the title to set
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
-     * @return the title
-     */
-    public String getTitle() {
-        return this.title;
     }
 
     public static ImportType getByTitle(String title) {
@@ -73,5 +52,4 @@ public enum ImportType {
         }
         return null;
     }
-
 }

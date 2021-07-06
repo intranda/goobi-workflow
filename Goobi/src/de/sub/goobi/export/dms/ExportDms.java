@@ -56,6 +56,8 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
+import lombok.Getter;
+import lombok.Setter;
 import ugh.dl.DocStruct;
 import ugh.dl.ExportFileformat;
 import ugh.dl.Fileformat;
@@ -69,7 +71,9 @@ import ugh.exceptions.WriteException;
 public class ExportDms extends ExportMets implements IExportPlugin {
     private static final Logger logger = LogManager.getLogger(ExportDms.class);
     protected boolean exportWithImages = true;
+    @Setter
     protected boolean exportFulltext = true;
+    @Getter
     protected List<String> problems = new ArrayList<>();
     public final static String DIRECTORY_SUFFIX = "_tif";
 
@@ -78,11 +82,6 @@ public class ExportDms extends ExportMets implements IExportPlugin {
 
     public ExportDms(boolean exportImages) {
         this.exportWithImages = exportImages;
-    }
-
-    @Override
-    public void setExportFulltext(boolean exportFulltext) {
-        this.exportFulltext = exportFulltext;
     }
 
     @Override
@@ -476,10 +475,5 @@ public class ExportDms extends ExportMets implements IExportPlugin {
 
     public String getDescription() {
         return getTitle();
-    }
-
-    @Override
-    public List<String> getProblems() {
-        return problems;
     }
 }
