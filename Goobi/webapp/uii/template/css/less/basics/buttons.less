@@ -98,6 +98,27 @@
 			background-color: @btnBgDarkgray !important;
 		}
 	}
+	&--light-gray {
+		color: #444;
+		background-color: @lightgray !important;
+		&:focus {
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
+		&:hover,
+		&active {
+			color: #333;
+			background-color: #A9A9A9 !important;
+		}
+	}
+	&--red {
+		color: white;
+		&:hover {
+			color: white;
+			background-color: #cf0418 !important;
+		}
+		
+	}
 	&--white {
 		border-color: @gray ! important;
 		&:hover {
