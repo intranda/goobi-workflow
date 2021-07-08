@@ -336,7 +336,7 @@ class UserMysqlHelper implements Serializable {
                 StringBuilder deactivateUserQuery = new StringBuilder();
                 deactivateUserQuery.append("UPDATE benutzer SET ");
                 deactivateUserQuery.append("isVisible = 'deleted', ");
-                deactivateUserQuery.append("IstAktiv = 0, ");
+                deactivateUserQuery.append("IstAktiv = false, ");
                 deactivateUserQuery.append("login= 'deletedUser" + ro.getId() + "', ");
                 deactivateUserQuery.append("email = '', ");
                 deactivateUserQuery.append("Vorname ='deleted', ");
