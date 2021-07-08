@@ -1238,7 +1238,7 @@
         <dependency>
             <groupId>de.intranda.chart</groupId>
             <artifactId>intrandachart</artifactId>
-            <version>1.5</version>
+            <version>1.6</version>
         </dependency>
         <dependency>
             <groupId>de.intranda.contentserver</groupId>
