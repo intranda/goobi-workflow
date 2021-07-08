@@ -115,7 +115,7 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     private String getBasicFilter() {
-        String hide = "isVisible is null";
+        String hide = "isVisible IS null";
         if (this.hideInactiveUsers) {
             hide += " AND istAktiv=true";
         }
@@ -139,16 +139,25 @@ public class UserBean extends BasicBean implements Serializable {
     public String FilterAlleStart() {
         this.sortierung = "nachname, vorname";
         UserManager m = new UserManager();
-        String myfilter = getBasicFilter();
+        String sqlQuery = getBasicFilter();
         if (this.filter != null && this.filter.length() != 0) {
-            filter = MySQLHelper.escapeString(filter);
-            myfilter += " AND (concat (vorname, \" \", nachname) like '%" + StringEscapeUtils.escapeSql(this.filter)
-                    + "%' OR BenutzerID IN (select distinct BenutzerID from benutzergruppenmitgliedschaft, benutzergruppen where benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel like '%"
-                    + StringEscapeUtils.escapeSql(this.filter)
-                    + "%') OR BenutzerID IN (SELECT distinct BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE '%"
-                    + StringEscapeUtils.escapeSql(this.filter) + "%'))";
+            String[] searchParts = this.filter.trim().split("\\s+");
+            sqlQuery += " AND (";
+            for (int index = 0; index < searchParts.length; index++) {
+                String like = MySQLHelper.escapeString(searchParts[index]);
+                like = "\'%" + StringEscapeUtils.escapeSql(like) + "%\'";
+                String inGroup = "BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzergruppenmitgliedschaft, benutzergruppen WHERE benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel LIKE " + like + ")";
+                String inProject = "BenutzerID IN (SELECT DISTINCT BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE " + like + ")";
+                String inInstitution = "BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzer, institution WHERE benutzer.institution_id = institution.id AND (institution.shortName LIKE " + like + " OR institution.longName LIKE " + like + "))";
+                String inName = "Vorname LIKE " + like + " OR Nachname LIKE " + like + " OR login LIKE " + like + " OR Standort LIKE " + like;
+                sqlQuery += inName + " OR " + inGroup + " OR " + inProject + " OR " + inInstitution;
+                if (index < searchParts.length - 1) {
+                    sqlQuery += " OR ";
+                }
+            }
+            sqlQuery += ")";
         }
-        paginator = new DatabasePaginator(sortierung, myfilter, m, "user_all");
+        paginator = new DatabasePaginator(sortierung, sqlQuery, m, "user_all");
         return "user_all";
     }
 
