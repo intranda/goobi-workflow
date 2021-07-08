@@ -320,7 +320,9 @@ public class DatabaseVersion {
 
     private static void updateToVersion44() {
 
-        String allBenutzer = "SELECT * FROM benutzer";
+        //if the user name has not been changed, but isVisible is "deleted" or " 'deleted' "
+        String allBenutzer = "SELECT * FROM benutzer WHERE login NOT LIKE 'deletedUser%' AND isVisible LIKE '%deleted%'";
+
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -328,11 +330,7 @@ public class DatabaseVersion {
             List<User> userList = runner.query(connection, allBenutzer, UserManager.resultSetToUserListHandler);
 
             for (User user : userList) {
-
-                //if the user name has not been changed, but isVisible is "deleted" or " 'deleted' "
-                if (!user.getLogin().startsWith("deletedUser") && user.getIsVisible() != null && user.getIsVisible().contains("deleted")) {
-                   UserManager.hideUser(user);
-                }
+                UserManager.hideUser(user);
             }
         } catch (SQLException | DAOException e) {
             logger.error(e);
