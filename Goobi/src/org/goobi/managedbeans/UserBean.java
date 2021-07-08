@@ -55,6 +55,7 @@ import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.api.mail.StepConfiguration;
 import org.goobi.api.mail.UserProjectConfiguration;
+import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Ldap;
 import org.goobi.beans.Project;
@@ -137,7 +138,6 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     public String FilterAlleStart() {
-        this.sortierung = "nachname, vorname";
         UserManager m = new UserManager();
         String sqlQuery = getBasicFilter();
         if (this.filter != null && this.filter.length() != 0) {
@@ -157,8 +157,58 @@ public class UserBean extends BasicBean implements Serializable {
             }
             sqlQuery += ")";
         }
-        paginator = new DatabasePaginator(sortierung, sqlQuery, m, "user_all");
+        paginator = new DatabasePaginator("Nachname, Vorname", sqlQuery, m, "user_all");
+        paginator.setList(this.sortUserList(this.convertDatabaseObjectsToUsers(paginator.getList())));
         return "user_all";
+    }
+
+    private List<User> convertDatabaseObjectsToUsers(List<? extends DatabaseObject> objects) {
+        List<User> users = new ArrayList<>();
+        for (int index = 0; index < objects.size(); index++) {
+            users.add((User)(objects.get(index)));
+        }
+        return users;
+    }
+
+    private List<User> sortUserList(List<User> users) {
+        List<User> sortedUsers = new ArrayList<>();
+        for (int index = 0; index < users.size(); index++) {
+            User user = users.get(index);
+            int position = 0;
+            while (position < sortedUsers.size()) {
+                // TODO: Code has to be refactored
+                // TODO: Name must be sorted by last name and first name
+                User sortedUser = sortedUsers.get(position);
+                if (this.sortierung.equals("nameAsc") && sortedUser.getVorname().compareTo(user.getVorname()) > 0) {
+                    break;
+                } else if (this.sortierung.equals("nameDesc") && sortedUser.getVorname().compareTo(user.getVorname()) < 0) {
+                    break;
+                } else if (this.sortierung.equals("loginAsc") && sortedUser.getLogin().compareTo(user.getLogin()) > 0) {
+                    break;
+                } else if (this.sortierung.equals("loginDesc") && sortedUser.getLogin().compareTo(user.getLogin()) < 0) {
+                    break;
+                } else if (this.sortierung.equals("locationAsc") && sortedUser.getStandort().compareTo(user.getStandort()) > 0) {
+                    break;
+                } else if (this.sortierung.equals("locationDesc") && sortedUser.getStandort().compareTo(user.getStandort()) < 0) {
+                    break;
+                } else if (this.sortierung.equals("groupAsc") && sortedUser.getBenutzergruppen().get(0).getTitel().compareTo(user.getBenutzergruppen().get(0).getTitel()) > 0) {
+                    break;
+                } else if (this.sortierung.equals("groupDesc") && sortedUser.getBenutzergruppen().get(0).getTitel().compareTo(user.getBenutzergruppen().get(0).getTitel()) < 0) {
+                    break;
+                } else if (this.sortierung.equals("projectsAsc") && sortedUser.getProjekte().get(0).getTitel().compareTo(user.getProjekte().get(0).getTitel()) > 0) {
+                    break;
+                } else if (this.sortierung.equals("projectsDesc") && sortedUser.getProjekte().get(0).getTitel().compareTo(user.getProjekte().get(0).getTitel()) < 0) {
+                    break;
+                } else if (this.sortierung.equals("institutionAsc") && sortedUser.getInstitution().getLongName().compareTo(user.getInstitution().getLongName()) > 0) {
+                    break;
+                } else if (this.sortierung.equals("institutionDesc") && sortedUser.getInstitution().getLongName().compareTo(user.getInstitution().getLongName()) < 0) {
+                    break;
+                }
+                position++;
+            }
+            sortedUsers.add(position, users.get(index));
+        }
+        return sortedUsers;
     }
 
     public String Speichern() {
