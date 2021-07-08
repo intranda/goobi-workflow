@@ -829,6 +829,11 @@ public class ProcessBean extends BasicBean implements Serializable {
                 return "process_edit_step";
             }
         }
+        else //not automatic: then remove from message queue:
+        {
+            mySchritt.setMessageQueue(QueueType.NONE);
+        }
+        
         this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
         mySchritt.setBearbeitungszeitpunkt(new Date());
         User ben = Helper.getCurrentUser();
