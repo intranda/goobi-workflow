@@ -71,7 +71,7 @@
 		default page size for pdf generation; possible values are 'A4', 'original' 
 		and 'A4Box' * sample: <defaultPdfConfig alwaysUseRenderedImage="true" alwaysCompressToJPEG="true" 
 		metsFileGroup="DEFAULT" writeAsPdfA="true" pagesize="A4"/> *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<defaultPdfConfig metsFileGroup="LOCAL" writeAsPdfA="true"
+	<defaultPdfConfig metsFileGroup="LOCAL" writeAsPdfA="false" imageScale="0.5" imageCompression="50"
 		pagesize="original" />
 
 	<!--########################################################## *############################################################# 

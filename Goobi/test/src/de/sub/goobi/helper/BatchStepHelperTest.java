@@ -49,7 +49,7 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PropertyManager.class, MetadataManager.class})
-@PowerMockIgnore({ "javax.management.*" })
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
 public class BatchStepHelperTest {
 
     private List<Step> stepList;

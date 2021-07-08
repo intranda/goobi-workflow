@@ -39,9 +39,13 @@ import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationT
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.LdapManager;
+import lombok.Getter;
+import lombok.Setter;
 
 @Named("LdapGruppenForm")
 @SessionScoped
+@Getter
+@Setter
 public class AuthenticationBean  extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = -5644561256582235244L;
@@ -84,22 +88,6 @@ public class AuthenticationBean  extends BasicBean implements Serializable {
     public String FilterKeinMitZurueck() {
         FilterKein();
         return this.zurueck;
-    }
-
-    public Ldap getMyLdapGruppe() {
-        return this.myLdapGruppe;
-    }
-
-    public void setMyLdapGruppe(Ldap myLdapGruppe) {
-        this.myLdapGruppe = myLdapGruppe;
-    }
-
-    public String getDisplayMode() {
-        return displayMode;
-    }
-
-    public void setDisplayMode(String displayMode) {
-        this.displayMode = displayMode;
     }
 
     public List<SelectItem> getAllAuthenticationTypes() {

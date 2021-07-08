@@ -45,6 +45,7 @@ import org.apache.logging.log4j.Logger;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import lombok.Getter;
 
 /**
  * The class ShellScript is intended to run shell scripts (or other system commands).
@@ -58,6 +59,7 @@ public class ShellScript {
 
     private final String command;
     private LinkedList<String> outputChannel, errorChannel;
+    @Getter
     private Integer errorLevel;
 
     /**
@@ -94,15 +96,6 @@ public class ShellScript {
      */
     public LinkedList<String> getStdErr() {
         return errorChannel;
-    }
-
-    /**
-     * Provides the result error level.
-     * 
-     * @return the error level
-     */
-    public Integer getErrorLevel() {
-        return errorLevel;
     }
 
     /**

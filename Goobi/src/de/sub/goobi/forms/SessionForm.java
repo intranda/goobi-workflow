@@ -24,6 +24,7 @@ import org.omnifaces.cdi.PushContext;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -87,6 +88,7 @@ public class SessionForm implements Serializable {
     /**
      * The formatter that is used for date representation strings
      */
+    @Setter
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE', ' dd. MMMM yyyy");
 
     /**
@@ -104,6 +106,7 @@ public class SessionForm implements Serializable {
     /**
      * A message that can be shown when a user should be logged out.
      */
+    @Getter
     private String logoutMessage = "";
 
     @Getter
@@ -334,15 +337,6 @@ public class SessionForm implements Serializable {
     }
 
     /**
-     * Sets the formatter for the date string representation
-     *
-     * @param formatter The formatter for the date representation
-     */
-    public void setDateFormatter(SimpleDateFormat formatter) {
-        this.dateFormatter = formatter;
-    }
-
-    /**
      * Sets the logout message
      *
      * @param message The new logout message
@@ -350,15 +344,6 @@ public class SessionForm implements Serializable {
     public void setLogoutMessage(String message) {
         this.logoutMessage = message;
         this.publishAdminMessage();
-    }
-
-    /**
-     * Returns the current logout message
-     *
-     * @return The logout message
-     */
-    public String getLogoutMessage() {
-        return this.logoutMessage;
     }
 
     public String sendLogoutMessage() {

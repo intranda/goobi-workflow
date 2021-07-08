@@ -171,7 +171,7 @@ public @Data class Image {
         if (Type.image.equals(this.type)) {
             this.bookmarkUrl = createThumbnailUrl(process, 1000, imageFolderName, filename);
             this.objectUrl = createIIIFUrl(process, imageFolderName, filename);
-        } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type)) {
+        } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type) || Type.object2vr.equals(this.type)) {
             this.objectUrl = create3DObjectUrl(process, imageFolderName, filename);
             //        } else if (Type.unknown.equals(this.type)) {
             //            this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_NOTFOUND;
@@ -282,7 +282,7 @@ public @Data class Image {
         if (Type.image.equals(this.type)) {
             this.thumbnailUrl = createThumbnailUrl(process, size, imageFoldername, filename);
             this.largeThumbnailUrl = createThumbnailUrl(process, size * LARGE_THUMBNAIL_SIZE_FACTOR, imageFoldername, filename);
-        } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type)) {
+        } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type) || Type.object2vr.equals(this.type)) {
             this.thumbnailUrl = PLACEHOLDER_URL_3D;
         } else if (Type.unknown.equals(this.type)) {
             this.thumbnailUrl = PLACEHOLDER_URL_NOTFOUND;
@@ -597,6 +597,7 @@ public @Data class Image {
         audio,
         object,
         x3dom,
+        object2vr,
         unknown;
 
         /**
@@ -635,6 +636,8 @@ public @Data class Image {
                 return Type.image;
             } else if (NIOFileUtils.check3DType(filename)) {
                 return Type.object;
+            } else if(filename.endsWith(".xml")) {
+                return Type.object2vr;
             } else {
                 return Type.unknown;
             }

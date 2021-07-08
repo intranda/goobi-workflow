@@ -33,6 +33,7 @@ import java.io.Serializable;
 import java.nio.file.FileSystems;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -73,20 +74,31 @@ import de.sub.goobi.persistence.managers.MySQLHelper;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import lombok.Getter;
+import lombok.Setter;
 
 @Named("BenutzerverwaltungForm")
 @SessionScoped
 
 public class UserBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = -3635859455444639614L;
+    @Getter
     private User myClass = new User();
+    @Getter
+    @Setter
     private boolean hideInactiveUsers = true;
     private static final Logger logger = LogManager.getLogger(UserBean.class);
+    @Getter
+    @Setter
     private String displayMode = "";
+    @Getter
     private DatabasePaginator usergroupPaginator;
+    @Getter
     private DatabasePaginator projectPaginator;
     //    @Getter
     //    private DatabasePaginator institutionPaginator;
+    @Getter
+    private boolean unsubscribedProjectsExist;
 
     public String Neu() {
         this.myClass = new User();
@@ -162,7 +174,7 @@ public class UserBean extends BasicBean implements Serializable {
                 }
                 UserManager.saveUser(this.myClass);
                 paginator.load();
-                return FilterKein();
+                return "user_all";
             } else {
                 Helper.setFehlerMeldung("", Helper.getTranslation("loginBereitsVergeben"));
                 return "";
@@ -331,10 +343,6 @@ public class UserBean extends BasicBean implements Serializable {
         return "";
     }
 
-    public User getMyClass() {
-        return this.myClass;
-    }
-
     public void setMyClass(User inMyClass) {
         this.myClass = inMyClass;
 
@@ -393,7 +401,8 @@ public class UserBean extends BasicBean implements Serializable {
         if (!Speichern().equals("") && AuthenticationType.LDAP.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())) {
             LdapKonfigurationSchreiben();
         }
-        return "user_all";
+        this.displayMode = "tab2";
+        return "user_edit";
     }
 
     public String LdapKonfigurationSchreiben() {
@@ -507,32 +516,8 @@ public class UserBean extends BasicBean implements Serializable {
         return password.toString();
     }
 
-    public boolean isHideInactiveUsers() {
-        return this.hideInactiveUsers;
-    }
-
-    public void setHideInactiveUsers(boolean hideInactiveUsers) {
-        this.hideInactiveUsers = hideInactiveUsers;
-    }
-
-    public String getDisplayMode() {
-        return displayMode;
-    }
-
-    public void setDisplayMode(String displayMode) {
-        this.displayMode = displayMode;
-    }
-
     public boolean getLdapUsage() {
         return ConfigurationHelper.getInstance().isUseLdap();
-    }
-
-    public DatabasePaginator getUsergroupPaginator() {
-        return usergroupPaginator;
-    }
-
-    public DatabasePaginator getProjectPaginator() {
-        return projectPaginator;
     }
 
     private void updateUsergroupPaginator() {
@@ -553,8 +538,10 @@ public class UserBean extends BasicBean implements Serializable {
         }
         ProjectManager m = new ProjectManager();
         projectPaginator = new DatabasePaginator("titel", filter, m, "");
+        
+        unsubscribedProjectsExist = projectPaginator.getTotalResults() > 0;
     }
-
+    
     public Integer getCurrentInstitutionID() {
         if (myClass.getInstitution() != null) {
             return myClass.getInstitution().getId();

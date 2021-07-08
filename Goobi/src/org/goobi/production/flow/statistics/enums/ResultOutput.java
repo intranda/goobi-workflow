@@ -27,6 +27,7 @@ package org.goobi.production.flow.statistics.enums;
  */
 
 import de.sub.goobi.helper.Helper;
+import lombok.Getter;
 
 /**
  * Enum of all result output possibilities for the statistics
@@ -40,6 +41,7 @@ public enum ResultOutput {
     table("2", "table"),
     chartAndTable("3", "chartAndTable");
 
+	@Getter
     private String id;
     private String title;
 
@@ -52,15 +54,6 @@ public enum ResultOutput {
     private ResultOutput(String inId, String inTitle) {
         id = inId;
         title = inTitle;
-    }
-
-    /**
-     * return unique ID for result output
-     * 
-     * @return unique ID as String
-     ****************************************************************************/
-    public String getId() {
-        return id;
     }
 
     /**

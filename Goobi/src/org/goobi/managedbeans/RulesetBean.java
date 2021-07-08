@@ -42,12 +42,16 @@ import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
+import lombok.Getter;
+import lombok.Setter;
 
 @Named("RegelsaetzeForm")
 @SessionScoped
 public class RulesetBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = -8994941188718721705L;
+    @Getter
+    @Setter
     private Ruleset myRegelsatz = new Ruleset();
 
     public String Neu() {
@@ -110,13 +114,4 @@ public class RulesetBean extends BasicBean implements Serializable {
         FilterKein();
         return this.zurueck;
     }
-
-    public Ruleset getMyRegelsatz() {
-        return this.myRegelsatz;
-    }
-
-    public void setMyRegelsatz(Ruleset inPreference) {
-        this.myRegelsatz = inPreference;
-    }
-
 }

@@ -94,6 +94,8 @@ public interface StorageProviderInterface {
     public boolean isWritable(Path path);
 
     public boolean isReadable(Path path);
+    
+    public boolean isDeletable(Path path);
 
     public long getFileSize(Path path) throws IOException;
 

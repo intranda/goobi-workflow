@@ -1,5 +1,8 @@
 package org.goobi.production.flow.statistics;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -22,6 +25,8 @@ package org.goobi.production.flow.statistics;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+@Getter
+@Setter
 public class StepInformation {
 
     // step identifier in workflow
@@ -48,117 +53,5 @@ public class StepInformation {
     public StepInformation(String title, Double avgOrdner) {
         this.title = title;
         this.averageStepOrder = avgOrdner;
-    }
-
-    /**
-     * @return the title
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * @param title the title to set
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
-     * @return the averageStepOrder
-     */
-    public Double getAverageStepOrder() {
-        return averageStepOrder;
-    }
-
-    /**
-     * @param averageStepOrder the averageStepOrder to set
-     */
-    public void setAverageStepOrder(Double averageStepOrder) {
-        this.averageStepOrder = averageStepOrder;
-    }
-
-    /**
-     * @return the numberOfTotalSteps
-     */
-    public int getNumberOfTotalSteps() {
-        return numberOfTotalSteps;
-    }
-
-    /**
-     * @param numberOfTotalSteps the numberOfTotalSteps to set
-     */
-    public void setNumberOfTotalSteps(int numberOfTotalSteps) {
-        this.numberOfTotalSteps = numberOfTotalSteps;
-    }
-
-    /**
-     * @return the numberOfTotalImages
-     */
-    public int getNumberOfTotalImages() {
-        return numberOfTotalImages;
-    }
-
-    /**
-     * @param numberOfTotalImages the numberOfTotalImages to set
-     */
-    public void setNumberOfTotalImages(int numberOfTotalImages) {
-        this.numberOfTotalImages = numberOfTotalImages;
-    }
-
-    /**
-     * @return the totalProcessCount
-     */
-    public int getTotalProcessCount() {
-        return totalProcessCount;
-    }
-
-    /**
-     * @param totalProcessCount the totalProcessCount to set
-     */
-    public void setTotalProcessCount(int totalProcessCount) {
-        this.totalProcessCount = totalProcessCount;
-    }
-
-    /**
-     * @return the numberOfStepsDone
-     */
-    public int getNumberOfStepsDone() {
-        return numberOfStepsDone;
-    }
-
-    /**
-     * @param numberOfStepsDone the numberOfStepsDone to set
-     */
-    public void setNumberOfStepsDone(int numberOfStepsDone) {
-        this.numberOfStepsDone = numberOfStepsDone;
-    }
-
-    /**
-     * @return the numberOfImagesDone
-     */
-    public int getNumberOfImagesDone() {
-        return numberOfImagesDone;
-    }
-
-    /**
-     * @param numberOfImagesDone the numberOfImagesDone to set
-     */
-    public void setNumberOfImagesDone(int numberOfImagesDone) {
-        this.numberOfImagesDone = numberOfImagesDone;
-    }
-
-    /**
-     * @return the processCountDone
-     */
-    public int getProcessCountDone() {
-        return processCountDone;
-    }
-
-    /**
-     * @param processCountDone the processCountDone to set
-     */
-    public void setProcessCountDone(int processCountDone) {
-        this.processCountDone = processCountDone;
     }
 }

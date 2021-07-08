@@ -60,6 +60,8 @@ import org.xml.sax.XMLReader;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.HttpClientHelper;
+import lombok.Getter;
+import lombok.Setter;
 
 /*******************************************************************************
  * Connects to OPAC system.
@@ -130,8 +132,11 @@ public class GetOpac {
     // TODO: Check if this should really be query specific
     private String data_character_encoding = "iso-8859-1";
 
+    @Getter
+    @Setter
     private Catalogue cat;
 
+    @Setter
     private boolean verbose = true;
     private String sorting = SORT_BY_YEAR_OF_PUBLISHING;
 
@@ -678,14 +683,6 @@ public class GetOpac {
         return ids;
     }
 
-    public Catalogue getCat() {
-        return this.cat;
-    }
-
-    public void setCat(Catalogue opac) {
-        this.cat = opac;
-    }
-
     /***********************************************************************
      * Set requested character encoding for the response of the catalogue system. For goettingen iso-8859-1 and utf-8 work, the default is iso-8859-1.
      * 
@@ -695,16 +692,6 @@ public class GetOpac {
     // TODO: rename this Method to camelCase convention
     public void setData_character_encoding(String data_character_encoding) {
         this.data_character_encoding = data_character_encoding;
-    }
-
-    /***********************************************************************
-     * Set verbose to true to get debug messages printed to .
-     * 
-     * @param verbose True will deliver debug messages to .
-     **********************************************************************/
-
-    public void setVerbose(boolean verbose) {
-        this.verbose = verbose;
     }
 
     public void sortByRelevance() {

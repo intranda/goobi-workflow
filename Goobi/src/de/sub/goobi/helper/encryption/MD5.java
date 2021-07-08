@@ -2,6 +2,9 @@ package de.sub.goobi.helper.encryption;
 
 import java.security.*;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /*
 Program: MD5.java
 This program generates MD5-Hashes
@@ -37,7 +40,10 @@ if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor
  *
  */
 public class MD5 {
+	@Getter
+	@Setter
     private String text = null;
+	@Getter
     private String hash = null;
 
     /**
@@ -115,33 +121,6 @@ public class MD5 {
         hash = strBuf.toString(); // String with the MD5-Hash
 
         return hash; // returns the MD5-Hash
-    }
-
-    /**
-     * <u>Setzt den Text, aus dem der MD5-Hash ermittelt werden soll</u>
-     * 
-     * @param text The text to set.
-     */
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    /**
-     * <u>Gibt den Text, aus dem der MD5-Hash ermittelt werden soll zur&uuml;ck</u>
-     * 
-     * @return Returns the text.
-     */
-    public String getText() {
-        return text;
-    }
-
-    /**
-     * <u>Konstruktor mit &Uuml;bergabe der zu verifizierenden Zeichenkette</u>
-     * 
-     * @return Returns the hash.
-     */
-    public String getHash() {
-        return hash;
     }
 }
 

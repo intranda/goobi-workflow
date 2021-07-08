@@ -25,8 +25,11 @@ package de.sub.goobi.metadaten;
 
 import java.awt.Dimension;
 
+import lombok.Getter;
+
 public class ImageLevel implements Comparable<ImageLevel> {
 
+	@Getter
     private String url;
     private Dimension size;
 
@@ -40,10 +43,6 @@ public class ImageLevel implements Comparable<ImageLevel> {
         super();
         this.url = url;
         this.size = new Dimension(width, height);
-    }
-
-    public String getUrl() {
-        return url;
     }
 
     public Dimension getSize() {

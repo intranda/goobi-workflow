@@ -283,7 +283,7 @@ public class GoobiImageResource {
         } catch (NumberFormatException | NullPointerException e) {
             throw new ContentNotFoundException("No process found with id " + processFolder.getFileName().toString(), e);
         } catch (IOException | InterruptedException | SwapException | DAOException | ContentLibException e) {
-            throw new ContentNotFoundException("Error initializing image resource for  " + processFolder.getFileName().toString(), e);
+            throw new ContentNotFoundException("Error initializing image resource for  " + processFolder.getFileName().toString() + ". Reason: " + e.getMessage(), e);
 
         }
     }

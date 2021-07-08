@@ -30,7 +30,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class Template implements Serializable {
     private static final long serialVersionUID = 1736135433162833277L;
     private Integer id;
@@ -46,57 +50,9 @@ public class Template implements Serializable {
     }
 
     /*
-     * ##################################################### ##################################################### ## ## Getter und Setter ##
-     * ##################################################### ####################################################
-     */
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Process getProzess() {
-        if (prozess == null && processId != null) {
-            prozess = ProcessManager.getProcessById(processId);
-        }
-        return this.prozess;
-    }
-
-    public void setProzess(Process prozess) {
-        this.prozess = prozess;
-    }
-
-    public boolean isPanelAusgeklappt() {
-        return this.panelAusgeklappt;
-    }
-
-    public void setPanelAusgeklappt(boolean panelAusgeklappt) {
-        this.panelAusgeklappt = panelAusgeklappt;
-    }
-
-    public List<Templateproperty> getEigenschaften() {
-        return this.eigenschaften;
-    }
-
-    public void setEigenschaften(List<Templateproperty> eigenschaften) {
-        this.eigenschaften = eigenschaften;
-    }
-
-    /*
      * ##################################################### ##################################################### ## ## Helper ##
      * ##################################################### ####################################################
      */
-
-    public String getHerkunft() {
-        return this.herkunft;
-    }
-
-    public void setHerkunft(String herkunft) {
-        this.herkunft = herkunft;
-    }
 
     public int getEigenschaftenSize() {
         return getEigenschaften().size();
@@ -104,14 +60,6 @@ public class Template implements Serializable {
 
     public List<Templateproperty> getEigenschaftenList() {
         return getEigenschaften();
-    }
-
-    public Integer getProcessId() {
-        return processId;
-    }
-
-    public void setProcessId(Integer processId) {
-        this.processId = processId;
     }
 
     @Override

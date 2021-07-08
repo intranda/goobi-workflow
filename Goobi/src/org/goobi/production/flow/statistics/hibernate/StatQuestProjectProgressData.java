@@ -46,6 +46,7 @@ import de.intranda.commons.chart.results.DataTable;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.Getter;
 
 /*****************************************************************************
  * Imlpementation of {@link IStatisticalQuestion}. This is used for the generation of a Datatable relfecting the progress of a project, based on it's
@@ -64,11 +65,13 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
     private List<Integer> myIDlist;
     private Boolean flagIncludeLoops = false;
     private String terminatingStep; // stepDone title
+    @Getter
     private List<String> selectedSteps;
     private Double requiredDailyOutput;
     private Boolean flagReferenceCurve = false;
     private List<StepInformation> commonWorkFlow = null;
     private DataTable myDataTable = null;
+    @Getter
     private String errMessage;
     private boolean isDirty = true;
 
@@ -82,10 +85,6 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
      */
     public Boolean getIncludeLoops() {
         return this.flagIncludeLoops;
-    }
-
-    public String getErrMessage() {
-        return this.errMessage;
     }
 
     /**
@@ -489,10 +488,6 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
                 this.terminatingStep = inSteps.get(inSteps.size() - 1);
             }
         }
-    }
-
-    public List<String> getSelectedSteps() {
-        return this.selectedSteps;
     }
 
     /**
