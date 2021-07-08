@@ -703,26 +703,25 @@ public class ProzesskopieForm implements Serializable {
             /*
              * -------------------------------- DO NOT always save date and user for each step --------------------------------
              */
-//            step.setBearbeitungszeitpunkt(this.prozessKopie.getErstellungsdatum());
-//            step.setEditTypeEnum(StepEditType.AUTOMATIC);
-//
-//            if (loginForm != null) {
-//                step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
-//            }
+            //            step.setBearbeitungszeitpunkt(this.prozessKopie.getErstellungsdatum());
+            //            step.setEditTypeEnum(StepEditType.AUTOMATIC);
+            //
+            //            if (loginForm != null) {
+            //                step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
+            //            }
 
             /*
              * -------------------------------- only if its done, set edit start and end date --------------------------------
              */
             if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
-                
+
                 step.setBearbeitungszeitpunkt(this.prozessKopie.getErstellungsdatum());
                 step.setEditTypeEnum(StepEditType.AUTOMATIC);
 
                 if (loginForm != null) {
                     step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
                 }
-                
-                
+
                 step.setBearbeitungsbeginn(this.prozessKopie.getErstellungsdatum());
                 // this concerns steps, which are set as done right on creation
                 // bearbeitungsbeginn is set to creation timestamp of process
@@ -778,8 +777,13 @@ public class ProzesskopieForm implements Serializable {
             try {
                 createNewFileformat();
             } catch (TypeNotAllowedForParentException | TypeNotAllowedAsChildException e) {
+                Helper.setFehlerMeldung("ProcessCreationError_mets_save_error");
                 Helper.setFehlerMeldung(e);
-                ProcessManager.deleteProcess(prozessKopie);               
+                ProcessManager.deleteProcess(prozessKopie);
+
+                //this ensures that the process will be saved later, if corrected. If
+                //the id is not null, then it is assumed that the process is already saved.
+                prozessKopie.setId(null);
                 return "";
             }
         }
@@ -826,6 +830,11 @@ public class ProzesskopieForm implements Serializable {
                             Metadata md = this.ughHelper.getMetadata(myTempStruct, mdt);
                             if (md != null) {
                                 md.setValue(field.getWert());
+                            } else if (this.ughHelper.lastErrorMessage != null && field.getWert() != null && !field.getWert().isEmpty())//if the md could not be found, warn! 
+                            {
+                                Helper.setFehlerMeldung(this.ughHelper.lastErrorMessage);
+                                String strError = mdt.getName() + " : " + field.getWert();
+                                Helper.setFehlerMeldung(strError);
                             }
                             /*
                              * wenn dem Topstruct und dem Firstchild der Wert gegeben werden soll
@@ -885,6 +894,10 @@ public class ProzesskopieForm implements Serializable {
                 } catch (IOException e) {
                     Helper.setFehlerMeldung("ProcessCreationError_mets_save_error");
                     ProcessManager.deleteProcess(prozessKopie);
+
+                    //this ensures that the process will be saved later, if corrected. If
+                    //the id is not null, then it is assumed that the process is already saved.
+                    prozessKopie.setId(null);
                     return "";
                 }
                 /*
@@ -899,6 +912,10 @@ public class ProzesskopieForm implements Serializable {
                 Helper.setFehlerMeldung(e.getMessage());
                 logger.error("creation of new process throws an error: ", e);
                 ProcessManager.deleteProcess(prozessKopie);
+
+                //this ensures that the process will be saved later, if corrected. If
+                //the id is not null, then it is assumed that the process is already saved.
+                prozessKopie.setId(null);
                 return "";
             }
 
