@@ -76,10 +76,10 @@ public class GeneratePdfFromXsltTest {
         if (!Files.exists(goobiFolder)) {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
-        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder.toString();        
+        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder.toString();
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
-        xsltfile = goobiFolder + "/xslt/docket.xsl";
+        xsltfile = goobiFolder.getParent().getParent() + "/xslt/docket.xsl";
 
         process = MockProcess.createProcess();
 

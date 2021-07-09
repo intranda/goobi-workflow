@@ -60,7 +60,7 @@ import ugh.fileformats.mets.MetsModsImportExport;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(MetadatenHelper.class)
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*", "javax.crypto.*"})
 public class ExportDmsTest {
 
     private Process testProcess = null;

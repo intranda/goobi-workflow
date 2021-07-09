@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.goobi.api.display.enums.DisplayType;
@@ -11,6 +12,7 @@ import org.goobi.beans.Process;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.mock.MockProcess;
 import ugh.dl.MetadataType;
@@ -21,14 +23,13 @@ public class DisplayCaseTest {
 
     @Before
     public void setUp() throws Exception {
-        String resourcesFolder = "src/test/resources/"; // for junit tests in eclipse
-        if (!Files.exists(Paths.get(resourcesFolder))) {
-            resourcesFolder = "target/test-classes/"; // to run mvn test from cli or in jenkins
+        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
+        Path goobiFolder = Paths.get(template.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
+        if (!Files.exists(goobiFolder)) {
+            goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
-        String goobiFolder = Paths.get(resourcesFolder).toAbsolutePath().toString() + "/";
-        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
 
         process = MockProcess.createProcess();
 

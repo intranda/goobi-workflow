@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -37,14 +38,13 @@ public class DigitalCollectionsTest {
 
     @BeforeClass
     public static void setUp() throws URISyntaxException {
-        String resourcesFolder = "src/test/resources/"; // for junit tests in eclipse
-        if (!Files.exists(Paths.get(resourcesFolder))) {
-            resourcesFolder = "target/test-classes/"; // to run mvn test from cli or in jenkins
+        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
+        Path goobiFolder = Paths.get(template.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
+        if (!Files.exists(goobiFolder)) {
+            goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
-        String goobiFolder = Paths.get(resourcesFolder).toAbsolutePath().toString() + "/";
-        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
     }
 
     @Test
