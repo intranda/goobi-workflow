@@ -4329,141 +4329,146 @@ public class Metadaten implements Serializable {
     }
 
     public void reOrderPagination() {
-        String imageDirectory = "";
-        try {
-            imageDirectory = myProzess.getImagesDirectory();
-        } catch (SwapException e) {
-            logger.error(e);
-        } catch (DAOException e) {
-            logger.error(e);
-        } catch (IOException e) {
-            logger.error(e);
-        } catch (InterruptedException e) {
-            logger.error(e);
-
-        }
-        if (imageDirectory.equals("")) {
-            Helper.setFehlerMeldung("ErrorMetsEditorImageRenaming");
-            return;
-        }
-
-        List<String> oldfilenames = new ArrayList<>();
-        for (DocStruct page : document.getPhysicalDocStruct().getAllChildren()) {
-            oldfilenames.add(page.getImageName());
-        }
-
-        // get all folders to check and rename images
-        Map<Path, List<Path>> allFolderAndAllFiles = myProzess.getAllFolderAndFiles();
-        // check size of folders, remove them if they don't match the expected number of files
-        for (Path p : allFolderAndAllFiles.keySet()) {
-            List<Path> files = allFolderAndAllFiles.get(p);
-            if (oldfilenames.size() != files.size()) {
-                files = Collections.emptyList();
-            }
-        }
-
-        progress = 0;
-        totalImageNo = oldfilenames.size() * 2;
-        currentImageNo = 0;
-
-        boolean isWriteable = true;
-        for (Path currentFolder : allFolderAndAllFiles.keySet()) {
-            // check if folder is writeable
-            if (!StorageProvider.getInstance().isWritable(currentFolder)) {
-                isWriteable = false;
-                Helper.setFehlerMeldung(Helper.getTranslation("folderNoWriteAccess", currentFolder.getFileName().toString()));
-            }
-            List<Path> files = allFolderAndAllFiles.get(currentFolder);
-            for (Path file : files) {
-                // check if folder is writeable
-                if (!StorageProvider.getInstance().isWritable(file)) {
-                    isWriteable = false;
-                    Helper.setFehlerMeldung(Helper.getTranslation("fileNoWriteAccess", file.toString()));
-                }
-            }
-        }
-        if (!isWriteable) {
-            return;
-        }
-
-        for (String imagename : oldfilenames) {
-
-            String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
-            //            String filenameExtension =  Metadaten.getFileExtension(imagename);
-
-            currentImageNo++;
-
-            // check all folder
-            for (Path currentFolder : allFolderAndAllFiles.keySet()) {
-                // check files in current folder
-                List<Path> files = allFolderAndAllFiles.get(currentFolder);
-                for (Path file : files) {
-                    String filenameToCheck = file.getFileName().toString();
-                    String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
-                    String fileExtension = Metadaten.getFileExtension(filenameToCheck);
-                    // find the current file the folder
-                    if (filenamePrefixToCheck.equals(filenamePrefix)) {
-                        // found file to rename
-                        Path tmpFileName = Paths.get(currentFolder.toString(), filenamePrefix + fileExtension + "_bak");
-                        try {
-                            StorageProvider.getInstance().move(file, tmpFileName);
-                        } catch (IOException e) {
-                            logger.error(e);
-                        }
-                    }
-                }
-            }
-        }
-
-        System.gc();
-        int counter = 1;
-        for (String imagename : oldfilenames) {
-            currentImageNo++;
-            String oldFilenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
-            String newFilenamePrefix = generateFileName(counter);
-            String originalExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
-            // update filename in mets file
-            document.getPhysicalDocStruct().getAllChildren().get(counter - 1).setImageName(newFilenamePrefix + originalExtension);
-
-            // check all folder
-            for (Path currentFolder : allFolderAndAllFiles.keySet()) {
-                // check files in current folder
-                List<Path> files = StorageProvider.getInstance().listFiles(currentFolder.toString(), NIOFileUtils.fileFilter);
-                for (Path file : files) {
-                    String filenameToCheck = file.getFileName().toString();
-                    if (filenameToCheck.contains(".")) {
-                        String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
-                        String fileExtension = Metadaten.getFileExtension(filenameToCheck.replace("_bak", ""));
-                        // found right file
-                        if (filenameToCheck.endsWith("bak") && filenamePrefixToCheck.equals(oldFilenamePrefix)) {
-                            // generate new file name
-                            Path renamedFile = Paths.get(currentFolder.toString(), newFilenamePrefix + fileExtension.toLowerCase());
-                            try {
-                                StorageProvider.getInstance().move(file, renamedFile);
-                            } catch (IOException e) {
-                                logger.error(e);
-                            }
-                        }
-                    } else {
-                        logger.debug("the file to be renamed does not contain a '.': " + currentFolder.toString() + filenameToCheck);
-                    }
-                }
-            }
-            counter++;
-        }
-
-        retrieveAllImages();
-        progress = null;
-        totalImageNo = 0;
-        currentImageNo = 0;
-
-        // load new file names
-        changeFolder();
-
-        // save current state
-        Reload();
-
-        Helper.setMeldung("finishedFileRenaming");
+    	try {
+	        String imageDirectory = "";
+	        try {
+	            imageDirectory = myProzess.getImagesDirectory();
+	        } catch (SwapException e) {
+	            logger.error(e);
+	        } catch (DAOException e) {
+	            logger.error(e);
+	        } catch (IOException e) {
+	            logger.error(e);
+	        } catch (InterruptedException e) {
+	            logger.error(e);
+	
+	        }
+	        if (imageDirectory.equals("")) {
+	            Helper.setFehlerMeldung("ErrorMetsEditorImageRenaming");
+	            return;
+	        }
+	
+	        List<String> oldfilenames = new ArrayList<>();
+	    	for (DocStruct page : document.getPhysicalDocStruct().getAllChildren()) {
+	    		oldfilenames.add(page.getImageName());
+	    	}
+	
+	        // get all folders to check and rename images
+	        Map<Path, List<Path>> allFolderAndAllFiles = myProzess.getAllFolderAndFiles();
+	        // check size of folders, remove them if they don't match the expected number of files
+	        for (Path p : allFolderAndAllFiles.keySet()) {
+	            List<Path> files = allFolderAndAllFiles.get(p);
+	            if (oldfilenames.size() != files.size()) {
+	                files = Collections.emptyList();
+	            }
+	        }
+	
+	        progress = 0;
+	        totalImageNo = oldfilenames.size() * 2;
+	        currentImageNo = 0;
+	
+	        boolean isWriteable = true;
+	        for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+	            // check if folder is writeable
+	            if (!StorageProvider.getInstance().isWritable(currentFolder)) {
+	                isWriteable = false;
+	                Helper.setFehlerMeldung(Helper.getTranslation("folderNoWriteAccess", currentFolder.getFileName().toString()));
+	            }
+	            List<Path> files = allFolderAndAllFiles.get(currentFolder);
+	            for (Path file : files) {
+	                // check if folder is writeable
+	                if (!StorageProvider.getInstance().isWritable(file)) {
+	                    isWriteable = false;
+	                    Helper.setFehlerMeldung(Helper.getTranslation("fileNoWriteAccess", file.toString()));
+	                }
+	            }
+	        }
+	        if (!isWriteable) {
+	            return;
+	        }
+	
+	        for (String imagename : oldfilenames) {
+	
+	            String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
+	            //            String filenameExtension =  Metadaten.getFileExtension(imagename);
+	
+	            currentImageNo++;
+	
+	            // check all folder
+	            for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+	                // check files in current folder
+	                List<Path> files = allFolderAndAllFiles.get(currentFolder);
+	                for (Path file : files) {
+	                    String filenameToCheck = file.getFileName().toString();
+	                    String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
+	                    String fileExtension = Metadaten.getFileExtension(filenameToCheck);
+	                    // find the current file the folder
+	                    if (filenamePrefixToCheck.equals(filenamePrefix)) {
+	                        // found file to rename
+	                        Path tmpFileName = Paths.get(currentFolder.toString(), filenamePrefix + fileExtension + "_bak");
+	                        try {
+	                            StorageProvider.getInstance().move(file, tmpFileName);
+	                        } catch (IOException e) {
+	                            logger.error(e);
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	
+	        System.gc();
+	        int counter = 1;
+	        for (String imagename : oldfilenames) {
+	            currentImageNo++;
+	            String oldFilenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
+	            String newFilenamePrefix = generateFileName(counter);
+	            String originalExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
+	            // update filename in mets file
+	            document.getPhysicalDocStruct().getAllChildren().get(counter - 1).setImageName(newFilenamePrefix + originalExtension);
+	
+	            // check all folder
+	            for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+	                // check files in current folder
+	                List<Path> files = StorageProvider.getInstance().listFiles(currentFolder.toString(), NIOFileUtils.fileFilter);
+	                for (Path file : files) {
+	                    String filenameToCheck = file.getFileName().toString();
+	                    if (filenameToCheck.contains(".")) {
+	                        String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
+	                        String fileExtension = Metadaten.getFileExtension(filenameToCheck.replace("_bak", ""));
+	                        // found right file
+	                        if (filenameToCheck.endsWith("bak") && filenamePrefixToCheck.equals(oldFilenamePrefix)) {
+	                            // generate new file name
+	                            Path renamedFile = Paths.get(currentFolder.toString(), newFilenamePrefix + fileExtension.toLowerCase());
+	                            try {
+	                                StorageProvider.getInstance().move(file, renamedFile);
+	                            } catch (IOException e) {
+	                                logger.error(e);
+	                            }
+	                        }
+	                    } else {
+	                        logger.debug("the file to be renamed does not contain a '.': " + currentFolder.toString() + filenameToCheck);
+	                    }
+	                }
+	            }
+	            counter++;
+	        }
+	
+	        retrieveAllImages();
+	        progress = null;
+	        totalImageNo = 0;
+	        currentImageNo = 0;
+	
+	        // load new file names
+	        changeFolder();
+	
+	        // save current state
+	        Reload();
+	
+	        Helper.setMeldung("finishedFileRenaming");
+    	}catch(Exception e) {
+    		logger.error(e);
+    		Helper.setFehlerMeldung("ErrorMetsEditorImageRenaming");
+    	}
     }
 
     private void removeImage(String fileToDelete, int totalNumberOfFiles) {
