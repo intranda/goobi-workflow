@@ -225,14 +225,14 @@
                             <li>
                                 <button 
                                     jsf:id="resetPagination" 
+                                    class="dropdown-item"
                                     data-toggle="modal"
                                     data-target="#resetPaginationModal"
-                                    type="button"
-                                    class="dropdown-item">
+                                    type="button">
                                     <i class="fa fa-refresh" aria-hidden="true"></i>
                                     #{msgs.mets_resetPagination}
-                                    <!--  <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                    <f:passThroughAttribute name="data-placement" value="bottom" /> -->
+                                    <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                    <f:passThroughAttribute name="data-placement" value="bottom" />
                                 </button>
                                 
                             </li>
