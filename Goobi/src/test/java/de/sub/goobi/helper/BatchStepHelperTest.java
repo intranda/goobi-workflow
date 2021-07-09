@@ -21,7 +21,7 @@ package de.sub.goobi.helper;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +41,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.MetadataManager;
@@ -48,7 +49,7 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PropertyManager.class, MetadataManager.class})
-@PowerMockIgnore({ "javax.management.*" })
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
 public class BatchStepHelperTest {
 
     private List<Step> stepList;
@@ -56,11 +57,8 @@ public class BatchStepHelperTest {
     @Before
     public void setUp() throws Exception {
         stepList = new ArrayList<>();
-        String resourcesFolder = "src/test/resources/"; // for junit tests in eclipse
-        if (!Files.exists(Paths.get(resourcesFolder))) {
-            resourcesFolder = "target/test-classes/"; // to run mvn test from cli or in jenkins
-        }
-        String goobiFolder = Paths.get(resourcesFolder).toAbsolutePath().toString() + "/";
+        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
+        String goobiFolder = template.getParent().getParent().getParent().toString() + "/test/resources/";
         ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);

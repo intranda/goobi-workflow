@@ -32,16 +32,33 @@ import java.util.List;
 
 import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.enums.PropertyType;
+import lombok.Getter;
+import lombok.Setter;
 
 public class ErrorProperty implements Serializable, IGoobiProperty {
     private static final long serialVersionUID = -443521810121056341L;
+    @Getter
+    @Setter
     private Step schritt;
+    @Getter
+    @Setter
     private Integer id;
+    @Getter
+    @Setter
     private String titel;
+    @Getter
+    @Setter
     private String wert;
+    @Setter
     private Boolean istObligatorisch;
+    @Getter
+    @Setter
     private Integer datentyp;
+    @Getter
+    @Setter
     private String auswahl;
+    @Getter
+    @Setter
     private Date creationDate;
     private Integer container;
 
@@ -51,27 +68,8 @@ public class ErrorProperty implements Serializable, IGoobiProperty {
         this.creationDate = new Date();
     }
 
+    @Setter
     private List<String> valueList;
-
-    @Override
-    public String getAuswahl() {
-        return this.auswahl;
-    }
-
-    @Override
-    public void setAuswahl(String auswahl) {
-        this.auswahl = auswahl;
-    }
-
-    @Override
-    public Integer getId() {
-        return this.id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     @Override
     public Boolean isIstObligatorisch() {
@@ -79,63 +77,6 @@ public class ErrorProperty implements Serializable, IGoobiProperty {
             this.istObligatorisch = false;
         }
         return this.istObligatorisch;
-    }
-
-    @Override
-    public void setIstObligatorisch(Boolean istObligatorisch) {
-        this.istObligatorisch = istObligatorisch;
-    }
-
-    @Override
-    public String getTitel() {
-        return this.titel;
-    }
-
-    @Override
-    public void setTitel(String titel) {
-        this.titel = titel;
-    }
-
-    @Override
-    public String getWert() {
-        return this.wert;
-    }
-
-    @Override
-    public void setWert(String wert) {
-        this.wert = wert;
-    }
-
-    @Override
-    public void setCreationDate(Date creation) {
-        this.creationDate = creation;
-    }
-
-    @Override
-    public Date getCreationDate() {
-        return this.creationDate;
-    }
-
-    /**
-     * getter for datentyp set to private for hibernate
-     * 
-     * for use in programm use getType instead
-     * 
-     * @return datentyp as integer
-     */
-    @SuppressWarnings("unused")
-    private Integer getDatentyp() {
-        return this.datentyp;
-    }
-
-    /**
-     * set datentyp to defined integer. only for internal use through hibernate, for changing datentyp use setType instead
-     * 
-     * @param datentyp as Integer
-     */
-    @SuppressWarnings("unused")
-    private void setDatentyp(Integer datentyp) {
-        this.datentyp = datentyp;
     }
 
     /**
@@ -166,18 +107,6 @@ public class ErrorProperty implements Serializable, IGoobiProperty {
             this.valueList = new ArrayList<String>();
         }
         return this.valueList;
-    }
-
-    public void setValueList(List<String> valueList) {
-        this.valueList = valueList;
-    }
-
-    public Step getSchritt() {
-        return this.schritt;
-    }
-
-    public void setSchritt(Step schritt) {
-        this.schritt = schritt;
     }
 
     @Override

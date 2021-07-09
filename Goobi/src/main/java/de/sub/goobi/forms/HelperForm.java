@@ -57,6 +57,8 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import lombok.Getter;
+import lombok.Setter;
 import ugh.dl.Fileformat;
 
 @Named("HelperForm")
@@ -70,6 +72,8 @@ public class HelperForm implements Serializable {
 
     private Boolean massImportAllowed = null;
 
+    @Getter
+    @Setter
     private boolean showError = false;
 
     // TODO re-added temporary for compiling issues
@@ -186,6 +190,8 @@ public class HelperForm implements Serializable {
         SelectItem inWork = new SelectItem("2", Helper.getTranslation("statusInBearbeitung"));
         ssl.add(inWork);
 
+        ssl.add(new SelectItem("6", Helper.getTranslation("statusInFlight")));
+
         SelectItem finished = new SelectItem("3", Helper.getTranslation("statusAbgeschlossen"));
         ssl.add(finished);
 
@@ -194,6 +200,7 @@ public class HelperForm implements Serializable {
 
         SelectItem deactivated = new SelectItem("5", Helper.getTranslation("statusDeactivated"));
         ssl.add(deactivated);
+
 
         return ssl;
     }
@@ -288,9 +295,6 @@ public class HelperForm implements Serializable {
         return !Helper.getCurrentUser().getLdapGruppe().isReadonly();
     }
 
-    public boolean isShowError() {
-        return showError;
-    }
 
     public boolean isUseUii() {
         return ConfigurationHelper.getInstance().isUseIntrandaUi();
@@ -298,10 +302,6 @@ public class HelperForm implements Serializable {
 
     public boolean isRenderAccessibilityCss() {
         return ConfigurationHelper.getInstance().isRenderAccessibilityCss();
-    }
-
-    public void setShowError(boolean showError) {
-        this.showError = showError;
     }
 
     public void executeScriptsForStep(int id) {

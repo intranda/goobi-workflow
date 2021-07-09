@@ -70,7 +70,7 @@ public class ExtendedSearchRow {
         }
 
         else if (fieldName.equals("BATCH") && !fieldValue.isEmpty()) {
-            value = "\"" + FilterString.BATCH + this.fieldValue + "\" ";
+            value = "\"" + this.fieldOperand + FilterString.BATCH + this.fieldValue + "\" ";
         }
 
         else if (fieldName.equals("PROJECT") && !this.projectName.equals(Helper.getTranslation("notSelected"))) {
@@ -105,8 +105,8 @@ public class ExtendedSearchRow {
             value = "\"" + this.fieldOperand + FilterString.PROCESSLOG + fieldValue + "\" ";
         }
 
-        else if (fieldName.equals("INSTITUION") && StringUtils.isNotBlank(fieldValue)) {
-            value = "\"" + this.fieldOperand + FilterString.INSTITUTION + fieldValue + "\" ";
+        else if (fieldName.equals("INSTITUTION") && StringUtils.isNotBlank(institutionName)) {
+            value = "\"" + this.fieldOperand + FilterString.INSTITUTION + ":" + institutionName + "\" ";
         } else if (fieldName.equals("PROCESSDATE") && !fieldValue.isEmpty()) {
             value = "\"" + FilterString.PROCESS_DATE + this.fieldOperand + fieldValue + "\" ";
         } else if (fieldName.equals("STEPSTARTDATE") && !fieldValue.isEmpty()) {

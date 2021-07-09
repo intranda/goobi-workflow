@@ -1,4 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:p="http://primefaces.org/ui" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:p="http://primefaces.org/ui" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param name="myPageTitle" value="#{msgs.MassImport}" />
 
@@ -123,10 +123,10 @@
                             <div class="form-actions">
                                 <!-- Save -->
 
-                                <h:commandLink styleClass="btn btn-success pull-right font-size-s margin-bottom-most" id="absenden" action="#{MassImportForm.convertData}" onclick="goobiWorkflowJS.progress.displayProgressBar()">
+                                <button class="btn btn-success pull-right font-size-s margin-bottom-most" jsf:id="absenden" jsf:action="#{MassImportForm.convertData}" onclick="goobiWorkflowJS.progress.displayProgressBar()">
                                     <i class="icon-save"></i>
                                     <h:outputText value="#{msgs.speichern}" />
-                                </h:commandLink>
+                                </button>
 
                                 <!-- Cancel -->
                                 <h:link id="cancel" styleClass="btn pull-right font-size-s margin-sides-10" outcome="process_all" value="#{msgs.abbrechen}" />

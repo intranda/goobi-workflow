@@ -22,14 +22,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import javax.faces.convert.ConverterException;
 
 import org.easymock.EasyMock;
 import org.goobi.beans.Process;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
@@ -37,26 +33,12 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ProcessManager.class)
-@PowerMockIgnore("javax.management.*")
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
 public class ProcessConverterTest {
-
-    @Before
-    public void setUp() throws Exception {
-        String resourcesFolder = "src/test/resources/"; // for junit tests in eclipse
-        if (!Files.exists(Paths.get(resourcesFolder))) {
-            resourcesFolder = "target/test-classes/"; // to run mvn test from cli or in jenkins
-        }
-        String goobiFolder = Paths.get(resourcesFolder).toAbsolutePath().toString() + "/";
-        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
-        ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
-
-    }
 
     @Test
     public void testGetAsObject() {

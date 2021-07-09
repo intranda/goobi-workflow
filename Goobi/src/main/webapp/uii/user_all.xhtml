@@ -6,7 +6,8 @@
 	template="/uii/template/template.html"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<ui:param name="myPageTitle" value="#{msgs.benutzerverwaltung}" />
 
@@ -53,9 +54,12 @@
 													value="#{msgs.benutzer}" />
 											</h:inputText>
 											<div class="input-group-btn">
-												<x:commandLink id="FilterAlle2" forceId="true"
-													value="#{msgs.search}" styleClass="btn"
-													action="#{BenutzerverwaltungForm.FilterAlleStart}" />
+												<button jsf:id="FilterAlle2" jsf:forceId="true"
+													class="btn"
+                                                    style="text-align: center; line-height: 100%; padding: 0px 10px"
+													jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}" >
+                                                    #{msgs.search}
+                                                </button>
 											</div>
 										</div>
 										<x:commandButton type="submit" id="FilterAlle" forceId="true"
@@ -65,10 +69,10 @@
 
 									<div class="dataTables_filter">
 										<!-- aktive Nutzer anzeigen -->
-										<h:commandLink id="tableUserAllShowActiveUsers"
-											styleClass="btn searchfieldbuttongroup hidden-xs"
-											action="#{BenutzerverwaltungForm.FilterAlleStart}"
-											immediate="true">
+										<button jsf:id="tableUserAllShowActiveUsers"
+											class="btn searchfieldbuttongroup hidden-xs"
+											jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
+											jsf:immediate="true">
 											<i
 												class="fa #{BenutzerverwaltungForm.hideInactiveUsers?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
 											<h:outputText styleClass="font-size-s"
@@ -76,7 +80,7 @@
 											<f:setPropertyActionListener
 												target="#{BenutzerverwaltungForm.hideInactiveUsers}"
 												value="#{not BenutzerverwaltungForm.hideInactiveUsers}" />
-										</h:commandLink>
+										</button>
 									</div>
 								</h:form>
 
@@ -141,7 +145,7 @@
 											</x:dataList>
 										</x:column>
 
-										<x:column>
+										<x:column rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
 											<f:facet name="header">
 												<h:outputText value="#{msgs.institution}" />
 											</f:facet>
@@ -155,51 +159,52 @@
 											<f:facet name="header">
 												<h:outputText value="#{msgs.auswahl}" />
 											</f:facet>
-											<!-- Bearbeiten-Schaltknopf -->
-											<h:commandLink id="edit" styleClass="btn margin-right-5"
-												rel="tooltip" action="user_edit"
-												title="#{msgs.benutzerBearbeiten}">
-												<i class="fa fa-pencil"></i>
-												<f:passThroughAttribute name="data-toggle" value="tooltip" />
-												<f:passThroughAttribute name="aria-label"
-													value="#{msgs.benutzerBearbeiten}" />
-												<f:setPropertyActionListener
-													target="#{BenutzerverwaltungForm.myClass}" value="#{item}" />
-												<f:setPropertyActionListener
-													target="#{BenutzerverwaltungForm.displayMode}" value="" />
-											</h:commandLink>
-
-											<!-- Benutzerprofil laden-Schaltknopf -->
-											<h:commandLink id="switch"
-												rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch')}"
-												styleClass="btn margin-right-5 hidden-xs"
-												action="#{LoginForm.EinloggenAls}"
-												title="#{msgs.benutzerprofilLaden}">
-												<i class="fa fa-user-secret"></i>
-												<f:passThroughAttribute name="aria-label"
-													value="#{msgs.benutzerprofilLaden}" />
-												<f:passThroughAttribute name="data-toggle" value="tooltip" />
-												<!-- <f:passThroughAttribute name="data-placement" value="top" /> -->
-												<f:param name="ID" value="#{item.id}" />
-											</h:commandLink>
-
-											<!-- Create new random password for user -->
-											<h:commandLink id="createNewRandomPassword"
-												styleClass="btn margin-right-5" rel="tooltip"
-												title="#{msgs.createNewRandomPassword}"
-												rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords') and (item.ldapGruppe.authenticationType != 'ldap' or not item.ldapGruppe.readonly)}"
-												onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
-												action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}">
-												<i class="fa fa-key"></i>
-												<f:passThroughAttribute name="data-toggle" value="tooltip" />
-												<f:setPropertyActionListener
-													target="#{BenutzerverwaltungForm.myClass}" value="#{item}" />
-                                                <f:passThroughAttribute name="aria-label"
-                                                    value="#{msgs.createNewRandomPassword}" />
-												<f:param name="ID" value="#{item.id}" />
-												<f:ajax render="globalMessage" />
-											</h:commandLink>
-											
+											<div class="no-linebreak">
+												<!-- Bearbeiten-Schaltknopf -->
+												<button jsf:id="edit" class="btn margin-right-5"
+													jsf:rel="tooltip" jsf:action="user_edit"
+													title="#{msgs.benutzerBearbeiten}">
+													<i class="fa fa-pencil"></i>
+													<f:passThroughAttribute name="data-toggle" value="tooltip" />
+													<f:passThroughAttribute name="aria-label"
+														value="#{msgs.benutzerBearbeiten}" />
+													<f:setPropertyActionListener
+														target="#{BenutzerverwaltungForm.myClass}" value="#{item}" />
+													<f:setPropertyActionListener
+														target="#{BenutzerverwaltungForm.displayMode}" value="" />
+												</button>
+	
+												<!-- Benutzerprofil laden-Schaltknopf -->
+												<button jsf:id="switch"
+													jsf:rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch')}"
+													class="btn margin-right-5 hidden-xs"
+													jsf:action="#{LoginForm.EinloggenAls}"
+													title="#{msgs.benutzerprofilLaden}">
+													<i class="fa fa-user-secret"></i>
+													<f:passThroughAttribute name="aria-label"
+														value="#{msgs.benutzerprofilLaden}" />
+													<f:passThroughAttribute name="data-toggle" value="tooltip" />
+													<!-- <f:passThroughAttribute name="data-placement" value="top" /> -->
+													<f:param name="ID" value="#{item.id}" />
+												</button>
+	
+												<!-- Create new random password for user -->
+												<button jsf:id="createNewRandomPassword"
+													class="btn margin-right-5" jsf:rel="tooltip"
+													title="#{msgs.createNewRandomPassword}"
+													jsf:rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords') and (item.ldapGruppe.authenticationType != 'ldap' or not item.ldapGruppe.readonly)}"
+													jsf:onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
+													jsf:action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}">
+													<i class="fa fa-key"></i>
+													<f:passThroughAttribute name="data-toggle" value="tooltip" />
+													<f:setPropertyActionListener
+														target="#{BenutzerverwaltungForm.myClass}" value="#{item}" />
+	                                                <f:passThroughAttribute name="aria-label"
+	                                                    value="#{msgs.createNewRandomPassword}" />
+													<f:param name="ID" value="#{item.id}" />
+													<f:ajax render="globalMessage" />
+												</button>
+											</div>
 											<!-- LdapKonfiguration schreiben-Schaltknopf
 											<h:commandLink 
 												styleClass="btn" 
@@ -216,14 +221,14 @@
 									
 									<div class="dataTables_info">
 										<!-- Neu-Schaltknopf -->
-										<h:commandLink id="newUser"
-											styleClass="btn btn-primary font-size-s"
-											action="#{BenutzerverwaltungForm.Neu}" immediate="true">
+										<button jsf:id="newUser"
+											class="btn btn-primary font-size-s"
+											jsf:action="#{BenutzerverwaltungForm.Neu}" jsf:immediate="true">
 											<i class="fa fa-plus margin-right-5"></i>
 											<h:outputText value="#{msgs.neuenBenutzerAnlegen}" />
 											<f:setPropertyActionListener
 												target="#{BenutzerverwaltungForm.displayMode}" value="" />
-										</h:commandLink>
+										</button>
 									</div>
 									<div class="dataTables_paginate">
 										<!-- paginator -->

@@ -49,7 +49,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import javax.enterprise.context.SessionScoped;
@@ -63,6 +62,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
@@ -79,6 +79,7 @@ import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.Docket;
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -90,6 +91,7 @@ import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
+import org.goobi.goobiScript.GoobiScriptManager;
 import org.goobi.goobiScript.GoobiScriptResult;
 import org.goobi.goobiScript.IGoobiScript;
 import org.goobi.production.cli.helper.StringPair;
@@ -112,8 +114,8 @@ import org.goobi.production.properties.PropertyParser;
 import org.goobi.production.properties.Type;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.jdom2.transform.XSLTransformException;
 import org.jfree.chart.plot.PlotOrientation;
-import org.reflections.Reflections;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
@@ -170,46 +172,99 @@ import ugh.exceptions.WriteException;
 public class ProcessBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 2838270843176821134L;
     private static final Logger logger = LogManager.getLogger(ProcessBean.class);
+    @Getter
     private Process myProzess = new Process();
+    @Getter
     private Step mySchritt = new Step();
+    @Getter
     private StatisticsManager statisticsManager;
 
     @Getter
     private List<ProcessCounterObject> myAnzahlList;
+    @Getter
     private HashMap<String, Integer> myAnzahlSummary;
+    @Getter
+    @Setter
     private Processproperty myProzessEigenschaft;
+    @Getter
+    @Setter
     private User myBenutzer;
+    @Getter
+    @Setter
     private Template myVorlage;
+    @Getter
+    @Setter
     private Templateproperty myVorlageEigenschaft;
+    @Getter
+    @Setter
     private Masterpiece myWerkstueck;
+    @Getter
+    @Setter
     private Masterpieceproperty myWerkstueckEigenschaft;
+    @Getter
+    @Setter
     private Usergroup myBenutzergruppe;
+    @Getter
+    @Setter
     private String modusAnzeige = "aktuell";
+    @Getter
+    @Setter
     private String modusBearbeiten = "";
+    @Getter
+    @Setter
     private String goobiScript;
+    @Getter
+    @Setter
     private HashMap<String, Boolean> anzeigeAnpassen;
+    @Getter
+    @Setter
     private String myNewProcessTitle;
+    @Getter
+    @Setter
     private String selectedXslt = "";
+    @Getter
+    @Setter
     private StatisticsRenderingElement myCurrentTable;
+    @Getter
+    @Setter
     private boolean showClosedProcesses = false;
+    @Getter
+    @Setter
     private boolean showArchivedProjects = false;
     private List<ProcessProperty> processPropertyList;
+    @Getter
+    @Setter
     private ProcessProperty processProperty;
+    @Getter
     private Map<Integer, PropertyListObject> containers = new TreeMap<>();
+    @Getter
     private Integer container;
+    @Getter
+    @Setter
     private String userDisplayMode = "";
 
+    @Getter
+    @Setter
     private boolean dispaySearchResult = false;
+    @Getter
+    @Setter
     private List<SearchColumn> searchField = new ArrayList<>();
+    @Setter
     private List<SelectItem> possibleItems = null;
+    @Getter
+    @Setter
     private SearchColumn currentField = null;
     private int order = 0;
 
+    @Getter
+    @Setter
     private boolean showStatistics = false;
 
     private static String DONEDIRECTORYNAME = "fertig/";
 
+    @Getter
     private DatabasePaginator usergroupPaginator;
+    @Getter
     private DatabasePaginator userPaginator;
 
     private List<String> stepPluginList = new ArrayList<>();
@@ -248,6 +303,9 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     @Inject
     private StepBean bean;
+
+    @Inject
+    private GoobiScriptManager goobiScriptManager;
 
     public ProcessBean() {
         this.anzeigeAnpassen = new HashMap<>();
@@ -340,7 +398,6 @@ public class ProcessBean extends BasicBean implements Serializable {
          */
         if (this.myProzess != null && this.myProzess.getTitel() != null) {
             if (!this.myProzess.getTitel().equals(this.myNewProcessTitle)) {
-
                 String validateRegEx = ConfigurationHelper.getInstance().getProcessTiteValidationlRegex();
                 if (!this.myNewProcessTitle.matches(validateRegEx)) {
                     this.modusBearbeiten = "prozess";
@@ -416,8 +473,15 @@ public class ProcessBean extends BasicBean implements Serializable {
         importTicket.getProperties().put("rule", "Autodetect rule");
         importTicket.getProperties().put("deleteOldProcess", "true");
         try {
-            TicketGenerator.submitTicket(importTicket, false);
+            TicketGenerator.submitInternalTicket(importTicket, QueueType.FAST_QUEUE, "DatabaseInformationTicket", 0);
         } catch (JMSException e) {
+            logger.error("Error adding TaskTicket to queue", e);
+            LogEntry errorEntry = LogEntry.build(this.myProzess.getId())
+                    .withType(LogType.ERROR)
+                    .withContent("Error reading metadata for process" + this.myProzess.getTitel())
+                    .withCreationDate(new Date())
+                    .withUsername("automatic");
+            ProcessManager.saveLogEntry(errorEntry);
         }
     }
 
@@ -765,15 +829,22 @@ public class ProcessBean extends BasicBean implements Serializable {
                 return "process_edit_step";
             }
         }
+        else //not automatic: then remove from message queue:
+        {
+            mySchritt.setMessageQueue(QueueType.NONE);
+        }
+        
         this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
         mySchritt.setBearbeitungszeitpunkt(new Date());
         User ben = Helper.getCurrentUser();
         if (ben != null) {
             mySchritt.setBearbeitungsbenutzer(ben);
         }
+        //This is needed later when the page is left. (Next page may be different)
+        boolean createNewStep = !myProzess.getSchritte().contains(mySchritt);
 
         // Create new step and add it to process
-        if (!myProzess.getSchritte().contains(mySchritt)) {
+        if (createNewStep) {
             // When parallel tasks aren't allowed, all steps
             // with higher order have to increment their order
             // Otherwise when no other step exists with the same order,
@@ -792,7 +863,9 @@ public class ProcessBean extends BasicBean implements Serializable {
         updateUsergroupPaginator();
         updateUserPaginator();
         reload();
-        return "process_edit";
+
+        this.modusBearbeiten = "";
+        return "process_edit_step";
     }
 
     // Increment the order of all steps coming after this.mySchritt
@@ -863,10 +936,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         return "";
     }
 
-    public DatabasePaginator getUsergroupPaginator() {
-        return usergroupPaginator;
-    }
-
     private void updateUsergroupPaginator() {
         String filter =
                 " benutzergruppen.BenutzergruppenID not in (select BenutzerGruppenID from schritteberechtigtegruppen where schritteberechtigtegruppen.schritteID = "
@@ -874,10 +943,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         UsergroupManager m = new UsergroupManager();
         usergroupPaginator = new DatabasePaginator("titel", filter, m, "");
 
-    }
-
-    public DatabasePaginator getUserPaginator() {
-        return userPaginator;
     }
 
     private void updateUserPaginator() {
@@ -966,6 +1031,20 @@ public class ProcessBean extends BasicBean implements Serializable {
         ExportMets export = new ExportMets();
         try {
             export.startExport(this.myProzess);
+            Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started METS export using 'ExportMets'.");
+        } catch (Exception e) {
+            String[] parameter = { "METS", this.myProzess.getTitel() };
+
+            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
+            //            ;An error occured while trying to export METS file for: " + this.myProzess.getTitel(), e);
+            logger.error("ExportMETS error", e);
+        }
+    }
+
+    public void downloadMets() {
+        ExportMets export = new ExportMets();
+        try {
+            export.downloadMets(this.myProzess);
             Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started METS export using 'ExportMets'.");
         } catch (Exception e) {
             String[] parameter = { "METS", this.myProzess.getTitel() };
@@ -1266,27 +1345,11 @@ public class ProcessBean extends BasicBean implements Serializable {
      * Getter und Setter
      */
 
-    public Process getMyProzess() {
-        return this.myProzess;
-    }
-
     public void setMyProzess(Process myProzess) {
         this.myProzess = myProzess;
         this.myNewProcessTitle = myProzess.getTitel();
         loadProcessProperties();
         loadDisplayableMetadata();
-    }
-
-    public Processproperty getMyProzessEigenschaft() {
-        return this.myProzessEigenschaft;
-    }
-
-    public void setMyProzessEigenschaft(Processproperty myProzessEigenschaft) {
-        this.myProzessEigenschaft = myProzessEigenschaft;
-    }
-
-    public Step getMySchritt() {
-        return this.mySchritt;
     }
 
     public void setMySchritt(Step mySchritt) {
@@ -1309,60 +1372,12 @@ public class ProcessBean extends BasicBean implements Serializable {
     //        this.mySchrittEigenschaft = mySchrittEigenschaft;
     //    }
 
-    public Template getMyVorlage() {
-        return this.myVorlage;
-    }
-
-    public void setMyVorlage(Template myVorlage) {
-        this.myVorlage = myVorlage;
-    }
-
     public void setMyVorlageReload(Template myVorlage) {
         this.myVorlage = myVorlage;
     }
 
-    public Templateproperty getMyVorlageEigenschaft() {
-        return this.myVorlageEigenschaft;
-    }
-
-    public void setMyVorlageEigenschaft(Templateproperty myVorlageEigenschaft) {
-        this.myVorlageEigenschaft = myVorlageEigenschaft;
-    }
-
-    public Masterpiece getMyWerkstueck() {
-        return this.myWerkstueck;
-    }
-
-    public void setMyWerkstueck(Masterpiece myWerkstueck) {
-        this.myWerkstueck = myWerkstueck;
-    }
-
     public void setMyWerkstueckReload(Masterpiece myWerkstueck) {
         this.myWerkstueck = myWerkstueck;
-    }
-
-    public Masterpieceproperty getMyWerkstueckEigenschaft() {
-        return this.myWerkstueckEigenschaft;
-    }
-
-    public void setMyWerkstueckEigenschaft(Masterpieceproperty myWerkstueckEigenschaft) {
-        this.myWerkstueckEigenschaft = myWerkstueckEigenschaft;
-    }
-
-    public String getModusAnzeige() {
-        return this.modusAnzeige;
-    }
-
-    public void setModusAnzeige(String modusAnzeige) {
-        this.modusAnzeige = modusAnzeige;
-    }
-
-    public String getModusBearbeiten() {
-        return this.modusBearbeiten;
-    }
-
-    public void setModusBearbeiten(String modusBearbeiten) {
-        this.modusBearbeiten = modusBearbeiten;
     }
 
     public String decrementOrder() {
@@ -1470,22 +1485,6 @@ public class ProcessBean extends BasicBean implements Serializable {
             this.myProzess = ProcessManager.getProcessById(this.myProzess.getId());
         }
         return "";
-    }
-
-    public User getMyBenutzer() {
-        return this.myBenutzer;
-    }
-
-    public void setMyBenutzer(User myBenutzer) {
-        this.myBenutzer = myBenutzer;
-    }
-
-    public Usergroup getMyBenutzergruppe() {
-        return this.myBenutzergruppe;
-    }
-
-    public void setMyBenutzergruppe(Usergroup myBenutzergruppe) {
-        this.myBenutzergruppe = myBenutzergruppe;
     }
 
     /*
@@ -1698,10 +1697,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         this.myAnzahlSummary.put("averageDocstructs", allDocstructs / countOfProcessesWithDocstructs);
     }
 
-    public HashMap<String, Integer> getMyAnzahlSummary() {
-        return this.myAnzahlSummary;
-    }
-
     private void renderHitNumberImage() {
         String renderString = this.goobiScriptHitsCount + " " + Helper.getTranslation("hits");
         BufferedImage im = new BufferedImage(500, 80, BufferedImage.TYPE_BYTE_INDEXED);
@@ -1786,20 +1781,13 @@ public class ProcessBean extends BasicBean implements Serializable {
     public List<StringPair> getAllGoobiScripts() {
         if (allGoobiScripts == null) {
             allGoobiScripts = new ArrayList<>();
-
-            Set<Class<? extends IGoobiScript>> myset = new Reflections("org.goobi.goobiScript.*").getSubTypesOf(IGoobiScript.class);
-            for (Class<? extends IGoobiScript> cl : myset) {
-                try {
-                    IGoobiScript gs = cl.newInstance();
-                    if (gs.isVisible()) {
-                        allGoobiScripts.add(new StringPair(gs.getAction(), gs.getSampleCall()));
-                    }
-                } catch (InstantiationException e) {
-                } catch (IllegalAccessException e) {
+            for (IGoobiScript gs : goobiScriptManager.getAvailableGoobiScripts()) {
+                if (gs.isVisible()) {
+                    allGoobiScripts.add(new StringPair(gs.getAction(), gs.getSampleCall()));
                 }
             }
-            Collections.sort(allGoobiScripts, new StringPair.OneComparator());
         }
+        Collections.sort(allGoobiScripts, new StringPair.OneComparator());
         return allGoobiScripts;
     }
 
@@ -1813,8 +1801,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         } else {
             resetHitsCount();
             GoobiScript gs = new GoobiScript();
-            return gs.execute(this.paginator.getIdList(), this.goobiScript);
-
+            gs.execute(this.paginator.getIdList(), this.goobiScript, goobiScriptManager);
+            return "process_all?faces-redirect=true";
         }
     }
 
@@ -1833,7 +1821,8 @@ public class ProcessBean extends BasicBean implements Serializable {
             for (Process p : (List<Process>) paginator.getList()) {
                 idList.add(p.getId());
             }
-            return gs.execute(idList, this.goobiScript);
+            gs.execute(idList, this.goobiScript, goobiScriptManager);
+            return "process_all?faces-redirect=true";
         }
     }
 
@@ -1854,7 +1843,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 }
             }
             GoobiScript gs = new GoobiScript();
-            return gs.execute(idList, this.goobiScript);
+            gs.execute(idList, this.goobiScript, goobiScriptManager);
+            return "process_all?faces-redirect=true";
         }
     }
 
@@ -1954,59 +1944,17 @@ public class ProcessBean extends BasicBean implements Serializable {
         tiff.ExportStart();
     }
 
-    public String getGoobiScript() {
-        return this.goobiScript;
-    }
-
-    public void setGoobiScript(String goobiScript) {
-        this.goobiScript = goobiScript;
-    }
-
-    public HashMap<String, Boolean> getAnzeigeAnpassen() {
-        return this.anzeigeAnpassen;
-    }
-
-    public void setAnzeigeAnpassen(HashMap<String, Boolean> anzeigeAnpassen) {
-        this.anzeigeAnpassen = anzeigeAnpassen;
-    }
-
-    public String getMyNewProcessTitle() {
-        return this.myNewProcessTitle;
-    }
-
-    public void setMyNewProcessTitle(String myNewProcessTitle) {
-        this.myNewProcessTitle = myNewProcessTitle;
-    }
-
-    public StatisticsManager getStatisticsManager() {
-        return this.statisticsManager;
-    }
-
-    /*************************************************************************************
-     * Getter for showStatistics loadProcessProperties();
-     * 
-     * @return the showStatistics
-     *************************************************************************************/
-    public boolean isShowStatistics() {
-        return this.showStatistics;
-    }
-
-    /**************************************************************************************
-     * Setter for showStatistics
-     * 
-     * @param showStatistics the showStatistics to set
-     **************************************************************************************/
-    public void setShowStatistics(boolean showStatistics) {
-        this.showStatistics = showStatistics;
-    }
-
+    @Getter
     public static class ProcessCounterObject {
         private String title;
         private int metadata;
         private int docstructs;
         private int images;
+        @Setter
         private int relImages;
+        @Setter
         private int relDocstructs;
+        @Setter
         private int relMetadata;
 
         public ProcessCounterObject(String title, int metadata, int docstructs, int images) {
@@ -2015,46 +1963,6 @@ public class ProcessBean extends BasicBean implements Serializable {
             this.metadata = metadata;
             this.docstructs = docstructs;
             this.images = images;
-        }
-
-        public int getImages() {
-            return this.images;
-        }
-
-        public int getMetadata() {
-            return this.metadata;
-        }
-
-        public String getTitle() {
-            return this.title;
-        }
-
-        public int getDocstructs() {
-            return this.docstructs;
-        }
-
-        public int getRelDocstructs() {
-            return this.relDocstructs;
-        }
-
-        public int getRelImages() {
-            return this.relImages;
-        }
-
-        public int getRelMetadata() {
-            return this.relMetadata;
-        }
-
-        public void setRelDocstructs(int relDocstructs) {
-            this.relDocstructs = relDocstructs;
-        }
-
-        public void setRelImages(int relImages) {
-            this.relImages = relImages;
-        }
-
-        public void setRelMetadata(int relMetadata) {
-            this.relMetadata = relMetadata;
         }
     }
 
@@ -2065,13 +1973,64 @@ public class ProcessBean extends BasicBean implements Serializable {
         this.myProzess.downloadSimplifiedMetadataAsPDF();
     }
 
+    /**
+     * starts generation of xml logfile for current process
+     */
+
+    public void CreateXML() {
+        XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
+        try {
+            String ziel = Helper.getCurrentUser().getHomeDir() + this.myProzess.getTitel() + "_log.xml";
+            xmlExport.startExport(this.myProzess, ziel);
+        } catch (IOException e) {
+            Helper.setFehlerMeldung("could not write logfile to home directory: ", e);
+        } catch (InterruptedException e) {
+            Helper.setFehlerMeldung("could not execute command to write logfile to home directory", e);
+        }
+    }
+
+    /**
+     * transforms xml logfile with given xslt and provides download
+     */
+    public void TransformXml() {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        if (!facesContext.getResponseComplete()) {
+            String OutputFileName = "export.xml";
+            /*
+             * Vorbereiten der Header-Informationen
+             */
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+
+            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(OutputFileName);
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + OutputFileName + "\"");
+
+            response.setContentType("text/xml");
+
+            try {
+                ServletOutputStream out = response.getOutputStream();
+                XsltPreparatorDocket export = new XsltPreparatorDocket();
+                export.startTransformation(out, this.myProzess, this.selectedXslt);
+                out.flush();
+            } catch (ConfigurationException e) {
+                Helper.setFehlerMeldung("could not create logfile: ", e);
+            } catch (XSLTransformException e) {
+                Helper.setFehlerMeldung("could not create transformation: ", e);
+            } catch (IOException e) {
+                Helper.setFehlerMeldung("could not create transformation: ", e);
+            }
+            facesContext.responseComplete();
+        }
+    }
+
     public String getMyProcessId() {
         return String.valueOf(this.myProzess.getId());
     }
 
     public void setMyProcessId(String id) {
         try {
-            int myid = new Integer(id);
+            int myid = Integer.valueOf(id).intValue();
             this.myProzess = ProcessManager.getProcessById(myid);
             //        } catch (DAOException e) {
             //            logger.error(e);
@@ -2095,20 +2054,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         return answer;
     }
 
-    public void setSelectedXslt(String select) {
-        this.selectedXslt = select;
-    }
-
-    public String getSelectedXslt() {
-        return this.selectedXslt;
-    }
-
-    public void setMyCurrentTable(StatisticsRenderingElement myCurrentTable) {
-        this.myCurrentTable = myCurrentTable;
-    }
-
-    public StatisticsRenderingElement getMyCurrentTable() {
-        return this.myCurrentTable;
+    public String downloadDocket() {
+        return this.myProzess.downloadDocket();
     }
 
     public void downloadStatisticsAsExcel() {
@@ -2352,30 +2299,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
     }
 
-    public boolean isShowClosedProcesses() {
-        return this.showClosedProcesses;
-    }
-
-    public void setShowClosedProcesses(boolean showClosedProcesses) {
-        this.showClosedProcesses = showClosedProcesses;
-    }
-
-    public void setShowArchivedProjects(boolean showArchivedProjects) {
-        this.showArchivedProjects = showArchivedProjects;
-    }
-
-    public boolean isShowArchivedProjects() {
-        return this.showArchivedProjects;
-    }
-
-    public ProcessProperty getProcessProperty() {
-        return this.processProperty;
-    }
-
-    public void setProcessProperty(ProcessProperty processProperty) {
-        this.processProperty = processProperty;
-    }
-
     public List<ProcessProperty> getProcessProperties() {
         return this.processPropertyList;
     }
@@ -2509,10 +2432,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         return this.processPropertyList.size();
     }
 
-    public Map<Integer, PropertyListObject> getContainers() {
-        return this.containers;
-    }
-
     public List<Integer> getContainerList() {
         return new ArrayList<>(this.containers.keySet());
     }
@@ -2544,10 +2463,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         ProcessProperty pt = this.processProperty.getClone(0);
         this.processPropertyList.add(pt);
         saveProcessProperties();
-    }
-
-    public Integer getContainer() {
-        return this.container;
     }
 
     public void setContainer(Integer container) {
@@ -2641,32 +2556,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         this.processProperty = pp;
     }
 
-    public String getUserDisplayMode() {
-        return userDisplayMode;
-    }
-
-    public void setUserDisplayMode(String userDisplayMode) {
-        this.userDisplayMode = userDisplayMode;
-    }
-
-    public List<SearchColumn> getSearchField() {
-        return searchField;
-    }
-
-    public void setSearchField(List<SearchColumn> searchField) {
-        this.searchField = searchField;
-    }
-
     public int getSizeOfFieldList() {
         return searchField.size();
-    }
-
-    public SearchColumn getCurrentField() {
-        return currentField;
-    }
-
-    public void setCurrentField(SearchColumn currentField) {
-        this.currentField = currentField;
     }
 
     public void addField() {
@@ -2682,18 +2573,6 @@ public class ProcessBean extends BasicBean implements Serializable {
             possibleItems = new SearchResultHelper().getPossibleColumns();
         }
         return possibleItems;
-    }
-
-    public void setPossibleItems(List<SelectItem> possibleItems) {
-        this.possibleItems = possibleItems;
-    }
-
-    public boolean isDispaySearchResult() {
-        return dispaySearchResult;
-    }
-
-    public void setDispaySearchResult(boolean dispaySearchResult) {
-        this.dispaySearchResult = dispaySearchResult;
     }
 
     public void setConfirmLink(boolean confirm) {
@@ -2741,10 +2620,10 @@ public class ProcessBean extends BasicBean implements Serializable {
             } else {
                 currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
                 if (currentPlugin != null) {
-                    bean.setMyPlugin(currentPlugin);
                     currentPlugin.initialize(mySchritt, "/process_edit");
                     if (currentPlugin.getPluginGuiType() == PluginGuiType.FULL || currentPlugin.getPluginGuiType() == PluginGuiType.PART_AND_FULL) {
 
+                        bean.setMyPlugin(currentPlugin);
                         String mypath = currentPlugin.getPagePath();
                         currentPlugin.execute();
                         return mypath;
@@ -2757,6 +2636,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                         //                            requestMap.put("AktuelleSchritteForm", bean);
                         //                        }
 
+                        bean.setMyPlugin(currentPlugin);
                         String mypath = "/uii/task_edit_simulator";
                         currentPlugin.execute();
                         return mypath;

@@ -55,6 +55,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.mock.MockProcess;
@@ -65,8 +66,10 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
+import ugh.exceptions.TypeNotAllowedAsChildException;
+import ugh.exceptions.TypeNotAllowedForParentException;
 
-@PowerMockIgnore({"javax.net.ssl.*", "javax.management.*"})
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*","javax.net.ssl.*",  "javax.management.*"})
 @RunWith(PowerMockRunner.class)
 
 @PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class, HistoryAnalyserJob.class, StepManager.class })
@@ -83,11 +86,8 @@ public class ProzesskopieFormTest {
 
     @Before
     public void setUp() throws Exception {
-        String resourcesFolder = "src/test/resources/"; // for junit tests in eclipse
-        if (!Files.exists(Paths.get(resourcesFolder))) {
-            resourcesFolder = "target/test-classes/"; // to run mvn test from cli or in jenkins
-        }
-        String goobiFolder = Paths.get(resourcesFolder).toAbsolutePath().toString() + "/";
+        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
+        String goobiFolder = template.getParent().getParent().getParent().toString() + "/test/resources/";
         ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
@@ -244,7 +244,7 @@ public class ProzesskopieFormTest {
     }
 
     @Test
-    public void testSetDocType() {
+    public void testSetDocType() throws TypeNotAllowedForParentException, TypeNotAllowedAsChildException {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
 

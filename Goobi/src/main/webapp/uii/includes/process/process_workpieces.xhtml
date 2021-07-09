@@ -5,7 +5,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
     </composite:interface>
@@ -28,14 +29,14 @@
                             </h3>
 
                             <div class="actions">
-                                <h:commandLink
+                                <button
                                     title="#{msgs.werkstueckBearbeiten}"
-                                    action="process_edit_workpiece"
-                                    id="editMasterpiece"
-                                    pt:aria-label="#{msgs.werkstueckBearbeiten}"
-                                    styleClass="btn btn-mini"
-                                    rel="tooltip"
-                                    rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
+                                    jsf:action="process_edit_workpiece"
+                                    jsf:id="editMasterpiece"
+                                    aria-label="#{msgs.werkstueckBearbeiten}"
+                                    class="btn btn-mini"
+                                    jsf:rel="tooltip"
+                                    jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}">
                                     <i class="fa fa-pencil"></i>
                                     <f:passThroughAttribute
                                         name="data-toggle"
@@ -43,7 +44,7 @@
                                     <x:updateActionListener
                                         property="#{ProzessverwaltungForm.myWerkstueckReload}"
                                         value="#{item}" />
-                                </h:commandLink>
+                                </button>
                             </div>
 
                         </div>
@@ -66,18 +67,18 @@
 
                                 <div class="dataTables_info">
                                     <!-- Neu-Schaltknopf -->
-                                    <h:commandLink
-                                        action="#{ProzessverwaltungForm.WerkstueckNeu}"
-                                        id="newMasterpiece"
-                                        styleClass="btn btn-lightgrey font-size-s margin-top-5"
-                                        rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
+                                    <button
+                                        jsf:action="#{ProzessverwaltungForm.WerkstueckNeu}"
+                                        jsf:id="newMasterpiece"
+                                        class="btn btn-lightgrey font-size-s margin-top-5"
+                                        jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit')}"
                                         title="#{msgs.werkstueckHinzufuegen}">
                                         <i class="fa fa-plus margin-right-5"></i>
                                         <h:outputText value="#{msgs.werkstueckHinzufuegen}" />
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
-                                    </h:commandLink>
+                                    </button>
                                 </div>
                             </div>
 

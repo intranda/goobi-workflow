@@ -8,7 +8,8 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -20,10 +21,19 @@
 
             <ul class='main-nav'>
                 <!-- Startseite -->
-                <intranda:menuItem
-                    id="a0"
-                    label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
-                    action="index" />
+                <li class="#{NavigationForm.aktuell == 'a0'?'active':''}">
+                    <h:commandLink
+                        action="index"
+                        id="start">
+                        <span>
+                            <i class="#{cc.attrs.icon}"></i>
+                            #{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}
+                        </span>
+                        <f:setPropertyActionListener
+                            target="#{NavigationForm.aktuell}"
+                            value="a0" />
+                    </h:commandLink>
+                </li>
 
                 <!-- aktuelle Schritte -->
                 <h:panelGroup rendered="#{LoginForm.hasRole('Task_Menu')}">
@@ -51,14 +61,15 @@
 
                 <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Menu')}">
                     <li class="#{NavigationForm.aktuell == 'a21' or NavigationForm.aktuell == 'a22' or NavigationForm.aktuell == 'a23' or NavigationForm.aktuell == 'a24' or NavigationForm.aktuell == 'a25'?'active':''}">
-                        <a
+                        <button
                             id="nav-workflow"
-                            href="#"
+                            type="button"
                             data-toggle="dropdown"
-                            class='dropdown-toggle'>
+                            class='dropdown-toggle btn'
+                            aria-haspopup="true">
                             <span>#{msgs.workflow}</span>
                             <span class="caret"></span>
-                        </a>
+                        </button>
                         <ul class="dropdown-menu">
                             <!-- Prozess suchen -->
                             <intranda:menuItem
@@ -131,14 +142,15 @@
                 <!-- ################            Administration              ######################-->
                 <h:panelGroup rendered="#{LoginForm.hasRole('Admin_Menu')}">
                     <li class="#{NavigationForm.aktuell == 'a30' or NavigationForm.aktuell == 'a31' or NavigationForm.aktuell == 'a32' or NavigationForm.aktuell == 'a33' or NavigationForm.aktuell == 'a34' or NavigationForm.aktuell == 'a35' or NavigationForm.aktuell == 'a36' or NavigationForm.aktuell == 'a37' or NavigationForm.aktuell == 'a38' or NavigationForm.aktuell == 'a39' or NavigationForm.aktuell == 'a42' or NavigationForm.aktuell == 'a53'?'active':''}">
-                        <a
+                        <button
                             id="nav-administration"
-                            href="#"
+                            type="button"
                             data-toggle="dropdown"
-                            class='dropdown-toggle'>
+                            class='dropdown-toggle btn'
+                            aria-haspopup="true">
                             <span>#{msgs.administration}</span>
                             <span class="caret"></span>
-                        </a>
+                        </button>
                         <ul class="dropdown-menu">
                             <!-- Benutzerverwaltung -->
                             <intranda:menuItem
@@ -210,6 +222,15 @@
                                 rendered="#{LoginForm.hasRole('Admin_Queue')}"
                                 icon="fa fa-spinner box-icon-fix-menu-up3"
                                 fontclass="margin-left-10" />
+                                
+                            <!-- Jobtypes -->
+                            <intranda:menuItem
+                                id="a37b"
+                                label="#{msgs.menu_administration_jobtypes}"
+                                action="admin_jobtypes_all"
+                                rendered="#{LoginForm.hasRole('Admin_Jobtypes')}"
+                                icon="fa fa-gears box-icon-fix-menu-up3"
+                                fontclass="margin-left-10" />
 
                             <!-- Plugins overview -->
                             <intranda:menuItem
@@ -273,14 +294,15 @@
                 <!-- Controlling -->
                 <h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Menu')}">
                     <li class="#{NavigationForm.aktuell == 'a40'  or NavigationForm.aktuell == 'a41' ?'active':''}">
-                        <a
+                        <button
                             id="nav-controlling"
-                            href="#"
+                            type="button"
                             data-toggle="dropdown"
-                            class='dropdown-toggle'>
+                            class='dropdown-toggle btn'
+                            aria-haspopup="true">
                             <span>#{msgs.controlling}</span>
                             <span class="caret"></span>
-                        </a>
+                        </button>
                         <ul class="dropdown-menu">
                             <intranda:menuItem
                                 id="a40"
@@ -327,27 +349,45 @@
                 </a>
 
                 <div class="user">
-                    <ul class="icon-nav">
+                    <ul class="icon-nav" style="height: 100%">
                         <li>
-                            <h:commandLink
-                                id="showHelp"
-                                pt:aria-label="#{msgs.showHelpMessages}"
-                                action="#{NavigationForm.Reload}"
+                            <button
+                                class="btn"
+                                jsf:id="showHelp"
+                                aria-label="#{msgs.showHelpMessages}"
+                                jsf:action="#{NavigationForm.Reload}"
                                 title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
-                                rel="tooltip">
+                                jsf:rel="tooltip"
+                                data-placement="bottom">
                                 <i class="fa #{not NavigationForm.showHelp?'fa-question':'fa-question-circle'}"></i>
-                                <!--                                 <f:passThroughAttribute name="data-toggle" value="tooltip" /> -->
+                                <f:passThroughAttribute name="data-toggle" value="tooltip"/>
                                 <f:setPropertyActionListener
                                     target="#{NavigationForm.showHelp}"
                                     value="#{not NavigationForm.showHelp}" />
-                            </h:commandLink>
+                            </button>
                         </li>
-
                         <li class="dropdown language-select">
-                            <a
+                        	<div data-toggle="tooltip" title="#{msgs.spracheAendern}" data-placement="bottom">
+	                            <button
+	                                type="button"
+	                                id="nav-language"
+	                                aria-label="#{msgs.spracheAendern}"
+	                                data-toggle="dropdown"
+	                                aria-haspopup="true"
+	                                class="dropdown-toggle btn"
+	                                title="#{msgs.spracheAendern}"
+	                                jsf:rel="tooltip"
+	                                >
+	                                
+	                                <img
+	                                    alt="#{SpracheForm.locale}"
+	                                    src="template/img/flags/#{SpracheForm.locale}.gif" />
+	                                <span></span>
+	                            </button>
+                            <!-- <a
                                 href="#"
                                 id="nav-language"
-                                pt:aria-label="#{msgs.spracheAendern}"
+                                aria-label="#{msgs.spracheAendern}"
                                 data-toggle="dropdown"
                                 class="dropdown-toggle"
                                 title="#{msgs.spracheAendern}">
@@ -355,40 +395,39 @@
                                     alt=""
                                     src="template/img/flags/#{SpracheForm.locale}.gif" />
                                 <span></span>
-                            </a>
-                            <ul class="dropdown-menu pull-right">
-                                <ui:repeat
-                                    var="availableLanguage"
-                                    value="#{SpracheForm.supportedLocales}"
-                                    id="plugin4">
-                                    <li>
-                                        <h:commandLink
-                                            id="locale"
-                                            styleClass="text_head"
-                                            action="#{SpracheForm.SpracheUmschalten}"
-                                            title="#{availableLanguage.displayLanguageTranslated}">
-                                            <f:param
-                                                name="locale"
-                                                value="#{availableLanguage.id}" />
-                                            <f:setPropertyActionListener
-                                                value="#{null}"
-                                                target="#{SessionForm.dateFormatter}" />
-                                            <h:graphicImage value="template/img/flags/#{availableLanguage.id}.gif" />
-                                            <span>
-                                                <h:outputText value="#{msgs[availableLanguage.displayLanguageSelf]}" />
-                                            </span>
-                                        </h:commandLink>
-                                    </li>
-                                </ui:repeat>
-                            </ul>
+                            </a> -->
+	                            <ul class="dropdown-menu pull-right">
+	                                <ui:repeat
+	                                    var="availableLanguage"
+	                                    value="#{SpracheForm.supportedLocales}"
+	                                    id="plugin4">
+	                                    <li>
+	                                        <button
+	                                            jsf:id="locale"
+	                                            class="dropdown-item text_head"
+	                                            jsf:action="#{SpracheForm.SpracheUmschalten}"
+	                                            title="#{availableLanguage.displayLanguageTranslated}">
+	                                            <f:param
+	                                                name="locale"
+	                                                value="#{availableLanguage.id}" />
+	                                            <f:setPropertyActionListener
+	                                                value="#{null}"
+	                                                target="#{SessionForm.dateFormatter}" />
+	                                            <h:graphicImage value="template/img/flags/#{availableLanguage.id}.gif" />
+	                                            <span>
+	                                                <h:outputText value="#{msgs[availableLanguage.displayLanguageSelf]}" />
+	                                            </span>
+	                                        </button>
+	                                    </li>
+	                                </ui:repeat>
+	                            </ul>
+	                         </div>
                         </li>
-
-                    </ul>
-
+	                </ul>
                     <div class="dropdown">
-                        <a
-                            href="#"
-                            class='dropdown-toggle'
+                        <button
+                            type="button"
+                            class='dropdown-toggle btn'
                             data-toggle="dropdown"
                             id="toggleUserdata">
                             <h:outputText
@@ -404,7 +443,7 @@
                                     src="#{LoginForm.myBenutzer.imageUrl}"
                                     alt="" />
                             </c:if>
-                        </a>
+                        </button>
 
                         <ul class="dropdown-menu pull-right">
                             <!-- Benutzerkonfiguration -->
@@ -425,17 +464,18 @@
                             </h:panelGroup>
 
                             <li>
-                                <h:commandLink
-                                    id="showEasyRead"
-                                    action="#{NavigationForm.Reload}"
+                                <button
+                                    jsf:id="showEasyRead"
+                                    jsf:action="#{NavigationForm.Reload}"
+                                    class="dropdown-item"
                                     title="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}"
-                                    rel="tooltip">
+                                    jsf:rel="tooltip">
                                     <i class="fa fa-eye-slash margin-right-5" />
                                     <h:outputText value="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}" />
                                     <f:setPropertyActionListener
                                         target="#{NavigationForm.showEasyRead}"
                                         value="#{not NavigationForm.showEasyRead}" />
-                                </h:commandLink>
+                                </button>
                             </li>
 
 			                <!-- logout -->

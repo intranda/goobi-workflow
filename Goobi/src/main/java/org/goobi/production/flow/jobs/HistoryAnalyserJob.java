@@ -56,7 +56,6 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class HistoryAnalyserJob extends AbstractGoobiJob {
 
-
     /*
      * (non-Javadoc)
      * 
@@ -215,7 +214,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                     break;
 
                 case INWORK:
-
+                case INFLIGHT:
                     // fix missing start date
                     if (step.getBearbeitungsbeginn() == null) {
                         isDirty = true;
@@ -260,31 +259,38 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 
                 case OPEN:
 
-                    // fix missing editing date
-                    if (step.getBearbeitungszeitpunkt() == null) {
-                        isDirty = true;
-                        if (step.getBearbeitungsende() != null) {
-                            step.setBearbeitungszeitpunkt(step.getBearbeitungsende());
-                        } else {
-                            // step.setBearbeitungsbeginn(getTimestampFromPreviousStep(inProcess,
-                            // step));
-                            step.setBearbeitungszeitpunkt(getTimestampFromPreviousStep(inProcess, step));
-                        }
-                    }
+                    //do not change Bearbeitungszeitpunkt for open steps.                   
+                    //                    // fix missing editing date
+                    //                    if (step.getBearbeitungszeitpunkt() == null) {
+                    //                        isDirty = true;
+                    //                        if (step.getBearbeitungsende() != null) {
+                    //                            step.setBearbeitungszeitpunkt(step.getBearbeitungsende());
+                    //                        } else {
+                    //                            // step.setBearbeitungsbeginn(getTimestampFromPreviousStep(inProcess,
+                    //                            // step));
+                    //                            step.setBearbeitungszeitpunkt(getTimestampFromPreviousStep(inProcess, step));
+                    //                        }
+                    //                    }
 
                     // fix set end date
                     if (step.getBearbeitungsende() != null) {
                         step.setBearbeitungsende(null);
                         isDirty = true;
+                        
+                        // fix missing editing date
+                        if (step.getBearbeitungszeitpunkt() == null) {
+                            isDirty = true;
+                            if (step.getBearbeitungsende() != null) {
+                                step.setBearbeitungszeitpunkt(step.getBearbeitungsende());
+                            } else {
+                                step.setBearbeitungszeitpunkt(getTimestampFromPreviousStep(inProcess, step));
+                            }
+                        }
+                        
+                        he = addHistoryEvent(step.getBearbeitungszeitpunkt(), step.getReihenfolge(), step.getTitel(), HistoryEventType.stepOpen,
+                                inProcess);
+
                     }
-
-                    he = addHistoryEvent(step.getBearbeitungszeitpunkt(), step.getReihenfolge(), step.getTitel(), HistoryEventType.stepOpen,
-                            inProcess);
-
-                    if (he != null) {
-                        isDirty = true;
-                    }
-
                     break;
             }
 

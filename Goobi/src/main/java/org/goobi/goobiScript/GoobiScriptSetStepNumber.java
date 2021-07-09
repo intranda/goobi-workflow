@@ -1,16 +1,15 @@
 package org.goobi.goobiScript;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
-
-import com.google.common.collect.ImmutableList;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -25,7 +24,7 @@ public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IG
     public String getAction() {
         return "setStepNumber";
     }
-    
+
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
@@ -34,92 +33,71 @@ public class GoobiScriptSetStepNumber extends AbstractIGoobiScript implements IG
         addParameterToSampleCall(sb, "number", "4", "Order number that the workflow step shall have in the order of all workflow steps");
         return sb.toString();
     }
-    
+
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
-            return false;
+            return new ArrayList<>();
         }
 
         if (parameters.get("number") == null || parameters.get("number").equals("")) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "number");
-            return false;
+            return new ArrayList<>();
         }
 
         if (!StringUtils.isNumeric(parameters.get("number"))) {
             Helper.setFehlerMeldung("goobiScriptfield", "Wrong number parameter", "(only numbers allowed)");
-            return false;
+            return new ArrayList<>();
         }
 
         // add all valid commands to list
-        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
+        List<GoobiScriptResult> newList = new ArrayList<>();
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, parameters, username, starttime);
             newList.add(gsr);
         }
-        gsm.setGoobiScriptResults(newList.build());
-
-        return true;
+        return newList;
     }
 
     @Override
-    public void execute() {
-        TEMPLATEThread et = new TEMPLATEThread();
-        et.start();
-    }
+    public void execute(GoobiScriptResult gsr) {
+        Map<String, String> parameters = gsr.getParameters();
+        Process p = ProcessManager.getProcessById(gsr.getProcessId());
+        gsr.setProcessTitle(p.getTitel());
+        gsr.setResultType(GoobiScriptResultType.RUNNING);
+        gsr.updateTimestamp();
 
-    class TEMPLATEThread extends Thread {
-        @Override
-        public void run() {
-            // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
+        for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
+            Step s = iterator.next();
+            if (s.getTitel().equals(parameters.get("steptitle"))) {
+                s.setReihenfolge(Integer.parseInt(parameters.get("number")));
                 try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    log.error("Problem while waiting for running GoobiScripts", e);
+                    StepManager.saveStep(s);
+                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                            "Changed order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "' using GoobiScript.",
+                            username);
+                    log.info("Changed order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge()
+                            + "' using GoobiScript for process with ID " + p.getId());
+                    gsr.setResultMessage(
+                            "Changed order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "' successfully.");
+                    gsr.setResultType(GoobiScriptResultType.OK);
+                } catch (DAOException e) {
+                    log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
+                    gsr.setResultMessage(
+                            "Error while changing the order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "'.");
+                    gsr.setResultType(GoobiScriptResultType.ERROR);
+                    gsr.setErrorText(e.getMessage());
                 }
-            } // execute all jobs that are still in waiting state
-            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
-
-                    for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
-                        Step s = iterator.next();
-                        if (s.getTitel().equals(parameters.get("steptitle"))) {
-                            s.setReihenfolge(Integer.parseInt(parameters.get("number")));
-                            try {
-                                StepManager.saveStep(s);
-                                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                        "Changed order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "' using GoobiScript.",
-                                        username);
-                                log.info("Changed order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge()
-                                + "' using GoobiScript for process with ID " + p.getId());
-                                gsr.setResultMessage(
-                                        "Changed order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "' successfully.");
-                                gsr.setResultType(GoobiScriptResultType.OK);
-                            } catch (DAOException e) {
-                                log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
-                                gsr.setResultMessage(
-                                        "Error while changing the order number of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "'.");
-                                gsr.setResultType(GoobiScriptResultType.ERROR);
-                                gsr.setErrorText(e.getMessage());
-                            }
-                            break;
-                        }
-                    }
-                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
-                        gsr.setResultType(GoobiScriptResultType.OK);
-                        gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
-                    }
-                    gsr.updateTimestamp();
-                }
+                break;
             }
         }
+        if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+            gsr.setResultType(GoobiScriptResultType.OK);
+            gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+        }
+        gsr.updateTimestamp();
     }
 }

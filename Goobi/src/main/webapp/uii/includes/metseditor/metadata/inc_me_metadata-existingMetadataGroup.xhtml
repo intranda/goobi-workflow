@@ -7,7 +7,8 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -45,115 +46,184 @@
                     value="#{Metadaten.groups}"
                     rowCountVar="rowCount"
                     rowIndexVar="rowIndex">
-
-                    <div class="btn-area duplicate pull-right">
-                        <h:commandLink
-                            id="grpdelete"
-                            pt:aria-label="#{msgs.mets_deleteMetadataGroup}"
-                            styleClass="btn btn--icon"
-                            action="#{Metadaten.deleteGroup}"
-                            title="#{msgs.mets_deleteMetadataGroup}"
-                            role="button">
-                            <i
-                                class="fa fa-lg fa-trash-o"
-                                aria-hidden="true"></i>
-                            <x:updateActionListener
-                                property="#{Metadaten.currentGroup}"
-                                value="#{Item}" />
-                            <f:passThroughAttribute
-                                name="data-toggle"
-                                value="tooltip" />
-                            <f:param
-                                name="ID"
-                                value="#{cc.attrs.metadata.identifier}" />
-                            <f:ajax
-                                execute="@form"
-                                render="@form" />
-                        </h:commandLink>
-                        <h:commandLink
-                            id="grpduplicate"
-                            pt:aria-label="#{msgs.mets_duplicateMetadataGroup}"
-                            styleClass="btn btn--icon"
-                            action="#{Metadaten.CopyGroup}"
-                            title="#{msgs.mets_duplicateMetadataGroup}"
-                            role="button">
-                            <i
-                                class="fa fa-lg fa-copy"
-                                aria-hidden="true"></i>
-                            <x:updateActionListener
-                                property="#{Metadaten.currentGroup}"
-                                value="#{Item}" />
-                            <f:passThroughAttribute
-                                name="data-toggle"
-                                value="tooltip" />
-                            <f:param
-                                name="ID"
-                                value="#{cc.attrs.metadata.identifier}" />
-                            <f:ajax
-                                execute="@form"
-                                render="@form" />
-                        </h:commandLink>
-                    </div>
-
-                    <h2 class="module__box-subtitle">
-                        <h:outputText value="#{Item.name}" />
-                    </h2>
-
-                    <div class="row">
-                        <div class="col-12">
-                            <x:dataList
-                                id="grpMdList"
-                                var="metadata"
-                                value="#{Item.metadataList}"
-                                rowCountVar="varCount"
-                                rowIndexVar="varIndex">
-                                <intranda:formGroupMetadata
-                                    id="grpMetadata"
-                                    metadata="#{metadata}"
-                                    renderDelete="false"
-                                    renderDuplicate="false" />
-                            </x:dataList>
-
-                            <x:dataList
-                                id="grpPL"
-                                var="currentPerson"
-                                value="#{Item.personList}"
-                                rowCountVar="varCount"
-                                rowIndexVar="varIndex">
-                                <intranda:formGroupPerson
-                                    id="grpPerson"
-                                    person="#{currentPerson}"
-                                    renderDelete="false" />
-                            </x:dataList>
-                            <x:dataList
-                                id="grpCL"
-                                var="currentCorporate"
-                                value="#{Item.corporateList}"
-                                rowCountVar="varCount"
-                                rowIndexVar="varIndex">
-                                <intranda:formGroupCorporate
-                                    id="grpCorporate"
-                                    corporate="#{currentCorporate}"
-                                    renderDelete="false"
-                                    changeRole="false"
-                                    index="#{rowIndex}" />
-                            </x:dataList>
+                    <h:panelGroup
+                        layout="block"
+                        styleClass="module__box-group module__box-level-#{Item.level}">
+                        <!--                     <h:outputText value="#{msgs.id}: #{Item.metadataGroupId}" /> -->
+                        <!--                     <br/> -->
+                        <!--                     <h:outputText value="#{msgs.parentId}: #{Item.parentGroupId}" rendered="#{Item.parentGroupId != null}" /> -->
+                        <!--                     <br/> -->
+                        <div class="btn-area duplicate pull-right">
+                            <button
+                                jsf:id="grpdelete"
+                                aria-label="#{msgs.mets_deleteMetadataGroup}"
+                                class="btn btn--icon btn--icon-light"
+                                jsf:action="#{Metadaten.deleteGroup}"
+                                title="#{msgs.mets_deleteMetadataGroup}"
+                                type="button">
+                                <i
+                                    class="fa fa-lg fa-trash-o"
+                                    aria-hidden="true"></i>
+                                <x:updateActionListener
+                                    property="#{Metadaten.currentGroup}"
+                                    value="#{Item}" />
+                                <f:passThroughAttribute
+                                    name="data-toggle"
+                                    value="tooltip" />
+                                <f:ajax
+                                    execute="@form"
+                                    render="@form" />
+                            </button>
+                            <button
+                                jsf:id="grpduplicate"
+                                aria-label="#{msgs.mets_duplicateMetadataGroup}"
+                                class="btn btn--icon btn--icon-light"
+                                jsf:action="#{Metadaten.CopyGroup}"
+                                title="#{msgs.mets_duplicateMetadataGroup}"
+                                type="button">
+                                <i
+                                    class="fa fa-lg fa-copy"
+                                    aria-hidden="true"></i>
+                                <x:updateActionListener
+                                    property="#{Metadaten.currentGroup}"
+                                    value="#{Item}" />
+                                <f:passThroughAttribute
+                                    name="data-toggle"
+                                    value="tooltip" />
+                                <f:ajax
+                                    execute="@form"
+                                    render="@form" />
+                            </button>
                         </div>
-                    </div>
+                        <h2 class="module__box-subtitle">
+                            <h:outputText value="#{Item.name}" />
+                        </h2>
+                        <div class="row">
+                            <div class="col-12">
+                                <x:dataList
+                                    id="grpMdList"
+                                    var="metadata"
+                                    value="#{Item.metadataList}"
+                                    rowCountVar="varCount"
+                                    rowIndexVar="varIndex">
+                                    <intranda:formGroupMetadata
+                                        id="grpMetadata"
+                                        metadata="#{metadata}"
+                                        renderDelete="true"
+                                        renderDuplicate="true" />
+                                </x:dataList>
+
+                                <x:dataList
+                                    id="grpPL"
+                                    var="currentPerson"
+                                    value="#{Item.personList}"
+                                    rowCountVar="varCount"
+                                    rowIndexVar="varIndex">
+                                    <intranda:formGroupPerson
+                                        id="grpPerson"
+                                        person="#{currentPerson}"
+                                        renderDelete="true" />
+                                </x:dataList>
+                                <x:dataList
+                                    id="grpCL"
+                                    var="currentCorporate"
+                                    value="#{Item.corporateList}"
+                                    rowCountVar="varCount"
+                                    rowIndexVar="varIndex">
+                                    <intranda:formGroupCorporate
+                                        id="grpCorporate"
+                                        corporate="#{currentCorporate}"
+                                        renderDelete="true"
+                                        changeRole="false"
+                                        index="#{rowIndex}" />
+                                </x:dataList>
+                            </div>
+                        </div>
+
+                        <ui:fragment rendered="#{Item.metadataAddable or Item.corporateAddable or Item.personAddable or Item.groupAddable}">
+                            <div class="row">
+                                <div class="col-auto mr-auto"></div>
+                                <div class="col-auto">
+                                    <button
+                                        class="btn btn--gray addable"
+                                        jsf:action="#{Metadaten.Hinzufuegen}"
+                                        jsf:rendered="#{Item.metadataAddable}"
+                                        type="button">
+                                        #{msgs.neuesMetadatumAnlegen}
+                                        <f:setPropertyActionListener
+                                            value="#{Item}"
+                                            target="#{Metadaten.currentGroup}" />
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <f:ajax render=":pageContentCenter" />
+                                    </button>
+
+                                    <button
+                                        class="btn btn--gray addable"
+                                        jsf:action="#{Metadaten.AddCorporate}"
+                                        jsf:rendered="#{Item.corporateAddable}"
+                                        type="button">
+                                        #{msgs.mets_corporate_createCorporate}
+                                        <f:setPropertyActionListener
+                                            value="#{Item}"
+                                            target="#{Metadaten.currentGroup}" />
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <f:ajax render=":pageContentCenter" />
+                                    </button>
+
+                                    <button
+                                        class="btn btn--gray addable"
+                                        jsf:action="#{Metadaten.HinzufuegenPerson}"
+                                        jsf:rendered="#{Item.personAddable}"
+                                        type="button">
+                                        #{msgs.neuePersonAnlegen}
+                                        <f:setPropertyActionListener
+                                            value="#{Item}"
+                                            target="#{Metadaten.currentGroup}" />
+                                        <f:ajax render=":pageContentCenter" />
+                                    </button>
+
+                                    <button
+                                        class="btn btn--gray addable"
+                                        jsf:action="#{Metadaten.AddGroup}"
+                                        jsf:rendered="#{Item.groupAddable}"
+                                        type="button">
+                                        #{msgs.AddNewGroup}
+                                        <f:setPropertyActionListener
+                                            value="#{Item}"
+                                            target="#{Metadaten.currentGroup}" />
+                                        <f:ajax render=":pageContentCenter" />
+                                    </button>                                    
+                                </div>
+                            </div>
+                        </ui:fragment>
+                    </h:panelGroup>
+
+
+
+
                 </x:dataList>
+
+                <br />
 
                 <h:panelGroup rendered="#{Metadaten.sizeOfMetadataGroups!=0}">
                     <div class="row">
                         <div class="col-auto mr-auto"></div>
                         <div class="col-auto">
-                            <h:commandLink
-                                id="addGroup"
-                                styleClass="btn btn--gray"
-                                value="#{msgs.AddNewGroup}"
-                                action="#{Metadaten.AddGroup}"
-                                role="button">
+                            <button
+                                jsf:id="addGroup"
+                                class="btn btn--gray"
+                                jsf:action="#{Metadaten.AddGroup}"
+                                type="button">
+                                #{msgs.AddNewGroup}
                                 <f:ajax render=":pageContentCenter" />
-                            </h:commandLink>
+                                <f:setPropertyActionListener
+                                    value=""
+                                    target="#{Metadaten.currentGroup}" />
+                            </button>
                         </div>
                     </div>
                 </h:panelGroup>

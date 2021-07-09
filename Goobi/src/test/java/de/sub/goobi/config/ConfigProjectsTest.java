@@ -24,7 +24,7 @@ import static org.junit.Assert.assertTrue;
  */
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -35,11 +35,8 @@ public class ConfigProjectsTest {
 
     @BeforeClass
     public static void setUp() throws URISyntaxException {
-        String resourcesFolder = "src/test/resources/"; // for junit tests in eclipse
-        if (!Files.exists(Paths.get(resourcesFolder))) {
-            resourcesFolder = "target/test-classes/"; // to run mvn test from cli or in jenkins
-        }
-        String goobiFolder = Paths.get(resourcesFolder).toAbsolutePath().toString() + "/";
+        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
+        String goobiFolder = template.getParent().getParent().getParent().toString() + "/test/resources/";
         ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
@@ -57,7 +54,7 @@ public class ConfigProjectsTest {
     @Test
     public void testParamString() throws IOException {
         ConfigProjects cp = new ConfigProjects("default");
-        String fixture = cp.getParamString("createNewProcess.opac.catalogue");
+        String fixture = cp.getParamString("/createNewProcess/opac/catalogue");
         assertNotNull(fixture);
         assertEquals("LOC", fixture);
     }
@@ -65,7 +62,7 @@ public class ConfigProjectsTest {
     @Test
     public void testParamStringWithDefault() throws IOException {
         ConfigProjects cp = new ConfigProjects("default");
-        String fixture = cp.getParamString("createNewProcess.opac.catalogue", "GBV");
+        String fixture = cp.getParamString("createNewProcess/opac/catalogue", "GBV");
         assertNotNull(fixture);
         assertEquals("LOC", fixture);
 
@@ -78,7 +75,7 @@ public class ConfigProjectsTest {
     @Test
     public void testParamBoolean() throws IOException {
         ConfigProjects cp = new ConfigProjects("default");
-        boolean fixture = cp.getParamBoolean("createNewProcess.opac[@use]");
+        boolean fixture = cp.getParamBoolean("createNewProcess/opac/@use");
         assertTrue(fixture);
 
     }
@@ -93,7 +90,7 @@ public class ConfigProjectsTest {
     @Test
     public void testParamList() throws IOException {
         ConfigProjects cp = new ConfigProjects("default");
-        List<String> fixture = cp.getParamList("createNewProcess.itemlist.item");
+        List<String> fixture = cp.getParamList("createNewProcess/itemlist/item");
         assertNotNull(fixture);
         assertEquals(1, fixture.size());
 

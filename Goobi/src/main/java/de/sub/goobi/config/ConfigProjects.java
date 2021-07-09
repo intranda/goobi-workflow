@@ -35,48 +35,87 @@ import java.util.NoSuchElementException;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.configuration.SubnodeConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.sub.goobi.helper.Helper;
 
 public class ConfigProjects {
-    XMLConfiguration config;
-    private String projektTitel;
     private static final Logger logger = LogManager.getLogger(ConfigProjects.class);
+
+
+    private SubnodeConfiguration config;
 
     public ConfigProjects(String projectTitle) throws IOException {
         this(projectTitle, new Helper().getGoobiConfigDirectory() + "goobi_projects.xml");
     }
 
+
+
     public ConfigProjects(String projectTitle, String configPfad) throws IOException {
         if (!Files.exists(Paths.get(configPfad))) {
             throw new IOException("File not found: " + configPfad);
         }
-        this.config = new XMLConfiguration();
-        this.config.setDelimiterParsingDisabled(true);
+        XMLConfiguration config = new XMLConfiguration();
+        config.setExpressionEngine(new XPathExpressionEngine());
+        config.setDelimiterParsingDisabled(true);
+        config.setReloadingStrategy(new FileChangedReloadingStrategy());
+
         try {
-            this.config.load(configPfad);
+            config.load(configPfad);
         } catch (ConfigurationException e) {
             logger.error(e);
         }
-        this.config.setReloadingStrategy(new FileChangedReloadingStrategy());
+        String projectNameInFile = null;
+        // get all project names from file
+        String getAllProjectNames ="//project/@name | //project/name";
+        String[] projectNames = config.getStringArray(getAllProjectNames);
+        // check if current project matches an entry
 
-        int countProjects = this.config.getMaxIndex("project");
-        for (int i = 0; i <= countProjects; i++) {
-            String title = this.config.getString("project(" + i + ")[@name]");
-            if (title.equals(projectTitle)) {
-                this.projektTitel = "project(" + i + ").";
+        for (String name : projectNames) {
+            if (projectTitle.equalsIgnoreCase(name)) {
+                projectNameInFile = name;
                 break;
             }
         }
 
+        // if not, check if wildcards where used, check if this matches (case insensitive)
+        if (projectNameInFile == null) {
+            for (String name : projectNames) {
+                if (projectTitle.matches(name)) {
+                    projectNameInFile = name;
+                    break;
+                }
+            }
+        }
+
+
+        // if not, try to load 'default' project
+        if (projectNameInFile == null) {
+            for (String name : projectNames) {
+                if (name.equalsIgnoreCase("default")) {
+                    projectNameInFile = name;
+                    break;
+                }
+            }
+        }
+        // if not, get first projects
+        if (projectNameInFile == null) {
+            projectNameInFile = projectNames[0];
+        }
+
+
+        String projektTitel = "/project[@name='"+ projectNameInFile + "'] | /project[name='"+ projectNameInFile + "']";
+
+        this.config = config.configurationAt(projektTitel);
+
         try {
-            this.config.getBoolean(this.projektTitel + "createNewProcess.opac[@use]");
+            this.config.getBoolean("/createNewProcess/opac/@use");
         } catch (NoSuchElementException e) {
-            this.projektTitel = "project(0).";
         }
 
     }
@@ -89,7 +128,7 @@ public class ConfigProjects {
     public String getParamString(String inParameter) {
         try {
             this.config.setListDelimiter('&');
-            String rueckgabe = this.config.getString(this.projektTitel + inParameter);
+            String rueckgabe = this.config.getString(inParameter);
             return cleanXmlFormatedString(rueckgabe);
         } catch (RuntimeException e) {
             logger.error(e);
@@ -116,7 +155,7 @@ public class ConfigProjects {
     public String getParamString(String inParameter, String inDefaultIfNull) {
         try {
             this.config.setListDelimiter('&');
-            String myParam = this.projektTitel + inParameter;
+            String myParam = inParameter;
             String rueckgabe = this.config.getString(myParam, inDefaultIfNull);
             return cleanXmlFormatedString(rueckgabe);
         } catch (RuntimeException e) {
@@ -131,7 +170,7 @@ public class ConfigProjects {
      */
     public boolean getParamBoolean(String inParameter) {
         try {
-            return this.config.getBoolean(this.projektTitel + inParameter);
+            return this.config.getBoolean(inParameter);
         } catch (RuntimeException e) {
             return false;
         }
@@ -144,7 +183,7 @@ public class ConfigProjects {
      */
     public long getParamLong(String inParameter) {
         try {
-            return this.config.getLong(this.projektTitel + inParameter);
+            return this.config.getLong(inParameter);
         } catch (RuntimeException e) {
             logger.error(e);
             return 0;
@@ -158,7 +197,7 @@ public class ConfigProjects {
      */
     public List<String> getParamList(String inParameter) {
         try {
-            return Arrays.asList(this.config.getStringArray(this.projektTitel + inParameter));
+            return Arrays.asList(this.config.getStringArray(inParameter));
         } catch (RuntimeException e) {
             logger.error(e);
             return new ArrayList<>();
@@ -167,11 +206,10 @@ public class ConfigProjects {
 
     public List<HierarchicalConfiguration> getList(String inParameter) {
         try {
-            return config.configurationsAt(this.projektTitel + inParameter);
+            return config.configurationsAt(inParameter);
         } catch (RuntimeException e) {
             logger.error(e);
             return new ArrayList<>();
         }
     }
-
 }

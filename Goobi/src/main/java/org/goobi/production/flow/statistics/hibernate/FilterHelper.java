@@ -70,7 +70,6 @@ public class FilterHelper {
         StringBuilder sb = new StringBuilder();
         User aktuellerNutzer = Helper.getCurrentUser();
 
-
         if (aktuellerNutzer != null) {
             if (!Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
                 sb.append("prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ");
@@ -97,7 +96,7 @@ public class FilterHelper {
         /* show only open Steps or those in use by current user */
         /* identify current user */
         User user = Helper.getCurrentUser();
-        if (user == null ) {
+        if (user == null) {
             return "";
         }
         int userId = user.getId();
@@ -917,8 +916,7 @@ public class FilterHelper {
 
             } else if (tok.equals(")")) {
                 filter.append(")");
-            }
-            else if (tok.toLowerCase().startsWith(FilterString.PROCESS_DATE)) {
+            } else if (tok.toLowerCase().startsWith(FilterString.PROCESS_DATE)) {
                 filter = checkStringBuilder(filter, true);
 
                 if (tok.length() > 12) {
@@ -965,7 +963,9 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith(FilterString.STEPINWORK) || tok.toLowerCase().startsWith(FilterString.SCHRITTINARBEIT)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(createStepFilters(tok, StepStatus.INWORK, false, currentDateFilter.getDateFilter()));
-
+            } else if (tok.toLowerCase().startsWith(FilterString.STEPINFLIGHT)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(createStepFilters(tok, StepStatus.INFLIGHT, false, currentDateFilter.getDateFilter()));
                 // new keyword stepLocked implemented
             } else if (tok.toLowerCase().startsWith(FilterString.STEPLOCKED) || tok.toLowerCase().startsWith(FilterString.SCHRITTGESPERRT)) {
                 filter = checkStringBuilder(filter, true);
@@ -1068,7 +1068,9 @@ public class FilterHelper {
                     || tok.toLowerCase().startsWith("-" + FilterString.SCHRITTINARBEIT)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(createStepFilters(tok, StepStatus.INWORK, true, currentDateFilter.getDateFilter()));
-
+            } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPINFLIGHT)) {
+                filter = checkStringBuilder(filter, true);
+                filter.append(createStepFilters(tok, StepStatus.INFLIGHT, true, currentDateFilter.getDateFilter()));
                 // new keyword stepLocked implemented
             } else if (tok.toLowerCase().startsWith("-" + FilterString.STEPLOCKED)
                     || tok.toLowerCase().startsWith("-" + FilterString.SCHRITTGESPERRT)) {
@@ -1120,6 +1122,28 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("-" + FilterString.ID)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterIds(tok, true));
+            }  else if (tok.toLowerCase().startsWith("-" + FilterString.BATCH) || tok.toLowerCase().startsWith("-" + FilterString.GRUPPE)) {
+                try {
+                    String substring = tok.substring(tok.indexOf(":") + 1);
+                    if (substring.contains(" ")) {
+                        substring = substring.substring(0, substring.indexOf(" "));
+                    }
+                    if (StringUtils.isNumeric(substring)) {
+
+                        int value = Integer.valueOf(substring);
+                        filter = checkStringBuilder(filter, true);
+                        filter.append(" (prozesse.batchID != " + value + " OR batchID is null)" );
+                    } else {
+                        filter = checkStringBuilder(filter, true);
+                        filter.append(" batches.batchName not like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(substring)
+                        + rightTruncationCharacter + "' OR batches.batchName IS NULL OR prozesse.batchID IS NULL ");
+                    }
+
+                } catch (NumberFormatException e) {
+                    logger.warn("input " + tok.substring(tok.indexOf(":") + 1) + " is not a number.");
+                }
+
+
             } else if (tok.toLowerCase().startsWith(FilterString.PROCESS) || tok.toLowerCase().startsWith(FilterString.PROZESS)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel not like '" + leftTruncationCharacter
@@ -1153,7 +1177,9 @@ public class FilterHelper {
                     || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTINARBEIT)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(createStepFilters(tok, StepStatus.INWORK, false, currentDateFilter.getDateFilter()));
-
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPINFLIGHT)) {
+                filter = checkStringBuilder(filter, false);
+                filter.append(createStepFilters(tok, StepStatus.INFLIGHT, false, currentDateFilter.getDateFilter()));
                 // new keyword stepLocked implemented
             } else if (tok.toLowerCase().startsWith("|" + FilterString.STEPLOCKED)
                     || tok.toLowerCase().startsWith("|" + FilterString.SCHRITTGESPERRT)) {
@@ -1202,16 +1228,35 @@ public class FilterHelper {
                 filter = checkStringBuilder(filter, false);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
                 + rightTruncationCharacter + "'");
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.BATCH) || tok.toLowerCase().startsWith("|" + FilterString.GRUPPE)) {
+                try {
+                    String substring = tok.substring(tok.indexOf(":") + 1);
+                    if (substring.contains(" ")) {
+                        substring = substring.substring(0, substring.indexOf(" "));
+                    }
+                    if (StringUtils.isNumeric(substring)) {
+                        int value = Integer.valueOf(substring);
+                        filter = checkStringBuilder(filter, false);
+                        filter.append(" prozesse.batchID = " + value);
+                    } else {
+                        filter = checkStringBuilder(filter, false);
+                        filter.append(" batches.batchName like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(substring)
+                        + rightTruncationCharacter + "'");
+                    }
+
+                } catch (NumberFormatException e) {
+                    logger.warn("input " + tok.substring(tok.indexOf(":") + 1) + " is not a number.");
+                }
             } else if (tok.toLowerCase().startsWith("|")) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(1))
                 + rightTruncationCharacter + "'");
-            } else {
+            }
+            else {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
                 + rightTruncationCharacter + "'");
             }
-
             if (newFilterGroup && !currentDateFilter.isStepFilterPresent() && !currentDateFilter.getDateFilter().isEmpty()) {
                 newFilterGroup = false;
                 filter = checkStringBuilder(filter, true);
@@ -1220,7 +1265,7 @@ public class FilterHelper {
                 for (String dateFilter : currentDateFilter.getDateFilter()) {
                     if (isFirst) {
                         filter.append(dateFilter);
-                        isFirst=false;
+                        isFirst = false;
                     } else {
                         filter.append(" AND ");
                         filter.append(dateFilter);

@@ -7,7 +7,8 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
     xmlns:p="http://primefaces.org/ui"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -27,77 +28,77 @@
                     <ul class="clean">
                         <!-- ELEMENT UP -->
                         <li>
-                            <h:commandLink 
-                                id="nodeUp" 
-                                styleClass="btn btn--icon" 
-                                action="#{Metadaten.KnotenUp}"
+                            <button 
+                                jsf:id="nodeUp" 
+                                class="btn btn--icon" 
+                                jsf:action="#{Metadaten.KnotenUp}"
                                 title="#{msgs.docstructNachObenSchieben}" role="button">
                                 <span class="fa fa-chevron-up fa-lg fa-with-bg" />
 <!--                                 <i class="fa fa-chevron-up" aria-hidden="true"></i> -->
                                 <h:outputText value="#{msgs.docstructNachObenSchieben}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:ajax execute="@form" render="@form :treeform" />
-                            </h:commandLink>
+                            </button>
                         </li>
                         <!-- ELEMENT DOWN -->
                         <li>
-                            <h:commandLink 
-                                id="nodeDown" 
-                                styleClass="btn btn--icon" 
-                                action="#{Metadaten.KnotenDown}"
+                            <button 
+                                jsf:id="nodeDown" 
+                                class="btn btn--icon" 
+                                jsf:action="#{Metadaten.KnotenDown}"
                                 title="#{msgs.docstructNachUntenSchieben}" 
-                                role="button">
+                                type="button">
                                 <span class="fa fa-chevron-down fa-lg fa-with-bg" />
 <!--                                 <i class="fa fa-chevron-down" aria-hidden="true"></i> -->
                                 <h:outputText value="#{msgs.docstructNachUntenSchieben}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:ajax execute="@form" render="@form :treeform" />
-                            </h:commandLink>
+                            </button>
                         </li>
                         <!-- ELEMENT MOVE -->
                         <li>
-                            <h:commandLink 
-                                id="moveNode" 
-                                styleClass="btn btn--icon" 
-                                action="metseditor"
+                            <button 
+                                jsf:id="moveNode" 
+                                class="btn btn--icon" 
+                                jsf:action="metseditor"
                                 title="#{msgs.docstructAnAndereStelleSchieben}" 
-                                role="button">
+                                >
                                 <span class="fa fa-arrows fa-lg fa-with-bg" />
 <!--                                 <i class="fa fa-arrows" aria-hidden="true"></i> -->
                                 <h:outputText value="#{msgs.docstructAnAndereStelleSchieben}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="true" />
-                            </h:commandLink>
+                            </button>
                         </li>
                         <!-- ELEMENT IMPORT -->
                         <li>
-                            <h:commandLink 
-                                id="copyNode" 
-                                styleClass="btn btn--icon" 
-                                action="metseditor"
+                            <button 
+                                jsf:id="copyNode" 
+                                class="btn btn--icon" 
+                                jsf:action="metseditor"
                                 title="#{msgs.copyDocstructFromOtherProcess}" role="button">
                                 <span class="fa fa-puzzle-piece fa-lg fa-with-bg" />
 <!--                                 <i class="fa fa-puzzle-piece" aria-hidden="true"></i> -->
                                 <h:outputText value="#{msgs.copyDocstructFromOtherProcess}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="true" />
-                            </h:commandLink>
+                            </button>
                         </li>
     
                         <ui:fragment rendered="#{Metadaten.isNotRootElement}">
                             <!-- CHANGE DOCSTRUCTTYPE -->
                             <li>
-                                <h:commandLink 
-                                    id="expandbutton1" 
-                                    styleClass="btn btn--icon btn--toggle"
+                                <button 
+                                    jsf:id="expandbutton1" 
+                                    class="btn btn--icon btn--toggle button-link"
                                     title="#{msgs.docstructTypeAendern}" 
-                                    role="button">
+                                    type="button">
                                     <span class="fa fa-exchange fa-lg fa-with-bg" />
 <!--                                     <i class="fa fa-exchange" aria-hidden="true"></i> -->
                                     <h:outputText value="#{msgs.docstructTypeAendern}" />
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:ajax render="expandbutton1" />
-                                </h:commandLink>
+                                </button>
     
                                 <div id="possibleActions1" class="form-group form-group--flex form-group--inside">
                                     <div class="row">
@@ -113,49 +114,48 @@
                                         </div>
                                         <!-- ACTION -->
                                         <div class="col-3">
-                                            <h:commandLink 
-                                                id="ChangeCurrentDocstructType"
-                                                pt:aria-label="#{msgs.uebernehmen}" 
-                                                styleClass="btn btn--icon"
-                                                action="#{Metadaten.ChangeCurrentDocstructType}" 
+                                            <button 
+                                                jsf:id="ChangeCurrentDocstructType"
+                                                aria-label="#{msgs.uebernehmen}" 
+                                                class="btn btn--icon"
+                                                jsf:action="#{Metadaten.ChangeCurrentDocstructType}" 
                                                 title="#{msgs.uebernehmen}"
-                                                onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
-                                                role="button">
+                                                onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                                 <span class="fa fa-check-circle-o fa-lg fa-with-bg" />
 <!--                                                 <i class="fa fa-check-circle-o" aria-hidden="true"></i> -->
                                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                            </h:commandLink>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </li>
                             <!-- DELETE ELEMENT -->
                             <li>
-                                <h:commandLink 
-                                    id="deleteNode" 
-                                    styleClass="btn btn--icon" 
-                                    action="#{Metadaten.KnotenDelete}"
+                                <button 
+                                    jsf:id="deleteNode" 
+                                    class="btn btn--icon" 
+                                    jsf:action="#{Metadaten.KnotenDelete}"
                                     title="#{msgs.strukturelementLoeschen}"
-                                    onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" role="button">
+                                    jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" role="button">
                                     <span class="fa fa-trash fa-lg fa-with-bg" />
                                     <h:outputText value="#{msgs.strukturelementLoeschen}" />
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:ajax execute="@form" render="@form :treeform" />
-                                </h:commandLink>
+                                </button>
                             </li>
                             <!-- DUPLICATE ELEMENT -->
                             <li>
-                                <h:commandLink 
-                                    id="duplicateNode" 
-                                    styleClass="btn btn--icon"
-                                    action="#{Metadaten.duplicateNode}" 
+                                <button 
+                                    jsf:id="duplicateNode" 
+                                    class="btn btn--icon"
+                                    jsf:action="#{Metadaten.duplicateNode}" 
                                     title="#{msgs.duplicateStructureElement}"
-                                    role="button">
+                                    type="button">
                                     <span class="fa fa-files-o fa-lg fa-with-bg" />
                                     <h:outputText value="#{msgs.duplicateStructureElement}" />
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                     <f:ajax execute="@form" render="@form :treeform" />
-                                </h:commandLink>
+                                </button>
                             </li>
                         </ui:fragment>
                         <li>
@@ -211,44 +211,44 @@
                                 <div class="row">
                                     <div class="col-auto mr-auto"></div>
                                     <div class="col-auto">
-                                        <h:commandLink 
-                                            id="importMetadata" 
-                                            styleClass="btn btn--gray" 
-                                            immediate="false"
-                                            action="#{Metadaten.AddMetadaFromOpacPpn}" 
+                                        <button 
+                                            jsf:id="importMetadata" 
+                                            class="btn btn--gray" 
+                                            jsf:immediate="false"
+                                            jsf:action="#{Metadaten.AddMetadaFromOpacPpn}" 
                                             title="#{msgs.uebernehmen}"
                                             onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                             <h:outputText value="#{msgs.nurMetadaten}" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                        </h:commandLink>
+                                        </button>
     
-                                        <h:commandLink 
-                                            id="importNode" 
-                                            styleClass="btn btn--gray" 
-                                            immediate="false"
-                                            action="#{Metadaten.AddAdditionalOpacPpns}" 
+                                        <button 
+                                            jsf:id="importNode" 
+                                            class="btn btn--gray" 
+                                            jsf:immediate="false"
+                                            jsf:action="#{Metadaten.AddAdditionalOpacPpns}" 
                                             title="#{msgs.uebernehmen}"
                                             onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                             <h:outputText value="#{msgs.alsUnterelemente}" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                        </h:commandLink>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </li>
                         <!-- PAGE ASSIGNMENT -->
                         <li>
-                            <h:commandLink 
-                                id="seitenVonUnterelementenZuweisen" 
-                                styleClass="btn btn--icon"
-                                action="#{Metadaten.SeitenVonChildrenUebernehmen}"
+                            <button 
+                                jsf:id="seitenVonUnterelementenZuweisen" 
+                                class="btn btn--icon"
+                                jsf:action="#{Metadaten.SeitenVonChildrenUebernehmen}"
                                 title="#{msgs.seitenVonUnterelementenZuweisen}">
                                 <span class="fa fa-check-circle-o fa-lg fa-with-bg" />
 <!--                                 <i class="fa fa-check-circle-o" aria-hidden="true"></i> -->
                                 <h:outputText value="#{msgs.seitenVonUnterelementenZuweisen}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:ajax execute="@form" render="@form :treeform" />
-                            </h:commandLink>
+                            </button>
                         </li>
     
                     </ul>

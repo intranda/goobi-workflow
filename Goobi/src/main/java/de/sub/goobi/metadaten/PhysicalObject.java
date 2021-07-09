@@ -17,6 +17,7 @@ public class PhysicalObject {
 
     private boolean representative;
 
+    private boolean doublePage;
 
     public String getLabel() {
         if ("div".equals(type)) {

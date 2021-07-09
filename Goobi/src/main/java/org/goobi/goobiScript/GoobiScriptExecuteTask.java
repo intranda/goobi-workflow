@@ -1,7 +1,8 @@
 package org.goobi.goobiScript;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
@@ -13,8 +14,6 @@ import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IDelayPlugin;
 import org.goobi.production.plugin.interfaces.IStepPlugin;
 import org.goobi.production.plugin.interfaces.IStepPluginVersion2;
-
-import com.google.common.collect.ImmutableList;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
@@ -29,154 +28,149 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
     public String getAction() {
         return "executeStepAndUpdateStatus";
     }
-    
+
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewActionToSampleCall(sb, "This GoobiScript allows to execute a specific workflow step and to move on the workflow afterwards automatically. This is mostly usefull to trigger automatic workflows steps.");
+        addNewActionToSampleCall(sb,
+                "This GoobiScript allows to execute a specific workflow step and to move on the workflow afterwards automatically. This is mostly usefull to trigger automatic workflows steps.");
         addParameterToSampleCall(sb, "steptitle", "OCR", "Title of the workflow step to be triggered.");
         return sb.toString();
     }
-    
+
     @Override
-    public boolean prepare(List<Integer> processes, String command, HashMap<String, String> parameters) {
+    public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
         if (parameters.get("steptitle") == null || parameters.get("steptitle").equals("")) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "steptitle");
-            return false;
+            return new ArrayList<>();
         }
 
         // add all valid commands to list
-        ImmutableList.Builder<GoobiScriptResult> newList = ImmutableList.<GoobiScriptResult> builder().addAll(gsm.getGoobiScriptResults());
+        List<GoobiScriptResult> newList = new ArrayList<>();
         for (Integer i : processes) {
-            GoobiScriptResult gsr = new GoobiScriptResult(i, command, username, starttime);
+            GoobiScriptResult gsr = new GoobiScriptResult(i, command, parameters, username, starttime);
             newList.add(gsr);
         }
-        gsm.setGoobiScriptResults(newList.build());
-        return true;
+        return newList;
     }
 
     @Override
-    public void execute() {
-        ExecuteTaskThread et = new ExecuteTaskThread();
-        et.start();
-    }
-
-    class ExecuteTaskThread extends Thread {
-
-        @Override
-        public void run() {
-            // wait until there is no earlier script to be executed first
-            while (gsm.getAreEarlierScriptsWaiting(starttime)) {
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    log.error("Problem while waiting for running GoobiScripts", e);
-                }
+    public void execute(GoobiScriptResult gsr) {
+        Map<String, String> parameters = gsr.getParameters();
+        String steptitle = parameters.get("steptitle");
+        HelperSchritte hs = new HelperSchritte();
+        // execute all jobs that are still in waiting state
+        Process process = ProcessManager.getProcessById(gsr.getProcessId());
+        gsr.setProcessTitle(process.getTitel());
+        gsr.setResultType(GoobiScriptResultType.RUNNING);
+        gsr.updateTimestamp();
+        boolean foundExecutableStep = false;
+        for (Step step : process.getSchritteList()) {
+            if (!step.getTitel().equalsIgnoreCase(steptitle)) {
+                continue;
             }
+            foundExecutableStep = true;
+            List<String> scriptPaths = step.getAllScriptPaths();
 
-            String steptitle = parameters.get("steptitle");
-            HelperSchritte hs = new HelperSchritte();
-            // execute all jobs that are still in waiting state
-            for (GoobiScriptResult gsr : gsm.getGoobiScriptResults()) {
-                if (gsm.getAreScriptsWaiting(command) && gsr.getResultType() == GoobiScriptResultType.WAITING && gsr.getCommand().equals(command)) {
-                    Process p = ProcessManager.getProcessById(gsr.getProcessId());
-                    gsr.setProcessTitle(p.getTitel());
-                    gsr.setResultType(GoobiScriptResultType.RUNNING);
-                    gsr.updateTimestamp();
-                    for (Step step : p.getSchritteList()) {
-                        if (step.getTitel().equalsIgnoreCase(steptitle)) {
-                            List<String> scriptPaths = step.getAllScriptPaths();
-                            if (step.getTypScriptStep() && !scriptPaths.isEmpty()) {
-                                // found script(s) to execute
-                                ShellScriptReturnValue returncode = hs.executeAllScriptsForStep(step, step.isTypAutomatisch());
-                                if (returncode.getReturnCode() == 0 || returncode.getReturnCode() == 98 || returncode.getReturnCode() == 99) {
-                                    gsr.setResultMessage("Script for step '" + steptitle + "' executed successfully.");
-                                    gsr.setResultType(GoobiScriptResultType.OK);
-                                } else {
-                                    gsr.setResultMessage(
-                                            "A problem occured while executing script for step '" + steptitle + "': " + returncode.getReturnCode());
-                                    gsr.setResultType(GoobiScriptResultType.ERROR);
-                                    gsr.setErrorText(returncode.getErrorText());
-                                }
-                            } else if (step.isTypExportDMS()) {
-                                // step is an export task
-                                boolean exportSuccessful = hs.executeDmsExport(step, step.isTypAutomatisch());
-                                if (exportSuccessful) {
-                                    gsr.setResultMessage("Export done successfully");
-                                    gsr.setResultType(GoobiScriptResultType.OK);
-                                } else {
-                                    gsr.setResultMessage("Errors occurred during export. See process log for details.");
-                                    gsr.setResultType(GoobiScriptResultType.ERROR);
-                                }
-                            } else if (step.isDelayStep() && step.getStepPlugin() != null && !step.getStepPlugin().isEmpty()) {
-                                // check if the delay is exhausted
-                                IDelayPlugin idp = (IDelayPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
-                                idp.initialize(step, "");
-                                if (idp.execute()) {
-                                    gsr.setResultMessage("Finished delay plugin " + step.getStepPlugin());
-                                    gsr.setResultType(GoobiScriptResultType.OK);
-                                    hs.CloseStepObjectAutomatic(step);
-                                }
-
-                            } else if (step.getStepPlugin() != null && !step.getStepPlugin().isEmpty()) {
-                                // run plugin
-                                IStepPlugin isp = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
-                                isp.initialize(step, "");
-
-                                if (isp instanceof IStepPluginVersion2) {
-                                    IStepPluginVersion2 plugin = (IStepPluginVersion2) isp;
-                                    PluginReturnValue val = plugin.run();
-                                    if (val == PluginReturnValue.FINISH) {
-                                        hs.CloseStepObjectAutomatic(step);
-                                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                                "Plugin for step '" + steptitle + "' executed using GoobiScript.", username);
-                                        log.info("Plugin for step '" + steptitle + "' executed using GoobiScript for process with ID " + p.getId());
-                                        gsr.setResultMessage("Plugin for step '" + steptitle + "' executed successfully.");
-                                        gsr.setResultType(GoobiScriptResultType.OK);
-                                    } else if (val == PluginReturnValue.ERROR) {
-                                        hs.errorStep(step);
-                                        gsr.setResultMessage("Plugin for step " + steptitle + " failed.");
-                                        gsr.setResultType(GoobiScriptResultType.ERROR);
-                                    } else if (val == PluginReturnValue.WAIT) {
-                                        // stay in status inwork
-                                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                                "Plugin for step '" + steptitle + "' executed using GoobiScript.", username);
-                                        log.info("Plugin for step '" + steptitle + "' executed using GoobiScript for process with ID " + p.getId());
-                                        gsr.setResultMessage("Plugin for step '" + steptitle + "' executed successfully.");
-                                        gsr.setResultType(GoobiScriptResultType.OK);
-                                    }
-
-                                } else {
-                                    if (isp.execute()) {
-                                        hs.CloseStepObjectAutomatic(step);
-                                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                                                "Plugin for step '" + steptitle + "' executed using GoobiScript.", username);
-                                        log.info("Plugin for step '" + steptitle + "' executed using GoobiScript for process with ID " + p.getId());
-                                        gsr.setResultMessage("Plugin for step '" + steptitle + "' executed successfully.");
-                                        gsr.setResultType(GoobiScriptResultType.OK);
-                                    } else {
-                                        hs.errorStep(step);
-                                        gsr.setResultMessage("Plugin for step " + steptitle + " failed.");
-                                        gsr.setResultType(GoobiScriptResultType.ERROR);
-                                    }
-                                }
-                            } else if (step.isHttpStep()) {
-                                hs.runHttpStep(step);
-                                gsr.setResultMessage("Executed http step");
-                                gsr.setResultType(GoobiScriptResultType.OK);
-                            }
-                        }
-                    }
-                    if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
-                        gsr.setResultType(GoobiScriptResultType.OK);
-                        gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
-                    }
-
-                    gsr.updateTimestamp();
+            if (step.getTypScriptStep() && !scriptPaths.isEmpty()) {
+                // This step is a script step
+                ShellScriptReturnValue returncode = hs.executeAllScriptsForStep(step, step.isTypAutomatisch());
+                boolean success = returncode.getReturnCode() == 0 || returncode.getReturnCode() == 98 || returncode.getReturnCode() == 99;
+                GoobiScriptExecuteTask.setStatusAndMessage(gsr, "script", steptitle, success);
+                if (!success) {
+                    gsr.setErrorText(returncode.getErrorText() + " The return code was : " + returncode.getReturnCode());
                 }
+
+            } else if (step.isTypExportDMS()) {
+                // This step is an export step
+                boolean success = hs.executeDmsExport(step, step.isTypAutomatisch());
+                GoobiScriptExecuteTask.setStatusAndMessage(gsr, "export", steptitle, success);
+
+            } else if (step.isDelayStep() && step.getStepPlugin() != null && !step.getStepPlugin().isEmpty()) {
+                // This step is a delay plugin step
+                IDelayPlugin idp = (IDelayPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
+                idp.initialize(step, "");
+                boolean success = idp.execute();
+                GoobiScriptExecuteTask.setStatusAndMessage(gsr, "delay plugin", steptitle, success);
+                if (success) {
+                    hs.CloseStepObjectAutomatic(step);
+                }
+
+            } else if (step.getStepPlugin() != null && !step.getStepPlugin().isEmpty()) {
+                // This step is a plugin step
+                IStepPlugin isp = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
+                isp.initialize(step, "");
+
+                if (isp instanceof IStepPluginVersion2) {
+                    IStepPluginVersion2 plugin = (IStepPluginVersion2) isp;
+                    PluginReturnValue status = plugin.run();
+
+                    boolean success = (status == PluginReturnValue.FINISH) || (status == PluginReturnValue.WAIT);
+                    GoobiScriptExecuteTask.setStatusAndMessage(gsr, "plugin", steptitle, success);
+                    if (success) {
+                        GoobiScriptExecuteTask.printSuccessMessages(steptitle, process.getId(), username);
+                    } else {
+                        // success == PluginReturnValue.ERROR
+                        hs.errorStep(step);
+                    }
+                } else {
+                    boolean success = isp.execute();
+                    GoobiScriptExecuteTask.setStatusAndMessage(gsr, "plugin", steptitle, success);
+                    if (success) {
+                        GoobiScriptExecuteTask.printSuccessMessages(steptitle, process.getId(), username);
+                        hs.CloseStepObjectAutomatic(step);
+                    } else {
+                        hs.errorStep(step);
+                    }
+                }
+            } else if (step.isHttpStep()) {
+                // This step is an HTTP step
+                hs.runHttpStep(step);
+                GoobiScriptExecuteTask.setStatusAndMessage(gsr, "HTTP", steptitle, true);
+            } else {
+                gsr.setResultType(GoobiScriptResultType.OK);
+                gsr.setResultMessage("Ignored the step \"" + steptitle + "\" because there is no execution command specified.");
             }
         }
+        if (!foundExecutableStep) {//gsr.getResultType().equals(GoobiScriptResultType.RUNNING)
+            gsr.setResultType(GoobiScriptResultType.ERROR);
+            gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+        }
+
+        gsr.updateTimestamp();
+    }
+
+    /**
+     * Handles the success/fail state of the executed GoobiScript. When it was successful (parameter is true) the state is set to OK and a info
+     * message is set. When it failed (parameter is false) the state is set to ERROR and a warning message is set.
+     *
+     * @param result The GoobiScriptResult object to set the message and the state
+     * @param type The name of the type of the step
+     * @param title The name of the currently executed step
+     * @param successful The result of the execution of the script
+     */
+    private static void setStatusAndMessage(GoobiScriptResult result, String type, String title, boolean successful) {
+        if (successful) {
+            result.setResultType(GoobiScriptResultType.OK);
+            result.setResultMessage("Executed the " + type + " step \"" + title + "\" successfully.");
+        } else {
+            result.setResultType(GoobiScriptResultType.ERROR);
+            result.setResultMessage("There was an error while executing the " + type + " step \"" + title + "\".");
+        }
+    }
+
+    /**
+     * Prints success messages to the log output
+     *
+     * @param title The title of the step
+     * @param id The id of the step
+     * @param name The user name
+     */
+    private static void printSuccessMessages(String title, int id, String name) {
+        String messagePrefix = "Plugin for step '" + title + "' executed using GoobiScript";
+        Helper.addMessageToProcessLog(id, LogType.DEBUG, messagePrefix + ".", name);
+        log.info(messagePrefix + " for process with ID " + id);
     }
 }

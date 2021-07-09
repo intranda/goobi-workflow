@@ -8,7 +8,7 @@
 #
 
 
-TOMCAT_USER="tomcat8"
+TOMCAT_USER="tomcat"
 TOMCAT_GROUP=${TOMCAT_USER}
 
 # first argument: name of link

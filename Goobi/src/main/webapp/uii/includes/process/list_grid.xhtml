@@ -1,4 +1,5 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
+xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 <composite:interface>
 </composite:interface>
@@ -45,16 +46,16 @@
 					<!-- Progress bar -->
 					<div class="progress margin-bottom-no" style="border: 0px solid black;height:7px; margin-top:-1px;	">
 						<h:panelGroup rendered="#{item.fortschritt3 gt 0}">
-							<div title="#{msgs.statusAbgeschlossen}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-done'):('progress-bar-success'))}" style="width: #{item.fortschritt3}%;margin-top:0px;"/>
+							<div title="#{msgs.statusAbgeschlossen}" aria-label="#{item.fortschritt3}% #{msgs.statusAbgeschlossen}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-done'):('progress-bar-success'))}" style="width: #{item.fortschritt3}%;margin-top:0px;"/>
 						</h:panelGroup>
 						<h:panelGroup rendered="#{item.fortschritt2 gt 0}">
-							<div title="#{msgs.statusOffen}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-open'):('progress-bar-warning'))}" style="width: #{item.fortschritt2}%;margin-top:0px;"/>
+							<div title="#{msgs.statusOffen}" aria-label="#{item.fortschritt2}% #{msgs.statusOffen}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-open'):('progress-bar-warning'))}" style="width: #{item.fortschritt2}%;margin-top:0px;"/>
 						</h:panelGroup>
 						<h:panelGroup rendered="#{item.fortschrittError gt 0}">
-							<div title="#{msgs.statusError}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-error'):('progress-bar-danger progressbar-status-error'))} " style="width: #{item.fortschrittError}%;margin-top:0px;"/>
+							<div title="#{msgs.statusError}" aria-label="#{item.fortschrittError}% #{msgs.statusError}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-error'):('progress-bar-danger progressbar-status-error'))} " style="width: #{item.fortschrittError}%;margin-top:0px;"/>
 						</h:panelGroup>
 						<h:panelGroup rendered="#{item.fortschritt1 gt 0}">
-							<div title="#{msgs.statusGesperrt}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-locked'):('progress-bar-danger'))} " style="width: #{item.fortschritt1}%;margin-top:0px;"/>
+							<div title="#{msgs.statusGesperrt}" aria-label="#{item.fortschritt1}% #{msgs.statusGesperrt}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-locked'):('progress-bar-danger'))} " style="width: #{item.fortschritt1}%;margin-top:0px;"/>
 						</h:panelGroup>
 					</div>
 				                                        
@@ -67,13 +68,13 @@
 							<tr>
 								<!-- Expand and collapse -->
 								<td style="padding-left:10px;" rowspan="2">
-									<h:commandLink action="#{NavigationForm.Reload}" id="grid_show_tasks"
-										rel="tooltip" title="#{msgs.process_grid_details}">
+									<button jsf:action="#{NavigationForm.Reload}" jsf:id="grid_show_tasks"
+										jsf:rel="tooltip" title="#{msgs.process_grid_details}" class="button-link">
 										<i class="fa #{item.panelAusgeklappt?'fa-chevron-down':'fa-chevron-right'} font-black margin-left-5 margin-right-5" />
 										<x:updateActionListener property="#{item.panelAusgeklappt}" value="#{not item.panelAusgeklappt}" />
 										<f:passThroughAttribute name="data-toggle" value="tooltip" />
 										<f:ajax render=":myform" />
-									</h:commandLink>
+									</button>
 								</td>
 								<!-- Project -->
 								<td style="width:10%"><h:outputText value="#{msgs.process_grid_project}:" /></td>
@@ -84,22 +85,23 @@
 								<td style="padding-right:10px;" rowspan="2">
 											
 									<div class="btn-group pull-right" title="#{msgs.process_grid_options}" data-toggle="tooltip">
-									
-										<a class="btn dropdown-toggle fa fa-cog" data-toggle="dropdown">
+										<div class="dropdown">
+										<button class="btn dropdown-toggle fa fa-cog" data-toggle="dropdown">
 											<span class="caret"></span>
-										</a>
+										</button>
 										<ul class="dropdown-menu pull-right">
 										
 											<li>
 												<!-- Bearbeiten-Schaltknopf -->
-												<h:commandLink action="#{ProzessverwaltungForm.editProcess}" id="grid_edit"
-													rendered="#{LoginForm.hasRole('Workflow_General_Details')}" rel="tooltip" title="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}">
+												<button jsf:action="#{ProzessverwaltungForm.editProcess}" jsf:id="grid_edit"
+													jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details')}" jsf:rel="tooltip" title="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}"
+													class="btn button-schaltknopf">
 													<i class="fa fa-pencil margin-right-10" />
 													<h:outputText value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}" />
 													<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 													<x:updateActionListener property="#{ProzessverwaltungForm.modusBearbeiten}" value="" />
-												</h:commandLink>
+												</button>
 											</li>
 											
 											<li>
@@ -146,92 +148,93 @@
 											
 											<li>
 												<!-- DMS-Export-Schaltknopf -->
-												<h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" id="grid_action21" rel="tooltip" title="#{msgs.importDms}" styleClass="font-light" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
+												<button jsf:action="#{ProzessverwaltungForm.ExportDMS}" jsf:id="grid_action21" jsf:rel="tooltip" title="#{msgs.importDms}" class="font-light dropdown-item" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
 													<i class="fa fa-globe margin-right-10" />
 													<h:outputText value="#{msgs.importDms}" />
 													<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
-												</h:commandLink>
+												</button>
 											</li>
 											<li>
 												<!-- DMS-Export-Schaltknopf greyed -->
-												<h:commandLink action="#{ProzessverwaltungForm.ExportDMS}" disabled="true" rel="tooltip" title="#{msgs.importDms}" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !item.displayDMSButton}">
+												<button jsf:id="grid_action21-greyed" jsf:action="#{ProzessverwaltungForm.ExportDMS}" class="dropdown-item" jsf:disabled="true" jsf:rel="tooltip" title="#{msgs.importDms}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and !item.displayDMSButton}">
 													<i class="font-light fa fa-globe margin-right-10" />
 													<h:outputText value="#{msgs.importDms}" />
 													<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
-												</h:commandLink>
+												</button>
 											</li>
 												
 											<h:panelGroup rendered="#{LoginForm.hasRole('Workflow_Processes_Allow_Linking')}">
 												<li>
 													<!-- Download-Schaltknopf -->
-													<h:commandLink action="#{ProzessverwaltungForm.DownloadToHome}" id="grid_action16" title="#{msgs.imHomeVerzeichnisVerlinken}" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and !item.imageFolderInUse}">
+													<button jsf:action="#{ProzessverwaltungForm.DownloadToHome}" jsf:id="grid_action16" class="dropdown-item" title="#{msgs.imHomeVerzeichnisVerlinken}" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and !item.imageFolderInUse}">
 														<i class="fa fa-cloud-download margin-right-10"></i>
 														<h:outputText value="#{msgs.imHomeVerzeichnisVerlinken}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
-													</h:commandLink>
+													</button>
 												</li>
 												<li>
 													<!-- Download-Schaltknopf -->
-													<h:commandLink action="#{ProzessverwaltungForm.DownloadToHome}" id="grid_action17" title="#{msgs.imHomeVerzeichnisVerlinkenTrotzBearbeitung}" onclick="if (!confirm('#{msgs.warningAdminBeforeLinking}')) return false" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and item.imageFolderInUse}">
+													<button jsf:action="#{ProzessverwaltungForm.DownloadToHome}" jsf:id="grid_action17" class="dropdown-item" title="#{msgs.imHomeVerzeichnisVerlinkenTrotzBearbeitung}" onclick="if (!confirm('#{msgs.warningAdminBeforeLinking}')) return false" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and item.imageFolderInUse}">
 														<i class="fa fa-cloud-download margin-right-10"></i>
 														<h:outputText value="#{msgs.imHomeVerzeichnisVerlinkenTrotzBearbeitung}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
-													</h:commandLink>
+													</button>
 												</li>
 												<li>
 													<!-- Upload-Schaltknopf -->
-													<h:commandLink action="#{ProzessverwaltungForm.UploadFromHome}" id="grid_action18" title="#{msgs.ausHomeverzeichnisEntfernen}" onclick="if (!confirm('#{msgs.ausHomeverzeichnisEntfernen}')) return false" rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+													<button jsf:action="#{ProzessverwaltungForm.UploadFromHome}" jsf:id="grid_action18" class="dropdown-item" title="#{msgs.ausHomeverzeichnisEntfernen}" onclick="if (!confirm('#{msgs.ausHomeverzeichnisEntfernen}')) return false" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
 														<i class="fa fa-cloud-upload margin-right-10"></i>
 														<h:outputText value="#{msgs.ausHomeverzeichnisEntfernen}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
-													</h:commandLink>
+													</button>
 												</li>
 											</h:panelGroup>
 												
 											<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Download')}">
 												<li>
 													<!-- XML Export-Schaltknopf -->
-													<h:commandLink id="grid_ubid119" action="#{ProzessverwaltungForm.CreateXML}" title="#{msgs.createXML}">
+													<button jsf:id="grid_ubid119" jsf:action="#{ProzessverwaltungForm.CreateXML}" class="dropdown-item" title="#{msgs.createXML}">
 														<i class="fa fa-floppy-o margin-right-10"></i>
 														<h:outputText value="#{msgs.createXML}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
-													</h:commandLink>
+													</button>
 												</li>
 												<li>
 													<!-- Docket Export -->
-													<h:commandLink id="grid_ubid1119" action="#{ProzessverwaltungForm.downloadDocket}" title="#{msgs.laufzettelDrucken}">
+													<button jsf:id="grid_ubid1119" jsf:action="#{ProzessverwaltungForm.downloadDocket}" class="dropdown-item" title="#{msgs.laufzettelDrucken}">
 														<i class="fa fa-print margin-right-10"></i>
 														<h:outputText value="#{msgs.process_generateDocket}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
-													</h:commandLink>
+													</button>
 												</li>
 												<li>
 													<!-- Mets-Export-Schaltknopf -->
-													<h:commandLink action="#{ProzessverwaltungForm.ExportMets}" id="grid_action19" title="#{msgs.exportMets}" rendered="#{item.displayMETSButton}">
+													<button jsf:action="#{ProzessverwaltungForm.ExportMets}" jsf:id="grid_action19" class="dropdown-item" title="#{msgs.exportMets}" jsf:rendered="#{item.displayMETSButton}">
 														<i class="fa fa-floppy-o margin-right-10"></i>
 														<h:outputText value="#{msgs.exportMets}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
-													</h:commandLink>
+													</button>
 												</li>
 												<li>
 													<!-- PDF-Export-Schaltknopf -->
-													<h:commandLink action="#{ProzessverwaltungForm.ExportPdf}" id="grid_action20" title="#{msgs.exportPdf}" rendered="#{item.displayPDFButton}">
+													<button jsf:action="#{ProzessverwaltungForm.ExportPdf}" jsf:id="grid_action20" class="dropdown-item" title="#{msgs.exportPdf}" jsf:rendered="#{item.displayPDFButton}">
 														<i class="fa fa-floppy-o margin-right-10"></i>
 														<h:outputText value="#{msgs.exportPdf}" />
 														<x:updateActionListener property="#{ProzessverwaltungForm.myProzess}" value="#{item}" />
 														<f:passThroughAttribute name="data-toggle" value="tooltip" />
-													</h:commandLink>
+													</button>
 												</li>
 											</h:panelGroup>
 										</ul>
+										</div>
 									</div>
 									
 								</td>

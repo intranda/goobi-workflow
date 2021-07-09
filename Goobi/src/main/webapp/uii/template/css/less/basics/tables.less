@@ -27,6 +27,12 @@
             	padding-right: 5px;
             }
         }
+		button {
+			.item-niveau {
+            	color: @gray;
+            	padding-right: 5px;
+            }
+		}
         .unselected {
         	color: @lightgray;
         }
@@ -38,25 +44,26 @@
         tr[class*="level"] {
             td {
                 .expand {
-                    margin-left: -22px;
+                    margin-left: -20px;
+                    position: absolute;
                 }
                 .expanded {
-                	margin-left: -19px;
+                	margin-left: -16px;
+                	position: absolute;
                 }              
             }
         }
         tr.level-0 {
+ 			padding-left: 10px;
             td {
-                [id*="expand"] {
-                    margin-left: 0;
-                }                
+                padding-left: 15px;
             }
         }
         tr.level-1,
         td.level-1 {
             padding-left: 10px;
             td {
-                padding-left: 35px;
+                padding-left: 30px;
             }
         }
         tr.level-2,

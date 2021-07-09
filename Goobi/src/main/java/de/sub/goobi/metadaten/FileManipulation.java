@@ -29,6 +29,8 @@ import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import lombok.Getter;
+import lombok.Setter;
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -48,25 +50,44 @@ public class FileManipulation {
     }
 
     // insert new file after this page
+    @Getter
+    @Setter
     private String insertPage = "";
 
+    @Getter
+    @Setter
     private String imageSelection = "";
 
     // mode of insert (uncounted or into pagination sequence)
+    @Getter
+    @Setter
     private String insertMode = "uncounted";
-
+    
+    @Getter
+    @Setter
     private Part uploadedFile = null;
 
+    @Getter
+    @Setter
     private String uploadedFileName = null;
 
+    @Getter
+    @Setter
     private List<String> selectedFiles = new ArrayList<>();
 
+    @Getter
+    @Setter
     private boolean deleteFilesAfterMove = false;
 
+    @Getter
+    @Setter
     private boolean moveFilesInAllFolder = true;
 
+    @Setter
     private List<String> allImportFolder = new ArrayList<>();
 
+    @Getter
+    @Setter
     private String currentFolder = "";
 
     /**
@@ -161,14 +182,6 @@ public class FileManipulation {
         return null;
     }
 
-    public String getUploadedFileName() {
-        return uploadedFileName;
-    }
-
-    public void setUploadedFileName(String uploadedFileName) {
-        this.uploadedFileName = uploadedFileName;
-    }
-
     private void updatePagination(String filename)
             throws TypeNotAllowedForParentException, IOException, InterruptedException, SwapException, DAOException, MetadataTypeNotAllowedException {
         if (!matchesFileConfiguration(filename)) {
@@ -185,7 +198,8 @@ public class FileManipulation {
 
             List<DocStruct> pageList = physical.getAllChildren();
 
-            int indexToImport = Integer.parseInt(insertPage);
+            int indexToImport = Math.max(Integer.parseInt(insertPage)-1, 0);
+            
             DocStructType newPageType = prefs.getDocStrctTypeByName("page");
             DocStruct newPage = doc.createDocStruct(newPageType);
             MetadataType physicalPageNoType = prefs.getMetadataTypeByName("physPageNumber");
@@ -252,41 +266,9 @@ public class FileManipulation {
         }
     }
 
-    public Part getUploadedFile() {
-        return this.uploadedFile;
-    }
-
-    public void setUploadedFile(Part uploadedFile) {
-        this.uploadedFile = uploadedFile;
-    }
-
-    public String getInsertPage() {
-        return insertPage;
-    }
-
-    public void setInsertPage(String insertPage) {
-        this.insertPage = insertPage;
-    }
-
-    public String getInsertMode() {
-        return insertMode;
-    }
-
-    public void setInsertMode(String insertMode) {
-        this.insertMode = insertMode;
-    }
-
     /**
      * download file
      */
-
-    public String getImageSelection() {
-        return imageSelection;
-    }
-
-    public void setImageSelection(String imageSelection) {
-        this.imageSelection = imageSelection;
-    }
 
     public void downloadFile() {
         Path downloadFile = null;
@@ -451,30 +433,6 @@ public class FileManipulation {
         metadataBean.retrieveAllImages();
     }
 
-    public List<String> getSelectedFiles() {
-        return selectedFiles;
-    }
-
-    public void setSelectedFiles(List<String> selectedFiles) {
-        this.selectedFiles = selectedFiles;
-    }
-
-    public boolean isDeleteFilesAfterMove() {
-        return deleteFilesAfterMove;
-    }
-
-    public void setDeleteFilesAfterMove(boolean deleteFilesAfterMove) {
-        this.deleteFilesAfterMove = deleteFilesAfterMove;
-    }
-
-    public boolean isMoveFilesInAllFolder() {
-        return moveFilesInAllFolder;
-    }
-
-    public void setMoveFilesInAllFolder(boolean moveFilesInAllFolder) {
-        this.moveFilesInAllFolder = moveFilesInAllFolder;
-    }
-
     /**
      * import files from folder
      * 
@@ -491,10 +449,6 @@ public class FileManipulation {
             allImportFolder.addAll(StorageProvider.getInstance().list(fileuploadFolder.toString(), NIOFileUtils.folderFilter));
         }
         return allImportFolder;
-    }
-
-    public void setAllImportFolder(List<String> allImportFolder) {
-        this.allImportFolder = allImportFolder;
     }
 
     public void importFiles() {
@@ -615,15 +569,7 @@ public class FileManipulation {
         // save current state
         metadataBean.Reload();
     }
-
-    public String getCurrentFolder() {
-        return currentFolder;
-    }
-
-    public void setCurrentFolder(String currentFolder) {
-        this.currentFolder = currentFolder;
-    }
-
+    
     private static boolean matchesFileConfiguration(String filename) {
 
         if (filename == null) {

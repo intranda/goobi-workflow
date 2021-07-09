@@ -1,5 +1,8 @@
 package org.goobi.production.flow.helper;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -17,20 +20,15 @@ package org.goobi.production.flow.helper;
  */
 public class SearchColumn {
 
+	@Getter
+	@Setter
     private String value = "";
 
+	@Getter
     private int order;
 
     public SearchColumn(int order) {
         this.order = order;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     public String getTableName() {
@@ -52,10 +50,6 @@ public class SearchColumn {
             return "log";
         }
         return "";
-    }
-
-    public int getOrder() {
-        return order;
     }
 
     public String getTableType() {

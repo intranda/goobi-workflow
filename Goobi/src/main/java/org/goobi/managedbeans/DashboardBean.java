@@ -13,6 +13,7 @@ import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IDashboardPlugin;
 
 import de.sub.goobi.helper.Helper;
+import lombok.Getter;
 
 @Named("DashboardForm")
 @ViewScoped
@@ -22,6 +23,7 @@ public class DashboardBean implements Serializable {
      * 
      */
     private static final long serialVersionUID = -8555010017712925180L;
+    @Getter
     private IDashboardPlugin plugin = null;
 
     public DashboardBean() {
@@ -43,9 +45,4 @@ public class DashboardBean implements Serializable {
             }
         }
     }
-
-    public IDashboardPlugin getPlugin() {
-        return plugin;
-    }
-
 }

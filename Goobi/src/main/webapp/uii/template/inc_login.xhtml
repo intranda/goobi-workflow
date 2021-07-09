@@ -6,7 +6,8 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:o="http://omnifaces.org/ui">
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<composite:interface>
 	</composite:interface>
@@ -20,15 +21,16 @@
 			
 			
 			<div id="login-body" class="login-body" style="margin-bottom:5px;">
+                <h:outputText style="color:red;" value="Developer Mode ON" rendered="#{DevModeBean.developerMode}" />
 				<ui:fragment rendered="#{!LoginForm.oidcAutoRedirect}">
 					<h2>
 						<h:outputText value="#{msgs.login}" />
 					</h2>
 					<h:form styleClass="form-validate" onkeypress="submitOnEnter(event);" id="loginForm" prependId="false">
 						<h:panelGroup id="globalWarningMessage">
-							<h:panelGroup rendered="#{SessionForm.bitteAusloggen!=''}" styleClass="alert alert-danger block" style="line-height:18px;font-size:14px;">
+							<h:panelGroup rendered="#{SessionForm.logoutMessage!=''}" styleClass="alert alert-danger block" style="line-height:18px;font-size:14px;">
 					             <i class="fa fa-exclamation-triangle margin-right-10" />
-					             <h:outputText value="#{SessionForm.bitteAusloggen}" />
+					             <h:outputText value="#{SessionForm.logoutMessage}" />
 					         </h:panelGroup>
 				         </h:panelGroup>
 				       
@@ -60,18 +62,19 @@
 							</div>
 							<div class="submit">
 								<ui:fragment rendered="#{LoginForm.useOpenIDConnect}">
-									<h:commandLink 
-										action="#{LoginForm.openIDLogin}" 
-										styleClass="float-left btn font-size-s" 
+									<button 
+										jsf:id="openIdLogin"
+										jsf:action="#{LoginForm.openIDLogin}" 
+										class="float-left btn font-size-s" 
 										style="background: #fff; outline: 1px solid #368ee0;">
 										OpenID connect
-									</h:commandLink>
+									</button>
 								</ui:fragment>
-								<h:commandLink id="loginButton" action="#{LoginForm.Einloggen}" style="margin-bottom:20px;"
-									styleClass="btn btn-primary font-size-s pull-right submitOnEnter">
+								<button jsf:id="loginButton" jsf:action="#{LoginForm.Einloggen}" style="margin-bottom:20px;"
+									class="btn btn-primary font-size-s pull-right submitOnEnter">
 									<h:outputText value="#{msgs.einloggen}" />
 									<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a0" />
-								</h:commandLink>
+								</button>
 							</div>
 							<x:commandButton id="LoginAbsenden2" forceId="true" style="display:none" type="submit"
 								action="#{LoginForm.Einloggen}" value="#{msgs.einloggen}">
@@ -91,13 +94,13 @@
 								<h:outputText value="Redirecting to SSO provider..." />
 							</h2>
 							<p>If this doesn't work, click this button:</p>
-							<h:commandLink 
-								id="openIdLink"
-								action="#{LoginForm.openIDLogin}" 
-								styleClass="float-left btn font-size-s" 
+							<button 
+								jsf:id="openIdLink"
+								jsf:action="#{LoginForm.openIDLogin}" 
+								class="float-left btn font-size-s" 
 								style="background: #fff; outline: 1px solid #368ee0; margin-bottom: 20px;">
 								OpenID connect
-							</h:commandLink>
+							</button>
 							<script>
 								$(document).ready(function() {
 								    console.log($('#openIdForm\\:openIdLink'));
@@ -111,12 +114,12 @@
 				</ui:fragment>
                 <ui:fragment rendered="#{LoginForm.useHeaderLogin}">
                     <h:form id="headerSsoForm">
-                        <h:commandLink 
-                            id="headerSsoLink"
-                            action="#{LoginForm.headerSsoLogin}" 
-                            styleClass="float-left btn font-size-s" 
+                        <button 
+                            jsf:id="headerSsoLink"
+                            jsf:action="#{LoginForm.headerSsoLogin}" 
+                            class="float-left btn font-size-s" 
                             style="display:none;">
-                        </h:commandLink>
+                        </button>
                         <script>
                         $(document).ready(function() {
                             setTimeout(function() {
@@ -128,7 +131,8 @@
                 </ui:fragment>
 			</div>
 			<a style="color: #FFFFFF;" href="https://goobi.io/">Goobi workflow - developed by intranda</a>
-			<h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{msgs.version} #{HelperForm.version}" />
+			
+            <h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="#{msgs.version} #{HelperForm.version}" />
 
 		</div>
     </main>

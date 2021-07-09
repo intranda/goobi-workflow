@@ -4,18 +4,19 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
+import org.goobi.goobiScript.GoobiScriptManager;
+import org.goobi.goobiScript.GoobiScriptResult;
 import org.goobi.goobiScript.IGoobiScript;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
-import org.reflections.Reflections;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,36 +36,39 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 
 @Log4j2
 public class GoobiScript {
-    HashMap<String, String> myParameters;
     private static final Logger logger = LogManager.getLogger(GoobiScript.class);
     public final static String DIRECTORY_SUFFIX = "_tif";
 
     /**
-     * exectute the list of GoobiScript commands for all processes that were selected
+     * executes the list of GoobiScript commands for all processes that were selected
      * 
      * @param processes List of process identifiers
      * @param allScripts all goobiScript calls that were used
      * @return
      */
+    @Deprecated
     public String execute(List<Integer> processes, String allScripts) {
-        YAMLFactory yaml = new YAMLFactory();
-        ObjectMapper mapper = new ObjectMapper();
-        TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {
-        };
-        List<HashMap<String, String>> scripts = new ArrayList<>();
-        try {
-            YAMLParser yamlParser = yaml.createParser(allScripts);
-            scripts = mapper.readValues(yamlParser, typeRef).readAll();
-        } catch (IOException e1) {
-            log.error(e1);
-            Helper.setFehlerMeldung("goobiScriptfield", "Can't parse GoobiScript. Please check your Syntax. Only valid YAML is allowed.");
+        GoobiScriptManager gsm = Helper.getBeanByClass(GoobiScriptManager.class);
+        return execute(processes, allScripts, gsm);
+    }
+
+    /**
+     * executes the list of GoobiScript commands for all processes that were selected
+     * 
+     * @param processes List of process identifiers
+     * @param allScripts all goobiScript calls that were used
+     * @param gsm GoobiScriptManager to use
+     * @return
+     */
+    public String execute(List<Integer> processes, String allScripts, GoobiScriptManager gsm) {
+        List<Map<String, String>> scripts = parseGoobiscripts(allScripts);
+        if (scripts == null) {
             return "";
         }
-        for (HashMap<String, String> currentScript : scripts) {
-            this.myParameters = currentScript;
+        for (Map<String, String> currentScript : scripts) {
 
             // in case of a missing action parameter skip this goobiscript
-            String myaction = this.myParameters.get("action");
+            String myaction = currentScript.get("action");
             if (myaction == null || myaction.length() == 0) {
                 Helper.setFehlerMeldung("goobiScriptfield", "Missing action!", "Please select one of the allowed commands.");
                 continue;
@@ -93,33 +97,47 @@ public class GoobiScript {
                     break;
                 default:
                     // find the right GoobiScript class
-                    boolean found = false;
-                    Set<Class<? extends IGoobiScript>> myset = new Reflections("org.goobi.goobiScript.*").getSubTypesOf(IGoobiScript.class);
-                    for (Class<? extends IGoobiScript> cl : myset) {
-                        try {
-                            IGoobiScript gs = cl.newInstance();
-                            if (gs.getAction().equals(myaction)) {
-                                found = true;
-                                // initialize the GoobiScript to check if all is valid
-                                boolean scriptCallIsValid = gs.prepare(processes, currentScript.toString(), this.myParameters);
+                    Optional<IGoobiScript> optGoobiScript = gsm.getGoobiScriptForAction(myaction);
+                    if (optGoobiScript.isPresent()) {
+                        IGoobiScript gs = optGoobiScript.get();
+                        // initialize the GoobiScript to check if all is valid
+                        List<GoobiScriptResult> scriptResults = gs.prepare(processes, currentScript.toString(), currentScript);
 
-                                // just execute the GoobiScript now if the initialisation was valid
-                                if (scriptCallIsValid) {
-                                    Helper.setMeldung("goobiScriptfield", "", "GoobiScript started: " + gs.getAction());
-                                    gs.execute();
-                                }
-                                break;
-                            }
-                        } catch (InstantiationException e) {
-                        } catch (IllegalAccessException e) {
+                        // just execute the GoobiScript now if the initialisation was valid
+                        if (!scriptResults.isEmpty()) {
+                            Helper.setMeldung("goobiScriptfield", "", "GoobiScript added: " + gs.getAction());
+                            gsm.enqueueScripts(scriptResults);
+                            gsm.startWork();
                         }
-                    }
-                    if (!found) {
+                    } else {
                         Helper.setFehlerMeldung("goobiScriptfield", "Unknown action: " + myaction, " Please use one of the given below.");
                     }
             }
         }
         return "";
+    }
+
+    /**
+     * Parses YAML to a list of GoobiScript parameter maps
+     * 
+     * @param allScripts
+     * @return
+     */
+    public static List<Map<String, String>> parseGoobiscripts(String allScripts) {
+        YAMLFactory yaml = new YAMLFactory();
+        ObjectMapper mapper = new ObjectMapper();
+        TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
+        };
+        List<Map<String, String>> scripts = new ArrayList<>();
+        try {
+            YAMLParser yamlParser = yaml.createParser(allScripts);
+            scripts = mapper.readValues(yamlParser, typeRef).readAll();
+        } catch (IOException e1) {
+            log.error(e1);
+            Helper.setFehlerMeldung("goobiScriptfield", "Can't parse GoobiScript. Please check your Syntax. Only valid YAML is allowed.");
+            return null;
+        }
+        return scripts;
     }
 
     /**

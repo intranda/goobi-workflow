@@ -299,7 +299,7 @@ function enlargeImageSize( width ) {
     var newWidth = percentWidth + 10;
 
     if ( newWidth <= 100 ) {
-        sessionStorage.setItem( 'imageSize', newWidth );
+        sessionStorage.setItem( 'wf_imageSize', newWidth );
         $( '[data-change="zoom-out"]' ).attr( 'disabled', false );
         $( '[data-change="zoom-in"]' ).attr( 'disabled', false );
         $( '#metseditorImageContainer' ).css( 'width', newWidth + '%' );
@@ -316,7 +316,7 @@ function decreaseImageSize( width ) {
     var newWidth = percentWidth - 10;
 
     if ( newWidth >= 20 ) {
-        sessionStorage.setItem( 'imageSize', newWidth );
+        sessionStorage.setItem( 'wf_imageSize', newWidth );
         $( '[data-change="zoom-in"]' ).attr( 'disabled', false );
         $( '[data-change="zoom-out"]' ).attr( 'disabled', false );
         $( '#metseditorImageContainer' ).css( 'width', newWidth + '%' );
@@ -358,8 +358,8 @@ $(document).ready(function () {
                 $(".notFocusable").attr("tabindex", "-1");
         		
         		
-                /*if ( sessionStorage.getItem( 'imageSize' ) !== null ) {
-                    $( '#metseditorImageContainer' ).css( 'width', sessionStorage.getItem( 'imageSize' ) + '%' );
+                /*if ( sessionStorage.getItem( 'wf_imageSize' ) !== null ) {
+                    $( '#metseditorImageContainer' ).css( 'width', sessionStorage.getItem( 'wf_imageSize' ) + '%' );
                 }
                 else {
                     $( '#metseditorImageContainer' ).css( 'width', '80%' );
@@ -408,8 +408,8 @@ $(document).ready(function () {
 
     // change image size
     /*
-    if ( sessionStorage.getItem( 'imageSize' ) !== null ) {
-        $( '#metseditorImageContainer' ).css( 'width', sessionStorage.getItem( 'imageSize' ) + '%' );
+    if ( sessionStorage.getItem( 'wf_imageSize' ) !== null ) {
+        $( '#metseditorImageContainer' ).css( 'width', sessionStorage.getItem( 'wf_imageSize' ) + '%' );
     }
     else {
         $( '#metseditorImageContainer' ).css( 'width', '80%' );

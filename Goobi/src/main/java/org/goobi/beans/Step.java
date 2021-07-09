@@ -44,49 +44,116 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
 public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private static final long serialVersionUID = 6831844584239811846L;
 
+    @Getter
+    @Setter
     private Integer id;
+    @Getter
+    @Setter
     private String titel;
+    @Getter
+    @Setter
     private Integer prioritaet;
+    @Getter
+    @Setter
     private Integer reihenfolge;
+    @Getter (AccessLevel.PRIVATE)
+    @Setter (AccessLevel.PRIVATE)
     private Integer bearbeitungsstatus;
-    private Date bearbeitungszeitpunkt;
+    @Getter
+    @Setter
+    private Date bearbeitungszeitpunkt;   
+    @Getter
+    @Setter
     private Date bearbeitungsbeginn;
+    @Getter
+    @Setter
     private Date bearbeitungsende;
+    @Getter (AccessLevel.PRIVATE)
+    @Setter (AccessLevel.PRIVATE)
     private Integer editType;
     private User bearbeitungsbenutzer;
     // temporär
+    @Getter
+    @Setter
     private Integer userId;
 
+    @Getter
+    @Setter
     private short homeverzeichnisNutzen;
 
+    @Getter
+    @Setter
     private boolean typMetadaten = false;
+    @Getter
+    @Setter
     private boolean typAutomatisch = false;
+    @Getter
+    @Setter
     private boolean typImportFileUpload = false;
+    @Getter
+    @Setter
     private boolean typExportRus = false;
+    @Getter
+    @Setter
     private boolean typImagesLesen = false;
+    @Getter
     private boolean typImagesSchreiben = false;
+    @Getter
+    @Setter
     private boolean typExportDMS = false;
+    @Getter
+    @Setter
     private boolean typBeimAnnehmenModul = false;
+    @Getter
+    @Setter
     private boolean typBeimAnnehmenAbschliessen = false;
+    @Getter
+    @Setter
     private boolean typBeimAnnehmenModulUndAbschliessen = false;
+    @Setter
     private Boolean typScriptStep = false;
+    @Getter
+    @Setter
     private String scriptname1;
+    @Getter
+    @Setter
     private String typAutomatischScriptpfad;
+    @Getter
+    @Setter
     private String scriptname2;
+    @Getter
+    @Setter
     private String typAutomatischScriptpfad2;
+    @Getter
+    @Setter
     private String scriptname3;
+    @Getter
+    @Setter
     private String typAutomatischScriptpfad3;
+    @Getter
+    @Setter
     private String scriptname4;
+    @Getter
+    @Setter
     private String typAutomatischScriptpfad4;
+    @Getter
+    @Setter
     private String scriptname5;
+    @Getter
+    @Setter
     private String typAutomatischScriptpfad5;
+    @Getter
+    @Setter
     private String typModulName;
+    @Getter
+    @Setter
     private boolean typBeimAbschliessenVerifizieren = false;
     private Boolean batchStep = false;
 
@@ -105,7 +172,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private String httpMethod;
     @Getter
     @Setter
-    private String[] possibleHttpMethods = new String[] { "POST", "PUT", "PATCH" };
+    private String[] possibleHttpMethods = new String[] { "POST", "PUT", "PATCH", "GET" };
     @Getter
     @Setter
     private String httpJsonBody;
@@ -116,21 +183,39 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     @Setter
     private boolean httpEscapeBodyJson;
 
+    @Setter
     private Process prozess;
     // temporär
+    @Getter
+    @Setter
     private Integer processId;
 
+    @Setter
     private List<ErrorProperty> eigenschaften;
+    @Setter
     private List<User> benutzer;
+    @Setter
     private List<Usergroup> benutzergruppen;
+    @Getter
+    @Setter
     private boolean panelAusgeklappt = false;
+    @Getter
+    @Setter
     private boolean selected = false;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyymmdd");
 
+    @Getter
+    @Setter
     private String stepPlugin;
+    @Getter
+    @Setter
     private String validationPlugin;
+    @Getter
+    @Setter
     private boolean delayStep;
 
+    @Getter
+    @Setter
     private boolean updateMetadataIndex;
 
     @Getter
@@ -140,13 +225,17 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     @Getter
     private QueueType messageQueue;
 
+    //    @Getter
+    //    @Setter
+    //    private String messageId;
+
     public Step() {
         this.titel = "";
         this.eigenschaften = new ArrayList<>();
         this.benutzer = new ArrayList<>();
         this.benutzergruppen = new ArrayList<>();
-        this.prioritaet = Integer.valueOf(0);
-        this.reihenfolge = Integer.valueOf(0);
+        this.prioritaet = 0;
+        this.reihenfolge = 0;
         this.httpJsonBody = "";
         setBearbeitungsstatusEnum(StepStatus.LOCKED);
     }
@@ -155,32 +244,36 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     public Step(Process process) {
         this();
         this.prozess = process;
-        
+
         // Look for the next available order number
         List<Step> steps = process.getSchritte();
-        int maximumOrder = 1;
-        for (int i = 0; i < steps.size(); i++) {
-            if (steps.get(i).getReihenfolge() > maximumOrder) {
-                maximumOrder = steps.get(i).getReihenfolge();
+        if (steps.size() == 0) {
+            this.reihenfolge = 1;
+            return;
+        }
+
+        // Here the list of steps is NOT empty
+        // Before iterating over all steps, the order of the first step is assumed as the highest one
+        int maximumOrder = steps.get(0).getReihenfolge();
+        // After that a higher one can be found. Here the index begins at 1.
+        Step currentStep;
+        for (int i = 1; i < steps.size(); i++) {
+            currentStep = steps.get(i);
+            if (currentStep.getReihenfolge() > maximumOrder) {
+                maximumOrder = currentStep.getReihenfolge();
             }
         }
-        this.reihenfolge = Integer.valueOf(maximumOrder + 1);
+
+        // Maximum order + 1 cannot be in use until now
+        this.reihenfolge = maximumOrder + 1;
     }
 
     /*
      * Getter und Setter
      */
 
-    public Date getBearbeitungsbeginn() {
-        return this.bearbeitungsbeginn;
-    }
-
     public String getBearbeitungsbeginnAsFormattedString() {
         return Helper.getDateAsFormattedString(this.bearbeitungsbeginn);
-    }
-
-    public void setBearbeitungsbeginn(Date bearbeitungsbeginn) {
-        this.bearbeitungsbeginn = bearbeitungsbeginn;
     }
 
     public String getStartDate() {
@@ -188,10 +281,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
             return this.formatter.format(this.bearbeitungsbeginn);
         }
         return "";
-    }
-
-    public Date getBearbeitungsende() {
-        return this.bearbeitungsende;
     }
 
     public String getEndDate() {
@@ -203,32 +292,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     public String getBearbeitungsendeAsFormattedString() {
         return Helper.getDateAsFormattedString(this.bearbeitungsende);
-    }
-
-    public void setBearbeitungsende(Date bearbeitungsende) {
-        this.bearbeitungsende = bearbeitungsende;
-    }
-
-    /**
-     * getter for editType set to private for hibernate
-     * 
-     * for use in programm use getEditTypeEnum instead
-     * 
-     * @return editType as integer
-     */
-    @SuppressWarnings("unused")
-    private Integer getEditType() {
-        return this.editType;
-    }
-
-    /**
-     * set editType to defined integer. only for internal use through hibernate, for changing editType use setEditTypeEnum instead
-     * 
-     * @param editType as Integer
-     */
-    @SuppressWarnings("unused")
-    private void setEditType(Integer editType) {
-        this.editType = editType;
     }
 
     /**
@@ -247,29 +310,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
      */
     public StepEditType getEditTypeEnum() {
         return StepEditType.getTypeFromValue(this.editType);
-    }
-
-    /**
-     * getter for Bearbeitunsstatus set to private for hibernate
-     * 
-     * for use in programm use getBearbeitungsstatusEnum instead
-     * 
-     * @return bearbeitungsstatus as integer
-     */
-    @SuppressWarnings("unused")
-    private Integer getBearbeitungsstatus() {
-        return this.bearbeitungsstatus;
-    }
-
-    /**
-     * set bearbeitungsstatus to defined integer. only for internal use through hibernate, for changing bearbeitungsstatus use
-     * setBearbeitungsstatusEnum instead
-     * 
-     * @param bearbeitungsstatus as Integer
-     */
-    @SuppressWarnings("unused")
-    private void setBearbeitungsstatus(Integer bearbeitungsstatus) {
-        this.bearbeitungsstatus = bearbeitungsstatus;
     }
 
     /**
@@ -292,14 +332,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     public String getBearbeitungszeitpunktAsFormattedString() {
         return Helper.getDateAsFormattedString(this.bearbeitungszeitpunkt);
-    }
-
-    public Date getBearbeitungszeitpunkt() {
-        return this.bearbeitungszeitpunkt;
-    }
-
-    public void setBearbeitungszeitpunkt(Date bearbeitungszeitpunkt) {
-        this.bearbeitungszeitpunkt = bearbeitungszeitpunkt;
     }
 
     // a parameter is given here (even if not used) because jsf expects setter convention
@@ -330,22 +362,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         }
     }
 
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getPrioritaet() {
-        return this.prioritaet;
-    }
-
-    public void setPrioritaet(Integer prioritaet) {
-        this.prioritaet = prioritaet;
-    }
-
     /*
      * if you change anything in the logic of priorities make sure that you catch dependencies on this system which are not directly related to
      * priorities
@@ -365,41 +381,13 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         return this.prozess;
     }
 
-    public void setProzess(Process prozess) {
-        this.prozess = prozess;
-    }
-
-    public Integer getReihenfolge() {
-        return this.reihenfolge;
-    }
-
-    public void setReihenfolge(Integer reihenfolge) {
-        this.reihenfolge = reihenfolge;
-    }
-
     public String getTitelLokalisiert() {
         String translatedTitle = Helper.getTranslation("stepname_" + this.titel);
         return translatedTitle.startsWith("stepname_") ? titel : translatedTitle;
     }
 
-    public String getTitel() {
-        return this.titel;
-    }
-
     public String getNormalizedTitle() {
         return this.titel.replace(" ", "_");
-    }
-
-    public void setTitel(String titel) {
-        this.titel = titel;
-    }
-
-    public boolean isPanelAusgeklappt() {
-        return this.panelAusgeklappt;
-    }
-
-    public void setPanelAusgeklappt(boolean panelAusgeklappt) {
-        this.panelAusgeklappt = panelAusgeklappt;
     }
 
     public List<ErrorProperty> getEigenschaften() {
@@ -409,10 +397,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         return this.eigenschaften;
     }
 
-    public void setEigenschaften(List<ErrorProperty> eigenschaften) {
-        this.eigenschaften = eigenschaften;
-    }
-
     public List<User> getBenutzer() {
         if ((benutzer == null || benutzer.isEmpty()) && id != null) {
             benutzer = UserManager.getUserForStep(id);
@@ -420,19 +404,11 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         return this.benutzer;
     }
 
-    public void setBenutzer(List<User> benutzer) {
-        this.benutzer = benutzer;
-    }
-
     public List<Usergroup> getBenutzergruppen() {
         if ((benutzergruppen == null || benutzergruppen.isEmpty()) && id != null) {
             benutzergruppen = UsergroupManager.getUserGroupsForStep(id);
         }
         return this.benutzergruppen;
-    }
-
-    public void setBenutzergruppen(List<Usergroup> benutzergruppen) {
-        this.benutzergruppen = benutzergruppen;
     }
 
     /*
@@ -470,54 +446,48 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public void setBearbeitungsstatusUp() {
-        if (getBearbeitungsstatusEnum() == StepStatus.ERROR) {
-            this.bearbeitungsstatus = StepStatus.DONE.getValue();
-            SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.DONE);
-        } else if (getBearbeitungsstatusEnum() != StepStatus.DONE) {
-            this.bearbeitungsstatus = Integer.valueOf(this.bearbeitungsstatus.intValue() + 1);
-            SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
+        switch (getBearbeitungsstatusEnum()) {
+            case ERROR:
+            case INFLIGHT:
+            case INWORK:
+                bearbeitungsstatus = StepStatus.DONE.getValue();
+                SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.DONE);
+                break;
+            case OPEN:
+                bearbeitungsstatus = 2;
+                SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
+                break;
+            case LOCKED:
+                bearbeitungsstatus = 1;
+                SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
+                break;
+            case DONE:
+            case DEACTIVATED:
+            default:
         }
-
     }
 
     public void setBearbeitungsstatusDown() {
-        if (getBearbeitungsstatusEnum() == StepStatus.ERROR) {
-            this.bearbeitungsstatus = StepStatus.OPEN.getValue();
-            SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.OPEN);
-        } else if (getBearbeitungsstatusEnum() != StepStatus.LOCKED) {
-            this.bearbeitungsstatus = Integer.valueOf(this.bearbeitungsstatus.intValue() - 1);
-            if (bearbeitungsstatus != 0) {
+        switch (getBearbeitungsstatusEnum()) {
+            case DONE:
+                bearbeitungsstatus = 2;
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
-            }
+                break;
+            case ERROR:
+            case INFLIGHT:
+            case INWORK:
+                bearbeitungsstatus = 1;
+                SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
+                break;
+
+            case OPEN:
+                bearbeitungsstatus = 0;
+                SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
+                break;
+            case LOCKED:
+            case DEACTIVATED:
+            default:
         }
-    }
-
-    public short getHomeverzeichnisNutzen() {
-        return this.homeverzeichnisNutzen;
-    }
-
-    public void setHomeverzeichnisNutzen(short homeverzeichnisNutzen) {
-        this.homeverzeichnisNutzen = homeverzeichnisNutzen;
-    }
-
-    public boolean isTypExportRus() {
-        return this.typExportRus;
-    }
-
-    public void setTypExportRus(boolean typExportRus) {
-        this.typExportRus = typExportRus;
-    }
-
-    public boolean isTypImagesLesen() {
-        return this.typImagesLesen;
-    }
-
-    public void setTypImagesLesen(boolean typImagesLesen) {
-        this.typImagesLesen = typImagesLesen;
-    }
-
-    public boolean isTypImagesSchreiben() {
-        return this.typImagesSchreiben;
     }
 
     public void setTypImagesSchreiben(boolean typImagesSchreiben) {
@@ -525,86 +495,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         if (typImagesSchreiben) {
             this.typImagesLesen = true;
         }
-    }
-
-    public boolean isTypExportDMS() {
-        return this.typExportDMS;
-    }
-
-    public void setTypExportDMS(boolean typExportDMS) {
-        this.typExportDMS = typExportDMS;
-    }
-
-    public boolean isTypImportFileUpload() {
-        return this.typImportFileUpload;
-    }
-
-    public void setTypImportFileUpload(boolean typImportFileUpload) {
-        this.typImportFileUpload = typImportFileUpload;
-    }
-
-    public boolean isTypMetadaten() {
-        return this.typMetadaten;
-    }
-
-    public void setTypMetadaten(boolean typMetadaten) {
-        this.typMetadaten = typMetadaten;
-    }
-
-    public boolean isTypBeimAnnehmenAbschliessen() {
-        return this.typBeimAnnehmenAbschliessen;
-    }
-
-    public void setTypBeimAnnehmenAbschliessen(boolean typBeimAnnehmenAbschliessen) {
-        this.typBeimAnnehmenAbschliessen = typBeimAnnehmenAbschliessen;
-    }
-
-    public boolean isTypBeimAnnehmenModul() {
-        return this.typBeimAnnehmenModul;
-    }
-
-    public void setTypBeimAnnehmenModul(boolean typBeimAnnehmenModul) {
-        this.typBeimAnnehmenModul = typBeimAnnehmenModul;
-    }
-
-    public boolean isTypBeimAnnehmenModulUndAbschliessen() {
-        return this.typBeimAnnehmenModulUndAbschliessen;
-    }
-
-    public void setTypBeimAnnehmenModulUndAbschliessen(boolean typBeimAnnehmenModulUndAbschliessen) {
-        this.typBeimAnnehmenModulUndAbschliessen = typBeimAnnehmenModulUndAbschliessen;
-    }
-
-    public boolean isTypAutomatisch() {
-        return this.typAutomatisch;
-    }
-
-    public void setTypAutomatisch(boolean typAutomatisch) {
-        this.typAutomatisch = typAutomatisch;
-    }
-
-    public boolean isTypBeimAbschliessenVerifizieren() {
-        return this.typBeimAbschliessenVerifizieren;
-    }
-
-    public void setTypBeimAbschliessenVerifizieren(boolean typBeimAbschliessenVerifizieren) {
-        this.typBeimAbschliessenVerifizieren = typBeimAbschliessenVerifizieren;
-    }
-
-    public String getTypModulName() {
-        return this.typModulName;
-    }
-
-    public void setTypModulName(String typModulName) {
-        this.typModulName = typModulName;
-    }
-
-    public boolean isSelected() {
-        return this.selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
     }
 
     /*
@@ -630,95 +520,11 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         this.bearbeitungsstatus = Integer.parseInt(inbearbeitungsstatus);
     }
 
-    public void setTypScriptStep(Boolean typScriptStep) {
-        this.typScriptStep = typScriptStep;
-    }
-
     public Boolean getTypScriptStep() {
         if (this.typScriptStep == null) {
             this.typScriptStep = false;
         }
         return this.typScriptStep;
-    }
-
-    public void setScriptname1(String scriptname1) {
-        this.scriptname1 = scriptname1;
-    }
-
-    public String getScriptname1() {
-        return this.scriptname1;
-    }
-
-    public String getTypAutomatischScriptpfad() {
-        return this.typAutomatischScriptpfad;
-    }
-
-    public void setTypAutomatischScriptpfad(String typAutomatischScriptpfad) {
-        this.typAutomatischScriptpfad = typAutomatischScriptpfad;
-    }
-
-    public void setScriptname2(String scriptname2) {
-        this.scriptname2 = scriptname2;
-    }
-
-    public String getScriptname2() {
-        return this.scriptname2;
-    }
-
-    public void setTypAutomatischScriptpfad2(String typAutomatischScriptpfad2) {
-        this.typAutomatischScriptpfad2 = typAutomatischScriptpfad2;
-    }
-
-    public String getTypAutomatischScriptpfad2() {
-        return this.typAutomatischScriptpfad2;
-    }
-
-    public void setScriptname3(String scriptname3) {
-        this.scriptname3 = scriptname3;
-    }
-
-    public String getScriptname3() {
-        return this.scriptname3;
-    }
-
-    public void setTypAutomatischScriptpfad3(String typAutomatischScriptpfad3) {
-        this.typAutomatischScriptpfad3 = typAutomatischScriptpfad3;
-    }
-
-    public String getTypAutomatischScriptpfad3() {
-        return this.typAutomatischScriptpfad3;
-    }
-
-    public void setScriptname4(String scriptname4) {
-        this.scriptname4 = scriptname4;
-    }
-
-    public String getScriptname4() {
-        return this.scriptname4;
-    }
-
-    public void setTypAutomatischScriptpfad4(String typAutomatischScriptpfad4) {
-        this.typAutomatischScriptpfad4 = typAutomatischScriptpfad4;
-    }
-
-    public String getTypAutomatischScriptpfad4() {
-        return this.typAutomatischScriptpfad4;
-    }
-
-    public void setScriptname5(String scriptname5) {
-        this.scriptname5 = scriptname5;
-    }
-
-    public String getScriptname5() {
-        return this.scriptname5;
-    }
-
-    public void setTypAutomatischScriptpfad5(String typAutomatischScriptpfad5) {
-        this.typAutomatischScriptpfad5 = typAutomatischScriptpfad5;
-    }
-
-    public String getTypAutomatischScriptpfad5() {
-        return this.typAutomatischScriptpfad5;
     }
 
     public ArrayList<String> getAllScriptPaths() {
@@ -836,38 +642,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         this.batchStep = batchStep;
     }
 
-    public String getStepPlugin() {
-        return stepPlugin;
-    }
-
-    public void setStepPlugin(String stepPlugin) {
-        this.stepPlugin = stepPlugin;
-    }
-
-    public String getValidationPlugin() {
-        return validationPlugin;
-    }
-
-    public void setValidationPlugin(String validationPlugin) {
-        this.validationPlugin = validationPlugin;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Integer getProcessId() {
-        return processId;
-    }
-
-    public void setProcessId(Integer processId) {
-        this.processId = processId;
-    }
-
     @Override
     public int compareTo(Step arg0) {
 
@@ -897,22 +671,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
             benutzergruppen = UsergroupManager.getUserGroupsForStep(id);
         }
 
-    }
-
-    public boolean isDelayStep() {
-        return delayStep;
-    }
-
-    public void setDelayStep(boolean delayStep) {
-        this.delayStep = delayStep;
-    }
-
-    public boolean isUpdateMetadataIndex() {
-        return updateMetadataIndex;
-    }
-
-    public void setUpdateMetadataIndex(boolean updateMetadataIndex) {
-        this.updateMetadataIndex = updateMetadataIndex;
     }
 
     public void setMessageQueue(QueueType mq) {

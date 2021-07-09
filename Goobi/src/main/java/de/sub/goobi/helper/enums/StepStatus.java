@@ -3,7 +3,7 @@ package de.sub.goobi.helper.enums;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -26,6 +26,7 @@ package de.sub.goobi.helper.enums;
  * exception statement from your version.
  */
 import de.sub.goobi.helper.Helper;
+import lombok.Getter;
 
 /**
  * Enum for status of steps, each one with integer value for database, with title and images for gui
@@ -58,13 +59,18 @@ public enum StepStatus {
     /**
      * deactivated = step is deactivated and gets activated maybe
      */
-    DEACTIVATED(5, "statusDeactivated", "red_10.gif", "red_15a.gif", "stepdeactivated", "status-deactivated");
-
+    DEACTIVATED(5, "statusDeactivated", "red_10.gif", "red_15a.gif", "stepdeactivated", "status-deactivated"),
+    /**
+     * deactivated = step is deactivated and gets activated maybe
+     */
+    INFLIGHT(6, "statusInFlight", "yellow_10.gif", "yellow_15a.gif", "stepinflight", "status-inflight");
     private int value;
     private String title;
     private String imageSmall;
     private String imageBig;
+    @Getter
     private String searchString;
+    @Getter
     private String color;
 
     /**
@@ -124,10 +130,6 @@ public enum StepStatus {
         return "images/status/" + this.imageBig;
     }
 
-    public String getColor() {
-        return color;
-    }
-
     /**
      * retrieve StepStatus by integer value, neccessary for database handlings, where only integer is saved but not type safe
      * 
@@ -141,9 +143,5 @@ public enum StepStatus {
             }
         }
         return LOCKED;
-    }
-
-    public String getSearchString() {
-        return this.searchString;
     }
 }

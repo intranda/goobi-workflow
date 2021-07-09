@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +45,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -57,7 +58,7 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ StepManager.class, UserManager.class, UsergroupManager.class, ProcessManager.class, RulesetManager.class, Helper.class })
-@PowerMockIgnore({ "javax.management.*" })
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
 
 public class GoobiScriptTest {
 
@@ -67,11 +68,8 @@ public class GoobiScriptTest {
 
     @Before
     public void setUp() throws Exception {
-        String resourcesFolder = "src/test/resources/"; // for junit tests in eclipse
-        if (!Files.exists(Paths.get(resourcesFolder))) {
-            resourcesFolder = "target/test-classes/"; // to run mvn test from cli or in jenkins
-        }
-        String goobiFolder = Paths.get(resourcesFolder).toAbsolutePath().toString() + "/";
+        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
+        String goobiFolder = template.getParent().getParent().getParent().toString() + "/test/resources/";
         ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
@@ -193,24 +191,18 @@ public class GoobiScriptTest {
     }
 
     @Test
-    public void testExecuteEmptyGoobiScript() {
-        GoobiScript script = new GoobiScript();
-        script.execute(new ArrayList<Integer>(), "---\\n");
-        assertNull(script.myParameters);
+    public void testParseEmptyGoobiScript() {
+        assertNull(GoobiScript.parseGoobiscripts("---\\n"));
     }
 
     @Test
-    public void testExecuteWrongSyntax() {
-        GoobiScript script = new GoobiScript();
-        script.execute(new ArrayList<Integer>(), "---\\naction");
-        assertEquals(0, script.myParameters.size());
+    public void testParseWrongSyntax() {
+        assertEquals(0, GoobiScript.parseGoobiscripts("---\\naction").size());
     }
 
     @Test
-    public void testExecuteUnknownAction() {
-        GoobiScript script = new GoobiScript();
-        script.execute(new ArrayList<Integer>(), "---\\naction: test");
-        assertEquals(1, script.myParameters.size());
+    public void testParseUnknownAction() {
+        assertEquals(1, GoobiScript.parseGoobiscripts("---\\naction: test").size());
     }
 
     @Test
@@ -280,14 +272,13 @@ public class GoobiScriptTest {
 
         PowerMock.expectLastCall().anyTimes();
 
-
         PowerMock.replay(Helper.class);
         GoobiScript script = new GoobiScript();
         script.execute(processList, "---\\naction: swapProzessesIn");
     }
 
     @Test
-    public void testExecuteAddUserAction() throws Exception{
+    public void testExecuteAddUserAction() throws Exception {
 
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
@@ -309,7 +300,6 @@ public class GoobiScriptTest {
         Helper.addMessageToProcessLog(EasyMock.anyInt(), EasyMock.anyObject(LogType.class), EasyMock.anyString());
 
         PowerMock.expectLastCall().anyTimes();
-
 
         PowerMock.replay(Helper.class);
 

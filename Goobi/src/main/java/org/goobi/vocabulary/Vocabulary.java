@@ -15,7 +15,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import de.sub.goobi.helper.Helper;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @NoArgsConstructor
@@ -61,6 +63,8 @@ public class Vocabulary implements Serializable, DatabaseObject {
     @JsonIgnore
     private int numberOfRecordsPerPage = Helper.getCurrentUser() != null ? Helper.getCurrentUser().getTabellengroesse() : 20;
     @JsonIgnore
+    @Getter
+    @Setter
     private int pageNo = 0;
 
     @JsonIgnore
@@ -135,14 +139,6 @@ public class Vocabulary implements Serializable, DatabaseObject {
         } else {
             subList = filteredRecords.subList(pageNo * numberOfRecordsPerPage, filteredRecords.size());
         }
-    }
-
-    public int getPageNo() {
-        return pageNo;
-    }
-
-    public void setPageNo(int pageNo) {
-        this.pageNo = pageNo;
     }
 
     public String cmdMoveFirst() {

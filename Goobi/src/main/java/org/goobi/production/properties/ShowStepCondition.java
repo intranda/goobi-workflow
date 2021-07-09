@@ -1,5 +1,8 @@
 package org.goobi.production.properties;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -23,34 +26,12 @@ package org.goobi.production.properties;
  * exception statement from your version.
  */
 
+@Getter
+@Setter
 public class ShowStepCondition {
 
     private String name;
     private AccessCondition accessCondition = AccessCondition.READ;
     private boolean duplication = false;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public AccessCondition getAccessCondition() {
-        return accessCondition;
-    }
-
-    public void setAccessCondition(AccessCondition accessCondition) {
-        this.accessCondition = accessCondition;
-    }
-
-    public boolean isDuplication() {
-        return duplication;
-    }
-
-    public void setDuplication(boolean duplication) {
-        this.duplication = duplication;
-    }
 
 }

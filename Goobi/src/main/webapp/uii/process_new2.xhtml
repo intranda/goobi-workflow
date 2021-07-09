@@ -7,7 +7,8 @@
 	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<ui:param name="myPageTitle" value="#{msgs.einenNeuenProzessAnlegen}" />
 
@@ -29,18 +30,18 @@
 
 	<ui:define name="content">
 		<script type="text/javascript"
-			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/openseadragon/openseadragon.min.js"></script>
+			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/openseadragon/openseadragon.min.js?v=#{HelperForm.buildVersion}"></script>
 		<script type="text/javascript"
-			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/openseadragon/openseadragon-viewerinputhook.js"></script>
+			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/openseadragon/openseadragon-viewerinputhook.js?v=#{HelperForm.buildVersion}"></script>
 		<script type="text/javascript"
-			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/q-promises/q.min.js"></script>
+			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/q-promises/q.min.js?v=#{HelperForm.buildVersion}"></script>
 		<script type="text/javascript"
-			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/reactiveX/rx.lite.min.js"></script>
-		<script src="template/js/imageView/imageView.image.js"></script>
-		<script src="template/js/imageView/imageView.tileSourceResolver.js"></script>
-		<script src="template/js/imageView/imageView.measures.js"></script>
-		<script src="template/js/imageView/imageView.controls.js"></script>
-		<script src="template/js/imageView/imageView.zoomSlider.js"></script>
+			src="#{HelperForm.applicationWebsiteUrl}/uii/template/js/reactiveX/rx.lite.min.js?v=#{HelperForm.buildVersion}"></script>
+		<script src="template/js/imageView/imageView.image.js?v=#{HelperForm.buildVersion}"></script>
+		<script src="template/js/imageView/imageView.tileSourceResolver.js?v=#{HelperForm.buildVersion}"></script>
+		<script src="template/js/imageView/imageView.measures.js?v=#{HelperForm.buildVersion}"></script>
+		<script src="template/js/imageView/imageView.controls.js?v=#{HelperForm.buildVersion}"></script>
+		<script src="template/js/imageView/imageView.zoomSlider.js?v=#{HelperForm.buildVersion}"></script>
 
 		<style>
 .grid-container {
@@ -77,7 +78,7 @@
 .folderselection {
 	width: 100%;
 	position: absolute;
-	bottom: 45px;
+	bottom: 60px;
 	text-align: left;
 }
 
@@ -136,7 +137,7 @@
 								<div class="form-group">
 									<div class="col-sm-3 control-label" tabindex="-1">
 										<h:outputLabel for="folderSelection" value="#{msgs.damageDocFolderSelection}" />
-										<i class="fa fa-asterisk pull-right font-asterisk"/>
+										<i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip"/>
 									</div>
 									<div class="col-sm-9">
 										<h:selectOneRadio id="folderSelection"
@@ -199,13 +200,13 @@
 													<f:passThroughAttribute name="data-toggle" value="tooltip" />
 												</h:selectOneMenu>
 												<!-- delete file -->
-												<h:commandLink styleClass="btn font-size-s folderselectionbutton" 
-													action="#{ProzesskopieForm.uploadedFiles.remove(image)}" 
+												<button id="deleteFile" class="btn font-size-s folderselectionbutton" 
+													jsf:action="#{ProzesskopieForm.uploadedFiles.remove(image)}" 
 													title="#{msgs.damageDocDeleteFile}">
 													<i class="fa fa-trash "/>
 													<f:passThroughAttribute name="data-toggle" value="tooltip" />
 													<f:ajax render=":imageform" />
-												</h:commandLink>
+												</button>
 											</div>
 											<div class="comment">
 												<h:inputTextarea value="#{image.descriptionText}" title="#{msgs.damageDocComment}"
@@ -223,18 +224,19 @@
 							<!-- area for buttons to -->
 							<div class="form-actions">
 								<!-- Save -->
-								<h:commandLink
-									styleClass="btn btn-success font-size-s pull-right"
-									id="absenden" action="#{ProzesskopieForm.NeuenProzessAnlegen}">
+								<button
+									class="btn btn-success font-size-s pull-right"
+									jsf:id="absenden" jsf:action="#{ProzesskopieForm.NeuenProzessAnlegen}">
 									<i class="fa fa-save margin-right-5"></i>
 									<h:outputText value="#{msgs.speichern}" />
-								</h:commandLink>
+								</button>
 
 								<!-- Cancel -->
-								<h:commandLink id="cancel"
-									styleClass="btn margin-sides-10 font-size-s pull-right"
-									action="process_all" value="#{msgs.abbrechen}" immediate="true">
-								</h:commandLink>
+								<button jsf:id="cancel"
+									class="btn margin-sides-10 font-size-s pull-right"
+									jsf:action="process_all" jsf:immediate="true">
+									#{msgs.abbrechen}
+								</button>
 
 								<!-- Go back -->
 								<h:commandLink styleClass="btn font-size-s" id="back"

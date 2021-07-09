@@ -44,49 +44,110 @@ import lombok.Setter;
 public class Project implements Serializable, DatabaseObject, Comparable<Project> {
     private static final long serialVersionUID = -8543713331407761617L;
     private static final Logger logger = LogManager.getLogger(Project.class);
+    @Getter
+    @Setter
     private Integer id;
+    @Getter
+    @Setter
     private String titel;
     @Getter @Setter
     private String projectIdentifier;
 
+    @Getter
+    @Setter
     private List<User> benutzer = new ArrayList<>();
+    @Getter
+    @Setter
     private List<Process> prozesse = new ArrayList<>();
+    @Setter
     private List<ProjectFileGroup> filegroups = new ArrayList<>();
 
+    @Getter
+    @Setter
     private boolean useDmsImport = false;
+    @Getter
+    @Setter
     private Integer dmsImportTimeOut = 20000;
+    @Getter
+    @Setter
     private String dmsImportRootPath;
+    @Getter
+    @Setter
     private String dmsImportImagesPath;
+    @Getter
+    @Setter
     private String dmsImportSuccessPath;
+    @Getter
+    @Setter
     private String dmsImportErrorPath;
     private Boolean dmsImportCreateProcessFolder = false;
 
+    @Getter
+    @Setter
     private String fileFormatInternal;
+    @Getter
+    @Setter
     private String fileFormatDmsExport;
 
+    @Getter
+    @Setter
     private String metsRightsOwner = "";
+    @Getter
+    @Setter
     private String metsRightsOwnerLogo = "";
+    @Getter
+    @Setter
     private String metsRightsOwnerSite = "";
+    @Getter
+    @Setter
     private String metsRightsOwnerMail = "";
+    @Getter
+    @Setter
     private String metsDigiprovReference = "";
+    @Getter
+    @Setter
     private String metsDigiprovPresentation = "";
+    @Getter
+    @Setter
     private String metsDigiprovReferenceAnchor = "";
+    @Getter
+    @Setter
     private String metsDigiprovPresentationAnchor = "";
+    @Getter
+    @Setter
     private String metsPointerPath = "";
+    @Getter
+    @Setter
     private String metsPointerPathAnchor = "";
+    @Getter
+    @Setter
     private String metsPurl = "";
+    @Getter
+    @Setter
     private String metsContentIDs = "";
 
     private List<StepInformation> commonWorkFlow = null;
+    @Setter
     private Date startDate;
+    @Setter
     private Date endDate;
+    @Setter
     private Integer numberOfPages;
+    @Setter
     private Integer numberOfVolumes;
     private Boolean projectIsArchived = false;
 
+    @Getter
+    @Setter
     private String metsRightsSponsor = "";
+    @Getter
+    @Setter
     private String metsRightsSponsorLogo = "";
+    @Getter
+    @Setter
     private String metsRightsSponsorSiteURL = "";
+    @Getter
+    @Setter
     private String metsRightsLicense = "";
 
     @Getter
@@ -114,87 +175,6 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         this.fileFormatInternal = "Mets";
         this.fileFormatDmsExport = "Mets";
     }
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public List<User> getBenutzer() {
-        return this.benutzer;
-    }
-
-    public void setBenutzer(List<User> benutzer) {
-        this.benutzer = benutzer;
-    }
-
-    public List<Process> getProzesse() {
-        return this.prozesse;
-    }
-
-    public void setProzesse(List<Process> prozesse) {
-        this.prozesse = prozesse;
-    }
-
-    public String getTitel() {
-        return this.titel;
-    }
-
-    public void setTitel(String titel) {
-        this.titel = titel;
-    }
-
-    public String getDmsImportImagesPath() {
-        return this.dmsImportImagesPath;
-    }
-
-    public void setDmsImportImagesPath(String dmsImportImagesPath) {
-        this.dmsImportImagesPath = dmsImportImagesPath;
-    }
-
-    public String getDmsImportRootPath() {
-        return this.dmsImportRootPath;
-    }
-
-    public void setDmsImportRootPath(String dmsImportRootPath) {
-        this.dmsImportRootPath = dmsImportRootPath;
-    }
-
-    public String getDmsImportSuccessPath() {
-        return this.dmsImportSuccessPath;
-    }
-
-    public void setDmsImportSuccessPath(String dmsImportSuccessPath) {
-        this.dmsImportSuccessPath = dmsImportSuccessPath;
-    }
-
-    public Integer getDmsImportTimeOut() {
-        return this.dmsImportTimeOut;
-    }
-
-    public void setDmsImportTimeOut(Integer dmsImportTimeOut) {
-        this.dmsImportTimeOut = dmsImportTimeOut;
-    }
-
-    public boolean isUseDmsImport() {
-        return this.useDmsImport;
-    }
-
-    public void setUseDmsImport(boolean useDmsImport) {
-        this.useDmsImport = useDmsImport;
-    }
-
-    public String getDmsImportErrorPath() {
-        return this.dmsImportErrorPath;
-    }
-
-    public void setDmsImportErrorPath(String dmsImportErrorPath) {
-        this.dmsImportErrorPath = dmsImportErrorPath;
-    }
-
     /**
      * here differet Getters and Setters for the same value, because Hibernate does not like bit-Fields with null Values (thats why Boolean) and
      * MyFaces seams not to like Boolean (thats why boolean for the GUI) ================================================================
@@ -233,122 +213,6 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         return this.filegroups;
     }
 
-    public void setFilegroups(List<ProjectFileGroup> filegroups) {
-        this.filegroups = filegroups;
-    }
-
-    public String getMetsRightsOwner() {
-        return this.metsRightsOwner;
-    }
-
-    public void setMetsRightsOwner(String metsRightsOwner) {
-        this.metsRightsOwner = metsRightsOwner;
-    }
-
-    public String getMetsRightsOwnerLogo() {
-        return this.metsRightsOwnerLogo;
-    }
-
-    public void setMetsRightsOwnerLogo(String metsRightsOwnerLogo) {
-        this.metsRightsOwnerLogo = metsRightsOwnerLogo;
-    }
-
-    public String getMetsRightsOwnerSite() {
-        return this.metsRightsOwnerSite;
-    }
-
-    public void setMetsRightsOwnerSite(String metsRightsOwnerSite) {
-        this.metsRightsOwnerSite = metsRightsOwnerSite;
-    }
-
-    public String getMetsRightsOwnerMail() {
-        return this.metsRightsOwnerMail;
-    }
-
-    public void setMetsRightsOwnerMail(String metsRigthsOwnerMail) {
-        this.metsRightsOwnerMail = metsRigthsOwnerMail;
-    }
-
-    public String getMetsDigiprovReference() {
-        return this.metsDigiprovReference;
-    }
-
-    public void setMetsDigiprovReference(String metsDigiprovReference) {
-        this.metsDigiprovReference = metsDigiprovReference;
-    }
-
-    public String getMetsDigiprovReferenceAnchor() {
-        return this.metsDigiprovReferenceAnchor;
-    }
-
-    public void setMetsDigiprovReferenceAnchor(String metsDigiprovReferenceAnchor) {
-        this.metsDigiprovReferenceAnchor = metsDigiprovReferenceAnchor;
-    }
-
-    public String getMetsDigiprovPresentation() {
-        return this.metsDigiprovPresentation;
-    }
-
-    public void setMetsDigiprovPresentation(String metsDigiprovPresentation) {
-        this.metsDigiprovPresentation = metsDigiprovPresentation;
-    }
-
-    public String getMetsDigiprovPresentationAnchor() {
-        return this.metsDigiprovPresentationAnchor;
-    }
-
-    public void setMetsDigiprovPresentationAnchor(String metsDigiprovPresentationAnchor) {
-        this.metsDigiprovPresentationAnchor = metsDigiprovPresentationAnchor;
-    }
-
-    public String getMetsPointerPath() {
-        return this.metsPointerPath;
-    }
-
-    public void setMetsPointerPath(String metsPointerPath) {
-        this.metsPointerPath = metsPointerPath;
-    }
-
-    public void setMetsPointerPathAnchor(String metsPointerPathAnchor) {
-        this.metsPointerPathAnchor = metsPointerPathAnchor;
-    }
-
-    public String getMetsPointerPathAnchor() {
-        return this.metsPointerPathAnchor;
-    }
-
-    public void setMetsPurl(String metsPurl) {
-        this.metsPurl = metsPurl;
-    }
-
-    public String getMetsPurl() {
-        return this.metsPurl;
-    }
-
-    public void setMetsContentIDs(String contentIDs) {
-        this.metsContentIDs = contentIDs;
-    }
-
-    public String getMetsContentIDs() {
-        return this.metsContentIDs;
-    }
-
-    public String getFileFormatInternal() {
-        return this.fileFormatInternal;
-    }
-
-    public void setFileFormatInternal(String fileFormatInternal) {
-        this.fileFormatInternal = fileFormatInternal;
-    }
-
-    public String getFileFormatDmsExport() {
-        return this.fileFormatDmsExport;
-    }
-
-    public void setFileFormatDmsExport(String fileFormatDmsExport) {
-        this.fileFormatDmsExport = fileFormatDmsExport;
-    }
-
     /**
      * 
      * @return a list with informations for each step on workflow
@@ -376,23 +240,11 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         return this.numberOfVolumes;
     }
 
-    /**
-     * 
-     * @param numberOfVolumes for this project
-     */
-    public void setNumberOfVolumes(Integer numberOfVolumes) {
-        this.numberOfVolumes = numberOfVolumes;
-    }
-
     public Integer getNumberOfPages() {
         if (this.numberOfPages == null) {
             this.numberOfPages = 0;
         }
         return this.numberOfPages;
-    }
-
-    public void setNumberOfPages(Integer numberOfPages) {
-        this.numberOfPages = numberOfPages;
     }
 
     public Date getStartDate() {
@@ -402,19 +254,11 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         return this.startDate;
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
     public Date getEndDate() {
         if (this.endDate == null) {
             this.endDate = new Date();
         }
         return this.endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
     }
 
     public void setProjectIsArchived(Boolean projectIsArchived) {
@@ -441,10 +285,6 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
     public boolean equals(Object obj) {
         return this.getTitel().equals(((Project) obj).getTitel())
                 && (getInstitution().getShortName().equals(((Project) obj).getInstitution().getShortName()));
-    }
-
-    public String getMetsRightsLicense() {
-        return metsRightsLicense;
     }
 
     @Override
@@ -488,34 +328,6 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         result = prime * result + ((titel == null) ? 0 : titel.hashCode());
         result = prime * result + (useDmsImport ? 1231 : 1237);
         return result;
-    }
-
-    public void setMetsRightsLicense(String metsRightsLicense) {
-        this.metsRightsLicense = metsRightsLicense;
-    }
-
-    public String getMetsRightsSponsorSiteURL() {
-        return metsRightsSponsorSiteURL;
-    }
-
-    public void setMetsRightsSponsorSiteURL(String metsRightsSponsorSiteURL) {
-        this.metsRightsSponsorSiteURL = metsRightsSponsorSiteURL;
-    }
-
-    public String getMetsRightsSponsorLogo() {
-        return metsRightsSponsorLogo;
-    }
-
-    public void setMetsRightsSponsorLogo(String metsRightsSponsorLogo) {
-        this.metsRightsSponsorLogo = metsRightsSponsorLogo;
-    }
-
-    public String getMetsRightsSponsor() {
-        return metsRightsSponsor;
-    }
-
-    public void setMetsRightsSponsor(String metsRightsSponsor) {
-        this.metsRightsSponsor = metsRightsSponsor;
     }
 
     @Override

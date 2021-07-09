@@ -32,61 +32,36 @@ import org.apache.logging.log4j.Logger;
 import org.goobi.beans.User;
 
 import de.sub.goobi.helper.Helper;
+import lombok.Getter;
+import lombok.Setter;
 
 public class BasicBean implements Serializable {
     @SuppressWarnings("unused")
 
     private static final Logger logger = LogManager.getLogger(BasicBean.class);
     private static final long serialVersionUID = 2950419497162710096L;
+    @Getter
     protected DatabasePaginator paginator;
+    @Getter
+    @Setter
     protected String zurueck = "";
+    @Getter
+    @Setter
     protected String temp = null;
+    @Getter
+    @Setter
     protected String filter = null;
     protected User user;
 
+    @Getter
+    @Setter
     protected String sortierung = "";
-
-    public DatabasePaginator getPaginator() {
-        return paginator;
-    }
-
-    public String getZurueck() {
-        return this.zurueck;
-    }
-
-    public void setZurueck(String zurueck) {
-        this.zurueck = zurueck;
-    }
 
     public User getUser() {
         if (this.user == null) {
             this.user = Helper.getCurrentUser();
         }
         return this.user;
-    }
-
-    public String getFilter() {
-        return this.filter;
-    }
-
-    public void setFilter(String filter) {
-        this.filter = filter;
-    }
-
-    public String getSortierung() {
-        return this.sortierung;
-    }
-
-    public void setSortierung(String sortierung) {
-        this.sortierung = sortierung;
-    }
-
-    public String getTemp() {
-        return temp;
-    }
-
-    public void setTemp(String temp) {
-        this.temp = temp;
     }
 
     public void addFilterToUser() {

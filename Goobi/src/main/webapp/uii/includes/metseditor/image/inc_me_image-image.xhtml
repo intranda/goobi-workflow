@@ -15,6 +15,7 @@
             <h:form
                 prependId="false"
                 id="openseadragonform">
+                <div id="jsonAlto" style="display: none;">#{Metadaten.jsonAlto}</div>
                 <div
                     id="objectControlWrapper"
                     class="image__object-control-wrapper">
@@ -23,6 +24,11 @@
                         <ui:include src="inc_me_image-imageNavigation.xhtml" />
                     </ui:fragment>
 
+                    <input
+                        type="hidden"
+                        id="tileSource"
+                        value="#{Metadaten.image.url}" />
+                        
                     <!-- OCR -->
                     <div id="image__image-container">
 
@@ -55,10 +61,6 @@
                                 value="#{Metadaten.myProzess.id}" />
                             <input
                                 type="hidden"
-                                id="tileSource"
-                                value="#{Metadaten.image.url}" />
-                            <input
-                                type="hidden"
                                 id="mediaType"
                                 value="#{Metadaten.image.type}" />
                             <input
@@ -82,7 +84,8 @@
                             <ui:fragment rendered="#{Metadaten.image.type == 'object'}">
                             	<div
                                     id="mainImage"
-                                    class="image__main-image">
+                                    class="image__main-image"
+                                    style="z-index: -1">
                                     <!-- AJAX LOADER -->
                                     <div id="imageLoader">
                                         <img src="template/img/goobi/ajaxloader2.gif" />
@@ -110,8 +113,28 @@
                                     src="#{Metadaten.image.objectUrl}">
                                 </video>
                             </ui:fragment>
+							<ui:fragment rendered="#{Metadaten.image.type == 'object2vr'}">
+								
+								<script
+									src="http://localhost:8080/goobi/resources/javascript/libs/object2vr_player.js">
+								</script>
 
-                            <ui:fragment rendered="#{Metadaten.image.type == 'unknown'}">
+								<div id="containerVR" style="width: 659px; height: 740px;">
+								</div>
+								
+								<script type="text/javascript">
+                                    // create the object player with the container
+                                    setTimeout( () => { 
+                                        console.log("start loading object2vr");
+	                                    let obj = new object2vrPlayer( "containerVR" );
+	                                    obj.readConfigUrl( "http://localhost:8080/goobi/api/view/object/2579/sampob_2_media/Totenmaske_Max_Kade_out.xml" );
+                                    	console.log("Done loading object2vr");
+                                    }, 200);
+                                </script>
+                                
+							</ui:fragment>
+
+							<ui:fragment rendered="#{Metadaten.image.type == 'unknown'}">
                                 <p class="unknown_file_download">
                                     <h:outputText value="#{msgs.mets_downloadFile}" />
                                     <a
@@ -125,7 +148,8 @@
                                 <!-- MAIN IMAGE CONTAINER -->
                                 <div
                                     id="mainImage"
-                                    class="image__main-image">
+                                    class="image__main-image"
+                                    style="z-index: -1">
                                     <!-- AJAX LOADER -->
                                     <div id="imageLoader">
                                         <img src="template/img/goobi/ajaxloader2.gif" />

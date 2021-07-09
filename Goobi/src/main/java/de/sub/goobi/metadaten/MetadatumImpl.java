@@ -1,61 +1,26 @@
 package de.sub.goobi.metadaten;
 
-import java.net.URL;
-import java.nio.file.Paths;
-import java.sql.SQLException;
-/**
- * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
- * 
- * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
- * 
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
- * Software Foundation; either version 2 of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
- * Temple Place, Suite 330, Boston, MA 02111-1307 USA
- * 
- * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
- * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
- * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
- * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
- * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
- * exception statement from your version.
- */
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
-
+import de.intranda.digiverso.normdataimporter.NormDataImporter;
+import de.intranda.digiverso.normdataimporter.dante.DanteImport;
+import de.intranda.digiverso.normdataimporter.model.NormData;
+import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
+import de.sub.goobi.config.ConfigPlugins;
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.metadaten.search.EasyDBSearch;
+import de.sub.goobi.metadaten.search.KulturNavImporter;
+import de.sub.goobi.metadaten.search.ViafSearch;
+import de.sub.goobi.persistence.managers.MetadataManager;
+import de.sub.goobi.persistence.managers.VocabularyManager;
+import lombok.Data;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.lang.StringUtils;
-import org.geonames.Style;
-import org.geonames.Toponym;
-import org.geonames.ToponymSearchCriteria;
-import org.geonames.ToponymSearchResult;
-import org.geonames.WebService;
+import org.geonames.*;
 import org.goobi.api.display.DisplayCase;
 import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
@@ -69,33 +34,52 @@ import org.goobi.production.cli.helper.StringPair;
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
-
-import de.intranda.digiverso.normdataimporter.NormDataImporter;
-import de.intranda.digiverso.normdataimporter.dante.DanteImport;
-import de.intranda.digiverso.normdataimporter.model.NormData;
-import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
-import de.sub.goobi.config.ConfigPlugins;
-import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.FacesContextHelper;
-import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.StorageProvider;
-import de.sub.goobi.metadaten.search.EasyDBSearch;
-import de.sub.goobi.metadaten.search.ViafSearch;
-import de.sub.goobi.persistence.managers.MetadataManager;
-import de.sub.goobi.persistence.managers.VocabularyManager;
-import lombok.Data;
-import lombok.extern.log4j.Log4j2;
-import ugh.dl.DocStruct;
-import ugh.dl.Metadata;
-import ugh.dl.MetadataGroup;
-import ugh.dl.MetadataGroupType;
-import ugh.dl.MetadataType;
-import ugh.dl.Prefs;
+import ugh.dl.*;
 import ugh.exceptions.MetadataTypeNotAllowedException;
+
+import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
+import java.net.URL;
+import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+/**
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ * <p>
+ * Visit the websites for more information.
+ * - https://goobi.io
+ * - https://www.intranda.com
+ * - https://github.com/intranda/goobi-workflow
+ * <p>
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * <p>
+ * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
+ * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
+ * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
+ * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
+ * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
+ * exception statement from your version.
+ */
 
 /**
  * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
- * 
+ *
  * @author Steffen Hankiewicz
  * @version 1.00 - 10.01.2005
  */
@@ -285,13 +269,27 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     List<VocabRecord> recordList = currentVocabulary.getRecords();
                     Collections.sort(recordList);
                     //                    currentVocabulary.setUrl(vocabularyBase.path("records").path("" + currentVocabulary.getId()).getUri().toString());
-                    ArrayList<Item> itemList = new ArrayList<>(recordList.size());
-                    List<SelectItem> selectItems = new ArrayList<>(recordList.size());
+                    ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
+                    List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
+
+                    String defaultValue = myValues.getItemList().get(0).getLabel();
+                    if (StringUtils.isNotBlank(defaultValue)) {
+                        List<String> defaultitems = new ArrayList<>();
+                        defaultitems.add(defaultValue);
+                        setDefaultItems(defaultitems);
+                    }
+                    itemList.add(new Item(Helper.getTranslation("bitteAuswaehlen"), "", false, "", ""));
+                    selectItems.add(new SelectItem("", Helper.getTranslation("bitteAuswaehlen")));
+
                     for (VocabRecord vr : recordList) {
                         for (Field f : vr.getFields()) {
                             if (f.getDefinition().isMainEntry()) {
                                 selectItems.add(new SelectItem(f.getValue(), f.getValue()));
-                                itemList.add(new Item(f.getValue(), f.getValue(), false, "", ""));
+                                Item item = new Item(f.getValue(), f.getValue(), false, "", "");
+                                if (StringUtils.isNotBlank(defaultValue) && defaultValue.equals(f.getValue())) {
+                                    item.setSelected(true);
+                                }
+                                itemList.add(item);
                                 break;
                             }
                         }
@@ -385,9 +383,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
      */
 
     /******************************************************
-     * 
+     *
      * new functions for use of display configuration whithin xml files
-     * 
+     *
      *****************************************************/
 
     @Override
@@ -574,11 +572,13 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 urlBuilder.append("&query=");
                 urlBuilder.append(getSearchValue());
                 normdataList = DanteImport.importNormDataList(urlBuilder.toString(), getLabelList());
-                if (normdataList.isEmpty()) {
-                    showNotHits = true;
-                } else {
-                    showNotHits = false;
-                }
+                showNotHits = normdataList.isEmpty();
+                break;
+
+            case kulturnav:
+                String knUrl = KulturNavImporter.constructSearchUrl(getSearchValue(), getVocabulary());
+                normdataList = KulturNavImporter.importNormData(knUrl);
+                showNotHits = normdataList.isEmpty();
                 break;
 
             case geonames:
@@ -677,18 +677,20 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 if (StringUtils.isNotBlank(selectedRecord.getPreferredValue())) {
                     md.setValue(selectedRecord.getPreferredValue());
                 }
-
                 for (NormData normdata : selectedRecord.getNormdataList()) {
                     if (normdata.getKey().equals("URI")) {
-                        md.setAutorityFile("dante", "https://uri.gbv.de/terminology/dante/", normdata.getValues().get(0).getText());
-                    } else if (StringUtils.isBlank(selectedRecord.getPreferredValue()) && CollectionUtils.isEmpty(getLabelList())
+                        md.setAutorityFile("dante", "https://uri.gbv.de/terminology/dante/",
+                                normdata.getValues().get(0).getText());
+                    } else if (StringUtils.isBlank(selectedRecord.getPreferredValue())
+                            && CollectionUtils.isEmpty(getLabelList())
                             && normdata.getKey().equals(field)) {
                         String value = normdata.getValues().get(0).getText();
                         md.setValue(filter(value));
                     }
                 }
 
-                if (StringUtils.isBlank(selectedRecord.getPreferredValue()) && CollectionUtils.isNotEmpty(getLabelList())) {
+                if (StringUtils.isBlank(selectedRecord.getPreferredValue())
+                        && CollectionUtils.isNotEmpty(getLabelList())) {
                     findPrioritisedMetadata: for (String fieldName : getLabelList()) {
                         for (NormData normdata : currentData) {
                             if (normdata.getKey().equals(fieldName)) {
@@ -699,7 +701,31 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         }
                     }
                 }
-
+                normdataList = new ArrayList<>();
+                break;
+            case kulturnav:
+                // Set authority ID
+                if (CollectionUtils.isNotEmpty(selectedRecord.getNormdataList())) {
+                    for (NormData normdata : selectedRecord.getNormdataList()) {
+                        if (normdata.getKey().equals("URI")) {
+                            String uriValue = normdata.getValues().get(0).getText();
+                            md.setAutorityFile(
+                                    DisplayType.kulturnav.name(),
+                                    KulturNavImporter.BASE_URL,
+                                    uriValue
+                            );
+                            break;
+                        }
+                    }
+                }
+                // Set value based on the preferred value, otherwise
+                // use the first element in the list
+                if (StringUtils.isNotBlank(selectedRecord.getPreferredValue())) {
+                    md.setValue(selectedRecord.getPreferredValue());
+                }
+                else if(CollectionUtils.isNotEmpty(selectedRecord.getValueList())) {
+                    md.setValue(selectedRecord.getValueList().get(0));
+                }
                 normdataList = new ArrayList<>();
                 break;
             case geonames:
@@ -791,14 +817,14 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     }
 
     /**
-     * this method is used to disable the edition of the identifier field, the default value is false, so it can be edited
+     * This method is used to disable the edition of the identifier field,
+     * the default value is false, so it can be edited
      */
 
     public boolean isDisableIdentifierField() {
-        if (metadataDisplaytype == DisplayType.dante || metadataDisplaytype == DisplayType.easydb) {
-            return true;
-        }
-        return false;
+        return metadataDisplaytype == DisplayType.dante
+                || metadataDisplaytype == DisplayType.kulturnav
+                || metadataDisplaytype == DisplayType.easydb;
     }
 
     /**

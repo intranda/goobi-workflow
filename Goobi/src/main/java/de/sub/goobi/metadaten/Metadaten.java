@@ -1,6 +1,5 @@
 package de.sub.goobi.metadaten;
 
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -26,63 +25,9 @@ package de.sub.goobi.metadaten;
  * exception statement from your version.
  */
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.solr.common.util.Pair;
-import org.goobi.api.display.enums.DisplayType;
-import org.goobi.api.display.helper.ConfigDisplayRules;
-import org.goobi.api.display.helper.NormDatabase;
-import org.goobi.beans.Process;
-import org.goobi.managedbeans.LoginBean;
-import org.goobi.production.cli.helper.OrderedKeyMap;
-import org.goobi.production.enums.PluginType;
-import org.goobi.production.plugin.PluginLoader;
-import org.goobi.production.plugin.interfaces.IOpacPlugin;
-
 import com.google.gson.Gson;
-
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.FacesContextHelper;
-import de.sub.goobi.helper.FilesystemHelper;
-import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.HelperComparator;
-import de.sub.goobi.helper.HttpClientHelper;
-import de.sub.goobi.helper.NIOFileUtils;
-import de.sub.goobi.helper.StorageProvider;
-import de.sub.goobi.helper.Transliteration;
-import de.sub.goobi.helper.TreeNode;
-import de.sub.goobi.helper.VariableReplacer;
-import de.sub.goobi.helper.XmlArtikelZaehlen;
+import de.sub.goobi.helper.*;
 import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
@@ -92,27 +37,48 @@ import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import lombok.Getter;
 import lombok.Setter;
-import ugh.dl.Corporate;
-import ugh.dl.DigitalDocument;
-import ugh.dl.DocStruct;
-import ugh.dl.DocStructType;
-import ugh.dl.Fileformat;
-import ugh.dl.Metadata;
-import ugh.dl.MetadataGroup;
-import ugh.dl.MetadataGroupType;
-import ugh.dl.MetadataType;
-import ugh.dl.NamePart;
-import ugh.dl.Person;
-import ugh.dl.Prefs;
-import ugh.dl.Reference;
-import ugh.exceptions.DocStructHasNoTypeException;
-import ugh.exceptions.IncompletePersonObjectException;
-import ugh.exceptions.MetadataTypeNotAllowedException;
-import ugh.exceptions.PreferencesException;
-import ugh.exceptions.ReadException;
-import ugh.exceptions.TypeNotAllowedAsChildException;
-import ugh.exceptions.TypeNotAllowedForParentException;
-import ugh.exceptions.WriteException;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.goobi.api.display.enums.DisplayType;
+import org.goobi.api.display.helper.ConfigDisplayRules;
+import org.goobi.api.display.helper.NormDatabase;
+import org.goobi.beans.AltoChange;
+import org.goobi.beans.Process;
+import org.goobi.beans.SimpleAlto;
+import org.goobi.managedbeans.LoginBean;
+import org.goobi.production.cli.helper.OrderedKeyMap;
+import org.goobi.production.enums.PluginType;
+import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IOpacPlugin;
+import org.jdom2.JDOMException;
+import org.omnifaces.util.Faces;
+import ugh.dl.*;
+import ugh.exceptions.*;
+
+import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
+import javax.inject.Named;
+import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
@@ -158,8 +124,8 @@ public class Metadaten implements Serializable {
     @Getter
     @Setter
     private List<MetaCorporate> corporates = new LinkedList<>();
+
     @Getter
-    @Setter
     private List<MetadataGroupImpl> groups = new LinkedList<>();
     @Getter
     @Setter
@@ -243,7 +209,7 @@ public class Metadaten implements Serializable {
     @Getter
     @Setter
     private MetadatumImpl selectedMetadatum;
-    @Getter
+
     @Setter
     private MetaCorporate selectedCorporate;
     @Getter
@@ -433,6 +399,11 @@ public class Metadaten implements Serializable {
     @Getter
     @Setter
     private String danteSearchValue;
+
+    @Getter
+    @Setter
+    private String kulturnavSearchValue;
+
     @Getter
     private SearchableMetadata currentMetadataToPerformSearch;
     @Getter
@@ -443,12 +414,23 @@ public class Metadaten implements Serializable {
     @Setter
     private boolean pagesRTL = false;
 
+    @Getter
+    @Setter
+    private String altoChanges;
+
     private List<SelectItem> addableMetadataTypes = new ArrayList<>();
     private List<SelectItem> addableCorporateTypes = new ArrayList<>();
 
     private List<ConfigOpacCatalogue> catalogues = null;
     private List<String> catalogueTitles;
     private ConfigOpacCatalogue currentCatalogue;
+
+    @Getter
+    @Setter
+    private boolean doublePage;
+
+    @Getter
+    private String currentJsonAlto;
 
     public enum MetadataTypes {
         PERSON,
@@ -652,39 +634,62 @@ public class Metadaten implements Serializable {
 
     }
 
+    private MetadataGroup cloneMetadataGroup(MetadataGroup inGroup) throws MetadataTypeNotAllowedException {
+        MetadataGroup mg = new MetadataGroup(inGroup.getType());
+        // copy metadata
+        for (Metadata md : inGroup.getMetadataList()) {
+            Metadata metadata = new Metadata(md.getType());
+            metadata.setValue(md.getValue());
+            if (StringUtils.isNotBlank(md.getAuthorityValue())) {
+                metadata.setAutorityFile(md.getAuthorityID(), md.getAuthorityURI(), md.getAuthorityValue());
+            }
+            mg.addMetadata(metadata);
+        }
+
+        // copy persons
+        for (Person p : inGroup.getPersonList()) {
+            Person person = new Person(p.getType());
+            person.setFirstname(p.getFirstname());
+            person.setLastname(p.getLastname());
+            person.setAutorityFile(p.getAuthorityID(), p.getAuthorityURI(), p.getAuthorityValue());
+            if (p.getAdditionalNameParts() != null && !p.getAdditionalNameParts().isEmpty()) {
+                for (NamePart np : p.getAdditionalNameParts()) {
+                    NamePart newNamePart = new NamePart(np.getType(), np.getValue());
+                    person.addNamePart(newNamePart);
+                }
+            }
+            mg.addPerson(person);
+        }
+
+        // copy corporations
+        for (Corporate c : inGroup.getCorporateList()) {
+            Corporate corporate = new Corporate(c.getType());
+            corporate.setMainName(c.getMainName());
+            if (c.getSubNames() != null) {
+                for (NamePart subName : c.getSubNames()) {
+                    corporate.addSubName(subName);
+                }
+            }
+            corporate.setPartName(c.getPartName());
+            if (c.getAuthorityID() != null && c.getAuthorityURI() != null && c.getAuthorityValue() != null) {
+                corporate.setAutorityFile(c.getAuthorityID(), c.getAuthorityURI(), c.getAuthorityValue());
+            }
+            mg.addCorporate(corporate);
+        }
+
+        // copy sub groups
+        for (MetadataGroup subGroup : inGroup.getAllMetadataGroups()) {
+            MetadataGroup copyOfSubGroup = cloneMetadataGroup(subGroup);
+            mg.addMetadataGroup(copyOfSubGroup);
+        }
+
+        return mg;
+    }
+
     public String CopyGroup() {
-        MetadataGroup newMetadataGroup;
         try {
-            newMetadataGroup = new MetadataGroup(this.currentGroup.getMetadataGroup().getType());
-            for (MetadatumImpl metadataImpl : currentGroup.getMetadataList()) {
-
-                List<Metadata> metadataList = newMetadataGroup.getMetadataList();
-                for (Metadata metadata : metadataList) {
-                    if (metadata.getType().getName().equals(metadataImpl.getMd().getType().getName())) {
-                        metadata.setValue(metadataImpl.getMd().getValue());
-                        if (StringUtils.isNotBlank(metadataImpl.getMd().getAuthorityValue())) {
-                            metadata.setAutorityFile(metadataImpl.getMd().getAuthorityID(), metadataImpl.getMd().getAuthorityURI(),
-                                    metadataImpl.getMd().getAuthorityValue());
-                        }
-                    }
-                }
-            }
-            for (MetaPerson mp : currentGroup.getPersonList()) {
-                if (StringUtils.isNotBlank(mp.getNachname()) ||StringUtils.isNotBlank(mp.getVorname())) {
-                    List<Person> newList = newMetadataGroup.getPersonList() ;
-                    for (Person p : newList) {
-                        if (p.getType().getName().equals(mp.getP().getType().getName())) {
-                            p.setFirstname(mp.getVorname());
-                            p.setLastname(mp.getNachname());
-                            p.setAutorityFile(mp.getP().getAuthorityID(), mp.getP().getAuthorityURI(),
-                                    mp.getP().getAuthorityValue());
-                        }
-                    }
-
-                }
-            }
-
-            this.myDocStruct.addMetadataGroup(newMetadataGroup);
+            MetadataGroup newMetadataGroup = cloneMetadataGroup(currentGroup.getMetadataGroup());
+            currentGroup.getMetadataGroup().getParent().addMetadataGroup(newMetadataGroup);
         } catch (MetadataTypeNotAllowedException e) {
             logger.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e);
         }
@@ -711,7 +716,7 @@ public class Metadaten implements Serializable {
                 md.setAutorityFile(currentMetadata.getAuthorityID(), currentMetadata.getAuthorityURI(), currentMetadata.getAuthorityValue());
             }
 
-            this.myDocStruct.addMetadata(md);
+            currentMetadata.getParent().addMetadata(md);
         } catch (MetadataTypeNotAllowedException e) {
             logger.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e.getMessage());
         }
@@ -739,8 +744,7 @@ public class Metadaten implements Serializable {
                         currentCorporate.getAuthorityValue());
             }
 
-            this.myDocStruct.addCorporate(corporate);
-            ;
+            currentCorporate.getParent().addCorporate(corporate);
         } catch (MetadataTypeNotAllowedException e) {
             logger.error(e);
         }
@@ -774,7 +778,7 @@ public class Metadaten implements Serializable {
                 per.setAutorityFile(currentPerson.getAuthorityID(), currentPerson.getAuthorityURI(), currentPerson.getAuthorityValue());
             }
 
-            this.myDocStruct.addPerson(per);
+            currentPerson.getParent().addPerson(per);
         } catch (IncompletePersonObjectException e) {
             logger.error("Fehler beim Kopieren von Personen (IncompletePersonObjectException): " + e.getMessage());
         } catch (MetadataTypeNotAllowedException e) {
@@ -812,23 +816,25 @@ public class Metadaten implements Serializable {
                 md.setAutorityFile(selectedMetadatum.getMd().getAuthorityID(), selectedMetadatum.getMd().getAuthorityURI(),
                         selectedMetadatum.getMd().getAuthorityValue());
             }
-
-            this.myDocStruct.addMetadata(md);
+            if (currentGroup != null) {
+                currentGroup.getMetadataGroup().addMetadata(md);
+            } else {
+                this.myDocStruct.addMetadata(md);
+                /*
+                 * wenn TitleDocMain, dann gleich Sortiertitel mit gleichem Inhalt anlegen
+                 */
+                if (this.tempTyp.equals("TitleDocMain") && this.myPrefs.getMetadataTypeByName("TitleDocMainShort") != null) {
+                    try {
+                        Metadata md2 = new Metadata(this.myPrefs.getMetadataTypeByName("TitleDocMainShort"));
+                        md2.setValue(this.selectedMetadatum.getValue());
+                        this.myDocStruct.addMetadata(md2);
+                    } catch (MetadataTypeNotAllowedException e) {
+                        logger.error("Error while adding title (MetadataTypeNotAllowedException): " + e.getMessage());
+                    }
+                }
+            }
         } catch (MetadataTypeNotAllowedException e) {
             logger.error("Error while adding metadata (MetadataTypeNotAllowedException): " + e.getMessage());
-        }
-
-        /*
-         * wenn TitleDocMain, dann gleich Sortiertitel mit gleichem Inhalt anlegen
-         */
-        if (this.tempTyp.equals("TitleDocMain") && this.myPrefs.getMetadataTypeByName("TitleDocMainShort") != null) {
-            try {
-                Metadata md2 = new Metadata(this.myPrefs.getMetadataTypeByName("TitleDocMainShort"));
-                md2.setValue(this.selectedMetadatum.getValue());
-                this.myDocStruct.addMetadata(md2);
-            } catch (MetadataTypeNotAllowedException e) {
-                logger.error("Error while adding title (MetadataTypeNotAllowedException): " + e.getMessage());
-            }
         }
 
         this.modusHinzufuegen = false;
@@ -844,18 +850,21 @@ public class Metadaten implements Serializable {
 
     public String addNewCorporate() {
         try {
-            Corporate corporate = new Corporate(myPrefs.getMetadataTypeByName(tempPersonRolle)); // TODO
+            Corporate corporate = new Corporate(myPrefs.getMetadataTypeByName(tempPersonRolle));
             corporate.setMainName(tempCorporateMainName);
 
             if (StringUtils.isNotBlank(tempCorporateSubName)) {
-                corporate.addSubName(new NamePart("subname",tempCorporateSubName));
+                corporate.addSubName(new NamePart("subname", tempCorporateSubName));
             }
             corporate.setPartName(tempCorporatePartName);
             tempCorporateMainName = null;
             tempCorporateSubName = null;
             tempCorporatePartName = null;
-
-            this.myDocStruct.addCorporate(corporate);
+            if (currentGroup != null) {
+                currentGroup.getMetadataGroup().addCorporate(corporate);
+            } else {
+                this.myDocStruct.addCorporate(corporate);
+            }
         } catch (IncompletePersonObjectException e) {
             Helper.setFehlerMeldung("Incomplete data for person", "");
 
@@ -875,17 +884,32 @@ public class Metadaten implements Serializable {
     public String saveGroup() {
         try {
             MetadataGroup md = new MetadataGroup(this.myPrefs.getMetadataGroupTypeByName(this.tempGroupType));
-
             for (MetadatumImpl mdi : selectedGroup.getMetadataList()) {
-                List<Metadata> metadataList = md.getMetadataList();
-                for (Metadata metadata : metadataList) {
-                    if (metadata.getType().getName().equals(mdi.getMd().getType().getName())) {
-                        metadata.setValue(mdi.getMd().getValue());
-                    }
+                if (StringUtils.isNotBlank(mdi.getMd().getValue())) {
+                    Metadata metadata = new Metadata(mdi.getMd().getType());
+                    metadata.setValue(mdi.getMd().getValue());
+                    md.addMetadata(metadata);
                 }
             }
-
-            this.myDocStruct.addMetadataGroup(md);
+            for (MetaPerson mp : selectedGroup.getPersonList()) {
+                Person p = new Person(mp.getP().getType());
+                p.setFirstname(mp.getP().getFirstname());
+                p.setLastname(mp.getP().getLastname());
+                p.setAutorityFile(mp.getP().getAuthorityID(), mp.getP().getAuthorityURI(), mp.getP().getAuthorityValue());
+                md.addPerson(p);
+            }
+            for (MetaCorporate mc : selectedGroup.getCorporateList()) {
+                Corporate corporate = new Corporate(mc.getCorporate().getType());
+                corporate.setMainName(mc.getCorporate().getMainName());
+                corporate.setSubNames(mc.getCorporate().getSubNames());
+                corporate.setPartName(mc.getCorporate().getPartName());
+                md.addCorporate(currentCorporate);
+            }
+            if (currentGroup != null) {
+                currentGroup.getMetadataGroup().addMetadataGroup(md);
+            } else {
+                this.myDocStruct.addMetadataGroup(md);
+            }
         } catch (MetadataTypeNotAllowedException e) {
             logger.error("Error while adding metadata (MetadataTypeNotAllowedException): " + e.getMessage());
         }
@@ -940,8 +964,11 @@ public class Metadaten implements Serializable {
             per.setFirstname(this.tempPersonVorname);
             per.setLastname(this.tempPersonNachname);
             per.setRole(this.tempPersonRolle);
-
-            this.myDocStruct.addPerson(per);
+            if (currentGroup != null) {
+                currentGroup.getMetadataGroup().addPerson(per);
+            } else {
+                this.myDocStruct.addPerson(per);
+            }
         } catch (IncompletePersonObjectException e) {
             Helper.setFehlerMeldung("Incomplete data for person", "");
 
@@ -959,7 +986,8 @@ public class Metadaten implements Serializable {
     }
 
     public String deleteGroup() {
-        this.myDocStruct.removeMetadataGroup(this.currentGroup.getMetadataGroup(), true);
+        MetadataGroup mg = currentGroup.getMetadataGroup();
+        mg.getParent().removeMetadataGroup(mg, true);
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -968,7 +996,15 @@ public class Metadaten implements Serializable {
     }
 
     public String Loeschen() {
-        this.myDocStruct.removeMetadata(this.curMetadatum.getMd(), true);
+        HoldingElement he = curMetadatum.getMd().getParent();
+        if (he != null) {
+            he.removeMetadata(curMetadatum.getMd(), true);
+        } else {
+            // we have a default metadata field, clear it
+            curMetadatum.setValue("");
+            curMetadatum.setNormdataValue("");
+            curMetadatum.setNormDatabase("");
+        }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -977,7 +1013,14 @@ public class Metadaten implements Serializable {
     }
 
     public String delete() {
-        this.myDocStruct.removeMetadata(currentMetadata, true);
+        HoldingElement he = currentMetadata.getParent();
+        if (he != null) {
+            he.removeMetadata(currentMetadata, true);
+        } else {
+            // we have a default metadata field, clear it
+            currentMetadata.setValue("");
+            currentMetadata.setAutorityFile("", "", "");
+        }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -986,7 +1029,15 @@ public class Metadaten implements Serializable {
     }
 
     public String deletePerson() {
-        this.myDocStruct.removePerson(currentPerson);
+        HoldingElement he = currentPerson.getParent();
+        if (he != null) {
+            he.removePerson(currentPerson, false);
+        } else {
+            // we have a default field, clear it
+            currentPerson.setFirstname("");
+            currentPerson.setLastname("");
+            currentPerson.setAutorityFile("", "", "");
+        }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -995,7 +1046,17 @@ public class Metadaten implements Serializable {
     }
 
     public String LoeschenPerson() {
-        this.myDocStruct.removePerson(this.curPerson.getP());
+        HoldingElement he = curPerson.getP().getParent();
+        if (he != null) {
+            he.removePerson(this.curPerson.getP(), false);
+        } else {
+            // we have a default field, clear it
+            curPerson.setVorname("");
+            curPerson.setNachname("");
+            curPerson.setNormdataValue("");
+            curPerson.setNormDatabase("");
+        }
+
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -1004,7 +1065,14 @@ public class Metadaten implements Serializable {
     }
 
     public String deleteCorporate() {
-        myDocStruct.removeCorporate(currentCorporate);
+        HoldingElement he = currentCorporate.getParent();
+        if (he != null) {
+            he.removeCorporate(currentCorporate, false);
+        } else {
+            // we have a default field, clear it
+            currentCorporate.setValue("");
+            currentCorporate.setAutorityFile("", "", "");
+        }
         MetadatenalsBeanSpeichern(myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -1015,11 +1083,19 @@ public class Metadaten implements Serializable {
     /**
      * die noch erlaubten Rollen zurückgeben ================================================================
      */
-    public ArrayList<SelectItem> getAddableRollen() {
+    public List<SelectItem> getAddableRollen() {
+        if (currentGroup != null) {
+            return currentGroup.getAddablePersons();
+        }
+
         return this.metahelper.getAddablePersonRoles(this.myDocStruct, "");
     }
 
     public List<SelectItem> getAddableCorporateRoles() {
+        if (currentGroup != null) {
+            return currentGroup.getAddableCorporations();
+        }
+
         return this.metahelper.getAddableCorporateRoles(myDocStruct, "");
     }
 
@@ -1056,11 +1132,12 @@ public class Metadaten implements Serializable {
     }
 
     public int getSizeOfMetadataGroups() {
-        try {
-            return getAddableMetadataGroupTypes().size();
-        } catch (NullPointerException e) {
+
+        List<MetadataGroupType> types = this.myDocStruct.getAddableMetadataGroupTypes();
+        if (types == null) {
             return 0;
         }
+        return types.size();
     }
 
     public void setSizeOfMetadataGroups(int i) {
@@ -1072,6 +1149,10 @@ public class Metadaten implements Serializable {
      */
 
     public List<SelectItem> getAddableMetadataTypes() {
+        if (currentGroup != null) {
+            return currentGroup.getAddableMetadata();
+        }
+
         if (addableMetadataTypes.isEmpty()) {
             addableMetadataTypes = createAddableMetadataTypes();
         }
@@ -1083,7 +1164,8 @@ public class Metadaten implements Serializable {
         /*
          * -------------------------------- zuerst mal alle addierbaren Metadatentypen ermitteln --------------------------------
          */
-        List<MetadataType> types = this.myDocStruct.getAddableMetadataTypes();
+        List<MetadataType> types = this.myDocStruct.getAddableMetadataTypes(false);
+
         if (types == null) {
             return myList;
         }
@@ -1137,7 +1219,7 @@ public class Metadaten implements Serializable {
         /*
          * -------------------------------- zuerst mal alle addierbaren Metadatentypen ermitteln --------------------------------
          */
-        List<MetadataType> types = this.myDocStruct.getAddableMetadataTypes();
+        List<MetadataType> types = this.myDocStruct.getAddableMetadataTypes(false);
         if (types == null) {
             return myList;
         }
@@ -1181,10 +1263,23 @@ public class Metadaten implements Serializable {
 
     public List<SelectItem> getAddableMetadataGroupTypes() {
         List<SelectItem> myList = new ArrayList<>();
-        /*
-         * -------------------------------- zuerst mal alle addierbaren Metadatentypen ermitteln --------------------------------
-         */
-        List<MetadataGroupType> types = this.myDocStruct.getAddableMetadataGroupTypes();
+        List<MetadataGroupType> types = null;
+
+        if (currentGroup != null) {
+
+            List<String> groupNames = currentGroup.getMetadataGroup().getAddableMetadataGroupTypes();
+            if (groupNames != null) {
+                types = new ArrayList<>();
+                for (String groupName : groupNames) {
+                    MetadataGroupType mgt = myPrefs.getMetadataGroupTypeByName(groupName);
+                    types.add(mgt);
+                }
+            }
+
+        } else {
+            types = this.myDocStruct.getAddableMetadataGroupTypes();
+        }
+
         if (types == null) {
             return myList;
         }
@@ -1200,8 +1295,9 @@ public class Metadaten implements Serializable {
             myList.add(new SelectItem(mdt.getName(), this.metahelper.getMetadataGroupTypeLanguage(mdt)));
             try {
                 MetadataGroup md = new MetadataGroup(mdt);
-                MetadataGroupImpl mdum = new MetadataGroupImpl(myPrefs, myProzess, md, this);
+                MetadataGroupImpl mdum = new MetadataGroupImpl(myPrefs, myProzess, md, this, metahelper.getMetadataGroupTypeLanguage(mdt), null, 0);
                 this.tempMetadataGroups.add(mdum);
+                // TODO initialize all fields
 
             } catch (MetadataTypeNotAllowedException e) {
                 logger.error("Fehler beim sortieren der Metadaten: " + e.getMessage());
@@ -1225,7 +1321,7 @@ public class Metadaten implements Serializable {
         /*
          * -------------------------------- zuerst mal die addierbaren Metadatentypen ermitteln --------------------------------
          */
-        List<MetadataType> types = this.myDocStruct.getAddableMetadataTypes();
+        List<MetadataType> types = this.myDocStruct.getAddableMetadataTypes(false);
 
         if (types == null) {
             return new SelectItem[0];
@@ -1656,7 +1752,7 @@ public class Metadaten implements Serializable {
             // }
             this.myProzess.writeMetadataFile(this.gdzfile);
         } catch (Exception e) {
-            Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
+            Helper.setFehlerMeldung("Metafile is not writable.", e);
             logger.error(e);
             return "Metadaten";
         }
@@ -1675,6 +1771,8 @@ public class Metadaten implements Serializable {
     private void MetadatenalsBeanSpeichern(DocStruct inStrukturelement) {
         this.myDocStruct = inStrukturelement;
         addableMetadataTypes.clear();
+        groups.clear();
+
         LinkedList<MetadatumImpl> lsMeta = new LinkedList<>();
         LinkedList<MetaCorporate> lsCorp = new LinkedList<>();
         LinkedList<MetaPerson> lsPers = new LinkedList<>();
@@ -1715,15 +1813,19 @@ public class Metadaten implements Serializable {
         List<MetadataGroup> groups =
                 this.metahelper.getMetadataGroupsInclDefaultDisplay(inStrukturelement, Helper.getMetadataLanguage(), this.myProzess);
         if (groups != null) {
+            int counter = 1;
             for (MetadataGroup mg : groups) {
-                metaGroups.add(new MetadataGroupImpl(myPrefs, myProzess, mg, this));
+                metaGroups.add(new MetadataGroupImpl(myPrefs, myProzess, mg, this, "" + counter++, null, 0));
             }
         }
 
         corporates = lsCorp;
         this.myMetadaten = lsMeta;
         this.myPersonen = lsPers;
-        this.groups = metaGroups;
+        for (MetadataGroupImpl impl : metaGroups) {
+            this.groups.addAll(impl.getAsFlatList());
+
+        }
 
         /*
          * -------------------------------- die zugehörigen Seiten ermitteln --------------------------------
@@ -1817,7 +1919,7 @@ public class Metadaten implements Serializable {
                     }
                 }
                 if (phys != null && phys.length() > 0) {
-                    OberKnoten.setFirstImage(new Pair<>(phys, log));
+                    OberKnoten.setFirstImage(new MutablePair<>(phys, log));
                 }
             }
         } else {
@@ -1825,17 +1927,17 @@ public class Metadaten implements Serializable {
             OberKnoten.setMainTitle(mainTitle);
             OberKnoten.addMetadata(Helper.getTranslation("haupttitel"), mainTitle);
             OberKnoten.addMetadata(Helper.getTranslation("identifier"), MetadatenErmitteln(inStrukturelement, "IdentifierDigital"));
-            Pair first = this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_FIRST);
+            MutablePair<String, String> first = this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_FIRST);
             if (first != null) {
                 OberKnoten.setFirstImage(first);
                 OberKnoten.addMetadata(Helper.getTranslation("firstImage"),
-                        OberKnoten.getFirstImage().first() + ":" + OberKnoten.getFirstImage().second());
+                        OberKnoten.getFirstImage().getLeft() + ":" + OberKnoten.getFirstImage().getRight());
             }
-            Pair last = this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_LAST);
+            MutablePair<String, String> last = this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_LAST);
             if (last != null) {
                 OberKnoten.setLastImage(last);
                 OberKnoten.addMetadata(Helper.getTranslation("lastImage"),
-                        OberKnoten.getLastImage().first() + ":" + OberKnoten.getLastImage().second());
+                        OberKnoten.getLastImage().getLeft() + ":" + OberKnoten.getLastImage().getRight());
             }
             OberKnoten.addMetadata(Helper.getTranslation("partNumber"), MetadatenErmitteln(inStrukturelement, "PartNumber"));
             OberKnoten.addMetadata(Helper.getTranslation("dateIssued"), MetadatenErmitteln(inStrukturelement, "DateIssued"));
@@ -2344,6 +2446,8 @@ public class Metadaten implements Serializable {
                 lastPhysPageNo = physPageNo;
                 logicalPageNumForPages[counter] = new MetadatumImpl(logPageNoMd, counter, myPrefs, myProzess, this);
                 pi.setPhysicalPageNo(lastPhysPageNo);
+                String doublePage = pageStruct.getAdditionalValue();
+                pi.setDoublePage(StringUtils.isNotBlank(doublePage) && doublePage.equals("double page"));
                 pi.setLogicalPageNo(lastLogPageNo);
                 counter++;
                 pageMap.put(lastPhysPageNo, pi);
@@ -2357,6 +2461,13 @@ public class Metadaten implements Serializable {
             pi.setImagename(pageStruct.getImageName());
             pi.setCoordinates(coordinates);
         }
+
+        if (StringUtils.isNotBlank(currentRepresentativePage)) {
+            PhysicalObject po = pageMap.get(currentRepresentativePage);
+            po.setRepresentative(true);
+
+        }
+
     }
 
     public void addPageArea() {
@@ -2630,12 +2741,13 @@ public class Metadaten implements Serializable {
         }
         for (Metadata meineSeite : listMetadaten) {
             this.structSeitenNeu[inZaehler] = new MetadatumImpl(meineSeite, inZaehler, this.myPrefs, this.myProzess, this);
+            DocStruct ds = (DocStruct) meineSeite.getParent();
             if (inStrukturelement.getDocstructType().equals("div")) {
-                this.structSeiten[inZaehler] = new SelectItem(pageIdentifier,
-                        MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber").trim() + ": " + meineSeite.getValue());
+                this.structSeiten[inZaehler] =
+                        new SelectItem(pageIdentifier, MetadatenErmitteln(ds, "physPageNumber").trim() + ": " + meineSeite.getValue());
             } else {
-                this.structSeiten[inZaehler] = new SelectItem(pageIdentifier, Helper.getTranslation("mets_pageArea",
-                        MetadatenErmitteln(meineSeite.getDocStruct(), "physPageNumber") + ": " + meineSeite.getValue()));
+                this.structSeiten[inZaehler] = new SelectItem(pageIdentifier,
+                        Helper.getTranslation("mets_pageArea", MetadatenErmitteln(ds, "physPageNumber") + ": " + meineSeite.getValue()));
             }
         }
     }
@@ -2746,6 +2858,27 @@ public class Metadaten implements Serializable {
             Helper.setFehlerMeldung("fehlerBeimEinlesen", iae.getMessage());
         }
 
+        boolean firstMatch = false;
+        for (String pageObject : pageMap.getKeyList()) {
+            PhysicalObject po = pageMap.get(pageObject);
+            if (po.isSelected() || firstMatch) {
+                firstMatch = true;
+                if (scope == Paginator.Scope.SELECTED && po.isSelected()) {
+                    if (doublePage) {
+                        po.getDocStruct().setAdditionalValue("double page");
+                    } else {
+                        po.getDocStruct().setAdditionalValue("");
+                    }
+                } else if (scope == Paginator.Scope.FROMFIRST && firstMatch) {
+                    if (doublePage) {
+                        po.getDocStruct().setAdditionalValue("double page");
+                    } else {
+                        po.getDocStruct().setAdditionalValue("");
+                    }
+                }
+            }
+        }
+
         /*
          * -------------------------------- zum Schluss nochmal alle Seiten neu einlesen --------------------------------
          */
@@ -2753,7 +2886,7 @@ public class Metadaten implements Serializable {
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
         }
-
+        doublePage = false;
         return null;
     }
 
@@ -3107,13 +3240,12 @@ public class Metadaten implements Serializable {
      * ================================================================
      */
     public String AddAdditionalOpacPpns() {
-        StringTokenizer tokenizer = new StringTokenizer(this.additionalOpacPpns, "\n");
+        StringTokenizer tokenizer = new StringTokenizer(this.additionalOpacPpns.replace("\r\n", "\n").replace("\r", "\n"), "\n");
+        ConfigOpacCatalogue coc = ConfigOpac.getInstance().getCatalogueByName(getOpacKatalog());
+        IOpacPlugin iopac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
         while (tokenizer.hasMoreTokens()) {
             String tok = tokenizer.nextToken();
             try {
-                ConfigOpacCatalogue coc = ConfigOpac.getInstance().getCatalogueByName(getOpacKatalog());
-                IOpacPlugin iopac = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, coc.getOpacType());
-
                 Fileformat addrdf = iopac.search(this.opacSuchfeld, tok, coc, this.myPrefs);
                 if (addrdf != null) {
                     this.myDocStruct.addChild(addrdf.getDigitalDocument().getLogicalDocStruct());
@@ -3164,7 +3296,7 @@ public class Metadaten implements Serializable {
 
                     /* die Liste aller erlaubten Metadatenelemente erstellen */
                     List<String> erlaubte = new ArrayList<>();
-                    for (MetadataType mt : this.myDocStruct.getAddableMetadataTypes()) {
+                    for (MetadataType mt : this.myDocStruct.getAddableMetadataTypes(false)) {
                         erlaubte.add(mt.getName());
                     }
 
@@ -3267,7 +3399,6 @@ public class Metadaten implements Serializable {
         AjaxSeitenStartUndEndeSetzen();
         MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
     }
-
 
     public void setPageNumber(int pageNumber) {
         this.pageNumber = pageNumber - 1;
@@ -3540,6 +3671,44 @@ public class Metadaten implements Serializable {
         return ocrResult;
     }
 
+    public void loadJsonAlto() throws IOException, JDOMException, SwapException, DAOException, InterruptedException {
+        Path altoFile = getCurrentAltoPath();
+        SimpleAlto alto = new SimpleAlto();
+        if (Files.exists(altoFile)) {
+            alto = SimpleAlto.readAlto(altoFile);
+        }
+
+        this.currentJsonAlto = new Gson().toJson(alto);
+    }
+
+    public String getJsonAlto() {
+        return currentJsonAlto;
+    }
+
+    private Path getCurrentAltoPath() throws SwapException, DAOException, IOException, InterruptedException {
+        String ocrFileNew = image.getTooltip().substring(0, image.getTooltip().lastIndexOf("."));
+        Path altoFile = Paths.get(myProzess.getOcrAltoDirectory(), ocrFileNew + ".xml");
+        if (!Files.exists(altoFile)) {
+            altoFile = altoFile.getParent().resolve(ocrFileNew + ".alto");
+        }
+        return altoFile;
+    }
+
+    public void saveAlto() {
+        AltoChange[] changes = new Gson().fromJson(this.altoChanges, AltoChange[].class);
+        try {
+            AltoSaver.saveAltoChanges(getCurrentAltoPath(), changes);
+            this.loadJsonAlto();
+            FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_INFO, Helper.getTranslation("savedAlto"), null);
+            FacesContext.getCurrentInstance().addMessage("altoChanges", fm);
+        } catch (JDOMException | IOException | SwapException | DAOException | InterruptedException e) {
+            // TODO Auto-generated catch block
+            logger.error(e);
+            FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_ERROR, Helper.getTranslation("errorSavingAlto"), null);
+            FacesContext.getCurrentInstance().addMessage("altoChanges", fm);
+        }
+    }
+
     public String getOcrAddress() {
         int startseite = -1;
         int endseite = -1;
@@ -3572,7 +3741,6 @@ public class Metadaten implements Serializable {
      * ##################################################### ##################################################### ## ## Getter und Setter ##
      * ##################################################### ####################################################
      */
-
 
     public void setBildNummer(int inBild) {
     }
@@ -3630,7 +3798,7 @@ public class Metadaten implements Serializable {
             MetadataGroupType mdt = this.myPrefs.getMetadataGroupTypeByName(tempTyp);
             try {
                 MetadataGroup md = new MetadataGroup(mdt);
-                this.selectedGroup = new MetadataGroupImpl(myPrefs, myProzess, md, this);
+                this.selectedGroup = new MetadataGroupImpl(myPrefs, myProzess, md, this, metahelper.getMetadataGroupTypeLanguage(mdt), null, 0);
             } catch (MetadataTypeNotAllowedException e) {
                 logger.error(e.getMessage());
             }
@@ -3648,7 +3816,6 @@ public class Metadaten implements Serializable {
         }
         return this.selectedGroup;
     }
-
 
     public void setSelectedGroup(MetadataGroupImpl meta) {
         this.selectedGroup = meta;
@@ -3823,7 +3990,6 @@ public class Metadaten implements Serializable {
         }
     }
 
-
     public MetadatumImpl getMetadata() {
         return myMetadaten.get(0);
     }
@@ -3835,20 +4001,31 @@ public class Metadaten implements Serializable {
             } else if (StringUtils.isNotBlank(gndSearchValue)) {
                 currentMetadataToPerformSearch.setSearchOption(searchOption);
                 currentMetadataToPerformSearch.setSearchValue(gndSearchValue);
+            } else if (currentMetadataToPerformSearch.getMetadataDisplaytype() == DisplayType.kulturnav
+                    || StringUtils.isNotBlank(kulturnavSearchValue) ) {
+                currentMetadataToPerformSearch.setSearchValue(kulturnavSearchValue);
             } else {
                 currentMetadataToPerformSearch.setSearchValue(geonamesSearchValue);
             }
             currentMetadataToPerformSearch.search();
-            gndSearchValue = "";
-            geonamesSearchValue = "";
-            danteSearchValue = "";
+            resetSearchValues();
         }
         return "";
     }
 
+
+    private void resetSearchValues() {
+        gndSearchValue = "";
+        geonamesSearchValue = "";
+        danteSearchValue = "";
+        kulturnavSearchValue = "";
+    }
+
+
     public String getOpacKatalog() {
         if (StringUtils.isBlank(opacKatalog)) {
             opacKatalog = getAllOpacCatalogues().get(0);
+            currentCatalogue = catalogues.get(0);
         }
         return this.opacKatalog;
     }
@@ -3913,6 +4090,17 @@ public class Metadaten implements Serializable {
             }
         }
         return result;
+    }
+
+    public void autocompleteJson() throws IOException {
+        String suggest = Faces.getRequestParameter("suggest");
+        List<String> result = autocomplete(suggest);
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        externalContext.setResponseContentType("application/json");
+        externalContext.setResponseCharacterEncoding("UTF-8");
+        externalContext.getResponseOutputWriter().write(new Gson().toJson(result));
+        facesContext.responseComplete();
     }
 
     public boolean getIsNotRootElement() {
@@ -4178,6 +4366,26 @@ public class Metadaten implements Serializable {
         totalImageNo = oldfilenames.size() * 2;
         currentImageNo = 0;
 
+        boolean isWriteable = true;
+        for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+            // check if folder is writeable
+            if (!StorageProvider.getInstance().isWritable(currentFolder)) {
+                isWriteable = false;
+                Helper.setFehlerMeldung(Helper.getTranslation("folderNoWriteAccess", currentFolder.getFileName().toString()));
+            }
+            List<Path> files = allFolderAndAllFiles.get(currentFolder);
+            for (Path file : files) {
+                // check if folder is writeable
+                if (!StorageProvider.getInstance().isWritable(file)) {
+                    isWriteable = false;
+                    Helper.setFehlerMeldung(Helper.getTranslation("fileNoWriteAccess", file.toString()));
+                }
+            }
+        }
+        if (!isWriteable) {
+            return;
+        }
+
         for (String imagename : oldfilenames) {
 
             String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
@@ -4282,6 +4490,7 @@ public class Metadaten implements Serializable {
                             StorageProvider.getInstance().deleteFile(file);
                         } catch (IOException e) {
                             logger.error(e);
+                            Helper.setFehlerMeldung(Helper.getTranslation("fileNoWriteAccess", file.toString()));
                         }
                     }
                 }
@@ -4450,7 +4659,6 @@ public class Metadaten implements Serializable {
         this.neuesElementWohin = "1";
     }
 
-
     public void updateAllSubNodes() {
         activateAllTreeElements(treeOfFilteredProcess);
         updateAllSubNodes(treeOfFilteredProcess);
@@ -4581,7 +4789,6 @@ public class Metadaten implements Serializable {
         }
     }
 
-
     public void changeTopstruct() {
         if (currentTopstruct.getType().getName().equals(logicalTopstruct.getType().getName())) {
             currentTopstruct = physicalTopstruct;
@@ -4614,7 +4821,6 @@ public class Metadaten implements Serializable {
         return subList;
     }
 
-
     public void setImageIndex(int imageIndex) {
         this.imageIndex = imageIndex;
         if (this.imageIndex < 0) {
@@ -4626,6 +4832,14 @@ public class Metadaten implements Serializable {
         if (!allImages.isEmpty() && allImages.size() >= this.imageIndex) {
             setImage(allImages.get(this.imageIndex));
             bildNummer = this.imageIndex;
+            try {
+                this.loadJsonAlto();
+            } catch (IOException | JDOMException | SwapException | DAOException | InterruptedException e) {
+                SimpleAlto alto = new SimpleAlto("Error reading ALTO, see application log for details.");
+
+                this.currentJsonAlto = new Gson().toJson(alto);
+                logger.error(e);
+            }
         }
     }
 
@@ -4878,9 +5092,27 @@ public class Metadaten implements Serializable {
      */
 
     public boolean isAddableMetadata(MetadataType mdt) {
-        if (myDocStruct != null && myDocStruct.getAddableMetadataTypes() != null) {
-            for (MetadataType type : myDocStruct.getAddableMetadataTypes()) {
+        if (myDocStruct != null && myDocStruct.getAddableMetadataTypes(false) != null) {
+            for (MetadataType type : myDocStruct.getAddableMetadataTypes(false)) {
                 if (type.getName().equals(mdt.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if {@link Metadata} can be duplicated in current {@link DocStruct}
+     *
+     * @param md the {@link MetadataType} to check
+     * @return true if duplication is allowed
+     */
+
+    public boolean isAddableMetadata(Metadata md) {
+        if (md.getParent() != null && md.getParent().getAddableMetadataTypes(false) != null) {
+            for (MetadataType type : md.getParent().getAddableMetadataTypes(false)) {
+                if (type.getName().equals(md.getType().getName())) {
                     return true;
                 }
             }
@@ -4896,7 +5128,7 @@ public class Metadaten implements Serializable {
      */
 
     public boolean isAddablePerson(MetadataType mdt) {
-        for (MetadataType type : myDocStruct.getAddableMetadataTypes()) {
+        for (MetadataType type : myDocStruct.getAddableMetadataTypes(false)) {
             if (type.getName().equals(mdt.getName())) {
                 return true;
             }
@@ -4925,5 +5157,4 @@ public class Metadaten implements Serializable {
             }
         }
     }
-
 }

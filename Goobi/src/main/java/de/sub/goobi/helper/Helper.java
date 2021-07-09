@@ -35,6 +35,7 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardWatchEventKinds;
@@ -71,6 +72,10 @@ import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -371,7 +376,7 @@ public class Helper implements Serializable, Observer, ServletContextListener {
             @Override
             public void run() {
                 try (final WatchService watchService = FileSystems.getDefault().newWatchService()) {
-                    final WatchKey watchKey = path.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+                    path.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
                     while (true) {
                         final WatchKey wk = watchService.take();
                         for (WatchEvent<?> event : wk.pollEvents()) {
@@ -400,6 +405,55 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         Thread watcherThread = new Thread(watchRunnable);
         watcherMap.put(path, watcherThread);
         watcherThread.start();
+    }
+
+    /**
+     * Creates the missing local message files in the configuration directory of goobi workflow. It checks iteratively whether the configured files
+     * (in faces-config.xml) exist and creates the missing files.
+     *
+     * @param languages The array of language string representations for the files that should be created
+     */
+    public static void createMissingLocalMessageFiles(String[] languages) {
+        // Prepare the path to the messages files
+        String separator = FileSystems.getDefault().getSeparator();
+        String path = ConfigurationHelper.getInstance().getPathForLocalMessages();
+        if (!path.endsWith(separator)) {
+            path += separator;
+        }
+
+        for (int l = 0; l < languages.length; l++) {
+            String fileName = "messages_" + languages[l] + ".properties";
+            Path messagesFile = Paths.get(path + fileName);
+            if (!Files.isRegularFile(messagesFile)) {
+                try {
+                    Files.createFile(messagesFile);
+                    logger.info("Created missing file: " + messagesFile.toAbsolutePath());
+                } catch (IOException ioException) {
+                    logger.error("IOException wile creating missing file: " + messagesFile.toAbsolutePath());
+                    ioException.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static String[] getLanguagesFromFacesConfigXMLFile(ServletContext servletContext) {
+        String facesConfigFileName = servletContext.getRealPath("WEB-INF") + FileSystems.getDefault().getSeparator() + "faces-config.xml";
+        XMLConfiguration configuration = new XMLConfiguration();
+        try {
+            configuration = new XMLConfiguration();
+            configuration.setDelimiterParsingDisabled(true);
+            configuration.load(facesConfigFileName);
+            configuration.setReloadingStrategy(new FileChangedReloadingStrategy());
+            configuration.setExpressionEngine(new XPathExpressionEngine());
+        } catch (ConfigurationException ce) {
+            return new String[0];
+        }
+        List<Object> list = configuration.getList("//application/locale-config/supported-locale");
+        String[] array = new String[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            array[i] = (String) (list.get(i));
+        }
+        return array;
     }
 
     private static void loadMsgs(boolean localOnly) {
@@ -575,7 +629,7 @@ public class Helper implements Serializable, Observer, ServletContextListener {
     public static SessionForm getSessionBean() {
         SessionForm bean = (SessionForm) getBeanByName("SessionForm", SessionForm.class);
         try {
-            bean.getBitteAusloggen();
+            bean.getLogoutMessage();
         } catch (ContextNotActiveException | NullPointerException e) {
             return null;
         }
@@ -627,7 +681,17 @@ public class Helper implements Serializable, Observer, ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         // register the fileChangedService to watch the local resource bundles
-        registerFileChangedService(Paths.get(ConfigurationHelper.getInstance().getPathForLocalMessages()));
+        String[] languages = Helper.getLanguagesFromFacesConfigXMLFile(sce.getServletContext());
+        Helper.createMissingLocalMessageFiles(languages);
+        Helper.registerFileChangedService(Paths.get(ConfigurationHelper.getInstance().getPathForLocalMessages()));
+        Helper.checkForJwtSecret();
+    }
+
+    private static void checkForJwtSecret() {
+        String jwtSecret = ConfigurationHelper.getInstance().getJwtSecret();
+        if (jwtSecret == null) {
+            ConfigurationHelper.getInstance().generateAndSaveJwtSecret();
+        }
     }
 
     @Override
@@ -671,6 +735,21 @@ public class Helper implements Serializable, Observer, ServletContextListener {
             logger.warn("Couldn't get BeanManager through JNDI", e);
             return null;
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getBeanByClass(Class<T> clazz) {
+        BeanManager bm = Helper.getBeanManager();
+        if (bm != null) {
+            Iterator<Bean<?>> beanIterator = bm.getBeans(clazz).iterator();
+            if (beanIterator.hasNext()) {
+                Bean<T> bean = (Bean<T>) beanIterator.next();
+                CreationalContext<T> ctx = bm.createCreationalContext(bean);
+                T instance = (T) bm.getReference(bean, clazz, ctx);
+                return instance;
+            }
+        }
+        return null;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

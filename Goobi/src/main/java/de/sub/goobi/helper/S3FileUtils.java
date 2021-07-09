@@ -737,6 +737,32 @@ public class S3FileUtils implements StorageProviderInterface {
         return true;
     }
 
+    /**
+     * WARNING: This method isn't tested until now. It should check recursively whether a path and all subelements are deletable.
+     * 
+     * @param path The path where to look for deletion permission
+     * @return true if this path, all subpaths recursively and all objects are deletable
+     */
+    @Override
+    public boolean isDeletable(Path path) {
+        StorageType storageType = getPathStorageType(path);
+        if (storageType == StorageType.LOCAL) {
+            return nio.isDeletable(path);
+        }
+        if (storageType == StorageType.S3) {
+            if (!this.isWritable(path)) {
+                return false;
+            }
+            List<Path> objects = this.listFiles(path.toString());
+            for (Path object : objects) {
+                if (!this.isDeletable(object)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     @Override
     public long getFileSize(Path path) throws IOException {
         if (getPathStorageType(path) == StorageType.LOCAL) {

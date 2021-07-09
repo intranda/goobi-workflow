@@ -42,7 +42,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         $( 'body' ).on( 'click', '#meStructure a', function() {
             _positions.structure.link = $( this ).parents('tr').position().top;
 
-            sessionStorage.setItem( 'scrollPositions', JSON.stringify( _positions ) );
+            sessionStorage.setItem( 'wf_scrollPositions', JSON.stringify( _positions ) );
         } );
     }
 
@@ -57,13 +57,13 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 
         var structLinkPosition;
         
-        if ( sessionStorage.getItem( 'scrollPositions' ) == null ) {
-            sessionStorage.setItem( 'scrollPositions', JSON.stringify( _positions ) );
-            structLinkPosition = JSON.parse( sessionStorage.getItem( 'scrollPositions' ) );
+        if ( sessionStorage.getItem( 'wf_scrollPositions' ) == null ) {
+            sessionStorage.setItem( 'wf_scrollPositions', JSON.stringify( _positions ) );
+            structLinkPosition = JSON.parse( sessionStorage.getItem( 'wf_scrollPositions' ) );
             $( '#pageContentLeft' ).scrollTop( structLinkPosition.structure.link );
         }
         else {
-            structLinkPosition = JSON.parse( sessionStorage.getItem( 'scrollPositions' ) );
+            structLinkPosition = JSON.parse( sessionStorage.getItem( 'wf_scrollPositions' ) );
             $( '#pageContentLeft' ).scrollTop( structLinkPosition.structure.link );
         }
     }

@@ -36,7 +36,8 @@ import java.util.List;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -50,6 +51,8 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 
 public class UghHelper {
     private static final Logger logger = LogManager.getLogger(UghHelper.class);
+
+    public String lastErrorMessage;
 
     /**
      * MetadataType aus Preferences eines Prozesses ermitteln
@@ -88,12 +91,13 @@ public class UghHelper {
      * @return Metadata
      */
     public Metadata getMetadata(DocStruct inStruct, MetadataType inMetadataType) {
+        lastErrorMessage = null;
         if (inStruct != null && inMetadataType != null) {
             List<? extends Metadata> all = inStruct.getAllMetadataByType(inMetadataType);
             if (all.size() == 0) {
                 try {
                     Metadata md = new Metadata(inMetadataType);
-                    md.setDocStruct(inStruct);
+                    md.setParent(inStruct);
                     inStruct.addMetadata(md);
 
                     return md;
@@ -101,6 +105,7 @@ public class UghHelper {
                     if (logger.isDebugEnabled()) {
                         logger.debug(e.getMessage());
                     }
+                    lastErrorMessage = e.getMessage();
                     return null;
                 }
             }
@@ -122,12 +127,13 @@ public class UghHelper {
      * @throws UghHelperException
      */
     public Metadata getMetadata(DocStruct inStruct, Prefs inPrefs, String inMetadataType) throws UghHelperException {
+        lastErrorMessage = null;
         MetadataType mdt = getMetadataType(inPrefs, inMetadataType);
         List<? extends Metadata> all = inStruct.getAllMetadataByType(mdt);
         if (all.size() == 0) {
             try {
                 Metadata md = new Metadata(mdt);
-                md.setDocStruct(inStruct);
+                md.setParent(inStruct);
                 inStruct.addMetadata(md);
 
                 return md;
@@ -135,9 +141,10 @@ public class UghHelper {
                 if (logger.isDebugEnabled()) {
                     logger.debug(e);
                 }
+                lastErrorMessage = e.getMessage();
             }
         }
-        
+
         if (all.size() != 0) {
             return all.get(0);
         } else {
@@ -154,12 +161,13 @@ public class UghHelper {
      * @throws UghHelperException
      */
     public Metadata getMetadata(DocStruct inStruct, Process inProzess, String inMetadataType) throws UghHelperException {
+        lastErrorMessage = null;
         MetadataType mdt = getMetadataType(inProzess, inMetadataType);
         List<? extends Metadata> all = inStruct.getAllMetadataByType(mdt);
         if (all.size() == 0) {
             try {
                 Metadata md = new Metadata(mdt);
-                md.setDocStruct(inStruct);
+                md.setParent(inStruct);
                 inStruct.addMetadata(md);
 
                 return md;
@@ -167,6 +175,7 @@ public class UghHelper {
                 if (logger.isDebugEnabled()) {
                     logger.debug(e);
                 }
+                lastErrorMessage = e.getMessage();
             }
         }
         if (all.size() != 0) {

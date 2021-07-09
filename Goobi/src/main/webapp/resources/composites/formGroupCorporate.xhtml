@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
         <composite:attribute name="corporate" />
@@ -47,14 +48,15 @@
                 <!-- ACTIONS -->
                 <div class="btn-area duplicate">
                     <!-- DELETE -->
-                    <h:commandLink
-                        id="delete"
+                    <button
+                        jsf:id="delete"
                         tabindex="-1"
-                        action="#{Metadaten.deleteCorporate}"
-                        pt:aria-label="#{msgs.mets_corporate_deleteCorporate}"
+                        jsf:action="#{Metadaten.deleteCorporate}"
+                        aria-label="#{msgs.mets_corporate_deleteCorporate}"
                         title="#{msgs.mets_corporate_deleteCorporate}"
-                        rendered="#{cc.attrs.renderDelete == 'true'}"
-                        role="button">
+                        jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
+                        class="btn btn--icon-light"
+                        type="button">
                         <i
                             class="fa fa-lg fa-trash-o"
                             aria-hidden="true"></i>
@@ -70,17 +72,18 @@
                         <f:ajax
                             execute="@form"
                             render="@form" />
-                    </h:commandLink>
+                    </button>
 
                     <!-- COPY -->
-                    <h:commandLink
-                        id="copy"
+                    <button
+                        jsf:id="copy"
                         tabindex="-1"
-                        action="#{Metadaten.copyCorporate}"
+                        jsf:action="#{Metadaten.copyCorporate}"
                         title="#{msgs.mets_corporate_copyCorporate}"
-                        pt:aria-label="#{msgs.mets_corporate_copyCorporate}"
-                        rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.corporate.corporate.type)}"
-                        role="button">
+                        aria-label="#{msgs.mets_corporate_copyCorporate}"
+                        jsf:rendered="#{cc.attrs.renderDuplicate and Metadaten.isAddablePerson(cc.attrs.corporate.corporate.type)}"
+                        type="button"
+                         class="btn btn--icon-light">
                         <i
                             class="fa fa-lg fa-copy"
                             aria-hidden="true"></i>
@@ -96,18 +99,18 @@
                         <f:ajax
                             execute="@form"
                             render="@form" />
-                    </h:commandLink>
+                    </button>
 
 
                     <!-- NORMDATA -->
                     <ui:fragment rendered="#{cc.attrs.corporate.normdata}">
-                        <h:commandLink
-                            styleClass="change-icon"
+                        <button
+                        	jsf:id="gndSearch"
+                            class="change-icon btn--icon-light"
                             title="#{msgs.NORM_gndSearch}"
-                            pt:aria-label="#{msgs.NORM_gndSearch}"
-                            onclick="$('#gndSearchBox').modal('show');">
-
-
+                            aria-label="#{msgs.NORM_gndSearch}"
+                            onclick="$('#gndSearchBox').modal('show');"
+                            type="button">
                             <img
                                 class="toggle"
                                 style="width: 16px;"
@@ -133,15 +136,16 @@
 	                        <f:passThroughAttribute
 	                            name="data-placement"
 	                            value="top" />
-                        </h:commandLink>
+                        </button>
 
 
-                        <h:commandLink
-                            styleClass="change-icon viafIndexTrigger"
+                        <button
+                        	jsf:id="viafSearch"
+                            class="change-icon viafIndexTrigger btn--icon-light"
                             title="#{msgs.NORM_viafSearch}"
-                            pt:aria-label="#{msgs.NORM_viafSearch}"
-                            onclick="$('#viafSearchBox').modal('show');">
-
+                            aria-label="#{msgs.NORM_viafSearch}"
+                            onclick="$('#viafSearchBox').modal('show');"
+                            type="button">
                             <img
                                 class="toggle"
                                 style="width: 16px;"
@@ -167,7 +171,7 @@
 	                        <f:passThroughAttribute
 	                            name="data-placement"
 	                            value="top" />
-                        </h:commandLink>
+                        </button>
 
                     </ui:fragment>
                 </div>
@@ -204,15 +208,16 @@
                     </div>
                     <div class="btn-area duplicate">
                         <!-- DELETE -->
-                        <h:commandLink
-                            id="delete"
-                            pt:aria-label="#{msgs.mets_corporate_deleteSubName}"
+                        <button
+                            jsf:id="delete"
+                            class="btn btn--icon-light"
+                            aria-label="#{msgs.mets_corporate_deleteSubName}"
                             tabindex="-1"
-                            action="#{cc.attrs.corporate.removeSubName(part)}"
+                            jsf:action="#{cc.attrs.corporate.removeSubName(part)}"
                             title="#{msgs.mets_corporate_deleteSubName}"
-                            rendered="#{cc.attrs.renderDelete == 'true'}"
-                            role="button"
-                            disabled="#{cc.attrs.corporate.subNameSize lt 2}">
+                            jsf:rendered="#{cc.attrs.renderDelete == 'true'}"
+                            type="button"
+                            jsf:disabled="#{cc.attrs.corporate.subNameSize lt 2}">
                             <i
                                 class="fa fa-lg fa-trash-o"
                                 aria-hidden="true"></i>
@@ -225,14 +230,15 @@
                             <f:ajax
                                 execute="@form"
                                 render="@form" />
-                        </h:commandLink>
+                        </button>
 
-                        <h:commandLink
-                            id="addSubName"
-                            styleClass="btn btn--link"
-                            pt:aria-label="#{msgs.mets_corporate_addSubName}"
-                            action="#{cc.attrs.corporate.addSubName}"
-                            title="#{msgs.mets_corporate_addSubName}">
+                        <button
+                            jsf:id="addSubName"
+                            class="btn btn--icon-light"
+                            aria-label="#{msgs.mets_corporate_addSubName}"
+                            jsf:action="#{cc.attrs.corporate.addSubName}"
+                            title="#{msgs.mets_corporate_addSubName}"
+                            type="button">
                             <i
                                 class="fa fa-lg fa-plus"
                                 aria-hidden="true"></i>
@@ -245,7 +251,7 @@
                             <f:ajax
                                 execute="@form"
                                 render="@form" />
-                        </h:commandLink>
+                        </button>
                     </div>
                 </div>
             </div>

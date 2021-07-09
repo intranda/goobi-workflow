@@ -6,8 +6,9 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" 
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -51,7 +52,7 @@
                                         <f:ajax
                                             event="valueChange"
                                             execute="@form"
-                                            render="@form" />
+                                            render="metadataform" />
                                     </h:selectOneMenu>
                                 </div>
 
@@ -171,8 +172,10 @@
                                             <div class="col-1">
                                                 <!--  buttons -->
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'geonames'}">
-                                                    <h:commandLink
-                                                        styleClass="change-icon geonamesIndexTrigger"
+                                                    <button
+                                                        type="button"
+                                                        jsf:id="geoNames"
+                                                        class="btn change-icon geonamesIndexTrigger"
                                                         title="#{msgs.search}"
                                                         onclick="$('#geonamesSearchBox').modal('show');">
                                                         <img
@@ -191,13 +194,15 @@
                                                         <f:ajax
                                                             execute="@this"
                                                             render=":geonamesModalContent" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </ui:fragment>
 
 
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'gnd'}">
-                                                    <h:commandLink
-                                                        styleClass="change-icon gndIndexTrigger"
+                                                    <button
+                                                        type="button"
+                                                        jsf:id="gndSearch"
+                                                        class="btn change-icon gndIndexTrigger"
                                                         title="#{msgs.search}"
                                                         onclick="$('#gndSearchBox').modal('show');">
 
@@ -218,12 +223,14 @@
                                                         <f:ajax
                                                             execute="@this"
                                                             render=":gndModalContent" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </ui:fragment>
 
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'process'}">
-                                                    <h:commandLink
-                                                        styleClass="change-icon processIndexTrigger"
+                                                    <button
+                                                        type="button"
+                                                        jsf:id="openProcessSearchModal"
+                                                        class="btn change-icon processIndexTrigger"
                                                         title="#{msgs.search}"
                                                         onclick="$('#processModalContent').modal('show');">
                                                         <i
@@ -235,7 +242,7 @@
                                                         <f:ajax
                                                             execute="@this"
                                                             render=":processModalContent" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </ui:fragment>
 
                                             </div>
@@ -259,8 +266,10 @@
                                                 class="col-1"
                                                 style="text-align: center;">
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'dante'}">
-                                                    <h:commandLink
-                                                        styleClass="change-icon danteIndexTrigger"
+                                                    <button
+                                                        type="button"
+                                                        jsf:id="openDanteSearchModal"
+                                                        class="btn change-icon danteIndexTrigger"
                                                         title="#{msgs.search}"
                                                         onclick="$('#danteSearchBox').modal('show');">
                                                         <img
@@ -279,11 +288,13 @@
                                                         <f:ajax
                                                             execute="@this"
                                                             render=":danteModalContent" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </ui:fragment>
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'easydb'}">
-                                                    <h:commandLink
-                                                        styleClass="change-icon easydbIndexTrigger"
+                                                    <button
+                                                        type="button"
+                                                        jsf:id="openEasyDbSearchModal"
+                                                        class="btn change-icon easydbIndexTrigger"
                                                         title="#{msgs.search}"
                                                         onclick="$('#easydbSearchBox').modal('show');">
                                                         <img
@@ -302,11 +313,13 @@
                                                         <f:ajax
                                                             execute="@this"
                                                             render=":easydbModalContent" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </ui:fragment>
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'viaf'}">
-                                                    <h:commandLink
-                                                        styleClass="change-icon viafIndexTrigger"
+                                                    <button
+                                                        type="button"
+                                                        jsf:id="viafSearchButton"
+                                                        class="btn change-icon viafIndexTrigger"
                                                         title="#{msgs.search}"
                                                         onclick="$('#viafSearchBox').modal('show');">
 
@@ -326,11 +339,13 @@
                                                         <f:ajax
                                                             execute="@this"
                                                             render=":viafModalContent" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </ui:fragment>
                                                 <ui:fragment rendered="#{Metadaten.metadatum.outputType == 'vocabularySearch'}">
-                                                    <h:commandLink
-                                                        styleClass="change-icon vocabularySearchIndexTrigger"
+                                                    <button
+                                                        type="button"
+                                                        jsf:id="vocabSearch"
+                                                        class="btn change-icon vocabularySearchIndexTrigger"
                                                         title="#{msgs.search}"
                                                         onclick="$('#vocabularySearchBox').modal('show');">
                                                         <img
@@ -349,7 +364,7 @@
                                                         <f:ajax
                                                             execute="@this"
                                                             render=":vocabularySearchModalContent" />
-                                                    </h:commandLink>
+                                                    </button>
                                                 </ui:fragment>
                                             </div>
                                         </div>
@@ -364,18 +379,18 @@
                     <div class="row">
                         <div class="col-auto mr-auto"></div>
                         <div class="col-auto">
-                            <h:commandLink
-                                id="cancelMetadata"
-                                styleClass="btn btn--gray"
-                                action="#{Metadaten.Abbrechen}"
-                                value="#{msgs.abbrechen}"
-                                immediate="false"
-                                role="button">
+                            <button
+                                jsf:id="cancelMetadata"
+                                class="btn btn--gray"
+                                jsf:action="#{Metadaten.Abbrechen}"
+                                jsf:immediate="false"
+                                type="button">
+                                #{msgs.abbrechen}
                                 <x:updateActionListener
                                     value=""
                                     property="#{Metadaten.metadatum.value}" />
                                 <f:ajax render=":pageContentCenter" />
-                            </h:commandLink>
+                            </button>
                             <h:commandButton
                                 id="absenden"
                                 styleClass="btn btn--gray"
@@ -383,7 +398,7 @@
                                 action="#{Metadaten.addNewMetadata}"
                                 value="#{msgs.dieAenderungenSpeichern}"
                                 role="button">
-                             </h:commandButton>
+                            </h:commandButton>
                         </div>
                     </div>
                 </div>

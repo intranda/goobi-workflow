@@ -5,7 +5,8 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
 
@@ -38,26 +39,26 @@
                             <h:outputText value="#{msgs.metseditorSaveExplanation}" />
                         </div>
                         <div class="modal-footer">
-                            <h:commandLink 
-                                id="discard" 
-                                styleClass="btn btn--red"
-                                action="#{Metadaten.discard}" 
+                            <button 
+                                jsf:id="discard" 
+                                class="btn btn--red"
+                                jsf:action="#{Metadaten.discard}" 
                                 title="#{msgs.discard}">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                                 <h:outputText value="#{msgs.discard}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                            </h:commandLink>
+                            </button>
 
-                            <h:commandLink 
-                                id="overwrite" 
-                                styleClass="btn btn--green" 
-                                action="#{Metadaten.XMLschreiben}"
+                            <button 
+                                jsf:id="overwrite" 
+                                class="btn btn--green" 
+                                jsf:action="#{Metadaten.XMLschreiben}"
                                 onclick="goobiWorkflowJS.progress.displayProgressBar()" 
                                 title="#{msgs.overwrite}">
                                 <i class="fa fa-floppy-o" aria-hidden="true"></i>
                                 <h:outputText value="#{msgs.overwrite}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                            </h:commandLink>
+                            </button>
                         </div>
                     </div>
                 </div>

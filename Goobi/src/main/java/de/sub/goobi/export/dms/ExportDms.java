@@ -43,7 +43,6 @@ import org.goobi.beans.User;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
 
-import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.download.ExportMets;
 import de.sub.goobi.helper.FilesystemHelper;
@@ -57,6 +56,8 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
+import lombok.Getter;
+import lombok.Setter;
 import ugh.dl.DocStruct;
 import ugh.dl.ExportFileformat;
 import ugh.dl.Fileformat;
@@ -69,9 +70,10 @@ import ugh.exceptions.WriteException;
 
 public class ExportDms extends ExportMets implements IExportPlugin {
     private static final Logger logger = LogManager.getLogger(ExportDms.class);
-    protected ConfigProjects cp;
     protected boolean exportWithImages = true;
+    @Setter
     protected boolean exportFulltext = true;
+    @Getter
     protected List<String> problems = new ArrayList<>();
     public final static String DIRECTORY_SUFFIX = "_tif";
 
@@ -80,11 +82,6 @@ public class ExportDms extends ExportMets implements IExportPlugin {
 
     public ExportDms(boolean exportImages) {
         this.exportWithImages = exportImages;
-    }
-
-    @Override
-    public void setExportFulltext(boolean exportFulltext) {
-        this.exportFulltext = exportFulltext;
     }
 
     @Override
@@ -115,7 +112,6 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             MetadataTypeNotAllowedException, ExportFileException, UghHelperException, SwapException, DAOException, TypeNotAllowedForParentException {
 
         this.myPrefs = myProzess.getRegelsatz().getPreferences();
-        this.cp = new ConfigProjects(myProzess.getProjekt().getTitel());
         String atsPpnBand = myProzess.getTitel();
 
         /*
@@ -479,10 +475,5 @@ public class ExportDms extends ExportMets implements IExportPlugin {
 
     public String getDescription() {
         return getTitle();
-    }
-
-    @Override
-    public List<String> getProblems() {
-        return problems;
     }
 }
