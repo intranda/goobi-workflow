@@ -65,7 +65,7 @@ public class HelperFormTest {
     public void setUp() {
 
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        String goobiFolder = template.getParent().getParent().getParent().toString() + "/test/resources/";
+        String goobiFolder = template.getParent().getParent().toString() + "/src/test/resources/";
         ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);

@@ -72,7 +72,7 @@ public class GeneratePdfFromXsltTest {
     public void setUp() throws Exception {
 
         Path path = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        String goobiFolder = path.getParent().getParent().getParent().toString() + "/test/resources/";
+        String goobiFolder = path.getParent().getParent().toString() + "/src/test/resources/";
         ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);

@@ -19,7 +19,7 @@ public class TestAuthorizationFilter {
     @Before
     public void setUp() throws Exception {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        String goobiFolder = template.getParent().getParent().getParent().toString() + "/test/resources/";
+        String goobiFolder = template.getParent().getParent().toString() + "/src/test/resources/";
         ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
         ConfigurationHelper.resetConfigurationFile();
     }
