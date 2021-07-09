@@ -27,13 +27,6 @@ package de.sub.goobi.helper.servletfilter;
  */
 import java.io.IOException;
 
-import javax.faces.FactoryFinder;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.context.FacesContextFactory;
-import javax.faces.lifecycle.Lifecycle;
-import javax.faces.lifecycle.LifecycleFactory;
 import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -42,10 +35,9 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.goobi.managedbeans.LoginBean;
-
-import de.sub.goobi.helper.FacesContextHelper;
 
 public class SecurityCheckFilter implements Filter {
 
@@ -73,51 +65,9 @@ public class SecurityCheckFilter implements Filter {
         if (((userBean == null || userBean.getMyBenutzer() == null)) && !url.contains("javax.faces.resource") && !url.contains("wi?")
                 && !url.contains("currentUsers.xhtml") && !url.contains("logout.xhtml") && !url.contains("technicalBackground.xhtml")
                 && !url.contains("mailNotificationDisabled.xhtml") && !url.contains(destination)) {
-            ExternalContext ec = getFacesContext(request, response).getExternalContext();
-
-            ec.redirect(destination);
-
+            ((HttpServletResponse) response).sendRedirect(destination);
         } else {
             chain.doFilter(request, response);
-        }
-    }
-
-    // Create a new FacesContext if it doesn't exist on first request
-    // idea taken from
-    // https://balusc.omnifaces.org/2006/06/communication-in-jsf.html#AccessingTheFacesContextInsideHttpServletOrFilter
-
-    public static FacesContext getFacesContext(ServletRequest request, ServletResponse response) {
-        // Get current FacesContext.
-        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
-
-        // Check current FacesContext.
-        if (facesContext == null) {
-
-            // Create new Lifecycle.
-            LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-            Lifecycle lifecycle = lifecycleFactory.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
-
-            // Create new FacesContext.
-            FacesContextFactory contextFactory = (FacesContextFactory) FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-            facesContext =
-                    contextFactory.getFacesContext(((HttpServletRequest) request).getSession().getServletContext(), request, response, lifecycle);
-
-            // Create new View.
-            UIViewRoot view = facesContext.getApplication().getViewHandler().createView(facesContext, "");
-            facesContext.setViewRoot(view);
-
-            // Set current FacesContext.
-            FacesContextWrapper.setCurrentInstance(facesContext);
-        }
-
-        return facesContext;
-    }
-
-
-    // Wrap the protected FacesContext.setCurrentInstance() in a inner class.
-    private static abstract class FacesContextWrapper extends FacesContext {
-        protected static void setCurrentInstance(FacesContext facesContext) {
-            FacesContext.setCurrentInstance(facesContext);
         }
     }
 }
