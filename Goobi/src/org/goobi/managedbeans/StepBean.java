@@ -41,11 +41,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.api.mail.SendMail;
@@ -99,7 +99,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named("AktuelleSchritteForm")
-@SessionScoped
+@WindowScoped
 public class StepBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 5841566727939692509L;
     private static final Logger logger = LogManager.getLogger(StepBean.class);

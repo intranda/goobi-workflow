@@ -34,13 +34,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
@@ -62,7 +62,7 @@ import lombok.Setter;
 import ugh.dl.Fileformat;
 
 @Named("HelperForm")
-@SessionScoped
+@WindowScoped
 public class HelperForm implements Serializable {
 
     /**

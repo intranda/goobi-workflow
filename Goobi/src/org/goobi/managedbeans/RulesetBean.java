@@ -31,9 +31,9 @@ import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Ruleset;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -46,7 +46,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named("RegelsaetzeForm")
-@SessionScoped
+@WindowScoped
 public class RulesetBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = -8994941188718721705L;
