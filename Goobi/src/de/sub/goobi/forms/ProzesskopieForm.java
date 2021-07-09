@@ -194,6 +194,7 @@ public class ProzesskopieForm implements Serializable {
     public String Prepare() {
         atstsl = "";
         opacSuchbegriff = "";
+        this.guessedImages = 0;
         if (ConfigurationHelper.getInstance().isResetProcesslog()) {
             addToWikiField = "";
         }
