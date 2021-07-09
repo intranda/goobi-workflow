@@ -85,46 +85,7 @@
             <ui:include src="includes/metseditor/modals/inc_me_modal_viaf.xhtml" />
             <ui:include src="includes/metseditor/modals/inc_me_modal_vocabulary.xhtml" />
             <ui:include src="includes/metseditor/modals/inc_me_modal_altoeditor.xhtml" />
-            <!-- Reset Pagination Modal -->
-			<div
-	           class="modal fade"
-	           id="resetPaginationModal"
-	           tabindex="-1"
-	           role="dialog"
-	           aria-labelledby="resetPagModalLabel">
-	           <div
-	               class="modal-dialog"
-	               role="document">
-	               <div class="modal-content">
-	                   <div class="modal-header">
-	                       <h4
-	                           class="modal-title"
-	                           id="resetPagModalLabel">
-	                           <h:outputText value="#{msgs.mets_resetPagination}" />
-	                       </h4>
-	                   </div>
-	                   <div class="modal-body">
-	                       <p>
-	                           <h:outputText
-	                               value="#{msgs.mets_reset_pagination_confirmation}" />
-	                       </p>
-	                   </div>
-	                   <div class="modal-footer">
-	                       <button
-	                           class="btn btn--light-gray"
-	                           data-dismiss="modal"
-	                           aria-hidden="true">#{msgs.abbrechen}</button>
-	                       <button
-	                           class="btn btn-danger btn--red"
-	                           jsf:id="confirmReset"
-	                           jsf:action="#{Metadaten.reloadPagination}">
-	                           <i class="fa fa-refresh" style="margin-right: 5px"></i>
-	                           <h:outputText value="#{msgs.mets_resetPagination}" />
-	                       </button>
-	                   </div>
-	               </div>
-	           </div>
-	       </div>
+            <ui:include src="includes/metseditor/modals/inc_me_modal_resetPagination.xhtml" />
             
         </h:form>
     </ui:define>
