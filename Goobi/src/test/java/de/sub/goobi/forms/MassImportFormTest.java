@@ -90,10 +90,12 @@ public class MassImportFormTest {
     @Before
     public void setUp() throws Exception {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        String goobiFolder = template.getParent().getParent().toString() + "/src/test/resources/";
-        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
+        Path goobiFolder = Paths.get(template.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
+        if (!Files.exists(goobiFolder)) {
+            goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
+        }
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
 
         this.template = MockProcess.createProcess();
         this.template.setDocket(new Docket());

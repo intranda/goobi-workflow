@@ -21,6 +21,7 @@ package de.sub.goobi.helper;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -57,10 +58,12 @@ public class BatchProcessHelperTest {
     public void setUp() throws Exception {
         processList = new ArrayList<>();
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        String goobiFolder = template.getParent().getParent().toString() + "/src/test/resources/";
-        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
+        Path goobiFolder = Paths.get(template.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
+        if (!Files.exists(goobiFolder)) {
+            goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
+        }
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
 
         Process process = MockProcess.createProcess();
         process.setTitel("process");

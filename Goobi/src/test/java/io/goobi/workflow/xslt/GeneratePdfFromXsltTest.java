@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -70,13 +71,14 @@ public class GeneratePdfFromXsltTest {
 
     @Before
     public void setUp() throws Exception {
-
         Path path = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        String goobiFolder = path.getParent().getParent().toString() + "/src/test/resources/";
-        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
+        Path goobiFolder = Paths.get(path.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
+        if (!Files.exists(goobiFolder)) {
+            goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
+        }
+        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder.toString();        
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder);
-
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
         xsltfile = goobiFolder + "/xslt/docket.xsl";
 
         process = MockProcess.createProcess();

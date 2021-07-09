@@ -2,6 +2,7 @@ package org.goobi.api.rest;
 
 import static org.junit.Assert.assertTrue;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -19,8 +20,12 @@ public class TestAuthorizationFilter {
     @Before
     public void setUp() throws Exception {
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        String goobiFolder = template.getParent().getParent().toString() + "/src/test/resources/";
-        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder + "config/goobi_config.properties";
+        Path goobiFolder = Paths.get(template.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
+        if (!Files.exists(goobiFolder)) {
+            goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
+        }
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
+        ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder.toString();
         ConfigurationHelper.resetConfigurationFile();
     }
 
