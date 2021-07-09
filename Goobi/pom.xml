@@ -77,51 +77,26 @@
             <artifactId>weld-servlet-shaded</artifactId>
             <version>3.0.5.Final</version>
         </dependency>
-<dependency>
-    <groupId>org.apache.deltaspike.core</groupId>
-    <artifactId>deltaspike-core-api</artifactId>
-    <version>${deltaspike.version}</version>    
-</dependency>
-
-<dependency>
-    <groupId>org.apache.deltaspike.core</groupId>
-    <artifactId>deltaspike-core-impl</artifactId>
-    <version>${deltaspike.version}</version>    
-</dependency>        
-
-
-<dependency>
-    <groupId>org.apache.deltaspike.modules</groupId>
-    <artifactId>deltaspike-jsf-module-api</artifactId>
-    <version>${deltaspike.version}</version>
-</dependency>
-
-<dependency>
-    <groupId>org.apache.deltaspike.modules</groupId>
-    <artifactId>deltaspike-jsf-module-impl</artifactId>
-    <version>${deltaspike.version}</version>
-</dependency>
-
-
-<!-- <dependency> -->
-<!--     <groupId>org.apache.deltaspike.cdictrl</groupId> -->
-<!--     <artifactId>deltaspike-cdictrl-api</artifactId> -->
-<!--     <version>${deltaspike.version}</version> -->
-<!--     <scope>compile</scope> -->
-<!-- </dependency> -->
-
-
-<!-- <dependency> -->
-<!--     <groupId>org.apache.deltaspike.cdictrl</groupId> -->
-<!--     <artifactId>deltaspike-cdictrl-weld</artifactId> -->
-<!--     <version>${deltaspike.version}</version> -->
-<!--     <scope>runtime</scope> -->
-<!-- </dependency> -->
-
-
-
-
-        
+        <dependency>
+            <groupId>org.apache.deltaspike.core</groupId>
+            <artifactId>deltaspike-core-api</artifactId>
+            <version>${deltaspike.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.deltaspike.core</groupId>
+            <artifactId>deltaspike-core-impl</artifactId>
+            <version>${deltaspike.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-jsf-module-api</artifactId>
+            <version>${deltaspike.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-jsf-module-impl</artifactId>
+            <version>${deltaspike.version}</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
         <dependency>
             <groupId>javax.servlet</groupId>
