@@ -389,6 +389,19 @@ public class User implements DatabaseObject {
         return this.nachname + ", " + this.vorname;
     }
 
+    public String getFirstProjectTitle() {
+        return this.projekte.get(0).getTitel();
+    }
+
+    public String getFirstUserGroupTitle() {
+        return this.benutzergruppen.get(0).getTitel();
+    }
+
+    public String getInstitutionName() {
+        // The getter must be here because the getter initializes the institution when it is null
+        return this.getInstitution().getShortName();
+    }
+
     /**
      * BenutzerHome ermitteln und zurückgeben (entweder aus dem LDAP oder direkt aus der Konfiguration)
      * 

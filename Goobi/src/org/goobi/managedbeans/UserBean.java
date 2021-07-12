@@ -33,7 +33,9 @@ import java.io.Serializable;
 import java.nio.file.FileSystems;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.function.Function;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -157,8 +159,8 @@ public class UserBean extends BasicBean implements Serializable {
             }
             sqlQuery += ")";
         }
-        paginator = new DatabasePaginator("Nachname, Vorname", sqlQuery, m, "user_all");
-        paginator.setList(this.sortUserList(this.convertDatabaseObjectsToUsers(paginator.getList())));
+        this.paginator = new DatabasePaginator("Nachname, Vorname", sqlQuery, m, "user_all");
+        this.paginator.setList(this.sortUserList(this.convertDatabaseObjectsToUsers(paginator.getList())));
         return "user_all";
     }
 
@@ -171,66 +173,33 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     private List<User> sortUserList(List<User> users) {
-        boolean descending = false;
-        if (this.sortierung.endsWith("Desc")) {
-            descending = true;
+        // Find the fitting User-getter-method for the sorting routine depending on the sort strategy
+        Function<User, String> function = null;
+        if (this.sortierung.startsWith("name")) {
+            function = User::getNachVorname;
+        } else if (this.sortierung.startsWith("login")) {
+            function = User::getLogin;
+        } else if (this.sortierung.startsWith("location")) {
+            function = User::getStandort;
+        } else if (this.sortierung.startsWith("group")) {
+            function = User::getFirstUserGroupTitle;
+        } else if (this.sortierung.startsWith("projects")) {
+            function = User::getFirstProjectTitle;
+        } else if (this.sortierung.startsWith("institution")) {
+            function = User::getInstitutionName;
         }
-        List<User> sortedUsers = new ArrayList<>();
-        for (int index = 0; index < users.size(); index++) {
-            User user = users.get(index);
-            int position = 0;
-            while (position < sortedUsers.size()) {
-                User sortedUser = sortedUsers.get(position);
-                if (this.areUsersSorted(user, sortedUser, descending)) {
-                    break;
-                }
-                position++;
+
+        // When there is no sorting routine, don't sort and return the original list
+        if (function != null) {
+            Comparator<User> comparator = Comparator.comparing(function);
+
+            // Only when the sorting routine is descending, replace comparator by reversed comparator.
+            if (this.sortierung.endsWith("Desc")) {
+                comparator = Collections.reverseOrder(comparator);
             }
-            sortedUsers.add(position, users.get(index));
+            Collections.sort(users, comparator);
         }
-        return sortedUsers;
-    }
-
-    private boolean areUsersSorted(User firstUser, User secondUser, boolean descending) {
-
-        String firstUserName = secondUser.getNachname() + " " + secondUser.getVorname();
-        String secondUserName = firstUser.getNachname() + " " + firstUser.getVorname();
-        boolean isNameSorted = this.sortierung.startsWith("name");
-        isNameSorted = isNameSorted && this.checkUserOrder(firstUserName, secondUserName);
-
-        boolean isLoginSorted = this.sortierung.startsWith("login");
-        isLoginSorted = isLoginSorted && this.checkUserOrder(firstUser.getLogin(), secondUser.getLogin());
-
-        boolean isLocationSorted = this.sortierung.startsWith("location");
-        isLocationSorted = isLocationSorted && this.checkUserOrder(firstUser.getStandort(), secondUser.getStandort());
-
-        String firstUserGroup = firstUser.getBenutzergruppen().get(0).getTitel();
-        String secondUserGroup = secondUser.getBenutzergruppen().get(0).getTitel();
-        boolean isGroupSorted = this.sortierung.startsWith("group");
-        isGroupSorted = isGroupSorted && this.checkUserOrder(firstUserGroup, secondUserGroup);
-
-        String firstUserProject = firstUser.getProjekte().get(0).getTitel();
-        String secondUserProject = secondUser.getProjekte().get(0).getTitel();
-        boolean isProjectsSorted = this.sortierung.startsWith("projects");
-        isProjectsSorted = isProjectsSorted && this.checkUserOrder(firstUserProject, secondUserProject);
-
-        String firstUserInstitution = firstUser.getInstitution().getLongName();
-        String secondUserInstitution = secondUser.getInstitution().getLongName();
-        boolean isInstitutionSorted = this.sortierung.startsWith("institution");
-        isInstitutionSorted = isInstitutionSorted && this.checkUserOrder(firstUserInstitution, secondUserInstitution);
-
-        return isNameSorted || isLoginSorted || isLocationSorted || isGroupSorted || isProjectsSorted || isInstitutionSorted;
-    }
-
-    private boolean checkUserOrder(String firstUserProperty, String secondUserProperty) {
-        int result = firstUserProperty.compareTo(secondUserProperty);
-        if (this.sortierung.endsWith("Asc")) {
-            return result > 0;
-        } else if (this.sortierung.endsWith("Desc")) {
-            return result < 0;
-        } else {
-            return false;
-        }
+        return users;
     }
 
     public String Speichern() {
