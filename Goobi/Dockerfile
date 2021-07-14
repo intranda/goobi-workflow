@@ -1,4 +1,4 @@
-FROM maven:3.6.0-jdk-8 AS BUILD
+FROM maven:3.6-jdk-11 AS BUILD
 
 COPY . /goobi/
 WORKDIR /goobi
