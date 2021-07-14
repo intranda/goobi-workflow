@@ -55,4 +55,4 @@ COPY --from=BUILD  /goobi/Goobi/module-war/target/goobi.war /
 RUN unzip /goobi.war -d /usr/local/tomcat/webapps/goobi && rm /goobi.war
 
 EXPOSE 8080
-CMD /run.sh
+CMD ["/run.sh"]
