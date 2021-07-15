@@ -817,7 +817,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             if (mySchritt.isTypExportDMS()) {
                 numberOfActions = numberOfActions + 1;
             }
-            if (mySchritt.getTypScriptStep()) {
+            if (mySchritt.isTypScriptStep()) {
                 numberOfActions = numberOfActions + 1;
             }
             if (StringUtils.isNotBlank(mySchritt.getStepPlugin()) && !mySchritt.isDelayStep() && !mySchritt.isTypExportDMS()) {
