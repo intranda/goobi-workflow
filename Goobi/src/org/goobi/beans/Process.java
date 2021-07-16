@@ -273,6 +273,15 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         return false;
     }
+    
+    public boolean containsExportStep() {
+    	for(int i = 0; i < this.schritte.size(); i++) {
+    		if(this.schritte.get(i).isTypExportDMS() || this.schritte.get(i).isTypExportRus()){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
 
     //    public List<HistoryEvent> getHistory() {
 
