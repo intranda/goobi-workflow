@@ -2077,7 +2077,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
                     List<Path> subdirs = StorageProvider.getInstance().listFiles(ocrDirectory);
                     for (Path imagedir : subdirs) {
-                        if (StorageProvider.getInstance().isDirectory(imagedir)) {
+                        if (StorageProvider.getInstance().isDirectory(imagedir) || StorageProvider.getInstance().isSymbolicLink(imagedir)) {
                             StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
                         }
                     }
