@@ -33,13 +33,11 @@ import java.io.Serializable;
 import java.nio.file.FileSystems;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -49,6 +47,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.shiro.crypto.RandomNumberGenerator;
@@ -78,8 +77,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named("BenutzerverwaltungForm")
-@SessionScoped
-
+@WindowScoped
 public class UserBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = -3635859455444639614L;
     @Getter
@@ -143,10 +141,10 @@ public class UserBean extends BasicBean implements Serializable {
         if (this.filter != null && this.filter.length() != 0) {
             filter = MySQLHelper.escapeString(filter);
             myfilter += " AND (concat (vorname, \" \", nachname) like '%" + StringEscapeUtils.escapeSql(this.filter)
-                    + "%' OR BenutzerID IN (select distinct BenutzerID from benutzergruppenmitgliedschaft, benutzergruppen where benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel like '%"
-                    + StringEscapeUtils.escapeSql(this.filter)
-                    + "%') OR BenutzerID IN (SELECT distinct BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE '%"
-                    + StringEscapeUtils.escapeSql(this.filter) + "%'))";
+            + "%' OR BenutzerID IN (select distinct BenutzerID from benutzergruppenmitgliedschaft, benutzergruppen where benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel like '%"
+            + StringEscapeUtils.escapeSql(this.filter)
+            + "%') OR BenutzerID IN (SELECT distinct BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE '%"
+            + StringEscapeUtils.escapeSql(this.filter) + "%'))";
         }
         paginator = new DatabasePaginator(sortierung, myfilter, m, "user_all");
         return "user_all";
@@ -449,7 +447,7 @@ public class UserBean extends BasicBean implements Serializable {
         if ("REALLY" == "CANCEL") {
             return "index";
         }
-        */
+         */
 
         // Create the random password and save it
         if (userToResetPassword != null) {
@@ -538,10 +536,10 @@ public class UserBean extends BasicBean implements Serializable {
         }
         ProjectManager m = new ProjectManager();
         projectPaginator = new DatabasePaginator("titel", filter, m, "");
-        
+
         unsubscribedProjectsExist = projectPaginator.getTotalResults() > 0;
     }
-    
+
     public Integer getCurrentInstitutionID() {
         if (myClass.getInstitution() != null) {
             return myClass.getInstitution().getId();
@@ -558,11 +556,11 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     public Integer getNumberOfInstitutions(){
-        
+
         List<Institution> lstInsts = InstitutionManager.getAllInstitutionsAsList();
         return lstInsts.size();
     }
-    
+
     public List<SelectItem> getInstitutionsAsSelectList() throws DAOException {
         List<SelectItem> institutions = new ArrayList<>();
         List<Institution> temp = null;

@@ -44,7 +44,6 @@ import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
-import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Default;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
@@ -54,6 +53,7 @@ import javax.servlet.http.Part;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.beans.LogEntry;
@@ -124,7 +124,7 @@ import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.XStream;
 
 @Named("ProzesskopieForm")
-@SessionScoped
+@WindowScoped
 @Default
 public class ProzesskopieForm implements Serializable {
     /**
@@ -340,7 +340,7 @@ public class ProzesskopieForm implements Serializable {
                             break;
                         case "export":
                             configuredFolderNames
-                                    .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
+                            .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
                             break;
                         case "master":
                             if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
@@ -831,7 +831,7 @@ public class ProzesskopieForm implements Serializable {
                             Metadata md = this.ughHelper.getMetadata(myTempStruct, mdt);
                             if (md != null) {
                                 md.setValue(field.getWert());
-                            } else if (this.ughHelper.lastErrorMessage != null && field.getWert() != null && !field.getWert().isEmpty())//if the md could not be found, warn! 
+                            } else if (this.ughHelper.lastErrorMessage != null && field.getWert() != null && !field.getWert().isEmpty())//if the md could not be found, warn!
                             {
                                 Helper.setFehlerMeldung(this.ughHelper.lastErrorMessage);
                                 String strError = mdt.getName() + " : " + field.getWert();

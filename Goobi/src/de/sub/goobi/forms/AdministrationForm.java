@@ -28,9 +28,9 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.plugin.PluginLoader;
@@ -41,7 +41,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named("AdministrationForm")
-@SessionScoped
+@WindowScoped
 public class AdministrationForm implements Serializable {
     private static final long serialVersionUID = 5648439270064158243L;
     public final static String DIRECTORY_SUFFIX = "_tif";
@@ -49,7 +49,7 @@ public class AdministrationForm implements Serializable {
     @Getter
     @Setter
     private List<String> possibleAdministrationPluginNames;
-    
+
     @Getter
     @Setter
     private String currentAdministrationPluginName;
@@ -92,7 +92,7 @@ public class AdministrationForm implements Serializable {
         Helper.setMeldung(
                 "Meldung mit extrem langem Text, die sich über viele Zeilen erstreckt und so weiter geht bis ein Zeilenumbruch kommt der dann in einem Zeilenumbruch endet und damit die Zeile umgebrochen hat 3");
     }
-    
+
     public String setPlugin(String pluginName) {
         currentAdministrationPluginName = pluginName;
         administrationPlugin = (IAdministrationPlugin) PluginLoader.getPluginByTitle(PluginType.Administration, currentAdministrationPluginName);

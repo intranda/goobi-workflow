@@ -29,11 +29,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
 import org.goobi.production.enums.UserRole;
@@ -51,7 +51,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named("SearchForm")
-@SessionScoped
+@WindowScoped
 public class SearchBean implements Serializable {
 
     @Inject
