@@ -35,13 +35,12 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.function.Function;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -51,6 +50,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.shiro.crypto.RandomNumberGenerator;
@@ -81,8 +81,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named("BenutzerverwaltungForm")
-@SessionScoped
-
+@WindowScoped
 public class UserBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = -3635859455444639614L;
     @Getter
@@ -148,9 +147,15 @@ public class UserBean extends BasicBean implements Serializable {
             for (int index = 0; index < searchParts.length; index++) {
                 String like = MySQLHelper.escapeString(searchParts[index]);
                 like = "\'%" + StringEscapeUtils.escapeSql(like) + "%\'";
-                String inGroup = "BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzergruppenmitgliedschaft, benutzergruppen WHERE benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel LIKE " + like + ")";
-                String inProject = "BenutzerID IN (SELECT DISTINCT BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE " + like + ")";
-                String inInstitution = "BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzer, institution WHERE benutzer.institution_id = institution.id AND (institution.shortName LIKE " + like + " OR institution.longName LIKE " + like + "))";
+                String inGroup =
+                        "BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzergruppenmitgliedschaft, benutzergruppen WHERE benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel LIKE "
+                                + like + ")";
+                String inProject =
+                        "BenutzerID IN (SELECT DISTINCT BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE "
+                                + like + ")";
+                String inInstitution =
+                        "BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzer, institution WHERE benutzer.institution_id = institution.id AND (institution.shortName LIKE "
+                                + like + " OR institution.longName LIKE " + like + "))";
                 String inName = "Vorname LIKE " + like + " OR Nachname LIKE " + like + " OR login LIKE " + like + " OR Standort LIKE " + like;
                 sqlQuery += inName + " OR " + inGroup + " OR " + inProject + " OR " + inInstitution;
                 if (index < searchParts.length - 1) {
@@ -167,7 +172,7 @@ public class UserBean extends BasicBean implements Serializable {
     private List<User> convertDatabaseObjectsToUsers(List<? extends DatabaseObject> objects) {
         List<User> users = new ArrayList<>();
         for (int index = 0; index < objects.size(); index++) {
-            users.add((User)(objects.get(index)));
+            users.add((User) (objects.get(index)));
         }
         return users;
     }
@@ -499,7 +504,7 @@ public class UserBean extends BasicBean implements Serializable {
         if ("REALLY" == "CANCEL") {
             return "index";
         }
-        */
+         */
 
         // Create the random password and save it
         if (userToResetPassword != null) {
@@ -588,10 +593,10 @@ public class UserBean extends BasicBean implements Serializable {
         }
         ProjectManager m = new ProjectManager();
         projectPaginator = new DatabasePaginator("titel", filter, m, "");
-        
+
         unsubscribedProjectsExist = projectPaginator.getTotalResults() > 0;
     }
-    
+
     public Integer getCurrentInstitutionID() {
         if (myClass.getInstitution() != null) {
             return myClass.getInstitution().getId();
@@ -605,6 +610,12 @@ public class UserBean extends BasicBean implements Serializable {
             Institution institution = InstitutionManager.getInstitutionById(id);
             myClass.setInstitution(institution);
         }
+    }
+
+    public Integer getNumberOfInstitutions() {
+
+        List<Institution> lstInsts = InstitutionManager.getAllInstitutionsAsList();
+        return lstInsts.size();
     }
 
     public List<SelectItem> getInstitutionsAsSelectList() throws DAOException {

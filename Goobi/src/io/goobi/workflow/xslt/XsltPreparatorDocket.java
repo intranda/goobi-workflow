@@ -38,6 +38,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
@@ -120,6 +122,10 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         startExport(p, new FileOutputStream(dest.toFile()), null);
     }
 
+    public void startExport(Process p, ServletOutputStream out) throws IOException {
+        startExport(p, out, null);
+    }
+    
     /**
      * This method exports the production metadata as xml to a given stream.
      * 
@@ -1481,5 +1487,6 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         sorting.setAttribute("mediaFolderExists", String.valueOf(process.isMediaFolderExists()));
         processElement.addContent(sorting);
     }
+
 
 }

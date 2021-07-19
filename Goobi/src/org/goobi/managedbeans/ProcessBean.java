@@ -51,7 +51,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.imageio.ImageIO;
@@ -66,6 +65,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
@@ -168,7 +168,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
 @Named("ProzessverwaltungForm")
-@SessionScoped
+@WindowScoped
 public class ProcessBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 2838270843176821134L;
     private static final Logger logger = LogManager.getLogger(ProcessBean.class);
@@ -829,6 +829,11 @@ public class ProcessBean extends BasicBean implements Serializable {
                 return "process_edit_step";
             }
         }
+        else //not automatic: then remove from message queue:
+        {
+            mySchritt.setMessageQueue(QueueType.NONE);
+        }
+
         this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
         mySchritt.setBearbeitungszeitpunkt(new Date());
         User ben = Helper.getCurrentUser();
@@ -1466,7 +1471,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             StepManager.saveStep(step);
             String message = "Changed step order for step '" + step.getTitel() + "' to position " + step.getReihenfolge()
-                    + " in process details.";
+            + " in process details.";
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, message);
             // set list to null to reload list of steps in new order
             this.myProzess.setSchritte(null);

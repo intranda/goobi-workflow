@@ -4,8 +4,9 @@ package de.sub.goobi.metadaten;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *             - https://goobi.io
- *             - https://www.intranda.com
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -25,21 +26,37 @@ package de.sub.goobi.metadaten;
  * exception statement from your version.
  */
 
-import com.google.gson.Gson;
-import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.*;
-import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.InvalidImagesException;
-import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.persistence.managers.ProcessManager;
-import de.unigoettingen.sub.search.opac.ConfigOpac;
-import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
-import lombok.Getter;
-import lombok.Setter;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
+import javax.inject.Named;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -58,27 +75,52 @@ import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.jdom2.JDOMException;
 import org.omnifaces.util.Faces;
-import ugh.dl.*;
-import ugh.exceptions.*;
 
-import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.inject.Named;
-import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.google.gson.Gson;
+
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
+import de.sub.goobi.helper.FilesystemHelper;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.HelperComparator;
+import de.sub.goobi.helper.HttpClientHelper;
+import de.sub.goobi.helper.NIOFileUtils;
+import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.Transliteration;
+import de.sub.goobi.helper.TreeNode;
+import de.sub.goobi.helper.VariableReplacer;
+import de.sub.goobi.helper.XmlArtikelZaehlen;
+import de.sub.goobi.helper.XmlArtikelZaehlen.CountType;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.InvalidImagesException;
+import de.sub.goobi.helper.exceptions.SwapException;
+import de.sub.goobi.persistence.managers.ProcessManager;
+import de.unigoettingen.sub.search.opac.ConfigOpac;
+import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
+import lombok.Getter;
+import lombok.Setter;
+import ugh.dl.Corporate;
+import ugh.dl.DigitalDocument;
+import ugh.dl.DocStruct;
+import ugh.dl.DocStructType;
+import ugh.dl.Fileformat;
+import ugh.dl.HoldingElement;
+import ugh.dl.Metadata;
+import ugh.dl.MetadataGroup;
+import ugh.dl.MetadataGroupType;
+import ugh.dl.MetadataType;
+import ugh.dl.NamePart;
+import ugh.dl.Person;
+import ugh.dl.Prefs;
+import ugh.dl.Reference;
+import ugh.exceptions.DocStructHasNoTypeException;
+import ugh.exceptions.IncompletePersonObjectException;
+import ugh.exceptions.MetadataTypeNotAllowedException;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.ReadException;
+import ugh.exceptions.TypeNotAllowedAsChildException;
+import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.WriteException;
 
 /**
  * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
@@ -87,7 +129,7 @@ import java.util.regex.Pattern;
  * @version 1.00 - 17.01.2005
  */
 @Named("Metadaten")
-@SessionScoped
+@WindowScoped
 public class Metadaten implements Serializable {
 
     /**
@@ -4002,7 +4044,7 @@ public class Metadaten implements Serializable {
                 currentMetadataToPerformSearch.setSearchOption(searchOption);
                 currentMetadataToPerformSearch.setSearchValue(gndSearchValue);
             } else if (currentMetadataToPerformSearch.getMetadataDisplaytype() == DisplayType.kulturnav
-                    || StringUtils.isNotBlank(kulturnavSearchValue) ) {
+                    || StringUtils.isNotBlank(kulturnavSearchValue)) {
                 currentMetadataToPerformSearch.setSearchValue(kulturnavSearchValue);
             } else {
                 currentMetadataToPerformSearch.setSearchValue(geonamesSearchValue);
@@ -4013,14 +4055,12 @@ public class Metadaten implements Serializable {
         return "";
     }
 
-
     private void resetSearchValues() {
         gndSearchValue = "";
         geonamesSearchValue = "";
         danteSearchValue = "";
         kulturnavSearchValue = "";
     }
-
 
     public String getOpacKatalog() {
         if (StringUtils.isBlank(opacKatalog)) {
@@ -4329,141 +4369,146 @@ public class Metadaten implements Serializable {
     }
 
     public void reOrderPagination() {
-        String imageDirectory = "";
         try {
-            imageDirectory = myProzess.getImagesDirectory();
-        } catch (SwapException e) {
-            logger.error(e);
-        } catch (DAOException e) {
-            logger.error(e);
-        } catch (IOException e) {
-            logger.error(e);
-        } catch (InterruptedException e) {
-            logger.error(e);
+            String imageDirectory = "";
+            try {
+                imageDirectory = myProzess.getImagesDirectory();
+            } catch (SwapException e) {
+                logger.error(e);
+            } catch (DAOException e) {
+                logger.error(e);
+            } catch (IOException e) {
+                logger.error(e);
+            } catch (InterruptedException e) {
+                logger.error(e);
 
-        }
-        if (imageDirectory.equals("")) {
-            Helper.setFehlerMeldung("ErrorMetsEditorImageRenaming");
-            return;
-        }
-
-        List<String> oldfilenames = new ArrayList<>();
-        for (DocStruct page : document.getPhysicalDocStruct().getAllChildren()) {
-            oldfilenames.add(page.getImageName());
-        }
-
-        // get all folders to check and rename images
-        Map<Path, List<Path>> allFolderAndAllFiles = myProzess.getAllFolderAndFiles();
-        // check size of folders, remove them if they don't match the expected number of files
-        for (Path p : allFolderAndAllFiles.keySet()) {
-            List<Path> files = allFolderAndAllFiles.get(p);
-            if (oldfilenames.size() != files.size()) {
-                files = Collections.emptyList();
             }
-        }
-
-        progress = 0;
-        totalImageNo = oldfilenames.size() * 2;
-        currentImageNo = 0;
-
-        boolean isWriteable = true;
-        for (Path currentFolder : allFolderAndAllFiles.keySet()) {
-            // check if folder is writeable
-            if (!StorageProvider.getInstance().isWritable(currentFolder)) {
-                isWriteable = false;
-                Helper.setFehlerMeldung(Helper.getTranslation("folderNoWriteAccess", currentFolder.getFileName().toString()));
+            if (imageDirectory.equals("")) {
+                Helper.setFehlerMeldung("ErrorMetsEditorImageRenaming");
+                return;
             }
-            List<Path> files = allFolderAndAllFiles.get(currentFolder);
-            for (Path file : files) {
-                // check if folder is writeable
-                if (!StorageProvider.getInstance().isWritable(file)) {
-                    isWriteable = false;
-                    Helper.setFehlerMeldung(Helper.getTranslation("fileNoWriteAccess", file.toString()));
+
+            List<String> oldfilenames = new ArrayList<>();
+            for (DocStruct page : document.getPhysicalDocStruct().getAllChildren()) {
+                oldfilenames.add(page.getImageName());
+            }
+
+            // get all folders to check and rename images
+            Map<Path, List<Path>> allFolderAndAllFiles = myProzess.getAllFolderAndFiles();
+            // check size of folders, remove them if they don't match the expected number of files
+            for (Path p : allFolderAndAllFiles.keySet()) {
+                List<Path> files = allFolderAndAllFiles.get(p);
+                if (oldfilenames.size() != files.size()) {
+                    files = Collections.emptyList();
                 }
             }
-        }
-        if (!isWriteable) {
-            return;
-        }
 
-        for (String imagename : oldfilenames) {
+            progress = 0;
+            totalImageNo = oldfilenames.size() * 2;
+            currentImageNo = 0;
 
-            String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
-            //            String filenameExtension =  Metadaten.getFileExtension(imagename);
-
-            currentImageNo++;
-
-            // check all folder
+            boolean isWriteable = true;
             for (Path currentFolder : allFolderAndAllFiles.keySet()) {
-                // check files in current folder
+                // check if folder is writeable
+                if (!StorageProvider.getInstance().isWritable(currentFolder)) {
+                    isWriteable = false;
+                    Helper.setFehlerMeldung(Helper.getTranslation("folderNoWriteAccess", currentFolder.getFileName().toString()));
+                }
                 List<Path> files = allFolderAndAllFiles.get(currentFolder);
                 for (Path file : files) {
-                    String filenameToCheck = file.getFileName().toString();
-                    String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
-                    String fileExtension = Metadaten.getFileExtension(filenameToCheck);
-                    // find the current file the folder
-                    if (filenamePrefixToCheck.equals(filenamePrefix)) {
-                        // found file to rename
-                        Path tmpFileName = Paths.get(currentFolder.toString(), filenamePrefix + fileExtension + "_bak");
-                        try {
-                            StorageProvider.getInstance().move(file, tmpFileName);
-                        } catch (IOException e) {
-                            logger.error(e);
-                        }
+                    // check if folder is writeable
+                    if (!StorageProvider.getInstance().isWritable(file)) {
+                        isWriteable = false;
+                        Helper.setFehlerMeldung(Helper.getTranslation("fileNoWriteAccess", file.toString()));
                     }
                 }
             }
-        }
+            if (!isWriteable) {
+                return;
+            }
 
-        System.gc();
-        int counter = 1;
-        for (String imagename : oldfilenames) {
-            currentImageNo++;
-            String oldFilenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
-            String newFilenamePrefix = generateFileName(counter);
-            String originalExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
-            // update filename in mets file
-            document.getPhysicalDocStruct().getAllChildren().get(counter - 1).setImageName(newFilenamePrefix + originalExtension);
+            for (String imagename : oldfilenames) {
 
-            // check all folder
-            for (Path currentFolder : allFolderAndAllFiles.keySet()) {
-                // check files in current folder
-                List<Path> files = StorageProvider.getInstance().listFiles(currentFolder.toString(), NIOFileUtils.fileFilter);
-                for (Path file : files) {
-                    String filenameToCheck = file.getFileName().toString();
-                    if (filenameToCheck.contains(".")) {
+                String filenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
+                //            String filenameExtension =  Metadaten.getFileExtension(imagename);
+
+                currentImageNo++;
+
+                // check all folder
+                for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+                    // check files in current folder
+                    List<Path> files = allFolderAndAllFiles.get(currentFolder);
+                    for (Path file : files) {
+                        String filenameToCheck = file.getFileName().toString();
                         String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
-                        String fileExtension = Metadaten.getFileExtension(filenameToCheck.replace("_bak", ""));
-                        // found right file
-                        if (filenameToCheck.endsWith("bak") && filenamePrefixToCheck.equals(oldFilenamePrefix)) {
-                            // generate new file name
-                            Path renamedFile = Paths.get(currentFolder.toString(), newFilenamePrefix + fileExtension.toLowerCase());
+                        String fileExtension = Metadaten.getFileExtension(filenameToCheck);
+                        // find the current file the folder
+                        if (filenamePrefixToCheck.equals(filenamePrefix)) {
+                            // found file to rename
+                            Path tmpFileName = Paths.get(currentFolder.toString(), filenamePrefix + fileExtension + "_bak");
                             try {
-                                StorageProvider.getInstance().move(file, renamedFile);
+                                StorageProvider.getInstance().move(file, tmpFileName);
                             } catch (IOException e) {
                                 logger.error(e);
                             }
                         }
-                    } else {
-                        logger.debug("the file to be renamed does not contain a '.': " + currentFolder.toString() + filenameToCheck);
                     }
                 }
             }
-            counter++;
+
+            System.gc();
+            int counter = 1;
+            for (String imagename : oldfilenames) {
+                currentImageNo++;
+                String oldFilenamePrefix = imagename.substring(0, imagename.lastIndexOf("."));
+                String newFilenamePrefix = generateFileName(counter);
+                String originalExtension = Metadaten.getFileExtension(imagename.replace("_bak", ""));
+                // update filename in mets file
+                document.getPhysicalDocStruct().getAllChildren().get(counter - 1).setImageName(newFilenamePrefix + originalExtension);
+
+                // check all folder
+                for (Path currentFolder : allFolderAndAllFiles.keySet()) {
+                    // check files in current folder
+                    List<Path> files = StorageProvider.getInstance().listFiles(currentFolder.toString(), NIOFileUtils.fileFilter);
+                    for (Path file : files) {
+                        String filenameToCheck = file.getFileName().toString();
+                        if (filenameToCheck.contains(".")) {
+                            String filenamePrefixToCheck = filenameToCheck.substring(0, filenameToCheck.lastIndexOf("."));
+                            String fileExtension = Metadaten.getFileExtension(filenameToCheck.replace("_bak", ""));
+                            // found right file
+                            if (filenameToCheck.endsWith("bak") && filenamePrefixToCheck.equals(oldFilenamePrefix)) {
+                                // generate new file name
+                                Path renamedFile = Paths.get(currentFolder.toString(), newFilenamePrefix + fileExtension.toLowerCase());
+                                try {
+                                    StorageProvider.getInstance().move(file, renamedFile);
+                                } catch (IOException e) {
+                                    logger.error(e);
+                                }
+                            }
+                        } else {
+                            logger.debug("the file to be renamed does not contain a '.': " + currentFolder.toString() + filenameToCheck);
+                        }
+                    }
+                }
+                counter++;
+            }
+
+            retrieveAllImages();
+            progress = null;
+            totalImageNo = 0;
+            currentImageNo = 0;
+
+            // load new file names
+            changeFolder();
+
+            // save current state
+            Reload();
+
+            Helper.setMeldung("finishedFileRenaming");
+        } catch (Exception e) {
+            logger.error(e);
+            Helper.setFehlerMeldung("ErrorMetsEditorImageRenaming");
         }
-
-        retrieveAllImages();
-        progress = null;
-        totalImageNo = 0;
-        currentImageNo = 0;
-
-        // load new file names
-        changeFolder();
-
-        // save current state
-        Reload();
-
-        Helper.setMeldung("finishedFileRenaming");
     }
 
     private void removeImage(String fileToDelete, int totalNumberOfFiles) {

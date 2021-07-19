@@ -2,8 +2,6 @@ package org.goobi.managedbeans;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.SessionScoped;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -32,6 +30,7 @@ import javax.enterprise.context.SessionScoped;
 
 import javax.inject.Named;
 
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Institution;
 
 import de.sub.goobi.persistence.managers.InstitutionManager;
@@ -39,7 +38,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named
-@SessionScoped
+@WindowScoped
 public class InstitutionBean  extends BasicBean implements Serializable {
 
 
