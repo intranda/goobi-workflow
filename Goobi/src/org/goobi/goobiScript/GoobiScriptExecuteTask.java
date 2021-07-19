@@ -74,7 +74,7 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
             foundExecutableStep = true;
             List<String> scriptPaths = step.getAllScriptPaths();
 
-            if (step.getTypScriptStep() && !scriptPaths.isEmpty()) {
+            if (step.isTypScriptStep() && !scriptPaths.isEmpty()) {
                 // This step is a script step
                 ShellScriptReturnValue returncode = hs.executeAllScriptsForStep(step, step.isTypAutomatisch());
                 boolean success = returncode.getReturnCode() == 0 || returncode.getReturnCode() == 98 || returncode.getReturnCode() == 99;

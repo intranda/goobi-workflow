@@ -874,8 +874,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         Element script = new Element("scriptStep", xmlns);
         task.addContent(script);
         // typScriptStep
-        script.setAttribute("scriptStep", String.valueOf(step.getTypScriptStep()));
-        if (step.getTypScriptStep()) {
+        script.setAttribute("scriptStep", String.valueOf(step.isTypScriptStep()));
+        if (step.isTypScriptStep()) {
             // scriptName1
             script.setAttribute("scriptName1", step.getScriptname1() == null ? "" : step.getScriptname1());
             // typAutomatischScriptpfad
