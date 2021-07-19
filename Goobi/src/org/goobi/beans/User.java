@@ -390,11 +390,19 @@ public class User implements DatabaseObject {
     }
 
     public String getFirstProjectTitle() {
-        return this.projekte.get(0).getTitel();
+        if (this.projekte != null && this.projekte.size() > 0) {
+            return this.projekte.get(0).getTitel();
+        } else {
+            return "";
+        }
     }
 
     public String getFirstUserGroupTitle() {
-        return this.benutzergruppen.get(0).getTitel();
+        if (this.benutzergruppen != null && this.benutzergruppen.size() > 0) {
+            return this.benutzergruppen.get(0).getTitel();
+        } else {
+            return "";
+        }
     }
 
     public String getInstitutionName() {
