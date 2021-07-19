@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -1768,7 +1767,7 @@ public class Metadaten implements Serializable {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -3716,7 +3715,7 @@ public class Metadaten implements Serializable {
     public void loadJsonAlto() throws IOException, JDOMException, SwapException, DAOException, InterruptedException {
         Path altoFile = getCurrentAltoPath();
         SimpleAlto alto = new SimpleAlto();
-        if (Files.exists(altoFile)) {
+        if (StorageProvider.getInstance().isFileExists(altoFile)) {
             alto = SimpleAlto.readAlto(altoFile);
         }
 
@@ -3730,7 +3729,7 @@ public class Metadaten implements Serializable {
     private Path getCurrentAltoPath() throws SwapException, DAOException, IOException, InterruptedException {
         String ocrFileNew = image.getTooltip().substring(0, image.getTooltip().lastIndexOf("."));
         Path altoFile = Paths.get(myProzess.getOcrAltoDirectory(), ocrFileNew + ".xml");
-        if (!Files.exists(altoFile)) {
+        if (!StorageProvider.getInstance().isFileExists(altoFile)) {
             altoFile = altoFile.getParent().resolve(ocrFileNew + ".alto");
         }
         return altoFile;
@@ -4541,7 +4540,7 @@ public class Metadaten implements Serializable {
                 }
             } else {
                 Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString()
-                + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
+                        + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
             }
         }
 
