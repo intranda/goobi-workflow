@@ -1070,7 +1070,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     public void ExportDMS() {
-    	if(this.myProzess.containsExportStep()) {
+    	if(this.myProzess.getContainsExportStep()) {
 	        IExportPlugin export = null;
 	        String pluginName = ProcessManager.getExportPluginName(myProzess.getId());
 	        if (StringUtils.isNotEmpty(pluginName)) {
