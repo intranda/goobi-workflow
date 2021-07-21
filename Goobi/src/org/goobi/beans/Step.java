@@ -68,7 +68,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private Integer bearbeitungsstatus;
     @Getter
     @Setter
-    private Date bearbeitungszeitpunkt;
+    private Date bearbeitungszeitpunkt;   
     @Getter
     @Setter
     private Date bearbeitungsbeginn;
@@ -117,8 +117,9 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     @Getter
     @Setter
     private boolean typBeimAnnehmenModulUndAbschliessen = false;
+    @Getter
     @Setter
-    private Boolean typScriptStep = false;
+    private boolean typScriptStep = false;
     @Getter
     @Setter
     private String scriptname1;
@@ -518,13 +519,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     public void setBearbeitungsstatusAsString(String inbearbeitungsstatus) {
         this.bearbeitungsstatus = Integer.parseInt(inbearbeitungsstatus);
-    }
-
-    public Boolean getTypScriptStep() {
-        if (this.typScriptStep == null) {
-            this.typScriptStep = false;
-        }
-        return this.typScriptStep;
     }
 
     public ArrayList<String> getAllScriptPaths() {

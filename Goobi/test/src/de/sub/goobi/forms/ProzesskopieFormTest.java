@@ -66,6 +66,8 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
+import ugh.exceptions.TypeNotAllowedAsChildException;
+import ugh.exceptions.TypeNotAllowedForParentException;
 
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*","javax.net.ssl.*",  "javax.management.*"})
 @RunWith(PowerMockRunner.class)
@@ -242,7 +244,7 @@ public class ProzesskopieFormTest {
     }
 
     @Test
-    public void testSetDocType() {
+    public void testSetDocType() throws TypeNotAllowedForParentException, TypeNotAllowedAsChildException {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
 

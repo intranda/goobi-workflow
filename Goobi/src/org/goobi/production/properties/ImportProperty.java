@@ -35,30 +35,37 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class ImportProperty implements IProperty {
 
+	@Getter
+	@Setter
     private String name = "";
     private Integer container = 0;
+    @Getter
+	@Setter
     private String validation = "";
+    @Getter
+	@Setter
     private Type type = Type.TEXT;
+    @Getter
+	@Setter
     private String value = "";
+    @Getter
+	@Setter
     private List<String> possibleValues = new ArrayList<String>();
+    @Getter
+	@Setter
     private List<String> projects = new ArrayList<String>();
+    @Getter
+	@Setter
     private boolean required = false;
 
     public ImportProperty() {
         this.possibleValues = new ArrayList<String>();
         this.projects = new ArrayList<String>();
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override
@@ -69,56 +76,6 @@ public class ImportProperty implements IProperty {
     @Override
     public void setContainer(int container) {
         this.container = container;
-    }
-
-    @Override
-    public String getValidation() {
-        return this.validation;
-    }
-
-    @Override
-    public void setValidation(String validation) {
-        this.validation = validation;
-    }
-
-    @Override
-    public Type getType() {
-        return this.type;
-    }
-
-    @Override
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    @Override
-    public String getValue() {
-        return this.value;
-    }
-
-    @Override
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    @Override
-    public List<String> getPossibleValues() {
-        return this.possibleValues;
-    }
-
-    @Override
-    public void setPossibleValues(List<String> possibleValues) {
-        this.possibleValues = possibleValues;
-    }
-
-    @Override
-    public List<String> getProjects() {
-        return this.projects;
-    }
-
-    @Override
-    public void setProjects(List<String> projects) {
-        this.projects = projects;
     }
 
     @Override
@@ -206,13 +163,5 @@ public class ImportProperty implements IProperty {
         } catch (NullPointerException e) {
             return new Date();
         }
-    }
-
-    public boolean getRequired() {
-        return required;
-    }
-
-    public void setRequired(boolean required) {
-        this.required = required;
     }
 }

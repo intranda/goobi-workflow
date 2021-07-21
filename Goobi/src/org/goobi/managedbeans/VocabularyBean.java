@@ -13,7 +13,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
@@ -21,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.input.BOMInputStream;
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -44,11 +44,11 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 @Named
-@SessionScoped
-@Log4j
+@WindowScoped
+@Log4j2
 public class VocabularyBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = -4591427229251805665L;

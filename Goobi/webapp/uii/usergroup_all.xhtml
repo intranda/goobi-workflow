@@ -97,7 +97,7 @@
 										</h:panelGroup>
 
 									</x:column>
-                                    <x:column>
+                                    <x:column  rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.institution}" />
                                         </f:facet>

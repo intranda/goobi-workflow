@@ -202,7 +202,7 @@
                                                                     <f:ajax render="@form" execute="@form" />
                                                                 </button>
 
-                                                                <button jsf:id="removeFilter" aria-label="#{msgs.removeFilter}" jsf:action="#{ProzessverwaltungForm.deleteField}" jsf:rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
+                                                                <button jsf:id="removeFilter" class="button-no-style" aria-label="#{msgs.removeFilter}" jsf:action="#{ProzessverwaltungForm.deleteField}" jsf:rendered="#{ProzessverwaltungForm.sizeOfFieldList > 1}">
                                                                     <span class="btn fa fa-minus margin-bottom-regular" />
                                                                     <x:updateActionListener property="#{ProzessverwaltungForm.currentField}" value="#{field}" />
                                                                     <f:ajax render="@form" execute="@form" />

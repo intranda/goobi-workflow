@@ -625,7 +625,7 @@ class StepMysqlHelper implements Serializable {
                     o.getUserId() == null ? null : o.getUserId(), //BearbeitungsBenutzerID
                     o.getProcessId() == null ? null : o.getProcessId(), //ProzesseID
                     o.getEditTypeEnum().getValue(), //edittype
-                    o.getTypScriptStep(), //typScriptStep
+                    o.isTypScriptStep(), //typScriptStep
                     (o.getScriptname1() == null || o.getScriptname1().equals("")) ? null : o.getScriptname1(), //scriptName1
                     (o.getScriptname2() == null || o.getScriptname2().equals("")) ? null : o.getScriptname2(), //scriptName2
                     (o.getTypAutomatischScriptpfad2() == null || o.getTypAutomatischScriptpfad2().equals("")) ? null
@@ -670,7 +670,7 @@ class StepMysqlHelper implements Serializable {
                     o.getUserId() == null ? null : o.getUserId(), //BearbeitungsBenutzerID
                     o.getProcessId() == null ? null : o.getProcessId(), //ProzesseID
                     o.getEditTypeEnum().getValue(), //edittype
-                    o.getTypScriptStep(), //typScriptStep
+                    o.isTypScriptStep(), //typScriptStep
                     (o.getScriptname1() == null || o.getScriptname1().equals("")) ? null : o.getScriptname1(), //scriptName1
                     (o.getScriptname2() == null || o.getScriptname2().equals("")) ? null : o.getScriptname2(), //scriptName2
                     (o.getTypAutomatischScriptpfad2() == null || o.getTypAutomatischScriptpfad2().equals("")) ? null

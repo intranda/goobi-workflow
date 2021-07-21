@@ -21,10 +21,19 @@
 
             <ul class='main-nav'>
                 <!-- Startseite -->
-                <intranda:menuItem
-                    id="a0"
-                    label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
-                    action="index" />
+                <li class="#{NavigationForm.aktuell == 'a0'?'active':''}">
+                    <h:commandLink
+                        action="index"
+                        id="start">
+                        <span>
+                            <i class="#{cc.attrs.icon}"></i>
+                            #{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}
+                        </span>
+                        <f:setPropertyActionListener
+                            target="#{NavigationForm.aktuell}"
+                            value="a0" />
+                    </h:commandLink>
+                </li>
 
                 <!-- aktuelle Schritte -->
                 <h:panelGroup rendered="#{LoginForm.hasRole('Task_Menu')}">

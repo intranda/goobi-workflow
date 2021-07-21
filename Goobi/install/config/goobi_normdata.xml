@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <normdatabases>
+    <normdatabase name="goobi" url="https://goobi.intranda.com/" abbreviation="" />
+    <normdatabase name="kulturnav" url="https://kulturnav.org/" abbreviation="kulturnav" />
     <normdatabase name="GND" url="http://d-nb.info/gnd/" abbreviation="gnd" />
     <normdatabase name="geonames" url="http://www.geonames.org/" abbreviation="geonames" />
     <normdatabase name="dante" url="https://dante.gbv.de/" abbreviation="dante" />
