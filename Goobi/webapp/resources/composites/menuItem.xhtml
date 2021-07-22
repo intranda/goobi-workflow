@@ -16,6 +16,7 @@
 		<composite:attribute name="orderBy"/>
 		<composite:attribute name="icon"/>
 		<composite:attribute name="fontclass"/>
+		<composite:attribute name="parentMenu"/>
 	</composite:interface>
 
 	<composite:implementation>
@@ -32,6 +33,9 @@
 				</c:if>
 				<c:if test="#{not empty cc.attrs.orderBy}">
 					<f:setPropertyActionListener target="#{cc.attrs.orderForm}" value="#{cc.attrs.orderBy}" />
+				</c:if>
+				<c:if test="#{not empty cc.attrs.parentMenu}">
+					<f:setPropertyActionListener target="#{NavigationForm.parentMenu}" value="#{cc.attrs.parentMenu}" />
 				</c:if>
 			</h:commandLink>
 		</li>

@@ -89,9 +89,17 @@ public class NavigationForm implements Serializable{
 
     };
 
+    /**
+     * Replaced by NavigationForm.parentMenu.
+     * Is still needed by some test classes, may not be removed until now.
+     */
     @Getter
     @Setter
+    @Deprecated
     private String aktuell = "0";
+    @Getter
+    @Setter
+    private String parentMenu = "";
     @Getter
     @Setter
     private boolean showHelp = false;
