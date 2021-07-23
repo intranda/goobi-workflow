@@ -122,7 +122,7 @@ function setAutocompleteListHandler() {
  * Handler for onkeypress that clicks {@code targetElement} if the enter key is pressed.
  */
 function submitOnEnter( event, classname ) {
-    classname = name || 'submitOnEnter';
+    classname = classname || 'submitOnEnter';
     event = event || window.event;
     if ( event.keyCode == 13 ) {
         // normalize event target, so it looks the same for all browsers
@@ -138,8 +138,7 @@ function submitOnEnter( event, classname ) {
             if ( event.target.type == 'button' || event.target.type == 'submit' ) {
                 if ( strEndsWith( event.target.id, 'focusKeeper' ) ) {
                     // inside some Richfaces component such as rich:listShuttle
-                }
-                else {
+                } else {
                     return;
                 }
             }
@@ -153,13 +152,11 @@ function submitOnEnter( event, classname ) {
             // Firefox
             event.stopPropagation();
             event.preventDefault();
-        }
-        else {
+        } else {
             // IE
             event.cancelBubble = true;
             event.returnValue = false;
         }
-        
         document.getElementsByClassName( classname )[ 0 ].click();
     }
     
