@@ -276,9 +276,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     
     public boolean getContainsExportStep() {
     	this.getSchritte();
-    	System.out.println(this);
-    	System.out.println(this.getSchritte());
-    	System.out.println(this.schritte);
     	for(int i = 0; i < this.schritte.size(); i++) {
     		if(this.schritte.get(i).isTypExportDMS() || this.schritte.get(i).isTypExportRus()){
     			return true;
