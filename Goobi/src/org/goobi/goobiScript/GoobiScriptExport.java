@@ -42,13 +42,8 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
         // add all valid commands to list
         List<GoobiScriptResult> newList = new ArrayList<>();
         for (Integer i : processes) {
-        	if(ProcessManager.getProcessById(i).getContainsExportStep()) {
-	            GoobiScriptResult gsr = new GoobiScriptResult(i, command, parameters, username, starttime);
-	            newList.add(gsr);
-        	}else {
-        		log.error("No task with type Export found in process " + i);
-            	Helper.setFehlerMeldung("noExportTaskError");
-        	}
+	        GoobiScriptResult gsr = new GoobiScriptResult(i, command, parameters, username, starttime);
+	        newList.add(gsr);
         }
         return newList;
     }
@@ -63,12 +58,17 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
 
         // execute all jobs that are still in waiting state
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
-        if(p.getContainsExportStep()) {      
-        	try {
-	            gsr.setProcessTitle(p.getTitel());
-	            gsr.setResultType(GoobiScriptResultType.RUNNING);
-	            gsr.updateTimestamp();
-	
+    	try {
+            gsr.setProcessTitle(p.getTitel());
+            gsr.setResultType(GoobiScriptResultType.RUNNING);
+            gsr.updateTimestamp();
+            
+            if(!p.getContainsExportStep()) {
+            	log.error("No task with type Export found in process " + p.getId());
+            	gsr.setResultMessage(Helper.getString(Helper.getSessionLocale(), "noExportTaskError"));
+                gsr.setResultType(GoobiScriptResultType.ERROR);
+                return;
+            }else {
 	            IExportPlugin export = null;
 	            String pluginName = ProcessManager.getExportPluginName(p.getId());
 	            if (StringUtils.isNotEmpty(pluginName)) {
@@ -107,16 +107,14 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
 	                gsr.setResultMessage("Export done successfully");
 	                gsr.setResultType(GoobiScriptResultType.OK);
 	            }
-	        } catch (NoSuchMethodError | Exception e) {
-	            gsr.setResultMessage(e.getMessage());
-	            gsr.setResultType(GoobiScriptResultType.ERROR);
-	            gsr.setErrorText(e.getMessage());
-	            log.error("Exception during the export of process " + p.getId(), e);
-	        }
-        gsr.updateTimestamp();
-        }else {
-        	log.error("No task with type Export found in process " + p.getId());
-        	Helper.setFehlerMeldung("noExportTaskError");
+            }
+        } catch (NoSuchMethodError | Exception e) {
+            gsr.setResultMessage(e.getMessage());
+            gsr.setResultType(GoobiScriptResultType.ERROR);
+            gsr.setErrorText(e.getMessage());
+            log.error("Exception during the export of process " + p.getId(), e);
         }
+        gsr.updateTimestamp();
+        
     }
 }
