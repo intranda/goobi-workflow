@@ -8,7 +8,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -114,7 +113,11 @@ public class GoobiImageResource {
             @PathParam("folder") String folder,
             @PathParam("filename") String filename) throws ContentLibException {
 
-        filename = URLDecoder.decode(filename, Charset.forName("UTF-8"));
+        try {
+            filename = URLDecoder.decode(filename, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage());
+        }
         ImageResource imageResource = createImageResource(processIdString, folder, filename);
 
         ImageInformation info = imageResource.getInfoAsJson();
@@ -159,8 +162,8 @@ public class GoobiImageResource {
             //            addResponseContentType(request, response);
             Response resp =
                     Response.seeOther(PathConverter.toURI(request.getRequestURI() + "/info.json"))
-                            .header("Content-Type", response.getContentType())
-                            .build();
+                    .header("Content-Type", response.getContentType())
+                    .build();
             return resp;
         } catch (URISyntaxException e) {
             throw new ContentLibException("Cannot create redirect url from " + request.getRequestURI());
@@ -178,7 +181,11 @@ public class GoobiImageResource {
             @PathParam("region") String region,
             @PathParam("size") String size, @PathParam("rotation") String rotation, @PathParam("quality") String quality,
             @PathParam("format") String format, @PathParam("cacheCommand") String command) throws ContentLibException {
-        filename = URLDecoder.decode(filename, Charset.forName("UTF-8"));
+        try {
+            filename = URLDecoder.decode(filename, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage());
+        }
         ImageResource imageResource = createImageResource(processIdString, folder, filename);
         return imageResource.isInCache(region, size, rotation, quality, format, command);
     }
@@ -193,7 +200,11 @@ public class GoobiImageResource {
             @PathParam("filename") String filename,
             @PathParam("region") String region, @PathParam("size") String size,
             @PathParam("rotation") String rotation, @PathParam("pdfName") String pdfName) throws ContentLibException {
-        filename = URLDecoder.decode(filename, Charset.forName("UTF-8"));
+        try {
+            filename = URLDecoder.decode(filename, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage());
+        }
         ImageResource imageResource = createImageResource(processIdString, folder, filename);
         return imageResource.getPdf();
     }
@@ -208,8 +219,12 @@ public class GoobiImageResource {
             @PathParam("filename") String filename,
             @PathParam("region") String region, @PathParam("size") String size,
             @PathParam("rotation") String rotation, @PathParam("quality") String quality, @PathParam("format") String format)
-            throws ContentLibException {
-        filename = URLDecoder.decode(filename, Charset.forName("UTF-8"));
+                    throws ContentLibException {
+        try {
+            filename = URLDecoder.decode(filename, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage());
+        }
         ImageResource imageResource = createImageResource(processIdString, folder, filename);
         return imageResource.getImage(region, size, rotation, quality, format);
     }
@@ -264,8 +279,8 @@ public class GoobiImageResource {
                     // size on the original image
                     Dimension size = requestedImageSize.orElse(null);
                     getThumbnailSize(imagePath.getParent().getFileName().toString())
-                            .map(sizeString -> calcThumbnailScale(imageSize, sizeString, size, requestedRegionSize.isPresent()))
-                            .ifPresent(scale -> setThumbnailScale(scale, request));
+                    .map(sizeString -> calcThumbnailScale(imageSize, sizeString, size, requestedRegionSize.isPresent()))
+                    .ifPresent(scale -> setThumbnailScale(scale, request));
                     logger.debug("Using thumbnail {} for image width {} and region width {}", imagePath,
                             requestedImageSize.map(Object::toString).orElse("max"),
                             requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
@@ -716,10 +731,10 @@ public class GoobiImageResource {
         List<Path> thumbFolderPaths = getMatchingThumbnailFolders(imageFolder, thumbsFolder);
         availableThumbnailFolders.put(imageFolder.toString(),
                 thumbFolderPaths.stream()
-                        .map(Path::getFileName)
-                        .map(Path::toString)
-                        .sorted((name1, name2) -> getSize(name1).compareTo(getSize(name2)))
-                        .collect(Collectors.toList()));
+                .map(Path::getFileName)
+                .map(Path::toString)
+                .sorted((name1, name2) -> getSize(name1).compareTo(getSize(name2)))
+                .collect(Collectors.toList()));
     }
 
     private List<ImageTile> getImageTiles(List<String> tileSizes, List<String> tileScales) {
