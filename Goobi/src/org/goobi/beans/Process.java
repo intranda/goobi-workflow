@@ -50,6 +50,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.ServletContext;
@@ -69,6 +70,8 @@ import org.goobi.io.FileListFilter;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
@@ -1340,10 +1343,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.swappedOut = inSwappedOut;
     }
 
-    /**
-     * starts generation of xml logfile for current process
-     */
-
     public void downloadXML() {
         XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
         try {
@@ -1355,6 +1354,36 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             Helper.setFehlerMeldung("could not execute command to write logfile to home directory", e);
         }
     }
+
+    /**
+     * download xml logfile for current process
+     */
+    public void downloadLogFile() {
+
+        XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        if (!facesContext.getResponseComplete()) {
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            String fileName = getTitel() + "_log.xml";
+            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(fileName);
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
+
+            // write to servlet output stream
+            try {
+                ServletOutputStream out = response.getOutputStream();
+                xmlExport.startExport(this, out);
+                out.flush();
+            } catch (IOException e) {
+                logger.error("IOException while exporting run note", e);
+            }
+
+            facesContext.responseComplete();
+        }
+        return ;
+    }
+    
 
     public String downloadDocket() {
 
@@ -2074,7 +2103,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
                     List<Path> subdirs = StorageProvider.getInstance().listFiles(imageDirectory);
                     for (Path imagedir : subdirs) {
-                        if (StorageProvider.getInstance().isDirectory(imagedir)) {
+                        if (StorageProvider.getInstance().isDirectory(imagedir) || StorageProvider.getInstance().isSymbolicLink(imagedir)) {
                             StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
                         }
                     }
@@ -2087,7 +2116,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
                     List<Path> subdirs = StorageProvider.getInstance().listFiles(ocrDirectory);
                     for (Path imagedir : subdirs) {
-                        if (StorageProvider.getInstance().isDirectory(imagedir)) {
+                        if (StorageProvider.getInstance().isDirectory(imagedir) || StorageProvider.getInstance().isSymbolicLink(imagedir)) {
                             StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
                         }
                     }

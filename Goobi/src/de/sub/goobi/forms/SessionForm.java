@@ -127,10 +127,26 @@ public class SessionForm implements Serializable {
      */
     public List<SessionInfo> getSessions() {
         if (this.sessions != null) {
-            return this.sessions;
+            return this.filterRealUserSessions();
         } else {
             return new ArrayList<>();
         }
+    }
+
+    /**
+     * Filters the sessions by real user sessions.
+     * All sessions that contain a name unequal to "-" are returned.
+     *
+     * @return The list of sessions with real users
+     */
+    private List<SessionInfo> filterRealUserSessions() {
+        List<SessionInfo> realUserSessions = new ArrayList<>();
+        for (int index = 0; index < this.sessions.size(); index++) {
+            if (!this.sessions.get(index).getUserName().equals(SessionForm.NOT_LOGGED_IN)) {
+                realUserSessions.add(this.sessions.get(index));
+            }
+        }
+        return realUserSessions;
     }
 
     /**
@@ -149,13 +165,28 @@ public class SessionForm implements Serializable {
     }
 
     /**
-     * Returns the number of currently existing sessions
+     * Returns the number of currently existing sessions.
      *
      * @return The number of sessions
      */
     public int getNumberOfSessions() {
         if (this.sessions != null) {
             return this.sessions.size();
+        } else {
+            return 0;
+        }
+    }
+
+
+    /**
+     * Returns the number of currently existing sessions.
+     * The list of sessions is filtered for real user sessions.
+     *
+     * @return The number of real user sessions
+     */
+    public int getNumberOfRealUserSessions() {
+        if (this.sessions != null) {
+            return this.filterRealUserSessions().size();
         } else {
             return 0;
         }

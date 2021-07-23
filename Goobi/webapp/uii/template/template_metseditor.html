@@ -8,7 +8,8 @@
     xmlns:c="http://java.sun.com/jstl/core" 
     xmlns:x="http://myfaces.apache.org/tomahawk" 
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ds="http://deltaspike.apache.org/jsf">
 
 <h:head>
     <!-- META TAGS -->
@@ -70,6 +71,7 @@
 <ui:insert name="metadata" />
 
 <body class="#{LoginForm.myBenutzer == null?'login':''}">
+  <ds:windowId/>  
 <main>
     <f:view locale="#{SpracheForm.locale}">
         <!-- USER NOT LOGGED IN -->

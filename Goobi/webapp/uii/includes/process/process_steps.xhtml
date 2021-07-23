@@ -622,7 +622,7 @@
                                         jsf:id="executeScript"
                                         title="#{msgs.executeScripts}"
                                         aria-label="#{msgs.executeScripts}"
-                                        jsf:rendered="#{item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}"
+                                        jsf:rendered="#{item.typScriptStep and item.typAutomatischScriptpfad != null and item.typAutomatischScriptpfad != ''}"
                                         jsf:action="#{HelperForm.executeScriptsForStep(item.id)}"
                                         onclick="preventDoubleSubmit(this);"
                                         class="button-link blue">

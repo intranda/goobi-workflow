@@ -154,7 +154,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
             logger.debug("step is automatic: " + automatic);
             logger.debug("found " + scriptPaths.size() + " scripts");
         }
-        if (step.getTypScriptStep() && !scriptPaths.isEmpty()) {
+        if (step.isTypScriptStep() && !scriptPaths.isEmpty()) {
             this.hs.executeAllScriptsForStep(this.step, automatic);
         } else if (this.step.isTypExportDMS()) {
             this.hs.executeDmsExport(this.step, automatic);

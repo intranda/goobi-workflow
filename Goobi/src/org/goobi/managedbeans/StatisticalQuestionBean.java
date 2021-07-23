@@ -7,10 +7,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.TimeUnit;
@@ -21,7 +21,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named("StatisticalQuestionBean")
-@SessionScoped
+@WindowScoped
 public class StatisticalQuestionBean implements Serializable {
 
     /**

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import javax.jms.JMSException;
 import javax.jms.Queue;
@@ -24,6 +23,7 @@ import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.jmx.QueueViewMBean;
 import org.apache.activemq.command.ActiveMQTextMessage;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.api.mq.TaskTicket;
 
 import com.google.gson.Gson;
@@ -39,7 +39,7 @@ import lombok.extern.log4j.Log4j;
  */
 
 @Named
-@SessionScoped
+@WindowScoped
 @Log4j
 public class JmsBean implements Serializable {
 
