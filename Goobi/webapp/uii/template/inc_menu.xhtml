@@ -15,13 +15,13 @@
 
     <composite:implementation>
         <h:form id="menu">
-            <a	aria-label="intranda Logo"
+            <a aria-label="intranda Logo"
                 href="index.xhtml"
                 id="brand">&#160;</a>
 
             <ul class='main-nav'>
-                <!-- Startseite -->
-                <li class="#{NavigationForm.aktuell == 'a0'?'active':''}">
+                <!-- Dropdown-Menü: "Startseite" / "Home page" -->
+                <li class="#{NavigationForm.parentMenu == 'menu_start' ? 'active' : ''}">
                     <h:commandLink
                         action="index"
                         id="start">
@@ -32,12 +32,15 @@
                         <f:setPropertyActionListener
                             target="#{NavigationForm.aktuell}"
                             value="a0" />
+                        <f:setPropertyActionListener
+                            target="#{NavigationForm.parentMenu}"
+                            value="menu_start" />
                     </h:commandLink>
                 </li>
 
-                <!-- aktuelle Schritte -->
+                <!-- Dropdown-Menü: "Meine Aufgaben" / "My tasks" -->
                 <h:panelGroup rendered="#{LoginForm.hasRole('Task_Menu')}">
-                    <li class="#{NavigationForm.aktuell == 'a20'?'active':''}">
+                    <li class="#{NavigationForm.parentMenu == 'menu_tasks' ? 'active' : ''}">
                         <h:commandLink
                             action="#{AktuelleSchritteForm.FilterAlleStart}"
                             id="steps">
@@ -49,18 +52,26 @@
                                 target="#{NavigationForm.aktuell}"
                                 value="a20" />
                             <f:setPropertyActionListener
+                                target="#{NavigationForm.parentMenu}"
+                                value="menu_tasks" />
+                            <f:setPropertyActionListener
                                 target="#{AktuelleSchritteForm.filter}"
                                 value="" />
-                            <!--                             <f:setPropertyActionListener target="#{AktuelleSchritteForm.hideStepsFromOtherUsers}" value="#{true}" /> -->
-<!--                             <f:setPropertyActionListener -->
-<!--                                 target="#{AktuelleSchritteForm.sortierung}" -->
-<!--                                 value="statusDesc" /> -->
+                            <!--
+                            <f:setPropertyActionListener
+                                target="#{AktuelleSchritteForm.hideStepsFromOtherUsers}"
+                                value="#{true}" />
+                            <f:setPropertyActionListener
+                                 target="#{AktuelleSchritteForm.sortierung}"
+                                 value="statusDesc" />
+                            -->
                         </h:commandLink>
                     </li>
                 </h:panelGroup>
 
+                <!-- Dropdown-Menü: "Workflow" -->
                 <h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Menu')}">
-                    <li class="#{NavigationForm.aktuell == 'a21' or NavigationForm.aktuell == 'a22' or NavigationForm.aktuell == 'a23' or NavigationForm.aktuell == 'a24' or NavigationForm.aktuell == 'a25'?'active':''}">
+                    <li class="#{NavigationForm.parentMenu == 'menu_workflow' ? 'active' : ''}">
                         <button
                             id="nav-workflow"
                             type="button"
@@ -74,6 +85,7 @@
                             <!-- Prozess suchen -->
                             <intranda:menuItem
                                 id="a21"
+                                parentMenu="menu_workflow"
                                 label="#{msgs.nachEinemBandSuchen}"
                                 action="process_search"
                                 filter="#{ProzessverwaltungForm.filter}"
@@ -84,6 +96,7 @@
                             <!-- Prozessuebersicht -->
                             <intranda:menuItem
                                 id="a22"
+                                parentMenu="menu_workflow"
                                 label="#{msgs.aktuelleProzesse}"
                                 action="#{ProzessverwaltungForm.FilterAktuelleProzesse}"
                                 filter="#{ProzessverwaltungForm.filter}"
@@ -95,6 +108,7 @@
                             <!-- batches -->
                             <intranda:menuItem
                                 id="a23"
+                                parentMenu="menu_workflow"
                                 label="#{msgs.batches}"
                                 action="#{BatchForm.FilterAlleStart}"
                                 display="#{BatchForm.modusBearbeiten}"
@@ -105,6 +119,7 @@
                             <!-- Prozessvorlagen -->
                             <intranda:menuItem
                                 id="a25"
+                                parentMenu="menu_workflow"
                                 label="#{msgs.prozessvorlagen}"
                                 action="#{ProzessverwaltungForm.FilterVorlagen}"
                                 filter="#{ProzessverwaltungForm.filter}"
@@ -119,7 +134,7 @@
                                     value="#{NavigationForm.possibleWorkflowPluginNames}"
                                     id="plugin1">
                                     <ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isWorkflowPluginAllowed(plugin)}">
-                                        <li class="#{NavigationForm.aktuell == 'a28' and NavigationForm.currentWorkflowPluginName == plugin ?'active':''}">
+                                        <li class="#{NavigationForm.parentMenu == 'menu_workflow' and NavigationForm.currentWorkflowPluginName == plugin ?'active':''}">
                                             <h:commandLink
                                                 action="#{NavigationForm.setPlugin(plugin)}"
                                                 id="plugin">
@@ -130,6 +145,9 @@
                                                 <f:setPropertyActionListener
                                                     target="#{NavigationForm.aktuell}"
                                                     value="a28" />
+                                                <f:setPropertyActionListener
+                                                    target="#{NavigationForm.parentMenu}"
+                                                    value="menu_workflow" />
                                             </h:commandLink>
                                         </li>
                                     </ui:fragment>
@@ -137,11 +155,11 @@
                             </h:panelGroup>
                         </ul>
                     </li>
- 				</h:panelGroup>
+                </h:panelGroup>
 
-                <!-- ################            Administration              ######################-->
+                <!-- Dropdown-Menü: "Administration" -->
                 <h:panelGroup rendered="#{LoginForm.hasRole('Admin_Menu')}">
-                    <li class="#{NavigationForm.aktuell == 'a30' or NavigationForm.aktuell == 'a31' or NavigationForm.aktuell == 'a32' or NavigationForm.aktuell == 'a33' or NavigationForm.aktuell == 'a34' or NavigationForm.aktuell == 'a35' or NavigationForm.aktuell == 'a36' or NavigationForm.aktuell == 'a37' or NavigationForm.aktuell == 'a38' or NavigationForm.aktuell == 'a39' or NavigationForm.aktuell == 'a42' or NavigationForm.aktuell == 'a53'?'active':''}">
+                    <li class="#{NavigationForm.parentMenu == 'menu_administration' ? 'active' : ''}">
                         <button
                             id="nav-administration"
                             type="button"
@@ -155,6 +173,7 @@
                             <!-- Benutzerverwaltung -->
                             <intranda:menuItem
                                 id="a30"
+                                parentMenu="menu_administration"
                                 label="#{msgs.benutzer}"
                                 action="#{BenutzerverwaltungForm.FilterKein}"
                                 rendered="#{LoginForm.hasRole('Admin_Users')}"
@@ -164,6 +183,7 @@
                             <!-- Benutzergruppen -->
                             <intranda:menuItem
                                 id="a31"
+                                parentMenu="menu_administration"
                                 label="#{msgs.benutzergruppen}"
                                 action="#{BenutzergruppenForm.FilterKein}"
                                 rendered="#{LoginForm.hasRole('Admin_Usergroups')}"
@@ -173,6 +193,7 @@
                             <!-- Projekte -->
                             <intranda:menuItem
                                 id="a32"
+                                parentMenu="menu_administration"
                                 label="#{msgs.projekte}"
                                 action="#{ProjekteForm.FilterKein}"
                                 rendered="#{LoginForm.hasRole('Admin_Projects')}"
@@ -182,6 +203,7 @@
                                 <!-- Institution -->
                                 <intranda:menuItem
                                     id="aInstitution"
+                                    parentMenu="menu_administration"
                                     label="#{msgs.institutions}"
                                     action="#{institutionBean.FilterKein}"
                                     icon="fa fa-building box-icon-fix-menu-up3"
@@ -190,6 +212,7 @@
                             <!-- Regelsaetze -->
                             <intranda:menuItem
                                 id="a33"
+                                parentMenu="menu_administration"
                                 label="#{msgs.regelsaetze}"
                                 action="#{RegelsaetzeForm.FilterKein}"
                                 rendered="#{LoginForm.hasRole('Admin_Rulesets')}"
@@ -199,6 +222,7 @@
                             <!-- Laufzettel -->
                             <intranda:menuItem
                                 id="a34"
+                                parentMenu="menu_administration"
                                 label="#{msgs.dockets}"
                                 action="#{DocketForm.FilterKein}"
                                 rendered="#{LoginForm.hasRole('Admin_Dockets')}"
@@ -208,6 +232,7 @@
                             <!-- Ldapgruppen -->
                             <intranda:menuItem
                                 id="a35"
+                                parentMenu="menu_administration"
                                 label="#{msgs.authentication_configuration}"
                                 action="#{LdapGruppenForm.FilterKein}"
                                 rendered="#{LoginForm.hasRole('Admin_Ldap')}"
@@ -217,6 +242,7 @@
                             <!-- Message Queue -->
                             <intranda:menuItem
                                 id="a37"
+                                parentMenu="menu_administration"
                                 label="#{msgs.menu_administration_currentQueue}"
                                 action="queue"
                                 rendered="#{LoginForm.hasRole('Admin_Queue')}"
@@ -226,6 +252,7 @@
                             <!-- Jobtypes -->
                             <intranda:menuItem
                                 id="a37b"
+                                parentMenu="menu_administration"
                                 label="#{msgs.menu_administration_jobtypes}"
                                 action="admin_jobtypes_all"
                                 rendered="#{LoginForm.hasRole('Admin_Jobtypes')}"
@@ -235,29 +262,35 @@
                             <!-- Plugins overview -->
                             <intranda:menuItem
                                 id="a42"
+                                parentMenu="menu_administration"
                                 label="#{msgs.menu_administration_plugins}"
                                 action="plugins"
                                 icon="fa fa-stethoscope box-icon-fix-menu-up3"
                                 fontclass="margin-left-10" />
 
                             <!-- Vokabularverwaltung -->
-                            <intranda:menuItem id="a53" 
-                            	label="#{msgs.vocabularyManager}"
+                            <intranda:menuItem
+                                id="a53"
+                                parentMenu="menu_administration"
+                                label="#{msgs.vocabularyManager}"
                                 action="#{vocabularyBean.FilterKein}"
                                 rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
                                 icon="fa fa-database box-icon-fix-menu-up3 "
                                 fontclass="margin-left-10" />
                                 
                             <!-- SWAGGER-API -->
-                            <intranda:menuItem id="a153" 
+                            <intranda:menuItem
+                                id="a153"
+                                parentMenu="menu_administration"
                                 label="#{msgs.apiDescription}"
                                 action="restApi.xhtml"
-                                icon="fa fa-terminal box-icon-fix-menu-up3 "
+                                icon="fa fa-terminal box-icon-fix-menu-up3"
                                 fontclass="margin-left-10" />
 
                             <!-- Superadmin -->
                             <intranda:menuItem
                                 id="a39"
+                                parentMenu="menu_administration"
                                 label="#{msgs.administrationsaufgaben}"
                                 action="admin"
                                 rendered="#{LoginForm.hasRole('Admin_Administrative_Tasks')}"
@@ -271,7 +304,7 @@
                                     value="#{AdministrationForm.possibleAdministrationPluginNames}"
                                     id="plugin2">
                                     <ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isAdministrationPluginAllowed(plugin)}">
-                                        <li class="#{NavigationForm.aktuell == 'a38' and AdministrationForm.currentAdministrationPluginName == plugin ?'active':''}">
+                                        <li class="#{NavigationForm.parentMenu == 'menu_administration' and AdministrationForm.currentAdministrationPluginName == plugin ?'active':''}">
                                             <h:commandLink
                                                 action="#{AdministrationForm.setPlugin(plugin)}"
                                                 id="plugin">
@@ -282,6 +315,9 @@
                                                 <f:setPropertyActionListener
                                                     target="#{NavigationForm.aktuell}"
                                                     value="a38" />
+                                                <f:setPropertyActionListener
+                                                    target="#{NavigationForm.parentMenu}"
+                                                    value="menu_administration" />
                                             </h:commandLink>
                                         </li>
                                     </ui:fragment>
@@ -289,11 +325,11 @@
                             </h:panelGroup>
                         </ul>
                     </li>
- 				</h:panelGroup>
+                </h:panelGroup>
 
-                <!-- Controlling -->
+                <!-- Dropdown-Menü: "Controlling" / "Management" -->
                 <h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Menu')}">
-                    <li class="#{NavigationForm.aktuell == 'a40'  or NavigationForm.aktuell == 'a41' ?'active':''}">
+                    <li class="#{NavigationForm.parentMenu == 'menu_controlling' ? 'active' : ''}">
                         <button
                             id="nav-controlling"
                             type="button"
@@ -306,6 +342,7 @@
                         <ul class="dropdown-menu">
                             <intranda:menuItem
                                 id="a40"
+                                parentMenu="menu_controlling"
                                 label="#{msgs.statistik}"
                                 action="statistics"
                                 rendered="#{LoginForm.hasRole('Statistics_General')}"
@@ -319,7 +356,7 @@
                                     id="plugin3">
 
                                     <ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isStatisticsPluginAllowed(statistics)}">
-                                        <li class="#{NavigationForm.aktuell == 'a41' and StatisticalQuestionBean.currentPluginName == statistics ?'active':''}">
+                                        <li class="#{NavigationForm.parentMenu == 'menu_controlling' and StatisticalQuestionBean.currentPluginName == statistics ?'active':''}">
                                             <h:commandLink
                                                 action="#{StatisticalQuestionBean.setStatisticalQuestion(statistics)}"
                                                 id="statistics">
@@ -330,6 +367,9 @@
                                                 <f:setPropertyActionListener
                                                     target="#{NavigationForm.aktuell}"
                                                     value="a41" />
+                                                <f:setPropertyActionListener
+                                                    target="#{NavigationForm.parentMenu}"
+                                                    value="menu_controlling" />
                                             </h:commandLink>
                                         </li>
                                     </ui:fragment>
@@ -337,7 +377,7 @@
                             </h:panelGroup>
                         </ul>
                     </li>
-	            </h:panelGroup>
+                </h:panelGroup>
             </ul>
 
             <h:panelGroup>
@@ -360,14 +400,16 @@
                                 jsf:rel="tooltip"
                                 data-placement="bottom">
                                 <i class="fa #{not NavigationForm.showHelp?'fa-question':'fa-question-circle'}"></i>
-                                <f:passThroughAttribute name="data-toggle" value="tooltip"/>
+                                <f:passThroughAttribute
+                                    name="data-toggle"
+                                    value="tooltip"/>
                                 <f:setPropertyActionListener
                                     target="#{NavigationForm.showHelp}"
                                     value="#{not NavigationForm.showHelp}" />
                             </button>
                         </li>
                         <li class="dropdown language-select">
-                        	<div data-toggle="tooltip" title="#{msgs.spracheAendern}" data-placement="bottom">
+                            <div data-toggle="tooltip" title="#{msgs.spracheAendern}" data-placement="bottom">
 	                            <button
 	                                type="button"
 	                                id="nav-language"
@@ -376,26 +418,27 @@
 	                                aria-haspopup="true"
 	                                class="dropdown-toggle btn"
 	                                title="#{msgs.spracheAendern}"
-	                                jsf:rel="tooltip"
-	                                >
+	                                jsf:rel="tooltip">
 	                                
 	                                <img
 	                                    alt="#{SpracheForm.locale}"
 	                                    src="template/img/flags/#{SpracheForm.locale}.gif" />
 	                                <span></span>
 	                            </button>
-                            <!-- <a
-                                href="#"
-                                id="nav-language"
-                                aria-label="#{msgs.spracheAendern}"
-                                data-toggle="dropdown"
-                                class="dropdown-toggle"
-                                title="#{msgs.spracheAendern}">
-                                <img
-                                    alt=""
-                                    src="template/img/flags/#{SpracheForm.locale}.gif" />
-                                <span></span>
-                            </a> -->
+                                <!--
+                                <a
+                                    href="#"
+                                    id="nav-language"
+                                    aria-label="#{msgs.spracheAendern}"
+                                    data-toggle="dropdown"
+                                    class="dropdown-toggle"
+                                    title="#{msgs.spracheAendern}">
+                                    <img
+                                        alt=""
+                                        src="template/img/flags/#{SpracheForm.locale}.gif" />
+                                    <span></span>
+                                </a>
+                                -->
 	                            <ul class="dropdown-menu pull-right">
 	                                <ui:repeat
 	                                    var="availableLanguage"
@@ -426,10 +469,11 @@
 	                </ul>
                     <div class="dropdown">
                         <button
+                            id="nav-account"
                             type="button"
-                            class='dropdown-toggle btn'
-                            data-toggle="dropdown"
-                            id="toggleUserdata">
+                            class="dropdown-toggle btn"
+                            aria-haspopup="true"
+                            data-toggle="dropdown">
                             <h:outputText
                                 rendered="#{LoginForm.myBenutzer != null}"
                                 value="#{LoginForm.myBenutzer.vorname} #{LoginForm.myBenutzer.nachname}" />
@@ -449,6 +493,7 @@
                             <!-- Benutzerkonfiguration -->
                             <intranda:menuItem
                                 id="a50"
+                                parentMenu="menu_account"
                                 label="#{msgs.benutzerkonfiguration}"
                                 action="user_config"
                                 display="#{NavigationForm.uiStatus.user_config}"
@@ -458,6 +503,7 @@
                             <h:panelGroup rendered="#{HelperForm.passwordIsChangable}">
                                 <intranda:menuItem
                                     id="a51"
+                                    parentMenu="menu_account"
                                     label="#{msgs.passwortAendern}"
                                     action="user_password"
                                     icon="fa fa-key box-icon-fix-menu-up3" />
@@ -478,24 +524,27 @@
                                 </button>
                             </li>
 
-			                <!-- logout -->
-							<ui:fragment rendered="#{!LoginForm.useOpenIDConnect}">
-								<intranda:menuItem id="a52" label="#{msgs.logout}"
-									action="#{LoginForm.Ausloggen}"
-									icon="fa fa-power-off box-icon-fix-menu" />
-							</ui:fragment>
-							<ui:fragment rendered="#{LoginForm.useOpenIDConnect}">
-								<intranda:menuItem id="openIdLogout" label="#{msgs.logout}"
-									action="#{LoginForm.logoutOpenId}"
-									icon="fa fa-power-off box-icon-fix-menu" />
-							</ui:fragment>
-						</ul>
-					</div>
-				</div>
-			</h:panelGroup>
-		</h:form>
-	</composite:implementation>
+                            <!-- logout -->
+                            <ui:fragment rendered="#{!LoginForm.useOpenIDConnect}">
+                                <intranda:menuItem
+                                    id="a52"
+                                    parentMenu="menu_account"
+                                    label="#{msgs.logout}"
+                                    action="#{LoginForm.Ausloggen}"
+                                    icon="fa fa-power-off box-icon-fix-menu" />
+                            </ui:fragment>
+                            <ui:fragment rendered="#{LoginForm.useOpenIDConnect}">
+                                <intranda:menuItem
+                                    id="openIdLogout"
+                                    parentMenu="menu_account"
+                                    label="#{msgs.logout}"
+                                    action="#{LoginForm.logoutOpenId}"
+                                    icon="fa fa-power-off box-icon-fix-menu" />
+                            </ui:fragment>
+                        </ul>
+                    </div>
+                </div>
+            </h:panelGroup>
+        </h:form>
+    </composite:implementation>
 </ui:composition>
-
-
-
