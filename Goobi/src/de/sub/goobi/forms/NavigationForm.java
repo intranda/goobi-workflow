@@ -32,11 +32,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.api.mail.SendMail;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
@@ -48,7 +48,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named("NavigationForm")
-@SessionScoped
+@WindowScoped
 public class NavigationForm implements Serializable{
 
     /**
@@ -88,7 +88,7 @@ public class NavigationForm implements Serializable{
         }
 
     };
-    
+
     @Getter
     @Setter
     private String aktuell = "0";

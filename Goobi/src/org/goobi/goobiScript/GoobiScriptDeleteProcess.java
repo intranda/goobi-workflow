@@ -159,12 +159,15 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
 
     private boolean checkDeletePermission(Process p, boolean contentOnly) throws DAOException, SwapException, InterruptedException, IOException {
         Path path = Paths.get(p.getProcessDataDirectory());
-        Path parent = path.getParent();
         boolean permission;
         if (contentOnly) {
-            permission = StorageProvider.getInstance().isDeletable(path);
+            permission = true;
+            List<Path> paths = StorageProvider.getInstance().listFiles(path.toAbsolutePath().toString());
+            for (Path contentPath : paths) {
+                permission = permission && StorageProvider.getInstance().isDeletable(contentPath);
+            }
         } else {
-            permission = StorageProvider.getInstance().isDeletable(parent);
+            permission = StorageProvider.getInstance().isDeletable(path);
         }
         return permission;
     }

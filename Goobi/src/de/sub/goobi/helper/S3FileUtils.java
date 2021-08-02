@@ -621,6 +621,11 @@ public class S3FileUtils implements StorageProviderInterface {
     }
 
     @Override
+    public boolean isSymbolicLink(Path path) {
+        return false;
+    }
+
+    @Override
     public void createDirectories(Path path) throws IOException {
         StorageType st = getPathStorageType(path);
         if (st == StorageType.LOCAL || st == StorageType.BOTH) {

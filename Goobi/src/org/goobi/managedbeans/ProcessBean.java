@@ -51,7 +51,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.imageio.ImageIO;
@@ -66,6 +65,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
@@ -168,7 +168,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
 @Named("ProzessverwaltungForm")
-@SessionScoped
+@WindowScoped
 public class ProcessBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 2838270843176821134L;
     private static final Logger logger = LogManager.getLogger(ProcessBean.class);
@@ -817,7 +817,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             if (mySchritt.isTypExportDMS()) {
                 numberOfActions = numberOfActions + 1;
             }
-            if (mySchritt.getTypScriptStep()) {
+            if (mySchritt.isTypScriptStep()) {
                 numberOfActions = numberOfActions + 1;
             }
             if (StringUtils.isNotBlank(mySchritt.getStepPlugin()) && !mySchritt.isDelayStep() && !mySchritt.isTypExportDMS()) {
@@ -829,6 +829,11 @@ public class ProcessBean extends BasicBean implements Serializable {
                 return "process_edit_step";
             }
         }
+        else //not automatic: then remove from message queue:
+        {
+            mySchritt.setMessageQueue(QueueType.NONE);
+        }
+
         this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
         mySchritt.setBearbeitungszeitpunkt(new Date());
         User ben = Helper.getCurrentUser();
@@ -1065,28 +1070,32 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     public void ExportDMS() {
-        IExportPlugin export = null;
-        String pluginName = ProcessManager.getExportPluginName(myProzess.getId());
-        if (StringUtils.isNotEmpty(pluginName)) {
-            try {
-                export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
-            } catch (Exception e) {
-                logger.error("Can't load export plugin, use default plugin", e);
-                export = new ExportDms();
-            }
-        }
-        if (export == null) {
-            export = new ExportDms();
-            Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started export using 'ExportDMS'.");
-        }
-        try {
-            export.startExport(this.myProzess);
-        } catch (Exception e) {
-            String[] parameter = { "DMS", this.myProzess.getTitel() };
-            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
-            //            Helper.setFehlerMeldung("An error occured while trying to export to DMS for: " + this.myProzess.getTitel(), e);
-            logger.error("ExportDMS error", e);
-        }
+    	if(this.myProzess.getContainsExportStep()) {
+	        IExportPlugin export = null;
+	        String pluginName = ProcessManager.getExportPluginName(myProzess.getId());
+	        if (StringUtils.isNotEmpty(pluginName)) {
+	            try {
+	                export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+	            } catch (Exception e) {
+	                logger.error("Can't load export plugin, use default plugin", e);
+	                export = new ExportDms();
+	            }
+	        }
+	        if (export == null) {
+	            export = new ExportDms();
+	            Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started export using 'ExportDMS'.");
+	        }
+	        try {
+	            export.startExport(this.myProzess);
+	        } catch (Exception e) {
+	            String[] parameter = { "DMS", this.myProzess.getTitel() };
+	            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
+	            //            Helper.setFehlerMeldung("An error occured while trying to export to DMS for: " + this.myProzess.getTitel(), e);
+	            logger.error("ExportDMS error", e);
+	        }
+    	}else {
+    		Helper.setFehlerMeldung("noExportTaskError");
+    	}
     }
 
     @SuppressWarnings("unchecked")
@@ -1466,7 +1475,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             StepManager.saveStep(step);
             String message = "Changed step order for step '" + step.getTitel() + "' to position " + step.getReihenfolge()
-                    + " in process details.";
+            + " in process details.";
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, message);
             // set list to null to reload list of steps in new order
             this.myProzess.setSchritte(null);

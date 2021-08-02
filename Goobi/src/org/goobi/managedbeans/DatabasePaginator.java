@@ -29,7 +29,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 
@@ -114,12 +115,16 @@ public class DatabasePaginator implements Serializable {
     // }
 
     public List<? extends DatabaseObject> getList() {
-        return results;
+        return this.results;
+    }
+
+    public void setList(List< ? extends DatabaseObject> results) {
+        this.results = results;
     }
 
     public void load() {
         try {
-            results = manager.getList(order, filter, this.page * this.pageSize, pageSize, institution);
+            this.results = manager.getList(order, filter, this.page * this.pageSize, pageSize, institution);
             for (DatabaseObject d : results) {
                 d.lazyLoad();
             }

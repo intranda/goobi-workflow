@@ -35,6 +35,7 @@ public enum DisplayType {
     geonames,
     corporate,
     dante,
+    kulturnav,
     process,
     htmlInput,
     viaf,

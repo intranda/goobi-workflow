@@ -596,7 +596,7 @@
                                                 </h:panelGroup>
                                             </x:column>
 
-                                            <x:column styleClass="tableColumnOverflow maxWidth120">
+                                            <x:column styleClass="tableColumnOverflow maxWidth120 #{item.getProjekt().projectIsArchived?font-status-deactivated:font-black}">
                                                 <f:facet name="header">
                                                     <!-- Header -->
                                                     <button
@@ -615,7 +615,9 @@
                                                         <f:ajax render=":myform" />
                                                     </button>
                                                 </f:facet>
-                                                <h:outputText value="#{item.projekt.titel}" />
+                                                
+                                                <h:outputText value="#{item.projekt.titel}"
+                                                              styleClass="tableColumnOverflow maxWidth120 #{item.getProjekt().projectIsArchived?'font-status-deactivated':'font-black'}" />
                                             </x:column>
 
                                             <x:column
@@ -957,24 +959,34 @@
 
 
                                                 <!-- DMS-Export-Schaltknopf -->
-                                                <button
-                                                    jsf:action="#{ProzessverwaltungForm.ExportDMS}"
-                                                    jsf:id="action21"
-                                                    aria-label="#{msgs.importDms}"
-                                                    jsf:rel="tooltip"
-                                                    onclick="preventDoubleSubmit(this);"
-                                                    title="#{msgs.importDms}"
-                                                    class="btn"
-                                                    style="padding-top: 1px; padding-bottom: 1px"
-                                                    jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
-                                                    <i class="fa fa-globe" />
-                                                    <f:passThroughAttribute
-                                                        name="data-toggle"
-                                                        value="tooltip" />
-                                                    <x:updateActionListener
-                                                        property="#{ProzessverwaltungForm.myProzess}"
-                                                        value="#{item}" />
-                                                </button>
+                                                <div jsf:rel="tooltip" 
+													aria-label="#{!item.containsExportStep ? msgs.noExportTask : ''}" 
+													title="#{!item.containsExportStep ? msgs.noExportTask : ''}" 
+													class="btn btn-mini" 
+													style="padding: 0;">
+	                                                <button
+	                                                    jsf:action="#{ProzessverwaltungForm.ExportDMS}"
+	                                                    jsf:id="action21"
+	                                                    aria-label="#{msgs.importDms}"
+	                                                    jsf:rel="tooltip"
+	                                                    onclick="preventDoubleSubmit(this);"
+	                                                    title="#{msgs.importDms}"
+	                                                    class="btn"
+	                                                    style="padding-top: 1px; padding-bottom: 1px"
+	                                                    jsf:disabled="#{!item.containsExportStep}"
+	                                                    jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
+	                                                    <i class="fa fa-globe" />
+	                                                    <f:passThroughAttribute
+	                                                        name="data-toggle"
+	                                                        value="tooltip" />
+	                                                    <x:updateActionListener
+	                                                        property="#{ProzessverwaltungForm.myProzess}"
+	                                                        value="#{item}" />
+	                                                </button>
+	                                                <f:passThroughAttribute
+			                                            name="data-toggle"
+			                                            value="tooltip" />
+	                                              </div>
 
                                                 <!-- DMS-Export-Schaltknopf greyed -->
                                                 <button
@@ -995,12 +1007,12 @@
 
                                                 <!-- ProzessKopie-Schaltknopf -->
                                                 <button
-                                                    class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} button-schaltknopf"
+                                                    class="btn fa #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'fa-file-o btn-danger':'fa-file-o btn-primary'} button-schaltknopf"
                                                     jsf:action="#{ProzesskopieForm.Prepare}"
                                                     jsf:id="action22"
                                                     jsf:rel="tooltip"
                                                     onclick="preventDoubleSubmit(this);"
-                                                    title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen}"
+                                                    title="#{item.containsUnreachableSteps?(msgs.prozessvorlageMitUnvollstaendigenSchrittdetails):(item.getProjekt().projectIsArchived?msgs.projectIsArchived:msgs.eineKopieDieserProzessvorlageAnlegen)}"
                                                     jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() eq 1}">
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
@@ -1018,7 +1030,7 @@
                                                         data-toggle="tooltip">
                                                         <div class="dropdown">
                                                         <button
-                                                            class="btn #{item.containsUnreachableSteps?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
+                                                            class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
                                                             style="margin: 0; padding-left: 4px; padding-right: 4px;"
                                                             data-toggle="dropdown"> <span class="caret"></span>
                                                         </button>
@@ -1057,7 +1069,7 @@
 
                                                 <!-- MassenImport -->
                                                 <button
-                                                    class="btn fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} button-schaltknopf"
+                                                    class="btn fa #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'fa-files-o btn-danger':'fa-files-o btn-primary'} button-schaltknopf"
                                                     jsf:action="#{MassImportForm.Prepare}"
                                                     jsf:id="action222"
                                                     jsf:rel="tooltip"
@@ -1075,12 +1087,12 @@
                                                 <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() gt 1}">
                                                     <div
                                                         class="btn-group"
-                                                        title="#{msgs.MassenImport}"
+                                                        title="#{item.getProjekt().projectIsArchived?msgs.projectIsArchived:msgs.MassenImport}"
                                                         data-toggle="tooltip">
 
                                                         <div class="dropdown">
                                                             <button
-                                                                class="btn #{item.containsUnreachableSteps?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
+                                                                class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
                                                                 style="margin: 0; padding-left: 4px; padding-right: 4px;"
                                                                 data-toggle="dropdown">
                                                                 <span class="caret"></span>
@@ -1109,7 +1121,7 @@
                                                             </ui:repeat>
                                                         </ul>
                                                             <button
-                                                                class="btn fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} "
+                                                                class="btn fa #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'fa-files-o btn-danger':'fa-files-o btn-primary'} "
                                                                 jsf:id="massImportPrepare"
                                                                 jsf:action="#{MassImportForm.Prepare}"
                                                                 jsf:rel="tooltip"
@@ -1124,7 +1136,6 @@
                                                         </div>
                                                     </div>
                                                 </h:panelGroup>
-
 
                                                 <h:panelGroup
                                                     rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Workflow_Processes_Allow_Download') or LoginForm.hasRole('Workflow_Processes_Allow_Linking'))}">
@@ -1194,12 +1205,12 @@
                                                                     <!-- XML Export-Button --> 
                                                                     <button
                                                                         jsf:id="ubid119"
-                                                                        jsf:action="#{item.downloadXML}"
-                                                                        title="#{msgs.createXML}"
+                                                                        jsf:action="#{item.downloadLogFile}"
+                                                                        title="#{msgs.downloadLogFile}"
                                                                         onclick="preventDoubleSubmit(this);"
                                                                         class="dropdown-item">
                                                                         <i class="fa fa-file-code-o margin-right-10" />
-                                                                        <h:outputText value="#{msgs.createXML}" />
+                                                                        <h:outputText value="#{msgs.downloadLogFile}" />
                                                                     </button>
                                                                 </li>
                                                                 <li>
