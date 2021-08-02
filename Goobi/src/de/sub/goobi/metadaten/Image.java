@@ -203,7 +203,7 @@ public @Data class Image {
         this.order = order;
         this.tooltip = imagePath.getFileName().toString();
         if (Type.image.equals(this.type)) {
-            String baseUrl =new HelperForm().getServletPathWithHostAsUrl();
+            String baseUrl = new HelperForm().getServletPathWithHostAsUrl();
             this.bookmarkUrl = createThumbnailUrl(this.imagePath, 1000, getThumbnailFormat(), baseUrl);
             this.objectUrl = createIIIFUrl(imagePath);
             this.thumbnailUrl = createThumbnailUrl(this.imagePath, thumbnailSize, getThumbnailFormat(), baseUrl);
@@ -346,13 +346,13 @@ public @Data class Image {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{")
-        .append("width : ")
-        .append(getSize().width)
-        .append(",")
-        .append("height : ")
-        .append(getSize().height)
-        .append(",")
-        .append("sizes : [");
+                .append("width : ")
+                .append(getSize().width)
+                .append(",")
+                .append("height : ")
+                .append(getSize().height)
+                .append(",")
+                .append("sizes : [");
         for (ImageLevel imageLevel : getImageLevels()) {
             sb.append(imageLevel.toString()).append(", ");
         }
@@ -469,12 +469,12 @@ public @Data class Image {
     public static String createIIIFUrl(Process process, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
         sb.append("/api/process/image/")
-        .append(process.getId())
-        .append("/")
-        .append(getImageFolderShort(imageFolderName))
-        .append("/")
-        .append(filename)
-        .append("/info.json");
+                .append(process.getId())
+                .append("/")
+                .append(getImageFolderShort(imageFolderName))
+                .append("/")
+                .append(filename)
+                .append("/info.json");
         return sb.toString();
     }
 
@@ -538,16 +538,16 @@ public @Data class Image {
     public static String createThumbnailUrl(Process process, int size, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
         sb.append("/api/process/image/")
-        .append(process.getId())
-        .append("/")
-        .append(getImageFolderShort(imageFolderName))
-        .append("/")
-        .append(filename)
-        .append("/")
-        .append("full/")
-        .append(size)
-        .append(",")
-        .append("/0/default.jpg");
+                .append(process.getId())
+                .append("/")
+                .append(getImageFolderShort(imageFolderName))
+                .append("/")
+                .append(filename)
+                .append("/")
+                .append("full/")
+                .append(size)
+                .append(",")
+                .append("/0/default.jpg");
         return sb.toString();
     }
 
@@ -616,7 +616,7 @@ public @Data class Image {
                 } else if (mimetype.startsWith("video")
                         && (mimetype.equals("video/mp4") || mimetype.equals("video/webm") || mimetype.equals("video/ogg"))) {
                     return Type.video;
-                }else if (mimetype.equals("application/mxf")) {
+                } else if (mimetype.equals("application/mxf")) {
                     return Type.video;
                 }
             }
@@ -636,7 +636,7 @@ public @Data class Image {
                 return Type.image;
             } else if (NIOFileUtils.check3DType(filename)) {
                 return Type.object;
-            } else if(filename.endsWith(".xml")) {
+            } else if (filename.endsWith(".xml")) {
                 return Type.object2vr;
             } else {
                 return Type.unknown;

@@ -79,6 +79,8 @@ public interface StorageProviderInterface {
 
     public boolean isDirectory(Path path);
 
+    public boolean isSymbolicLink(Path path);
+
     public void createDirectories(Path path) throws IOException;
 
     public long getLastModifiedDate(Path path) throws IOException;

@@ -10,7 +10,8 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     template="/uii/template/template_metseditor.html"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:o="http://omnifaces.org/ui">
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -84,6 +85,7 @@
             <ui:include src="includes/metseditor/modals/inc_me_modal_viaf.xhtml" />
             <ui:include src="includes/metseditor/modals/inc_me_modal_vocabulary.xhtml" />
             <ui:include src="includes/metseditor/modals/inc_me_modal_altoeditor.xhtml" />
+            <ui:include src="includes/metseditor/modals/inc_me_modal_resetPagination.xhtml" />
             
         </h:form>
     </ui:define>

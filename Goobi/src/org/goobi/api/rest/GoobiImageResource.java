@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -100,19 +101,23 @@ public class GoobiImageResource {
     @Context
     private HttpServletResponse response;
 
-
     @GET
     @javax.ws.rs.Path("/{process}/{folder}/{filename}/info.json")
-    @Operation(summary="Returns information about an image", description="Returns information about an image in JSON or JSONLD format")
-    @ApiResponse(responseCode="200", description="OK")
-    @ApiResponse(responseCode="500", description="Internal error")
-    @Produces({ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON})
+    @Operation(summary = "Returns information about an image", description = "Returns information about an image in JSON or JSONLD format")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    @Produces({ ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
     @ContentServerImageInfoBinding
     public ImageInformation getInfoAsJson(
             @PathParam("process") String processIdString,
             @PathParam("folder") String folder,
             @PathParam("filename") String filename) throws ContentLibException {
 
+        try {
+            filename = URLDecoder.decode(filename, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage());
+        }
         ImageResource imageResource = createImageResource(processIdString, folder, filename);
 
         ImageInformation info = imageResource.getInfoAsJson();
@@ -148,7 +153,6 @@ public class GoobiImageResource {
         return info;
     }
 
-
     @GET
     @javax.ws.rs.Path("/{process}/{folder}/{filename}")
     @Produces({ MediaType.APPLICATION_JSON, ImageResource.MEDIA_TYPE_APPLICATION_JSONLD })
@@ -157,7 +161,9 @@ public class GoobiImageResource {
         try {
             //            addResponseContentType(request, response);
             Response resp =
-                    Response.seeOther(PathConverter.toURI(request.getRequestURI() + "/info.json")).header("Content-Type", response.getContentType()).build();
+                    Response.seeOther(PathConverter.toURI(request.getRequestURI() + "/info.json"))
+                    .header("Content-Type", response.getContentType())
+                    .build();
             return resp;
         } catch (URISyntaxException e) {
             throw new ContentLibException("Cannot create redirect url from " + request.getRequestURI());
@@ -175,7 +181,11 @@ public class GoobiImageResource {
             @PathParam("region") String region,
             @PathParam("size") String size, @PathParam("rotation") String rotation, @PathParam("quality") String quality,
             @PathParam("format") String format, @PathParam("cacheCommand") String command) throws ContentLibException {
-
+        try {
+            filename = URLDecoder.decode(filename, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage());
+        }
         ImageResource imageResource = createImageResource(processIdString, folder, filename);
         return imageResource.isInCache(region, size, rotation, quality, format, command);
     }
@@ -190,7 +200,11 @@ public class GoobiImageResource {
             @PathParam("filename") String filename,
             @PathParam("region") String region, @PathParam("size") String size,
             @PathParam("rotation") String rotation, @PathParam("pdfName") String pdfName) throws ContentLibException {
-
+        try {
+            filename = URLDecoder.decode(filename, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage());
+        }
         ImageResource imageResource = createImageResource(processIdString, folder, filename);
         return imageResource.getPdf();
     }
@@ -206,11 +220,14 @@ public class GoobiImageResource {
             @PathParam("region") String region, @PathParam("size") String size,
             @PathParam("rotation") String rotation, @PathParam("quality") String quality, @PathParam("format") String format)
                     throws ContentLibException {
-
+        try {
+            filename = URLDecoder.decode(filename, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e.getMessage());
+        }
         ImageResource imageResource = createImageResource(processIdString, folder, filename);
         return imageResource.getImage(region, size, rotation, quality, format);
     }
-
 
     private ImageResource createImageResource(String processIdString, String folder, String filename)
             throws IllegalRequestException, ContentLibException {
@@ -229,7 +246,7 @@ public class GoobiImageResource {
             this.thumbnailFolder = processFolder.resolve("thumbs");
 
             //replace image Path with thumbnail path if image file does not exist
-            if(!Files.exists(imagePath) && hasThumbnailDirectories(imageFolder, thumbnailFolder)) {
+            if (!Files.exists(imagePath) && hasThumbnailDirectories(imageFolder, thumbnailFolder)) {
                 imagePath = getThumbnailPath(imagePath, thumbnailFolder, Optional.empty(), true).orElse(imagePath);
             }
             URI originalImageURI = Image.toURI(imagePath);
@@ -239,7 +256,7 @@ public class GoobiImageResource {
 
                 boolean imageTooLarge = isFileTooLarge(imagePath);
                 Dimension imageSize = getImageSize(originalImageURI.toString());
-                if(!imageTooLarge) {
+                if (!imageTooLarge) {
                     int maxImageSize = ConfigurationHelper.getInstance().getMaximalImageSize();
                     imageTooLarge = maxImageSize > 0 && Math.max(imageSize.getWidth(), imageSize.getHeight()) > maxImageSize;
                 }
@@ -247,7 +264,7 @@ public class GoobiImageResource {
                 Optional<Dimension> requestedRegionSize = getRequestedRegionSize(request);
                 requestedImageSize = completeRequestedSize(requestedImageSize, requestedRegionSize, imageSize);
 
-                if(hasThumbnailDirectories(imageFolder, thumbnailFolder)) {
+                if (hasThumbnailDirectories(imageFolder, thumbnailFolder)) {
                     // For requests covering only part of the image, calculate the size of the
                     // requested image if the entire image were requested
                     if (requestedImageSize.isPresent() && requestedRegionSize.isPresent()) {
@@ -267,9 +284,10 @@ public class GoobiImageResource {
                     logger.debug("Using thumbnail {} for image width {} and region width {}", imagePath,
                             requestedImageSize.map(Object::toString).orElse("max"),
                             requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
-                } else if(imageTooLarge){
+                } else if (imageTooLarge) {
                     //image too large for display and no thumbnails available
-                    throw new ContentLibException("Image size is larger than the allowed maximal size. Please consider using a compressed derivate or generating thumbnails for these images.");
+                    throw new ContentLibException(
+                            "Image size is larger than the allowed maximal size. Please consider using a compressed derivate or generating thumbnails for these images.");
                 } else {
                     // ignore thumbnail folder for this request
                     this.thumbnailFolder = null;
@@ -283,11 +301,11 @@ public class GoobiImageResource {
         } catch (NumberFormatException | NullPointerException e) {
             throw new ContentNotFoundException("No process found with id " + processFolder.getFileName().toString(), e);
         } catch (IOException | InterruptedException | SwapException | DAOException | ContentLibException e) {
-            throw new ContentNotFoundException("Error initializing image resource for  " + processFolder.getFileName().toString() + ". Reason: " + e.getMessage(), e);
+            throw new ContentNotFoundException(
+                    "Error initializing image resource for  " + processFolder.getFileName().toString() + ". Reason: " + e.getMessage(), e);
 
         }
     }
-
 
     /**
      * Return true if the file in the given path is larger than allowed in {@link ConfigurationHelper#getMaximalImageFileSize()}
@@ -297,13 +315,13 @@ public class GoobiImageResource {
     private boolean isFileTooLarge(Path imagePath) {
         boolean imageTooLarge = false;
         long maxImageFileSize = ConfigurationHelper.getInstance().getMaximalImageFileSize();
-        if(maxImageFileSize > 0) {
+        if (maxImageFileSize > 0) {
             try {
                 long imageFileSize = StorageProvider.getInstance().getFileSize(imagePath);
-                if(imageFileSize > maxImageFileSize) {
+                if (imageFileSize > maxImageFileSize) {
                     imageTooLarge = true;
                 }
-            } catch(IOException e) {
+            } catch (IOException e) {
                 logger.error("IO error when requesting image size. Image will be delivered regardless");
             }
         }
@@ -383,9 +401,9 @@ public class GoobiImageResource {
      */
     private String calcThumbnailScale(Dimension imageSize, String sizeString, Dimension requestedSize, boolean regionRequest) {
         int thumbnailSize = Integer.parseInt(sizeString);
-        if(!regionRequest && requestedSize != null) {
+        if (!regionRequest && requestedSize != null) {
             int maxRequestedSize = Math.max(requestedSize.height, requestedSize.width);
-            if(maxRequestedSize == thumbnailSize) {
+            if (maxRequestedSize == thumbnailSize) {
                 //the thumbnail has exactly the requested size
                 return "max";
             }
@@ -496,8 +514,9 @@ public class GoobiImageResource {
     }
 
     /**
-     * Return the image size requested in the IIIF image url. If this not IIIF image request for an actual image
-     * (but for example an info.json request), Optional.empty() is returned
+     * Return the image size requested in the IIIF image url. If this not IIIF image request for an actual image (but for example an info.json
+     * request), Optional.empty() is returned
+     * 
      * @param request
      * @return
      */
@@ -646,8 +665,6 @@ public class GoobiImageResource {
                 return false;
         }
     }
-
-
 
     private void setImageSize(String uri, Dimension size) {
         if (IMAGE_SIZES.size() >= IMAGE_SIZES_MAX_SIZE) {

@@ -959,24 +959,34 @@
 
 
                                                 <!-- DMS-Export-Schaltknopf -->
-                                                <button
-                                                    jsf:action="#{ProzessverwaltungForm.ExportDMS}"
-                                                    jsf:id="action21"
-                                                    aria-label="#{msgs.importDms}"
-                                                    jsf:rel="tooltip"
-                                                    onclick="preventDoubleSubmit(this);"
-                                                    title="#{msgs.importDms}"
-                                                    class="btn"
-                                                    style="padding-top: 1px; padding-bottom: 1px"
-                                                    jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
-                                                    <i class="fa fa-globe" />
-                                                    <f:passThroughAttribute
-                                                        name="data-toggle"
-                                                        value="tooltip" />
-                                                    <x:updateActionListener
-                                                        property="#{ProzessverwaltungForm.myProzess}"
-                                                        value="#{item}" />
-                                                </button>
+                                                <div jsf:rel="tooltip" 
+													aria-label="#{!item.containsExportStep ? msgs.noExportTask : ''}" 
+													title="#{!item.containsExportStep ? msgs.noExportTask : ''}" 
+													class="btn btn-mini" 
+													style="padding: 0;">
+	                                                <button
+	                                                    jsf:action="#{ProzessverwaltungForm.ExportDMS}"
+	                                                    jsf:id="action21"
+	                                                    aria-label="#{msgs.importDms}"
+	                                                    jsf:rel="tooltip"
+	                                                    onclick="preventDoubleSubmit(this);"
+	                                                    title="#{msgs.importDms}"
+	                                                    class="btn"
+	                                                    style="padding-top: 1px; padding-bottom: 1px"
+	                                                    jsf:disabled="#{!item.containsExportStep}"
+	                                                    jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
+	                                                    <i class="fa fa-globe" />
+	                                                    <f:passThroughAttribute
+	                                                        name="data-toggle"
+	                                                        value="tooltip" />
+	                                                    <x:updateActionListener
+	                                                        property="#{ProzessverwaltungForm.myProzess}"
+	                                                        value="#{item}" />
+	                                                </button>
+	                                                <f:passThroughAttribute
+			                                            name="data-toggle"
+			                                            value="tooltip" />
+	                                              </div>
 
                                                 <!-- DMS-Export-Schaltknopf greyed -->
                                                 <button

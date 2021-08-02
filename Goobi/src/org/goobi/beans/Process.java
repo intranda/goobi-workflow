@@ -276,6 +276,16 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         return false;
     }
+    
+    public boolean getContainsExportStep() {
+    	this.getSchritte();
+    	for(int i = 0; i < this.schritte.size(); i++) {
+    		if(this.schritte.get(i).isTypExportDMS() || this.schritte.get(i).isTypExportRus()){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
 
     //    public List<HistoryEvent> getHistory() {
 
@@ -2093,7 +2103,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
                     List<Path> subdirs = StorageProvider.getInstance().listFiles(imageDirectory);
                     for (Path imagedir : subdirs) {
-                        if (StorageProvider.getInstance().isDirectory(imagedir)) {
+                        if (StorageProvider.getInstance().isDirectory(imagedir) || StorageProvider.getInstance().isSymbolicLink(imagedir)) {
                             StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
                         }
                     }
@@ -2106,7 +2116,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
                     List<Path> subdirs = StorageProvider.getInstance().listFiles(ocrDirectory);
                     for (Path imagedir : subdirs) {
-                        if (StorageProvider.getInstance().isDirectory(imagedir)) {
+                        if (StorageProvider.getInstance().isDirectory(imagedir) || StorageProvider.getInstance().isSymbolicLink(imagedir)) {
                             StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
                         }
                     }

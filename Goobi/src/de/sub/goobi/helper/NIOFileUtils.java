@@ -659,6 +659,11 @@ public class NIOFileUtils implements StorageProviderInterface {
     }
 
     @Override
+    public boolean isSymbolicLink(Path path) {
+        return Files.isSymbolicLink(path);
+    }
+
+    @Override
     public void createDirectories(Path path) throws IOException {
         Files.createDirectories(path);
     }
