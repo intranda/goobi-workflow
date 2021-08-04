@@ -4859,7 +4859,13 @@ public class Metadaten implements Serializable {
         if (allImages.size() > (pageNo * numberOfImagesPerPage) + numberOfImagesPerPage) {
             subList = allImages.subList(pageNo * numberOfImagesPerPage, (pageNo * numberOfImagesPerPage) + numberOfImagesPerPage);
         } else {
-            subList = allImages.subList(pageNo * numberOfImagesPerPage, allImages.size());
+            // Sometimes pageNo is not zero here, although we only have 20 images or so. 
+            // This is a quick fix and we should find out why pageNo is not zero in some cases
+            int startIdx = pageNo * numberOfImagesPerPage;
+            if (startIdx > allImages.size()) {
+                startIdx = Math.max(0, allImages.size() - numberOfImagesPerPage);
+            }
+            subList = allImages.subList(startIdx, allImages.size());
         }
 
         return subList;
