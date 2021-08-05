@@ -25,27 +25,15 @@
         </style>
         <div id="navigation">
             <div class="container-fluid">
-                <ui:insert name="menu">
-                    <c:if test="#{LoginForm.myBenutzer!=null}">
+                <c:if test="#{LoginForm.myBenutzer!=null}">
+                    <ui:insert name="menu">
                         <ui:include src="template/inc_menu.xhtml" />
-                    </c:if>
-                </ui:insert>
-
-                <ui:insert name="menu_mobile">
-                    <c:if test="#{LoginForm.myBenutzer!=null}">
-                        <ui:include src="template/inc_menu_mobile.xhtml" />
-                    </c:if>
-                </ui:insert>
+                    </ui:insert>
+                </c:if>
                 <!-- empty blue box if not logged in -->
                 <c:if test="#{LoginForm.myBenutzer==null}">
                     <h:form id="menu">
-                        <a
-                            href="index.xhtml"
-                            id="brand">&#160;</a>
-
-
-
-
+                        <a href="index.xhtml" id="brand">&#160;</a>
                         <div class="user pull-right">
                             <ul class="icon-nav">
                                 <li>
@@ -56,7 +44,11 @@
                                         title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
                                         jsf:rel="tooltip">
                                         <i class="fa #{not NavigationForm.showHelp?'fa-question':'fa-question-circle'}"></i>
-                                        <!--                                 <f:passThroughAttribute name="data-toggle" value="tooltip" /> -->
+                                        <!--
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        -->
                                         <f:setPropertyActionListener
                                             target="#{NavigationForm.showHelp}"
                                             value="#{not NavigationForm.showHelp}" />
@@ -108,6 +100,11 @@
                 </c:if>
 
             </div>
+            <c:if test="#{LoginForm.myBenutzer!=null}">
+                <ui:insert name="menu_mobile">
+                    <ui:include src="template/inc_menu_mobile.xhtml" />
+                </ui:insert>
+            </c:if>
 
 
         </div>

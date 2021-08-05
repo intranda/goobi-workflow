@@ -2248,7 +2248,21 @@ label, input, button, select, textarea {
     padding: 10px 8px !important;
   }
 }
+.small_window_menu {
+    display: none;
+}
+.large_window_menu {
+    display: block;
+}
 @media (max-width: 840px) {
+
+  .small_window_menu {
+    display: block;
+  }
+  .large_window_menu {
+    display: none;
+  }
+
   .mobile-sidebar-toggle {
     display: block !important;
   }

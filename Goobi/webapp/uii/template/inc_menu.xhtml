@@ -27,7 +27,7 @@
                         id="start">
                         <span>
                             <i class="#{cc.attrs.icon}"></i>
-                            #{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}
+                            #{DashboardForm.plugin == null ? msgs.startseite:msgs.dashboard}
                         </span>
                         <f:setPropertyActionListener
                             target="#{NavigationForm.aktuell}"
@@ -57,14 +57,12 @@
                             <f:setPropertyActionListener
                                 target="#{AktuelleSchritteForm.filter}"
                                 value="" />
-                            <!--
+                            <f:setPropertyActionListener
+                                target="#{AktuelleSchritteForm.sortierung}"
+                                value="statusDesc" />
                             <f:setPropertyActionListener
                                 target="#{AktuelleSchritteForm.hideStepsFromOtherUsers}"
-                                value="#{true}" />
-                            <f:setPropertyActionListener
-                                 target="#{AktuelleSchritteForm.sortierung}"
-                                 value="statusDesc" />
-                            -->
+                                value="#{false}" />
                         </h:commandLink>
                     </li>
                 </h:panelGroup>
@@ -199,16 +197,17 @@
                                 rendered="#{LoginForm.hasRole('Admin_Projects')}"
                                 icon="fa fa-compass box-icon-fix-menu-up3 "
                                 fontclass="margin-left-10" />
-                            <ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin}">
-                                <!-- Institution -->
-                                <intranda:menuItem
-                                    id="aInstitution"
-                                    parentMenu="menu_administration"
-                                    label="#{msgs.institutions}"
-                                    action="#{institutionBean.FilterKein}"
-                                    icon="fa fa-building box-icon-fix-menu-up3"
-                                    fontclass="margin-left-10" />
-                            </ui:fragment>
+
+                            <!-- Institution -->
+                            <intranda:menuItem
+                                id="aInstitution"
+                                parentMenu="menu_administration"
+                                label="#{msgs.institutions}"
+                                action="#{institutionBean.FilterKein}"
+                                rendered="#{LoginForm.myBenutzer.superAdmin}"
+                                icon="fa fa-building box-icon-fix-menu-up3"
+                                fontclass="margin-left-10" />
+
                             <!-- Regelsaetze -->
                             <intranda:menuItem
                                 id="a33"
@@ -248,7 +247,7 @@
                                 rendered="#{LoginForm.hasRole('Admin_Queue')}"
                                 icon="fa fa-spinner box-icon-fix-menu-up3"
                                 fontclass="margin-left-10" />
-                                
+
                             <!-- Jobtypes -->
                             <intranda:menuItem
                                 id="a37b"
@@ -275,7 +274,7 @@
                                 label="#{msgs.vocabularyManager}"
                                 action="#{vocabularyBean.FilterKein}"
                                 rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
-                                icon="fa fa-database box-icon-fix-menu-up3 "
+                                icon="fa fa-database box-icon-fix-menu-up3"
                                 fontclass="margin-left-10" />
                                 
                             <!-- SWAGGER-API -->
@@ -354,7 +353,6 @@
                                     var="statistics"
                                     value="#{StatisticalQuestionBean.possiblePluginNames}"
                                     id="plugin3">
-
                                     <ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isStatisticsPluginAllowed(statistics)}">
                                         <li class="#{NavigationForm.parentMenu == 'menu_controlling' and StatisticalQuestionBean.currentPluginName == statistics ?'active':''}">
                                             <h:commandLink
