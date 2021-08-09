@@ -34,6 +34,7 @@ import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
 import org.goobi.vocabulary.VocabularyUploader;
+import org.goobi.vocabulary.helper.ImportJsonVocabulary;
 import org.primefaces.event.FileUploadEvent;
 
 import de.sub.goobi.helper.FacesContextHelper;
@@ -390,62 +391,73 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     private void loadUploadedFile() {
         InputStream file = null;
-        try {
-            file = new FileInputStream(importFile.toFile());
-            BOMInputStream in = new BOMInputStream(file, false);
-            Workbook wb = WorkbookFactory.create(in);
-            Sheet sheet = wb.getSheetAt(0);
-            Iterator<Row> rowIterator = sheet.rowIterator();
-            Row headerRow = rowIterator.next();
-            int numberOfCells = headerRow.getLastCellNum();
-            headerOrder = new ArrayList<>(numberOfCells);
-            rowsToImport = new LinkedList<>();
-            for (int i = 0; i < numberOfCells; i++) {
-                Cell cell = headerRow.getCell(i);
-                if (cell != null) {
-                    cell.setCellType(CellType.STRING);
-                    String value = cell.getStringCellValue();
-                    headerOrder.add(new MatchingField(value, i, CellReference.convertNumToColString(i), this));
-                }
-            }
-            while (rowIterator.hasNext()) {
-                Row row = rowIterator.next();
-                rowsToImport.add(row);
-            }
 
-            for (MatchingField mf : headerOrder) {
-                String excelTitle = mf.getColumnHeader();
-                if (excelTitle.matches(".*\\(.{3}\\)")) {
-                    String titlePart = excelTitle.substring(0, excelTitle.lastIndexOf("(")).trim();
-                    String languagePart = excelTitle.substring(excelTitle.lastIndexOf("(") + 1, excelTitle.lastIndexOf(")")).trim();
-                    for (Definition def : currentVocabulary.getStruct()) {
-                        if (def.getLabel().equals(titlePart) && def.getLanguage().equals(languagePart)) {
-                            mf.setAssignedField(def);
-                        }
-                    }
-                } else {
-                    String titlePart = excelTitle.trim();
-                    for (Definition def : currentVocabulary.getStruct()) {
-                        if (def.getLabel().equals(titlePart) && StringUtils.isBlank(def.getLanguage())) {
-                            mf.setAssignedField(def);
-                        }
+        if (importFile.getFileName().toString().endsWith(".json")) {
+
+            List<VocabRecord> records =   ImportJsonVocabulary.convertJsonVocabulary(currentVocabulary, importFile);
+            VocabularyManager.saveVocabulary(currentVocabulary);
+            VocabularyManager.insertNewRecords(records, currentVocabulary.getId());
+
+            Helper.setMeldung("Imported records: " + records.size());
+
+        } else {
+
+            try {
+                file = new FileInputStream(importFile.toFile());
+                BOMInputStream in = new BOMInputStream(file, false);
+                Workbook wb = WorkbookFactory.create(in);
+                Sheet sheet = wb.getSheetAt(0);
+                Iterator<Row> rowIterator = sheet.rowIterator();
+                Row headerRow = rowIterator.next();
+                int numberOfCells = headerRow.getLastCellNum();
+                headerOrder = new ArrayList<>(numberOfCells);
+                rowsToImport = new LinkedList<>();
+                for (int i = 0; i < numberOfCells; i++) {
+                    Cell cell = headerRow.getCell(i);
+                    if (cell != null) {
+                        cell.setCellType(CellType.STRING);
+                        String value = cell.getStringCellValue();
+                        headerOrder.add(new MatchingField(value, i, CellReference.convertNumToColString(i), this));
                     }
                 }
-            }
+                while (rowIterator.hasNext()) {
+                    Row row = rowIterator.next();
+                    rowsToImport.add(row);
+                }
 
-        } catch (Exception e) {
-            Helper.setFehlerMeldung("file not readable", e);
-            log.error(e);
-        } finally {
-            if (file != null) {
-                try {
-                    file.close();
-                } catch (IOException e) {
-                    log.error(e);
+                for (MatchingField mf : headerOrder) {
+                    String excelTitle = mf.getColumnHeader();
+                    if (excelTitle.matches(".*\\(.{3}\\)")) {
+                        String titlePart = excelTitle.substring(0, excelTitle.lastIndexOf("(")).trim();
+                        String languagePart = excelTitle.substring(excelTitle.lastIndexOf("(") + 1, excelTitle.lastIndexOf(")")).trim();
+                        for (Definition def : currentVocabulary.getStruct()) {
+                            if (def.getLabel().equals(titlePart) && def.getLanguage().equals(languagePart)) {
+                                mf.setAssignedField(def);
+                            }
+                        }
+                    } else {
+                        String titlePart = excelTitle.trim();
+                        for (Definition def : currentVocabulary.getStruct()) {
+                            if (def.getLabel().equals(titlePart) && StringUtils.isBlank(def.getLanguage())) {
+                                mf.setAssignedField(def);
+                            }
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                Helper.setFehlerMeldung("file not readable", e);
+                log.error(e);
+            } finally {
+                if (file != null) {
+                    try {
+                        file.close();
+                    } catch (IOException e) {
+                        log.error(e);
+                    }
                 }
             }
         }
-
     }
 
     public void copyFile(String fileName, InputStream in) {
