@@ -12,8 +12,8 @@
 	<composite:interface />
 
 	<composite:implementation>
-		<h:form>
-			<ul class='mobile-nav open'>
+		<!--<h:form>-->
+			<ul id="main-menu-set-class">
 				<!-- Dropdown-Menü: "Startseite" / "Home page" -->
 				<li class="#{NavigationForm.parentMenu == 'menu_start' ? 'active' : ''}">
 					<h:commandLink
@@ -31,6 +31,35 @@
 							value="menu_start" />
 					</h:commandLink>
 				</li>
+
+				<!-- Dropdown-Menü: "Meine Aufgaben" / "My tasks" -->
+				<h:panelGroup rendered="#{LoginForm.hasRole('Task_Menu')}">
+					<!--<li class="#{NavigationForm.parentMenu == 'menu_tasks' ? 'active' : ''}">
+						<h:commandLink
+							action="#{AktuelleSchritteForm.FilterAlleStart}"
+							id="steps">
+							<span>
+								<i class="#{cc.attrs.icon}"></i>
+								#{msgs.aktuelleSchritte}
+							</span>
+							<f:setPropertyActionListener
+								target="#{NavigationForm.aktuell}"
+								value="a20" />
+							<f:setPropertyActionListener
+								target="#{NavigationForm.parentMenu}"
+								value="menu_tasks" />
+							<f:setPropertyActionListener
+								target="#{AktuelleSchritteForm.filter}"
+								value="" />
+							<f:setPropertyActionListener
+								target="#{AktuelleSchritteForm.sortierung}"
+								value="statusDesc" />
+							<f:setPropertyActionListener
+								target="#{AktuelleSchritteForm.hideStepsFromOtherUsers}"
+								value="#{false}" />
+						</h:commandLink>
+					</li>-->
+				</h:panelGroup>
 
 				<!-- Dropdown-Menü: "Meine Aufgaben" / "My tasks" -->
 				<h:panelGroup rendered="#{LoginForm.hasRole('Task_Menu')}">
@@ -63,9 +92,18 @@
 
 				<!-- Dropdown-Menü: "Workflow" -->
 				<h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Menu')}">
-					<li class="#{NavigationForm.parentMenu == 'menu_workflow' ? 'active' : ''} has-submenu">
-						<a href="#">#{msgs.workflow}</a>
-						<ul>
+					<li class="#{NavigationForm.parentMenu == 'menu_workflow' ? 'active' : ''} add-has-submenu-in-small-window">
+						<a href="#" class="rendered-in-small-window">#{msgs.workflow}</a>
+						<button
+							id="nav-workflow"
+							type="button"
+							data-toggle="dropdown"
+							class='rendered-in-wide-window dropdown-toggle btn'
+							aria-haspopup="true">
+							<span>#{msgs.workflow}</span>
+							<span class="caret"></span>
+						</button>
+						<ul class="add-dropdown-menu-in-wide-window">
 							<!-- Prozess suchen -->
 							<intranda:menuItem
 								id="a21"
@@ -76,7 +114,7 @@
 								rendered="#{LoginForm.hasRole('Workflow_General_Search')}"
 								icon="fa fa-search box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
-							
+
 							<!-- Prozessuebersicht -->
 							<intranda:menuItem
 								id="a22"
@@ -88,7 +126,7 @@
 								rendered="#{LoginForm.hasRole('Workflow_Processes')}"
 								icon="fa fa-tasks box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
-								
+
 							<!-- batches -->
 							<intranda:menuItem
 								id="a23"
@@ -99,7 +137,7 @@
 								rendered="#{LoginForm.hasRole('Workflow_General_Batches')}"
 								icon="fa fa-archive box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
-							
+
 							<!-- Prozessvorlagen -->
 							<intranda:menuItem
 								id="a25"
@@ -110,7 +148,7 @@
 								rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates')}"
 								icon="fa fa-files-o box-icon-fix-menu-up3 "
 								fontclass="margin-left-10" />
-								
+
 							<!-- Workflow-Plugins -->
 							<h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Plugins')}">
 								<ui:repeat
@@ -135,17 +173,26 @@
 											</h:commandLink>
 										</li>
 									</ui:fragment>
-								</ui:repeat> 
+								</ui:repeat>
 							</h:panelGroup>
 						</ul>
 					</li>
- 				</h:panelGroup>
+				</h:panelGroup>
 
 				<!-- Dropdown-Menü: "Administration" -->
 				<h:panelGroup rendered="#{LoginForm.hasRole('Admin_Menu')}">
-					<li class="#{NavigationForm.parentMenu == 'menu_administration' ? 'active' : ''} has-submenu">
-						<a href="#">#{msgs.administration}</a>
-						<ul>
+					<li class="#{NavigationForm.parentMenu == 'menu_administration' ? 'active' : ''} add-has-submenu-in-small-window">
+						<a href="#" class="rendered-in-small-window">#{msgs.administration}</a>
+						<button
+							id="nav-administration"
+							type="button"
+							data-toggle="dropdown"
+							class='rendered-in-wide-window dropdown-toggle btn'
+							aria-haspopup="true">
+							<span>#{msgs.administration}</span>
+							<span class="caret"></span>
+						</button>
+						<ul class="add-dropdown-menu-in-wide-window">
 							<!-- Benutzerverwaltung -->
 							<intranda:menuItem
 								id="a30"
@@ -210,7 +257,7 @@
 							<intranda:menuItem
 								id="a35"
 								parentMenu="menu_administration"
-								label="#{msgs.ldapgruppen}"
+								label="#{msgs.authentication_configuration}"
 								action="#{LdapGruppenForm.FilterKein}"
 								rendered="#{LoginForm.hasRole('Admin_Ldap')}"
 								icon="fa fa-key box-icon-fix-menu-up3 "
@@ -306,9 +353,18 @@
 
 				<!-- Dropdown-Menü: "Controlling" / "Management" -->
 				<h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Menu')}">
-					<li class="#{NavigationForm.parentMenu == 'menu_controlling' ? 'active' : ''} has-submenu">
-						<a href="#">#{msgs.controlling}</a>
-						<ul>
+					<li class="#{NavigationForm.parentMenu == 'menu_controlling' ? 'active' : ''} add-has-submenu-in-small-window">
+						<a href="#" class="rendered-in-small-window">#{msgs.controlling}</a>
+						<button
+							id="nav-controlling"
+							type="button"
+							data-toggle="dropdown"
+							class='rendered-in-wide-window dropdown-toggle btn'
+							aria-haspopup="true">
+							<span>#{msgs.controlling}</span>
+							<span class="caret"></span>
+						</button>
+						<ul class="add-dropdown-menu-in-wide-window">
 							<intranda:menuItem
 								id="a40"
 								parentMenu="menu_controlling"
@@ -347,6 +403,9 @@
 					</li>
 				</h:panelGroup>
 			</ul>
-		</h:form>
+		<!--</h:form>-->
+		<script type="text/javascript">
+			loadMenu();
+		</script>
 	</composite:implementation>
 </ui:composition>

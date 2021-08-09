@@ -272,3 +272,34 @@ function onMouseMove( event ) {
         img.src = intrandaImages[ canvas.id ].largeUrl;
     }
 }
+
+function loadMenu() {
+	let maximumWidth = 840;
+	let width = window.innerWidth;
+	let menu = document.getElementById("main-menu-set-class");
+	let wide = document.getElementsByClassName("rendered-in-wide-window");
+	let small = document.getElementsByClassName("rendered-in-small-window");
+	for (let index = 0; index < wide.length; index++) {
+		wide[index].style.display = (width >= maximumWidth ? "block" : "none");
+	}
+	for (let index = 0; index < small.length; index++) {
+		small[index].style.display = (width >= maximumWidth ? "none" : "block");
+	}
+	if (width > maximumWidth) {
+		// This is the main menu. It appears in the header area when the window is wide enough.
+		menu.classList.add("main-nav");
+		let hasDropdownMenu = document.getElementsByClassName("add-dropdown-menu-in-wide-window");
+		for (let index = 0; index < hasDropdownMenu.length; index++) {
+			hasDropdownMenu[index].classList.add("dropdown-menu");
+		}
+	} else {
+		// This is the alternative menu. It appears as a menu-icon
+		// (three bars) in the upper right corner and can be expanded.
+		menu.classList.add("mobile-nav");
+		menu.classList.add("open");
+		let hasSubmenu = document.getElementsByClassName("add-has-submenu-in-small-window");
+		for (let index = 0; index < hasSubmenu.length; index++) {
+			hasSubmenu[index].classList.add("has-submenu");
+		}
+	}
+}

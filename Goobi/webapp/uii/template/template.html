@@ -100,7 +100,7 @@
 <ui:insert name="metadata" />
 
 <h:body styleClass="#{LoginForm.myBenutzer == null?'login':'sidebar-right'}" style="#{LoginForm.myBenutzer == null?'height:300px;':''}">
-   <ds:windowId/>  
+   <ds:windowId/>
     <f:view locale="#{SpracheForm.locale}">
 
         <h:panelGroup rendered="#{LoginForm.myBenutzer==null}">
@@ -111,14 +111,18 @@
             <!-- MENU -->
             <nav role="navigation" aria-label="navigation">
 	            <div id="navigation">
+	                <!---->
 	                <div class="container-fluid">
 	                    <ui:insert name="menu">
 	                        <ui:include src="inc_menu.xhtml" />
 	                    </ui:insert>
 	                </div>
+	                <!---->
+	                <!--
 	                <ui:insert name="menu_mobile">
-	                    <ui:include src="inc_menu_mobile.xhtml" />
+	                    <ui:include src="inc_menu.xhtml" />
 	                </ui:insert>
+	                -->
 	            </div>
 	        </nav>
 
