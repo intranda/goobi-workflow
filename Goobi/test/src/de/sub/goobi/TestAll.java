@@ -1,6 +1,5 @@
 package de.sub.goobi;
 
-import org.goobi.vocabulary.helper.ImportJsonVocabulary;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -16,7 +15,7 @@ import io.goobi.workflow.xslt.GeneratePdfFromXsltTest;
     de.sub.goobi.helper.TestAll.class, de.sub.goobi.helper.enums.TestAll.class, ExceptionTest.class, de.sub.goobi.helper.ldap.TestAll.class,
     de.sub.goobi.helper.servletfilter.TestAll.class, de.sub.goobi.metadaten.TestAll.class, org.goobi.api.rest.TestRestConfig.class,
     org.goobi.api.rest.TestAuthorizationFilter.class, LockingBeanTest.class, GeneratePdfFromXsltTest.class, org.goobi.api.display.TestAll.class,
-    ImportJsonVocabulary.class
+    org.goobi.vocabulary.helper.ImportJsonVocabularyTest.class
 })
 public class TestAll {
 
