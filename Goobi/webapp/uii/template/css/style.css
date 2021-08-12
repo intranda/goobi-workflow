@@ -2956,13 +2956,11 @@ label, input, button, select, textarea {
 #navigation .mobile-nav {
   display: none;
 }
-/* #navigation .mobile-nav > li > ul { */
-/*   display: none; */
-/* } */
 #navigation .mobile-nav.open {
   display: none;
   list-style: none;
-  padding: 0 20px 20px 20px;
+  padding-left: 60px;
+  padding-right: 20px;
   margin: 0;
   background: #368ee0;
 }

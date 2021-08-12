@@ -68,27 +68,6 @@ public class NavigationForm implements Serializable{
     @Setter
     private IWorkflowPlugin workflowPlugin;
 
-    public NavigationForm() {
-        possibleWorkflowPluginNames = PluginLoader.getListOfPlugins(PluginType.Workflow);
-        Collections.sort(possibleWorkflowPluginNames);
-        uiStatus.put("process_log_level_debug", "true");
-    }
-
-    public enum Theme {
-        ui("ui"),
-        uii("uii");
-        private String id;
-
-        private Theme(String id) {
-            this.id = id;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-    };
-
     /**
      * Replaced by NavigationForm.parentMenu.
      * Is still needed by some test classes, may not be removed until now.
@@ -99,7 +78,7 @@ public class NavigationForm implements Serializable{
     private String aktuell = "0";
     @Getter
     @Setter
-    private String parentMenu = "";
+    private String parentMenu = "start_menu";
     @Getter
     @Setter
     private boolean showHelp = false;
@@ -120,6 +99,27 @@ public class NavigationForm implements Serializable{
     private String activeImportTab = "recordImport";
     private HashMap<String, String> uiStatus = new HashMap<>();
     private String currentTheme = "/uii";
+
+    public enum Theme {
+        ui("ui"),
+        uii("uii");
+        private String id;
+
+        private Theme(String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+    };
+
+    public NavigationForm() {
+        possibleWorkflowPluginNames = PluginLoader.getListOfPlugins(PluginType.Workflow);
+        Collections.sort(possibleWorkflowPluginNames);
+        uiStatus.put("process_log_level_debug", "true");
+    }
 
     public String Reload() {
         return "";

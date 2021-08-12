@@ -108,23 +108,7 @@
         </h:panelGroup>
 
         <c:if test="#{LoginForm.myBenutzer!=null}">
-            <!-- MENU -->
-            <nav role="navigation" aria-label="navigation">
-	            <div id="navigation">
-	                <!---->
-	                <div class="container-fluid">
-	                    <ui:insert name="menu">
-	                        <ui:include src="inc_menu.xhtml" />
-	                    </ui:insert>
-	                </div>
-	                <!---->
-	                <!--
-	                <ui:insert name="menu_mobile">
-	                    <ui:include src="inc_menu.xhtml" />
-	                </ui:insert>
-	                -->
-	            </div>
-	        </nav>
+            <ui:include src="inc_menu.xhtml" />
 
             <div class="container-fluid" id="content" style="padding-bottom:20px">
                 <!-- 				<div id="left"> -->
@@ -137,13 +121,13 @@
 
                         <h:form id="header">
                             <o:socket channel="developerMessageChannel" connected="#{DevModeBean.developerMode}" onmessage="() => window.location.reload()" />
-                        	<header>
-	                            <div class="page-header">
+                            <header>
+                                <div class="page-header">
                                     <h:panelGroup id="globalWarningMessage">
-    	                                <h:panelGroup rendered="#{SessionForm.logoutMessage != ''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
-    	                                    <i class="fa fa-exclamation-triangle margin-right-10" />
-    	                                    <h:outputText value="#{SessionForm.logoutMessage}" />
-    	                                </h:panelGroup>
+                                        <h:panelGroup rendered="#{SessionForm.logoutMessage != ''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
+                                            <i class="fa fa-exclamation-triangle margin-right-10" />
+                                            <h:outputText value="#{SessionForm.logoutMessage}" />
+                                        </h:panelGroup>
                                     </h:panelGroup>
                                     <o:socket channel="adminMessageChannel">
                                         <f:ajax event="update" render="globalWarningMessage"/>

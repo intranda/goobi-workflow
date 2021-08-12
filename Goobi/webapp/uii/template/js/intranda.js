@@ -292,6 +292,10 @@ function loadMenu() {
 		for (let index = 0; index < hasDropdownMenu.length; index++) {
 			hasDropdownMenu[index].classList.add("dropdown-menu");
 		}
+		let containerFluid = document.getElementsByClassName("add-container-fluid-in-wide-window");
+		for (let index = 0; index < containerFluid.length; index++) {
+			containerFluid[index].classList.add("container-fluid");
+		}
 	} else {
 		// This is the alternative menu. It appears as a menu-icon
 		// (three bars) in the upper right corner and can be expanded.

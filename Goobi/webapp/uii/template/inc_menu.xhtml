@@ -14,181 +14,192 @@
     <composite:interface />
 
     <composite:implementation>
-        <h:form id="menu">
-            <a aria-label="intranda Logo"
-                href="index.xhtml"
-                id="brand">&#160;</a>
+        <nav role="navigation" aria-label="navigation">
+            <div id="navigation">
+                <div class="container-fluid">
+                    <h:form id="menu">
 
-            <ui:insert name="menu-content">
-                <ui:include src="inc_menu_mobile.xhtml" />
-            </ui:insert>
+                        <!-- Goobi-Workflow-Logo -->
+                        <a aria-label="intranda Logo"
+                            href="index.xhtml"
+                            id="brand">&#160;
+                        </a>
 
-            <h:panelGroup class="rendered-in-wide-window">
-                <!-- toggle mobile menu -->
-                <a
-                    href="#"
-                    class="toggle-mobile">
-                    <i class="fa fa-bars"></i>
-                </a>
+                        <!-- Load the main menu only if the user is logged in -->
+                        <!-- The page "mailNotificationDisabled.xhtml needs the menu with user == null -->
+                        <c:if test="#{LoginForm.myBenutzer != null}">
+                            <ui:insert name="menu-content">
+                                <ui:include src="inc_menu_mobile.xhtml" />
+                            </ui:insert>
 
-                <div class="user">
-                    <ul class="icon-nav" style="height: 100%">
-                        <li>
-                            <button
-                                class="btn"
-                                jsf:id="showHelp"
-                                aria-label="#{msgs.showHelpMessages}"
-                                jsf:action="#{NavigationForm.Reload}"
-                                title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
-                                jsf:rel="tooltip"
-                                data-placement="bottom">
-                                <i class="fa #{not NavigationForm.showHelp?'fa-question':'fa-question-circle'}"></i>
-                                <f:passThroughAttribute
-                                    name="data-toggle"
-                                    value="tooltip"/>
-                                <f:setPropertyActionListener
-                                    target="#{NavigationForm.showHelp}"
-                                    value="#{not NavigationForm.showHelp}" />
-                            </button>
-                        </li>
-                        <li class="dropdown language-select">
-                            <div data-toggle="tooltip" title="#{msgs.spracheAendern}" data-placement="bottom">
-	                            <button
-	                                type="button"
-	                                id="nav-language"
-	                                aria-label="#{msgs.spracheAendern}"
-	                                data-toggle="dropdown"
-	                                aria-haspopup="true"
-	                                class="dropdown-toggle btn"
-	                                title="#{msgs.spracheAendern}"
-	                                jsf:rel="tooltip">
-	                                
-	                                <img
-	                                    alt="#{SpracheForm.locale}"
-	                                    src="template/img/flags/#{SpracheForm.locale}.gif" />
-	                                <span></span>
-	                            </button>
-                                <!--
-                                <a
-                                    href="#"
-                                    id="nav-language"
-                                    aria-label="#{msgs.spracheAendern}"
-                                    data-toggle="dropdown"
-                                    class="dropdown-toggle"
-                                    title="#{msgs.spracheAendern}">
-                                    <img
-                                        alt=""
-                                        src="template/img/flags/#{SpracheForm.locale}.gif" />
-                                    <span></span>
-                                </a>
-                                -->
-	                            <ul class="dropdown-menu pull-right">
-	                                <ui:repeat
-	                                    var="availableLanguage"
-	                                    value="#{SpracheForm.supportedLocales}"
-	                                    id="plugin4">
-	                                    <li>
-	                                        <button
-	                                            jsf:id="locale"
-	                                            class="dropdown-item text_head"
-	                                            jsf:action="#{SpracheForm.SpracheUmschalten}"
-	                                            title="#{availableLanguage.displayLanguageTranslated}">
-	                                            <f:param
-	                                                name="locale"
-	                                                value="#{availableLanguage.id}" />
-	                                            <f:setPropertyActionListener
-	                                                value="#{null}"
-	                                                target="#{SessionForm.dateFormatter}" />
-	                                            <h:graphicImage value="template/img/flags/#{availableLanguage.id}.gif" />
-	                                            <span>
-	                                                <h:outputText value="#{msgs[availableLanguage.displayLanguageSelf]}" />
-	                                            </span>
-	                                        </button>
-	                                    </li>
-	                                </ui:repeat>
-	                            </ul>
-	                         </div>
-                        </li>
-	                </ul>
-                    <div class="dropdown">
-                        <button
-                            id="nav-account"
-                            type="button"
-                            class="dropdown-toggle btn"
-                            aria-haspopup="true"
-                            data-toggle="dropdown">
-                            <h:outputText
-                                rendered="#{LoginForm.myBenutzer != null}"
-                                value="#{LoginForm.myBenutzer.vorname} #{LoginForm.myBenutzer.nachname}" />
-                            <c:if test="#{empty LoginForm.myBenutzer.imageUrl}">
-                                <img
-                                    alt=""
-                                    src="template/img/intranda.png" />
+                            <!-- Toggle mobile menu -->
+                            <a
+                                href="#"
+                                class="toggle-mobile">
+                                <i class="fa fa-bars"></i>
+                            </a>
+                        </c:if>
+
+                        <div class="user pull-right">
+                            <ul class="icon-nav">
+
+                                <!-- Icon to enable help texts -->
+                                <li>
+                                    <button
+                                        class="btn"
+                                        jsf:id="showHelp"
+                                        aria-label="#{msgs.showHelpMessages}"
+                                        jsf:action="#{NavigationForm.Reload}"
+                                        title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
+                                        jsf:rel="tooltip"
+                                        data-placement="bottom">
+                                        <i class="fa #{not NavigationForm.showHelp?'fa-question':'fa-question-circle'}"></i>
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <f:setPropertyActionListener
+                                            target="#{NavigationForm.showHelp}"
+                                            value="#{not NavigationForm.showHelp}" />
+                                    </button>
+                                </li>
+
+                                <!-- Icon to select language -->
+                                <li class="dropdown language-select">
+                                    <div
+                                        data-toggle="tooltip"
+                                        title="#{msgs.spracheAendern}"
+                                        data-placement="bottom">
+                                        <button
+                                            type="button"
+                                            id="nav-language"
+                                            aria-label="#{msgs.spracheAendern}"
+                                            data-toggle="dropdown"
+                                            aria-haspopup="true"
+                                            class="dropdown-toggle btn"
+                                            title="#{msgs.spracheAendern}"
+                                            jsf:rel="tooltip">
+                                            
+                                            <img
+                                                alt="#{SpracheForm.locale}"
+                                                src="template/img/flags/#{SpracheForm.locale}.gif" />
+                                            <span></span>
+                                        </button>
+                                        <ul class="dropdown-menu pull-right">
+                                            <ui:repeat
+                                                var="availableLanguage"
+                                                value="#{SpracheForm.supportedLocales}"
+                                                id="plugin4">
+                                                <li>
+                                                    <button
+                                                        jsf:id="locale"
+                                                        class="dropdown-item text_head"
+                                                        jsf:action="#{SpracheForm.SpracheUmschalten}"
+                                                        title="#{availableLanguage.displayLanguageTranslated}">
+                                                        <f:param
+                                                            name="locale"
+                                                            value="#{availableLanguage.id}" />
+                                                        <f:setPropertyActionListener
+                                                            value="#{null}"
+                                                            target="#{SessionForm.dateFormatter}" />
+                                                        <h:graphicImage value="template/img/flags/#{availableLanguage.id}.gif" />
+                                                        <span>
+                                                            <h:outputText value="#{msgs[availableLanguage.displayLanguageSelf]}" />
+                                                        </span>
+                                                    </button>
+                                                </li>
+                                            </ui:repeat>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <!-- Account menu (only rendered when user is logged in) -->
+                            <!-- mailNotificationDisabled.xhtml does not need this block when no user is logged in -->
+                            <c:if test="#{LoginForm.myBenutzer != null}">
+                                <div class="dropdown">
+
+                                    <button
+                                        id="nav-account"
+                                        type="button"
+                                        class="dropdown-toggle btn"
+                                        aria-haspopup="true"
+                                        data-toggle="dropdown">
+                                        <h:outputText
+                                            rendered="#{LoginForm.myBenutzer != null}"
+                                            value="#{LoginForm.myBenutzer.vorname} #{LoginForm.myBenutzer.nachname}" />
+                                        <c:if test="#{empty LoginForm.myBenutzer.imageUrl}">
+                                            <img
+                                                alt=""
+                                                src="template/img/intranda.png" />
+                                        </c:if>
+                                        <c:if test="#{not empty LoginForm.myBenutzer.imageUrl}">
+                                            <img
+                                                src="#{LoginForm.myBenutzer.imageUrl}"
+                                                alt="" />
+                                        </c:if>
+                                    </button>
+
+                                    <ul class="dropdown-menu pull-right">
+                                        <!-- User settings -->
+                                        <intranda:menuItem
+                                            id="a50"
+                                            parentMenu="menu_account"
+                                            label="#{msgs.benutzerkonfiguration}"
+                                            action="user_config"
+                                            display="#{NavigationForm.uiStatus.user_config}"
+                                            icon="fa fa-user-circle-o box-icon-fix-menu-up3" />
+
+                                        <!-- Change password -->
+                                        <h:panelGroup rendered="#{HelperForm.passwordIsChangable}">
+                                            <intranda:menuItem
+                                                id="a51"
+                                                parentMenu="menu_account"
+                                                label="#{msgs.passwortAendern}"
+                                                action="user_password"
+                                                icon="fa fa-key box-icon-fix-menu-up3" />
+                                        </h:panelGroup>
+
+                                        <!-- Enable style with more contrast -->
+                                        <li>
+                                            <button
+                                                jsf:id="showEasyRead"
+                                                jsf:action="#{NavigationForm.Reload}"
+                                                class="dropdown-item"
+                                                title="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}"
+                                                jsf:rel="tooltip">
+                                                <i class="fa fa-eye-slash margin-right-5" />
+                                                <h:outputText value="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}" />
+                                                <f:setPropertyActionListener
+                                                    target="#{NavigationForm.showEasyRead}"
+                                                    value="#{not NavigationForm.showEasyRead}" />
+                                            </button>
+                                        </li>
+
+                                        <!-- Logout -->
+                                        <ui:fragment rendered="#{!LoginForm.useOpenIDConnect}">
+                                            <intranda:menuItem
+                                                id="a52"
+                                                parentMenu="menu_account"
+                                                label="#{msgs.logout}"
+                                                action="#{LoginForm.Ausloggen}"
+                                                icon="fa fa-power-off box-icon-fix-menu" />
+                                        </ui:fragment>
+                                        <ui:fragment rendered="#{LoginForm.useOpenIDConnect}">
+                                            <intranda:menuItem
+                                                id="openIdLogout"
+                                                parentMenu="menu_account"
+                                                label="#{msgs.logout}"
+                                                action="#{LoginForm.logoutOpenId}"
+                                                icon="fa fa-power-off box-icon-fix-menu" />
+                                        </ui:fragment>
+
+                                    </ul>
+                                </div>
                             </c:if>
-                            <c:if test="#{not empty LoginForm.myBenutzer.imageUrl}">
-                                <img
-                                    src="#{LoginForm.myBenutzer.imageUrl}"
-                                    alt="" />
-                            </c:if>
-                        </button>
-
-                        <ul class="dropdown-menu pull-right">
-                            <!-- Benutzerkonfiguration -->
-                            <intranda:menuItem
-                                id="a50"
-                                parentMenu="menu_account"
-                                label="#{msgs.benutzerkonfiguration}"
-                                action="user_config"
-                                display="#{NavigationForm.uiStatus.user_config}"
-                                icon="fa fa-user-circle-o box-icon-fix-menu-up3" />
-
-                            <!-- Passwort aendern -->
-                            <h:panelGroup rendered="#{HelperForm.passwordIsChangable}">
-                                <intranda:menuItem
-                                    id="a51"
-                                    parentMenu="menu_account"
-                                    label="#{msgs.passwortAendern}"
-                                    action="user_password"
-                                    icon="fa fa-key box-icon-fix-menu-up3" />
-                            </h:panelGroup>
-
-                            <li>
-                                <button
-                                    jsf:id="showEasyRead"
-                                    jsf:action="#{NavigationForm.Reload}"
-                                    class="dropdown-item"
-                                    title="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}"
-                                    jsf:rel="tooltip">
-                                    <i class="fa fa-eye-slash margin-right-5" />
-                                    <h:outputText value="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}" />
-                                    <f:setPropertyActionListener
-                                        target="#{NavigationForm.showEasyRead}"
-                                        value="#{not NavigationForm.showEasyRead}" />
-                                </button>
-                            </li>
-
-                            <!-- logout -->
-                            <ui:fragment rendered="#{!LoginForm.useOpenIDConnect}">
-                                <intranda:menuItem
-                                    id="a52"
-                                    parentMenu="menu_account"
-                                    label="#{msgs.logout}"
-                                    action="#{LoginForm.Ausloggen}"
-                                    icon="fa fa-power-off box-icon-fix-menu" />
-                            </ui:fragment>
-                            <ui:fragment rendered="#{LoginForm.useOpenIDConnect}">
-                                <intranda:menuItem
-                                    id="openIdLogout"
-                                    parentMenu="menu_account"
-                                    label="#{msgs.logout}"
-                                    action="#{LoginForm.logoutOpenId}"
-                                    icon="fa fa-power-off box-icon-fix-menu" />
-                            </ui:fragment>
-                        </ul>
-                    </div>
+                        </div>
+                    </h:form>
                 </div>
-            </h:panelGroup>
-
-        </h:form>
+            </div>
+        </nav>
     </composite:implementation>
 </ui:composition>
