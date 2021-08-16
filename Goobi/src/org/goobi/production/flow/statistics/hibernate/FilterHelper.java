@@ -476,14 +476,14 @@ public class FilterHelper {
         if (negate) {
             sb.append(" NOT");
         }
-        sb.append(" EXISTS( SELECT NULL FROM werkstuecke WHERE werkstuecke.prozesseID = prozesse.prozesseID AND EXISTS( SELECT ");
+        sb.append(" EXISTS( SELECT NULL FROM vorlagen WHERE vorlagen.prozesseID = prozesse.prozesseID AND EXISTS( SELECT ");
         sb.append(
-                "NULL FROM werkstueckeeigenschaften WHERE werkstuecke.WerkstueckeID = werkstueckeeigenschaften.WerkstueckeID AND werkstueckeeigenschaften.WERT LIKE '");
+                "NULL FROM vorlageneigenschaften WHERE vorlagen.vorlagenID = vorlageneigenschaften.vorlagenID AND vorlageneigenschaften.WERT LIKE '");
         sb.append(leftTruncationCharacter);
         if (ts.length > 1) {
             sb.append(StringEscapeUtils.escapeSql(ts[1]));
             sb.append(rightTruncationCharacter);
-            sb.append("' werkstueckeeigenschaften.Titel LIKE '");
+            sb.append("' AND vorlageneigenschaften.Titel LIKE '");
             sb.append(leftTruncationCharacter);
             sb.append(StringEscapeUtils.escapeSql(ts[0]));
         } else {
@@ -494,32 +494,6 @@ public class FilterHelper {
 
         return sb.toString();
     }
-
-    //    protected static String filterStepProperty(String tok, boolean negate) {
-    //        /* Filtering by signature */
-    //        String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
-    //        if (!negate) {
-    //            if (ts.length > 1) {
-    //                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select schritteID from schritteeigenschaften where Wert like ''"
-    //                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter + "' " + " AND Titel like '"
-    //                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' ))";
-    //
-    //            } else {
-    //                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID in (select schritteID from schritteeigenschaften where Wert like '"
-    //                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
-    //            }
-    //        } else {
-    //            if (ts.length > 1) {
-    //                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select schritteID from schritteeigenschaften where Wert like '"
-    //                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter + "' " + " AND Titel like '"
-    //                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "' ))";
-    //
-    //            } else {
-    //                return " prozesse.prozesseID in (select distinct ProzesseID from schritte where schritte.schritteID not in (select schritteID from schritteeigenschaften where Wert like '"
-    //                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
-    //            }
-    //        }
-    //    }
 
     /**
      * This method creates a query to filter for a process creation date. step edit date or step finish date. If the entered date is incomplete, the
@@ -658,10 +632,10 @@ public class FilterHelper {
     protected static String filterInstitution(String tok, boolean negate) {
         String query = "";
         if (!negate) {
-            query = "prozesse.ProjekteID in (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '"
+            query = " institution.shortName LIKE '"
                     + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
         } else {
-            query = "prozesse.ProjekteID not sin (select ProjekteID from projekte left join institution on projekte.institution_id = institution.id WHERE institution.shortName LIKE '"
+            query = " institution.shortName NOT LIKE '"
                     + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
         }
 
@@ -711,34 +685,29 @@ public class FilterHelper {
      * @param tok part of filter string to use
      ****************************************************************************/
     protected static String filterWorkpiece(String tok, boolean negate) {
-        /* filter according signature */
         String[] ts = tok.substring(tok.indexOf(":") + 1).split(":");
-        if (!negate) {
-            if (ts.length > 1) {
-                return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '"
-                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter
-                        + "' AND werkstueckeeigenschaften.Titel LIKE '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0])
-                        + rightTruncationCharacter + "'))";
-            } else {
-
-                return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '"
-                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
-            }
-        } else {
-            if (ts.length > 1) {
-                return " prozesse.prozesseID in (select werkstuecke.prozesseID from werkstuecke where WerkstueckeID not in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '"
-                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[1]) + rightTruncationCharacter
-                        + "' AND werkstueckeeigenschaften.Titel LIKE '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0])
-                        + rightTruncationCharacter + "'))";
-
-            } else {
-
-                return " prozesse.prozesseID in (select prozesseID from werkstuecke where WerkstueckeID not in (select WerkstueckeID from werkstueckeeigenschaften where werkstueckeeigenschaften.WERT like '"
-                        + leftTruncationCharacter + StringEscapeUtils.escapeSql(ts[0]) + rightTruncationCharacter + "'))";
-
-            }
-
+        StringBuilder sb = new StringBuilder();
+        if (negate) {
+            sb.append(" NOT");
         }
+        sb.append(" EXISTS( SELECT NULL FROM werkstuecke WHERE werkstuecke.prozesseID = prozesse.prozesseID AND EXISTS( SELECT ");
+        sb.append(
+                "NULL FROM werkstueckeeigenschaften WHERE werkstuecke.WerkstueckeID = werkstueckeeigenschaften.WerkstueckeID AND werkstueckeeigenschaften.WERT LIKE '");
+        sb.append(leftTruncationCharacter);
+        if (ts.length > 1) {
+            sb.append(StringEscapeUtils.escapeSql(ts[1]));
+            sb.append(rightTruncationCharacter);
+            sb.append("' AND werkstueckeeigenschaften.Titel LIKE '");
+            sb.append(leftTruncationCharacter);
+            sb.append(StringEscapeUtils.escapeSql(ts[0]));
+        } else {
+            sb.append(StringEscapeUtils.escapeSql(ts[0]));
+        }
+        sb.append(rightTruncationCharacter);
+        sb.append("')) ");
+
+        return sb.toString();
+
     }
 
     private static StringBuilder checkStringBuilder(StringBuilder filter, boolean conjunction) {
@@ -791,7 +760,7 @@ public class FilterHelper {
         if (isStep) {
             flagSteps = true;
             filter = checkStringBuilder(filter, true);
-            filter.append(" prozesse.prozesseId not in (select prozesse.prozesseID from prozesse where prozesse.istTemplate = true) ");
+            filter.append(" prozesse.istTemplate = false ");
         }
 
         // preparation to filter for step dates
