@@ -58,7 +58,7 @@ import lombok.Getter;
 
 public class SearchResultHelper {
 
-	@Getter
+    @Getter
     private List<SelectItem> possibleColumns = new ArrayList<>();
 
     public SearchResultHelper() {
@@ -392,7 +392,7 @@ public class SearchResultHelper {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
             }
-            sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
+            sql = sql + " projekte.projectIsArchived = false ";
         }
         if (order.startsWith("projekte") && !includeProjects) {
             sb.append(" WHERE projekte.ProjekteID = prozesse.ProjekteID AND ");
