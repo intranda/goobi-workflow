@@ -3,7 +3,7 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
  * 
@@ -39,7 +39,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
