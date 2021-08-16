@@ -434,11 +434,6 @@ button.dropdown-item:hover {
     }
 }
 
-/* CSS-Bugfix for rendered whitespace from h:panelGroup */
-#navigation .mobile-nav.open>li.has-submenu {
-    /*margin-bottom: -17px;*/
-}
-
 /* ------------- sub forms --------------- */
 
 .padding-subform {

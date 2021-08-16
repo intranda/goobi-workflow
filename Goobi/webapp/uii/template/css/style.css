@@ -2957,11 +2957,13 @@ label, input, button, select, textarea {
   display: none;
 }
 #navigation .mobile-nav.open {
-  display: none;
-  list-style: none;
-  padding-left: 60px;
-  padding-right: 20px;
-  margin: 0;
+  position: absolute;
+  padding: 10px;
+  float: right;
+  border: 1px solid #144d82;
+  border-top: none !important;
+  top: 40px;
+  right: 0px;
   background: #368ee0;
 }
 #navigation .mobile-nav.open > li {
