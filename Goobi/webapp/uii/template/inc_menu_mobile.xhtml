@@ -126,7 +126,7 @@
 								value="#{NavigationForm.possibleWorkflowPluginNames}"
 								id="plugin1">
 								<ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isWorkflowPluginAllowed(plugin)}">
-									<li class="#{NavigationForm.parentMenu == 'menu_workflow' and NavigationForm.currentWorkflowPluginName == plugin ?'active':''}">
+									<li class="#{NavigationForm.aktuell == 'a28' and NavigationForm.parentMenu == 'menu_workflow' and NavigationForm.currentWorkflowPluginName == plugin ?'active':''}">
 										<h:commandLink
 											action="#{NavigationForm.setPlugin(plugin)}"
 											id="plugin">
@@ -298,7 +298,7 @@
 								value="#{AdministrationForm.possibleAdministrationPluginNames}"
 								id="plugin2">
 								<ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isAdministrationPluginAllowed(plugin)}">
-									<li class="#{NavigationForm.parentMenu == 'menu_administration' and AdministrationForm.currentAdministrationPluginName == plugin ?'active':''}">
+									<li class="#{NavigationForm.aktuell == 'a38' and NavigationForm.parentMenu == 'menu_administration' and AdministrationForm.currentAdministrationPluginName == plugin ?'active':''}">
 										<h:commandLink
 											action="#{AdministrationForm.setPlugin(plugin)}"
 											id="plugin">
@@ -350,7 +350,7 @@
 								value="#{StatisticalQuestionBean.possiblePluginNames}"
 								id="plugin3">
 								<ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isStatisticsPluginAllowed(statistics)}">
-									<li class="#{NavigationForm.parentMenu == 'menu_controlling' and StatisticalQuestionBean.currentPluginName == statistics ?'active':''}">
+									<li class="#{NavigationForm.aktuell == 'a41' and NavigationForm.parentMenu == 'menu_controlling' and StatisticalQuestionBean.currentPluginName == statistics ?'active':''}">
 										<h:commandLink
 											action="#{StatisticalQuestionBean.setStatisticalQuestion(statistics)}"
 											id="statistics">
