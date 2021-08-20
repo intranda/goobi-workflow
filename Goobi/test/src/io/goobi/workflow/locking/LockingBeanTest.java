@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+@SuppressWarnings("static-access")
 public class LockingBeanTest {
 
     @Test

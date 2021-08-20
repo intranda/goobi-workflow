@@ -3,7 +3,7 @@ package de.sub.goobi.helper.enums;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -26,7 +26,6 @@ package de.sub.goobi.helper.enums;
  * exception statement from your version.
  */
 import de.sub.goobi.helper.Helper;
-import lombok.Getter;
 
 /**
  * Enum for edit type of task steps each one has an integer value, and a title
@@ -53,7 +52,7 @@ public enum StepEditType {
 
     /** automatic = all kinds of automatic steps */
     AUTOMATIC(4, "automatic");
-	
+
     private int value;
     private String title;
 
@@ -64,7 +63,7 @@ public enum StepEditType {
         this.value = inValue;
         this.title = inTitle;
     }
-    
+
     /**
      * return integer value for database savings
      * 

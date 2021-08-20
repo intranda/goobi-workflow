@@ -304,7 +304,7 @@ public class MySQLHelper implements Serializable {
             Long answer = null;
             try {
                 if (rs.next()) {
-                    answer = new Long(rs.getLong(1));
+                    answer = Long.valueOf(rs.getLong(1));
                     if (rs.wasNull()) {
                         answer = 0l;
                     }
@@ -324,7 +324,7 @@ public class MySQLHelper implements Serializable {
             Double answer = null;
             try {
                 if (rs.next()) {
-                    answer = new Double(rs.getDouble(1));
+                    answer = Double.valueOf(rs.getDouble(1));
                     if (rs.wasNull()) {
                         answer = 0.0;
                     }

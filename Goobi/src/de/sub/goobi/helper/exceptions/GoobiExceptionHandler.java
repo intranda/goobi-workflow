@@ -1,7 +1,7 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
  * 
@@ -44,7 +44,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sub.goobi.helper.FacesContextHelper;
 
@@ -61,6 +62,7 @@ public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
 
     private ExceptionHandler exceptionHandler;
 
+    @SuppressWarnings("deprecation")
     public GoobiExceptionHandler(ExceptionHandler exceptionHandler) {
         this.exceptionHandler = exceptionHandler;
     }

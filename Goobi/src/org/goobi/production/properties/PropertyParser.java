@@ -89,7 +89,6 @@ public class PropertyParser {
      * @return names of metadata fields
      */
 
-    @SuppressWarnings("unchecked")
     public List<String> getDisplayableMetadataForStep(Step step) {
         return buildStringList(null, step);
     }
@@ -101,7 +100,6 @@ public class PropertyParser {
      * @return names of metadata fields
      */
 
-    @SuppressWarnings("unchecked")
     public List<String> getDisplayableMetadataForProcess(Process process) {
         return buildStringList(process, null);
     }
@@ -377,7 +375,7 @@ public class PropertyParser {
 
             }
         } // add existing 'eigenschaften' to properties from config, so we have all properties from config and some of them with already existing
-          // 'eigenschaften'
+        // 'eigenschaften'
         List<ProcessProperty> listClone = new ArrayList<>(properties);
         process.setEigenschaften(null);
         List<Processproperty> plist = new ArrayList<>(process.getEigenschaftenList());

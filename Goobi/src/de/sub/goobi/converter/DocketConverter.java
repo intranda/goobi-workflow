@@ -3,7 +3,7 @@ package de.sub.goobi.converter;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -39,33 +39,31 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @FacesConverter("DocketConverter")
-public class DocketConverter implements Converter {
+public class DocketConverter implements Converter<Docket> {
 
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
+    public Docket getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
         if (value == null || value.length() == 0) {
             return null;
         } else {
             try {
-                return DocketManager.getDocketById(new Integer(value));
+                return DocketManager.getDocketById(Integer.valueOf(value));
             } catch (NumberFormatException e) {
                 log.error(e);
-                return "0";
+                return null;
             } catch (DAOException e) {
                 log.error(e);
-                return "0";
+                return null;
             }
         }
     }
 
     @Override
-    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
+    public String getAsString(FacesContext context, UIComponent component, Docket value) throws ConverterException {
         if (value == null) {
             return null;
         } else if (value instanceof Docket) {
-            return String.valueOf(((Docket) value).getId().intValue());
-        } else if (value instanceof String) {
-            return (String) value;
+            return String.valueOf(value.getId().intValue());
         } else {
             throw new ConverterException("Falscher Typ: " + value.getClass() + " muss 'Docket' sein!");
         }

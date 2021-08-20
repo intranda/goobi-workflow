@@ -3,7 +3,7 @@ package de.sub.goobi.converter;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -40,13 +40,13 @@ import org.goobi.production.flow.statistics.enums.ResultOutput;
  * @version 21.05.2009
  **************************************************************************************/
 @FacesConverter("StatisticsResultOutputConverter")
-public class StatisticsResultOutputConverter implements Converter {
+public class StatisticsResultOutputConverter implements Converter<ResultOutput> {
 
     /**
      * convert String to ResultOutput
      **************************************************************************************/
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
+    public ResultOutput getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
         if (value == null) {
             return ResultOutput.table;
         } else {
@@ -58,11 +58,11 @@ public class StatisticsResultOutputConverter implements Converter {
      * convert ResultOutput to String
      **************************************************************************************/
     @Override
-    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
+    public String getAsString(FacesContext context, UIComponent component, ResultOutput value) throws ConverterException {
         if (value == null || !(value instanceof ResultOutput)) {
             return ResultOutput.table.getId();
         } else {
-            return ((ResultOutput) value).getId();
+            return value.getId();
         }
     }
 

@@ -80,7 +80,7 @@ public class DatabasePaginator implements Serializable {
     }
 
     public int getLastPageNumber() {
-        int ret = new Double(Math.floor(this.totalResults / this.pageSize)).intValue();
+        int ret = Double.valueOf(Math.floor(this.totalResults / this.pageSize)).intValue();
         if (this.totalResults % this.pageSize == 0) {
             ret--;
         }

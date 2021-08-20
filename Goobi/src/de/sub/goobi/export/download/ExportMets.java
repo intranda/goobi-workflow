@@ -34,6 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -874,12 +875,13 @@ public class ExportMets {
     private static ImageReader getOpenJpegReader() {
         ImageReader reader;
         try {
-            Object readerSpi = Class.forName("de.digitalcollections.openjpeg.imageio.OpenJp2ImageReaderSpi").newInstance();
+            Object readerSpi = Class.forName("de.digitalcollections.openjpeg.imageio.OpenJp2ImageReaderSpi").getDeclaredConstructor().newInstance();
             reader = ((ImageReaderSpi) readerSpi).createReaderInstance();
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
             return null;
-        } catch (NoClassDefFoundError | ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+        } catch (NoClassDefFoundError | ClassNotFoundException | IllegalAccessException | InstantiationException | IllegalArgumentException
+                | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             logger.warn("No openjpeg reader");
             return null;
         }

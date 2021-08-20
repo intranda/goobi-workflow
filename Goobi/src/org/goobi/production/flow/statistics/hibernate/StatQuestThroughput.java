@@ -3,7 +3,7 @@ package org.goobi.production.flow.statistics.hibernate;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -32,7 +32,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.IStatisticalQuestionLimitedTimeframe;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
@@ -104,7 +105,7 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
     @Override
     public List<DataTable> getDataTables(String filter, String originalFilter) {
 
-        List<DataTable> allTables = new ArrayList<DataTable>();
+        List<DataTable> allTables = new ArrayList<>();
 
         //		IEvaluableFilter originalFilter;
         //
@@ -368,7 +369,7 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
                             (new Converter(objArr[0]).getDouble()));
 
                 } catch (Exception e) {
-                    headerRow.addValue(e.getMessage(), new Double(0));
+                    headerRow.addValue(e.getMessage(), Double.valueOf(0));
                 }
             }
 
@@ -431,7 +432,7 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
                 //						(new Converter(objArr[0]).getDouble()));
 
             } catch (Exception e) {
-                dataRow.addValue(e.getMessage(), new Double(0));
+                dataRow.addValue(e.getMessage(), Double.valueOf(0));
             }
         }
         // to add the last row

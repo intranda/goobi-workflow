@@ -15,12 +15,9 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import org.glassfish.jersey.client.ClientConfig;
-import org.goobi.vocabulary.Definition;
-import org.goobi.vocabulary.VocabRecord;
-import org.goobi.vocabulary.Vocabulary;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -56,7 +53,7 @@ public class VocabularyUploader {
     public static Boolean upload(Vocabulary vocab) {
 
         Boolean boOk = true;
-        
+
         try {
             //does the vocab already exist?
             String strUsername = ConfigurationHelper.getInstance().getGoobiAuthorityServerUser();
@@ -77,7 +74,7 @@ public class VocabularyUploader {
             log.error(e);
             boOk = false;
         }
-        
+
         return boOk;
     }
 
@@ -113,8 +110,8 @@ public class VocabularyUploader {
         });
 
         System.out.println(response.getStatusInfo());
-        
-       return response.getStatus() == Response.Status.OK.getStatusCode();     
+
+        return response.getStatus() == Response.Status.OK.getStatusCode();
     }
 
     private static String getAuthorizationHeader() {
@@ -138,7 +135,7 @@ public class VocabularyUploader {
         });
 
         System.out.println(response.getStatusInfo());
-        return response.getStatus() == Response.Status.OK.getStatusCode();     
+        return response.getStatus() == Response.Status.OK.getStatusCode();
     }
 
     private static Vocabulary vocabFromResponse(Response response) {
@@ -146,7 +143,7 @@ public class VocabularyUploader {
         Vocabulary vocab = null;
 
         try {
-            
+
             if (response.getStatus() != Response.Status.OK.getStatusCode()) {
                 return null;
             }
@@ -180,7 +177,7 @@ public class VocabularyUploader {
     //todo
     private static List<VocabRecord> getRecords(JSONArray jsonArray) {
 
-        List<VocabRecord> lstRecords = new ArrayList<VocabRecord>();
+        List<VocabRecord> lstRecords = new ArrayList<>();
 
         return lstRecords;
     }
@@ -188,7 +185,7 @@ public class VocabularyUploader {
     //todo
     private static List<Definition> getStruct(JSONArray jsonArray) {
 
-        List<Definition> lstDef = new ArrayList<Definition>();
+        List<Definition> lstDef = new ArrayList<>();
 
         return lstDef;
     }

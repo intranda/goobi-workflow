@@ -3,7 +3,7 @@ package org.goobi.production.chart;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -28,7 +28,6 @@ package org.goobi.production.chart;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import lombok.Getter;
@@ -70,8 +69,8 @@ public class ProjectStatusDataTable implements Serializable {
         this.name = inName;
         projectBegin = begin;
         projectEnd = end;
-        projectTasks = new ArrayList<ProjectTask>();
-        taskTitles = new ArrayList<String>();
+        projectTasks = new ArrayList<>();
+        taskTitles = new ArrayList<>();
     }
 
     /**

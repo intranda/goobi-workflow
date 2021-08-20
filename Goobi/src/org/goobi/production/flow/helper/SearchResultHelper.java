@@ -254,7 +254,6 @@ public class SearchResultHelper {
         return;
     }
 
-    @SuppressWarnings("deprecation")
     public XSSFWorkbook getResult(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses,
             boolean showArchivedProjects) {
         List<SearchColumn> sortedList = new ArrayList<>(columnList.size());
