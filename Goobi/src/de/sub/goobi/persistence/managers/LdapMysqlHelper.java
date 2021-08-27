@@ -26,7 +26,8 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Ldap;
 
@@ -53,7 +54,8 @@ class LdapMysqlHelper implements Serializable {
             } else {
                 sql.append(" WHERE ");
             }
-            sql.append("ldapgruppenID in (SELECT object_id FROM institution_configuration where object_type = 'authentication' and selected = true and institution_id = ");
+            sql.append(
+                    "ldapgruppenID in (SELECT object_id FROM institution_configuration where object_type = 'authentication' and selected = true and institution_id = ");
             sql.append(institution.getId());
             sql.append(") ");
         }
@@ -94,7 +96,8 @@ class LdapMysqlHelper implements Serializable {
             } else {
                 sql.append(" WHERE ");
             }
-            sql.append("ldapgruppenID in (SELECT object_id FROM institution_configuration where object_type = 'authentication' and selected = true and institution_id = ");
+            sql.append(
+                    "ldapgruppenID in (SELECT object_id FROM institution_configuration where object_type = 'authentication' and selected = true and institution_id = ");
             sql.append(institution.getId());
             sql.append(") ");
         }
@@ -140,7 +143,7 @@ class LdapMysqlHelper implements Serializable {
                 sql.append("titel, homeDirectory, gidNumber, userDN, objectClasses, sambaSID, sn, uid, description, displayName, gecos, ");
                 sql.append("loginShell, sambaAcctFlags, sambaLogonScript, sambaPrimaryGroupSID, sambaPwdMustChange, sambaPasswordHistory, ");
                 sql.append("sambaLogonHours, sambaKickoffTime, adminLogin, adminPassword, ldapUrl, attributeToTest, valueOfAttribute, ");
-                sql.append("nextFreeUnixId, pathToKeystore, keystorePassword, pathToRootCertificate, pathToPdcCertificate, encryptionType, ");
+                sql.append("nextFreeUnixId, pathToRootCertificate, pathToPdcCertificate, encryptionType, ");
                 sql.append("useSsl, authenticationType, readonly, readDirectoryAnonymous, useLocalDirectoryConfiguration, ");
                 sql.append("ldapHomeDirectoryAttributeName, useTLS) VALUES ( ");
                 sql.append("?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?");
@@ -151,10 +154,9 @@ class LdapMysqlHelper implements Serializable {
                         ro.getDisplayName(), ro.getGecos(), ro.getLoginShell(), ro.getSambaAcctFlags(), ro.getSambaLogonScript(),
                         ro.getSambaPrimaryGroupSID(), ro.getSambaPwdMustChange(), ro.getSambaPasswordHistory(), ro.getSambaLogonHours(),
                         ro.getSambaKickoffTime(), ro.getAdminLogin(), ro.getAdminPassword(), ro.getLdapUrl(), ro.getAttributeToTest(),
-                        ro.getValueOfAttribute(), ro.getNextFreeUnixId(), ro.getPathToKeystore(), ro.getKeystorePassword(),
-                        ro.getPathToRootCertificate(), ro.getPathToPdcCertificate(), ro.getEncryptionType(), ro.isUseSsl(),
-                        ro.getAuthenticationType(), ro.isReadonly(), ro.isReadDirectoryAnonymous(), ro.isUseLocalDirectoryConfiguration(),
-                        ro.getLdapHomeDirectoryAttributeName(), ro.isUseTLS());
+                        ro.getValueOfAttribute(), ro.getNextFreeUnixId(), ro.getPathToRootCertificate(), ro.getPathToPdcCertificate(),
+                        ro.getEncryptionType(), ro.isUseSsl(), ro.getAuthenticationType(), ro.isReadonly(), ro.isReadDirectoryAnonymous(),
+                        ro.isUseLocalDirectoryConfiguration(), ro.getLdapHomeDirectoryAttributeName(), ro.isUseTLS());
                 if (id != null) {
                     ro.setId(id);
                 }
@@ -187,8 +189,6 @@ class LdapMysqlHelper implements Serializable {
                 sql.append("attributeToTest = ?, ");
                 sql.append("valueOfAttribute = ?, ");
                 sql.append("nextFreeUnixId = ?, ");
-                sql.append("pathToKeystore = ?, ");
-                sql.append("keystorePassword = ?, ");
                 sql.append("pathToRootCertificate = ?, ");
                 sql.append("pathToPdcCertificate = ?, ");
                 sql.append("encryptionType = ?, ");
@@ -204,10 +204,9 @@ class LdapMysqlHelper implements Serializable {
                         ro.getSambaSID(), ro.getSn(), ro.getUid(), ro.getDescription(), ro.getDisplayName(), ro.getGecos(), ro.getLoginShell(),
                         ro.getSambaAcctFlags(), ro.getSambaLogonScript(), ro.getSambaPrimaryGroupSID(), ro.getSambaPwdMustChange(),
                         ro.getSambaPasswordHistory(), ro.getSambaLogonHours(), ro.getSambaKickoffTime(), ro.getAdminLogin(), ro.getAdminPassword(),
-                        ro.getLdapUrl(), ro.getAttributeToTest(), ro.getValueOfAttribute(), ro.getNextFreeUnixId(), ro.getPathToKeystore(),
-                        ro.getKeystorePassword(), ro.getPathToRootCertificate(), ro.getPathToPdcCertificate(), ro.getEncryptionType(), ro.isUseSsl(),
-                        ro.getAuthenticationType(), ro.isReadonly(), ro.isReadDirectoryAnonymous(), ro.isUseLocalDirectoryConfiguration(),
-                        ro.getLdapHomeDirectoryAttributeName(), ro.isUseTLS());
+                        ro.getLdapUrl(), ro.getAttributeToTest(), ro.getValueOfAttribute(), ro.getNextFreeUnixId(), ro.getPathToRootCertificate(),
+                        ro.getPathToPdcCertificate(), ro.getEncryptionType(), ro.isUseSsl(), ro.getAuthenticationType(), ro.isReadonly(),
+                        ro.isReadDirectoryAnonymous(), ro.isUseLocalDirectoryConfiguration(), ro.getLdapHomeDirectoryAttributeName(), ro.isUseTLS());
             }
         } finally {
             if (connection != null) {
@@ -252,7 +251,8 @@ class LdapMysqlHelper implements Serializable {
             } else {
                 sql.append(" WHERE ");
             }
-            sql.append("ldapgruppenID in (SELECT object_id FROM institution_configuration where object_type = 'authentication' and selected = true and institution_id = ");
+            sql.append(
+                    "ldapgruppenID in (SELECT object_id FROM institution_configuration where object_type = 'authentication' and selected = true and institution_id = ");
             sql.append(institution.getId());
             sql.append(") ");
         }

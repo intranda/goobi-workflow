@@ -52,7 +52,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 44;
+    public static final int EXPECTED_VERSION = 45;
     private static final Logger logger = LogManager.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -307,6 +307,11 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 44.");
                 }
                 updateToVersion44();
+            case 44:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 45.");
+                }
+                updateToVersion45();
             default:
 
                 // this has to be the last case
@@ -314,6 +319,17 @@ public class DatabaseVersion {
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+
+    }
+
+    private static void updateToVersion45() {
+
+        if (checkIfColumnExists("ldapgruppen", "pathToKeystore")) {
+            DatabaseVersion.runSql("ALTER TABLE ldapgruppen DROP column pathToKeystore");
+        }
+        if (checkIfColumnExists("ldapgruppen", "keystorePassword")) {
+            DatabaseVersion.runSql("ALTER TABLE ldapgruppen DROP column keystorePassword");
         }
 
     }
@@ -679,12 +695,12 @@ public class DatabaseVersion {
                 }
 
                 DatabaseVersion.runSql("update ldapgruppen set nextFreeUnixId = '" + ConfigurationHelper.getInstance().getLdapNextId() + "'");
-                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapKeystore())) {
-                    DatabaseVersion.runSql("update ldapgruppen set pathToKeystore = '" + ConfigurationHelper.getInstance().getLdapKeystore() + "'");
+                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getTruststore())) {
+                    DatabaseVersion.runSql("update ldapgruppen set pathToKeystore = '" + ConfigurationHelper.getInstance().getTruststore() + "'");
                 }
-                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapKeystoreToken())) {
+                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getTruststoreToken())) {
                     DatabaseVersion
-                    .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getLdapKeystoreToken() + "'");
+                    .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapRootCert())) {
                     DatabaseVersion
