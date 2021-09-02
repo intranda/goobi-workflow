@@ -268,6 +268,7 @@ public class FileManipulationTest {
 
     }
 
+    @SuppressWarnings("deprecation")
     private void prepareMocking() {
         PowerMock.mockStatic(ExternalContext.class);
         PowerMock.mockStatic(FacesContext.class);

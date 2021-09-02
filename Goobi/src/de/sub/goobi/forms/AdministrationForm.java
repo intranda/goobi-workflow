@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.deltaspike.core.api.scope.WindowScoped;
@@ -35,6 +36,9 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IAdministrationPlugin;
+import org.goobi.production.plugin.interfaces.IPushPlugin;
+import org.omnifaces.cdi.Push;
+import org.omnifaces.cdi.PushContext;
 
 import de.sub.goobi.helper.Helper;
 import lombok.Getter;
@@ -57,6 +61,10 @@ public class AdministrationForm implements Serializable {
     @Getter
     @Setter
     private IAdministrationPlugin administrationPlugin;
+
+    @Inject
+    @Push
+    PushContext adminPluginPush;
 
     public AdministrationForm() {
         possibleAdministrationPluginNames = PluginLoader.getListOfPlugins(PluginType.Administration);
@@ -96,6 +104,9 @@ public class AdministrationForm implements Serializable {
     public String setPlugin(String pluginName) {
         currentAdministrationPluginName = pluginName;
         administrationPlugin = (IAdministrationPlugin) PluginLoader.getPluginByTitle(PluginType.Administration, currentAdministrationPluginName);
+        if (administrationPlugin instanceof IPushPlugin) {
+            ((IPushPlugin) administrationPlugin).setPushContext(adminPluginPush);
+        }
         return "administration";
     }
 

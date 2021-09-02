@@ -61,7 +61,6 @@ public class OpenApiResource {
     @Produces(MediaType.APPLICATION_JSON)
     public OpenAPI getOpenApi() {
         String contextPath = servletConfig.getServletContext().getContextPath();
-        String apiPath = "/api";
         OpenAPI openApi = initSwagger(servletConfig, application, contextPath);
         return openApi;
     }
@@ -74,7 +73,7 @@ public class OpenApiResource {
                     .readAllResources(false)
                     .resourcePackages(Stream.of("org.goobi.api.rest").collect(Collectors.toSet()));
 
-            OpenAPI openApi = new JaxrsOpenApiContextBuilder()
+            OpenAPI openApi = new JaxrsOpenApiContextBuilder<>()
                     .servletConfig(servletConfig)
                     .application(application)
                     .openApiConfiguration(oasConfig)

@@ -3,7 +3,7 @@ package org.goobi.beans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -29,7 +29,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,7 +45,7 @@ public class Template implements Serializable {
     private boolean panelAusgeklappt = true;
 
     public Template() {
-        this.eigenschaften = new ArrayList<Templateproperty>();
+        this.eigenschaften = new ArrayList<>();
     }
 
     /*
@@ -77,23 +76,30 @@ public class Template implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Template other = (Template) obj;
         if (herkunft == null) {
-            if (other.herkunft != null)
+            if (other.herkunft != null) {
                 return false;
-        } else if (!herkunft.equals(other.herkunft))
+            }
+        } else if (!herkunft.equals(other.herkunft)) {
             return false;
+        }
         if (id == null) {
-            if (other.id != null)
+            if (other.id != null) {
                 return false;
-        } else if (!id.equals(other.id))
+            }
+        } else if (!id.equals(other.id)) {
             return false;
+        }
         return true;
     }
 }

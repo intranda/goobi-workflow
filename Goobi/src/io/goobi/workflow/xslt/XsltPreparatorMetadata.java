@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -65,8 +64,6 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
     private static final Logger logger = LogManager.getLogger(XsltPreparatorMetadata.class);
 
     private static Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
-
-    private static final SimpleDateFormat dateConverter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     /**
      * This method exports the METS metadata as xml to a given directory

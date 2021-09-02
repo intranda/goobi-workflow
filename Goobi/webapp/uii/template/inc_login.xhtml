@@ -13,31 +13,30 @@
 	</composite:interface>
 
 	<composite:implementation>
-    <main>
+	<main>
 		<div class="wrapper wide" style="height:300px;">
 			<h1>
 				<a href="index.xhtml"><h:outputText escape="false" value="#{HelperForm.applicationHeaderTitle}" /></a>
 			</h1>
-			
-			
+
 			<div id="login-body" class="login-body" style="margin-bottom:5px;">
-                <h:outputText style="color:red;" value="Developer Mode ON" rendered="#{DevModeBean.developerMode}" />
+				<h:outputText style="color:red;" value="Developer Mode ON" rendered="#{DevModeBean.developerMode}" />
 				<ui:fragment rendered="#{!LoginForm.oidcAutoRedirect}">
 					<h2>
 						<h:outputText value="#{msgs.login}" />
 					</h2>
-					<h:form styleClass="form-validate" onkeypress="submitOnEnter(event);" id="loginForm" prependId="false">
+					<h:form styleClass="form-validate" id="loginForm" prependId="false">
 						<h:panelGroup id="globalWarningMessage">
 							<h:panelGroup rendered="#{SessionForm.logoutMessage!=''}" styleClass="alert alert-danger block" style="line-height:18px;font-size:14px;">
-					             <i class="fa fa-exclamation-triangle margin-right-10" />
-					             <h:outputText value="#{SessionForm.logoutMessage}" />
-					         </h:panelGroup>
-				         </h:panelGroup>
-				       
-	                    <h:messages escape="false" globalOnly="false" errorClass="alert alert-danger" infoClass="alert alert-info"
+								<i class="fa fa-exclamation-triangle margin-right-10" />
+								<h:outputText value="#{SessionForm.logoutMessage}" />
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<h:messages escape="false" globalOnly="false" errorClass="alert alert-danger" infoClass="alert alert-info"
 							warnClass="alert" showDetail="true" showSummary="true" tooltip="true"
 							styleClass="messagesLogin" />
-					
+
 						<h:panelGroup>
 							<script type="text/javascript">
 								window.onload = function() {
@@ -71,15 +70,11 @@
 									</button>
 								</ui:fragment>
 								<button jsf:id="loginButton" jsf:action="#{LoginForm.Einloggen}" style="margin-bottom:20px;"
-									class="btn btn-primary font-size-s pull-right submitOnEnter">
+									class="btn btn-primary font-size-s pull-right">
 									<h:outputText value="#{msgs.einloggen}" />
 									<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a0" />
 								</button>
 							</div>
-							<x:commandButton id="LoginAbsenden2" forceId="true" style="display:none" type="submit"
-								action="#{LoginForm.Einloggen}" value="#{msgs.einloggen}">
-								<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="a0" />
-							</x:commandButton>
 						</h:panelGroup>
 	
 					</h:form>

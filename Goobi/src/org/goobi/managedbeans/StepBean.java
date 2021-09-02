@@ -239,7 +239,7 @@ public class StepBean extends BasicBean implements Serializable {
         if (!sql.isEmpty()) {
             sql = sql + " AND ";
         }
-        sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
+        sql = sql + " projekte.projectIsArchived = false ";
         paginator = new DatabasePaginator(sortList(), sql, m, "task_all");
 
         return "task_all";

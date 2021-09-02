@@ -1,6 +1,7 @@
 package de.sub.goobi.forms;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -149,12 +150,13 @@ public class HelperForm implements Serializable {
         Set<Class<? extends Fileformat>> formatSet = new Reflections("ugh.fileformats.*").getSubTypesOf(Fileformat.class);
         for (Class<? extends Fileformat> cl : formatSet) {
             try {
-                Fileformat ff = cl.newInstance();
+                Fileformat ff = cl.getDeclaredConstructor().newInstance();
                 if (ff.isExportable()) {
                     ffs.add(new SelectItem(ff.getDisplayName(), null));
                 }
             } catch (InstantiationException e) {
             } catch (IllegalAccessException e) {
+            } catch (IllegalArgumentException |InvocationTargetException |NoSuchMethodException |SecurityException e) {
             }
         }
         return ffs;
@@ -166,12 +168,13 @@ public class HelperForm implements Serializable {
         Set<Class<? extends Fileformat>> formatSet = new Reflections("ugh.fileformats.*").getSubTypesOf(Fileformat.class);
         for (Class<? extends Fileformat> cl : formatSet) {
             try {
-                Fileformat ff = cl.newInstance();
+                Fileformat ff = cl.getDeclaredConstructor().newInstance();
                 if (ff.isWritable()) {
                     ffs.add(new SelectItem(ff.getDisplayName(), null));
                 }
             } catch (InstantiationException e) {
             } catch (IllegalAccessException e) {
+            } catch (IllegalArgumentException |InvocationTargetException |NoSuchMethodException |SecurityException e) {
             }
 
         }

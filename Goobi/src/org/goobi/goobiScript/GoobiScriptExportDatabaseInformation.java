@@ -52,7 +52,6 @@ public class GoobiScriptExportDatabaseInformation extends AbstractIGoobiScript i
 
     @Override
     public void execute(GoobiScriptResult gsr) {
-        Map<String, String> parameters = gsr.getParameters();
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
         try {
             gsr.setProcessTitle(p.getTitel());

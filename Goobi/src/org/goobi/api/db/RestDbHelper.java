@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.lang3.tuple.Pair;
 import org.goobi.api.rest.model.RestProcess;
 import org.goobi.api.rest.request.SearchRequest;
 
@@ -23,7 +22,7 @@ public class RestDbHelper {
                 results = run.query(conn, sql, new JsonResultSetToRestProcessList(), params);
             }
         } else {
-            
+
             String sql =  req.createLegacySql();
             Object[] params =   req.createLegacySqlParams();
             try (Connection conn = MySQLHelper.getInstance().getConnection()) {

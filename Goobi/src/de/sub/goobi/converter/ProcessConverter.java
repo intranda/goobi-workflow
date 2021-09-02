@@ -3,7 +3,7 @@ package de.sub.goobi.converter;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -39,30 +39,28 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @FacesConverter("ProcessConverter")
-public class ProcessConverter implements Converter {
+public class ProcessConverter implements Converter<Process> {
 
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
+    public Process getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
         if (value == null) {
             return null;
         } else {
             try {
-                return ProcessManager.getProcessById(new Integer(value));
+                return ProcessManager.getProcessById(Integer.valueOf(value));
             } catch (NumberFormatException e) {
                 log.error(e);
-                return "0";
+                return null;
             }
         }
     }
 
     @Override
-    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
+    public String getAsString(FacesContext context, UIComponent component, Process value) throws ConverterException {
         if (value == null) {
             return null;
         } else if (value instanceof Process) {
-            return String.valueOf(((Process) value).getId().intValue());
-        } else if (value instanceof String) {
-            return (String) value;
+            return String.valueOf(value.getId().intValue());
         } else {
             throw new ConverterException("Falscher Typ: " + value.getClass() + " muss 'Prozess' sein!");
         }

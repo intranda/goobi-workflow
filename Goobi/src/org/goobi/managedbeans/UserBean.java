@@ -289,12 +289,12 @@ public class UserBean extends BasicBean implements Serializable {
                 }
                 paginator.load();
             } catch (DAOException e) {
-                Helper.setFehlerMeldung("#{msgs.Error_hideUser}", e.getMessage());
+                Helper.setFehlerMeldung("Error_hideUser", e.getMessage());
                 return "";
             }
             return FilterKein();
         }
-        Helper.setFehlerMeldung("#{msgs.Error_selfDelete}");
+        Helper.setFehlerMeldung("Error_selfDelete");
         return "";
     }
 

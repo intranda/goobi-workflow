@@ -1,14 +1,13 @@
 package org.goobi.vocabulary;
 
 import java.util.List;
+
 import org.goobi.beans.DatabaseObject;
 import org.goobi.production.flow.jobs.AbstractGoobiJob;
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.VocabularyManager;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -23,7 +22,7 @@ public class UploadVocabJob extends AbstractGoobiJob {
     public String getJobName() {
         return "UploadVocabJob";
     }
-    
+
     @Override
     public void execute(JobExecutionContext context) {
 

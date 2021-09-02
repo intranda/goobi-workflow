@@ -31,14 +31,14 @@ public class StepInformation {
 
     // step identifier in workflow
     private String title = "";
-    private Double averageStepOrder = new Double(0);
+    private Double averageStepOrder = Double.valueOf(0);
 
     // information about all steps of these type
     private int numberOfTotalSteps = 0;
     private int numberOfTotalImages = 0;
     private int totalProcessCount = 0;
 
-    // information about all steps of these type with status done 
+    // information about all steps of these type with status done
     private int numberOfStepsDone = 0;
     private int numberOfImagesDone = 0;
     private int processCountDone = 0;

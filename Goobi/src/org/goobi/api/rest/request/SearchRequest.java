@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.goobi.api.db.RestDbHelper;
 import org.goobi.api.rest.model.RestProcess;
 import org.goobi.api.rest.utils.MetadataUtils;
@@ -73,7 +71,7 @@ public class SearchRequest {
     }
 
     public String createSql() {
-        //example sql: select * from metadata left join prozesse on metadata.processid = prozesse.ProzesseID where prozesse.ProzesseID IN 
+        //example sql: select * from metadata left join prozesse on metadata.processid = prozesse.ProzesseID where prozesse.ProzesseID IN
         //(select processid from metadata where metadata.name="_dateDigitization" and metadata.value="2018");
         StringBuilder b = new StringBuilder();
         createSelect(b);
@@ -211,7 +209,7 @@ public class SearchRequest {
             params.add(this.propName);
             params.add(this.propValue);
         }
-        
+
         if (this.stepName != null) {
             params.add(this.stepName);
             params.add(this.stepStatus);
@@ -232,7 +230,7 @@ public class SearchRequest {
     }
 
     public String createLegacySql() {
-        //example sql: select * from metadata left join prozesse on metadata.processid = prozesse.ProzesseID where prozesse.ProzesseID IN 
+        //example sql: select * from metadata left join prozesse on metadata.processid = prozesse.ProzesseID where prozesse.ProzesseID IN
         //(select processid from metadata where metadata.name="_dateDigitization" and metadata.value="2018");
         StringBuilder builder = new StringBuilder();
         createLegacySelect(builder);
@@ -303,17 +301,17 @@ public class SearchRequest {
                 params.add(project);
             }
         }
-        
+
         if (this.propName != null) {
             params.add(this.propName);
             params.add(this.propValue);
         }
-        
+
         if (this.stepName != null) {
             params.add(this.stepName);
             params.add(this.stepStatus);
         }
-        
+
         if (metadataFilters != null) {
             for (SearchGroup sg : metadataFilters) {
                 sg.addLegacyParams(params);

@@ -124,6 +124,7 @@ public class MassImportFormTest {
         prepareMocking();
     }
 
+    @SuppressWarnings("deprecation")
     private void prepareMocking() {
 
         //        PowerMock.mockStatic(JobCreation.class);

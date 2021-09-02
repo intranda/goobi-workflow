@@ -82,7 +82,7 @@ public @Data class Image {
     private static final String PLACEHOLDER_URL_VIDEO = "/uii/template/img/goobi_placeholder_video_large.png?version=1";
     private static final String PLACEHOLDER_URL_AUDIO = "/uii/template/img/goobi_placeholder_audio_large.png?version=1";
     private static final String PLACEHOLDER_URL_NOTFOUND = "/uii/template/img/goobi_placeholder_notFound_large.png?version=1";
-    private static final String PLACEHOLDER_URL_DEFAULT = "uii/template/img/thumbnail-placeholder.png?version=1";
+    //    private static final String PLACEHOLDER_URL_DEFAULT = "uii/template/img/thumbnail-placeholder.png?version=1";
 
     /**
      * The image format of the thumbnail urls. 'jpeg' per default
@@ -203,7 +203,7 @@ public @Data class Image {
         this.order = order;
         this.tooltip = imagePath.getFileName().toString();
         if (Type.image.equals(this.type)) {
-            String baseUrl =new HelperForm().getServletPathWithHostAsUrl();
+            String baseUrl = new HelperForm().getServletPathWithHostAsUrl();
             this.bookmarkUrl = createThumbnailUrl(this.imagePath, 1000, getThumbnailFormat(), baseUrl);
             this.objectUrl = createIIIFUrl(imagePath);
             this.thumbnailUrl = createThumbnailUrl(this.imagePath, thumbnailSize, getThumbnailFormat(), baseUrl);
@@ -396,7 +396,7 @@ public @Data class Image {
                     this.imageLevels = new ArrayList<>();
                 }
             } else {
-                this.imageLevels = Collections.EMPTY_LIST;
+                this.imageLevels = Collections.emptyList();
             }
         }
         return this.imageLevels;
@@ -616,7 +616,7 @@ public @Data class Image {
                 } else if (mimetype.startsWith("video")
                         && (mimetype.equals("video/mp4") || mimetype.equals("video/webm") || mimetype.equals("video/ogg"))) {
                     return Type.video;
-                }else if (mimetype.equals("application/mxf")) {
+                } else if (mimetype.equals("application/mxf")) {
                     return Type.video;
                 }
             }
@@ -636,7 +636,7 @@ public @Data class Image {
                 return Type.image;
             } else if (NIOFileUtils.check3DType(filename)) {
                 return Type.object;
-            } else if(filename.endsWith(".xml")) {
+            } else if (filename.endsWith(".xml")) {
                 return Type.object2vr;
             } else {
                 return Type.unknown;
@@ -655,7 +655,7 @@ public @Data class Image {
         return this.layerSizes;
     }
 
-    public void setLayerSizes(List sizes) {
+    public void setLayerSizes(List<?> sizes) {
         this.layerSizes = new ArrayList<>();
         if (sizes != null) {
             for (Object object : sizes) {
