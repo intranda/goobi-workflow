@@ -978,7 +978,7 @@
 
                                                 <!-- ProzessKopie-Schaltknopf -->
                                                 <button
-                                                    class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger': item.getProjekt().projectIsArchived?'fa-file-o btn':'fa-file-o btn-primary'} button-schaltknopf"
+                                                    class="btn fa #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'fa-file-o btn-danger':'fa-file-o btn-primary'} button-schaltknopf"
                                                     jsf:action="#{ProzesskopieForm.Prepare}"
                                                     jsf:id="action22"
                                                     jsf:rel="tooltip"
@@ -1001,7 +1001,7 @@
                                                         data-toggle="tooltip">
                                                         <div class="dropdown">
                                                         <button
-                                                            class="btn #{item.containsUnreachableSteps?'btn-danger':item.getProjekt().projectIsArchived?'btn':'btn-primary'} dropdown-toggle fa pull-right"
+                                                            class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
                                                             style="margin: 0; padding-left: 4px; padding-right: 4px;"
                                                             data-toggle="dropdown"> <span class="caret"></span>
                                                         </button>
@@ -1022,7 +1022,7 @@
                                                         </ul>
                                                         <button
                                                         	jsf:id="copyProcessTempalte"
-                                                        	class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger': item.getProjekt().projectIsArchived?'fa-file-o btn':'fa-file-o btn-primary'} "
+                                                        	class="btn fa #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'fa-file-o btn-danger':'fa-file-o btn-primary'} "
                                                             aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
                                                             jsf:action="#{ProzesskopieForm.Prepare}"
                                                             jsf:rel="tooltip">
@@ -1039,7 +1039,7 @@
 
                                                 <!-- MassenImport -->
                                                 <button
-                                                    class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger': item.getProjekt().projectIsArchived?'fa-file-o btn':'fa-file-o btn-primary'} button-schaltknopf"
+                                                    class="btn fa #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'fa-files-o btn-danger':'fa-files-o btn-primary'} button-schaltknopf"
                                                     jsf:action="#{MassImportForm.Prepare}"
                                                     jsf:id="action222"
                                                     jsf:rel="tooltip"
@@ -1062,7 +1062,7 @@
 
                                                         <div class="dropdown">
                                                             <button
-                                                                class="btn #{item.containsUnreachableSteps?'btn-danger':item.getProjekt().projectIsArchived?'btn':'btn-primary'} dropdown-toggle fa pull-right"
+                                                                class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
                                                                 style="margin: 0; padding-left: 4px; padding-right: 4px;"
                                                                 data-toggle="dropdown">
                                                                 <span class="caret"></span>
@@ -1091,7 +1091,7 @@
                                                             </ui:repeat>
                                                         </ul>
                                                             <button
-                                                                class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger': item.getProjekt().projectIsArchived?'fa-file-o btn':'fa-file-o btn-primary'} "
+                                                                class="btn fa #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'fa-files-o btn-danger':'fa-files-o btn-primary'} "
                                                                 jsf:id="massImportPrepare"
                                                                 jsf:action="#{MassImportForm.Prepare}"
                                                                 jsf:rel="tooltip"
