@@ -100,6 +100,9 @@ public class UserBean extends BasicBean implements Serializable {
     @Getter
     private boolean unsubscribedProjectsExist;
 
+    @Getter
+    private boolean  unsubscribedGroupsExist;
+    
     public String Neu() {
         this.myClass = new User();
         this.myClass.setVorname("");
@@ -528,6 +531,8 @@ public class UserBean extends BasicBean implements Serializable {
         }
         UsergroupManager m = new UsergroupManager();
         usergroupPaginator = new DatabasePaginator("titel", filter, m, "");
+        
+        unsubscribedGroupsExist = usergroupPaginator.getTotalResults() > 0;
     }
 
     private void updateProjectPaginator() {
