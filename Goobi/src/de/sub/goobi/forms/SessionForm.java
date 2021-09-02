@@ -1,13 +1,35 @@
 package de.sub.goobi.forms;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.goobi.beans.Browser;
+import org.goobi.beans.SessionInfo;
+import org.goobi.beans.User;
+import org.goobi.goobiScript.GoobiScriptManager;
+import org.omnifaces.cdi.Push;
+import org.omnifaces.cdi.PushContext;
+
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.Helper;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -25,217 +47,308 @@ import java.io.Serializable;
  * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
- */
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import org.goobi.beans.User;
-import org.goobi.goobiScript.GoobiScriptManager;
-import org.omnifaces.cdi.Push;
-import org.omnifaces.cdi.PushContext;
-
-import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.Helper;
-import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
-
-/**
+ * 
  * Die Klasse SessionForm für den überblick über die aktuell offenen Sessions
  * 
  * @author Steffen Hankiewicz
+ * @author Maurice Mueller
  * @version 1.00 - 16.01.2005
+ * @version 2.00 - 03.05.2021
  */
 
-@Log4j2
 @Named("SessionForm")
 @ApplicationScoped
 public class SessionForm implements Serializable {
 
     /**
-     * 
+     * The version id for serializing processes
      */
     private static final long serialVersionUID = 8457947420232054227L;
-    @SuppressWarnings("rawtypes")
-    private List<Map> alleSessions = Collections.synchronizedList(new ArrayList<Map>());
-    private SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+
+    /**
+     * The constant string to indicate that a user is logged out
+     */
+    private static final String LOGGED_OUT = " - ausgeloggt - ";
+
+    /**
+     * The constant string to indicate that a user is not logged in until now
+     */
+    private static final String NOT_LOGGED_IN = " - ";
+
+    /**
+     * The list of current sessions (represented by SessionInfo objects)
+     */
+    private List<SessionInfo> sessions = Collections.synchronizedList(new ArrayList<>());
+
+    /**
+     * The formatter that is used for time representation strings
+     */
+    private SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss");
+
+    /**
+     * The formatter that is used for date representation strings
+     */
+    @Setter
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE', ' dd. MMMM yyyy");
-    private SimpleDateFormat fullFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-    private String aktuelleZeit = this.formatter.format(new Date());
-    private String bitteAusloggen = "";
+
+    /**
+     * The request object of the current session
+     */
+    @Inject
+    private HttpServletRequest request;
+
+    /**
+     * A message that can be shown when a user should be logged out.
+     */
+    @Getter
+    private String logoutMessage = "";
+
     @Getter
     private String sessionListErrorTime = "";
 
     @Inject
-    private HttpServletRequest request;
-    @Inject
     @Push
     PushContext adminMessageChannel;
+
     @Inject
     @Getter
     private GoobiScriptManager gsm;
 
-    public int getAktiveSessions() {
-        if (this.alleSessions == null) {
-            return 0;
+    /**
+     * Returns a list of all currently existing sessions, represented by a list of SessionInfo objects
+     *
+     * @return The list of SessionInfo objects
+     */
+    public List<SessionInfo> getSessions() {
+        if (this.sessions != null) {
+            return this.filterRealUserSessions();
         } else {
-            return this.alleSessions.size();
+            return new ArrayList<>();
         }
     }
 
-    public String getAktuelleZeit() {
-        return this.aktuelleZeit;
+    /**
+     * Filters the sessions by real user sessions.
+     * All sessions that contain a name unequal to "-" are returned.
+     *
+     * @return The list of sessions with real users
+     */
+    private List<SessionInfo> filterRealUserSessions() {
+        List<SessionInfo> realUserSessions = new ArrayList<>();
+        for (int index = 0; index < this.sessions.size(); index++) {
+            if (!this.sessions.get(index).getUserName().equals(SessionForm.NOT_LOGGED_IN)) {
+                realUserSessions.add(this.sessions.get(index));
+            }
+        }
+        return realUserSessions;
     }
 
-    @SuppressWarnings("rawtypes")
-    public List getAlleSessions() {
-        try {
-            return this.alleSessions;
-        } catch (RuntimeException e) {
-            return null;
+    /**
+     * Returns the SessionInfo object with the specified id
+     *
+     * @param id The id of the requested SessionInfo object
+     * @return The SessionInfo object with that id
+     */
+    public SessionInfo getSessionInfoById(String id) {
+        for (int session = 0; session < this.sessions.size(); session++) {
+            if (this.sessions.get(session).getSessionId().equals(id)) {
+                return this.sessions.get(session);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the number of currently existing sessions.
+     *
+     * @return The number of sessions
+     */
+    public int getNumberOfSessions() {
+        if (this.sessions != null) {
+            return this.sessions.size();
+        } else {
+            return 0;
         }
     }
 
-    public void publishAdminMessage() {
-        adminMessageChannel.send("update");
-    }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void sessionAdd(HttpSession insession) {
-        Map map = new HashMap<>();
-        map.put("id", insession.getId());
-        map.put("created", this.formatter.format(new Date()));
-        map.put("last", this.formatter.format(new Date()));
-        map.put("last2", Long.valueOf(System.currentTimeMillis()));
-        map.put("user", " - ");
-        map.put("userid", Integer.valueOf(0));
-        map.put("session", insession);
-        map.put("browserIcon", "none.png");
-        //        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        //        if (context != null) {
-        //            HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        if (request != null) {
-            String address = request.getHeader("x-forwarded-for");
-            if (address == null) {
-                address = request.getRemoteAddr();
-            }
-
-            map.put("address", address);
-
-            String mybrowser = request.getHeader("User-Agent");
-            if (mybrowser == null) {
-                mybrowser = "-";
-            }
-            List<String> monitoringChecks = ConfigurationHelper.getInstance().getExcludeMonitoringAgentNames();
-            for (String agent : monitoringChecks) {
-                if (mybrowser.contains(agent)) {
-                    return;
-                }
-            }
-            map.put("browser", mybrowser);
-            if (mybrowser.indexOf("Gecko") > 0) {
-                map.put("browserIcon", "mozilla.png");
-            }
-            if (mybrowser.indexOf("Firefox") > 0) {
-                map.put("browserIcon", "firefox.png");
-            }
-            if (mybrowser.indexOf("MSIE") > 0) {
-                map.put("browserIcon", "ie.png");
-            }
-            if (mybrowser.indexOf("Opera") > 0) {
-                map.put("browserIcon", "opera.png");
-            }
-            if (mybrowser.indexOf("Safari") > 0) {
-                map.put("browserIcon", "safari.png");
-            }
-            if (mybrowser.indexOf("Chrome") > 0) {
-                map.put("browserIcon", "chrome.png");
-            }
-            if (mybrowser.indexOf("Konqueror") > 0) {
-                map.put("browserIcon", "konqueror.png");
-            }
-            if (mybrowser.indexOf("Netscape") > 0) {
-                map.put("browserIcon", "netscape.png");
-            }
-        }
-        this.alleSessions.add(map);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private void sessionsAufraeumen(int time) {
-        List<Map> temp = new ArrayList<>(this.alleSessions);
-        for (Map map : temp) {
-            long differenz = System.currentTimeMillis() - ((Long) map.get("last2")).longValue();
-            if (differenz / 1000 > time || map.get("address") == null || (map.get("user").equals("- ausgeloggt - "))) {
-                this.alleSessions.remove(map);
-            }
+    /**
+     * Returns the number of currently existing sessions.
+     * The list of sessions is filtered for real user sessions.
+     *
+     * @return The number of real user sessions
+     */
+    public int getNumberOfRealUserSessions() {
+        if (this.sessions != null) {
+            return this.filterRealUserSessions().size();
+        } else {
+            return 0;
         }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void sessionAktualisieren(HttpSession insession) {
-        boolean gefunden = false;
-        this.aktuelleZeit = this.formatter.format(new Date());
-        if (alleSessions != null && insession != null) {
-            for (Map map : alleSessions) {
-                if (map.get("id").equals(insession.getId())) {
-                    map.put("last", this.formatter.format(new Date()));
-                    map.put("last2", Long.valueOf(System.currentTimeMillis()));
-                    gefunden = true;
-                    break;
-                }
+    /**
+     * Adds a new session to the list of current sessions
+     *
+     * @param newSession The new session to add to the other sessions
+     */
+    private void addSession(HttpSession newSession) {
+
+        SessionInfo sessionInfo = new SessionInfo();
+        long now = System.currentTimeMillis();
+
+        sessionInfo.setSession(newSession);
+        sessionInfo.setSessionId(newSession.getId());
+        sessionInfo.setSessionCreatedTimestamp(now);
+        sessionInfo.setSessionCreatedFormatted(this.timeFormatter.format(now));
+        sessionInfo.setLastAccessTimestamp(now);
+        sessionInfo.setLastAccessFormatted(this.timeFormatter.format(now));
+        sessionInfo.setUserName(NOT_LOGGED_IN);
+        sessionInfo.setUserId(0);
+        sessionInfo.setUserTimeout(newSession.getMaxInactiveInterval());
+
+        /*
+        if (this.request == null) {
+             FacesContext context = FacesContextHelper.getCurrentFacesContext();
+             if (context != null) {
+                 this.request = (HttpServletRequest) context.getExternalContext().getRequest();
             }
         }
-        if (!gefunden) {
-            sessionAdd(insession);
+         */
+
+        if (this.request == null) {
+            this.sessions.add(sessionInfo);
+            return;
         }
-        sessionsAufraeumen(insession.getMaxInactiveInterval());
+
+        String address = this.request.getHeader("x-forwarded-for");
+        if (address == null) {
+            address = this.request.getRemoteAddr();
+        }
+        sessionInfo.setUserIpAddress(address);
+
+        String browserName = this.request.getHeader("User-Agent");
+        if (browserName == null) {
+            browserName = "-";
+        }
+        List<String> monitoringChecks = ConfigurationHelper.getInstance().getExcludeMonitoringAgentNames();
+        for (String agent : monitoringChecks) {
+            if (browserName.contains(agent)) {
+                return;
+            }
+        }
+        sessionInfo.setBrowserName(browserName);
+
+        Browser browser = Browser.parseBrowser(browserName);
+        sessionInfo.setBrowserIconFileName(Browser.getIconFileName(browser));
+
+        this.sessions.add(sessionInfo);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void sessionBenutzerAktualisieren(HttpSession insession, User inBenutzer) {
-        // logger.debug("sessionBenutzerAktualisieren-start");
-        if (alleSessions != null && insession != null) {
-            for (Map map : alleSessions) {
-                if (map != null && map.get("id").equals(insession.getId())) {
-                    if (inBenutzer != null) {
-                        insession.setAttribute("User", inBenutzer.getNachVorname());
-                        map.put("user", inBenutzer.getNachVorname());
-                        map.put("userid", inBenutzer.getId());
-                        insession.setMaxInactiveInterval(inBenutzer.getSessiontimeout());
-                    } else {
-                        map.put("user", "- ausgeloggt - ");
-                        map.put("userid", Integer.valueOf(0));
-                    }
-                    break;
-                }
+    /**
+     * Updates the time information about a session
+     *
+     * @param updatedSession The concerning session to update
+     */
+    public void updateSessionLastAccess(HttpSession updatedSession) {
+        if (this.sessions == null || updatedSession == null) {
+            return;
+        }
+
+        String id = updatedSession.getId();
+        SessionInfo knownSession = this.getSessionInfoById(id);
+        if (knownSession == null) {
+            this.addSession(updatedSession);
+            return;
+        }
+
+        long now = System.currentTimeMillis();
+        knownSession.setLastAccessTimestamp(now);
+        knownSession.setLastAccessFormatted(this.timeFormatter.format(now));
+    }
+
+    /**
+     * Updates the user information about a session in dependence of a certain user
+     *
+     * @param updatedSession The session to update
+     * @param updatedUser The concerning user
+     */
+    public void updateSessionUserName(HttpSession updatedSession, User updatedUser) {
+        if (this.sessions == null || updatedSession == null) {
+            return;
+        }
+
+        String id = updatedSession.getId();
+        SessionInfo knownSession = this.getSessionInfoById(id);
+
+        if (knownSession == null) {
+            SessionInfo newSession = new SessionInfo();
+            newSession.setUserName(LOGGED_OUT);
+            newSession.setUserId(0);
+            newSession.setSessionId("-1");
+            this.sessions.add(newSession);
+            this.removeAbandonedSessions();
+            return;
+        }
+
+        if (updatedUser == null) {
+            knownSession.setUserName(LOGGED_OUT);
+            updatedSession.setAttribute("User", LOGGED_OUT);
+            knownSession.setUserId(0);
+            this.removeAbandonedSessions();
+            return;
+        }
+
+        String name = updatedUser.getNachVorname();
+        int timeout = updatedUser.getSessiontimeout();
+
+        knownSession.setUserName(name);
+        updatedSession.setAttribute("User", name);
+        knownSession.setUserId(updatedUser.getId());
+        knownSession.setUserTimeout(timeout);
+        updatedSession.setMaxInactiveInterval(timeout);
+        this.removeAbandonedSessions();
+    }
+
+    /**
+     * Removes all unused sessions. All sessions where the user is null, the user has no name, the user is logged out or the IP address is null, are
+     * unused.
+     */
+    private void removeAbandonedSessions() {
+        for (int index = 0; index < this.sessions.size(); index++) {
+
+            SessionInfo session = this.sessions.get(index);
+            String userName = session.getUserName();
+            long userTimeout = (session.getUserTimeout());
+            long loginTimestamp = (session.getLastAccessTimestamp());
+            long now = System.currentTimeMillis();
+            long sessionDuration = (now - loginTimestamp) / 1000;
+
+            boolean overTimeout = sessionDuration > userTimeout;
+            //boolean notLoggedIn = userName.equals(NOT_LOGGED_IN);
+            boolean loggedOut = userName.equals(LOGGED_OUT);
+            boolean noAddress = session.getUserIpAddress() == null;
+
+            if (overTimeout || loggedOut || noAddress) {
+                this.sessions.remove(index);
+                index--;
             }
         }
     }
 
-    public String getBitteAusloggen() {
-        return this.bitteAusloggen;
+    /**
+     * Returns the current time, formatted as HH:MM:SS
+     *
+     * @return The current time as string representation
+     */
+    public String getCurrentTime() {
+        return timeFormatter.format(new Date());
     }
 
-    public void setBitteAusloggen(String bitteAusloggen) {
-        this.bitteAusloggen = bitteAusloggen;
-    }
-
-    public String sendLogoutMessage() {
-        return "admin";
-    }
-
+    /**
+     * Returns the current date and time in dependence of the current locale settings
+     *
+     * @return The formatted date string
+     */
     public String getDate() {
         if (dateFormatter == null) {
             Locale language = Locale.ENGLISH;
@@ -248,8 +361,22 @@ public class SessionForm implements Serializable {
         return dateFormatter.format(new Date());
     }
 
-    public void setDateFormatter(SimpleDateFormat dateFormatter) {
-        this.dateFormatter = dateFormatter;
+    /**
+     * Sets the logout message
+     *
+     * @param message The new logout message
+     */
+    public void setLogoutMessage(String message) {
+        this.logoutMessage = message;
+        this.publishAdminMessage();
+    }
+
+    public String sendLogoutMessage() {
+        return "admin";
+    }
+
+    public void publishAdminMessage() {
+        adminMessageChannel.send("update");
     }
 
 }

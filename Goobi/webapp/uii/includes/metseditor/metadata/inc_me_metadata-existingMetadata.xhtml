@@ -43,11 +43,15 @@
                         <div class="col-auto mr-auto"></div>
                         <div class="col-auto">
                             <button
+                            type="button"
                                 jsf:id="addMetadata"
                                 class="btn btn--gray"
                                 jsf:action="#{Metadaten.Hinzufuegen}">
                                 #{msgs.neuesMetadatumAnlegen}
                                 <f:ajax render=":pageContentCenter" />
+                                <f:setPropertyActionListener
+                                        value=""
+                                        target="#{Metadaten.currentGroup}" />
                             </button>
                         </div>
                     </div>

@@ -2,8 +2,11 @@ package de.sub.goobi.persistence.managers;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,6 +33,8 @@ class VocabularyMysqlHelper implements Serializable {
      * 
      */
     private static final long serialVersionUID = 5141386688477409583L;
+
+    private static String vocabTable = "vocabulary";
 
     static Vocabulary getVocabularyByTitle(String title) throws SQLException {
         StringBuilder sql = new StringBuilder();
@@ -233,10 +238,10 @@ class VocabularyMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
 
         if (vocabulary.getId() == null) {
-            sql.append("INSERT INTO vocabularies(title, description, structure) ");
+            sql.append("INSERT INTO " + vocabTable + "(title, description, structure) ");
             sql.append("VALUES (?,?,?)");
         } else {
-            sql.append("UPDATE vocabularies ");
+            sql.append("UPDATE " + vocabTable + " ");
             sql.append("SET title =  ?, description = ?, structure  = ? ");
             sql.append("WHERE vocabId = " + vocabulary.getId());
         }
@@ -585,8 +590,8 @@ class VocabularyMysqlHelper implements Serializable {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT vocabularyRecords.* FROM vocabularyRecords LEFT JOIN vocabularies ON vocabularyRecords.vocabId=vocabularies.vocabId ");
-        sb.append("WHERE vocabularies.vocabId = ? ");
+        sb.append("SELECT vocabularyRecords.* FROM vocabularyRecords LEFT JOIN " + vocabTable + " ON vocabularyRecords.vocabId=" + vocabTable + ".vocabId ");
+        sb.append("WHERE " + vocabTable + ".vocabId = ? ");
         StringBuilder subQuery = new StringBuilder();
 
         if (StringUtils.isNotBlank(vocabulary.getSearchField())) {
@@ -791,17 +796,25 @@ class VocabularyMysqlHelper implements Serializable {
 
     public static void batchUpdateRecords(List<VocabRecord> records, Integer vocabularyID) throws SQLException {
         //        1.) delete old fields;
-        String sql = "DELETE from vocabulary_record_data WHERE record_id IN (?)";
-        List<Integer> idList = new ArrayList<>(records.size());
+        StringBuilder sql = new StringBuilder();
+        sql.append("DELETE from vocabulary_record_data WHERE record_id IN (");
+
+        StringBuilder ids = new StringBuilder();
 
         for (VocabRecord rec : records) {
-            idList.add(rec.getId());
+            if (ids.length() > 0) {
+                ids.append(", ");
+            }
+            ids.append(rec.getId());
         }
+        sql.append(ids.toString());
+        sql.append(")");
+
         Connection connection = null;
         try {
             QueryRunner runner = new QueryRunner();
             connection = MySQLHelper.getInstance().getConnection();
-            runner.execute(connection, sql, idList);
+            runner.execute(connection, sql.toString());
             //        2.) insert new fields;
             fieldsBatchInsertion(records, vocabularyID, connection, runner);
         } finally {
@@ -810,5 +823,96 @@ class VocabularyMysqlHelper implements Serializable {
             }
         }
 
+    }
+
+
+    public static Timestamp getVocabularyLastAltered(Vocabulary vocabulary) throws SQLException {
+
+        if (vocabulary == null) {
+            return null;
+        }
+        String sql = "SELECT * FROM vocabulary WHERE id = ? ";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+
+            Timestamp timeAltered = new QueryRunner().query(connection, sql, VocabularyManager.resultSetGetLastAlteredHandler, vocabulary.getId());
+
+            return timeAltered;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void setVocabularyLastAltered(Vocabulary vocabulary) throws SQLException {
+
+        if (vocabulary == null) {
+            return;
+        }
+
+        String updateSql = "UPDATE " + vocabTable + " SET lastAltered = ? WHERE id = " + vocabulary.getId();
+        Connection connection = null;
+
+        try {
+            Calendar calendar = Calendar.getInstance();
+            Timestamp timeNow = new Timestamp(calendar.getTime().getTime());
+            connection = MySQLHelper.getInstance().getConnection();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
+            preparedStatement.setTimestamp(1, timeNow);
+            preparedStatement.executeUpdate();
+
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+
+    }
+
+    public static Timestamp getVocabularyLastUploaded(Vocabulary vocabulary) throws SQLException {
+        if (vocabulary == null) {
+            return null;
+        }
+        String sql = "SELECT * FROM " + vocabTable + " WHERE id = ? ";
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+
+            Timestamp timeUploaded = new QueryRunner().query(connection, sql, VocabularyManager.resultSetGetLastUploadedHandler, vocabulary.getId());
+
+            return timeUploaded;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
+    public static void setVocabularyLastUploaded(Vocabulary vocabulary) throws SQLException {
+
+        if (vocabulary == null) {
+            return;
+        }
+
+        String updateSql = "UPDATE " + vocabTable + " SET lastUploaded = ? WHERE id = " + vocabulary.getId();
+        Connection connection = null;
+
+        try {
+            Calendar calendar = Calendar.getInstance();
+            Timestamp timeNow = new Timestamp(calendar.getTime().getTime());
+            connection = MySQLHelper.getInstance().getConnection();
+
+            PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
+            preparedStatement.setTimestamp(1, timeNow);
+            preparedStatement.executeUpdate();
+
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
     }
 }

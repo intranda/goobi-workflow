@@ -33,10 +33,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
+
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -46,7 +47,7 @@ import de.sub.goobi.helper.Helper;
  * The SpracheForm class serves to switch the displayed language for the current user in the running application
  */
 @Named("SpracheForm")
-@SessionScoped
+@WindowScoped
 public class SpracheForm implements Serializable {
 
     /**
@@ -110,13 +111,8 @@ public class SpracheForm implements Serializable {
     /**
      * The procedure switchLanguage is used to alter the application’s interface language.
      * 
-<<<<<<< HEAD
      * @param langCodeCombined
      *            This parameter can be either of form “‹language›” or of form “‹language›_‹country›”, e.g. “en” or “en_GB” are valid values.
-=======
-     * @param langCodeCombined This parameter can be either of form “‹language›” or of form “‹language›_‹country›”, e.g. “en” or “en_GB” are valid
-     *            values.
->>>>>>> refs/heads/develop
      */
     public void switchLanguage(String langCodeCombined) {
         String[] languageCode = langCodeCombined.split("_");

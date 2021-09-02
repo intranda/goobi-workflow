@@ -1,6 +1,7 @@
 package org.goobi.goobiScript;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -67,13 +68,14 @@ public class GoobiScriptManager {
     }
 
     private void populateActionToScriptImplMap() {
-        actionToScriptImplMap = new HashMap<String, IGoobiScript>();
+        actionToScriptImplMap = new HashMap<>();
         Set<Class<? extends IGoobiScript>> myset = new Reflections("org.goobi.goobiScript.*").getSubTypesOf(IGoobiScript.class);
         for (Class<? extends IGoobiScript> cl : myset) {
             try {
-                IGoobiScript gs = cl.newInstance();
+                IGoobiScript gs = cl.getDeclaredConstructor().newInstance();
                 actionToScriptImplMap.put(gs.getAction(), gs);
-            } catch (InstantiationException | IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+                    | SecurityException e) {
             }
         }
     }

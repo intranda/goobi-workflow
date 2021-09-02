@@ -1,9 +1,11 @@
 package org.goobi.production.flow.statistics.enums;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -73,7 +75,10 @@ public enum StatisticsMode {
         title = inTitle;
         if (inQuestion != null) {
             try {
-                question = inQuestion.newInstance();
+
+                question = inQuestion.getDeclaredConstructor().newInstance();
+            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                e.printStackTrace();
             } catch (InstantiationException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {

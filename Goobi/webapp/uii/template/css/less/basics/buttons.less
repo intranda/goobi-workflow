@@ -4,6 +4,7 @@
    ==============================================================*/
 /* BUTTONS */
 .btn {
+    text-align: left;
 	position: relative;
 	line-height: 29px;
     padding-top: 0;
@@ -96,6 +97,28 @@
 			color: @white !important;
 			background-color: @btnBgDarkgray !important;
 		}
+	}
+	&--light-gray {
+		color: #444;
+		background-color: @lightgray !important;
+		&:focus {
+			outline-offset: 2px;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
+		&:hover,
+		&active {
+			color: #333;
+			background-color: #A9A9A9 !important;
+		}
+	}
+	&--red {
+		color: white;
+		background-color: #ff4433;
+		&:hover {
+			color: white;
+			background-color: #E51400;
+		}
+		
 	}
 	&--white {
 		border-color: @gray ! important;
@@ -319,6 +342,18 @@ button.btn {
   display: inline-block;
 }
 
+.personButton {
+	margin-left: 0px !important;
+}
+
+.metadataButton {
+	margin-left: 0px !important;
+}
+
+.greenCheckButton {
+	padding-left: 5px !important;
+}
+
 .duplicate > a,.duplicate > span  {
 	display: inline-block;
 	height: 25px;
@@ -327,13 +362,20 @@ button.btn {
 	color: #eee;
 	margin-right: 2px;
 }
+
 duplicate > span:hover {
-color: #666;
+	color: #666;
 } 
+
+.duplicate button {
+	padding-left: 2px !important; 
+	padding-right: 2px !important;
+}
 
 /* Button styling as link */
 
 .button-link {
+    text-align: left;
 	background: none!important;
   	border: none;
   	padding: 0;

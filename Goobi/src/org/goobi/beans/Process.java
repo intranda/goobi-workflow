@@ -130,38 +130,62 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private String ausgabename;
     private Boolean istTemplate;
     private Boolean inAuswahllisteAnzeigen;
+    @Setter
     private Project projekt;
+    @Getter
+    @Setter
     private Date erstellungsdatum;
+    @Setter
     private List<Step> schritte;
     //    private List<HistoryEvent> history;
+    @Setter
     private List<Masterpiece> werkstuecke;
+    @Setter
     private List<Template> vorlagen;
+    @Setter
     private List<Processproperty> eigenschaften;
     @Getter
     @Setter
     private String sortHelperStatus;
+    @Setter
     private Integer sortHelperImages;
+    @Setter
     private Integer sortHelperArticles;
+    @Setter
     private Integer sortHelperMetadata;
+    @Setter
     private Integer sortHelperDocstructs;
+    @Getter
+    @Setter
     private Ruleset regelsatz;
     //    private Integer batchID;
+    @Getter
+    @Setter
     private Batch batch;
     private Boolean swappedOut = false;
     private Boolean panelAusgeklappt = false;
     private Boolean selected = false;
+    @Setter
     private Docket docket;
 
     private String imagesTiffDirectory = null;
     private String imagesOrigDirectory = null;
 
+    @Getter
+    @Setter
     private List<LogEntry> processLog = new LinkedList<>();
 
     private BeanHelper bhelp = new BeanHelper();
 
     // temporär
+    @Getter
+    @Setter
     private Integer projectId;
+    @Getter
+    @Setter
     private Integer MetadatenKonfigurationID;
+    @Getter
+    @Setter
     private Integer docketId;
 
     private final MetadatenSperrung msp = new MetadatenSperrung();
@@ -223,15 +247,15 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     }
 
+    public void setIstTemplate(boolean istTemplate) {
+        this.istTemplate = istTemplate;
+    }
+
     public boolean isIstTemplate() {
         if (this.istTemplate == null) {
             this.istTemplate = Boolean.valueOf(false);
         }
         return this.istTemplate;
-    }
-
-    public void setIstTemplate(boolean istTemplate) {
-        this.istTemplate = istTemplate;
     }
 
     public List<Step> getSchritte() {
@@ -241,13 +265,19 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return this.schritte;
     }
 
-    public void setSchritte(List<Step> schritte) {
-        this.schritte = schritte;
-    }
-
     public boolean containsStepOfOrder(int order) {
         for (int i = 0; i < this.schritte.size(); i++) {
             if (this.schritte.get(i).getReihenfolge() == order) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean getContainsExportStep() {
+        this.getSchritte();
+        for(int i = 0; i < this.schritte.size(); i++) {
+            if(this.schritte.get(i).isTypExportDMS() || this.schritte.get(i).isTypExportRus()){
                 return true;
             }
         }
@@ -278,10 +308,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return this.vorlagen;
     }
 
-    public void setVorlagen(List<Template> vorlagen) {
-        this.vorlagen = vorlagen;
-    }
-
     public List<Masterpiece> getWerkstuecke() {
         if ((werkstuecke == null || werkstuecke.isEmpty()) && id != null) {
             werkstuecke = MasterpieceManager.getMasterpiecesForProcess(id);
@@ -289,19 +315,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return this.werkstuecke;
     }
 
-    public void setWerkstuecke(List<Masterpiece> werkstuecke) {
-        this.werkstuecke = werkstuecke;
-    }
-
     public List<Processproperty> getEigenschaften() {
         if ((eigenschaften == null || eigenschaften.isEmpty()) && id != null) {
             eigenschaften = PropertyManager.getProcessPropertiesForProcess(id);
         }
         return this.eigenschaften;
-    }
-
-    public void setEigenschaften(List<Processproperty> eigenschaften) {
-        this.eigenschaften = eigenschaften;
     }
 
     /*
@@ -313,7 +331,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (MetadatenSperrung.isLocked(this.id.intValue())) {
             String benutzerID = this.msp.getLockBenutzer(this.id.intValue());
             try {
-                rueckgabe = UserManager.getUserById(new Integer(benutzerID));
+                rueckgabe = UserManager.getUserById(Integer.valueOf(benutzerID));
             } catch (Exception e) {
                 Helper.setFehlerMeldung(Helper.getTranslation("userNotFound"), e);
             }
@@ -537,7 +555,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrTxtDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     @Deprecated
@@ -547,27 +565,27 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrPdfDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrXmlDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getImportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getExportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException, InterruptedException, SwapException, DAOException {
@@ -742,26 +760,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return this.projekt;
     }
 
-    public void setProjekt(Project projekt) {
-        this.projekt = projekt;
-    }
-
-    public Batch getBatch() {
-        return this.batch;
-    }
-
-    public void setBatch(Batch batch) {
-        this.batch = batch;
-    }
-
-    public Ruleset getRegelsatz() {
-        return this.regelsatz;
-    }
-
-    public void setRegelsatz(Ruleset regelsatz) {
-        this.regelsatz = regelsatz;
-    }
-
     public int getSchritteSize() {
 
         return getSchritte().size();
@@ -829,19 +827,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return this.sortHelperArticles;
     }
 
-    public void setSortHelperArticles(Integer sortHelperArticles) {
-        this.sortHelperArticles = sortHelperArticles;
-    }
-
     public Integer getSortHelperImages() {
         if (this.sortHelperImages == null) {
             this.sortHelperImages = 0;
         }
         return this.sortHelperImages;
-    }
-
-    public void setSortHelperImages(Integer sortHelperImages) {
-        this.sortHelperImages = sortHelperImages;
     }
 
     public Integer getSortHelperMetadata() {
@@ -851,19 +841,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return this.sortHelperMetadata;
     }
 
-    public void setSortHelperMetadata(Integer sortHelperMetadata) {
-        this.sortHelperMetadata = sortHelperMetadata;
-    }
-
     public Integer getSortHelperDocstructs() {
         if (this.sortHelperDocstructs == null) {
             this.sortHelperDocstructs = 0;
         }
         return this.sortHelperDocstructs;
-    }
-
-    public void setSortHelperDocstructs(Integer sortHelperDocstructs) {
-        this.sortHelperDocstructs = sortHelperDocstructs;
     }
 
     public boolean isInAuswahllisteAnzeigen() {
@@ -898,14 +880,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public void setSelected(boolean selected) {
         this.selected = selected;
-    }
-
-    public Date getErstellungsdatum() {
-        return this.erstellungsdatum;
-    }
-
-    public void setErstellungsdatum(Date erstellungsdatum) {
-        this.erstellungsdatum = erstellungsdatum;
     }
 
     public String getErstellungsdatumAsString() {
@@ -1366,10 +1340,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.swappedOut = inSwappedOut;
     }
 
-    /**
-     * starts generation of xml logfile for current process
-     */
-
     public void downloadXML() {
         XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
         try {
@@ -1381,6 +1351,36 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             Helper.setFehlerMeldung("could not execute command to write logfile to home directory", e);
         }
     }
+
+    /**
+     * download xml logfile for current process
+     */
+    public void downloadLogFile() {
+
+        XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        if (!facesContext.getResponseComplete()) {
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            String fileName = getTitel() + "_log.xml";
+            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(fileName);
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
+
+            // write to servlet output stream
+            try {
+                ServletOutputStream out = response.getOutputStream();
+                xmlExport.startExport(this, out);
+                out.flush();
+            } catch (IOException e) {
+                logger.error("IOException while exporting run note", e);
+            }
+
+            facesContext.responseComplete();
+        }
+        return ;
+    }
+
 
     public String downloadDocket() {
 
@@ -1520,18 +1520,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return docket;
     }
 
-    public void setDocket(Docket docket) {
-        this.docket = docket;
-    }
-
-    public Integer getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(Integer projectId) {
-        this.projectId = projectId;
-    }
-
     @Override
     public int compareTo(Process arg0) {
 
@@ -1540,22 +1528,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     @Override
     public void lazyLoad() {
-    }
-
-    public Integer getMetadatenKonfigurationID() {
-        return MetadatenKonfigurationID;
-    }
-
-    public void setMetadatenKonfigurationID(Integer metadatenKonfigurationID) {
-        MetadatenKonfigurationID = metadatenKonfigurationID;
-    }
-
-    public Integer getDocketId() {
-        return docketId;
-    }
-
-    public void setDocketId(Integer docketId) {
-        this.docketId = docketId;
     }
 
     @Override
@@ -1603,14 +1575,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
 
         return p;
-    }
-
-    public void setProcessLog(List<LogEntry> processLog) {
-        this.processLog = processLog;
-    }
-
-    public List<LogEntry> getProcessLog() {
-        return processLog;
     }
 
     public void addLogEntry() {
@@ -2136,7 +2100,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
                     List<Path> subdirs = StorageProvider.getInstance().listFiles(imageDirectory);
                     for (Path imagedir : subdirs) {
-                        if (StorageProvider.getInstance().isDirectory(imagedir)) {
+                        if (StorageProvider.getInstance().isDirectory(imagedir) || StorageProvider.getInstance().isSymbolicLink(imagedir)) {
                             StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
                         }
                     }
@@ -2149,7 +2113,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
                     List<Path> subdirs = StorageProvider.getInstance().listFiles(ocrDirectory);
                     for (Path imagedir : subdirs) {
-                        if (StorageProvider.getInstance().isDirectory(imagedir)) {
+                        if (StorageProvider.getInstance().isDirectory(imagedir) || StorageProvider.getInstance().isSymbolicLink(imagedir)) {
                             StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
                         }
                     }
@@ -2341,7 +2305,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.pauseAutomaticExecution = pauseAutomaticExecution;
         if (!automaticTasks.isEmpty()) {
             for (Step step : automaticTasks) {
-                //We need to set the process in the step to this process, so the step doesn't fetch the process from 
+                //We need to set the process in the step to this process, so the step doesn't fetch the process from
                 //the DB when it checks if automatic execution is paused
                 step.setProzess(this);
                 ScriptThreadWithoutHibernate script = new ScriptThreadWithoutHibernate(step);

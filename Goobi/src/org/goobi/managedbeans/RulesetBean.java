@@ -31,9 +31,9 @@ import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Ruleset;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -42,12 +42,16 @@ import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
+import lombok.Getter;
+import lombok.Setter;
 
 @Named("RegelsaetzeForm")
-@SessionScoped
+@WindowScoped
 public class RulesetBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = -8994941188718721705L;
+    @Getter
+    @Setter
     private Ruleset myRegelsatz = new Ruleset();
 
     public String Neu() {
@@ -110,13 +114,4 @@ public class RulesetBean extends BasicBean implements Serializable {
         FilterKein();
         return this.zurueck;
     }
-
-    public Ruleset getMyRegelsatz() {
-        return this.myRegelsatz;
-    }
-
-    public void setMyRegelsatz(Ruleset inPreference) {
-        this.myRegelsatz = inPreference;
-    }
-
 }

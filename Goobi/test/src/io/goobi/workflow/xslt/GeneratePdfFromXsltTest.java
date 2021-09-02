@@ -57,7 +57,7 @@ import de.sub.goobi.persistence.managers.TemplateManager;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PropertyManager.class, StepManager.class, TemplateManager.class, MasterpieceManager.class, HistoryManager.class,
     MetadataManager.class, FacesContext.class, ExternalContext.class, Helper.class })
-@PowerMockIgnore("javax.management.*")
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
 public class GeneratePdfFromXsltTest {
 
     private static final Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");

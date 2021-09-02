@@ -122,7 +122,7 @@ function setAutocompleteListHandler() {
  * Handler for onkeypress that clicks {@code targetElement} if the enter key is pressed.
  */
 function submitOnEnter( event, classname ) {
-    classname = name || 'submitOnEnter';
+    classname = classname || 'submitOnEnter';
     event = event || window.event;
     if ( event.keyCode == 13 ) {
         // normalize event target, so it looks the same for all browsers
@@ -138,8 +138,7 @@ function submitOnEnter( event, classname ) {
             if ( event.target.type == 'button' || event.target.type == 'submit' ) {
                 if ( strEndsWith( event.target.id, 'focusKeeper' ) ) {
                     // inside some Richfaces component such as rich:listShuttle
-                }
-                else {
+                } else {
                     return;
                 }
             }
@@ -153,13 +152,11 @@ function submitOnEnter( event, classname ) {
             // Firefox
             event.stopPropagation();
             event.preventDefault();
-        }
-        else {
+        } else {
             // IE
             event.cancelBubble = true;
             event.returnValue = false;
         }
-        
         document.getElementsByClassName( classname )[ 0 ].click();
     }
     
@@ -271,4 +268,55 @@ function onMouseMove( event ) {
     if ( intrandaImages[ canvas.id ] ) {
         img.src = intrandaImages[ canvas.id ].largeUrl;
     }
+}
+
+window.onresize = loadMenu;
+function loadMenu() {
+	let maximumWidth = 840;
+	let width = window.innerWidth;
+	let menu = document.getElementById("main-menu-set-class");
+	let wide = document.getElementsByClassName("rendered-in-wide-window");
+	let small = document.getElementsByClassName("rendered-in-small-window");
+	for (let index = 0; index < wide.length; index++) {
+		wide[index].style.display = (width >= maximumWidth ? "block" : "none");
+	}
+	for (let index = 0; index < small.length; index++) {
+		small[index].style.display = (width >= maximumWidth ? "none" : "block");
+	}
+	if (width > maximumWidth) {
+		// This is the main menu. It appears in the header area when the window is wide enough.
+		menu.classList.add("main-nav");
+		menu.classList.remove("mobile-nav");
+		menu.classList.remove("open-nav");
+		let hasDropdownMenu = document.getElementsByClassName("add-dropdown-menu-in-wide-window");
+		for (let index = 0; index < hasDropdownMenu.length; index++) {
+			hasDropdownMenu[index].classList.add("dropdown-menu");
+		}
+		let containerFluid = document.getElementsByClassName("add-container-fluid-in-wide-window");
+		for (let index = 0; index < containerFluid.length; index++) {
+			containerFluid[index].classList.add("container-fluid");
+		}
+		let hasSubmenu = document.getElementsByClassName("add-has-submenu-in-small-window");
+		for (let index = 0; index < hasSubmenu.length; index++) {
+			hasSubmenu[index].classList.remove("has-submenu");
+		}
+	} else {
+		// This is the alternative menu. It appears as a menu-icon
+		// (three bars) in the upper right corner and can be expanded.
+		menu.classList.add("mobile-nav");
+		menu.classList.add("open");
+		menu.classList.remove("main-nav");
+		let hasDropdownMenu = document.getElementsByClassName("add-dropdown-menu-in-wide-window");
+		for (let index = 0; index < hasDropdownMenu.length; index++) {
+			hasDropdownMenu[index].classList.remove("dropdown-menu");
+		}
+		let containerFluid = document.getElementsByClassName("add-container-fluid-in-wide-window");
+		for (let index = 0; index < containerFluid.length; index++) {
+			containerFluid[index].classList.remove("container-fluid");
+		}
+		let hasSubmenu = document.getElementsByClassName("add-has-submenu-in-small-window");
+		for (let index = 0; index < hasSubmenu.length; index++) {
+			hasSubmenu[index].classList.add("has-submenu");
+		}
+	}
 }

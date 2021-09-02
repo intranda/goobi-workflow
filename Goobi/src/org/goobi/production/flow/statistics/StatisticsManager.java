@@ -53,6 +53,8 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.statistik.StatistikLaufzeitSchritte;
 import de.sub.goobi.statistik.StatistikStatus;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The Class StatisticsManager organizes all statistical questions by choosing the right implementation depening on {@link StatisticsMode}
@@ -68,19 +70,36 @@ public class StatisticsManager implements Serializable {
     private static final Logger logger = LogManager.getLogger(StatisticsManager.class);
     /* simple JFreeChart Dataset for the old simple statistics */
     private Dataset jfreeDataset;
+    @Getter
     private String jfreeImage;
     /* internal StatisticsMode */
+    @Getter
     private StatisticsMode statisticMode;
+    @Getter
+    @Setter
     private Date sourceDateFrom;
+    @Getter
+    @Setter
     private Date sourceDateTo = new Date();
     private int sourceNumberOfTimeUnits;
+    @Getter
+    @Setter
     private TimeUnit sourceTimeUnit;
+    @Getter
+    @Setter
     private TimeUnit targetTimeUnit;
+    @Getter
+    @Setter
     private ResultOutput targetResultOutput;
+    @Getter
+    @Setter
     private CalculationUnit targetCalculationUnit;
+    @Getter
+    @Setter
     private boolean showAverage;
     private Date calculatedStartDate = new Date();
     private Date calculatedEndDate = new Date();
+    @Getter
     private List<StatisticsRenderingElement> renderingElements;
     static private Locale myLocale = null;
     private Boolean includeLoops = null;
@@ -142,19 +161,6 @@ public class StatisticsManager implements Serializable {
         } else {
             return new DefaultValueDataset();
         }
-    }
-
-    public String getJfreeImage() {
-        return jfreeImage;
-    }
-
-    /**
-     * retrieve current {@link StatisticsMode}
-     * 
-     * @return {@link StatisticsMode} for current statistical question
-     ****************************************************************************/
-    public StatisticsMode getStatisticMode() {
-        return statisticMode;
     }
 
     /**
@@ -366,34 +372,6 @@ public class StatisticsManager implements Serializable {
     }
 
     /**
-     * @return the sourceDateFrom
-     *************************************************************************************/
-    public Date getSourceDateFrom() {
-        return sourceDateFrom;
-    }
-
-    /**
-     * @param sourceDateFrom the sourceDateFrom to set
-     *************************************************************************************/
-    public void setSourceDateFrom(Date sourceDateFrom) {
-        this.sourceDateFrom = sourceDateFrom;
-    }
-
-    /**
-     * @return the sourceDateTo
-     *************************************************************************************/
-    public Date getSourceDateTo() {
-        return sourceDateTo;
-    }
-
-    /**
-     * @param sourceDateTo the sourceDateTo to set
-     *************************************************************************************/
-    public void setSourceDateTo(Date sourceDateTo) {
-        this.sourceDateTo = sourceDateTo;
-    }
-
-    /**
      * @return the sourceNumberOfTimeUnitsAsString
      *************************************************************************************/
     public String getSourceNumberOfTimeUnitsAsString() {
@@ -416,76 +394,6 @@ public class StatisticsManager implements Serializable {
     }
 
     /**
-     * @return the sourceTimeUnit
-     *************************************************************************************/
-    public TimeUnit getSourceTimeUnit() {
-        return sourceTimeUnit;
-    }
-
-    /**
-     * @param sourceTimeUnit the sourceTimeUnit to set
-     *************************************************************************************/
-    public void setSourceTimeUnit(TimeUnit sourceTimeUnit) {
-        this.sourceTimeUnit = sourceTimeUnit;
-    }
-
-    /**
-     * @return the targetTimeUnit
-     *************************************************************************************/
-    public TimeUnit getTargetTimeUnit() {
-        return targetTimeUnit;
-    }
-
-    /**
-     * @param targetTimeUnit the targetTimeUnit to set
-     *************************************************************************************/
-    public void setTargetTimeUnit(TimeUnit targetTimeUnit) {
-        this.targetTimeUnit = targetTimeUnit;
-    }
-
-    /**
-     * @return the targetResultOutput
-     *************************************************************************************/
-    public ResultOutput getTargetResultOutput() {
-        return targetResultOutput;
-    }
-
-    /**
-     * @param targetResultOutput the targetResultOutput to set
-     *************************************************************************************/
-    public void setTargetResultOutput(ResultOutput targetResultOutput) {
-        this.targetResultOutput = targetResultOutput;
-    }
-
-    /**
-     * @return the targetCalculationUnit
-     *************************************************************************************/
-    public CalculationUnit getTargetCalculationUnit() {
-        return targetCalculationUnit;
-    }
-
-    /**
-     * @param targetCalculationUnit the targetCalculationUnit to set
-     *************************************************************************************/
-    public void setTargetCalculationUnit(CalculationUnit targetCalculationUnit) {
-        this.targetCalculationUnit = targetCalculationUnit;
-    }
-
-    /**
-     * @return the showAverage
-     *************************************************************************************/
-    public boolean isShowAverage() {
-        return showAverage;
-    }
-
-    /**
-     * @param showAverage the showAverage to set
-     *************************************************************************************/
-    public void setShowAverage(boolean showAverage) {
-        this.showAverage = showAverage;
-    }
-
-    /**
      * @return includeLoops flag
      */
     public boolean isIncludeLoops() {
@@ -504,15 +412,6 @@ public class StatisticsManager implements Serializable {
      */
     public void setIncludeLoops(boolean includeLoops) {
         this.includeLoops = includeLoops;
-    }
-
-    /**
-     * get List of RenderingElements
-     * 
-     * @return List of {@link StatisticsRenderingElement} of calculated results
-     *************************************************************************************/
-    public List<StatisticsRenderingElement> getRenderingElements() {
-        return renderingElements;
     }
 
     public static Locale getLocale() {

@@ -47,7 +47,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -58,8 +57,9 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ StepManager.class, UserManager.class, UsergroupManager.class, ProcessManager.class, RulesetManager.class, Helper.class })
-@PowerMockIgnore({ "javax.management.*" })
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
 
+@SuppressWarnings("deprecation")
 public class GoobiScriptTest {
 
     private List<Integer> processList;
@@ -191,24 +191,18 @@ public class GoobiScriptTest {
     }
 
     @Test
-    public void testExecuteEmptyGoobiScript() {
-        GoobiScript script = new GoobiScript();
-        script.execute(new ArrayList<Integer>(), "---\\n");
-        assertNull(script.myParameters);
+    public void testParseEmptyGoobiScript() {
+        assertNull(GoobiScript.parseGoobiscripts("---\\n"));
     }
 
     @Test
-    public void testExecuteWrongSyntax() {
-        GoobiScript script = new GoobiScript();
-        script.execute(new ArrayList<Integer>(), "---\\naction");
-        assertEquals(0, script.myParameters.size());
+    public void testParseWrongSyntax() {
+        assertEquals(0, GoobiScript.parseGoobiscripts("---\\naction").size());
     }
 
     @Test
-    public void testExecuteUnknownAction() {
-        GoobiScript script = new GoobiScript();
-        script.execute(new ArrayList<Integer>(), "---\\naction: test");
-        assertEquals(1, script.myParameters.size());
+    public void testParseUnknownAction() {
+        assertEquals(1, GoobiScript.parseGoobiscripts("---\\naction: test").size());
     }
 
     @Test
@@ -223,7 +217,6 @@ public class GoobiScriptTest {
         PowerMock.replay(ProcessManager.class);
 
         PowerMock.mockStatic(Helper.class);
-        SessionForm sessionForm = new SessionForm();
         LoginBean loginBean = new LoginBean();
         loginBean.setMyBenutzer(user);
 
@@ -268,7 +261,6 @@ public class GoobiScriptTest {
         PowerMock.replay(ProcessManager.class);
 
         PowerMock.mockStatic(Helper.class);
-        SessionForm sessionForm = new SessionForm();
         LoginBean loginBean = new LoginBean();
         loginBean.setMyBenutzer(user);
 
@@ -296,7 +288,6 @@ public class GoobiScriptTest {
         PowerMock.replay(ProcessManager.class);
 
         PowerMock.mockStatic(Helper.class);
-        SessionForm sessionForm = new SessionForm();
         LoginBean loginBean = new LoginBean();
         loginBean.setMyBenutzer(user);
 

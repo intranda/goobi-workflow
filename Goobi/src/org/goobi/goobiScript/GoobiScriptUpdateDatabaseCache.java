@@ -54,7 +54,6 @@ public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript impleme
 
     @Override
     public void execute(GoobiScriptResult gsr) {
-
         XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
 
         Process p = ProcessManager.getProcessById(gsr.getProcessId());

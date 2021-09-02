@@ -1,5 +1,7 @@
 package org.goobi.production.cli;
 
+import lombok.Getter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -23,6 +25,7 @@ package org.goobi.production.cli;
  * exception statement from your version.
  */
 
+@Getter
 public class CommandResponse {
     private int status = 200;
     private String title;
@@ -38,17 +41,5 @@ public class CommandResponse {
         status = 200;
         title = inTitle;
         message = inMessage;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getMessage() {
-        return message;
     }
 }

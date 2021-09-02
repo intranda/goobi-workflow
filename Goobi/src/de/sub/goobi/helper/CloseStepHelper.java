@@ -94,7 +94,7 @@ public class CloseStepHelper {
 
         }
         SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.DONE);
-        HistoryManager.addHistory(currentStep.getBearbeitungsende(), new Integer(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(),
+        HistoryManager.addHistory(currentStep.getBearbeitungsende(), Integer.valueOf(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(),
                 HistoryEventType.stepDone.getValue(), currentStep.getProzess().getId());
 
         List<Step> automaticTasks = new ArrayList<>();
@@ -133,7 +133,7 @@ public class CloseStepHelper {
                         myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
                         myStep.setBearbeitungszeitpunkt(currentStep.getBearbeitungsende());
                         myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
-                        HistoryManager.addHistory(currentStep.getBearbeitungsende(), new Integer(myStep.getReihenfolge()).doubleValue(),
+                        HistoryManager.addHistory(currentStep.getBearbeitungsende(), Integer.valueOf(myStep.getReihenfolge()).doubleValue(),
                                 myStep.getTitel(), HistoryEventType.stepOpen.getValue(), currentStep.getProzess().getId());
                         /* wenn es ein automatischer Schritt mit Script ist */
                         if (myStep.isTypAutomatisch()) {

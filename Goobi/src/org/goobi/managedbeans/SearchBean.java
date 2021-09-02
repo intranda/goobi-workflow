@@ -29,11 +29,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
 import org.goobi.production.enums.UserRole;
@@ -48,9 +48,10 @@ import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Getter;
+import lombok.Setter;
 
 @Named("SearchForm")
-@SessionScoped
+@WindowScoped
 public class SearchBean implements Serializable {
 
     @Inject
@@ -61,29 +62,49 @@ public class SearchBean implements Serializable {
      */
     private static final long serialVersionUID = -4981330560006133964L;
 
+    @Getter
+    @Setter
     private List<String> projects = new ArrayList<>(); // proj:
 
+    @Getter
+    @Setter
     private List<String> processPropertyTitles = new ArrayList<>(); // processeig:
 
+    @Getter
+    @Setter
     private List<String> masterpiecePropertyTitles = new ArrayList<>(); // werk:
 
+    @Getter
+    @Setter
     private List<String> metadataTitles = new ArrayList<>();
 
+    @Getter
+    @Setter
     private List<String> templatePropertyTitles = new ArrayList<>();// vorl:
 
+    @Getter
+    @Setter
     private List<String> stepPropertyTitles = new ArrayList<>(); // stepeig:
 
+    @Getter
+    @Setter
     private List<String> stepTitles = new ArrayList<>(); // step:
 
+    @Getter
+    @Setter
     private List<StepStatus> stepstatus = new ArrayList<>();
 
+    @Getter
     private List<ExtendedSearchRow> rowList = new ArrayList<>();
 
+    @Getter
     private List<SelectItem> fieldnameList = new ArrayList<>();
 
     @Getter
     private List<String> institutionNames = new ArrayList<>();
 
+    @Getter
+    @Setter
     private ExtendedSearchRow currentRow;
 
     public SearchBean() {
@@ -181,70 +202,6 @@ public class SearchBean implements Serializable {
         rowList.add(row5);
     }
 
-    public List<String> getProjects() {
-        return this.projects;
-    }
-
-    public void setProjects(List<String> projects) {
-        this.projects = projects;
-    }
-
-    public List<String> getMasterpiecePropertyTitles() {
-        return this.masterpiecePropertyTitles;
-    }
-
-    public void setMasterpiecePropertyTitles(List<String> masterpiecePropertyTitles) {
-        this.masterpiecePropertyTitles = masterpiecePropertyTitles;
-    }
-
-    public List<String> getMetadataTitles() {
-        return metadataTitles;
-    }
-
-    public void setMetadataTitles(List<String> metadataTitles) {
-        this.metadataTitles = metadataTitles;
-    }
-
-    public List<String> getTemplatePropertyTitles() {
-        return this.templatePropertyTitles;
-    }
-
-    public void setTemplatePropertyTitles(List<String> templatePropertyTitles) {
-        this.templatePropertyTitles = templatePropertyTitles;
-    }
-
-    public List<String> getProcessPropertyTitles() {
-        return this.processPropertyTitles;
-    }
-
-    public void setProcessPropertyTitles(List<String> processPropertyTitles) {
-        this.processPropertyTitles = processPropertyTitles;
-    }
-
-    public List<String> getStepPropertyTitles() {
-        return this.stepPropertyTitles;
-    }
-
-    public void setStepPropertyTitles(List<String> stepPropertyTitles) {
-        this.stepPropertyTitles = stepPropertyTitles;
-    }
-
-    public List<String> getStepTitles() {
-        return this.stepTitles;
-    }
-
-    public void setStepTitles(List<String> stepTitles) {
-        this.stepTitles = stepTitles;
-    }
-
-    public List<StepStatus> getStepstatus() {
-        return this.stepstatus;
-    }
-
-    public void setStepstatus(List<StepStatus> stepstatus) {
-        this.stepstatus = stepstatus;
-    }
-
     public List<SelectItem> getOperands() {
         List<SelectItem> answer = new ArrayList<>();
         SelectItem and = new SelectItem("", Helper.getTranslation("AND"));
@@ -263,14 +220,6 @@ public class SearchBean implements Serializable {
         return answer;
     }
 
-    public List<SelectItem> getFieldnameList() {
-        return fieldnameList;
-    }
-
-    public List<ExtendedSearchRow> getRowList() {
-        return rowList;
-    }
-
     public void addRow() {
         rowList.add(new ExtendedSearchRow());
     }
@@ -279,14 +228,6 @@ public class SearchBean implements Serializable {
         if (rowList.contains(currentRow)) {
             rowList.remove(currentRow);
         }
-    }
-
-    public ExtendedSearchRow getCurrentRow() {
-        return currentRow;
-    }
-
-    public void setCurrentRow(ExtendedSearchRow currentRow) {
-        this.currentRow = currentRow;
     }
 
     public int getSizeOfRowList() {

@@ -24,8 +24,6 @@ import static org.junit.Assert.assertNull;
 
 import java.sql.SQLException;
 
-import javax.faces.convert.ConverterException;
-
 import org.easymock.EasyMock;
 import org.goobi.beans.Docket;
 import org.junit.Test;
@@ -40,7 +38,7 @@ import de.sub.goobi.persistence.managers.DocketManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DocketManager.class)
-@PowerMockIgnore("javax.management.*")
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
 public class DocketConverterTest {
 
     @Test
@@ -57,10 +55,8 @@ public class DocketConverterTest {
         Object fixture = conv.getAsObject(null, null, "1");
         assertNotNull(fixture);
         assertNull(conv.getAsObject(null, null, null));
-        String zero = (String) conv.getAsObject(null, null, "NAN");
-        assertEquals("0", zero);
 
-        assertNotNull(conv.getAsObject(null, null, "2"));
+        assertNull(conv.getAsObject(null, null, "2"));
 
     }
 
@@ -73,17 +69,7 @@ public class DocketConverterTest {
         String value = conv.getAsString(null, null, docket);
         assertEquals("42", value);
 
-        value = conv.getAsString(null, null, "test");
-        assertEquals("test", value);
-
         String nullValue = conv.getAsString(null, null, null);
         assertNull(nullValue);
     }
-
-    @Test(expected = ConverterException.class)
-    public void testConverterException() {
-        DocketConverter conv = new DocketConverter();
-        conv.getAsString(null, null, 1);
-    }
-
 }

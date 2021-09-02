@@ -37,9 +37,9 @@
     </ui:define>
 
     <ui:define name="content">
-    	<link rel="stylesheet" href="template/css/codemirror/codemirror.css"/>
-        <script type="text/javascript" src="template/js/codemirror/codemirror.js"/>
-    	<script src="template/js/codemirror/mode/yaml/yaml.js"/>
+    	<link rel="stylesheet" href="template/css/codemirror/codemirror.css?v=#{HelperForm.buildVersion}"/>
+        <script type="text/javascript" src="template/js/codemirror/codemirror.js?v=#{HelperForm.buildVersion}"/>
+    	<script src="template/js/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}"/>
 
     	<style>
 	        .CodeMirror{
@@ -111,6 +111,7 @@
                                         <!-- +++++++++++++++++  Display as table ++++++++++++++++++++++++ -->
                                         <x:dataTable
                                             id="processTable"
+                                            role="grid"
                                             rowIndexVar="count"
                                             styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
                                             var="item"
@@ -161,7 +162,9 @@
                                                     <button
                                                         class="button-link font-black-block"
                                                         style="width: 100%; text-align: left"
-                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                                        aria-label="#{msgs.defaultSortField} #{msgs.id} #{ProzessverwaltungForm.sortierung=='idDesc'? msgs.defaultSortFieldDesc : ProzessverwaltungForm.sortierung=='idAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                                        aria-sort="#{ProzessverwaltungForm.sortierung=='idDesc'? 'descending' : ProzessverwaltungForm.sortierung=='idAsc'? 'ascending' :'none'}">
                                                         <h:outputText value="#{msgs.id}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='idDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='idAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -250,7 +253,9 @@
                                                     <button
                                                         class="button-link font-black-block"
                                                         style="width: 100%; text-align: left"
-                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                                        aria-label="#{msgs.defaultSortField} #{msgs.batch} #{ProzessverwaltungForm.sortierung=='batchDesc'? msgs.defaultSortFieldDesc : ProzessverwaltungForm.sortierung=='batchAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                                        aria-sort="#{ProzessverwaltungForm.sortierung=='batchDesc'? 'descending' : ProzessverwaltungForm.sortierung=='batchAsc'? 'ascending' :'none'}">
                                                         <h:outputText value="#{msgs.batch}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='batchDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='batchAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -277,7 +282,9 @@
                                                     <button
                                                         class="button-link font-black-block"
                                                         style="width: 100%; text-align: left"
-                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                                        aria-label="#{msgs.defaultSortField} #{msgs.titel} #{ProzessverwaltungForm.sortierung=='titelDesc'? msgs.defaultSortFieldDesc : ProzessverwaltungForm.sortierung=='titelAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                                        aria-sort="#{ProzessverwaltungForm.sortierung=='titleDesc'? 'descending' : ProzessverwaltungForm.sortierung=='titleAsc'? 'ascending' :'none'}">
                                                         <h:outputText
                                                             value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessTitel:msgs.titel}" />
                                                         <span
@@ -443,7 +450,9 @@
                                                     <button
                                                         class="button-link font-black-block"
                                                         style="width: 100%; text-align: left"
-                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                                        aria-label="#{msgs.defaultSortField} #{msgs.vorgangsdatum} #{ProzessverwaltungForm.sortierung=='vorgangsdatumDesc'? msgs.defaultSortFieldDesc : ProzessverwaltungForm.sortierung=='vorgangsdatumAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                                        aria-sort="#{ProzessverwaltungForm.sortierung=='vorgangsdatumDesc'? 'descending' : ProzessverwaltungForm.sortierung=='vorgangsdatumAsc'? 'ascending' :'none'}">
                                                         <h:outputText value="#{msgs.vorgangsdatum}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='vorgangsdatumDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='vorgangsdatumAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -465,7 +474,9 @@
                                                     <button
                                                         class="button-link font-black-block"
                                                         style="width: 100%; text-align: left"
-                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
+                                                        jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
+                                                        aria-label="#{msgs.defaultSortField} #{msgs.status} #{ProzessverwaltungForm.sortierung=='fortschrittDesc'? msgs.defaultSortFieldDesc : ProzessverwaltungForm.sortierung=='fortschrittAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                                        aria-sort="#{ProzessverwaltungForm.sortierung=='fortschrittDesc'? 'descending' : ProzessverwaltungForm.sortierung=='fortschrittAsc'? 'ascending' :'none'}">
                                                         <h:outputText value="#{msgs.status}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='fortschrittDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='fortschrittAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -480,7 +491,8 @@
                                                     rendered="#{item.fortschritt3 gt 0}"
                                                     data-toggle="tooltip"
                                                     styleClass="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-done'):('progress-bar-success'))}"
-                                                    style="width: #{item.fortschritt3}%;line-height:15px;">
+                                                    style="width: #{item.fortschritt3}%;line-height:15px;"
+                                                    pt:aria-label="#{item.fortschritt3}% #{msgs.statusAbgeschlossen}">
                                                     <h:outputText value="&#160;" />
                                                     <f:passThroughAttribute
                                                         name="data-trigger"
@@ -506,7 +518,8 @@
                                                     rendered="#{item.fortschritt2 gt 0}"
                                                     data-toggle="tooltip"
                                                     styleClass="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-open'):('progress-bar-warning'))}"
-                                                    style="width: #{item.fortschritt2}%;line-height:15px;">
+                                                    style="width: #{item.fortschritt2}%;line-height:15px;"
+                                                    pt:aria-label="#{item.fortschritt2}% #{msgs.statusOffen} / #{msgs.statusInBearbeitung}">
                                                     <h:outputText value="&#160;" />
                                                     <f:passThroughAttribute
                                                         name="data-trigger"
@@ -532,7 +545,8 @@
                                                     rendered="#{item.fortschrittError gt 0}"
                                                     data-toggle="tooltip"
                                                     styleClass="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-error'):('progress-bar-danger progressbar-status-error'))} "
-                                                    style="width: #{item.fortschrittError}%;line-height:15px;">
+                                                    style="width: #{item.fortschrittError}%;line-height:15px;"
+                                                    pt:aria-label="#{item.fortschrittError}% #{msgs.statusError}">
                                                     <h:outputText value="&#160;" />
                                                     <f:passThroughAttribute
                                                         name="data-trigger"
@@ -558,7 +572,8 @@
                                                     rendered="#{item.fortschritt1 gt 0}"
                                                     data-toggle="tooltip"
                                                     styleClass="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-locked'):('progress-bar-danger'))} "
-                                                    style="width: #{item.fortschritt1}%;line-height:15px;">
+                                                    style="width: #{item.fortschritt1}%;line-height:15px;"
+                                                    pt:aria-label="#{item.fortschritt1}% #{msgs.statusGesperrt}">
                                                     <h:outputText value="&#160;" />
                                                     <f:passThroughAttribute
                                                         name="data-trigger"
@@ -581,14 +596,16 @@
                                                 </h:panelGroup>
                                             </x:column>
 
-                                            <x:column styleClass="tableColumnOverflow maxWidth120">
+                                            <x:column styleClass="tableColumnOverflow maxWidth120 #{item.getProjekt().projectIsArchived?font-status-deactivated:font-black}">
                                                 <f:facet name="header">
                                                     <!-- Header -->
                                                     <button
                                                         class="button-link font-black-block"
                                                         style="width: 100%; text-align: left"
                                                         jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
-                                                        title="#{msgs.projekt}">
+                                                        title="#{msgs.projekt}"
+                                                        aria-label="#{msgs.defaultSortField} #{msgs.projekt} #{ProzessverwaltungForm.sortierung=='projektDesc'? msgs.defaultSortFieldDesc : ProzessverwaltungForm.sortierung=='projektAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                                        aria-sort="#{ProzessverwaltungForm.sortierung=='projektDesc'? 'descending' : ProzessverwaltungForm.sortierung=='projektAsc'? 'ascending' :'none'}">
                                                         <h:outputText value="#{msgs.projekt}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='projektDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='projektAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -598,7 +615,9 @@
                                                         <f:ajax render=":myform" />
                                                     </button>
                                                 </f:facet>
-                                                <h:outputText value="#{item.projekt.titel}" />
+                                                
+                                                <h:outputText value="#{item.projekt.titel}"
+                                                              styleClass="tableColumnOverflow maxWidth120 #{item.getProjekt().projectIsArchived?'font-status-deactivated':'font-black'}" />
                                             </x:column>
 
                                             <x:column
@@ -610,7 +629,9 @@
                                                         class="button-link font-black-block"
                                                         style="width: 100%; text-align: left"
                                                         jsf:action="#{ProzessverwaltungForm.FilterAlleStart}"
-                                                        title="#{msgs.institution}">
+                                                        title="#{msgs.institution}"
+                                                        aria-label="#{msgs.defaultSortField} #{msgs.institution} #{ProzessverwaltungForm.sortierung=='institutionDesc'? msgs.defaultSortFieldDesc : ProzessverwaltungForm.sortierung=='institutionAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+                                                        aria-sort="#{ProzessverwaltungForm.sortierung=='institutionDesc'? 'descending' : ProzessverwaltungForm.sortierung=='institutionAsc'? 'ascending' :'none'}">
                                                         <h:outputText value="#{msgs.institution}" />
                                                         <span
                                                             class="pull-right table-sort-icon fa #{ProzessverwaltungForm.sortierung=='institutionDesc'?'fa-sort-desc':ProzessverwaltungForm.sortierung=='institutionAsc'?'fa-sort-asc':'fa-sort'}"></span>
@@ -938,24 +959,34 @@
 
 
                                                 <!-- DMS-Export-Schaltknopf -->
-                                                <button
-                                                    jsf:action="#{ProzessverwaltungForm.ExportDMS}"
-                                                    jsf:id="action21"
-                                                    aria-label="#{msgs.importDms}"
-                                                    jsf:rel="tooltip"
-                                                    onclick="preventDoubleSubmit(this);"
-                                                    title="#{msgs.importDms}"
-                                                    class="btn"
-                                                    style="padding-top: 1px; padding-bottom: 1px"
-                                                    jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
-                                                    <i class="fa fa-globe" />
-                                                    <f:passThroughAttribute
-                                                        name="data-toggle"
-                                                        value="tooltip" />
-                                                    <x:updateActionListener
-                                                        property="#{ProzessverwaltungForm.myProzess}"
-                                                        value="#{item}" />
-                                                </button>
+                                                <div jsf:rel="tooltip" 
+													aria-label="#{!item.containsExportStep ? msgs.noExportTask : ''}" 
+													title="#{!item.containsExportStep ? msgs.noExportTask : ''}" 
+													class="btn btn-mini" 
+													style="padding: 0;">
+	                                                <button
+	                                                    jsf:action="#{ProzessverwaltungForm.ExportDMS}"
+	                                                    jsf:id="action21"
+	                                                    aria-label="#{msgs.importDms}"
+	                                                    jsf:rel="tooltip"
+	                                                    onclick="preventDoubleSubmit(this);"
+	                                                    title="#{msgs.importDms}"
+	                                                    class="btn"
+	                                                    style="padding-top: 1px; padding-bottom: 1px"
+	                                                    jsf:disabled="#{!item.containsExportStep}"
+	                                                    jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.displayDMSButton}">
+	                                                    <i class="fa fa-globe" />
+	                                                    <f:passThroughAttribute
+	                                                        name="data-toggle"
+	                                                        value="tooltip" />
+	                                                    <x:updateActionListener
+	                                                        property="#{ProzessverwaltungForm.myProzess}"
+	                                                        value="#{item}" />
+	                                                </button>
+	                                                <f:passThroughAttribute
+			                                            name="data-toggle"
+			                                            value="tooltip" />
+	                                              </div>
 
                                                 <!-- DMS-Export-Schaltknopf greyed -->
                                                 <button
@@ -976,13 +1007,13 @@
 
                                                 <!-- ProzessKopie-Schaltknopf -->
                                                 <button
+                                                    class="btn fa #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'fa-file-o btn-danger':'fa-file-o btn-primary'} button-schaltknopf"
                                                     jsf:action="#{ProzesskopieForm.Prepare}"
                                                     jsf:id="action22"
                                                     jsf:rel="tooltip"
                                                     onclick="preventDoubleSubmit(this);"
-                                                    title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen}"
+                                                    title="#{item.containsUnreachableSteps?(msgs.prozessvorlageMitUnvollstaendigenSchrittdetails):(item.getProjekt().projectIsArchived?msgs.projectIsArchived:msgs.eineKopieDieserProzessvorlageAnlegen)}"
                                                     jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() eq 1}">
-                                                    <i class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} " />
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip" />
@@ -995,15 +1026,15 @@
                                                     rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() gt 1}">
                                                     <div
                                                         class="btn-group"
-                                                        title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen}"
+                                                        title="#{ProzesskopieForm.isUserInProcessProject(item)?(item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen):msgs.nutzerNichtFuerProjektZugeordnet}"
                                                         data-toggle="tooltip">
                                                         <div class="dropdown">
                                                         <button
-                                                            class="btn #{item.containsUnreachableSteps?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
+                                                            class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
                                                             style="margin: 0; padding-left: 4px; padding-right: 4px;"
                                                             data-toggle="dropdown"> <span class="caret"></span>
                                                         </button>
-                                                        <ul class="dropdown-menu  pull-right">
+                                                        <ul class="dropdown-menu pull-right">
                                                             <ui:repeat
                                                                 var="proj"
                                                                 value="#{ProzesskopieForm.availableProjects}">
@@ -1019,9 +1050,10 @@
                                                             </ui:repeat>
                                                         </ul>
                                                         <button
-                                                        	jsf:id="copyProcessTempalte"
-                                                        	class="btn fa #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} "
+                                                            jsf:id="copyProcessTempalte"
+                                                            class="btn fa #{!ProzesskopieForm.isUserInProcessProject(item)?'disabled':''} #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} "
                                                             aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
+                                                            
                                                             jsf:action="#{ProzesskopieForm.Prepare}"
                                                             jsf:rel="tooltip">
                                                             <f:passThroughAttribute
@@ -1037,15 +1069,13 @@
 
                                                 <!-- MassenImport -->
                                                 <button
-                                                	class="btn"
+                                                    class="btn fa #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'fa-files-o btn-danger':'fa-files-o btn-primary'} button-schaltknopf"
                                                     jsf:action="#{MassImportForm.Prepare}"
                                                     jsf:id="action222"
                                                     jsf:rel="tooltip"
                                                     title="#{msgs.MassenImport}"
                                                     onclick="preventDoubleSubmit(this);"
                                                     jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() eq 1}">
-                                                    <i
-                                                        class="fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} " />
                                                     <f:passThroughAttribute
                                                         name="data-toggle"
                                                         value="tooltip" />
@@ -1057,12 +1087,12 @@
                                                 <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() gt 1}">
                                                     <div
                                                         class="btn-group"
-                                                        title="#{msgs.MassenImport}"
+                                                        title="#{item.getProjekt().projectIsArchived?msgs.projectIsArchived:msgs.MassenImport}"
                                                         data-toggle="tooltip">
 
                                                         <div class="dropdown">
                                                             <button
-                                                                class="btn #{item.containsUnreachableSteps?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
+                                                                class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
                                                                 style="margin: 0; padding-left: 4px; padding-right: 4px;"
                                                                 data-toggle="dropdown">
                                                                 <span class="caret"></span>
@@ -1091,7 +1121,7 @@
                                                             </ui:repeat>
                                                         </ul>
                                                             <button
-                                                                class="btn fa #{item.containsUnreachableSteps?'fa-files-o btn-danger':'fa-files-o btn-primary'} "
+                                                                class="btn fa #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'fa-files-o btn-danger':'fa-files-o btn-primary'} "
                                                                 jsf:id="massImportPrepare"
                                                                 jsf:action="#{MassImportForm.Prepare}"
                                                                 jsf:rel="tooltip"
@@ -1106,7 +1136,6 @@
                                                         </div>
                                                     </div>
                                                 </h:panelGroup>
-
 
                                                 <h:panelGroup
                                                     rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and (LoginForm.hasRole('Workflow_Processes_Allow_Download') or LoginForm.hasRole('Workflow_Processes_Allow_Linking'))}">
@@ -1176,12 +1205,12 @@
                                                                     <!-- XML Export-Button --> 
                                                                     <button
                                                                         jsf:id="ubid119"
-                                                                        jsf:action="#{item.downloadXML}"
-                                                                        title="#{msgs.createXML}"
+                                                                        jsf:action="#{item.downloadLogFile}"
+                                                                        title="#{msgs.downloadLogFile}"
                                                                         onclick="preventDoubleSubmit(this);"
                                                                         class="dropdown-item">
                                                                         <i class="fa fa-file-code-o margin-right-10" />
-                                                                        <h:outputText value="#{msgs.createXML}" />
+                                                                        <h:outputText value="#{msgs.downloadLogFile}" />
                                                                     </button>
                                                                 </li>
                                                                 <li>
@@ -1198,15 +1227,15 @@
 
                                                                 </li>
                                                                 <li>
-                                                                    <!-- Mets-Export-Button --> <button
-                                                                        jsf:action="#{ProzessverwaltungForm.ExportMets}"
-                                                                        jsf:id="action19"
-                                                                        title="#{msgs.exportMets}"
+                                                                    <!-- Mets-Download-Button --> <button
+                                                                        jsf:action="#{ProzessverwaltungForm.downloadMets}"
+                                                                        jsf:id="action25"
+                                                                        title="#{msgs.downloadMets}"
                                                                         onclick="preventDoubleSubmit(this);"
                                                                         jsf:rendered="#{item.displayMETSButton}"
                                                                         class="dropdown-item">
                                                                         <i class="fa fa-floppy-o margin-right-10" />
-                                                                        <h:outputText value="#{msgs.exportMets}" />
+                                                                        <h:outputText value="#{msgs.downloadMets}" />
                                                                         <x:updateActionListener
                                                                             property="#{ProzessverwaltungForm.myProzess}"
                                                                             value="#{item}" />

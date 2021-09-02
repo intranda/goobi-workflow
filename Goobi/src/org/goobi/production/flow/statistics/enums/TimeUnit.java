@@ -34,6 +34,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import de.sub.goobi.helper.Helper;
+import lombok.Getter;
 
 /**
  * Enum of all time units for the statistics
@@ -50,11 +51,15 @@ public enum TimeUnit {
     years("5", "years", "year", "year", true, 256.0),
     simpleSum("6", "alltime", "alltime", "alltime", false, -1.0);
 
+	@Getter
     private String id;
     private String title;
+    @Getter
     private String sqlKeyword;
+    @Getter
     private String singularTitle;
     private boolean visible;
+    @Getter
     private Double dayFactor;
 
     /**
@@ -69,32 +74,6 @@ public enum TimeUnit {
         sqlKeyword = inKeyword;
         this.visible = visible;
         this.dayFactor = dayFactor;
-    }
-
-    /**
-     * return unique ID for TimeUnit
-     * 
-     * @return unique ID as String
-     ****************************************************************************/
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * 
-     * @return sqlKeyword for use in querys
-     */
-    public String getSqlKeyword() {
-        return sqlKeyword;
-    }
-
-    /**
-     * return singular name for timeUnit
-     * 
-     * @return singularTitle
-     ****************************************************************************/
-    public String getSingularTitle() {
-        return singularTitle;
     }
 
     /**
@@ -139,14 +118,6 @@ public enum TimeUnit {
             }
         }
         return mylist;
-    }
-
-    /**
-     * 
-     * @returns a day factor for the selected time unit based on an average year of 365.25 days
-     */
-    public Double getDayFactor() {
-        return this.dayFactor;
     }
 
     /**

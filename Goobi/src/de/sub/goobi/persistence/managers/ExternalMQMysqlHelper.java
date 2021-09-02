@@ -33,18 +33,7 @@ public class ExternalMQMysqlHelper {
                 MySQLHelper.closeConnection(connection);
             }
         }
-
     }
-
-    private static ResultSetHandler<ExternalCommandResult> rsToStatusMessageHandler = new ResultSetHandler<ExternalCommandResult>() {
-        @Override
-        public ExternalCommandResult handle(ResultSet rs) throws SQLException {
-            if (rs.next()) {
-                return convertRow(rs);
-            }
-            return null;
-        }
-    };
 
     private static ResultSetHandler<List<ExternalCommandResult>> rsToStatusMessageListHandler = new ResultSetHandler<List<ExternalCommandResult>>() {
         @Override

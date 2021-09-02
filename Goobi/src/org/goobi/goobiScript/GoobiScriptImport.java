@@ -20,9 +20,7 @@ import de.sub.goobi.forms.MassImportForm;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScript {
     @Setter
     private MassImportForm mi;
@@ -89,7 +87,7 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
 
     @Override
     public void execute(GoobiScriptResult gsr) {
-
+        Map<String, String> parameters = gsr.getParameters();
         String pluginName = parameters.get("plugin");
         Process template = ProcessManager.getProcessById(Integer.parseInt(parameters.get("template")));
 

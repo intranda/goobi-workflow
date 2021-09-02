@@ -110,7 +110,7 @@
                                                 	jsf:id="changeOrderId"
                                                     class="font-black-block button-no-style"
                                                     jsf:action="#{vocabularyBean.currentVocabulary.changeOrder}">
-                                                    <h:outputText value="#{msgs.id}" />
+                                                    <h:outputText value="#{msgs.id}"/>
                                                     <span class="pull-right table-sort-icon fa #{vocabularyBean.currentVocabulary.sortfield=='idDesc'?'fa-sort-desc':vocabularyBean.currentVocabulary.sortfield=='idAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                     <f:setPropertyActionListener
                                                         target="#{vocabularyBean.currentVocabulary.sortfield}"

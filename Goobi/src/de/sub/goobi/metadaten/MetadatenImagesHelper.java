@@ -296,7 +296,6 @@ public class MetadatenImagesHelper {
             checkIfImagesValid(inProzess.getTitel(), folderToCheck.toString());
         }
 
-
         DocStructType typePage = this.myPrefs.getDocStrctTypeByName("page");
         DocStructType typeAudio = this.myPrefs.getDocStrctTypeByName("audio");
         DocStructType typeVideo = this.myPrefs.getDocStrctTypeByName("video");
@@ -395,13 +394,13 @@ public class MetadatenImagesHelper {
             for (String newImage : imagesWithoutPageElements) {
                 String mimetype = NIOFileUtils.getMimeTypeFromFile(Paths.get(newImage));
 
-                DocStruct dsPage =null;
+                DocStruct dsPage = null;
 
                 // TODO check mimetypes of all 3d object files
 
                 if (mimetype.startsWith("image")) {
                     dsPage = this.mydocument.createDocStruct(typePage);
-                } else if (mimetype.startsWith("video")|| mimetype.equals("application/mxf")) {
+                } else if (mimetype.startsWith("video") || mimetype.equals("application/mxf")) {
                     dsPage = mydocument.createDocStruct(typeVideo);
                 } else if (mimetype.startsWith("audio")) {
                     dsPage = mydocument.createDocStruct(typeAudio);
@@ -485,8 +484,8 @@ public class MetadatenImagesHelper {
 
                 int currentPhysicalOrder = physicaldocstruct.getAllChildren().size();
                 for (String newImage : imagesWithoutPageElements) {
-                    String mimetype =NIOFileUtils.getMimeTypeFromFile(Paths.get(newImage));
-                    DocStruct dsPage =null;
+                    String mimetype = NIOFileUtils.getMimeTypeFromFile(Paths.get(newImage));
+                    DocStruct dsPage = null;
 
                     // TODO check mimetypes of all 3d object files
 
@@ -593,10 +592,11 @@ public class MetadatenImagesHelper {
 
         if (ConfigurationHelper.getInstance().getContentServerUrl() == null) {
             logger.trace("api");
-            ImageManager im = conf.useS3() ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
+            ImageManager im = null;
             JpegInterpreter pi = null;
             try {
-                im = new ImageManager(Paths.get(inFileName).toUri());
+                im= conf.useS3() ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
+                //                im = new ImageManager(Paths.get(inFileName).toUri());
                 logger.trace("im");
                 ImageInterpreter ii = im.getMyInterpreter();
                 Dimension inputResolution = new Dimension((int) ii.getXResolution(), (int) ii.getYResolution());

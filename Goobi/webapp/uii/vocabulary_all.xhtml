@@ -143,6 +143,18 @@
                                                 target="#{vocabularyBean.currentVocabulary}"
                                                 value="#{item}" />
                                         </button>
+                                        
+                                        <!-- upload records to server -->
+                                        <h:commandLink id="uploadToServerRecords"
+                                            styleClass="btn margin-right-5" rel="tooltip"
+                                            action="#{vocabularyBean.uploadToServerRecords}"
+                                            rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management') and vocabularyBean.useAuthorityServer()}"
+                                            title="#{msgs.vocabularyManager_uploadToServerRecords}">
+                                            <i class="fa fa-database"></i>
+                                            <f:setPropertyActionListener
+                                                target="#{vocabularyBean.currentVocabulary}" value="#{item}" />
+                                        </h:commandLink>
+                                        
                                     </x:column>
                                 </x:dataTable>
 

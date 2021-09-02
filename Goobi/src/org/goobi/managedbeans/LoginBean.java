@@ -72,11 +72,23 @@ public class LoginBean implements Serializable {
      */
     private static final long serialVersionUID = -6036632431688990910L;
 
+    @Getter
+    @Setter
     private String login;
+    @Getter
+    @Setter
     private String passwort;
+    @Getter
+    @Setter
     private User myBenutzer;
+    @Getter
+    @Setter
     private String passwortAendernAlt;
+    @Getter
+    @Setter
     private String passwortAendernNeu1;
+    @Getter
+    @Setter
     private String passwortAendernNeu2;
     @Setter
     private List<String> roles;
@@ -106,7 +118,7 @@ public class LoginBean implements Serializable {
 
         this.myBenutzer = null;
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-        Helper.getSessionBean().sessionBenutzerAktualisieren(mySession, this.myBenutzer);
+        Helper.getSessionBean().updateSessionUserName(mySession, this.myBenutzer);
         if (mySession != null) {
             mySession.invalidate();
         }
@@ -181,7 +193,7 @@ public class LoginBean implements Serializable {
                     HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
 
                     /* in der Session den Login speichern */
-                    Helper.getSessionBean().sessionBenutzerAktualisieren(mySession, b);
+                    Helper.getSessionBean().updateSessionUserName(mySession, b);
                     this.myBenutzer = b;
                     this.myBenutzer.lazyLoad();
                     roles = myBenutzer.getAllUserRoles();
@@ -203,8 +215,8 @@ public class LoginBean implements Serializable {
         try {
             this.myBenutzer = UserManager.getUserById(LoginID);
             /* in der Session den Login speichern */
-            Helper.getSessionBean().sessionBenutzerAktualisieren((HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false),
-                    this.myBenutzer);
+            HttpSession session = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
+            Helper.getSessionBean().updateSessionUserName(session, this.myBenutzer);
             roles = this.myBenutzer.getAllUserRoles();
         } catch (DAOException e) {
             Helper.setFehlerMeldung("could not read database", e.getMessage());
@@ -336,30 +348,6 @@ public class LoginBean implements Serializable {
         }
     };
 
-    public String getLogin() {
-        return this.login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPasswort() {
-        return this.passwort;
-    }
-
-    public void setPasswort(String passwort) {
-        this.passwort = passwort;
-    }
-
-    public User getMyBenutzer() {
-        return this.myBenutzer;
-    }
-
-    public void setMyBenutzer(User myClass) {
-        this.myBenutzer = myClass;
-    }
-
     public int getMaximaleBerechtigung() {
         int rueckgabe = 0;
         if (this.myBenutzer != null) {
@@ -370,30 +358,6 @@ public class LoginBean implements Serializable {
             }
         }
         return rueckgabe;
-    }
-
-    public String getPasswortAendernAlt() {
-        return this.passwortAendernAlt;
-    }
-
-    public void setPasswortAendernAlt(String passwortAendernAlt) {
-        this.passwortAendernAlt = passwortAendernAlt;
-    }
-
-    public String getPasswortAendernNeu1() {
-        return this.passwortAendernNeu1;
-    }
-
-    public void setPasswortAendernNeu1(String passwortAendernNeu1) {
-        this.passwortAendernNeu1 = passwortAendernNeu1;
-    }
-
-    public String getPasswortAendernNeu2() {
-        return this.passwortAendernNeu2;
-    }
-
-    public void setPasswortAendernNeu2(String passwortAendernNeu2) {
-        this.passwortAendernNeu2 = passwortAendernNeu2;
     }
 
     public boolean hasRole(String inRole) {

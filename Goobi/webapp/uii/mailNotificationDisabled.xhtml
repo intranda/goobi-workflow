@@ -15,99 +15,13 @@
         name="myPageTitle"
         value="#{msgs.mail_notification_disable}" />
 
-
-
     <ui:define name="content">
-
-        <div id="navigation">
-            <div class="container-fluid">
-                <ui:insert name="menu">
-                    <c:if test="#{LoginForm.myBenutzer!=null}">
-                        <ui:include src="template/inc_menu.xhtml" />
-                    </c:if>
-                </ui:insert>
-
-                <ui:insert name="menu_mobile">
-                    <c:if test="#{LoginForm.myBenutzer!=null}">
-                        <ui:include src="template/inc_menu_mobile.xhtml" />
-                    </c:if>
-                </ui:insert>
-                <!-- empty blue box if not logged in -->
-                <c:if test="#{LoginForm.myBenutzer==null}">
-                    <h:form id="menu">
-                        <a
-                            href="index.xhtml"
-                            id="brand">&#160;</a>
-
-
-
-
-                        <div class="user pull-right">
-                            <ul class="icon-nav">
-                                <li>
-                                    <button
-                                        jsf:id="showHelp"
-                                        class="dropdown-item"
-                                        jsf:action="#{NavigationForm.Reload}"
-                                        title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
-                                        jsf:rel="tooltip">
-                                        <i class="fa #{not NavigationForm.showHelp?'fa-question':'fa-question-circle'}"></i>
-                                        <!--                                 <f:passThroughAttribute name="data-toggle" value="tooltip" /> -->
-                                        <f:setPropertyActionListener
-                                            target="#{NavigationForm.showHelp}"
-                                            value="#{not NavigationForm.showHelp}" />
-                                    </button>
-                                </li>
-
-                                <li class="dropdown language-select">
-                                    <a
-                                        data-toggle="dropdown"
-                                        class="dropdown-toggle"
-                                        href="#"
-                                        title="#{msgs.spracheAendern}">
-                                        <img
-                                            alt=""
-                                            src="template/img/flags/#{SpracheForm.locale}.gif" />
-                                        <span></span>
-                                    </a>
-                                    <ul class="dropdown-menu pull-right">
-                                        <ui:repeat
-                                            var="availableLanguage"
-                                            value="#{SpracheForm.supportedLocales}"
-                                            id="plugin4">
-                                            <li>
-                                                <h:commandLink
-                                                    id="locale"
-                                                    styleClass="text_head"
-                                                    action="#{SpracheForm.SpracheUmschalten}"
-                                                    title="#{availableLanguage.displayLanguageTranslated}">
-                                                    <f:param
-                                                        name="locale"
-                                                        value="#{availableLanguage.id}" />
-                                                    <f:setPropertyActionListener
-                                                        value="#{null}"
-                                                        target="#{SessionForm.dateFormatter}" />
-                                                    <h:graphicImage value="template/img/flags/#{availableLanguage.id}.gif" />
-                                                    <span>
-                                                        <h:outputText value="#{msgs[availableLanguage.displayLanguageSelf]}" />
-                                                    </span>
-                                                </h:commandLink>
-                                            </li>
-                                        </ui:repeat>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-
-                    </h:form>
-
-                </c:if>
-
-            </div>
-
-
-        </div>
-
+        <style type="text/css">
+            a {
+                text-decoration: none;
+            }
+        </style>
+        <ui:include src="template/inc_menu.xhtml" />
 
         <div
             id="main"
@@ -116,11 +30,11 @@
                 <h:form id="header">
                     <div class="page-header">
                         <h:panelGroup
-                            rendered="#{SessionForm.bitteAusloggen!=''}"
+                            rendered="#{SessionForm.logoutMessage!=''}"
                             styleClass="alert alert-danger block"
                             style="line-height:40px;font-size:24px;">
                             <i class="fa fa-exclamation-triangle margin-right-10" />
-                            <h:outputText value="#{SessionForm.bitteAusloggen}" />
+                            <h:outputText value="#{SessionForm.logoutMessage}" />
                         </h:panelGroup>
                         <div class="pull-left">
                             <h1>
@@ -130,18 +44,15 @@
                             </h1>
                         </div>
 
-
                         <div class="pull-right">
                             <ui:insert name="info" />
                             <ul class="stats">
-
-
 
                                 <li class='background-color-A'>
                                     <i class="fa fa-calendar"></i>
                                     <div class="details">
                                         <span class="big">
-                                            <h:outputText value="#{SessionForm.aktuelleZeit}" />
+                                            <h:outputText value="#{SessionForm.currentTime}" />
                                             <a
                                                 href="#{HelperForm.itmPathAsUrl}"
                                                 target="self"
@@ -186,8 +97,6 @@
                     </ul>
                 </div>
             </h:form>
-
-
 
             <div style="margin: 20px 20px 20px 20px;">
                 <p>#{msgs.mail_notification_successfulDisabled}</p>

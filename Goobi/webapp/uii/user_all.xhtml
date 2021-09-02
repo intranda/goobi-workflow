@@ -91,7 +91,19 @@
 										var="item" value="#{BenutzerverwaltungForm.paginator.list}">
 										<x:column>
 											<f:facet name="header">
-												<h:outputText value="#{msgs.benutzer}" />
+												<button
+													class="button-link font-black-block"
+													style="width: 100%; text-align: left"
+													jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
+													aria-label="#{msgs.defaultSortField} #{msgs.benutzer} #{BenutzerverwaltungForm.sortierung=='nameDesc'? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung=='nameAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+													aria-sort="#{BenutzerverwaltungForm.sortierung=='nameDesc'? 'descending' : BenutzerverwaltungForm.sortierung=='nameAsc'? 'ascending' :'none'}">
+													<h:outputText value="#{msgs.benutzer}" />
+													<span class="pull-right table-sort-icon fa #{BenutzerverwaltungForm.sortierung=='nameDesc'?'fa-sort-desc':BenutzerverwaltungForm.sortierung=='nameAsc'?'fa-sort-asc':'fa-sort'}"></span>
+													<f:setPropertyActionListener
+														target="#{BenutzerverwaltungForm.sortierung}"
+														value="#{BenutzerverwaltungForm.sortierung=='nameAsc'?'nameDesc':'nameAsc'}" />
+													<f:ajax render=":myform" />
+												</button>
 											</f:facet>
 											<h:outputText 
 												value="#{item.nachname}, #{item.vorname}"
@@ -101,7 +113,19 @@
 
 										<x:column headerstyleClass="hidden-xs" styleClass="hidden-xs">
 											<f:facet name="header">
-												<h:outputText value="#{msgs.login}" />
+												<button
+													class="button-link font-black-block"
+													style="width: 100%; text-align: left"
+													jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
+													aria-label="#{msgs.defaultSortField} #{msgs.login} #{BenutzerverwaltungForm.sortierung=='loginDesc'? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung=='loginAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+													aria-sort="#{BenutzerverwaltungForm.sortierung=='loginDesc'? 'descending' : BenutzerverwaltungForm.sortierung=='loginAsc'? 'ascending' :'none'}">
+													<h:outputText value="#{msgs.login}" />
+													<span class="pull-right table-sort-icon fa #{BenutzerverwaltungForm.sortierung=='loginDesc'?'fa-sort-desc':BenutzerverwaltungForm.sortierung=='loginAsc'?'fa-sort-asc':'fa-sort'}"></span>
+													<f:setPropertyActionListener
+														target="#{BenutzerverwaltungForm.sortierung}"
+														value="#{BenutzerverwaltungForm.sortierung=='loginAsc'?'loginDesc':'loginAsc'}" />
+													<f:ajax render=":myform" />
+												</button>
 											</f:facet>
 											<h:outputText value="#{item.login}"
 												styleClass="#{not item.istAktiv?'font-light':''}" />
@@ -109,7 +133,19 @@
 
 										<x:column headerstyleClass="hidden-xs" styleClass="hidden-xs">
 											<f:facet name="header">
-												<h:outputText value="#{msgs.standort}" />
+												<button
+													class="button-link font-black-block"
+													style="width: 100%; text-align: left"
+													jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
+													aria-label="#{msgs.defaultSortField} #{msgs.standort} #{BenutzerverwaltungForm.sortierung=='locationDesc'? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung=='locationAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+													aria-sort="#{BenutzerverwaltungForm.sortierung=='locationDesc'? 'descending' : BenutzerverwaltungForm.sortierung=='locationAsc'? 'ascending' :'none'}">
+													<h:outputText value="#{msgs.standort}" />
+													<span class="pull-right table-sort-icon fa #{BenutzerverwaltungForm.sortierung=='locationDesc'?'fa-sort-desc':BenutzerverwaltungForm.sortierung=='locationAsc'?'fa-sort-asc':'fa-sort'}"></span>
+													<f:setPropertyActionListener
+														target="#{BenutzerverwaltungForm.sortierung}"
+														value="#{BenutzerverwaltungForm.sortierung=='locationAsc'?'locationDesc':'locationAsc'}" />
+													<f:ajax render=":myform" />
+												</button>
 											</f:facet>
 											<h:outputText value="#{item.standort}"
 												styleClass="#{not item.istAktiv?'font-light':''}" />
@@ -117,7 +153,19 @@
 
 										<x:column>
 											<f:facet name="header">
-												<h:outputText value="#{msgs.benutzergruppen}" />
+												<button
+													class="button-link font-black-block"
+													style="width: 100%; text-align: left"
+													jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
+													aria-label="#{msgs.defaultSortField} #{msgs.benutzergruppen} #{BenutzerverwaltungForm.sortierung=='groupDesc'? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung=='groupAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+													aria-sort="#{BenutzerverwaltungForm.sortierung=='groupDesc'? 'descending' : BenutzerverwaltungForm.sortierung=='groupAsc'? 'ascending' :'none'}">
+													<h:outputText value="#{msgs.benutzergruppen}" />
+													<span class="pull-right table-sort-icon fa #{BenutzerverwaltungForm.sortierung=='groupDesc'?'fa-sort-desc':BenutzerverwaltungForm.sortierung=='groupAsc'?'fa-sort-asc':'fa-sort'}"></span>
+													<f:setPropertyActionListener
+														target="#{BenutzerverwaltungForm.sortierung}"
+														value="#{BenutzerverwaltungForm.sortierung=='groupAsc'?'groupDesc':'groupAsc'}" />
+													<f:ajax render=":myform" />
+												</button>
 											</f:facet>
 											<x:dataList var="intern"
 												styleClass="#{not item.istAktiv?'font-light':''}"
@@ -132,7 +180,19 @@
 
 										<x:column>
 											<f:facet name="header">
-												<h:outputText value="#{msgs.projekte}" />
+												<button
+													class="button-link font-black-block"
+													style="width: 100%; text-align: left"
+													jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
+													aria-label="#{msgs.defaultSortField} #{msgs.projekte} #{BenutzerverwaltungForm.sortierung=='projectsDesc'? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung=='projectsAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+													aria-sort="#{BenutzerverwaltungForm.sortierung=='projectsDesc'? 'descending' : BenutzerverwaltungForm.sortierung=='projectsAsc'? 'ascending' :'none'}">
+													<h:outputText value="#{msgs.projekte}" />
+													<span class="pull-right table-sort-icon fa #{BenutzerverwaltungForm.sortierung=='projectsDesc'?'fa-sort-desc':BenutzerverwaltungForm.sortierung=='projectsAsc'?'fa-sort-asc':'fa-sort'}"></span>
+													<f:setPropertyActionListener
+														target="#{BenutzerverwaltungForm.sortierung}"
+														value="#{BenutzerverwaltungForm.sortierung=='projectsAsc'?'projectsDesc':'projectsAsc'}" />
+													<f:ajax render=":myform" />
+												</button>
 											</f:facet>
 											<x:dataList var="intern"
 												styleClass="#{not item.istAktiv?'font-light':''}"
@@ -145,9 +205,21 @@
 											</x:dataList>
 										</x:column>
 
-										<x:column>
+										<x:column rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
 											<f:facet name="header">
-												<h:outputText value="#{msgs.institution}" />
+												<button
+													class="button-link font-black-block"
+													style="width: 100%; text-align: left"
+													jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
+													aria-label="#{msgs.defaultSortField} #{msgs.institution} #{BenutzerverwaltungForm.sortierung=='institutionDesc'? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung=='institutionAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }"
+													aria-sort="#{BenutzerverwaltungForm.sortierung=='institutionDesc'? 'descending' : BenutzerverwaltungForm.sortierung=='institutionAsc'? 'ascending' :'none'}">
+													<h:outputText value="#{msgs.institution}" />
+													<span class="pull-right table-sort-icon fa #{BenutzerverwaltungForm.sortierung=='institutionDesc'?'fa-sort-desc':BenutzerverwaltungForm.sortierung=='institutionAsc'?'fa-sort-asc':'fa-sort'}"></span>
+													<f:setPropertyActionListener
+														target="#{BenutzerverwaltungForm.sortierung}"
+														value="#{BenutzerverwaltungForm.sortierung=='institutionAsc'?'institutionDesc':'institutionAsc'}" />
+													<f:ajax render=":myform" />
+												</button>
 											</f:facet>
 											<h:outputText value="#{item.institution.shortName}"
 												styleClass="#{not item.istAktiv?'font-light':''}" />
@@ -159,51 +231,52 @@
 											<f:facet name="header">
 												<h:outputText value="#{msgs.auswahl}" />
 											</f:facet>
-											<!-- Bearbeiten-Schaltknopf -->
-											<button jsf:id="edit" class="btn margin-right-5"
-												jsf:rel="tooltip" jsf:action="user_edit"
-												title="#{msgs.benutzerBearbeiten}">
-												<i class="fa fa-pencil"></i>
-												<f:passThroughAttribute name="data-toggle" value="tooltip" />
-												<f:passThroughAttribute name="aria-label"
-													value="#{msgs.benutzerBearbeiten}" />
-												<f:setPropertyActionListener
-													target="#{BenutzerverwaltungForm.myClass}" value="#{item}" />
-												<f:setPropertyActionListener
-													target="#{BenutzerverwaltungForm.displayMode}" value="" />
-											</button>
-
-											<!-- Benutzerprofil laden-Schaltknopf -->
-											<button jsf:id="switch"
-												jsf:rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch')}"
-												class="btn margin-right-5 hidden-xs"
-												jsf:action="#{LoginForm.EinloggenAls}"
-												title="#{msgs.benutzerprofilLaden}">
-												<i class="fa fa-user-secret"></i>
-												<f:passThroughAttribute name="aria-label"
-													value="#{msgs.benutzerprofilLaden}" />
-												<f:passThroughAttribute name="data-toggle" value="tooltip" />
-												<!-- <f:passThroughAttribute name="data-placement" value="top" /> -->
-												<f:param name="ID" value="#{item.id}" />
-											</button>
-
-											<!-- Create new random password for user -->
-											<button jsf:id="createNewRandomPassword"
-												class="btn margin-right-5" jsf:rel="tooltip"
-												title="#{msgs.createNewRandomPassword}"
-												jsf:rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords') and (item.ldapGruppe.authenticationType != 'ldap' or not item.ldapGruppe.readonly)}"
-												onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
-												jsf:action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}">
-												<i class="fa fa-key"></i>
-												<f:passThroughAttribute name="data-toggle" value="tooltip" />
-												<f:setPropertyActionListener
-													target="#{BenutzerverwaltungForm.myClass}" value="#{item}" />
-                                                <f:passThroughAttribute name="aria-label"
-                                                    value="#{msgs.createNewRandomPassword}" />
-												<f:param name="ID" value="#{item.id}" />
-												<f:ajax render="globalMessage" />
-											</button>
-											
+											<div class="no-linebreak">
+												<!-- Bearbeiten-Schaltknopf -->
+												<button jsf:id="edit" class="btn margin-right-5"
+													jsf:rel="tooltip" jsf:action="user_edit"
+													title="#{msgs.benutzerBearbeiten}">
+													<i class="fa fa-pencil"></i>
+													<f:passThroughAttribute name="data-toggle" value="tooltip" />
+													<f:passThroughAttribute name="aria-label"
+														value="#{msgs.benutzerBearbeiten}" />
+													<f:setPropertyActionListener
+														target="#{BenutzerverwaltungForm.myClass}" value="#{item}" />
+													<f:setPropertyActionListener
+														target="#{BenutzerverwaltungForm.displayMode}" value="" />
+												</button>
+	
+												<!-- Benutzerprofil laden-Schaltknopf -->
+												<button jsf:id="switch"
+													jsf:rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch')}"
+													class="btn margin-right-5 hidden-xs"
+													jsf:action="#{LoginForm.EinloggenAls}"
+													title="#{msgs.benutzerprofilLaden}">
+													<i class="fa fa-user-secret"></i>
+													<f:passThroughAttribute name="aria-label"
+														value="#{msgs.benutzerprofilLaden}" />
+													<f:passThroughAttribute name="data-toggle" value="tooltip" />
+													<!-- <f:passThroughAttribute name="data-placement" value="top" /> -->
+													<f:param name="ID" value="#{item.id}" />
+												</button>
+	
+												<!-- Create new random password for user -->
+												<button jsf:id="createNewRandomPassword"
+													class="btn margin-right-5" jsf:rel="tooltip"
+													title="#{msgs.createNewRandomPassword}"
+													jsf:rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords') and (item.ldapGruppe.authenticationType != 'ldap' or not item.ldapGruppe.readonly)}"
+													jsf:onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
+													jsf:action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}">
+													<i class="fa fa-key"></i>
+													<f:passThroughAttribute name="data-toggle" value="tooltip" />
+													<f:setPropertyActionListener
+														target="#{BenutzerverwaltungForm.myClass}" value="#{item}" />
+	                                                <f:passThroughAttribute name="aria-label"
+	                                                    value="#{msgs.createNewRandomPassword}" />
+													<f:param name="ID" value="#{item.id}" />
+													<f:ajax render="globalMessage" />
+												</button>
+											</div>
 											<!-- LdapKonfiguration schreiben-Schaltknopf
 											<h:commandLink 
 												styleClass="btn" 

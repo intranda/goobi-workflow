@@ -184,6 +184,12 @@ label {
 	background: none!important;
   	border: none;
   	padding: 0!important;
+  	-webkit-touch-callout: text;
+	-webkit-user-select: text;
+	-khtml-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
+	user-select: text;
 }
 
 .button-link-no-hover {
@@ -299,6 +305,11 @@ button.dropdown-item:hover {
 	background: #fff;
 }
 
+.no-linebreak {
+	display: inline; 
+	white-space: nowrap;
+}
+
 /* ---------- NAVIGATION BUTTONS ----------- */
 
 #navigation .btn {
@@ -362,6 +373,10 @@ button.dropdown-item:hover {
     text-decoration: none;
 }
 
+#navigation .btn .caret {
+    margin-left: 3px;
+}
+
 /* ------------- Background colors --------------- */
 .background-color-A {
     background: none repeat scroll 0 0 #aaa;
@@ -423,11 +438,6 @@ button.dropdown-item:hover {
     #navigation .toggle-mobile {
         display: block;
     }
-}
-
-/* CSS-Bugfix for rendered whitespace from h:panelGroup */
-#navigation .mobile-nav.open>li.has-submenu {
-    margin-bottom: -17px;
 }
 
 /* ------------- sub forms --------------- */
@@ -2220,6 +2230,15 @@ ul>li.yellow, .label-yellow {
 	min-width:140px;
 }
 
+.log_file {
+	background: #368ee0;
+    border: none;
+    color: white;
+    margin-left: 10px;
+}
+.log_file_delete {
+	border: none;
+}
 
 @media only print {
     #left {

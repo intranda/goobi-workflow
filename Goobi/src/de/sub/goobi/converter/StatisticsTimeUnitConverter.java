@@ -3,7 +3,7 @@ package de.sub.goobi.converter;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -40,13 +40,13 @@ import org.goobi.production.flow.statistics.enums.TimeUnit;
  * @version 21.05.2009
  **************************************************************************************/
 @FacesConverter("StatisticsTimeUnitConverter")
-public class StatisticsTimeUnitConverter implements Converter {
+public class StatisticsTimeUnitConverter implements Converter<TimeUnit> {
 
     /**
      * convert String to TimeUnit
      **************************************************************************************/
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
+    public TimeUnit getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
         if (value == null) {
             return TimeUnit.days;
         } else {
@@ -58,11 +58,11 @@ public class StatisticsTimeUnitConverter implements Converter {
      * convert TimeUnit to String
      **************************************************************************************/
     @Override
-    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
+    public String getAsString(FacesContext context, UIComponent component, TimeUnit value) throws ConverterException {
         if (value == null || !(value instanceof TimeUnit)) {
             return TimeUnit.days.getId();
         } else {
-            return ((TimeUnit) value).getId();
+            return value.getId();
         }
     }
 

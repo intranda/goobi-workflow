@@ -5,7 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.solr.common.util.Pair;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.goobi.beans.Process;
 import org.junit.Before;
 import org.junit.Rule;
@@ -60,18 +60,18 @@ public class TreeNodeStruct3Test {
     public void testFirstImage() {
         TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
         assertNotNull(tree);
-        tree.setFirstImage(new Pair("aaa", "bbb"));
-        assertEquals("aaa", tree.getFirstImage().first());
-        assertEquals("bbb", tree.getFirstImage().first());
+        tree.setFirstImage(new MutablePair<>("aaa", "bbb"));
+        assertEquals("aaa", tree.getFirstImage().getLeft());
+        assertEquals("bbb", tree.getFirstImage().getLeft());
     }
 
     @Test
     public void testLastImage() {
         TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
         assertNotNull(tree);
-        tree.setLastImage(new Pair("aaa", "bbb"));
-        assertEquals("aaa", tree.getLastImage().first());
-        assertEquals("bbb", tree.getLastImage().first());
+        tree.setLastImage(new MutablePair<>("aaa", "bbb"));
+        assertEquals("aaa", tree.getLastImage().getLeft());
+        assertEquals("bbb", tree.getLastImage().getLeft());
     }
 
     @Test

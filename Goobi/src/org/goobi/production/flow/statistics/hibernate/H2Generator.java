@@ -33,6 +33,8 @@ import javax.enterprise.inject.Alternative;
 
 import org.goobi.production.flow.statistics.enums.TimeUnit;
 
+import lombok.Setter;
+
 /**
  * 
  * This is the superclass for SQL generation and it provides some common data collection in the constructor and abstract methods which needs to be
@@ -52,6 +54,7 @@ public abstract class H2Generator implements IGenerator {
     TimeUnit myTimeUnit = null;
     String myIdsCondition = null;
     String myIdFieldName = "prozesse.prozesseid";
+    @Setter
     List<Integer> ids;
 
     public H2Generator() {
@@ -84,10 +87,6 @@ public abstract class H2Generator implements IGenerator {
 
     public void setTimeUnit(TimeUnit myTimeUnit) {
         this.myTimeUnit = myTimeUnit;
-    }
-
-    public void setIds(List<Integer> ids) {
-        this.ids = ids;
     }
 
     public void setIdFieldName(String name) {

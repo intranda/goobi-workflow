@@ -24,6 +24,7 @@
             <div
                 class="modal-dialog"
                 role="document">
+				<c:if test="#{Metadaten.currentMetadataToPerformSearch.metadataDisplaytype == 'easydb'}">
                 <h:panelGroup
                     id="easydbModalContent"
                     layout="block"
@@ -59,10 +60,6 @@
                                     styleClass="form-control"
                                     onfocus="goobiWorkflowJS.fireOnEnter(this.id, 'easydbSearchAction')"
                                     value="#{Metadaten.currentMetadataToPerformSearch.easydbSearch.searchValue}" />
-
-
-
-
 
                                 <h:message
                                     for="easydbSearch"
@@ -137,7 +134,7 @@
                                             <div class="col-2 text-right">
                                                 <button
                                                 	jsf:id="easyDbbutton3"
-                                                    class="btn btn--icon-green btn__bottom"
+                                                    class="btn btn--icon-green btn__bottom greenCheckButton"
                                                     jsf:action="#{Metadaten.currentMetadataToPerformSearch.getData}">
                                                     <i
                                                         class="fa fa-check"
@@ -196,6 +193,7 @@
                         </h:panelGroup>
                     </div>
                 </h:panelGroup>
+                </c:if>
             </div>
         </div>
     </composite:implementation>

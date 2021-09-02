@@ -1122,6 +1122,28 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("-" + FilterString.ID)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterIds(tok, true));
+            }  else if (tok.toLowerCase().startsWith("-" + FilterString.BATCH) || tok.toLowerCase().startsWith("-" + FilterString.GRUPPE)) {
+                try {
+                    String substring = tok.substring(tok.indexOf(":") + 1);
+                    if (substring.contains(" ")) {
+                        substring = substring.substring(0, substring.indexOf(" "));
+                    }
+                    if (StringUtils.isNumeric(substring)) {
+
+                        int value = Integer.valueOf(substring);
+                        filter = checkStringBuilder(filter, true);
+                        filter.append(" (prozesse.batchID != " + value + " OR batchID is null)" );
+                    } else {
+                        filter = checkStringBuilder(filter, true);
+                        filter.append(" batches.batchName not like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(substring)
+                        + rightTruncationCharacter + "' OR batches.batchName IS NULL OR prozesse.batchID IS NULL ");
+                    }
+
+                } catch (NumberFormatException e) {
+                    logger.warn("input " + tok.substring(tok.indexOf(":") + 1) + " is not a number.");
+                }
+
+
             } else if (tok.toLowerCase().startsWith(FilterString.PROCESS) || tok.toLowerCase().startsWith(FilterString.PROZESS)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel not like '" + leftTruncationCharacter
@@ -1206,16 +1228,35 @@ public class FilterHelper {
                 filter = checkStringBuilder(filter, false);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
                 + rightTruncationCharacter + "'");
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.BATCH) || tok.toLowerCase().startsWith("|" + FilterString.GRUPPE)) {
+                try {
+                    String substring = tok.substring(tok.indexOf(":") + 1);
+                    if (substring.contains(" ")) {
+                        substring = substring.substring(0, substring.indexOf(" "));
+                    }
+                    if (StringUtils.isNumeric(substring)) {
+                        int value = Integer.valueOf(substring);
+                        filter = checkStringBuilder(filter, false);
+                        filter.append(" prozesse.batchID = " + value);
+                    } else {
+                        filter = checkStringBuilder(filter, false);
+                        filter.append(" batches.batchName like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(substring)
+                        + rightTruncationCharacter + "'");
+                    }
+
+                } catch (NumberFormatException e) {
+                    logger.warn("input " + tok.substring(tok.indexOf(":") + 1) + " is not a number.");
+                }
             } else if (tok.toLowerCase().startsWith("|")) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(1))
                 + rightTruncationCharacter + "'");
-            } else {
+            }
+            else {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
                 + rightTruncationCharacter + "'");
             }
-
             if (newFilterGroup && !currentDateFilter.isStepFilterPresent() && !currentDateFilter.getDateFilter().isEmpty()) {
                 newFilterGroup = false;
                 filter = checkStringBuilder(filter, true);

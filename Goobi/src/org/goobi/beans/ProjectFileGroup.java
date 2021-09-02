@@ -30,6 +30,8 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 public class ProjectFileGroup implements Serializable {
     private static final long serialVersionUID = -5506252462891480484L;
     private Integer id;
@@ -40,81 +42,13 @@ public class ProjectFileGroup implements Serializable {
     private String folder;
 
     // use original mimetype, suffix in export
-    @Getter
-    @Setter
     private boolean useOriginalFiles = false;
 
     // list of mimetypes to ignore during export. Can be images/jpeg or images/*
-    @Getter
-    @Setter
     private String ignoreMimetypes;
 
 
     private Project project;
-
-    /*#####################################################
-     #####################################################
-     ##
-     ##				Getter und Setter
-     ##
-     #####################################################
-     ####################################################*/
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Project getProject() {
-        return this.project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
-    public String getPath() {
-        return this.path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getMimetype() {
-        return this.mimetype;
-    }
-
-    public void setMimetype(String mimetype) {
-        this.mimetype = mimetype;
-    }
-
-    public String getSuffix() {
-        return this.suffix;
-    }
-
-    public void setSuffix(String suffix) {
-        this.suffix = suffix;
-    }
-
-    public String getFolder() {
-        return this.folder;
-    }
-
-    public void setFolder(String folder) {
-        this.folder = folder;
-    }
 
     @Override
     public ProjectFileGroup clone() {

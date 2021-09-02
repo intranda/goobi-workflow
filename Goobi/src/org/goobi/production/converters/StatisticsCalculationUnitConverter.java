@@ -3,9 +3,9 @@ package org.goobi.production.converters;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -31,13 +31,14 @@ import org.goobi.production.flow.statistics.enums.CalculationUnit;
  * @author Steffen Hankiewicz
  * @version 21.05.2009
  **************************************************************************************/
-public class StatisticsCalculationUnitConverter implements Converter {
+public class StatisticsCalculationUnitConverter implements Converter<CalculationUnit> {
     public static final String CONVERTER_ID = "StatisticsCalculationUnitConverter";
 
     /**
      * convert String to CalculationUnit
      **************************************************************************************/
-    public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
+    @Override
+    public CalculationUnit getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
         if (value == null) {
             return CalculationUnit.volumes;
         } else {
@@ -48,11 +49,12 @@ public class StatisticsCalculationUnitConverter implements Converter {
     /**
      * convert ResultOutput to String
      **************************************************************************************/
-    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, CalculationUnit value) throws ConverterException {
         if (value == null || !(value instanceof CalculationUnit)) {
             return CalculationUnit.volumes.getId();
         } else {
-            return ((CalculationUnit) value).getId();
+            return value.getId();
         }
     }
 

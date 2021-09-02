@@ -1,4 +1,4 @@
-FROM maven:3.6.0-jdk-8 AS BUILD
+FROM maven:3.6-jdk-11 AS BUILD
 
 COPY . /goobi/
 WORKDIR /goobi
@@ -29,7 +29,7 @@ COPY Goobi/install/docker/server.xml /usr/local/tomcat/conf/server.xml
 COPY Goobi/install/docker/run.sh /run.sh
 COPY Goobi/install/docker/log4j.xml /opt/digiverso/log4j.xml
 
-RUN sed -i 's/TOMCATUSER=tomcat8/TOMCATUSER=root/' /opt/digiverso/goobi/scripts/iii.sh
+RUN sed -i 's/TOMCATUSER=tomcat/TOMCATUSER=root/' /opt/digiverso/goobi/scripts/iii.sh
 
 RUN apt-get update && \
     apt-get -y install rsync \
@@ -55,4 +55,4 @@ COPY --from=BUILD  /goobi/Goobi/module-war/target/goobi.war /
 RUN unzip /goobi.war -d /usr/local/tomcat/webapps/goobi && rm /goobi.war
 
 EXPOSE 8080
-CMD /run.sh
+CMD ["/run.sh"]

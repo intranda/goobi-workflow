@@ -34,6 +34,8 @@ import org.goobi.beans.Step;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.enums.StepReturnValue;
 
+import lombok.Getter;
+
 @PluginImplementation
 public abstract class AbstractStepPlugin implements IStepPlugin {
 
@@ -41,6 +43,7 @@ public abstract class AbstractStepPlugin implements IStepPlugin {
 
     protected String name = "Abstract Step Plugin";
     protected String version = "1.0";
+    @Getter
     protected String description = "Abstract description for abstract step";
 
     protected Step myStep;
@@ -55,10 +58,6 @@ public abstract class AbstractStepPlugin implements IStepPlugin {
     @Override
     public String getTitle() {
         return this.name + " v" + this.version;
-    }
-
-    public String getDescription() {
-        return this.description;
     }
 
     @Override

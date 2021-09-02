@@ -46,12 +46,12 @@ public class GeneralImageResource extends ImageResource {
             String directory, String filename) {
         super(context, request, response, directory, filename);
     }
-    
+
     public GeneralImageResource(@Context ContainerRequestContext context,
             @Context HttpServletRequest request,
             @Context HttpServletResponse response,
             @PathParam("path") String path)
-            throws ContentNotFoundException, IllegalRequestException {
+                    throws ContentNotFoundException, IllegalRequestException {
         super(context, request, response, "-", path);
         createResourceURI(request, path);
     }
@@ -89,7 +89,7 @@ public class GeneralImageResource extends ImageResource {
     public static String getGoobiURIPrefix() {
         return GeneralImageResource.class.getAnnotation(Path.class).value();
     }
-    
+
     @GET
     @Path("/info.json")
     @Operation(summary="Returns information about an image", description="Returns information about the image in JSON or JSONLD format")
@@ -114,7 +114,7 @@ public class GeneralImageResource extends ImageResource {
                 info.setTiles(tiles);
             }
         } else {
-            info.setTiles(Collections.EMPTY_LIST);
+            info.setTiles(Collections.emptyList());
         }
         return info;
     }

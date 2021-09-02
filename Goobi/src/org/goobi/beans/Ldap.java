@@ -32,10 +32,10 @@ import org.goobi.security.authentication.IAuthenticationProvider;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 public class Ldap implements Serializable, DatabaseObject, IAuthenticationProvider {
     private static final long serialVersionUID = 931296142933906486L;
-    @Getter
-    @Setter
     private Integer ldapgruppenID;
     private String titel;
     private String homeDirectory = "/home/{login}";
@@ -58,42 +58,22 @@ public class Ldap implements Serializable, DatabaseObject, IAuthenticationProvid
     private String sambaLogonHours = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
     private String sambaKickoffTime = "0";
 
-    @Getter @Setter
     private String adminLogin = "CHANGE_ME_cn=administrator,ou=users,o=example,c=net";
-    @Getter @Setter
     private String adminPassword ="CHANGE_ME_password";
-    @Getter @Setter
     private String ldapUrl ="CHANGE_ME_http://localhost:389/";
-    @Getter @Setter
     private String attributeToTest;
-    @Getter @Setter
     private String valueOfAttribute;
-    @Getter @Setter
     private String nextFreeUnixId ="CHANGE_ME_cn=NextFreeUnixId,o=example,c=net";
-    @Getter @Setter
-    private String pathToKeystore;
-    @Getter @Setter
-    private String keystorePassword;
-    @Getter @Setter
     private String pathToRootCertificate;
-    @Getter @Setter
     private String pathToPdcCertificate;
-    @Getter @Setter
     private String encryptionType = "SHA";
-    @Getter @Setter
     private boolean useSsl;
 
-    @Getter @Setter
     private String authenticationType;
-    @Getter @Setter
     private boolean readonly;
-    @Getter @Setter
     private boolean readDirectoryAnonymous;
-    @Getter @Setter
     private boolean useLocalDirectoryConfiguration;
-    @Getter @Setter
     private String ldapHomeDirectoryAttributeName = "homeDirectory";
-    @Getter @Setter
     private boolean useTLS;
 
     @Override
@@ -109,158 +89,6 @@ public class Ldap implements Serializable, DatabaseObject, IAuthenticationProvid
     @Override
     public void setId(Integer id) {
         this.ldapgruppenID = id;
-    }
-
-    public String getGidNumber() {
-        return this.gidNumber;
-    }
-
-    public void setGidNumber(String gidNumber) {
-        this.gidNumber = gidNumber;
-    }
-
-    public String getHomeDirectory() {
-        return this.homeDirectory;
-    }
-
-    public void setHomeDirectory(String homeDirectory) {
-        this.homeDirectory = homeDirectory;
-    }
-
-    public String getTitel() {
-        return this.titel;
-    }
-
-    public void setTitel(String titel) {
-        this.titel = titel;
-    }
-
-    public String getUserDN() {
-        return this.userDN;
-    }
-
-    public void setUserDN(String userDN) {
-        this.userDN = userDN;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getDisplayName() {
-        return this.displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getGecos() {
-        return this.gecos;
-    }
-
-    public void setGecos(String gecos) {
-        this.gecos = gecos;
-    }
-
-    public String getLoginShell() {
-        return this.loginShell;
-    }
-
-    public void setLoginShell(String loginShell) {
-        this.loginShell = loginShell;
-    }
-
-    public String getObjectClasses() {
-        return this.objectClasses;
-    }
-
-    public void setObjectClasses(String objectClasses) {
-        this.objectClasses = objectClasses;
-    }
-
-    public String getSambaAcctFlags() {
-        return this.sambaAcctFlags;
-    }
-
-    public void setSambaAcctFlags(String sambaAcctFlags) {
-        this.sambaAcctFlags = sambaAcctFlags;
-    }
-
-    public String getSambaLogonScript() {
-        return this.sambaLogonScript;
-    }
-
-    public void setSambaLogonScript(String sambaLogonScript) {
-        this.sambaLogonScript = sambaLogonScript;
-    }
-
-    public String getSambaPrimaryGroupSID() {
-        return this.sambaPrimaryGroupSID;
-    }
-
-    public void setSambaPrimaryGroupSID(String sambaPrimaryGroupSID) {
-        this.sambaPrimaryGroupSID = sambaPrimaryGroupSID;
-    }
-
-    public String getSambaSID() {
-        return this.sambaSID;
-    }
-
-    public void setSambaSID(String sambaSID) {
-        this.sambaSID = sambaSID;
-    }
-
-    public String getSn() {
-        return this.sn;
-    }
-
-    public void setSn(String sn) {
-        this.sn = sn;
-    }
-
-    public String getSambaKickoffTime() {
-        return this.sambaKickoffTime;
-    }
-
-    public void setSambaKickoffTime(String sambaKickoffTime) {
-        this.sambaKickoffTime = sambaKickoffTime;
-    }
-
-    public String getSambaLogonHours() {
-        return this.sambaLogonHours;
-    }
-
-    public void setSambaLogonHours(String sambaLogonHours) {
-        this.sambaLogonHours = sambaLogonHours;
-    }
-
-    public String getSambaPasswordHistory() {
-        return this.sambaPasswordHistory;
-    }
-
-    public void setSambaPasswordHistory(String sambaPasswordHistory) {
-        this.sambaPasswordHistory = sambaPasswordHistory;
-    }
-
-    public String getSambaPwdMustChange() {
-        return this.sambaPwdMustChange;
-    }
-
-    public void setSambaPwdMustChange(String sambaPwdMustChange) {
-        this.sambaPwdMustChange = sambaPwdMustChange;
-    }
-
-    public String getUid() {
-        return this.uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
     }
 
     @Override

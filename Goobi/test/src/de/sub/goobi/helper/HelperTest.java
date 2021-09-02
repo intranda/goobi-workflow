@@ -11,8 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 
-import javax.inject.Inject;
-
 import org.jdom2.Element;
 import org.junit.Before;
 import org.junit.Rule;
@@ -28,9 +26,6 @@ public class HelperTest {
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     private Path currentFolder;
-
-    @Inject
-    private Helper helper;
 
     @Before
     public void setUp() throws IOException, URISyntaxException {

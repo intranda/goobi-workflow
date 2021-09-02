@@ -3,7 +3,7 @@ package org.goobi.beans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -27,17 +27,25 @@ package org.goobi.beans;
  */
 import java.io.Serializable;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
-import org.goobi.beans.DatabaseObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import de.sub.goobi.config.ConfigurationHelper;
+import lombok.Getter;
+import lombok.Setter;
 import ugh.dl.Prefs;
 import ugh.exceptions.PreferencesException;
-import de.sub.goobi.config.ConfigurationHelper;
 
 public class Ruleset implements Serializable, DatabaseObject {
     private static final long serialVersionUID = -6663371963274685060L;
+    @Getter
+    @Setter
     private Integer id;
+    @Getter
+    @Setter
     private String titel;
+    @Getter
+    @Setter
     private String datei;
     private Prefs mypreferences;
     private Boolean orderMetadataByRuleset = false;
@@ -45,32 +53,9 @@ public class Ruleset implements Serializable, DatabaseObject {
 
     //    private static Map<Integer, Prefs> loadedPrefs = new HashMap<Integer, Prefs>();
 
+    @Override
     public void lazyLoad() {
         // nothing to load lazy here
-    }
-
-    public String getDatei() {
-        return this.datei;
-    }
-
-    public void setDatei(String datei) {
-        this.datei = datei;
-    }
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getTitel() {
-        return this.titel;
-    }
-
-    public void setTitel(String titel) {
-        this.titel = titel;
     }
 
     public Prefs getPreferences() {

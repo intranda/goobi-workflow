@@ -2,6 +2,7 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
 	template="/uii/template/template.html"
@@ -42,7 +43,7 @@
 						</h2>
 					</div>
 					<div class="box-content ">
-						<h:form id="plugins_tabform">
+						<h:form id="plugins_tabform" >
 							<ul class="nav nav-tabs">
 								<li role="presentation"
 									class="#{pluginsBean.mode eq 'installed' ? 'active' : ''}">
@@ -251,52 +252,46 @@
 								</h:form>
 							</h:panelGroup>
 							<h:panelGroup layout="block" rendered="#{pluginsBean.mode eq 'installed'}">
+                                <h4>#{msgs.runningGoobiVersion}: #{HelperForm.version}</h4>
 								<h:form id="plugins_form">
 									<ui:repeat var="folder"
-										value="#{pluginsBean.plugins.keySet().toArray()}">
-										
-										<ui:fragment rendered="#{not pluginsBean.plugins[folder].isEmpty()}">
-											<h3 class="folder--line" tabindex="0">
-												<h:outputText value="#{folder} #{msgs.plugins}" styleClass="text"/>
-											</h3>
-										</ui:fragment>
-	
-										<x:dataTable
-											rendered="#{not pluginsBean.plugins[folder].isEmpty()}"
-											styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
-											var="pluginInfo" value="#{pluginsBean.plugins[folder]}">
-											<x:column styleClass="">
-												<f:facet name="header">
-													<h:outputText value="#{msgs.filename}" />
-												</f:facet>
-												<h:outputText value="#{pluginInfo.filename}" />
-											</x:column>
-											<x:column style="width: 300px;">
-												<f:facet name="header">
-													<h:outputText value="#{msgs.containedPlugins}" />
-												</f:facet>
-												<h:outputText rendered="#{not pluginInfo.containedPlugins.isEmpty()}" value="#{pluginInfo.containedPlugins}" />
-											</x:column>
-											<x:column style="width: 300px;">
-												<f:facet name="header">
-													<h:outputText value="#{msgs.pluginsUsedInWorkflows}" />
-												</f:facet>
-												<h:outputText rendered="#{not pluginInfo.pluginsUsedInWorkflows.isEmpty()}" value="#{pluginInfo.pluginsUsedInWorkflows}" />
-											</x:column>
-											<x:column styleClass="tableColumnOverflow width200">
-												<f:facet name="header">
-													<h:outputText value="#{msgs.gitHash}" />
-												</f:facet>
-												<h:outputText value="#{pluginInfo.gitHash}" />
-											</x:column>
-											<x:column styleClass="tableColumnOverflow width200">
-												<f:facet name="header">
-													<h:outputText value="#{msgs.buildDate}" />
-												</f:facet>
-												<h:outputText value="#{pluginInfo.buildDate}" />
-											</x:column>
-										</x:dataTable>
-									</ui:repeat>
+									value="#{pluginsBean.plugins.keySet().toArray()}">
+									
+									<h3 class="folder--line" jsf:id="pluginFolderTitle" jsf:rendered="#{not pluginsBean.plugins[folder].isEmpty()}">
+										<h:outputText value="#{folder} #{msgs.plugins}" styleClass="text"/>
+									</h3>
+
+									<table jsf:id="pluginInfoTable"
+										jsf:rendered="#{not pluginsBean.plugins[folder].isEmpty()}"
+										class="table table-hover table-nomargin dataTable table-bordered responsive">
+                                        <thead>
+                                            <tr>
+                                                <th>#{msgs.filename}</th>
+                                                <th>#{msgs.containedPlugins}</th>
+                                                <th>#{msgs.pluginsUsedInWorkflows}</th>
+                                                <th>#{msgs.gitHash}</th>
+                                                <th>#{msgs.buildDate}</th>
+                                                <th>#{msgs.compatibleWith}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <ui:repeat var="pluginInfo" value="#{pluginsBean.plugins[folder]}">
+                                                <tr>
+                                                    <td><h:outputText value="#{pluginInfo.filename}" /></td>
+                                                    <td style="width: 300px;"><h:outputText rendered="#{not pluginInfo.containedPlugins.isEmpty()}" value="#{pluginInfo.containedPlugins}" /></td>
+                                                    <td style="width: 300px;"><h:outputText rendered="#{not pluginInfo.pluginsUsedInWorkflows.isEmpty()}" value="#{pluginInfo.pluginsUsedInWorkflows}" /></td>
+                                                    <td class="tableColumnOverflow width200"><h:outputText value="#{pluginInfo.gitHash}" /></td>
+                                                    <td class="tableColumnOverFlow width200"><h:outputText value="#{pluginInfo.buildDate}" /></td>
+                                                    <td class="tableColumnOverFlow width200">
+                                                        <h:outputText 
+                                                            styleClass="badge #{pluginsBean.getBadgeClassForGoobiVersion(pluginInfo.goobiVersion)}" 
+                                                            value="#{pluginInfo.goobiVersion eq 'N/A'?'' : 'Goobi '}#{pluginInfo.goobiVersion}" />
+                                                    </td>
+                                                </tr>
+                                            </ui:repeat>
+                                        </tbody>
+									</table>
+								</ui:repeat>
 								</h:form>
 							</h:panelGroup>
 						</h:panelGroup>

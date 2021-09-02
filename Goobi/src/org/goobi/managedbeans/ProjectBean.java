@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.imageio.ImageIO;
@@ -49,6 +48,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -86,12 +86,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named("ProjekteForm")
-@SessionScoped
+@WindowScoped
 public class ProjectBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 6735912903249358786L;
     private static final Logger logger = LogManager.getLogger(ProjectBean.class);
 
+    @Getter
     private Project myProjekt = new Project();
+    @Getter
+    @Setter
     private ProjectFileGroup myFilegroup;
 
     // lists accepting the preliminary actions of adding and delting filegroups
@@ -108,7 +111,11 @@ public class ProjectBean extends BasicBean implements Serializable {
     private String projectProgressImage;
     private String projectStatImages;
     private String projectStatVolumes;
+    @Getter
+    @Setter
     private boolean showStatistics;
+    @Getter
+    @Setter
     private String displayMode = "";
 
     @Getter
@@ -298,10 +305,6 @@ public class ProjectBean extends BasicBean implements Serializable {
 
     }
 
-    public Project getMyProjekt() {
-        return this.myProjekt;
-    }
-
     public void setMyProjekt(Project inProjekt) {
         // has to be called if a page back move was done
         this.Cancel();
@@ -327,14 +330,6 @@ public class ProjectBean extends BasicBean implements Serializable {
             }
         }
         return filteredFileGroupList;
-    }
-
-    public ProjectFileGroup getMyFilegroup() {
-        return this.myFilegroup;
-    }
-
-    public void setMyFilegroup(ProjectFileGroup myFilegroup) {
-        this.myFilegroup = myFilegroup;
     }
 
     /**
@@ -714,15 +709,9 @@ public class ProjectBean extends BasicBean implements Serializable {
         ImageIO.write(image, "png", outputfile.toFile());
     }
 
+    @Getter
+    @Setter
     private StatisticsRenderingElement myCurrentTable;
-
-    public void setMyCurrentTable(StatisticsRenderingElement myCurrentTable) {
-        this.myCurrentTable = myCurrentTable;
-    }
-
-    public StatisticsRenderingElement getMyCurrentTable() {
-        return this.myCurrentTable;
-    }
 
     public void downloadStatisticsAsExcel() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
@@ -793,32 +782,6 @@ public class ProjectBean extends BasicBean implements Serializable {
                 }
             }
         }
-    }
-
-    /*************************************************************************************
-     * Getter for showStatistics
-     * 
-     * @return the showStatistics
-     *************************************************************************************/
-    public boolean getShowStatistics() {
-        return this.showStatistics;
-    }
-
-    /**************************************************************************************
-     * Setter for showStatistics
-     * 
-     * @param showStatistics the showStatistics to set
-     **************************************************************************************/
-    public void setShowStatistics(boolean showStatistics) {
-        this.showStatistics = showStatistics;
-    }
-
-    public String getDisplayMode() {
-        return displayMode;
-    }
-
-    public void setDisplayMode(String displayMode) {
-        this.displayMode = displayMode;
     }
 
     public Integer getProjektAuswahl() {

@@ -55,6 +55,7 @@ public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobi
 
     @Override
     public void execute(GoobiScriptResult gsr) {
+        Map<String, String> parameters = gsr.getParameters();
         String steptitle = parameters.get("steptitle");
 
         Process p = ProcessManager.getProcessById(gsr.getProcessId());

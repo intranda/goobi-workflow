@@ -604,8 +604,8 @@
     <language name="en">Language</language>
     <language name="es">Idioma</language>
     <validationExpression>[a-z]{3}</validationExpression>
-    <validationErrorMessage name="de">Der Wert muss ein drestelliger iso 639 code sein, gefunden wurde jedoch '{}'.</validationErrorMessage>
-    <validationErrorMessage name="en">The value '{}' does not correspond to a three-letter iso 639 code.</validationErrorMessage>    
+    <validationErrorMessage name="de">Der Wert muss ein dreistelliger ISO 639 Code sein. Vorgefunden wurde jedoch der Wert '{}'.</validationErrorMessage>
+    <validationErrorMessage name="en">The value '{}' does not correspond to a three-letter ISO 639 code.</validationErrorMessage>    
   </MetadataType>
   <MetadataType>
     <Name>OrigLanguage</Name>

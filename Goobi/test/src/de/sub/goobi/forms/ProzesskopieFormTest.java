@@ -23,8 +23,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,8 +37,6 @@ import org.goobi.beans.Institution;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
-import org.goobi.beans.Project;
-import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
 import org.goobi.beans.User;
@@ -57,7 +53,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
@@ -66,21 +61,22 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.unigoettingen.sub.search.opac.ConfigOpacDoctype;
+import ugh.exceptions.TypeNotAllowedAsChildException;
+import ugh.exceptions.TypeNotAllowedForParentException;
 
-@PowerMockIgnore({"javax.net.ssl.*", "javax.management.*"})
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.net.ssl.*", "javax.management.*" })
 @RunWith(PowerMockRunner.class)
 
-@PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class, HistoryAnalyserJob.class, StepManager.class })
+@PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class,
+    HistoryAnalyserJob.class, StepManager.class })
 public class ProzesskopieFormTest {
 
     private Process template;
-    private static final String RULESET_NAME = "ruleset.xml";
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
     private Step secondStep;
     private List<User> userList = new ArrayList<>();
-    private String datafolder;
 
     @Before
     public void setUp() throws Exception {
@@ -242,7 +238,7 @@ public class ProzesskopieFormTest {
     }
 
     @Test
-    public void testSetDocType() {
+    public void testSetDocType() throws TypeNotAllowedForParentException, TypeNotAllowedAsChildException {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
 
@@ -372,72 +368,6 @@ public class ProzesskopieFormTest {
         assertEquals(fixture, form.getOpacSuchbegriff());
     }
 
-    private void setUpTemplate() {
-        this.template = new Process();
-        template.setTitel("template");
-        template.setId(1);
-        template.setDocket(new Docket());
-        template.setDocketId(0);
-        template.setId(666);
-        template.setMetadatenKonfigurationID(0);
-        template.setIstTemplate(true);
-
-        Project project = new Project();
-        project.setTitel("Project");
-        template.setProjekt(project);
-        project.setFileFormatInternal("Mets");
-        project.setFileFormatDmsExport("Mets");
-        userList = new ArrayList<>();
-        User user = new User();
-        user.setLogin("login");
-        user.setEncryptedPassword("password");
-        userList.add(user);
-
-        List<Step> stepList = new ArrayList<>();
-        Step step = new Step();
-        step.setTitel("titel");
-        step.setBenutzer(userList);
-        step.setReihenfolge(1);
-        stepList.add(step);
-
-        secondStep = new Step();
-        secondStep.setTitel("titel");
-        secondStep.setReihenfolge(2);
-        stepList.add(secondStep);
-        template.setSchritte(stepList);
-
-    }
-
-    private void setUpConfig() {
-
-        ConfigurationHelper.getInstance()
-        .setParameter("MetadatenVerzeichnis", folder.getRoot().getAbsolutePath() + FileSystems.getDefault().getSeparator());
-        ConfigurationHelper.getInstance().setParameter("DIRECTORY_SUFFIX", "media");
-        ConfigurationHelper.getInstance().setParameter("DIRECTORY_PREFIX", "master");
-        ConfigurationHelper.getInstance().setParameter("pluginFolder", datafolder);
-        ConfigurationHelper.getInstance().setParameter("TiffHeaderArtists", "1");
-        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder);
-
-    }
-
-    private void setUpRuleset() throws IOException, URISyntaxException {
-        Path rulesetFolder = folder.newFolder("rulesets").toPath();
-        Files.createDirectories(rulesetFolder);
-        Path rulesetTemplate = Paths.get(datafolder + RULESET_NAME);
-        Path rulesetFile = Paths.get(rulesetFolder.toString(), RULESET_NAME);
-        Files.copy(rulesetTemplate, rulesetFile, NIOFileUtils.STANDARD_COPY_OPTIONS);
-        Ruleset ruleset = new Ruleset();
-        ruleset.setId(11111);
-        ruleset.setOrderMetadataByRuleset(true);
-        ruleset.setTitel(RULESET_NAME);
-        ruleset.setDatei(RULESET_NAME);
-
-        ConfigurationHelper.getInstance().setParameter("KonfigurationVerzeichnis", datafolder);
-        ConfigurationHelper.getInstance().setParameter("pluginFolder", datafolder);
-        ConfigurationHelper.getInstance().setParameter("RegelsaetzeVerzeichnis", rulesetFolder.toString() + FileSystems.getDefault().getSeparator());
-        template.setRegelsatz(ruleset);
-    }
-
     @SuppressWarnings("unchecked")
     private void prepareMocking() throws Exception {
         Template template = new Template();
@@ -472,8 +402,6 @@ public class ProzesskopieFormTest {
         ProcessManager.saveProcess(EasyMock.anyObject(Process.class));
         MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
         MetadataManager.updateJSONMetadata(EasyMock.anyInt(), EasyMock.anyObject(Map.class));
-
-
 
         PowerMock.mockStatic(HistoryAnalyserJob.class);
         EasyMock.expect(HistoryAnalyserJob.updateHistoryForProzess(EasyMock.anyObject(Process.class))).andReturn(true);

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import lombok.Getter;
 
 public enum QueueType {
     FAST_QUEUE("goobi_fast", "GOOBI_INTERNAL_FAST_QUEUE"), //goobi-internal queue for jobs that don't run long (max 5s)
@@ -17,6 +18,7 @@ public enum QueueType {
     NONE("NO_QUEUE", ""); // This is an unknown queue / the "null" value for this enum
 
     private String queueName;
+    @Getter
     private String configName;
 
     private QueueType(String queueName, String configName) {
@@ -40,10 +42,6 @@ public enum QueueType {
     @Override
     public String toString() {
         return queueName;
-    }
-
-    public String getConfigName() {
-        return configName;
     }
 
     public static List<QueueType> getSelectable() {

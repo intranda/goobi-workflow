@@ -3,7 +3,7 @@ package org.goobi.production.chart;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -30,6 +30,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /*************************************************************************************
  * A ProjectStatusDataTable object holds all the information needed for rendering a project status chart
  * 
@@ -44,9 +47,13 @@ import java.util.List;
  *************************************************************************************/
 public class ProjectStatusDataTable implements Serializable {
     private static final long serialVersionUID = -6649337945039135394L;
+    @Getter
+    @Setter
     private String name;
 
+    @Getter
     private Date projectBegin;
+    @Getter
     private Date projectEnd;
 
     private List<ProjectTask> projectTasks;
@@ -62,8 +69,8 @@ public class ProjectStatusDataTable implements Serializable {
         this.name = inName;
         projectBegin = begin;
         projectEnd = end;
-        projectTasks = new ArrayList<ProjectTask>();
-        taskTitles = new ArrayList<String>();
+        projectTasks = new ArrayList<>();
+        taskTitles = new ArrayList<>();
     }
 
     /**
@@ -104,24 +111,6 @@ public class ProjectStatusDataTable implements Serializable {
     }
 
     /************************************************************************************
-     * getter for name
-     * 
-     * @return name as string
-     ************************************************************************************/
-    public String getName() {
-        return name;
-    }
-
-    /************************************************************************************
-     * setter for name
-     * 
-     * @param name as string
-     ************************************************************************************/
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /************************************************************************************
      * getter for all tasks
      * 
      * @return list of {@link ProjectTask}
@@ -155,23 +144,4 @@ public class ProjectStatusDataTable implements Serializable {
             return -1;
         }
     }
-
-    /************************************************************************************
-     * getter for projectBegin
-     * 
-     * @return projectBegin as Date
-     ************************************************************************************/
-    public Date getProjectBegin() {
-        return projectBegin;
-    }
-
-    /************************************************************************************
-     * getter for projectEnd
-     * 
-     * @return projectEnd as Date
-     ************************************************************************************/
-    public Date getProjectEnd() {
-        return projectEnd;
-    }
-
 }

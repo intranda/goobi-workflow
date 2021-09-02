@@ -3,7 +3,7 @@ package org.goobi.production.flow.statistics.hibernate;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -70,7 +70,7 @@ public class StatQuestStorage implements IStatisticalQuestionLimitedTimeframe {
     @Override
     public List<DataTable> getDataTables(String filter, String originalFilter) {
 
-        List<DataTable> allTables = new ArrayList<DataTable>();
+        List<DataTable> allTables = new ArrayList<>();
 
         //		IEvaluableFilter originalFilter;
         //
@@ -116,7 +116,7 @@ public class StatQuestStorage implements IStatisticalQuestionLimitedTimeframe {
 
         // each data row comes out as an Array of Objects
         // the only way to extract the data is by knowing
-        // in which order they come out 
+        // in which order they come out
         for (Object obj : list) {
             dataRow = new DataRow(null);
             //TODO: Don't use arrays
@@ -132,14 +132,14 @@ public class StatQuestStorage implements IStatisticalQuestionLimitedTimeframe {
                 dataRow.addValue(Helper.getTranslation("storageDifference"), (new Converter(objArr[0]).getGB()));
 
             } catch (Exception e) {
-                dataRow.addValue(e.getMessage(), new Double(0));
+                dataRow.addValue(e.getMessage(), Double.valueOf(0));
             }
 
             //finally adding dataRow to DataTable and fetching next row
             dtbl.addDataRow(dataRow);
         }
 
-        // a list of DataTables is expected as return Object, even if there is only one 
+        // a list of DataTables is expected as return Object, even if there is only one
         // Data Table as it is here in this implementation
         dtbl.setUnitLabel(Helper.getTranslation(this.timeGrouping.getSingularTitle()));
         allTables.add(dtbl);

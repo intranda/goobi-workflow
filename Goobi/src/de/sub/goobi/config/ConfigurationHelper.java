@@ -1,5 +1,7 @@
 package de.sub.goobi.config;
 
+import java.io.IOException;
+import java.io.OutputStream;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -23,6 +25,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,6 +40,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.api.mq.QueueType;
@@ -338,7 +342,29 @@ public class ConfigurationHelper implements Serializable {
         return getLocalInt("numberOfMetaBackups", 0);
     }
 
+    public String getGoobiAuthorityServerPassword() {
+
+        return getLocalString("goobiAuthorityServerPassword");
+    }
+
+    public int getGoobiAuthorityServerBackupFreq() {
+        return getLocalInt("goobiAuthorityServerUploadFrequency", 0);
+    }
+
+    public String getGoobiAuthorityServerUser() {
+
+        return getLocalString("goobiAuthorityServerUser");
+    }
+
     // URLs
+
+    public String getGoobiAuthorityServerUrl() {
+        return getLocalString("goobiAuthorityServerUrl");
+    }
+
+    public String getGoobiUrl() {
+        return getLocalString("goobiUrl");
+    }
 
     public String getGoobiContentServerUrl() {
         return getLocalString("goobiContentServerUrl");
@@ -551,24 +577,24 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("ldap_nextFreeUnixId");
     }
 
-    @Deprecated
+
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    public String getLdapKeystore() {
-        return getLocalString("ldap_keystore");
+    public String getTruststore() {
+        return getLocalString("truststore");
     }
 
-    @Deprecated
+
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    public String getLdapKeystoreToken() {
-        return getLocalString("ldap_keystore_password");
+    public String getTruststoreToken() {
+        return getLocalString("truststore_password");
     }
 
     @Deprecated
@@ -1116,6 +1142,23 @@ public class ConfigurationHelper implements Serializable {
 
     public static void resetConfigurationFile() {
         instance = null;
+    }
+
+    public void generateAndSaveJwtSecret() {
+        String secretString = RandomStringUtils.random(20, 0, 0, true, true, null, new SecureRandom());
+        this.setParameter("jwtSecret", secretString);
+        saveLocalConfig();
+    }
+
+    private void saveLocalConfig() {
+        Path fileLocal = Paths.get(getConfigLocalPath(), CONFIG_FILE_NAME);
+        if (Files.exists(fileLocal)) {
+            try (OutputStream out = Files.newOutputStream(fileLocal)) {
+                configLocal.save(out);
+            } catch (IOException | ConfigurationException e) {
+                logger.error(e);
+            }
+        }
     }
 
 }

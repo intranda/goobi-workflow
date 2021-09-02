@@ -3,7 +3,7 @@ package org.goobi.beans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -29,8 +29,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class Template implements Serializable {
     private static final long serialVersionUID = 1736135433162833277L;
     private Integer id;
@@ -42,47 +45,7 @@ public class Template implements Serializable {
     private boolean panelAusgeklappt = true;
 
     public Template() {
-        this.eigenschaften = new ArrayList<Templateproperty>();
-    }
-
-    /*
-     * ##################################################### ##################################################### ## ## Getter und Setter ##
-     * ##################################################### ####################################################
-     */
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Process getProzess() {
-        if (prozess == null && processId != null) {
-            prozess = ProcessManager.getProcessById(processId);
-        }
-        return this.prozess;
-    }
-
-    public void setProzess(Process prozess) {
-        this.prozess = prozess;
-    }
-
-    public boolean isPanelAusgeklappt() {
-        return this.panelAusgeklappt;
-    }
-
-    public void setPanelAusgeklappt(boolean panelAusgeklappt) {
-        this.panelAusgeklappt = panelAusgeklappt;
-    }
-
-    public List<Templateproperty> getEigenschaften() {
-        return this.eigenschaften;
-    }
-
-    public void setEigenschaften(List<Templateproperty> eigenschaften) {
-        this.eigenschaften = eigenschaften;
+        this.eigenschaften = new ArrayList<>();
     }
 
     /*
@@ -90,28 +53,12 @@ public class Template implements Serializable {
      * ##################################################### ####################################################
      */
 
-    public String getHerkunft() {
-        return this.herkunft;
-    }
-
-    public void setHerkunft(String herkunft) {
-        this.herkunft = herkunft;
-    }
-
     public int getEigenschaftenSize() {
         return getEigenschaften().size();
     }
 
     public List<Templateproperty> getEigenschaftenList() {
         return getEigenschaften();
-    }
-
-    public Integer getProcessId() {
-        return processId;
-    }
-
-    public void setProcessId(Integer processId) {
-        this.processId = processId;
     }
 
     @Override
@@ -129,23 +76,30 @@ public class Template implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Template other = (Template) obj;
         if (herkunft == null) {
-            if (other.herkunft != null)
+            if (other.herkunft != null) {
                 return false;
-        } else if (!herkunft.equals(other.herkunft))
+            }
+        } else if (!herkunft.equals(other.herkunft)) {
             return false;
+        }
         if (id == null) {
-            if (other.id != null)
+            if (other.id != null) {
                 return false;
-        } else if (!id.equals(other.id))
+            }
+        } else if (!id.equals(other.id)) {
             return false;
+        }
         return true;
     }
 }

@@ -54,14 +54,12 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
+import lombok.Getter;
 
 public class SearchResultHelper {
 
+    @Getter
     private List<SelectItem> possibleColumns = new ArrayList<>();
-
-    public List<SelectItem> getPossibleColumns() {
-        return possibleColumns;
-    }
 
     public SearchResultHelper() {
         List<String> columnWhiteList = ConfigurationHelper.getInstance().getDownloadColumnWhitelist();
@@ -256,7 +254,6 @@ public class SearchResultHelper {
         return;
     }
 
-    @SuppressWarnings("deprecation")
     public XSSFWorkbook getResult(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses,
             boolean showArchivedProjects) {
         List<SearchColumn> sortedList = new ArrayList<>(columnList.size());
@@ -394,7 +391,7 @@ public class SearchResultHelper {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
             }
-            sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
+            sql = sql + " projekte.projectIsArchived = false ";
         }
         if (order.startsWith("projekte") && !includeProjects) {
             sb.append(" WHERE projekte.ProjekteID = prozesse.ProjekteID AND ");
