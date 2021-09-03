@@ -592,10 +592,11 @@ public class MetadatenImagesHelper {
 
         if (ConfigurationHelper.getInstance().getContentServerUrl() == null) {
             logger.trace("api");
-            ImageManager im = conf.useS3() ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
+            ImageManager im = null;
             JpegInterpreter pi = null;
             try {
-                im = new ImageManager(Paths.get(inFileName).toUri());
+                im= conf.useS3() ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
+                //                im = new ImageManager(Paths.get(inFileName).toUri());
                 logger.trace("im");
                 ImageInterpreter ii = im.getMyInterpreter();
                 Dimension inputResolution = new Dimension((int) ii.getXResolution(), (int) ii.getYResolution());

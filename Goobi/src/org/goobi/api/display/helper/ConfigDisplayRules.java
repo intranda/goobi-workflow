@@ -47,7 +47,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public final class ConfigDisplayRules {
 
-	@Getter
+    @Getter
     private static ConfigDisplayRules instance = new ConfigDisplayRules();
     private static XMLConfiguration config;
     private static String configPfad;
@@ -81,7 +81,6 @@ public final class ConfigDisplayRules {
      * 
      * creates hierarchical HashMap with values for each element of given data
      */
-    @SuppressWarnings("unchecked")
     private synchronized void getDisplayItems() {
         if (this.allValues.isEmpty() && config != null) {
 

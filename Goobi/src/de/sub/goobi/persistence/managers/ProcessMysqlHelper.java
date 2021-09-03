@@ -332,7 +332,7 @@ class ProcessMysqlHelper implements Serializable {
     public static List<Integer> getProcessIdList(String order, String filter, Integer start, Integer count) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT ProzesseID FROM prozesse use index (status) left join batches on prozesse.batchID = batches.id ");
+        sql.append("SELECT ProzesseID FROM prozesse left join batches on prozesse.batchID = batches.id ");
         sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
         sql.append("left join institution on projekte.institution_id = institution.id ");
         if (filter != null && !filter.isEmpty()) {
@@ -587,15 +587,15 @@ class ProcessMysqlHelper implements Serializable {
     public static List<Integer> getIDList(String order, String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT prozesseID FROM prozesse use index (status) left join batches on prozesse.batchId = batches.id ");
+        sql.append("SELECT prozesseID FROM prozesse left join batches on prozesse.batchId = batches.id ");
         sql.append("left join projekte on prozesse.ProjekteID = projekte.ProjekteID ");
         sql.append("left join institution on projekte.institution_id = institution.id ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
-        if (order != null && !order.isEmpty()) {
-            sql.append(" ORDER BY " + order);
-        }
+        //        if (order != null && !order.isEmpty()) {
+        //            sql.append(" ORDER BY " + order);
+        //        }
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (logger.isTraceEnabled()) {

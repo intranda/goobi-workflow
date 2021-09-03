@@ -460,7 +460,6 @@ public class VocabularyManager implements IManager, Serializable {
     public static void saveDefinition(Integer vocabularyId, Definition definition) {
         try {
             VocabularyMysqlHelper.saveDefinition(vocabularyId, definition);
-            Vocabulary vocab = getVocabularyById(vocabularyId);
             setVocabularyLastAltered(vocabularyId);
         } catch (SQLException e) {
             log.error(e);

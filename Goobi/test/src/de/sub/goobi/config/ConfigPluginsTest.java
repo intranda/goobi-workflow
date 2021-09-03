@@ -53,6 +53,7 @@ public class ConfigPluginsTest {
 
         IImportPlugin plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, "JunitImportPlugin");
 
+        @SuppressWarnings("deprecation")
         XMLConfiguration config = ConfigPlugins.getPluginConfig(plugin);
         assertNotNull(config);
     }
@@ -62,6 +63,7 @@ public class ConfigPluginsTest {
 
         IImportPlugin plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, "JunitImportPluginError");
 
+        @SuppressWarnings("deprecation")
         XMLConfiguration config = ConfigPlugins.getPluginConfig(plugin);
         assertNotNull(config);
     }

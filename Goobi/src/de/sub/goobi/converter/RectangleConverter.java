@@ -10,12 +10,12 @@ import javax.faces.convert.FacesConverter;
 import com.thoughtworks.xstream.converters.ConversionException;
 
 @FacesConverter("rectangleConverter")
-public class RectangleConverter implements Converter {
+public class RectangleConverter implements Converter<Rectangle2D> {
 
     private static final String COORD_SEPARATOR = ",";
 
     @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String string) {
+    public Rectangle2D getAsObject(FacesContext context, UIComponent component, String string) {
         try {
             String[] parts = string.split(COORD_SEPARATOR);
             float x = parseToFloat(parts[0]);
@@ -31,17 +31,17 @@ public class RectangleConverter implements Converter {
     }
 
     @Override
-    public String getAsString(FacesContext context, UIComponent component, Object object) {
+    public String getAsString(FacesContext context, UIComponent component, Rectangle2D object) {
         if (object instanceof Rectangle2D) {
-            Rectangle2D rect = (Rectangle2D) object;
+            Rectangle2D rect = object;
             StringBuilder sb = new StringBuilder();
             sb.append(rect.getX())
-                    .append(COORD_SEPARATOR)
-                    .append(rect.getY())
-                    .append(COORD_SEPARATOR)
-                    .append(rect.getWidth())
-                    .append(COORD_SEPARATOR)
-                    .append(rect.getHeight());
+            .append(COORD_SEPARATOR)
+            .append(rect.getY())
+            .append(COORD_SEPARATOR)
+            .append(rect.getWidth())
+            .append(COORD_SEPARATOR)
+            .append(rect.getHeight());
             return sb.toString();
         }
         throw new ConversionException(object + " is not of type Rectangle2D");
@@ -50,10 +50,5 @@ public class RectangleConverter implements Converter {
     private float parseToFloat(String string) throws NumberFormatException, NullPointerException {
         float d = Float.parseFloat(string);
         return d;
-    }
-
-    private int parseToInt(String string) throws NumberFormatException, NullPointerException {
-        double d = Double.parseDouble(string);
-        return (int) Math.round(d);
     }
 }

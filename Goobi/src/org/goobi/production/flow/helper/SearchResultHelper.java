@@ -58,7 +58,7 @@ import lombok.Getter;
 
 public class SearchResultHelper {
 
-	@Getter
+    @Getter
     private List<SelectItem> possibleColumns = new ArrayList<>();
 
     public SearchResultHelper() {
@@ -254,7 +254,6 @@ public class SearchResultHelper {
         return;
     }
 
-    @SuppressWarnings("deprecation")
     public XSSFWorkbook getResult(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses,
             boolean showArchivedProjects) {
         List<SearchColumn> sortedList = new ArrayList<>(columnList.size());
@@ -392,7 +391,7 @@ public class SearchResultHelper {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
             }
-            sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
+            sql = sql + " projekte.projectIsArchived = false ";
         }
         if (order.startsWith("projekte") && !includeProjects) {
             sb.append(" WHERE projekte.ProjekteID = prozesse.ProjekteID AND ");

@@ -82,7 +82,7 @@ public @Data class Image {
     private static final String PLACEHOLDER_URL_VIDEO = "/uii/template/img/goobi_placeholder_video_large.png?version=1";
     private static final String PLACEHOLDER_URL_AUDIO = "/uii/template/img/goobi_placeholder_audio_large.png?version=1";
     private static final String PLACEHOLDER_URL_NOTFOUND = "/uii/template/img/goobi_placeholder_notFound_large.png?version=1";
-    private static final String PLACEHOLDER_URL_DEFAULT = "uii/template/img/thumbnail-placeholder.png?version=1";
+    //    private static final String PLACEHOLDER_URL_DEFAULT = "uii/template/img/thumbnail-placeholder.png?version=1";
 
     /**
      * The image format of the thumbnail urls. 'jpeg' per default
@@ -346,13 +346,13 @@ public @Data class Image {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("{")
-                .append("width : ")
-                .append(getSize().width)
-                .append(",")
-                .append("height : ")
-                .append(getSize().height)
-                .append(",")
-                .append("sizes : [");
+        .append("width : ")
+        .append(getSize().width)
+        .append(",")
+        .append("height : ")
+        .append(getSize().height)
+        .append(",")
+        .append("sizes : [");
         for (ImageLevel imageLevel : getImageLevels()) {
             sb.append(imageLevel.toString()).append(", ");
         }
@@ -396,7 +396,7 @@ public @Data class Image {
                     this.imageLevels = new ArrayList<>();
                 }
             } else {
-                this.imageLevels = Collections.EMPTY_LIST;
+                this.imageLevels = Collections.emptyList();
             }
         }
         return this.imageLevels;
@@ -469,12 +469,12 @@ public @Data class Image {
     public static String createIIIFUrl(Process process, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
         sb.append("/api/process/image/")
-                .append(process.getId())
-                .append("/")
-                .append(getImageFolderShort(imageFolderName))
-                .append("/")
-                .append(filename)
-                .append("/info.json");
+        .append(process.getId())
+        .append("/")
+        .append(getImageFolderShort(imageFolderName))
+        .append("/")
+        .append(filename)
+        .append("/info.json");
         return sb.toString();
     }
 
@@ -538,16 +538,16 @@ public @Data class Image {
     public static String createThumbnailUrl(Process process, int size, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
         sb.append("/api/process/image/")
-                .append(process.getId())
-                .append("/")
-                .append(getImageFolderShort(imageFolderName))
-                .append("/")
-                .append(filename)
-                .append("/")
-                .append("full/")
-                .append(size)
-                .append(",")
-                .append("/0/default.jpg");
+        .append(process.getId())
+        .append("/")
+        .append(getImageFolderShort(imageFolderName))
+        .append("/")
+        .append(filename)
+        .append("/")
+        .append("full/")
+        .append(size)
+        .append(",")
+        .append("/0/default.jpg");
         return sb.toString();
     }
 
@@ -655,7 +655,7 @@ public @Data class Image {
         return this.layerSizes;
     }
 
-    public void setLayerSizes(List sizes) {
+    public void setLayerSizes(List<?> sizes) {
         this.layerSizes = new ArrayList<>();
         if (sizes != null) {
             for (Object object : sizes) {

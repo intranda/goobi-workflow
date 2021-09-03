@@ -2248,6 +2248,7 @@ label, input, button, select, textarea {
     padding: 10px 8px !important;
   }
 }
+
 @media (max-width: 840px) {
   .mobile-sidebar-toggle {
     display: block !important;
@@ -2955,14 +2956,14 @@ label, input, button, select, textarea {
 #navigation .mobile-nav {
   display: none;
 }
-/* #navigation .mobile-nav > li > ul { */
-/*   display: none; */
-/* } */
 #navigation .mobile-nav.open {
-  display: none;
-  list-style: none;
-  padding: 0 20px 20px 20px;
-  margin: 0;
+  position: absolute;
+  padding: 10px;
+  float: right;
+  border: 1px solid #144d82;
+  border-top: none !important;
+  top: 40px;
+  right: 0px;
   background: #368ee0;
 }
 #navigation .mobile-nav.open > li {

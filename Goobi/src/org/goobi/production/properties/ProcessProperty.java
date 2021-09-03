@@ -3,7 +3,7 @@ package org.goobi.production.properties;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -89,10 +89,10 @@ public class ProcessProperty implements IProperty, Serializable {
     private boolean duplicationAllowed = false;
 
     public ProcessProperty() {
-        this.possibleValues = new ArrayList<String>();
-        this.projects = new ArrayList<String>();
-        this.workflows = new ArrayList<String>();
-        this.showStepConditions = new ArrayList<ShowStepCondition>();
+        this.possibleValues = new ArrayList<>();
+        this.projects = new ArrayList<>();
+        this.workflows = new ArrayList<>();
+        this.showStepConditions = new ArrayList<>();
     }
 
     /*
@@ -106,12 +106,14 @@ public class ProcessProperty implements IProperty, Serializable {
         this.readValue = value;
     }
 
+    @Override
     public void setDateValue(Date inDate) {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         value = format.format(inDate);
         this.readValue = value;
     }
 
+    @Override
     public Date getDateValue() {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         try {
@@ -169,9 +171,9 @@ public class ProcessProperty implements IProperty, Serializable {
         p.setValue(this.value);
         p.setShowProcessGroupAccessCondition(this.showProcessGroupAccessCondition);
         p.setDuplicationAllowed(this.isDuplicationAllowed());
-        p.setShowStepConditions(new ArrayList<ShowStepCondition>(getShowStepConditions()));
-        p.setPossibleValues(new ArrayList<String>(getPossibleValues()));
-        p.setProjects(new ArrayList<String>(getProjects()));
+        p.setShowStepConditions(new ArrayList<>(getShowStepConditions()));
+        p.setPossibleValues(new ArrayList<>(getPossibleValues()));
+        p.setProjects(new ArrayList<>(getProjects()));
         p.setCurrentStepAccessCondition(currentStepAccessCondition);
         return p;
     }
@@ -189,7 +191,7 @@ public class ProcessProperty implements IProperty, Serializable {
     }
 
     public List<String> getValueList() {
-        List<String> answer = new ArrayList<String>();
+        List<String> answer = new ArrayList<>();
         if (this.value != null && this.value.contains("; ")) {
             String[] values = this.value.split("; ");
             for (String val : values) {
@@ -229,7 +231,7 @@ public class ProcessProperty implements IProperty, Serializable {
 
         @Override
         public int compare(ProcessProperty o1, ProcessProperty o2) {
-            return new Integer(o1.getContainer()).compareTo(new Integer(o2.getContainer()));
+            return  Integer.valueOf(o1.getContainer()).compareTo(Integer.valueOf(o2.getContainer()));
         }
 
     }

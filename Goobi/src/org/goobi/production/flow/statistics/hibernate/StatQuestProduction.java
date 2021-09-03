@@ -3,7 +3,7 @@ package org.goobi.production.flow.statistics.hibernate;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -76,7 +76,7 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
         // if not defined it will trigger a fall back on a different way of retrieving the statistical data
         Integer exactStepDone = null;
         String stepname = null;
-        List<DataTable> allTables = new ArrayList<DataTable>();
+        List<DataTable> allTables = new ArrayList<>();
 
         // gathering some information from the filter passed by dataSource
         // exactStepDone is very important ...
@@ -135,7 +135,7 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
         DataTable dtbl = new DataTable(title.toString());
         // building a second table for the chart
         DataTable dtblChart = new DataTable(title.toString());
-        // 
+        //
         DataRow dataRowChart;
         DataRow dataRow;
 
@@ -168,14 +168,14 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
                         dataRow.addValue(CalculationUnit.pages.getTitle(), (new Converter(objArr[1]).getDouble()));
 
                     }
-                        break;
+                    break;
 
                     case volumes: {
                         dataRowChart.addValue(CalculationUnit.volumes.getTitle(), (new Converter(objArr[0]).getDouble()));
                         dataRow.addValue(CalculationUnit.volumes.getTitle(), (new Converter(objArr[0]).getDouble()));
 
                     }
-                        break;
+                    break;
 
                     case pages: {
 
@@ -183,14 +183,14 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
                         dataRow.addValue(CalculationUnit.pages.getTitle(), (new Converter(objArr[1]).getDouble()));
 
                     }
-                        break;
+                    break;
 
                 }
 
                 // fall back, if conversion triggers an exception
             } catch (Exception e) {
-                dataRowChart.addValue(e.getMessage(), new Double(0));
-                dataRow.addValue(e.getMessage(), new Double(0));
+                dataRowChart.addValue(e.getMessage(), Double.valueOf(0));
+                dataRow.addValue(e.getMessage(), Double.valueOf(0));
             }
 
             // finally adding dataRow to DataTable and fetching next row

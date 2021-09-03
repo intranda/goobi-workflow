@@ -3,7 +3,7 @@ package org.goobi.production.flow.statistics.hibernate;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -31,7 +31,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.IStatisticalQuestionLimitedTimeframe;
 import org.goobi.production.flow.statistics.StepInformation;
@@ -417,7 +418,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
                     dataRow.addValue(stepName, count);
 
                 } catch (Exception e) {
-                    dataRow.addValue(e.getMessage(), new Double(0));
+                    dataRow.addValue(e.getMessage(), Double.valueOf(0));
                 }
             }
         }
@@ -466,7 +467,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
      */
 
     public List<String> getSelectableSteps() {
-        List<String> selectableList = new ArrayList<String>();
+        List<String> selectableList = new ArrayList<>();
         selectableList.add(Helper.getTranslation("selectAll"));
         for (StepInformation steps : this.commonWorkFlow) {
             selectableList.add(steps.getTitle());
@@ -477,7 +478,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
     public void setSelectedSteps(List<String> inSteps) {
         this.isDirty = true;
         if (inSteps.contains(Helper.getTranslation("selectAll"))) {
-            this.selectedSteps = new ArrayList<String>();
+            this.selectedSteps = new ArrayList<>();
             for (StepInformation steps : this.commonWorkFlow) {
                 this.selectedSteps.add(steps.getTitle());
                 this.terminatingStep = steps.getTitle();

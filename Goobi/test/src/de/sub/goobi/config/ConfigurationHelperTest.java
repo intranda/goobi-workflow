@@ -295,12 +295,12 @@ public class ConfigurationHelperTest {
 
     @Test
     public void testGgetLdapKeystore() {
-        assertNotNull(ConfigurationHelper.getInstance().getLdapKeystore());
+        assertNotNull(ConfigurationHelper.getInstance().getTruststore());
     }
 
     @Test
     public void testGetLdapKeystoreToken() {
-        assertNotNull(ConfigurationHelper.getInstance().getLdapKeystoreToken());
+        assertNotNull(ConfigurationHelper.getInstance().getTruststoreToken());
     }
 
     @Test
