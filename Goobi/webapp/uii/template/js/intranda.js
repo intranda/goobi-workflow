@@ -270,7 +270,6 @@ function onMouseMove( event ) {
     }
 }
 
-window.onresize = loadMenu;
 function loadMenu() {
 	let maximumWidth = 840;
 	let width = window.innerWidth;
@@ -283,7 +282,7 @@ function loadMenu() {
 	for (let index = 0; index < small.length; index++) {
 		small[index].style.display = (width >= maximumWidth ? "none" : "block");
 	}
-	if (width > maximumWidth) {
+	if (width >= maximumWidth) {
 		// This is the main menu. It appears in the header area when the window is wide enough.
 		menu.classList.add("main-nav");
 		menu.classList.remove("mobile-nav");
@@ -293,10 +292,12 @@ function loadMenu() {
 			hasDropdownMenu[index].classList.add("dropdown-menu");
 		}
 		let containerFluid = document.getElementsByClassName("add-container-fluid-in-wide-window");
+		console.log("fluid", containerFluid)
 		for (let index = 0; index < containerFluid.length; index++) {
 			containerFluid[index].classList.add("container-fluid");
 		}
 		let hasSubmenu = document.getElementsByClassName("add-has-submenu-in-small-window");
+		console.log(hasSubmenu)
 		for (let index = 0; index < hasSubmenu.length; index++) {
 			hasSubmenu[index].classList.remove("has-submenu");
 		}
@@ -311,12 +312,15 @@ function loadMenu() {
 			hasDropdownMenu[index].classList.remove("dropdown-menu");
 		}
 		let containerFluid = document.getElementsByClassName("add-container-fluid-in-wide-window");
+		console.log(containerFluid)
 		for (let index = 0; index < containerFluid.length; index++) {
 			containerFluid[index].classList.remove("container-fluid");
 		}
 		let hasSubmenu = document.getElementsByClassName("add-has-submenu-in-small-window");
+		console.log("hasSubmenu", hasSubmenu)
 		for (let index = 0; index < hasSubmenu.length; index++) {
 			hasSubmenu[index].classList.add("has-submenu");
 		}
 	}
 }
+window.addEventListener("resize", loadMenu);
