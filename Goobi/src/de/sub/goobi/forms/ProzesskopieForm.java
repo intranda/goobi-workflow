@@ -212,7 +212,12 @@ public class ProzesskopieForm implements Serializable {
 
             return "";
         }
-
+        if (this.prozessVorlage.getProjekt().getProjectIsArchived()) {
+                
+            Helper.setFehlerMeldung("projectIsArchived");    
+            return "";
+        }
+        
         clearValues();
         this.co = ConfigOpac.getInstance();
         catalogues = co.getAllCatalogues();
