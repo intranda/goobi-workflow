@@ -33,12 +33,14 @@ import java.io.Serializable;
 import java.nio.file.FileSystems;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -48,12 +50,14 @@ import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.api.mail.StepConfiguration;
 import org.goobi.api.mail.UserProjectConfiguration;
+import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Ldap;
 import org.goobi.beans.Project;
@@ -73,21 +77,34 @@ import de.sub.goobi.persistence.managers.MySQLHelper;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import lombok.Getter;
+import lombok.Setter;
 
 @Named("BenutzerverwaltungForm")
-@SessionScoped
-
+@WindowScoped
 public class UserBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = -3635859455444639614L;
+    @Getter
     private User myClass = new User();
+    @Getter
+    @Setter
     private boolean hideInactiveUsers = true;
     private static final Logger logger = LogManager.getLogger(UserBean.class);
+    @Getter
+    @Setter
     private String displayMode = "";
+    @Getter
     private DatabasePaginator usergroupPaginator;
+    @Getter
     private DatabasePaginator projectPaginator;
     //    @Getter
     //    private DatabasePaginator institutionPaginator;
+    @Getter
+    private boolean unsubscribedProjectsExist;
 
+    @Getter
+    private boolean  unsubscribedGroupsExist;
+    
     public String Neu() {
         this.myClass = new User();
         this.myClass.setVorname("");
@@ -103,7 +120,7 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     private String getBasicFilter() {
-        String hide = "isVisible is null";
+        String hide = "isVisible IS null";
         if (this.hideInactiveUsers) {
             hide += " AND istAktiv=true";
         }
@@ -125,19 +142,72 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     public String FilterAlleStart() {
-        this.sortierung = "nachname, vorname";
         UserManager m = new UserManager();
-        String myfilter = getBasicFilter();
+        String sqlQuery = getBasicFilter();
         if (this.filter != null && this.filter.length() != 0) {
-            filter = MySQLHelper.escapeString(filter);
-            myfilter += " AND (concat (vorname, \" \", nachname) like '%" + StringEscapeUtils.escapeSql(this.filter)
-                    + "%' OR BenutzerID IN (select distinct BenutzerID from benutzergruppenmitgliedschaft, benutzergruppen where benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel like '%"
-                    + StringEscapeUtils.escapeSql(this.filter)
-                    + "%') OR BenutzerID IN (SELECT distinct BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE '%"
-                    + StringEscapeUtils.escapeSql(this.filter) + "%'))";
+            String[] searchParts = this.filter.trim().split("\\s+");
+            sqlQuery += " AND (";
+            for (int index = 0; index < searchParts.length; index++) {
+                String like = MySQLHelper.escapeString(searchParts[index]);
+                like = "\'%" + StringEscapeUtils.escapeSql(like) + "%\'";
+                String inGroup =
+                        "BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzergruppenmitgliedschaft, benutzergruppen WHERE benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel LIKE "
+                                + like + ")";
+                String inProject =
+                        "BenutzerID IN (SELECT DISTINCT BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE "
+                                + like + ")";
+                String inInstitution =
+                        "BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzer, institution WHERE benutzer.institution_id = institution.id AND (institution.shortName LIKE "
+                                + like + " OR institution.longName LIKE " + like + "))";
+                String inName = "Vorname LIKE " + like + " OR Nachname LIKE " + like + " OR login LIKE " + like + " OR Standort LIKE " + like;
+                sqlQuery += inName + " OR " + inGroup + " OR " + inProject + " OR " + inInstitution;
+                if (index < searchParts.length - 1) {
+                    sqlQuery += " OR ";
+                }
+            }
+            sqlQuery += ")";
         }
-        paginator = new DatabasePaginator(sortierung, myfilter, m, "user_all");
+        this.paginator = new DatabasePaginator("Nachname, Vorname", sqlQuery, m, "user_all");
+        this.paginator.setList(this.sortUserList(this.convertDatabaseObjectsToUsers(paginator.getList())));
         return "user_all";
+    }
+
+    private List<User> convertDatabaseObjectsToUsers(List<? extends DatabaseObject> objects) {
+        List<User> users = new ArrayList<>();
+        for (int index = 0; index < objects.size(); index++) {
+            users.add((User) (objects.get(index)));
+        }
+        return users;
+    }
+
+    private List<User> sortUserList(List<User> users) {
+        // Find the fitting User-getter-method for the sorting routine depending on the sort strategy
+        Function<User, String> function = null;
+        if (this.sortierung.startsWith("name")) {
+            function = User::getNachVorname;
+        } else if (this.sortierung.startsWith("login")) {
+            function = User::getLogin;
+        } else if (this.sortierung.startsWith("location")) {
+            function = User::getStandort;
+        } else if (this.sortierung.startsWith("group")) {
+            function = User::getFirstUserGroupTitle;
+        } else if (this.sortierung.startsWith("projects")) {
+            function = User::getFirstProjectTitle;
+        } else if (this.sortierung.startsWith("institution")) {
+            function = User::getInstitutionName;
+        }
+
+        // When there is no sorting routine, don't sort and return the original list
+        if (function != null) {
+            Comparator<User> comparator = Comparator.comparing(function);
+
+            // Only when the sorting routine is descending, replace comparator by reversed comparator.
+            if (this.sortierung.endsWith("Desc")) {
+                comparator = Collections.reverseOrder(comparator);
+            }
+            Collections.sort(users, comparator);
+        }
+        return users;
     }
 
     public String Speichern() {
@@ -162,7 +232,7 @@ public class UserBean extends BasicBean implements Serializable {
                 }
                 UserManager.saveUser(this.myClass);
                 paginator.load();
-                return FilterKein();
+                return "user_all";
             } else {
                 Helper.setFehlerMeldung("", Helper.getTranslation("loginBereitsVergeben"));
                 return "";
@@ -222,12 +292,12 @@ public class UserBean extends BasicBean implements Serializable {
                 }
                 paginator.load();
             } catch (DAOException e) {
-                Helper.setFehlerMeldung("#{msgs.Error_hideUser}", e.getMessage());
+                Helper.setFehlerMeldung("Error_hideUser", e.getMessage());
                 return "";
             }
             return FilterKein();
         }
-        Helper.setFehlerMeldung("#{msgs.Error_selfDelete}");
+        Helper.setFehlerMeldung("Error_selfDelete");
         return "";
     }
 
@@ -331,10 +401,6 @@ public class UserBean extends BasicBean implements Serializable {
         return "";
     }
 
-    public User getMyClass() {
-        return this.myClass;
-    }
-
     public void setMyClass(User inMyClass) {
         this.myClass = inMyClass;
 
@@ -393,7 +459,8 @@ public class UserBean extends BasicBean implements Serializable {
         if (!Speichern().equals("") && AuthenticationType.LDAP.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())) {
             LdapKonfigurationSchreiben();
         }
-        return "user_all";
+        this.displayMode = "tab2";
+        return "user_edit";
     }
 
     public String LdapKonfigurationSchreiben() {
@@ -440,7 +507,7 @@ public class UserBean extends BasicBean implements Serializable {
         if ("REALLY" == "CANCEL") {
             return "index";
         }
-        */
+         */
 
         // Create the random password and save it
         if (userToResetPassword != null) {
@@ -507,32 +574,8 @@ public class UserBean extends BasicBean implements Serializable {
         return password.toString();
     }
 
-    public boolean isHideInactiveUsers() {
-        return this.hideInactiveUsers;
-    }
-
-    public void setHideInactiveUsers(boolean hideInactiveUsers) {
-        this.hideInactiveUsers = hideInactiveUsers;
-    }
-
-    public String getDisplayMode() {
-        return displayMode;
-    }
-
-    public void setDisplayMode(String displayMode) {
-        this.displayMode = displayMode;
-    }
-
     public boolean getLdapUsage() {
         return ConfigurationHelper.getInstance().isUseLdap();
-    }
-
-    public DatabasePaginator getUsergroupPaginator() {
-        return usergroupPaginator;
-    }
-
-    public DatabasePaginator getProjectPaginator() {
-        return projectPaginator;
     }
 
     private void updateUsergroupPaginator() {
@@ -543,6 +586,8 @@ public class UserBean extends BasicBean implements Serializable {
         }
         UsergroupManager m = new UsergroupManager();
         usergroupPaginator = new DatabasePaginator("titel", filter, m, "");
+        
+        unsubscribedGroupsExist = usergroupPaginator.getTotalResults() > 0;
     }
 
     private void updateProjectPaginator() {
@@ -553,6 +598,8 @@ public class UserBean extends BasicBean implements Serializable {
         }
         ProjectManager m = new ProjectManager();
         projectPaginator = new DatabasePaginator("titel", filter, m, "");
+
+        unsubscribedProjectsExist = projectPaginator.getTotalResults() > 0;
     }
 
     public Integer getCurrentInstitutionID() {
@@ -568,6 +615,12 @@ public class UserBean extends BasicBean implements Serializable {
             Institution institution = InstitutionManager.getInstitutionById(id);
             myClass.setInstitution(institution);
         }
+    }
+
+    public Integer getNumberOfInstitutions() {
+
+        List<Institution> lstInsts = InstitutionManager.getAllInstitutionsAsList();
+        return lstInsts.size();
     }
 
     public List<SelectItem> getInstitutionsAsSelectList() throws DAOException {

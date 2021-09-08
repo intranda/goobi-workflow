@@ -1,6 +1,12 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:of="http://omnifaces.org/functions"
+	template="/uii/template/template.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
 	<ui:param name="myPageTitle" value="#{msgs.aktiveBenutzer}" />
@@ -35,8 +41,8 @@
 							<div class="dataTables_wrapper">
 								<div class="dataTables_length">
 									<h:panelGrid columns="2">
-										<h:outputText value="#{msgs.aktiveBenutzer}:" />
-										<h:outputText value="#{SessionForm.numberOfSessions}" />
+										<h:outputText value="#{msgs.aktiveBenutzer}:&#160;" />
+										<h:outputText value="#{SessionForm.numberOfRealUserSessions}" />
 										<h:outputText value="#{msgs.aktuelleZeit}:" />
 										<h:outputText value="#{SessionForm.currentTime}" />
 									</h:panelGrid>

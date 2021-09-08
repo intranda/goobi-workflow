@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
@@ -42,6 +41,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Batch;
@@ -62,7 +62,7 @@ import lombok.EqualsAndHashCode;
 //import de.sub.goobi.persistence.ProzessDAO;
 
 @Named("BatchForm")
-@SessionScoped
+@WindowScoped
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class BatchBean extends BasicBean implements Serializable {
@@ -198,7 +198,7 @@ public class BatchBean extends BasicBean implements Serializable {
     public void setSelectedBatchIds(List<String> processIds) {
         selectedBatches = new ArrayList<>();
         for (String idString : processIds) {
-            Integer id = new Integer(idString);
+            Integer id = Integer.valueOf(idString);
 
             selectedBatches.add(ProcessManager.getBatchById(id));
         }
@@ -223,7 +223,7 @@ public class BatchBean extends BasicBean implements Serializable {
     public void setSelectedProcessIds(List<String> processIds) {
         selectedProcesses = new ArrayList<>();
         for (String idString : processIds) {
-            Integer id = new Integer(idString);
+            Integer id = Integer.valueOf(idString);
 
             selectedProcesses.add(ProcessManager.getProcessById(id));
         }

@@ -46,16 +46,16 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 					<!-- Progress bar -->
 					<div class="progress margin-bottom-no" style="border: 0px solid black;height:7px; margin-top:-1px;	">
 						<h:panelGroup rendered="#{item.fortschritt3 gt 0}">
-							<div title="#{msgs.statusAbgeschlossen}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-done'):('progress-bar-success'))}" style="width: #{item.fortschritt3}%;margin-top:0px;"/>
+							<div title="#{msgs.statusAbgeschlossen}" aria-label="#{item.fortschritt3}% #{msgs.statusAbgeschlossen}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-done'):('progress-bar-success'))}" style="width: #{item.fortschritt3}%;margin-top:0px;"/>
 						</h:panelGroup>
 						<h:panelGroup rendered="#{item.fortschritt2 gt 0}">
-							<div title="#{msgs.statusOffen}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-open'):('progress-bar-warning'))}" style="width: #{item.fortschritt2}%;margin-top:0px;"/>
+							<div title="#{msgs.statusOffen}" aria-label="#{item.fortschritt2}% #{msgs.statusOffen}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-open'):('progress-bar-warning'))}" style="width: #{item.fortschritt2}%;margin-top:0px;"/>
 						</h:panelGroup>
 						<h:panelGroup rendered="#{item.fortschrittError gt 0}">
-							<div title="#{msgs.statusError}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-error'):('progress-bar-danger progressbar-status-error'))} " style="width: #{item.fortschrittError}%;margin-top:0px;"/>
+							<div title="#{msgs.statusError}" aria-label="#{item.fortschrittError}% #{msgs.statusError}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-error'):('progress-bar-danger progressbar-status-error'))} " style="width: #{item.fortschrittError}%;margin-top:0px;"/>
 						</h:panelGroup>
 						<h:panelGroup rendered="#{item.fortschritt1 gt 0}">
-							<div title="#{msgs.statusGesperrt}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-locked'):('progress-bar-danger'))} " style="width: #{item.fortschritt1}%;margin-top:0px;"/>
+							<div title="#{msgs.statusGesperrt}" aria-label="#{item.fortschritt1}% #{msgs.statusGesperrt}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-locked'):('progress-bar-danger'))} " style="width: #{item.fortschritt1}%;margin-top:0px;"/>
 						</h:panelGroup>
 					</div>
 				                                        
@@ -95,7 +95,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 												<!-- Bearbeiten-Schaltknopf -->
 												<button jsf:action="#{ProzessverwaltungForm.editProcess}" jsf:id="grid_edit"
 													jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details')}" jsf:rel="tooltip" title="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}"
-													class="btn button-schaltknopf">
+													class="dropdown-item">
 													<i class="fa fa-pencil margin-right-10" />
 													<h:outputText value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}" />
 													<f:passThroughAttribute name="data-toggle" value="tooltip" />

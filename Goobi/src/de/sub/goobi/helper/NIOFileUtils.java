@@ -28,6 +28,7 @@ package de.sub.goobi.helper;
  */
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -36,6 +37,7 @@ import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.CopyOption;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileStore;
@@ -66,6 +68,8 @@ import java.util.zip.CRC32;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j2;
@@ -77,6 +81,8 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class NIOFileUtils implements StorageProviderInterface {
+
+    private static final Logger logger = LogManager.getLogger(Helper.class);
 
     public static final CopyOption[] STANDARD_COPY_OPTIONS =
             new CopyOption[] { StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES };
@@ -299,6 +305,8 @@ public class NIOFileUtils implements StorageProviderInterface {
                 fileOk = true;
             } else if (name.matches(prefix + "\\.[Gg][Ll][bB]")) {
                 fileOk = true;
+            }else if (name.matches(prefix + "\\.[Xx][Mm][Ll]")) {
+                fileOk = true;
             }
             return fileOk;
         }
@@ -345,6 +353,8 @@ public class NIOFileUtils implements StorageProviderInterface {
                 } else if (name.matches(prefix + "\\.[xX]3[dD]")) {
                     fileOk = true;
                 } else if (name.matches(prefix + "\\.[Bb][Ii][Nn]")) {
+                    fileOk = true;
+                }else if (name.matches(prefix + "\\.[xX][mM][lL]")) {
                     fileOk = true;
                 }
             }
@@ -410,21 +420,29 @@ public class NIOFileUtils implements StorageProviderInterface {
                         targetDosAttrs.setSystem(sourceDosAttrs.isSystem());
                     }
                 }
-                FileOwnerAttributeView ownerAttrs = Files.getFileAttributeView(dir, FileOwnerAttributeView.class);
-                if (ownerAttrs != null) {
-                    if (fileStore.supportsFileAttributeView(FileOwnerAttributeView.class)) {
-                        FileOwnerAttributeView targetOwner = Files.getFileAttributeView(targetDir, FileOwnerAttributeView.class);
-                        targetOwner.setOwner(ownerAttrs.getOwner());
+                try {
+                    FileOwnerAttributeView ownerAttrs = Files.getFileAttributeView(dir, FileOwnerAttributeView.class);
+                    if (ownerAttrs != null) {
+                        if (fileStore.supportsFileAttributeView(FileOwnerAttributeView.class)) {
+                            FileOwnerAttributeView targetOwner = Files.getFileAttributeView(targetDir, FileOwnerAttributeView.class);
+                            targetOwner.setOwner(ownerAttrs.getOwner());
+                        }
                     }
+                } catch (AccessDeniedException | FileNotFoundException exception) {
+                    logger.error(exception);
                 }
-                PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
-                if (posixAttrs != null) {
-                    if (fileStore.supportsFileAttributeView(PosixFileAttributeView.class)) {
-                        PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
-                        PosixFileAttributeView targetPosix = Files.getFileAttributeView(targetDir, PosixFileAttributeView.class);
-                        targetPosix.setPermissions(sourcePosix.permissions());
-                        targetPosix.setGroup(sourcePosix.group());
+                try {
+                    PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
+                    if (posixAttrs != null) {
+                        if (fileStore.supportsFileAttributeView(PosixFileAttributeView.class)) {
+                            PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
+                            PosixFileAttributeView targetPosix = Files.getFileAttributeView(targetDir, PosixFileAttributeView.class);
+                            targetPosix.setPermissions(sourcePosix.permissions());
+                            targetPosix.setGroup(sourcePosix.group());
+                        }
                     }
+                } catch (AccessDeniedException | FileNotFoundException exception) {
+                    logger.error(exception);
                 }
                 UserDefinedFileAttributeView userAttrs = Files.getFileAttributeView(dir, UserDefinedFileAttributeView.class);
                 if (userAttrs != null) {
@@ -641,6 +659,11 @@ public class NIOFileUtils implements StorageProviderInterface {
     }
 
     @Override
+    public boolean isSymbolicLink(Path path) {
+        return Files.isSymbolicLink(path);
+    }
+
+    @Override
     public void createDirectories(Path path) throws IOException {
         Files.createDirectories(path);
     }
@@ -678,6 +701,37 @@ public class NIOFileUtils implements StorageProviderInterface {
     @Override
     public boolean isReadable(Path path) {
         return Files.isReadable(path);
+    }
+
+    /**
+     * IMPORTANT: This detection of deletion permission works only for Linux/Unix systems. On Windows systems it's much more complicated to detect the
+     * deletion permission.
+     * 
+     * @return deletion permission of given path
+     */
+    @Override
+    public boolean isDeletable(Path path) {
+        Path parent = path.getParent();
+        if (!this.isReadable(parent) || !this.isWritable(parent) || !Files.isExecutable(parent)) {
+            return false;
+        }
+        if (this.isDirectory(path)) {
+            if (!this.isReadable(path) || !this.isWritable(path) || !Files.isExecutable(path)) {
+                return false;
+            }
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path)) {
+                for (Path child : directoryStream) {
+                    // Test whether child is a directory
+                    // If it is a directory, check recursively whether it is deletable
+                    // When it is not deletable, return false. Check other directories else.
+                    if (this.isDirectory(child) && !this.isDeletable(child)) {
+                        return false;
+                    }
+                }
+            } catch (IOException ex) {
+            }
+        }
+        return true;
     }
 
     @Override

@@ -41,11 +41,13 @@ import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
 
 import de.sub.goobi.helper.Helper;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public final class ConfigDisplayRules {
 
+    @Getter
     private static ConfigDisplayRules instance = new ConfigDisplayRules();
     private static XMLConfiguration config;
     private static String configPfad;
@@ -75,15 +77,10 @@ public final class ConfigDisplayRules {
         }
     }
 
-    public static ConfigDisplayRules getInstance() {
-        return instance;
-    }
-
     /**
      * 
      * creates hierarchical HashMap with values for each element of given data
      */
-    @SuppressWarnings("unchecked")
     private synchronized void getDisplayItems() {
         if (this.allValues.isEmpty() && config != null) {
 

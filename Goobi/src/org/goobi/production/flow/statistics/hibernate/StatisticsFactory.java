@@ -2,9 +2,9 @@ package org.goobi.production.flow.statistics.hibernate;
 
 import java.util.Date;
 import java.util.List;
+
 import org.goobi.production.flow.statistics.enums.TimeUnit;
 
-import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.MySQLHelper;
 
 public class StatisticsFactory {

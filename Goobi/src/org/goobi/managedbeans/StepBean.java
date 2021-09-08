@@ -41,11 +41,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.api.mail.SendMail;
@@ -99,38 +99,70 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named("AktuelleSchritteForm")
-@SessionScoped
+@WindowScoped
 public class StepBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 5841566727939692509L;
     private static final Logger logger = LogManager.getLogger(StepBean.class);
+    @Getter
+    @Setter
     private Process myProzess = new Process();
     private Step mySchritt = new Step();
+    @Getter
     private IStepPlugin myPlugin;
+    @Getter
+    @Setter
     private Integer myProblemID;
+    @Getter
+    @Setter
     private Integer mySolutionID;
+    @Getter
+    @Setter
     private String problemMessage;
+    @Getter
+    @Setter
     private String solutionMessage;
 
+    @Getter
+    @Setter
     private String modusBearbeiten = "";
     //    private Schritteigenschaft mySchrittEigenschaft;
     private WebDav myDav = new WebDav();
     private int gesamtAnzahlImages = 0;
     private int pageAnzahlImages = 0;
+    @Getter
+    @Setter
     private boolean nurOffeneSchritte = false;
+    @Getter
+    @Setter
     private boolean nurEigeneSchritte = false;
+    @Setter
     private boolean showAutomaticTasks = false;
+    @Setter
     private boolean hideCorrectionTasks = false;
+    @Getter
+    @Setter
     private boolean hideStepsFromOtherUsers = false;
+    @Getter
+    @Setter
     private HashMap<String, Boolean> anzeigeAnpassen;
+    @Getter
+    @Setter
     private String scriptPath;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static String DONEDIRECTORYNAME = "fertig/";
     //	private Boolean flagWait = false;
+    @Getter
+    @Setter
     private BatchStepHelper batchHelper;
+    @Getter
     private Map<Integer, PropertyListObject> containers = new TreeMap<>();
+    @Getter
     private Integer container;
     private List<ProcessProperty> processPropertyList;
+    @Getter
+    @Setter
     private ProcessProperty processProperty;
+    @Getter
     private HashMap<Integer, Boolean> containerAccess;
 
     @Getter
@@ -207,7 +239,7 @@ public class StepBean extends BasicBean implements Serializable {
         if (!sql.isEmpty()) {
             sql = sql + " AND ";
         }
-        sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
+        sql = sql + " projekte.projectIsArchived = false ";
         paginator = new DatabasePaginator(sortList(), sql, m, "task_all");
 
         return "task_all";
@@ -947,15 +979,6 @@ public class StepBean extends BasicBean implements Serializable {
         return FilterAlleStart();
     }
 
-    public String getScriptPath() {
-
-        return this.scriptPath;
-    }
-
-    public void setScriptPath(String scriptPath) {
-        this.scriptPath = scriptPath;
-    }
-
     public void executeScript() {
         //        StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
         new HelperSchritte().executeScriptForStepObject(mySchritt, this.scriptPath, false);
@@ -1009,14 +1032,6 @@ public class StepBean extends BasicBean implements Serializable {
     /*
      *  Getter und Setter
      */
-
-    public Process getMyProzess() {
-        return this.myProzess;
-    }
-
-    public void setMyProzess(Process myProzess) {
-        this.myProzess = myProzess;
-    }
 
     public Step getMySchritt() {
         try {
@@ -1078,10 +1093,6 @@ public class StepBean extends BasicBean implements Serializable {
         }
     }
 
-    public IStepPlugin getMyPlugin() {
-        return myPlugin;
-    }
-
     public void setMyPlugin(IStepPlugin myPlugin) {
         if (myPlugin instanceof IPushPlugin) {
             ((IPushPlugin) myPlugin).setPushContext(stepPluginPush);
@@ -1096,46 +1107,6 @@ public class StepBean extends BasicBean implements Serializable {
 
     public Step getStep() {
         return this.mySchritt;
-    }
-
-    public String getModusBearbeiten() {
-        return this.modusBearbeiten;
-    }
-
-    public void setModusBearbeiten(String modusBearbeiten) {
-        this.modusBearbeiten = modusBearbeiten;
-    }
-
-    public Integer getMyProblemID() {
-        return this.myProblemID;
-    }
-
-    public void setMyProblemID(Integer myProblemID) {
-        this.myProblemID = myProblemID;
-    }
-
-    public Integer getMySolutionID() {
-        return this.mySolutionID;
-    }
-
-    public void setMySolutionID(Integer mySolutionID) {
-        this.mySolutionID = mySolutionID;
-    }
-
-    public String getProblemMessage() {
-        return this.problemMessage;
-    }
-
-    public void setProblemMessage(String problemMessage) {
-        this.problemMessage = problemMessage;
-    }
-
-    public String getSolutionMessage() {
-        return this.solutionMessage;
-    }
-
-    public void setSolutionMessage(String solutionMessage) {
-        this.solutionMessage = solutionMessage;
     }
 
     //    public Schritteigenschaft getMySchrittEigenschaft() {
@@ -1221,30 +1192,6 @@ public class StepBean extends BasicBean implements Serializable {
         }
     }
 
-    public boolean isNurOffeneSchritte() {
-        return this.nurOffeneSchritte;
-    }
-
-    public void setNurOffeneSchritte(boolean nurOffeneSchritte) {
-        this.nurOffeneSchritte = nurOffeneSchritte;
-    }
-
-    public boolean isNurEigeneSchritte() {
-        return this.nurEigeneSchritte;
-    }
-
-    public void setNurEigeneSchritte(boolean nurEigeneSchritte) {
-        this.nurEigeneSchritte = nurEigeneSchritte;
-    }
-
-    public HashMap<String, Boolean> getAnzeigeAnpassen() {
-        return this.anzeigeAnpassen;
-    }
-
-    public void setAnzeigeAnpassen(HashMap<String, Boolean> anzeigeAnpassen) {
-        this.anzeigeAnpassen = anzeigeAnpassen;
-    }
-
     public void addLogEntry() {
         if (StringUtils.isNotBlank(content)) {
             User user = Helper.getCurrentUser();
@@ -1264,20 +1211,8 @@ public class StepBean extends BasicBean implements Serializable {
         }
     }
 
-    public ProcessProperty getProcessProperty() {
-        return this.processProperty;
-    }
-
-    public void setProcessProperty(ProcessProperty processProperty) {
-        this.processProperty = processProperty;
-    }
-
     public List<ProcessProperty> getProcessProperties() {
         return this.processPropertyList;
-    }
-
-    public HashMap<Integer, Boolean> getContainerAccess() {
-        return containerAccess;
     }
 
     public int getSizeOfDisplayableMetadata() {
@@ -1409,10 +1344,6 @@ public class StepBean extends BasicBean implements Serializable {
         loadProcessProperties();
     }
 
-    public Map<Integer, PropertyListObject> getContainers() {
-        return this.containers;
-    }
-
     public List<Integer> getContainerList() {
         return new ArrayList<>(this.containers.keySet());
     }
@@ -1462,14 +1393,6 @@ public class StepBean extends BasicBean implements Serializable {
         loadProcessProperties();
     }
 
-    public BatchStepHelper getBatchHelper() {
-        return this.batchHelper;
-    }
-
-    public void setBatchHelper(BatchStepHelper batchHelper) {
-        this.batchHelper = batchHelper;
-    }
-
     public List<ProcessProperty> getContainerlessProperties() {
         List<ProcessProperty> answer = new ArrayList<>();
         for (ProcessProperty pp : this.processPropertyList) {
@@ -1478,10 +1401,6 @@ public class StepBean extends BasicBean implements Serializable {
             }
         }
         return answer;
-    }
-
-    public Integer getContainer() {
-        return this.container;
     }
 
     public void setContainer(Integer container) {
@@ -1554,24 +1473,8 @@ public class StepBean extends BasicBean implements Serializable {
         return this.showAutomaticTasks;
     }
 
-    public void setShowAutomaticTasks(boolean showAutomaticTasks) {
-        this.showAutomaticTasks = showAutomaticTasks;
-    }
-
     public boolean getHideCorrectionTasks() {
         return hideCorrectionTasks;
-    }
-
-    public void setHideCorrectionTasks(boolean hideCorrectionTasks) {
-        this.hideCorrectionTasks = hideCorrectionTasks;
-    }
-
-    public boolean isHideStepsFromOtherUsers() {
-        return hideStepsFromOtherUsers;
-    }
-
-    public void setHideStepsFromOtherUsers(boolean hideStepsFromOtherUsers) {
-        this.hideStepsFromOtherUsers = hideStepsFromOtherUsers;
     }
 
     public String callStepPlugin() {

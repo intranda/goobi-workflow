@@ -3,9 +3,9 @@ package org.goobi.production.converters;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -31,13 +31,14 @@ import org.goobi.production.flow.statistics.enums.ResultOutput;
  * @author Steffen Hankiewicz
  * @version 21.05.2009
  **************************************************************************************/
-public class StatisticsResultOutputConverter implements Converter {
+public class StatisticsResultOutputConverter implements Converter<ResultOutput> {
     public static final String CONVERTER_ID = "StatisticsResultOutputConverter";
 
     /**
      * convert String to ResultOutput
      **************************************************************************************/
-    public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
+    @Override
+    public ResultOutput getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
         if (value == null) {
             return ResultOutput.table;
         } else {
@@ -48,11 +49,12 @@ public class StatisticsResultOutputConverter implements Converter {
     /**
      * convert ResultOutput to String
      **************************************************************************************/
-    public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, ResultOutput value) throws ConverterException {
         if (value == null || !(value instanceof ResultOutput)) {
             return ResultOutput.table.getId();
         } else {
-            return ((ResultOutput) value).getId();
+            return value.getId();
         }
     }
 

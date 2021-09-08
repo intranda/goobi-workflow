@@ -1,5 +1,8 @@
 package org.goobi.production.enums;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -29,7 +32,11 @@ public enum ImportFormat {
     MARCXML("3", "marcxml"),
     DC("4", "dc");
 
+	@Getter
+    @Setter
     private String value;
+	@Getter
+    @Setter
     private String title;
 
     private ImportFormat(String inValue, String inTitle) {
@@ -58,33 +65,4 @@ public enum ImportFormat {
         }
         return PICA;
     }
-
-    /**
-     * @param value the value to set
-     */
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    /**
-     * @return the value
-     */
-    public String getValue() {
-        return this.value;
-    }
-
-    /**
-     * @param title the title to set
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
-     * @return the title
-     */
-    public String getTitle() {
-        return this.title;
-    }
-
 }

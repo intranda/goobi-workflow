@@ -32,15 +32,21 @@ import java.util.jar.Manifest;
 
 import org.joda.time.DateTime;
 
+import lombok.Getter;
+
 public class GoobiVersion {
 
     private static DateTime now = DateTime.now();
 
+    @Getter
     private static String version = "N/A";
+    @Getter
     private static String buildversion = "N/A";
     // after a long discussion about earth climate change we decided that a subtraction of 2000 years is probably the easiest way 
     // to get a two character year number. Just remember to change that value in 81 years from now on :)
+    @Getter
     private static String publicVersion = String.format("%02d.%02d-dev", now.getYear()-2000, now.getMonthOfYear());
+    @Getter
     private static String builddate = "N/A";
 
     public static void setupFromManifest(Manifest manifest) throws IllegalArgumentException {
@@ -55,21 +61,5 @@ public class GoobiVersion {
     private static Optional<String> getOptionalValue(Attributes attributes, String attributeName) throws IllegalArgumentException {
         String result = attributes.getValue(attributeName);
         return Optional.ofNullable(result);
-    }
-
-    public static String getVersion() {
-        return version;
-    }
-
-    public static String getBuildversion() {
-        return buildversion;
-    }
-
-    public static String getBuilddate() {
-        return builddate;
-    }
-
-    public static String getPublicVersion() {
-        return publicVersion;
     }
 }

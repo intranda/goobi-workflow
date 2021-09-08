@@ -26,6 +26,7 @@
 
                     <button
                         class="btn btn-mini pull-right margin-right-10"
+                        data-toggle="tooltip"
                         jsf:action="#{NavigationForm.Reload}"
                         title="#{msgs.resizeBox}"
                         jsf:rendered="#{showBigButton}">
@@ -37,6 +38,7 @@
 
                     <button
                         jsf:id="adapt_display"
+                        data-toggle="tooltip"
                         title="#{NavigationForm.uiStatus['toggleProcessLog']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         class="btn btn-mini pull-right margin-right-10">
                         <i class="fa #{NavigationForm.uiStatus['toggleProcessLog']== 'fileUpload' ? 'fa-comment ' : 'fa-folder-open-o'}" />

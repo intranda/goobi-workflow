@@ -52,6 +52,8 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 public class UghHelper {
     private static final Logger logger = LogManager.getLogger(UghHelper.class);
 
+    public String lastErrorMessage;
+
     /**
      * MetadataType aus Preferences eines Prozesses ermitteln
      * 
@@ -89,6 +91,7 @@ public class UghHelper {
      * @return Metadata
      */
     public Metadata getMetadata(DocStruct inStruct, MetadataType inMetadataType) {
+        lastErrorMessage = null;
         if (inStruct != null && inMetadataType != null) {
             List<? extends Metadata> all = inStruct.getAllMetadataByType(inMetadataType);
             if (all.size() == 0) {
@@ -102,6 +105,7 @@ public class UghHelper {
                     if (logger.isDebugEnabled()) {
                         logger.debug(e.getMessage());
                     }
+                    lastErrorMessage = e.getMessage();
                     return null;
                 }
             }
@@ -123,6 +127,7 @@ public class UghHelper {
      * @throws UghHelperException
      */
     public Metadata getMetadata(DocStruct inStruct, Prefs inPrefs, String inMetadataType) throws UghHelperException {
+        lastErrorMessage = null;
         MetadataType mdt = getMetadataType(inPrefs, inMetadataType);
         List<? extends Metadata> all = inStruct.getAllMetadataByType(mdt);
         if (all.size() == 0) {
@@ -136,6 +141,7 @@ public class UghHelper {
                 if (logger.isDebugEnabled()) {
                     logger.debug(e);
                 }
+                lastErrorMessage = e.getMessage();
             }
         }
 
@@ -155,6 +161,7 @@ public class UghHelper {
      * @throws UghHelperException
      */
     public Metadata getMetadata(DocStruct inStruct, Process inProzess, String inMetadataType) throws UghHelperException {
+        lastErrorMessage = null;
         MetadataType mdt = getMetadataType(inProzess, inMetadataType);
         List<? extends Metadata> all = inStruct.getAllMetadataByType(mdt);
         if (all.size() == 0) {
@@ -168,6 +175,7 @@ public class UghHelper {
                 if (logger.isDebugEnabled()) {
                     logger.debug(e);
                 }
+                lastErrorMessage = e.getMessage();
             }
         }
         if (all.size() != 0) {

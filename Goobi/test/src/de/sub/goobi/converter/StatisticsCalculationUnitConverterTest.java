@@ -3,9 +3,9 @@ package de.sub.goobi.converter;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -18,7 +18,7 @@ package de.sub.goobi.converter;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.junit.Test;
@@ -40,7 +40,6 @@ public class StatisticsCalculationUnitConverterTest {
     public void testGetAsString() {
         StatisticsCalculationUnitConverter conv = new StatisticsCalculationUnitConverter();
         assertEquals(CalculationUnit.volumes.getId(), conv.getAsString(null, null, null));
-        assertEquals(CalculationUnit.volumes.getId(), conv.getAsString(null, null, 42));
         assertEquals(CalculationUnit.volumes.getId(), conv.getAsString(null, null, CalculationUnit.volumes));
         assertEquals(CalculationUnit.pages.getId(), conv.getAsString(null, null, CalculationUnit.pages));
         assertEquals(CalculationUnit.volumesAndPages.getId(), conv.getAsString(null, null, CalculationUnit.volumesAndPages));

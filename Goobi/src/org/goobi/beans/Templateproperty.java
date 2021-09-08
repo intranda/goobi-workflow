@@ -33,17 +33,35 @@ import java.util.List;
 import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.persistence.managers.TemplateManager;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Templateproperty implements Serializable, IGoobiProperty {
     private static final long serialVersionUID = -5981263038302791497L;
+    @Getter
+    @Setter
     private Integer templateId;
+    @Setter
     private Template vorlage;
+    @Getter
+    @Setter
     private Integer id;
+    @Getter
+    @Setter
     private String titel;
+    @Getter
+    @Setter
     private String wert;
     private Boolean istObligatorisch;
+    @Getter (AccessLevel.PRIVATE)
+    @Setter (AccessLevel.PRIVATE)
     private Integer datentyp;
+    @Getter
+    @Setter
     private String auswahl;
+    @Getter
+    @Setter
     private Date creationDate;
     private Integer container;
 
@@ -53,27 +71,8 @@ public class Templateproperty implements Serializable, IGoobiProperty {
         this.creationDate = new Date();
     }
 
+    @Setter
     private List<String> valueList;
-
-    @Override
-    public String getAuswahl() {
-        return this.auswahl;
-    }
-
-    @Override
-    public void setAuswahl(String auswahl) {
-        this.auswahl = auswahl;
-    }
-
-    @Override
-    public Integer getId() {
-        return this.id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     @Override
     public Boolean isIstObligatorisch() {
@@ -86,58 +85,6 @@ public class Templateproperty implements Serializable, IGoobiProperty {
     @Override
     public void setIstObligatorisch(Boolean istObligatorisch) {
         this.istObligatorisch = istObligatorisch;
-    }
-
-    @Override
-    public String getTitel() {
-        return this.titel;
-    }
-
-    @Override
-    public void setTitel(String titel) {
-        this.titel = titel;
-    }
-
-    @Override
-    public String getWert() {
-        return this.wert;
-    }
-
-    @Override
-    public void setWert(String wert) {
-        this.wert = wert;
-    }
-
-    @Override
-    public void setCreationDate(Date creation) {
-        this.creationDate = creation;
-    }
-
-    @Override
-    public Date getCreationDate() {
-        return this.creationDate;
-    }
-
-    /**
-     * getter for datentyp set to private for hibernate
-     * 
-     * for use in programm use getType instead
-     * 
-     * @return datentyp as integer
-     */
-    @SuppressWarnings("unused")
-    private Integer getDatentyp() {
-        return this.datentyp;
-    }
-
-    /**
-     * set datentyp to defined integer. only for internal use through hibernate, for changing datentyp use setType instead
-     * 
-     * @param datentyp as Integer
-     */
-    @SuppressWarnings("unused")
-    private void setDatentyp(Integer datentyp) {
-        this.datentyp = datentyp;
     }
 
     /**
@@ -168,14 +115,6 @@ public class Templateproperty implements Serializable, IGoobiProperty {
             this.valueList = new ArrayList<String>();
         }
         return this.valueList;
-    }
-
-    public void setValueList(List<String> valueList) {
-        this.valueList = valueList;
-    }
-
-    public void setVorlage(Template vorlage) {
-        this.vorlage = vorlage;
     }
 
     public Template getVorlage() {
@@ -209,13 +148,5 @@ public class Templateproperty implements Serializable, IGoobiProperty {
     @Override
     public String getNormalizedValue() {
         return this.wert.replace(" ", "_").trim();
-    }
-
-    public Integer getTemplateId() {
-        return templateId;
-    }
-
-    public void setTemplateId(Integer templateId) {
-        this.templateId = templateId;
     }
 }

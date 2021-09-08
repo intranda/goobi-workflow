@@ -43,6 +43,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
+import lombok.Getter;
 import ugh.dl.Corporate;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -64,6 +65,8 @@ public class MetadatenVerifizierung {
     List<DocStruct> docStructsOhneSeiten;
     Process myProzess;
     boolean autoSave = false;
+
+    @Getter
     private List<String> problems = new ArrayList<>();
 
     public boolean validate(Process inProzess) {
@@ -678,7 +681,7 @@ public class MetadatenVerifizierung {
             for (Metadata md : metadataList) {
                 if (StringUtils.isNotBlank(md.getType().getValidationExpression())) {
                     String regularExpression = md.getType().getValidationExpression();
-                    if (md.getValue() == null || !md.getValue().matches(regularExpression)) {
+                    if (StringUtils.isNotBlank(md.getValue()) && !md.getValue().matches(regularExpression)) {
                         String errorMessage = md.getType().getValidationErrorMessages().get(lang);
                         if (StringUtils.isNotBlank(errorMessage)) {
                             errorList.add(errorMessage.replace("{}", md.getValue()));
@@ -696,7 +699,7 @@ public class MetadatenVerifizierung {
                 for (Metadata md : mg.getMetadataList()) {
                     if (StringUtils.isNotBlank(md.getType().getValidationExpression())) {
                         String regularExpression = md.getType().getValidationExpression();
-                        if (md.getValue() == null || !md.getValue().matches(regularExpression)) {
+                        if (StringUtils.isNotBlank(md.getValue()) && !md.getValue().matches(regularExpression)) {
                             String errorMessage = md.getType().getValidationErrorMessages().get(lang);
                             if (StringUtils.isNotBlank(errorMessage)) {
                                 errorList.add(errorMessage.replace("{}", md.getValue()));
@@ -776,9 +779,5 @@ public class MetadatenVerifizierung {
 
         }
         return true;
-    }
-
-    public List<String> getProblems() {
-        return problems;
     }
 }

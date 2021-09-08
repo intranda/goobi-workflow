@@ -27,7 +27,7 @@ import de.sub.goobi.helper.FacesContextHelper;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class, ExternalContext.class })
-@PowerMockIgnore("javax.management.*")
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
 public class SecurityCheckFilterTest {
 
     @Test

@@ -1,5 +1,8 @@
 package org.goobi.production.enums;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -30,28 +33,16 @@ public enum StepReturnValue {
     DataAllreadyExists(3, "Data already exists"),
     WriteError(4, "Data could not be written");
 
+	@Getter
+    @Setter
     private int id;
+	@Getter
+    @Setter
     private String value;
 
     private StepReturnValue(int id, String title) {
         this.setId(id);
         this.setValue(title);
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return this.id;
-    }
-
-    public void setValue(String title) {
-        this.value = title;
-    }
-
-    public String getValue() {
-        return this.value;
     }
 
     public static StepReturnValue getByValue(String title) {

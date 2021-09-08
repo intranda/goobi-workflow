@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.JobType;
 import org.goobi.beans.Step;
 
@@ -22,7 +22,7 @@ import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-@SessionScoped
+@WindowScoped
 @Named("JobTypesBean")
 @Data
 public class JobTypesBean implements Serializable {
@@ -88,7 +88,7 @@ public class JobTypesBean implements Serializable {
         } else {
             JobType oldJobType = this.jobTypes.get(indexes[0]);
             if (oldJobType.isPaused() && !this.currentJobType.isPaused()) {
-                //job was paused, but now isn't anymore => restart work 
+                //job was paused, but now isn't anymore => restart work
                 //TODO re-run paused jobs for this jobType
             }
             this.jobTypes.set(indexes[0], this.currentJobType);

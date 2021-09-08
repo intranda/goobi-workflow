@@ -44,7 +44,7 @@ import de.sub.goobi.mock.MockUploadedFile;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class, ExternalContext.class, HttpSession.class })
-@PowerMockIgnore("javax.management.*")
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
 public class FileManipulationTest {
 
     private Metadaten metadataBean;
@@ -268,6 +268,7 @@ public class FileManipulationTest {
 
     }
 
+    @SuppressWarnings("deprecation")
     private void prepareMocking() {
         PowerMock.mockStatic(ExternalContext.class);
         PowerMock.mockStatic(FacesContext.class);

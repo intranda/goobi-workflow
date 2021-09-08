@@ -32,6 +32,8 @@ import org.goobi.pagination.IntegerSequence;
 import org.goobi.pagination.RomanNumberSequence;
 
 import de.sub.goobi.helper.Helper;
+import lombok.Getter;
+import lombok.Setter;
 import ugh.dl.RomanNumeral;
 
 /**
@@ -61,13 +63,18 @@ public class Paginator {
     }
 
     private int[] selectedPages;
+    @Getter
     private Metadatum[] pagesToPaginate;
     private Mode paginationMode = Paginator.Mode.PAGES;
     private Scope paginationScope = Paginator.Scope.FROMFIRST;
     private String paginationStartValue = "uncounted";
     private Type paginationType = Paginator.Type.UNCOUNTED;
     private boolean fictitiousPagination = false;
+    @Getter
+    @Setter
     private String prefix = null;
+    @Getter
+    @Setter
     private String suffix = null;
     private String doublePageDiscriminator = "-";
 
@@ -323,15 +330,6 @@ public class Paginator {
     }
 
     /**
-     * Get pages provided with new pagination label.
-     * 
-     * @return Array of <code>Metadatum</code> instances.
-     */
-    public Metadatum[] getPagesToPaginate() {
-        return pagesToPaginate;
-    }
-
-    /**
      * Give a list of page numbers to select pages to actually paginate.
      * 
      * @param selectedPages Array numbers, each pointing to a given page set via <code>setPagesToPaginate</code>
@@ -408,21 +406,4 @@ public class Paginator {
         this.fictitiousPagination = b;
         return this;
     }
-
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-
-    public String getSuffix() {
-        return suffix;
-    }
-
-    public void setSuffix(String suffix) {
-        this.suffix = suffix;
-    }
-
 }

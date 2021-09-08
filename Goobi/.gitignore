@@ -13,3 +13,5 @@
 /module-war/
 /module-jar/
 /install/
+/install/plugins
+*.iml

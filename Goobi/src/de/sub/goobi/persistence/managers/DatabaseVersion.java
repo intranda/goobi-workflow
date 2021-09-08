@@ -52,7 +52,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 42;
+    public static final int EXPECTED_VERSION = 45;
     private static final Logger logger = LogManager.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -293,15 +293,89 @@ public class DatabaseVersion {
                 }
                 updateToVersion41();
             case 41:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 42.");
+                }
                 updateToVersion42();
+            case 42:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 43.");
+                }
+                updateToVersion43();
+            case 43:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 44.");
+                }
+                updateToVersion44();
+            case 44:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 45.");
+                }
+                updateToVersion45();
             default:
-
 
                 // this has to be the last case
                 updateDatabaseVersion(currentVersion);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Database is up to date.");
                 }
+        }
+
+    }
+
+    private static void updateToVersion45() {
+
+        if (checkIfColumnExists("ldapgruppen", "pathToKeystore")) {
+            DatabaseVersion.runSql("ALTER TABLE ldapgruppen DROP column pathToKeystore");
+        }
+        if (checkIfColumnExists("ldapgruppen", "keystorePassword")) {
+            DatabaseVersion.runSql("ALTER TABLE ldapgruppen DROP column keystorePassword");
+        }
+
+    }
+
+    private static void updateToVersion44() {
+
+        //if the user name has not been changed, but isVisible is "deleted" or " 'deleted' "
+        String allBenutzer = "SELECT * FROM benutzer WHERE login NOT LIKE 'deletedUser%' AND isVisible LIKE '%deleted%'";
+
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner runner = new QueryRunner();
+            List<User> userList = runner.query(connection, allBenutzer, UserManager.resultSetToUserListHandler);
+
+            for (User user : userList) {
+                UserManager.hideUser(user);
+            }
+        } catch (SQLException | DAOException e) {
+            logger.error(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    MySQLHelper.closeConnection(connection);
+                } catch (SQLException e) {
+                }
+            }
+        }
+    }
+
+    private static void updateToVersion43() {
+
+        if (!DatabaseVersion.checkIfColumnExists("vocabulary", "lastAltered")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("ALTER TABLE vocabulary ");
+            sql.append("ADD COLUMN lastAltered DATETIME NOT NULL ");
+            sql.append("DEFAULT '2020-01-01 00:00:01' AFTER description;");
+            DatabaseVersion.runSql(sql.toString());
+        }
+
+        if (!DatabaseVersion.checkIfColumnExists("vocabulary", "lastUploaded")) {
+            StringBuilder sql = new StringBuilder();
+            sql.append("ALTER TABLE vocabulary ");
+            sql.append("ADD COLUMN lastUploaded DATETIME NOT NULL ");
+            sql.append("DEFAULT '2020-01-01 00:00:00' AFTER lastAltered;");
+            DatabaseVersion.runSql(sql.toString());
         }
 
     }
@@ -338,6 +412,7 @@ public class DatabaseVersion {
 
     }
 
+    @SuppressWarnings("deprecation")
     private static void updateToVersion39() {
         if (!DatabaseVersion.checkIfTableExists("vocabulary_structure")) {
             StringBuilder sql = new StringBuilder();
@@ -620,12 +695,12 @@ public class DatabaseVersion {
                 }
 
                 DatabaseVersion.runSql("update ldapgruppen set nextFreeUnixId = '" + ConfigurationHelper.getInstance().getLdapNextId() + "'");
-                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapKeystore())) {
-                    DatabaseVersion.runSql("update ldapgruppen set pathToKeystore = '" + ConfigurationHelper.getInstance().getLdapKeystore() + "'");
+                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getTruststore())) {
+                    DatabaseVersion.runSql("update ldapgruppen set pathToKeystore = '" + ConfigurationHelper.getInstance().getTruststore() + "'");
                 }
-                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapKeystoreToken())) {
+                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getTruststoreToken())) {
                     DatabaseVersion
-                    .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getLdapKeystoreToken() + "'");
+                    .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapRootCert())) {
                     DatabaseVersion

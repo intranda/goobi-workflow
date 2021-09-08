@@ -49,11 +49,19 @@ import lombok.Setter;
 public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseObject {
     private static final long serialVersionUID = -5924845694417474352L;
     private static final Logger logger = LogManager.getLogger(Usergroup.class);
+    @Getter
+    @Setter
     private Integer id;
+    @Setter
     private String titel;
+    @Setter
     private Integer berechtigung;
+    @Setter
     private List<User> benutzer;
+    @Getter
+    @Setter
     private List<Step> schritte;
+    @Setter
     private List<String> userRoles;
 
     @Setter
@@ -62,6 +70,8 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
     private Integer institutionId;
 
 
+    @Getter
+    @Setter
     private boolean panelAusgeklappt = false;
 
     @Override
@@ -73,14 +83,6 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
         }
     }
 
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public Integer getBerechtigung() {
         if (this.berechtigung == null) {
             this.berechtigung = 4;
@@ -88,10 +90,6 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
             this.berechtigung = 4;
         }
         return this.berechtigung;
-    }
-
-    public void setBerechtigung(int berechtigung) {
-        this.berechtigung = berechtigung;
     }
 
     public String getBerechtigungAsString() {
@@ -115,10 +113,6 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
         }
     }
 
-    public void setTitel(String titel) {
-        this.titel = titel;
-    }
-
     public List<User> getBenutzer() {
         if (benutzer == null) {
             try {
@@ -130,35 +124,11 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
         return this.benutzer;
     }
 
-    public void setBenutzer(List<User> benutzer) {
-        this.benutzer = benutzer;
-    }
-
-    public List<Step> getSchritte() {
-        return this.schritte;
-    }
-
-    public void setSchritte(List<Step> schritte) {
-        this.schritte = schritte;
-    }
-
-    public boolean isPanelAusgeklappt() {
-        return this.panelAusgeklappt;
-    }
-
-    public void setPanelAusgeklappt(boolean panelAusgeklappt) {
-        this.panelAusgeklappt = panelAusgeklappt;
-    }
-
     public List<String> getUserRoles() {
         if (userRoles == null) {
             userRoles = new ArrayList<>();
         }
         return userRoles;
-    }
-
-    public void setUserRoles(List<String> userRoles) {
-        this.userRoles = userRoles;
     }
 
     public void addUserRole(String inRole) {

@@ -1,5 +1,4 @@
-<ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -11,25 +10,18 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
-    <ui:param
-        name="myPageTitle"
+    <ui:param name="myPageTitle"
         value="#{BenutzerverwaltungForm.myClass.id == null?msgs.neuenBenutzerAnlegen:msgs.benutzerBearbeiten}" />
 
     <ui:define name="breadcrumb">
-        <intranda:breadcrumb
-            id="index"
+        <intranda:breadcrumb id="index"
             label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
-            action="index"
-            navId="a0" />
-        <intranda:breadcrumb
-            id="userAll"
+            action="index" navId="a0" />
+        <intranda:breadcrumb id="userAll"
             label="#{msgs.benutzerverwaltung}"
             action="#{BenutzerverwaltungForm.paginator.returnToPreviousPage}" />
-        <intranda:breadcrumb
-            id="userEdit"
-            label="#{myPageTitle}"
-            action="user_edit"
-            noSeparator="#{true}" />
+        <intranda:breadcrumb id="userEdit" label="#{myPageTitle}"
+            action="user_edit" noSeparator="#{true}" />
     </ui:define>
 
     <ui:define name="info">
@@ -37,13 +29,12 @@
 
     <ui:define name="content">
         <script type="text/javascript">
-                                    window.onload = function() {
-                                        document.getElementById( 'nachname' ).focus();
-                                    }
-                                </script>
-        <h:form
-            id="myform"
-            styleClass="form-horizontal form-bordered"
+									window.onload = function() {
+										document.getElementById('nachname')
+												.focus();
+									}
+								</script>
+        <h:form id="myform" styleClass="form-horizontal form-bordered"
             onkeypress="submitOnEnter(event);"
             rendered="#{LoginForm.hasRole('Admin_Users')}">
 
@@ -59,44 +50,41 @@
                                     rendered="#{BenutzerverwaltungForm.myClass.id != null}" />
                             </h2>
                             <ul class="tabs">
-                                <li class="#{BenutzerverwaltungForm.displayMode eq ''?'active':''}">
-                                    <h:commandLink
-                                        id="tab1"
+                                <li
+                                    class="#{BenutzerverwaltungForm.displayMode eq ''?'active':''}">
+                                    <h:commandLink id="tab1"
                                         action="#{NavigationForm.Reload}"
                                         value="#{msgs.details}">
                                         <f:setPropertyActionListener
                                             target="#{BenutzerverwaltungForm.displayMode}"
                                             value="" />
-                                        <f:ajax
-                                            render=":myform"
+                                        <f:ajax render=":myform"
                                             execute=":myform" />
                                     </h:commandLink>
                                 </li>
-                                <li class="#{BenutzerverwaltungForm.displayMode eq 'tab2'?'active':''}">
-                                    <h:commandLink
-                                        id="tab2"
+                                <li
+                                    class="#{BenutzerverwaltungForm.displayMode eq 'tab2'?'active':''}">
+                                    <h:commandLink id="tab2"
                                         action="#{NavigationForm.Reload}"
                                         value="#{msgs.benutzergruppen}"
                                         disabled="#{BenutzerverwaltungForm.myClass.id == null}">
                                         <f:setPropertyActionListener
                                             target="#{BenutzerverwaltungForm.displayMode}"
                                             value="tab2" />
-                                        <f:ajax
-                                            render=":myform"
+                                        <f:ajax render=":myform"
                                             execute=":myform" />
                                     </h:commandLink>
                                 </li>
-                                <li class="#{BenutzerverwaltungForm.displayMode eq 'tab3'?'active':''}">
-                                    <h:commandLink
-                                        id="tab3"
+                                <li
+                                    class="#{BenutzerverwaltungForm.displayMode eq 'tab3'?'active':''}">
+                                    <h:commandLink id="tab3"
                                         action="#{NavigationForm.Reload}"
                                         value="#{msgs.projekte}"
                                         disabled="#{BenutzerverwaltungForm.myClass.id == null}">
                                         <f:setPropertyActionListener
                                             target="#{BenutzerverwaltungForm.displayMode}"
                                             value="tab3" />
-                                        <f:ajax
-                                            render=":myform"
+                                        <f:ajax render=":myform"
                                             execute=":myform" />
                                     </h:commandLink>
                                 </li>
@@ -105,7 +93,8 @@
                         <div class="box-content nopadding">
 
                             <div class="tab-content">
-                                <div class="#{BenutzerverwaltungForm.displayMode eq ''?'tab-pane active':'tab-pane'}">
+                                <div
+                                    class="#{BenutzerverwaltungForm.displayMode eq ''?'tab-pane active':'tab-pane'}">
 
                                     <intranda:formInputText
                                         classLeft="col-sm-3 control-label notFocusable"
@@ -146,27 +135,29 @@
                                         required="true" />
 
                                     <div class="form-group">
-                                        <div class="col-sm-3 control-label">
-                                            <h:outputLabel
-                                                for="loginAs"
+                                        <div
+                                            class="col-sm-3 control-label">
+                                            <h:outputLabel for="loginAs"
                                                 value="#{msgs.login}" />
                                             <h:panelGroup>
-                                                <i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip" />
+                                                <i
+                                                    class="fa fa-asterisk pull-right font-asterisk"
+                                                    title="#{msgs.requiredField}"
+                                                    data-toggle="tooltip" />
                                             </h:panelGroup>
                                         </div>
                                         <div class="col-sm-9">
-                                            <x:inputText
-                                                id="loginAs"
+                                            <x:inputText id="loginAs"
                                                 forceId="true"
                                                 styleClass="form-control"
                                                 value="#{BenutzerverwaltungForm.myClass.login}"
                                                 required="true"
                                                 readonly="false"
                                                 validatorMessage="#{msgs.loginWrongCharacter}">
-                                                <f:validateRegex pattern="[a-z0-9\._-]+" />
+                                                <f:validateRegex
+                                                    pattern="[a-z0-9\._-]+" />
                                             </x:inputText>
-                                            <h:message
-                                                for="loginAs"
+                                            <h:message for="loginAs"
                                                 showDetail="true"
                                                 styleClass="help-inline font-danger" />
                                             <h:outputText
@@ -177,16 +168,21 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <div class="col-sm-3 control-label">
+                                        <div
+                                            class="col-sm-3 control-label">
                                             <h:outputLabel
                                                 for="ldapGruppe"
                                                 value="#{msgs.user_edit_loginType}" />
                                             <h:panelGroup>
-                                                <i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip" />
+                                                <i
+                                                    class="fa fa-asterisk pull-right font-asterisk"
+                                                    title="#{msgs.requiredField}"
+                                                    data-toggle="tooltip" />
                                             </h:panelGroup>
                                         </div>
                                         <div class="col-sm-9">
-                                            <h:panelGroup rendered="#{cc.attrs.onevent == null}">
+                                            <h:panelGroup
+                                                rendered="#{cc.attrs.onevent == null}">
                                                 <h:selectOneMenu
                                                     id="ldapGruppe"
                                                     styleClass="form-control"
@@ -202,8 +198,7 @@
                                                         itemValue="#{var.itemValue}" />
                                                 </h:selectOneMenu>
                                             </h:panelGroup>
-                                            <h:message
-                                                for="ldapGruppe"
+                                            <h:message for="ldapGruppe"
                                                 showDetail="true"
                                                 styleClass="help-inline font-danger" />
                                             <h:outputText
@@ -216,7 +211,8 @@
 
 
                                     <h:panelGroup id="loginTypeArea">
-                                        <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType == 'ldap'}">
+                                        <h:panelGroup
+                                            rendered="#{BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType == 'ldap'}">
                                             <intranda:formInputText
                                                 id="ldapname"
                                                 label="#{msgs.ldaplogin}"
@@ -226,7 +222,8 @@
                                                 name="ldaplogin"
                                                 fieldStyle="form-control" />
                                         </h:panelGroup>
-                                        <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.id == null and BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType != 'openid' and (BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType != 'ldap' or not BenutzerverwaltungForm.myClass.ldapGruppe.readonly)}">
+                                        <h:panelGroup
+                                            rendered="#{BenutzerverwaltungForm.myClass.id == null and BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType != 'openid' and (BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType != 'ldap' or not BenutzerverwaltungForm.myClass.ldapGruppe.readonly)}">
                                             <intranda:formInputSecretText
                                                 id="password"
                                                 label="#{msgs.passwort}"
@@ -235,8 +232,7 @@
                                                 name="passwordName"
                                                 fieldStyle="form-control" />
                                         </h:panelGroup>
-                                        <h:panelGroup
-                                            id="ssoIdArea"
+                                        <h:panelGroup id="ssoIdArea"
                                             rendered="#{BenutzerverwaltungForm.myClass.ldapGruppe.authenticationType == 'openid'}">
                                             <intranda:formInputText
                                                 id="ssoId"
@@ -253,8 +249,7 @@
 
                                     <intranda:formInputText
                                         classLeft="col-sm-3 control-label notFocusable"
-                                        id="email"
-                                        label="#{msgs.email}"
+                                        id="email" label="#{msgs.email}"
                                         field="#{BenutzerverwaltungForm.myClass.email}"
                                         help="#{msgs.helpEmail}"
                                         required="false"
@@ -282,7 +277,8 @@
                                         selectItems="#{BenutzerverwaltungForm.myClass.availableDashboards}"
                                         fieldStyle="form-control" />
 
-                                    <ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin}">
+                                    <ui:fragment
+                                        rendered="#{LoginForm.myBenutzer.superAdmin}">
                                         <intranda:formInputCheckBox
                                             classLeft="col-sm-3 control-label notFocusable"
                                             id="superadmin"
@@ -310,12 +306,12 @@
                                         style="border-bottom: 1px solid #DDDDDD;" />
 
                                 </div>
-                                <div class="#{BenutzerverwaltungForm.displayMode eq 'tab2' or BenutzerverwaltungForm.displayMode eq 'usergroup'?'tab-pane active':'tab-pane'}">
+                                <div
+                                    class="#{BenutzerverwaltungForm.displayMode eq 'tab2' or BenutzerverwaltungForm.displayMode eq 'usergroup'?'tab-pane active':'tab-pane'}">
 
                                     <!-- ===================== User groups ====================== -->
 
-                                    <div
-                                        class="form-group"
+                                    <div class="form-group"
                                         style="border-bottom: 1px solid #DDDDDD;">
 
                                         <h:outputLabel
@@ -324,17 +320,24 @@
 
                                         <div class="col-sm-9">
 
-                                            <h:panelGroup rendered="#{BenutzerverwaltungForm.displayMode eq 'usergroup'}">
+                                            <h:panelGroup
+                                                rendered="#{BenutzerverwaltungForm.displayMode eq 'usergroup'}">
 
-                                                <div class="box box-color box-small box-bordered">
-                                                    <div class="box-title">
+                                                <div
+                                                    class="box box-color box-small box-bordered">
+                                                    <div
+                                                        class="box-title">
                                                         <h3>
-                                                            <i class="fa fa-table"></i>
-                                                            <h:outputText value="#{msgs.benutzergruppen}" />
+                                                            <i
+                                                                class="fa fa-table"></i>
+                                                            <h:outputText
+                                                                value="#{msgs.benutzergruppen}" />
                                                         </h3>
                                                     </div>
-                                                    <div class="box-content nopadding">
-                                                        <div class="dataTables_wrapper">
+                                                    <div
+                                                        class="box-content nopadding">
+                                                        <div
+                                                            class="dataTables_wrapper">
 
                                                             <x:dataTable
                                                                 id="newgroups"
@@ -350,36 +353,45 @@
                                                                         title="#{msgs.uebernehmen}"
                                                                         jsf:rel="tooltip"
                                                                         jsf:action="#{BenutzerverwaltungForm.ZuGruppeHinzufuegen}">
-                                                                        <i class="fa fa-plus"></i>
+                                                                        <i
+                                                                            class="fa fa-plus"></i>
                                                                         <f:param
                                                                             name="ID"
                                                                             value="#{item.id}" />
                                                                         <f:setPropertyActionListener
                                                                             target="#{BenutzerverwaltungForm.displayMode}"
                                                                             value="tab2" />
-                                                                        <f:ajax render=":myform" />
+                                                                        <f:ajax
+                                                                            render=":myform" />
                                                                     </button>
-                                                                    <h:outputText value="#{item.titel}" />
+                                                                    <h:outputText
+                                                                        value="#{item.titel}" />
                                                                 </x:column>
-                                                                <x:column width="40%">
-                                                                    <h:outputText value="#{item.institution.shortName}" />
+                                                                <x:column
+                                                                    width="40%">
+                                                                    <h:outputText
+                                                                        value="#{item.institution.shortName}" />
                                                                 </x:column>
                                                             </x:dataTable>
 
-                                                            <div class="dataTables_info">
+                                                            <div
+                                                                class="dataTables_info">
                                                                 <!-- Cancel-Schaltknopf -->
                                                                 <button
                                                                     jsf:id="cancel"
                                                                     class="btn font-size-s"
                                                                     jsf:action="#{NavigationForm.Reload}">
-                                                                    <h:outputText value="#{msgs.abbrechen}" />
+                                                                    <h:outputText
+                                                                        value="#{msgs.abbrechen}" />
                                                                     <f:setPropertyActionListener
                                                                         target="#{BenutzerverwaltungForm.displayMode}"
                                                                         value="tab2" />
-                                                                    <f:ajax render=":myform" />
+                                                                    <f:ajax
+                                                                        render=":myform" />
                                                                 </button>
                                                             </div>
-                                                            <div class="dataTables_paginate">
+                                                            <div
+                                                                class="dataTables_paginate">
                                                                 <!-- paginator -->
                                                                 <intranda:tablePaginator2
                                                                     id="groups"
@@ -394,16 +406,23 @@
                                             </h:panelGroup>
 
 
-                                            <h:panelGroup rendered="#{BenutzerverwaltungForm.displayMode ne 'usergroup'}">
-                                                <div class="box box-color grey-4 box-small box-bordered">
-                                                    <div class="box-title">
+                                            <h:panelGroup
+                                                rendered="#{BenutzerverwaltungForm.displayMode ne 'usergroup'}">
+                                                <div
+                                                    class="box box-color grey-4 box-small box-bordered">
+                                                    <div
+                                                        class="box-title">
                                                         <h3>
-                                                            <i class="fa fa-table"></i>
-                                                            <h:outputText value="#{msgs.benutzergruppen}" />
+                                                            <i
+                                                                class="fa fa-table"></i>
+                                                            <h:outputText
+                                                                value="#{msgs.benutzergruppen}" />
                                                         </h3>
                                                     </div>
-                                                    <div class="box-content nopadding">
-                                                        <div class="dataTables_wrapper">
+                                                    <div
+                                                        class="box-content nopadding">
+                                                        <div
+                                                            class="dataTables_wrapper">
 
                                                             <x:dataTable
                                                                 id="currentGroups"
@@ -412,10 +431,13 @@
                                                                 value="#{BenutzerverwaltungForm.myClass.benutzergruppen}">
 
                                                                 <h:column>
-                                                                    <h:outputText value="#{item.titel}" />
+                                                                    <h:outputText
+                                                                        value="#{item.titel}" />
                                                                 </h:column>
-                                                                <x:column width="40%">
-                                                                    <h:outputText value="#{item.institution.shortName}" />
+                                                                <x:column
+                                                                    width="40%">
+                                                                    <h:outputText
+                                                                        value="#{item.institution.shortName}" />
                                                                     <!-- Löschen-Schaltknopf -->
                                                                     <button
                                                                         jsf:id="deleteFromGroup"
@@ -423,28 +445,35 @@
                                                                         title="#{msgs.ausGruppeLoeschen}"
                                                                         jsf:rel="tooltip"
                                                                         jsf:action="#{BenutzerverwaltungForm.AusGruppeLoeschen}">
-                                                                        <i class="fa fa-trash-o"></i>
+                                                                        <i
+                                                                            class="fa fa-trash-o"></i>
                                                                         <f:param
                                                                             name="ID"
                                                                             value="#{item.id}" />
-                                                                        <f:ajax render=":myform" />
+                                                                        <f:ajax
+                                                                            render=":myform" />
                                                                     </button>
                                                                 </x:column>
                                                             </x:dataTable>
 
-                                                            <div class="dataTables_info">
+                                                            <div
+                                                                class="dataTables_info">
                                                                 <!-- Neu-Schaltknopf -->
                                                                 <button
                                                                     jsf:id="addGroup"
+                                                                    jsf:rendered="#{BenutzerverwaltungForm.unsubscribedGroupsExist}"
                                                                     class="btn btn-primary font-size-s"
                                                                     jsf:action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
                                                                     jsf:immediate="true">
-                                                                    <i class="fa fa-plus margin-right-5"></i>
-                                                                    <h:outputText value="#{msgs.benutzergruppenHinzufuegen}" />
+                                                                    <i
+                                                                        class="fa fa-plus margin-right-5"></i>
+                                                                    <h:outputText
+                                                                        value="#{msgs.benutzergruppenHinzufuegen}" />
                                                                     <f:setPropertyActionListener
                                                                         target="#{BenutzerverwaltungForm.displayMode}"
                                                                         value="usergroup" />
-                                                                    <f:ajax render=":myform" />
+                                                                    <f:ajax
+                                                                        render=":myform" />
                                                                 </button>
 
                                                             </div>
@@ -463,13 +492,11 @@
 
                                 </div>
 
-                                <div
-                                    id="t9"
+                                <div id="t9"
                                     class="#{BenutzerverwaltungForm.displayMode eq 'tab3' or BenutzerverwaltungForm.displayMode eq 'project'?'tab-pane active':'tab-pane'}">
 
                                     <!-- ===================== Projects ====================== -->
-                                    <div
-                                        class="form-group"
+                                    <div class="form-group"
                                         style="border-bottom: 1px solid #DDDDDD;">
                                         <h:outputLabel
                                             styleClass="col-sm-3 control-label"
@@ -477,17 +504,24 @@
 
                                         <div class="col-sm-9">
 
-                                            <h:panelGroup rendered="#{BenutzerverwaltungForm.displayMode eq 'project'}">
+                                            <h:panelGroup
+                                                rendered="#{BenutzerverwaltungForm.displayMode eq 'project'}">
 
-                                                <div class="box box-color box-small box-bordered">
-                                                    <div class="box-title">
+                                                <div
+                                                    class="box box-color box-small box-bordered">
+                                                    <div
+                                                        class="box-title">
                                                         <h3>
-                                                            <i class="fa fa-table"></i>
-                                                            <h:outputText value="#{msgs.projekte}" />
+                                                            <i
+                                                                class="fa fa-table"></i>
+                                                            <h:outputText
+                                                                value="#{msgs.projekte}" />
                                                         </h3>
                                                     </div>
-                                                    <div class="box-content nopadding">
-                                                        <div class="dataTables_wrapper">
+                                                    <div
+                                                        class="box-content nopadding">
+                                                        <div
+                                                            class="dataTables_wrapper">
 
                                                             <x:dataTable
                                                                 id="newprojects"
@@ -503,36 +537,45 @@
                                                                         title="#{msgs.uebernehmen}"
                                                                         jsf:rel="tooltip"
                                                                         jsf:action="#{BenutzerverwaltungForm.ZuProjektHinzufuegen}">
-                                                                        <i class="fa fa-plus"></i>
+                                                                        <i
+                                                                            class="fa fa-plus"></i>
                                                                         <f:param
                                                                             name="ID"
                                                                             value="#{item.id}" />
                                                                         <f:setPropertyActionListener
                                                                             target="#{BenutzerverwaltungForm.displayMode}"
                                                                             value="tab3" />
-                                                                        <f:ajax render=":myform" />
+                                                                        <f:ajax
+                                                                            render=":myform" />
                                                                     </button>
-                                                                    <h:outputText value="#{item.titel}" />
+                                                                    <h:outputText
+                                                                        value="#{item.titel}" />
                                                                 </h:column>
-                                                                <x:column width="40%">
-                                                                    <h:outputText value="#{item.institution.shortName}" />
+                                                                <x:column
+                                                                    width="40%">
+                                                                    <h:outputText
+                                                                        value="#{item.institution.shortName}" />
                                                                 </x:column>
                                                             </x:dataTable>
 
-                                                            <div class="dataTables_info">
+                                                            <div
+                                                                class="dataTables_info">
                                                                 <!-- Cancel-Schaltknopf -->
                                                                 <button
                                                                     jsf:id="cancelProject"
                                                                     class="btn font-size-s"
                                                                     jsf:action="#{NavigationForm.Reload}">
-                                                                    <h:outputText value="#{msgs.abbrechen}" />
+                                                                    <h:outputText
+                                                                        value="#{msgs.abbrechen}" />
                                                                     <f:setPropertyActionListener
                                                                         target="#{BenutzerverwaltungForm.displayMode}"
                                                                         value="tab3" />
-                                                                    <f:ajax render=":myform" />
+                                                                    <f:ajax
+                                                                        render=":myform" />
                                                                 </button>
                                                             </div>
-                                                            <div class="dataTables_paginate">
+                                                            <div
+                                                                class="dataTables_paginate">
                                                                 <!-- paginator -->
                                                                 <intranda:tablePaginator
                                                                     id="projects"
@@ -547,16 +590,23 @@
                                             </h:panelGroup>
 
 
-                                            <h:panelGroup rendered="#{BenutzerverwaltungForm.displayMode ne 'project'}">
-                                                <div class="box box-color grey-4 box-small box-bordered">
-                                                    <div class="box-title">
+                                            <h:panelGroup
+                                                rendered="#{BenutzerverwaltungForm.displayMode ne 'project'}">
+                                                <div
+                                                    class="box box-color grey-4 box-small box-bordered">
+                                                    <div
+                                                        class="box-title">
                                                         <h3>
-                                                            <i class="fa fa-table"></i>
-                                                            <h:outputText value="#{msgs.projekte}" />
+                                                            <i
+                                                                class="fa fa-table"></i>
+                                                            <h:outputText
+                                                                value="#{msgs.projekte}" />
                                                         </h3>
                                                     </div>
-                                                    <div class="box-content nopadding">
-                                                        <div class="dataTables_wrapper">
+                                                    <div
+                                                        class="box-content nopadding">
+                                                        <div
+                                                            class="dataTables_wrapper">
 
                                                             <x:dataTable
                                                                 id="currentProjects"
@@ -565,10 +615,13 @@
                                                                 value="#{BenutzerverwaltungForm.myClass.projekte}">
 
                                                                 <h:column>
-                                                                    <h:outputText value="#{item.titel}" />
+                                                                    <h:outputText
+                                                                        value="#{item.titel}" />
                                                                 </h:column>
-                                                                <x:column width="40%">
-                                                                    <h:outputText value="#{item.institution.shortName}" />
+                                                                <x:column
+                                                                    width="40%">
+                                                                    <h:outputText
+                                                                        value="#{item.institution.shortName}" />
                                                                     <!-- Löschen-Schaltknopf -->
                                                                     <button
                                                                         jsf:id="deleteFromProject"
@@ -576,30 +629,36 @@
                                                                         title="#{msgs.ausProjektLoeschen}"
                                                                         jsf:rel="tooltip"
                                                                         jsf:action="#{BenutzerverwaltungForm.AusProjektLoeschen}">
-                                                                        <i class="fa fa-trash-o"></i>
+                                                                        <i
+                                                                            class="fa fa-trash-o"></i>
                                                                         <f:param
                                                                             name="ID"
                                                                             value="#{item.id}" />
-                                                                        <f:ajax render=":myform" />
+                                                                        <f:ajax
+                                                                            render=":myform" />
                                                                     </button>
                                                                 </x:column>
                                                             </x:dataTable>
 
-                                                            <div class="dataTables_info">
+                                                            <div
+                                                                class="dataTables_info">
                                                                 <!-- Neu-Schaltknopf -->
                                                                 <button
                                                                     jsf:id="addToProject"
+                                                                    jsf:rendered="#{BenutzerverwaltungForm.unsubscribedProjectsExist}"
                                                                     class="btn btn-primary font-size-s"
                                                                     jsf:action="#{ProjekteForm.FilterKeinMitZurueck}"
                                                                     jsf:immediate="true">
-                                                                    <i class="fa fa-plus margin-right-5"></i>
-                                                                    <h:outputText value="#{msgs.projektHinzufuegen}" />
+                                                                    <i
+                                                                        class="fa fa-plus margin-right-5"></i>
+                                                                    <h:outputText
+                                                                        value="#{msgs.projektHinzufuegen}" />
                                                                     <f:setPropertyActionListener
                                                                         target="#{BenutzerverwaltungForm.displayMode}"
                                                                         value="project" />
-                                                                    <f:ajax render=":myform" />
+                                                                    <f:ajax
+                                                                        render=":myform" />
                                                                 </button>
-
                                                             </div>
 
                                                         </div>
@@ -615,23 +674,26 @@
                                     </div>
                                 </div>
 
-                                <h:panelGroup rendered="#{BenutzerverwaltungForm.displayMode ne 'usergroup' and BenutzerverwaltungForm.displayMode ne 'project'  and BenutzerverwaltungForm.displayMode ne 'institution'}">
+                                <h:panelGroup
+                                    rendered="#{BenutzerverwaltungForm.displayMode ne 'usergroup' and BenutzerverwaltungForm.displayMode ne 'project'  and BenutzerverwaltungForm.displayMode ne 'institution'}">
 
                                     <div class="form-actions">
 
-                                        <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.id == null}">
+                                        <h:panelGroup
+                                            rendered="#{BenutzerverwaltungForm.myClass.id == null}">
                                             <button
-                                               	class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+                                                class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
                                                 jsf:id="absenden2"
                                                 type="submit"
                                                 jsf:action="#{BenutzerverwaltungForm.createUser}">
-                                                <i class="fa fa-save margin-right-5"></i>
-                                                <h:outputText value="#{msgs.createUser}" />
+                                                <i
+                                                    class="fa fa-save margin-right-5"></i>
+                                                <h:outputText
+                                                    value="#{msgs.createUser}" />
                                             </button>
 
                                             <!-- Cancel -->
-                                            <h:link
-                                                id="cancelEdition2"
+                                            <h:link id="cancelEdition2"
                                                 styleClass="btn margin-sides-10 font-size-s pull-right"
                                                 outcome="user_all"
                                                 value="#{msgs.abbrechen}" />
@@ -640,7 +702,8 @@
                                         </h:panelGroup>
 
 
-                                        <h:panelGroup rendered="#{BenutzerverwaltungForm.myClass.id != null}">
+                                        <h:panelGroup
+                                            rendered="#{BenutzerverwaltungForm.myClass.id != null}">
 
 
                                             <!-- Save -->
@@ -649,24 +712,26 @@
                                                 jsf:id="absenden"
                                                 type="submit"
                                                 jsf:action="#{BenutzerverwaltungForm.Speichern}">
-                                                <i class="fa fa-save margin-right-5"></i>
-                                                <h:outputText value="#{msgs.speichern}" />
+                                                <i
+                                                    class="fa fa-save margin-right-5"></i>
+                                                <h:outputText
+                                                    value="#{msgs.speichern}" />
                                             </button>
 
                                             <!-- Cancel -->
-                                            <h:link
-                                                id="cancelEdition"
+                                            <h:link id="cancelEdition"
                                                 styleClass="btn margin-sides-10 font-size-s pull-right"
                                                 outcome="user_all"
                                                 value="#{msgs.abbrechen}" />
 
-                                            <button
-                                                jsf:id="deleteUser"
+                                            <button jsf:id="deleteUser"
                                                 class="btn btn-danger font-size-s"
                                                 onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
                                                 jsf:action="#{BenutzerverwaltungForm.Loeschen}">
-                                                <i class="fa fa-trash-o margin-right-5"></i>
-                                                <h:outputText value="#{msgs.loeschen}" />
+                                                <i
+                                                    class="fa fa-trash-o margin-right-5"></i>
+                                                <h:outputText
+                                                    value="#{msgs.loeschen}" />
                                             </button>
                                         </h:panelGroup>
                                     </div>

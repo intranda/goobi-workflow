@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -36,6 +34,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
 
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.UserRole;
@@ -44,9 +43,13 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import lombok.Getter;
+import lombok.Setter;
 
 @Named("BenutzergruppenForm")
-@SessionScoped
+@WindowScoped
+@Getter
+@Setter
 public class UsergroupBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 8051160917458068675L;
     private Usergroup myBenutzergruppe = new Usergroup();
@@ -91,14 +94,6 @@ public class UsergroupBean extends BasicBean implements Serializable {
         return FilterKein();
     }
 
-    public String getTempRole() {
-        return tempRole;
-    }
-
-    public void setTempRole(String tempRole) {
-        this.tempRole = tempRole.trim();
-    }
-
     public String addRole() {
         myBenutzergruppe.addUserRole(tempRole);
         tempRole = "";
@@ -120,14 +115,6 @@ public class UsergroupBean extends BasicBean implements Serializable {
     public String FilterKeinMitZurueck() {
         FilterKein();
         return this.zurueck;
-    }
-
-    public Usergroup getMyBenutzergruppe() {
-        return this.myBenutzergruppe;
-    }
-
-    public void setMyBenutzergruppe(Usergroup myBenutzergruppe) {
-        this.myBenutzergruppe = myBenutzergruppe;
     }
 
     public List<String> getAllAvailableRoles() {

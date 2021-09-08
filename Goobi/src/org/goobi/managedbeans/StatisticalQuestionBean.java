@@ -7,18 +7,21 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.TimeUnit;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IStatisticPlugin;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Named("StatisticalQuestionBean")
-@SessionScoped
+@WindowScoped
 public class StatisticalQuestionBean implements Serializable {
 
     /**
@@ -26,21 +29,35 @@ public class StatisticalQuestionBean implements Serializable {
      */
     private static final long serialVersionUID = -5418439937138681611L;
 
+    @Getter
     private List<String> possiblePluginNames;
 
+    @Getter
     private String currentPluginName = "";
 
+    @Getter
+    @Setter
     private IStatisticPlugin currentPlugin;
 
+    @Getter
+    @Setter
     private Date sourceDateFrom;
+    @Getter
+    @Setter
     private Date sourceDateTo = new Date();
 
     private Date calculatedStartDate = new Date();
     private Date calculatedEndDate = new Date();
 
+    @Getter
+    @Setter
     protected Date timeFilterFrom;
+    @Getter
+    @Setter
     protected Date timeFilterTo;
 
+    @Getter
+    @Setter
     private TimeUnit sourceTimeUnit;
     private int sourceNumberOfTimeUnits = 0;
 
@@ -49,28 +66,12 @@ public class StatisticalQuestionBean implements Serializable {
         Collections.sort(possiblePluginNames);
     }
 
-    public List<String> getPossiblePluginNames() {
-        return possiblePluginNames;
-    }
-
     public String setStatisticalQuestion(String pluginName) {
         currentPluginName = pluginName;
 
         currentPlugin = (IStatisticPlugin) PluginLoader.getPluginByTitle(PluginType.Statistics, currentPluginName);
         currentPlugin.setFilter("");
         return "statistics";
-    }
-
-    public String getCurrentPluginName() {
-        return currentPluginName;
-    }
-
-    public IStatisticPlugin getCurrentPlugin() {
-        return currentPlugin;
-    }
-
-    public void setCurrentPlugin(IStatisticPlugin currentPlugin) {
-        this.currentPlugin = currentPlugin;
     }
 
     /**
@@ -105,38 +106,6 @@ public class StatisticalQuestionBean implements Serializable {
     public void setData(String data) {
     }
 
-    public Date getSourceDateFrom() {
-        return sourceDateFrom;
-    }
-
-    public Date getSourceDateTo() {
-        return sourceDateTo;
-    }
-
-    public void setSourceDateFrom(Date sourceDateFrom) {
-        this.sourceDateFrom = sourceDateFrom;
-    }
-
-    public void setSourceDateTo(Date sourceDateTo) {
-        this.sourceDateTo = sourceDateTo;
-    }
-
-    public void setTimeFilterFrom(Date timeFilterFrom) {
-        this.timeFilterFrom = timeFilterFrom;
-    }
-
-    public Date getTimeFilterFrom() {
-        return timeFilterFrom;
-    }
-
-    public void setTimeFilterTo(Date timeFilterTo) {
-        this.timeFilterTo = timeFilterTo;
-    }
-
-    public Date getTimeFilterTo() {
-        return timeFilterTo;
-    }
-
     /**
      * @return the sourceNumberOfTimeUnitsAsString
      *************************************************************************************/
@@ -157,14 +126,6 @@ public class StatisticalQuestionBean implements Serializable {
         } else {
             sourceNumberOfTimeUnits = 0;
         }
-    }
-
-    public TimeUnit getSourceTimeUnit() {
-        return sourceTimeUnit;
-    }
-
-    public void setSourceTimeUnit(TimeUnit sourceTimeUnit) {
-        this.sourceTimeUnit = sourceTimeUnit;
     }
 
     private void setTimeFrameToStatisticalQuestion() {

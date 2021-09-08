@@ -28,6 +28,7 @@ package de.sub.goobi.helper;
 import java.io.Serializable;
 import java.util.Comparator;
 
+import lombok.Setter;
 import ugh.dl.DocStructType;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroupType;
@@ -36,6 +37,7 @@ import ugh.dl.MetadataType;
 public class HelperComparator implements Comparator<Object>, Serializable {
 
     private static final long serialVersionUID = -1124724462982810327L;
+    @Setter
     private String Sortierart;
 
     @Override
@@ -60,10 +62,6 @@ public class HelperComparator implements Comparator<Object>, Serializable {
     @Override
     public boolean equals(Object obj) {
         return this == obj;
-    }
-
-    public void setSortierart(String sortierart) {
-        this.Sortierart = sortierart;
     }
 
     private int compareMetadatenTypen(Object o1, Object o2) {

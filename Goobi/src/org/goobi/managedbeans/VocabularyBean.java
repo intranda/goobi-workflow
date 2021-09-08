@@ -13,7 +13,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
@@ -21,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.input.BOMInputStream;
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -33,6 +33,8 @@ import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
+import org.goobi.vocabulary.VocabularyUploader;
+import org.goobi.vocabulary.helper.ImportJsonVocabulary;
 import org.primefaces.event.FileUploadEvent;
 
 import de.sub.goobi.helper.FacesContextHelper;
@@ -43,11 +45,11 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
 @Named
-@SessionScoped
-@Log4j
+@WindowScoped
+@Log4j2
 public class VocabularyBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = -4591427229251805665L;
@@ -131,11 +133,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     public String editRecords() {
         // load records of selected vocabulary
-        for (Definition def : currentVocabulary.getStruct()) {
-            if (def.isMainEntry()) {
-                currentVocabulary.setMainFieldName(def.getLabel());
-            }
-        }
         // initial first page
         //        VocabularyManager.getPaginatedRecords(currentVocabulary);
         VocabularyManager.getAllRecords(currentVocabulary);
@@ -147,6 +144,18 @@ public class VocabularyBean extends BasicBean implements Serializable {
             addRecord();
         }
         return "vocabulary_records";
+    }
+
+    public String uploadToServerRecords() {
+        VocabularyManager.getAllRecords(currentVocabulary);
+        Boolean boOK = VocabularyUploader.upload(currentVocabulary);
+        if (boOK) {
+            Helper.setMeldung(Helper.getTranslation("ExportFinished"));
+            return "vocabulary_all";
+        } else {
+            Helper.setFehlerMeldung(Helper.getTranslation("ExportError"));
+            return "";
+        }
     }
 
     /**
@@ -309,7 +318,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
         List<VocabRecord> recordList = currentVocabulary.getRecords();
 
         Workbook wb = new XSSFWorkbook();
-        Sheet sheet = wb.createSheet(StringUtils.isBlank(description) ? title : title + " - " + description);
+        Sheet sheet = wb.createSheet((StringUtils.isBlank(description) ? title : title + " - " + description).replace("/", ""));
 
         // create header
         Row headerRow = sheet.createRow(0);
@@ -377,62 +386,72 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     private void loadUploadedFile() {
         InputStream file = null;
-        try {
-            file = new FileInputStream(importFile.toFile());
-            BOMInputStream in = new BOMInputStream(file, false);
-            Workbook wb = WorkbookFactory.create(in);
-            Sheet sheet = wb.getSheetAt(0);
-            Iterator<Row> rowIterator = sheet.rowIterator();
-            Row headerRow = rowIterator.next();
-            int numberOfCells = headerRow.getLastCellNum();
-            headerOrder = new ArrayList<>(numberOfCells);
-            rowsToImport = new LinkedList<>();
-            for (int i = 0; i < numberOfCells; i++) {
-                Cell cell = headerRow.getCell(i);
-                if (cell != null) {
-                    cell.setCellType(CellType.STRING);
-                    String value = cell.getStringCellValue();
-                    headerOrder.add(new MatchingField(value, i, CellReference.convertNumToColString(i), this));
-                }
-            }
-            while (rowIterator.hasNext()) {
-                Row row = rowIterator.next();
-                rowsToImport.add(row);
-            }
 
-            for (MatchingField mf : headerOrder) {
-                String excelTitle = mf.getColumnHeader();
-                if (excelTitle.matches(".*\\(.{3}\\)")) {
-                    String titlePart = excelTitle.substring(0, excelTitle.lastIndexOf("(")).trim();
-                    String languagePart = excelTitle.substring(excelTitle.lastIndexOf("(") + 1, excelTitle.lastIndexOf(")")).trim();
-                    for (Definition def : currentVocabulary.getStruct()) {
-                        if (def.getLabel().equals(titlePart) && def.getLanguage().equals(languagePart)) {
-                            mf.setAssignedField(def);
-                        }
-                    }
-                } else {
-                    String titlePart = excelTitle.trim();
-                    for (Definition def : currentVocabulary.getStruct()) {
-                        if (def.getLabel().equals(titlePart) && StringUtils.isBlank(def.getLanguage())) {
-                            mf.setAssignedField(def);
-                        }
+        if (importFile.getFileName().toString().endsWith(".json")) {
+
+            List<VocabRecord> records =   ImportJsonVocabulary.convertJsonVocabulary(currentVocabulary, importFile);
+            VocabularyManager.saveVocabulary(currentVocabulary);
+            VocabularyManager.insertNewRecords(records, currentVocabulary.getId());
+
+            Helper.setMeldung("Imported records: " + records.size());
+
+        } else {
+
+            try {
+                file = new FileInputStream(importFile.toFile());
+                BOMInputStream in = new BOMInputStream(file, false);
+                Workbook wb = WorkbookFactory.create(in);
+                Sheet sheet = wb.getSheetAt(0);
+                Iterator<Row> rowIterator = sheet.rowIterator();
+                Row headerRow = rowIterator.next();
+                int numberOfCells = headerRow.getLastCellNum();
+                headerOrder = new ArrayList<>(numberOfCells);
+                rowsToImport = new LinkedList<>();
+                for (int i = 0; i < numberOfCells; i++) {
+                    Cell cell = headerRow.getCell(i);
+                    if (cell != null) {
+                        String value = cell.getStringCellValue();
+                        headerOrder.add(new MatchingField(value, i, CellReference.convertNumToColString(i), this));
                     }
                 }
-            }
+                while (rowIterator.hasNext()) {
+                    Row row = rowIterator.next();
+                    rowsToImport.add(row);
+                }
 
-        } catch (Exception e) {
-            Helper.setFehlerMeldung("file not readable", e);
-            log.error(e);
-        } finally {
-            if (file != null) {
-                try {
-                    file.close();
-                } catch (IOException e) {
-                    log.error(e);
+                for (MatchingField mf : headerOrder) {
+                    String excelTitle = mf.getColumnHeader();
+                    if (excelTitle.matches(".*\\(.{3}\\)")) {
+                        String titlePart = excelTitle.substring(0, excelTitle.lastIndexOf("(")).trim();
+                        String languagePart = excelTitle.substring(excelTitle.lastIndexOf("(") + 1, excelTitle.lastIndexOf(")")).trim();
+                        for (Definition def : currentVocabulary.getStruct()) {
+                            if (def.getLabel().equals(titlePart) && def.getLanguage().equals(languagePart)) {
+                                mf.setAssignedField(def);
+                            }
+                        }
+                    } else {
+                        String titlePart = excelTitle.trim();
+                        for (Definition def : currentVocabulary.getStruct()) {
+                            if (def.getLabel().equals(titlePart) && StringUtils.isBlank(def.getLanguage())) {
+                                mf.setAssignedField(def);
+                            }
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                Helper.setFehlerMeldung("file not readable", e);
+                log.error(e);
+            } finally {
+                if (file != null) {
+                    try {
+                        file.close();
+                    } catch (IOException e) {
+                        log.error(e);
+                    }
                 }
             }
         }
-
     }
 
     public void copyFile(String fileName, InputStream in) {
@@ -640,6 +659,16 @@ public class VocabularyBean extends BasicBean implements Serializable {
         }
         record.setFields(fieldList);
         currentVocabulary.getRecords().add(record);
+    }
+
+    /**
+     * If true, allow uploading of the vocabularies
+     * 
+     * @return
+     */
+    public Boolean useAuthorityServer() {
+
+        return VocabularyUploader.isActive();
     }
 
     /**

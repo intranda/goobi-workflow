@@ -72,7 +72,7 @@ import de.sub.goobi.mock.MockUploadedFile;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ JobCreation.class, FacesContext.class, ExternalContext.class })
-@PowerMockIgnore("javax.management.*")
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
 public class MassImportFormTest {
 
     private Process template;
@@ -124,6 +124,7 @@ public class MassImportFormTest {
         prepareMocking();
     }
 
+    @SuppressWarnings("deprecation")
     private void prepareMocking() {
 
         //        PowerMock.mockStatic(JobCreation.class);

@@ -3,7 +3,7 @@ package org.goobi.production.flow.statistics.hibernate;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -30,7 +30,8 @@ import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.production.flow.statistics.StatisticsManager;
 
 /**
@@ -95,7 +96,7 @@ public class Converter {
     protected Double getDouble() {
         if (this.myObject instanceof Integer) {
 
-            return new Double(((Integer) this.myObject).intValue());
+            return Double.valueOf(((Integer) this.myObject).intValue());
         } else if (this.myObject instanceof Double) {
 
             return (Double) this.myObject;

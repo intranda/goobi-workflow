@@ -26,6 +26,7 @@ package de.sub.goobi.export.dms;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -240,7 +241,11 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     }
                 }
             }
-        } catch (Exception e) {
+        }catch (AccessDeniedException e) { 
+        	Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), "Access to "+ e.getMessage()+ " was denied");
+            problems.add("Export cancelled: Access to " + e.getMessage()+ " was denied");
+            return false;
+    	}catch (Exception e) {
             Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), e);
             problems.add("Export cancelled: " + e.getMessage());
             return false;

@@ -3,9 +3,9 @@ package org.goobi.production.messages;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -32,12 +32,7 @@ public class EscapableMessagesRenderer extends MessagesRenderer {
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
         final ResponseWriter originalResponseWriter = context.getResponseWriter();
-        context.setResponseWriter(new ResponseWriterWrapper() {
-
-            @Override
-            public ResponseWriter getWrapped() {
-                return originalResponseWriter;
-            }
+        context.setResponseWriter(new ResponseWriterWrapper(originalResponseWriter) {
 
             @Override
             public void writeText(Object text, UIComponent component, String property) throws IOException {

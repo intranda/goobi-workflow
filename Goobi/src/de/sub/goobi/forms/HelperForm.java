@@ -1,6 +1,7 @@
 package de.sub.goobi.forms;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -34,13 +35,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
@@ -57,10 +58,12 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import lombok.Getter;
+import lombok.Setter;
 import ugh.dl.Fileformat;
 
 @Named("HelperForm")
-@SessionScoped
+@WindowScoped
 public class HelperForm implements Serializable {
 
     /**
@@ -70,6 +73,8 @@ public class HelperForm implements Serializable {
 
     private Boolean massImportAllowed = null;
 
+    @Getter
+    @Setter
     private boolean showError = false;
 
     // TODO re-added temporary for compiling issues
@@ -145,12 +150,13 @@ public class HelperForm implements Serializable {
         Set<Class<? extends Fileformat>> formatSet = new Reflections("ugh.fileformats.*").getSubTypesOf(Fileformat.class);
         for (Class<? extends Fileformat> cl : formatSet) {
             try {
-                Fileformat ff = cl.newInstance();
+                Fileformat ff = cl.getDeclaredConstructor().newInstance();
                 if (ff.isExportable()) {
                     ffs.add(new SelectItem(ff.getDisplayName(), null));
                 }
             } catch (InstantiationException e) {
             } catch (IllegalAccessException e) {
+            } catch (IllegalArgumentException |InvocationTargetException |NoSuchMethodException |SecurityException e) {
             }
         }
         return ffs;
@@ -162,12 +168,13 @@ public class HelperForm implements Serializable {
         Set<Class<? extends Fileformat>> formatSet = new Reflections("ugh.fileformats.*").getSubTypesOf(Fileformat.class);
         for (Class<? extends Fileformat> cl : formatSet) {
             try {
-                Fileformat ff = cl.newInstance();
+                Fileformat ff = cl.getDeclaredConstructor().newInstance();
                 if (ff.isWritable()) {
                     ffs.add(new SelectItem(ff.getDisplayName(), null));
                 }
             } catch (InstantiationException e) {
             } catch (IllegalAccessException e) {
+            } catch (IllegalArgumentException |InvocationTargetException |NoSuchMethodException |SecurityException e) {
             }
 
         }
@@ -291,9 +298,6 @@ public class HelperForm implements Serializable {
         return !Helper.getCurrentUser().getLdapGruppe().isReadonly();
     }
 
-    public boolean isShowError() {
-        return showError;
-    }
 
     public boolean isUseUii() {
         return ConfigurationHelper.getInstance().isUseIntrandaUi();
@@ -301,10 +305,6 @@ public class HelperForm implements Serializable {
 
     public boolean isRenderAccessibilityCss() {
         return ConfigurationHelper.getInstance().isRenderAccessibilityCss();
-    }
-
-    public void setShowError(boolean showError) {
-        this.showError = showError;
     }
 
     public void executeScriptsForStep(int id) {

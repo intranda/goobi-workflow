@@ -56,5 +56,5 @@ esac
 #cat /usr/local/tomcat/conf/Catalina/localhost/goobi.xml
 
 echo "Starting application server..."
-catalina.sh run
+exec catalina.sh run
 

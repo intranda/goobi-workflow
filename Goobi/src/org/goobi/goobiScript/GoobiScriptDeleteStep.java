@@ -1,7 +1,6 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -53,32 +52,43 @@ public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoob
     public void execute(GoobiScriptResult gsr) {
         Map<String, String> parameters = gsr.getParameters();
         // execute all jobs that are still in waiting state
-        Process p = ProcessManager.getProcessById(gsr.getProcessId());
-        gsr.setProcessTitle(p.getTitel());
+        Process process = ProcessManager.getProcessById(gsr.getProcessId());
+        gsr.setProcessTitle(process.getTitel());
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
 
-        if (p.getSchritte() != null) {
-            for (Iterator<Step> iterator = p.getSchritte().iterator(); iterator.hasNext();) {
-                Step s = iterator.next();
-                if (s.getTitel().equals(parameters.get("steptitle"))) {
-                    p.getSchritte().remove(s);
+        if (process.getSchritte() == null) {
+            gsr.setResultType(GoobiScriptResultType.OK);
+            gsr.setResultMessage("No steps available for process: " + process.getTitel());
+            return;
+        }
 
-                    StepManager.deleteStep(s);
-                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                            "Deleted step '" + parameters.get("steptitle") + "' from process using GoobiScript.", username);
-                    log.info("Deleted step '" + parameters.get("steptitle") + "' from process using GoobiScript for process with ID "
-                            + p.getId());
-                    gsr.setResultMessage("Deleted step '" + parameters.get("steptitle") + "' from process.");
-                    gsr.setResultType(GoobiScriptResultType.OK);
-                    break;
-                }
+        List<Step> steps = process.getSchritte();
+        String stepTitle = parameters.get("steptitle");
+        int removedSteps = 0;
+
+        for (int index = 0; index < steps.size(); index++) {
+            Step step = steps.get(index);
+
+            if (step.getTitel().equals(stepTitle)) {
+                StepManager.deleteStep(step);
+                removedSteps++;
             }
         }
-        if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
-            gsr.setResultType(GoobiScriptResultType.OK);
-            gsr.setResultMessage("Step not found: " + parameters.get("steptitle"));
+
+        if (removedSteps > 0) {
+            String howOften = "";
+            if (removedSteps > 1) {
+                howOften = " (" + removedSteps + "x)";
+            }
+            String message = "Deleted step '" + stepTitle + "'" + howOften + " from process using GoobiScript";
+            Helper.addMessageToProcessLog(process.getId(), LogType.DEBUG, message + ".", username);
+            log.info(message + " for process with ID " + process.getId());
+            gsr.setResultMessage("Deleted step '" + stepTitle + "'" + howOften + " from process.");
+        } else {
+            gsr.setResultMessage("Step not found: " + stepTitle);
         }
+        gsr.setResultType(GoobiScriptResultType.OK);
         gsr.updateTimestamp();
     }
 }

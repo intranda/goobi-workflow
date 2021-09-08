@@ -17,6 +17,7 @@
         <wb-resource deploy-path="/" source-path="/test/src"/>
                 
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/test/src"/>
                 
         <property name="java-output-path" value="/Goobi/webapp/WEB-INF/classes"/>
                 

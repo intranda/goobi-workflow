@@ -88,12 +88,15 @@ public class User implements DatabaseObject {
     @Getter
     @Setter
     private String standort;
+    @Setter
     private Integer tabellengroesse = Integer.valueOf(10);
+    @Setter
     private Integer sessiontimeout = 7200;
     //	private boolean confVorgangsdatumAnzeigen = false;
     @Getter
     @Setter
     private String metadatenSprache;
+    @Setter
     private List<Usergroup> benutzergruppen;
     @Getter
     @Setter
@@ -101,6 +104,7 @@ public class User implements DatabaseObject {
     @Getter
     @Setter
     private List<Step> bearbeitungsschritte;
+    @Setter
     private List<Project> projekte;
     @Getter
     @Setter
@@ -111,6 +115,7 @@ public class User implements DatabaseObject {
     @Getter
     @Setter
     private Ldap ldapGruppe;
+    @Setter
     private String css;
     @Getter
     @Setter
@@ -119,7 +124,11 @@ public class User implements DatabaseObject {
     @Setter
     private String shortcutPrefix = "ctrl+shift";
 
+    @Getter
+    @Setter
     private String encryptedPassword;
+    @Getter
+    @Setter
     private String passwordSalt;
 
     @Getter
@@ -285,31 +294,11 @@ public class User implements DatabaseObject {
         this.passwort = encrypted;
     }
 
-    public String getEncryptedPassword() {
-        return encryptedPassword;
-    }
-
-    public Object getPasswordSalt() {
-        return passwordSalt;
-    }
-
-    public void setEncryptedPassword(String encryptedPassword) {
-        this.encryptedPassword = encryptedPassword;
-    }
-
-    public void setPasswordSalt(String passwordSalt) {
-        this.passwordSalt = passwordSalt;
-    }
-
     public Integer getTabellengroesse() {
         if (this.tabellengroesse == null) {
             return Integer.valueOf(10);
         }
         return this.tabellengroesse;
-    }
-
-    public void setTabellengroesse(Integer tabellengroesse) {
-        this.tabellengroesse = tabellengroesse;
     }
 
     public int getBenutzergruppenSize() {
@@ -318,10 +307,6 @@ public class User implements DatabaseObject {
         } else {
             return this.benutzergruppen.size();
         }
-    }
-
-    public void setBenutzergruppen(List<Usergroup> benutzergruppen) {
-        this.benutzergruppen = benutzergruppen;
     }
 
     public List<Usergroup> getBenutzergruppen() {
@@ -357,10 +342,6 @@ public class User implements DatabaseObject {
         } else {
             return this.projekte.size();
         }
-    }
-
-    public void setProjekte(List<Project> projekte) {
-        this.projekte = projekte;
     }
 
     public List<Project> getProjekte() {
@@ -408,6 +389,27 @@ public class User implements DatabaseObject {
         return this.nachname + ", " + this.vorname;
     }
 
+    public String getFirstProjectTitle() {
+        if (this.projekte != null && this.projekte.size() > 0) {
+            return this.projekte.get(0).getTitel();
+        } else {
+            return "";
+        }
+    }
+
+    public String getFirstUserGroupTitle() {
+        if (this.benutzergruppen != null && this.benutzergruppen.size() > 0) {
+            return this.benutzergruppen.get(0).getTitel();
+        } else {
+            return "";
+        }
+    }
+
+    public String getInstitutionName() {
+        // The getter must be here because the getter initializes the institution when it is null
+        return this.getInstitution().getShortName();
+    }
+
     /**
      * BenutzerHome ermitteln und zurückgeben (entweder aus dem LDAP oder direkt aus der Konfiguration)
      * 
@@ -445,10 +447,6 @@ public class User implements DatabaseObject {
         return this.sessiontimeout;
     }
 
-    public void setSessiontimeout(Integer sessiontimeout) {
-        this.sessiontimeout = sessiontimeout;
-    }
-
     public Integer getSessiontimeoutInMinutes() {
         return getSessiontimeout() / 60;
     }
@@ -466,10 +464,6 @@ public class User implements DatabaseObject {
             this.css = "/css/default.css";
         }
         return this.css;
-    }
-
-    public void setCss(String css) {
-        this.css = css;
     }
 
     public boolean isRenderAccessibilityCss() {

@@ -21,7 +21,7 @@
             navId="a0" />
         <intranda:breadcrumb
             id="ldapgroups"
-            label="#{msgs.ldapgruppen}"
+            label="#{msgs.authentication}"
             action="#{LdapGruppenForm.paginator.returnToPreviousPage}" />
         <intranda:breadcrumb
             id="ldap"
@@ -366,24 +366,6 @@
                                             label="#{msgs.ldapNextFreeUnixId}"
                                             field="#{LdapGruppenForm.myLdapGruppe.nextFreeUnixId}"
                                             help="#{msgs.helpLdapNextFreeUnixId}"
-                                            fieldStyle="form-control" />
-
-                                        <intranda:formInputText
-                                            id="keystore"
-                                            name="keystore"
-                                            label="#{msgs.ldapKeystore}"
-                                            field="#{LdapGruppenForm.myLdapGruppe.pathToKeystore}"
-                                            required="false"
-                                            help="#{msgs.helpLdapKeystore}"
-                                            fieldStyle="form-control" />
-
-                                        <intranda:formInputText
-                                            id="keystoreToken"
-                                            name="keystoreToken"
-                                            label="#{msgs.ldapKeystoreToken}"
-                                            field="#{LdapGruppenForm.myLdapGruppe.keystorePassword}"
-                                            required="false"
-                                            help="#{msgs.helpLdapKeystoreToken}"
                                             fieldStyle="form-control" />
 
                                         <intranda:formInputText

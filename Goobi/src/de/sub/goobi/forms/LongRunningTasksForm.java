@@ -1,9 +1,10 @@
 package de.sub.goobi.forms;
 
+import java.lang.reflect.InvocationTargetException;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -27,14 +28,21 @@ package de.sub.goobi.forms;
  */
 import java.util.LinkedList;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
+
 import de.sub.goobi.helper.tasks.LongRunningTask;
 import de.sub.goobi.helper.tasks.LongRunningTaskManager;
+import lombok.Getter;
+import lombok.Setter;
 
 public class LongRunningTasksForm {
+    @Getter
+    @Setter
     private Process prozess;
+    @Getter
+    @Setter
     private LongRunningTask task;
     private static final Logger logger = LogManager.getLogger(LongRunningTask.class);
 
@@ -59,13 +67,12 @@ public class LongRunningTasksForm {
         } else {
             /* Thread lief schon und wurde abgebrochen */
             try {
-                LongRunningTask lrt = this.task.getClass().newInstance();
+                LongRunningTask lrt = this.task.getClass().getDeclaredConstructor().newInstance();
                 lrt.initialize(this.task.getProzess());
                 LongRunningTaskManager.getInstance().replaceTask(this.task, lrt);
                 LongRunningTaskManager.getInstance().executeTask(lrt);
-            } catch (InstantiationException e) {
-                logger.error(e);
-            } catch (IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+                    | SecurityException e) {
                 logger.error(e);
             }
         }
@@ -95,27 +102,11 @@ public class LongRunningTasksForm {
         LongRunningTaskManager.getInstance().removeTask(this.task);
     }
 
-    public Process getProzess() {
-        return this.prozess;
-    }
-
-    public void setProzess(Process prozess) {
-        this.prozess = prozess;
-    }
-
-    public LongRunningTask getTask() {
-        return this.task;
-    }
-
-    public void setTask(LongRunningTask task) {
-        this.task = task;
-    }
-
     public boolean isRunning() {
-        return LongRunningTaskManager.getInstance().isRunning();
+        return LongRunningTaskManager.isRunning();
     }
 
     public void toggleRunning() {
-        LongRunningTaskManager.getInstance().setRunning(!LongRunningTaskManager.getInstance().isRunning());
+        LongRunningTaskManager.setRunning(!LongRunningTaskManager.isRunning());
     }
 }

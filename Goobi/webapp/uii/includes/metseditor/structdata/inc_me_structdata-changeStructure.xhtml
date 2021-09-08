@@ -136,7 +136,7 @@
                                     class="btn btn--icon" 
                                     jsf:action="#{Metadaten.KnotenDelete}"
                                     title="#{msgs.strukturelementLoeschen}"
-                                    onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" role="button">
+                                    jsf:onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false" role="button">
                                     <span class="fa fa-trash fa-lg fa-with-bg" />
                                     <h:outputText value="#{msgs.strukturelementLoeschen}" />
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />

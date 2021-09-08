@@ -184,6 +184,12 @@ label {
 	background: none!important;
   	border: none;
   	padding: 0!important;
+  	-webkit-touch-callout: text;
+	-webkit-user-select: text;
+	-khtml-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
+	user-select: text;
 }
 
 .button-link-no-hover {
@@ -432,11 +438,6 @@ button.dropdown-item:hover {
     #navigation .toggle-mobile {
         display: block;
     }
-}
-
-/* CSS-Bugfix for rendered whitespace from h:panelGroup */
-#navigation .mobile-nav.open>li.has-submenu {
-    margin-bottom: -17px;
 }
 
 /* ------------- sub forms --------------- */
