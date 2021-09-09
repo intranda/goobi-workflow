@@ -625,8 +625,8 @@ public class LdapAuthentication {
         env.put(Context.SECURITY_AUTHENTICATION, "simple");
         /* wenn die Verbindung über ssl laufen soll */
         if (inBenutzer.getLdapGruppe().isUseSsl()) {
-            String keystorepath = inBenutzer.getLdapGruppe().getPathToKeystore();
-            String keystorepasswd = inBenutzer.getLdapGruppe().getKeystorePassword();
+            String keystorepath = ConfigurationHelper.getInstance().getTruststore();
+            String keystorepasswd = ConfigurationHelper.getInstance().getTruststoreToken();
 
             // add all necessary certificates first
             loadCertificates(inBenutzer, keystorepath, keystorepasswd);
