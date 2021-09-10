@@ -66,10 +66,10 @@ public class SimpleAlto {
             SimpleAltoLine line = new SimpleAltoLine();
             line.setId(xmlLine.getAttributeValue("ID"));
 
-            line.setX((int) Double.parseDouble(xmlLine.getAttributeValue("HPOS")));
-            line.setY((int) Double.parseDouble(xmlLine.getAttributeValue("VPOS")));
-            line.setWidth((int) Double.parseDouble(xmlLine.getAttributeValue("WIDTH")));
-            line.setHeight((int) Double.parseDouble(xmlLine.getAttributeValue("HEIGHT")));
+            line.setX((int) Double.parseDouble(xmlLine.getAttributeValue("HPOS", "0")));
+            line.setY((int) Double.parseDouble(xmlLine.getAttributeValue("VPOS", "0")));
+            line.setWidth((int) Double.parseDouble(xmlLine.getAttributeValue("WIDTH", "0")));
+            line.setHeight((int) Double.parseDouble(xmlLine.getAttributeValue("HEIGHT", "0")));
 
             List<SimpleAltoWord> words = new ArrayList<>();
 
@@ -80,10 +80,10 @@ public class SimpleAlto {
                 word.setValue(xmlWord.getAttributeValue("CONTENT"));
                 word.setLineId(line.getId());
 
-                word.setX((int) Double.parseDouble(xmlWord.getAttributeValue("HPOS")));
-                word.setY((int) Double.parseDouble(xmlWord.getAttributeValue("VPOS")));
-                word.setWidth((int) Double.parseDouble(xmlWord.getAttributeValue("WIDTH")));
-                word.setHeight((int) Double.parseDouble(xmlWord.getAttributeValue("HEIGHT")));
+                word.setX((int) Double.parseDouble(xmlWord.getAttributeValue("HPOS", "0")));
+                word.setY((int) Double.parseDouble(xmlWord.getAttributeValue("VPOS", "0")));
+                word.setWidth((int) Double.parseDouble(xmlWord.getAttributeValue("WIDTH", "0")));
+                word.setHeight((int) Double.parseDouble(xmlWord.getAttributeValue("HEIGHT", "0")));
 
                 words.add(word);
                 alto.wordMap.put(word.getId(), word);

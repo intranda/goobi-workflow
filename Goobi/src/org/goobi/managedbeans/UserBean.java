@@ -102,6 +102,9 @@ public class UserBean extends BasicBean implements Serializable {
     @Getter
     private boolean unsubscribedProjectsExist;
 
+    @Getter
+    private boolean  unsubscribedGroupsExist;
+    
     public String Neu() {
         this.myClass = new User();
         this.myClass.setVorname("");
@@ -289,12 +292,12 @@ public class UserBean extends BasicBean implements Serializable {
                 }
                 paginator.load();
             } catch (DAOException e) {
-                Helper.setFehlerMeldung("#{msgs.Error_hideUser}", e.getMessage());
+                Helper.setFehlerMeldung("Error_hideUser", e.getMessage());
                 return "";
             }
             return FilterKein();
         }
-        Helper.setFehlerMeldung("#{msgs.Error_selfDelete}");
+        Helper.setFehlerMeldung("Error_selfDelete");
         return "";
     }
 
@@ -583,6 +586,8 @@ public class UserBean extends BasicBean implements Serializable {
         }
         UsergroupManager m = new UsergroupManager();
         usergroupPaginator = new DatabasePaginator("titel", filter, m, "");
+        
+        unsubscribedGroupsExist = usergroupPaginator.getTotalResults() > 0;
     }
 
     private void updateProjectPaginator() {

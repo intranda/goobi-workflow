@@ -3,7 +3,7 @@ package de.sub.goobi.persistence.managers;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -36,7 +36,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.pool2.ObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPool;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * 
@@ -60,21 +61,6 @@ public class ConnectionManager {
             connectToDB();
         } catch (Exception e) {
             logger.error("Failed to construct ConnectionManager", e);
-        }
-    }
-
-    /**
-     * destructor
-     */
-    @Override
-    protected void finalize() {
-        if (logger.isTraceEnabled()) {
-            logger.trace("Finalizing ConnectionManager");
-        }
-        try {
-            super.finalize();
-        } catch (Throwable ex) {
-            logger.error("ConnectionManager finalize failed to disconnect from mysql: ", ex);
         }
     }
 

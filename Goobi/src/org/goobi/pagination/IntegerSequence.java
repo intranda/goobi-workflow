@@ -2,7 +2,7 @@
  * This file is part of the Goobi Application - a Workflow tool for the support of
  * mass digitization.
  *
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
  *
@@ -46,7 +46,7 @@ public class IntegerSequence extends ArrayList<Integer> {
 
         this.ensureCapacity(end - start);
         for (int i = start; i <= end; i = (i + increment)) {
-            this.add(new Integer(i));
+            this.add(Integer.valueOf(i));
         }
     }
 }

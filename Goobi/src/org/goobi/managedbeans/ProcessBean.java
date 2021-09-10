@@ -547,7 +547,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
             }
-            sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
+            sql = sql + " projekte.projectIsArchived = false ";
         }
 
         paginator = new DatabasePaginator(sortList(), sql, m, "process_all");
@@ -598,7 +598,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
             }
-            sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
+            sql = sql + " projekte.projectIsArchived = false ";
         }
         ProcessManager m = new ProcessManager();
         paginator = new DatabasePaginator(sortList(), sql, m, "process_all");
@@ -647,7 +647,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
             }
-            sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
+            sql = sql + " projekte.projectIsArchived = false ";
         }
 
         ProcessManager m = new ProcessManager();
@@ -1070,32 +1070,32 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     public void ExportDMS() {
-    	if(this.myProzess.getContainsExportStep()) {
-	        IExportPlugin export = null;
-	        String pluginName = ProcessManager.getExportPluginName(myProzess.getId());
-	        if (StringUtils.isNotEmpty(pluginName)) {
-	            try {
-	                export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
-	            } catch (Exception e) {
-	                logger.error("Can't load export plugin, use default plugin", e);
-	                export = new ExportDms();
-	            }
-	        }
-	        if (export == null) {
-	            export = new ExportDms();
-	            Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started export using 'ExportDMS'.");
-	        }
-	        try {
-	            export.startExport(this.myProzess);
-	        } catch (Exception e) {
-	            String[] parameter = { "DMS", this.myProzess.getTitel() };
-	            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
-	            //            Helper.setFehlerMeldung("An error occured while trying to export to DMS for: " + this.myProzess.getTitel(), e);
-	            logger.error("ExportDMS error", e);
-	        }
-    	}else {
-    		Helper.setFehlerMeldung("noExportTaskError");
-    	}
+        if(this.myProzess.getContainsExportStep()) {
+            IExportPlugin export = null;
+            String pluginName = ProcessManager.getExportPluginName(myProzess.getId());
+            if (StringUtils.isNotEmpty(pluginName)) {
+                try {
+                    export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+                } catch (Exception e) {
+                    logger.error("Can't load export plugin, use default plugin", e);
+                    export = new ExportDms();
+                }
+            }
+            if (export == null) {
+                export = new ExportDms();
+                Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started export using 'ExportDMS'.");
+            }
+            try {
+                export.startExport(this.myProzess);
+            } catch (Exception e) {
+                String[] parameter = { "DMS", this.myProzess.getTitel() };
+                Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
+                //            Helper.setFehlerMeldung("An error occured while trying to export to DMS for: " + this.myProzess.getTitel(), e);
+                logger.error("ExportDMS error", e);
+            }
+        }else {
+            Helper.setFehlerMeldung("noExportTaskError");
+        }
     }
 
     @SuppressWarnings("unchecked")

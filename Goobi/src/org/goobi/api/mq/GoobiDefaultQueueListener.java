@@ -1,5 +1,6 @@
 package org.goobi.api.mq;
 
+import java.lang.reflect.InvocationTargetException;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -153,7 +154,7 @@ public class GoobiDefaultQueueListener {
                 }
             }
         };
-        
+
         cons.setMessageListener(myListener);*/
 
         conn.start();
@@ -188,9 +189,10 @@ public class GoobiDefaultQueueListener {
         Set<Class<? extends TicketHandler>> ticketHandlers = new Reflections("org.goobi.api.mq.*").getSubTypesOf(TicketHandler.class);
         for (Class<? extends TicketHandler> clazz : ticketHandlers) {
             try {
-                TicketHandler<PluginReturnValue> handler = clazz.newInstance();
+                TicketHandler<PluginReturnValue> handler = clazz.getDeclaredConstructor().newInstance();
                 instances.put(handler.getTicketHandlerName(), handler);
-            } catch (InstantiationException | IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | IllegalArgumentException | InvocationTargetException
+                    | SecurityException e) {
                 log.error(e);
             }
         }

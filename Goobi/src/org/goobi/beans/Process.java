@@ -50,7 +50,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.ServletContext;
@@ -70,8 +69,6 @@ import org.goobi.io.FileListFilter;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.StringPair;
 import org.goobi.production.enums.LogType;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BeanHelper;
@@ -276,15 +273,15 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         return false;
     }
-    
+
     public boolean getContainsExportStep() {
-    	this.getSchritte();
-    	for(int i = 0; i < this.schritte.size(); i++) {
-    		if(this.schritte.get(i).isTypExportDMS() || this.schritte.get(i).isTypExportRus()){
-    			return true;
-    		}
-    	}
-    	return false;
+        this.getSchritte();
+        for(int i = 0; i < this.schritte.size(); i++) {
+            if(this.schritte.get(i).isTypExportDMS() || this.schritte.get(i).isTypExportRus()){
+                return true;
+            }
+        }
+        return false;
     }
 
     //    public List<HistoryEvent> getHistory() {
@@ -334,7 +331,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (MetadatenSperrung.isLocked(this.id.intValue())) {
             String benutzerID = this.msp.getLockBenutzer(this.id.intValue());
             try {
-                rueckgabe = UserManager.getUserById(new Integer(benutzerID));
+                rueckgabe = UserManager.getUserById(Integer.valueOf(benutzerID));
             } catch (Exception e) {
                 Helper.setFehlerMeldung(Helper.getTranslation("userNotFound"), e);
             }
@@ -558,7 +555,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrTxtDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     @Deprecated
@@ -568,27 +565,27 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrPdfDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrXmlDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getImportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getExportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException, InterruptedException, SwapException, DAOException {
@@ -1383,7 +1380,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         return ;
     }
-    
+
 
     public String downloadDocket() {
 

@@ -92,12 +92,6 @@ public class SessionForm implements Serializable {
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE', ' dd. MMMM yyyy");
 
     /**
-     * The formatter that is used for date- and time representation strings
-     */
-    private SimpleDateFormat fullFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-
-
-    /**
      * The request object of the current session
      */
     @Inject

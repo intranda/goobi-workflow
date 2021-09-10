@@ -216,7 +216,7 @@ public class HelperSchritte {
                         myStep.setBearbeitungszeitpunkt(myDate);
                         myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
                         SendMail.getInstance().sendMailToAssignedUser(myStep, StepStatus.OPEN);
-                        HistoryManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(),
+                        HistoryManager.addHistory(myDate, Integer.valueOf(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(),
                                 HistoryEventType.stepOpen.getValue(), processId);
                         /* wenn es ein automatischer Schritt mit Script ist */
                         if (myStep.isTypAutomatisch()) {

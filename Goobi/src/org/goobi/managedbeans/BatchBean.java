@@ -198,7 +198,7 @@ public class BatchBean extends BasicBean implements Serializable {
     public void setSelectedBatchIds(List<String> processIds) {
         selectedBatches = new ArrayList<>();
         for (String idString : processIds) {
-            Integer id = new Integer(idString);
+            Integer id = Integer.valueOf(idString);
 
             selectedBatches.add(ProcessManager.getBatchById(id));
         }
@@ -223,7 +223,7 @@ public class BatchBean extends BasicBean implements Serializable {
     public void setSelectedProcessIds(List<String> processIds) {
         selectedProcesses = new ArrayList<>();
         for (String idString : processIds) {
-            Integer id = new Integer(idString);
+            Integer id = Integer.valueOf(idString);
 
             selectedProcesses.add(ProcessManager.getProcessById(id));
         }

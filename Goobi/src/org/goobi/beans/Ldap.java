@@ -64,8 +64,6 @@ public class Ldap implements Serializable, DatabaseObject, IAuthenticationProvid
     private String attributeToTest;
     private String valueOfAttribute;
     private String nextFreeUnixId ="CHANGE_ME_cn=NextFreeUnixId,o=example,c=net";
-    private String pathToKeystore;
-    private String keystorePassword;
     private String pathToRootCertificate;
     private String pathToPdcCertificate;
     private String encryptionType = "SHA";

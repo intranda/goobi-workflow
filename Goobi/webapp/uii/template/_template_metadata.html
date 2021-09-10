@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:c="http://java.sun.com/jstl/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 <h:head>
 	<meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<!-- Apple devices fullscreen -->
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<!-- Apple devices fullscreen -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
 	<meta name="description" content="Goobi workflow" />
 	<meta name="author" content="intranda GmbH" />
@@ -15,8 +15,8 @@
 	<meta http-equiv="pragma" content="no-cache" />
 	<meta http-equiv="cache-control" content="no-cache" />
 	<meta name="date" content="1970-01-01T00:00:00+01:00" />
-    <meta name="version" content="#{HelperForm.applicationHeaderTitle} - #{HelperForm.buildVersion}" />
-    <title><h:outputText value="#{HelperForm.applicationHeaderTitle} - #{HelperForm.version}" /></title>
+	<meta name="version" content="#{HelperForm.applicationHeaderTitle} - #{HelperForm.buildVersion}" />
+	<title><h:outputText value="#{HelperForm.applicationHeaderTitle} - #{HelperForm.version}" /></title>
 
 	<!-- Bootstrap -->
 	<link rel="stylesheet" href="template/css/bootstrap.min.css?version=2" />
@@ -25,13 +25,13 @@
 	<!-- Color CSS -->
 	<link rel="stylesheet" href="template/css/themes.css?v=1" />
 	<!-- Font Awesome CSS -->
-    <link rel="stylesheet" href="template/css/font-awesome.css?v=1" />
+	<link rel="stylesheet" href="template/css/font-awesome.css?v=1" />
 	<!-- colorbox -->
-    <link rel="stylesheet" href="template/css/plugins/colorbox/colorbox.css?v=1" />
+	<link rel="stylesheet" href="template/css/plugins/colorbox/colorbox.css?v=1" />
 	<!-- intranda -->
 	<link rel="stylesheet" href="template/css/intranda.css?v=1" />
-    <link rel="stylesheet" href="template/css/x3dom/x3dom.css?v=1" />
-    <link rel="stylesheet" href="template/css/image.css?v=1" />
+	<link rel="stylesheet" href="template/css/x3dom/x3dom.css?v=1" />
+	<link rel="stylesheet" href="template/css/image.css?v=1" />
 	<script src="template/js/intranda.js?v=1"></script>
 	<!-- jQuery -->
 	<script src="template/js/jquery.min.js"></script>
@@ -40,7 +40,7 @@
 	<!-- Nice Scroll -->
 	<script src="template/js/plugins/nicescroll/jquery.nicescroll.min.js"></script>
 	<!-- imagesLoaded -->
-    <script src="template/js/plugins/imagesLoaded/jquery.imagesloaded.min.js"></script>
+	<script src="template/js/plugins/imagesLoaded/jquery.imagesloaded.min.js"></script>
 	<!-- jQuery UI -->
 	<script src="template/js/plugins/jquery-ui/jquery-ui.js"></script>
 	<!-- colorbox -->
@@ -63,7 +63,7 @@
 	<script src="template/js/openseadragon/openseadragon.min.js"></script>
 	<script
 		src="template/js/openseadragon/openseadragon-viewerinputhook.js"></script>
-    <script src="template/js/imageView.min.js"></script>
+	<script src="template/js/imageView.min.js"></script>
 
 	<!-- 3D-Models -->
 	<script type="text/javascript"
@@ -128,17 +128,7 @@
 		</h:panelGroup>
 
 		<c:if test="#{LoginForm.myBenutzer!=null}">
-			<div id="navigation">
-				<div class="container-fluid">
-					<ui:insert name="menu">
-						<ui:include src="inc_menu.xhtml" />
-					</ui:insert>
-				</div>
-
-				<ui:insert name="menu_mobile">
-					<ui:include src="inc_menu_mobile.xhtml" />
-				</ui:insert>
-			</div>
+			<ui:include src="inc_menu.xhtml" />
 
 			<div class="container-fluid" id="content">
 				<div id="left" style="width: #{Metadaten.treeWidth}px;">
@@ -157,10 +147,10 @@
 		</c:if>
 		<style>
 			<h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false"/>
-        </style>
+		</style>
 	</f:view>
 
-    <div id="ajaxloader" style="position: absolute; right: 20px; top: 32px; display: none;">
+	<div id="ajaxloader" style="position: absolute; right: 20px; top: 32px; display: none;">
 		<img src="template/img/goobi/ajaxloader2.gif" />
 	</div>
 </body>

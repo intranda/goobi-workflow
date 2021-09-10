@@ -16,9 +16,7 @@ import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 public class GoobiScriptMoveWorkflowBackward extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
@@ -48,7 +46,6 @@ public class GoobiScriptMoveWorkflowBackward extends AbstractIGoobiScript implem
 
     @Override
     public void execute(GoobiScriptResult gsr) {
-        Map<String, String> parameters = gsr.getParameters();
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
         gsr.setProcessTitle(p.getTitel());
         gsr.setResultType(GoobiScriptResultType.RUNNING);

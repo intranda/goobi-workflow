@@ -38,7 +38,6 @@ public class AltoSaver {
             String xpath = String.format("//alto:String[@ID='%s']", change.getWordId());
             XPathExpression<Element> compXpath = xFactory.compile(xpath, Filters.element(), wordXpathVariables, altoNamespace);
             compXpath.setVariable("wordid", change.getWordId());
-            System.out.println();
             Element stringEl = compXpath.evaluateFirst(doc);
             if (stringEl != null) {
                 stringEl.setAttribute("CONTENT", change.getValue());
