@@ -196,7 +196,7 @@
                                                     <fo:table-cell>
                                                         <fo:block margin="2pt">
                                                             <xsl:value-of select="@role" />
-                                                            :
+                                                            <xsl:text>:</xsl:text>
                                                         </fo:block>
                                                     </fo:table-cell>
                                                     <fo:table-cell>
@@ -248,7 +248,7 @@
                                                     <fo:table-cell>
                                                         <fo:block margin="2pt">
                                                             <xsl:value-of select="@name" />
-                                                            :
+                                                            <xsl:text>:</xsl:text>
                                                         </fo:block>
                                                     </fo:table-cell>
                                                     <fo:table-cell>
@@ -300,7 +300,7 @@
                                                         <fo:table-cell>
                                                             <fo:block margin="2pt">
                                                                 <xsl:value-of select="@role" />
-                                                                :
+                                                                <xsl:text>:</xsl:text>
                                                             </fo:block>
                                                         </fo:table-cell>
                                                         <fo:table-cell>
@@ -350,7 +350,7 @@
                                                         <fo:table-cell>
                                                             <fo:block margin="2pt">
                                                                 <xsl:value-of select="@name" />
-                                                                :
+                                                                <xsl:text>:</xsl:text>
                                                             </fo:block>
                                                         </fo:table-cell>
                                                         <fo:table-cell>
@@ -401,19 +401,14 @@
                                                             <fo:table-cell>
                                                                 <fo:block margin="2pt">
                                                                     <xsl:value-of select="@role" />
-                                                                    :
+                                                                    <xsl:text>:</xsl:text>
                                                                 </fo:block>
                                                             </fo:table-cell>
                                                             <fo:table-cell>
                                                                 <fo:block margin="2pt">
-                                                                    <xsl:value-of select="@lastname" />
-                                                                    ,
-                                                                    <xsl:value-of select="@firstname" />
+                                                                    <xsl:value-of select="@lastname" />, <xsl:value-of select="@firstname" />
                                                                     <xsl:if test="@id">
-                                                                        (
-                                                                        <xsl:value-of select="@uri" />
-                                                                        <xsl:value-of select="@id" />
-                                                                        )
+                                                                        (<xsl:value-of select="@uri" /><xsl:value-of select="@id" />)
                                                                     </xsl:if>
                                                                 </fo:block>
                                                             </fo:table-cell>
@@ -451,7 +446,7 @@
                                                             <fo:table-cell>
                                                                 <fo:block margin="2pt">
                                                                     <xsl:value-of select="@name" />
-                                                                    :
+                                                                    <xsl:text>:</xsl:text>
                                                                 </fo:block>
                                                             </fo:table-cell>
                                                             <fo:table-cell>
@@ -502,7 +497,7 @@
                                                                 <fo:table-cell>
                                                                     <fo:block margin="2pt">
                                                                         <xsl:value-of select="@role" />
-                                                                        :
+                                                                        <xsl:text>:</xsl:text>
                                                                     </fo:block>
                                                                 </fo:table-cell>
                                                                 <fo:table-cell>
@@ -552,7 +547,7 @@
                                                                 <fo:table-cell>
                                                                     <fo:block margin="2pt">
                                                                         <xsl:value-of select="@name" />
-                                                                        :
+                                                                        <xsl:text>:</xsl:text>
                                                                     </fo:block>
                                                                 </fo:table-cell>
                                                                 <fo:table-cell>
@@ -603,7 +598,7 @@
                                                                     <fo:table-cell>
                                                                         <fo:block margin="2pt">
                                                                             <xsl:value-of select="@role" />
-                                                                            :
+                                                                            <xsl:text>:</xsl:text>
                                                                         </fo:block>
                                                                     </fo:table-cell>
                                                                     <fo:table-cell>
@@ -653,7 +648,7 @@
                                                                     <fo:table-cell>
                                                                         <fo:block margin="2pt">
                                                                             <xsl:value-of select="@name" />
-                                                                            :
+                                                                            <xsl:text>:</xsl:text>
                                                                         </fo:block>
                                                                     </fo:table-cell>
                                                                     <fo:table-cell>
@@ -704,7 +699,7 @@
                                                                         <fo:table-cell>
                                                                             <fo:block margin="2pt">
                                                                                 <xsl:value-of select="@role" />
-                                                                                :
+                                                                                <xsl:text>:</xsl:text>
                                                                             </fo:block>
                                                                         </fo:table-cell>
                                                                         <fo:table-cell>
@@ -754,7 +749,7 @@
                                                                         <fo:table-cell>
                                                                             <fo:block margin="2pt">
                                                                                 <xsl:value-of select="@name" />
-                                                                                :
+                                                                                <xsl:text>:</xsl:text>
                                                                             </fo:block>
                                                                         </fo:table-cell>
                                                                         <fo:table-cell>
@@ -805,19 +800,14 @@
                                                                             <fo:table-cell>
                                                                                 <fo:block margin="2pt">
                                                                                     <xsl:value-of select="@role" />
-                                                                                    :
+                                                                                    <xsl:text>:</xsl:text>
                                                                                 </fo:block>
                                                                             </fo:table-cell>
                                                                             <fo:table-cell>
                                                                                 <fo:block margin="2pt">
-                                                                                    <xsl:value-of select="@lastname" />
-                                                                                    ,
-                                                                                    <xsl:value-of select="@firstname" />
+                                                                                    <xsl:value-of select="@lastname" />, <xsl:value-of select="@firstname" />
                                                                                     <xsl:if test="@id">
-                                                                                        (
-                                                                                        <xsl:value-of select="@uri" />
-                                                                                        <xsl:value-of select="@id" />
-                                                                                        )
+                                                                                        (<xsl:value-of select="@uri" /><xsl:value-of select="@id" />)
                                                                                     </xsl:if>
                                                                                 </fo:block>
                                                                             </fo:table-cell>
@@ -855,7 +845,7 @@
                                                                             <fo:table-cell>
                                                                                 <fo:block margin="2pt">
                                                                                     <xsl:value-of select="@name" />
-                                                                                    :
+                                                                                    <xsl:text>:</xsl:text>
                                                                                 </fo:block>
                                                                             </fo:table-cell>
                                                                             <fo:table-cell>
@@ -906,7 +896,7 @@
                                                                                 <fo:table-cell>
                                                                                     <fo:block margin="2pt">
                                                                                         <xsl:value-of select="@role" />
-                                                                                        :
+                                                                                        <xsl:text>:</xsl:text>
                                                                                     </fo:block>
                                                                                 </fo:table-cell>
                                                                                 <fo:table-cell>
@@ -956,7 +946,7 @@
                                                                                 <fo:table-cell>
                                                                                     <fo:block margin="2pt">
                                                                                         <xsl:value-of select="@name" />
-                                                                                        :
+                                                                                        <xsl:text>:</xsl:text>
                                                                                     </fo:block>
                                                                                 </fo:table-cell>
                                                                                 <fo:table-cell>

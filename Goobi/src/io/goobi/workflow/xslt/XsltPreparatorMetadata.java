@@ -213,20 +213,19 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
 
         //pages 
         MutablePair<String, String> first = this.metahelper.getImageNumber(parentStruct, MetadatenHelper.PAGENUMBER_FIRST);
-        if (first != null) {
-            Element mdPhys = new Element("metadata", xmlns);
-            MetadataType typePhs = prefs.getMetadataTypeByName("physPageNumber");
-            mdPhys.setAttribute("name", typePhs.getNameByLanguage(Helper.getMetadataLanguage()));
-            mdPhys.addContent(first.getLeft());
-            node.addContent(mdPhys);
-            Element mdLog = new Element("metadata", xmlns);
-            MetadataType typeLog = prefs.getMetadataTypeByName("logicalPageNumber");
-            mdLog.setAttribute("name", typeLog.getNameByLanguage(Helper.getMetadataLanguage()));
-            mdLog.addContent(first.getRight());
-            node.addContent(mdLog);
-        }
+        MutablePair<String, String> last = this.metahelper.getImageNumber(parentStruct, MetadatenHelper.PAGENUMBER_LAST);
 
-//        MutablePair<String, String> last = this.metahelper.getImageNumber(parentStruct, MetadatenHelper.PAGENUMBER_LAST);
+        if (first != null) {
+            Element mdPages = new Element("metadata", xmlns);
+            mdPages.setAttribute("name", Helper.getTranslation("Pages"));
+            mdPages.addContent(first.getRight() + " - " + last.getRight());
+            node.addContent(mdPages);
+            
+            Element mdImages = new Element("metadata", xmlns);
+            mdImages.setAttribute("name", Helper.getTranslation("Images"));
+            mdImages.addContent(first.getLeft() + " - " + last.getLeft());
+            node.addContent(mdImages);
+        }
 
         if (parentStruct.getAllChildren() != null) {
             for (DocStruct ds : parentStruct.getAllChildren()) {
