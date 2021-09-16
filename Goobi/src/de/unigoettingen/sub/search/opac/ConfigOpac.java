@@ -96,7 +96,7 @@ public class ConfigOpac {
      * find Catalogue in Opac-Configurationlist ================================================================
      */
 
-    public List<ConfigOpacCatalogue> getAllCatalogues() {
+    public List<ConfigOpacCatalogue> getAllCatalogues(String workflowName) {
         List<ConfigOpacCatalogue> answer = new ArrayList<>();
         int countCatalogues = config.getMaxIndex("catalogue");
         for (int i = 0; i <= countCatalogues; i++) {
@@ -104,7 +104,7 @@ public class ConfigOpac {
             String opacType = config.getString("catalogue(" + i + ").config[@opacType]", "PICA");
             IOpacPlugin opacPlugin = (IOpacPlugin) PluginLoader.getPluginByTitle(PluginType.Opac, opacType);
             if (opacPlugin != null) {
-                answer.addAll(opacPlugin.getOpacConfiguration(title));
+                answer.addAll(opacPlugin.getOpacConfiguration(workflowName, title));
             }
         }
         return answer;
