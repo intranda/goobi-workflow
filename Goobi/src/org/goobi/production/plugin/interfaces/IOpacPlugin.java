@@ -71,7 +71,6 @@ public interface IOpacPlugin extends IPlugin {
         return "/uii/includes/process/process_new_opac.xhtml";
     }
 
-
     default List<ConfigOpacCatalogue> getOpacConfiguration(String title) {
         List<ConfigOpacCatalogue> catalogues = new ArrayList<>();
         ConfigOpacCatalogue coc = ConfigOpac.getInstance().getCatalogueByName(title);
@@ -79,4 +78,9 @@ public interface IOpacPlugin extends IPlugin {
         catalogues.add(coc);
         return catalogues;
     }
+
+    default List<ConfigOpacCatalogue> getOpacConfiguration(String workflowName, String title) {
+        return getOpacConfiguration(title);
+    }
+
 }

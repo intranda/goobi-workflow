@@ -213,14 +213,14 @@ public class ProzesskopieForm implements Serializable {
             return "";
         }
         if (this.prozessVorlage.getProjekt().getProjectIsArchived()) {
-                
-            Helper.setFehlerMeldung("projectIsArchived");    
+
+            Helper.setFehlerMeldung("projectIsArchived");
             return "";
         }
-        
+
         clearValues();
         this.co = ConfigOpac.getInstance();
-        catalogues = co.getAllCatalogues();
+        catalogues = co.getAllCatalogues(prozessVorlage.getTitel());
 
         catalogueTitles = new ArrayList<>(catalogues.size());
         for (ConfigOpacCatalogue coc : catalogues) {

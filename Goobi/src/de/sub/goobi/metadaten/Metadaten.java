@@ -66,6 +66,7 @@ import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.AltoChange;
 import org.goobi.beans.Process;
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.SimpleAlto;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.OrderedKeyMap;
@@ -1767,7 +1768,7 @@ public class Metadaten implements Serializable {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -4096,7 +4097,16 @@ public class Metadaten implements Serializable {
 
     public List<String> getAllOpacCatalogues() {
         if (catalogues == null) {
-            catalogues = ConfigOpac.getInstance().getAllCatalogues();
+            String processTemplateName = "";
+            List<Processproperty>  properties =myProzess.getEigenschaften();
+            if (properties!= null) {
+                for (Processproperty pp : properties) {
+                    if ("Template".equals( pp.getTitel())) {
+                        processTemplateName= pp.getWert();
+                    }
+                }
+            }
+            catalogues = ConfigOpac.getInstance().getAllCatalogues(processTemplateName);
 
             catalogueTitles = new ArrayList<>(catalogues.size());
             for (ConfigOpacCatalogue coc : catalogues) {
@@ -4540,7 +4550,7 @@ public class Metadaten implements Serializable {
                 }
             } else {
                 Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString()
-                        + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
+                + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
             }
         }
 
@@ -4859,7 +4869,7 @@ public class Metadaten implements Serializable {
         if (allImages.size() > (pageNo * numberOfImagesPerPage) + numberOfImagesPerPage) {
             subList = allImages.subList(pageNo * numberOfImagesPerPage, (pageNo * numberOfImagesPerPage) + numberOfImagesPerPage);
         } else {
-            // Sometimes pageNo is not zero here, although we only have 20 images or so. 
+            // Sometimes pageNo is not zero here, although we only have 20 images or so.
             // This is a quick fix and we should find out why pageNo is not zero in some cases
             int startIdx = pageNo * numberOfImagesPerPage;
             if (startIdx > allImages.size()) {
