@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.amazonaws.AmazonClientException;
@@ -72,7 +73,7 @@ public class S3FileUtils implements StorageProviderInterface {
         if (!metadataFolder.endsWith("/")) {
             metadataFolder = metadataFolder + "/";
         }
-        processDirPattern = Pattern.compile(metadataFolder + "\\d*?/?");
+        processDirPattern = Pattern.compile(Matcher.quoteReplacement(metadataFolder) + "\\d*?/?");
     }
 
     public S3FileUtils() {

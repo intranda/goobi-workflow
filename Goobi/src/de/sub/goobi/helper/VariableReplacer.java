@@ -286,17 +286,17 @@ public class VariableReplacer {
             inString = pOcrBasisPath.matcher(inString).replaceAll(ocrBasisPath);
             inString = pOcrPlaintextPath.matcher(inString).replaceAll(ocrPlaintextPath);
 
-            inString = piiifMediaFolder.matcher(inString).replaceAll(getIiifImageUrls(process, "media"));
-            inString = piiifMasterFolder.matcher(inString).replaceAll(getIiifImageUrls(process, "master"));
+            inString = piiifMediaFolder.matcher(inString).replaceAll(Matcher.quoteReplacement(getIiifImageUrls(process, "media")));
+            inString = piiifMasterFolder.matcher(inString).replaceAll(Matcher.quoteReplacement(getIiifImageUrls(process, "master")));
 
         } catch (IOException | InterruptedException | SwapException | DAOException e) {
             logger.error(e);
         }
         String myprefs = ConfigurationHelper.getInstance().getRulesetFolder() + this.process.getRegelsatz().getDatei();
 
-        inString = pGoobiFolder.matcher(inString).replaceAll(ConfigurationHelper.getInstance().getGoobiFolder());
-        inString = pScriptsFolder.matcher(inString).replaceAll(ConfigurationHelper.getInstance().getScriptsFolder());
-        inString = pPrefs.matcher(inString).replaceAll(myprefs);
+        inString = pGoobiFolder.matcher(inString).replaceAll(Matcher.quoteReplacement(ConfigurationHelper.getInstance().getGoobiFolder()));
+        inString = pScriptsFolder.matcher(inString).replaceAll(Matcher.quoteReplacement(ConfigurationHelper.getInstance().getScriptsFolder()));
+        inString = pPrefs.matcher(inString).replaceAll(Matcher.quoteReplacement(myprefs));
 
         if (this.step != null) {
             String stepId = String.valueOf(this.step.getId());
