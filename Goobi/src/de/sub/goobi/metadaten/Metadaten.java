@@ -65,6 +65,7 @@ import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.AltoChange;
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.SimpleAlto;
@@ -504,6 +505,7 @@ public class Metadaten implements Serializable {
             this.treeProperties.put("showThumbnails", Boolean.valueOf(false));
         }
         treeProperties.put("showMetadataPopup", ConfigurationHelper.getInstance().isMetsEditorShowMetadataPopup());
+        
     }
 
     /**
@@ -1783,7 +1785,7 @@ public class Metadaten implements Serializable {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -4565,7 +4567,7 @@ public class Metadaten implements Serializable {
                 }
             } else {
                 Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString()
-                + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
+                        + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
             }
         }
 
@@ -5088,6 +5090,13 @@ public class Metadaten implements Serializable {
 
     public void setImage(final Image image) {
         this.image = image;
+        
+        showImageComments =false;
+        if ( ConfigurationHelper.getInstance().getMetsEditorShowImageComments()) {
+            if (myProzess != null && image != null) {
+               showImageComments = true;
+            }
+        }
     }
 
     public void setContainerWidth(int containerWidth) {
@@ -5231,5 +5240,48 @@ public class Metadaten implements Serializable {
                 this.currentMetadataToPerformSearch.clearResults();
             }
         }
+    }
+
+    //this is set whenever setImage() is called.
+    @Getter
+    private boolean showImageComments = false;
+    
+    public String getCommentForImage() {
+
+        if (myProzess == null || getImage() == null) {
+            return null;
+        }
+
+        String strForLog = getImage().getImageName() + " - comment - ";
+        List<LogEntry> logs = myProzess.getProcessLog();
+
+        //search backwards to find the latest comment.
+        for (int i = logs.size() - 1; i >= 0; i--) {
+            LogEntry logEntry = logs.get(i);
+            if (logEntry.getContent().startsWith(strForLog)) {
+
+                return (logEntry.getContent().replaceFirst(strForLog, ""));
+            }
+        }
+
+        //otherwise
+        return null;
+    }
+
+    public void setCommentForImage(String comment) {
+
+        if (myProzess == null || getImage() == null) {
+            return;
+        }
+
+        //only save new log entry if the comment has changed
+        String oldComment = getCommentForImage();
+        if (comment == null || (oldComment != null && comment.contentEquals(oldComment)) || (oldComment == null && comment.isBlank())) {
+            return;
+        }
+
+        String strForLog = getImage().getImageName() + " - comment - " + comment;
+        myProzess.setContent(strForLog);
+        myProzess.addLogEntry();
     }
 }
