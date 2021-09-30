@@ -131,6 +131,10 @@ public class PluginsBean implements Serializable {
         if (StringUtils.isBlank(goobiVersion) || "N/A".equals(goobiVersion)) {
             return 1;
         }
+        if (goobiVersion.endsWith("-SNAPSHOT")) {
+            //SNAPSHOT versions are always a bad idea and should be marked as bad at all times
+            return 1;
+        }
         String runningVersion = helperForm.getVersion().replace("-dev", "").replace("-SNAPSHOT", "");
         int[] runningVersionFields = Arrays.stream(runningVersion.split("\\."))
                 .mapToInt(Integer::valueOf)
