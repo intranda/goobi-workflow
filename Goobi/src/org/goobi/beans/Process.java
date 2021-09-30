@@ -88,6 +88,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.metadaten.Image;
+import de.sub.goobi.metadaten.ImageCommentHelper;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.DocketManager;
@@ -276,8 +277,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public boolean getContainsExportStep() {
         this.getSchritte();
-        for(int i = 0; i < this.schritte.size(); i++) {
-            if(this.schritte.get(i).isTypExportDMS() || this.schritte.get(i).isTypExportRus()){
+        for (int i = 0; i < this.schritte.size(); i++) {
+            if (this.schritte.get(i).isTypExportDMS() || this.schritte.get(i).isTypExportRus()) {
                 return true;
             }
         }
@@ -555,7 +556,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrTxtDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     @Deprecated
@@ -565,27 +566,27 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrPdfDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrXmlDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getImportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getExportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException, InterruptedException, SwapException, DAOException {
@@ -1378,9 +1379,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
             facesContext.responseComplete();
         }
-        return ;
+        return;
     }
-
 
     public String downloadDocket() {
 
@@ -2312,6 +2312,32 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 script.startOrPutToQueue();
             }
         }
+    }
+
+    //read the image comments files in the image folders, and return all of them as a list.
+    public List<ImageComment> getImageComments() throws IOException, InterruptedException, SwapException, DAOException {
+
+        List<ImageComment> lstComments = new ArrayList<ImageComment>();
+
+        ImageCommentHelper helper = new ImageCommentHelper();
+
+        String folderMaster = this.getImagesOrigDirectory(true);
+        HashMap<String, String> masterComments = helper.getComments(folderMaster);
+
+        for (String imageName : masterComments.keySet()) {
+            lstComments.add(new ImageComment("Master", imageName, masterComments.get(imageName)));
+        }
+
+        if (this.isMediaFolderExists()) {
+            String folderMedia = this.getImagesTifDirectory(true);
+            HashMap<String, String> mediaComments = helper.getComments(folderMedia);
+
+            for (String imageName : mediaComments.keySet()) {
+                lstComments.add(new ImageComment("Media", imageName, mediaComments.get(imageName)));
+            }
+        }
+
+        return lstComments;
     }
 
 }

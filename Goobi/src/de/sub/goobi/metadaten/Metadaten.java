@@ -505,7 +505,7 @@ public class Metadaten implements Serializable {
             this.treeProperties.put("showThumbnails", Boolean.valueOf(false));
         }
         treeProperties.put("showMetadataPopup", ConfigurationHelper.getInstance().isMetsEditorShowMetadataPopup());
-        
+
     }
 
     /**
@@ -5090,11 +5090,11 @@ public class Metadaten implements Serializable {
 
     public void setImage(final Image image) {
         this.image = image;
-        
-        showImageComments =false;
-        if ( ConfigurationHelper.getInstance().getMetsEditorShowImageComments()) {
+
+        showImageComments = false;
+        if (ConfigurationHelper.getInstance().getMetsEditorShowImageComments()) {
             if (myProzess != null && image != null) {
-               showImageComments = true;
+                showImageComments = true;
             }
         }
     }
@@ -5245,27 +5245,25 @@ public class Metadaten implements Serializable {
     //this is set whenever setImage() is called.
     @Getter
     private boolean showImageComments = false;
-    
+
+    private ImageCommentHelper commentHelper;
+
+    private ImageCommentHelper getCommentHelper() {
+
+        if (commentHelper == null) {
+            commentHelper = new ImageCommentHelper();
+        }
+
+        return commentHelper;
+    }
+
     public String getCommentForImage() {
 
         if (myProzess == null || getImage() == null) {
             return null;
         }
 
-        String strForLog = getImage().getImageName() + " - comment - ";
-        List<LogEntry> logs = myProzess.getProcessLog();
-
-        //search backwards to find the latest comment.
-        for (int i = logs.size() - 1; i >= 0; i--) {
-            LogEntry logEntry = logs.get(i);
-            if (logEntry.getContent().startsWith(strForLog)) {
-
-                return (logEntry.getContent().replaceFirst(strForLog, ""));
-            }
-        }
-
-        //otherwise
-        return null;
+        return getCommentHelper().getComment(this.imageFolderName, getImage().getImageName());
     }
 
     public void setCommentForImage(String comment) {
@@ -5280,8 +5278,6 @@ public class Metadaten implements Serializable {
             return;
         }
 
-        String strForLog = getImage().getImageName() + " - comment - " + comment;
-        myProzess.setContent(strForLog);
-        myProzess.addLogEntry();
+        getCommentHelper().setComment(this.imageFolderName, getImage().getImageName(), comment);
     }
 }

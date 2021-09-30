@@ -50,32 +50,6 @@
                         </ui:fragment>
                     </div>
 
-
-                    <!-- Image comments -->
-                    <div class="form-group form-group--flex"
-                        jsf:rendered="#{Metadaten.showImageComments}">
-                        <div class="row justify-content-between">
-                            <div class="col-3">
-                                <h:outputText
-                                    styleClass="form-group__label"
-                                    value="#{msgs.comment} :"
-                                    title="#{msgs.comment}" />
-                            </div>
-
-                            <div class="col-9">
-                                <!-- TEXTAREA -->
-                                <h:inputText id="Comment"
-                                    styleClass="form-control"
-                                    value="#{Metadaten.commentForImage}"
-                                    disabled="false" readonly="false">
-                                    <f:ajax execute="@form"
-                                        event="valueChange" />
-                                </h:inputText>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /Image comments -->
-
                     <!-- MAIN IMAGE -->
                     <ui:fragment
                         rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''  and Metadaten.treeProperties.showOcr ne 'true'}">
@@ -100,6 +74,8 @@
                                     id="tileSource_previous"
                                     value="#{Metadaten.allImages.get(Metadaten.imageIndex-1).url}" />
                             </ui:fragment>
+
+
 
                             <!-- 3D CONTROLS -->
                             <ui:fragment
@@ -168,6 +144,33 @@
                                 </p>
                             </ui:fragment>
 
+                            <!--                             Image comments -->
+                            <ui:fragment
+                                rendered="#{Metadaten.showImageComments}">
+                                <div id="imageCommentArea"
+                                    class="row justify-content-between"
+                                    style="padding-bottom: 5px">
+                                    <div class="col-3">
+                                        <h:outputText
+                                            styleClass="form-group__label"
+                                            value="#{msgs.comment} :"
+                                            title="#{msgs.comment}" />
+                                    </div>
+
+                                    <div class="col-9">
+                                        <h:inputTextarea id="Comment"
+                                            style="min-height: 25px; height: 28px;"
+                                            styleClass="form-control"
+                                            value="#{Metadaten.commentForImage}"
+                                            min-rows="1"
+                                            disabled="false"
+                                            readonly="false">
+                                            <f:ajax execute="@form"
+                                                event="valueChange" />
+                                        </h:inputTextarea>
+                                    </div>
+                                </div>
+                            </ui:fragment>
 
                             <ui:fragment
                                 rendered="#{Metadaten.image.type == 'image'}">
