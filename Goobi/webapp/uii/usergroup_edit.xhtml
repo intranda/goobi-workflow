@@ -52,6 +52,7 @@
 
                             <intranda:formInputDropDown id="institution" label="#{msgs.institution}" field="#{BenutzergruppenForm.currentInstitutionID}" 
                                     help="#{msgs.helpUserInstitution}" name="institutionName" 
+                                    rendered="#{BenutzergruppenForm.institutionsAsSelectList.size()>1}"
                                     selectItems="#{BenutzergruppenForm.institutionsAsSelectList}" fieldStyle="form-control" required="true" />
 
 

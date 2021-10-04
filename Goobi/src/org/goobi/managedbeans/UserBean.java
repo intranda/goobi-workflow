@@ -230,6 +230,12 @@ public class UserBean extends BasicBean implements Serializable {
                         && myClass.getPasswort() != null) {
                     myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
                 }
+                //if there is only one institution, then it is not shown in ui and the value may be null:
+                if (myClass.getInstitutionId() == null) {
+                    Integer inst = (Integer) getInstitutionsAsSelectList().get(0).getValue();
+                    myClass.setInstitutionId(inst);
+                }
+                
                 UserManager.saveUser(this.myClass);
                 paginator.load();
                 return "user_all";
