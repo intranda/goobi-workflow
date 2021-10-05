@@ -31,6 +31,7 @@ import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
+import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
@@ -83,6 +84,9 @@ public class UserManager implements IManager, Serializable {
 
     public static void hideUser(User o) throws DAOException {
         try {
+            for (Step step : StepMysqlHelper.getUserSchritte(o)) {
+                StepMysqlHelper.removeUserFromStep(step, o);
+            }
             for (Usergroup ug : o.getBenutzergruppen()) {
                 UserMysqlHelper.deleteUsergroupAssignment(o, ug.getId());
             }
