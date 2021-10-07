@@ -25,6 +25,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -56,6 +57,7 @@ import lombok.Setter;
  * @version 2.00 - 03.05.2021
  */
 
+@Log4j2
 @Named("SessionForm")
 @ApplicationScoped
 public class SessionForm implements Serializable {
@@ -128,8 +130,7 @@ public class SessionForm implements Serializable {
     }
 
     /**
-     * Filters the sessions by real user sessions.
-     * All sessions that contain a name unequal to "-" are returned.
+     * Filters the sessions by real user sessions. All sessions that contain a name unequal to "-" are returned.
      *
      * @return The list of sessions with real users
      */
@@ -171,10 +172,8 @@ public class SessionForm implements Serializable {
         }
     }
 
-
     /**
-     * Returns the number of currently existing sessions.
-     * The list of sessions is filtered for real user sessions.
+     * Returns the number of currently existing sessions. The list of sessions is filtered for real user sessions.
      *
      * @return The number of real user sessions
      */
@@ -264,6 +263,9 @@ public class SessionForm implements Serializable {
         long now = System.currentTimeMillis();
         knownSession.setLastAccessTimestamp(now);
         knownSession.setLastAccessFormatted(this.timeFormatter.format(now));
+
+        // This is needed to remove out-of-timeout-sessions
+        this.removeAbandonedSessions();
     }
 
     /**
@@ -322,13 +324,22 @@ public class SessionForm implements Serializable {
             long loginTimestamp = (session.getLastAccessTimestamp());
             long now = System.currentTimeMillis();
             long sessionDuration = (now - loginTimestamp) / 1000;
+            StringBuffer string = new StringBuffer();
+            string.append("Session " + (index + 1) + "/" + this.sessions.size());
+            string.append("\n- login name:       " + userName);
+            string.append("\n- browser:          " + session.getBrowserName());
+            string.append("\n- ip address:       " + session.getUserIpAddress());
+            string.append("\n- timeout:          " + userTimeout + " seconds");
+            string.append("\n- session duration: " + sessionDuration + " seconds");
+            log.trace(string.toString());
 
             boolean overTimeout = sessionDuration > userTimeout;
-            //boolean notLoggedIn = userName.equals(NOT_LOGGED_IN);
             boolean loggedOut = userName.equals(LOGGED_OUT);
+            boolean notLoggedIn = userName.equals(NOT_LOGGED_IN);
             boolean noAddress = session.getUserIpAddress() == null;
 
-            if (overTimeout || loggedOut || noAddress) {
+            // sessionDuration > 0 is needed to not remove the login screen while the user logs in
+            if (overTimeout || loggedOut || (notLoggedIn && sessionDuration > 0) || noAddress) {
                 this.sessions.remove(index);
                 index--;
             }
