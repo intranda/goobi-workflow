@@ -52,7 +52,7 @@
         <dependency>
             <groupId>de.intranda.ugh</groupId>
             <artifactId>ugh-core</artifactId>
-            <version>4.1.13</version>
+            <version>4.1.14</version>
             <exclusions>
                 <exclusion>
                     <groupId>poi</groupId>
