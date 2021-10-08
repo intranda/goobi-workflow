@@ -284,6 +284,10 @@ public class ProjectBean extends BasicBean implements Serializable {
             }
         }
         ProjectManager.saveProjectFileGroup(myFilegroup);
+        if (!this.newFileGroups.contains(this.myFilegroup.getId())) {
+            this.newFileGroups.add(this.myFilegroup.getId());
+        }
+
         return "";
     }
 
@@ -292,6 +296,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     public String filegroupCancel() {
+//        Cancel();
         return "";
     }
 
@@ -339,8 +344,9 @@ public class ProjectBean extends BasicBean implements Serializable {
 
     public StatisticsManager getStatisticsManager1() {
         if (this.statisticsManager1 == null) {
-            this.statisticsManager1 = new StatisticsManager(StatisticsMode.PRODUCTION, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
-                    "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
+            this.statisticsManager1 =
+                    new StatisticsManager(StatisticsMode.PRODUCTION, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
+                            "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
         }
         return this.statisticsManager1;
     }
@@ -351,8 +357,9 @@ public class ProjectBean extends BasicBean implements Serializable {
      */
     public StatisticsManager getStatisticsManager2() {
         if (this.statisticsManager2 == null) {
-            this.statisticsManager2 = new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
-                    "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
+            this.statisticsManager2 =
+                    new StatisticsManager(StatisticsMode.THROUGHPUT, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
+                            "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
         }
         return this.statisticsManager2;
     }
@@ -363,8 +370,9 @@ public class ProjectBean extends BasicBean implements Serializable {
      */
     public StatisticsManager getStatisticsManager3() {
         if (this.statisticsManager3 == null) {
-            this.statisticsManager3 = new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
-                    "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
+            this.statisticsManager3 =
+                    new StatisticsManager(StatisticsMode.CORRECTIONS, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
+                            "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
         }
         return this.statisticsManager3;
     }
@@ -375,8 +383,9 @@ public class ProjectBean extends BasicBean implements Serializable {
      */
     public StatisticsManager getStatisticsManager4() {
         if (this.statisticsManager4 == null) {
-            this.statisticsManager4 = new StatisticsManager(StatisticsMode.STORAGE, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
-                    "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
+            this.statisticsManager4 =
+                    new StatisticsManager(StatisticsMode.STORAGE, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
+                            "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
         }
         return this.statisticsManager4;
     }
@@ -584,8 +593,8 @@ public class ProjectBean extends BasicBean implements Serializable {
                 this.projectProgressData.setRequiredDailyOutput(this.getThroughputPerDay());
                 this.projectProgressData.setTimeFrame(this.getMyProjekt().getStartDate(), this.getMyProjekt().getEndDate());
                 this.projectProgressData
-                .setDataSource(FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"", false,
-                        null, null, null, true, false) + " AND prozesse.istTemplate = false ");
+                        .setDataSource(FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"", false,
+                                null, null, null, true, false) + " AND prozesse.istTemplate = false ");
 
                 if (this.projectProgressImage == null) {
                     this.projectProgressImage = "";
