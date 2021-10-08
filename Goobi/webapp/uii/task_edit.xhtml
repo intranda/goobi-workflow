@@ -35,7 +35,7 @@
 
                 <div class="row">
 
-                    <div class="#{NavigationForm.uiStatus['processLogBig']?'col-sm-12':'col-sm-6'}">
+                    <div class="col-sm-6">
 
                         <!-- Box for process details -->
                         <h:form id="detailsform">
@@ -348,6 +348,7 @@
                         <!-- Box for process log -->
                        
                             <h:form
+                                rendered="#{!NavigationForm.uiStatus['processLogBig']}"
                                 styleClass="form-vertical form-bordered"
                                 id="processLog"
                                 enctype="multipart/form-data"
@@ -370,119 +371,6 @@
                     </div>
 
                     <div class="col-sm-6">
-
-                        <!-- Box for Progress -->
-                        <h:panelGroup id="progressgroup"
-                            rendered="false">
-                            <div class="box box-bordered">
-                                <div class="box-title">
-                                    <h3>
-                                        <i class="fa fa-edit"></i>
-                                        <h:outputText
-                                            value="#{msgs.workflowProgress}" />
-                                    </h3>
-                                </div>
-                                <div class="box-content nopadding">
-                                    <div id="progressSteps">
-                                        <ul>
-                                            <li class="step-done"
-                                                data-toggle="popover"
-                                                title="Ein langer Stepname"
-                                                data-content="&lt;span&gt;Marc Lettau-Poelchen&lt;&#47;span&gt;&lt;span&gt;28.02.1954&lt;&#47;span&gt;"
-                                                data-placement="top"
-                                                data-trigger="hover"><span
-                                                class="first-step-cover"></span>
-                                                <span class="rotate">Ein
-                                                    Stepname</span></li>
-
-                                            <li class="step-done"
-                                                data-toggle="popover"
-                                                title="Ein langer Stepname"
-                                                data-content="&lt;span&gt;Marc Lettau-Poelchen&lt;&#47;span&gt;&lt;span&gt;28.02.1954&lt;&#47;span&gt;"
-                                                data-placement="top"
-                                                data-trigger="hover"><span
-                                                class="rotate">Ein
-                                                    Stepname</span></li>
-                                            <li class="step-done"
-                                                data-toggle="popover"
-                                                title="Ein langer Stepname"
-                                                data-content="&lt;span&gt;Marc Lettau-Poelchen&lt;&#47;span&gt;&lt;span&gt;28.02.1954&lt;&#47;span&gt;"
-                                                data-placement="top"
-                                                data-trigger="hover"><span
-                                                class="rotate">Ein
-                                                    Stepname</span></li>
-                                            <li class="step-done"
-                                                data-toggle="popover"
-                                                title="Ein langer Stepname"
-                                                data-content="&lt;span&gt;Marc Lettau-Poelchen&lt;&#47;span&gt;&lt;span&gt;28.02.1954&lt;&#47;span&gt;"
-                                                data-placement="top"
-                                                data-trigger="hover"><span
-                                                class="rotate">Ein
-                                                    langer dssdfsdf
-                                                    sfsdfds Stepname</span></li>
-                                            <li class="step-done"
-                                                data-toggle="popover"
-                                                title="Ein langer Stepname"
-                                                data-content="&lt;span&gt;Marc Lettau-Poelchen&lt;&#47;span&gt;&lt;span&gt;28.02.1954&lt;&#47;span&gt;"
-                                                data-placement="top"
-                                                data-trigger="hover"><span
-                                                class="rotate">Ein
-                                                    Stepname</span></li>
-                                            <li class="step-inwork"><span
-                                                class="rotate">Ein
-                                                    Stepname</span>
-                                                <div
-                                                    class="current-step-info">
-                                                    <span>Eine
-                                                        Information</span> <span>Noch
-                                                        eine Information</span>
-                                                    <span>Noch
-                                                        eine Information</span>
-                                                    <span>22.04.2015</span>
-                                                </div></li>
-                                            <li class="step-locked"
-                                                data-toggle="popover"
-                                                data-content="Ein langer Stepname"
-                                                data-placement="top"
-                                                data-trigger="hover"><span
-                                                class="rotate">Ein
-                                                    langer Stepname</span></li>
-                                            <li class="step-locked"
-                                                data-toggle="popover"
-                                                data-content="Ein langer Stepname"
-                                                data-placement="top"
-                                                data-trigger="hover"><span
-                                                class="rotate">Ein
-                                                    Stepname</span></li>
-
-                                            <li class="step-locked"
-                                                data-toggle="popover"
-                                                data-content="Ein langer Stepname"
-                                                data-placement="top"
-                                                data-trigger="hover"><span
-                                                class="last-step-cover"></span>
-                                                <span class="rotate">Ein
-                                                    Stepname</span></li>
-                                        </ul>
-
-                                    </div>
-
-                                    <script>
-																																					$(function() {
-																																						$(
-																																								'[data-toggle="popover"]')
-																																								.popover(
-																																										{
-																																											html : true
-																																										})
-																																					})
-																																				</script>
-                                </div>
-                            </div>
-
-                        </h:panelGroup>
-                        <!-- // Box for Progress -->
-
 
                         <!-- Area for part GUI plugins -->
                         <c:if
@@ -535,11 +423,31 @@
                         <!-- // Box for action area -->
 
                     </div>
-
-
-
                 </div>
-
+                                
+                <ui:fragment rendered="#{NavigationForm.uiStatus['processLogBig']}" >
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h:form
+                                styleClass="form-vertical form-bordered"
+                                id="processLog2"
+                                enctype="multipart/form-data"
+                                prependId="false">
+                                <x:aliasBeansScope>
+                                    <x:aliasBean
+                                        alias="#{showBigButton}"
+                                        value="true" />
+                                    <x:aliasBean alias="#{process}"
+                                        value="#{AktuelleSchritteForm.mySchritt.prozess}" />
+                                    <f:subview id="sublog2">
+                                        <ui:include
+                                            src="includes/processLog.xhtml" />
+                                    </f:subview>
+                                </x:aliasBeansScope>
+                            </h:form>
+                        </div>
+                    </div>
+                </ui:fragment>
             </c:if>
         </main>
     </ui:define>
