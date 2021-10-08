@@ -1,7 +1,7 @@
 var goobiWorkflowJS = ( function( goobiWorkflow ) {
     'use strict';
     
-    var _debug = true;
+    var _debug = false;
     var _columns = {
         left: 0,
         center: 0,

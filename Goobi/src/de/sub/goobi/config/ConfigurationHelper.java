@@ -577,7 +577,6 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("ldap_nextFreeUnixId");
     }
 
-
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
@@ -586,7 +585,6 @@ public class ConfigurationHelper implements Serializable {
     public String getTruststore() {
         return getLocalString("truststore");
     }
-
 
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
@@ -1101,6 +1099,10 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isDeveloping() {
         return getLocalBoolean("developing", false);
+    }
+
+    public boolean isShowSSOLogoutPage() {
+        return getLocalBoolean("showSSOLogoutPage", false);
     }
 
     /**
