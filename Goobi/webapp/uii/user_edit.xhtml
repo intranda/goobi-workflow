@@ -461,6 +461,7 @@
                                                                 <!-- Neu-Schaltknopf -->
                                                                 <button
                                                                     jsf:id="addGroup"
+                                                                    jsf:rendered="#{BenutzerverwaltungForm.unsubscribedGroupsExist}"
                                                                     class="btn btn-primary font-size-s"
                                                                     jsf:action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
                                                                     jsf:immediate="true">

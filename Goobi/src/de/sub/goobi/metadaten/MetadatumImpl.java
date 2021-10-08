@@ -203,7 +203,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             showNotHits = false;
         }
         Collections.sort(records);
+
         vocabularyUrl = vocabularyBase.path("records").getUri().toString();
+
     }
 
     private void initializeValues() {
@@ -693,18 +695,15 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 }
                 for (NormData normdata : selectedRecord.getNormdataList()) {
                     if (normdata.getKey().equals("URI")) {
-                        md.setAutorityFile("dante", "https://uri.gbv.de/terminology/dante/",
-                                normdata.getValues().get(0).getText());
-                    } else if (StringUtils.isBlank(selectedRecord.getPreferredValue())
-                            && CollectionUtils.isEmpty(getLabelList())
+                        md.setAutorityFile("dante", "https://uri.gbv.de/terminology/dante/", normdata.getValues().get(0).getText());
+                    } else if (StringUtils.isBlank(selectedRecord.getPreferredValue()) && CollectionUtils.isEmpty(getLabelList())
                             && normdata.getKey().equals(field)) {
                         String value = normdata.getValues().get(0).getText();
                         md.setValue(filter(value));
                     }
                 }
 
-                if (StringUtils.isBlank(selectedRecord.getPreferredValue())
-                        && CollectionUtils.isNotEmpty(getLabelList())) {
+                if (StringUtils.isBlank(selectedRecord.getPreferredValue()) && CollectionUtils.isNotEmpty(getLabelList())) {
                     findPrioritisedMetadata: for (String fieldName : getLabelList()) {
                         for (NormData normdata : currentData) {
                             if (normdata.getKey().equals(fieldName)) {
@@ -723,11 +722,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     for (NormData normdata : selectedRecord.getNormdataList()) {
                         if (normdata.getKey().equals("URI")) {
                             String uriValue = normdata.getValues().get(0).getText();
-                            md.setAutorityFile(
-                                    DisplayType.kulturnav.name(),
-                                    KulturNavImporter.BASE_URL,
-                                    uriValue
-                                    );
+                            md.setAutorityFile(DisplayType.kulturnav.name(), KulturNavImporter.BASE_URL, uriValue);
                             break;
                         }
                     }
@@ -736,8 +731,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 // use the first element in the list
                 if (StringUtils.isNotBlank(selectedRecord.getPreferredValue())) {
                     md.setValue(selectedRecord.getPreferredValue());
-                }
-                else if(CollectionUtils.isNotEmpty(selectedRecord.getValueList())) {
+                } else if (CollectionUtils.isNotEmpty(selectedRecord.getValueList())) {
                     md.setValue(selectedRecord.getValueList().get(0));
                 }
                 normdataList = new ArrayList<>();
@@ -774,8 +768,17 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         md.setValue(field.getValue());
                     }
                 }
-                md.setAutorityFile(vocabulary, vocabularyUrl,
-                        vocabularyUrl + "/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
+                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getGoobiAuthorityServerUser())
+                        && StringUtils.isNotBlank(ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl())) {
+                    md.setAutorityFile(vocabulary, ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl(),
+                            ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl()
+                            + ConfigurationHelper.getInstance().getGoobiAuthorityServerUser() + "/vocabularies/"
+                            + selectedVocabularyRecord.getVocabularyId() + "/records/" + selectedVocabularyRecord.getId());
+                } else {
+                    md.setAutorityFile(vocabulary, vocabularyUrl,
+                            vocabularyUrl + "/vocabularies/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
+                }
+
             default:
                 break;
         }
@@ -831,14 +834,11 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     }
 
     /**
-     * This method is used to disable the edition of the identifier field,
-     * the default value is false, so it can be edited
+     * This method is used to disable the edition of the identifier field, the default value is false, so it can be edited
      */
 
     public boolean isDisableIdentifierField() {
-        return metadataDisplaytype == DisplayType.dante
-                || metadataDisplaytype == DisplayType.kulturnav
-                || metadataDisplaytype == DisplayType.easydb;
+        return metadataDisplaytype == DisplayType.dante || metadataDisplaytype == DisplayType.kulturnav || metadataDisplaytype == DisplayType.easydb;
     }
 
     /**

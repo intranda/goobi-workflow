@@ -105,13 +105,9 @@ class StepMysqlHelper implements Serializable {
             if (logger.isTraceEnabled()) {
                 logger.trace(sql.toString());
             }
-            System.out.println(sql.toString());
 
-            long start = System.currentTimeMillis();
             int val = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
-            System.out.println("Duration: " + (System.currentTimeMillis() - start));
             return val;
-
 
         } finally {
             if (connection != null) {

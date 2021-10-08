@@ -350,18 +350,18 @@ public class ConfigurationHelper implements Serializable {
     public int getGoobiAuthorityServerBackupFreq() {
         return getLocalInt("goobiAuthorityServerUploadFrequency", 0);
     }
-    
+
     public String getGoobiAuthorityServerUser() {
 
         return getLocalString("goobiAuthorityServerUser");
     }
-    
+
     // URLs
 
     public String getGoobiAuthorityServerUrl() {
         return getLocalString("goobiAuthorityServerUrl");
     }
-    
+
     public String getGoobiUrl() {
         return getLocalString("goobiUrl");
     }
@@ -577,24 +577,22 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("ldap_nextFreeUnixId");
     }
 
-    @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    public String getLdapKeystore() {
-        return getLocalString("ldap_keystore");
+    public String getTruststore() {
+        return getLocalString("truststore");
     }
 
-    @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    public String getLdapKeystoreToken() {
-        return getLocalString("ldap_keystore_password");
+    public String getTruststoreToken() {
+        return getLocalString("truststore_password");
     }
 
     @Deprecated
@@ -1101,6 +1099,10 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isDeveloping() {
         return getLocalBoolean("developing", false);
+    }
+
+    public boolean isShowSSOLogoutPage() {
+        return getLocalBoolean("showSSOLogoutPage", false);
     }
 
     /**

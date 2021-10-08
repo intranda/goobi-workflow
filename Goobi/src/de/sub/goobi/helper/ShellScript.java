@@ -151,6 +151,10 @@ public class ShellScript {
         try {
             String[] callSequence = commandLine.toArray(new String[commandLine.size()]);
             ProcessBuilder pb = new ProcessBuilder(callSequence);
+            // If we call another java process with JDK_JAVA_OPTIONS set, we will get a message on stderr
+            // which in turn will make Goobi think this process failed. For this reason,
+            // JDK_JAVA_OPTIONS is unset here.
+            pb.environment().remove("JDK_JAVA_OPTIONS");
             ConfigurationHelper config = ConfigurationHelper.getInstance();
             if (config.useCustomS3()) {
                 pb.environment().put("CUSTOM_S3", "true");
@@ -263,7 +267,7 @@ public class ShellScript {
             }
             Helper.addMessageToProcessLog(processID, LogType.DEBUG, "Script '" + scriptname + "' was executed with result: " + outputText);
             if (!outputText.isEmpty()) {
-            	Helper.setMeldung(outputText);
+                Helper.setMeldung(outputText);
             }
             if (s.getStdErr().size() > 0) {
                 returnCode = ShellScript.ERRORLEVEL_ERROR;
