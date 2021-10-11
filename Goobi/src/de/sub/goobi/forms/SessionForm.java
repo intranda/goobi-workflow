@@ -123,25 +123,11 @@ public class SessionForm implements Serializable {
      */
     public List<SessionInfo> getSessions() {
         if (this.sessions != null) {
-            return this.filterRealUserSessions();
+            this.removeAbandonedSessions(false);
+            return this.sessions;
         } else {
             return new ArrayList<>();
         }
-    }
-
-    /**
-     * Filters the sessions by real user sessions. All sessions that contain a name unequal to "-" are returned.
-     *
-     * @return The list of sessions with real users
-     */
-    private List<SessionInfo> filterRealUserSessions() {
-        List<SessionInfo> realUserSessions = new ArrayList<>();
-        for (int index = 0; index < this.sessions.size(); index++) {
-            if (!this.sessions.get(index).getUserName().equals(SessionForm.NOT_LOGGED_IN)) {
-                realUserSessions.add(this.sessions.get(index));
-            }
-        }
-        return realUserSessions;
     }
 
     /**
@@ -166,20 +152,8 @@ public class SessionForm implements Serializable {
      */
     public int getNumberOfSessions() {
         if (this.sessions != null) {
+            this.removeAbandonedSessions(false);
             return this.sessions.size();
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * Returns the number of currently existing sessions. The list of sessions is filtered for real user sessions.
-     *
-     * @return The number of real user sessions
-     */
-    public int getNumberOfRealUserSessions() {
-        if (this.sessions != null) {
-            return this.filterRealUserSessions().size();
         } else {
             return 0;
         }
@@ -265,7 +239,7 @@ public class SessionForm implements Serializable {
         knownSession.setLastAccessFormatted(this.timeFormatter.format(now));
 
         // This is needed to remove out-of-timeout-sessions
-        this.removeAbandonedSessions();
+        this.removeAbandonedSessions(true);
     }
 
     /**
@@ -282,21 +256,11 @@ public class SessionForm implements Serializable {
         String id = updatedSession.getId();
         SessionInfo knownSession = this.getSessionInfoById(id);
 
-        if (knownSession == null) {
-            SessionInfo newSession = new SessionInfo();
-            newSession.setUserName(LOGGED_OUT);
-            newSession.setUserId(0);
-            newSession.setSessionId("-1");
-            this.sessions.add(newSession);
-            this.removeAbandonedSessions();
-            return;
-        }
-
         if (updatedUser == null) {
             knownSession.setUserName(LOGGED_OUT);
             updatedSession.setAttribute("User", LOGGED_OUT);
             knownSession.setUserId(0);
-            this.removeAbandonedSessions();
+            this.removeAbandonedSessions(true);
             return;
         }
 
@@ -308,14 +272,16 @@ public class SessionForm implements Serializable {
         knownSession.setUserId(updatedUser.getId());
         knownSession.setUserTimeout(timeout);
         updatedSession.setMaxInactiveInterval(timeout);
-        this.removeAbandonedSessions();
+        this.removeAbandonedSessions(true);
     }
 
     /**
      * Removes all unused sessions. All sessions where the user is null, the user has no name, the user is logged out or the IP address is null, are
      * unused.
+     *
+     * @param logKeptSessions Must be true to log all sessions (kept and removed) and must be false to only log removed sessions.
      */
-    private void removeAbandonedSessions() {
+    private void removeAbandonedSessions(boolean logKeptSessions) {
         for (int index = 0; index < this.sessions.size(); index++) {
 
             SessionInfo session = this.sessions.get(index);
@@ -324,14 +290,14 @@ public class SessionForm implements Serializable {
             long loginTimestamp = (session.getLastAccessTimestamp());
             long now = System.currentTimeMillis();
             long sessionDuration = (now - loginTimestamp) / 1000;
-            StringBuffer string = new StringBuffer();
-            string.append("Session " + (index + 1) + "/" + this.sessions.size());
-            string.append("\n- login name:       " + userName);
-            string.append("\n- browser:          " + session.getBrowserName());
-            string.append("\n- ip address:       " + session.getUserIpAddress());
-            string.append("\n- timeout:          " + userTimeout + " seconds");
-            string.append("\n- session duration: " + sessionDuration + " seconds");
-            log.trace(string.toString());
+            String counter = (index + 1) + "/" + this.sessions.size();
+            StringBuffer message = new StringBuffer();
+            message.append("Session " + counter);
+            message.append("\n- login name:       " + userName);
+            message.append("\n- browser:          " + session.getBrowserName());
+            message.append("\n- ip address:       " + session.getUserIpAddress());
+            message.append("\n- timeout:          " + userTimeout + " seconds");
+            message.append("\n- session duration: " + sessionDuration + " seconds");
 
             boolean overTimeout = sessionDuration > userTimeout;
             boolean loggedOut = userName.equals(LOGGED_OUT);
@@ -340,8 +306,15 @@ public class SessionForm implements Serializable {
 
             // sessionDuration > 0 is needed to not remove the login screen while the user logs in
             if (overTimeout || loggedOut || (notLoggedIn && sessionDuration > 0) || noAddress) {
+                message.append("\nSession " + counter + " will be removed because it is too old or abandoned.");
+                log.trace(message.toString());
                 this.sessions.remove(index);
                 index--;
+            } else {
+                message.append("\nSession " + counter + " is valid and is kept in the sessions list.");
+                if (logKeptSessions) {
+                    log.trace(message.toString());
+                }
             }
         }
     }

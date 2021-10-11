@@ -33,15 +33,15 @@
 							</div>
 							<div class="box-content nopadding">
 								<h:panelGroup rendered="#{SessionForm.sessionListErrorTime != ''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
-	                                <i class="fa fa-exclamation-triangle margin-right-10" />
-	                                <h:outputText value="#{msgs.sessionListError}" />
-	                                <h:outputText value="#{SessionForm.sessionListErrorTime}"></h:outputText>
-	                            </h:panelGroup>
+									<i class="fa fa-exclamation-triangle margin-right-10" />
+									<h:outputText value="#{msgs.sessionListError}" />
+									<h:outputText value="#{SessionForm.sessionListErrorTime}"></h:outputText>
+								</h:panelGroup>
 								<div class="dataTables_wrapper">
 									<div class="dataTables_length">
 										<h:panelGrid columns="2">
 											<h:outputText value="#{msgs.aktiveBenutzer}:&#160;" />
-											<h:outputText value="#{SessionForm.numberOfRealUserSessions}" />
+											<h:outputText value="#{SessionForm.numberOfSessions}" />
 											<h:outputText value="#{msgs.aktuelleZeit}:" />
 											<h:outputText value="#{SessionForm.currentTime}" />
 										</h:panelGrid>
