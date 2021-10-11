@@ -25,6 +25,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -56,6 +57,7 @@ import lombok.Setter;
  * @version 2.00 - 03.05.2021
  */
 
+@Log4j2
 @Named("SessionForm")
 @ApplicationScoped
 public class SessionForm implements Serializable {
@@ -128,8 +130,7 @@ public class SessionForm implements Serializable {
     }
 
     /**
-     * Filters the sessions by real user sessions.
-     * All sessions that contain a name unequal to "-" are returned.
+     * Filters the sessions by real user sessions. All sessions that contain a name unequal to "-" are returned.
      *
      * @return The list of sessions with real users
      */
@@ -171,10 +172,8 @@ public class SessionForm implements Serializable {
         }
     }
 
-
     /**
-     * Returns the number of currently existing sessions.
-     * The list of sessions is filtered for real user sessions.
+     * Returns the number of currently existing sessions. The list of sessions is filtered for real user sessions.
      *
      * @return The number of real user sessions
      */
@@ -291,12 +290,14 @@ public class SessionForm implements Serializable {
         }
 
         if (updatedUser == null) {
+            log.info("User will be logged out.");
             knownSession.setUserName(LOGGED_OUT);
             updatedSession.setAttribute("User", LOGGED_OUT);
             knownSession.setUserId(0);
             this.removeAbandonedSessions();
             return;
         }
+        log.info("Session already exists and will be overwritten with new session.");
 
         String name = updatedUser.getNachVorname();
         int timeout = updatedUser.getSessiontimeout();
@@ -306,7 +307,9 @@ public class SessionForm implements Serializable {
         knownSession.setUserId(updatedUser.getId());
         knownSession.setUserTimeout(timeout);
         updatedSession.setMaxInactiveInterval(timeout);
+        log.info("Removing old sessions...");
         this.removeAbandonedSessions();
+        log.info("Sessions list is up to date.");
     }
 
     /**

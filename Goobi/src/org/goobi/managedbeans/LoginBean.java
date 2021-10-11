@@ -152,60 +152,84 @@ public class LoginBean implements Serializable {
     }
 
     public String Einloggen() {
+
+        // Prepare login
+        log.info("Login button was pressed");
         AlteBilderAufraeumen();
         this.myBenutzer = null;
-        /* ohne Login gleich abbrechen */
-        if (this.login == null) {
+
+        // Check valid login information
+        if (this.login == null || this.passwort == null) {
             Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
-        } else {
-            /* prüfen, ob schon ein Benutzer mit dem Login existiert */
-            List<User> treffer;
-            try {
-                treffer = UserManager.getUsers(null, "login='" + StringEscapeUtils.escapeSql(this.login) + "'", null,
-                        null, null);
-            } catch (DAOException e) {
-                Helper.setFehlerMeldung("could not read database", e.getMessage());
-                return "";
-            }
+            log.info("Login canceled. User could not log in because login name or password was null.");
+            return "";
+        }
+        log.info("The login data is available for further processing.");
 
-            if (treffer == null || treffer.size() == 0) {
-                Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
-                return "";
-            }
-
-            if (treffer != null && treffer.size() > 0) {
-                /* Login vorhanden, nun passwort prüfen */
-                User b = treffer.get(0);
-                if (b.getIsVisible() != null) {
-                    Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));// previously "loginDeleted"
-                    return "";
-                }
-                /*
-                 * wenn der Benutzer auf inaktiv gesetzt (z.B. arbeitet er nicht mehr hier)
-                 * wurde, jetzt Meldung anzeigen
-                 */
-                if (!b.isIstAktiv()) {
-                    Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));// previously "loginInactive"
-                    return "";
-                }
-
-                /* wenn passwort auch richtig ist, den benutzer übernehmen */
-                if (b.istPasswortKorrekt(this.passwort)) {
-                    /* jetzt prüfen, ob dieser Benutzer schon in einer anderen Session eingeloggt ist */
-                    HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-
-                    /* in der Session den Login speichern */
-                    Helper.getSessionBean().updateSessionUserName(mySession, b);
-                    this.myBenutzer = b;
-                    this.myBenutzer.lazyLoad();
-                    roles = myBenutzer.getAllUserRoles();
-                } else {
-                    Helper.setFehlerMeldung("passwort", "", Helper.getTranslation("wrongLogin"));// previously "wrongPassword
-                }
-            }
+        // Get user account from database
+        User user = LoginBean.findUserByLoginName(this.login);
+        if (user == null) {
+            // Log output is done in findUserByLoginName()
+            return "";
         }
 
+        // Check whether the user is an active user and is not invisible
+        if (user.getIsVisible() != null || !user.isIstAktiv()) {
+            Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
+            log.info("Login canceled. User could not log in because account is not visible or not active.");
+            return "";
+        }
+        log.info("The user is able to log in (user is visible and active).");
+
+        // Check the password
+        if (!user.istPasswortKorrekt(this.passwort)) {
+            Helper.setFehlerMeldung("passwort", "", Helper.getTranslation("wrongLogin"));
+            log.info("Login canceled. Password of user with login " + this.login + " was not correct.");
+            return "";
+        }
+        log.info("Password was correct.");
+
+        // Get the user session if this user is already logged in in an other browser tab or create a new session for the user.
+        log.info("Getting available user session or creating a new session for user...");
+        HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
+        // Update or add session in the sessions manager
+        log.info("Adding or replacing session in session manager...");
+        Helper.getSessionBean().updateSessionUserName(mySession, user);
+
+        this.myBenutzer = user;
+        this.myBenutzer.lazyLoad();
+        roles = myBenutzer.getAllUserRoles();
+
+        StringBuilder string = new StringBuilder();
+        string.append("Login was successful.\n");
+        string.append("Login name: " + user.getLogin() + "\n");
+        string.append("First name: " + user.getVorname() + "\n");
+        string.append("Last name: " + user.getNachname() + "\n");
+        string.append("Login type: " + user.getLdapGruppe().getAuthenticationType() + "\n");
+        log.info(string.toString());
+
+        log.info("Loading start page or dashboard...");
         return "";
+    }
+
+    private static User findUserByLoginName(String login) {
+        try {
+            String userString = "login='" + StringEscapeUtils.escapeSql(login) + "'";
+            List<User> users = UserManager.getUsers(null, userString, null, null, null);
+            if (users != null && users.size() == 1 && users.get(0) != null) {
+                log.info("Found user with login name " + login + " in database.");
+                return users.get(0);
+            } else {
+                Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
+                log.error("Login canceled. User with login name " + login + " does not exist.");
+                return null;
+            }
+        } catch (DAOException exception) {
+            Helper.setFehlerMeldung("Could not read database ", exception.getMessage());
+            log.error("Login canceled. Could not read database in login process.");
+            log.error(exception);
+            return null;
+        }
     }
 
     public String EinloggenAls() {
