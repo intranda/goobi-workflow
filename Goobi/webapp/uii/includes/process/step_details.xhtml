@@ -420,6 +420,14 @@
                             </span>
                         </div>
                     </div>
+                    
+                    <!-- help is still wrong -->
+                    <intranda:formInputCheckBox
+                        id="autoThumbnail"
+                        label="Auto Thumbnail"
+                        field="#{ProzessverwaltungForm.mySchritt.typAutomaticthumbnail}"
+                        help="#{msgs.helpProcessStepBatch}"
+                        name="thumb" />
 
                     <div
                         class="form-group"
@@ -710,7 +718,7 @@
                                 property="#{ProzessverwaltungForm.modusBearbeiten}"
                                 value="" />
                         </button>
-
+ 
 
                         <!-- Cancel -->
                         <button

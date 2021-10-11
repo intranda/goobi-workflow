@@ -96,6 +96,9 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private boolean typAutomatisch = false;
     @Getter
     @Setter
+    private boolean typAutomaticThumbnail = false;
+    @Getter
+    @Setter
     private boolean typImportFileUpload = false;
     @Getter
     @Setter
