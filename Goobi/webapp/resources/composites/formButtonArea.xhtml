@@ -7,8 +7,8 @@
 	<composite:interface>
 		<composite:attribute name="object" />
 		<composite:attribute name="form" />
-		<composite:attribute name="actionCancel" />
-
+		<composite:attribute name="actionCancel"  method-signature="String cancelMethod()" />
+        
 	</composite:interface>
 
 	<composite:implementation>
@@ -23,7 +23,7 @@
 			</button>
 
 			<!-- Cancel -->
-			<button jsf:id="cancel" class="btn margin-sides-10 font-size-s pull-right" jsf:outcome="#{cc.attrs.actionCancel}">
+			<button jsf:id="cancel" class="btn margin-sides-10 font-size-s pull-right" jsf:action="#{cc.attrs.actionCancel}">
 			#{msgs.abbrechen} </button>
 
 
