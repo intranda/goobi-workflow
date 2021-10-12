@@ -39,7 +39,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         }
 
         // set scroll status of structure link
-        $( 'body' ).on( 'click', '#meStructure a', function() {
+        $( 'body' ).on( 'click', '#meStructure button', function() {
             _positions.structure.link = $( this ).parents('tr').position().top;
 
             sessionStorage.setItem( 'wf_scrollPositions', JSON.stringify( _positions ) );

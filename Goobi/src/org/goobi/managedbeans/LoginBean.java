@@ -97,6 +97,8 @@ public class LoginBean implements Serializable {
     @Getter
     private boolean oidcAutoRedirect;
     @Getter
+    private boolean showSSOLogoutPage;
+    @Getter
     @Setter
     private String ssoError;
 
@@ -107,9 +109,9 @@ public class LoginBean implements Serializable {
         super();
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         this.useOpenIDConnect = config.isUseOpenIDConnect();
+        this.showSSOLogoutPage = config.isShowSSOLogoutPage();
         this.oidcAutoRedirect = this.useOpenIDConnect && config.isOIDCAutoRedirect();
     }
-
 
     public String Ausloggen() {
         if (this.myBenutzer != null) {
@@ -366,6 +368,7 @@ public class LoginBean implements Serializable {
 
     /**
      * check if any of the assigned roles is related to GoobiScript
+     * 
      * @return
      */
     public boolean isHasAnyGoobiScriptRole() {

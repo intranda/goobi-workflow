@@ -957,7 +957,20 @@ public class Metadaten implements Serializable {
         }
 
         this.modeAddGroup = false;
+        for (MetadatumImpl mdi : selectedGroup.getMetadataList()) {
+            mdi.setValue("");
+        }
+        for (MetaPerson mp : selectedGroup.getPersonList()) {
+            mp.setVorname("");
+            mp.setNachname("");
+        }
+        for (MetaCorporate mc : selectedGroup.getCorporateList()) {
+            mc.setMainName("");
+            mc.getSubNames().clear();
+            mc.addSubName();
+            mc.setPartName("");
 
+        }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -1618,13 +1631,15 @@ public class Metadaten implements Serializable {
                 docstruct = docstruct.getAllChildren().get(0);
             }
             lstMetadata = docstruct.getAllMetadata();
-            for (Metadata md : lstMetadata) {
-                if (md.getType().getName().equals("_directionRTL")) {
-                    try {
-                        Boolean value = Boolean.valueOf(md.getValue());
-                        this.pagesRTL = value;
-                    } catch (Exception e) {
+            if (lstMetadata != null) {
+                for (Metadata md : lstMetadata) {
+                    if (md.getType().getName().equals("_directionRTL")) {
+                        try {
+                            Boolean value = Boolean.valueOf(md.getValue());
+                            this.pagesRTL = value;
+                        } catch (Exception e) {
 
+                        }
                     }
                 }
             }
@@ -4098,11 +4113,11 @@ public class Metadaten implements Serializable {
     public List<String> getAllOpacCatalogues() {
         if (catalogues == null) {
             String processTemplateName = "";
-            List<Processproperty>  properties =myProzess.getEigenschaften();
-            if (properties!= null) {
+            List<Processproperty> properties = myProzess.getEigenschaften();
+            if (properties != null) {
                 for (Processproperty pp : properties) {
-                    if ("Template".equals( pp.getTitel())) {
-                        processTemplateName= pp.getWert();
+                    if ("Template".equals(pp.getTitel())) {
+                        processTemplateName = pp.getWert();
                     }
                 }
             }
