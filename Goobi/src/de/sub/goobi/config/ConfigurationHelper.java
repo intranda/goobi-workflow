@@ -1158,7 +1158,7 @@ public class ConfigurationHelper implements Serializable {
             try (OutputStream out = Files.newOutputStream(fileLocal)) {
                 configLocal.save(out);
             } catch (IOException | ConfigurationException e) {
-                logger.error(e);
+                logger.error("Error saving local config: {}", e);
             }
         }
     }
