@@ -35,7 +35,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.nio.file.Files;
@@ -165,8 +164,8 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
-            WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
-            TypeNotAllowedForParentException {
+    WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
+    TypeNotAllowedForParentException {
 
         String benutzerHome = "";
         LoginBean login = Helper.getLoginBean();
@@ -179,7 +178,7 @@ public class ExportMets {
     }
 
     public void downloadMets(Process process) throws ReadException, PreferencesException, WriteException, IOException, InterruptedException,
-            SwapException, DAOException, TypeNotAllowedForParentException {
+    SwapException, DAOException, TypeNotAllowedForParentException {
         this.myPrefs = process.getRegelsatz().getPreferences();
         String atsPpnBand = process.getTitel();
         Fileformat gdzfile = process.readMetadataFile();
@@ -236,8 +235,8 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
-            WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
-            SwapException, DAOException, TypeNotAllowedForParentException {
+    WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
+    SwapException, DAOException, TypeNotAllowedForParentException {
 
         /*
          * -------------------------------- Read Document --------------------------------
@@ -246,8 +245,8 @@ public class ExportMets {
         String atsPpnBand = myProzess.getTitel();
         Fileformat gdzfile = myProzess.readMetadataFile();
 
-        //String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
-        String zielVerzeichnis = Files.createTempDirectory("mets_export").toAbsolutePath().toString(); //only save file in /tmp/ directory
+        String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
+    //    String zielVerzeichnis = Files.createTempDirectory("mets_export").toAbsolutePath().toString(); //only save file in /tmp/ directory
 
         String targetFileName = zielVerzeichnis + atsPpnBand + "_mets.xml";
         return writeMetsFile(myProzess, targetFileName, gdzfile, false);
@@ -591,7 +590,7 @@ public class ExportMets {
             }
             StorageProvider.getInstance().deleteDir(tempFile);
         } else {
-            
+
             mm.write(targetFileName);
 
             if (addAnchorFile) {
