@@ -18,6 +18,7 @@ import org.goobi.beans.Browser;
 import org.goobi.beans.SessionInfo;
 import org.goobi.beans.User;
 import org.goobi.goobiScript.GoobiScriptManager;
+import org.goobi.managedbeans.LoginBean;
 import org.omnifaces.cdi.Push;
 import org.omnifaces.cdi.PushContext;
 
@@ -280,6 +281,7 @@ public class SessionForm implements Serializable {
         SessionInfo knownSession = this.getSessionInfoById(id);
 
         if (knownSession == null) {
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Created new session for user.");
             SessionInfo newSession = new SessionInfo();
             newSession.setUserName(LOGGED_OUT);
             newSession.setUserId(0);
@@ -290,14 +292,14 @@ public class SessionForm implements Serializable {
         }
 
         if (updatedUser == null) {
-            log.info("User will be logged out.");
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "User will be logged out.");
             knownSession.setUserName(LOGGED_OUT);
             updatedSession.setAttribute("User", LOGGED_OUT);
             knownSession.setUserId(0);
             this.removeAbandonedSessions();
             return;
         }
-        log.info("Session already exists and will be overwritten with new session.");
+        log.trace(LoginBean.LOGIN_LOG_PREFIX + "Session already exists and will be overwritten with new session.");
 
         String name = updatedUser.getNachVorname();
         int timeout = updatedUser.getSessiontimeout();
@@ -307,9 +309,9 @@ public class SessionForm implements Serializable {
         knownSession.setUserId(updatedUser.getId());
         knownSession.setUserTimeout(timeout);
         updatedSession.setMaxInactiveInterval(timeout);
-        log.info("Removing old sessions...");
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Removing old sessions...");
         this.removeAbandonedSessions();
-        log.info("Sessions list is up to date.");
+        log.trace(LoginBean.LOGIN_LOG_PREFIX + "Sessions list is up to date.");
     }
 
     /**

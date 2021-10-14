@@ -44,6 +44,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.beans.User;
@@ -71,6 +72,11 @@ public class LoginBean implements Serializable {
      * 
      */
     private static final long serialVersionUID = -6036632431688990910L;
+
+    /**
+     * The login log prefix is used in each login log output line. This makes it possible to filter the whole log file for login log output lines.
+     */
+    public static final String LOGIN_LOG_PREFIX = "LOGIN PROCESS: ";
 
     @Getter
     @Setter
@@ -154,17 +160,17 @@ public class LoginBean implements Serializable {
     public String Einloggen() {
 
         // Prepare login
-        log.info("Login button was pressed");
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login button was pressed");
         AlteBilderAufraeumen();
         this.myBenutzer = null;
 
         // Check valid login information
         if (this.login == null || this.passwort == null) {
             Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
-            log.info("Login canceled. User could not log in because login name or password was null.");
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User could not log in because login name or password was null.");
             return "";
         }
-        log.info("The login data is available for further processing.");
+        log.trace(LoginBean.LOGIN_LOG_PREFIX + "The login data is available for further processing.");
 
         // Get user account from database
         User user = LoginBean.findUserByLoginName(this.login);
@@ -176,39 +182,43 @@ public class LoginBean implements Serializable {
         // Check whether the user is an active user and is not invisible
         if (user.getIsVisible() != null || !user.isIstAktiv()) {
             Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
-            log.info("Login canceled. User could not log in because account is not visible or not active.");
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User could not log in because account is not visible or not active.");
             return "";
         }
-        log.info("The user is able to log in (user is visible and active).");
+        log.trace(LoginBean.LOGIN_LOG_PREFIX + "The user is able to log in (user is visible and active).");
 
         // Check the password
         if (!user.istPasswortKorrekt(this.passwort)) {
             Helper.setFehlerMeldung("passwort", "", Helper.getTranslation("wrongLogin"));
-            log.info("Login canceled. Password of user with login " + this.login + " was not correct.");
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. Password of user with login " + this.login + " was not correct.");
             return "";
         }
-        log.info("Password was correct.");
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Password was correct.");
 
         // Get the user session if this user is already logged in in an other browser tab or create a new session for the user.
-        log.info("Getting available user session or creating a new session for user...");
+        log.trace(LoginBean.LOGIN_LOG_PREFIX + "Getting available user session or creating a new session for user...");
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
         // Update or add session in the sessions manager
-        log.info("Adding or replacing session in session manager...");
+        log.trace(LoginBean.LOGIN_LOG_PREFIX + "Adding or replacing session in session manager...");
         Helper.getSessionBean().updateSessionUserName(mySession, user);
 
         this.myBenutzer = user;
         this.myBenutzer.lazyLoad();
         roles = myBenutzer.getAllUserRoles();
 
-        StringBuilder string = new StringBuilder();
-        string.append("Login was successful.\n");
-        string.append("Login name: " + user.getLogin() + "\n");
-        string.append("First name: " + user.getVorname() + "\n");
-        string.append("Last name: " + user.getNachname() + "\n");
-        string.append("Login type: " + user.getLdapGruppe().getAuthenticationType() + "\n");
-        log.info(string.toString());
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login was successful.\n");
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login name: " + user.getLogin());
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "First name: " + user.getVorname());
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Last name: " + user.getNachname());
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login type: " + user.getLdapGruppe().getAuthenticationType());
 
-        log.info("Loading start page or dashboard...");
+        String dashboard = user.getDashboardPlugin();
+        if (StringUtils.isBlank(dashboard) || dashboard.equals("null")) {
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Loading start page...");
+        } else {
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Trying to load dashboard plugin: " + dashboard);
+        }
+
         return "";
     }
 
@@ -217,16 +227,16 @@ public class LoginBean implements Serializable {
             String userString = "login='" + StringEscapeUtils.escapeSql(login) + "'";
             List<User> users = UserManager.getUsers(null, userString, null, null, null);
             if (users != null && users.size() == 1 && users.get(0) != null) {
-                log.info("Found user with login name " + login + " in database.");
+                log.debug(LoginBean.LOGIN_LOG_PREFIX + "Found user with login name " + login + " in database.");
                 return users.get(0);
             } else {
                 Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
-                log.error("Login canceled. User with login name " + login + " does not exist.");
+                log.error(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User with login name " + login + " does not exist.");
                 return null;
             }
         } catch (DAOException exception) {
             Helper.setFehlerMeldung("Could not read database ", exception.getMessage());
-            log.error("Login canceled. Could not read database in login process.");
+            log.error(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. Could not read database in login process.");
             log.error(exception);
             return null;
         }
