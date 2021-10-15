@@ -644,12 +644,12 @@ public class FilterHelper {
                     sb.append(rightTruncationCharacter);
                     sb.append("' AND ");
                 }
-                sb.append("MATCH (value) AGAINST ('");
+                sb.append("MATCH (value) AGAINST ('\"");
 
                 if ("BOOLEAN MODE".equals(ConfigurationHelper.getInstance().getFulltextSearchMode())) {
                     String[] words = value.split(" ");
                     for (String w : words) {
-                        sb.append("+" + w + " ");
+                        sb.append("+*" + w + "* ");
                     }
                 } else {
                     sb.append(value);
