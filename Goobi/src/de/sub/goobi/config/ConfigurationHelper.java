@@ -1012,6 +1012,15 @@ public class ConfigurationHelper implements Serializable {
         return MySQLHelper.isUsingH2();
     }
 
+
+    public boolean isUseFulltextSearch() {
+        return getLocalBoolean("useFulltextSearch", false);
+    }
+
+    public String getFulltextSearchMode() {
+        return getLocalString("FulltextSearchMode", "BOOLEAN MODE");
+    }
+
     public boolean isAllowGravatar() {
         return getLocalBoolean("enableGravatar", true);
     }
