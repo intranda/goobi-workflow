@@ -14,22 +14,19 @@
 		<RollingFile
 			name="file"
 			fileName="${baseDir}/goobi.log"
-			filePattern="${baseDir}/goobi.log.%i"
+			filePattern="${baseDir}/goobi-%d{yyyy-MM-dd}.log"
 			append="true">
 			<PatternLayout>
 				<Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n</Pattern>
 			</PatternLayout>
 			<Policies>
-				<SizeBasedTriggeringPolicy size="10MB" />
-				<CronTriggeringPolicy schedule="0 0 0 * * ?" />
+				<TimeBasedTriggeringPolicy interval="1" />
 			</Policies>
-			<!--<DefaultRolloverStrategy max="5">-->
+			<!-- Due to the DSGVO, log outputs must be deleted after seven days because they may contain information about users -->
 			<DefaultRolloverStrategy>
 				<Delete basePath="${baseDir}">
-					<IfFileName glob="goobi.log.*" />
-					<!-- Due to the DSGVO, log outputs must be deleted after seven days because they may contain information about users -->
-					<!-- ISO 8601 duration format -->
-					<IfLastModified age="7d" />
+					<!-- Time format is ISO 8601 -->
+					<IfLastModified age="P7D" />
 				</Delete>
 			</DefaultRolloverStrategy>
 		</RollingFile>
