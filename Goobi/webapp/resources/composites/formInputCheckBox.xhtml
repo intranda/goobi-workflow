@@ -1,7 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
 	<composite:interface>
 		<composite:attribute name="name" />
@@ -29,7 +29,7 @@
 			</div>
 			<div class="#{cc.attrs.classRight}" style="#{cc.attrs.styleRight}">
 					<h:selectBooleanCheckbox id="#{cc.attrs.name}" styleClass="#{cc.attrs.fieldStyle} checkbox-height-fix" style="margin-left: 0px;"
-					value="#{cc.attrs.field}" disabled="#{cc.attrs.disabled}" tabindex="#{cc.attrs.tabindex}" />
+					value="#{cc.attrs.field}" disabled="#{cc.attrs.disabled}" tabindex="#{cc.attrs.tabindex}" pt:aria-label="#{cc.attrs.label}"/>
 					<h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger" />
 					<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
 						value="#{cc.attrs.help}" />
