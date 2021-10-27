@@ -33,6 +33,7 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.goobi.api.mail.SendMail;
 import org.goobi.api.mail.StepConfiguration;
 import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.beans.Institution;
@@ -296,22 +297,25 @@ class UserMysqlHelper implements Serializable {
                 run.update(connection, sql.toString(), param);
             }
 
-            String insert =
-                    "INSERT INTO user_email_configuration (userid, projectid, stepname, open, inWork, done, error) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            String update = "UPDATE user_email_configuration set open = ?, inWork = ?, done = ?, error = ? where id = ?";
-            if (ro.getEmailConfiguration() != null) {
-                for (UserProjectConfiguration upc : ro.getEmailConfiguration()) {
-                    for (StepConfiguration sc : upc.getStepList()) {
-                        if (sc.getId() == null) {
+            if (SendMail.getInstance().getConfig().isEnableMail()) {
 
-                            Integer id = run.insert(connection, insert, MySQLHelper.resultSetToIntegerHandler, ro.getId(), upc.getProjectId(),
-                                    sc.getStepName(), sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError());
-                            sc.setId(id);
-                        } else {
-                            if (!sc.isOpen() && !sc.isInWork() && !sc.isDone() && !sc.isError()) {
-                                run.update(connection, "DELETE FROM user_email_configuration WHERE id = ?", sc.getId());
+                String insert =
+                        "INSERT INTO user_email_configuration (userid, projectid, stepname, open, inWork, done, error) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                String update = "UPDATE user_email_configuration set open = ?, inWork = ?, done = ?, error = ? where id = ?";
+                if (ro.getEmailConfiguration() != null) {
+                    for (UserProjectConfiguration upc : ro.getEmailConfiguration()) {
+                        for (StepConfiguration sc : upc.getStepList()) {
+                            if (sc.getId() == null) {
+
+                                Integer id = run.insert(connection, insert, MySQLHelper.resultSetToIntegerHandler, ro.getId(), upc.getProjectId(),
+                                        sc.getStepName(), sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError());
+                                sc.setId(id);
                             } else {
-                                run.update(connection, update, sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError(), sc.getId());
+                                if (!sc.isOpen() && !sc.isInWork() && !sc.isDone() && !sc.isError()) {
+                                    run.update(connection, "DELETE FROM user_email_configuration WHERE id = ?", sc.getId());
+                                } else {
+                                    run.update(connection, update, sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError(), sc.getId());
+                                }
                             }
                         }
                     }
@@ -620,7 +624,7 @@ class UserMysqlHelper implements Serializable {
     public static List<UserProjectConfiguration> getEmailConfigurationForUser(List<Project> projects, Integer id, boolean showAllItems)
             throws SQLException {
         List<UserProjectConfiguration> answer = new ArrayList<>();
-        if (projects == null || projects.isEmpty()) {
+        if (projects == null || projects.isEmpty() || !SendMail.getInstance().getConfig().isEnableMail())  {
             return answer;
         }
 
