@@ -160,6 +160,7 @@
                 <ui:fragment rendered="#{NavigationForm.uiStatus['toggleProcessLog']=='' or NavigationForm.uiStatus['toggleProcessLog']== null}">
                     <div
                         class="#{NavigationForm.uiStatus['processLogBig']?'':''}"
+                        tabindex="1"
                         data-scrolldown="true"
                         style="overflow: auto; width: auto; #{NavigationForm.uiStatus['processLogBig']?'':'height: 180px;'}">
                         <h:panelGroup rendered="#{process.processLog.size()>0}">
