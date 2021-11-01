@@ -150,7 +150,7 @@
 						</li>
 
 						<!-- Logout -->
-						<ui:fragment rendered="#{!LoginForm.useOpenIDConnect}">
+						<ui:fragment rendered="#{!LoginForm.showSSOLogoutPage}">
 							<intranda:menuItem
 								id="a52"
 								parentMenu="menu_account"
@@ -158,7 +158,7 @@
 								action="#{LoginForm.Ausloggen}"
 								icon="fa fa-power-off box-icon-fix-menu" />
 						</ui:fragment>
-						<ui:fragment rendered="#{LoginForm.useOpenIDConnect}">
+						<ui:fragment rendered="#{LoginForm.showSSOLogoutPage}">
 							<intranda:menuItem
 								id="openIdLogout"
 								parentMenu="menu_account"

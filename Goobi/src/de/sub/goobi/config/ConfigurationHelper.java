@@ -577,7 +577,6 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("ldap_nextFreeUnixId");
     }
 
-
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
@@ -586,7 +585,6 @@ public class ConfigurationHelper implements Serializable {
     public String getTruststore() {
         return getLocalString("truststore");
     }
-
 
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
@@ -1014,6 +1012,15 @@ public class ConfigurationHelper implements Serializable {
         return MySQLHelper.isUsingH2();
     }
 
+
+    public boolean isUseFulltextSearch() {
+        return getLocalBoolean("useFulltextSearch", false);
+    }
+
+    public String getFulltextSearchMode() {
+        return getLocalString("FulltextSearchMode", "BOOLEAN MODE");
+    }
+
     public boolean isAllowGravatar() {
         return getLocalBoolean("enableGravatar", true);
     }
@@ -1103,6 +1110,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("developing", false);
     }
 
+    public boolean isShowSSOLogoutPage() {
+        return getLocalBoolean("showSSOLogoutPage", false);
+    }
+
     /**
      * Returns the memory size of the given unit in bytes
      * 
@@ -1156,7 +1167,7 @@ public class ConfigurationHelper implements Serializable {
             try (OutputStream out = Files.newOutputStream(fileLocal)) {
                 configLocal.save(out);
             } catch (IOException | ConfigurationException e) {
-                logger.error(e);
+                logger.error("Error saving local config: {}", e);
             }
         }
     }

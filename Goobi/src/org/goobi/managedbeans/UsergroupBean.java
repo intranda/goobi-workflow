@@ -101,6 +101,10 @@ public class UsergroupBean extends BasicBean implements Serializable {
         }
         return FilterKein();
     }
+    
+    public String Cancel() {
+        return "usergroup_all";
+    }
 
     public String addRole() {
         myBenutzergruppe.addUserRole(tempRole);

@@ -300,6 +300,10 @@ public class ProjectBean extends BasicBean implements Serializable {
             }
         }
         ProjectManager.saveProjectFileGroup(myFilegroup);
+        if (!this.newFileGroups.contains(this.myFilegroup.getId())) {
+            this.newFileGroups.add(this.myFilegroup.getId());
+        }
+
         return "";
     }
 
@@ -308,6 +312,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     public String filegroupCancel() {
+//        Cancel();
         return "";
     }
 
