@@ -30,7 +30,6 @@ import java.util.List;
  * exception statement from your version.
  */
 
-
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
 
@@ -68,10 +67,13 @@ public class UsergroupBean extends BasicBean implements Serializable {
         try {
             //if there is only one institution, then it is not shown in ui and the value may be null:
             if (getCurrentInstitutionID() == 0) {
-                Integer inst = (Integer) getInstitutionsAsSelectList().get(0).getValue();
-                setCurrentInstitutionID(inst);
+                List<SelectItem> lstInst = getInstitutionsAsSelectList();
+                if (lstInst.size() > 0) {
+                    Integer inst = (Integer) lstInst.get(0).getValue();
+                    setCurrentInstitutionID(inst);
+                }
             }
-            
+
             UsergroupManager.saveUsergroup(myBenutzergruppe);
             paginator.load();
             return FilterKein();

@@ -193,9 +193,13 @@ public class ProjectBean extends BasicBean implements Serializable {
         if (getCurrentInstitutionID() == 0) {
             Integer inst;
             try {
-                inst = (Integer) getInstitutionsAsSelectList().get(0).getValue();
-                setCurrentInstitutionID(inst);
+                List<SelectItem> lstInst = getInstitutionsAsSelectList();
+                if (lstInst.size() > 0) {
+                    inst = (Integer) lstInst.get(0).getValue();
+                    setCurrentInstitutionID(inst);
+                }
             } catch (DAOException e) {
+                file: ///home/joel/eclipse-workspace/.metadata/.plugins/org.eclipse.jdt.ui/jdt-images/0.png
                 Helper.setFehlerMeldung("could not save", e.getMessage());
                 return "";
             }
