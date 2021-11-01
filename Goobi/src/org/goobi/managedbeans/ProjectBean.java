@@ -189,6 +189,22 @@ public class ProjectBean extends BasicBean implements Serializable {
             return "";
         }
 
+        //if there is only one institution, then it is not shown in ui and the value may not be set:
+        if (getCurrentInstitutionID() == 0) {
+            Integer inst;
+            try {
+                List<SelectItem> lstInst = getInstitutionsAsSelectList();
+                if (lstInst.size() > 0) {
+                    inst = (Integer) lstInst.get(0).getValue();
+                    setCurrentInstitutionID(inst);
+                }
+            } catch (DAOException e) {
+                file: ///home/joel/eclipse-workspace/.metadata/.plugins/org.eclipse.jdt.ui/jdt-images/0.png
+                Helper.setFehlerMeldung("could not save", e.getMessage());
+                return "";
+            }
+        }
+
         this.commitFileGroups();
         try {
             ProjectManager.saveProject(this.myProjekt);
