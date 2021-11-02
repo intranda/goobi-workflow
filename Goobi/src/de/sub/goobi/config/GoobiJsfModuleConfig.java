@@ -15,7 +15,7 @@ public class GoobiJsfModuleConfig extends JsfModuleConfig {
 
     @Override
     public ClientWindowConfig.ClientWindowRenderMode getDefaultWindowMode() {
-        return ClientWindowConfig.ClientWindowRenderMode.CLIENTWINDOW;
+        return ClientWindowConfig.ClientWindowRenderMode.LAZY;
     }
 
 }

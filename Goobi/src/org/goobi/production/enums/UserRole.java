@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import de.sub.goobi.config.ConfigurationHelper;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -81,6 +83,8 @@ public enum UserRole {
         for (UserRole ur : UserRole.values()) {
             roles.add(ur.name());
         }
+        roles.addAll(ConfigurationHelper.getInstance().getAdditionalUserRoles());
+
         Collections.sort(roles);
         return roles;
     }
