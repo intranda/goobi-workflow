@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -104,8 +105,15 @@ public class UserBean extends BasicBean implements Serializable {
     private boolean unsubscribedProjectsExist;
 
     @Getter
-    private boolean  unsubscribedGroupsExist;
-    
+    private boolean unsubscribedGroupsExist;
+
+
+    //changes since last save for each user:
+    private Map<Integer, ArrayList<Integer>> addedToGroups = new HashMap<>();
+    private Map<Integer, ArrayList<Integer>> removedFromGroups = new HashMap<>();
+    private Map<Integer, ArrayList<Integer>> addedToProjects = new HashMap<>();
+    private Map<Integer, ArrayList<Integer>> removedFromProjects = new HashMap<>();
+
     public String Neu() {
         this.myClass = new User();
         this.myClass.setVorname("");
@@ -242,6 +250,15 @@ public class UserBean extends BasicBean implements Serializable {
                         && myClass.getPasswort() != null) {
                     myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
                 }
+                //if there is only one institution, then it is not shown in ui and the value may be null:
+                if (myClass.getInstitutionId() == null) {
+                    List<SelectItem> lstInst = getInstitutionsAsSelectList();
+                    if (lstInst.size() > 0) {
+                        Integer inst = (Integer) lstInst.get(0).getValue();
+                        myClass.setInstitutionId(inst);
+                    }
+                }
+
                 UserManager.saveUser(this.myClass);
                 paginator.load();
 
@@ -460,13 +477,6 @@ public class UserBean extends BasicBean implements Serializable {
         updateUsergroupPaginator();
         updateProjectPaginator();
 
-        if (addedToGroups == null) {
-            addedToGroups = new HashMap<Integer, ArrayList<Integer>>();
-            removedFromGroups = new HashMap<Integer, ArrayList<Integer>>();
-            addedToProjects = new HashMap<Integer, ArrayList<Integer>>();
-            removedFromProjects = new HashMap<Integer, ArrayList<Integer>>();
-        }
-
         if (!addedToGroups.containsKey(myClass.getId())) {
             resetChangeLists();
         }
@@ -650,7 +660,7 @@ public class UserBean extends BasicBean implements Serializable {
         }
         UsergroupManager m = new UsergroupManager();
         usergroupPaginator = new DatabasePaginator("titel", filter, m, "");
-        
+
         unsubscribedGroupsExist = usergroupPaginator.getTotalResults() > 0;
     }
 
@@ -725,11 +735,4 @@ public class UserBean extends BasicBean implements Serializable {
         resetChangeLists();
         return "user_all";
     }
-
-    //changes since last save for each user:
-    private HashMap<Integer, ArrayList<Integer>> addedToGroups;
-    private HashMap<Integer, ArrayList<Integer>> removedFromGroups;
-    private HashMap<Integer, ArrayList<Integer>> addedToProjects;
-    private HashMap<Integer, ArrayList<Integer>> removedFromProjects;
-
 }

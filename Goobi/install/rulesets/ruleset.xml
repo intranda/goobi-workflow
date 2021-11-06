@@ -4302,7 +4302,7 @@
         <identifierReplacement>s/\(.+\)//g</identifierReplacement>
         <conditionField>4</conditionField>
         <conditionValue>/rcp/</conditionValue>
-        <separateEntries>false</separateEntries>
+        <separateEntries>true</separateEntries>
         <separator>; </separator>
       </Person>
       <Person>
@@ -4324,7 +4324,7 @@
         <identifierReplacement>s/\(.+\)//g</identifierReplacement>
         <conditionField>4</conditionField>
         <conditionValue>/ann/</conditionValue>
-        <separateEntries>false</separateEntries>
+        <separateEntries>true</separateEntries>
         <separator>; </separator>
       </Person>
       <Person>
@@ -4368,7 +4368,7 @@
         <identifierReplacement>s/\(.+\)//g</identifierReplacement>
         <conditionField>4</conditionField>
         <conditionValue>/aut/</conditionValue>
-        <separateEntries>false</separateEntries>
+        <separateEntries>true</separateEntries>
         <separator>; </separator>
       </Person>
 
