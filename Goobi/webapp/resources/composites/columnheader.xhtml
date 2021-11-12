@@ -13,7 +13,7 @@
 		<composite:attribute name="style" />
 		<composite:attribute name="class" />
 		<composite:attribute name="value" />
-		<composite:attribute name="render" />
+		<composite:attribute name="ajaxRender" />
 		<composite:attribute name="sortable" default="true" />
 	</composite:interface>
 
@@ -33,7 +33,7 @@
 				<f:setPropertyActionListener
 					target="#{cc.attrs.form.sortierung}"
 					value="#{cc.attrs.form.sortierung== ascendingLabel ? descendingLabel : ascendingLabel }" />
-				<f:ajax render="#{cc.attrs.render}" />
+				<f:ajax render="#{cc.attrs.ajaxRender}" />
 			</button>
 		</th>
 		

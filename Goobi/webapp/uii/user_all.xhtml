@@ -91,33 +91,33 @@
 			                                        name="name"
 			                                        form="#{BenutzerverwaltungForm}"
 			                                        value="#{msgs.benutzer}"
-			                                        render=":myform" />
+			                                        ajaxRender=":myform" />
 			                                    <intranda:columnheader
 			                                        name="login"
 			                                        form="#{BenutzerverwaltungForm}"
 			                                        value="#{msgs.login}"
-			                                        render=":myform" />
+			                                        ajaxRender=":myform" />
 			                                    <intranda:columnheader
 			                                        name="location"
 			                                        form="#{BenutzerverwaltungForm}"
 			                                        value="#{msgs.standort}"
-			                                        render=":myform" />
+			                                        ajaxRender=":myform" />
 			                                    <intranda:columnheader
 			                                        name="group"
 			                                        form="#{BenutzerverwaltungForm}"
 			                                        value="#{msgs.benutzergruppen}"
-			                                        render=":myform" />
+			                                        ajaxRender=":myform" />
 			                                    <intranda:columnheader
 			                                        name="projects"
 			                                        form="#{BenutzerverwaltungForm}"
 			                                        value="#{msgs.projekte}"
-			                                        render=":myform" />
+			                                        ajaxRender=":myform" />
 			                                    <intranda:columnheader
 			                                        name="institution"
 			                                        form="#{BenutzerverwaltungForm}"
 			                                        value="#{msgs.institution}"
 			                                        rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}"
-			                                        render=":myform" />
+			                                        ajaxRender=":myform" />
 												<intranda:columnheader
 			                                        value="#{msgs.auswahl}"
 			                                        sortable="false" />
