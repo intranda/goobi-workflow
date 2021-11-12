@@ -80,158 +80,70 @@
 										</button>
 									</div>
 								</h:form>
-								<!-- User Table -->
+								<!-- ### Table ### -->
 								<h:form id="myform" prependId="false">
 									<table role="grid" id="tableUserAll"
 										class="table table-hover table-nomargin dataTable table-bordered responsive">
-										<!-- Columnheader row -->
+										<!-- ### Columnheader row ### -->
 										<thead>
 											<tr role="row">
-												<th scope="col" role="columnheader"
-													aria-sort="#{BenutzerverwaltungForm.sortierung=='nameDesc'? 'descending' : BenutzerverwaltungForm.sortierung=='nameAsc'? 'ascending' :'none'}">
-													<button class="button-link font-black-block"
-														style="width: 100%; text-align: left"
-														jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
-														aria-label="#{msgs.defaultSortField} #{msgs.benutzer} #{BenutzerverwaltungForm.sortierung=='nameDesc'? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung=='nameAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
-														<h:outputText value="#{msgs.benutzer}" />
-														<span
-															class="pull-right table-sort-icon fa #{BenutzerverwaltungForm.sortierung=='nameDesc'?'fa-sort-desc':BenutzerverwaltungForm.sortierung=='nameAsc'?'fa-sort-asc':'fa-sort'}"></span>
-														<f:setPropertyActionListener
-															target="#{BenutzerverwaltungForm.sortierung}"
-															value="#{BenutzerverwaltungForm.sortierung=='nameAsc'?'nameDesc':'nameAsc'}" />
-														<f:ajax render=":myform" />
-													</button>
-												</th>
-												<th scope="col" role="columnheader"
-													aria-sort="#{BenutzerverwaltungForm.sortierung=='loginDesc'? 'descending' : BenutzerverwaltungForm.sortierung=='loginAsc'? 'ascending' :'none'}">
-													<button class="button-link font-black-block"
-														style="width: 100%; text-align: left"
-														jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
-														aria-label="#{msgs.defaultSortField} #{msgs.login} #{BenutzerverwaltungForm.sortierung=='loginDesc'? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung=='loginAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
-														<h:outputText value="#{msgs.login}" />
-														<span
-															class="pull-right table-sort-icon fa #{BenutzerverwaltungForm.sortierung=='loginDesc'?'fa-sort-desc':BenutzerverwaltungForm.sortierung=='loginAsc'?'fa-sort-asc':'fa-sort'}"></span>
-														<f:setPropertyActionListener
-															target="#{BenutzerverwaltungForm.sortierung}"
-															value="#{BenutzerverwaltungForm.sortierung=='loginAsc'?'loginDesc':'loginAsc'}" />
-														<f:ajax render=":myform" />
-													</button>
-												</th>
-												<th scope="col" role="columnheader"
-													aria-sort="#{BenutzerverwaltungForm.sortierung=='locationDesc'? 'descending' : BenutzerverwaltungForm.sortierung=='locationAsc'? 'ascending' :'none'}">
-													<button class="button-link font-black-block"
-														style="width: 100%; text-align: left"
-														jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
-														aria-label="#{msgs.defaultSortField} #{msgs.standort} #{BenutzerverwaltungForm.sortierung=='locationDesc'? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung=='locationAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
-														<h:outputText value="#{msgs.standort}" />
-														<span
-															class="pull-right table-sort-icon fa #{BenutzerverwaltungForm.sortierung=='locationDesc'?'fa-sort-desc':BenutzerverwaltungForm.sortierung=='locationAsc'?'fa-sort-asc':'fa-sort'}"></span>
-														<f:setPropertyActionListener
-															target="#{BenutzerverwaltungForm.sortierung}"
-															value="#{BenutzerverwaltungForm.sortierung=='locationAsc'?'locationDesc':'locationAsc'}" />
-														<f:ajax render=":myform" />
-													</button>
-												</th>
-												<th scope="col" role="columnheader"
-													aria-sort="#{BenutzerverwaltungForm.sortierung=='groupDesc'? 'descending' : BenutzerverwaltungForm.sortierung=='groupAsc'? 'ascending' :'none'}">
-													<button class="button-link font-black-block"
-														style="width: 100%; text-align: left"
-														jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
-														aria-label="#{msgs.defaultSortField} #{msgs.benutzergruppen} #{BenutzerverwaltungForm.sortierung=='groupDesc'? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung=='groupAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
-														<h:outputText value="#{msgs.benutzergruppen}" />
-														<span
-															class="pull-right table-sort-icon fa #{BenutzerverwaltungForm.sortierung=='groupDesc'?'fa-sort-desc':BenutzerverwaltungForm.sortierung=='groupAsc'?'fa-sort-asc':'fa-sort'}"></span>
-														<f:setPropertyActionListener
-															target="#{BenutzerverwaltungForm.sortierung}"
-															value="#{BenutzerverwaltungForm.sortierung=='groupAsc'?'groupDesc':'groupAsc'}" />
-														<f:ajax render=":myform" />
-													</button>
-												</th>
-												<th scope="col" role="columnheader"
-													aria-sort="#{BenutzerverwaltungForm.sortierung=='projectsDesc'? 'descending' : BenutzerverwaltungForm.sortierung=='projectsAsc'? 'ascending' :'none'}">
-													<button class="button-link font-black-block"
-														style="width: 100%; text-align: left"
-														jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
-														aria-label="#{msgs.defaultSortField} #{msgs.projekte} #{BenutzerverwaltungForm.sortierung=='projectsDesc'? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung=='projectsAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
-														<h:outputText value="#{msgs.projekte}" />
-														<span
-															class="pull-right table-sort-icon fa #{BenutzerverwaltungForm.sortierung=='projectsDesc'?'fa-sort-desc':BenutzerverwaltungForm.sortierung=='projectsAsc'?'fa-sort-asc':'fa-sort'}"></span>
-														<f:setPropertyActionListener
-															target="#{BenutzerverwaltungForm.sortierung}"
-															value="#{BenutzerverwaltungForm.sortierung=='projectsAsc'?'projectsDesc':'projectsAsc'}" />
-														<f:ajax render=":myform" />
-													</button>
-												</th>
-												<th
-													jsf:rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}"
-													scope="col" role="columnheader"
-													aria-sort="#{BenutzerverwaltungForm.sortierung=='institutionDesc'? 'descending' : BenutzerverwaltungForm.sortierung=='institutionAsc'? 'ascending' :'none'}">
-													<button class="button-link font-black-block"
-														style="width: 100%; text-align: left"
-														jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
-														aria-label="#{msgs.defaultSortField} #{msgs.institution} #{BenutzerverwaltungForm.sortierung=='institutionDesc'? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung=='institutionAsc'? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
-														<h:outputText value="#{msgs.institution}" />
-														<span
-															class="pull-right table-sort-icon fa #{BenutzerverwaltungForm.sortierung=='institutionDesc'?'fa-sort-desc':BenutzerverwaltungForm.sortierung=='institutionAsc'?'fa-sort-asc':'fa-sort'}"></span>
-														<f:setPropertyActionListener
-															target="#{BenutzerverwaltungForm.sortierung}"
-															value="#{BenutzerverwaltungForm.sortierung=='institutionAsc'?'institutionDesc':'institutionAsc'}" />
-														<f:ajax render=":myform" />
-													</button>
-												</th>
-												<th scope="col" role="columnheader"><h:outputText
-														value="#{msgs.auswahl}" /></th>
+												<intranda:columnheader
+			                                        name="name"
+			                                        form="#{BenutzerverwaltungForm}"
+			                                        value="#{msgs.benutzer}"
+			                                        render=":myform" />
+			                                    <intranda:columnheader
+			                                        name="login"
+			                                        form="#{BenutzerverwaltungForm}"
+			                                        value="#{msgs.login}"
+			                                        render=":myform" />
+			                                    <intranda:columnheader
+			                                        name="location"
+			                                        form="#{BenutzerverwaltungForm}"
+			                                        value="#{msgs.standort}"
+			                                        render=":myform" />
+			                                    <intranda:columnheader
+			                                        name="group"
+			                                        form="#{BenutzerverwaltungForm}"
+			                                        value="#{msgs.benutzergruppen}"
+			                                        render=":myform" />
+			                                    <intranda:columnheader
+			                                        name="projects"
+			                                        form="#{BenutzerverwaltungForm}"
+			                                        value="#{msgs.projekte}"
+			                                        render=":myform" />
+			                                    <intranda:columnheader
+			                                        name="institution"
+			                                        form="#{BenutzerverwaltungForm}"
+			                                        value="#{msgs.institution}"
+			                                        renderRule="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}"
+			                                        render=":myform" />
+												<intranda:columnheader
+			                                        value="#{msgs.auswahl}"
+			                                        sortable="false" />
 											</tr>
 										</thead>
-										<!-- Content rows -->
+										<!-- ### Content rows ### -->
 										<ui:repeat var="item"
 											value="#{BenutzerverwaltungForm.paginator.list}"
 											varStatus="status">
 											<tr role="row">
-												<td><h:outputText
+												<td>
+													<h:outputText
 														value="#{item.nachname}, #{item.vorname}"
 														styleClass="userID_#{item.vorname}_#{item.nachname} #{not item.istAktiv?'font-light':''}"
 														title="#{item.login}" />
-														<div jsf:rendered="false" class="box box-small box-color box-bordered">
-	                                                        <div class="box-title">
-	                                                            <h3>
-	                                                                <i class="fa fa-list"></i> #{msgs.details}
-	                                                            </h3>
-	                                                        </div>
-	                                                        <div class="box-content nopadding">
-	                                                        	<table role="grid" class="table table-hover table-nomargin dataTable table-bordered responsive">
-	                                                        		<thead>
-	                                                        			<tr role="row">
-	                                                        				<th scope="col" role="columnheader">
-	                                                        					<p>Col 1</p>
-	                                                        				</th>
-	                                                        				<th scope="col" role="columnheader">
-	                                                        					<p>Col 2</p>
-	                                                        				</th>
-	                                                        				<th scope="col" role="columnheader">
-	                                                        					<p>Col 3</p>
-	                                                        				</th>
-	                                                        			</tr>
-	                                                        		</thead>
-	                                                        		<tbody>
-	                                                        			<ui:repeat var="subItem"
-																			value="#{BenutzerverwaltungForm.paginator.list}"
-																			varStatus="status">
-																			<tr>
-																				<td>#{subItem.nachname}</td>
-																				<td>#{subItem.vorname}</td>
-																				<td>#{subItem.standort}</td>
-																			</tr>
-	                                                        			</ui:repeat>
-	                                                        		</tbody>
-	                                                        	</table>
-	                                                        </div>
-                                                        </div></td>
-												<td><h:outputText value="#{item.login}"
-														styleClass="#{not item.istAktiv?'font-light':''}" /></td>
-												<td><h:outputText value="#{item.standort}"
-														styleClass="#{not item.istAktiv?'font-light':''}" /></td>
-												<td><x:dataList var="intern"
+												</td>
+												<td>
+													<h:outputText value="#{item.login}"
+														styleClass="#{not item.istAktiv?'font-light':''}" />
+												</td>
+												<td>
+													<h:outputText value="#{item.standort}"
+														styleClass="#{not item.istAktiv?'font-light':''}" />
+												</td>
+												<td>
+													<x:dataList var="intern"
 														styleClass="#{not item.istAktiv?'font-light':''}"
 														rendered="#{item.benutzergruppenSize != 0}"
 														value="#{item.benutzergruppen}" layout="ordered list"
@@ -239,8 +151,10 @@
 														<h:outputText value="#{intern.titel}" />
 														<h:outputText value=","
 															rendered="#{rowIndex + 1 lt rowCount}" />
-													</x:dataList></td>
-												<td><x:dataList var="intern"
+													</x:dataList>
+												</td>
+												<td>
+													<x:dataList var="intern"
 														styleClass="#{not item.istAktiv?'font-light':''}"
 														rendered="#{item.projekteSize != 0}"
 														value="#{item.projekte}" layout="ordered list"
@@ -248,13 +162,13 @@
 														<h:outputText value="#{intern.titel}" />
 														<h:outputText value=","
 															rendered="#{rowIndex + 1 lt rowCount}" />
-													</x:dataList></td>
-												<td
-													jsf:rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
+													</x:dataList>
+												</td>
+												<td jsf:rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
 													<h:outputText value="#{item.institution.shortName}"
 														styleClass="#{not item.istAktiv?'font-light':''}" />
 												</td>
-												<!-- Buttons -->
+												<!-- ### Action Buttons ### -->
 												<td>
 													<div class="no-linebreak">
 														<!-- Bearbeiten-Schaltknopf -->
