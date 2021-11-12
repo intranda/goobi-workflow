@@ -14,7 +14,6 @@
 		<composite:attribute name="class" />
 		<composite:attribute name="value" />
 		<composite:attribute name="render" />
-		<composite:attribute name="renderRule" default="true" />
 		<composite:attribute name="sortable" default="true" />
 	</composite:interface>
 
@@ -22,7 +21,7 @@
 		<ui:param name="descendingLabel" value="#{cc.attrs.name}Desc" />
 		<ui:param name="ascendingLabel" value="#{cc.attrs.name}Asc" />
 		
-		<th scope="col" role="columnheader" style="#{cc.attrs.style}" class="#{cc.attrs.style}" jsf:rendered="#{cc.attrs.sortable and cc.attrs.renderRule}"
+		<th scope="col" role="columnheader" style="#{cc.attrs.style}" class="#{cc.attrs.style}" jsf:rendered="#{cc.attrs.sortable}"
 			aria-sort="#{cc.attrs.form.sortierung== descendingLabel ? 'descending' : cc.attrs.form.sortierung== ascendingLabel ? 'ascending' :'none'}">
 			<button class="button-link font-black-block"
 				style="width: 100%; text-align: left"
@@ -38,7 +37,7 @@
 			</button>
 		</th>
 		
-		<th scope="col" role="columnheader" style="#{cc.attrs.style}" class="#{cc.attrs.style}" jsf:rendered="#{not cc.attrs.sortable and cc.attrs.renderRule}"><h:outputText value="#{cc.attrs.value}" /></th>
+		<th scope="col" role="columnheader" style="#{cc.attrs.style}" class="#{cc.attrs.style}" jsf:rendered="#{not cc.attrs.sortable}"><h:outputText value="#{cc.attrs.value}" /></th>
 
 	</composite:implementation>
 

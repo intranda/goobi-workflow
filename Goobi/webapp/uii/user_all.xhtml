@@ -116,7 +116,7 @@
 			                                        name="institution"
 			                                        form="#{BenutzerverwaltungForm}"
 			                                        value="#{msgs.institution}"
-			                                        renderRule="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}"
+			                                        rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}"
 			                                        render=":myform" />
 												<intranda:columnheader
 			                                        value="#{msgs.auswahl}"
