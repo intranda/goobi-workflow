@@ -1,10 +1,10 @@
 #!/bin/bash
 set -u
 
-#################### 
-#####  iii.sh  
+####################
+#####  iii.sh
 #####  Copyright (c) 2010-2011 - Jan Toenjes <jan.toenjes@intranda.com>
-##### 
+#####
 ##
 ##  History:
 ##   0.4    - added MAXPROCS option and using xargs now
@@ -20,7 +20,7 @@ set -u
 ##   0.11.2 - changed tmp filename, added datestring
 ##   0.12   - added renaming of *.TIF to *.tif after changing to workingdir
 ##   0.13   - added compress_images -> resizing and dpi change
-##   0.13.1 - changed TIF to tif renaming loop from if to for 
+##   0.13.1 - changed TIF to tif renaming loop from if to for
 ##   0.13.2 - changed TIF to tif renaming loop again
 ##   0.13.3 - changed LZW to JPEG compression
 ##   0.14   - added check if *.tif files exist before trying to convert
@@ -51,7 +51,7 @@ set -u
 ##   0.28.1 - added several comments and simplified moving to jpg folder at create_jpeg option
 ##   0.29   - added function to compare version numbers to see if installed imagemagick version can create tiled tiffs
 ##            the code is from: http://stackoverflow.com/questions/4023830/bash-how-compare-two-strings-in-version-format
-##          - added create_tile_tiff option 
+##          - added create_tile_tiff option
 ##          - moved preparing stuff to prepare function to provide a better help screen if no valid action was given
 ##          - added SHOWARNINGS option to hide warnings if wanted...
 ##  0.30    - added switch to use graphicsmagick instead of imagemagick
@@ -77,7 +77,7 @@ set -u
 ##  0.44    - changed create_thumbnails option to include -quiet parameter at convert call
 ##  0.45    - enhanced create_tile_tiff option to specify degrees in case you'd like to rotate it. Possible values are 90, 180 and 270 specified as
 ##            third optional option. Added possibillity to tile only one image as well.
-##  0.46    - changed error handling at generate_watermark option because warnings are send to stderr from gm composite and there is no -quiet option 
+##  0.46    - changed error handling at generate_watermark option because warnings are send to stderr from gm composite and there is no -quiet option
 ##            available as in the imagemagick calls to supress warnings...
 ##  0.47    - added -depth 8 parameter at every call at convert_jpeg to prevent errors when automatically setting it to 1 together
 ##            with JPEG wich might cause trouble (i.e. at ZLB)
@@ -131,7 +131,7 @@ set -u
 TOMCATUSER=tomcat
 TOMCATGROUP=$TOMCATUSER
 
-## how many processes shall run at the same time 
+## how many processes shall run at the same time
 MAXPROCS=2
 
 ##jpeg compression level used at convert_jpeg_quality
@@ -179,7 +179,7 @@ WATERMARKIMAGEFILE=/home/jan/Dokumente/intranda/adminscripts/scripts/ubhu.png
 ## value. If set to any integer, this is the amount of pixel that will be cut.
 CUTPIXELAMOUNT="DISABLED"
 
-## Box size in px for thumbnails. If you end up with a > then smaller images are _not_ upscaled. 
+## Box size in px for thumbnails. If you end up with a > then smaller images are _not_ upscaled.
 ## The quotes are important, otherwise the 0> will be interpreted as new line...
 THUMBNAILBOXSIZE="150x150>"
 
@@ -230,7 +230,7 @@ vercomp () {
 			# fill empty fields in ver2 with zeros
 			ver2[i]=0
 		fi
-		if ((10#${ver1[i]} > 10#${ver2[i]})); then 
+		if ((10#${ver1[i]} > 10#${ver2[i]})); then
 			return 1
 		fi
 		if ((10#${ver1[i]} < 10#${ver2[i]})); then
@@ -269,7 +269,7 @@ if [ "${CUTPIXELAMOUNT}" != "DISABLED" ]; then
 	type -P tee &>/dev/null || { echo "ERROR: tee is required but seems not to be installed.  Aborting." >&2; exit 1; }
 
 	if [ "$#" == "3" ]; then
-		if [ "$3" -gt 0 ]; then 
+		if [ "$3" -gt 0 ]; then
 			echo "INFO: Found valid number as third parameter to this script. Using this as CUTPIXELAMOUNT.";
 			CUTPIXELAMOUNT=$3
 		fi
@@ -288,7 +288,7 @@ fi
 TILETIFFSINGLEIMAGE=0
 TILETIFFSINGLEIMAGENAME=0
 ROTATEDEGREE=0
-if [ ! -d "$2" ]; then 
+if [ ! -d "$2" ]; then
 	if [ "$1" == "create_tile_tiff" ]; then
 		if [ -f "$2" ]; then
 			echo "INFO: Found file instead of directory together with create_tile_tiff option. Tiling only this single image.";
@@ -297,14 +297,14 @@ if [ ! -d "$2" ]; then
 			echo -e "ERROR: Unable to determine what you want to do with -> $2 <- and create_tile_tiff. It's not a file! Aborting." >&2; exit 1;
 		fi
 	else
-		echo -e "ERROR: The specified directory -> $2 <- does not exist.  Aborting." >&2; exit 1; 
+		echo -e "ERROR: The specified directory -> $2 <- does not exist.  Aborting." >&2; exit 1;
 	fi
 fi
 
 
 if [ "$1" == "create_tile_tiff" ]; then
 	if [ "$#" == "3" ]; then
-		if ( [ "$3" == "90" ] || [ "$3" == "180" ] || [ "$3" == "270" ] ); then 
+		if ( [ "$3" == "90" ] || [ "$3" == "180" ] || [ "$3" == "270" ] ); then
 			echo "INFO: Found valid number as third parameter to this script. Using this as degree for clockwise rotation at create_tile_tiff option..";
 			ROTATEDEGREE=$3
 		else
@@ -317,12 +317,12 @@ if [ "$1" == "create_tile_tiff" ]; then
 			echo "WARNING: You are not using create_tile_tiff with graphicsmagick. This may result in invalid files."
 		fi
 	fi
-fi	
+fi
 
 
 
 
-## check if workingpath is a directory. if create_tile_tiff option is used it may be a file as well, we need to 
+## check if workingpath is a directory. if create_tile_tiff option is used it may be a file as well, we need to
 ## make sure, that we cut of the filename if that's the case
 if [ -d "$2" ]; then
 	WORKINGPATH=$2
@@ -358,7 +358,7 @@ function prepare() {
 
 	## rename all file extensions to lower case, also tiff -> tif and jpeg -> jpg
 	if [ ${VERBOSE} == "1" ]; then echo "Renaming everything to small letters"; fi
-	
+
 	if [ $CIFS == "true" ]
 	then
 		rename -f 's/(.*)\.(.*)/$1\.\L$2-renaming/' * || { echo "ERROR: could not rename file extensions to lower case. Aborting!" >&2; exit 1; }
@@ -381,7 +381,7 @@ function prepare() {
 	if ls *.* | grep -E ".*\.([a-z]*[A-Z]+[a-z]*)+$|.*\.tiff$|.*\.jpeg$" -q; then
 		echo "ERROR: could not rename file extensions. Aborting!" >&2; exit 1;
 	fi
-	
+
 	## replace spaces with underscores in filenames
 	if [ "$REPLACEWHITESPACES" == "true" ]; then
 		echo "Replacing whitespaces in filenames with underscores";
@@ -403,11 +403,11 @@ function prepare() {
 }
 
 
-case "$ACTION" in 
+case "$ACTION" in
 	## Resize and compress all TIFF files to a new DPI value
 	compress_images)
 		prepare
-		if [ ${VERBOSE} == "1" ]; then echo "Resizing and compressing all *.tif images."; fi  
+		if [ ${VERBOSE} == "1" ]; then echo "Resizing and compressing all *.tif images."; fi
 
 		## if file extension exists
 		if [ "${tiffiles}" != "0" ] ; then
@@ -435,7 +435,7 @@ case "$ACTION" in
 						if [ "${USEGM}" == "1" ]; then
 							nice -n ${NICELEVEL} gm convert "${i}" -strip -resize $(echo $WIDTHNEW)x$(echo $HEIGHTNEW) -density $DPINEW -compress LZW "${i}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in compress_image. Aborting!" >&2; exit 1; fi
-						else 
+						else
 							nice -n ${NICELEVEL} convert "${i}" -quiet -strip -resize $(echo $WIDTHNEW)x$(echo $HEIGHTNEW) -density $DPINEW -compress LZW "${i}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in compress_image. Aborting!" >&2; exit 1; fi
 						fi
@@ -455,11 +455,11 @@ case "$ACTION" in
 		## send email after success or fail
 		if [ "${SEND_EMAIL_AFTER_COMPRESS}" == "true" ]; then
 			if [ "$(ls | wc -w)" == "$(ls ../orig_${WORKINGFOLDER} | wc -w)" ]; then
-				echo "SUCCESS: conversion finished in folder: ${WORKINGFOLDER}" | mail -s "${SEND_EMAIL_HEADER_SUCCESS} ${WORKINGFOLDER}" $SEND_EMAIL_ADDRESS_SUCCESS 
+				echo "SUCCESS: conversion finished in folder: ${WORKINGFOLDER}" | mail -s "${SEND_EMAIL_HEADER_SUCCESS} ${WORKINGFOLDER}" $SEND_EMAIL_ADDRESS_SUCCESS
 			fi
 			if [ "$(ls | wc -w)" != "$(ls ../orig_${WORKINGFOLDER} | wc -w)" ]; then
 				echo "FAILURE: conversion failed in foler: ${WORKINGFOLDER}" | mail -s "${SEND_EMAIL_HEADER_FAILURE} ${WORKINGFOLDER}" $SEND_EMAIL_ADDRESS_FAILURE
-			fi      
+			fi
 		fi
 	;;
 
@@ -490,7 +490,7 @@ case "$ACTION" in
 	;;
 
 
-	## Create JPEG files from TIFF or JP2 files and stores them in a new folder (used at the Wellcome Trust) 
+	## Create JPEG files from TIFF or JP2 files and stores them in a new folder (used at the Wellcome Trust)
 	create_jpeg)
 		prepare
 		if [ ${VERBOSE} == "1" ]; then echo "Creating JPEG from JP2 or TIFF files"; fi
@@ -500,7 +500,7 @@ case "$ACTION" in
 		if [ ! -d $FOLDER ] ; then
 			mkdir $FOLDER;
 			if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_jpeg. Aborting!" >&2; exit 1; fi
-		else 
+		else
 			mv $FOLDER ${FOLDER}_$(date +%s)
 			if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_jpeg. Aborting!" >&2; exit 1; fi
 			mkdir $FOLDER
@@ -550,8 +550,8 @@ case "$ACTION" in
 						if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_jpeg. Aborting!" >&2; exit 1; fi
 					fi
 				fi
-			done	
-		fi	
+			done
+		fi
 
                 if [ "${jpgfiles}" != "0" ] ; then
                         if [ "${COPYJPEGFILESDURINGCREATEJPEG}" == "1" ]; then
@@ -564,7 +564,7 @@ case "$ACTION" in
 	;;
 
 
-	## Create JPEG files from TIFF files and stores them in a new folder (used at Genus) 
+	## Create JPEG files from TIFF files and stores them in a new folder (used at Genus)
 	create_jpeg_size)
 		prepare
 		if [ ${VERBOSE} == "1" ]; then echo "Creating JPEG from TIFF files"; fi
@@ -575,7 +575,7 @@ case "$ACTION" in
 		if [ ! -d $FOLDER ] ; then
 			mkdir $FOLDER;
 			if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_jpeg. Aborting!" >&2; exit 1; fi
-		else 
+		else
 			mv $FOLDER ${FOLDER}_$(date +%s)
 			if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_jpeg. Aborting!" >&2; exit 1; fi
 			mkdir $FOLDER
@@ -598,7 +598,7 @@ case "$ACTION" in
 		set -e
 		if [ "${VERBOSE}" == "1" ]; then echo "Creating JPEG from TIFF files"; fi
 		if [ "$#" -ne "3" ]; then echo "Wrong number of arguments, expecting 3, got $#."; exit 1; fi
-		
+
 		FOLDER="$3"
 		mkdir -p "$FOLDER";
 
@@ -616,7 +616,7 @@ case "$ACTION" in
 		set -e
 		if [ "${VERBOSE}" == "1" ]; then echo "Mogrify TIFF files, applying fx: $3"; fi
 		if [ "$#" -ne "3" ]; then echo "Wrong number of arguments, expecting 3, got $#."; exit 1; fi
-		
+
 		if [ "${tiffiles}" != "0" ] ; then
 			for i in *.tif; do
 				nice -n ${NICELEVEL} mogrify -quiet -depth 8 -alpha off -compress JPEG -quality 95 -fx "$3" "$i";
@@ -660,7 +660,7 @@ case "$ACTION" in
 				fi
 			done
 		fi
-    
+
 		## if files are jpg files
 		if [ "$jpgfiles" != "0" ] ; then
 			for i in *.jpg; do
@@ -672,7 +672,7 @@ case "$ACTION" in
 						nice -n ${NICELEVEL} convert "${i}" -quiet -depth 8 -alpha off -compress JPEG "${i%.*}.tif"
 						if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_jpeg. Aborting!" >&2; exit 1; fi
 					fi
-				else 
+				else
 					if [ "${USEGM}" == "1" ]; then
 						gm convert "${i}" -depth 8 +matte -compress JPEG "${i%.*}.tif"
 						if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_jpeg. Aborting!" >&2; exit 1; fi
@@ -688,11 +688,11 @@ case "$ACTION" in
 		## send email after success or fail
 		if [ "${SEND_EMAIL_AFTER_COMPRESS}" == "true" ]; then
 			if [ "$(ls | wc -w)" == "$(ls ../orig_${WORKINGFOLDER} | wc -w)" ]; then
-				echo "SUCCESS: conversion finished in folder: ${WORKINGFOLDER}" | mail -s "${SEND_EMAIL_HEADER_SUCCESS} ${WORKINGFOLDER}" ${SEND_EMAIL_ADDRESS_SUCCESS} 
+				echo "SUCCESS: conversion finished in folder: ${WORKINGFOLDER}" | mail -s "${SEND_EMAIL_HEADER_SUCCESS} ${WORKINGFOLDER}" ${SEND_EMAIL_ADDRESS_SUCCESS}
 			fi
 			if [ "$(ls | wc -w)" != "$(ls ../orig_${WORKINGFOLDER} | wc -w)" ]; then
 				echo "FAILURE: conversion failed in foler: ${WORKINGFOLDER}" | mail -s "${SEND_EMAIL_HEADER_FAILURE} ${WORKINGFOLDER}" ${SEND_EMAIL_ADDRESS_FAILURE}
-			fi      
+			fi
 		fi
 	;;
 
@@ -713,7 +713,7 @@ case "$ACTION" in
 						nice -n ${NICELEVEL} convert "${i}" -quiet -depth 8 -alpha off -compress JPEG "$3/${i}"
 					fi
 				else
-					cp "${i}" "$3/${i}" 
+					cp "${i}" "$3/${i}"
 				fi
 			done
 		fi
@@ -801,9 +801,9 @@ case "$ACTION" in
 		if [ ${VERBOSE} == "1" ]; then echo "Converting images to TIFF/JPEG based on file extension"; fi
 
 		## get all available fileextensions in this folder
-		FILEEXTENSIONS=$(for i in *; do echo ${i#*.}; done | sort | uniq)  
+		FILEEXTENSIONS=$(for i in *; do echo ${i#*.}; done | sort | uniq)
 		if [ ${VERBOSE} == "1" ]; then echo "Available fileextensions: ${FILEEXTENSIONS}"; fi
-	
+
 		for i in ${FILEEXTENSIONS}; do
 			case "${i}" in
 				tif)
@@ -817,7 +817,7 @@ case "$ACTION" in
 					if [ "${NICEENABLED}" == "1" ]; then
 						if [ "${USEGM}" == "1" ]; then
 							for i in *.png
-							do 
+							do
 								nice -n ${NICELEVEL} gm convert "${i}" -strip +matte -compress JPEG ${i/png/tif}
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 								mv "${i}" ../orig_png/
@@ -832,10 +832,10 @@ case "$ACTION" in
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 							done
 						fi
-					else 
+					else
 						if [ "${USEGM}" == "1" ]; then
 							for i in *.png
-							do 
+							do
 								gm convert "${i}" -strip +matte -compress JPEG ${i/png/tif}
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 								mv "${i}" ../orig_png/
@@ -852,7 +852,7 @@ case "$ACTION" in
 						fi
 					fi
 				;;
-      
+
 				jpg)
 					if [ ${VERBOSE} == "1" ]; then echo "jpg -> convert to tif"; fi
 					mkdir -p ../orig_jpg;
@@ -860,7 +860,7 @@ case "$ACTION" in
 					if [ "${NICEENABLED}" == "1" ]; then
 						if [ "${USEGM}" == "1" ]; then
 							for i in *.jpg
-							do 
+							do
 								nice -n ${NICELEVEL} gm convert "${i}" -strip +matte -compress JPEG ${i/jpg/tif}
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 								mv "${i}" ../orig_jpg/
@@ -875,10 +875,10 @@ case "$ACTION" in
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 							done
 						fi
-					else 
+					else
 						if [ "${USEGM}" == "1" ]; then
 							for i in *.jpg
-							do 
+							do
 								gm convert "${i}" -strip +matte -compress JPEG ${i/jpg/tif}
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 								mv "${i}" ../orig_jpg/
@@ -886,7 +886,7 @@ case "$ACTION" in
 							done
 						else
 							for i in *.jpg
-							do 
+							do
 								convert "${i}" -quiet -alpha off -compress JPEG -strip ${i/jpg/tif}
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 								mv "${i}" ../orig_jpg/
@@ -895,7 +895,7 @@ case "$ACTION" in
 						fi
 					fi
 				;;
-      
+
 				djvu)
 					if [ ${VERBOSE} == "1" ]; then echo "djvu -> convert to tif"; fi
 					type -P ddjvu &>/dev/null || { echo "ERROR: cant find ddjvu. For djvu conversion please install the djvulibre-bin package. Aborting." >&2; exit 1; }
@@ -909,20 +909,20 @@ case "$ACTION" in
 							mv *.djvu ../orig_djvu/
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 							for i in *.djvu.tif
-							do 
+							do
 								mv "${i}" "${i/.djvu.tif/.tif}"
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 							done
 							find *.tif -print0 | xargs -0 -I {} -P ${MAXPROCS} nice -n ${NICELEVEL} gm mogrify +matte -compress JPEG {}
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
-						else 
+						else
 							#for i in *.djvu; do nice -n ${NICELEVEL} ddjvu -format=tiff ${i} ${i/djvu/tif}; mv ${i} ../orig_djvu/; done
 							find *.djvu -print0 | xargs -0 -I {} -P ${MAXPROCS} nice -n ${NICELEVEL} ddjvu -format=tiff {} {}.tif
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 							mv *.djvu ../orig_djvu/
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 							for i in *.djvu.tif
-							do 
+							do
 								mv "${i}" "${i/.djvu.tif/.tif}"
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 							done
@@ -938,7 +938,7 @@ case "$ACTION" in
 							mv *.djvu ../orig_djvu/
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 							for i in *.djvu.tif
-							do 
+							do
 								mv "${i}" "${i/.djvu.tif/.tif}"
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 							done
@@ -952,7 +952,7 @@ case "$ACTION" in
 							mv *.djvu ../orig_djvu/
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 							for i in *.djvu.tif
-							do 
+							do
 								mv "${i}" "${i/.djvu.tif/.tif}"
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 							done
@@ -971,7 +971,7 @@ case "$ACTION" in
 					if [ "${NICEENABLED}" == "1" ]; then
 						if [ "${USEGM}" == "1" ]; then
 							for i in *.sid
-							do 
+							do
 								LD_LIBRARY_PATH="${SIDPATH}/bin/" nice -n ${NICELEVEL} ${SIDPATH}/bin/mrsidgeodecode -i "${i}" -o  ${i/sid/tif} -of tif -quiet; mv "${i}" ../orig_sid/
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 							done
@@ -979,7 +979,7 @@ case "$ACTION" in
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 						else
 							for i in *.sid
-							do 
+							do
 								LD_LIBRARY_PATH="${SIDPATH}/bin/" nice -n ${NICELEVEL} ${SIDPATH}/bin/mrsidgeodecode -i "${i}" -o  ${i/sid/tif} -of tif -quiet
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 								mv "${i}" ../orig_sid/
@@ -991,7 +991,7 @@ case "$ACTION" in
 					else
 						if [ "${USEGM}" == "1" ]; then
 							for i in *.sid
-							do 
+							do
 								LD_LIBRARY_PATH="${SIDPATH}/bin/" ${SIDPATH}/bin/mrsidgeodecode -i "${i}" -o  ${i/sid/tif} -of tif -quiet
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 								mv "${i}" ../orig_sid/
@@ -1001,7 +1001,7 @@ case "$ACTION" in
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 						else
 							for i in *.sid
-							do 
+							do
 								LD_LIBRARY_PATH="${SIDPATH}/bin/" ${SIDPATH}/bin/mrsidgeodecode -i "${i}" -o  ${i/sid/tif} -of tif -quiet
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_images. Aborting!" >&2; exit 1; fi
 								mv "${i}" ../orig_sid/
@@ -1015,7 +1015,7 @@ case "$ACTION" in
 
 				*)
 					if [ ${VERBOSE} == "1" ]; then echo "Nothing converted"; fi
-				;;  
+				;;
 			esac
 		done
 	;;
@@ -1043,7 +1043,7 @@ case "$ACTION" in
 			fi
 		fi
 	;;
-    
+
 
 	## Convert all TIFF files to grayscale
 	convert_gray)
@@ -1061,18 +1061,18 @@ case "$ACTION" in
 			if [ "${USEGM}" == "1" ]; then
 				find *.tif -print0 | xargs -0 -I {} -P ${MAXPROCS} gm mogrify -type GRAYSCALE {}
 				if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_gray. Aborting!" >&2; exit 1; fi
-			else 
+			else
 				find *.tif -print0 | xargs -0 -I {} -P ${MAXPROCS} mogrify -quiet -type GRAYSCALE {}
 				if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_gray. Aborting!" >&2; exit 1; fi
 			fi
-		fi 
+		fi
 	;;
-    
+
 
 	## Convert all TIFF files to monochrome
 	convert_monochrome)
 		prepare
-		if [ ${VERBOSE} == "1" ]; then echo "Converting all *.tif files to monochrome"; fi  
+		if [ ${VERBOSE} == "1" ]; then echo "Converting all *.tif files to monochrome"; fi
 		if [ "${NICEENABLED}" == "1" ]; then
 			if [ "${USEGM}" == "1" ]; then
 				find *.tif -print0 | xargs -0 -I {} -P ${MAXPROCS} nice -n ${NICELEVEL} gm mogrify -compress FAX {}
@@ -1089,14 +1089,14 @@ case "$ACTION" in
 				find *.tif -print0 | xargs -0 -I {} -P ${MAXPROCS} mogrify -quiet -compress FAX {}
 				if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_monochrome. Aborting!" >&2; exit 1; fi
 			fi
-		fi 
+		fi
 	;;
 
 
 	## Remove black border from all TIFF files
 	remove_black_border)
 		prepare
-		if [ ${VERBOSE} == "1" ]; then echo "Removing black border from all *.tif files"; fi  
+		if [ ${VERBOSE} == "1" ]; then echo "Removing black border from all *.tif files"; fi
 
 		for i in *.tif; do
 			## convert to pbm
@@ -1122,7 +1122,7 @@ case "$ACTION" in
 			if [ "${NICEENABLED}" == "1" ]; then
 				nice -n ${NICELEVEL} pnmcrop -black -verbose ${i/.tif/_black.pbm} 1> /dev/null 2> cropinfo
 				if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_black_border. Aborting!" >&2; exit 1; fi
-			else 
+			else
 				pnmcrop -black -verbose ${i/.tif/_black.pbm} 1> /dev/null 2> cropinfo
 				if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_black_border. Aborting!" >&2; exit 1; fi
 			fi
@@ -1133,19 +1133,19 @@ case "$ACTION" in
 			else
 				TOP=$(grep top cropinfo | cut -d" " -f 3)
 			fi
- 
+
 			if [ "$(grep bottom cropinfo | cut -d" " -f 3)" == "" ]; then
 				BOTTOM="0"
 			else
 				BOTTOM=$(grep bottom cropinfo | cut -d" " -f 3)
 			fi
- 
+
 			if [ "$(grep left cropinfo | cut -d" " -f 3)" == "" ]; then
 				LEFT="0"
 			else
 				LEFT=$(grep left cropinfo | cut -d" " -f 3)
 			fi
-      
+
 			if [ "$(grep right cropinfo | cut -d" " -f 3)" == "" ]; then
 				RIGHT="0"
 			else
@@ -1163,7 +1163,7 @@ case "$ACTION" in
 					nice -n ${NICELEVEL} mogrify -quiet -shave "$TOP"x"$BOTTOM"x"$LEFT"x"$RIGHT" "${i}"
 					if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_black_border. Aborting!" >&2; exit 1; fi
 				fi
-			else 
+			else
 				if [ "${USEGM}" == "1" ]; then
 					gm mogrify -shave "$TOP"x"$BOTTOM"x"$LEFT"x"$RIGHT" "${i}"
 					if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in convert_black_border. Aborting!" >&2; exit 1; fi
@@ -1184,13 +1184,13 @@ case "$ACTION" in
 		#    find *.tif -print0 | xargs -0 -I {} -P ${MAXPROCS} mogrify -quiet -fuzz 5% -trim {}
 		### OLD STUFF ###
 	;;
-  
+
 
 	## Deskew all TIFF files
 	straighten)
 		prepare
 		if [ ${VERBOSE} == "1" ]; then echo "Straighten all *.tif files"; fi
-    
+
 		for i in *.tif; do
 			## convert to pbm
 			if [ "${NICEENABLED}" == "1" ]; then
@@ -1215,7 +1215,7 @@ case "$ACTION" in
 			if [ "${NICEENABLED}" == "1" ]; then
 				nice -n ${NICELEVEL} $PBMFINDSKEW ${i/.tif/_work.pbm} > skew
 				if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in straighten. Aborting!" >&2; exit 1; fi
-			else 
+			else
 				${PBMFINDSKEW} ${i/.tif/_work.pbm} > skew
 				if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in straighten. Aborting!" >&2; exit 1; fi
 			fi
@@ -1229,7 +1229,7 @@ case "$ACTION" in
 					nice -n ${NICELEVEL} mogrify -quiet -background black -rotate "$(echo $(cat skew)*-1 | bc)" "${i}"
 					if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in straighten. Aborting!" >&2; exit 1; fi
 				fi
-			else 
+			else
 				if [ "${USEGM}" == "1" ]; then
 					gm mogrify -background black -rotate "$(echo $(cat skew)*-1 | bc)" "${i}"
 					if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in straighten. Aborting!" >&2; exit 1; fi
@@ -1247,7 +1247,7 @@ case "$ACTION" in
 
 		done
 
-	;;    
+	;;
 
 
 	## Set TIFF Header fiels 259 to uncompressed if not set (used in Kassel)
@@ -1258,13 +1258,13 @@ case "$ACTION" in
 		if [ "${tiffiles}" != "0" ]; then
 			if [ "${NICEENABLED}" == "1" ]; then
 				for i in *.tif
-				do 
+				do
 					nice -n ${NICELEVEL} tiffset -s 259 1 "${i}"
 					if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in correct259. Aborting!" >&2; exit 1; fi
 				done
-			else 
+			else
 				for i in *.tif
-				do 
+				do
 					tiffset -s 259 1 "${i}"
 					if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in correct259. Aborting!" >&2; exit 1; fi
 				done
@@ -1281,11 +1281,11 @@ case "$ACTION" in
 		if [ "${tiffiles}" != "0" ]; then
 			if [ "${NICEENABLED}" == "1" ]; then
 				for i in *.jpg
-				do 
+				do
 					nice -n ${NICELEVEL} mogrify -strip -colorspace rgb "${i}"
 					if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in set_jpeg_colorspace. Aborting!" >&2; exit 1; fi
 				done
-			else 
+			else
 				for i in *.jpg
 				do
 					mogrify -strip -colorspace rgb "${i}"
@@ -1301,7 +1301,7 @@ case "$ACTION" in
 	create_tile_tiff)
 		prepare
 		if [ ${VERBOSE} == "1" ]; then echo "Create tiled TIFF files and move them to a new folder"; fi
-		FOLDER=$(echo ${WORKINGPATH} | sed "s|orig_||" | sed "s|_tif|_ptif|") 
+		FOLDER=$(echo ${WORKINGPATH} | sed "s|orig_||" | sed "s|_tif|_ptif|")
 
 		if [ "${FOLDER}" == "${WORKINGPATH}" ]; then
 			FOLDER=TILES
@@ -1315,14 +1315,14 @@ case "$ACTION" in
 						if [ "${ROTATEDEGREE}" != "0" ]; then
 							nice -n ${NICELEVEL} gm convert "${i}" -rotate ${ROTATEDEGREE} "${i/.tif/_${ROTATEDEGREE}.tif}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
-							nice -n ${NICELEVEL} gm convert "${i/.tif/_${ROTATEDEGREE}.tif}" -define tiff:tile-geometry=256x256 'ptif:out.ptif'; 
+							nice -n ${NICELEVEL} gm convert "${i/.tif/_${ROTATEDEGREE}.tif}" -define tiff:tile-geometry=256x256 'ptif:out.ptif';
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 							mv out.ptif "${i/.tif/_${ROTATEDEGREE}degree.tif}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 							rm "${i/.tif/_${ROTATEDEGREE}.tif}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 						else
-							nice -n ${NICELEVEL} gm convert "${i}" -define tiff:tile-geometry=256x256 'ptif:out.ptif'; 
+							nice -n ${NICELEVEL} gm convert "${i}" -define tiff:tile-geometry=256x256 'ptif:out.ptif';
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 							mv out.ptif "${i/.tif/_0degree.tif}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
@@ -1330,19 +1330,19 @@ case "$ACTION" in
 					else
 						if [ "${ROTATEDEGREE}" != "0" ]; then
 							for i in *.tif
-							do 
+							do
 								nice -n ${NICELEVEL} gm convert "${i}" -rotate ${ROTATEDEGREE} "${i/.tif/_${ROTATEDEGREE}.tif}"
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
-								nice -n ${NICELEVEL} gm convert "${i/.tif/_${ROTATEDEGREE}.tif}" -define tiff:tile-geometry=256x256 'ptif:out.ptif'; 
+								nice -n ${NICELEVEL} gm convert "${i/.tif/_${ROTATEDEGREE}.tif}" -define tiff:tile-geometry=256x256 'ptif:out.ptif';
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
-								mv out.ptif "${i/.tif/_${ROTATEDEGREE}degree.tif}"; 
+								mv out.ptif "${i/.tif/_${ROTATEDEGREE}degree.tif}";
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 								rm "${i/.tif/_${ROTATEDEGREE}.tif}"
 							done
 						else
 							for i in *.tif
-							do 
-								nice -n ${NICELEVEL} gm convert "${i}" -define tiff:tile-geometry=256x256 'ptif:out.ptif'; 
+							do
+								nice -n ${NICELEVEL} gm convert "${i}" -define tiff:tile-geometry=256x256 'ptif:out.ptif';
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 								mv out.ptif "${i/.tif/_0degree.tif}";
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
@@ -1355,14 +1355,14 @@ case "$ACTION" in
 						if [ "${ROTATEDEGREE}" != "0" ]; then
 							nice -n ${NICELEVEL} convert "${i}" -quiet -rotate ${ROTATEDEGREE} "${i/.tif/_${ROTATEDEGREE}.tif}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
-							nice -n ${NICELEVEL} convert "${i/.tif/_${ROTATEDEGREE}.tif}" -quiet -define tiff:tile-geometry=256x256 'ptif:out.ptif'; 
+							nice -n ${NICELEVEL} convert "${i/.tif/_${ROTATEDEGREE}.tif}" -quiet -define tiff:tile-geometry=256x256 'ptif:out.ptif';
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 							mv out.ptif "${i/.tif/_${ROTATEDEGREE}degree.tif}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 							rm "${i/.tif/_${ROTATEDEGREE}.tif}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 						else
-							nice -n ${NICELEVEL} convert "${i}" -quiet -define tiff:tile-geometry=256x256 'ptif:out.ptif'; 
+							nice -n ${NICELEVEL} convert "${i}" -quiet -define tiff:tile-geometry=256x256 'ptif:out.ptif';
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 							mv out.ptif "${i/.tif/_0degree.tif}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
@@ -1370,12 +1370,12 @@ case "$ACTION" in
 					else
 						if [ "${ROTATEDEGREE}" != "0" ]; then
 							for i in *.tif
-							do 
+							do
 								nice -n ${NICELEVEL} convert "${i}" -quiet -rotate ${ROTATEDEGREE} "${i/.tif/_${ROTATEDEGREE}.tif}"
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
-								nice -n ${NICELEVEL} convert "${i/.tif/_${ROTATEDEGREE}.tif}" -quiet -define tiff:tile-geometry=256x256 'ptif:out.ptif'; 
+								nice -n ${NICELEVEL} convert "${i/.tif/_${ROTATEDEGREE}.tif}" -quiet -define tiff:tile-geometry=256x256 'ptif:out.ptif';
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
-								mv out.ptif "${i/.tif/_${ROTATEDEGREE}degree.tif}"; 
+								mv out.ptif "${i/.tif/_${ROTATEDEGREE}degree.tif}";
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 								rm "${i/.tif/_${ROTATEDEGREE}.tif}"
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
@@ -1383,9 +1383,9 @@ case "$ACTION" in
 						else
 							for i in *.tif
 							do
-								nice -n ${NICELEVEL} convert "${i}" -quiet -define tiff:tile-geometry=256x256 'ptif:out.ptif'; 
+								nice -n ${NICELEVEL} convert "${i}" -quiet -define tiff:tile-geometry=256x256 'ptif:out.ptif';
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
-								mv out.ptif "${i/.tif/_0degree.tif}"; 
+								mv out.ptif "${i/.tif/_0degree.tif}";
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 							done
 						fi
@@ -1398,14 +1398,14 @@ case "$ACTION" in
 						if [ "${ROTATEDEGREE}" != "0" ]; then
 							gm convert "${i}" -rotate ${ROTATEDEGREE} "${i/.tif/_${ROTATEDEGREE}.tif}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
-							gm convert "${i/.tif/_${ROTATEDEGREE}.tif}" -define tiff:tile-geometry=256x256 'ptif:out.ptif'; 
+							gm convert "${i/.tif/_${ROTATEDEGREE}.tif}" -define tiff:tile-geometry=256x256 'ptif:out.ptif';
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 							mv out.ptif "${i/.tif/_${ROTATEDEGREE}degree.tif}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 							rm "${i/.tif/_${ROTATEDEGREE}.tif}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 						else
-							gm convert "${i}" -define tiff:tile-geometry=256x256 'ptif:out.ptif'; 
+							gm convert "${i}" -define tiff:tile-geometry=256x256 'ptif:out.ptif';
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 							mv out.ptif "${i/.tif/_0degree.tif}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
@@ -1413,19 +1413,19 @@ case "$ACTION" in
 						fi
 					else
 						if [ "${ROTATEDEGREE}" != "0" ]; then
-							for i in *.tif; do 
+							for i in *.tif; do
 								gm convert "${i}" -rotate ${ROTATEDEGREE} "${i/.tif/_${ROTATEDEGREE}.tif}"
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
-								gm convert "${i/.tif/_${ROTATEDEGREE}.tif}" -define tiff:tile-geometry=256x256 'ptif:out.ptif'; 
+								gm convert "${i/.tif/_${ROTATEDEGREE}.tif}" -define tiff:tile-geometry=256x256 'ptif:out.ptif';
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
-								mv out.ptif "${i/.tif/_${ROTATEDEGREE}degree.tif}"; 
+								mv out.ptif "${i/.tif/_${ROTATEDEGREE}degree.tif}";
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 								rm "${i/.tif/_${ROTATEDEGREE}.tif}"
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 							done
 						else
-							for i in *.tif; do 
-								gm convert "${i}" -define tiff:tile-geometry=256x256 'ptif:out.ptif'; 
+							for i in *.tif; do
+								gm convert "${i}" -define tiff:tile-geometry=256x256 'ptif:out.ptif';
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 								mv out.ptif "${i/.tif/_0degree.tif}";
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
@@ -1438,14 +1438,14 @@ case "$ACTION" in
 						if [ "${ROTATEDEGREE}" != "0" ]; then
 							convert "${i}" -rotate ${ROTATEDEGREE} "${i/.tif/_${ROTATEDEGREE}.tif}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
-							convert "${i/.tif/_${ROTATEDEGREE}.tif}" -quiet -define tiff:tile-geometry=256x256 'ptif:out.ptif'; 
+							convert "${i/.tif/_${ROTATEDEGREE}.tif}" -quiet -define tiff:tile-geometry=256x256 'ptif:out.ptif';
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 							mv out.ptif "${i/.tif/_${ROTATEDEGREE}degree.tif}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 							rm "${i/.tif/_${ROTATEDEGREE}.tif}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 						else
-							convert "${i}" -quiet -define tiff:tile-geometry=256x256 'ptif:out.ptif'; 
+							convert "${i}" -quiet -define tiff:tile-geometry=256x256 'ptif:out.ptif';
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 							mv out.ptif "${i/.tif/_0degree.tif}"
 							if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
@@ -1454,22 +1454,22 @@ case "$ACTION" in
 					else
 						if [ "${ROTATEDEGREE}" != "0" ]; then
 							for i in *.tif
-							do 
+							do
 								convert "${i}" -rotate ${ROTATEDEGREE} "${i/.tif/_${ROTATEDEGREE}.tif}"
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
-								convert "${i/.tif/_${ROTATEDEGREE}.tif}" -quiet -define tiff:tile-geometry=256x256 'ptif:out.ptif'; 
+								convert "${i/.tif/_${ROTATEDEGREE}.tif}" -quiet -define tiff:tile-geometry=256x256 'ptif:out.ptif';
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
-								mv out.ptif "${i/.tif/_${ROTATEDEGREE}degree.tif}"; 
+								mv out.ptif "${i/.tif/_${ROTATEDEGREE}degree.tif}";
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 								rm "${i/.tif/_${ROTATEDEGREE}.tif}"
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 							done
 						else
 							for i in *.tif
-							do 
-								convert "${i}" -quiet -define tiff:tile-geometry=256x256 'ptif:out.ptif'; 
+							do
+								convert "${i}" -quiet -define tiff:tile-geometry=256x256 'ptif:out.ptif';
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
-								mv out.ptif "${i/.tif/_0degree.tif}"; 
+								mv out.ptif "${i/.tif/_0degree.tif}";
 								if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_tile_tiff. Aborting!" >&2; exit 1; fi
 							done
 						fi
@@ -1508,7 +1508,7 @@ case "$ACTION" in
 		if file ../tiffwriter.conf | grep -E "tiffwriter.conf.*(UTF-8|ASCII)" >/dev/null ; then
 			## if file extension exists
 			if [ "${tiffiles}" != "0" ] ; then
-				for i in *.tif; do 
+				for i in *.tif; do
 					tiffinfo "${i}" &>/dev/null | grep 'Compression Scheme: Old-style JPEG' -q && { echo "WARNING: ${i} is compressed Old-style JPEG, skipping tiffwriter."; continue; }
 					tiffset -s ImageDescription "$(grep ImageDescription ../tiffwriter.conf | sed 's/ImageDescription=//g')" "${i}" 2>&1 >> /dev/null;
 					if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in write_tiffheader. Aborting!" >&2; exit 1; fi
@@ -1525,7 +1525,7 @@ case "$ACTION" in
 						exiv2 -M "del Exif.Image.ExifTag" modify $i
 						if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in write_tiffheader. Aborting!" >&2; exit 1; fi
 					fi
-				done     
+				done
 			fi
 		fi
 	;;
@@ -1611,7 +1611,7 @@ case "$ACTION" in
 			for i in *.tif; do
 				if [ "${NICEENABLED}" == "1" ]; then
 					if [ "${USEGM}" == "1" ]; then
-						nice -n ${NICELEVEL} gm convert "${i}[0]" -thumbnail ${THUMBNAILBOXSIZE} ../pimped_jpg/"${i/.tif/.jpg}" 
+						nice -n ${NICELEVEL} gm convert "${i}[0]" -thumbnail ${THUMBNAILBOXSIZE} ../pimped_jpg/"${i/.tif/.jpg}"
 						if [ "$?" != "0" ]; then echo -e "ERROR: an error occured in create_thumbnails. Aborting!" >&2; exit 1; fi
 					else
 						nice -n ${NICELEVEL} convert "${i}[0]" -quiet -thumbnail ${THUMBNAILBOXSIZE} ../pimped_jpg/"${i/.tif/.jpg}"
@@ -1630,7 +1630,7 @@ case "$ACTION" in
 		fi
 	;;
 
-	
+
 	prepare)
 		prepare
 	;;
@@ -1642,12 +1642,12 @@ case "$ACTION" in
                 mogrify -compress NONE *.tif
         ;;
 
-  
+
 	*)
 		echo
 		echo "   USAGE:  $0 PARAMETER /path/to/files"
 		echo
-    
+
 		echo "   Available parameters:
       * compress_images       - Resize and compress all TIFF files to a new DPI value
       * create_jpeg           - Create JPEG files from TIFF or JP2 files and stores them in a new folder
@@ -1674,10 +1674,7 @@ case "$ACTION" in
       * convert_jpeg_rm_icc   - Like convert_jpeg, but apply and remove ICC profile if existent.
       * decompress            - Convert all tiff images to uncompressed tif format.
       * create_tiffjpeg       - Convert all tiff and jpg files to tiff/jpeg w/ target folder";
-		echo 
+		echo
 	;;
 
 esac
-
-
-
