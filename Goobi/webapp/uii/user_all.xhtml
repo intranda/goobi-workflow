@@ -191,7 +191,42 @@
 												<td><h:outputText
 														value="#{item.nachname}, #{item.vorname}"
 														styleClass="userID_#{item.vorname}_#{item.nachname} #{not item.istAktiv?'font-light':''}"
-														title="#{item.login}" /></td>
+														title="#{item.login}" />
+														<div jsf:rendered="false" class="box box-small box-color box-bordered">
+	                                                        <div class="box-title">
+	                                                            <h3>
+	                                                                <i class="fa fa-list"></i> #{msgs.details}
+	                                                            </h3>
+	                                                        </div>
+	                                                        <div class="box-content nopadding">
+	                                                        	<table role="grid" class="table table-hover table-nomargin dataTable table-bordered responsive">
+	                                                        		<thead>
+	                                                        			<tr role="row">
+	                                                        				<th scope="col" role="columnheader">
+	                                                        					<p>Col 1</p>
+	                                                        				</th>
+	                                                        				<th scope="col" role="columnheader">
+	                                                        					<p>Col 2</p>
+	                                                        				</th>
+	                                                        				<th scope="col" role="columnheader">
+	                                                        					<p>Col 3</p>
+	                                                        				</th>
+	                                                        			</tr>
+	                                                        		</thead>
+	                                                        		<tbody>
+	                                                        			<ui:repeat var="subItem"
+																			value="#{BenutzerverwaltungForm.paginator.list}"
+																			varStatus="status">
+																			<tr>
+																				<td>#{subItem.nachname}</td>
+																				<td>#{subItem.vorname}</td>
+																				<td>#{subItem.standort}</td>
+																			</tr>
+	                                                        			</ui:repeat>
+	                                                        		</tbody>
+	                                                        	</table>
+	                                                        </div>
+                                                        </div></td>
 												<td><h:outputText value="#{item.login}"
 														styleClass="#{not item.istAktiv?'font-light':''}" /></td>
 												<td><h:outputText value="#{item.standort}"
