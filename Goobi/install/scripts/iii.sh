@@ -108,8 +108,9 @@ set -u
 ##  0.71    - new: added option to copy jpeg files, too at the create_jpeg case...
 ##  0.72    - fix: only check for mail program, when mail notification is activated
 ##  0.73    - write_tiffheader and convert_jpeg: skip files if compression is Old-style JPEG
+##  0.74    - new: compress_jpeg_if_uncompressed
 ##
-#####  VERSION = 0.73
+#####  VERSION = 0.74
 #####
 ####################
 
@@ -1642,6 +1643,62 @@ case "$ACTION" in
                 mogrify -compress NONE *.tif
         ;;
 
+	compress_jpeg_if_uncompressed)
+		if [ ${VERBOSE} == "1" ]; then echo "Creating TIFF/JPEG compressed images if image was uncompressed"; fi
+		if [ "$#" -ne "2" ]; then echo "Wrong number of arguments, expecting 2, got $#."; exit 1; fi
+
+		if [ ! -d "${WORKINGPATH}" ] ; then
+			echo -e "ERROR: $WORKINGPATH is not a directory (in $ACTION). Aborting!" >&2
+			exit 1
+		else
+			BACKUPPATH="${WORKINGPATH}_$(date +%s)"
+			if [ -e "${BACKUPPATH}" ]; then
+				echo -e "ERROR: backup target ${BACKUPPATH} already exists" >&2
+				exit 1
+			fi
+			if ! cp -ar "${WORKINGPATH}" "${BACKUPPATH}"; then
+				echo -e "ERROR: an error occured in $ACTION. Aborting!" >&2
+				exit 1
+			fi
+		fi
+		cd "${WORKINGPATH}"
+		prepare
+		## if files are tiff files
+		if [ "${tiffiles}" != "0" ] ; then
+			for i in *.tif; do
+				## if picture is not bitonal compress
+				if [ "$(tiffinfo ${i} 2>&1 | grep Bits | awk {'print $2'})" != "1" ]; then
+				  	if identify -format "%[compression]" ${i} | grep -q 'None'; then
+						if [ "${NICEENABLED}" == "1" ]; then
+							if [ "${USEGM}" == "1" ]; then
+								if ! nice -n ${NICELEVEL} gm mogrify -depth 8 +matte -colorspace RGB -compress JPEG "${i}"; then
+									echo -e "ERROR: an error occured in convert_jpeg. Aborting!" >&2
+									exit 1
+								fi
+							else
+								if ! nice -n ${NICELEVEL} mogrify -quiet -depth 8 -alpha off -compress JPEG "${i}"; then
+									echo -e "ERROR: an error occured in convert_jpeg. Aborting!" >&2
+									exit 1
+								fi
+							fi
+						else
+							if [ "${USEGM}" == "1" ]; then
+								if ! gm mogrify -depth 8 +matte -colorspace RGB -compress JPEG "${i}"; then
+									echo -e "ERROR: an error occured in convert_jpeg. Aborting!" >&2
+									exit 1
+								fi
+							else
+								if ! mogrify -quiet -depth 8 -alpha off -compress JPEG "${i}"; then
+									echo -e "ERROR: an error occured in convert_jpeg. Aborting!" >&2
+									exit 1
+								fi
+							fi
+						fi
+					fi
+				fi
+			done
+		fi
+	;;
 
 	*)
 		echo
@@ -1673,7 +1730,8 @@ case "$ACTION" in
       * mogrify-fx            - Mogrify Tiff to Tiff/Jpeg, apply fx
       * convert_jpeg_rm_icc   - Like convert_jpeg, but apply and remove ICC profile if existent.
       * decompress            - Convert all tiff images to uncompressed tif format.
-      * create_tiffjpeg       - Convert all tiff and jpg files to tiff/jpeg w/ target folder";
+      * create_tiffjpeg       - Convert all tiff and jpg files to tiff/jpeg w/ target folder
+	  * compress_jpeg_if_uncompresed  - Convert TIFF files to TIFF/JPEG if they are uncompressed";
 		echo
 	;;
 
