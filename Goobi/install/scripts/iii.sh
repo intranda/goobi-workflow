@@ -1647,21 +1647,6 @@ case "$ACTION" in
 		if [ ${VERBOSE} == "1" ]; then echo "Creating TIFF/JPEG compressed images if image was uncompressed"; fi
 		if [ "$#" -ne "2" ]; then echo "Wrong number of arguments, expecting 2, got $#."; exit 1; fi
 
-		if [ ! -d "${WORKINGPATH}" ] ; then
-			echo -e "ERROR: $WORKINGPATH is not a directory (in $ACTION). Aborting!" >&2
-			exit 1
-		else
-			BACKUPPATH="${WORKINGPATH}_$(date +%s)"
-			if [ -e "${BACKUPPATH}" ]; then
-				echo -e "ERROR: backup target ${BACKUPPATH} already exists" >&2
-				exit 1
-			fi
-			if ! cp -ar "${WORKINGPATH}" "${BACKUPPATH}"; then
-				echo -e "ERROR: an error occured in $ACTION. Aborting!" >&2
-				exit 1
-			fi
-		fi
-		cd "${WORKINGPATH}"
 		prepare
 		## if files are tiff files
 		if [ "${tiffiles}" != "0" ] ; then
