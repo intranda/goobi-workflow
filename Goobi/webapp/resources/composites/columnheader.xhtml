@@ -15,13 +15,14 @@
 		<composite:attribute name="value" />
 		<composite:attribute name="ajaxRender" />
 		<composite:attribute name="sortable" default="true" />
+		<composite:attribute name="id"/>
 	</composite:interface>
 
 	<composite:implementation>
 		<ui:param name="descendingLabel" value="#{cc.attrs.name}Desc" />
 		<ui:param name="ascendingLabel" value="#{cc.attrs.name}Asc" />
 		
-		<th scope="col" role="columnheader" style="#{cc.attrs.style}" class="#{cc.attrs.style}" jsf:rendered="#{cc.attrs.sortable}"
+		<th scope="col" role="columnheader" id="#{cc.attrs.id}" style="#{cc.attrs.style}" class="#{cc.attrs.style}" jsf:rendered="#{cc.attrs.sortable}"
 			aria-sort="#{cc.attrs.form.sortierung== descendingLabel ? 'descending' : cc.attrs.form.sortierung== ascendingLabel ? 'ascending' :'none'}">
 			<button class="button-link font-black-block"
 				style="width: 100%; text-align: left"
