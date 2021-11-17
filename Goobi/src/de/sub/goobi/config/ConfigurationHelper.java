@@ -388,7 +388,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getApplicationTitle() {
-        return getLocalString("ApplicationTitle", "http://goobi.intranda.com");
+        return getLocalString("ApplicationTitle", "http://goobi.io");
     }
 
     public String getApplicationWebsiteMsg() {
