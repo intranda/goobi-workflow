@@ -864,15 +864,14 @@
 		
 		
 		                                                <!-- DMS-Export-Schaltknopf -->
-		                                                <div jsf:rel="tooltip" 
-															aria-label="#{!item.containsExportStep ? msgs.noExportTask : ''}" 
+		                                                <div jsf:rel="tooltip"
 															title="#{!item.containsExportStep ? msgs.noExportTask : ''}" 
 															class="btn btn-mini" 
 															style="padding: 0;">
 			                                                <button
 			                                                    jsf:action="#{ProzessverwaltungForm.ExportDMS}"
 			                                                    jsf:id="action21"
-			                                                    aria-label="#{msgs.importDms}"
+			                                                    aria-label="#{!item.containsExportStep ? msgs.noExportTask : msgs.importDms}"
 			                                                    jsf:rel="tooltip"
 			                                                    onclick="preventDoubleSubmit(this);"
 			                                                    title="#{msgs.importDms}"
