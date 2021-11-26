@@ -39,7 +39,8 @@
 
         <h:form
             rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
-            styleClass="form-horizontal form-bordered">
+            styleClass="form-horizontal form-bordered"
+            id="myform">
             <div class="row" role="main">
                 <div class="col-sm-12">
                     <div class="box box-color box-bordered">
@@ -171,7 +172,7 @@
                                 <div class="dataTables_paginate">
                                     <!-- paginator -->
                                     <intranda:tablePaginator
-                                        id="docket"
+                                        id="vocabulary"
                                         paginator="#{vocabularyBean.paginator}" />
                                     <!-- /paginator -->
                                 </div>

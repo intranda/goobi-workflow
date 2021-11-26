@@ -104,8 +104,8 @@ public class UserBean extends BasicBean implements Serializable {
     private boolean unsubscribedProjectsExist;
 
     @Getter
-    private boolean  unsubscribedGroupsExist;
-    
+    private boolean unsubscribedGroupsExist;
+
     public String Neu() {
         this.myClass = new User();
         this.myClass.setVorname("");
@@ -242,6 +242,15 @@ public class UserBean extends BasicBean implements Serializable {
                         && myClass.getPasswort() != null) {
                     myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
                 }
+                //if there is only one institution, then it is not shown in ui and the value may be null:
+                if (myClass.getInstitutionId() == null) {
+                    List<SelectItem> lstInst = getInstitutionsAsSelectList();
+                    if (lstInst.size() > 0) {
+                        Integer inst = (Integer) lstInst.get(0).getValue();
+                        myClass.setInstitutionId(inst);
+                    }
+                }
+
                 UserManager.saveUser(this.myClass);
                 paginator.load();
 
@@ -650,7 +659,7 @@ public class UserBean extends BasicBean implements Serializable {
         }
         UsergroupManager m = new UsergroupManager();
         usergroupPaginator = new DatabasePaginator("titel", filter, m, "");
-        
+
         unsubscribedGroupsExist = usergroupPaginator.getTotalResults() > 0;
     }
 

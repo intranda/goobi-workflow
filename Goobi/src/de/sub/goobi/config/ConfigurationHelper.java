@@ -28,6 +28,7 @@ import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -689,6 +690,14 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("ldap_useTLS", false);
     }
 
+    public List<String> getAdditionalUserRoles() {
+        List<String> additionalUserRoles = getLocalList("userRole");
+        if (additionalUserRoles == null || additionalUserRoles.isEmpty()) {
+            additionalUserRoles = Collections.emptyList();
+        }
+        return additionalUserRoles;
+    }
+
     public String getGeonamesCredentials() {
         return getLocalString("geonames_account", null);
     }
@@ -1010,6 +1019,14 @@ public class ConfigurationHelper implements Serializable {
     @Deprecated
     public boolean isUseH2DB() {
         return MySQLHelper.isUsingH2();
+    }
+
+    public boolean isUseFulltextSearch() {
+        return getLocalBoolean("useFulltextSearch", false);
+    }
+
+    public String getFulltextSearchMode() {
+        return getLocalString("FulltextSearchMode", "BOOLEAN MODE");
     }
 
     public boolean isAllowGravatar() {

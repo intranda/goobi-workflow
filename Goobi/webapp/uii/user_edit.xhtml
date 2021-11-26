@@ -126,6 +126,7 @@
                                     <intranda:formInputDropDown
                                         classLeft="col-sm-3 control-label notFocusable"
                                         id="institution"
+                                        rendered="#{BenutzerverwaltungForm.institutionsAsSelectList.size()>1}"
                                         label="#{msgs.institution}"
                                         field="#{BenutzerverwaltungForm.currentInstitutionID}"
                                         help="#{msgs.helpUserInstitution}"
