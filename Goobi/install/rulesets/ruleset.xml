@@ -3769,7 +3769,7 @@
         <conditionField/>
         <conditionValue/>
         <!-- run the regex and keep the value of $1 -->
-        <fieldReplacement/>
+        <fieldReplacement>s/[\xAC\x98\x9C]//g</fieldReplacement>
         <separateEntries>true</separateEntries>
         <separator>; </separator>
       </Metadata>
@@ -3792,6 +3792,7 @@
           <fieldInd2>any</fieldInd2>
         </field>
         <separateEntries>true</separateEntries>
+        <fieldReplacement>s/[\xAC\x98\x9C]//g</fieldReplacement>        
       </Metadata>
       <Metadata>
         <Name>TitleDocParallel</Name>

@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -105,6 +106,13 @@ public class UserBean extends BasicBean implements Serializable {
 
     @Getter
     private boolean unsubscribedGroupsExist;
+
+
+    //changes since last save for each user:
+    private Map<Integer, ArrayList<Integer>> addedToGroups = new HashMap<>();
+    private Map<Integer, ArrayList<Integer>> removedFromGroups = new HashMap<>();
+    private Map<Integer, ArrayList<Integer>> addedToProjects = new HashMap<>();
+    private Map<Integer, ArrayList<Integer>> removedFromProjects = new HashMap<>();
 
     public String Neu() {
         this.myClass = new User();
@@ -469,13 +477,6 @@ public class UserBean extends BasicBean implements Serializable {
         updateUsergroupPaginator();
         updateProjectPaginator();
 
-        if (addedToGroups == null) {
-            addedToGroups = new HashMap<Integer, ArrayList<Integer>>();
-            removedFromGroups = new HashMap<Integer, ArrayList<Integer>>();
-            addedToProjects = new HashMap<Integer, ArrayList<Integer>>();
-            removedFromProjects = new HashMap<Integer, ArrayList<Integer>>();
-        }
-
         if (!addedToGroups.containsKey(myClass.getId())) {
             resetChangeLists();
         }
@@ -734,11 +735,4 @@ public class UserBean extends BasicBean implements Serializable {
         resetChangeLists();
         return "user_all";
     }
-
-    //changes since last save for each user:
-    private HashMap<Integer, ArrayList<Integer>> addedToGroups;
-    private HashMap<Integer, ArrayList<Integer>> removedFromGroups;
-    private HashMap<Integer, ArrayList<Integer>> addedToProjects;
-    private HashMap<Integer, ArrayList<Integer>> removedFromProjects;
-
 }

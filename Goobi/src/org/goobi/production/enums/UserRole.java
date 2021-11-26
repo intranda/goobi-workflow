@@ -83,7 +83,7 @@ public enum UserRole {
         for (UserRole ur : UserRole.values()) {
             roles.add(ur.name());
         }
-        roles.addAll(ConfigurationHelper.getInstance().getAdditionalUserRoles());
+        roles.addAll(ConfigurationHelper.getInstance().getAdditionalUserRights());
 
         Collections.sort(roles);
         return roles;

@@ -26,8 +26,10 @@ package org.goobi.production.flow.helper;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -158,25 +160,35 @@ public class JobCreation {
         // new folder structure for process imports
         Path importFolder = Paths.get(basepath);
         if (StorageProvider.getInstance().isFileExists(importFolder) && StorageProvider.getInstance().isDirectory(importFolder)) {
-            List<Path> folderList = StorageProvider.getInstance().listFiles(basepath);
-            for (Path directory : folderList) {
-                Path destination = Paths.get(p.getProcessDataDirectory(), directory.getFileName().toString());
-                if (StorageProvider.getInstance().isDirectory(directory)) {
-                    //                    if (!StorageProvider.getInstance().isFileExists(destination)) {
-                    //                        Files.move(directory, destination);
-                    //                    } else {
-                    FileUtils.copyDirectory(directory.toFile(), destination.toFile());
-                    //                        StorageProvider.getInstance().copyDirectory(directory, destination);
-                    deleteDirectory(directory);
-                    //                    }
+            if (ConfigurationHelper.getInstance().useS3()) {
+                String rootFolderName = p.getProcessDataDirectory();
+                List<Path> filesToUpload = new ArrayList<>();
+                Files.find(importFolder, 3, (path, file) -> file.isRegularFile()).forEach(path -> filesToUpload.add(path));
 
-                } else {
-                    StorageProvider.getInstance().move(directory, Paths.get(p.getProcessDataDirectory(), directory.getFileName().toString()));
+                for (Path file : filesToUpload) {
+                    Path destination = Paths.get(file.toString().replace(importFolder.toString(), rootFolderName));
+                    StorageProvider.getInstance().move(file, destination);
+                }
+            } else {
+                List<Path> folderList = StorageProvider.getInstance().listFiles(basepath);
+                for (Path directory : folderList) {
+                    Path destination = Paths.get(p.getProcessDataDirectory(), directory.getFileName().toString());
+                    if (StorageProvider.getInstance().isDirectory(directory)) {
+                        //                    if (!StorageProvider.getInstance().isFileExists(destination)) {
+                        //                        Files.move(directory, destination);
+                        //                    } else {
+                        FileUtils.copyDirectory(directory.toFile(), destination.toFile());
+                        //                        StorageProvider.getInstance().copyDirectory(directory, destination);
+                        deleteDirectory(directory);
+                        //                    }
+
+                    } else {
+                        StorageProvider.getInstance().move(directory, Paths.get(p.getProcessDataDirectory(), directory.getFileName().toString()));
+                    }
                 }
             }
             StorageProvider.getInstance().deleteDir(importFolder);
         }
-
     }
 
     private static void deleteDirectory(Path directory) {
