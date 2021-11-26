@@ -11,20 +11,23 @@
 		<composite:attribute name="name" />
 		<composite:attribute name="form" />
 		<composite:attribute name="style" />
-		<composite:attribute name="class" />
+		<composite:attribute name="addClass" />
 		<composite:attribute name="value" />
 		<composite:attribute name="ajaxRender" />
 		<composite:attribute name="sortable" default="true" />
 		<composite:attribute name="id"/>
+		<composite:attribute name="addAction" default="false" />
+		<composite:attribute name="customActionBean" type="java.lang.Object"/>
+		<composite:attribute name="customAction" type="java.lang.String"/>
 	</composite:interface>
 
 	<composite:implementation>
 		<ui:param name="descendingLabel" value="#{cc.attrs.name}Desc" />
 		<ui:param name="ascendingLabel" value="#{cc.attrs.name}Asc" />
 		
-		<th scope="col" role="columnheader" id="#{cc.attrs.id}" style="#{cc.attrs.style}" class="#{cc.attrs.style}" jsf:rendered="#{cc.attrs.sortable}"
+		<th scope="col" role="columnheader" id="#{cc.attrs.id}" style="#{cc.attrs.style}" class="#{cc.attrs.addClass}" jsf:rendered="#{cc.attrs.sortable}"
 			aria-sort="#{cc.attrs.form.sortierung== descendingLabel ? 'descending' : cc.attrs.form.sortierung== ascendingLabel ? 'ascending' :'none'}">
-			<button class="button-link font-black-block"
+			<button class="button-link font-black-block" jsf:rendered="#{not cc.attrs.addAction}"
 				style="width: 100%; text-align: left"
 				jsf:action="#{cc.attrs.form.FilterAlleStart}"
 				aria-label="#{msgs.defaultSortField} #{cc.attrs.value} #{cc.attrs.form.sortierung== descendingLabel ? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung== ascendingLabel ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
