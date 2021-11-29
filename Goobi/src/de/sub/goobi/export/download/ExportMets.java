@@ -640,7 +640,13 @@ public class ExportMets {
         v.setName(projectFileGroup.getName());
         v.setPathToFiles(variableRplacer.replace(projectFileGroup.getPath()));
         v.setMimetype(projectFileGroup.getMimetype());
-        v.setFileSuffix(projectFileGroup.getSuffix().trim());
+        System.out.println(projectFileGroup.getSuffix());
+        String projectFileSuffix = projectFileGroup.getSuffix();
+        if(projectFileSuffix != null) {
+        	 v.setFileSuffix(projectFileSuffix.trim());
+        }else {
+        	v.setFileSuffix(projectFileSuffix);        
+        }
         v.setFileExtensionsToIgnore(projectFileGroup.getIgnoreMimetypes());
         v.setIgnoreConfiguredMimetypeAndSuffix(projectFileGroup.isUseOriginalFiles());
         if (projectFileGroup.getName().equals("PRESENTATION")) {
