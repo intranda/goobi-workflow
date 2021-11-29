@@ -640,7 +640,7 @@ public class ExportMets {
         v.setName(projectFileGroup.getName());
         v.setPathToFiles(variableRplacer.replace(projectFileGroup.getPath()));
         v.setMimetype(projectFileGroup.getMimetype());
-        System.out.println(projectFileGroup.getSuffix());
+        //check for null to stop NullPointerException
         String projectFileSuffix = projectFileGroup.getSuffix();
         if(projectFileSuffix != null) {
         	 v.setFileSuffix(projectFileSuffix.trim());
