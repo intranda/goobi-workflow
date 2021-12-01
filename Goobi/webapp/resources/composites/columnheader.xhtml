@@ -27,8 +27,8 @@
 		
 		<th scope="col" role="columnheader" id="#{cc.attrs.id}" style="#{cc.attrs.style}" class="#{cc.attrs.addClass}" jsf:rendered="#{cc.attrs.sortable}"
 			aria-sort="#{cc.attrs.form.sortierung== descendingLabel ? 'descending' : cc.attrs.form.sortierung== ascendingLabel ? 'ascending' :'none'}">
-			<button class="button-link font-black-block" jsf:rendered="#{not cc.attrs.addAction}"
-				style="width: 100%; text-align: left"
+			<button class="button-link" jsf:rendered="#{not cc.attrs.addAction}"
+				style="width: 100%; text-align: left;"
 				jsf:action="#{cc.attrs.form.FilterAlleStart}"
 				aria-label="#{msgs.defaultSortField} #{cc.attrs.value} #{cc.attrs.form.sortierung== descendingLabel ? msgs.defaultSortFieldDesc : BenutzerverwaltungForm.sortierung== ascendingLabel ? msgs.defaultSortFieldAsc : msgs.defaultSortFieldNotSorted }">
 				<h:outputText value="#{cc.attrs.value}" />

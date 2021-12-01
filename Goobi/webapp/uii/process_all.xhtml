@@ -116,7 +116,7 @@
 											<thead>
 												<tr role="row">
 													<!-- Selection Boxes -->
-													<th style="tableColumnOverflow width120" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
+													<th class="tableColumnOverflow width120" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
 														<x:div>
 	                                                        
 	                                                        <h:outputText value="#{msgs.auswahl2}" />
@@ -139,7 +139,7 @@
 													</th>
 													<!-- Process Id -->
 													<intranda:columnheader
-														style="tableColumnOverflow width80"
+														addClass="tableColumnOverflow width80"
 				                                        name="id"
 				                                        form="#{ProzessverwaltungForm}"
 				                                        value="#{msgs.id}"
@@ -147,19 +147,19 @@
 				                                        ajaxRender=":myform" />
 				                                    <!-- thumbnail -->
 				                                    <intranda:columnheader
-														style="width80"
+														addClass="width80"
 				                                        value="#{msgs.thumbnail}"
 				                                        rendered="#{ProzessverwaltungForm.anzeigeAnpassen['thumbnail'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}" 
 				                                        sortable="false"/>
 				                                    <!-- Embedded Metadata -->
 				                                    <intranda:columnheader
-														style="tableColumnOverflow maxWidth300"
+														addClass="tableColumnOverflow maxWidth300"
 				                                        value="#{msgs.metadata}"
 				                                        rendered="#{ProzessverwaltungForm.anzeigeAnpassen['metadatadetails'] and ProzessverwaltungForm.modusAnzeige!='vorlagen'}"
 				                                        sortable="false"/>
 				                                    <!-- Batch Id -->
 													<intranda:columnheader
-														style="tableColumnOverflow width80"
+														addClass="tableColumnOverflow width80"
 				                                        name="batch"
 				                                        form="#{ProzessverwaltungForm}"
 				                                        value="#{msgs.batch}"
@@ -167,7 +167,7 @@
 				                                        ajaxRender=":myform" />
 				                                    <!-- Alle Schritte Auflisten -->
 													<intranda:columnheader
-														style="tableColumnOverflow maxWidth300"
+														addClass="tableColumnOverflow maxWidth300"
 				                                        name="titel"
 				                                        form="#{ProzessverwaltungForm}"
 				                                        value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessTitel:msgs.titel}"
@@ -179,14 +179,14 @@
 		                                                items="#{LoginForm.listOfCustomColumns}"
 		                                                var="var">
 		                                                <intranda:columnheader
-															style="width80"
+															addClass="width80"
 					                                        value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
 					                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}" 
 					                                        sortable="false" />
 					                                </c:forEach>
 					                                <!-- Vorgangsdatum -->
 													<intranda:columnheader
-														style="tableColumnOverflow width150"
+														addClass="tableColumnOverflow width150"
 				                                        name="vorgangsdatum"
 				                                        form="#{ProzessverwaltungForm}"
 				                                        value="#{msgs.vorgangsdatum}"
@@ -194,21 +194,21 @@
 				                                        ajaxRender=":myform" />
 				                                    <!-- Status -->
 													<intranda:columnheader
-														style="tableColumnOverflow width200"
+														addClass="tableColumnOverflow width200"
 				                                        name="fortschritt"
 				                                        form="#{ProzessverwaltungForm}"
 				                                        value="#{msgs.status}"
 				                                        ajaxRender=":myform" />
 				                                    <!-- . -->
 													<intranda:columnheader
-														style="tableColumnOverflow maxWidth120 #{item.getProjekt().projectIsArchived?font-status-deactivated:font-black}"
+														addClass="tableColumnOverflow maxWidth120 #{item.getProjekt().projectIsArchived?font-status-deactivated:font-black}"
 				                                        name="projekt"
 				                                        form="#{ProzessverwaltungForm}"
 				                                        value="#{msgs.projekt}"
 				                                        ajaxRender=":myform" />
 				                                    <!-- .. -->
 													<intranda:columnheader
-														style="tableColumnOverflow maxWidth120"
+														addClass="tableColumnOverflow maxWidth120"
 				                                        name="institution"
 				                                        form="#{ProzessverwaltungForm}"
 				                                        value="#{msgs.institution}"
@@ -216,37 +216,37 @@
 				                                        ajaxRender=":myform" />
 				                                    <!-- ... -->
 													<intranda:columnheader
-														style="tableColumnOverflow maxWidth120"
+														addClass="tableColumnOverflow maxWidth120"
 				                                        value="#{msgs.sperrungen}"
 				                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['lockings']}"
 				                                        sortable="false"/>
 				                                    <!-- .... -->
 													<intranda:columnheader
-														style="tableColumnOverflow maxWidth120"
+														addClass="tableColumnOverflow maxWidth120"
 				                                        value="#{msgs.lastStatusUpdate}"
 				                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionDate']}"
 				                                        sortable="false"/>
 				                                    <!-- ..... -->
 													<intranda:columnheader
-														style="tableColumnOverflow maxWidth120"
+														addClass="tableColumnOverflow maxWidth120"
 				                                        value="#{msgs.userLastStatusUpdate}"
 				                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionUser']}"
 				                                        sortable="false"/>
 				                                    <!-- ...... -->
 													<intranda:columnheader
-														style="tableColumnOverflow maxWidth120"
+														addClass="tableColumnOverflow maxWidth120"
 				                                        value="#{msgs.taskLastStatusUpdate}"
 				                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['editionTask']}"
 				                                        sortable="false"/>
 				                                   	<!-- swapped out -->
 													<intranda:columnheader
-														style="tableColumnOverflow width100"
+														addClass="tableColumnOverflow width100"
 				                                        value="#{msgs.ausgelagert}"
 				                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}"
 				                                        sortable="false"/>
 				                                    <!-- Buttons -->
 													<intranda:columnheader
-														style="width200"
+														addClass="width200"
 				                                        value="#{msgs.auswahl}"
 				                                        sortable="false"/>
 												</tr>
@@ -256,7 +256,7 @@
 												varStatus="status">
 												<tr role="row">
 													<!-- Selection Boxes -->
-													<td style="tableColumnOverflow width120" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
+													<td class="tableColumnOverflow width120" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
 														<button
 		                                                	jsf:id="selected"
 		                                                	class="button-link">
@@ -608,7 +608,7 @@
 														<i class="fa #{item.swappedOutGui?'fa-check-square-o':'fa-square-o'}" />
 													</td>
 													<!-- Buttons -->
-													<td>
+													<td class="tableColumnOverflow width150">
 														<!-- Bearbeiten-Schaltknopf -->
 		                                                <button
 		                                                    jsf:action="#{ProzessverwaltungForm.editProcess}"
