@@ -214,12 +214,14 @@
 				                                        value="#{msgs.institution}"
 				                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['institution']}"
 				                                        ajaxRender=":myform" />
-				                                    <!-- ... -->
-													<intranda:columnheader
-														addClass="tableColumnOverflow maxWidth120"
+				                                     <!-- Lockings -->
+				                                    <intranda:columnheader
+				                                    	rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['lockings']}"
+				                                    	addClass="tableColumnOverflow maxWidth120 width100"
+				                                        name="sperrungen"
+				                                        form="#{ProzessverwaltungForm}"
 				                                        value="#{msgs.sperrungen}"
-				                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['lockings']}"
-				                                        sortable="false"/>
+				                                        ajaxRender=":myform" />
 				                                    <!-- .... -->
 													<intranda:columnheader
 														addClass="tableColumnOverflow maxWidth120"
@@ -246,7 +248,7 @@
 				                                        sortable="false"/>
 				                                    <!-- Buttons -->
 													<intranda:columnheader
-														addClass="width200"
+														addClass="tableColumnOverflow width200"
 				                                        value="#{msgs.auswahl}"
 				                                        sortable="false"/>
 												</tr>
@@ -259,6 +261,7 @@
 													<td class="tableColumnOverflow width120" jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
 														<button
 		                                                	jsf:id="selected"
+		                                                	aria-label="#{msgs.auswahl2}"
 		                                                	class="button-link">
 		                                                    <i class="font-black #{item.selected?'fa fa-check-square-o':'fa fa-square-o'}" />
 		                                                    <f:setPropertyActionListener
@@ -608,7 +611,7 @@
 														<i class="fa #{item.swappedOutGui?'fa-check-square-o':'fa-square-o'}" />
 													</td>
 													<!-- Buttons -->
-													<td class="tableColumnOverflow width150">
+													<td class="tableColumnOverflow width200">
 														<!-- Bearbeiten-Schaltknopf -->
 		                                                <button
 		                                                    jsf:action="#{ProzessverwaltungForm.editProcess}"
