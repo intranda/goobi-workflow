@@ -181,8 +181,8 @@
 		                                                <intranda:columnheader
 															addClass="width80"
 					                                        value="#{msgs[fn:substring(var, fn:indexOf(var,'.') lt 0 ? 1 : fn:indexOf(var,'.') + 1, var.length() - fn.indexOf(var,'.') - 1)]}"
-					                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}" 
 					                                        sortable="false" />
+					                                        <!-- rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}" --> 
 					                                </c:forEach>
 					                                <!-- Vorgangsdatum -->
 													<intranda:columnheader
