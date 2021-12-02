@@ -61,10 +61,10 @@
 												<x:div>
 	                                                <h:outputText value="#{msgs.auswahl2}" styleClass="" />
 	                                                <button class="button-no-style font-black" jsf:action="#{AktuelleSchritteForm.SelectionNone}" jsf:id="selectnone" title="#{msgs.auswahlEntfernen}">
-	                                                    <i class="fa fa-square-o" />
+	                                                    <i class="fa fa-square-o margin-left-5" />
 	                                                </button>
 	                                                <button class="button-no-style font-black" jsf:action="#{AktuelleSchritteForm.SelectionAll}" jsf:id="selectAll" title="#{msgs.alleAuswaehlen}">
-	                                                    <i class="fa fa-check-square-o" />
+	                                                    <i class="fa fa-check-square-o margin-left-5" />
 	                                                </button>
 	                                            </x:div>
 											</th>
@@ -106,13 +106,13 @@
 		                                        value="#{msgs.vorgangsdatum}"
 		                                        ajaxRender=":myform" />
 		                                    <!-- Modules / Plugins -->
-			                                <intranda:columnheader
+			                                <!-- <intranda:columnheader
 		                                    	rendered="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}"
 												id="sortModule"
 		                                        name="module"
 		                                        form="#{AktuelleSchritteForm}"
 		                                        value="#{msgs.module}"
-		                                        ajaxRender=":myform" />
+		                                        ajaxRender=":myform" /> -->
 		                                    <!-- Project -->
 			                                <intranda:columnheader
 												id="sortProject"
@@ -254,9 +254,9 @@
 												<h:outputText value="#{item.prozess.erstellungsdatum}" />
 											</td>
 											<!-- ===================== Modules / Plugins ===================== -->
-											<td jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}">
+											<!-- <td jsf:rendered="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}">
 												<h:outputText value="#{item.typModulName}" />
-											</td>
+											</td> -->
 											<!-- ===================== Project ===================== -->
 											<td>
 												<h:outputText value="#{item.prozess.projekt.titel}" />

@@ -13,7 +13,7 @@
 			<div id="filterTableColumns" class="btn-group" data-toggle="tooltip" title="#{msgs.selectTableColumns}">
 				<!-- show columns -->
 				<div class="dropdown">
-                <button type="button" aria-haspopup="true" aria-label="#{msgs.selectTableColumns}" class="btn dropdown-toggle searchfieldbuttongroup focusable" data-toggle="dropdown"> 
+                <button type="button" aria-label="#{msgs.selectTableColumns}" class="btn dropdown-toggle searchfieldbuttongroup focusable" data-toggle="dropdown"> 
                     <span class="fa fa-columns margin-right-5" /> <span class="caret"></span>
                 </button>
 				<ul class="dropdown-menu">
@@ -33,14 +33,14 @@
 							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['batchId']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['batchId']}" />
 						</button>
 					</li>
-					<li>
-						<!-- modules --> 
+					<!-- <li>
+						#### modules ###### 
 						<button jsf:id="modules" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
 							<i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['modules']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
 							<h:outputText value="#{msgs.module}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['modules']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['modules']}" />
 						</button>
-					</li>
+					</li> -->
 					<li>
 						<!-- process date --> 
 						<button jsf:id="processDate" jsf:action="#{NavigationForm.Reload}" class="dropdown-item">
