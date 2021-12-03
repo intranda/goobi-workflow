@@ -140,6 +140,10 @@ label {
     float: left;
 }
 
+#myform\:usergroups button {
+	color: #333;
+}
+
 /* changes color to dark when in lightgrey box */
 .box.lightgrey div.box-title h2.tableColumnMaxWidthExtraLong{
 	color: #333333;
