@@ -143,9 +143,9 @@
 	                                                    <!-- GoobiScript für selektierte Treffer der Seite -->
 	                                                    <ui:fragment rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
 		                                                    <!-- GoobiScript für selektierte Treffer der Seite - modal rendern  -->
-		                                                    <button jsf:id="selectedModalRender" class="btn text_head" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptSelection}" pt:data-modalid="goobiScriptModal">
+		                                                    <button jsf:id="selectedModalRender" class="expandbutton text_head" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptSelection}" pt:data-modalid="goobiScriptModal">
 		                                                    	<f:ajax render="goobiScriptModalWrapper" execute="goobiScriptfield" onevent="renderModal"/>
-		                                                    	<span class="margin-right-10 fa fa-angle-right" />
+		                                                    	<span class="btn margin-right-10 fa fa-angle-right" />
 		                                                       <h:outputText value="#{msgs.auswahl2}" />
 		                                                    </button>
 	                                                    </ui:fragment>

@@ -388,7 +388,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getApplicationTitle() {
-        return getLocalString("ApplicationTitle", "http://goobi.intranda.com");
+        return getLocalString("ApplicationTitle", "http://goobi.io");
     }
 
     public String getApplicationWebsiteMsg() {
@@ -690,12 +690,12 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("ldap_useTLS", false);
     }
 
-    public List<String> getAdditionalUserRoles() {
-        List<String> additionalUserRoles = getLocalList("userRole");
-        if (additionalUserRoles == null || additionalUserRoles.isEmpty()) {
-            additionalUserRoles = Collections.emptyList();
+    public List<String> getAdditionalUserRights() {
+        List<String> additionalUserRights = getLocalList("userRight");
+        if (additionalUserRights == null || additionalUserRights.isEmpty()) {
+            additionalUserRights = Collections.emptyList();
         }
-        return additionalUserRoles;
+        return additionalUserRights;
     }
 
     public String getGeonamesCredentials() {
