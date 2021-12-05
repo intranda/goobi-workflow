@@ -346,7 +346,8 @@
                         <!-- // Box for process details -->
 
 <!--                         Box for image comments -->
-                        <h:form styleClass="form-vertical form-bordered" id="imageComments"
+                        <h:form styleClass="form-vertical form-bordered" id="imageComments" 
+                            rendered="#{AktuelleSchritteForm.mySchritt.prozess.imageComments.size()>0}"
                             enctype="multipart/form-data" prependId="false">
                             <x:aliasBeansScope>
                                 <x:aliasBean alias="#{showBigButton}" value="true" />
