@@ -1,5 +1,4 @@
-<ui:composition
-    xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
@@ -142,6 +141,34 @@
                                     download="#{Metadaten.image.tooltip}">Download</a>
                             </p>
                         </ui:fragment>
+                        
+                         <!--                             Image comments -->
+                            <ui:fragment
+                                rendered="#{Metadaten.showImageComments}">
+                                <div id="imageCommentArea"
+                                    class="row justify-content-between"
+                                    style="padding-bottom: 5px">
+                                    <div class="col-3">
+                                        <h:outputText
+                                            styleClass="form-group__label"
+                                            value="#{msgs.comment} :"
+                                            title="#{msgs.comment}" />
+                                    </div>
+
+                                    <div class="col-9">
+                                        <h:inputTextarea id="Comment"
+                                            style="min-height: 25px; height: 28px;"
+                                            styleClass="form-control"
+                                            value="#{Metadaten.commentForImage}"
+                                            min-rows="1"
+                                            disabled="false"
+                                            readonly="false">
+                                            <f:ajax execute="@form"
+                                                event="valueChange" />
+                                        </h:inputTextarea>
+                                    </div>
+                                </div>
+                            </ui:fragment>
 
 
                         <ui:fragment rendered="#{Metadaten.image.type == 'image'}">
