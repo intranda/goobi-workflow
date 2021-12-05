@@ -23,11 +23,9 @@ public class CurrentUsers {
     private SessionForm sessionForm;
 
     /**
-     * Returns the list of current users. The list of current users is stored
-     * in SessionForm. The list is of type List<SessionInfo>. All irrelevant
-     * fields of SessionInfo are excluded with JsonIgnore annotation. The
-     * resulting list will contain the name of a user, the IP address, the
-     * login time, the last access time and the name of the used browser.
+     * Returns the list of current users. The list of current users is stored in SessionForm. The list is of type List<SessionInfo>. All irrelevant
+     * fields of SessionInfo are excluded with JsonIgnore annotation. The resulting list will contain the name of a user, the IP address, the login
+     * time, the last access time and the name of the used browser.
      *
      * @return The list of current users as a list of SessionInfo objects.
      */

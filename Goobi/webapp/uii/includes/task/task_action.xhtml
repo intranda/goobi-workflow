@@ -1,4 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core" >
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" >
 
     <composite:interface>
     </composite:interface>
@@ -342,7 +342,7 @@
                                 <div class="form-group">
                                     <label class="control-label">#{msgs.korrekturmeldungAnVorherigeStationSenden}</label>
                                     <div class="controls">
-                                        <h:selectOneMenu id="selectErrorStep" styleClass="form-control" value="#{AktuelleSchritteForm.myProblemID}">
+                                        <h:selectOneMenu id="selectErrorStep" pt:aria-label="#{msgs.korrekturmeldungAnVorherigeStationSenden}" styleClass="form-control" value="#{AktuelleSchritteForm.myProblemID}">
                                             <f:selectItems value="#{AktuelleSchritteForm.previousStepsForProblemReporting}" var="step1" itemLabel="#{step1.titelMitBenutzername}" itemValue="#{step1.id}" />
                                         </h:selectOneMenu>
                                     </div>
@@ -351,7 +351,7 @@
                                 <div class="form-group">
                                     <label class="control-label">#{msgs.bemerkung}</label>
                                     <div class="controls">
-                                        <h:inputTextarea id="addToTextArea" styleClass="form-control" value="#{AktuelleSchritteForm.problemMessage}" />
+                                        <h:inputTextarea id="addToTextArea" pt:aria-label="#{msgs.bemerkung}" styleClass="form-control" value="#{AktuelleSchritteForm.problemMessage}" />
                                     </div>
                                 </div>
 
