@@ -12,14 +12,6 @@
     </composite:interface>
 
     <composite:implementation>
-    	<button
-      	  id="addToLogHidden"
-          type="submit"
-          style="position: absolute; left: -100%"
-          tabindex="-1"
-          jsf:action="#{process.addLogEntry}">
-          <h:outputText value="#{msgs.nachrichtHinzufuegen}" />
-      	</button>
         <div class="box thin-margin box-bordered">
             <div class="box-title">
                 <h3>
@@ -252,6 +244,7 @@
 	                                id="addToTextArea"
 	                                styleClass="form-control"
 	                                pt:aria-label="#{msgs.process_log_firstContent}"
+	                                onkeypress="return submitEnter('addToLog',event)"
 	                                value="#{process.content}" />
                             </div>
                          </div>
