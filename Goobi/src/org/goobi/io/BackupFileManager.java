@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.sub.goobi.helper.StorageProvider;
@@ -40,31 +41,54 @@ import lombok.extern.log4j.Log4j2;
 public abstract class BackupFileManager {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
 
-    public static void createBackup(String path, String fileName, int limit) {
-        BackupFileManager.createBackupFile(path, fileName);
-        BackupFileManager.removeTooOldFiles(path, fileName, limit);
+    /**
+     * Creates a backup and tidies up the too old files (depending on the limit parameter). It returns the name of the backup file because it contains
+     * a time stamp and is not reliably reproducible otherwise. It returns null if the limit is set to 0.
+     *
+     * @param path The path of the original file (is used for the backup files too)
+     * @param fileName The name of the original file
+     * @param limit The maximum number of backup files before the oldest one gets deleted.
+     * @return The name of the created backup file or null in case of an error
+     */
+    public static String createBackup(String path, String fileName, int limit) {
+        String backupFileName = null;
+        if (limit > 0) {
+            backupFileName = BackupFileManager.createBackupFile(path, fileName);
+        }
+        BackupFileManager.removeTooOldBackupFiles(path, fileName, limit);
+        return backupFileName;
     }
 
-    private static void createBackupFile(String path, String fileName) {
+    /**
+     * Creates a backup. It returns the name of the backup file because it contains a time stamp and is not reliably reproducible otherwise. It
+     * returns null if the limit is set to 0.
+     *
+     * @param path The path of the original file (is used for the backup files too)
+     * @param fileName The name of the original file
+     * @return The name of the created backup file or null in case of an error
+     */
+    private static String createBackupFile(String path, String fileName) {
         Path existingFile = Paths.get(path + fileName);
         String backupFileName = fileName + "." + BackupFileManager.getCurrentTimestamp();
         Path backupFile = Paths.get(path + backupFileName);
 
         if (!StorageProvider.getInstance().isFileExists(existingFile)) {
             log.error("File " + path + fileName + " does not exist. No backup created.");
-            return;
+            return null;
         }
 
         try {
             StorageProvider.getInstance().copyFile(existingFile, backupFile);
             log.info("Created backup file " + path + backupFileName);
+            return backupFileName;
         } catch (IOException ioException) {
             log.error("Error while creating backup file " + path + backupFileName);
             log.error(ioException);
+            return null;
         }
     }
 
-    private static void removeTooOldFiles(String path, String fileName, int limit) {
+    private static void removeTooOldBackupFiles(String path, String fileName, int limit) {
         List<Path> files = BackupFileManager.getBackupFilesSortedByAge(path, fileName);
 
         // remove first (oldest) files until list length is equal to limit
@@ -81,7 +105,7 @@ public abstract class BackupFileManager {
     }
 
     private static List<Path> getBackupFilesSortedByAge(String path, String fileName) {
-        List<Path> files = BackupFileManager.filterFiles(path, fileName);
+        List<Path> files = BackupFileManager.getFilteredBackupFiles(path, fileName);
         BackupFileManager.sortFilesByName(files);
         return files;
     }
@@ -101,17 +125,18 @@ public abstract class BackupFileManager {
 
     }
 
-    private static List<Path> filterFiles(String path, String prefix) {
-        List<Path> files = StorageProvider.getInstance().listFiles(path);
+    private static List<Path> getFilteredBackupFiles(String path, String prefix) {
+        List<Path> allFiles = StorageProvider.getInstance().listFiles(path);
+        List<Path> fittingFiles = new ArrayList<>();
         int index = 0;
-        while (index < files.size()) {
-            if (files.get(index).getFileName().startsWith(prefix)) {
-                files.remove(index);
-            } else {
-                index++;
+        while (index < allFiles.size()) {
+            String name = allFiles.get(index).getFileName().toString();
+            if (name.startsWith(prefix) && name.length() > prefix.length()) {
+                fittingFiles.add(allFiles.get(index));
             }
+            index++;
         }
-        return files;
+        return fittingFiles;
     }
 
     private static String getCurrentTimestamp() {
