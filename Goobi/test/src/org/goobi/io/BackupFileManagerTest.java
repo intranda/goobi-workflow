@@ -41,7 +41,7 @@ import org.junit.Test;
 
 public class BackupFileManagerTest {
 
-    public final String BACKUP_PATH_NAME = "./";
+    public final String BACKUP_PATH_NAME = "./test/";
     public final String BACKUP_FILE_NAME = "File-BackupFileManagerTest.xml";
     public final String TEST_FILE_CONTENT = "Hello\nWorld!";
     public int maximumNumberOfBackupFiles = 1;
@@ -52,14 +52,14 @@ public class BackupFileManagerTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws IOException {
         String fileName = this.getTestFileName();
         this.createFile(fileName);
         this.writeFile(fileName, this.TEST_FILE_CONTENT);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() throws IOException {
         this.deleteFile(this.getTestFileName());
         for (int index = 0; index < this.createdFiles.size(); index++) {
             if (this.createdFiles.get(index) != null) {
@@ -69,24 +69,27 @@ public class BackupFileManagerTest {
     }
 
     @Test
-    public void shouldCreateOneBackupFile() throws Exception {
+    public void shouldCreateOneBackupFile() throws IOException {
         this.maximumNumberOfBackupFiles = 1;
         String fileName = this.runBackup();
-        assertFileExists(fileName);
+
+        this.assertFileExists(fileName);
     }
 
     @Test
     public void firstBackupFileShouldContainSameContentAsOriginalFile() throws IOException {
         this.maximumNumberOfBackupFiles = 1;
         String fileName = this.runBackup();
+
         this.assertFileHasContent(fileName, this.TEST_FILE_CONTENT);
     }
 
     @Test
-    public void modifiedDateShouldNotChangedOnBackup() {
+    public void modifiedDateShouldNotChangedOnBackup() throws IOException {
         this.maximumNumberOfBackupFiles = 1;
         long firstModifiedDate = this.getLastModifiedFileDate(this.getTestFileName());
         this.runBackup();
+
         this.assertLastModifiedDate(this.getTestFileName(), firstModifiedDate);
     }
 
@@ -112,7 +115,7 @@ public class BackupFileManagerTest {
     }
 
     @Test
-    public void backupFileModifiedDateLaterThanOriginalFileModifiedDate() {
+    public void backupFileModifiedDateLaterThanOriginalFileModifiedDate() throws IOException {
         this.maximumNumberOfBackupFiles = 1;
 
         String fileName = this.runBackup();
@@ -149,7 +152,7 @@ public class BackupFileManagerTest {
     }
 
     @Test
-    public void noBackupIsPerformedWithNumberOfBackupsSetToZero() throws Exception {
+    public void noBackupIsPerformedWithNumberOfBackupsSetToZero() throws IOException {
         this.maximumNumberOfBackupFiles = 0;
 
         String fileName = this.runBackup();
@@ -160,8 +163,10 @@ public class BackupFileManagerTest {
     @Test
     public void oldestBackupGetsDeletedWithNumberOfBackupsSetToOne() throws IOException {
         this.maximumNumberOfBackupFiles = 1;
+
         String firstFileName = this.runBackup();
         String secondFileName = this.runBackup();
+
         this.assertFileNotExists(firstFileName);
         this.assertFileExists(secondFileName);
     }
@@ -169,9 +174,11 @@ public class BackupFileManagerTest {
     @Test
     public void oldestBackupGetsDeletedWithNumberOfBackupsSetToTwo() throws IOException {
         this.maximumNumberOfBackupFiles = 2;
+
         String firstFileName = this.runBackup();
         String secondFileName = this.runBackup();
         String thirdFileName = this.runBackup();
+
         this.assertFileNotExists(firstFileName);
         this.assertFileExists(secondFileName);
         this.assertFileExists(thirdFileName);
@@ -187,7 +194,7 @@ public class BackupFileManagerTest {
     }
 
     private long getLastModifiedFileDate(String fileName) {
-        File testFile = new File(fileName);
+        File testFile = new File(this.BACKUP_PATH_NAME + fileName);
         return testFile.lastModified();
     }
 
@@ -204,13 +211,18 @@ public class BackupFileManagerTest {
         } catch (InterruptedException interruptedException) {
             interruptedException.printStackTrace();
         }
-        String fileName = BackupFileManager.createBackup(this.BACKUP_PATH_NAME, this.BACKUP_FILE_NAME, this.maximumNumberOfBackupFiles);
+        String fileName = null;
+        try {
+            fileName = BackupFileManager.createBackup(this.BACKUP_PATH_NAME, this.BACKUP_FILE_NAME, this.maximumNumberOfBackupFiles);
+        } catch (IOException ioException) {
+            Assert.fail(ioException.getMessage());
+        }
         this.createdFiles.add(fileName);
         return fileName;
     }
 
     private void assertFileHasContent(String fileName, String expectedContent) throws IOException {
-        File testFile = new File(fileName);
+        File testFile = new File(this.BACKUP_PATH_NAME + fileName);
         FileReader reader = new FileReader(testFile);
         BufferedReader br = new BufferedReader(reader);
         StringBuffer string = new StringBuffer();
@@ -231,15 +243,15 @@ public class BackupFileManagerTest {
         Assert.assertEquals("File " + fileName + " does not contain expected content:", expectedContent, content);
     }
 
-    private void assertFileExists(String fileName) {
-        File newFile = new File(fileName);
+    private void assertFileExists(String fileName) throws IOException {
+        File newFile = new File(this.BACKUP_PATH_NAME + fileName);
         if (!newFile.exists()) {
             Assert.fail("File " + fileName + " does not exist.");
         }
     }
 
-    private void assertFileNotExists(String fileName) {
-        File newFile = new File(fileName);
+    private void assertFileNotExists(String fileName) throws IOException {
+        File newFile = new File(this.BACKUP_PATH_NAME + fileName);
         if (newFile.exists()) {
             Assert.fail("File " + fileName + " should not exist.");
         }
@@ -251,12 +263,12 @@ public class BackupFileManagerTest {
         writer.close();
     }
 
-    private void deleteFile(String fileName) {
+    private void deleteFile(String fileName) throws IOException {
         File testFile = new File(fileName);
         testFile.delete();
     }
 
-    private void deleteFileIfExists(String fileName) {
+    private void deleteFileIfExists(String fileName) throws IOException {
         File testFile = new File(fileName);
         if (testFile.exists()) {
             testFile.delete();

@@ -1083,7 +1083,13 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         Path metadataFile = Paths.get(path + metadataFileName);
 
         int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
-        String backupFileName = BackupFileManager.createBackup(path, metadataFileName, maximumNumberOfBackups);
+        String backupFileName = null;
+        try {
+            backupFileName = BackupFileManager.createBackup(path, metadataFileName, maximumNumberOfBackups);
+            Helper.setMeldung("Created backup file: " + path + backupFileName);
+        } catch (IOException ioException) {
+            Helper.setFehlerMeldung(ioException.getMessage());
+        }
         Path backupFile = Paths.get(path + backupFileName);
 
         Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
@@ -1113,7 +1119,14 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             throws SwapException, DAOException, IOException, InterruptedException, PreferencesException, WriteException {
 
         int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
-        BackupFileManager.createBackup(this.getProcessDataDirectory(), "temp.xml", maximumNumberOfBackups);
+
+        String backupFileName = null;
+        try {
+            backupFileName = BackupFileManager.createBackup(this.getProcessDataDirectory(), "temp.xml", maximumNumberOfBackups);
+            Helper.setMeldung("Created backup file: " + this.getProcessDataDirectory() + backupFileName);
+        } catch (IOException ioException) {
+            Helper.setFehlerMeldung(ioException.getMessage());
+        }
 
         Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
         ff.setDigitalDocument(gdzfile.getDigitalDocument());
@@ -1173,14 +1186,28 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
             if (StorageProvider.getInstance().isFileExists(temporaryFile)) {
                 // backup meta.xml
-                BackupFileManager.createBackup(path, "meta.xml", maximumNumberOfBackups);
+                String backupFileName = null;
+                try {
+                    backupFileName = BackupFileManager.createBackup(path, "meta.xml", maximumNumberOfBackups);
+                    Helper.setMeldung("Created backup file: " + path + backupFileName);
+                } catch (IOException ioException) {
+                    Helper.setFehlerMeldung(ioException.getMessage());
+                }
+
                 // copy temp.xml to meta.xml
                 Path meta = Paths.get(path, "meta.xml");
                 StorageProvider.getInstance().copyFile(temporaryFile, meta);
             }
             if (StorageProvider.getInstance().isFileExists(temporaryAnchorFile)) {
                 // backup meta_anchor.xml
-                BackupFileManager.createBackup(path, "meta_anchor.xml", maximumNumberOfBackups);
+                String backupFileName = null;
+                try {
+                    backupFileName = BackupFileManager.createBackup(path, "meta_anchor.xml", maximumNumberOfBackups);
+                    Helper.setMeldung("Created backup file: " + path + backupFileName);
+                } catch (IOException ioException) {
+                    Helper.setFehlerMeldung(ioException.getMessage());
+                }
+
                 // copy temp_anchor.xml to meta_anchor.xml
                 Path metaAnchor = Paths.get(path, "meta_anchor.xml");
                 StorageProvider.getInstance().copyFile(temporaryAnchorFile, metaAnchor);

@@ -40,22 +40,36 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public abstract class BackupFileManager {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
+    private static final int SUFFIX_LENGTH = "yyyy-MM-dd-HH-mm-ss-SSS".length();
 
     /**
      * Creates a backup and tidies up the too old files (depending on the limit parameter). It returns the name of the backup file because it contains
      * a time stamp and is not reliably reproducible otherwise. It returns null if the limit is set to 0.
      *
      * @param path The path of the original file (is used for the backup files too)
-     * @param fileName The name of the original file
+     * @param fileName The name of the original file (without directory)
      * @param limit The maximum number of backup files before the oldest one gets deleted.
      * @return The name of the created backup file or null in case of an error
+     * @throws IOException if there was an error while reading the original file or writing backup files
      */
-    public static String createBackup(String path, String fileName, int limit) {
+    public static String createBackup(String path, String fileName, int limit) throws IOException {
         String backupFileName = null;
-        if (limit > 0) {
-            backupFileName = BackupFileManager.createBackupFile(path, fileName);
+        try {
+            if (limit > 0) {
+                backupFileName = BackupFileManager.createBackupFile(path, fileName);
+            }
+        } catch (Exception exception) {
+            String message = "Could not create backup file. Make sure that the required permissions are set.";
+            log.error(message);
+            throw new IOException(message);
         }
-        BackupFileManager.removeTooOldBackupFiles(path, fileName, limit);
+        try {
+            BackupFileManager.removeTooOldBackupFiles(path, fileName, limit);
+        } catch (Exception exception) {
+            String message = "Backup created. Could not remove old backup files. Make sure that the required permissions are set.";
+            log.error(message);
+            throw new IOException(message);
+        }
         return backupFileName;
     }
 
@@ -64,10 +78,11 @@ public abstract class BackupFileManager {
      * returns null if the limit is set to 0.
      *
      * @param path The path of the original file (is used for the backup files too)
-     * @param fileName The name of the original file
+     * @param fileName The name of the original file (without directory)
      * @return The name of the created backup file or null in case of an error
+     * @throws IOException if there was an error while creating the backup file
      */
-    private static String createBackupFile(String path, String fileName) {
+    private static String createBackupFile(String path, String fileName) throws IOException {
         Path existingFile = Paths.get(path + fileName);
         String backupFileName = fileName + "." + BackupFileManager.getCurrentTimestamp();
         Path backupFile = Paths.get(path + backupFileName);
@@ -84,14 +99,23 @@ public abstract class BackupFileManager {
         } catch (IOException ioException) {
             log.error("Error while creating backup file " + path + backupFileName);
             log.error(ioException);
-            return null;
+            throw ioException;
         }
     }
 
-    private static void removeTooOldBackupFiles(String path, String fileName, int limit) {
+    /**
+     * Removes the old files that are "unnecessary" due to the limit parameter. The files are sorted by name, so files from previous backup file
+     * strategies should be detected to be older than the new backup files.
+     *
+     * @param path The path of the original file and the backup files
+     * @param fileName The name of the original file (without directory)
+     * @param limit The maximum number of backup files
+     * @throws IOException if there was an error while removing the old files
+     */
+    private static void removeTooOldBackupFiles(String path, String fileName, int limit) throws IOException {
         List<Path> files = BackupFileManager.getBackupFilesSortedByAge(path, fileName);
 
-        // remove first (oldest) files until list length is equal to limit
+        // remove oldest files until list length is equal to limit
         while (files.size() > limit) {
             try {
                 StorageProvider.getInstance().deleteFile(files.get(0));
@@ -99,6 +123,7 @@ public abstract class BackupFileManager {
             } catch (IOException ioException) {
                 log.warn("Could not delete old backup file: " + path + fileName);
                 log.warn(ioException);
+                throw ioException;
             }
             files.remove(0);
         }
@@ -115,12 +140,22 @@ public abstract class BackupFileManager {
         for (int secondIndex = 1; secondIndex < files.size(); secondIndex++) {
             for (int index = 0; index < secondIndex; index++) {
 
-                if (files.get(index).getFileName().compareTo(files.get(secondIndex)) < 0) {
+                String firstFileName = files.get(index).getFileName().toString();
+                String secondFileName = files.get(secondIndex).getFileName().toString();
+                int comparison = firstFileName.compareTo(secondFileName);
+                // This is to prefer the order *.3, *.2, *.1 for older files and *.2021*, *.2022*, *.2023* for newer files
+                // TODO: LOGICAL BUG IN THE FOLLOWING LINE
+                if (firstFileName.length() > secondFileName.length() && comparison < 0) {
                     Path temporary = files.get(index);
                     files.set(index, files.get(secondIndex));
                     files.set(secondIndex, temporary);
                 }
             }
+        }
+        int index = 0;
+        while (index < files.size()) {
+            System.out.println(files.get(index).getFileName());
+            index++;
         }
 
     }
