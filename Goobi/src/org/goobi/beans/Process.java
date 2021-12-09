@@ -64,7 +64,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.goobi.io.BackupFileRotation;
+import org.goobi.io.BackupFileManager;
 import org.goobi.io.FileListFilter;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.StringPair;
@@ -276,8 +276,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public boolean getContainsExportStep() {
         this.getSchritte();
-        for(int i = 0; i < this.schritte.size(); i++) {
-            if(this.schritte.get(i).isTypExportDMS() || this.schritte.get(i).isTypExportRus()){
+        for (int i = 0; i < this.schritte.size(); i++) {
+            if (this.schritte.get(i).isTypExportDMS() || this.schritte.get(i).isTypExportRus()) {
                 return true;
             }
         }
@@ -555,7 +555,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrTxtDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     @Deprecated
@@ -565,27 +565,27 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrPdfDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrXmlDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getImportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getExportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException, InterruptedException, SwapException, DAOException {
@@ -1064,79 +1064,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return ff;
     }
 
-    // backup of meta.xml
-
-    private void createBackupFile() throws IOException, InterruptedException, SwapException, DAOException {
-        int numberOfBackups = 0;
-        String FORMAT = "";
-        if (ConfigurationHelper.getInstance().getNumberOfMetaBackups() != 0) {
-            numberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
-            FORMAT = ConfigurationHelper.getInstance().getFormatOfMetsBackup();
-        }
-        if (numberOfBackups != 0) {
-            String typeOfBackup = ConfigurationHelper.getInstance().getTypeOfBackup();
-            if (typeOfBackup.equals("renameFile") && FORMAT != null) {
-                createBackup(numberOfBackups, FORMAT);
-            } else if (typeOfBackup.equals("")) {
-                BackupFileRotation bfr = new BackupFileRotation();
-                bfr.setNumberOfBackups(numberOfBackups);
-                bfr.setFormat("meta.*\\.xml");
-                bfr.setProcessDataDirectory(getProcessDataDirectory());
-                bfr.performBackup();
-            }
-        } else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("No backup configured for meta data files.");
-            }
-        }
-        //            format = ConfigMain.getParameter("formatOfMetaBackups");
-        //        }
-        //        if (format != null) {
-        //            logger.info("Option 'formatOfMetaBackups' is deprecated and will be ignored.");
-        //        }
-
-    }
-
-    private void createBackup(int numberOfBackups, String FORMAT) throws IOException, InterruptedException, SwapException, DAOException {
-        DirectoryStream.Filter<Path> filter = new FileListFilter(FORMAT);
-        Path metaFilePath = Paths.get(getProcessDataDirectory());
-        Path metadataFile = Paths.get(getMetadataFilePath());
-        if (!StorageProvider.getInstance().isFileExists(metadataFile)) {
-            return;
-        }
-        List<Path> meta = StorageProvider.getInstance().listFiles(metaFilePath.toString(), filter);
-        if (meta != null) {
-            List<Path> files = new ArrayList<>(meta);
-            Collections.reverse(files);
-
-            int count;
-            if (meta != null) {
-                if (files.size() > numberOfBackups) {
-                    count = numberOfBackups;
-                } else {
-                    count = meta.size();
-                }
-                while (count > 0) {
-                    for (Path data : files) {
-                        if (StorageProvider.getInstance().getFileSize(data) != 0) {
-
-                            if (data.getFileName().toString().endsWith("xml." + (count - 1))) {
-                                Path newFile = Paths.get(data.toString().substring(0, data.toString().lastIndexOf(".")) + "." + (count));
-                                StorageProvider.getInstance().copyFile(data, newFile);
-                            }
-                            if (data.getFileName().toString().endsWith(".xml") && count == 1) {
-                                Path newFile = Paths.get(data.toString() + ".1");
-                                StorageProvider.getInstance().copyFile(data, newFile);
-
-                            }
-                        }
-                    }
-                    count--;
-                }
-            }
-        }
-    }
-
     private boolean checkForMetadataFile()
             throws IOException, InterruptedException, SwapException, DAOException, WriteException, PreferencesException {
         boolean result = true;
@@ -1151,26 +1078,26 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public synchronized void writeMetadataFile(Fileformat gdzfile)
             throws IOException, InterruptedException, SwapException, DAOException, WriteException, PreferencesException {
 
-        Fileformat ff;
-        String metadataFileName;
-        createBackupFile();
+        String path = this.getProcessDataDirectory();
+        String metadataFileName = "meta.xml";
+        Path metadataFile = Paths.get(path + metadataFileName);
 
-        ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
+        int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
+        String backupFileName = BackupFileManager.createBackup(path, metadataFileName, maximumNumberOfBackups);
+        Path backupFile = Paths.get(path + backupFileName);
 
-        metadataFileName = getMetadataFilePath();
+        Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
 
         synchronized (xmlWriteLock) {
             ff.setDigitalDocument(gdzfile.getDigitalDocument());
             try {
-                ff.write(metadataFileName);
-            } catch (UGHException e) {
+                ff.write(path + metadataFileName);
+            } catch (UGHException ughException) {
                 //error writing. restore backup and rethrow error
-                Path meta = Paths.get(metadataFileName);
-                Path lastBackup = Paths.get(metadataFileName + ".1");
-                if ((!Files.exists(meta) || Files.size(meta) == 0) && Files.exists(lastBackup)) {
-                    Files.copy(lastBackup, meta, StandardCopyOption.REPLACE_EXISTING);
+                if ((!Files.exists(metadataFile) || Files.size(metadataFile) == 0) && Files.exists(backupFile)) {
+                    Files.copy(backupFile, metadataFile, StandardCopyOption.REPLACE_EXISTING);
                 }
-                throw e;
+                throw ughException;
             }
         }
         Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile, false);
@@ -1185,13 +1112,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public void saveTemporaryMetsFile(Fileformat gdzfile)
             throws SwapException, DAOException, IOException, InterruptedException, PreferencesException, WriteException {
 
+        int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
+        BackupFileManager.createBackup(this.getProcessDataDirectory(), "temp.xml", maximumNumberOfBackups);
+
         Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
-        String metadataFileName = getProcessDataDirectory() + "temp.xml";
-        createBackup(9, "temp.*\\.xml.*+");
-
         ff.setDigitalDocument(gdzfile.getDigitalDocument());
-
-        ff.write(metadataFileName);
+        ff.write(getProcessDataDirectory() + "temp.xml");
     }
 
     public void writeMetadataAsTemplateFile(Fileformat inFile)
@@ -1239,15 +1165,24 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public void overwriteMetadata() {
         try {
-            Path temporaryFile = Paths.get(getProcessDataDirectory(), "temp.xml");
-            Path temporaryAnchorFile = Paths.get(getProcessDataDirectory(), "temp_anchor.xml");
+            String path = this.getProcessDataDirectory();
+            Path temporaryFile = Paths.get(path, "temp.xml");
+            Path temporaryAnchorFile = Paths.get(path, "temp_anchor.xml");
+
+            int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
 
             if (StorageProvider.getInstance().isFileExists(temporaryFile)) {
-                Path meta = Paths.get(getProcessDataDirectory(), "meta.xml");
+                // backup meta.xml
+                BackupFileManager.createBackup(path, "meta.xml", maximumNumberOfBackups);
+                // copy temp.xml to meta.xml
+                Path meta = Paths.get(path, "meta.xml");
                 StorageProvider.getInstance().copyFile(temporaryFile, meta);
             }
             if (StorageProvider.getInstance().isFileExists(temporaryAnchorFile)) {
-                Path metaAnchor = Paths.get(getProcessDataDirectory(), "meta_anchor.xml");
+                // backup meta_anchor.xml
+                BackupFileManager.createBackup(path, "meta_anchor.xml", maximumNumberOfBackups);
+                // copy temp_anchor.xml to meta_anchor.xml
+                Path metaAnchor = Paths.get(path, "meta_anchor.xml");
                 StorageProvider.getInstance().copyFile(temporaryAnchorFile, metaAnchor);
             }
 
@@ -1378,9 +1313,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
             facesContext.responseComplete();
         }
-        return ;
+        return;
     }
-
 
     public String downloadDocket() {
 

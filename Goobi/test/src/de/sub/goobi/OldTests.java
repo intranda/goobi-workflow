@@ -18,7 +18,6 @@ package de.sub.goobi;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import org.goobi.io.BackupFileRotationTest;
 import org.goobi.pagination.IntegerSequenceTest;
 import org.goobi.pagination.RomanNumberSequenceTest;
 import org.junit.runner.RunWith;
@@ -30,7 +29,7 @@ import de.sub.goobi.helper.encryption.DesEncrypterTest;
 import de.sub.goobi.helper.importer.ImportOpacTest;
 
 @RunWith(Suite.class)
-@SuiteClasses({ ProcessSwapOutTaskTest.class, DesEncrypterTest.class, ImportOpacTest.class, BackupFileRotationTest.class, IntegerSequenceTest.class,
+@SuiteClasses({ ProcessSwapOutTaskTest.class, DesEncrypterTest.class, ImportOpacTest.class, IntegerSequenceTest.class,
         RomanNumberSequenceTest.class })
 public class OldTests {
 
