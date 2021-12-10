@@ -13,7 +13,9 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 
-public class JwtHelperTest {
+import de.sub.goobi.AbstractTest;
+
+public class JwtHelperTest extends AbstractTest {
     @Test
     public void testValidTokenValidation()
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {

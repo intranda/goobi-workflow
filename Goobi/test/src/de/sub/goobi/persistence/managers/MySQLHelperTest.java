@@ -5,7 +5,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class MySQLHelperTest {
+import de.sub.goobi.AbstractTest;
+
+public class MySQLHelperTest extends AbstractTest {
     @Test
     public void testCheckMariadbVersion() {
         assertTrue(MySQLHelper.checkMariadbVersion("5.5.5-10.3.8-MariaDB-1:10.3.8+maria~xenial"));

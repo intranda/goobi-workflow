@@ -23,7 +23,9 @@ import static org.junit.Assert.assertEquals;
 import org.goobi.production.flow.statistics.enums.TimeUnit;
 import org.junit.Test;
 
-public class StatisticsTimeUnitConverterTest {
+import de.sub.goobi.AbstractTest;
+
+public class StatisticsTimeUnitConverterTest extends AbstractTest {
 
     @Test
     public void testGetAsObject() {

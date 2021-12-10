@@ -1,7 +1,7 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -27,8 +27,10 @@ package de.sub.goobi.helper.importer;
 
 import org.junit.Ignore;
 
+import de.sub.goobi.AbstractTest;
+
 @Ignore("Test defintion incorrect.")
-public class ImportOpacTest {
+public class ImportOpacTest extends AbstractTest {
     public static void main(String[] args) {
         System.out.println("class ImportOpac has been deleted.");
         //      String atstsl = "";
