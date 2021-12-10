@@ -13,7 +13,9 @@ import org.goobi.beans.Ldap;
 import org.goobi.beans.User;
 import org.junit.Test;
 
-public class LdapUserTest {
+import de.sub.goobi.AbstractTest;
+
+public class LdapUserTest extends AbstractTest {
 
     @Test
     public void testConstructor() {

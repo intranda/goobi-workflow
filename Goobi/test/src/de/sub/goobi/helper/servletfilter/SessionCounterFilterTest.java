@@ -1,6 +1,6 @@
 package de.sub.goobi.helper.servletfilter;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
@@ -19,11 +19,12 @@ import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.FacesContextHelper;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class })
-public class SessionCounterFilterTest {
+public class SessionCounterFilterTest extends AbstractTest {
 
     @Test
     public void testInit() throws ServletException {

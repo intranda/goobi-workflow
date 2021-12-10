@@ -1,7 +1,7 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -27,6 +27,7 @@ package de.sub.goobi.helper.archive;
 
 import static org.junit.Assert.assertTrue;
 
+import org.goobi.beans.Process;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -34,12 +35,12 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import org.goobi.beans.Process;
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.tasks.ProcessSwapOutTask;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
 @Ignore("Crashing")
-public class ProcessSwapOutTaskTest {
+public class ProcessSwapOutTaskTest extends AbstractTest {
     static Process proz = null;
 
     @BeforeClass
