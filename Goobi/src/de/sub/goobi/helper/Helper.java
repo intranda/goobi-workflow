@@ -125,11 +125,8 @@ public class Helper implements Serializable, ServletContextListener {
     public static String getRequestParameter(String Parameter) {
         /* einen bestimmten übergebenen Parameter ermitteln */
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        System.out.println(context);
         Map requestParams = context.getExternalContext().getRequestParameterMap();
-        System.out.println(requestParams);
         String myParameter = (String) requestParams.get(Parameter);
-        System.out.println(myParameter);
         if (myParameter == null) {
             myParameter = "";
         }
