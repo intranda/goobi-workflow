@@ -1494,7 +1494,9 @@ public class Metadaten implements Serializable {
             Integer id = Integer.valueOf(Helper.getRequestParameter("ProzesseID"));
             this.myProzess = ProcessManager.getProcessById(id);
         } catch (NumberFormatException e1) {
-            Helper.setFehlerMeldung("error while loading process data" + e1.getMessage());
+            Helper.setFehlerMeldung("error while loading process data " + e1.getMessage());
+            System.out.println(e1);
+            e1.printStackTrace();         
             return Helper.getRequestParameter("zurueck");
             // } catch (DAOException e1) {
             // Helper.setFehlerMeldung("error while loading process data" + e1.getMessage());
