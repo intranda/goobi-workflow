@@ -29,10 +29,11 @@ import java.nio.file.Paths;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 
-public class NavigationFormTest {
+public class NavigationFormTest extends AbstractTest {
 
     @Before
     public void setUp() {

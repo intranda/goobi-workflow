@@ -2,12 +2,12 @@
 	<parent>
 		<groupId>de.intranda.goobi.workflow</groupId>
 		<artifactId>goobi-core</artifactId>
-		<version>21.11.3-SNAPSHOT</version>
+		<version>21.11.4-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.intranda.goobi.workflow</groupId>
 	<artifactId>goobi-core-jar</artifactId>
-	<version>21.11.3-SNAPSHOT</version>
+	<version>21.11.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	
 	<build>

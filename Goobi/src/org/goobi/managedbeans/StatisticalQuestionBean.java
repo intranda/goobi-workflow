@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
@@ -15,7 +16,10 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.TimeUnit;
 import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IPushPlugin;
 import org.goobi.production.plugin.interfaces.IStatisticPlugin;
+import org.omnifaces.cdi.Push;
+import org.omnifaces.cdi.PushContext;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -61,6 +65,10 @@ public class StatisticalQuestionBean implements Serializable {
     private TimeUnit sourceTimeUnit;
     private int sourceNumberOfTimeUnits = 0;
 
+    @Inject
+    @Push
+    PushContext statisticsPluginPush;
+    
     public StatisticalQuestionBean() {
         possiblePluginNames = PluginLoader.getListOfPlugins(PluginType.Statistics);
         Collections.sort(possiblePluginNames);
@@ -68,8 +76,10 @@ public class StatisticalQuestionBean implements Serializable {
 
     public String setStatisticalQuestion(String pluginName) {
         currentPluginName = pluginName;
-
         currentPlugin = (IStatisticPlugin) PluginLoader.getPluginByTitle(PluginType.Statistics, currentPluginName);
+        if (currentPlugin instanceof IPushPlugin) {
+            ((IPushPlugin) currentPlugin).setPushContext(statisticsPluginPush);
+        }
         currentPlugin.setFilter("");
         return "statistics";
     }

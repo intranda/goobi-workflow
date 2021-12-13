@@ -2,7 +2,7 @@
  * This file is part of the Goobi Application - a Workflow tool for the support of
  * mass digitization.
  *
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
  *
@@ -21,14 +21,17 @@
  * Suite 330, Boston, MA 02111-1307 USA
  */
 
-// 
+//
 package org.goobi.pagination;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import de.sub.goobi.AbstractTest;
 
-public class IntegerSequenceTest {
+public class IntegerSequenceTest extends AbstractTest {
 
     @Test
     public void sequenceWithoutRangeIsEmpty() {

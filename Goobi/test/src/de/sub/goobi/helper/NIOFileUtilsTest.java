@@ -10,7 +10,9 @@ import java.util.stream.Stream;
 
 import org.junit.Test;
 
-public class NIOFileUtilsTest {
+import de.sub.goobi.AbstractTest;
+
+public class NIOFileUtilsTest extends AbstractTest {
     private static NIOFileUtils nio = new NIOFileUtils();
 
     @Test

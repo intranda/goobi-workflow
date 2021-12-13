@@ -1,12 +1,11 @@
 package de.sub.goobi.helper.ldap;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.naming.NamingException;
-
 import javax.naming.directory.InitialDirContext;
 
 import org.goobi.beans.Ldap;
@@ -17,13 +16,14 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.mock.Ldapserver;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(InitialDirContext.class)
 
-public class LdapAuthenticationTest {
+public class LdapAuthenticationTest extends AbstractTest {
 
     private User currentUser;
     private Ldapserver server;

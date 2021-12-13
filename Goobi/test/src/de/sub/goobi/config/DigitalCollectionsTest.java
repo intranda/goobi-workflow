@@ -33,7 +33,9 @@ import org.jdom2.JDOMException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class DigitalCollectionsTest {
+import de.sub.goobi.AbstractTest;
+
+public class DigitalCollectionsTest extends AbstractTest {
 
     @BeforeClass
     public static void setUp() throws URISyntaxException {
