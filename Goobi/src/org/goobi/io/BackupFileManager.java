@@ -32,8 +32,10 @@ import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import lombok.extern.log4j.Log4j2;
 
@@ -44,31 +46,52 @@ public abstract class BackupFileManager {
 
     /**
      * Creates a backup and tidies up the too old files (depending on the limit parameter). It returns the name of the backup file because it contains
-     * a time stamp and is not reliably reproducible otherwise. It returns null if the limit is set to 0.
+     * a time stamp and is not reliably reproducible otherwise. It returns null if the limit is set to 0 because the file gets directly deleted and
+     * throws an IOException if no file could be created due to other reasons.
+     * 
+     * If the createFrontendMessage parameter is set to true, this method creates Helper.setMeldung() messages and Helper.setFehlerMeldung() messages.
+     * This is easier for the surrounding code because the error output handling must not be repeated each time.
+     * 
+     * An exception is thrown independently in the case that no backup file could be created. If the backup file could be created, but old files could
+     * not be deleted, no exception is thrown. This is to avoid confusion with the decision whether the backup file was created or not.
      *
      * @param path The path of the original file (is used for the backup files too)
      * @param fileName The name of the original file (without directory)
      * @param limit The maximum number of backup files before the oldest one gets deleted.
+     * @param createFrontendMessage Must be true to generate frontend help messages (Helper.setMeldung() or Helper.setFehlerMeldung())
      * @return The name of the created backup file or null in case of an error
      * @throws IOException if there was an error while reading the original file or writing backup files
      */
-    public static String createBackup(String path, String fileName, int limit) throws IOException {
+    public static String createBackup(String path, String fileName, int limit, boolean createFrontendMessage) throws IOException {
         String backupFileName = null;
         try {
             if (limit > 0) {
                 backupFileName = BackupFileManager.createBackupFile(path, fileName);
             }
         } catch (Exception exception) {
-            String message = "Could not create backup file. Make sure that the required permissions are set.";
-            log.error(message);
-            throw new IOException(message);
+            String messageFail = Helper.getTranslation("noBackupCreated");
+            log.error(messageFail);
+            if (createFrontendMessage) {
+                Helper.setFehlerMeldung(messageFail);
+            }
+            throw new IOException(messageFail);
         }
+        String messageSuccess = Helper.getTranslation("backupCreated") + " " + path + backupFileName;
+        log.error(messageSuccess);
+        //if (createFrontendMessage) {
+        //    Helper.setMeldung(messageSuccess);
+        //}
         try {
             BackupFileManager.removeTooOldBackupFiles(path, fileName, limit);
         } catch (Exception exception) {
-            String message = "Backup created. Could not remove old backup files. Make sure that the required permissions are set.";
-            log.error(message);
-            throw new IOException(message);
+            String messageFail = Helper.getTranslation("noOldBackupsDeleted");
+            log.error(messageFail);
+            if (createFrontendMessage) {
+                Helper.setFehlerMeldung(messageFail);
+            }
+            // This exception should not be thrown because the important thing is that the backup file could be created.
+            // Code that calls this method should not ge confused with this thrown exception in case of success...
+            //throw new IOException(messageFail);
         }
         return backupFileName;
     }
@@ -129,37 +152,83 @@ public abstract class BackupFileManager {
         }
     }
 
+    /**
+     * Returns the list of all backup files that match to the given file name. The original file is not included in this list. The backup files are
+     * searched only in the given directory. The sorting strategy depends on the old name system (*.1, *.2, ...) and the new one with time stamps.
+     *
+     * @param path The directory to search backup files
+     * @param fileName The file name to search the backup files for
+     * @return The list of backup files
+     */
     private static List<Path> getBackupFilesSortedByAge(String path, String fileName) {
         List<Path> files = BackupFileManager.getFilteredBackupFiles(path, fileName);
-        BackupFileManager.sortFilesByName(files);
+        BackupFileManager.sortFilesByName(files, fileName);
         return files;
     }
 
-    private static void sortFilesByName(List<Path> files) {
+    /**
+     * Sorts the given list of files by their age. The age depends on the old and the new name system. In the old name system, *.2 is older than *.1
+     * and in the new name system the file names are sorted by their time stamp. The given list is directly edited and no copy is returned.
+     * 
+     * @param files The list of files to sort
+     * @param fileName The name of the original file. This is needed to get the maximum length of the new backup file names
+     */
+    private static void sortFilesByName(List<Path> files, String fileName) {
+
+        // length of example: meta.xml.2021-12-09-13-14-45-203 = 8 + 1 + 23 = 32
+        // the length is needed to detect whether a backup file contains a time stamp or is a .1, .2, ... file
+        int fileNameLength = fileName.length() + 1 + BackupFileManager.SUFFIX_LENGTH;
 
         for (int secondIndex = 1; secondIndex < files.size(); secondIndex++) {
             for (int index = 0; index < secondIndex; index++) {
 
                 String firstFileName = files.get(index).getFileName().toString();
                 String secondFileName = files.get(secondIndex).getFileName().toString();
-                int comparison = firstFileName.compareTo(secondFileName);
+
                 // This is to prefer the order *.3, *.2, *.1 for older files and *.2021*, *.2022*, *.2023* for newer files
-                // TODO: LOGICAL BUG IN THE FOLLOWING LINE
-                if (firstFileName.length() > secondFileName.length() && comparison < 0) {
-                    Path temporary = files.get(index);
-                    files.set(index, files.get(secondIndex));
-                    files.set(secondIndex, temporary);
+                if (!BackupFileManager.isSorted(firstFileName, secondFileName, fileNameLength)) {
+                    Collections.swap(files, index, secondIndex);
                 }
             }
         }
-        int index = 0;
-        while (index < files.size()) {
-            System.out.println(files.get(index).getFileName());
-            index++;
-        }
-
     }
 
+    /**
+     * Returns true if the two given file names are sorted by the age of the backup files. The age of the files can be detected in the name. Files
+     * ending with *.1, *.2 and so on are older than files with a full time stamp. Files with larger numbers (*.21, *.20, ..., *.11, *.10, *.9, ...)
+     * are older than files with smaller numbers (*.2, *.1). Files with a (numerically) larger time stamp are newer than files with a (numerically)
+     * smaller time stamp. So these files can be sorted lexicographically.
+     *
+     * @param firstName The name of the first file to compare
+     * @param secondName The name of the second file to compare
+     * @param maximumNameLength The length of file names that have a time stamp (to detect these files)
+     * @return true If the first file is older than the second one, otherwise false
+     */
+    private static boolean isSorted(String firstName, String secondName, int maximumNameLength) {
+        if (firstName.length() == maximumNameLength) {
+            if (secondName.length() == maximumNameLength) {
+                return firstName.compareTo(secondName) < 0;
+            } else {
+                return false;
+            }
+        } else {
+            if (secondName.length() == maximumNameLength) {
+                return true;
+            } else {
+                boolean longer = firstName.length() > secondName.length();
+                boolean sameLength = firstName.length() == secondName.length();
+                return longer || (sameLength && firstName.compareTo(secondName) > 0);
+            }
+        }
+    }
+
+    /**
+     * Returns a list with all backup files that match to the prefix (file name without backup suffix). The files are not sorted by age.
+     *
+     * @param path The directory to search for the backup files
+     * @param prefix The name of the original file (file name without backup suffix)
+     * @return The unsorted list of found backup files
+     */
     private static List<Path> getFilteredBackupFiles(String path, String prefix) {
         List<Path> allFiles = StorageProvider.getInstance().listFiles(path);
         List<Path> fittingFiles = new ArrayList<>();
@@ -174,6 +243,11 @@ public abstract class BackupFileManager {
         return fittingFiles;
     }
 
+    /**
+     * Returns the time stamp of "now" in a formatted form that can be directly used as suffix for backup file names.
+     *
+     * @return The formatted time stamp
+     */
     private static String getCurrentTimestamp() {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         return BackupFileManager.DATE_FORMAT.format(timestamp);
