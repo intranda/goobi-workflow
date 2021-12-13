@@ -77,7 +77,7 @@ public abstract class BackupFileManager {
             throw new IOException(messageFail);
         }
         String messageSuccess = Helper.getTranslation("backupCreated") + " " + path + backupFileName;
-        log.error(messageSuccess);
+        log.info(messageSuccess);
         //if (createFrontendMessage) {
         //    Helper.setMeldung(messageSuccess);
         //}
@@ -85,7 +85,7 @@ public abstract class BackupFileManager {
             BackupFileManager.removeTooOldBackupFiles(path, fileName, limit);
         } catch (Exception exception) {
             String messageFail = Helper.getTranslation("noOldBackupsDeleted");
-            log.error(messageFail);
+            log.warn(messageFail);
             if (createFrontendMessage) {
                 Helper.setFehlerMeldung(messageFail);
             }
