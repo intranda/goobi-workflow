@@ -1,7 +1,7 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -25,19 +25,25 @@
  */
 package org.goobi.io;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.*;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
+import de.sub.goobi.AbstractTest;
 
 //import org.apache.log4j.BasicConfigurator;
 
-public class BackupFileRotationTest {
+public class BackupFileRotationTest extends AbstractTest {
 
     public static final String BACKUP_FILE_NAME = "File-BackupFileRotationTest.xml";
     public static final String BACKUP_FILE_PATH = "./";

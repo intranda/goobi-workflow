@@ -15,12 +15,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.mock.MockProcess;
 import ugh.dl.Metadata;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
-public class MetadatumImplTest {
+public class MetadatumImplTest extends AbstractTest {
 
     private Prefs prefs;
     private Process process;

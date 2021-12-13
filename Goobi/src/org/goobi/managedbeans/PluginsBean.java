@@ -171,6 +171,6 @@ public class PluginsBean implements Serializable {
             return "badge-intranda-red";
         }
         //compared == 0, plugin Goobi version matches running version 
-        return "badge-intranda-ultralight";
+        return "badge-intranda-green";
     }
 }
