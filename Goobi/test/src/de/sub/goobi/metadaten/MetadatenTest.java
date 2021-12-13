@@ -30,6 +30,7 @@ import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.mock.MockProcess;
@@ -42,7 +43,7 @@ import ugh.dl.Prefs;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class, ExternalContext.class, Application.class, UIViewRoot.class })
-public class MetadatenTest {
+public class MetadatenTest extends AbstractTest {
 
     private Process process;
     private Prefs prefs;

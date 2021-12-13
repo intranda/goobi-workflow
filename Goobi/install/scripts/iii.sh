@@ -187,10 +187,10 @@ THUMBNAILBOXSIZE="150x150>"
 ## set to true if the files are stored on a CIFS share
 CIFS="false"
 
-## replace white spaces with underscores
-REPLACEWHITESPACES="false"
+## replace spaces with underscores
+REPLACEWHITESPACES="true"
 
-## replace all non [:alnum:.-] with underscores (including white spaces)
+## replace all non [:alnum:. -] with underscores (not including spaces)
 REPLACENONWORDCHARS="true"
 
 ## copies jpg files during the create_jpeg call to the derivatives folder. Set to 1 to enable. Default is 0
@@ -392,7 +392,7 @@ function prepare() {
 	## replace non-word and non "-" characters with underscores in filenames
 	if [ "$REPLACENONWORDCHARS" == "true" ]; then
 		echo "Replacing non-word and non "-" characters in filenames with underscores";
-		rename -E 's/[^[:alnum:].-]/_/g' *
+		rename -E 's/[^[:alnum:]. -]/_/g' *
 		if [ "$?" != "0" ]; then echo -e "ERROR: an error occured during preparation. Aborting!" >&2; exit 1; fi
 	fi
 

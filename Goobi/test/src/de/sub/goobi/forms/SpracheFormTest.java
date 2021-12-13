@@ -40,12 +40,13 @@ import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class, ExternalContext.class, UIViewRoot.class, Application.class })
-public class SpracheFormTest {
+public class SpracheFormTest extends AbstractTest {
 
     @Before
     public void setUp() throws Exception {
