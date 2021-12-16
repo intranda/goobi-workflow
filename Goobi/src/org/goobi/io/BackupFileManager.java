@@ -69,14 +69,14 @@ public abstract class BackupFileManager {
                 backupFileName = BackupFileManager.createBackupFile(path, fileName);
             }
         } catch (Exception exception) {
-            String messageFail = Helper.getTranslation("noBackupCreated");
+            String messageFail = Helper.getTranslation("noBackupCreated") + " (" + fileName + ").";
             log.error(messageFail);
             if (createFrontendMessage) {
                 Helper.setFehlerMeldung(messageFail);
             }
             throw new IOException(messageFail);
         }
-        String messageSuccess = Helper.getTranslation("backupCreated") + " " + path + backupFileName;
+        String messageSuccess = Helper.getTranslation("backupCreated") + " " + path + backupFileName + ".";
         log.info(messageSuccess);
         //if (createFrontendMessage) {
         //    Helper.setMeldung(messageSuccess);
