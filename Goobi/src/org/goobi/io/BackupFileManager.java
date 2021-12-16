@@ -90,7 +90,7 @@ public abstract class BackupFileManager {
                 Helper.setFehlerMeldung(messageFail);
             }
             // This exception should not be thrown because the important thing is that the backup file could be created.
-            // Code that calls this method should not ge confused with this thrown exception in case of success...
+            // Code that calls this method should not get confused with this thrown exception in case of success...
             //throw new IOException(messageFail);
         }
         return backupFileName;
