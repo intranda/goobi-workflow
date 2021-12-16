@@ -58,9 +58,9 @@
             showSummary="true"
             tooltip="true" />
             
-        <div class="alert alert-warning" jsf:rendered="#{ProzessverwaltungForm.myProzess.archivedImageFolders.size() gt 0}">
+        <div class="alert alert-warning" jsf:rendered="#{Metadaten.myProzess.archivedImageFolders.size() gt 0}">
             <h:outputText value="#{msgs.warningImageFoldersArchived}" escape="false" />
-            <ui:repeat var="folder" value="#{ProzessverwaltungForm.myProzess.archivedImageFolders}">#{folder}</ui:repeat>
+            <ui:repeat var="folder" value="#{Metadaten.myProzess.archivedImageFolders}">#{folder}</ui:repeat>
         </div>
             
         <ui:include src="includes/metseditor/metseditor_progress.xhtml" />
