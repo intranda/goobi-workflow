@@ -1122,6 +1122,22 @@ class StepMysqlHelper implements Serializable {
             }
         }
     }
+    
+    public static void removeUserFromAllSteps(User user) throws SQLException {
+    	if (user.getId() != null) {
+    		Connection connection = null;
+    		try {
+    			connection = MySQLHelper.getInstance().getConnection();
+    			String sql = "DELETE FROM schritteberechtigtebenutzer WHERE BenutzerID = "+ user.getId();
+    			
+    			new QueryRunner().update(connection, sql);
+    		} finally {
+    			if (connection != null) {
+    				MySQLHelper.closeConnection(connection);
+    			}
+    		}
+    	}
+    }
 
     public static List<String> getScriptsForStep(int stepId) throws SQLException {
         Connection connection = null;

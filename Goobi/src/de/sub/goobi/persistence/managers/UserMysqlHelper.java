@@ -524,6 +524,22 @@ class UserMysqlHelper implements Serializable {
             }
         }
     }
+    
+    public static void deleteAllUsergroupAssignments(User user) throws SQLException {
+    	if (user.getId() != null) {
+    		Connection connection = null;
+    		try {
+    			connection = MySQLHelper.getInstance().getConnection();
+                String sql = " DELETE FROM benutzergruppenmitgliedschaft WHERE BenutzerID =" + user.getId();
+                new QueryRunner().update(connection, sql);
+
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+    	}
+    }
 
     public static void deleteProjectAssignment(User user, int projektID) throws SQLException {
         if (user.getId() != null) {
@@ -531,6 +547,22 @@ class UserMysqlHelper implements Serializable {
             try {
                 connection = MySQLHelper.getInstance().getConnection();
                 String sql = "DELETE FROM projektbenutzer WHERE BenutzerID =" + user.getId() + " AND ProjekteID = " + projektID;
+
+                new QueryRunner().update(connection, sql);
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+        }
+    }
+    
+    public static void deleteAllProjectAssignments(User user) throws SQLException {
+        if (user.getId() != null) {
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                String sql = "DELETE FROM projektbenutzer WHERE BenutzerID =" + user.getId();
 
                 new QueryRunner().update(connection, sql);
             } finally {

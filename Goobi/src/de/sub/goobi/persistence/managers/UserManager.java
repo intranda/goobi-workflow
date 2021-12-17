@@ -84,15 +84,9 @@ public class UserManager implements IManager, Serializable {
 
     public static void hideUser(User o) throws DAOException {
         try {
-            for (Step step : StepMysqlHelper.getUserSchritte(o)) {
-                StepMysqlHelper.removeUserFromStep(step, o);
-            }
-            for (Usergroup ug : o.getBenutzergruppen()) {
-                UserMysqlHelper.deleteUsergroupAssignment(o, ug.getId());
-            }
-            for (Project p : o.getProjekte()) {
-                UserMysqlHelper.deleteProjectAssignment(o, p.getId());
-            }
+        	StepMysqlHelper.removeUserFromAllSteps(o);
+        	UserMysqlHelper.deleteAllUsergroupAssignments(o);
+            UserMysqlHelper.deleteAllProjectAssignments(o);
             UserMysqlHelper.hideUser(o);
         } catch (SQLException e) {
             logger.error("error while deleting User with id " + o.getId(), e);
