@@ -9,10 +9,20 @@
 		<ignoreVersion type="regex">.*[-_\.](alpha|Alpha|ALPHA|beta|Beta|BETA|rc|RC|M|EA)[-_\.]?[0-9]?.*</ignoreVersion>
 	</ignoreVersions>
     <rules>
+        <!-- updating to 2.4.0 currently breaks the file upload - leave at 2.3.8 for now -->
         <rule groupId="org.glassfish" artifactId="javax.faces">
             <ignoreVersions>
-                <!-- updating to 2.4.0 currently breaks the file upload - leave at 2.3.8 for now -->
                 <ignoreVersion>2.4.0</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+        <!-- The following rules exist, because updating to this major versions include changing the javax. to jakarta. namespaces.
+             Not all dependencies are compatible yet. Therefore excluding this is the best thing for now -->
+        <rule groupId="org.glassfish.jersey">
+            <ignoreVersions>
+                <ignoreVersion>3.0.0</ignoreVersion>
+                <ignoreVersion>3.0.1</ignoreVersion>
+                <ignoreVersion>3.0.2</ignoreVersion>
+                <ignoreVersion>3.0.3</ignoreVersion>
             </ignoreVersions>
         </rule>
     </rules>
