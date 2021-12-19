@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <ruleset comparisonMethod="maven"
-	 xmlns="http://mojo.codehaus.org/versions-maven-plugin/rule/2.0.0" 
+	 xmlns="http://mojo.codehaus.org/versions-maven-plugin/rule/2.0.0"
 	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	 xsi:schemaLocation="http://mojo.codehaus.org/versions-maven-plugin/rule/2.0.0 http://www.mojohaus.org/versions-maven-plugin/xsd/rule-2.0.0.xsd">
 
@@ -15,6 +15,14 @@
                 <ignoreVersion>2.4.0</ignoreVersion>
             </ignoreVersions>
         </rule>
+
+        <!-- updating to 4.3 breaks compiling -->
+        <rule groupId="avalon-framework" artifactId="avalon-framework-api">
+            <ignoreVersions>
+                <ignoreVersion>4.3</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+
         <!-- The following rules exist, because updating to this major versions include changing the javax. to jakarta. namespaces.
              Not all dependencies are compatible yet. Therefore excluding this is the best thing for now -->
         <rule groupId="org.glassfish.jersey">
