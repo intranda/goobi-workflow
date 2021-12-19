@@ -7,6 +7,30 @@
         the submodules -->
     <version>21.11.6-SNAPSHOT</version>
     <packaging>pom</packaging>
+
+    <modules>
+        <module>module-jar</module>
+        <module>module-war</module>
+    </modules>
+
+    <repositories>
+        <repository>
+            <id>intranda-public</id>
+            <url>https://nexus.intranda.com/repository/maven-public</url>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>intranda-releases</id>
+            <url>https://nexus.intranda.com/repository/maven-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>intranda-snapshots</id>
+            <url>https://nexus.intranda.com/repository/maven-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -26,26 +50,10 @@
         <poi.version>5.0.0</poi.version>
         <deltaspike.version>1.9.4</deltaspike.version>
     </properties>
-    <repositories>
-        <repository>
-            <id>intranda-public</id>
-            <url>https://nexus.intranda.com/repository/maven-public</url>
-        </repository>
-    </repositories>
-    <distributionManagement>
-        <repository>
-            <id>intranda-releases</id>
-            <url>https://nexus.intranda.com/repository/maven-releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>intranda-snapshots</id>
-            <url>https://nexus.intranda.com/repository/maven-snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-    <modules>
-        <module>module-jar</module>
-        <module>module-war</module>
-    </modules>
+
+
+
+
     <dependencies>
         <dependency>
             <groupId>de.intranda.ugh</groupId>
