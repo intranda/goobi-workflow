@@ -79,6 +79,7 @@
         <jnr-ffi.version>2.2.10</jnr-ffi.version>
         <junit.version>4.13.2</junit.version>
         <jsonpath.version>2.6.0</jsonpath.version>
+        <jwks-rsa.version>0.20.0</jwks-rsa.version>
         <log4j.version>2.17.0</log4j.version>
         <lombok.version>1.18.22</lombok.version>
         <metadata-extractor.version>2.16.0</metadata-extractor.version>
@@ -977,7 +978,7 @@
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>jwks-rsa</artifactId>
-            <version>0.13.0</version>
+            <version>${jwks-rsa.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sparkjava</groupId>
