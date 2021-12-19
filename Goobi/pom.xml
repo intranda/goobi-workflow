@@ -55,6 +55,7 @@
         <xmpcore.version>6.1.11</xmpcore.version>
         <aws.version>1.12.129</aws.version>
         <mimepull.version>1.9.15</mimepull.version>
+        <joda.version>2.10.13</joda.version>
 
         <jhove.version>1.20.1</jhove.version>
         <jackson.version>2.13.1</jackson.version>
@@ -693,7 +694,7 @@
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-            <version>2.10.6</version>
+            <version>${joda.version}</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
