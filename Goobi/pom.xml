@@ -61,6 +61,7 @@
         <sshj.version>0.32.0</sshj.version>
         <pdfbox.version>2.0.25</pdfbox.version>
         <weld.version>3.1.8.Final</weld.version>
+        <imageio-openjpeg.version>0.6.0</imageio-openjpeg.version>
 
         <jhove.version>1.20.1</jhove.version>
         <jackson.version>2.13.1</jackson.version>
@@ -147,7 +148,7 @@
         <dependency>
             <groupId>de.digitalcollections.imageio</groupId>
             <artifactId>imageio-openjpeg</artifactId>
-            <version>0.4.4</version>
+            <version>${imageio-openjpeg.version></version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
