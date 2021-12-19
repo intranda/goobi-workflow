@@ -74,6 +74,7 @@
         <jersey.version>2.35</jersey.version>
         <jhove.version>1.20.1</jhove.version>
         <joda.version>2.10.13</joda.version>
+        <jnr-ffi.version>2.2.10</jnr-ffi.version>
         <junit.version>4.13.2</junit.version>
         <jsonpath.version>2.6.0</jsonpath.version>
         <log4j.version>2.17.0</log4j.version>
@@ -718,6 +719,11 @@
             <version>1.2.23</version>
         </dependency>
         <dependency>
+            <groupId>com.github.jnr</groupId>
+            <artifactId>jnr-ffi</artifactId>
+            <version>${jnr-ffi.version}</version>
+        </dependency>
+        <dependency>
             <groupId>jfree</groupId>
             <artifactId>jfreechart</artifactId>
             <version>1.0.1</version>
@@ -731,11 +737,6 @@
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
             <version>4.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.jnr</groupId>
-            <artifactId>jnr-ffi</artifactId>
-            <version>2.1.15</version>
         </dependency>
         <dependency>
             <groupId>com.github.jnr</groupId>
