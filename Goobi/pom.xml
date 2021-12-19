@@ -82,6 +82,7 @@
         <xerces.version>2.12.1</xerces.version>
         <dom4j.version>2.1.3</dom4j.version>
         <xmlgraphics-commons.version>2.6</xmlgraphics-commons.version>
+        <java-jwt.version>3.18.2</java-jwt.version>
 
         <jhove.version>1.20.1</jhove.version>
         <jackson.version>2.13.1</jackson.version>
@@ -943,7 +944,7 @@
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
-            <version>3.10.3</version>
+            <version>${java-jwt.version}</version>
         </dependency>
         <dependency>
             <groupId>com.auth0</groupId>
