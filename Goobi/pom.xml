@@ -70,6 +70,7 @@
         <commons-net.version>3.8.0</commons-net.version>
         <xstream.version>1.4.18</xstream.version>
         <jsonpath.version>2.6.0</jsonpath.version>
+        <javassist.version>3.28.0-GA</javassist.version>
 
         <jhove.version>1.20.1</jhove.version>
         <jackson.version>2.13.1</jackson.version>
@@ -531,7 +532,7 @@
         <dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
-            <version>3.27.0-GA</version>
+            <version>${javassist.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.annotation</groupId>
