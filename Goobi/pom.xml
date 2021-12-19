@@ -50,6 +50,7 @@
 
         <aspectj.version>1.9.7</aspectj.version>
         <aws.version>1.12.129</aws.version>
+        <bouncycastle.version>1.70</bouncycastle.version>
         <cdi.version>2.0.SP1</cdi.version>
         <commons-cli.version>1.5.0</commons-cli.version>
         <commons-csv.version>1.9.0</commons-csv.version>
@@ -1242,7 +1243,7 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.61</version>
+            <version>${bouncycastle.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.zxing</groupId>
