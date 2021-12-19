@@ -44,6 +44,8 @@
 
         <slf4j.version>1.7.32</slf4j.version>
         <omnifaces.version>3.12</omnifaces.version>
+        <lombok.version>1.18.22</lombok.version>
+
         <jhove.version>1.20.1</jhove.version>
         <jackson.version>2.11.2</jackson.version>
         <jersey.version>2.35</jersey.version>
@@ -751,7 +753,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.12</version>
+            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
