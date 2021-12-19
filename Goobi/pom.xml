@@ -40,7 +40,7 @@
         <ugh-marc.version>1.3.0</ugh-marc.version>
         <ugh-lido.version>0.0.12</ugh-lido.version>
 
-        <swagger.version>2.1.3</swagger.version>
+        <swagger.version>2.1.11</swagger.version>
 
         <slf4j.version>1.7.32</slf4j.version>
         <omnifaces.version>3.12</omnifaces.version>
