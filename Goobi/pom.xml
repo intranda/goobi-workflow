@@ -57,6 +57,7 @@
         <mimepull.version>1.9.15</mimepull.version>
         <joda.version>2.10.13</joda.version>
         <zxing.version>3.4.1</zxing.version>
+        <sshj.version>0.32.0</sshj.version>
 
         <jhove.version>1.20.1</jhove.version>
         <jackson.version>2.13.1</jackson.version>
@@ -1266,7 +1267,7 @@
         <dependency>
             <groupId>com.hierynomus</groupId>
             <artifactId>sshj</artifactId>
-            <version>0.31.0</version>
+            <version>${sshj.version}</version>
         </dependency>
     </dependencies>
     <build>
