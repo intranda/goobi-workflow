@@ -44,6 +44,7 @@
         <!-- Be careful with updates here -->
         <avalon-framework.version>4.2.0</avalon-framework.version>
         <oscache.version>2.3</oscache.version>
+        <h2.version>1.4.200</h2.version>
 
 
         <swagger.version>2.1.11</swagger.version>
@@ -420,7 +421,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.200</version>
+            <version>${h2.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
