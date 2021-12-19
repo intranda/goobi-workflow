@@ -17,12 +17,18 @@
             </ignoreVersions>
         </rule>
 
-        <!-- updating to 4.3 breaks compiling -->
+        <!-- updating breaks compiling -->
         <rule groupId="avalon-framework" artifactId="avalon-framework-api">
             <ignoreVersions>
                 <ignoreVersion>4.3</ignoreVersion>
             </ignoreVersions>
         </rule>
+        <rule groupId="opensymphony" artifactId="oscache">
+            <ignoreVersions>
+                <ignoreVersion>2.4.1</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+
 
         <!-- The following rules exist, because updating to this major versions include changing the javax. to jakarta. namespaces.
              Not all dependencies are compatible yet. Therefore excluding this is the best thing for now -->
