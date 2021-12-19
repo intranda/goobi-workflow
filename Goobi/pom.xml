@@ -148,7 +148,7 @@
         <dependency>
             <groupId>de.digitalcollections.imageio</groupId>
             <artifactId>imageio-openjpeg</artifactId>
-            <version>${imageio-openjpeg.version></version>
+            <version>${imageio-openjpeg.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
