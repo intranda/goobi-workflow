@@ -26,5 +26,10 @@
                 <ignoreVersion>3.0.3</ignoreVersion>
             </ignoreVersions>
         </rule>
+        <rule groupId="org.jboss.weld.servlet" artifactId="weld-servlet-shaded">
+            <ignoreVersions>
+                <ignoreVersion type="regex">4.*</ignoreVersion>
+            </ignoreVersions>
+        </rule>
     </rules>
 </ruleset>
