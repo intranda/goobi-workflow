@@ -62,6 +62,7 @@
         <pdfbox.version>2.0.25</pdfbox.version>
         <weld.version>3.1.8.Final</weld.version>
         <imageio-openjpeg.version>0.6.0</imageio-openjpeg.version>
+        <cdi.version>2.0.SP1</cdi.version>
 
         <jhove.version>1.20.1</jhove.version>
         <jackson.version>2.13.1</jackson.version>
@@ -195,7 +196,7 @@
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
-            <version>2.0</version>
+            <version>${cdi.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
