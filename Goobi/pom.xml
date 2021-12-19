@@ -53,6 +53,7 @@
         <metadata-extractor.version>2.16.0</metadata-extractor.version>
         <freemarker.version>2.3.31</freemarker.version>
         <xmpcore.version>6.1.11</xmpcore.version>
+        <aws.version>1.12.129</aws.version>
 
         <jhove.version>1.20.1</jhove.version>
         <jackson.version>2.13.1</jackson.version>
@@ -160,7 +161,12 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
-            <version>1.11.914</version>
+            <version>${aws.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>jmespath-java</artifactId>
+            <version>${aws.version}</version>
         </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
@@ -662,11 +668,6 @@
             <groupId>jfree</groupId>
             <artifactId>jfreechart</artifactId>
             <version>1.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>jmespath-java</artifactId>
-            <version>1.11.865</version>
         </dependency>
         <dependency>
             <groupId>net.java.dev.jna</groupId>
