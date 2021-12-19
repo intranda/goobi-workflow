@@ -41,8 +41,12 @@
         <ugh-lido.version>0.0.12</ugh-lido.version>
         <normdataimporter.version>1.9.1</normdataimporter.version>
 
-        <swagger.version>2.1.11</swagger.version>
+        <!-- Be careful with updates here -->
+        <avalon-framework.version>4.2.0</avalon-framework.version>
+        <oscache.version>2.3</oscache.version>
 
+
+        <swagger.version>2.1.11</swagger.version>
         <slf4j.version>1.7.32</slf4j.version>
         <omnifaces.version>3.12</omnifaces.version>
         <lombok.version>1.18.22</lombok.version>
@@ -175,11 +179,10 @@
             <artifactId>aspectjweaver</artifactId>
             <version>${aspectj.version}</version>
         </dependency>
-        <!-- Be careful with updates here -->
         <dependency>
             <groupId>avalon-framework</groupId>
             <artifactId>avalon-framework-api</artifactId>
-            <version>4.2.0</version>
+            <version>${avalon-framework.version}</version>
         </dependency>
         <dependency>
             <groupId>com.amazonaws</groupId>
@@ -818,11 +821,10 @@
             <artifactId>poi-ooxml-full</artifactId>
             <version>${poi.version}</version>
         </dependency>
-        <!-- Be careful with updates here -->
         <dependency>
             <groupId>opensymphony</groupId>
             <artifactId>oscache</artifactId>
-            <version>2.3</version>
+            <version>${oscache.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
