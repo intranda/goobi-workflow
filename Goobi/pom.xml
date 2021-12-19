@@ -63,7 +63,7 @@
         <powermock.version>2.0.9</powermock.version>
         <httpclient.version>4.5.13</httpclient.version>
         <poi.version>5.0.0</poi.version>
-        <deltaspike.version>1.9.4</deltaspike.version>
+        <deltaspike.version>1.9.5</deltaspike.version>
     </properties>
 
 
