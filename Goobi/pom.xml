@@ -54,6 +54,7 @@
         <freemarker.version>2.3.31</freemarker.version>
         <xmpcore.version>6.1.11</xmpcore.version>
         <aws.version>1.12.129</aws.version>
+        <mimepull.version>1.9.15</mimepull.version>
 
         <jhove.version>1.20.1</jhove.version>
         <jackson.version>2.13.1</jackson.version>
@@ -773,7 +774,7 @@
         <dependency>
             <groupId>org.jvnet.mimepull</groupId>
             <artifactId>mimepull</artifactId>
-            <version>1.9.13</version>
+            <version>${mimepull.version}</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
