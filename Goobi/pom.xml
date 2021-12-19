@@ -59,6 +59,7 @@
         <zxing.version>3.4.1</zxing.version>
         <sshj.version>0.32.0</sshj.version>
         <pdfbox.version>2.0.25</pdfbox.version>
+        <weld.version>3.1.8.Final</weld.version>
 
         <jhove.version>1.20.1</jhove.version>
         <jackson.version>2.13.1</jackson.version>
@@ -109,7 +110,7 @@
         <dependency>
             <groupId>org.jboss.weld.servlet</groupId>
             <artifactId>weld-servlet-shaded</artifactId>
-            <version>3.0.5.Final</version>
+            <version>${weld.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.deltaspike.core</groupId>
