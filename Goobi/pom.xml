@@ -196,7 +196,7 @@
             <artifactId>avalon-framework-api</artifactId>
             <version>${avalon-framework.version}</version>
         </dependency>
-        </dependency>
+        <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-core</artifactId>
             <version>${aws.version}</version>
