@@ -63,6 +63,7 @@
         <weld.version>3.1.8.Final</weld.version>
         <imageio-openjpeg.version>0.6.0</imageio-openjpeg.version>
         <cdi.version>2.0.SP1</cdi.version>
+        <aspectj.version>1.9.7</aspectj.version>
 
         <jhove.version>1.20.1</jhove.version>
         <jackson.version>2.13.1</jackson.version>
@@ -154,12 +155,12 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>1.9.6</version>
+            <version>${aspectj.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
-            <version>1.9.6</version>
+            <version>${aspectj.version}</version>
         </dependency>
         <!-- Be careful with updates here -->
         <dependency>
