@@ -74,6 +74,7 @@
         <el-impl.version>2.2.1-b05</el-impl.version>
         <reflections.version>0.10.2</reflections.version>
         <xbean-spring.version>4.20</xbean-spring.version>
+        <xerces.version>2.12.1</xerces.version>
 
         <jhove.version>1.20.1</jhove.version>
         <jackson.version>2.13.1</jackson.version>
@@ -906,7 +907,7 @@
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
-            <version>2.9.1</version>
+            <version>${xerces.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>xml-apis</groupId>
