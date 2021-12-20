@@ -9,12 +9,25 @@
 	<composite:interface />
 
 	<composite:implementation>
+		<script type="text/javascript">
+        	function switchExpanded(id){
+        		console.log("called by: "+id);
+				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				console.log(x)
+				if (x == "true"){
+					x = "false"
+				} else {
+					x = "true"
+				}
+				document.getElementById(id).setAttribute("aria-expanded", x);
+        	}
+        </script>
 		<div class="dataTables_filter">
 			<div id="filterTableColumns" class="btn-group" data-toggle="tooltip" title="#{msgs.selectTableColumns}">
 				<!-- show columns -->
 				<div class="dropdown">
                 <button id="columnDropdown" type="button" aria-label="#{msgs.selectTableColumns}" class="btn dropdown-toggle searchfieldbuttongroup focusable" 
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="switchExpanded('columnDropdown')"> 
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="switchExpanded(this.id)"> 
                     <span class="fa fa-columns margin-right-5" /> <span class="caret"></span>
                 </button>
 				<ul class="dropdown-menu">
@@ -64,7 +77,7 @@
 
 			<div class="btn-group" data-toggle="tooltip" title="#{msgs.anzeigeAnpassen}">
                 <div class="dropdown">
-				<button type="button" aria-haspopup="true" aria-label="#{msgs.anzeigeAnpassen}" class="btn dropdown-toggle searchfieldbuttongroup focusable" data-toggle="dropdown"> 
+				<button id="anzeigeAnpassenDropdown" type="button" aria-haspopup="true" aria-expanded="false" onclick="switchExpanded(this.id)" aria-label="#{msgs.anzeigeAnpassen}" class="btn dropdown-toggle searchfieldbuttongroup focusable" data-toggle="dropdown"> 
                     <span class="fa fa-wrench margin-right-5" />
 					<span class="caret"></span>
 				</button>
@@ -103,7 +116,7 @@
 							<h:outputText value="#{msgs.nurOffeneAufgabenAnzeigen}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.nurOffeneSchritte}" value="#{not AktuelleSchritteForm.nurOffeneSchritte}" />
 							<x:updateActionListener property="#{AktuelleSchritteForm.nurEigeneSchritte}" value="#{false}" />
-						</button>
+						</button>'columnDropdown'
 					</li>
 					<li>
 						<!-- hide tasks from other users --> 
@@ -118,15 +131,5 @@
                 </div>
 			</div>
 		</div>
-		<script type="text/javascript">
-        	function switchExpanded(id){
-				var x = document.getElementById(id).getAttribute("aria-expanded"); 
-				if (x == "true"){
-					x = "false"
-				} else {
-					x = "true"
-				}
-        	}
-        </script>
 	</composite:implementation>
 </ui:composition>
