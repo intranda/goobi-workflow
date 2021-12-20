@@ -55,7 +55,9 @@ public class GoobiScriptMetadataBackup extends AbstractIGoobiScript implements I
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         String path = config.getMetadataFolder() + process.getId() + "/";
         int maximumNumberOfBackupFiles = config.getNumberOfMetaBackups();
-        String warning = " does not exist! No backup created.";
+        String warning1 = "Could not create backup file. ";
+        String warning2 = " does not exist.";
+        String success = "Created backup successfully.";
 
         String metaFileName = "meta.xml";
         boolean existsMetaFile = StorageProvider.getInstance().isFileExists(Paths.get(path + metaFileName));
@@ -63,9 +65,12 @@ public class GoobiScriptMetadataBackup extends AbstractIGoobiScript implements I
 
         if (existsMetaFile) {
             metaBackupResult = GoobiScriptMetadataBackup.createBackup(path, metaFileName, maximumNumberOfBackupFiles);
+            if (metaBackupResult.getResultType() == GoobiScriptResultType.OK) {
+                metaBackupResult.setResultMessage(success);
+            }
         } else {
             metaBackupResult = new GoobiScriptResult(null, null, null, null, 0);
-            metaBackupResult.setResultMessage(metaFileName + warning);
+            metaBackupResult.setResultMessage(warning1 + metaFileName + warning2);
             metaBackupResult.setResultType(GoobiScriptResultType.ERROR);
         }
 
@@ -77,11 +82,11 @@ public class GoobiScriptMetadataBackup extends AbstractIGoobiScript implements I
             metaAnchorBackupResult = GoobiScriptMetadataBackup.createBackup(path, metaAnchorFileName, maximumNumberOfBackupFiles);
         } else {
             metaAnchorBackupResult = new GoobiScriptResult(null, null, null, null, 0);
-            metaAnchorBackupResult.setResultMessage(metaAnchorFileName + warning);
+            metaAnchorBackupResult.setResultMessage(warning1 + metaAnchorFileName + warning2);
             metaAnchorBackupResult.setResultType(GoobiScriptResultType.OK);
         }
 
-        result.setResultMessage(metaBackupResult.getResultMessage() + " " + metaAnchorBackupResult.getResultMessage());
+        result.setResultMessage(metaBackupResult.getResultMessage());
         if (metaBackupResult.getResultType() == GoobiScriptResultType.OK && metaAnchorBackupResult.getResultType() == GoobiScriptResultType.OK) {
             result.setResultType(GoobiScriptResultType.OK);
         } else {

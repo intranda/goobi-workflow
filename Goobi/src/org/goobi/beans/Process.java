@@ -1079,24 +1079,39 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             throws IOException, InterruptedException, SwapException, DAOException, WriteException, PreferencesException {
 
         String path = this.getProcessDataDirectory();
-        String metadataFileName = "meta.xml";
-        Path metadataFile = Paths.get(path + metadataFileName);
-
         int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
-        String backupFileName = Process.createBackup(path, metadataFileName, maximumNumberOfBackups);
-        Path backupFile = Paths.get(path + backupFileName);
+
+        // Backup meta.xml
+        String metaFileName = "meta.xml";
+        Path metaFile = Paths.get(path + metaFileName);
+        String backupMetaFileName = Process.createBackup(path, metaFileName, maximumNumberOfBackups);
+        Path backupMetaFile = Paths.get(path + backupMetaFileName);
+
+        // Backup meta_anchor.xml
+        String metaAnchorFileName = "meta_anchor.xml";
+        Path metaAnchorFile = Paths.get(path + metaAnchorFileName);
+        String backupMetaAnchorFileName = Process.createBackup(path, metaAnchorFileName, maximumNumberOfBackups);
+        Path backupMetaAnchorFile = Paths.get(path + backupMetaAnchorFileName);
 
         Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
 
         synchronized (xmlWriteLock) {
             ff.setDigitalDocument(gdzfile.getDigitalDocument());
             try {
-                ff.write(path + metadataFileName);
+                ff.write(path + metaFileName);
             } catch (UGHException ughException) {
-                //error writing. restore backup and rethrow error
-                if ((!Files.exists(metadataFile) || Files.size(metadataFile) == 0) && Files.exists(backupFile)) {
-                    Files.copy(backupFile, metadataFile, StandardCopyOption.REPLACE_EXISTING);
+                // Error while writing meta.xml or meta_anchor.xml. Restore backups and rethrow error
+
+                // Restore meta.xml
+                if ((!Files.exists(metaFile) || Files.size(metaFile) == 0) && Files.exists(backupMetaFile)) {
+                    Files.copy(backupMetaFile, metaFile, StandardCopyOption.REPLACE_EXISTING);
                 }
+
+                // Restore meta_anchor.xml
+                if ((!Files.exists(metaAnchorFile) || Files.size(metaAnchorFile) == 0) && Files.exists(backupMetaAnchorFile)) {
+                    Files.copy(backupMetaAnchorFile, metaAnchorFile, StandardCopyOption.REPLACE_EXISTING);
+                }
+
                 throw ughException;
             }
         }

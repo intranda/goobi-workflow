@@ -41,8 +41,9 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public abstract class BackupFileManager {
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
-    private static final int SUFFIX_LENGTH = "yyyy-MM-dd-HH-mm-ss-SSS".length();
+    private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd-HHmmssSSS";
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(BackupFileManager.TIMESTAMP_FORMAT);
+    private static final int TIMESTAMP_LENGTH = BackupFileManager.TIMESTAMP_FORMAT.length();
 
     /**
      * Creates a backup and tidies up the too old files (depending on the limit parameter). It returns the name of the backup file because it contains
@@ -69,7 +70,7 @@ public abstract class BackupFileManager {
                 backupFileName = BackupFileManager.createBackupFile(path, fileName);
             }
         } catch (Exception exception) {
-            String messageFail = Helper.getTranslation("noBackupCreated") + " (" + fileName + ").";
+            String messageFail = Helper.getTranslation("noBackupCreated");
             log.error(messageFail);
             if (createFrontendMessage) {
                 Helper.setFehlerMeldung(messageFail);
@@ -177,7 +178,7 @@ public abstract class BackupFileManager {
 
         // length of example: meta.xml.2021-12-09-13-14-45-203 = 8 + 1 + 23 = 32
         // the length is needed to detect whether a backup file contains a time stamp or is a .1, .2, ... file
-        int fileNameLength = fileName.length() + 1 + BackupFileManager.SUFFIX_LENGTH;
+        int fileNameLength = fileName.length() + 1 + BackupFileManager.TIMESTAMP_LENGTH;
 
         for (int secondIndex = 1; secondIndex < files.size(); secondIndex++) {
             for (int index = 0; index < secondIndex; index++) {
