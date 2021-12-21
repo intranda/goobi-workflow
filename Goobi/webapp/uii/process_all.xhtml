@@ -192,6 +192,12 @@
 				                                        value="#{msgs.vorgangsdatum}"
 				                                        rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}"
 				                                        ajaxRender=":myform" />
+				                                    <!-- Ruleset -->
+				                                    <intranda:columnheader
+														addClass="tableColumnOverflow maxWidth120"
+				                                        value="#{msgs.regelsatz}"
+				                                        rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}"
+				                                        sortable="false"/>
 				                                    <!-- Status -->
 													<intranda:columnheader
 														addClass="tableColumnOverflow width200"
@@ -461,6 +467,10 @@
 														<h:outputText value="#{item.erstellungsdatumAsString}">
 															<!-- <f:convertDateTime locale="#{SpracheForm.locale}" type="date" dateStyle="medium"/> -->
 														</h:outputText>
+													</td>
+													<!-- Ruleset -->
+													<td jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}">
+														<h:outputText value="#{item.regelsatz.titel}" />
 													</td>
 													<!-- Status -->
 													<td>

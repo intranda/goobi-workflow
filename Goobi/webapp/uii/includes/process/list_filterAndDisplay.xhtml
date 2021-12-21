@@ -96,6 +96,20 @@
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}" />
                             </button>
                         </li>
+                        <li>
+                        	<!-- Regelsatz -->
+                        	<button
+                                jsf:action="#{NavigationForm.Reload}"
+                                jsf:id="showProcessRuleset"
+                                class="dropdown-item">
+                                <i
+                                    class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                                <h:outputText value="#{msgs.regelsatz}" />
+                                <x:updateActionListener
+                                    property="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}"
+                                    value="#{not ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}" />
+                            </button>
+                        </li>
                         <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
                             <!-- Batch ID --> <button
                                 jsf:action="#{NavigationForm.Reload}"
