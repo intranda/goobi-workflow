@@ -67,14 +67,25 @@ public class PluginsBean implements Serializable {
     }
 
     public static Map<String, List<PluginInfo>> getPluginsFromFS() {
-        Set<String> stepPluginsInUse = StepManager.getDistinctStepPluginTitles();
         Map<String, List<PluginInfo>> plugins = new TreeMap<>();
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         Path pluginsFolder = Paths.get(config.getPluginFolder());
-        try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(pluginsFolder)) {
+        Path libFolder = Paths.get(config.getLibFolder());
+        plugins.putAll(getPluginsFromPath(pluginsFolder));
+        plugins.putAll(getPluginsFromPath(libFolder));
+        
+        return plugins;
+    }
+    
+    //get plugins from any folder (including subfolders or not)
+    public static Map<String, List<PluginInfo>> getPluginsFromPath(Path pluginsFolder){
+    	Set<String> stepPluginsInUse = StepManager.getDistinctStepPluginTitles();
+        Map<String, List<PluginInfo>> plugins = new TreeMap<>();
+    	try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(pluginsFolder)) {
+    		List<PluginInfo> dirList = new ArrayList<>();
             for (Path pluginDir : dirStream) {
                 if (Files.isDirectory(pluginDir)) {
-                    List<PluginInfo> dirList = new ArrayList<>();
+                	dirList = new ArrayList<>();
                     try (DirectoryStream<Path> pluginStream = Files.newDirectoryStream(pluginDir)) {
                         for (Path pluginP : pluginStream) {
                             if (pluginP.getFileName().toString().endsWith("jar")) {
@@ -83,12 +94,19 @@ public class PluginsBean implements Serializable {
                         }
                     }
                     plugins.put(pluginDir.getFileName().toString(), dirList);
+                }else {																//if plugin is directly inside directory
+                    if (pluginDir.getFileName().toString().endsWith("jar")) {
+                        dirList.add(getPluginInfo(pluginDir.toAbsolutePath(), stepPluginsInUse));
+                    }
                 }
+            }
+            if(!dirList.isEmpty()) {												//if there were plugins inside the directory dirList will not be empty
+            	plugins.put(pluginsFolder.getFileName().toString(), dirList);		// add the plugins to the list
             }
         } catch (IOException e) {
             log.error(e);
         }
-        return plugins;
+    	return plugins;
     }
 
     private static PluginInfo getPluginInfo(Path pluginP, Set<String> stepPluginsInUse) throws ZipException, IOException {

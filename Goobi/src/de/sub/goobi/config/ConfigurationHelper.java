@@ -264,6 +264,10 @@ public class ConfigurationHelper implements Serializable {
     public String getPluginFolder() {
         return getGoobiFolder() + "plugins/";
     }
+    
+    public String getLibFolder() {
+    	return getGoobiFolder() + "lib/";
+    }
 
     public String getPathForLocalMessages() {
         return getGoobiFolder() + "config/";
