@@ -312,6 +312,11 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 45.");
                 }
                 updateToVersion45();
+            case 45:
+            	if(logger.isTraceEnabled()) {
+            		logger.trace("Update database to version 46.");
+            	}
+            	updateToVersion46();
             default:
 
                 // this has to be the last case
@@ -321,6 +326,12 @@ public class DatabaseVersion {
                 }
         }
 
+    }
+    
+    private static void updateToVersion46() {
+    	if(!checkIfColumnExists("benutzer", "displayrulesetcolumn")) {
+    		DatabaseVersion.runSql("ALTER TABLE benutzer ADD COLUMN displayrulesetcolumn boolean default false");
+    	}
     }
 
     private static void updateToVersion45() {

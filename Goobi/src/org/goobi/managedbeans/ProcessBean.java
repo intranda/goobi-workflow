@@ -352,6 +352,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             anzeigeAnpassen.put("institution", false);
             this.anzeigeAnpassen.put("processRuleset",false);
         }
+        System.out.println(this.anzeigeAnpassen);
         DONEDIRECTORYNAME = ConfigurationHelper.getInstance().getDoneDirectoryName();
 
         searchField.add(new SearchColumn(order++));

@@ -174,7 +174,7 @@ class UserMysqlHelper implements Serializable {
                 String propNames =
                         "Vorname, Nachname, login, IstAktiv, Standort, metadatensprache, css, mitMassendownload, Tabellengroesse, sessiontimeout, ldapgruppenID, isVisible, ldaplogin,"
                                 + "displayAutomaticTasks, displayBatchColumn, displayDeactivatedProjects, displayFinishedProcesses, displayIdColumn, displayLocksColumn, "
-                                + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks, email, shortcut, metseditortime, "
+                                + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displayRulesetColumn displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks, email, shortcut, metseditortime, "
                                 + "metsDisplayHierarchy, metsDisplayPageAssignments, metsDisplayTitle, metsLinkImage, displayOtherTasks, encryptedPassword, salt, metsDisplayProcessID, displayGridView, displayMetadataColumn, "
                                 + "displayThumbColumn, customColumns, customCss, mailNotificationLanguage, institution_id, superadmin, displayInstitutionColumn, dashboardPlugin, ssoId"
                                 + ", processses_sort_field, processes_sort_order, tasks_sort_field, tasks_sort_order, displayLastEditionDate, displayLastEditionUser, displayLastEditionTask, dashboard_configuration ";
@@ -188,7 +188,7 @@ class UserMysqlHelper implements Serializable {
                                                         ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), visible, ro.getLdaplogin() == null ? null : ro.getLdaplogin(),
                                                                 ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
                                                                 ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
-                                                                ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
+                                                                ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn() , ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
                                                                 ro.isHideCorrectionTasks(), ro.getEmail() == null ? null : ro.getEmail(),
                                                                         ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
                                                                                 ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
@@ -239,6 +239,7 @@ class UserMysqlHelper implements Serializable {
                 sql.append("displayOnlyOpenTasks =  ?, ");
                 sql.append("displayOnlySelectedTasks =  ?, ");
                 sql.append("displayProcessDateColumn =  ?, ");
+                sql.append("displayRulesetColumn = ?, ");
                 sql.append("displaySelectBoxes =  ?, ");
                 sql.append("displaySwappingColumn =  ?, ");
                 sql.append("hideCorrectionTasks =  ?, ");
@@ -279,7 +280,7 @@ class UserMysqlHelper implements Serializable {
                                                         ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), visible, ro.getLdaplogin() == null ? null : ro.getLdaplogin(),
                                                                 ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
                                                                 ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
-                                                                ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
+                                                                ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
                                                                 ro.isHideCorrectionTasks(), ro.getEmail() == null ? null : ro.getEmail(),
                                                                         ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
                                                                                 ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
