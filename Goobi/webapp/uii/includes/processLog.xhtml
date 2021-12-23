@@ -16,7 +16,7 @@
             <div class="box-title">
 
                 <h3>
-                    <i class="fa fa-comment"></i>
+                    <i class="fa fa-list-ol"></i>
                     <h:outputText value="#{msgs.processLog}" rendered="#{NavigationForm.uiStatus['toggleProcessLog'] != 'fileUpload'}" />
                      <h:outputText value="#{msgs.process_log_fileView}" rendered="#{NavigationForm.uiStatus['toggleProcessLog']== 'fileUpload'}"/>
                 </h3>
@@ -38,14 +38,27 @@
                     </button>
 
                     <button
-                        jsf:id="adapt_display"
+                        jsf:id="adapt_display_folders"
                         data-toggle="tooltip"
                         title="#{NavigationForm.uiStatus['toggleProcessLog']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         aria-label="#{NavigationForm.uiStatus['toggleProcessLog']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
                         class="btn btn-mini pull-right margin-right-10">
-                        <i class="fa #{NavigationForm.uiStatus['toggleProcessLog']== 'fileUpload' ? 'fa-comment ' : 'fa-folder-open-o'}" />
+                        <i class="fa #{NavigationForm.uiStatus['toggleProcessLog']== 'fileUpload' ? 'fa-list-ol ' : 'fa-folder-open-o'}" />
                         <f:setPropertyActionListener
                             value="#{NavigationForm.uiStatus['toggleProcessLog']=='' or NavigationForm.uiStatus['toggleProcessLog']== null ? 'fileUpload' : '' }"
+                            target="#{NavigationForm.uiStatus['toggleProcessLog']}" />
+                    </button>
+                    
+                    
+                    <button
+                        jsf:id="adapt_display_comments"
+                        data-toggle="tooltip"
+                        title="#{NavigationForm.uiStatus['toggleProcessLog']== 'imageComments' ? msgs.process_log_regularView : msgs.comments}"
+                        aria-label="#{NavigationForm.uiStatus['toggleProcessLog']== 'imageComments' ? msgs.process_log_regularView : msgs.comments}"
+                        class="btn btn-mini pull-right margin-right-10">
+                        <i class="fa #{NavigationForm.uiStatus['toggleProcessLog']== 'imageComments' ? 'fa-comment' : 'fa-comment'}" />
+                        <f:setPropertyActionListener
+                            value="#{NavigationForm.uiStatus['toggleProcessLog']=='' or NavigationForm.uiStatus['toggleProcessLog']== null ? 'imageComments' : '' }"
                             target="#{NavigationForm.uiStatus['toggleProcessLog']}" />
                     </button>
 
@@ -367,6 +380,9 @@
                     </h:panelGroup>
 
                        
+                </ui:fragment>
+                <ui:fragment rendered="#{NavigationForm.uiStatus['toggleProcessLog']=='imageComments'}">
+                    <ui:include src="imageComments.xhtml" />
                 </ui:fragment>
 
             </div>

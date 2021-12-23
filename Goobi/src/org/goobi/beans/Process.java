@@ -2344,6 +2344,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
         }
 
+        System.out.println(lstComments);
         return lstComments;
     }
 
