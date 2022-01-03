@@ -41,7 +41,12 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public abstract class BackupFileManager {
+    /**
+     * WARNING: Make sure that the TIMESTAMP_REGEX matches to the TIMESTAMP_FORMAT! Otherwise the backup manager does not find and delete the correct
+     * old files.
+     */
     private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd-HHmmssSSS";
+    private static final String TIMESTAMP_REGEX = "\\d{4}-\\d{2}-\\d{2}-\\d{9}";
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(BackupFileManager.TIMESTAMP_FORMAT);
     private static final int TIMESTAMP_LENGTH = BackupFileManager.TIMESTAMP_FORMAT.length();
 
@@ -236,7 +241,14 @@ public abstract class BackupFileManager {
         int index = 0;
         while (index < allFiles.size()) {
             String name = allFiles.get(index).getFileName().toString();
-            if (name.startsWith(prefix) && name.length() > prefix.length()) {
+            if (!name.startsWith(prefix) || name.length() <= prefix.length()) {
+                index++;
+                continue;
+            }
+            String backupIdentifier = name.substring(prefix.length() + 1, name.length());// +1 is the dot between file name and backup identifier
+            boolean isOldBackupFile = backupIdentifier.matches("[0-9]*");// any valid integer
+            boolean isNewBackupFile = backupIdentifier.matches(BackupFileManager.TIMESTAMP_REGEX); // The time stamp
+            if (isOldBackupFile || isNewBackupFile) {
                 fittingFiles.add(allFiles.get(index));
             }
             index++;
