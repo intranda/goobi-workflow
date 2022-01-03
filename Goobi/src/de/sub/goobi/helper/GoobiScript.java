@@ -62,6 +62,10 @@ public class GoobiScript {
      */
     public String execute(List<Integer> processes, String allScripts, GoobiScriptManager gsm) {
         List<Map<String, String>> scripts = parseGoobiscripts(allScripts);
+        return this.execute(processes, scripts, gsm);
+    }
+
+    public String execute(List<Integer> processes, List<Map<String, String>> scripts, GoobiScriptManager gsm) {
         if (scripts == null) {
             return "";
         }
