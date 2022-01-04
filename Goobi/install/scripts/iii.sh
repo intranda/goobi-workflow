@@ -1718,6 +1718,7 @@ case "$ACTION" in
       * create_tiffjpeg       - Convert all tiff and jpg files to tiff/jpeg w/ target folder
 	  * compress_jpeg_if_uncompresed  - Convert TIFF files to TIFF/JPEG if they are uncompressed";
 		echo
+		exit 1
 	;;
 
 esac
