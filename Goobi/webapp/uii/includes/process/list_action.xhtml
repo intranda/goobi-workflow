@@ -111,8 +111,10 @@
                                         </li>
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{LoginForm.hasAnyGoobiScriptRole and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
+                                    	<div jsf:id="goobiScriptMessages">
                                         <h:messages for="goobiScriptfield" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
                                         <h:messages for="goobiScriptPopup" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" styleClass="messages" />
+                                        </div>
                                         <li class="action-li">
                                             <button jsf:id="expandbutton5" jsf:action="#{NavigationForm.Reload}" class="button-link blue">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-cogs fa-lg width-40" />
@@ -144,7 +146,7 @@
 	                                                    <ui:fragment rendered="#{ProzessverwaltungForm.anzeigeAnpassen['selectionBoxes']}">
 		                                                    <!-- GoobiScript für selektierte Treffer der Seite - modal rendern  -->
 		                                                    <button jsf:id="selectedModalRender" class="expandbutton text_head" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptSelection}" pt:data-modalid="goobiScriptModal">
-		                                                    	<f:ajax render="goobiScriptModalWrapper" execute="goobiScriptfield" onevent="renderModal"/>
+		                                                    	<f:ajax render="goobiScriptModalWrapper goobiScriptMessages" execute="goobiScriptfield" onevent="renderModal"/>
 		                                                    	<span class="btn margin-right-10 fa fa-angle-right" />
 		                                                       <h:outputText value="#{msgs.auswahl2}" />
 		                                                    </button>
@@ -153,7 +155,7 @@
 	                                                <li class="action-intent-li">
 	                                                    <!-- GoobiScript für Treffer der Seite - modal rendern  -->
 	                                                    <button jsf:id="resultsModalRender" class="expandbutton text_head" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptPage}" pt:data-modalid="goobiScriptModal">
-	                                                    	<f:ajax render="goobiScriptModalWrapper" execute="goobiScriptfield" onevent="renderModal"/>
+	                                                    	<f:ajax render="goobiScriptModalWrapper goobiScriptMessages" execute="goobiScriptfield" onevent="renderModal"/>
 	                                                    	<span class="btn margin-right-10 fa fa-angle-right" />
 	                                                      		<h:outputText value="#{msgs.trefferDieserSeite}" />
 	                                                    </button>
@@ -161,7 +163,7 @@
 	                                                <li class="action-intent-li">
 	                                                    <!-- GoobiScript für alle Treffer - modal rendern  -->
 	                                                    <button jsf:id="allModalRender" class="expandbutton text_head" jsf:action="#{ProzessverwaltungForm.prepareGoobiScriptHits}" pt:data-modalid="goobiScriptModal">
-	                                                    	<f:ajax render="goobiScriptModalWrapper" execute="goobiScriptfield" onevent="renderModal"/>
+	                                                    	<f:ajax render="goobiScriptModalWrapper goobiScriptMessages" execute="goobiScriptfield" onevent="renderModal"/>
 	                                                    	<span class="btn margin-right-10 fa fa-angle-right" />
 	                                                      		<h:outputText value="#{msgs.gesamtesTrefferset}" />
 	                                                    </button>
@@ -362,10 +364,9 @@
                                     </h:panelGroup>
 
                                 </ul>
-<!--                             </h:form> -->
                             
                             <h:panelGroup id="goobiScriptModalWrapper" prependId="false" rendered="#{LoginForm.hasAnyGoobiScriptRole and ProzessverwaltungForm.modusAnzeige=='aktuell'  and ProzessverwaltungForm.paginator.totalResults > 0 }">
-	                            <h:panelGroup styleClass="modal fade" layout="block" id="goobiScriptModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	                            <h:panelGroup styleClass="modal fade" layout="block" id="goobiScriptModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" rendered="#{ProzessverwaltungForm.parsedGoobiScripts != null}">
 		                            <div class="modal-dialog" role="document">
 		                                <div class="modal-content">
 		                                    <div class="modal-header">
@@ -390,10 +391,15 @@
 		                                    </div>
 		                                    <div class="modal-footer">
 		
+												<!--
 												<a class="btn pull-left" title="#{msgs.cancel}" data-dismiss="modal">
 		                                            <h:outputText value="#{msgs.cancel}" />
 		                                        </a>
+		                                        -->
 		                                        
+		                                        <button jsf:id="goobiScriptCancelButton" title="#{msgs.goobiScriptAusfuehren}" jsf:rel="tooltip" class="btn pull-left">
+		                                            <h:outputText value="#{msgs.cancel} " />
+		                                        </button>
 		                                        <button jsf:action="#{ProzessverwaltungForm.runGoobiScript}" jsf:id="goobiScriptConfirmButton" title="#{msgs.goobiScriptAusfuehren}" jsf:rel="tooltip" class="btn btn-red" onclick="preventDoubleSubmit(this);">
 		                                            <i class="fa fa-cogs margin-right-10"></i>
 		                                            <h:outputText value="#{msgs.goobiScriptAusfuehren} " />

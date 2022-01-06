@@ -1734,8 +1734,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     public void prepareGoobiScriptHits() {
         this.goobiScriptHitsCount = this.paginator.getIdList().size();
         this.goobiScriptMode = "hits";
-        this.parsedGoobiScripts = GoobiScript.parseGoobiscripts(this.goobiScript);
-        this.renderHitNumberImage();
+        this.parseGoobiScripts();
     }
 
     /**
@@ -1744,8 +1743,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     public void prepareGoobiScriptPage() {
         this.goobiScriptHitsCount = paginator.getList().size();
         this.goobiScriptMode = "page";
-        this.parsedGoobiScripts = GoobiScript.parseGoobiscripts(this.goobiScript);
-        this.renderHitNumberImage();
+        this.parseGoobiScripts();
     }
 
     /**
@@ -1754,8 +1752,16 @@ public class ProcessBean extends BasicBean implements Serializable {
     public void prepareGoobiScriptSelection() {
         this.goobiScriptHitsCount = (int) paginator.getList().stream().filter(p -> ((Process) p).isSelected()).count();
         this.goobiScriptMode = "selection";
+        this.parseGoobiScripts();
+    }
+
+    private void parseGoobiScripts() {
         this.parsedGoobiScripts = GoobiScript.parseGoobiscripts(this.goobiScript);
-        this.renderHitNumberImage();
+        if (this.parsedGoobiScripts != null) {
+            this.renderHitNumberImage();
+        } else {
+            Helper.setFehlerMeldung("goobiScriptfield", "", "Can't parse GoobiScript. Please check your Syntax. Only valid YAML is allowed.");
+        }
     }
 
     private boolean checkSecurityResult() {
