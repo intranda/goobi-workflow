@@ -6,6 +6,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -52,6 +53,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.zip.DataFormatException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -184,15 +187,21 @@ public class ExportMets {
         Path targetDir = Files.createTempDirectory("mets_export"); //only save file in /tmp/ directory
 
         String targetFileName = targetDir.resolve(atsPpnBand + "_mets.xml").toAbsolutePath().toString();
-        writeMetsFile(process, targetFileName, gdzfile, false);
+        writeMetsFile(process, targetFileName, gdzfile, false, true);
 
         //download File
-        try (InputStream in = StorageProvider.getInstance().newInputStream(Paths.get(targetFileName))) {
+        //check if it is a zip:
+        Path targetFile = Paths.get(targetFileName);
+        if (!StorageProvider.getInstance().isFileExists(targetFile)) {
+            targetFile = Paths.get(targetFileName.replace(".xml", ".zip"));
+        }
+
+        try (InputStream in = StorageProvider.getInstance().newInputStream(targetFile)) {
             FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
             ExternalContext ec = facesContext.getExternalContext();
             ec.responseReset();
-            ec.setResponseHeader("Content-Disposition", "attachment; filename=" + Paths.get(targetFileName).getFileName());
-            ec.setResponseContentLength((int) StorageProvider.getInstance().getFileSize(Paths.get(targetFileName)));
+            ec.setResponseHeader("Content-Disposition", "attachment; filename=" + targetFile.getFileName());
+            ec.setResponseContentLength((int) StorageProvider.getInstance().getFileSize(targetFile));
 
             IOUtils.copy(in, ec.getResponseOutputStream());
 
@@ -236,8 +245,8 @@ public class ExportMets {
         String atsPpnBand = myProzess.getTitel();
         Fileformat gdzfile = myProzess.readMetadataFile();
 
-        //String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
-        String zielVerzeichnis = Files.createTempDirectory("mets_export").toAbsolutePath().toString(); //only save file in /tmp/ directory
+        String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
+    //    String zielVerzeichnis = Files.createTempDirectory("mets_export").toAbsolutePath().toString(); //only save file in /tmp/ directory
 
         String targetFileName = zielVerzeichnis + atsPpnBand + "_mets.xml";
         return writeMetsFile(myProzess, targetFileName, gdzfile, false);
@@ -277,7 +286,32 @@ public class ExportMets {
     protected boolean writeMetsFile(Process myProzess, String targetFileName, Fileformat gdzfile, boolean writeLocalFilegroup)
             throws PreferencesException, WriteException, IOException, InterruptedException, SwapException, DAOException,
             TypeNotAllowedForParentException {
+
+        return writeMetsFile(myProzess, targetFileName, gdzfile, writeLocalFilegroup, false);
+    }
+
+    //Write the MetsFile to the given path, possibly as .zip file together with the anchor mets file.
+    //
+    protected boolean writeMetsFile(Process myProzess, String targetFileName, Fileformat gdzfile, boolean writeLocalFilegroup, boolean addAnchorFile)
+            throws PreferencesException, WriteException, IOException, InterruptedException, SwapException, DAOException,
+            TypeNotAllowedForParentException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
+
+        ExportFileformat mm = collectMetadataToSave(myProzess, gdzfile, writeLocalFilegroup, config);
+
+        if (mm == null) {
+            return false;
+        }
+        //otherwise
+        saveFinishedMetadata(myProzess, targetFileName, config, mm, addAnchorFile);
+
+        Helper.setMeldung(null, myProzess.getTitel() + ": ", "ExportFinished");
+        return true;
+    }
+
+    private ExportFileformat collectMetadataToSave(Process myProzess, Fileformat gdzfile, boolean writeLocalFilegroup, ConfigurationHelper config)
+            throws IOException, InterruptedException, SwapException, DAOException, PreferencesException, TypeNotAllowedForParentException {
+
         ExportFileformat mm = MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
         mm.setWriteLocal(writeLocalFilegroup);
         mm.setCreateUUIDs(config.isExportCreateUUIDsAsFileIDs());
@@ -327,7 +361,7 @@ public class ExportMets {
                 } else {
                     Helper.setFehlerMeldung(myProzess.getTitel() + ": could not find any referenced images, export aborted");
                     dd = null;
-                    return false;
+                    return null;
                 }
             }
 
@@ -524,20 +558,25 @@ public class ExportMets {
                     } else {
                         String[] param = { String.valueOf(sizeOfPagination), String.valueOf(sizeOfImages) };
                         Helper.setFehlerMeldung(Helper.getTranslation("imagePaginationError", param));
-                        return false;
+                        return null;
                     }
                 }
             } catch (IndexOutOfBoundsException e) {
                 logger.error(e);
-                return false;
+                return null;
             } catch (InvalidImagesException e) {
                 logger.error(e);
-                return false;
+                return null;
             }
         } else {
             // create pagination out of virtual file names
             dd.addAllContentFiles();
         }
+        return mm;
+    }
+
+    private void saveFinishedMetadata(Process myProzess, String targetFileName, ConfigurationHelper config, ExportFileformat mm,
+            boolean addAnchorFile) throws IOException, WriteException, PreferencesException, InterruptedException, SwapException, DAOException {
         if (config.isExportInTemporaryFile()) {
             Path tempFile = StorageProvider.getInstance().createTemporaryFile(myProzess.getTitel(), ".xml");
             String filename = tempFile.toString();
@@ -551,11 +590,49 @@ public class ExportMets {
             }
             StorageProvider.getInstance().deleteDir(tempFile);
         } else {
-            mm.write(targetFileName);
-        }
 
-        Helper.setMeldung(null, myProzess.getTitel() + ": ", "ExportFinished");
-        return true;
+            mm.write(targetFileName);
+
+            if (addAnchorFile) {
+                //Anchor exists? Then copy that too, and place both in a zip:
+                String filename = myProzess.getMetadataFilePath();
+                Path anchorFile = Paths.get(filename.replace(".xml", "_anchor.xml"));
+                if (StorageProvider.getInstance().isFileExists(anchorFile)) {
+
+                    Path pathTarget = Paths.get(targetFileName);
+                    String anchorTarget = targetFileName.replace(".xml", "_anchor.xml");
+                    Path pathAnchorTarget = Paths.get(anchorTarget);
+                    StorageProvider.getInstance().copyFile(anchorFile, pathAnchorTarget);
+
+                    FileOutputStream fos = new FileOutputStream(targetFileName.replace(".xml", ".zip"));
+                    ZipOutputStream out = new ZipOutputStream(fos);
+
+                    writeToZip(pathTarget, out);
+                    writeToZip(pathAnchorTarget, out);
+
+                    out.flush();
+                    out.close();
+
+                    //zip:
+
+                    //remove unzipped versions:
+                    StorageProvider.getInstance().deleteFile(Paths.get(targetFileName));
+                    StorageProvider.getInstance().deleteFile(Paths.get(anchorTarget));
+                }
+            }
+        }
+    }
+
+    private void writeToZip(Path pathTarget, ZipOutputStream out) throws IOException {
+        InputStream in = StorageProvider.getInstance().newInputStream(pathTarget);
+        out.putNextEntry(new ZipEntry(pathTarget.getFileName().toString()));
+        byte[] b = new byte[1024];
+        int count;
+
+        while ((count = in.read(b)) > 0) {
+            out.write(b, 0, count);
+        }
+        in.close();
     }
 
     private VirtualFileGroup createFilegroup(VariableReplacer variableRplacer, ProjectFileGroup projectFileGroup) {

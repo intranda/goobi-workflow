@@ -33,8 +33,10 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import de.sub.goobi.AbstractTest;
+
 @SuppressWarnings("deprecation")
-public class ConfigurationHelperTest {
+public class ConfigurationHelperTest extends AbstractTest {
 
     private static String goobiMainFolder;
 
@@ -131,7 +133,6 @@ public class ConfigurationHelperTest {
         assertEquals("{processtitle}_source", ConfigurationHelper.getInstance().getProcessImagesSourceDirectoryName());
     }
 
-
     @Test
     public void testGetProcessOcrTxtDirectoryName() {
         assertEquals("{processtitle}_txt", ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName());
@@ -141,18 +142,22 @@ public class ConfigurationHelperTest {
     public void testGetProcessOcrPdfDirectoryName() {
         assertEquals("{processtitle}_pdf", ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName());
     }
+
     @Test
     public void testGetProcessOcrXmlDirectoryName() {
         assertEquals("{processtitle}_xml", ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName());
     }
+
     @Test
     public void testGetProcessOcrAltoDirectoryName() {
         assertEquals("{processtitle}_alto", ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName());
     }
+
     @Test
     public void testGetProcessImportDirectoryName() {
         assertEquals("import", ConfigurationHelper.getInstance().getProcessImportDirectoryName());
     }
+
     @Test
     public void testGetProcessExportDirectoryName() {
         assertEquals("export", ConfigurationHelper.getInstance().getProcessExportDirectoryName());
@@ -195,7 +200,7 @@ public class ConfigurationHelperTest {
 
     @Test
     public void testGetApplicationTitle() {
-        assertEquals("http://goobi.intranda.com", ConfigurationHelper.getInstance().getApplicationTitle());
+        assertEquals("http://goobi.io", ConfigurationHelper.getInstance().getApplicationTitle());
     }
 
     @Test

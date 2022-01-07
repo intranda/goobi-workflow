@@ -51,6 +51,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.mock.MockProcess;
@@ -69,7 +70,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 
 @PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class,
     HistoryAnalyserJob.class, StepManager.class })
-public class ProzesskopieFormTest {
+public class ProzesskopieFormTest extends AbstractTest {
 
     private Process template;
     @Rule

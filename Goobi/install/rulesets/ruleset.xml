@@ -3769,7 +3769,7 @@
         <conditionField/>
         <conditionValue/>
         <!-- run the regex and keep the value of $1 -->
-        <fieldReplacement/>
+        <fieldReplacement>s/[\xAC\x98\x9C]//g</fieldReplacement>
         <separateEntries>true</separateEntries>
         <separator>; </separator>
       </Metadata>
@@ -3792,6 +3792,7 @@
           <fieldInd2>any</fieldInd2>
         </field>
         <separateEntries>true</separateEntries>
+        <fieldReplacement>s/[\xAC\x98\x9C]//g</fieldReplacement>        
       </Metadata>
       <Metadata>
         <Name>TitleDocParallel</Name>
@@ -4302,7 +4303,7 @@
         <identifierReplacement>s/\(.+\)//g</identifierReplacement>
         <conditionField>4</conditionField>
         <conditionValue>/rcp/</conditionValue>
-        <separateEntries>false</separateEntries>
+        <separateEntries>true</separateEntries>
         <separator>; </separator>
       </Person>
       <Person>
@@ -4324,7 +4325,7 @@
         <identifierReplacement>s/\(.+\)//g</identifierReplacement>
         <conditionField>4</conditionField>
         <conditionValue>/ann/</conditionValue>
-        <separateEntries>false</separateEntries>
+        <separateEntries>true</separateEntries>
         <separator>; </separator>
       </Person>
       <Person>
@@ -4368,7 +4369,7 @@
         <identifierReplacement>s/\(.+\)//g</identifierReplacement>
         <conditionField>4</conditionField>
         <conditionValue>/aut/</conditionValue>
-        <separateEntries>false</separateEntries>
+        <separateEntries>true</separateEntries>
         <separator>; </separator>
       </Person>
 

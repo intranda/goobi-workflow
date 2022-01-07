@@ -446,6 +446,7 @@ public class S3FileUtils implements StorageProviderInterface {
                 String key = path2Prefix(target) + fileName;
                 ObjectMetadata om = new ObjectMetadata();
                 om.setContentType(Files.probeContentType(p));
+                om.setContentLength(Files.size(p));
                 try (InputStream is = Files.newInputStream(p)) {
                     try {
                         Upload upload = transferManager.upload(getBucket(), key, is, om);

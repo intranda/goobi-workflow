@@ -104,12 +104,14 @@
 
                                 <table class="table table-hover table-nomargin dataTable table-bordered responsive">
                                     <thead>
-                                        <tr>
-                                            <th>
+                                        <tr role="row">
+                                            <th scope="col" role="columnheader" aria-sort="#{vocabularyBean.currentVocabulary.sortfield== 'idDesc' ? 'descending' : vocabularyBean.currentVocabulary.sortfield== 'idAsc' ? 'ascending' :'none'}">
                                                 <button
                                                 	jsf:id="changeOrderId"
-                                                    class="font-black-block button-no-style"
-                                                    jsf:action="#{vocabularyBean.currentVocabulary.changeOrder}">
+                                                    class="button-link"
+                                                    style="width: 100%; text-align: left;"
+                                                    jsf:action="#{vocabularyBean.currentVocabulary.changeOrder}"
+                                                    aria-label="#{msgs.id}">
                                                     <h:outputText value="#{msgs.id}"/>
                                                     <span class="pull-right table-sort-icon fa #{vocabularyBean.currentVocabulary.sortfield=='idDesc'?'fa-sort-desc':vocabularyBean.currentVocabulary.sortfield=='idAsc'?'fa-sort-asc':'fa-sort'}"></span>
                                                     <f:setPropertyActionListener
@@ -118,13 +120,14 @@
                                                     <f:ajax render="@form" />
                                                 </button>
                                             </th>
-
                                             <ui:repeat var="definition" value="#{vocabularyBean.currentVocabulary.mainFields}">
-                                                <th>
+                                                <th scope="col" role="columnheader" aria-sort="#{vocabularyBean.currentVocabulary.sortfield== definition.idAsString.concat('Desc') ? 'descending' : vocabularyBean.currentVocabulary.sortfield== definition.idAsString.concat('Asc') ? 'ascending' :'none'}">
                                                     <button
                                                     	jsf:id="changeOrderLabel"
-                                                        class="font-black-block button-no-style"
-                                                        jsf:action="#{vocabularyBean.currentVocabulary.changeOrder}">
+                                                        class="button-link"
+                                                        style="width: 100%; text-align: left;"
+                                                        jsf:action="#{vocabularyBean.currentVocabulary.changeOrder}"
+                                                        aria-label="#{definition.label} #{definition.language != '' ? msgs[definition.language] : ''}">
                                                         <h:outputText value="#{definition.label} #{definition.language != '' ? msgs[definition.language] : ''}" />
 
                                                         <span class="pull-right table-sort-icon fa #{vocabularyBean.currentVocabulary.sortfield==definition.idAsString.concat('Desc')?'fa-sort-desc':vocabularyBean.currentVocabulary.sortfield==definition.idAsString.concat('Asc')?'fa-sort-asc':'fa-sort'}"></span>

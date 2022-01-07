@@ -21,7 +21,7 @@ import lombok.Setter;
 @WindowScoped
 @Getter
 @Setter
-public class AuthenticationBean  extends BasicBean implements Serializable {
+public class AuthenticationBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = -5644561256582235244L;
     private Ldap myLdapGruppe = new Ldap();
@@ -52,6 +52,10 @@ public class AuthenticationBean  extends BasicBean implements Serializable {
             return "";
         }
         return FilterKein();
+    }
+
+    public String Cancel() {
+        return "ldap_all";
     }
 
     public String FilterKein() {
