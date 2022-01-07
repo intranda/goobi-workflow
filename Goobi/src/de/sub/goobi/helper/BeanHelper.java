@@ -377,6 +377,7 @@ public class BeanHelper {
         newProcess.setInAuswahllisteAnzeigen(false);
         newProcess.setProjekt(template.getProjekt());
         newProcess.setRegelsatz(template.getRegelsatz());
+        newProcess.setDocket(template.getDocket());
         SchritteKopieren(template, newProcess);
         ScanvorlagenKopieren(template, newProcess);
         WerkstueckeKopieren(template, newProcess);
