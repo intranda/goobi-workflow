@@ -40,10 +40,10 @@
 			<ui:fragment rendered="#{messageQueueBean.messageBrokerStart}">
 				<div class="box-content">
 					<h:form id="mqTabForm">
-						<ul class="nav nav-tabs">
+						<ul class="nav nav-tabs" role="tablist">
 							<li role="presentation"
 								class="#{messageQueueBean.mode eq 'waiting' ? 'active' : ''}">
-								<h:commandLink id="queue">
+								<h:commandLink id="queue" role="tab">
 									<h:outputText value="#{msgs.waiting}" />
 									<f:ajax render="mqTabContent @form" />
 									<f:setPropertyActionListener value="waiting" target="#{messageQueueBean.mode}"></f:setPropertyActionListener>
@@ -51,7 +51,7 @@
 							</li>
 							<li role="presentation"
 								class="#{messageQueueBean.mode eq 'error' ? 'active' : ''}">
-								<h:commandLink id="error">
+								<h:commandLink id="error" role="tab">
 									<h:outputText value="#{msgs.errors}" />
 									<f:ajax render="mqTabContent @form" />
 									<f:setPropertyActionListener value="error" target="#{messageQueueBean.mode}"></f:setPropertyActionListener>

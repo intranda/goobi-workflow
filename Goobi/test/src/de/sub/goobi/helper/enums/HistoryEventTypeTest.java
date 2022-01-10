@@ -22,7 +22,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class HistoryEventTypeTest {
+import de.sub.goobi.AbstractTest;
+
+public class HistoryEventTypeTest extends AbstractTest {
 
     @Test
     public void testEnumValues() {

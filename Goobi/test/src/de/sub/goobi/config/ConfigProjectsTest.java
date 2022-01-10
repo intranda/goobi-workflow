@@ -31,7 +31,9 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ConfigProjectsTest {
+import de.sub.goobi.AbstractTest;
+
+public class ConfigProjectsTest extends AbstractTest{
 
     @BeforeClass
     public static void setUp() throws URISyntaxException {

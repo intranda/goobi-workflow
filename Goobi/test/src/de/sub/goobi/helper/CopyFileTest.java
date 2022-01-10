@@ -14,10 +14,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 
-public class CopyFileTest {
+public class CopyFileTest extends AbstractTest {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
@@ -58,7 +59,7 @@ public class CopyFileTest {
         assertTrue(Files.exists(destFile));
     }
 
-   @Test
+    @Test
     public void testCopyDirectory() throws IOException {
         Path srcDir =  Paths.get(ConfigurationHelper.getInstance().getConfigurationFolder());
         Path dstDir = folder.newFolder("dest").toPath();

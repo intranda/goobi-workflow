@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
@@ -88,6 +89,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.metadaten.Image;
+import de.sub.goobi.metadaten.ImageCommentHelper;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.DocketManager;
@@ -2277,4 +2279,48 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
     }
 
+    //read the image comments files in the image folders, and return all of them as a list.
+    public List<ImageComment> getImageComments() throws IOException, InterruptedException, SwapException, DAOException {
+
+        List<ImageComment> lstComments = new ArrayList<ImageComment>();
+
+        ImageCommentHelper helper = new ImageCommentHelper();
+
+        String folderMaster = this.getImagesOrigDirectory(true);
+        HashMap<String, String> masterComments = helper.getComments(folderMaster);
+
+        for (String imageName : masterComments.keySet()) {
+            String comment = masterComments.get(imageName);
+            if (!StringUtils.isBlank(comment)) {
+                lstComments.add(new ImageComment("Master", imageName, comment));
+            }
+        }
+
+        if (this.isMediaFolderExists()) {
+            String folderMedia = this.getImagesTifDirectory(true);
+            HashMap<String, String> mediaComments = helper.getComments(folderMedia);
+
+            for (String imageName : mediaComments.keySet()) {
+                String comment = mediaComments.get(imageName);
+                if (!StringUtils.isBlank(comment)) {
+                    lstComments.add(new ImageComment("Media", imageName, comment));
+                }
+            }
+        }
+
+        return lstComments;
+    }
+
+    public List<String> getArchivedImageFolders() throws IOException, InterruptedException, SwapException, DAOException {
+        if (this.id == null) {
+            return new ArrayList<>();
+        }
+        Path images = Paths.get(this.getImagesDirectory());
+        try (Stream<Path> filesInImages = Files.list(images)) {
+            return filesInImages
+                    .filter(p -> Files.isRegularFile(p) && p.getFileName().toString().endsWith(".xml"))
+                    .map(p -> p.getFileName().toString().replace(".xml", ""))
+                    .collect(Collectors.toList());
+        }
+    }
 }

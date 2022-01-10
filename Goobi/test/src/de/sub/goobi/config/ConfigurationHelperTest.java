@@ -33,8 +33,10 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import de.sub.goobi.AbstractTest;
+
 @SuppressWarnings("deprecation")
-public class ConfigurationHelperTest {
+public class ConfigurationHelperTest extends AbstractTest {
 
     private static String goobiMainFolder;
 
