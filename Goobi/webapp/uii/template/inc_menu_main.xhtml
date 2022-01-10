@@ -18,7 +18,7 @@
 		<!-- The page "mailNotificationDisabled.xhtml needs the menu with user == null -->
 		<c:if test="#{LoginForm.myBenutzer != null}">
 			<ui:insert name="menu-content">
-				<ul id="main-menu-set-class">
+				<ul id="main-menu-set-class" class="main-nav">
 					<!-- Dropdown-Menü: "Startseite" / "Home page" -->
 					<li class="#{NavigationForm.parentMenu == 'menu_start' ? 'active' : ''}">
 						<h:commandLink
@@ -56,12 +56,6 @@
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.filter}"
 									value="" />
-								<f:setPropertyActionListener
-									target="#{AktuelleSchritteForm.sortierung}"
-									value="statusDesc" />
-								<f:setPropertyActionListener
-									target="#{AktuelleSchritteForm.hideStepsFromOtherUsers}"
-									value="#{false}" />
 							</h:commandLink>
 						</li>
 					</h:panelGroup>
@@ -69,7 +63,7 @@
 					<!-- Dropdown-Menü: "Workflow" -->
 					<h:panelGroup rendered="#{LoginForm.hasRole('Workflow_General_Menu')}">
 						<li class="#{NavigationForm.parentMenu == 'menu_workflow' ? 'active' : ''} add-has-submenu-in-small-window">
-							<a href="#" class="rendered-in-small-window">#{msgs.workflow}</a>
+							<a href="#" class="rendered-in-small-window" style="display:none;">#{msgs.workflow}</a>
 							<button
 								id="nav-workflow"
 								type="button"
@@ -79,7 +73,7 @@
 								<span>#{msgs.workflow}</span>
 								<span class="caret"></span>
 							</button>
-							<ul class="add-dropdown-menu-in-wide-window">
+							<ul class="add-dropdown-menu-in-wide-window dropdown-menu">
 								<!-- Prozess suchen -->
 								<intranda:menuItem
 									id="a21"
@@ -158,7 +152,7 @@
 					<!-- Dropdown-Menü: "Administration" -->
 					<h:panelGroup rendered="#{LoginForm.hasRole('Admin_Menu')}">
 						<li class="#{NavigationForm.parentMenu == 'menu_administration' ? 'active' : ''} add-has-submenu-in-small-window">
-							<a href="#" class="rendered-in-small-window">#{msgs.administration}</a>
+							<a href="#" class="rendered-in-small-window" style="display:none;">#{msgs.administration}</a>
 							<button
 								id="nav-administration"
 								type="button"
@@ -168,7 +162,7 @@
 								<span>#{msgs.administration}</span>
 								<span class="caret"></span>
 							</button>
-							<ul class="add-dropdown-menu-in-wide-window">
+							<ul class="add-dropdown-menu-in-wide-window dropdown-menu">
 								<!-- Benutzerverwaltung -->
 								<intranda:menuItem
 									id="a30"
@@ -330,7 +324,7 @@
 					<!-- Dropdown-Menü: "Controlling" / "Management" -->
 					<h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Menu')}">
 						<li class="#{NavigationForm.parentMenu == 'menu_controlling' ? 'active' : ''} add-has-submenu-in-small-window">
-							<a href="#" class="rendered-in-small-window">#{msgs.controlling}</a>
+							<a href="#" class="rendered-in-small-window" style="display:none;">#{msgs.controlling}</a>
 							<button
 								id="nav-controlling"
 								type="button"
@@ -340,7 +334,7 @@
 								<span>#{msgs.controlling}</span>
 								<span class="caret"></span>
 							</button>
-							<ul class="add-dropdown-menu-in-wide-window">
+							<ul class="add-dropdown-menu-in-wide-window dropdown-menu">
 								<intranda:menuItem
 									id="a40"
 									parentMenu="menu_controlling"

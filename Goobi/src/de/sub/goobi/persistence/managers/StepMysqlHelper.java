@@ -105,13 +105,9 @@ class StepMysqlHelper implements Serializable {
             if (logger.isTraceEnabled()) {
                 logger.trace(sql.toString());
             }
-            System.out.println(sql.toString());
 
-            long start = System.currentTimeMillis();
             int val = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
-            System.out.println("Duration: " + (System.currentTimeMillis() - start));
             return val;
-
 
         } finally {
             if (connection != null) {
@@ -216,7 +212,9 @@ class StepMysqlHelper implements Serializable {
             }
             sb.append(whereClause.toString());
             //TODO activate this line only if sql_mode only_full_group_by is active
-            // sb.append("group by prozesse.batchID, schritte.titel ");
+            if (MySQLHelper.isUsingH2()) {
+                sb.append("group by prozesse.batchID, schritte.titel ");
+            }
             List<Object[]> rawData = ControllingManager.getResultsAsObjectList(sb.toString());
             for (Object[] row : rawData) {
                 int numberOfProcesses = Integer.parseInt((String) row[0]);

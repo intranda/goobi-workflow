@@ -140,6 +140,10 @@ label {
     float: left;
 }
 
+#myform\:usergroups button {
+	color: #333;
+}
+
 /* changes color to dark when in lightgrey box */
 .box.lightgrey div.box-title h2.tableColumnMaxWidthExtraLong{
 	color: #333333;
@@ -181,6 +185,7 @@ label {
 /* Button styling as link */
 
 .button-link {
+	font-size: inherit;
 	background: none!important;
   	border: none;
   	padding: 0!important;
@@ -193,6 +198,7 @@ label {
 }
 
 .button-link-no-hover {
+	font-size: inherit;
 	background: none!important;
   	border: none;
   	padding: 0!important;

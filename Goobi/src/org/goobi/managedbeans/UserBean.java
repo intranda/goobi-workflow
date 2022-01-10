@@ -35,7 +35,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -102,6 +104,16 @@ public class UserBean extends BasicBean implements Serializable {
     @Getter
     private boolean unsubscribedProjectsExist;
 
+    @Getter
+    private boolean unsubscribedGroupsExist;
+
+
+    //changes since last save for each user:
+    private Map<Integer, ArrayList<Integer>> addedToGroups = new HashMap<>();
+    private Map<Integer, ArrayList<Integer>> removedFromGroups = new HashMap<>();
+    private Map<Integer, ArrayList<Integer>> addedToProjects = new HashMap<>();
+    private Map<Integer, ArrayList<Integer>> removedFromProjects = new HashMap<>();
+
     public String Neu() {
         this.myClass = new User();
         this.myClass.setVorname("");
@@ -113,7 +125,18 @@ public class UserBean extends BasicBean implements Serializable {
         this.myClass.setPasswordSalt(salt.toString());
         updateUsergroupPaginator();
         updateProjectPaginator();
+
+        resetChangeLists();
+
         return "user_edit";
+    }
+
+    //set up the change recording lists
+    private void resetChangeLists() {
+        addedToGroups.put(myClass.getId(), new ArrayList<Integer>());
+        addedToProjects.put(myClass.getId(), new ArrayList<Integer>());
+        removedFromGroups.put(myClass.getId(), new ArrayList<Integer>());
+        removedFromProjects.put(myClass.getId(), new ArrayList<Integer>());
     }
 
     private String getBasicFilter() {
@@ -227,8 +250,20 @@ public class UserBean extends BasicBean implements Serializable {
                         && myClass.getPasswort() != null) {
                     myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
                 }
+                //if there is only one institution, then it is not shown in ui and the value may be null:
+                if (myClass.getInstitutionId() == null) {
+                    List<SelectItem> lstInst = getInstitutionsAsSelectList();
+                    if (lstInst.size() > 0) {
+                        Integer inst = (Integer) lstInst.get(0).getValue();
+                        myClass.setInstitutionId(inst);
+                    }
+                }
+
                 UserManager.saveUser(this.myClass);
                 paginator.load();
+
+                resetChangeLists();
+
                 return "user_all";
             } else {
                 Helper.setFehlerMeldung("", Helper.getTranslation("loginBereitsVergeben"));
@@ -300,6 +335,16 @@ public class UserBean extends BasicBean implements Serializable {
 
     public String AusGruppeLoeschen() {
         int gruppenID = Integer.parseInt(Helper.getRequestParameter("ID"));
+        String strResult = AusGruppeLoeschen(gruppenID);
+
+        if (strResult != null) {
+            removedFromGroups.get(myClass.getId()).add(gruppenID);
+        }
+        return strResult;
+    }
+
+    private String AusGruppeLoeschen(int gruppenID) {
+
         List<Usergroup> neu = new ArrayList<>();
         for (Usergroup u : this.myClass.getBenutzergruppen()) {
             if (u.getId().intValue() != gruppenID) {
@@ -345,6 +390,15 @@ public class UserBean extends BasicBean implements Serializable {
 
     public String ZuGruppeHinzufuegen() {
         Integer gruppenID = Integer.valueOf(Helper.getRequestParameter("ID"));
+        String strResult = ZuGruppeHinzufuegen(gruppenID);
+
+        if (strResult != null) {
+            addedToGroups.get(myClass.getId()).add(gruppenID);
+        }
+        return strResult;
+    }
+
+    private String ZuGruppeHinzufuegen(int gruppenID) {
         try {
             Usergroup usergroup = UsergroupManager.getUsergroupById(gruppenID);
             for (Usergroup b : this.myClass.getBenutzergruppen()) {
@@ -364,6 +418,15 @@ public class UserBean extends BasicBean implements Serializable {
 
     public String AusProjektLoeschen() {
         int projektID = Integer.parseInt(Helper.getRequestParameter("ID"));
+        String strResult = AusProjektLoeschen(projektID);
+
+        if (strResult != null) {
+            removedFromProjects.get(myClass.getId()).add(projektID);
+        }
+        return strResult;
+    }
+
+    private String AusProjektLoeschen(int projektID) {
         List<Project> neu = new ArrayList<>();
         for (Project p : this.myClass.getProjekte()) {
             if (p.getId().intValue() != projektID) {
@@ -381,6 +444,16 @@ public class UserBean extends BasicBean implements Serializable {
 
     public String ZuProjektHinzufuegen() {
         Integer projektID = Integer.valueOf(Helper.getRequestParameter("ID"));
+
+        String strResult = ZuProjektHinzufuegen(projektID);
+
+        if (strResult != null) {
+            addedToProjects.get(myClass.getId()).add(projektID);
+        }
+        return strResult;
+    }
+
+    private String ZuProjektHinzufuegen(int projektID) {
         try {
             Project project = ProjectManager.getProjectById(projektID);
             for (Project p : this.myClass.getProjekte()) {
@@ -403,6 +476,10 @@ public class UserBean extends BasicBean implements Serializable {
 
         updateUsergroupPaginator();
         updateProjectPaginator();
+
+        if (!addedToGroups.containsKey(myClass.getId())) {
+            resetChangeLists();
+        }
         //        updateInstitutionPaginator();
 
     }
@@ -583,6 +660,8 @@ public class UserBean extends BasicBean implements Serializable {
         }
         UsergroupManager m = new UsergroupManager();
         usergroupPaginator = new DatabasePaginator("titel", filter, m, "");
+
+        unsubscribedGroupsExist = usergroupPaginator.getTotalResults() > 0;
     }
 
     private void updateProjectPaginator() {
@@ -633,5 +712,27 @@ public class UserBean extends BasicBean implements Serializable {
             }
         }
         return institutions;
+    }
+
+    /*
+     * Undo the changes since last Save() was called
+     */
+    public String cancelEdit() {
+
+        for (Integer iGroup : addedToGroups.get(myClass.getId())) {
+            AusGruppeLoeschen(iGroup);
+        }
+        for (Integer iGroup : removedFromGroups.get(myClass.getId())) {
+            ZuGruppeHinzufuegen(iGroup);
+        }
+        for (Integer iProj : addedToProjects.get(myClass.getId())) {
+            AusProjektLoeschen(iProj);
+        }
+        for (Integer iProj : removedFromProjects.get(myClass.getId())) {
+            ZuProjektHinzufuegen(iProj);
+        }
+
+        resetChangeLists();
+        return "user_all";
     }
 }

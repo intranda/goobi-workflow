@@ -31,7 +31,9 @@ import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ConfigPluginsTest {
+import de.sub.goobi.AbstractTest;
+
+public class ConfigPluginsTest extends AbstractTest {
 
     @BeforeClass
     public static void setUp() throws URISyntaxException {

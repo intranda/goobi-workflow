@@ -1,12 +1,14 @@
 package de.sub.goobi.helper.enums;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.Helper;
 
-public class StepEditTypeTest {
+public class StepEditTypeTest extends AbstractTest {
 
     @Test
     public void testStepEditTypeGetValue() {

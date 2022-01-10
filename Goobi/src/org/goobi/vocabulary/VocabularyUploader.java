@@ -109,8 +109,6 @@ public class VocabularyUploader {
             return target.request().header(HttpHeaders.AUTHORIZATION, strAuthorization).put(Entity.json(vocab));
         });
 
-        System.out.println(response.getStatusInfo());
-
         return response.getStatus() == Response.Status.OK.getStatusCode();
     }
 
@@ -134,7 +132,6 @@ public class VocabularyUploader {
             return target.request().header(HttpHeaders.AUTHORIZATION, strAuthorization).post(Entity.json(vocab));
         });
 
-        System.out.println(response.getStatusInfo());
         return response.getStatus() == Response.Status.OK.getStatusCode();
     }
 

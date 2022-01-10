@@ -12,10 +12,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.mock.MockProcess;
 import ugh.dl.DocStruct;
 
-public class TreeNodeStruct3Test {
+public class TreeNodeStruct3Test extends AbstractTest {
 
     private Process process;
     private DocStruct docstruct;

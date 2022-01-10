@@ -9,7 +9,8 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <ui:param
         name="myPageTitle"
@@ -223,7 +224,7 @@
                                             id="ug"
                                             var="intern"
                                             styleClass="form-control metsEditorTextArea"
-                                            style=" background-color: #eee;cursor: not-allowed;opacity: 1;"
+                                            style=" background-color: #eee;cursor: not-allowed;opacity: 1; height: auto; overflow: none"
                                             value="#{LoginForm.myBenutzer.benutzergruppen}"
                                             layout="ordered list"
                                             rowCountVar="rowCount"
@@ -258,7 +259,7 @@
                                             value="#{LoginForm.myBenutzer.allUserRoles}"
                                             varStatus="row">
                                             <h:outputText
-                                                value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('roles_').concat(role)]}"
+                                                value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('rights_').concat(role)]}"
                                                 styleClass="badge badge-no-radius #{fn:startsWith(role,'Admin_') ? 'badge-light-red' : 
 			                            		fn:startsWith(role,'Statistics_') ? 'badge-light-green' :
 			                            		fn:startsWith(role,'Workflow_ProcessTemplates') ? 'badge-light-brown2' : 

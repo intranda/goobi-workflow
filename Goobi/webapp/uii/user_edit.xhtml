@@ -126,6 +126,7 @@
                                     <intranda:formInputDropDown
                                         classLeft="col-sm-3 control-label notFocusable"
                                         id="institution"
+                                        rendered="#{BenutzerverwaltungForm.institutionsAsSelectList.size()>1}"
                                         label="#{msgs.institution}"
                                         field="#{BenutzerverwaltungForm.currentInstitutionID}"
                                         help="#{msgs.helpUserInstitution}"
@@ -461,6 +462,7 @@
                                                                 <!-- Neu-Schaltknopf -->
                                                                 <button
                                                                     jsf:id="addGroup"
+                                                                    jsf:rendered="#{BenutzerverwaltungForm.unsubscribedGroupsExist}"
                                                                     class="btn btn-primary font-size-s"
                                                                     jsf:action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
                                                                     jsf:immediate="true">
@@ -718,10 +720,20 @@
                                             </button>
 
                                             <!-- Cancel -->
-                                            <h:link id="cancelEdition"
-                                                styleClass="btn margin-sides-10 font-size-s pull-right"
-                                                outcome="user_all"
-                                                value="#{msgs.abbrechen}" />
+                                            <!-- Abbrechen-Schaltknopf -->
+                                            <button
+                                                jsf:id="cancelEdition"
+                                                class="btn margin-sides-10 font-size-s pull-right"
+                                                jsf:immediate="true"
+                                                jsf:action="#{BenutzerverwaltungForm.cancelEdit}">
+                                                <h:outputText
+                                                    value="#{msgs.abbrechen}" />
+                                            </button>
+
+<!--                                             <h:link id="cancelEdition" -->
+<!--                                                 styleClass="btn margin-sides-10 font-size-s pull-right" -->
+<!--                                                 outcome="user_all" -->
+<!--                                                 value="#{msgs.abbrechen}" /> -->
 
                                             <button jsf:id="deleteUser"
                                                 class="btn btn-danger font-size-s"

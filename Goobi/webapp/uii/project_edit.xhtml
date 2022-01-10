@@ -1,6 +1,9 @@
 <ui:composition xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
-    <ui:param name="myPageTitle" value="#{ProjekteForm.myProjekt.id == null?msgs.neuesProjektAnlegen:msgs.projektBearbeiten}" />
+	<ui:param name="myProjectTitle" value="#{msgs.project}: #{ProjekteForm.myProjekt.titel}" />
+    <ui:param name="myPageTitle" value="#{ProjekteForm.myProjekt.id == null?msgs.neuesProjektAnlegen:myProjectTitle}" />
+	<ui:param name="myBoxTitle" value="#{ProjekteForm.myProjekt.id == null?msgs.neuesProjektAnlegen:msgs.projektBearbeiten}" />
+	
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
@@ -20,8 +23,7 @@
                         <div class="box-title">
                             <h2>
                                 <i class="fa fa-compass"></i>
-                                <h:outputText value="#{myPageTitle}" />
-                                <h:outputText value=": #{ProjekteForm.myProjekt.titel}" rendered="#{ProjekteForm.myProjekt.id != null}" />
+                                <h:outputText value="#{myBoxTitle}" />
                             </h2>
                             <ul class="tabs">
                                 <li class="#{ProjekteForm.displayMode eq ''?'active':''}">
@@ -61,6 +63,7 @@
                                     <intranda:formInputText id="projectIdentifier" name="projectIdentifierName" label="#{msgs.project_projectIdentifier}" field="#{ProjekteForm.myProjekt.projectIdentifier}" help="#{msgs.help_project_projectIdentifier}" fieldStyle="form-control"  required="false"  />
 
                                     <intranda:formInputDropDown id="institution" label="#{msgs.institution}" field="#{ProjekteForm.currentInstitutionID}" 
+                                    rendered="#{ProjekteForm.institutionsAsSelectList.size()>1}"
                                     help="#{msgs.helpProjectInstitution}" name="institutionName" 
                                     selectItems="#{ProjekteForm.institutionsAsSelectList}" fieldStyle="form-control" required="true" />
 
@@ -307,7 +310,7 @@
                             </div>
 
                             <h:panelGroup rendered="#{ProjekteForm.displayMode ne 'filegroups'}">
-                                <intranda:formButtonArea id="buttons" form="#{ProjekteForm}" object="#{ProjekteForm.myProjekt.id}" actionCancel="project_all" />
+                                <intranda:formButtonArea id="buttons" form="#{ProjekteForm}" object="#{ProjekteForm.myProjekt.id}" actionCancel="#{ProjekteForm.Cancel}" />
                             </h:panelGroup>
 
                         </div>

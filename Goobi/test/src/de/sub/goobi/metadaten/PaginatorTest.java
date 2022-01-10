@@ -2,7 +2,7 @@
  * This file is part of the Goobi Application - a Workflow tool for the support of
  * mass digitization.
  *
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
  *
@@ -21,14 +21,16 @@
 
 package de.sub.goobi.metadaten;
 
-import org.junit.Test;
-import org.junit.internal.ArrayComparisonFailure;
-
-import de.sub.goobi.mock.MockMetadatum;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class PaginatorTest {
+import org.junit.Test;
+import org.junit.internal.ArrayComparisonFailure;
+
+import de.sub.goobi.AbstractTest;
+import de.sub.goobi.mock.MockMetadatum;
+
+public class PaginatorTest extends AbstractTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void throwsExceptionOnEmptyPageSelection() {

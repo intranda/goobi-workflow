@@ -65,7 +65,9 @@ import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.AltoChange;
+import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
+import org.goobi.beans.Processproperty;
 import org.goobi.beans.SimpleAlto;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.OrderedKeyMap;
@@ -503,6 +505,7 @@ public class Metadaten implements Serializable {
             this.treeProperties.put("showThumbnails", Boolean.valueOf(false));
         }
         treeProperties.put("showMetadataPopup", ConfigurationHelper.getInstance().isMetsEditorShowMetadataPopup());
+
     }
 
     /**
@@ -956,7 +959,20 @@ public class Metadaten implements Serializable {
         }
 
         this.modeAddGroup = false;
+        for (MetadatumImpl mdi : selectedGroup.getMetadataList()) {
+            mdi.setValue("");
+        }
+        for (MetaPerson mp : selectedGroup.getPersonList()) {
+            mp.setVorname("");
+            mp.setNachname("");
+        }
+        for (MetaCorporate mc : selectedGroup.getCorporateList()) {
+            mc.setMainName("");
+            mc.getSubNames().clear();
+            mc.addSubName();
+            mc.setPartName("");
 
+        }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
@@ -1617,13 +1633,15 @@ public class Metadaten implements Serializable {
                 docstruct = docstruct.getAllChildren().get(0);
             }
             lstMetadata = docstruct.getAllMetadata();
-            for (Metadata md : lstMetadata) {
-                if (md.getType().getName().equals("_directionRTL")) {
-                    try {
-                        Boolean value = Boolean.valueOf(md.getValue());
-                        this.pagesRTL = value;
-                    } catch (Exception e) {
+            if (lstMetadata != null) {
+                for (Metadata md : lstMetadata) {
+                    if (md.getType().getName().equals("_directionRTL")) {
+                        try {
+                            Boolean value = Boolean.valueOf(md.getValue());
+                            this.pagesRTL = value;
+                        } catch (Exception e) {
 
+                        }
                     }
                 }
             }
@@ -4096,7 +4114,16 @@ public class Metadaten implements Serializable {
 
     public List<String> getAllOpacCatalogues() {
         if (catalogues == null) {
-            catalogues = ConfigOpac.getInstance().getAllCatalogues();
+            String processTemplateName = "";
+            List<Processproperty> properties = myProzess.getEigenschaften();
+            if (properties != null) {
+                for (Processproperty pp : properties) {
+                    if ("Template".equals(pp.getTitel())) {
+                        processTemplateName = pp.getWert();
+                    }
+                }
+            }
+            catalogues = ConfigOpac.getInstance().getAllCatalogues(processTemplateName);
 
             catalogueTitles = new ArrayList<>(catalogues.size());
             for (ConfigOpacCatalogue coc : catalogues) {
@@ -4859,7 +4886,7 @@ public class Metadaten implements Serializable {
         if (allImages.size() > (pageNo * numberOfImagesPerPage) + numberOfImagesPerPage) {
             subList = allImages.subList(pageNo * numberOfImagesPerPage, (pageNo * numberOfImagesPerPage) + numberOfImagesPerPage);
         } else {
-            // Sometimes pageNo is not zero here, although we only have 20 images or so. 
+            // Sometimes pageNo is not zero here, although we only have 20 images or so.
             // This is a quick fix and we should find out why pageNo is not zero in some cases
             int startIdx = pageNo * numberOfImagesPerPage;
             if (startIdx > allImages.size()) {
@@ -5063,6 +5090,13 @@ public class Metadaten implements Serializable {
 
     public void setImage(final Image image) {
         this.image = image;
+
+        showImageComments = false;
+        if (ConfigurationHelper.getInstance().getMetsEditorShowImageComments()) {
+            if (myProzess != null && image != null) {
+                showImageComments = true;
+            }
+        }
     }
 
     public void setContainerWidth(int containerWidth) {
@@ -5206,5 +5240,44 @@ public class Metadaten implements Serializable {
                 this.currentMetadataToPerformSearch.clearResults();
             }
         }
+    }
+
+    //this is set whenever setImage() is called.
+    @Getter
+    private boolean showImageComments = false;
+
+    private ImageCommentHelper commentHelper;
+
+    private ImageCommentHelper getCommentHelper() {
+
+        if (commentHelper == null) {
+            commentHelper = new ImageCommentHelper();
+        }
+
+        return commentHelper;
+    }
+
+    public String getCommentForImage() {
+
+        if (myProzess == null || getImage() == null) {
+            return null;
+        }
+
+        return getCommentHelper().getComment(this.imageFolderName, getImage().getImageName());
+    }
+
+    public void setCommentForImage(String comment) {
+
+        if (myProzess == null || getImage() == null) {
+            return;
+        }
+
+        //only save new log entry if the comment has changed
+        String oldComment = getCommentForImage();
+        if (comment == null || (oldComment != null && comment.contentEquals(oldComment)) || (oldComment == null && comment.isBlank())) {
+            return;
+        }
+
+        getCommentHelper().setComment(this.imageFolderName, getImage().getImageName(), comment);
     }
 }

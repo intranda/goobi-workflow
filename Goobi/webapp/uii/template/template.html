@@ -171,7 +171,7 @@
 	                                                    <i class="fa fa-users" style="margin-top:3px;"></i>
 	                                                    <div class="details">
 	                                                        <span>#{msgs.aktiveBenutzer}</span>
-	                                                        <span class="big pull-left">#{SessionForm.numberOfRealUserSessions}</span>
+	                                                        <span class="big pull-left">#{SessionForm.numberOfSessions}</span>
 	                                                        <f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="" />
 	                                                    </div>
 	                                                </button>
@@ -220,7 +220,7 @@
                         		<h:messages escape="false" globalOnly="true" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
 			             	</h:panelGroup>
 			            </div>
-                        <div id="main-content">    
+                        <div jsf:id="main-content">    
                             <ui:insert name="content" />
                         </div>
                     </div>

@@ -1,7 +1,7 @@
 var goobiWorkflowJS = ( function( goobiWorkflow ) {
     'use strict';
     
-    var _debug = true;
+    var _debug = false;
     var _columns = {
         left: 0,
         center: 0,
@@ -61,8 +61,12 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                         
             var pageContentRightHeight = $( '#pageContentRight' ).outerHeight();
             var controlWrapperHeight = $( '#imageNavigation' ).outerHeight();
-            $( '#mainImage' ).css( 'height', pageContentRightHeight - controlWrapperHeight - 45 );
+            var imageCommentHeight = $( '#imageCommentArea' ).outerHeight();
+            if (!imageCommentHeight){
+            	imageCommentHeight = 0;
+            }
             
+            $( '#mainImage' ).css( 'height', pageContentRightHeight - controlWrapperHeight - imageCommentHeight - 45 );
         }
     };
     

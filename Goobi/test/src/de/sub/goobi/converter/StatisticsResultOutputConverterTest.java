@@ -23,7 +23,9 @@ import static org.junit.Assert.assertEquals;
 import org.goobi.production.flow.statistics.enums.ResultOutput;
 import org.junit.Test;
 
-public class StatisticsResultOutputConverterTest {
+import de.sub.goobi.AbstractTest;
+
+public class StatisticsResultOutputConverterTest extends AbstractTest {
 
     @Test
     public void testGetAsObject() {
