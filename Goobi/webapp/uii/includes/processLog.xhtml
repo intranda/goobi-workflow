@@ -16,9 +16,10 @@
             <div class="box-title">
 
                 <h3>
-                    <i class="fa fa-list-ol"></i>
-                    <h:outputText value="#{msgs.processLog}" rendered="#{NavigationForm.uiStatus['toggleProcessLog'] != 'fileUpload'}" />
+                    <i class="fa #{NavigationForm.uiStatus['toggleProcessLog']== 'imageComments' ? 'fa-comment' : NavigationForm.uiStatus['toggleProcessLog']== null or NavigationForm.uiStatus['toggleProcessLog'] == '' ? 'fa-list-ol' : 'fa-folder-o'}"></i>
+                    <h:outputText value="#{msgs.processLog}" rendered="#{NavigationForm.uiStatus['toggleProcessLog'] == null or NavigationForm.uiStatus['toggleProcessLog'] == ''}" />
                      <h:outputText value="#{msgs.process_log_fileView}" rendered="#{NavigationForm.uiStatus['toggleProcessLog']== 'fileUpload'}"/>
+                     <h:outputText value="#{msgs.imageComments}" rendered="#{NavigationForm.uiStatus['toggleProcessLog'] == 'imageComments'}" />
                 </h3>
                 <div class="actions">
 
@@ -45,7 +46,7 @@
                         class="btn btn-mini pull-right margin-right-10">
                         <i class="fa #{NavigationForm.uiStatus['toggleProcessLog']== 'fileUpload' ? 'fa-list-ol ' : 'fa-folder-open-o'}" />
                         <f:setPropertyActionListener
-                            value="#{NavigationForm.uiStatus['toggleProcessLog']=='' or NavigationForm.uiStatus['toggleProcessLog']== null ? 'fileUpload' : '' }"
+                            value="#{NavigationForm.uiStatus['toggleProcessLog']=='' or NavigationForm.uiStatus['toggleProcessLog']== null or NavigationForm.uiStatus['toggleProcessLog']=='imageComments' ? 'fileUpload' : '' }"
                             target="#{NavigationForm.uiStatus['toggleProcessLog']}" />
                     </button>
                     
@@ -53,12 +54,12 @@
                     <button
                         jsf:id="adapt_display_comments"
                         data-toggle="tooltip"
-                        title="#{NavigationForm.uiStatus['toggleProcessLog']== 'imageComments' ? msgs.process_log_regularView : msgs.comments}"
-                        aria-label="#{NavigationForm.uiStatus['toggleProcessLog']== 'imageComments' ? msgs.process_log_regularView : msgs.comments}"
+                        title="#{NavigationForm.uiStatus['toggleProcessLog']== 'imageComments' ? msgs.process_log_regularView : msgs.showCommentArea}"
+                        aria-label="#{NavigationForm.uiStatus['toggleProcessLog']== 'imageComments' ? msgs.process_log_regularView : msgs.showCommentArea}"
                         class="btn btn-mini pull-right margin-right-10">
-                        <i class="fa #{NavigationForm.uiStatus['toggleProcessLog']== 'imageComments' ? 'fa-comment' : 'fa-comment'}" />
+                        <i class="fa #{NavigationForm.uiStatus['toggleProcessLog']== 'imageComments' ? 'fa-list-ol' : 'fa-comment'}" />
                         <f:setPropertyActionListener
-                            value="#{NavigationForm.uiStatus['toggleProcessLog']=='' or NavigationForm.uiStatus['toggleProcessLog']== null ? 'imageComments' : '' }"
+                            value="#{NavigationForm.uiStatus['toggleProcessLog']=='' or NavigationForm.uiStatus['toggleProcessLog']== null or NavigationForm.uiStatus['toggleProcessLog']=='fileUpload' ? 'imageComments' : '' }"
                             target="#{NavigationForm.uiStatus['toggleProcessLog']}" />
                     </button>
 
