@@ -4,7 +4,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class TestQueueType {
+import de.sub.goobi.AbstractTest;
+
+public class TestQueueType extends AbstractTest {
 
     @Test
     public void TestQueueInstantiation() {

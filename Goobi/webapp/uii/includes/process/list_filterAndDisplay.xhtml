@@ -46,7 +46,7 @@
                         data-toggle="dropdown"> <i class="fa fa-columns margin-right-5" /> <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li>
+                        <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
                             <!-- check boxes --> <button
                                 jsf:action="#{NavigationForm.Reload}"
                                 jsf:id="showSelectionBoxes"
@@ -71,7 +71,7 @@
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['processId']}" />
                             </button>
                         </li>
-                        <li>
+                        <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
                             <!-- Thumbnail --> <button
                                 jsf:action="#{NavigationForm.Reload}"
                                 jsf:id="showProcessThumbnail"
@@ -83,7 +83,7 @@
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['thumbnail']}" />
                             </button>
                         </li>
-                        <li>
+                        <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
                             <!-- Metadata details --> <button
                                 jsf:action="#{NavigationForm.Reload}"
                                 jsf:id="showProcessMetadataDetails"
@@ -96,7 +96,7 @@
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}" />
                             </button>
                         </li>
-                        <li>
+                        <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
                             <!-- Batch ID --> <button
                                 jsf:action="#{NavigationForm.Reload}"
                                 jsf:id="showBatch"
@@ -120,7 +120,7 @@
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['processDate']}" />
                             </button>
                         </li>
-                        <li>
+                        <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
                             <!-- lockings --> <button
                                 jsf:action="#{NavigationForm.Reload}"
                                 jsf:id="showProcessLockings"
@@ -132,7 +132,7 @@
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['lockings']}" />
                             </button>
                         </li>
-                        <li>
+                        <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
                             <!-- swapping --> <button
                                 jsf:action="#{NavigationForm.Reload}"
                                 jsf:id="showSwapping"

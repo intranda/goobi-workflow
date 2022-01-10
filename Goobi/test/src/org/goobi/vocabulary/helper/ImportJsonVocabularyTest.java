@@ -10,9 +10,10 @@ import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
 import org.junit.Test;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 
-public class ImportJsonVocabularyTest {
+public class ImportJsonVocabularyTest extends AbstractTest {
 
     @Test
     public void testConvertVocabulary() {

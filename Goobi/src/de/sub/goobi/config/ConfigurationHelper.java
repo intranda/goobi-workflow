@@ -28,6 +28,7 @@ import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -387,7 +388,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getApplicationTitle() {
-        return getLocalString("ApplicationTitle", "http://goobi.intranda.com");
+        return getLocalString("ApplicationTitle", "http://goobi.io");
     }
 
     public String getApplicationWebsiteMsg() {
@@ -689,6 +690,14 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("ldap_useTLS", false);
     }
 
+    public List<String> getAdditionalUserRights() {
+        List<String> additionalUserRights = getLocalList("userRight");
+        if (additionalUserRights == null || additionalUserRights.isEmpty()) {
+            additionalUserRights = Collections.emptyList();
+        }
+        return additionalUserRights;
+    }
+
     public String getGeonamesCredentials() {
         return getLocalString("geonames_account", null);
     }
@@ -957,6 +966,11 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("MetsEditorUseImageTiles", true);
 
     }
+    
+    public boolean getMetsEditorShowImageComments() {
+        return getLocalBoolean("MetsEditorShowImageComments", false);
+
+    }
 
     public boolean isShowSecondLogField() {
         return getLocalBoolean("ProcessLogShowSecondField", false);
@@ -1010,6 +1024,14 @@ public class ConfigurationHelper implements Serializable {
     @Deprecated
     public boolean isUseH2DB() {
         return MySQLHelper.isUsingH2();
+    }
+
+    public boolean isUseFulltextSearch() {
+        return getLocalBoolean("useFulltextSearch", false);
+    }
+
+    public String getFulltextSearchMode() {
+        return getLocalString("FulltextSearchMode", "BOOLEAN MODE");
     }
 
     public boolean isAllowGravatar() {
@@ -1158,7 +1180,7 @@ public class ConfigurationHelper implements Serializable {
             try (OutputStream out = Files.newOutputStream(fileLocal)) {
                 configLocal.save(out);
             } catch (IOException | ConfigurationException e) {
-                logger.error(e);
+                logger.error("Error saving local config: {}", e);
             }
         }
     }

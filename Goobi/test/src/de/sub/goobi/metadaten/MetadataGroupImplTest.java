@@ -1,21 +1,27 @@
 package de.sub.goobi.metadaten;
 
-import de.sub.goobi.mock.MockProcess;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.goobi.beans.Process;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
+import de.sub.goobi.AbstractTest;
+import de.sub.goobi.mock.MockProcess;
 import ugh.dl.MetadataGroup;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.*;
-
-public class MetadataGroupImplTest {
+public class MetadataGroupImplTest extends AbstractTest {
 
     private Prefs prefs;
     private Process process;

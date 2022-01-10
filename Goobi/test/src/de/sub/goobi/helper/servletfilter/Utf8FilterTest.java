@@ -1,6 +1,6 @@
 package de.sub.goobi.helper.servletfilter;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
-public class Utf8FilterTest {
+import de.sub.goobi.AbstractTest;
+
+public class Utf8FilterTest extends AbstractTest {
 
     @Test
     public void testDoFilter() throws IOException, ServletException {
