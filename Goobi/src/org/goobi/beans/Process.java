@@ -2348,6 +2348,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public List<String> getArchivedImageFolders() throws IOException, InterruptedException, SwapException, DAOException {
+        if (this.id == null) {
+            return new ArrayList<>();
+        }
         Path images = Paths.get(this.getImagesDirectory());
         try (Stream<Path> filesInImages = Files.list(images)) {
             return filesInImages
