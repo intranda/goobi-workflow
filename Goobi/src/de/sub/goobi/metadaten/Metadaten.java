@@ -41,9 +41,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
@@ -75,6 +78,8 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.jdom2.JDOMException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.omnifaces.util.Faces;
 
 import com.google.gson.Gson;
@@ -2120,6 +2125,24 @@ public class Metadaten implements Serializable {
             }
 
             this.myDocStruct.getParent().removeChild(this.myDocStruct);
+            if(this.myDocStruct.getAllToReferences() != null) {                
+                List<DocStruct> pageAreas = this.myDocStruct.getAllToReferences().stream()
+                        .map(ref -> ref.getTarget())
+                        .filter(t -> t != null)
+                        .filter(t -> StringUtils.isNotBlank(MetadatenErmitteln(t, "_COORDS")))
+                        .collect(Collectors.toList());
+                for (DocStruct area : pageAreas) {
+                    if(area.getAllFromReferences() != null) {                        
+                        List<DocStruct> referencedLogDs = area.getAllFromReferences().stream()
+                        .map(Reference::getSource)
+                        .filter(t -> t != null)
+                        .collect(Collectors.toList());
+                        if(referencedLogDs.isEmpty() || (referencedLogDs.size() == 1 && referencedLogDs.get(0).equals(this.myDocStruct))) {
+                            area.getParent().removeChild(area);
+                        }
+                    }
+                }
+            }
             this.myDocStruct = tempParent;
 
         }
@@ -2606,9 +2629,12 @@ public class Metadaten implements Serializable {
         DocStruct page = pages.get(imageIndex);
 
         for (PageAreaRectangle rect : data) {
-            DocStruct area = page.getAllChildren().get(Integer.valueOf(rect.getId()));
-            for (Metadata md : area.getAllMetadataByType(myPrefs.getMetadataTypeByName("_COORDS"))) {
-                md.setValue(rect.getX() + "," + rect.getY() + "," + rect.getW() + "," + rect.getH());
+            int index = Integer.valueOf(rect.getId());
+            if(index < page.getAllChildren().size()) {                
+                DocStruct area = page.getAllChildren().get(index);
+                for (Metadata md : area.getAllMetadataByType(myPrefs.getMetadataTypeByName("_COORDS"))) {
+                    md.setValue(rect.getX() + "," + rect.getY() + "," + rect.getW() + "," + rect.getH());
+                }
             }
 
         }
@@ -2616,22 +2642,37 @@ public class Metadaten implements Serializable {
     }
 
     public String getRectangles() {
-        StringBuilder sb = new StringBuilder();
         List<DocStruct> pages = document.getPhysicalDocStruct().getAllChildren();
         if (pages == null || pages.isEmpty() || pages.size() <= imageIndex) {
             return "";
         }
         DocStruct page = pages.get(imageIndex);
-        sb.append("[");
+        JSONArray rectangles = new JSONArray();
         if (page.getAllChildren() == null) {
             return "";
         }
         int index = 0;
-        for (DocStruct area : page.getAllChildren()) {
+        List<DocStruct> pageAreas = new ArrayList<>(page.getAllChildren());
+        for (DocStruct area : pageAreas) {
             String coordinates = MetadatenErmitteln(area, "_COORDS");
-            sb.append("{");
-            sb.append("\"id\":\"");
-            sb.append(index++);
+            DocStruct logDocStruct =  Optional.ofNullable(area.getAllFromReferences())
+            .flatMap(refs -> refs.stream().findFirst())
+            .map(Reference::getSource)
+//            .map(DocStruct::getIdentifier)
+            .orElse(null);
+//            if(StringUtils.isNotBlank(coordinates) && logDocStruct == null) {
+//                //existing rect without logStruct. Ignore
+//                continue;
+//            }
+            
+            JSONObject json = new JSONObject();
+            json.put("id", index++);
+            json.put("logId", logDocStruct);
+            if(logDocStruct != null && Objects.equals(logDocStruct, myDocStruct)) {                
+                json.put("highlight", true);
+            }
+//            if(Optional.ofNullable(this.myDocStruct).map(DocStruct::getIdentifier).orElse("").equals(logDocStruct)) {
+//            }
 
             String x = "";
             String y = "";
@@ -2648,27 +2689,21 @@ public class Metadaten implements Serializable {
                     w = matcher.group(3);
                     h = matcher.group(4);
                 }
+                
+                json.put("x", x);
+                json.put("y", y);
+                json.put("w", w);
+                json.put("h", h);
 
-                sb.append("\",\"x\":\"");
-                sb.append(x);
-                sb.append("\",\"y\":\"");
-                sb.append(y);
-                sb.append("\",\"w\":\"");
-                sb.append(w);
-                sb.append("\",\"h\":\"");
-                sb.append(h);
             }
-            sb.append("\"},");
             if (StringUtils.isBlank(x)) {
                 pageAreaEditionMode = true;
             }
+
+            rectangles.put(json);
         }
-        if (sb.length() > 1) {
-            sb.deleteCharAt(sb.length() - 1);
-        }
-        sb.append("]");
-        return sb.toString();
-    }
+        return rectangles.toString();
+     }
 
     public void deletePageArea() {
         if (currentPage == null || currentPage.getType().equals("div")) {

@@ -9,6 +9,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          * @description Method to initialize the jsf ajax listener.
          * @method init
          */
+        begin: new rxjs.Subject(),
+        complete: new rxjs.Subject(),
+        success: new rxjs.Subject(),
     	init: function( config ) {
             if ( _debug ) {
                 console.log( 'Initializing: goobiWorkflowJS.jsfAjax.init' );
@@ -26,6 +29,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                     var ajaxloader = document.getElementById("ajaxloader");
                     switch (data.status) {
                         case 'begin':
+                        	goobiWorkflow.jsfAjax.begin.next(data);
                             // show button ajax loader
                             if ($('.btn').hasClass('btn--loader')) {
                                 $('.btn-ajax-loader').addClass('in');
@@ -38,9 +42,11 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             goobiWorkflow.tinymce.renderInputFields(data);
                             break;
                         case 'complete':
+                        	goobiWorkflow.jsfAjax.complete.next(data);
                             ajaxloader.style.display = 'none';
                             break;
                         case 'success':
+                        	goobiWorkflow.jsfAjax.success.next(data);
                             if ( _debug ){
                                 console.log("handling jsf ajax success");
                             }

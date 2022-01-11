@@ -8,6 +8,7 @@
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface />
@@ -237,6 +238,11 @@
                                     title="#{msgs.mets_createPageArea}"
                                     aria-label="#{msgs.mets_createPageArea}"
                                     jsf:action="#{Metadaten.addPageAreaAndAssignToDocststuct}">
+                                    <c:if test="#{empty Metadaten.addDocStructType2}">
+	                                    <f:passThroughAttribute
+			                                name="disabled"
+			                                value="disabled" />
+		                            </c:if>
                                     <i
                                         class="fa fa-crop"
                                         aria-hidden="true"></i>
@@ -387,7 +393,7 @@
                                     jsf:action="#{Metadaten.KnotenAdd}">
                                     #{msgs.strukturelementHinzufuegen}
                                     <f:ajax
-                                        render="@form :treeform :messages"
+                                        render="@form :treeform :messages :openseadragonform:pageareas"
                                         execute="@form" />
                                 </button>
                             </div>
