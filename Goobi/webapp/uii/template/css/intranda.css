@@ -958,6 +958,10 @@ dropdown-menu>li>a {
     color: black;
 }
 
+.font-white {
+    color: white;
+}
+
 .font-size-xs {
     font-size: 11px;
 }
