@@ -232,17 +232,12 @@
                             </div>
                             <div class="col-3">
                                 <!-- or create new page area -->
-                                <button jsf:rendered="#{not Metadaten.pageAreaEditionMode}"
+                                <button jsf:rendered="#{(not Metadaten.pageAreaEditionMode) and ((Metadaten.neuesElementWohin gt 2 and not empty Metadaten.addDocStructType2) or (Metadaten.neuesElementWohin lt 3 and not empty Metadaten.addDocStructType1))}"
                                     class="btn btn--icon-gray"
                                     type="button"
                                     title="#{msgs.mets_createPageArea}"
                                     aria-label="#{msgs.mets_createPageArea}"
                                     jsf:action="#{Metadaten.addPageAreaAndAssignToDocststuct}">
-                                    <c:if test="#{empty Metadaten.addDocStructType2}">
-	                                    <f:passThroughAttribute
-			                                name="disabled"
-			                                value="disabled" />
-		                            </c:if>
                                     <i
                                         class="fa fa-crop"
                                         aria-hidden="true"></i>
@@ -257,6 +252,18 @@
 		                                name="data-placement"
 		                                value="top" />
                                 </button>
+                                <!-- disabled dummy button in case no docStruct type is selected -->
+                                <button jsf:rendered="#{(not Metadaten.pageAreaEditionMode) and ((Metadaten.neuesElementWohin gt 2 and empty Metadaten.addDocStructType2) or (Metadaten.neuesElementWohin lt 3 and empty Metadaten.addDocStructType1))}"
+                                    class="btn btn--icon-gray"
+                                    type="button"
+                                    aria-label="#{msgs.mets_createPageArea}"
+                                    disabled="disabled">
+                                    <i
+                                        class="fa fa-crop"
+                                        aria-hidden="true"></i>
+                                </button>
+                                
+                                
                                 
                                 <button jsf:rendered="#{Metadaten.pageAreaEditionMode}"
                                     class="btn btn--icon-red cancel-area-edition"
