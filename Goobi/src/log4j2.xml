@@ -48,15 +48,15 @@
            <AppenderRef ref="file" />
        </Logger>
     
-        <Logger name="de.sub.goobi" level="trace" additivity="false">
-            <AppenderRef ref="file" level="trace"/>
+        <Logger name="de.sub.goobi" level="debug" additivity="false">
+            <AppenderRef ref="file" level="debug"/>
             <AppenderRef ref="STDOUT" level="${env:LOG_LEVEL:-error}"/>
         </Logger>
 	    <Logger name="org.reflections" level="error" additivity="false">
 	        <AppenderRef ref="file" />
 	    </Logger>
-	    <Logger name="org.goobi" level="trace" additivity="false">
-	        <AppenderRef ref="file" level="trace"/>
+	    <Logger name="org.goobi" level="debug" additivity="false">
+	        <AppenderRef ref="file" level="debug"/>
             <AppenderRef ref="STDOUT" level="${env:LOG_LEVEL:-error}"/>
 	    </Logger>
         <Logger name="de.unigoettingen.sub.search.opac" level="debug" additivity="false">
