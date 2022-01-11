@@ -178,7 +178,7 @@ public class StepBean extends BasicBean implements Serializable {
     private IExportPlugin exportPlugin = null;
 
     @Getter
-    private Map<String, List<String>> displayableMetadataMap;
+    private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
 
     @Inject
     @Push
