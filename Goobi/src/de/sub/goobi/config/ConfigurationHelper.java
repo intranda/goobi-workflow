@@ -970,10 +970,13 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("MetsEditorUseImageTiles", true);
 
     }
-    
-    public boolean getMetsEditorShowImageComments() {
-        return getLocalBoolean("MetsEditorShowImageComments", false);
 
+    public boolean getMetsEditorShowImageComments() {
+        return isShowImageComments();
+    }
+
+    public boolean isShowImageComments() {
+        return getLocalBoolean("ShowImageComments", false);
     }
 
     public boolean isShowSecondLogField() {

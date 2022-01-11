@@ -2326,7 +2326,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         HashMap<String, String> masterComments = helper.getComments(folderMaster);
 
         for (String imageName : masterComments.keySet()) {
-            lstComments.add(new ImageComment("Master", imageName, masterComments.get(imageName)));
+            String comment = masterComments.get(imageName);
+            if (!StringUtils.isBlank(comment)) {
+                lstComments.add(new ImageComment("Master", imageName, comment));
+            }
         }
 
         if (this.isMediaFolderExists()) {
@@ -2334,14 +2337,21 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             HashMap<String, String> mediaComments = helper.getComments(folderMedia);
 
             for (String imageName : mediaComments.keySet()) {
-                lstComments.add(new ImageComment("Media", imageName, mediaComments.get(imageName)));
+                String comment = mediaComments.get(imageName);
+                if (!StringUtils.isBlank(comment)) {
+                    lstComments.add(new ImageComment("Media", imageName, comment));
+                }
             }
         }
 
+        System.out.println(lstComments);
         return lstComments;
     }
 
     public List<String> getArchivedImageFolders() throws IOException, InterruptedException, SwapException, DAOException {
+        if (this.id == null) {
+            return new ArrayList<>();
+        }
         Path images = Paths.get(this.getImagesDirectory());
         try (Stream<Path> filesInImages = Files.list(images)) {
             return filesInImages
