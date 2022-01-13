@@ -8,7 +8,8 @@
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:o="http://omnifaces.org/ui">
 
     <composite:interface />
 
@@ -249,6 +250,88 @@
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:ajax execute="@form" render="@form :treeform" />
                             </button>
+                        </li>
+                        <!-- ADD PAGE AREA TO CURRENT DOCSTRUCT -->
+                        <li>
+                            <button jsf:rendered="#{not Metadaten.pageAreaEditionMode}"
+                                    class="btn btn--icon"
+                                    title="#{msgs.mets_createPageArea}"
+                                    aria-label="#{msgs.mets_createPageArea}"
+                                    jsf:action="#{Metadaten.addPageAreaAndAssignToDocststuct(Metadaten.myDocStruct)}">
+                                    <span class="fa fa-crop fa-lg fa-with-bg" />
+                                    <f:ajax render="struct structEdit :pageareas" execute=":pageareas"></f:ajax>
+                                    <f:passThroughAttribute
+                                        name="data-renderimage"
+                                        value="true" />
+                                    <f:passThroughAttribute
+		                                name="data-toggle"
+		                                value="tooltip" />
+		                            <f:passThroughAttribute
+		                                name="data-placement"
+		                                value="top" />
+                                </button>
+                                <button jsf:rendered="#{Metadaten.pageAreaEditionMode}"
+                                    class="btn btn--icon cancel-area-edition"
+                                    title="#{msgs.mets_cancelPageArea}"
+                                    aria-label="#{msgs.mets_cancelPageArea}"
+                                    jsf:action="#{Metadaten.cancelPageAreaEdition}">
+                                    <span class="fa fa-ban fa-lg fa-with-bg" style="background:red"/>
+                                    <f:ajax render="struct structEdit :pageareas"></f:ajax>
+                                    <f:passThroughAttribute
+                                        name="data-renderimage"
+                                        value="true" />
+                                    <f:passThroughAttribute
+		                                name="data-toggle"
+		                                value="tooltip" />
+		                            <f:passThroughAttribute
+		                                name="data-placement"
+		                                value="top" />
+                                </button>
+                                <button jsf:rendered="#{Metadaten.pageAreaEditionMode}"
+                                    class="btn btn--icon"
+                                    title="#{msgs.mets_completePageArea}"
+                                    aria-label="#{msgs.mets_completePageArea}"
+                                    jsf:action="#{Metadaten.setPageAreaEditionMode(false)}">
+                                    <span class="fa fa-check fa-lg fa-with-bg" />
+                                    <f:ajax render="struct structEdit :pageareas"></f:ajax>
+                                    <f:passThroughAttribute
+                                        name="data-renderimage"
+                                        value="true" />
+                                    <f:passThroughAttribute
+		                                name="data-toggle"
+		                                value="tooltip" />
+		                            <f:passThroughAttribute
+		                                name="data-placement"
+		                                value="top" />
+                                </button>
+		                        <h:outputText value="Seitenbereich dem Strukturelement zuweisen" />
+                        </li>
+                        <!-- DELETE PAGE AREA -->
+                        <li>
+                            <button class="btn btn--icon"
+                            		type="button"
+                                    title="#{msgs.mets_PageArea}"
+                                    aria-label="#{msgs.mets_deletePageArea}"
+                                    data-pagearea-delete="start"
+                                    data-renderimage="true"
+                                    data-toggle="tooltip"
+                                    data-placement="top">
+                                    <span class="fa fa-eraser fa-lg fa-with-bg" />
+                                </button>
+                                <button
+                                	type="button"
+                                    class="btn btn--icon"
+                                    style="display: none;"
+                                    title="#{msgs.mets_cancelPageArea}"
+                                    aria-label="#{msgs.mets_cancelPageArea}"
+                                    data-pagearea-delete="cancel"
+                                    data-renderimage="true"
+                                    data-toggle="tooltip"
+                                    data-placement="top">
+                                    <span class="fa fa-ban fa-lg fa-with-bg" style="background:red"/>
+                                </button>
+                                <o:commandScript name="deletePageArea" action="#{Metadaten.deletePageAreaCommand}"/>
+		                        <h:outputText value="Seitenbereich löschen" />
                         </li>
     
                     </ul>
