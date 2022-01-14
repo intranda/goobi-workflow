@@ -1,5 +1,8 @@
 package org.goobi.beans;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -32,10 +35,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.goobi.api.mail.SendMail;
 import org.goobi.api.mq.QueueType;
+import org.json.JSONObject;
+import org.yaml.snakeyaml.Yaml;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepEditType;
@@ -97,6 +108,10 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     @Getter
     @Setter
     private boolean typAutomaticThumbnail = false;
+    @Getter
+    @Setter
+    private JSONObject automaticThumbnailSettings = new JSONObject("{'Master':false,'Media':false, 'Sizes':[800] }");
+    private String automaticThumbnailSettingsYaml;
     @Getter
     @Setter
     private boolean typImportFileUpload = false;
@@ -296,6 +311,23 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     public String getBearbeitungsendeAsFormattedString() {
         return Helper.getDateAsFormattedString(this.bearbeitungsende);
+    }
+    
+    public String getAutomaticThumbnailSettingsYaml() throws JsonProcessingException {
+    	JsonNode jsonNodeTree = new ObjectMapper().readTree(this.automaticThumbnailSettings.toString());
+    	this.automaticThumbnailSettingsYaml = new YAMLMapper().writeValueAsString(jsonNodeTree);
+    	System.out.println(this.automaticThumbnailSettingsYaml);
+    	return automaticThumbnailSettingsYaml;
+    }
+    
+    public void setAutomaticThumbnailSettingsYaml(String yamlString) {
+    	 Yaml yaml= new Yaml();
+    	 @SuppressWarnings("unchecked")
+		Map<String,Object> map= (Map<String, Object>) yaml.load(yamlString);
+    	 
+    	 this.automaticThumbnailSettingsYaml=yamlString;
+    	 this.automaticThumbnailSettings=new JSONObject(map);
+    	 System.out.println(this.automaticThumbnailSettings);
     }
 
     /**

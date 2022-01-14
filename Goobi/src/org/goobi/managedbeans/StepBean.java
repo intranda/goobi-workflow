@@ -87,6 +87,7 @@ import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
@@ -380,11 +381,22 @@ public class StepBean extends BasicBean implements Serializable {
         return "task_edit";
     }
 
-    public String EditStep() {
+    public String EditStep() throws SwapException, DAOException, IOException, InterruptedException {
         mySchritt = StepManager.getStepById(mySchritt.getId());
         mySchritt.lazyLoad();
-
+        if(mySchritt.isTypAutomaticThumbnail()) {
+        	this.generateThumbnailsWithSettings();
+        }
+        
         return "task_edit";
+    }
+    
+    public void generateThumbnailsWithSettings() throws IOException, InterruptedException, SwapException, DAOException {
+    	System.out.println(mySchritt.getAutomaticThumbnailSettings());
+    	Boolean master = mySchritt.getAutomaticThumbnailSettings().getBoolean("Master");
+    	Boolean media = mySchritt.getAutomaticThumbnailSettings().getBoolean("Media");
+    	int size = mySchritt.getAutomaticThumbnailSettings().getJSONArray("Sizes").optInt(0);
+    	mySchritt.getProzess().generateThumbnails(master, media, String.valueOf(size));
     }
 
     public String TakeOverBatch() {

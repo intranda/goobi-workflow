@@ -1,5 +1,6 @@
 package org.goobi.beans;
 
+import java.io.BufferedReader;
 import java.io.FileOutputStream;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -29,6 +30,7 @@ import java.io.FileOutputStream;
  */
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -603,6 +605,46 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * Thumbs
      */
 
+    public void generateThumbnails(Boolean master, Boolean media, String size) throws IOException, InterruptedException, SwapException, DAOException {
+    	String imageDirectory;
+    	if(master) {
+    		imageDirectory = this.getImagesOrigDirectory(false);
+    		generateThumbnailsFromDirectory(imageDirectory, size, true);
+    	}
+    	if(media) {
+    		imageDirectory = this.getImagesTifDirectory(false);
+    		generateThumbnailsFromDirectory(imageDirectory, size, false);
+    	}
+    }
+    
+    public void generateThumbnailsFromDirectory(String imageDirectory, String size, Boolean master) throws SwapException, DAOException {
+    	java.lang.Process thumbnailProcess;
+		try {
+			String thumbnailDirectory;
+			if(master) {
+				thumbnailDirectory = getThumbsDirectory()+"master_"+titel+"_media_"+size;
+			}else {
+				thumbnailDirectory = getThumbsDirectory()+""+titel+"_media_"+size;
+			}
+			String[] command = {"/bin/bash", "/opt/digiverso/goobi/scripts/gm-convert.sh", "-s", imageDirectory, "-d",
+					thumbnailDirectory, "-D", ".jpg", "-o", "-thumbnail "+size+"x"+size};
+			thumbnailProcess = new ProcessBuilder(command).start();
+			BufferedReader input = new BufferedReader(new InputStreamReader(thumbnailProcess.getInputStream())); 
+            System.out.println(command);
+			String line; 
+            while ((line = input.readLine()) != null) { 
+                System.out.println(line); 
+            } 
+            int exitCode = thumbnailProcess.waitFor();
+        } catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException i) {
+			i.printStackTrace();
+		}
+		
+    }
+    
     /**
      * Get the process thumbnail directory which is located directly in the process directory and named 'thumbs'
      * 
