@@ -49,7 +49,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
@@ -2352,12 +2351,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (this.id == null) {
             return new ArrayList<>();
         }
-        Path images = Paths.get(this.getImagesDirectory());
-        try (Stream<Path> filesInImages = Files.list(images)) {
-            return filesInImages
-                    .filter(p -> Files.isRegularFile(p) && p.getFileName().toString().endsWith(".xml"))
-                    .map(p -> p.getFileName().toString().replace(".xml", ""))
-                    .collect(Collectors.toList());
-        }
+        List<String> filesInImages = StorageProvider.getInstance().list(this.getImagesDirectory());
+        return filesInImages
+                .stream()
+                .filter(p -> p.endsWith(".xml"))
+                .map(p -> Paths.get(p).getFileName().toString().replace(".xml", ""))
+                .collect(Collectors.toList());
     }
 }
