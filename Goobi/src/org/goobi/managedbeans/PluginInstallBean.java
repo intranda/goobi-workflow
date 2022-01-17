@@ -7,11 +7,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
 import javax.servlet.http.Part;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.tools.tar.TarEntry;
 import org.apache.tools.tar.TarInputStream;
 import org.goobi.production.plugin.PluginInstallConflict;
@@ -23,8 +23,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
-@ManagedBean
-@SessionScoped
+@Named
+@WindowScoped
 @Log4j2
 public class PluginInstallBean {
 
@@ -112,7 +112,7 @@ public class PluginInstallBean {
     public boolean getAreAllConflictsFixed() {
         Object[] conflicts = this.pluginInstaller.getCheck().getConflicts().values().toArray();
         for (int index = 0; index < conflicts.length; index++) {
-            PluginInstallConflict conflict = (PluginInstallConflict)(conflicts[index]);
+            PluginInstallConflict conflict = (PluginInstallConflict) (conflicts[index]);
             if (!conflict.isFixed()) {
                 return false;
             }
