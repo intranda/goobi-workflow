@@ -65,7 +65,6 @@ import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.AltoChange;
-import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.SimpleAlto;
@@ -4921,6 +4920,10 @@ public class Metadaten implements Serializable {
     }
 
     public void checkSelectedThumbnail(int imageIndex) {
+        // The selection should only happen in "Paginierung"-mode
+        if (!this.modusAnsicht.equals("Paginierung")) {
+            return;
+        }
         if (pageMap != null && !pageMap.isEmpty()) {
             for (String pageObject : pageMap.getKeyList()) {
                 PhysicalObject po = pageMap.get(pageObject);
