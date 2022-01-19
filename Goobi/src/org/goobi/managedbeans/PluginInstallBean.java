@@ -3,6 +3,7 @@ package org.goobi.managedbeans;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -26,7 +27,9 @@ import lombok.extern.log4j.Log4j2;
 @Named
 @WindowScoped
 @Log4j2
-public class PluginInstallBean {
+public class PluginInstallBean implements Serializable {
+
+    private static final long serialVersionUID = 6994049417697395754L;
 
     @Getter
     @Setter
