@@ -778,88 +778,41 @@
 		                                                            </div>
 		                                                            <div class="modal-footer">
 		
-		                                                                <button
-		                                                                    onclick="sessionStorage.removeItem('columnWidths');"
-		                                                                    jsf:action="#{Metadaten.XMLlesen}"
-		                                                                    jsf:id="action15a"
-		                                                                    title="#{msgs.discard}"
-		                                                                    jsf:rel="tooltip"
-		                                                                    class="btn btn-lightred pull-left">
-		                                                                    <i class="fa fa-trash-o margin-right-10"></i>
-		                                                                    <h:outputText value="#{msgs.discard}" />
-		                                                                    <f:passThroughAttribute
-		                                                                        name="data-toggle"
-		                                                                        value="tooltip" />
-		                                                                    <f:param
-		                                                                        name="ProzesseID"
-		                                                                        value="#{item.id}" />
-		                                                                    <f:param
-		                                                                        name="BenutzerID"
-		                                                                        value="#{LoginForm.myBenutzer.id}" />
-		                                                                    <f:param
-		                                                                        name="zurueck"
-		                                                                        value="process_all" />
-		                                                                    <f:param
-		                                                                        name="discardChanges"
-		                                                                        value="true" />
-		                                                                    <f:setPropertyActionListener
-		                                                                        value="#{null}"
-		                                                                        target="#{NavigationForm.uiStatus.mets_toc1}" />
-		                                                                    <f:setPropertyActionListener
-		                                                                        value="#{null}"
-		                                                                        target="#{NavigationForm.uiStatus.mets_toc2}" />
-		                                                                    <f:setPropertyActionListener
-		                                                                        value="#{null}"
-		                                                                        target="#{NavigationForm.uiStatus.mets_toc3}" />
-		                                                                    <f:setPropertyActionListener
-		                                                                        value="#{null}"
-		                                                                        target="#{NavigationForm.uiStatus.mets_toc4}" />
-		                                                                    <f:setPropertyActionListener
-		                                                                        value="#{null}"
-		                                                                        target="#{NavigationForm.uiStatus.mets_toc5}" />
-		                                                                </button>
-		
-		                                                                <button
-		                                                                    onclick="sessionStorage.removeItem('columnWidths');"
-		                                                                    jsf:action="#{Metadaten.XMLlesen}"
-		                                                                    jsf:id="action15b"
-		                                                                    title="#{msgs.overwrite}"
-		                                                                    jsf:rel="tooltip"
-		                                                                    class="btn btn-green">
-		                                                                    <i class="fa fa-floppy-o margin-right-10"></i>
-		                                                                    <h:outputText value="#{msgs.overwrite}" />
-		                                                                    <f:passThroughAttribute
-		                                                                        name="data-toggle"
-		                                                                        value="tooltip" />
-		                                                                    <f:param
-		                                                                        name="ProzesseID"
-		                                                                        value="#{item.id}" />
-		                                                                    <f:param
-		                                                                        name="BenutzerID"
-		                                                                        value="#{LoginForm.myBenutzer.id}" />
-		                                                                    <f:param
-		                                                                        name="zurueck"
-		                                                                        value="process_all" />
-		                                                                    <f:param
-		                                                                        name="overwriteChanges"
-		                                                                        value="true" />
-		                                                                    <f:setPropertyActionListener
-		                                                                        value="#{null}"
-		                                                                        target="#{NavigationForm.uiStatus.mets_toc1}" />
-		                                                                    <f:setPropertyActionListener
-		                                                                        value="#{null}"
-		                                                                        target="#{NavigationForm.uiStatus.mets_toc2}" />
-		                                                                    <f:setPropertyActionListener
-		                                                                        value="#{null}"
-		                                                                        target="#{NavigationForm.uiStatus.mets_toc3}" />
-		                                                                    <f:setPropertyActionListener
-		                                                                        value="#{null}"
-		                                                                        target="#{NavigationForm.uiStatus.mets_toc4}" />
-		                                                                    <f:setPropertyActionListener
-		                                                                        value="#{null}"
-		                                                                        target="#{NavigationForm.uiStatus.mets_toc5}" />
-		                                                                </button>
-		
+        
+                                                           <h:commandLink onclick="sessionStorage.removeItem('columnWidths');" 
+                                                           action="#{Metadaten.XMLlesen}" id="action15a" title="#{msgs.discard}" rel="tooltip"
+                                                                styleClass="btn btn-lightred pull-left">
+                                                                <i class="fa fa-trash-o margin-right-10"></i>
+                                                                <h:outputText value="#{msgs.discard}" />
+                                                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                                                <f:param name="ProzesseID" value="#{item.id}" />
+                                                                <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
+                                                                <f:param name="zurueck" value="process_all" />
+                                                                <f:param name="discardChanges" value="true" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
+                                                            </h:commandLink>
+
+                                                            <h:commandLink onclick="sessionStorage.removeItem('columnWidths');" action="#{Metadaten.XMLlesen}" id="action15b" title="#{msgs.overwrite}" rel="tooltip"
+                                                                styleClass="btn btn-green">
+                                                                <i class="fa fa-floppy-o margin-right-10"></i>
+                                                                <h:outputText value="#{msgs.overwrite}" />
+                                                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                                                <f:param name="ProzesseID" value="#{item.id}" />
+                                                                <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
+                                                                <f:param name="zurueck" value="process_all" />
+                                                                <f:param name="overwriteChanges" value="true" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
+                                                            </h:commandLink>
+        
+        
 		                                                            </div>
 		                                                        </div>
 		                                                    </div>
