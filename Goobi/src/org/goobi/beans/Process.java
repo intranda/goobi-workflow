@@ -1,6 +1,14 @@
 package org.goobi.beans;
 
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -34,6 +42,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.net.URI;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -55,12 +65,14 @@ import java.util.stream.Stream;
 
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -103,11 +115,22 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
+import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
+import de.unigoettingen.sub.commons.contentlib.exceptions.IllegalRequestException;
+import de.unigoettingen.sub.commons.contentlib.exceptions.ServiceNotImplementedException;
+import de.unigoettingen.sub.commons.contentlib.imagelib.ImageFileFormat;
+import de.unigoettingen.sub.commons.contentlib.imagelib.ImageType.Colortype;
+import de.unigoettingen.sub.commons.contentlib.imagelib.transform.RegionRequest;
+import de.unigoettingen.sub.commons.contentlib.imagelib.transform.Rotation;
+import de.unigoettingen.sub.commons.contentlib.imagelib.transform.Scale;
+import de.unigoettingen.sub.commons.contentlib.servlet.controller.GetImageAction;
+import de.unigoettingen.sub.commons.contentlib.servlet.model.ImageRequest;
 import io.goobi.workflow.xslt.XsltPreparatorDocket;
 import io.goobi.workflow.xslt.XsltPreparatorMetadata;
 import io.goobi.workflow.xslt.XsltToPdf;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -120,6 +143,7 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
+@Log4j2
 public class Process implements Serializable, DatabaseObject, Comparable<Process> {
     private static final Logger logger = LogManager.getLogger(Process.class);
     private static final long serialVersionUID = -6503348094655786275L;
@@ -605,7 +629,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * Thumbs
      */
 
-    public void generateThumbnails(Boolean master, Boolean media, String size) throws IOException, InterruptedException, SwapException, DAOException {
+    public void generateThumbnails(Boolean master, Boolean media, String size) throws IOException, InterruptedException, SwapException, DAOException, ContentLibException {
+    	System.out.println("generating thumbnails");
     	String imageDirectory;
     	if(master) {
     		imageDirectory = this.getImagesOrigDirectory(false);
@@ -617,7 +642,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     	}
     }
     
-    public void generateThumbnailsFromDirectory(String imageDirectory, String size, Boolean master) throws SwapException, DAOException {
+    public void generateThumbnailsFromDirectory(String imageDirectory, String size, Boolean master) throws SwapException, DAOException, ContentLibException {
+    	System.out.println("generating thumbnails from directory: "+imageDirectory);
     	java.lang.Process thumbnailProcess;
 		try {
 			String thumbnailDirectory;
@@ -626,16 +652,45 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 			}else {
 				thumbnailDirectory = getThumbsDirectory()+""+titel+"_media_"+size;
 			}
-			String[] command = {"/bin/bash", "/opt/digiverso/goobi/scripts/gm-convert.sh", "-s", imageDirectory, "-d",
-					thumbnailDirectory, "-D", ".jpg", "-o", "-thumbnail "+size+"x"+size};
-			thumbnailProcess = new ProcessBuilder(command).start();
-			BufferedReader input = new BufferedReader(new InputStreamReader(thumbnailProcess.getInputStream())); 
-            System.out.println(command);
-			String line; 
-            while ((line = input.readLine()) != null) { 
-                System.out.println(line); 
-            } 
-            int exitCode = thumbnailProcess.waitFor();
+			try {
+				File[] fileList = new File(imageDirectory).listFiles();
+				Scale scale = new Scale.ScaleToBox(new Dimension(100,100));
+				for(File img : fileList) {
+					if(img.isDirectory()) {
+						continue;
+					}
+					String basename = FilenameUtils.getBaseName(img.toString());
+					OutputStream out = new FileOutputStream(thumbnailDirectory+basename+".jpg");
+					ImageRequest request = new ImageRequest(new URI(img.getAbsolutePath()), RegionRequest.FULL, scale, Rotation.NONE, Colortype.DEFAULT, ImageFileFormat.JPG, Map.of("ignoreWatermark", "true"));
+					new GetImageAction().writeImage(request, out);
+				}
+	        }catch(Exception e) {
+	        	log.error(e);
+	        }
+			//URI origImage = Path.of("/opt/digiverso/goobi/metadata/3/images/bergsphi_625017145_master/00000025.tif").toUri();
+			//BufferedImage img = ImageIO.read(new File("/opt/digiverso/goobi/metadata/3/images/bergsphi_625017145_master/00000025.tif"));
+			//BufferedImage scaled = scale(img,0.5);
+			//ImageIO.write(scaled, "jpg", new FileOutputStream("output25.jpg"));			
+			//try(OutputStream out = new FileOutputStream("output25.jpg")) {
+			//	Dimension x = new Dimension(100,100);
+			//	Scale scale = new Scale.ScaleToBox(x);
+	        //    ImageRequest request = new ImageRequest(origImage, RegionRequest.FULL, scale, Rotation.NONE, Colortype.DEFAULT, ImageFileFormat.JPG, Map.of("ignoreWatermark", "true"));
+	        //    new GetImageAction().writeImage(request, out);
+	        //}catch(Exception e) {
+	        //	log.error(e);
+	        //}
+			//String[] command = {"/bin/bash", "/opt/digiverso/goobi/scripts/gm-convert.sh", "-s", imageDirectory, "-d",
+			//		thumbnailDirectory, "-D", ".jpg", "-o", "-thumbnail "+size+"x"+size};
+			//thumbnailProcess = new ProcessBuilder(command).start();
+			//BufferedReader input = new BufferedReader(new InputStreamReader(thumbnailProcess.getInputStream())); 
+            //System.out.println(command.toString());
+            //System.out.println(thumbnailDirectory);
+            //String line; 
+           // while ((line = input.readLine()) != null) { 
+           //     System.out.println(line); 
+            //} 
+            //int exitCode = thumbnailProcess.waitFor();
+            //System.out.println(exitCode);
         } catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -661,7 +716,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     /**
      * Return all thumbnail directories containing thumbs for the images stored in the given images directory as a map hashed by the thumbnail size.
-     * If no thumbnail directories exist, an empty map is returned
+     * If no thumbnail directories exist, anfalse empty map is returned
      * 
      * @param imageDirectory The path of an image directory, either only the name or the entire path.
      * @return A map of folders containing thumbnails for the given imageDirectory hashed by thumbnail size

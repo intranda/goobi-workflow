@@ -96,6 +96,7 @@ import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -382,21 +383,31 @@ public class StepBean extends BasicBean implements Serializable {
     }
 
     public String EditStep() throws SwapException, DAOException, IOException, InterruptedException {
-        mySchritt = StepManager.getStepById(mySchritt.getId());
-        mySchritt.lazyLoad();
-        if(mySchritt.isTypAutomaticThumbnail()) {
-        	this.generateThumbnailsWithSettings();
-        }
+    	try {	
+    		System.out.println("Edit step");
+    		mySchritt = StepManager.getStepById(mySchritt.getId());
+    		mySchritt.lazyLoad();
+    		if(mySchritt.isTypAutomaticThumbnail()) {
+    			this.generateThumbnailsWithSettings();
+    		}
+    	} catch(Exception e) {
+    		System.out.println(e);
+    	}
         
         return "task_edit";
     }
     
     public void generateThumbnailsWithSettings() throws IOException, InterruptedException, SwapException, DAOException {
-    	System.out.println(mySchritt.getAutomaticThumbnailSettings());
+    	System.out.println("with settings");
     	Boolean master = mySchritt.getAutomaticThumbnailSettings().getBoolean("Master");
     	Boolean media = mySchritt.getAutomaticThumbnailSettings().getBoolean("Media");
     	int size = mySchritt.getAutomaticThumbnailSettings().getJSONArray("Sizes").optInt(0);
-    	mySchritt.getProzess().generateThumbnails(master, media, String.valueOf(size));
+    	try {
+			mySchritt.getProzess().generateThumbnails(master, media, String.valueOf(size));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     public String TakeOverBatch() {
