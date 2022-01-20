@@ -269,6 +269,13 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public void saveRecordEdition() {
         currentVocabRecord.setValid(true);
         for (Field field : currentVocabRecord.getFields()) {
+
+            // If the field is a text field, the value is trimmed to avoid leading or trailing whitespaces
+            String type = field.getDefinition().getType();
+            if (type.equals("input") || type.equals("textarea") || type.equals("html")) {
+                field.setValue(field.getValue().trim());
+            }
+
             field.setValidationMessage(null);
             if (field.getDefinition().isRequired()) {
                 if (StringUtils.isBlank(field.getValue())) {
@@ -325,8 +332,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
         int columnCounter = 0;
         for (Definition definition : definitionList) {
             headerRow.createCell(columnCounter)
-            .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
-                    : definition.getLabel());
+                    .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
+                            : definition.getLabel());
             columnCounter = columnCounter + 1;
         }
 
@@ -389,7 +396,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
         if (importFile.getFileName().toString().endsWith(".json")) {
 
-            List<VocabRecord> records =   ImportJsonVocabulary.convertJsonVocabulary(currentVocabulary, importFile);
+            List<VocabRecord> records = ImportJsonVocabulary.convertJsonVocabulary(currentVocabulary, importFile);
             VocabularyManager.saveVocabulary(currentVocabulary);
             VocabularyManager.insertNewRecords(records, currentVocabulary.getId());
 
