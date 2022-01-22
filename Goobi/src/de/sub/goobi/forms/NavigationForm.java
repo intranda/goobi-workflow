@@ -41,6 +41,7 @@ import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.api.mail.SendMail;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IPushPlugin;
 import org.goobi.production.plugin.interfaces.IWorkflowPlugin;
 import org.omnifaces.cdi.Push;
 import org.omnifaces.cdi.PushContext;
@@ -184,6 +185,9 @@ public class NavigationForm implements Serializable{
     public String setPlugin(String pluginName) {
         currentWorkflowPluginName = pluginName;
         workflowPlugin = (IWorkflowPlugin) PluginLoader.getPluginByTitle(PluginType.Workflow, currentWorkflowPluginName);
+        if (workflowPlugin instanceof IPushPlugin) {
+            ((IPushPlugin) workflowPlugin).setPushContext(workflowPluginPush);
+        }
         return "workflow";
     }
 
