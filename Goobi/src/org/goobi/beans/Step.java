@@ -110,7 +110,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private boolean typAutomaticThumbnail = false;
     @Getter
     @Setter
-    private JSONObject automaticThumbnailSettings = new JSONObject("{'Master':true,'Media':false, 'Sizes':[800] }");
+    private JSONObject automaticThumbnailSettings = new JSONObject("{'Master':true,'Media':true, 'Sizes':[800] }");
     private String automaticThumbnailSettingsYaml;
     @Getter
     @Setter

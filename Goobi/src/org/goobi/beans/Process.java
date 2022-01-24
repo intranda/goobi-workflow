@@ -646,12 +646,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     	System.out.println("generating thumbnails from directory: "+imageDirectory);
     	java.lang.Process thumbnailProcess;
 		try {
-			String thumbnailDirectory;
-			if(master) {
-				thumbnailDirectory = getThumbsDirectory()+"master_"+titel+"_media_"+size;
-			}else {
-				thumbnailDirectory = getThumbsDirectory()+""+titel+"_media_"+size;
+			String thumbnailDirectory = getThumbsDirectory()+Paths.get(imageDirectory).getFileName().toString()+"_"+size;
+			File outputDirectory = new File(thumbnailDirectory);
+			if(! outputDirectory.exists()) {
+				outputDirectory.mkdirs();
 			}
+			System.out.println("placing thumbnails here: "+thumbnailDirectory);
 			try {
 				File[] fileList = new File(imageDirectory).listFiles();
 				Scale scale = new Scale.ScaleToBox(new Dimension(100,100));
@@ -660,7 +660,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 						continue;
 					}
 					String basename = FilenameUtils.getBaseName(img.toString());
-					OutputStream out = new FileOutputStream(thumbnailDirectory+basename+".jpg");
+					
+					OutputStream out = new FileOutputStream(thumbnailDirectory+FileSystems.getDefault().getSeparator()+basename+"_"+size+".jpg");
 					ImageRequest request = new ImageRequest(new URI(img.getAbsolutePath()), RegionRequest.FULL, scale, Rotation.NONE, Colortype.DEFAULT, ImageFileFormat.JPG, Map.of("ignoreWatermark", "true"));
 					new GetImageAction().writeImage(request, out);
 				}
@@ -691,12 +692,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             //} 
             //int exitCode = thumbnailProcess.waitFor();
             //System.out.println(exitCode);
-        } catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException i) {
-			i.printStackTrace();
-		}
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }
 		
     }
     
