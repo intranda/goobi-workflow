@@ -66,6 +66,9 @@
     <style>
         <h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false" />
     </style>
+    <div class="outer-skip-link">
+    	<a class="skip-main" href="#pageContentWrapper" tabindex="0">Skip to main Content</a>
+    </div>
 </h:head>
 
 <ui:insert name="metadata" />
@@ -119,7 +122,7 @@
                 </div>
     
                 <!-- CONTENT WRAPPER -->
-                <div id="pageContentWrapper" class="page-content-wrapper">
+                <div id="pageContentWrapper" class="page-content-wrapper" tabindex="-1">
                     <!-- CONTENT LEFT -->
                     <div id="pageContentLeft" class="page-content__left">
                         <div class="page-content__left-inner">
