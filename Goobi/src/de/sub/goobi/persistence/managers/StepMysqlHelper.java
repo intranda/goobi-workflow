@@ -276,6 +276,7 @@ class StepMysqlHelper implements Serializable {
         s.setTypMetadaten(rs.getBoolean("typMetadaten"));
         s.setTypAutomatisch(rs.getBoolean("typAutomatisch"));
         s.setTypAutomaticThumbnail(rs.getBoolean("typAutomaticThumbnail"));
+        s.setAutomaticThumbnailSettingsYaml(rs.getString("automaticThumbnailSettingsYaml"));
         s.setTypImportFileUpload(rs.getBoolean("typImportFileUpload"));
         s.setTypExportRus(rs.getBoolean("typExportRus"));
         s.setTypImagesLesen(rs.getBoolean("typImagesLesen"));
@@ -617,6 +618,7 @@ class StepMysqlHelper implements Serializable {
                                             o.isTypMetadaten(), // typMetadaten
                                             o.isTypAutomatisch(), // typAutomatisch
                                             o.isTypAutomaticThumbnail(), // typAutomaticThumbnail
+                                            o.getAutomaticThumbnailSettingsYaml(), //automaticThumbnailSettingsYaml
                                             o.isTypImportFileUpload(), // typImportFileUpload
                                             o.isTypExportRus(), //typExportRus
                                             o.isTypImagesLesen(), //typImagesLesen
@@ -663,6 +665,7 @@ class StepMysqlHelper implements Serializable {
                                             o.isTypMetadaten(), // typMetadaten
                                             o.isTypAutomatisch(), // typAutomatisch
                                             o.isTypAutomaticThumbnail(), // typAutomaticThumbnail
+                                            o.getAutomaticThumbnailSettingsYaml(), //automaticThumbnailSettingsYaml
                                             o.isTypImportFileUpload(), // typImportFileUpload
                                             o.isTypExportRus(), //typExportRus
                                             o.isTypImagesLesen(), //typImagesLesen
@@ -716,7 +719,7 @@ class StepMysqlHelper implements Serializable {
             answer += " SchritteID, ";
         }
         answer += "Titel, Prioritaet, Reihenfolge, Bearbeitungsstatus, BearbeitungsZeitpunkt, BearbeitungsBeginn, BearbeitungsEnde, "
-                + "homeverzeichnisNutzen, typMetadaten, typAutomatisch, typAutomaticThumbnail, typImportFileUpload, typExportRus, typImagesLesen, typImagesSchreiben, "
+                + "homeverzeichnisNutzen, typMetadaten, typAutomatisch, typAutomaticThumbnail, automaticThumbnailSettingsYaml, typImportFileUpload, typExportRus, typImagesLesen, typImagesSchreiben, "
                 + "typExportDMS, typBeimAnnehmenModul, typBeimAnnehmenAbschliessen, typBeimAnnehmenModulUndAbschliessen, typAutomatischScriptpfad, "
                 + "typBeimAbschliessenVerifizieren, typModulName, BearbeitungsBenutzerID, ProzesseID, edittype, typScriptStep, scriptName1, "
                 + "scriptName2, typAutomatischScriptpfad2, scriptName3, typAutomatischScriptpfad3, scriptName4, typAutomatischScriptpfad4, "
@@ -738,7 +741,8 @@ class StepMysqlHelper implements Serializable {
         sql.append(" homeverzeichnisNutzen = ?,");
         sql.append(" typMetadaten = ?,");
         sql.append(" typAutomatisch = ?,");
-        sql.append("typAutomaticThumbnail = ?,");
+        sql.append(" typAutomaticThumbnail = ?,");
+        sql.append(" automaticThumbnailSettingsYaml = ?,");
         sql.append(" typImportFileUpload = ?,");
         sql.append(" typExportRus = ?,");
         sql.append(" typImagesLesen = ?,");
@@ -824,6 +828,7 @@ class StepMysqlHelper implements Serializable {
         joinQuery.append(" typMetadaten = " + tablename + ".typMetadaten,");
         joinQuery.append(" typAutomatisch = " + tablename + ".typAutomatisch,");
         joinQuery.append(" typAutomaticThumbnail = " + tablename + ".typAutomaticThumbnail,");
+        joinQuery.append(" automaticThumbnailSettingsYaml = " + tablename + ".automaticThumbnailSettingsYaml");
         joinQuery.append(" typImportFileUpload = " + tablename + ".typImportFileUpload,");
         joinQuery.append(" typExportRus = " + tablename + ".typExportRus,");
         joinQuery.append(" typImagesLesen = " + tablename + ".typImagesLesen,");

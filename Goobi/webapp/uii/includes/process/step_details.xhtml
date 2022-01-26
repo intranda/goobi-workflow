@@ -779,22 +779,22 @@
         <script type="text/javascript">
 									if (window.attachEvent) {
 										window.attachEvent('onload',
-												function(){txtAutomatischAnzeigen(); showThumbsSettings(); initThumbCodeMirror();});
+												function(){txtAutomatischAnzeigen(); initThumbCodeMirror(); showThumbsSettings();});
 									} else {
 										if (window.onload) {
 											var curronload = window.onload;
 											var newonload = function() {
 												curronload();
 												txtAutomatischAnzeigen();
-												showThumbsSettings();
 												initThumbCodeMirror();
+												showThumbsSettings();
 											};
 											window.onload = newonload;
 										} else {
 											window.onload = function() {
 												txtAutomatischAnzeigen();
-												showThumbsSettings();
 												initThumbCodeMirror();
+												showThumbsSettings();
 											}
 										}
 									}
@@ -879,19 +879,16 @@
 										}
 									}
 									
-									var settingsCodeMirror;
+									var yamlCodeMirror;
 									
 									function initThumbCodeMirror(){
-										console.log("init");
-										var settingsTextArea = document.getElementById("myform:ThumbSettings")
-										console.log(settingsTextArea);
-										if(settingsTextArea) {
-											settingsCodeMirror = CodeMirror.fromTextArea(settingsTextArea, {
+										var yamlTextArea = document.getElementById("myform:ThumbSettings")
+										if(yamlTextArea) {
+											yamlCodeMirror = CodeMirror.fromTextArea(yamlTextArea, {
 					    						lineNumbers: true,
 					    						mode: 'yaml'
 					    					});
-											console.log(settingsCodeMirror);
-											settingsCodeMirror.on('change', editor => {
+											yamlCodeMirror.on('change', editor => {
 					    						document.getElementById("myform:ThumbSettings").innerHTML = editor.getValue();   
 					    				    });
 					                	}

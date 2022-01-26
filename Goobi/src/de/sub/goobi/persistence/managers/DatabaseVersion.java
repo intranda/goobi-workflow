@@ -332,6 +332,9 @@ public class DatabaseVersion {
     	if (!checkIfColumnExists("schritte", "typAutomaticThumbnail")) {
     		DatabaseVersion.runSql("ALTER TABLE schritte ADD COLUMN typAutomaticThumbnail boolean default false");   	
     	}
+    	if(!checkIfColumnExists("schritte", "automaticThumbnailSettingsYaml")) {
+    		DatabaseVersion.runSql("ALTER TABLE schritte ADD COLUMN automaticThumbnailSettingsYaml varchar(200) DEFAULT '---' + CHAR(13) +  '---'");
+    	}
     }
 
     private static void updateToVersion45() {

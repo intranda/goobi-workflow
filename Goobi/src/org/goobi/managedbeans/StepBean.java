@@ -69,6 +69,7 @@ import org.goobi.production.properties.AccessCondition;
 import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
+import org.json.JSONObject;
 import org.omnifaces.cdi.Push;
 import org.omnifaces.cdi.PushContext;
 
@@ -388,26 +389,13 @@ public class StepBean extends BasicBean implements Serializable {
     		mySchritt = StepManager.getStepById(mySchritt.getId());
     		mySchritt.lazyLoad();
     		if(mySchritt.isTypAutomaticThumbnail()) {
-    			this.generateThumbnailsWithSettings();
+    			mySchritt.generateThumbnailsWithSettings();
     		}
     	} catch(Exception e) {
     		System.out.println(e);
     	}
         
         return "task_edit";
-    }
-    
-    public void generateThumbnailsWithSettings() throws IOException, InterruptedException, SwapException, DAOException {
-    	System.out.println("with settings");
-    	Boolean master = mySchritt.getAutomaticThumbnailSettings().getBoolean("Master");
-    	Boolean media = mySchritt.getAutomaticThumbnailSettings().getBoolean("Media");
-    	int size = mySchritt.getAutomaticThumbnailSettings().getJSONArray("Sizes").optInt(0);
-    	try {
-			mySchritt.getProzess().generateThumbnails(master, media, String.valueOf(size));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
     }
 
     public String TakeOverBatch() {

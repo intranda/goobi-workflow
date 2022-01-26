@@ -52,6 +52,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
@@ -110,7 +111,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private boolean typAutomaticThumbnail = false;
     @Getter
     @Setter
-    private JSONObject automaticThumbnailSettings = new JSONObject("{'Master':true,'Media':true, 'Sizes':[800] }");
     private String automaticThumbnailSettingsYaml;
     @Getter
     @Setter
@@ -313,21 +313,26 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         return Helper.getDateAsFormattedString(this.bearbeitungsende);
     }
     
-    public String getAutomaticThumbnailSettingsYaml() throws JsonProcessingException {
-    	JsonNode jsonNodeTree = new ObjectMapper().readTree(this.automaticThumbnailSettings.toString());
-    	this.automaticThumbnailSettingsYaml = new YAMLMapper().writeValueAsString(jsonNodeTree);
-    	System.out.println(this.automaticThumbnailSettingsYaml);
-    	return automaticThumbnailSettingsYaml;
+    public JSONObject getAutoThumbnailSettingsJSON() {
+    	//new JSONObject("{'Master':true,'Media':true, 'Sizes':[800] }");
+    	Yaml yaml= new Yaml();
+    	@SuppressWarnings("unchecked")
+		Map<String,Object> map= (Map<String, Object>) yaml.load(this.automaticThumbnailSettingsYaml);
+    	return new JSONObject(map);
     }
     
-    public void setAutomaticThumbnailSettingsYaml(String yamlString) {
-    	 Yaml yaml= new Yaml();
-    	 @SuppressWarnings("unchecked")
-		Map<String,Object> map= (Map<String, Object>) yaml.load(yamlString);
-    	 
-    	 this.automaticThumbnailSettingsYaml=yamlString;
-    	 this.automaticThumbnailSettings=new JSONObject(map);
-    	 System.out.println(this.automaticThumbnailSettings);
+    public void generateThumbnailsWithSettings() throws IOException, InterruptedException, SwapException, DAOException {
+    	System.out.println("with settings");
+    	JSONObject settings = this.getAutoThumbnailSettingsJSON();
+    	Boolean master = settings.getBoolean("Master");
+    	Boolean media = settings.getBoolean("Media");
+    	int size = settings.getJSONArray("Sizes").optInt(0);
+    	try {
+			this.prozess.generateThumbnails(master, media, String.valueOf(size));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     /**
