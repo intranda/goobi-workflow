@@ -40,6 +40,7 @@ import java.util.Set;
 
 import org.goobi.api.mail.SendMail;
 import org.goobi.api.mq.QueueType;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.yaml.snakeyaml.Yaml;
 
@@ -322,13 +323,35 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
     
     public void generateThumbnailsWithSettings() throws IOException, InterruptedException, SwapException, DAOException {
-    	System.out.println("with settings");
     	JSONObject settings = this.getAutoThumbnailSettingsJSON();
-    	Boolean master = settings.getBoolean("Master");
-    	Boolean media = settings.getBoolean("Media");
-    	int size = settings.getJSONArray("Sizes").optInt(0);
+    	Boolean master = false;
+    	Boolean media = false;
+    	String imgDirectory = "";
+    	String scriptCommand = "";
+    	int[] sizes = {};
+    	
+    	if(settings.has("Master")) {
+    		master = settings.getBoolean("Master");
+    	}
+    	if(settings.has("Media")) {
+    		media = settings.getBoolean("Media");
+    	}
+    	if(settings.has("Img_directory")) {
+    		imgDirectory = settings.getString("Img_directory");
+    	}
+    	if(settings.has("Custom_script_command")) {
+    		scriptCommand = settings.getString("Custom_script_command");
+    	}
+    	if(settings.has("Sizes")) {
+    		JSONArray arr = settings.getJSONArray("Sizes");
+    		sizes = new int[arr.length()];
+    		for(int i = 0; i < arr.length(); i++) {
+    			sizes[i] = arr.optInt(i);
+    		}
+    	}
+    	
     	try {
-			this.prozess.generateThumbnails(master, media, String.valueOf(size));
+			this.prozess.generateThumbnails(master, media, imgDirectory, scriptCommand, sizes);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

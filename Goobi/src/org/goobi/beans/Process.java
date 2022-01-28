@@ -629,69 +629,58 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * Thumbs
      */
 
-    public void generateThumbnails(Boolean master, Boolean media, String size) throws IOException, InterruptedException, SwapException, DAOException, ContentLibException {
+    public void generateThumbnails(Boolean master, Boolean media, String imgDirectory, String command, int[] sizes) throws IOException, InterruptedException, SwapException, DAOException, ContentLibException {
     	System.out.println("generating thumbnails");
-    	String imageDirectory;
+    	String defaultImageDirectory;
     	if(master) {
-    		imageDirectory = this.getImagesOrigDirectory(false);
-    		generateThumbnailsFromDirectory(imageDirectory, size, true);
+    		defaultImageDirectory = this.getImagesOrigDirectory(false);
+    		generateThumbnailsFromDirectory(defaultImageDirectory, sizes, command);
     	}
     	if(media) {
-    		imageDirectory = this.getImagesTifDirectory(false);
-    		generateThumbnailsFromDirectory(imageDirectory, size, false);
+    		defaultImageDirectory = this.getImagesTifDirectory(false);
+    		generateThumbnailsFromDirectory(defaultImageDirectory, sizes, command);
+    	}
+    	if(! imgDirectory.isEmpty()) {
+    		generateThumbnailsFromDirectory(imgDirectory, sizes, command);
     	}
     }
     
-    public void generateThumbnailsFromDirectory(String imageDirectory, String size, Boolean master) throws SwapException, DAOException, ContentLibException {
-    	System.out.println("generating thumbnails from directory: "+imageDirectory);
+    public void generateThumbnailsFromDirectory(String imageDirectory, int[] sizes, String command) throws SwapException, DAOException, ContentLibException {
     	java.lang.Process thumbnailProcess;
 		try {
-			String thumbnailDirectory = getThumbsDirectory()+Paths.get(imageDirectory).getFileName().toString()+"_"+size;
-			File outputDirectory = new File(thumbnailDirectory);
-			if(! outputDirectory.exists()) {
-				outputDirectory.mkdirs();
-			}
-			System.out.println("placing thumbnails here: "+thumbnailDirectory);
-			try {
-				File[] fileList = new File(imageDirectory).listFiles();
-				Scale scale = new Scale.ScaleToBox(new Dimension(100,100));
-				for(File img : fileList) {
-					if(img.isDirectory()) {
-						continue;
-					}
-					String basename = FilenameUtils.getBaseName(img.toString());
-					
-					OutputStream out = new FileOutputStream(thumbnailDirectory+FileSystems.getDefault().getSeparator()+basename+"_"+size+".jpg");
-					ImageRequest request = new ImageRequest(new URI(img.getAbsolutePath()), RegionRequest.FULL, scale, Rotation.NONE, Colortype.DEFAULT, ImageFileFormat.JPG, Map.of("ignoreWatermark", "true"));
-					new GetImageAction().writeImage(request, out);
+			File[] fileList = new File(imageDirectory).listFiles();
+			
+			for(int size : sizes) {
+				String thumbnailDirectory = getThumbsDirectory()+Paths.get(imageDirectory).getFileName().toString()+"_"+String.valueOf(size);
+				File outputDirectory = new File(thumbnailDirectory);
+				if(! outputDirectory.exists()) {
+					outputDirectory.mkdirs();
 				}
-	        }catch(Exception e) {
-	        	log.error(e);
-	        }
-			//URI origImage = Path.of("/opt/digiverso/goobi/metadata/3/images/bergsphi_625017145_master/00000025.tif").toUri();
-			//BufferedImage img = ImageIO.read(new File("/opt/digiverso/goobi/metadata/3/images/bergsphi_625017145_master/00000025.tif"));
-			//BufferedImage scaled = scale(img,0.5);
-			//ImageIO.write(scaled, "jpg", new FileOutputStream("output25.jpg"));			
-			//try(OutputStream out = new FileOutputStream("output25.jpg")) {
-			//	Dimension x = new Dimension(100,100);
-			//	Scale scale = new Scale.ScaleToBox(x);
-	        //    ImageRequest request = new ImageRequest(origImage, RegionRequest.FULL, scale, Rotation.NONE, Colortype.DEFAULT, ImageFileFormat.JPG, Map.of("ignoreWatermark", "true"));
-	        //    new GetImageAction().writeImage(request, out);
-	        //}catch(Exception e) {
-	        //	log.error(e);
-	        //}
+				if(command.isEmpty()) {
+					Scale scale = new Scale.ScaleToBox(new Dimension(size,size));
+					for(File img : fileList) {
+						if(img.isDirectory()) {
+							continue;
+						}
+						String basename = FilenameUtils.getBaseName(img.toString());
+						
+						OutputStream out = new FileOutputStream(thumbnailDirectory+FileSystems.getDefault().getSeparator()+basename+"_"+size+".jpg");
+						ImageRequest request = new ImageRequest(new URI(img.getAbsolutePath()), RegionRequest.FULL, scale, Rotation.NONE, Colortype.DEFAULT, ImageFileFormat.JPG, Map.of("ignoreWatermark", "true"));
+						new GetImageAction().writeImage(request, out);
+					}
+				}else {
+					String[] formattedCommand = command.split("\\s+");
+					thumbnailProcess = new ProcessBuilder(formattedCommand).start();
+					BufferedReader input = new BufferedReader(new InputStreamReader(thumbnailProcess.getInputStream()));
+					String line;
+					while ((line = input.readLine()) != null) {
+						System.out.println(line);
+					}
+					int exitCode = thumbnailProcess.waitFor();
+				}
+			}
 			//String[] command = {"/bin/bash", "/opt/digiverso/goobi/scripts/gm-convert.sh", "-s", imageDirectory, "-d",
 			//		thumbnailDirectory, "-D", ".jpg", "-o", "-thumbnail "+size+"x"+size};
-			//thumbnailProcess = new ProcessBuilder(command).start();
-			//BufferedReader input = new BufferedReader(new InputStreamReader(thumbnailProcess.getInputStream())); 
-            //System.out.println(command.toString());
-            //System.out.println(thumbnailDirectory);
-            //String line; 
-           // while ((line = input.readLine()) != null) { 
-           //     System.out.println(line); 
-            //} 
-            //int exitCode = thumbnailProcess.waitFor();
-            //System.out.println(exitCode);
         } catch (Exception e) {
         	e.printStackTrace();
         }

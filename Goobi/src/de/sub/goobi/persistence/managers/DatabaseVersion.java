@@ -333,7 +333,14 @@ public class DatabaseVersion {
     		DatabaseVersion.runSql("ALTER TABLE schritte ADD COLUMN typAutomaticThumbnail boolean default false");   	
     	}
     	if(!checkIfColumnExists("schritte", "automaticThumbnailSettingsYaml")) {
-    		DatabaseVersion.runSql("ALTER TABLE schritte ADD COLUMN automaticThumbnailSettingsYaml varchar(200) DEFAULT '---' + CHAR(13) +  '---'");
+    		String defaultYamlSettings= "'--- \n" 
+    				+"Master: false  #use master image directory \n"
+    				+"Media: false  #use media image directory \n"
+    				+"Img_directory: \"\" #set path to custom image directory \n"
+    				+"Custom_script_command: \"\" #command to execute custom thumbnail generation script \n"
+    				+"Sizes: #define thumbnail sizes \n"
+    				+"- 800'";
+    		DatabaseVersion.runSql("ALTER TABLE schritte ADD COLUMN automaticThumbnailSettingsYaml varchar(1000) DEFAULT "+defaultYamlSettings);
     	}
     }
 
