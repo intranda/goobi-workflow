@@ -351,7 +351,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     	}
     	
     	try {
-			this.prozess.generateThumbnails(master, media, imgDirectory, scriptCommand, sizes);
+			this.prozess.generateThumbnails(master, media, imgDirectory, scriptCommand, sizes, this);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

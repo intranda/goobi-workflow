@@ -91,6 +91,7 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.GoobiScript;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.StorageProvider;
@@ -629,7 +630,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * Thumbs
      */
 
-    public void generateThumbnails(Boolean master, Boolean media, String imgDirectory, String command, int[] sizes) throws IOException, InterruptedException, SwapException, DAOException, ContentLibException {
+    public void generateThumbnails(Boolean master, Boolean media, String imgDirectory, String command, int[] sizes, Step step) throws IOException, InterruptedException, SwapException, DAOException, ContentLibException {
     	System.out.println("generating thumbnails");
     	String defaultImageDirectory;
     	if(master) {
@@ -643,10 +644,40 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     	if(! imgDirectory.isEmpty()) {
     		generateThumbnailsFromDirectory(imgDirectory, sizes, command);
     	}
+    	if(! command.isEmpty()) {
+    		System.out.println("Executing command");
+    		//executeCommand(command, step);
+    		new HelperSchritte().executeScriptForStepObject(step, command, false);
+    	}
+    }
+    
+    private void executeCommand(String command, Step step) {
+    	try {
+	    	java.lang.Process thumbnailProcess;
+	    	//String[] formattedCommand = command.split("\\s+");
+			DigitalDocument dd = null;
+			Process po = this;
+			Prefs prefs = null;
+	    	VariableReplacer replacer = new VariableReplacer(dd, prefs, po, step);
+	    	List<String> formattedCommand = replacer.replaceBashScript(command);
+	    	for(String str : formattedCommand) {
+	    		System.out.println(str);
+	    	}
+	    	thumbnailProcess = new ProcessBuilder(formattedCommand).start();
+			BufferedReader input = new BufferedReader(new InputStreamReader(thumbnailProcess.getInputStream()));
+			String line;
+			while ((line = input.readLine()) != null) {
+				System.out.println(line);
+			}
+			int exitCode = thumbnailProcess.waitFor();
+			System.out.println(exitCode);
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    	}
     }
     
     public void generateThumbnailsFromDirectory(String imageDirectory, int[] sizes, String command) throws SwapException, DAOException, ContentLibException {
-    	java.lang.Process thumbnailProcess;
+    	
 		try {
 			File[] fileList = new File(imageDirectory).listFiles();
 			
@@ -656,27 +687,16 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 				if(! outputDirectory.exists()) {
 					outputDirectory.mkdirs();
 				}
-				if(command.isEmpty()) {
-					Scale scale = new Scale.ScaleToBox(new Dimension(size,size));
-					for(File img : fileList) {
-						if(img.isDirectory()) {
-							continue;
-						}
-						String basename = FilenameUtils.getBaseName(img.toString());
-						
-						OutputStream out = new FileOutputStream(thumbnailDirectory+FileSystems.getDefault().getSeparator()+basename+"_"+size+".jpg");
-						ImageRequest request = new ImageRequest(new URI(img.getAbsolutePath()), RegionRequest.FULL, scale, Rotation.NONE, Colortype.DEFAULT, ImageFileFormat.JPG, Map.of("ignoreWatermark", "true"));
-						new GetImageAction().writeImage(request, out);
+				Scale scale = new Scale.ScaleToBox(new Dimension(size,size));
+				for(File img : fileList) {
+					if(img.isDirectory()) {
+						continue;
 					}
-				}else {
-					String[] formattedCommand = command.split("\\s+");
-					thumbnailProcess = new ProcessBuilder(formattedCommand).start();
-					BufferedReader input = new BufferedReader(new InputStreamReader(thumbnailProcess.getInputStream()));
-					String line;
-					while ((line = input.readLine()) != null) {
-						System.out.println(line);
-					}
-					int exitCode = thumbnailProcess.waitFor();
+					String basename = FilenameUtils.getBaseName(img.toString());
+					
+					OutputStream out = new FileOutputStream(thumbnailDirectory+FileSystems.getDefault().getSeparator()+basename+"_"+size+".jpg");
+					ImageRequest request = new ImageRequest(new URI(img.getAbsolutePath()), RegionRequest.FULL, scale, Rotation.NONE, Colortype.DEFAULT, ImageFileFormat.JPG, Map.of("ignoreWatermark", "true"));
+					new GetImageAction().writeImage(request, out);
 				}
 			}
 			//String[] command = {"/bin/bash", "/opt/digiverso/goobi/scripts/gm-convert.sh", "-s", imageDirectory, "-d",
