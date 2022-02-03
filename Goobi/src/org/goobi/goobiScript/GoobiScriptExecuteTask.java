@@ -103,28 +103,24 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
                 IStepPlugin isp = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
                 isp.initialize(step, "");
 
+                boolean success;
+
                 if (isp instanceof IStepPluginVersion2) {
                     IStepPluginVersion2 plugin = (IStepPluginVersion2) isp;
                     PluginReturnValue status = plugin.run();
-
-                    boolean success = (status == PluginReturnValue.FINISH) || (status == PluginReturnValue.WAIT);
-                    GoobiScriptExecuteTask.setStatusAndMessage(gsr, "plugin", steptitle, success);
-                    if (success) {
-                        GoobiScriptExecuteTask.printSuccessMessages(steptitle, process.getId(), username);
-                    } else {
-                        // success == PluginReturnValue.ERROR
-                        hs.errorStep(step);
-                    }
+                    success = (status == PluginReturnValue.FINISH) || (status == PluginReturnValue.WAIT);
                 } else {
-                    boolean success = isp.execute();
-                    GoobiScriptExecuteTask.setStatusAndMessage(gsr, "plugin", steptitle, success);
-                    if (success) {
-                        GoobiScriptExecuteTask.printSuccessMessages(steptitle, process.getId(), username);
-                        hs.CloseStepObjectAutomatic(step);
-                    } else {
-                        hs.errorStep(step);
-                    }
+                    success = isp.execute();
                 }
+
+                GoobiScriptExecuteTask.setStatusAndMessage(gsr, "plugin", steptitle, success);
+                if (success) {
+                    GoobiScriptExecuteTask.printSuccessMessages(steptitle, process.getId(), username);
+                    hs.CloseStepObjectAutomatic(step);
+                } else {
+                    hs.errorStep(step);
+                }
+
             } else if (step.isHttpStep()) {
                 // This step is an HTTP step
                 hs.runHttpStep(step);
