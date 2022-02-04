@@ -321,42 +321,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 		Map<String,Object> map= (Map<String, Object>) yaml.load(this.automaticThumbnailSettingsYaml);
     	return new JSONObject(map);
     }
-    
-    public void generateThumbnailsWithSettings() throws IOException, InterruptedException, SwapException, DAOException {
-    	JSONObject settings = this.getAutoThumbnailSettingsJSON();
-    	Boolean master = false;
-    	Boolean media = false;
-    	String imgDirectory = "";
-    	String scriptCommand = "";
-    	int[] sizes = {};
-    	
-    	if(settings.has("Master")) {
-    		master = settings.getBoolean("Master");
-    	}
-    	if(settings.has("Media")) {
-    		media = settings.getBoolean("Media");
-    	}
-    	if(settings.has("Img_directory")) {
-    		imgDirectory = settings.getString("Img_directory");
-    	}
-    	if(settings.has("Custom_script_command")) {
-    		scriptCommand = settings.getString("Custom_script_command");
-    	}
-    	if(settings.has("Sizes")) {
-    		JSONArray arr = settings.getJSONArray("Sizes");
-    		sizes = new int[arr.length()];
-    		for(int i = 0; i < arr.length(); i++) {
-    			sizes[i] = arr.optInt(i);
-    		}
-    	}
-    	
-    	try {
-			this.prozess.generateThumbnails(master, media, imgDirectory, scriptCommand, sizes, this);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    }
 
     /**
      * set editType to specific value from {@link StepEditType}

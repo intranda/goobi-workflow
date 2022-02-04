@@ -49,6 +49,10 @@ import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.api.mail.SendMail;
+import org.goobi.api.mq.AutomaticThumbnailHandler;
+import org.goobi.api.mq.QueueType;
+import org.goobi.api.mq.TaskTicket;
+import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
@@ -385,14 +389,22 @@ public class StepBean extends BasicBean implements Serializable {
 
     public String EditStep() throws SwapException, DAOException, IOException, InterruptedException {
     	try {	
-    		System.out.println("Edit step");
     		mySchritt = StepManager.getStepById(mySchritt.getId());
     		mySchritt.lazyLoad();
     		if(mySchritt.isTypAutomaticThumbnail()) {
-    			mySchritt.generateThumbnailsWithSettings();
+				TaskTicket ticket = new TaskTicket(AutomaticThumbnailHandler.HANDLERNAME);
+    			ticket.setStepId(mySchritt.getId());
+                ticket.setProcessId(mySchritt.getProzess().getId());
+                ticket.setStepName(mySchritt.getTitel());
+                AutomaticThumbnailHandler handler = new AutomaticThumbnailHandler();
+				if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
+					handler.call(ticket);
+                }else {
+                	TicketGenerator.submitInternalTicket(ticket, QueueType.SLOW_QUEUE, mySchritt.getTitel(), mySchritt.getProzess().getId());
+                }
     		}
     	} catch(Exception e) {
-    		System.out.println(e);
+    		System.out.println(e.getStackTrace());
     	}
         
         return "task_edit";
