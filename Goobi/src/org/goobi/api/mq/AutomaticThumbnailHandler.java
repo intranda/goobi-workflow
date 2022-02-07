@@ -40,8 +40,18 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
         return HANDLERNAME;
     }
 	
+	//returns true if changed and false if not
+	private boolean checkIfChanged(File outputDirectory, File[] fileList) {
+		File thumbnailFile = outputDirectory.listFiles()[0];
+		for(File img: fileList) {
+			if(img.lastModified() > thumbnailFile.lastModified()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private void generateThumbnails(Process process, Boolean master, Boolean media, String imgDirectory, String command, int[] sizes, Step step) throws IOException, InterruptedException, SwapException, DAOException, ContentLibException {
-    	//System.out.println("generating thumbnails");
     	String defaultImageDirectory;
     	if(master) {
     		defaultImageDirectory = process.getImagesOrigDirectory(false);
@@ -55,8 +65,6 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
     		generateThumbnailsFromDirectory(process, imgDirectory, sizes, command);
     	}
     	if(! command.isEmpty()) {
-    		//System.out.println("Executing command");
-    		//executeCommand(command, step);
     		new HelperSchritte().executeScriptForStepObject(step, command, false);
     	}
     }
@@ -68,7 +76,11 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
 			for(int size : sizes) {
 				String thumbnailDirectory = process.getThumbsDirectory()+Paths.get(imageDirectory).getFileName().toString()+"_"+String.valueOf(size);
 				File outputDirectory = new File(thumbnailDirectory);
-				if(! outputDirectory.exists()) {
+				if(outputDirectory.exists()) {
+					if(! checkIfChanged(outputDirectory, fileList)) {
+						return;
+					}
+				}else {
 					outputDirectory.mkdirs();
 				}
 				Scale scale = new Scale.ScaleToBox(new Dimension(size,size));
@@ -79,7 +91,7 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
 					String basename = FilenameUtils.getBaseName(img.toString());
 					
 					OutputStream out = new FileOutputStream(thumbnailDirectory+FileSystems.getDefault().getSeparator()+basename+"_"+size+".jpg");
-					ImageRequest request = new ImageRequest(new URI(img.getAbsolutePath()), RegionRequest.FULL, scale, Rotation.NONE, Colortype.DEFAULT, ImageFileFormat.JPG, Map.of("ignoreWatermark", "true"));
+					ImageRequest request = new ImageRequest(new URI(img.getAbsolutePath().replace(" ", "%20")), RegionRequest.FULL, scale, Rotation.NONE, Colortype.DEFAULT, ImageFileFormat.JPG, Map.of("ignoreWatermark", "true"));	//remove spaces from url
 					new GetImageAction().writeImage(request, out);
 				}
 			}

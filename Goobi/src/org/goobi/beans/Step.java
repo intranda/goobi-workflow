@@ -39,7 +39,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.goobi.api.mail.SendMail;
+import org.goobi.api.mq.AutomaticThumbnailHandler;
 import org.goobi.api.mq.QueueType;
+import org.goobi.api.mq.TaskTicket;
+import org.goobi.api.mq.TicketGenerator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.yaml.snakeyaml.Yaml;
@@ -49,6 +52,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -320,6 +324,23 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     	@SuppressWarnings("unchecked")
 		Map<String,Object> map= (Map<String, Object>) yaml.load(this.automaticThumbnailSettingsYaml);
     	return new JSONObject(map);
+    }
+    
+    public void submitAutomaticThumbnailTicket() {
+    	try {
+	    	TaskTicket ticket = new TaskTicket(AutomaticThumbnailHandler.HANDLERNAME);
+			ticket.setStepId(this.id);
+	        ticket.setProcessId(this.prozess.getId());
+	        ticket.setStepName(this.titel);
+	        AutomaticThumbnailHandler handler = new AutomaticThumbnailHandler();
+			if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
+				handler.call(ticket);
+	        }else {
+	        	TicketGenerator.submitInternalTicket(ticket, QueueType.SLOW_QUEUE, this.titel, this.prozess.getId());
+	        }
+    	}catch(Exception e) {
+    		e.printStackTrace();
+    	}
     }
 
     /**

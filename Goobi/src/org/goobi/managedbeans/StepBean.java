@@ -392,16 +392,7 @@ public class StepBean extends BasicBean implements Serializable {
     		mySchritt = StepManager.getStepById(mySchritt.getId());
     		mySchritt.lazyLoad();
     		if(mySchritt.isTypAutomaticThumbnail()) {
-				TaskTicket ticket = new TaskTicket(AutomaticThumbnailHandler.HANDLERNAME);
-    			ticket.setStepId(mySchritt.getId());
-                ticket.setProcessId(mySchritt.getProzess().getId());
-                ticket.setStepName(mySchritt.getTitel());
-                AutomaticThumbnailHandler handler = new AutomaticThumbnailHandler();
-				if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
-					handler.call(ticket);
-                }else {
-                	TicketGenerator.submitInternalTicket(ticket, QueueType.SLOW_QUEUE, mySchritt.getTitel(), mySchritt.getProzess().getId());
-                }
+				mySchritt.submitAutomaticThumbnailTicket();
     		}
     	} catch(Exception e) {
     		System.out.println(e.getStackTrace());
@@ -1076,6 +1067,9 @@ public class StepBean extends BasicBean implements Serializable {
         loadDisplayableMetadata();
         if (this.mySchritt.getStepPlugin() != null && !this.mySchritt.getStepPlugin().isEmpty()) {
             myPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, this.mySchritt.getStepPlugin());
+            if(mySchritt.isTypAutomaticThumbnail()) {
+            	mySchritt.submitAutomaticThumbnailTicket();
+            }
             if (myPlugin == null) {
                 exportPlugin = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, this.mySchritt.getStepPlugin());
             }
