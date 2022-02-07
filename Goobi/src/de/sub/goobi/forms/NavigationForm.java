@@ -87,9 +87,7 @@ public class NavigationForm implements Serializable{
     @Getter
     @Setter
     private boolean showHelp = false;
-    @Getter
-    @Setter
-    private boolean showEasyRead = false;
+
     @Getter
     @Setter
     private boolean showExpertView = false;

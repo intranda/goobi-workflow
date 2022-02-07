@@ -272,6 +272,13 @@ public class User implements DatabaseObject {
     @Setter
     private String dashboardConfiguration;
 
+    @Getter
+    @Setter
+    private String uiMode;
+
+
+    private List<SelectItem> availableUiModes = null;
+
     @Override
     public void lazyLoad() {
         try {
@@ -466,11 +473,6 @@ public class User implements DatabaseObject {
         return this.css;
     }
 
-    public boolean isRenderAccessibilityCss() {
-        //TODO: make this one a persisted property that overwrites the global configuration.
-        return ConfigurationHelper.getInstance().isRenderAccessibilityCss();
-    }
-
     public int getEigenschaftenSize() {
 
         if (this.eigenschaften == null) {
@@ -630,6 +632,16 @@ public class User implements DatabaseObject {
         return emailConfiguration;
     }
 
+    public List<SelectItem> getAvailableUiModes() {
+        if (availableUiModes == null) {
+            availableUiModes = new ArrayList<> ();
+            availableUiModes.add(new SelectItem("regular", Helper.getTranslation("user_ui_mode_regular")));
+            availableUiModes.add(new SelectItem("low_vision", Helper.getTranslation("user_ui_mode_low_vision")));
+            availableUiModes.add(new SelectItem("accessibility", Helper.getTranslation("user_ui_mode_accessibility_compatible")));
+        }
+        return availableUiModes;
+    }
+
     public List<SelectItem> getAvailableDashboards() {
         List<SelectItem> dashboards = new ArrayList<>();
         Institution institution = Helper.getCurrentUser().getInstitution();
@@ -642,6 +654,7 @@ public class User implements DatabaseObject {
         }
         return dashboards;
     }
+
 
     public List<SelectItem> getTaskListColumnNames() {
         List<SelectItem> taskList = new ArrayList<>();

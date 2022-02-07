@@ -58,7 +58,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="template/css/dist/goobiWorkflow.min.css?v=#{HelperForm.buildVersion}" />
 
-    <ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.renderAccessibilityCss}">
+    <ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.uiMode=='accessibility'}">
         <link rel="stylesheet" href="template/css/accessibility.css?v=#{HelperForm.buildVersion}" />
     </ui:fragment>
 

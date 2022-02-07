@@ -249,6 +249,7 @@ public class UserManager implements IManager, Serializable {
         r.setDashboardPlugin(rs.getString("dashboardPlugin"));
         r.setSsoId(rs.getString("ssoId"));
         r.setDashboardConfiguration(rs.getString("dashboard_configuration"));
+        r.setUiMode(rs.getString("ui_mode"));
         return r;
     }
 
