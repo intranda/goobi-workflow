@@ -18,6 +18,7 @@ import org.goobi.beans.Browser;
 import org.goobi.beans.SessionInfo;
 import org.goobi.beans.User;
 import org.goobi.goobiScript.GoobiScriptManager;
+import org.goobi.managedbeans.LoginBean;
 import org.omnifaces.cdi.Push;
 import org.omnifaces.cdi.PushContext;
 
@@ -131,6 +132,21 @@ public class SessionForm implements Serializable {
     }
 
     /**
+     * Filters the sessions by real user sessions. All sessions that contain a name unequal to "-" are returned.
+     *
+     * @return The list of sessions with real users
+     */
+    private List<SessionInfo> filterRealUserSessions() {
+        List<SessionInfo> realUserSessions = new ArrayList<>();
+        for (int index = 0; index < this.sessions.size(); index++) {
+            if (!this.sessions.get(index).getUserName().equals(SessionForm.NOT_LOGGED_IN)) {
+                realUserSessions.add(this.sessions.get(index));
+            }
+        }
+        return realUserSessions;
+    }
+
+    /**
      * Returns the SessionInfo object with the specified id
      *
      * @param id The id of the requested SessionInfo object
@@ -154,6 +170,19 @@ public class SessionForm implements Serializable {
         if (this.sessions != null) {
             this.removeAbandonedSessions(false);
             return this.sessions.size();
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Returns the number of currently existing sessions. The list of sessions is filtered for real user sessions.
+     *
+     * @return The number of real user sessions
+     */
+    public int getNumberOfRealUserSessions() {
+        if (this.sessions != null) {
+            return this.filterRealUserSessions().size();
         } else {
             return 0;
         }
@@ -256,13 +285,26 @@ public class SessionForm implements Serializable {
         String id = updatedSession.getId();
         SessionInfo knownSession = this.getSessionInfoById(id);
 
+        if (knownSession == null) {
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Created new session for user.");
+            SessionInfo newSession = new SessionInfo();
+            newSession.setUserName(LOGGED_OUT);
+            newSession.setUserId(0);
+            newSession.setSessionId("-1");
+            this.sessions.add(newSession);
+            this.removeAbandonedSessions(true);
+            return;
+        }
+
         if (updatedUser == null) {
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "User will be logged out.");
             knownSession.setUserName(LOGGED_OUT);
             updatedSession.setAttribute("User", LOGGED_OUT);
             knownSession.setUserId(0);
             this.removeAbandonedSessions(true);
             return;
         }
+        log.trace(LoginBean.LOGIN_LOG_PREFIX + "Session already exists and will be overwritten with new session.");
 
         String name = updatedUser.getNachVorname();
         int timeout = updatedUser.getSessiontimeout();
@@ -272,7 +314,9 @@ public class SessionForm implements Serializable {
         knownSession.setUserId(updatedUser.getId());
         knownSession.setUserTimeout(timeout);
         updatedSession.setMaxInactiveInterval(timeout);
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Removing old sessions...");
         this.removeAbandonedSessions(true);
+        log.trace(LoginBean.LOGIN_LOG_PREFIX + "Sessions list is up to date.");
     }
 
     /**

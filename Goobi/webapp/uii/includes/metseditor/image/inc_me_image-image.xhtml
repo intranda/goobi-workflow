@@ -4,6 +4,7 @@
     xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:p="http://primefaces.org/ui"
@@ -149,22 +150,16 @@
                                 <div id="imageCommentArea"
                                     class="row justify-content-between"
                                     style="padding-bottom: 5px">
-                                    <div class="col-3">
-                                        <h:outputText
-                                            styleClass="form-group__label"
-                                            value="#{msgs.comment} :"
-                                            title="#{msgs.comment}" />
-                                    </div>
-
-                                    <div class="col-9">
+                                    <div class="col-12">
                                         <h:inputTextarea id="Comment"
                                             style="min-height: 25px; height: 28px;"
                                             styleClass="form-control"
                                             value="#{Metadaten.commentForImage}"
                                             min-rows="1"
                                             disabled="false"
-                                            readonly="false">
-                                            <f:ajax execute="@form"
+                                            readonly="false"
+                                            pt:placeholder="#{msgs.comment}">
+                                            <f:ajax execute="@this"
                                                 event="valueChange" />
                                         </h:inputTextarea>
                                     </div>

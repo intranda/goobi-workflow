@@ -131,6 +131,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
+import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
 public class ExportMets {
@@ -246,7 +247,7 @@ public class ExportMets {
         Fileformat gdzfile = myProzess.readMetadataFile();
 
         String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
-    //    String zielVerzeichnis = Files.createTempDirectory("mets_export").toAbsolutePath().toString(); //only save file in /tmp/ directory
+        //    String zielVerzeichnis = Files.createTempDirectory("mets_export").toAbsolutePath().toString(); //only save file in /tmp/ directory
 
         String targetFileName = zielVerzeichnis + atsPpnBand + "_mets.xml";
         return writeMetsFile(myProzess, targetFileName, gdzfile, false);
@@ -326,8 +327,13 @@ public class ExportMets {
         MetadatenImagesHelper mih = new MetadatenImagesHelper(this.myPrefs, dd);
 
         if (dd.getFileSet() == null || dd.getFileSet().getAllFiles().isEmpty()) {
-            Helper.setMeldung(myProzess.getTitel() + ": digital document does not contain images; temporarily adding them for mets file creation");
+            Helper.setMeldung(myProzess.getTitel() + ": digital document does not contain images; adding them for mets file creation");
             mih.createPagination(myProzess, null);
+            try {
+                myProzess.writeMetadataFile(gdzfile);
+            } catch (UGHException | IOException | InterruptedException | SwapException | DAOException e) {
+                logger.error(e);
+            }
         } else {
             mih.checkImageNames(myProzess, imageFolder.getFileName().toString());
         }

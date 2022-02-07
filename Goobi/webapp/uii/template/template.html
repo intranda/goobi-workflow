@@ -94,7 +94,9 @@
     <style>
         <h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false" />
     </style>
-    
+    <span class="outer-skip-link">
+    	<a class="skip-main sr-only" href="#main-content" tabindex="0">Skip to main Content</a>
+    </span>
 </h:head>
 
 <ui:insert name="metadata" />
@@ -137,7 +139,6 @@
 	                                        <ui:insert name="title">
 	                                            <h:outputText value="#{myPageTitle}" />
 	                                        </ui:insert>
-                                            <a class="skip-main" href="#main-content" tabindex="1">Skip to main Content</a>
 	                                    </h1>
 	                                </div>
 	                                <div class="pull-right">
@@ -220,7 +221,7 @@
                         		<h:messages escape="false" globalOnly="true" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
 			             	</h:panelGroup>
 			            </div>
-                        <div jsf:id="main-content">    
+                        <div jsf:id="main-content" tabindex="-1">    
                             <ui:insert name="content" />
                         </div>
                     </div>

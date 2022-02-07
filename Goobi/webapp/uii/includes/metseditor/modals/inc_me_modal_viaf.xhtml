@@ -136,8 +136,8 @@
                                                     </h:selectOneRadio>
                                                 </div>
                                             </ui:fragment>
-                                                <div class="#{group.numFilters gt 1 ? 'col-4' : 'col'}">
-                                                    <button jsf:id="newFilter" jsf:action="#{group.newFilter}" class="btn new-filter-btn">
+                                                <div class="#{group.numFilters gt 1 ? 'col-4' : 'col-12'} text-right" >
+                                                    <button jsf:id="newFilter" jsf:action="#{group.newFilter}" class="btn btn--link">
                                                         #{msgs.NORM_newFilter}
                                                         <f:ajax 
                                                             execute=":normdataForm:viaf_search"
