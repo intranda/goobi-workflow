@@ -269,6 +269,7 @@
 		                            <f:passThroughAttribute
 		                                name="data-placement"
 		                                value="top" />
+		                                <h:outputText value="#{msgs.mets_addPageAreaToDocStruct}" />
                                 </button>
                                 <button jsf:rendered="#{Metadaten.pageAreaEditionMode}"
                                     class="btn btn--icon cancel-area-edition"
@@ -303,8 +304,8 @@
 		                            <f:passThroughAttribute
 		                                name="data-placement"
 		                                value="top" />
+		                                <h:outputText value="#{msgs.mets_addPageAreaToDocStruct}" />
                                 </button>
-		                        <h:outputText value="#{msgs.mets_addPageAreaToDocStruct}" />
                         </li>
                         <!-- DELETE PAGE AREA -->
                         <li>
@@ -317,6 +318,7 @@
                                     data-toggle="tooltip"
                                     data-placement="top">
                                     <span class="fa fa-eraser fa-lg fa-with-bg" />
+                                    <h:outputText value="#{msgs.mets_deletePageArea}" />
                                 </button>
                                 <button
                                 	type="button"
@@ -329,9 +331,10 @@
                                     data-toggle="tooltip"
                                     data-placement="top">
                                     <span class="fa fa-ban fa-lg fa-with-bg" style="background:red"/>
+                                    <h:outputText value="#{msgs.mets_deletePageArea}" />
                                 </button>
                                 <o:commandScript name="deletePageArea" action="#{Metadaten.deletePageAreaCommand}"/>
-		                        <h:outputText value="#{msgs.mets_deletePageArea}" />
+		                        
                         </li>
     
                     </ul>

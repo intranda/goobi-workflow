@@ -114,7 +114,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             	goobiWorkflowJS.object.freeJSResources();
                 let imageZoomPersistenzeId = $( '#persistenceId' ).val();
                 if(imageZoomPersistenzeId && imageZoomPersistenzeId.length > 0) {
-                    console.log("persist image zoom with id ", imageZoomPersistenzeId);
+                    if(_debug)console.log("persist image zoom with id ", imageZoomPersistenzeId);
                     _configViewer.global.persistenceId = imageZoomPersistenzeId;
                     _configViewer.global.persistZoom =  true;
                     _configViewer.global.persistRotation = true;                    
@@ -222,13 +222,14 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          * Initialize drawing and transforming areas within image
          */
         initAreas() {
-        	console.log("init areas");
+        	if(_debug)console.log("init areas");
             $('#disable-interaction-overlay').hide();
             this.drawer = new ImageView.Draw(_viewImage.viewer, _drawStyle, () => this.isDrawArea());
             this.drawer.finishedDrawing().subscribe(function(overlay) {
             	overlay.style = $.extend({}, _drawStyle, {borderColor: this.colors.next()});
                 overlay.draw();
 				overlay.areaId = this.areaId;
+				overlay.rotateWithImage = true;
                 this.overlays.push(overlay);
                 this.setDrawArea(false);
                 this.transformer.addOverlay(overlay);
@@ -240,20 +241,10 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             this.transformer.finishedTransforming().subscribe(function(overlay) {
                 this.writeAreas();
             }.bind(this));
-    
-//   			_viewImage.viewer.addHandler("canvas-click", e => {
-//				this.overlays.forEach(o => {
-//					if(o.contains(e.position, 5, true)) {
-//						this.highlight(o);
-//					} else {
-//						this.unHighlight(o);
-//					}
-//				});
-//    	    });
 
 			this.areaString = $(".pageareas").val();
 			if (this.areaString) {
-				console.log("drawAreas", this.areaString);
+				if(_debug)console.log("drawAreas", this.areaString);
 	            let areas = JSON.parse(this.areaString);
 				this.drawAreas(areas);
 			}
@@ -271,9 +262,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 		        }
 			}); 
 			this.initDeletePageAreas();
-        },
+		},
         initDeletePageAreas() {
-	        console.log("init delete page areas");
+	        if(_debug)console.log("init delete page areas");
 	        this.endDeletePageMode();//remove previous ini
         	$(document).off("click", "[data-pagearea-delete='start']").on("click", "[data-pagearea-delete='start']", (e) => {
         		this.startDeletePageMode();
@@ -283,15 +274,14 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         	});
         },
         startDeletePageMode() {
-        	console.log("start delete mode");
+        	if(_debug)console.log("start delete mode");
         	$("[data-pagearea-delete='start']").hide();
         	$("[data-pagearea-delete='cancel']").show();
         	if(this.deleteHandler == null) {
 	        	this.deleteHandler = event => {
-		        	console.log("delete area ", event, this);
+		        	if(_debug)console.log("delete area ", event, this);
 		        	this.overlays.forEach(o => {
 						if(o.contains(event.position, 5, true)) {
-							console.log("delete ", o.areaId);
 							deletePageArea({"areaId": o.areaId});
 							o.remove();
 							this.transformer.removeOverlay(o);
@@ -305,7 +295,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         	
         },
         endDeletePageMode() {
-        	console.log("end delete page mode");
+        	if(_debug)console.log("end delete page mode");
     		$("[data-pagearea-delete='cancel']").hide();
     		$("[data-pagearea-delete='start']").show();
     		if(this.deleteHandler != null) {
@@ -314,13 +304,14 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
     		}
         },
         drawAreas(areas) {
-        	console.log("draw areas ", areas);
+        	if(_debug)console.log("draw areas ", areas);
             if(this.overlays) {
             	this.overlays.forEach(o => {
             		o.remove();
             		this.transformer.removeOverlay(o);
             	});
             }
+                     
             
             this.overlays = [];
             this.colors = new ImageView.ColorIterator(_colors);
@@ -330,6 +321,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 if(!area.x) {
                     shouldDraw = true;
                 } else {
+                    try {
                     var rect = new OpenSeadragon.Rect(parseInt(area.x), parseInt(area.y), parseInt(area.w), parseInt(area.h));
                     var displayRect = ImageView.CoordinateConversion.convertRectFromImageToOpenSeadragon(rect, _viewImage.viewer, _viewImage.getOriginalImageSize());
                     var overlay = new ImageView.Overlay(displayRect, _viewImage.viewer, _drawStyle, true);
@@ -339,8 +331,11 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                     	this.highlight(overlay);
                     }
                     overlay.draw();
+                    if(_debug)console.log("draw overlay", overlay);
                     this.transformer.addOverlay(overlay);
                     this.overlays.push(overlay);
+                    } catch(e) {
+                    }
                 }
             } 
             if(shouldDraw) {
