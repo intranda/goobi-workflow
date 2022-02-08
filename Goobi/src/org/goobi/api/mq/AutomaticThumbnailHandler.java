@@ -52,7 +52,7 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
 	}
 	
 	private void generateThumbnails(Process process, Boolean master, Boolean media, String imgDirectory, String command, int[] sizes, Step step) throws IOException, InterruptedException, SwapException, DAOException, ContentLibException {
-    	String defaultImageDirectory;
+		String defaultImageDirectory;
     	if(master) {
     		defaultImageDirectory = process.getImagesOrigDirectory(false);
     		generateThumbnailsFromDirectory(process, defaultImageDirectory, sizes, command);
@@ -72,7 +72,6 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
     private void generateThumbnailsFromDirectory(Process process, String imageDirectory, int[] sizes, String command) throws SwapException, DAOException, ContentLibException {
 		try {
 			File[] fileList = new File(imageDirectory).listFiles();
-			
 			for(int size : sizes) {
 				String thumbnailDirectory = process.getThumbsDirectory()+Paths.get(imageDirectory).getFileName().toString()+"_"+String.valueOf(size);
 				File outputDirectory = new File(thumbnailDirectory);

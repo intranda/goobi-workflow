@@ -391,9 +391,6 @@ public class StepBean extends BasicBean implements Serializable {
     	try {	
     		mySchritt = StepManager.getStepById(mySchritt.getId());
     		mySchritt.lazyLoad();
-    		if(mySchritt.isTypAutomaticThumbnail()) {
-				mySchritt.submitAutomaticThumbnailTicket();
-    		}
     	} catch(Exception e) {
     		System.out.println(e.getStackTrace());
     	}
