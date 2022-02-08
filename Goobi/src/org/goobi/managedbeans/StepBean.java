@@ -1064,9 +1064,9 @@ public class StepBean extends BasicBean implements Serializable {
         loadDisplayableMetadata();
         if (this.mySchritt.getStepPlugin() != null && !this.mySchritt.getStepPlugin().isEmpty()) {
             myPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, this.mySchritt.getStepPlugin());
-            if(mySchritt.isTypAutomaticThumbnail()) {
-            	mySchritt.submitAutomaticThumbnailTicket();
-            }
+//            if(mySchritt.isTypAutomaticThumbnail()) {
+//            	mySchritt.submitAutomaticThumbnailTicket();
+//            }
             if (myPlugin == null) {
                 exportPlugin = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, this.mySchritt.getStepPlugin());
             }

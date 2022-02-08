@@ -1279,6 +1279,8 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public void SchrittStatusUp() {
         if (this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.DONE && this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.DEACTIVATED) {
+            System.out.println(this.mySchritt.getTitel());
+            System.out.println(this.mySchritt.getProcessId());
             this.mySchritt.setBearbeitungsstatusUp();
             this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
             //            StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());

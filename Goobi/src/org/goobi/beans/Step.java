@@ -330,13 +330,14 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     	try {
 	    	TaskTicket ticket = new TaskTicket(AutomaticThumbnailHandler.HANDLERNAME);
 			ticket.setStepId(this.id);
-	        ticket.setProcessId(this.prozess.getId());
+			System.out.println(this.prozess);
+	        ticket.setProcessId(this.getProcessId());
 	        ticket.setStepName(this.titel);
 	        AutomaticThumbnailHandler handler = new AutomaticThumbnailHandler();
 			if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
 				handler.call(ticket);
 	        }else {
-	        	TicketGenerator.submitInternalTicket(ticket, QueueType.SLOW_QUEUE, this.titel, this.prozess.getId());
+	        	TicketGenerator.submitInternalTicket(ticket, QueueType.SLOW_QUEUE, this.titel, this.getProcessId());
 	        }
     	}catch(Exception e) {
     		e.printStackTrace();
@@ -508,6 +509,12 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
                 break;
             case LOCKED:
                 bearbeitungsstatus = 1;
+                if(this.typAutomaticThumbnail) {
+                	System.out.println(this.titel);
+                	System.out.println(this.prozess);
+                	System.out.println(this.getProcessId());
+                	this.submitAutomaticThumbnailTicket();
+                }
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
                 break;
             case DONE:
@@ -526,6 +533,9 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
             case INFLIGHT:
             case INWORK:
                 bearbeitungsstatus = 1;
+                if(this.typAutomaticThumbnail) {
+                	this.submitAutomaticThumbnailTicket();
+                }
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
                 break;
 
