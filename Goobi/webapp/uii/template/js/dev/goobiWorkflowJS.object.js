@@ -228,40 +228,61 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             this.drawer.finishedDrawing().subscribe(function(overlay) {
             	overlay.style = $.extend({}, _drawStyle, {borderColor: this.colors.next()});
                 overlay.draw();
-				overlay.areaId = this.areaId;
-				overlay.rotateWithImage = true;
                 this.overlays.push(overlay);
                 this.setDrawArea(false);
                 this.transformer.addOverlay(overlay);
-                this.writeAreas(); 
+                this.addArea(overlay);
                 $('#disable-interaction-overlay').hide();
             }.bind(this)); 
                         
             this.transformer = new ImageView.Transform(_viewImage.viewer, _drawStyle, () => !this.isDrawArea());
             this.transformer.finishedTransforming().subscribe(function(overlay) {
-                this.writeAreas();
+                this.setArea(overlay);
             }.bind(this));
 
-			this.areaString = $(".pageareas").val();
+			this.areaString = $("#pageAreas").text();
+			console.log("page area string", this.areaString);
 			if (this.areaString) {
 				if(_debug)console.log("drawAreas", this.areaString);
 	            let areas = JSON.parse(this.areaString);
 				this.drawAreas(areas);
 			}
 			
-			goobiWorkflow.jsfAjax.success.subscribe(data => {
-				let areaString = $(".pageareas").val();
-				if (this.areaString != areaString) {
-					this.areaString = areaString;
-					if(this.areaString) {
-		            	let areas = JSON.parse(this.areaString);
-		            	this.drawAreas(areas);
-		            } else {
-		            	this.drawAreas([]);
-		            }
-		        }
-			}); 
+//			goobiWorkflow.jsfAjax.success.subscribe(data => {
+//				let areaString = $("[data-content='pageAreas']").val();
+//				if (this.areaString != areaString) {
+//					this.areaString = areaString;
+//					if(this.areaString) {
+//		            	let areas = JSON.parse(this.areaString);
+//		            	this.drawAreas(areas);
+//		            } else {
+//		            	this.drawAreas([]);
+//		            }
+//		        }
+//			}); 
 			this.initDeletePageAreas();
+		},
+		/**
+		Set to 'current' to add area to current docStrct. Otherwise area is added to the next newly created docStruct
+		*/
+		setAreaTarget(target) {
+			this.areaTarget = target;
+		},
+		addArea(overlay) {
+			let area = this.writeArea(overlay);
+			area.addTo = this.areaTarget;
+			addPageArea(area);
+		},
+		setArea(overlay) {
+			let area = this.writeArea(overlay);
+			console.log("set area", overlay, area);
+			setPageArea(area);
+		},
+		deleteArea(overlay) {
+			deletePageArea({areaId: overlay.areaId});
+		},
+		cancelPageAreaEdition() {
+			cancelPageAreaEdition();
 		},
         initDeletePageAreas() {
 	        if(_debug)console.log("init delete page areas");
@@ -326,7 +347,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                     var displayRect = ImageView.CoordinateConversion.convertRectFromImageToOpenSeadragon(rect, _viewImage.viewer, _viewImage.getOriginalImageSize());
                     var overlay = new ImageView.Overlay(displayRect, _viewImage.viewer, _drawStyle, true);
                     overlay.style = $.extend({}, _drawStyle, {borderColor: this.colors.next()});
-                    overlay.areaId = area.id;
+                    overlay.areaId = area.areaId;
                     if(area.highlight) {
                     	this.highlight(overlay);
                     }
@@ -356,26 +377,17 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         	overlay.style.fillColor = null;
         	_viewImage.viewer.forceRedraw();
         },
-        writeAreas() {
-            var areas = [];
-            for(var overlay of this.overlays) {
-                var area = {};
-                var rect = ImageView.CoordinateConversion.convertRectFromOpenSeadragonToImage(overlay.rect, _viewImage.viewer, _viewImage.getOriginalImageSize());
-                if(rect) {                    
-                    area.id = overlay.areaId;
-                    area.x = Math.round(rect.x);
-                    area.y = Math.round(rect.y);
-                    area.w = Math.round(rect.width);
-                    area.h = Math.round(rect.height);
-                    areas.push(area);
-                }
+        writeArea(overlay) {
+            var area = {};
+            var rect = ImageView.CoordinateConversion.convertRectFromOpenSeadragonToImage(overlay.rect, _viewImage.viewer, _viewImage.getOriginalImageSize());
+            if(rect) {                    
+                area.areaId = overlay.areaId;
+                area.x = Math.round(rect.x);
+                area.y = Math.round(rect.y);
+                area.w = Math.round(rect.width);
+                area.h = Math.round(rect.height);
             }
-            var areaString = "";
-            if(areas.length) {                
-                areaString = JSON.stringify(areas);
-            }
-            $(".pageareas").val(areaString);
- 			$(".pageareas").change();
+            return area;
         },
         /**
          * @description Method to clean up javascript resources for different object views.

@@ -49,7 +49,6 @@
                     </ui:fragment>
                 </div>
 
-
                 <!-- MAIN IMAGE -->
                 <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''  and Metadaten.treeProperties.showOcr ne 'true'}">
                     <div
@@ -196,6 +195,14 @@
                     value="- #{msgs.keinBildVorhanden} -"
                     rendered="#{Metadaten.bildNummer == '-1'}" />
             </div>
+            
+            <!-- PAGE AREAS -->
+			<h:outputText id="pageAreas" value="#{Metadaten.pageAreas}" styleClass="d-none"></h:outputText>
+            <o:commandScript name="deletePageArea" action="#{Metadaten.deletePageAreaCommand}"/>
+            <o:commandScript name="addPageArea" action="#{Metadaten.addPageAreaCommand}"/>
+            <o:commandScript name="setPageArea" action="#{Metadaten.setPageAreaCommand}"/>
+            <o:commandScript name="cancelPageAreaEdition" action="#{Metadaten.cancelPageAreaEdition}"/>
+            
         </h:form>
     </composite:implementation>
 </ui:composition>

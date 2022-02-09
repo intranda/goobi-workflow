@@ -231,61 +231,21 @@
                                     completeMethod="#{Metadaten.autocomplete}" />
                             </div>
                             <div class="col-3">
-                                <!-- or create new page area -->
-                                <button jsf:rendered="#{(not Metadaten.pageAreaEditionMode) and ((Metadaten.neuesElementWohin gt 2 and not empty Metadaten.addDocStructType2) or (Metadaten.neuesElementWohin lt 3 and not empty Metadaten.addDocStructType1))}"
-                                    class="btn btn--icon-gray"
-                                    type="button"
-                                    title="#{msgs.mets_createPageArea}"
-                                    aria-label="#{msgs.mets_createPageArea}"
-                                    jsf:action="#{Metadaten.addPageAreaAndAssignToDocststuct}">
-                                    <i
-                                        class="fa fa-crop"
-                                        aria-hidden="true"></i>
-                                    <f:ajax render="struct :pageareas"></f:ajax>
-                                    <f:passThroughAttribute
-                                        name="data-renderimage"
-                                        value="true" />
-                                    <f:passThroughAttribute
-		                                name="data-toggle"
-		                                value="tooltip" />
-		                            <f:passThroughAttribute
-		                                name="data-placement"
-		                                value="top" />
-                                </button>
-                                <!-- disabled dummy button in case no docStruct type is selected -->
-                                <button jsf:rendered="#{(not Metadaten.pageAreaEditionMode) and ((Metadaten.neuesElementWohin gt 2 and empty Metadaten.addDocStructType2) or (Metadaten.neuesElementWohin lt 3 and empty Metadaten.addDocStructType1))}"
-                                    class="btn btn--icon-gray"
-                                    type="button"
-                                    aria-label="#{msgs.mets_createPageArea}"
-                                    disabled="disabled">
-                                    <i
-                                        class="fa fa-crop"
-                                        aria-hidden="true"></i>
-                                </button>
-                                
-                                
-                                
-                                <button jsf:rendered="#{Metadaten.pageAreaEditionMode}"
-                                    class="btn btn--icon-red cancel-area-edition"
-                                    type="button"
-                                    title="#{msgs.mets_cancelPageArea}"
-                                    aria-label="#{msgs.mets_cancelPageArea}"
-                                    jsf:action="#{Metadaten.cancelPageAreaEdition}">
-                                    <i
-                                        class="fa fa-ban"
-                                        aria-hidden="true"></i>
-                                    <f:ajax render="struct :pageareas"></f:ajax>
-                                    <f:passThroughAttribute
-                                        name="data-renderimage"
-                                        value="true" />
-                                    <f:passThroughAttribute
-		                                name="data-toggle"
-		                                value="tooltip" />
-		                            <f:passThroughAttribute
-		                                name="data-placement"
-		                                value="top" />
-                                </button>
-
+                            <!-- ADD PAGE AREA -->
+								<button class="btn btn--icon-gray start-area-edition"
+									title="#{msgs.mets_createPageArea}"
+									aria-label="#{msgs.mets_createPageArea}" data-toggle="tooltip"
+									data-placement="top">
+									<span class="fa fa-crop fa-lg fa-with-bg" />
+								</button>
+								<button class="btn btn--icon-red cancel-area-edition d-none"
+									title="#{msgs.mets_cancelPageArea}"
+									aria-label="#{msgs.mets_cancelPageArea}" data-toggle="tooltip"
+									data-placement="top">
+									<span class="fa fa-ban fa-lg fa-with-bg"
+										style="background: red" />
+									<h:outputText value="#{msgs.mets_addPageAreaToDocStruct}" />
+								</button>
                             </div>
 
                         </div>

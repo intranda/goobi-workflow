@@ -253,59 +253,20 @@
                         </li>
                         <!-- ADD PAGE AREA TO CURRENT DOCSTRUCT -->
                         <li>
-                            <button jsf:rendered="#{not Metadaten.pageAreaEditionMode}"
-                                    class="btn btn--icon"
-                                    title="#{msgs.mets_createPageArea}"
-                                    aria-label="#{msgs.mets_createPageArea}"
-                                    jsf:action="#{Metadaten.addPageAreaAndAssignToDocststuct(Metadaten.myDocStruct)}">
-                                    <span class="fa fa-crop fa-lg fa-with-bg" />
-                                    <f:ajax render="struct structEdit :pageareas" execute=":pageareas"></f:ajax>
-                                    <f:passThroughAttribute
-                                        name="data-renderimage"
-                                        value="true" />
-                                    <f:passThroughAttribute
-		                                name="data-toggle"
-		                                value="tooltip" />
-		                            <f:passThroughAttribute
-		                                name="data-placement"
-		                                value="top" />
-		                                <h:outputText value="#{msgs.mets_addPageAreaToDocStruct}" />
-                                </button>
-                                <button jsf:rendered="#{Metadaten.pageAreaEditionMode}"
-                                    class="btn btn--icon cancel-area-edition"
-                                    title="#{msgs.mets_cancelPageArea}"
-                                    aria-label="#{msgs.mets_cancelPageArea}"
-                                    jsf:action="#{Metadaten.cancelPageAreaEdition}">
-                                    <span class="fa fa-ban fa-lg fa-with-bg" style="background:red"/>
-                                    <f:ajax render="struct structEdit :pageareas"></f:ajax>
-                                    <f:passThroughAttribute
-                                        name="data-renderimage"
-                                        value="true" />
-                                    <f:passThroughAttribute
-		                                name="data-toggle"
-		                                value="tooltip" />
-		                            <f:passThroughAttribute
-		                                name="data-placement"
-		                                value="top" />
-                                </button>
-                                <button jsf:rendered="#{Metadaten.pageAreaEditionMode}"
-                                    class="btn btn--icon"
-                                    title="#{msgs.mets_completePageArea}"
-                                    aria-label="#{msgs.mets_completePageArea}"
-                                    jsf:action="#{Metadaten.setPageAreaEditionMode(false)}">
-                                    <span class="fa fa-check fa-lg fa-with-bg" />
-                                    <f:ajax render="struct structEdit :pageareas"></f:ajax>
-                                    <f:passThroughAttribute
-                                        name="data-renderimage"
-                                        value="true" />
-                                    <f:passThroughAttribute
-		                                name="data-toggle"
-		                                value="tooltip" />
-		                            <f:passThroughAttribute
-		                                name="data-placement"
-		                                value="top" />
-		                                <h:outputText value="#{msgs.mets_addPageAreaToDocStruct}" />
-                                </button>
+                            <button class="btn btn--icon start-area-edition"
+                                 title="#{msgs.mets_createPageArea}"
+                                 aria-label="#{msgs.mets_createPageArea}"
+                                 data-toggle="tooltip" data-placement="top">
+                                 <span class="fa fa-crop fa-lg fa-with-bg" />
+                           		<h:outputText value="#{msgs.mets_addPageAreaToDocStruct}" />
+                           </button>
+                           <button class="btn btn--icon cancel-area-edition d-none"
+                               title="#{msgs.mets_cancelPageArea}"
+                               aria-label="#{msgs.mets_cancelPageArea}"
+                               data-toggle="tooltip" data-placement="top">
+                               <span class="fa fa-ban fa-lg fa-with-bg" style="background:red"/>
+                               <h:outputText value="#{msgs.mets_addPageAreaToDocStruct}" />
+                           </button>
                         </li>
                         <!-- DELETE PAGE AREA -->
                         <li>
@@ -333,7 +294,6 @@
                                     <span class="fa fa-ban fa-lg fa-with-bg" style="background:red"/>
                                     <h:outputText value="#{msgs.mets_deletePageArea}" />
                                 </button>
-                                <o:commandScript name="deletePageArea" action="#{Metadaten.deletePageAreaCommand}"/>
 		                        
                         </li>
     
