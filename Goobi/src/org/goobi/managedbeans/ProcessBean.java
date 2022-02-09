@@ -2611,6 +2611,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public String startPlugin() {
         if (StringUtils.isNotBlank(mySchritt.getStepPlugin())) {
+        	
             if (mySchritt.isTypExportDMS()) {
                 IExportPlugin dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, mySchritt.getStepPlugin());
                 try {
@@ -2623,6 +2624,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             } else if (mySchritt.isDelayStep()) {
                 Helper.setFehlerMeldung("cannotStartPlugin");
             } else {
+            	Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "plugin with title: "+mySchritt.getStepPlugin()+" was executed from Process details");
                 currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
                 if (currentPlugin != null) {
                     currentPlugin.initialize(mySchritt, "/process_edit");
