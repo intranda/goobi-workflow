@@ -148,10 +148,7 @@
                                             	jsf:id="deletePageArea"
                                                 class="btn btn--icon"
                                                 title="#{msgs.mets_deletePageArea}"
-                                                jsf:action="#{Metadaten.deletePageArea}">
-                                                <f:setPropertyActionListener
-                                                    value="#{page}"
-                                                    target="#{Metadaten.currentPage}" />
+                                                jsf:action="#{Metadaten.deletePageArea(page.docStruct)}">
                                                 <f:passThroughAttribute
                                                     name="data-renderimage"
                                                     value="true" />

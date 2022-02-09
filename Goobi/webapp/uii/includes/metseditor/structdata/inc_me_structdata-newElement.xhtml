@@ -212,7 +212,7 @@
                         </div>
                     </div>
                     <hr />
-                    <h:panelGroup
+                    <h:panelGroup id="addNewPageArea"
                         styleClass="form-group form-group--flex structdata__page-area"
                         layout="block"
                         rendered="#{Metadaten.enablePageArea}">
@@ -221,34 +221,40 @@
                                 <label for="pageArea">#{msgs.pageArea}:</label>
                             </div>
                             <div class="col-6">
-                                <p:autoComplete
-                                    scrollHeight="300"
-                                    id="pageArea"
-                                    pt:aria-label="#{msgs.pageArea}"
-                                    styleClass="form-control focusableChildCss"
-                                    forceId="true"
-                                    value="#{Metadaten.pageArea}"
-                                    completeMethod="#{Metadaten.autocomplete}" />
+                            	<h:inputText id="pageAreaName" pt:aria-label="#{msgs.pageArea}" 
+	                            	styleClass="form-control focusableChildCss" 
+	                            	value="#{Metadaten.pageArea}"
+	                            	disabled="true"></h:inputText>
                             </div>
                             <div class="col-3">
+          						<ui:fragment rendered="#{(Metadaten.neuesElementWohin gt 2 and not empty Metadaten.addDocStructType2) or (Metadaten.neuesElementWohin lt 3 and not empty Metadaten.addDocStructType1)}">
                             <!-- ADD PAGE AREA -->
 								<button class="btn btn--icon-gray start-area-edition"
 									title="#{msgs.mets_createPageArea}"
+									type="button"
+									onclick="goobiWorkflowJS.object.startDrawArea(this, 'new')"
 									aria-label="#{msgs.mets_createPageArea}" data-toggle="tooltip"
 									data-placement="top">
-									<span class="fa fa-crop fa-lg fa-with-bg" />
+									<i class="fa fa-crop"
+                                        aria-hidden="true"></i>
 								</button>
-								<button class="btn btn--icon-red cancel-area-edition d-none"
+								<button class="btn btn--icon-red cancel-area-edition"
 									title="#{msgs.mets_cancelPageArea}"
+									type="button"
+									onclick="goobiWorkflowJS.object.cancelDrawArea(this)"
 									aria-label="#{msgs.mets_cancelPageArea}" data-toggle="tooltip"
 									data-placement="top">
-									<span class="fa fa-ban fa-lg fa-with-bg"
-										style="background: red" />
-									<h:outputText value="#{msgs.mets_addPageAreaToDocStruct}" />
+									<i
+                                        class="fa fa-ban"
+                                        aria-hidden="true"></i>
 								</button>
+								</ui:fragment>
                             </div>
 
                         </div>
+                        
+            
+                        
                     </h:panelGroup>
 
 

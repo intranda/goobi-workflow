@@ -94,7 +94,7 @@
             <!-- METSEDITOR STRUCTURE -->
             <div class="table__structure">
                 <x:dataTable id="meStructure" forceId="true" value="#{Metadaten.strukturBaum3}" var="item" rowStyleClass="level-#{item.niveau}">
-                    <h:column>
+                    <h:column>                    
                         <button 
                             jsf:id="expand"
                             aria-label="#{msgs.expand}" 
@@ -121,7 +121,6 @@
                                 <f:passThroughAttribute name="data-placement" value="top" />
                                 <f:passThroughAttribute name="data-html" value="true" />
                                 <f:passThroughAttribute name="data-content" value="#{item.node.metadataPopup}" />
-                                
                                 <h:outputText value="#{item.node.description}"
                                     rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
                                 <h:outputText value="#{item.node.mainTitle}"

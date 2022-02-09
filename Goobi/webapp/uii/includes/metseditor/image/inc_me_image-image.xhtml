@@ -196,13 +196,13 @@
                     rendered="#{Metadaten.bildNummer == '-1'}" />
             </div>
             
+                        
             <!-- PAGE AREAS -->
-			<h:outputText id="pageAreas" value="#{Metadaten.pageAreas}" styleClass="d-none"></h:outputText>
-            <o:commandScript name="deletePageArea" action="#{Metadaten.deletePageAreaCommand}"/>
-            <o:commandScript name="addPageArea" action="#{Metadaten.addPageAreaCommand}"/>
-            <o:commandScript name="setPageArea" action="#{Metadaten.setPageAreaCommand}"/>
-            <o:commandScript name="cancelPageAreaEdition" action="#{Metadaten.cancelPageAreaEdition}"/>
-            
+			<h:outputLabel id="pageareas" data-content="pageareas" value="#{Metadaten.pageAreas}" styleClass="d-none"></h:outputLabel>
+            <h:commandScript name="deletePageArea" action="#{Metadaten.deletePageAreaCommand}" render="pageareas"/>
+            <h:commandScript name="addPageArea" action="#{Metadaten.addPageAreaCommand}" render="pageareas"/>
+            <h:commandScript name="setPageArea" action="#{Metadaten.setPageAreaCommand}"/>
+            <h:commandScript name="cancelPageAreaEdition" action="#{Metadaten.cancelPageAreaEdition}" render="pageareas"/>
         </h:form>
     </composite:implementation>
 </ui:composition>

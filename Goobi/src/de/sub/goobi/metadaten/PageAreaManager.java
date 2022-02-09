@@ -1,6 +1,7 @@
 package de.sub.goobi.metadaten;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import org.json.JSONObject;
 
 import com.google.gson.Gson;
 
+import de.sub.goobi.helper.Helper;
 import lombok.Getter;
 import lombok.Setter;
 import ugh.dl.DigitalDocument;
@@ -56,7 +58,7 @@ public class PageAreaManager {
     public PhysicalObject createPhysicalObject(DocStruct docStruct) {
         PhysicalObject pi = new PhysicalObject();
         pi.setDocStruct(docStruct);
-        pi.setPhysicalPageNo(createPhysicalPageNumberForArea(docStruct));
+        pi.setPhysicalPageNo(createPhysicalPageNumberForArea(docStruct, docStruct.getParent()));
         pi.setLogicalPageNo(createLogicalPageNumberForArea(docStruct));
         return pi;
     }
@@ -67,7 +69,7 @@ public class PageAreaManager {
             if (hasNewPageArea() && id.equals(getNewPageArea().getIdentifier())) {
                 setCoords(this.getNewPageArea(), x, y, w, h);
             } else {
-                List<DocStruct> pageAreas = new ArrayList<>(page.getAllChildren());
+                List<DocStruct> pageAreas = new ArrayList<>(Optional.ofNullable(page.getAllChildren()).orElse(Collections.emptyList()));
                 DocStruct area = pageAreas.stream().filter(a -> id.equals(a.getIdentifier())).findAny().orElse(null);
                 if (area != null) {
                     setCoords(area, x, y, w, h);
@@ -88,6 +90,9 @@ public class PageAreaManager {
             return "";
         }
         List<DocStruct> pageAreas = new ArrayList<>(page.getAllChildren());
+        if(this.newPageArea != null) {
+            pageAreas.add(newPageArea);
+        }
         for (DocStruct area : pageAreas) {
             String coordinates = MetadatenHelper.getSingleMetadataValue(area, "_COORDS").orElse(null);
             DocStruct logDocStruct = Optional.ofNullable(area.getAllFromReferences())
@@ -96,14 +101,17 @@ public class PageAreaManager {
                     .orElse(null);
 
             JSONObject json = new JSONObject();
-            String id = createPhysicalPageNumberForArea(area);
+            String id = createPhysicalPageNumberForArea(area, page);
             area.setIdentifier(id);
             json.put("areaId", id);
-            json.put("logId", logDocStruct.getIdentifier());
-            if (logDocStruct != null && Objects.equals(logDocStruct, currentLogicalDocStruct)) {
-                json.put("highlight", true);
+            if(logDocStruct != null) {
+                json.put("logId", logDocStruct.getIdentifier());
+                if (logDocStruct != null && Objects.equals(logDocStruct, currentLogicalDocStruct)) {
+                    json.put("highlight", true);
+                }
+            } else {
+                json.put("label", getNewPageAreaLabel());
             }
-
             String x = "";
             String y = "";
             String w = "";
@@ -131,6 +139,12 @@ public class PageAreaManager {
         }
         return rectangles.toString();
     }
+    
+    public String getNewPageAreaLabel() {
+        return Optional.ofNullable(getNewPageArea())
+            .map(area -> Helper.getTranslation("mets_pageArea", MetadatenHelper.getSingleMetadataValue(area, "logicalPageNumber").orElse("")))
+            .orElse("");
+    }
 
     public DocStruct createPageArea(DocStruct page, Integer x, Integer y, Integer w, Integer h)
             throws TypeNotAllowedForParentException, MetadataTypeNotAllowedException, TypeNotAllowedAsChildException {
@@ -147,7 +161,7 @@ public class PageAreaManager {
         md.setValue(x + "," + y + "," + w + "," + h);
         pageArea.addMetadata(md);
         pageArea.setDocstructType("area");
-        pageArea.setIdentifier(createPhysicalPageNumberForArea(pageArea));
+        pageArea.setIdentifier(createPhysicalPageNumberForArea(pageArea, page));
         return pageArea;
     }
 
@@ -164,23 +178,19 @@ public class PageAreaManager {
         logical.addReferenceTo(pageArea, "logical_physical");
     }
 
-    private String createPhysicalPageNumberForArea(DocStruct pageAreaStruct) {
-        if (pageAreaStruct.getDocstructType().equalsIgnoreCase("area") && pageAreaStruct.getParent() != null) {
-            DocStruct page = pageAreaStruct.getParent();
+    private String createPhysicalPageNumberForArea(DocStruct pageAreaStruct, DocStruct page) {
             String physicalPageNumber = page.getAllMetadata()
                     .stream()
                     .filter(md -> md.getType().getName().equalsIgnoreCase("physPageNumber"))
                     .findAny()
                     .map(Metadata::getValue)
                     .orElse("uncounted");
-            int indexOfArea = page.getAllChildren().indexOf(pageAreaStruct);
-            if (indexOfArea < 0) {
-                indexOfArea = page.getAllChildren().size();
+            List<DocStruct> pageAreas = new ArrayList<>(Optional.ofNullable(page.getAllChildren()).orElse(Collections.emptyList()));
+            int indexOfArea = pageAreas.size();
+            if(pageAreaStruct != null && pageAreas.contains(pageAreaStruct)) {
+                indexOfArea = pageAreas.indexOf(pageAreaStruct);
             }
             return physicalPageNumber + "_" + Integer.toString(indexOfArea + 1);
-        } else {
-            throw new IllegalArgumentException("given docStruct is not page area or has no parent");
-        }
     }
 
     private String createLogicalPageNumberForArea(DocStruct pageAreaStruct) {

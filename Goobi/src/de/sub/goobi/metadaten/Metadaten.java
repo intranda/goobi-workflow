@@ -2354,7 +2354,7 @@ public class Metadaten implements Serializable {
         
         //if page area was set, assign to docStruct
         if(this.pageAreaManager.hasNewPageArea()) {
-            this.pageAreaManager.assignToLogicalDocStruct(this.pageAreaManager.getNewPageArea(), getCurrentPage());
+            this.pageAreaManager.assignToPhysicalDocStruct(this.pageAreaManager.getNewPageArea(), getCurrentPage());
             this.pageAreaManager.assignToLogicalDocStruct(this.pageAreaManager.getNewPageArea(), ds);
             this.pageAreaManager.resetNewPageArea();
         }
@@ -2560,22 +2560,26 @@ public class Metadaten implements Serializable {
         }
 
     }
+    
+    private String getRequestParameter(String name) {
+        Map<String, String> params = FacesContext.getCurrentInstance().
+                getExternalContext().getRequestParameterMap();
+        return params.get(name);
+    }
 
 
     /**
      * Add page area via commandScript
      */
     public void addPageAreaCommand() {
-        String addTo = Faces.getRequestParameter("addTo", String.class);
-        Integer x =  Faces.getRequestParameter("x", Integer.class);
-        Integer y =  Faces.getRequestParameter("y", Integer.class);
-        Integer w =  Faces.getRequestParameter("w", Integer.class);
-        Integer h =  Faces.getRequestParameter("h", Integer.class);
+        String addTo = getRequestParameter("addTo");
+        Integer x =  Integer.parseInt(getRequestParameter("x"));
+        Integer y =  Integer.parseInt(getRequestParameter("y"));
+        Integer w =  Integer.parseInt(getRequestParameter("w"));
+        Integer h =  Integer.parseInt(getRequestParameter("h"));
         
         DocStruct page = getCurrentPage();
         DocStruct logicalDocStruct = "current".equalsIgnoreCase(addTo) ? this.myDocStruct : null;
-        DigitalDocument document = this.document;
-        Prefs prefs = this.myPrefs;
         try {
             DocStruct pageArea = this.pageAreaManager.createPageArea(page, x,y,w,h);
             if(logicalDocStruct != null) {
@@ -2593,11 +2597,11 @@ public class Metadaten implements Serializable {
      * @param json
      */
     public void setPageAreaCommand() {
-        String id = Faces.getRequestParameter("areaId", String.class);
-        Integer x =  Faces.getRequestParameter("x", Integer.class);
-        Integer y =  Faces.getRequestParameter("y", Integer.class);
-        Integer w =  Faces.getRequestParameter("w", Integer.class);
-        Integer h =  Faces.getRequestParameter("h", Integer.class);
+        String id = getRequestParameter("areaId");
+        Integer x =  Integer.parseInt(getRequestParameter("x"));
+        Integer y =  Integer.parseInt(getRequestParameter("y"));
+        Integer w =  Integer.parseInt(getRequestParameter("w"));
+        Integer h =  Integer.parseInt(getRequestParameter("h"));
         this.pageAreaManager.setRectangle(id, x,y,w,h, getCurrentPage());
 
     }
@@ -2605,23 +2609,34 @@ public class Metadaten implements Serializable {
 
     public void deletePageAreaCommand() {
         DocStruct page = getCurrentPage();
-        Integer areaId = Faces.getRequestParameter("areaId", Integer.class);
-        if (page != null && areaId != null && page.getAllChildren() != null && page.getAllChildren().size() > areaId) {
-            DocStruct pageArea = page.getAllChildren().get(areaId);
-            page.removeChild(pageArea);
-            List<Reference> fromReferences = pageArea.getAllFromReferences();
-            List<DocStruct> linkedDocstructs = new ArrayList<>();
-            for (Reference ref : fromReferences) {
-                linkedDocstructs.add(ref.getSource());
+        String areaId = getRequestParameter("areaId");
+        if(this.pageAreaManager.hasNewPageArea() && Objects.equals(areaId, this.pageAreaManager.getNewPageArea().getIdentifier())) {
+            this.pageAreaManager.setNewPageArea(null);
+        } else if (page != null && StringUtils.isNotBlank(areaId) && page.getAllChildren() != null) {
+            DocStruct pageArea = page.getAllChildren().stream().filter(c -> areaId.equals(c.getIdentifier())).findAny().orElse(null);
+            if(pageArea != null) {
+                deletePageArea(pageArea);
             }
-            for (DocStruct ds : linkedDocstructs) {
-                ds.removeReferenceTo(pageArea);
-                if (ds.getAllToReferences() == null || ds.getAllToReferences().isEmpty()) {
-                    ds.addReferenceTo(page, "logical_physical");
-                }
-            }
-            retrieveAllImages();
         }
+    }
+    
+    public void deletePageArea(DocStruct pageArea) {
+        DocStruct page = pageArea.getParent();
+        if(page != null) {            
+            page.removeChild(pageArea);
+        }
+        List<Reference> fromReferences = pageArea.getAllFromReferences();
+        List<DocStruct> linkedDocstructs = new ArrayList<>();
+        for (Reference ref : fromReferences) {
+            linkedDocstructs.add(ref.getSource());
+        }
+        for (DocStruct ds : linkedDocstructs) {
+            ds.removeReferenceTo(pageArea);
+            if (page != null &&  ds.getAllToReferences() == null || ds.getAllToReferences().isEmpty()) {
+                ds.addReferenceTo(page, "logical_physical");
+            }
+        }
+        retrieveAllImages();
     }
 
     public void cancelPageAreaEdition() {
@@ -2639,9 +2654,7 @@ public class Metadaten implements Serializable {
     }
 
     public String getPageArea() {
-        return Optional.ofNullable(this.pageAreaManager.getNewPageArea())
-                .map(area -> Helper.getTranslation("mets_pageArea", MetadatenHelper.getSingleMetadataValue(area, "logicalPageNo").orElse("")))
-                .orElse("");
+        return this.pageAreaManager.getNewPageAreaLabel();
     }
     
     public void setPageArea(String label) {
@@ -4098,7 +4111,9 @@ public class Metadaten implements Serializable {
         List<String> alle = new ArrayList<>();
         for (String key : pageMap.getKeyList()) {
             PhysicalObject po = pageMap.get(key);
-            alle.add(po.getLabel());
+            if(po.getDocStruct().getType().getName().equals("page")) {                
+                alle.add(po.getLabel());
+            }
         }
 
         Iterator<String> iterator = alle.iterator();
@@ -5233,5 +5248,9 @@ public class Metadaten implements Serializable {
         }
 
         getCommentHelper().setComment(this.imageFolderName, getImage().getImageName(), comment);
+    }
+    
+    public void refresh() {
+        
     }
 }

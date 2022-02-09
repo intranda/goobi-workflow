@@ -253,16 +253,18 @@
                         </li>
                         <!-- ADD PAGE AREA TO CURRENT DOCSTRUCT -->
                         <li>
-                            <button class="btn btn--icon start-area-edition"
+                            <button class="btn btn--icon start-area-edition" type="button"
                                  title="#{msgs.mets_createPageArea}"
                                  aria-label="#{msgs.mets_createPageArea}"
+                                 onclick="goobiWorkflowJS.object.startDrawArea(this, 'current')"
                                  data-toggle="tooltip" data-placement="top">
                                  <span class="fa fa-crop fa-lg fa-with-bg" />
                            		<h:outputText value="#{msgs.mets_addPageAreaToDocStruct}" />
                            </button>
-                           <button class="btn btn--icon cancel-area-edition d-none"
+                           <button class="btn btn--icon cancel-area-edition" type="button"
                                title="#{msgs.mets_cancelPageArea}"
                                aria-label="#{msgs.mets_cancelPageArea}"
+                               onclick="goobiWorkflowJS.object.cancelDrawArea(this)"
                                data-toggle="tooltip" data-placement="top">
                                <span class="fa fa-ban fa-lg fa-with-bg" style="background:red"/>
                                <h:outputText value="#{msgs.mets_addPageAreaToDocStruct}" />
@@ -283,8 +285,7 @@
                                 </button>
                                 <button
                                 	type="button"
-                                    class="btn btn--icon"
-                                    style="display: none;"
+                                    class="btn btn--icon delete-page-area"
                                     title="#{msgs.mets_cancelPageArea}"
                                     aria-label="#{msgs.mets_cancelPageArea}"
                                     data-pagearea-delete="cancel"
