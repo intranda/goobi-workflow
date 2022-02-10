@@ -56,7 +56,6 @@ public class UsergroupBean extends BasicBean implements Serializable {
     private String tempRole;
 
     public void setMyBenutzergruppe(Usergroup group) {
-    	System.out.println("specific setter called");
     	this.myBenutzergruppe = group;
     	this.tempTitle = group.getTitel();
     }
