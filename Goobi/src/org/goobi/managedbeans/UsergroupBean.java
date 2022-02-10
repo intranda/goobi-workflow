@@ -107,7 +107,9 @@ public class UsergroupBean extends BasicBean implements Serializable {
     }
 
     public String addRole() {
-        myBenutzergruppe.addUserRole(tempRole);
+    	if(! tempRole.isEmpty()) {
+        	myBenutzergruppe.addUserRole(tempRole);
+    	}
         tempRole = "";
         return "";
     }
