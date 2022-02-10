@@ -52,8 +52,15 @@ import lombok.Setter;
 public class UsergroupBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 8051160917458068675L;
     private Usergroup myBenutzergruppe = new Usergroup();
+    private String tempTitle = "";	//title before editing
     private String tempRole;
 
+    public void setMyBenutzergruppe(Usergroup group) {
+    	System.out.println("specific setter called");
+    	this.myBenutzergruppe = group;
+    	this.tempTitle = group.getTitel();
+    }
+    
     public UsergroupBean() {
         sortierung = "titel";
     }
@@ -103,6 +110,7 @@ public class UsergroupBean extends BasicBean implements Serializable {
     }
     
     public String Cancel() {
+    	this.myBenutzergruppe.setTitel(tempTitle);
         return "usergroup_all";
     }
 
