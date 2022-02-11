@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.goobi.api.mq.QueueType;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.GoobiScriptResultType;
@@ -17,6 +18,7 @@ import org.goobi.production.plugin.interfaces.IStepPluginVersion2;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
+import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.ShellScriptReturnValue;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
@@ -76,11 +78,17 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
 
             if (step.isTypScriptStep() && !scriptPaths.isEmpty()) {
                 // This step is a script step
-                ShellScriptReturnValue returncode = hs.executeAllScriptsForStep(step, step.isTypAutomatisch());
-                boolean success = returncode.getReturnCode() == 0 || returncode.getReturnCode() == 98 || returncode.getReturnCode() == 99;
-                GoobiScriptExecuteTask.setStatusAndMessage(gsr, "script", steptitle, success);
-                if (!success) {
-                    gsr.setErrorText(returncode.getErrorText() + " The return code was : " + returncode.getReturnCode());
+                if (step.getMessageQueue() == QueueType.NONE) {
+                    ShellScriptReturnValue returncode = hs.executeAllScriptsForStep(step, step.isTypAutomatisch());
+                    boolean success = returncode.getReturnCode() == 0 || returncode.getReturnCode() == 98 || returncode.getReturnCode() == 99;
+                    GoobiScriptExecuteTask.setStatusAndMessage(gsr, "script", steptitle, success);
+                    if (!success) {
+                        gsr.setErrorText(returncode.getErrorText() + " The return code was : " + returncode.getReturnCode());
+                    }
+                } else {
+                    ScriptThreadWithoutHibernate thread = new ScriptThreadWithoutHibernate(step);
+                    thread.startOrPutToQueue();
+                    GoobiScriptExecuteTask.setStatusAndMessage(gsr, "script", steptitle, true);
                 }
 
             } else if (step.isTypExportDMS()) {
