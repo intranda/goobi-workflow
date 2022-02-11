@@ -34,6 +34,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
@@ -50,6 +51,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
@@ -828,8 +830,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 modusBearbeiten = "schritt";
                 return "process_edit_step";
             }
-        }
-        else //not automatic: then remove from message queue:
+        } else //not automatic: then remove from message queue:
         {
             mySchritt.setMessageQueue(QueueType.NONE);
         }
@@ -1071,7 +1072,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     public void ExportDMS() {
-        if(this.myProzess.getContainsExportStep()) {
+        if (this.myProzess.getContainsExportStep()) {
             IExportPlugin export = null;
             String pluginName = ProcessManager.getExportPluginName(myProzess.getId());
             if (StringUtils.isNotEmpty(pluginName)) {
@@ -1094,7 +1095,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 //            Helper.setFehlerMeldung("An error occured while trying to export to DMS for: " + this.myProzess.getTitel(), e);
                 logger.error("ExportDMS error", e);
             }
-        }else {
+        } else {
             Helper.setFehlerMeldung("noExportTaskError");
         }
     }
@@ -1476,7 +1477,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             StepManager.saveStep(step);
             String message = "Changed step order for step '" + step.getTitel() + "' to position " + step.getReihenfolge()
-            + " in process details.";
+                    + " in process details.";
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, message);
             // set list to null to reload list of steps in new order
             this.myProzess.setSchritte(null);
@@ -2611,6 +2612,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public String startPlugin() {
         if (StringUtils.isNotBlank(mySchritt.getStepPlugin())) {
+        	
             if (mySchritt.isTypExportDMS()) {
                 IExportPlugin dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, mySchritt.getStepPlugin());
                 try {
@@ -2623,6 +2625,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             } else if (mySchritt.isDelayStep()) {
                 Helper.setFehlerMeldung("cannotStartPlugin");
             } else {
+            	Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "plugin with title: "+mySchritt.getStepPlugin()+" was executed from Process details");
                 currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
                 if (currentPlugin != null) {
                     currentPlugin.initialize(mySchritt, "/process_edit");
@@ -2709,6 +2712,14 @@ public class ProcessBean extends BasicBean implements Serializable {
                 Helper.setFehlerMeldung("could not export database information: ", e);
             }
             facesContext.responseComplete();
+        }
+    }
+
+    public boolean isFoldersArchived() throws IOException, InterruptedException, SwapException, DAOException {
+        Path images = Paths.get(this.myProzess.getImagesDirectory());
+        try (Stream<Path> filesInImages = Files.list(images)) {
+            return filesInImages
+                    .anyMatch(p -> Files.isRegularFile(p) && p.getFileName().toString().endsWith(".xml"));
         }
     }
 

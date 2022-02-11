@@ -52,27 +52,13 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                     + DatabaseVersion.EXPECTED_VERSION);
             DatabaseVersion.updateDatabase(currentVersion);
         }
-        // TODO
-        if (!DatabaseVersion.checkIfColumnExists("schritte", "messageId")) {
-            DatabaseVersion.runSql("ALTER TABLE schritte add column messageId varchar(255) DEFAULT NULL");
-        }
 
         checkIndexes();
 
         DatabaseVersion.checkIfEmptyDatabase();
 
-        checkProjectTable();
-
     }
 
-    private void checkProjectTable() {
-
-        if (!DatabaseVersion.checkIfColumnExists("projectfilegroups", "ignore_file_extensions")) {
-            DatabaseVersion.runSql("alter table projectfilegroups add column ignore_file_extensions text default null");
-            DatabaseVersion.runSql("alter table projectfilegroups add column original_mimetypes tinyint(1)");
-        }
-
-    }
 
     // this method is executed on every startup and checks, if some mandatory indexes exist
     // if some indexes are missing, they are created

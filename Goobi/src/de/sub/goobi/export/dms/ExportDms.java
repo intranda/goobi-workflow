@@ -239,13 +239,14 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                             }
                         }
                     }
+                    // TODO if it is a regular file, export it to source folder
                 }
             }
-        }catch (AccessDeniedException e) { 
-        	Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), "Access to "+ e.getMessage()+ " was denied");
+        }catch (AccessDeniedException e) {
+            Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), "Access to "+ e.getMessage()+ " was denied");
             problems.add("Export cancelled: Access to " + e.getMessage()+ " was denied");
             return false;
-    	}catch (Exception e) {
+        }catch (Exception e) {
             Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), e);
             problems.add("Export cancelled: " + e.getMessage());
             return false;

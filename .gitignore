@@ -8,3 +8,4 @@ goobi1.9/WEB-INF/classes
 *.iml
 /.project
 *~
+/.DS_Store

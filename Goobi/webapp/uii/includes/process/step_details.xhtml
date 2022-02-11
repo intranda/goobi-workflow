@@ -248,7 +248,7 @@
                         <h:panelGroup>
                             <ul class="colors small13">
                                 <li
-                                    class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.color)} margin-top-lesser margin-right-regular"
+                                    class="#{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.color)} margin-top-lesser margin-right-regular"
                                     rel="tooltip"
                                     title="#{ProzessverwaltungForm.mySchritt.bearbeitungsstatusEnum.title}" />
                             </ul>

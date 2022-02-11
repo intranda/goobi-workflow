@@ -98,6 +98,8 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             goobiWorkflowJS.tinymce.init(_defaults);
                             
                             goobiWorkflowJS.setAutocompleteListHandler();
+                            
+                            goobiWorkflowJS.layout.setImageCommentHeight();
                             break;
                     }
                 });
