@@ -2357,6 +2357,7 @@ public class Metadaten implements Serializable {
             this.pageAreaManager.assignToPhysicalDocStruct(this.pageAreaManager.getNewPageArea(), getCurrentPage());
             this.pageAreaManager.assignToLogicalDocStruct(this.pageAreaManager.getNewPageArea(), ds);
             this.pageAreaManager.resetNewPageArea();
+            retrieveAllImages();
         }
         
         // if easy pagination is switched on, use the last page as first page for next structure element
@@ -2585,6 +2586,7 @@ public class Metadaten implements Serializable {
             if(logicalDocStruct != null) {
                 this.pageAreaManager.assignToPhysicalDocStruct(pageArea, page);
                 this.pageAreaManager.assignToLogicalDocStruct(pageArea, logicalDocStruct);
+                retrieveAllImages();
             } else {
                 this.pageAreaManager.setNewPageArea(pageArea);           }
         } catch (TypeNotAllowedAsChildException | TypeNotAllowedForParentException | MetadataTypeNotAllowedException e) {
