@@ -25,7 +25,7 @@
             <intranda:breadcrumb
                 id="processAll"
                 label="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.aktuelleProzesse:msgs.prozessvorlagen}"
-                action="process_all"
+                action="#{ProzessverwaltungForm.FilterAlleStart()}"
                 navId="a1" />
         </c:if>
         <intranda:breadcrumb

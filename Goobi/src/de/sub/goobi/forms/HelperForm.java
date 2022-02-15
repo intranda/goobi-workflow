@@ -54,6 +54,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
+import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
@@ -156,7 +157,7 @@ public class HelperForm implements Serializable {
                 }
             } catch (InstantiationException e) {
             } catch (IllegalAccessException e) {
-            } catch (IllegalArgumentException |InvocationTargetException |NoSuchMethodException |SecurityException e) {
+            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             }
         }
         return ffs;
@@ -174,7 +175,7 @@ public class HelperForm implements Serializable {
                 }
             } catch (InstantiationException e) {
             } catch (IllegalAccessException e) {
-            } catch (IllegalArgumentException |InvocationTargetException |NoSuchMethodException |SecurityException e) {
+            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             }
 
         }
@@ -203,7 +204,6 @@ public class HelperForm implements Serializable {
 
         SelectItem deactivated = new SelectItem("5", Helper.getTranslation("statusDeactivated"));
         ssl.add(deactivated);
-
 
         return ssl;
     }
@@ -298,7 +298,6 @@ public class HelperForm implements Serializable {
         return !Helper.getCurrentUser().getLdapGruppe().isReadonly();
     }
 
-
     public boolean isUseUii() {
         return ConfigurationHelper.getInstance().isUseIntrandaUi();
     }
@@ -308,9 +307,9 @@ public class HelperForm implements Serializable {
     }
 
     public void executeScriptsForStep(int id) {
-        HelperSchritte hs = new HelperSchritte();
-        Step s = StepManager.getStepById(id);
-        hs.executeAllScriptsForStep(s, false);
+        Step step = StepManager.getStepById(id);
+        ScriptThreadWithoutHibernate thread = new ScriptThreadWithoutHibernate(step);
+        thread.startOrPutToQueue();
     }
 
     public void executeHttpCallForStep(int id) {

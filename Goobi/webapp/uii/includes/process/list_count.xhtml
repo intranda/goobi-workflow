@@ -7,6 +7,53 @@
     <composite:implementation>
 
 		<h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.myAnzahlList != null}">
+			<div class="row">
+	        	<div class="col-sm-4">
+	        
+			        <div class="box box-small box-color lightgrey box-bordered">
+						<div class="box-title">
+							<h3>
+								<i class="fa fa-tint"></i> #{msgs.zusammenfassung}
+							</h3>
+						</div>
+						<div class="box-content nopadding">
+							<table class="table table-hover responsive padding-sides-10">
+								<tbody>
+									<tr>
+										<td>#{msgs.baendeGesamt}:</td>
+										<td>#{ProzessverwaltungForm.myAnzahlSummary.sumProcesses}</td>
+									</tr>
+									<tr>
+										<td>#{msgs.imagesGesamt}:</td>
+										<td>#{ProzessverwaltungForm.myAnzahlSummary.sumImages}</td>
+									</tr>
+									<tr>
+										<td>#{msgs.imagesDurchschnitt}:</td>
+										<td>#{ProzessverwaltungForm.myAnzahlSummary.averageImages}</td>
+									</tr>
+									<tr>
+										<td>#{msgs.docstructsGesamt}:</td>
+										<td>#{ProzessverwaltungForm.myAnzahlSummary.sumDocstructs}</td>
+									</tr>
+									<tr>
+										<td>#{msgs.docstructsDurchschnitt}:</td>
+										<td>#{ProzessverwaltungForm.myAnzahlSummary.averageDocstructs}</td>
+									</tr>
+									<tr>
+										<td>#{msgs.metadataGesamt}:</td>
+										<td>#{ProzessverwaltungForm.myAnzahlSummary.sumMetadata}</td>
+									</tr>
+									<tr>
+										<td>#{msgs.metadataDurchschnitt}:</td>
+										<td>#{ProzessverwaltungForm.myAnzahlSummary.averageMetadata}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+									
+	        	</div>
+	        </div>
             <div class="row">
                 <div class="col-sm-12">
 
@@ -83,53 +130,6 @@
 	        </div>
 	    </div>
 	    
-		<div class="row">
-        	<div class="col-sm-4">
-        
-		        <div class="box box-small box-color lightgrey box-bordered">
-					<div class="box-title">
-						<h3>
-							<i class="fa fa-tint"></i> #{msgs.zusammenfassung}
-						</h3>
-					</div>
-					<div class="box-content nopadding">
-						<table class="table table-hover responsive padding-sides-10">
-							<tbody>
-								<tr>
-									<td>#{msgs.baendeGesamt}:</td>
-									<td>#{ProzessverwaltungForm.myAnzahlSummary.sumProcesses}</td>
-								</tr>
-								<tr>
-									<td>#{msgs.imagesGesamt}:</td>
-									<td>#{ProzessverwaltungForm.myAnzahlSummary.sumImages}</td>
-								</tr>
-								<tr>
-									<td>#{msgs.imagesDurchschnitt}:</td>
-									<td>#{ProzessverwaltungForm.myAnzahlSummary.averageImages}</td>
-								</tr>
-								<tr>
-									<td>#{msgs.docstructsGesamt}:</td>
-									<td>#{ProzessverwaltungForm.myAnzahlSummary.sumDocstructs}</td>
-								</tr>
-								<tr>
-									<td>#{msgs.docstructsDurchschnitt}:</td>
-									<td>#{ProzessverwaltungForm.myAnzahlSummary.averageDocstructs}</td>
-								</tr>
-								<tr>
-									<td>#{msgs.metadataGesamt}:</td>
-									<td>#{ProzessverwaltungForm.myAnzahlSummary.sumMetadata}</td>
-								</tr>
-								<tr>
-									<td>#{msgs.metadataDurchschnitt}:</td>
-									<td>#{ProzessverwaltungForm.myAnzahlSummary.averageMetadata}</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-								
-        	</div>
-        </div>
 	</h:panelGroup>
         
     </composite:implementation>

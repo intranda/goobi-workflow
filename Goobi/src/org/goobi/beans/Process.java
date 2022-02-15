@@ -1535,7 +1535,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         Process p = new Process();
         p.setDocket(docket);
         p.setInAuswahllisteAnzeigen(false);
-        p.setIstTemplate(true);
+        p.setIstTemplate(istTemplate);
+        p.setProjectId(projectId);
         p.setProjekt(projekt);
         p.setRegelsatz(regelsatz);
         p.setSortHelperStatus(sortHelperStatus);
