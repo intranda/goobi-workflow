@@ -39,6 +39,7 @@ import javax.inject.Named;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.api.mail.SendMail;
+import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IPushPlugin;
@@ -86,9 +87,7 @@ public class NavigationForm implements Serializable{
     @Getter
     @Setter
     private boolean showHelp = false;
-    @Getter
-    @Setter
-    private boolean showEasyRead = false;
+
     @Getter
     @Setter
     private boolean showExpertView = false;
@@ -107,7 +106,7 @@ public class NavigationForm implements Serializable{
     @Inject
     @Push
     PushContext workflowPluginPush;
-    
+
     public enum Theme {
         ui("ui"),
         uii("uii");
@@ -188,6 +187,11 @@ public class NavigationForm implements Serializable{
         if (workflowPlugin instanceof IPushPlugin) {
             ((IPushPlugin) workflowPlugin).setPushContext(workflowPluginPush);
         }
+
+        if (PluginGuiType.FULL == workflowPlugin.getPluginGuiType()) {
+            return workflowPlugin.getGui();
+        }
+
         return "workflow";
     }
 

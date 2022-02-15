@@ -197,7 +197,7 @@
                                                         <ul
                                                             class="colors small13">
                                                             <li
-                                                                class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)} margin-top-lesser margin-right-regular"
+                                                                class="#{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)} margin-top-lesser margin-right-regular"
                                                                 rel="tooltip"
                                                                 title="#{step.bearbeitungsstatusEnum.title}" />
                                                         </ul> <h:panelGroup
