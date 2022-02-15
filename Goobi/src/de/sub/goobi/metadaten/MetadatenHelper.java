@@ -38,6 +38,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.faces.model.SelectItem;
@@ -877,6 +878,17 @@ public class MetadatenHelper implements Comparator<Object> {
         }
         return metadataList;
     }
+    
+    public static Optional<Metadata> getSingleMetadata(DocStruct docStruct, String metadataType) {
+        return docStruct.getAllMetadata()
+                .stream()
+                .filter(md -> md.getType().getName().equalsIgnoreCase(metadataType))
+                .findAny();
+    }
+    
+    public static Optional<String> getSingleMetadataValue(DocStruct docStruct, String metadataType) {
+        return getSingleMetadata(docStruct, metadataType).map(Metadata::getValue);
+    }
 
     private static void getMetadataFromDocstruct(boolean includeAuthority, Map<String, List<String>> metadataList, DocStruct ds) {
         if (ds.getAllMetadataGroups() != null) {
@@ -1054,4 +1066,6 @@ public class MetadatenHelper implements Comparator<Object> {
             value.add(md.getAuthorityID());
         }
     }
+    
+  
 }
