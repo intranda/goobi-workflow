@@ -18,9 +18,11 @@ import org.goobi.production.plugin.interfaces.IDashboardPlugin;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 
 @Named("DashboardForm")
 @ViewScoped
+@Log4j2
 public class DashboardBean implements Serializable {
 
     /**
@@ -46,17 +48,22 @@ public class DashboardBean implements Serializable {
             IDashboardPlugin plugin = (IDashboardPlugin) PluginLoader.getPluginByTitle(PluginType.Dashboard, pluginName);
             if (plugin != null) {
                 this.plugin = plugin;
-                if (PluginGuiType.FULL == plugin.getPluginGuiType()) {
-                    ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
-                    try {
-                        ec.redirect(ec.getRequestContextPath() + plugin.getGuiPath());
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+            }
+        }
+    }
+
+    public String getPluginUi() {
+        if (plugin == null) {
+            return "";
+        } else
+            if (PluginGuiType.FULL == plugin.getPluginGuiType()) {
+                ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
+                try {
+                    ec.redirect(ec.getRequestContextPath() + plugin.getGuiPath());
+                } catch (IOException e) {
+                    log.error(e);
                 }
             }
-
-        }
+        return plugin.getGuiPath();
     }
 }
