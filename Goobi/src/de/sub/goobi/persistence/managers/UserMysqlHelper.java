@@ -53,7 +53,7 @@ class UserMysqlHelper implements Serializable {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM benutzer");
+        sql.append("SELECT * FROM benutzer LEFT JOIN institution ON benutzer.institution_id = institution.id");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
             whereSet = true;
