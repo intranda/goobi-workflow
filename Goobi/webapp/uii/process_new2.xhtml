@@ -166,11 +166,20 @@
 									<div class="col-sm-9">
 										<p:fileUpload
 											fileUploadListener="#{ProzesskopieForm.uploadFile}"
-											id="upload" auto="true"
-											mode="advanced" multiple="true" dragDropSupport="true"
+											id="upload"
+											auto="true"
+											mode="advanced"
+											multiple="true"
+											dragDropSupport="true"
 											label="#{msgs.plugin_massupload_selectFiles}"
-											sizeLimit="1000000000000" fileLimit="42000"
-											update=":imageform" />
+											sizeLimit="1000000000000"
+											fileLimit="42000"
+											update=":imageform">
+											<!--
+											allowTypes="#{ProzesskopieForm.uploadRegex}"
+											invalidFileMessage="The file did not match to the configured regex expression.">
+											-->
+										</p:fileUpload>
 										<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
 											value="#{msgs.helpDamageDocFileUpload}" />
 									</div>

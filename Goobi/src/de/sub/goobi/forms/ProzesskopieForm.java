@@ -335,17 +335,20 @@ public class ProzesskopieForm implements Serializable {
         // check if file upload is allowed
         enableFileUpload = cp.getParamBoolean("createNewProcess/fileupload/@use");
         configuredFolderNames = new ArrayList<>();
+        configuredFolderRegex = new ArrayList<>();
         if (enableFileUpload) {
-            List<String> folders = cp.getParamList("createNewProcess/fileupload/folder");
-            if (folders != null) {
-                for (String f : folders) {
-                    switch (f) {
+            List<HierarchicalConfiguration> folderObjects = cp.getList("createNewProcess/fileupload/folder");
+            if (folderObjects != null) {
+                for (HierarchicalConfiguration folderObject : folderObjects) {
+                    configuredFolderRegex.add(folderObject.getString("@regex"));
+                    String name = folderObject.getString(".");
+                    switch (name) {
                         case "intern":
                             configuredFolderNames.add(new SelectItem("intern", Helper.getTranslation("process_log_file_FolderSelectionInternal")));
                             break;
                         case "export":
                             configuredFolderNames
-                            .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
+                                    .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
                             break;
                         case "master":
                             if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
@@ -356,8 +359,8 @@ public class ProzesskopieForm implements Serializable {
                             configuredFolderNames.add(new SelectItem("media", Helper.getTranslation("process_log_file_mediaFolder")));
                             break;
                         default:
-                            if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(f))) {
-                                configuredFolderNames.add(new SelectItem(f, Helper.getTranslation("process_log_file_" + f + "Folder")));
+                            if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(name))) {
+                                configuredFolderNames.add(new SelectItem(name, Helper.getTranslation("process_log_file_" + name + "Folder")));
                             }
                             break;
                     }
@@ -367,6 +370,7 @@ public class ProzesskopieForm implements Serializable {
                 enableFileUpload = false;
             } else {
                 uploadFolder = (String) configuredFolderNames.get(0).getValue();
+                uploadRegex = configuredFolderRegex.get(0);
             }
         }
     }
@@ -1711,8 +1715,22 @@ public class ProzesskopieForm implements Serializable {
     private TreeSet<UploadImage> uploadedFiles = new TreeSet<>();
 
     @Getter
-    @Setter
     private String uploadFolder;
+
+    public void setUploadFolder(String folder) {
+        this.uploadFolder = folder;
+        this.uploadRegex = this.getRegexOfFolder(folder);
+        logger.debug("regex: " + this.uploadRegex);
+    }
+
+    //@Getter
+    @Setter
+    private String uploadRegex;
+
+    public String getUploadRegex() {
+        logger.debug("regex: " + this.uploadRegex);
+        return this.uploadRegex;
+    }
 
     @Getter
     @Setter
@@ -1726,7 +1744,19 @@ public class ProzesskopieForm implements Serializable {
     private List<SelectItem> configuredFolderNames;
 
     @Getter
+    private List<String> configuredFolderRegex;
+
+    @Getter
     private boolean enableFileUpload = false;
+
+    private String getRegexOfFolder(String folder) {
+        for (int index = 0; index < this.configuredFolderNames.size(); index++) {
+            if (this.configuredFolderNames.get(index).getValue().equals(folder)) {
+                return this.configuredFolderRegex.get(index);
+            }
+        }
+        return "";
+    }
 
     /**
      * Get get temporary folder to upload to
@@ -1750,6 +1780,7 @@ public class ProzesskopieForm implements Serializable {
      * @param event
      */
     public void uploadFile(FileUploadEvent event) {
+        logger.debug("Uploaded file.");
         try {
             UploadedFile upload = event.getFile();
             saveFileTemporary(upload.getFileName(), upload.getInputstream());
@@ -1779,6 +1810,7 @@ public class ProzesskopieForm implements Serializable {
 
             UploadImage currentImage = new UploadImage(file.toPath(), uploadedFiles.size() + 1, 300, uploadFolder, fileComment);
             uploadedFiles.add(currentImage);
+            logger.debug("Added file to list.");
 
         } catch (IOException e) {
             logger.error(e);
