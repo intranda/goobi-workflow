@@ -27,7 +27,7 @@ public class GoobiScriptMetadataBackup extends AbstractIGoobiScript implements I
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewActionToSampleCall(sb, "This GoobiScript allows create a backup of meta.xml and meta_anchor.xml.");
+        addNewActionToSampleCall(sb, "This GoobiScript creates a backup of meta.xml and meta_anchor.xml.");
         return sb.toString();
     }
 
