@@ -399,6 +399,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
             try {
                 file = new FileInputStream(importFile.toFile());
+                log.debug("Importing file {}", importFile.toString());
                 BOMInputStream in = new BOMInputStream(file, false);
                 Workbook wb = WorkbookFactory.create(in);
                 Sheet sheet = wb.getSheetAt(0);
@@ -406,6 +407,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
                 Row headerRow = rowIterator.next();
                 int numberOfCells = headerRow.getLastCellNum();
                 headerOrder = new ArrayList<>(numberOfCells);
+                log.debug("Found {} cell(s)", numberOfCells);
+
                 rowsToImport = new LinkedList<>();
                 for (int i = 0; i < numberOfCells; i++) {
                     Cell cell = headerRow.getCell(i);
@@ -414,11 +417,12 @@ public class VocabularyBean extends BasicBean implements Serializable {
                         headerOrder.add(new MatchingField(value, i, CellReference.convertNumToColString(i), this));
                     }
                 }
+                log.debug("read header");
                 while (rowIterator.hasNext()) {
                     Row row = rowIterator.next();
                     rowsToImport.add(row);
                 }
-
+                log.debug("Found {} rows to import", rowsToImport.size());
                 for (MatchingField mf : headerOrder) {
                     String excelTitle = mf.getColumnHeader();
                     if (excelTitle.matches(".*\\(.{3}\\)")) {
@@ -539,6 +543,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
             currentVocabulary.setRecords(new ArrayList<>());
         }
         if (importType.equals("remove") || importType.equals("add")) {
+
             for (Row row : rowsToImport) {
                 VocabRecord record = new VocabRecord();
                 List<Field> fieldList = new ArrayList<>();
@@ -553,11 +558,14 @@ public class VocabularyBean extends BasicBean implements Serializable {
                     }
                 }
                 if (!fieldList.isEmpty()) {
+
+                    log.debug("Created record");
                     addFieldToRecord(record, fieldList);
                 }
 
             }
             VocabularyManager.insertNewRecords(currentVocabulary.getRecords(), currentVocabulary.getId());
+            log.debug("Stored {} new records", currentVocabulary.getRecords().size());
         }
 
         if (importType.equals("merge")) {
@@ -584,6 +592,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
                         }
                     }
                     if (recordToUpdate != null) {
+                        log.debug("merged row with existing record");
                         updateRecords.add(recordToUpdate);
                         // update existing record
                         for (MatchingField mf : headerOrder) {
@@ -606,6 +615,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
                         continue;
                     } else {
                         // create new record
+                        log.debug("create new record.");
                         VocabRecord record = new VocabRecord();
                         List<Field> fieldList = new ArrayList<>();
                         for (MatchingField mf : headerOrder) {
@@ -627,9 +637,11 @@ public class VocabularyBean extends BasicBean implements Serializable {
                 }
             }
             if (!newRecords.isEmpty()) {
+                log.debug("Created {} new record(s)", newRecords.size());
                 VocabularyManager.insertNewRecords(newRecords, currentVocabulary.getId());
             }
             if (!updateRecords.isEmpty()) {
+                log.debug("Updated {} record(s)", updateRecords.size());
                 VocabularyManager.batchUpdateRecords(updateRecords, currentVocabulary.getId());
             }
         }

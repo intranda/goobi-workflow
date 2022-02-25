@@ -52,7 +52,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 45;
+    public static final int EXPECTED_VERSION = 46;
     private static final Logger logger = LogManager.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
@@ -312,6 +312,11 @@ public class DatabaseVersion {
                     logger.trace("Update database to version 45.");
                 }
                 updateToVersion45();
+            case 45:
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Update database to version 45.");
+                }
+                updateToVersion46();
             default:
 
                 // this has to be the last case
@@ -321,6 +326,21 @@ public class DatabaseVersion {
                 }
         }
 
+    }
+
+    private static void updateToVersion46() {
+        if (!DatabaseVersion.checkIfColumnExists("schritte", "messageId")) {
+            DatabaseVersion.runSql("ALTER TABLE schritte add column messageId varchar(255) DEFAULT NULL");
+        }
+
+        if (!DatabaseVersion.checkIfColumnExists("projectfilegroups", "ignore_file_extensions")) {
+            DatabaseVersion.runSql("alter table projectfilegroups add column ignore_file_extensions text default null");
+            DatabaseVersion.runSql("alter table projectfilegroups add column original_mimetypes tinyint(1)");
+        }
+
+        if (!checkIfColumnExists("benutzer", "ui_mode")) {
+            DatabaseVersion.runSql("ALTER TABLE benutzer ADD COLUMN ui_mode VARCHAR(190) DEFAULT 'regular'");
+        }
     }
 
     private static void updateToVersion45() {

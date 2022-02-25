@@ -149,22 +149,6 @@
 								icon="fa fa-key box-icon-fix-menu-up3" />
 						</h:panelGroup>
 
-						<!-- Enable style with more contrast -->
-						<li>
-							<button
-								jsf:id="showEasyRead"
-								jsf:action="#{NavigationForm.Reload}"
-								class="dropdown-item"
-								title="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}"
-								jsf:rel="tooltip">
-								<i class="fa fa-eye-slash margin-right-5" />
-								<h:outputText value="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}" />
-								<f:setPropertyActionListener
-									target="#{NavigationForm.showEasyRead}"
-									value="#{not NavigationForm.showEasyRead}" />
-							</button>
-						</li>
-
 						<!-- Logout -->
 						<ui:fragment rendered="#{!LoginForm.showSSOLogoutPage}">
 							<intranda:menuItem

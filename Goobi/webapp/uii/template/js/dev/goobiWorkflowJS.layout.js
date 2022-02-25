@@ -49,6 +49,9 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             
             //set tabIndex
             _setTabindex();
+            
+            //set image comments height
+            this.setImageCommentHeight();
         },
         /**
          * @description Method to set the correct height of the object view column.
@@ -67,8 +70,25 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             }
             
             $( '#mainImage' ).css( 'height', pageContentRightHeight - controlWrapperHeight - imageCommentHeight - 45 );
-        }
+        },
+	    /**
+	     * @description Method to set initial image comment height
+	     * @method setImageCommentHeight
+	     */
+	    setImageCommentHeight: function() {
+			var commentArea = document.querySelector("#Comment");
+			if(commentArea) {
+				function setHeight() {
+					var lines = Math.max(1, commentArea.value.split("\n").length);
+					commentArea.style.height = (lines * 17 + 13) + "px";
+				}
+				setHeight();
+	  			//also add event listener on input
+	  			commentArea.addEventListener("input", setHeight);
+			}
+		}
     };
+    
     
     /**
      * @description Method to add Tabindex to elements.

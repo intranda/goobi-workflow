@@ -264,6 +264,10 @@ public class ConfigurationHelper implements Serializable {
     public String getPluginFolder() {
         return getGoobiFolder() + "plugins/";
     }
+    
+    public String getLibFolder() {
+    	return getGoobiFolder() + "lib/";
+    }
 
     public String getPathForLocalMessages() {
         return getGoobiFolder() + "config/";
@@ -966,10 +970,13 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("MetsEditorUseImageTiles", true);
 
     }
-    
-    public boolean getMetsEditorShowImageComments() {
-        return getLocalBoolean("MetsEditorShowImageComments", false);
 
+    public boolean getMetsEditorShowImageComments() {
+        return isShowImageComments();
+    }
+
+    public boolean isShowImageComments() {
+        return getLocalBoolean("ShowImageComments", false);
     }
 
     public boolean isShowSecondLogField() {

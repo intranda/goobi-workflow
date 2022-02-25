@@ -49,7 +49,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
@@ -1536,7 +1535,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         Process p = new Process();
         p.setDocket(docket);
         p.setInAuswahllisteAnzeigen(false);
-        p.setIstTemplate(true);
+        p.setIstTemplate(istTemplate);
+        p.setProjectId(projectId);
         p.setProjekt(projekt);
         p.setRegelsatz(regelsatz);
         p.setSortHelperStatus(sortHelperStatus);
@@ -2326,7 +2326,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         HashMap<String, String> masterComments = helper.getComments(folderMaster);
 
         for (String imageName : masterComments.keySet()) {
-            lstComments.add(new ImageComment("Master", imageName, masterComments.get(imageName)));
+            String comment = masterComments.get(imageName);
+            if (!StringUtils.isBlank(comment)) {
+                lstComments.add(new ImageComment("Master", imageName, comment));
+            }
         }
 
         if (this.isMediaFolderExists()) {
@@ -2334,20 +2337,26 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             HashMap<String, String> mediaComments = helper.getComments(folderMedia);
 
             for (String imageName : mediaComments.keySet()) {
-                lstComments.add(new ImageComment("Media", imageName, mediaComments.get(imageName)));
+                String comment = mediaComments.get(imageName);
+                if (!StringUtils.isBlank(comment)) {
+                    lstComments.add(new ImageComment("Media", imageName, comment));
+                }
             }
         }
 
+        System.out.println(lstComments);
         return lstComments;
     }
 
     public List<String> getArchivedImageFolders() throws IOException, InterruptedException, SwapException, DAOException {
-        Path images = Paths.get(this.getImagesDirectory());
-        try (Stream<Path> filesInImages = Files.list(images)) {
-            return filesInImages
-                    .filter(p -> Files.isRegularFile(p) && p.getFileName().toString().endsWith(".xml"))
-                    .map(p -> p.getFileName().toString().replace(".xml", ""))
-                    .collect(Collectors.toList());
+        if (this.id == null) {
+            return new ArrayList<>();
         }
+        List<String> filesInImages = StorageProvider.getInstance().list(this.getImagesDirectory());
+        return filesInImages
+                .stream()
+                .filter(p -> p.endsWith(".xml"))
+                .map(p -> Paths.get(p).getFileName().toString().replace(".xml", ""))
+                .collect(Collectors.toList());
     }
 }
