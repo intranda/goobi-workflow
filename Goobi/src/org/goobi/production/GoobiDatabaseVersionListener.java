@@ -1,5 +1,7 @@
 package org.goobi.production;
 
+import java.sql.SQLException;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -52,34 +54,24 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                     + DatabaseVersion.EXPECTED_VERSION);
             DatabaseVersion.updateDatabase(currentVersion);
         }
-        // TODO
-        if (!DatabaseVersion.checkIfColumnExists("schritte", "messageId")) {
-            DatabaseVersion.runSql("ALTER TABLE schritte add column messageId varchar(255) DEFAULT NULL");
-        }
 
         checkIndexes();
 
         DatabaseVersion.checkIfEmptyDatabase();
 
-        checkProjectTable();
-
     }
 
-    private void checkProjectTable() {
-
-        if (!DatabaseVersion.checkIfColumnExists("projectfilegroups", "ignore_file_extensions")) {
-            DatabaseVersion.runSql("alter table projectfilegroups add column ignore_file_extensions text default null");
-            DatabaseVersion.runSql("alter table projectfilegroups add column original_mimetypes tinyint(1)");
-        }
-
-    }
 
     // this method is executed on every startup and checks, if some mandatory indexes exist
     // if some indexes are missing, they are created
     private void checkIndexes() {
         if (MySQLHelper.isUsingH2()) {
+        	try {
             DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS priority_x_status ON schritte(Prioritaet, Bearbeitungsstatus) ");
             DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS stepstatus ON schritte(Bearbeitungsstatus) ");
+        	}catch(SQLException e) {
+        		logger.error(e);
+        	}
         } else {
             if (!DatabaseVersion.checkIfIndexExists("schritte", "priority_x_status")) {
                 DatabaseVersion.createIndexOnTable("schritte", "priority_x_status", "Prioritaet, Bearbeitungsstatus", null);

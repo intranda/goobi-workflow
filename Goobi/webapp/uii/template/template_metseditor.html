@@ -58,7 +58,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="template/css/dist/goobiWorkflow.min.css?v=#{HelperForm.buildVersion}" />
 
-    <ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.renderAccessibilityCss}">
+    <ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.uiMode=='accessibility'}">
         <link rel="stylesheet" href="template/css/accessibility.css?v=#{HelperForm.buildVersion}" />
     </ui:fragment>
 
@@ -67,7 +67,7 @@
         <h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false" />
     </style>
     <span class="outer-skip-link">
-    	<a class="skip-main sr-only" href="#pageContentWrapper" tabindex="0">Skip to main Content</a>
+    	<a class="skip-main sr-only" href="#pageContentWrapper" tabindex="0">#{msgs.skipMainContent}</a>
     </span>
 </h:head>
 

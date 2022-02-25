@@ -7,7 +7,8 @@
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:o="http://omnifaces.org/ui">
 
     <composite:interface />
 
@@ -47,7 +48,6 @@
 
                     </ui:fragment>
                 </div>
-
 
                 <!-- MAIN IMAGE -->
                 <ui:fragment rendered="#{Metadaten.image != null and Metadaten.image.imageName != ''  and Metadaten.treeProperties.showOcr ne 'true'}">
@@ -151,7 +151,7 @@
                                     style="padding-bottom: 5px">
                                     <div class="col-12">
                                         <h:inputTextarea id="Comment"
-                                            style="min-height: 25px; height: 28px;"
+                                            style="min-height: 25px; height: 28px; font-size: 12px;"
                                             styleClass="form-control"
                                             value="#{Metadaten.commentForImage}"
                                             min-rows="1"
@@ -195,6 +195,14 @@
                     value="- #{msgs.keinBildVorhanden} -"
                     rendered="#{Metadaten.bildNummer == '-1'}" />
             </div>
+            
+                        
+            <!-- PAGE AREAS -->
+			<h:outputLabel id="pageareas" data-content="pageareas" value="#{Metadaten.pageAreas}" styleClass="d-none"></h:outputLabel>
+            <h:commandScript name="deletePageArea" action="#{Metadaten.deletePageAreaCommand}" render="pageareas"/>
+            <h:commandScript name="addPageArea" action="#{Metadaten.addPageAreaCommand}" render="pageareas"/>
+            <h:commandScript name="setPageArea" action="#{Metadaten.setPageAreaCommand}"/>
+            <h:commandScript name="cancelPageAreaEdition" action="#{Metadaten.cancelPageAreaEdition}" render="pageareas"/>
         </h:form>
     </composite:implementation>
 </ui:composition>
