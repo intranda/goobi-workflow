@@ -953,7 +953,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     private void updateUserPaginator() {
         String filter =
                 "benutzer.BenutzerID not in (select BenutzerID from schritteberechtigtebenutzer where schritteberechtigtebenutzer.schritteID = "
-                        + mySchritt.getId() + ") AND " + 
+                        + mySchritt.getId() + ") AND " +
                         "benutzer.BenutzerID not in (select BenutzerID from benutzer where benutzer.isVisible = 'deleted')";
         UserManager m = new UserManager();
         userPaginator = new DatabasePaginator("Nachname", filter, m, "");
@@ -1083,7 +1083,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 try {
                     export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
                 } catch (Exception e) {
-                    logger.error("Can't load export plugin, use default plugin", e);
+                    logger.error("Can't load export plugin, use default export", e);
+                    Helper.setFehlerMeldung("Can't load export plugin, use default export");
                     export = new ExportDms();
                 }
             }
@@ -1115,7 +1116,9 @@ public class ProcessBean extends BasicBean implements Serializable {
                 try {
                     export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
                 } catch (Exception e) {
-                    logger.error("Can't load export plugin, use default plugin", e);
+                    logger.error("Can't load export plugin, use default export", e);
+                    Helper.setFehlerMeldung("Can't load export plugin, use default export");
+
                     export = new ExportDms();
                 }
             }
@@ -1160,7 +1163,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                     try {
                         export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
                     } catch (Exception e) {
-                        logger.error("Can't load export plugin, use default plugin", e);
+                        logger.error("Can't load export plugin, use default export", e);
+                        Helper.setFehlerMeldung("Can't load export plugin, use default export");
                         export = new ExportDms();
                     }
                 }
@@ -1189,7 +1193,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 try {
                     export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
                 } catch (Exception e) {
-                    logger.error("Can't load export plugin, use default plugin", e);
+                    logger.error("Can't load export plugin, use default export", e);
+                    Helper.setFehlerMeldung("Can't load export plugin, use default export");
                     export = new ExportDms();
                 }
             }
@@ -1481,7 +1486,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             StepManager.saveStep(step);
             String message = "Changed step order for step '" + step.getTitel() + "' to position " + step.getReihenfolge()
-                    + " in process details.";
+            + " in process details.";
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, message);
             // set list to null to reload list of steps in new order
             this.myProzess.setSchritte(null);
@@ -2612,7 +2617,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public String startPlugin() {
         if (StringUtils.isNotBlank(mySchritt.getStepPlugin())) {
-        	
+
             if (mySchritt.isTypExportDMS()) {
                 IExportPlugin dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, mySchritt.getStepPlugin());
                 try {
@@ -2621,11 +2626,12 @@ public class ProcessBean extends BasicBean implements Serializable {
                         | TypeNotAllowedForParentException | IOException | InterruptedException | ExportFileException | UghHelperException
                         | SwapException | DAOException e) {
                     logger.error(e);
+                    Helper.setFehlerMeldung("Can't load export plugin.");
                 }
             } else if (mySchritt.isDelayStep()) {
                 Helper.setFehlerMeldung("cannotStartPlugin");
             } else {
-            	Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "plugin with title: "+mySchritt.getStepPlugin()+" was executed from Process details");
+                Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "plugin with title: "+mySchritt.getStepPlugin()+" was executed from Process details");
                 currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
                 if (currentPlugin != null) {
                     currentPlugin.initialize(mySchritt, "/process_edit");
