@@ -14,6 +14,19 @@
 	<composite:interface />
 
 	<composite:implementation>
+		<script type="text/javascript">
+        	function switchExpanded(id){
+        		console.log("called by: "+id);
+				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				console.log(x)
+				if (x == "true"){
+					x = "false"
+				} else {
+					x = "true"
+				}
+				document.getElementById(id).setAttribute("aria-expanded", x);
+        	}
+        </script>
 		<!-- Load the main menu only if the user is logged in -->
 		<!-- The page "mailNotificationDisabled.xhtml needs the menu with user == null -->
 		<c:if test="#{LoginForm.myBenutzer != null}">
@@ -56,9 +69,6 @@
 								<f:setPropertyActionListener
 									target="#{AktuelleSchritteForm.filter}"
 									value="" />
-								<f:setPropertyActionListener
-									target="#{AktuelleSchritteForm.sortierung}"
-									value="statusDesc" />
 							</h:commandLink>
 						</li>
 					</h:panelGroup>
@@ -72,7 +82,9 @@
 								type="button"
 								data-toggle="dropdown"
 								class='rendered-in-wide-window dropdown-toggle btn'
-								aria-haspopup="true">
+								aria-haspopup="true"
+								aria-expanded="false"
+								onclick="switchExpanded(this.id)">
 								<span>#{msgs.workflow}</span>
 								<span class="caret"></span>
 							</button>
@@ -161,7 +173,9 @@
 								type="button"
 								data-toggle="dropdown"
 								class='rendered-in-wide-window dropdown-toggle btn'
-								aria-haspopup="true">
+								aria-haspopup="true"
+								aria-expanded="false"
+								onclick="switchExpanded(this.id)">
 								<span>#{msgs.administration}</span>
 								<span class="caret"></span>
 							</button>
@@ -333,7 +347,9 @@
 								type="button"
 								data-toggle="dropdown"
 								class='rendered-in-wide-window dropdown-toggle btn'
-								aria-haspopup="true">
+								aria-haspopup="true"
+								aria-expanded="false"
+								onclick="switchExpanded(this.id)">
 								<span>#{msgs.controlling}</span>
 								<span class="caret"></span>
 							</button>

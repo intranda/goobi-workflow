@@ -67,23 +67,41 @@ public class PluginsBean implements Serializable {
     }
 
     public static Map<String, List<PluginInfo>> getPluginsFromFS() {
-        Set<String> stepPluginsInUse = StepManager.getDistinctStepPluginTitles();
         Map<String, List<PluginInfo>> plugins = new TreeMap<>();
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         Path pluginsFolder = Paths.get(config.getPluginFolder());
+        Path libFolder = Paths.get(config.getLibFolder());
+        plugins.putAll(getPluginsFromPath(pluginsFolder, true));
+        plugins.putAll(getPluginsFromPath(libFolder, false));
+
+        return plugins;
+    }
+
+    //get plugins from any folder (including subfolders or not)
+    public static Map<String, List<PluginInfo>> getPluginsFromPath(Path pluginsFolder, boolean instantiate) {
+        Set<String> stepPluginsInUse = StepManager.getDistinctStepPluginTitles();
+        Map<String, List<PluginInfo>> plugins = new TreeMap<>();
         try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(pluginsFolder)) {
+            List<PluginInfo> dirList = new ArrayList<>();
             for (Path pluginDir : dirStream) {
                 if (Files.isDirectory(pluginDir)) {
-                    List<PluginInfo> dirList = new ArrayList<>();
+                    dirList = new ArrayList<>();
                     try (DirectoryStream<Path> pluginStream = Files.newDirectoryStream(pluginDir)) {
                         for (Path pluginP : pluginStream) {
                             if (pluginP.getFileName().toString().endsWith("jar")) {
-                                dirList.add(getPluginInfo(pluginP.toAbsolutePath(), stepPluginsInUse));
+                                dirList.add(getPluginInfo(pluginP.toAbsolutePath(), stepPluginsInUse, instantiate));
                             }
                         }
                     }
                     plugins.put(pluginDir.getFileName().toString(), dirList);
+                } else { //if plugin is directly inside directory
+                    if (pluginDir.getFileName().toString().endsWith("jar")) {
+                        dirList.add(getPluginInfo(pluginDir.toAbsolutePath(), stepPluginsInUse, instantiate));
+                    }
                 }
+            }
+            if (!dirList.isEmpty()) { //if there were plugins inside the directory dirList will not be empty
+                plugins.put(pluginsFolder.getFileName().toString(), dirList); // add the plugins to the list
             }
         } catch (IOException e) {
             log.error(e);
@@ -91,18 +109,20 @@ public class PluginsBean implements Serializable {
         return plugins;
     }
 
-    private static PluginInfo getPluginInfo(Path pluginP, Set<String> stepPluginsInUse) throws ZipException, IOException {
+    private static PluginInfo getPluginInfo(Path pluginP, Set<String> stepPluginsInUse, boolean instantiate) throws ZipException, IOException {
         final PluginInfo info = new PluginInfo();
         info.setFilename(pluginP.getFileName().toString());
-        PluginManager pm = PluginManagerFactory.createPluginManager();
-        pm.addPluginsFrom(pluginP.toUri());
-        Collection<IPlugin> plugins = new PluginManagerUtil(pm).getPlugins(IPlugin.class);
-        for (IPlugin p : plugins) {
-            info.addContainedPlugin(p.getTitle());
+        if (instantiate) {
+            PluginManager pm = PluginManagerFactory.createPluginManager();
+            pm.addPluginsFrom(pluginP.toUri());
+            Collection<IPlugin> plugins = new PluginManagerUtil(pm).getPlugins(IPlugin.class);
+            for (IPlugin p : plugins) {
+                info.addContainedPlugin(p.getTitle());
+            }
+            Set<String> pluginsInUse = new HashSet<>(info.getContainedPlugins());
+            pluginsInUse.retainAll(stepPluginsInUse);
+            info.setPluginsUsedInWorkflows(pluginsInUse);
         }
-        Set<String> pluginsInUse = new HashSet<>(info.getContainedPlugins());
-        pluginsInUse.retainAll(stepPluginsInUse);
-        info.setPluginsUsedInWorkflows(pluginsInUse);
         try (ZipFile zipFile = new ZipFile(pluginP.toFile())) {
             ZipEntry manifestEntry = zipFile.getEntry("META-INF/MANIFEST.MF");
             try (InputStream in = zipFile.getInputStream(manifestEntry); BufferedReader br = new BufferedReader(new InputStreamReader(in))) {

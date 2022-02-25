@@ -30,7 +30,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.InstitutionManager;
@@ -66,9 +67,9 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
 
     @Setter
     private Institution institution;
-    @Getter @Setter
+    @Getter
+    @Setter
     private Integer institutionId;
-
 
     @Getter
     @Setter
@@ -122,6 +123,10 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
             }
         }
         return this.benutzer;
+    }
+
+    public boolean isDeletable() {
+        return this.benutzer == null || this.benutzer.size() == 0;
     }
 
     public List<String> getUserRoles() {

@@ -1,10 +1,13 @@
 package de.sub.goobi.helper.exceptions;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-public class ExceptionTest {
+import de.sub.goobi.AbstractTest;
+
+public class ExceptionTest extends AbstractTest {
 
     @Test
     public void testDAOException() {

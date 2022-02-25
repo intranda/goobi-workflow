@@ -225,7 +225,6 @@
 											</tr>
 										</ui:repeat>
 									</table>
-								</h:form>
 								<div class="dataTables_info">
 									<!-- Neu-Schaltknopf -->
 									<button jsf:id="newUser" class="btn btn-primary font-size-s"
@@ -236,13 +235,14 @@
 										<f:setPropertyActionListener
 											target="#{BenutzerverwaltungForm.displayMode}" value="" />
 									</button>
+									
 								</div>
 								<div class="dataTables_paginate">
 									<!-- paginator -->
 									<intranda:tablePaginator id="users"
 										paginator="#{BenutzerverwaltungForm.paginator}" />
 								</div>
-								<!-- </h:form> -->
+								</h:form>
 							</div>
 						</div>
 					</div>

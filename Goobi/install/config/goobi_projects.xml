@@ -75,11 +75,11 @@ Sequence for determining the right <project> element:
                 <!-- ZVDD Anpassungen -->
                 <item docstruct="topstruct" isnotdoctype="periodical\|multivolume" metadata="_dateDigitization" multiselect="true" required="true" ughbinding="true">
                     Digitisation date
-                    <select label="2021"> 2021 </select>
+                    <select label="2022"> 2022 </select>
                 </item>
                 <item docstruct="firstchild" isdoctype="periodical\|multivolume" metadata="_dateDigitization" multiselect="true" required="true" ughbinding="true">
                     Digitisation date
-                    <select label="2021"> 2021</select>
+                    <select label="2022"> 2022</select>
                 </item>
                 <item docstruct="topstruct" isnotdoctype="periodical\|multivolume" metadata="_electronicEdition" multiselect="true" required="true" ughbinding="true">
                     Electronic ed.

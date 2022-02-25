@@ -8,7 +8,9 @@ import org.apache.activemq.util.ByteArrayInputStream;
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Test;
 
-public class TestRestConfig {
+import de.sub.goobi.AbstractTest;
+
+public class TestRestConfig extends AbstractTest {
     private static String configString = "<?xml version='1.0' encoding='UTF-8'?>\n" +
             "<config>\n" +
             "    <endpoint path=\"/addtoprocesslog.*\">\n" +

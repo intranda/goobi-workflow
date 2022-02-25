@@ -1,7 +1,7 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -32,11 +32,13 @@ import java.util.Map;
 
 import org.junit.Test;
 
-public class DesEncrypterTest {
+import de.sub.goobi.AbstractTest;
+
+public class DesEncrypterTest extends AbstractTest {
     static Map<String, String> testData;
 
     static {
-        testData = new HashMap<String, String>();
+        testData = new HashMap<>();
         testData.put("Password", "6lPEb6Gic+/7BNRdMmL1qQ==");
         testData.put("12345678", "wkQy7f152Zl422PTPOPAMQ==");
         testData.put("GoobiPassword1234*./", "nDI2cSug5Nj/kkEvKQPBOsHjdTofLmaJ");

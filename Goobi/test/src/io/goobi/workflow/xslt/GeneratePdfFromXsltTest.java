@@ -40,6 +40,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -58,7 +59,7 @@ import de.sub.goobi.persistence.managers.TemplateManager;
 @PrepareForTest({ PropertyManager.class, StepManager.class, TemplateManager.class, MasterpieceManager.class, HistoryManager.class,
     MetadataManager.class, FacesContext.class, ExternalContext.class, Helper.class })
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
-public class GeneratePdfFromXsltTest {
+public class GeneratePdfFromXsltTest extends AbstractTest {
 
     private static final Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
 

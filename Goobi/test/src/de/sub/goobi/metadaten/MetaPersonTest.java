@@ -18,6 +18,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.mock.MockProcess;
 import ugh.dl.DocStruct;
 import ugh.dl.NamePart;
@@ -25,7 +26,7 @@ import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
-public class MetaPersonTest {
+public class MetaPersonTest extends AbstractTest {
 
     private Prefs prefs;
     private Process process;

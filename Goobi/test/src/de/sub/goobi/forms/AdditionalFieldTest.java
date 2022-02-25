@@ -5,7 +5,7 @@ package de.sub.goobi.forms;
  * 
  * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -30,7 +30,9 @@ import javax.faces.model.SelectItem;
 
 import org.junit.Test;
 
-public class AdditionalFieldTest {
+import de.sub.goobi.AbstractTest;
+
+public class AdditionalFieldTest extends AbstractTest {
 
     @Test
     public void testConstructor() {

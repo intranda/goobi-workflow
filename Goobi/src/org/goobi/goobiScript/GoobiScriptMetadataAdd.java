@@ -9,7 +9,9 @@ import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
@@ -129,8 +131,13 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
             // check if errors shall be ignored
             boolean ignoreErrors = getParameterAsBoolean("ignoreErrors");
 
+            // get the content to be set and pipe it through the variable replacer
+            String newvalue = parameters.get("value");
+            VariableReplacer replacer = new VariableReplacer(ff.getDigitalDocument(), p.getRegelsatz().getPreferences(), p, null);
+            newvalue = replacer.replace(newvalue);
+            
             // now add the new metadata and save the file
-            addMetadata(dsList, parameters.get("field"), parameters.get("value"), p.getRegelsatz().getPreferences(), ignoreErrors);
+            addMetadata(dsList, parameters.get("field"), newvalue, p.getRegelsatz().getPreferences(), ignoreErrors);
             p.writeMetadataFile(ff);
             Thread.sleep(2000);
             Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
@@ -139,6 +146,8 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
             gsr.setResultMessage("Metadata added successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);
         } catch (Exception e1) {
+        	Helper.addMessageToProcessLog(p.getId(), LogType.ERROR,
+        			"Problem while adding the metadata using GoobiScript for process with id: " + p.getId(), username);
             log.error("Problem while adding the metadata using GoobiScript for process with id: " + p.getId(), e1);
             gsr.setResultMessage("Error while adding metadata: " + e1.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);

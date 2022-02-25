@@ -11,34 +11,7 @@
     </composite:interface>
 
     <composite:implementation>
-        <div class="box thin-margin box-bordered">
-            <div class="box-title">
 
-                <h3>
-                    <i class="fa fa-comment"></i>
-                    <h:outputText value="#{msgs.annotationData}"/>
-                </h3>
-                <div class="actions">
-
-                    <button
-                        class="btn btn-mini pull-right margin-right-10"
-                        data-toggle="tooltip"
-                        jsf:action="#{NavigationForm.Reload}"
-                        title="#{msgs.resizeBox}"
-                        jsf:rendered="#{showBigButton}">
-                        <i
-                            class="fa #{NavigationForm.uiStatus['imageCommentsBig']?'fa-compress':'fa-expand'}"></i>
-                        <f:setPropertyActionListener
-                            target="#{NavigationForm.uiStatus['imageCommentsBig']}"
-                            value="#{not NavigationForm.uiStatus['imageCommentsBig']}" />
-                    </button>
-
-                </div>
-            </div>
-
-            <div class="box-content nopadding">
-                <ui:fragment
-                    rendered="#{NavigationForm.uiStatus['toggleProcessLog']=='' or NavigationForm.uiStatus['toggleProcessLog']== null}">
                     <div
                         class="#{NavigationForm.uiStatus['imageCommentsBig']?'':''}"
                         data-scrolldown="true"
@@ -80,11 +53,6 @@
                         </h:panelGroup>
                     </div>
 
-                </ui:fragment>
-
-
-            </div>
-        </div>
     </composite:implementation>
 
 </ui:composition>
