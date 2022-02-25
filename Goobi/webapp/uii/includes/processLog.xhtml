@@ -27,7 +27,6 @@
         </script>
         <div class="box thin-margin box-bordered">
             <div class="box-title">
-
                 <h3>
                     <i class="fa #{NavigationForm.uiStatus['toggleProcessLog']== 'imageComments' ? 'fa-comment' : NavigationForm.uiStatus['toggleProcessLog']== null or NavigationForm.uiStatus['toggleProcessLog'] == '' ? 'fa-list-ol' : 'fa-folder-o'}"></i>
                     <h:outputText value="#{msgs.processLog}" rendered="#{NavigationForm.uiStatus['toggleProcessLog'] == null or NavigationForm.uiStatus['toggleProcessLog'] == ''}" />
@@ -276,6 +275,7 @@
 	                                id="addToTextArea"
 	                                styleClass="form-control"
 	                                pt:aria-label="#{msgs.process_log_firstContent}"
+	                                onkeypress="return submitEnter('addToLog',event)"
 	                                value="#{process.content}" />
                             </div>
                          </div>
@@ -337,13 +337,14 @@
 		                                          itemValue="export" />
 	                               </h:selectOneRadio>
 	                               </div>
-		                         <h:commandButton
-		                             id="addToLog"
-		                             type="submit"
-		                             styleClass="btn btn-primary font-size-s "
-		                             style="display: inline;"
-		                             value="#{msgs.nachrichtHinzufuegen}"
-		                             action="#{process.addLogEntry}" />
+		                         		<button
+				                         	 id="addToLog"
+				                             type="submit"
+				                             class="btn btn-primary font-size-s "
+				                             style="display: inline;"
+				                             jsf:action="#{process.addLogEntry}">
+				                             <h:outputText value="#{msgs.nachrichtHinzufuegen}" />
+			                         	</button>
 	                               </div>
                                </div>
                       	 </div>
