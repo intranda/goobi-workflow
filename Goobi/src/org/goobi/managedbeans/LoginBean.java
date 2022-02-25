@@ -206,7 +206,7 @@ public class LoginBean implements Serializable {
         this.myBenutzer.lazyLoad();
         roles = myBenutzer.getAllUserRoles();
 
-        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login was successful.\n");
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Following user was logged in successfully:");
         log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login name: " + user.getLogin());
         log.debug(LoginBean.LOGIN_LOG_PREFIX + "First name: " + user.getVorname());
         log.debug(LoginBean.LOGIN_LOG_PREFIX + "Last name: " + user.getNachname());
