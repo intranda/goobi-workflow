@@ -339,7 +339,7 @@ public class DatabaseVersion {
         }
 
         if (!checkIfColumnExists("benutzer", "ui_mode")) {
-            DatabaseVersion.runSql("ALTER TABLE benutzer ADD COLUMN ui_mode text DEFAULT 'regular'");
+            DatabaseVersion.runSql("ALTER TABLE benutzer ADD COLUMN ui_mode VARCHAR(190) DEFAULT 'regular'");
         }
     }
 
