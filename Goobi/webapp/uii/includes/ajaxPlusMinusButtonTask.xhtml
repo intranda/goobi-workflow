@@ -7,7 +7,8 @@
 
 	<composite:implementation>
 
-		<button class="font-black button-link" jsf:rendered="#{!item.panelAusgeklappt}" title="#{item.titel}"  jsf:id="displayDetails">
+		<button class="font-black button-link" jsf:rendered="#{!item.panelAusgeklappt}" title="#{item.titel}"  jsf:id="displayDetails"
+		aria-haspopup="true" aria-expanded="false">
 			<i class="fa fa-angle-right margin-right-5"></i>
 			<h:panelGroup rendered="#{item.typAutomatisch}">
          	   <i class="fa fa-cogs font-light margin-right-10" title="#{msgs.automatischerSchritt}"/>
@@ -20,7 +21,8 @@
 			<f:ajax render=":myform" />
 		</button>
 		
-		<button type="button" class="font-black button-link" jsf:rendered="#{item.panelAusgeklappt}" title="#{item.titel}"  jsf:id="hideDetails">
+		<button type="button" class="font-black button-link" jsf:rendered="#{item.panelAusgeklappt}" title="#{item.titel}"  jsf:id="hideDetails"
+		aria-haspopup="true" aria-expanded="true">
 			<i class="fa fa-angle-down margin-right-5"></i>
 			<h:panelGroup rendered="#{item.typAutomatisch}">
          	   <i class="fa fa-cogs font-light margin-right-10" title="#{msgs.automatischerSchritt}"/>

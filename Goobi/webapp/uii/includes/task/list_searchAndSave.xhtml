@@ -10,6 +10,16 @@
 	<composite:interface />
 
 	<composite:implementation>
+		<script type="text/javascript">
+        	function switchExpanded(id){
+				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				if (x == "true"){
+					x = "false"
+				} else {
+					x = "true"
+				}
+        	}
+        </script>
 		<div class="dataTables_filter">
 			<div class="input-group input-group">
 				<span class="input-group-addon">
@@ -32,7 +42,8 @@
 				<span data-toggle="tooltip" title="#{msgs.filter}"> 
 					<h:panelGroup rendered="#{Form.user.filters.size() gt 0}">
                         <div class="dropdown" style="display: inline-block">
-						<button class="btn dropdown-toggle searchfieldbuttongroup" aria-label="#{msgs.dropdownMenu}" data-toggle="dropdown" id="filterDropdown">
+						<button class="btn dropdown-toggle searchfieldbuttongroup" aria-label="#{msgs.dropdownMenu}" data-toggle="dropdown" id="filterDropdown"
+						aria-haspopup="true" aria-expanded="false" onclick="switchExpanded(this.id)">
 							<i class="fa fa-filter margin-right-5" />
 							<span class="caret"></span>
 						</button> 

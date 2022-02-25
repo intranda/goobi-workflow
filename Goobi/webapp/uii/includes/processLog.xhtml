@@ -12,6 +12,19 @@
     </composite:interface>
 
     <composite:implementation>
+    	<script type="text/javascript">
+        	function switchExpanded(id){
+        		console.log("called by: "+id);
+				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				console.log(x)
+				if (x == "true"){
+					x = "false"
+				} else {
+					x = "true"
+				}
+				document.getElementById(id).setAttribute("aria-expanded", x);
+        	}
+        </script>
         <div class="box thin-margin box-bordered">
             <div class="box-title">
 
@@ -80,9 +93,13 @@
                             title="#{msgs.filterProcessLog}">
                             <div class="dropdown">
                             <button
+                            	id="filterLogDropdown"
                                 type="button"
                                 class="btn btn-mini dropdown-toggle searchfieldbuttongroup"
                                 aria-label="#{msgs.filterProcessLog}"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                                onclick="switchExpanded(this.id)"
                                 data-toggle="dropdown">
                                 <i class="fa fa-columns margin-right-5" />
                                 <span class="caret"></span>

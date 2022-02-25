@@ -1,5 +1,18 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:c="http://java.sun.com/jsp/jstl/core" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
-
+	
+	<script type="text/javascript">
+        	function switchExpanded(id){
+        		console.log("called by: "+id);
+				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				console.log(x)
+				if (x == "true"){
+					x = "false"
+				} else {
+					x = "true"
+				}
+				document.getElementById(id).setAttribute("aria-expanded", x);
+        	}
+        </script>
     <ui:param name="myPageTitle" value="#{msgs.goobiScriptAusfuehren}" />
 
     <ui:define name="title">
@@ -40,10 +53,10 @@
 								<h:form id="searchform">
 								
 									<div class="btn-group font-size-s pull-right margin-right-10 margin-top-10" data-toggle="tooltip" title="#{msgs.goobiScript_limitList}">
-							            <a class="btn font-size-s dropdown-toggle" data-toggle="dropdown">
+							            <button id="searchFormDropdown" type="button" class="btn font-size-s dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="switchExpanded(this.id)">
 							                <i class="fa fa-table margin-right-5" />
 							                <span class="caret"></span>
-							            </a>
+							            </button>
 							
 							            <ul class="dropdown-menu">
 							                <li>
