@@ -1,11 +1,11 @@
-package de.sub.goobi;
+package org.goobi.io;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -18,19 +18,11 @@ package de.sub.goobi;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import org.goobi.pagination.IntegerSequenceTest;
-import org.goobi.pagination.RomanNumberSequenceTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import de.sub.goobi.helper.archive.ProcessSwapOutTaskTest;
-import de.sub.goobi.helper.encryption.DesEncrypterTest;
-import de.sub.goobi.helper.importer.ImportOpacTest;
-
 @RunWith(Suite.class)
-@SuiteClasses({ ProcessSwapOutTaskTest.class, DesEncrypterTest.class, ImportOpacTest.class, IntegerSequenceTest.class,
-        RomanNumberSequenceTest.class })
-public class OldTests {
-
+@SuiteClasses({ BackupFileManagerTest.class })
+public class TestAll {
 }
