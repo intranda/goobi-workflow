@@ -146,11 +146,11 @@
                                     <tbody>
                                         <ui:repeat varStatus="status" var="record" value="#{vocabularyBean.currentVocabulary.paginatorList}">
                                             <tr>
-                                                <td>
+                                                <td class="maxWidth80">
                                                     <h:outputText value="#{record.id}" />
                                                 </td>
                                                 <ui:repeat var="definition" value="#{vocabularyBean.currentVocabulary.mainFields}">
-                                                    <td>
+                                                    <td class="tableColumnOverflow maxWidth150">
                                                         <h:outputText value="#{record.getFieldValue(definition)}" />
                                                     </td>
                                                 </ui:repeat>
