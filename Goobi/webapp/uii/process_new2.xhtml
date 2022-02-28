@@ -146,6 +146,7 @@
 											tabindex="0">
 											<f:selectItems value="#{ProzesskopieForm.configuredFolderNames}" />
 											<f:ajax event="change" execute="@this" />
+											<f:ajax event="click" update="@form" render="@form" />
 										</h:selectOneRadio>
 										<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
 											value="#{msgs.helpDamageDocFolderSelection}" />
@@ -164,6 +165,8 @@
 										<h:outputLabel for="uploadArea" value="#{msgs.damageDocFileUpload}" />
 									</div>
 									<div class="col-sm-9">
+										<!-- IMPORTANT: allowTypes="" only works with "/regex/" (included in slashes) -->
+										<!-- Even if other regular expressions would be valid too, only "/regex/" works in contrast to "regex" -->
 										<p:fileUpload
 											fileUploadListener="#{ProzesskopieForm.uploadFile}"
 											id="upload"
@@ -174,13 +177,13 @@
 											label="#{msgs.plugin_massupload_selectFiles}"
 											sizeLimit="1000000000000"
 											fileLimit="42000"
-											update=":imageform">
-											<!--
-											allowTypes="#{ProzesskopieForm.uploadRegex}"
-											invalidFileMessage="The file did not match to the configured regex expression.">
-											-->
+											update=":imageform"
+											allowTypes="#{ProzesskopieForm.getUploadRegex()}"
+											invalidFileMessage="#{ProzesskopieForm.generateFileUploadErrorMessage()}">
 										</p:fileUpload>
-										<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
+										<h:outputText
+											styleClass="help-block font-light"
+											rendered="#{NavigationForm.showHelp}"
 											value="#{msgs.helpDamageDocFileUpload}" />
 									</div>
 								</div>

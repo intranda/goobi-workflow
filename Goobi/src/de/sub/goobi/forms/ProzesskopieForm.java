@@ -336,11 +336,24 @@ public class ProzesskopieForm implements Serializable {
         enableFileUpload = cp.getParamBoolean("createNewProcess/fileupload/@use");
         configuredFolderNames = new ArrayList<>();
         configuredFolderRegex = new ArrayList<>();
+        configuredFolderErrorMessageKeys = new ArrayList<>();
         if (enableFileUpload) {
             List<HierarchicalConfiguration> folderObjects = cp.getList("createNewProcess/fileupload/folder");
             if (folderObjects != null) {
                 for (HierarchicalConfiguration folderObject : folderObjects) {
-                    configuredFolderRegex.add(folderObject.getString("@regex"));
+
+                    String regex = folderObject.getString("@regex");
+                    if (regex == null) {
+                        regex = "";
+                    }
+                    configuredFolderRegex.add(regex);
+
+                    String key = folderObject.getString("@messageKey");
+                    if (key == null) {
+                        key = "";
+                    }
+                    configuredFolderErrorMessageKeys.add(key);
+
                     String name = folderObject.getString(".");
                     switch (name) {
                         case "intern":
@@ -1720,16 +1733,33 @@ public class ProzesskopieForm implements Serializable {
     public void setUploadFolder(String folder) {
         this.uploadFolder = folder;
         this.uploadRegex = this.getRegexOfFolder(folder);
-        logger.debug("regex: " + this.uploadRegex);
+        logger.debug("Regex: " + this.uploadRegex);
     }
 
-    //@Getter
+    @Getter
     @Setter
     private String uploadRegex;
 
-    public String getUploadRegex() {
-        logger.debug("regex: " + this.uploadRegex);
-        return this.uploadRegex;
+    @Getter
+    @Setter
+    private String fileUploadErrorMessage;
+
+    public String generateFileUploadErrorMessage() {
+        String key = this.getErrorMessageKeyOfFolder(this.uploadFolder);
+        String message = "";
+
+        if (key != null && key.length() > 0) {
+            String result = Helper.getTranslation(key, this.uploadRegex);
+            if (result != null && result.length() > 0 && !result.equals(key)) {
+                message = result;
+            } else {
+                message = "";
+            }
+        }
+        if (message.length() == 0) {
+            message = "The selected file did not match the regular expression \"" + this.uploadRegex + "\".";
+        }
+        return message;
     }
 
     @Getter
@@ -1747,15 +1777,26 @@ public class ProzesskopieForm implements Serializable {
     private List<String> configuredFolderRegex;
 
     @Getter
+    private List<String> configuredFolderErrorMessageKeys;
+
+    @Getter
     private boolean enableFileUpload = false;
 
     private String getRegexOfFolder(String folder) {
+        return this.configuredFolderRegex.get(this.getIndexOfFolder(folder));
+    }
+
+    private String getErrorMessageKeyOfFolder(String folder) {
+        return this.configuredFolderErrorMessageKeys.get(this.getIndexOfFolder(folder));
+    }
+
+    private int getIndexOfFolder(String folder) {
         for (int index = 0; index < this.configuredFolderNames.size(); index++) {
             if (this.configuredFolderNames.get(index).getValue().equals(folder)) {
-                return this.configuredFolderRegex.get(index);
+                return index;
             }
         }
-        return "";
+        return -1;
     }
 
     /**
@@ -1780,7 +1821,6 @@ public class ProzesskopieForm implements Serializable {
      * @param event
      */
     public void uploadFile(FileUploadEvent event) {
-        logger.debug("Uploaded file.");
         try {
             UploadedFile upload = event.getFile();
             saveFileTemporary(upload.getFileName(), upload.getInputstream());
@@ -1810,7 +1850,6 @@ public class ProzesskopieForm implements Serializable {
 
             UploadImage currentImage = new UploadImage(file.toPath(), uploadedFiles.size() + 1, 300, uploadFolder, fileComment);
             uploadedFiles.add(currentImage);
-            logger.debug("Added file to list.");
 
         } catch (IOException e) {
             logger.error(e);
