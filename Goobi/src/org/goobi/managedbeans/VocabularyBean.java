@@ -22,7 +22,7 @@ import org.apache.commons.io.input.BOMInputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -96,7 +96,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
     private String importType = "merge";
 
     private List<Definition> removedDefinitions = null;
-
+    private DataFormatter dataFormatter = new DataFormatter();
+    
     /**
      * Constructor for class
      */
@@ -393,6 +394,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     private void loadUploadedFile() {
         InputStream file = null;
+        
 
         if (importFile.getFileName().toString().endsWith(".json")) {
 
@@ -420,7 +422,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
                 for (int i = 0; i < numberOfCells; i++) {
                     Cell cell = headerRow.getCell(i);
                     if (cell != null) {
-                        String value = cell.getStringCellValue();
+                        String value = dataFormatter.formatCellValue(cell).trim();
+                        //String value = cell.getStringCellValue();
                         headerOrder.add(new MatchingField(value, i, CellReference.convertNumToColString(i), this));
                     }
                 }
@@ -686,19 +689,16 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @return
      */
     public Boolean useAuthorityServer() {
-
         return VocabularyUploader.isActive();
     }
 
     /**
      * returns the value of the current cell as string
      */
-    @SuppressWarnings("deprecation")
     private String getCellValue(Cell cell) {
         String value = "";
         if (cell != null) {
-            cell.setCellType(CellType.STRING);
-            value = cell.getStringCellValue();
+            value = dataFormatter.formatCellValue(cell).trim();
         }
         return value;
     }

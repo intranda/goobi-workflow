@@ -1083,7 +1083,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 try {
                     export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
                 } catch (Exception e) {
-                    logger.error("Can't load export plugin, use default plugin", e);
+                    logger.error("Can't load export plugin, use default export", e);
+                    Helper.setFehlerMeldung("Can't load export plugin, use default export");
                     export = new ExportDms();
                 }
             }
@@ -1115,7 +1116,9 @@ public class ProcessBean extends BasicBean implements Serializable {
                 try {
                     export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
                 } catch (Exception e) {
-                    logger.error("Can't load export plugin, use default plugin", e);
+                    logger.error("Can't load export plugin, use default export", e);
+                    Helper.setFehlerMeldung("Can't load export plugin, use default export");
+
                     export = new ExportDms();
                 }
             }
@@ -1160,7 +1163,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                     try {
                         export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
                     } catch (Exception e) {
-                        logger.error("Can't load export plugin, use default plugin", e);
+                        logger.error("Can't load export plugin, use default export", e);
+                        Helper.setFehlerMeldung("Can't load export plugin, use default export");
                         export = new ExportDms();
                     }
                 }
@@ -1189,7 +1193,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 try {
                     export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
                 } catch (Exception e) {
-                    logger.error("Can't load export plugin, use default plugin", e);
+                    logger.error("Can't load export plugin, use default export", e);
+                    Helper.setFehlerMeldung("Can't load export plugin, use default export");
                     export = new ExportDms();
                 }
             }
@@ -2623,6 +2628,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                         | TypeNotAllowedForParentException | IOException | InterruptedException | ExportFileException | UghHelperException
                         | SwapException | DAOException e) {
                     logger.error(e);
+                    Helper.setFehlerMeldung("Can't load export plugin.");
                 }
             } else if (mySchritt.isDelayStep()) {
                 Helper.setFehlerMeldung("cannotStartPlugin");

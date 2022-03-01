@@ -1177,7 +1177,8 @@ public class StepBean extends BasicBean implements Serializable {
             try {
                 dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, mySchritt.getStepPlugin());
             } catch (Exception e) {
-                logger.error("Can't load export plugin, use default plugin", e);
+                logger.error("Can't load export plugin, use default export", e);
+                Helper.setFehlerMeldung("Can't load export plugin, use default export");
                 dms = new ExportDms();
             }
         }
