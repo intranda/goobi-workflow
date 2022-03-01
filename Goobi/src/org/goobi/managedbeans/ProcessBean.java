@@ -953,7 +953,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     private void updateUserPaginator() {
         String filter =
                 "benutzer.BenutzerID not in (select BenutzerID from schritteberechtigtebenutzer where schritteberechtigtebenutzer.schritteID = "
-                        + mySchritt.getId() + ") AND " + 
+                        + mySchritt.getId() + ") AND " +
                         "benutzer.BenutzerID not in (select BenutzerID from benutzer where benutzer.isVisible = 'deleted')";
         UserManager m = new UserManager();
         userPaginator = new DatabasePaginator("Nachname", filter, m, "");
@@ -1790,8 +1790,10 @@ public class ProcessBean extends BasicBean implements Serializable {
             switch (this.goobiScriptMode) {
                 case "hits":
                     this.executeGoobiScriptHits();
+                    break;
                 case "page":
                     this.executeGoobiScriptPage();
+                    break;
                 case "selection":
                 default:
                     this.executeGoobiScriptSelection();
@@ -2612,7 +2614,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public String startPlugin() {
         if (StringUtils.isNotBlank(mySchritt.getStepPlugin())) {
-        	
+
             if (mySchritt.isTypExportDMS()) {
                 IExportPlugin dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, mySchritt.getStepPlugin());
                 try {
@@ -2625,7 +2627,8 @@ public class ProcessBean extends BasicBean implements Serializable {
             } else if (mySchritt.isDelayStep()) {
                 Helper.setFehlerMeldung("cannotStartPlugin");
             } else {
-            	Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "plugin with title: "+mySchritt.getStepPlugin()+" was executed from Process details");
+                Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG,
+                        "plugin with title: " + mySchritt.getStepPlugin() + " was executed from Process details");
                 currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
                 if (currentPlugin != null) {
                     currentPlugin.initialize(mySchritt, "/process_edit");
