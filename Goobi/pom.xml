@@ -1269,7 +1269,7 @@
         <dependency>
             <groupId>de.intranda.contentserver</groupId>
             <artifactId>ics</artifactId>
-            <version>3.2.2</version>
+            <version>3.3.0</version>
             <exclusions>
                 <exclusion>
                     <artifactId>bcprov-jdk14</artifactId>
