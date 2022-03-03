@@ -37,7 +37,8 @@
         <h:panelGroup id="logoutContainer">
             <h:panelGroup
                 rendered="#{SessionForm.logoutMessage != ''}"
-                styleClass="alert alert-danger">
+                styleClass="alert alert-danger"
+                style="display: block;">
                 <i class="fa fa-exclamation-triangle" />
                 <h:outputText value="#{SessionForm.logoutMessage}" />
             </h:panelGroup>
