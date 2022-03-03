@@ -229,7 +229,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             	console.log("finished drawing", this);
             	overlay.style = $.extend({}, _drawStyle, {borderColor: this.colors.next()});
                 overlay.draw();
-                this.overlays.push(overlay);
+                this.addOverlay(overlay);
                 this.setDrawArea(false);
                 this.drawnOverlay = overlay;
                 this.transformer.addOverlay(overlay);
@@ -272,6 +272,14 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
 				//console.log("page area string", this.areaString);
 			}); 
 			this.initDeletePageAreas();
+		},
+		addOverlay(overlay) {
+			if(overlay) {
+				this.overlays.push(overlay);
+				this.overlays.sort((o1,o2) => {
+            		return o1.highlight ? -1 : o2.highlight ? 1 : 0;
+           		} );
+			}
 		},
 		startDrawArea(source, target) {
 			console.log("start draw area", source, target);
@@ -348,13 +356,17 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         	$("[data-pagearea-delete='cancel']").show();
         	if(this.deleteHandler == null) {
 	        	this.deleteHandler = event => {
-		        	if(_debug)console.log("delete area ", event, this);
-		        	this.overlays.forEach(o => {
+		        	if(_debug)console.log("delete area ", event, this.overlays);
+		        	this.overlays.every(o => {
 						if(o.contains(event.position, 5, true)) {
+							if(_debug)console.log("delete page area 2", o);
 							deletePageArea({"areaId": o.areaId});
 							o.remove();
 							this.transformer.removeOverlay(o);
 							this.endDeletePageMode();
+							return false;
+						} else {
+							return true;
 						}
 					});
 		        };
@@ -390,18 +402,18 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                     shouldDraw = true;
                 } else {
                     try {
-                    var rect = new OpenSeadragon.Rect(parseInt(area.x), parseInt(area.y), parseInt(area.w), parseInt(area.h));
-                    var displayRect = ImageView.CoordinateConversion.convertRectFromImageToOpenSeadragon(rect, _viewImage.viewer, _viewImage.getOriginalImageSize());
-                    var overlay = new ImageView.Overlay(displayRect, _viewImage.viewer, _drawStyle, true);
-                    overlay.style = $.extend({}, _drawStyle, {borderColor: this.colors.next()});
-                    overlay.areaId = area.areaId;
-                    if(area.highlight) {
-                    	this.highlight(overlay);
-                    }
-                    overlay.draw();
-                    if(_debug)console.log("draw overlay", overlay);
-                    this.transformer.addOverlay(overlay);
-                    this.overlays.push(overlay);
+	                    var rect = new OpenSeadragon.Rect(parseInt(area.x), parseInt(area.y), parseInt(area.w), parseInt(area.h));
+	                    var displayRect = ImageView.CoordinateConversion.convertRectFromImageToOpenSeadragon(rect, _viewImage.viewer, _viewImage.getOriginalImageSize());
+	                    var overlay = new ImageView.Overlay(displayRect, _viewImage.viewer, _drawStyle, true);
+	                    overlay.style = $.extend({}, _drawStyle, {borderColor: this.colors.next()});
+	                    overlay.areaId = area.areaId;
+	                    if(area.highlight) {
+	                    	this.highlight(overlay);
+	                    }
+	                    overlay.draw();
+	                    if(_debug)console.log("draw overlay", overlay);
+	                    this.transformer.addOverlay(overlay);
+	                    this.addOverlay(overlay);
                     } catch(e) {
                     }
                 }
@@ -417,7 +429,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 this.setDrawArea(false, null);
             }
         },
-        highlight(overlay) {
+        highlight(overlay) { 
         	overlay.highlight = true;
         	overlay.style.fillColor = overlay.style.borderColor;
         	overlay.style.opacity = 0.3;
@@ -427,7 +439,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         	overlay.highlight = false;
         	overlay.style.fillColor = null;
         	_viewImage.viewer.forceRedraw();
-        },
+        }, 
         writeArea(overlay) {
             var area = {};
             var rect = ImageView.CoordinateConversion.convertRectFromOpenSeadragonToImage(overlay.rect, _viewImage.viewer, _viewImage.getOriginalImageSize());

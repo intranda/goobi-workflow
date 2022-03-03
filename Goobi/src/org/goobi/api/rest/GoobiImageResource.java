@@ -115,7 +115,7 @@ public class GoobiImageResource {
         ImageResource imageResource = createImageResource(processIdString, folder, filename);
 
         ImageInformation info = imageResource.getInfoAsJson();
-
+        
         double heightToWidthRatio = info.getHeight() / (double) info.getWidth();
         List<Dimension> sizes = new ArrayList<>();
 
