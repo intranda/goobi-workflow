@@ -123,11 +123,17 @@ Sequence for determining the right <project> element:
             <metadatageneration use="true" />
             
             <fileupload use="true">
-                <folder>intern</folder>
-                <folder>export</folder>
-                <folder>master</folder>
-                <folder>media</folder>
-            </fileupload>            
+                <!-- The regex strings must be enclosed in slashes. -->
+                <!-- Primefaces does not accept regex without slashes -->
+                <!-- and does not output an error otherwise -->
+                <!-- The messageKey parameter can be used to specify the text key of a customized error message -->
+                <!-- that is shown in the user interface if a file could not be uploaded because it did not match -->
+                <!-- to the regular expression. The messages can then be provided in the messages_xx.properties files for all languages. -->
+                <folder regex="/^.*\\.pdf$/" messageKey="uploadFileErrorIntern">intern</folder>
+                <folder regex="/^.*\\.pdf$/" messageKey="uploadFileErrorExport">export</folder>
+                <folder regex="/^.*\\.pdf$/" messageKey="uploadFileErrorMaster">master</folder>
+                <folder regex="/^.*\\.pdf$/" messageKey="uploadFileErrorMedia">media</folder>
+            </fileupload>
         </createNewProcess>
 
 

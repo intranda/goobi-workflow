@@ -1757,7 +1757,7 @@ public class ProzesskopieForm implements Serializable {
             }
         }
         if (message.length() == 0) {
-            message = "The selected file did not match the regular expression \"" + this.uploadRegex + "\".";
+            message = "The selected file could not be uploaded because it does not match the specified file format.";
         }
         return message;
     }
