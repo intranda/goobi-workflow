@@ -18,7 +18,7 @@
         <poi.version>5.0.0</poi.version>
         <deltaspike.version>1.9.4</deltaspike.version>
         <log4j.version>2.17.1</log4j.version>
-        <ics.version>3.3.1</ics.version>
+        <ics.version>3.3.2</ics.version>
     </properties>
     <repositories>
         <repository>
