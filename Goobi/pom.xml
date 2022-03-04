@@ -112,8 +112,6 @@
             <artifactId>antlr</artifactId>
             <version>2.7.7</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.ow2.asm/asm <dependency> <groupId>org.ow2.asm</groupId>
-            <artifactId>asm</artifactId> <version>5.0.3</version> </dependency> -->
         <dependency>
             <groupId>de.digitalcollections.imageio</groupId>
             <artifactId>imageio-openjpeg</artifactId>
@@ -586,6 +584,12 @@
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
             <version>2.4.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- https://mvnrepository.com/artifact/javax.mail/javax.mail-api -->
         <dependency>
@@ -728,12 +732,6 @@
             <artifactId>javax.ws.rs-api</artifactId>
             <version>2.1.1</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.github.jnr/jffi -->
-        <dependency>
-            <groupId>com.github.jnr</groupId>
-            <artifactId>jffi</artifactId>
-            <version>1.2.23</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/jfree/jfreechart -->
         <dependency>
             <groupId>jfree</groupId>
@@ -757,12 +755,6 @@
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
             <version>4.1.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.github.jnr/jnr-ffi -->
-        <dependency>
-            <groupId>com.github.jnr</groupId>
-            <artifactId>jnr-ffi</artifactId>
-            <version>2.1.15</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.github.jnr/jnr-x86asm -->
         <dependency>
@@ -837,6 +829,10 @@
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
