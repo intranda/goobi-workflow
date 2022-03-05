@@ -32,6 +32,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.deltaspike.core.api.scope.WindowScoped;
+import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 import org.goobi.production.plugin.PluginLoader;
@@ -107,6 +108,10 @@ public class AdministrationForm implements Serializable {
         if (administrationPlugin instanceof IPushPlugin) {
             ((IPushPlugin) administrationPlugin).setPushContext(adminPluginPush);
         }
+        if (PluginGuiType.FULL == administrationPlugin.getPluginGuiType()) {
+            return administrationPlugin.getGui();
+        }
+
         return "administration";
     }
 

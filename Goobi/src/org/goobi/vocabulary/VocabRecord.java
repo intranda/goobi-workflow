@@ -33,7 +33,7 @@ public class VocabRecord implements DatabaseObject, Comparable<VocabRecord> {
     @JsonIgnore
     public String getTitle() {
         for (Field field : fields) {
-            if (field.getDefinition().isMainEntry()) {
+            if (field.getDefinition() != null && field.getDefinition().isMainEntry()) {
                 return field.getValue();
             }
         }
@@ -48,7 +48,7 @@ public class VocabRecord implements DatabaseObject, Comparable<VocabRecord> {
     public  List<Field> getMainFields() {
         List<Field> answer = new ArrayList<>();
         for (Field field : fields) {
-            if (field.getDefinition().isTitleField()) {
+            if (field.getDefinition() != null && field.getDefinition().isTitleField()) {
                 answer.add(field);
             }
         }
@@ -57,7 +57,7 @@ public class VocabRecord implements DatabaseObject, Comparable<VocabRecord> {
 
     public String getFieldValue(Definition definition) {
         for (Field field : fields) {
-            if (field.getDefinition().equals(definition)) {
+            if (field.getDefinition() != null && field.getDefinition().equals(definition)) {
                 return field.getValue();
             }
         }

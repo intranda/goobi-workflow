@@ -33,14 +33,19 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.api.mail.SendMail;
+import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IPushPlugin;
 import org.goobi.production.plugin.interfaces.IWorkflowPlugin;
+import org.omnifaces.cdi.Push;
+import org.omnifaces.cdi.PushContext;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -82,9 +87,7 @@ public class NavigationForm implements Serializable{
     @Getter
     @Setter
     private boolean showHelp = false;
-    @Getter
-    @Setter
-    private boolean showEasyRead = false;
+
     @Getter
     @Setter
     private boolean showExpertView = false;
@@ -99,6 +102,10 @@ public class NavigationForm implements Serializable{
     private String activeImportTab = "recordImport";
     private HashMap<String, String> uiStatus = new HashMap<>();
     private String currentTheme = "/uii";
+
+    @Inject
+    @Push
+    PushContext workflowPluginPush;
 
     public enum Theme {
         ui("ui"),
@@ -177,6 +184,14 @@ public class NavigationForm implements Serializable{
     public String setPlugin(String pluginName) {
         currentWorkflowPluginName = pluginName;
         workflowPlugin = (IWorkflowPlugin) PluginLoader.getPluginByTitle(PluginType.Workflow, currentWorkflowPluginName);
+        if (workflowPlugin instanceof IPushPlugin) {
+            ((IPushPlugin) workflowPlugin).setPushContext(workflowPluginPush);
+        }
+
+        if (PluginGuiType.FULL == workflowPlugin.getPluginGuiType()) {
+            return workflowPlugin.getGui();
+        }
+
         return "workflow";
     }
 

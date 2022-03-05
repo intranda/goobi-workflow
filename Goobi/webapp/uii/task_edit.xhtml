@@ -197,7 +197,7 @@
                                                         <ul
                                                             class="colors small13">
                                                             <li
-                                                                class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)} margin-top-lesser margin-right-regular"
+                                                                class="#{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)} margin-top-lesser margin-right-regular"
                                                                 rel="tooltip"
                                                                 title="#{step.bearbeitungsstatusEnum.title}" />
                                                         </ul> <h:panelGroup
@@ -345,19 +345,6 @@
                         </h:form>
                         <!-- // Box for process details -->
 
-<!--                         Box for image comments -->
-                        <h:form styleClass="form-vertical form-bordered" id="imageComments" 
-                            rendered="#{AktuelleSchritteForm.mySchritt.prozess.imageComments.size()>0}"
-                            enctype="multipart/form-data" prependId="false">
-                            <x:aliasBeansScope>
-                                <x:aliasBean alias="#{showBigButton}" value="true" />
-                                <x:aliasBean alias="#{process}"
-                                    value="#{AktuelleSchritteForm.mySchritt.prozess}" />
-                                <f:subview id="subImageComments">
-                                    <ui:include src="includes/imageComments.xhtml" />
-                                </f:subview>
-                            </x:aliasBeansScope>
-                        </h:form>
 
                         <!-- Box for process log -->
                        

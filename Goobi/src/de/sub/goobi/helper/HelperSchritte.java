@@ -659,7 +659,7 @@ public class HelperSchritte {
             try {
                 dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, step.getStepPlugin());
             } catch (Exception e) {
-                logger.error("Can't load export plugin, use default plugin for process with ID " + step.getProcessId(), e);
+                logger.error("Can't load export plugin, use default export for process with ID " + step.getProcessId(), e);
                 dms = new ExportDms(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
                 //                dms = new AutomaticDmsExport(ConfigurationHelper.isAutomaticExportWithImages());
             }

@@ -49,7 +49,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
@@ -65,7 +64,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.goobi.io.BackupFileRotation;
+import org.goobi.io.BackupFileManager;
 import org.goobi.io.FileListFilter;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.StringPair;
@@ -1066,79 +1065,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return ff;
     }
 
-    // backup of meta.xml
-
-    private void createBackupFile() throws IOException, InterruptedException, SwapException, DAOException {
-        int numberOfBackups = 0;
-        String FORMAT = "";
-        if (ConfigurationHelper.getInstance().getNumberOfMetaBackups() != 0) {
-            numberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
-            FORMAT = ConfigurationHelper.getInstance().getFormatOfMetsBackup();
-        }
-        if (numberOfBackups != 0) {
-            String typeOfBackup = ConfigurationHelper.getInstance().getTypeOfBackup();
-            if (typeOfBackup.equals("renameFile") && FORMAT != null) {
-                createBackup(numberOfBackups, FORMAT);
-            } else if (typeOfBackup.equals("")) {
-                BackupFileRotation bfr = new BackupFileRotation();
-                bfr.setNumberOfBackups(numberOfBackups);
-                bfr.setFormat("meta.*\\.xml");
-                bfr.setProcessDataDirectory(getProcessDataDirectory());
-                bfr.performBackup();
-            }
-        } else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("No backup configured for meta data files.");
-            }
-        }
-        //            format = ConfigMain.getParameter("formatOfMetaBackups");
-        //        }
-        //        if (format != null) {
-        //            logger.info("Option 'formatOfMetaBackups' is deprecated and will be ignored.");
-        //        }
-
-    }
-
-    private void createBackup(int numberOfBackups, String FORMAT) throws IOException, InterruptedException, SwapException, DAOException {
-        DirectoryStream.Filter<Path> filter = new FileListFilter(FORMAT);
-        Path metaFilePath = Paths.get(getProcessDataDirectory());
-        Path metadataFile = Paths.get(getMetadataFilePath());
-        if (!StorageProvider.getInstance().isFileExists(metadataFile)) {
-            return;
-        }
-        List<Path> meta = StorageProvider.getInstance().listFiles(metaFilePath.toString(), filter);
-        if (meta != null) {
-            List<Path> files = new ArrayList<>(meta);
-            Collections.reverse(files);
-
-            int count;
-            if (meta != null) {
-                if (files.size() > numberOfBackups) {
-                    count = numberOfBackups;
-                } else {
-                    count = meta.size();
-                }
-                while (count > 0) {
-                    for (Path data : files) {
-                        if (StorageProvider.getInstance().getFileSize(data) != 0) {
-
-                            if (data.getFileName().toString().endsWith("xml." + (count - 1))) {
-                                Path newFile = Paths.get(data.toString().substring(0, data.toString().lastIndexOf(".")) + "." + (count));
-                                StorageProvider.getInstance().copyFile(data, newFile);
-                            }
-                            if (data.getFileName().toString().endsWith(".xml") && count == 1) {
-                                Path newFile = Paths.get(data.toString() + ".1");
-                                StorageProvider.getInstance().copyFile(data, newFile);
-
-                            }
-                        }
-                    }
-                    count--;
-                }
-            }
-        }
-    }
-
     private boolean checkForMetadataFile()
             throws IOException, InterruptedException, SwapException, DAOException, WriteException, PreferencesException {
         boolean result = true;
@@ -1153,26 +1079,41 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public synchronized void writeMetadataFile(Fileformat gdzfile)
             throws IOException, InterruptedException, SwapException, DAOException, WriteException, PreferencesException {
 
-        Fileformat ff;
-        String metadataFileName;
-        createBackupFile();
+        String path = this.getProcessDataDirectory();
+        int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
 
-        ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
+        // Backup meta.xml
+        String metaFileName = "meta.xml";
+        Path metaFile = Paths.get(path + metaFileName);
+        String backupMetaFileName = Process.createBackup(path, metaFileName, maximumNumberOfBackups);
+        Path backupMetaFile = Paths.get(path + backupMetaFileName);
 
-        metadataFileName = getMetadataFilePath();
+        // Backup meta_anchor.xml
+        String metaAnchorFileName = "meta_anchor.xml";
+        Path metaAnchorFile = Paths.get(path + metaAnchorFileName);
+        String backupMetaAnchorFileName = Process.createBackup(path, metaAnchorFileName, maximumNumberOfBackups);
+        Path backupMetaAnchorFile = Paths.get(path + backupMetaAnchorFileName);
+
+        Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
 
         synchronized (xmlWriteLock) {
             ff.setDigitalDocument(gdzfile.getDigitalDocument());
             try {
-                ff.write(metadataFileName);
-            } catch (UGHException e) {
-                //error writing. restore backup and rethrow error
-                Path meta = Paths.get(metadataFileName);
-                Path lastBackup = Paths.get(metadataFileName + ".1");
-                if ((!Files.exists(meta) || Files.size(meta) == 0) && Files.exists(lastBackup)) {
-                    Files.copy(lastBackup, meta, StandardCopyOption.REPLACE_EXISTING);
+                ff.write(path + metaFileName);
+            } catch (UGHException ughException) {
+                // Error while writing meta.xml or meta_anchor.xml. Restore backups and rethrow error
+
+                // Restore meta.xml
+                if ((!Files.exists(metaFile) || Files.size(metaFile) == 0) && Files.exists(backupMetaFile)) {
+                    Files.copy(backupMetaFile, metaFile, StandardCopyOption.REPLACE_EXISTING);
                 }
-                throw e;
+
+                // Restore meta_anchor.xml
+                if ((!Files.exists(metaAnchorFile) || Files.size(metaAnchorFile) == 0) && Files.exists(backupMetaAnchorFile)) {
+                    Files.copy(backupMetaAnchorFile, metaAnchorFile, StandardCopyOption.REPLACE_EXISTING);
+                }
+
+                throw ughException;
             }
         }
         Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile, false);
@@ -1184,16 +1125,27 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         MetadataManager.updateJSONMetadata(id, jsonMetadata);
     }
 
+    private static String createBackup(String path, String fileName, int maximumNumberOfBackups) {
+        String backupFileName;
+        try {
+            backupFileName = BackupFileManager.createBackup(path, fileName, maximumNumberOfBackups, true);
+            // Output in the GUI is already done in BackupFileManager.createBackup()
+        } catch (IOException ioException) {
+            backupFileName = null;
+            // Output in the GUI is already done in BackupFileManager.createBackup()
+        }
+        return backupFileName;
+    }
+
     public void saveTemporaryMetsFile(Fileformat gdzfile)
             throws SwapException, DAOException, IOException, InterruptedException, PreferencesException, WriteException {
 
+        int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
+        Process.createBackup(this.getProcessDataDirectory(), "temp.xml", maximumNumberOfBackups);
+
         Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
-        String metadataFileName = getProcessDataDirectory() + "temp.xml";
-        createBackup(9, "temp.*\\.xml.*+");
-
         ff.setDigitalDocument(gdzfile.getDigitalDocument());
-
-        ff.write(metadataFileName);
+        ff.write(getProcessDataDirectory() + "temp.xml");
     }
 
     public void writeMetadataAsTemplateFile(Fileformat inFile)
@@ -1241,15 +1193,26 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public void overwriteMetadata() {
         try {
-            Path temporaryFile = Paths.get(getProcessDataDirectory(), "temp.xml");
-            Path temporaryAnchorFile = Paths.get(getProcessDataDirectory(), "temp_anchor.xml");
+            String path = this.getProcessDataDirectory();
+            Path temporaryFile = Paths.get(path, "temp.xml");
+            Path temporaryAnchorFile = Paths.get(path, "temp_anchor.xml");
+
+            int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
 
             if (StorageProvider.getInstance().isFileExists(temporaryFile)) {
-                Path meta = Paths.get(getProcessDataDirectory(), "meta.xml");
+                // backup meta.xml
+                Process.createBackup(path, "meta.xml", maximumNumberOfBackups);
+
+                // copy temp.xml to meta.xml
+                Path meta = Paths.get(path, "meta.xml");
                 StorageProvider.getInstance().copyFile(temporaryFile, meta);
             }
             if (StorageProvider.getInstance().isFileExists(temporaryAnchorFile)) {
-                Path metaAnchor = Paths.get(getProcessDataDirectory(), "meta_anchor.xml");
+                // backup meta_anchor.xml
+                Process.createBackup(path, "meta_anchor.xml", maximumNumberOfBackups);
+
+                // copy temp_anchor.xml to meta_anchor.xml
+                Path metaAnchor = Paths.get(path, "meta_anchor.xml");
                 StorageProvider.getInstance().copyFile(temporaryAnchorFile, metaAnchor);
             }
 
@@ -1536,7 +1499,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         Process p = new Process();
         p.setDocket(docket);
         p.setInAuswahllisteAnzeigen(false);
-        p.setIstTemplate(true);
+        p.setIstTemplate(istTemplate);
+        p.setProjectId(projectId);
         p.setProjekt(projekt);
         p.setRegelsatz(regelsatz);
         p.setSortHelperStatus(sortHelperStatus);
@@ -2344,6 +2308,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
         }
 
+        System.out.println(lstComments);
         return lstComments;
     }
 
@@ -2351,12 +2316,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (this.id == null) {
             return new ArrayList<>();
         }
-        Path images = Paths.get(this.getImagesDirectory());
-        try (Stream<Path> filesInImages = Files.list(images)) {
-            return filesInImages
-                    .filter(p -> Files.isRegularFile(p) && p.getFileName().toString().endsWith(".xml"))
-                    .map(p -> p.getFileName().toString().replace(".xml", ""))
-                    .collect(Collectors.toList());
-        }
+        List<String> filesInImages = StorageProvider.getInstance().list(this.getImagesDirectory());
+        return filesInImages
+                .stream()
+                .filter(p -> p.endsWith(".xml"))
+                .map(p -> Paths.get(p).getFileName().toString().replace(".xml", ""))
+                .collect(Collectors.toList());
     }
 }

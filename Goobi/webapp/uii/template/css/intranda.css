@@ -25,13 +25,25 @@ body {
 
 /* ------------- General --------------- */
 
+.outer-skip-link {
+  	position: relative;
+  	width: 100%;
+  	text-align: center;
+}
+
 .skip-main {
-	font-size: 0px;
+	position: absolute;
+	top: -50px;
+	height: 30px;
+	padding: 15px;
+	font-size: 25px;
 }
 
 .skip-main:focus {
-	font-size: inherit;
+	position: relative;
+	top: 0px;
 }
+
 
 .focusable:focus {
 	outline-offset: 2px;
@@ -956,6 +968,10 @@ dropdown-menu>li>a {
 
 .font-black {
     color: black;
+}
+
+.font-white {
+    color: white;
 }
 
 .font-size-xs {
