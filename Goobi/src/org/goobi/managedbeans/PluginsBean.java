@@ -35,6 +35,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.HelperForm;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import net.xeoh.plugins.base.PluginManager;
 import net.xeoh.plugins.base.impl.PluginManagerFactory;
@@ -53,6 +54,7 @@ import net.xeoh.plugins.base.util.PluginManagerUtil;
 public class PluginsBean implements Serializable {
 
     private static final long serialVersionUID = 9152658727528258005L;
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     @Inject
     HelperForm helperForm;
@@ -60,7 +62,9 @@ public class PluginsBean implements Serializable {
     @Getter
     private Map<String, List<PluginInfo>> plugins;
 
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    @Getter
+    @Setter
+    private String mode = "installed";
 
     public PluginsBean() {
         this.plugins = getPluginsFromFS();
@@ -156,6 +160,10 @@ public class PluginsBean implements Serializable {
             return 1;
         }
         String runningVersion = helperForm.getVersion().replace("-dev", "").replace("-SNAPSHOT", "");
+        return compareGoobiVersions(goobiVersion, runningVersion);
+    }
+
+    public static int compareGoobiVersions(String goobiVersion, String runningVersion) {
         int[] runningVersionFields = Arrays.stream(runningVersion.split("\\."))
                 .mapToInt(Integer::valueOf)
                 .toArray();
