@@ -58,14 +58,14 @@ public class PluginInstaller {
             xFactory.compile("//pom:dependencies/pom:dependency[./pom:artifactId = 'goobi-core-jar']/pom:version", Filters.element(), null, pomNs);
 
     private static Pattern typeExtractor = Pattern.compile("plugin_intranda_(.+?)_.*");
+    private static String pluginPackagePath = ".plugin-packages";
 
     private Path extractedArchivePath;
     private Path goobiDirectory;
-    public static String pluginPackagePath = "/.plugin-packages/";
     private PluginInstallInfo pluginInfo;
     private PluginPreInstallCheck check;
     private Path uploadedArchiveFile;
-    private static String archiveFileName;
+    private String archiveFileName;
 
     public void install() {
         this.saveArchiveFile();
@@ -142,21 +142,22 @@ public class PluginInstaller {
      * @param archiveFileName The name of the uploaded archive because an old one must be loaded to
      */
     public PluginInstaller(Path extractedArchivePath, Path goobiDirectory, PluginInstallInfo pluginInfo, PluginPreInstallCheck check,
-            String archiveFileName) {
+            Path archiveFile) {
         this.extractedArchivePath = extractedArchivePath;
         this.goobiDirectory = goobiDirectory;
         this.pluginInfo = pluginInfo;
         this.check = check;
+        this.archiveFileName = archiveFile.getFileName().toString();
+        this.uploadedArchiveFile = archiveFile;
         this.findDifferencesInAllFiles();
     }
 
-    public static PluginInstaller createFromExtractedArchive(Path extractedArchivePath, String archiveFileName) throws JDOMException, IOException {
+    public static PluginInstaller createFromExtractedArchive(Path extractedArchivePath, Path archivePath) throws JDOMException, IOException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         Path goobiFolder = Paths.get(config.getGoobiFolder());
         PluginInstallInfo pluginInfo = parsePlugin(extractedArchivePath);
-        PluginInstaller.archiveFileName = archiveFileName;
-        PluginPreInstallCheck check = checkPluginInstall(extractedArchivePath, pluginInfo, goobiFolder);
-        return new PluginInstaller(extractedArchivePath, goobiFolder, pluginInfo, check, archiveFileName);
+        PluginPreInstallCheck check = checkPluginInstall(extractedArchivePath, pluginInfo, goobiFolder, archivePath.getFileName().toString());
+        return new PluginInstaller(extractedArchivePath, goobiFolder, pluginInfo, check, archivePath);
     }
 
     private static PluginInstallInfo parsePlugin(Path pluginFolder) throws JDOMException, IOException {
@@ -175,7 +176,7 @@ public class PluginInstaller {
 
         List<PluginVersion> versions = Collections.singletonList(new PluginVersion(null, null, goobiVersion, goobiVersion, pluginVersion));
 
-        return new PluginInstallInfo(name, type, null, null, versions);
+        return new PluginInstallInfo(0, name, type, null, null, versions);
     }
 
     private static String extractPluginName(Document pluginPomDocument, Path pluginFolder) throws JDOMException, IOException {
@@ -201,7 +202,8 @@ public class PluginInstaller {
         return pluginPomDocument;
     }
 
-    private static PluginPreInstallCheck checkPluginInstall(Path extractedPluginPath, PluginInstallInfo info, Path goobiDirectory) {
+    private static PluginPreInstallCheck checkPluginInstall(Path extractedPluginPath, PluginInstallInfo info, Path goobiDirectory,
+            String archiveFileName) {
         Map<String, PluginInstallConflict> conflicts = new HashMap<>();
         try (Stream<Path> walkStream = Files.walk(extractedPluginPath)) {
             walkStream.filter(Files::isRegularFile)
@@ -215,7 +217,7 @@ public class PluginInstaller {
                         Path installPath = goobiDirectory.resolve(relativePath);
                         if (checkForConflict(installPath, p)) {
                             Path archivedArchiveFile =
-                                    Paths.get(goobiDirectory.toString() + PluginInstaller.pluginPackagePath + PluginInstaller.archiveFileName);
+                                    Paths.get(goobiDirectory.toString(), pluginPackagePath, archiveFileName);
                             String archivedVersion = PluginInstaller.getContentFromFileInArchive(archivedArchiveFile, p.getFileName().toString());
                             try {
                                 String existingVersion = Files.readAllLines(installPath).stream().collect(Collectors.joining("\n"));
