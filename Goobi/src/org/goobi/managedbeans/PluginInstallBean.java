@@ -19,7 +19,6 @@ import org.goobi.production.plugin.PluginInstallConflict;
 import org.goobi.production.plugin.PluginInstaller;
 import org.jdom2.JDOMException;
 
-import de.sub.goobi.config.ConfigurationHelper;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -42,14 +41,28 @@ public class PluginInstallBean implements Serializable {
 
     private InputStream streamToStoreArchiveFile;
 
-    public String parseUploadedPlugin() {
+    public String parseUploadedPlugin() throws IOException, JDOMException {
+        try (InputStream input = uploadedPluginFile.getInputStream()) {
+            this.pluginInstaller = parsePlugin(input);
+        }
+        return "";
+    }
+
+    /**
+     * Parses a tar-packaged plugin and returns a PluginInstaller instance. The InputStream is not closed by this method
+     * 
+     * @param input InputStream pointing to tar-packaged Goobi workflow plugin
+     * @return
+     * @throws IOException
+     * @throws JDOMException
+     */
+    public PluginInstaller parsePlugin(InputStream input) throws JDOMException, IOException {
         if (currentExtractedPluginPath != null && Files.exists(currentExtractedPluginPath)) {
             FileUtils.deleteQuietly(currentExtractedPluginPath.toFile());
         }
-        InputStream input = null;
         TarInputStream tarIn = null;
         try {
-            input = uploadedPluginFile.getInputStream();
+
             this.streamToStoreArchiveFile = uploadedPluginFile.getInputStream();
             tarIn = new TarInputStream(input);
             currentExtractedPluginPath = Files.createTempDirectory("plugin_extracted_");
@@ -68,23 +81,12 @@ public class PluginInstallBean implements Serializable {
             log.error(ioException);
         } finally {
             try {
-                input.close();
-            } catch (IOException ioException) {
-                log.error(ioException);
-            }
-            try {
                 tarIn.close();
             } catch (IOException ioException) {
                 log.error(ioException);
             }
         }
-        ConfigurationHelper config = ConfigurationHelper.getInstance();
-        try {
-            this.pluginInstaller = PluginInstaller.createFromExtractedArchive(currentExtractedPluginPath, uploadedPluginFile.getSubmittedFileName());
-        } catch (JDOMException | IOException exception) {
-            log.error(exception);
-        }
-        return "";
+        return PluginInstaller.createFromExtractedArchive(currentExtractedPluginPath, uploadedPluginFile.getSubmittedFileName());
     }
 
     public String install() {

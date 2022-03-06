@@ -2,8 +2,6 @@ package org.goobi.production.plugin;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -24,12 +22,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.text.diff.StringsComparator;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.text.diff.StringsComparator;
 import org.goobi.production.plugin.PluginInstallConflict.ResolveTactic;
-
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -56,9 +53,9 @@ public class PluginInstaller {
     private static XPathExpression<Element> pluginNameXpath = xFactory.compile("//pom:properties/pom:jar.name", Filters.element(), null, pomNs);
     private static XPathExpression<Element> pluginVersionXpath = xFactory.compile("//pom:version", Filters.element(), null, pomNs);
     private static XPathExpression<Element> goobiVersionXpath =
+            xFactory.compile("//pom:properties/pom:goobi.version", Filters.element(), null, pomNs);
+    private static XPathExpression<Element> secondGoobiVersionXpath =
             xFactory.compile("//pom:dependencies/pom:dependency[./pom:artifactId = 'goobi-core-jar']/pom:version", Filters.element(), null, pomNs);
-    private static XPathExpression<Element> publicGoobiVersionXpath =
-            xFactory.compile("//pom:properties/pom:publicVersion", Filters.element(), null, pomNs);
 
     private static Pattern typeExtractor = Pattern.compile("plugin_intranda_(.+?)_.*");
 
@@ -142,9 +139,10 @@ public class PluginInstaller {
      * @param goobiDirectory The goobi root directory
      * @param pluginInfo The plugin information object
      * @param check The check object containing file differences and more information
-     * @param archiveFileName The name of the uploaded archive because an old one must be loaded to 
+     * @param archiveFileName The name of the uploaded archive because an old one must be loaded to
      */
-    public PluginInstaller(Path extractedArchivePath, Path goobiDirectory, PluginInstallInfo pluginInfo, PluginPreInstallCheck check, String archiveFileName) {
+    public PluginInstaller(Path extractedArchivePath, Path goobiDirectory, PluginInstallInfo pluginInfo, PluginPreInstallCheck check,
+            String archiveFileName) {
         this.extractedArchivePath = extractedArchivePath;
         this.goobiDirectory = goobiDirectory;
         this.pluginInfo = pluginInfo;
@@ -163,18 +161,30 @@ public class PluginInstaller {
 
     private static PluginInstallInfo parsePlugin(Path pluginFolder) throws JDOMException, IOException {
         //TODO: error checking...
-        Document pluginPomDocument = parsePomXml(pluginFolder);
-        String name = pluginNameXpath.evaluateFirst(pluginPomDocument).getTextTrim();
+        Document pluginPomDocument = parsePomXml(pluginFolder, "pom.xml");
+        String name = extractPluginName(pluginPomDocument, pluginFolder);
         String type = extractPluginTypeFromName(name);
 
         String pluginVersion = pluginVersionXpath.evaluateFirst(pluginPomDocument).getTextTrim();
 
-        String goobiVersion = goobiVersionXpath.evaluateFirst(pluginPomDocument).getTextTrim();
-        String publicGoobiVersion = getPublicGoobiVersion(goobiVersion);
+        Element goobiVersionEle = goobiVersionXpath.evaluateFirst(pluginPomDocument);
+        if (goobiVersionEle == null) {
+            goobiVersionEle = secondGoobiVersionXpath.evaluateFirst(pluginPomDocument);
+        }
+        String goobiVersion = goobiVersionEle.getTextTrim();
 
-        List<PluginVersion> versions = Collections.singletonList(new PluginVersion(null, null, goobiVersion, publicGoobiVersion, pluginVersion));
+        List<PluginVersion> versions = Collections.singletonList(new PluginVersion(null, null, goobiVersion, goobiVersion, pluginVersion));
 
         return new PluginInstallInfo(name, type, null, null, versions);
+    }
+
+    private static String extractPluginName(Document pluginPomDocument, Path pluginFolder) throws JDOMException, IOException {
+        Element pluginNameEle = pluginNameXpath.evaluateFirst(pluginPomDocument);
+        if (pluginNameEle == null) {
+            Document doc = parsePomXml(pluginFolder, "module-main/pom.xml");
+            pluginNameEle = pluginNameXpath.evaluateFirst(doc);
+        }
+        return pluginNameEle.getTextTrim();
     }
 
     private static String extractPluginTypeFromName(String name) {
@@ -184,20 +194,11 @@ public class PluginInstaller {
         return type;
     }
 
-    private static Document parsePomXml(Path pluginFolder) throws JDOMException, IOException {
+    private static Document parsePomXml(Path pluginFolder, String pomFilePath) throws JDOMException, IOException {
         SAXBuilder saxBuilder = new SAXBuilder();
-        Path pomPath = pluginFolder.resolve("pom.xml");
+        Path pomPath = pluginFolder.resolve(pomFilePath);
         Document pluginPomDocument = saxBuilder.build(pomPath.toFile());
         return pluginPomDocument;
-    }
-
-    private static String getPublicGoobiVersion(String actualGoobiVersion) throws MalformedURLException, JDOMException, IOException {
-        SAXBuilder saxBuilder = new SAXBuilder();
-        Document doc = saxBuilder.build(new URL(
-                String.format("https://nexus.intranda.com/repository/maven-releases/de/intranda/goobi/workflow/goobi-core/%s/goobi-core-%s.pom",
-                        actualGoobiVersion, actualGoobiVersion)));
-
-        return publicGoobiVersionXpath.evaluateFirst(doc).getTextTrim();
     }
 
     private static PluginPreInstallCheck checkPluginInstall(Path extractedPluginPath, PluginInstallInfo info, Path goobiDirectory) {
@@ -213,12 +214,14 @@ public class PluginInstaller {
                         }
                         Path installPath = goobiDirectory.resolve(relativePath);
                         if (checkForConflict(installPath, p)) {
-                            Path archivedArchiveFile = Paths.get(goobiDirectory.toString() + PluginInstaller.pluginPackagePath + PluginInstaller.archiveFileName);
+                            Path archivedArchiveFile =
+                                    Paths.get(goobiDirectory.toString() + PluginInstaller.pluginPackagePath + PluginInstaller.archiveFileName);
                             String archivedVersion = PluginInstaller.getContentFromFileInArchive(archivedArchiveFile, p.getFileName().toString());
                             try {
                                 String existingVersion = Files.readAllLines(installPath).stream().collect(Collectors.joining("\n"));
                                 String uploadedVersion = Files.readAllLines(p).stream().collect(Collectors.joining("\n"));
-                                PluginInstallConflict conflict = new PluginInstallConflict(installPath.toString(), ResolveTactic.unknown, existingVersion, uploadedVersion, archivedVersion);
+                                PluginInstallConflict conflict = new PluginInstallConflict(installPath.toString(), ResolveTactic.unknown,
+                                        existingVersion, uploadedVersion, archivedVersion);
                                 conflicts.put(relativePath.toString(), conflict);
                             } catch (IOException e) {
                                 //TODO: handle error
@@ -237,7 +240,7 @@ public class PluginInstaller {
 
     public static void setNumbersForAllConflicts(Object[] objects) {
         for (int index = 0; index < objects.length; index++) {
-            PluginInstallConflict conflict = (PluginInstallConflict)(objects[index]);
+            PluginInstallConflict conflict = (PluginInstallConflict) (objects[index]);
             conflict.setNumber(index + 1);
         }
     }
@@ -249,7 +252,7 @@ public class PluginInstaller {
             tarInputStream = new TarArchiveInputStream(Files.newInputStream(archivePath));
             TarArchiveEntry tarEntry;
             do {
-                tarEntry = (TarArchiveEntry)(tarInputStream.getNextEntry());
+                tarEntry = (TarArchiveEntry) (tarInputStream.getNextEntry());
                 if (!(tarEntry == null) && !tarEntry.isDirectory() && tarEntry.getName().endsWith(fileName)) {
                     content = IOUtils.toString(tarInputStream, StandardCharsets.UTF_8.name());
                     break;
@@ -393,7 +396,8 @@ public class PluginInstaller {
             int localUploadedLineIndex = uploadedLineIndex;
             while (localUploadedLineIndex < linesInUploadedFile - 1) {
                 StringsComparator comparator = new StringsComparator(existingLines[existingLineIndex], uploadedLines[localUploadedLineIndex]);
-                if (comparator.getScript().getLCSLength() > commonalityFactor * (Integer.max(existingLines[existingLineIndex].length(), uploadedLines[localUploadedLineIndex].length()))) {
+                if (comparator.getScript().getLCSLength() > commonalityFactor
+                        * (Integer.max(existingLines[existingLineIndex].length(), uploadedLines[localUploadedLineIndex].length()))) {
                     break;
                 }
                 localUploadedLineIndex++;
@@ -430,10 +434,12 @@ public class PluginInstaller {
                 lineNumbers.add(String.valueOf(existingLineIndex + 1));
             } else {
                 // Otherwise a deleted line and an inserted line are generated.
-                fileContent.add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], "deletion"));
+                fileContent
+                        .add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], "deletion"));
                 lineTypes.add("deletion");
                 lineNumbers.add(String.valueOf(existingLineIndex + 1));
-                fileContent.add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], "insertion"));
+                fileContent
+                        .add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], "insertion"));
                 lineTypes.add("insertion");
                 lineNumbers.add(String.valueOf(uploadedLineIndex + 1));
             }
