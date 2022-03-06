@@ -9,6 +9,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -29,7 +30,13 @@ import org.goobi.production.plugin.PluginInstallConflict;
 import org.goobi.production.plugin.PluginInstallInfo;
 import org.goobi.production.plugin.PluginInstaller;
 import org.goobi.production.plugin.PluginVersion;
+import org.jdom2.Document;
+import org.jdom2.Element;
 import org.jdom2.JDOMException;
+import org.jdom2.filter.Filters;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.xpath.XPathExpression;
+import org.jdom2.xpath.XPathFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -48,6 +55,8 @@ public class PluginInstallBean implements Serializable {
 
     private static final long serialVersionUID = 6994049417697395754L;
     private static Pattern headerFilenamePattern = Pattern.compile("attachment; filename=\"(.*?)\"");
+    private static XPathFactory xFactory = XPathFactory.instance();
+    private static XPathExpression<Element> versionXpath = xFactory.compile("//version", Filters.element());
 
     @Inject
     private HelperForm helperForm;
@@ -66,7 +75,7 @@ public class PluginInstallBean implements Serializable {
     private Path tempDir;
 
     @PostConstruct
-    private void init() throws ClientProtocolException, IOException {
+    private void init() throws ClientProtocolException, IOException, JDOMException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         String queryUrl = config.getPluginServerUrl();
         if (queryUrl.isBlank()) {
@@ -75,8 +84,12 @@ public class PluginInstallBean implements Serializable {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         List<PluginInstallInfo> installInfos = new ArrayList<PluginInstallInfo>();
-        //InputStream responseStream = Request.Get(queryUrl + "/api/plugins?goobiVersion=" + helperForm.getVersion())
-        try (InputStream responseStream = Request.Get(queryUrl + "/api/plugins?goobiVersion=" + "22.01.2")
+        String goobiVersion = helperForm.getVersion();
+        if (goobiVersion.endsWith("-dev")) {
+            goobiVersion = getLatestGoobiVersionFromNexus().orElse(goobiVersion);
+        }
+        goobiVersion = goobiVersion.replace("-SNAPSHOT", "");
+        try (InputStream responseStream = Request.Get(queryUrl + "/api/plugins?goobiVersion=" + goobiVersion)
                 .execute()
                 .returnContent()
                 .asStream();) {
@@ -86,6 +99,22 @@ public class PluginInstallBean implements Serializable {
         }
         this.availablePlugins = installInfos.stream()
                 .collect(Collectors.groupingBy(PluginInstallInfo::getType));
+    }
+
+    private Optional<String> getLatestGoobiVersionFromNexus() throws ClientProtocolException, IOException, JDOMException {
+        SAXBuilder saxB = new SAXBuilder();
+        String nexusUrl = "https://nexus.intranda.com/repository/maven-public/de/intranda/goobi/workflow/goobi-core-jar/maven-metadata.xml";
+        try (InputStream in = Request.Get(nexusUrl).execute().returnContent().asStream()) {
+            Document doc = saxB.build(in);
+            return versionXpath.evaluate(doc)
+                    .stream()
+                    .map(v -> v.getTextTrim())
+                    .filter(v -> !v.endsWith("SNAPSHOT"))
+                    .sorted((v1, v2) -> {
+                        return PluginsBean.compareGoobiVersions(v1, v2);
+                    })
+                    .findFirst();
+        }
     }
 
     public void downloadAndInstallPlugin(PluginInstallInfo pluginInfo) throws ClientProtocolException, IOException, JDOMException {

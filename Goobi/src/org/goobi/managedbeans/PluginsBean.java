@@ -160,6 +160,10 @@ public class PluginsBean implements Serializable {
             return 1;
         }
         String runningVersion = helperForm.getVersion().replace("-dev", "").replace("-SNAPSHOT", "");
+        return compareGoobiVersions(goobiVersion, runningVersion);
+    }
+
+    public static int compareGoobiVersions(String goobiVersion, String runningVersion) {
         int[] runningVersionFields = Arrays.stream(runningVersion.split("\\."))
                 .mapToInt(Integer::valueOf)
                 .toArray();
