@@ -47,6 +47,20 @@
 				heigth:50px;	
 			}    
 	    </style>
+	    
+	    <script type="text/javascript">
+        	function switchExpanded(id){
+        		console.log("called by: "+id);
+				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				console.log(x)
+				if (x == "true"){
+					x = "false"
+				} else {
+					x = "true"
+				}
+				document.getElementById(id).setAttribute("aria-expanded", x);
+        	}
+        </script>
     	
         <main>
             <c:if test="#{LoginForm.hasRole('Workflow_Processes') or LoginForm.hasRole('Workflow_ProcessTemplates')}">
@@ -899,7 +913,11 @@
  		                                                        data-toggle="tooltip">
 		                                                        <div class="dropdown">
 		                                                        <button
-		                                                            class="btn #{item.containsUnreachableSteps?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
+		                                                        	id="availableProjectsDropdown"
+		                                                            class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
+		                                                            aria-haspopup="true"
+		                                                            aria-expanded="false"
+		                                                            onclick="switchExpanded(this.id)"
 		                                                            style="margin: 0; padding-left: 4px; padding-right: 4px;"
 		                                                            data-toggle="dropdown"> <span class="caret"></span>
 		                                                        </button>
@@ -968,7 +986,11 @@
 		
 		                                                        <div class="dropdown">
 		                                                            <button
-		                                                                class="btn #{item.containsUnreachableSteps?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
+		                                                            	id="importProjectListDropdown"
+		                                                                class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
+		                                                                aria-haspopup="true"
+		                                                                aria-expanded="false"
+		                                                                onclick="switchExpanded(this.id)"
 		                                                                style="margin: 0; padding-left: 4px; padding-right: 4px;"
 		                                                                data-toggle="dropdown">
 		                                                                <span class="caret"></span>
@@ -1020,7 +1042,11 @@
 		                                                        data-toggle="tooltip">
 		                                                        <div class="dropdown">
 		                                                        <button
+		                                                        	id="additionalOptionsDropdown"
 		                                                            aria-label="#{msgs.additionalOptions}"
+		                                                            aria-haspopup="true"
+		                                                            aria-expanded="false"
+		                                                            onclick="switchExpanded(this.id)"
 		                                                            type="button"
 		                                                            class="btn dropdown-toggle fa fa-cog"
 		                                                            data-toggle="dropdown"> <span class="caret"></span>

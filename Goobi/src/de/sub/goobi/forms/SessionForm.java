@@ -24,6 +24,8 @@ import org.omnifaces.cdi.PushContext;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -297,7 +299,8 @@ public class SessionForm implements Serializable {
         }
 
         if (updatedUser == null) {
-            log.debug(LoginBean.LOGIN_LOG_PREFIX + "User will be logged out.");
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Following user will be logged out:");
+            SessionForm.logUserInformation(knownSession);
             knownSession.setUserName(LOGGED_OUT);
             updatedSession.setAttribute("User", LOGGED_OUT);
             knownSession.setUserId(0);
@@ -351,6 +354,8 @@ public class SessionForm implements Serializable {
             // sessionDuration > 0 is needed to not remove the login screen while the user logs in
             if (overTimeout || loggedOut || (notLoggedIn && sessionDuration > 0) || noAddress) {
                 message.append("\nSession " + counter + " will be removed because it is too old or abandoned.");
+                log.debug(LoginBean.LOGIN_LOG_PREFIX + "Following user will be logged out because the session is too old:");
+                log.debug(LoginBean.LOGIN_LOG_PREFIX + "User name: " + session.getUserName());
                 log.trace(message.toString());
                 this.sessions.remove(index);
                 index--;
@@ -360,6 +365,27 @@ public class SessionForm implements Serializable {
                     log.trace(message.toString());
                 }
             }
+        }
+    }
+
+    /**
+     * Prints the login name, the first name and the last name of the user in the given session object to the debug log output. If the user is
+     * unknown, no log is printed.
+     *
+     * @param session The object that contains the session information and the user information
+     */
+    public static void logUserInformation(SessionInfo session) {
+        try {
+            User user = UserManager.getUserById(session.getUserId());
+            if (user == null) {
+                return;
+            }
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login name: " + user.getLogin());
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "First name: " + user.getVorname());
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Last name: " + user.getNachname());
+        } catch (DAOException daoException) {
+            //log.debug("Unknown user will be logged out.");
+            //daoException.printStackTrace();
         }
     }
 

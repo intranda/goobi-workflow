@@ -1,5 +1,7 @@
 package org.goobi.production;
 
+import java.sql.SQLException;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -64,8 +66,12 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
     // if some indexes are missing, they are created
     private void checkIndexes() {
         if (MySQLHelper.isUsingH2()) {
+        	try {
             DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS priority_x_status ON schritte(Prioritaet, Bearbeitungsstatus) ");
             DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS stepstatus ON schritte(Bearbeitungsstatus) ");
+        	}catch(SQLException e) {
+        		logger.error(e);
+        	}
         } else {
             if (!DatabaseVersion.checkIfIndexExists("schritte", "priority_x_status")) {
                 DatabaseVersion.createIndexOnTable("schritte", "priority_x_status", "Prioritaet, Bearbeitungsstatus", null);

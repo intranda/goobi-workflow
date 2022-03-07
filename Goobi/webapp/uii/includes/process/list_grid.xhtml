@@ -37,6 +37,20 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 </style>
 
+<script type="text/javascript">
+        	function switchExpanded(id){
+        		console.log("called by: "+id);
+				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				console.log(x)
+				if (x == "true"){
+					x = "false"
+				} else {
+					x = "true"
+				}
+				document.getElementById(id).setAttribute("aria-expanded", x);
+        	}
+        </script>
+
 <div class="row margin-left-10 margin-right-10" >
 	<ui:repeat var="item" value="#{ProzessverwaltungForm.paginator.list}" varStatus="itemstatus" id="processgrid">
 		<div class="thumbgrid">
@@ -86,7 +100,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 											
 									<div class="btn-group pull-right" title="#{msgs.process_grid_options}" data-toggle="tooltip">
 										<div class="dropdown">
-										<button class="btn dropdown-toggle fa fa-cog" data-toggle="dropdown">
+										<button id="gridOptionsDropdown" class="btn dropdown-toggle fa fa-cog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="switchExpanded(this.id)">
 											<span class="caret"></span>
 										</button>
 										<ul class="dropdown-menu pull-right">
