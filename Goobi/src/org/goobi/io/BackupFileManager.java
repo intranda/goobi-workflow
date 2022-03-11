@@ -1,7 +1,7 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
@@ -76,7 +76,6 @@ public abstract class BackupFileManager {
             }
         } catch (Exception exception) {
             String messageFail = Helper.getTranslation("noBackupCreated");
-            log.error(messageFail);
             if (createFrontendMessage) {
                 Helper.setFehlerMeldung(messageFail);
             }
@@ -117,17 +116,16 @@ public abstract class BackupFileManager {
         Path backupFile = Paths.get(path + backupFileName);
 
         if (!StorageProvider.getInstance().isFileExists(existingFile)) {
-            log.error("File " + path + fileName + " does not exist. No backup created.");
+            //            log.error("File " + path + fileName + " does not exist. No backup created.");
             return null;
         }
 
         try {
             StorageProvider.getInstance().copyFile(existingFile, backupFile);
-            log.info("Created backup file " + path + backupFileName);
+            log.debug("Created backup file " + path + backupFileName);
             return backupFileName;
         } catch (IOException ioException) {
             log.error("Error while creating backup file " + path + backupFileName);
-            log.error(ioException);
             throw ioException;
         }
     }
