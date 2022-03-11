@@ -215,7 +215,7 @@
 				                                        ajaxRender=":myform" />
 				                                    <!-- . -->
 													<intranda:columnheader
-														addClass="tableColumnOverflow maxWidth120 #{item.getProjekt().projectIsArchived?font-status-deactivated:font-black}"
+														addClass="tableColumnOverflow maxWidth120 #{item.getProjekt().projectIsArchived?'font-status-deactivated':'font-black'}"
 				                                        name="projekt"
 				                                        form="#{ProzessverwaltungForm}"
 				                                        value="#{msgs.projekt}"
