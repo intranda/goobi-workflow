@@ -1151,7 +1151,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private static String createBackup(String path, String fileName, int maximumNumberOfBackups) {
         String backupFileName;
         try {
-            backupFileName = BackupFileManager.createBackup(path, fileName, maximumNumberOfBackups, true);
+            backupFileName = BackupFileManager.createBackup(path, path, fileName, maximumNumberOfBackups, true);
             // Output in the GUI is already done in BackupFileManager.createBackup()
         } catch (IOException ioException) {
             backupFileName = null;

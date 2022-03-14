@@ -61,18 +61,19 @@ public abstract class BackupFileManager {
      * An exception is thrown independently in the case that no backup file could be created. If the backup file could be created, but old files could
      * not be deleted, no exception is thrown. This is to avoid confusion with the decision whether the backup file was created or not.
      *
-     * @param path The path of the original file (is used for the backup files too)
+     * @param path The path of the original file
+     * @param backupPath The path of the backup file (may be the same as the path)
      * @param fileName The name of the original file (without directory)
      * @param limit The maximum number of backup files before the oldest one gets deleted.
      * @param createFrontendMessage Must be true to generate frontend help messages (Helper.setMeldung() or Helper.setFehlerMeldung())
      * @return The name of the created backup file or null in case of an error
      * @throws IOException if there was an error while reading the original file or writing backup files
      */
-    public static String createBackup(String path, String fileName, int limit, boolean createFrontendMessage) throws IOException {
+    public static String createBackup(String path, String backupPath, String fileName, int limit, boolean createFrontendMessage) throws IOException {
         String backupFileName = null;
         try {
             if (limit > 0) {
-                backupFileName = BackupFileManager.createBackupFile(path, fileName);
+                backupFileName = BackupFileManager.createBackupFile(path, backupPath, fileName);
             }
         } catch (Exception exception) {
             String messageFail = Helper.getTranslation("noBackupCreated");
@@ -81,13 +82,13 @@ public abstract class BackupFileManager {
             }
             throw new IOException(messageFail);
         }
-        String messageSuccess = Helper.getTranslation("backupCreated") + " " + path + backupFileName + ".";
+        String messageSuccess = Helper.getTranslation("backupCreated") + " " + backupPath + backupFileName + ".";
         log.info(messageSuccess);
         //if (createFrontendMessage) {
         //    Helper.setMeldung(messageSuccess);
         //}
         try {
-            BackupFileManager.removeTooOldBackupFiles(path, fileName, limit);
+            BackupFileManager.removeTooOldBackupFiles(backupPath, fileName, limit);
         } catch (Exception exception) {
             String messageFail = Helper.getTranslation("noOldBackupsDeleted");
             log.warn(messageFail);
@@ -105,15 +106,16 @@ public abstract class BackupFileManager {
      * Creates a backup. It returns the name of the backup file because it contains a time stamp and is not reliably reproducible otherwise. It
      * returns null if the limit is set to 0.
      *
-     * @param path The path of the original file (is used for the backup files too)
+     * @param path The path of the original file
+     * @param backupPath The path of the backup file (may be the same as the source path)
      * @param fileName The name of the original file (without directory)
      * @return The name of the created backup file or null in case of an error
      * @throws IOException if there was an error while creating the backup file
      */
-    private static String createBackupFile(String path, String fileName) throws IOException {
+    private static String createBackupFile(String path, String backupPath, String fileName) throws IOException {
         Path existingFile = Paths.get(path + fileName);
         String backupFileName = fileName + "." + BackupFileManager.getCurrentTimestamp();
-        Path backupFile = Paths.get(path + backupFileName);
+        Path backupFile = Paths.get(backupPath + backupFileName);
 
         if (!StorageProvider.getInstance().isFileExists(existingFile)) {
             //            log.error("File " + path + fileName + " does not exist. No backup created.");
@@ -122,10 +124,10 @@ public abstract class BackupFileManager {
 
         try {
             StorageProvider.getInstance().copyFile(existingFile, backupFile);
-            log.debug("Created backup file " + path + backupFileName);
+            log.debug("Created backup file " + backupPath + backupFileName);
             return backupFileName;
         } catch (IOException ioException) {
-            log.error("Error while creating backup file " + path + backupFileName);
+            log.error("Error while creating backup file " + backupPath + backupFileName);
             throw ioException;
         }
     }
