@@ -213,7 +213,7 @@ public class BackupFileManagerTest {
         }
         String fileName = null;
         try {
-            fileName = BackupFileManager.createBackup(this.BACKUP_PATH_NAME, this.BACKUP_FILE_NAME, this.maximumNumberOfBackupFiles, false);
+            fileName = BackupFileManager.createBackup(this.BACKUP_PATH_NAME, this.BACKUP_PATH_NAME, this.BACKUP_FILE_NAME, this.maximumNumberOfBackupFiles, false);
         } catch (IOException ioException) {
             Assert.fail(ioException.getMessage());
         }

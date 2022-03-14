@@ -98,7 +98,7 @@ public class GoobiScriptMetadataBackup extends AbstractIGoobiScript implements I
     private static GoobiScriptResult createBackup(String path, String file, int maximumNumberOfBackupFiles) {
         GoobiScriptResult result = new GoobiScriptResult(null, null, null, null, 0);
         try {
-            String backupFileName = BackupFileManager.createBackup(path, file, maximumNumberOfBackupFiles, false);
+            String backupFileName = BackupFileManager.createBackup(path, path, file, maximumNumberOfBackupFiles, false);
             result.setResultType(GoobiScriptResultType.OK);
             result.setResultMessage(Helper.getTranslation("backupCreated") + " " + path + backupFileName + ".");
         } catch (IOException ioException) {
