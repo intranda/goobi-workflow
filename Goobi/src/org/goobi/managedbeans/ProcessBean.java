@@ -694,6 +694,10 @@ public class ProcessBean extends BasicBean implements Serializable {
             answer = "institution.shortName";
         } else if (sortierung.equals("institutionDesc")) {
             answer = "institution.shortName desc";
+        } else if (sortierung.equals("numberOfImagesAsc")) {
+            answer = "prozesse.sortHelperImages";
+        } else if (sortierung.equals("numberOfImagesDesc")) {
+            answer = "prozesse.sortHelperImages desc";
         }
 
         return answer;

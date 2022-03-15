@@ -147,8 +147,11 @@
                                             <!-- number of images -->
                                             <intranda:columnheader
                                                 rendered="#{AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']}"
-                                                sortable="false"
-                                                value="#{msgs.NumberOfImages}" />
+                                                value="#{msgs.NumberOfImages}"
+                                                addClass="tableColumnOverflow maxWidth120"
+                                                name="numberOfImages"
+                                                form="#{AktuelleSchritteForm}"
+                                                ajaxRender=":myform" />
 
                                                     <!-- Status -->
 		                                    <intranda:columnheader
