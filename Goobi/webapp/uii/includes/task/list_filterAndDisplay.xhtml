@@ -71,6 +71,20 @@
 							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['lockings']}" />
 						</button>
 					</li>
+                        <li>
+                            <!-- show number of images --> 
+                            <button
+                                jsf:action="#{NavigationForm.Reload}"
+                                jsf:id="showNumberOfImages"
+                                class="dropdown-item">
+                                <i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                                <h:outputText value="#{msgs.NumberOfImages}" />
+                                <x:updateActionListener
+                                    property="#{AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']}"
+                                    value="#{not AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']}" />
+                            </button>
+                        </li>                    
+                    
 				</ul>
                 </div>
 			</div>

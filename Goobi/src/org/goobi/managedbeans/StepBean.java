@@ -186,6 +186,7 @@ public class StepBean extends BasicBean implements Serializable {
 
     public StepBean() {
         this.anzeigeAnpassen = new HashMap<>();
+        anzeigeAnpassen.put("numberOfImages", false);
 
         /*
          * --------------------- Vorgangsdatum generell anzeigen? -------------------

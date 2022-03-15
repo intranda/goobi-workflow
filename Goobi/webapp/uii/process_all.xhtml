@@ -260,6 +260,12 @@
 				                                        value="#{msgs.ausgelagert}"
 				                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}"
 				                                        sortable="false"/>
+                                                        
+                                                     <!-- number of images -->
+                                                    <intranda:columnheader
+                                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}"
+                                                        sortable="false"
+                                                        value="#{msgs.NumberOfImages}"/>                                                        
 				                                    <!-- Buttons -->
 													<intranda:columnheader
 														addClass="width200"
@@ -624,6 +630,12 @@
 													<td jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}">
 														<i class="fa #{item.swappedOutGui?'fa-check-square-o':'fa-square-o'}" />
 													</td>
+                                                         
+	                                                <td jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}">
+                                                       <h:outputText
+                                                    		value="#{item.sortHelperImages}"/>
+                                                    </td>
+                                                    
 													<!-- Buttons -->
 													<td class="width200">
 														<!-- Bearbeiten-Schaltknopf -->

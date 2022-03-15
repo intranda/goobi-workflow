@@ -160,6 +160,21 @@
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}" />
                             </button>
                         </li>
+                        
+                        <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+                            <!-- show number of images --> 
+                            <button
+                                jsf:action="#{NavigationForm.Reload}"
+                                jsf:id="showNumberOfImages"
+                                class="dropdown-item">
+                                <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                                <h:outputText value="#{msgs.NumberOfImages}" />
+                                <x:updateActionListener
+                                    property="#{ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}"
+                                    value="#{not ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}" />
+                            </button>
+                        </li>
+                        
                     </ul>
                 </div>
                 </div>
