@@ -74,13 +74,15 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
         for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
             Step s = iterator.next();
             if (s.getTitel().equals(gsr.getParameters().get("steptitle"))) {
+                String oldStatusTitle = s.getBearbeitungsstatusEnum().getUntranslatedTitle();
                 s.setBearbeitungsstatusAsString(gsr.getParameters().get("status"));
                 try {
                     StepManager.saveStep(s);
-                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Changed status of step '" + s.getTitel() + "' to '"
-                            + s.getBearbeitungsstatusEnum().getUntranslatedTitle() + "' using GoobiScript.", username);
-                    log.info("Changed status of step '" + s.getTitel() + "' to '" + s.getBearbeitungsstatusEnum().getUntranslatedTitle()
-                            + "' using GoobiScript for process with ID " + p.getId());
+                    String newStatusTitle = s.getBearbeitungsstatusEnum().getUntranslatedTitle();
+                    String message = "Changed status of step '" + s.getTitel() + "' from' " + oldStatusTitle + " ' to '" + newStatusTitle
+                            + "' using GoobiScript";
+                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, message + ".", username);
+                    log.info(message + " for process with ID " + p.getId());
                     gsr.setResultMessage("Status of the step is set successfully.");
                     gsr.setResultType(GoobiScriptResultType.OK);
                 } catch (DAOException e) {
