@@ -51,6 +51,22 @@ public abstract class BackupFileManager {
     private static final int TIMESTAMP_LENGTH = BackupFileManager.TIMESTAMP_FORMAT.length();
 
     /**
+     * Creates a backup. The difference to the other method is that this one uses the same path for original files and backup files.
+     *
+     * @see #createBackup(String, String, String, int, boolean)
+     *
+     * @param path The path of the original file. This is also used for backups
+     * @param fileName The name of the original file (without directory)
+     * @param limit The maximum number of backup files before the oldest one gets deleted.
+     * @param createFrontendMessage Must be true to generate frontend help messages (Helper.setMeldung() or Helper.setFehlerMeldung())
+     * @return The name of the created backup file or null in case of an error
+     * @throws IOException if there was an error while reading the original file or writing backup files
+     */
+    public static String createBackup(String path, String fileName, int limit, boolean createFrontendMessage) throws IOException {
+        return BackupFileManager.createBackup(path, path, fileName, limit, createFrontendMessage);
+    }
+
+    /**
      * Creates a backup and tidies up the too old files (depending on the limit parameter). It returns the name of the backup file because it contains
      * a time stamp and is not reliably reproducible otherwise. It returns null if the limit is set to 0 because the file gets directly deleted and
      * throws an IOException if no file could be created due to other reasons.
@@ -118,7 +134,7 @@ public abstract class BackupFileManager {
         Path backupFile = Paths.get(backupPath + backupFileName);
 
         if (!StorageProvider.getInstance().isFileExists(existingFile)) {
-            //            log.error("File " + path + fileName + " does not exist. No backup created.");
+            // log.error("File " + path + fileName + " does not exist. No backup created.");
             return null;
         }
 
