@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -95,10 +96,9 @@ public class PageAreaManager {
         }
         for (DocStruct area : pageAreas) {
             String coordinates = MetadatenHelper.getSingleMetadataValue(area, "_COORDS").orElse(null);
-            DocStruct logDocStruct = Optional.ofNullable(area.getAllFromReferences())
-                    .flatMap(refs -> refs.stream().findFirst())
-                    .map(Reference::getSource)
-                    .orElse(null);
+           
+            List<DocStruct> referencedLogStructs = Optional.ofNullable(area.getAllFromReferences()).orElse(Collections.emptyList()).stream().map(Reference::getSource).collect(Collectors.toList());
+            DocStruct logDocStruct = referencedLogStructs.isEmpty() ? null : referencedLogStructs.get(referencedLogStructs.size()-1);
 
             JSONObject json = new JSONObject();
             String id = createPhysicalPageNumberForArea(area, page);
