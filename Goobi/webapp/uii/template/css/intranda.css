@@ -1079,12 +1079,10 @@ dropdown-menu>li>a {
     padding: 0px 0px 7px 0px;
 }
 
-.box-icon-fix-menu-up3 {
-    padding: 0px 5px 5px 0px;
-}
 
 .box-icon-fix-menu {
-    padding: 0px 7px 0px 0px;
+    padding: 0px 5px 5px 0px;
+    width: 15px;
 }
 
 .box-icon-fix-down {
