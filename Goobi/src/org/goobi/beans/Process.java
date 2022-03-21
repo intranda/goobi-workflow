@@ -583,7 +583,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrTxtDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     @Deprecated
@@ -593,27 +593,27 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrPdfDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrXmlDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getImportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getExportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException, InterruptedException, SwapException, DAOException {
@@ -2319,7 +2319,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
         }
 
-        if (this.isMediaFolderExists()) {
+        if (StorageProvider.getInstance().isFileExists(Paths.get(this.getImagesDirectory()))) {
             String folderMedia = this.getImagesTifDirectory(true);
             HashMap<String, String> mediaComments = helper.getComments(folderMedia);
 
@@ -2338,8 +2338,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             return new ArrayList<>();
         }
         List<String> filesInImages = StorageProvider.getInstance().list(this.getImagesDirectory());
-        return filesInImages
-                .stream()
+        return filesInImages.stream()
                 .filter(p -> p.endsWith(".xml"))
                 .map(p -> Paths.get(p).getFileName().toString().replace(".xml", ""))
                 .collect(Collectors.toList());
