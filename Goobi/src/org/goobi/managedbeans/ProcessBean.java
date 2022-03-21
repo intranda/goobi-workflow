@@ -2640,7 +2640,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 Helper.setFehlerMeldung("cannotStartPlugin");
             } else {
                 Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG,
-                        "plugin with title: " + mySchritt.getStepPlugin() + " was executed from Process details");
+                        "Plugin " + mySchritt.getStepPlugin() + " was executed from process details");
                 currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
                 if (currentPlugin != null) {
                     currentPlugin.initialize(mySchritt, "/process_edit");
