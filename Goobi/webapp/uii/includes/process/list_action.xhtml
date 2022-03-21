@@ -111,11 +111,11 @@
                                         </li>
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{LoginForm.hasAnyGoobiScriptRole and ProzessverwaltungForm.modusAnzeige=='aktuell' and ProzessverwaltungForm.paginator.totalResults > 0 }">
-                                    	<div jsf:id="goobiScriptMessages">
-                                        <h:messages for="goobiScriptfield" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
-                                        <h:messages for="goobiScriptPopup" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" styleClass="messages" />
-                                        </div>
                                         <li class="action-li">
+                                            <div jsf:id="goobiScriptMessages">
+                                            <h:messages for="goobiScriptfield" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
+                                            <h:messages for="goobiScriptPopup" escape="false" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" styleClass="messages" />
+                                            </div>
                                             <button jsf:id="expandbutton5" jsf:action="#{NavigationForm.Reload}" class="button-link blue">
                                                 <span class="btn btn-lightgrey margin-right-10 fa fa-cogs fa-lg width-40" />
                                                 <h:outputText value="#{msgs.goobiScriptAusfuehren}" />
