@@ -347,15 +347,16 @@ public class SessionForm implements Serializable {
             message.append("\n- session duration: " + sessionDuration + " seconds");
 
             boolean overTimeout = sessionDuration > userTimeout;
-            boolean loggedOut = userName.equals(LOGGED_OUT);
-            boolean notLoggedIn = userName.equals(NOT_LOGGED_IN);
+            // sessionDuration > 0 is needed to not remove the login screen while the user logs in
+            boolean loggedOut = userName.equals(LOGGED_OUT) || (userName.equals(NOT_LOGGED_IN) && sessionDuration > 0);
             boolean noAddress = session.getUserIpAddress() == null;
 
-            // sessionDuration > 0 is needed to not remove the login screen while the user logs in
-            if (overTimeout || loggedOut || (notLoggedIn && sessionDuration > 0) || noAddress) {
-                message.append("\nSession " + counter + " will be removed because it is too old or abandoned.");
-                log.debug(LoginBean.LOGIN_LOG_PREFIX + "Following user will be logged out because the session is too old:");
-                log.debug(LoginBean.LOGIN_LOG_PREFIX + "User name: " + session.getUserName());
+            if (overTimeout || loggedOut || noAddress) {
+                if (overTimeout) {
+                    log.debug(LoginBean.LOGIN_LOG_PREFIX + "Following user will be logged out because timeout is exceeded:");
+                    log.debug(LoginBean.LOGIN_LOG_PREFIX + "User name: " + session.getUserName());
+                }
+                message.append("\nSession " + counter + " will be removed because timeout is exceeded or session is abandoned.");
                 log.trace(message.toString());
                 this.sessions.remove(index);
                 index--;
