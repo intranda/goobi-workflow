@@ -2296,7 +2296,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
         }
 
-        if (this.isMediaFolderExists()) {
+        if (StorageProvider.getInstance().isFileExists(Paths.get(this.getImagesDirectory()))) {
             String folderMedia = this.getImagesTifDirectory(true);
             HashMap<String, String> mediaComments = helper.getComments(folderMedia);
 
@@ -2308,7 +2308,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
         }
 
-        System.out.println(lstComments);
         return lstComments;
     }
 
