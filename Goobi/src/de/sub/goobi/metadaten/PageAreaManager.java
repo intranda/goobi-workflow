@@ -97,9 +97,9 @@ public class PageAreaManager {
         for (DocStruct area : pageAreas) {
             String coordinates = MetadatenHelper.getSingleMetadataValue(area, "_COORDS").orElse(null);
            
-            List<DocStruct> referencedLogStructs = Optional.ofNullable(area.getAllFromReferences()).orElse(Collections.emptyList()).stream().map(Reference::getSource).collect(Collectors.toList());
+            List<DocStruct> referencedLogStructs = Optional.ofNullable(area.getAllFromReferences()).orElse(Collections.emptyList()).stream().map(Reference::getSource).collect(Collectors.toList()); 
             DocStruct logDocStruct = referencedLogStructs.isEmpty() ? null : referencedLogStructs.get(referencedLogStructs.size()-1);
-
+            
             JSONObject json = new JSONObject();
             String id = createPhysicalPageNumberForArea(area, page);
             area.setIdentifier(id);
@@ -178,7 +178,7 @@ public class PageAreaManager {
         logical.addReferenceTo(pageArea, "logical_physical");
     }
 
-    private String createPhysicalPageNumberForArea(DocStruct pageAreaStruct, DocStruct page) {
+    String createPhysicalPageNumberForArea(DocStruct pageAreaStruct, DocStruct page) {
             String physicalPageNumber = page.getAllMetadata()
                     .stream()
                     .filter(md -> md.getType().getName().equalsIgnoreCase("physPageNumber"))
