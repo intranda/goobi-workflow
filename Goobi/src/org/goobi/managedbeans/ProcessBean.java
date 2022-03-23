@@ -316,6 +316,8 @@ public class ProcessBean extends BasicBean implements Serializable {
     public ProcessBean() {
         this.anzeigeAnpassen = new HashMap<>();
 
+        anzeigeAnpassen.put("numberOfImages", false);
+
         this.sortierung = "titel";
         /*
          * Vorgangsdatum generell anzeigen?
@@ -692,6 +694,10 @@ public class ProcessBean extends BasicBean implements Serializable {
             answer = "institution.shortName";
         } else if (sortierung.equals("institutionDesc")) {
             answer = "institution.shortName desc";
+        } else if (sortierung.equals("numberOfImagesAsc")) {
+            answer = "prozesse.sortHelperImages";
+        } else if (sortierung.equals("numberOfImagesDesc")) {
+            answer = "prozesse.sortHelperImages desc";
         }
 
         return answer;
@@ -1486,7 +1492,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             StepManager.saveStep(step);
             String message = "Changed step order for step '" + step.getTitel() + "' to position " + step.getReihenfolge()
-                    + " in process details.";
+            + " in process details.";
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, message);
             // set list to null to reload list of steps in new order
             this.myProzess.setSchritte(null);
@@ -2634,7 +2640,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 Helper.setFehlerMeldung("cannotStartPlugin");
             } else {
                 Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG,
-                        "plugin with title: " + mySchritt.getStepPlugin() + " was executed from Process details");
+                        "Plugin " + mySchritt.getStepPlugin() + " was executed from process details");
                 currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
                 if (currentPlugin != null) {
                     currentPlugin.initialize(mySchritt, "/process_edit");

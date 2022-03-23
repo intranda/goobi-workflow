@@ -2765,7 +2765,7 @@ public class Metadaten implements Serializable {
         if (inStrukturelement.getDocstructType().equals("div")) {
             pageIdentifier = MetadatenErmitteln(inStrukturelement, "physPageNumber");
         } else {
-            pageIdentifier = MetadatenErmitteln(inStrukturelement, "physPageNumber") + "_" + physicalDocStructs.indexOf(inStrukturelement);
+            pageIdentifier = this.pageAreaManager.createPhysicalPageNumberForArea(inStrukturelement, inStrukturelement.getParent());
         }
         for (Metadata meineSeite : listMetadaten) {
             this.structSeitenNeu[inZaehler] = new MetadatumImpl(meineSeite, inZaehler, this.myPrefs, this.myProzess, this);
@@ -3491,7 +3491,11 @@ public class Metadaten implements Serializable {
             List<String> pageIdentifierList = pageMap.getKeyList().subList(startPage, endPage + 1);
 
             for (String pageIdentifier : pageIdentifierList) {
-                myDocStruct.addReferenceTo(pageMap.get(pageIdentifier).getDocStruct(), "logical_physical");
+                DocStruct page = pageMap.get(pageIdentifier).getDocStruct();
+                //only add physical docStructs of type "page"/"div" to logical docstruct. Ignore page areas
+                if("div".equalsIgnoreCase(page.getDocstructType())) {                    
+                    myDocStruct.addReferenceTo(page, "logical_physical");
+                }
             }
 
         } else {
@@ -3620,7 +3624,10 @@ public class Metadaten implements Serializable {
      */
     public String SeitenWeg() {
         for (String key : this.structSeitenAuswahl) {
-            this.myDocStruct.removeReferenceTo(pageMap.get(key).getDocStruct());
+            DocStruct ds = Optional.ofNullable(pageMap.get(key)).map(PhysicalObject::getDocStruct).orElse(null);
+            if(ds != null) {                
+                this.myDocStruct.removeReferenceTo(ds);
+            }
         }
         StructSeitenErmitteln(this.myDocStruct);
         MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
