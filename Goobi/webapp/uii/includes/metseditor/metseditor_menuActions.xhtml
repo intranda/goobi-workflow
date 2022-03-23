@@ -13,6 +13,19 @@
     <composite:interface />
 
     <composite:implementation>
+    	<script type="text/javascript">
+        	function switchExpanded(id){
+        		console.log("called by: "+id);
+				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				console.log(x)
+				if (x == "true"){
+					x = "false"
+				} else {
+					x = "true"
+				}
+				document.getElementById(id).setAttribute("aria-expanded", x);
+        	}
+        </script>
         <h:form id="meMenuActionsForm">
             <ul class="clean">
                 <!-- PAGE TITLE -->
@@ -139,10 +152,14 @@
                 <!-- CONFIGURATION -->
                 <li>
                     <button 
+                    	id="configDropdown"
                         type="button" 
                         class="btn btn--clean"
                         aria-label="#{msgs.mets_configuration}" 
-                        title="#{msgs.mets_configuration}" 
+                        title="#{msgs.mets_configuration}"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        onclick="switchExpanded(this.id)" 
                         data-show="submenu"
                         data-toggle="tooltip"
                         data-placement="bottom">
@@ -368,6 +385,9 @@
                         id="exit"
                         type="button" 
                         class="btn btn--clean"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        onclick="switchExpanded(this.id)"
                         aria-label="#{msgs.mets_leaveMetsEditor}" 
                         title="#{msgs.mets_leaveMetsEditor}" 
                         data-show="submenu"
@@ -400,7 +420,7 @@
                                 <f:passThroughAttribute name="data-placement" value="bottom" />
                             </h:commandLink>
                             <h:panelGroup rendered="#{Metadaten.checkForNewerTemporaryMetadataFiles}">
-                                <button type="button" title="#{msgs.goBack}" data-toggle="modal" data-target="#unsavedChanges">
+                                <button class="btn btn--clean" type="button" title="#{msgs.goBack}" data-toggle="modal" data-target="#unsavedChanges">
                                     <i class="fa fa-trash-o" aria-hidden="true"></i>
                                     #{msgs.goBack}
                                 </button>            

@@ -185,7 +185,7 @@ public class StepBean extends BasicBean implements Serializable {
     private IExportPlugin exportPlugin = null;
 
     @Getter
-    private Map<String, List<String>> displayableMetadataMap;
+    private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
 
     @Inject
     @Push
@@ -193,6 +193,7 @@ public class StepBean extends BasicBean implements Serializable {
 
     public StepBean() {
         this.anzeigeAnpassen = new HashMap<>();
+        anzeigeAnpassen.put("numberOfImages", false);
 
         /*
          * --------------------- Vorgangsdatum generell anzeigen? -------------------
@@ -312,6 +313,10 @@ public class StepBean extends BasicBean implements Serializable {
             answer = "institution.shortName";
         } else if (sortierung.equals("institutionDesc")) {
             answer = "institution.shortName desc";
+        } else if (sortierung.equals("numberOfImagesAsc")) {
+            answer = "prozesse.sortHelperImages";
+        } else if (sortierung.equals("numberOfImagesDesc")) {
+            answer = "prozesse.sortHelperImages desc";
         }
 
         return answer;
@@ -1191,7 +1196,8 @@ public class StepBean extends BasicBean implements Serializable {
             try {
                 dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, mySchritt.getStepPlugin());
             } catch (Exception e) {
-                logger.error("Can't load export plugin, use default plugin", e);
+                logger.error("Can't load export plugin, use default export", e);
+                Helper.setFehlerMeldung("Can't load export plugin, use default export");
                 dms = new ExportDms();
             }
         }

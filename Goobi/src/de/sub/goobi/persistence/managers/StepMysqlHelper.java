@@ -171,6 +171,26 @@ class StepMysqlHelper implements Serializable {
 
     };
 
+    public static ResultSetHandler<List<Step>> resultSetIdsToStepListHandler = new ResultSetHandler<List<Step>>() {
+
+        @Override
+        public List<Step> handle(ResultSet rs) throws SQLException {
+            List<Step> answer = new ArrayList<>();
+            try {
+                while (rs.next()) {
+                    Integer id = rs.getInt("schritteID");
+                    answer.add(getStepById(id));
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            return answer;
+        }
+
+    };
+
     private static void checkBatchStatus(List<Step> stepList) {
         List<StringPair> batchChecks = new ArrayList<>();
         for (Step step : stepList) {
@@ -1113,6 +1133,22 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
+    public static void removeUserFromAllSteps(User user) throws SQLException {
+        if (user.getId() != null) {
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                String sql = "DELETE FROM schritteberechtigtebenutzer WHERE BenutzerID = "+ user.getId();
+
+                new QueryRunner().update(connection, sql);
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+        }
+    }
+
     public static List<String> getScriptsForStep(int stepId) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -1283,6 +1319,16 @@ class StepMysqlHelper implements Serializable {
         try (Connection connection = MySQLHelper.getInstance().getConnection()) {
             QueryRunner run = new QueryRunner();
             return run.query(connection, sql.toString(), resultSetToStepListHandler, restartStepnames.toArray());
+        }
+    }
+
+    public static List<Step> getUserSchritte(User user) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM schritteberechtigtebenutzer WHERE BenutzerID=" + user.getId());
+
+        try (Connection connection = MySQLHelper.getInstance().getConnection()) {
+            QueryRunner run = new QueryRunner();
+            return run.query(connection, sql.toString(), resultSetIdsToStepListHandler);
         }
     }
 
