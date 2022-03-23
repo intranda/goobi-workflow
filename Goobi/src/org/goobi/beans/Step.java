@@ -1,8 +1,5 @@
 package org.goobi.beans;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -43,21 +40,14 @@ import org.goobi.api.mq.AutomaticThumbnailHandler;
 import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.yaml.snakeyaml.Yaml;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
@@ -85,7 +75,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private Integer bearbeitungsstatus;
     @Getter
     @Setter
-    private Date bearbeitungszeitpunkt;   
+    private Date bearbeitungszeitpunkt;
     @Getter
     @Setter
     private Date bearbeitungsbeginn;
@@ -317,31 +307,30 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     public String getBearbeitungsendeAsFormattedString() {
         return Helper.getDateAsFormattedString(this.bearbeitungsende);
     }
-    
+
     public JSONObject getAutoThumbnailSettingsJSON() {
-    	//new JSONObject("{'Master':true,'Media':true, 'Sizes':[800] }");
-    	Yaml yaml= new Yaml();
-    	@SuppressWarnings("unchecked")
-		Map<String,Object> map= (Map<String, Object>) yaml.load(this.automaticThumbnailSettingsYaml);
-    	return new JSONObject(map);
+        //new JSONObject("{'Master':true,'Media':true, 'Sizes':[800] }");
+        Yaml yaml= new Yaml();
+        @SuppressWarnings("unchecked")
+        Map<String,Object> map= (Map<String, Object>) yaml.load(this.automaticThumbnailSettingsYaml);
+        return new JSONObject(map);
     }
-    
+
     public void submitAutomaticThumbnailTicket() {
-    	try {
-	    	TaskTicket ticket = new TaskTicket(AutomaticThumbnailHandler.HANDLERNAME);
-			ticket.setStepId(this.id);
-			System.out.println(this.prozess);
-	        ticket.setProcessId(this.getProcessId());
-	        ticket.setStepName(this.titel);
-	        AutomaticThumbnailHandler handler = new AutomaticThumbnailHandler();
-			if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
-				handler.call(ticket);
-	        }else {
-	        	TicketGenerator.submitInternalTicket(ticket, QueueType.SLOW_QUEUE, this.titel, this.getProcessId());
-	        }
-    	}catch(Exception e) {
-    		e.printStackTrace();
-    	}
+        try {
+            TaskTicket ticket = new TaskTicket(AutomaticThumbnailHandler.HANDLERNAME);
+            ticket.setStepId(this.id);
+            ticket.setProcessId(this.getProcessId());
+            ticket.setStepName(this.titel);
+            if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
+                AutomaticThumbnailHandler handler = new AutomaticThumbnailHandler();
+                handler.call(ticket);
+            }else {
+                TicketGenerator.submitInternalTicket(ticket, QueueType.SLOW_QUEUE, this.titel, this.getProcessId());
+            }
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -510,10 +499,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
             case LOCKED:
                 bearbeitungsstatus = 1;
                 if(this.typAutomaticThumbnail) {
-                	System.out.println(this.titel);
-                	System.out.println(this.prozess);
-                	System.out.println(this.getProcessId());
-                	this.submitAutomaticThumbnailTicket();
+                    this.submitAutomaticThumbnailTicket();
                 }
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
                 break;
@@ -534,7 +520,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
             case INWORK:
                 bearbeitungsstatus = 1;
                 if(this.typAutomaticThumbnail) {
-                	this.submitAutomaticThumbnailTicket();
+                    this.submitAutomaticThumbnailTicket();
                 }
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
                 break;

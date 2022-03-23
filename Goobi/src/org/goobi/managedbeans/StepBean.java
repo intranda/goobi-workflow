@@ -49,10 +49,6 @@ import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.api.mail.SendMail;
-import org.goobi.api.mq.AutomaticThumbnailHandler;
-import org.goobi.api.mq.QueueType;
-import org.goobi.api.mq.TaskTicket;
-import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
@@ -73,7 +69,6 @@ import org.goobi.production.properties.AccessCondition;
 import org.goobi.production.properties.IProperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
-import org.json.JSONObject;
 import org.omnifaces.cdi.Push;
 import org.omnifaces.cdi.PushContext;
 
@@ -101,7 +96,6 @@ import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
-import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -393,13 +387,12 @@ public class StepBean extends BasicBean implements Serializable {
     }
 
     public String EditStep() throws SwapException, DAOException, IOException, InterruptedException {
-    	try {	
-    		mySchritt = StepManager.getStepById(mySchritt.getId());
-    		mySchritt.lazyLoad();
-    	} catch(Exception e) {
-    		System.out.println(e.getStackTrace());
-    	}
-        
+        try {
+            mySchritt = StepManager.getStepById(mySchritt.getId());
+            mySchritt.lazyLoad();
+        } catch(Exception e) {
+        }
+
         return "task_edit";
     }
 
@@ -1069,9 +1062,9 @@ public class StepBean extends BasicBean implements Serializable {
         loadDisplayableMetadata();
         if (this.mySchritt.getStepPlugin() != null && !this.mySchritt.getStepPlugin().isEmpty()) {
             myPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, this.mySchritt.getStepPlugin());
-//            if(mySchritt.isTypAutomaticThumbnail()) {
-//            	mySchritt.submitAutomaticThumbnailTicket();
-//            }
+            //            if(mySchritt.isTypAutomaticThumbnail()) {
+            //            	mySchritt.submitAutomaticThumbnailTicket();
+            //            }
             if (myPlugin == null) {
                 exportPlugin = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, this.mySchritt.getStepPlugin());
             }
