@@ -663,6 +663,22 @@
                                             value="tooltip" />
                                         <span class="btn fa fa-cog margin-right-5"></span>
                                     </button>
+
+
+                                    <button
+                                        jsf:id="exportProcess"
+                                        title="#{msgs.exportDMS}"
+                                        aria-label="#{msgs.exportDMS}"
+                                        jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.typExportDMS}"
+                                        jsf:action="#{ProzessverwaltungForm.ExportDMS(item.id)}"
+                                        onclick="preventDoubleSubmit(this);"
+                                        class="button-link blue">
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <span class="btn fa fa-globe margin-right-5"></span>
+                                    </button>
+
                                 </h:column>
 
                             </x:dataTable>
