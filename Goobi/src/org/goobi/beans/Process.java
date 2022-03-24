@@ -1,14 +1,5 @@
 package org.goobi.beans;
 
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileOutputStream;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -38,12 +29,9 @@ import java.io.FileOutputStream;
  */
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.net.URI;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -64,14 +52,12 @@ import java.util.stream.Collectors;
 
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
-import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -90,7 +76,6 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.GoobiScript;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.StorageProvider;
@@ -115,16 +100,6 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
-import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
-import de.unigoettingen.sub.commons.contentlib.exceptions.IllegalRequestException;
-import de.unigoettingen.sub.commons.contentlib.exceptions.ServiceNotImplementedException;
-import de.unigoettingen.sub.commons.contentlib.imagelib.ImageFileFormat;
-import de.unigoettingen.sub.commons.contentlib.imagelib.ImageType.Colortype;
-import de.unigoettingen.sub.commons.contentlib.imagelib.transform.RegionRequest;
-import de.unigoettingen.sub.commons.contentlib.imagelib.transform.Rotation;
-import de.unigoettingen.sub.commons.contentlib.imagelib.transform.Scale;
-import de.unigoettingen.sub.commons.contentlib.servlet.controller.GetImageAction;
-import de.unigoettingen.sub.commons.contentlib.servlet.model.ImageRequest;
 import io.goobi.workflow.xslt.XsltPreparatorDocket;
 import io.goobi.workflow.xslt.XsltPreparatorMetadata;
 import io.goobi.workflow.xslt.XsltToPdf;
@@ -2319,7 +2294,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
         }
 
-        if (this.isMediaFolderExists()) {
+        if (StorageProvider.getInstance().isFileExists(Paths.get(this.getImagesDirectory()))) {
             String folderMedia = this.getImagesTifDirectory(true);
             HashMap<String, String> mediaComments = helper.getComments(folderMedia);
 
@@ -2330,6 +2305,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 }
             }
         }
+
         return lstComments;
     }
 
@@ -2338,8 +2314,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             return new ArrayList<>();
         }
         List<String> filesInImages = StorageProvider.getInstance().list(this.getImagesDirectory());
-        return filesInImages
-                .stream()
+        return filesInImages.stream()
                 .filter(p -> p.endsWith(".xml"))
                 .map(p -> Paths.get(p).getFileName().toString().replace(".xml", ""))
                 .collect(Collectors.toList());
