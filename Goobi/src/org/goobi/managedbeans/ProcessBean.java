@@ -330,7 +330,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             this.anzeigeAnpassen.put("processId", login.getMyBenutzer().isDisplayIdColumn());
             this.anzeigeAnpassen.put("batchId", login.getMyBenutzer().isDisplayBatchColumn());
             this.anzeigeAnpassen.put("processDate", login.getMyBenutzer().isDisplayProcessDateColumn());
-
+            this.anzeigeAnpassen.put("processRuleset", login.getMyBenutzer().isDisplayRulesetColumn());
             this.anzeigeAnpassen.put("thumbnail", login.getMyBenutzer().isDisplayThumbColumn());
             this.anzeigeAnpassen.put("metadatadetails", login.getMyBenutzer().isDisplayMetadataColumn());
             this.anzeigeAnpassen.put("gridview", login.getMyBenutzer().isDisplayGridView());
@@ -356,6 +356,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             this.anzeigeAnpassen.put("batchId", false);
             this.anzeigeAnpassen.put("processDate", false);
             anzeigeAnpassen.put("institution", false);
+            this.anzeigeAnpassen.put("processRuleset",false);
         }
         DONEDIRECTORYNAME = ConfigurationHelper.getInstance().getDoneDirectoryName();
 

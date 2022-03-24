@@ -273,6 +273,15 @@ div#gndModalContent.modal-content, div#viafModalContent.modal-content {
 	border: 2px solid #1F79CC;
 }
 
+.modal .modal-dialog .modal-content {
+    border: 2px solid #1F79CC;
+}
+
+.modal .modal-dialog .modal-content .modal-header {
+    color: #fff;
+    background-color: #1F79CC;
+}
+
 /*++++++++++++++++++++++++++++ BACKGROUND ++++++++++++++++++++++ */
 
 html body.login {

@@ -37,9 +37,6 @@
                                     escape="false" />
                             </span>
                         </button>
-
-
-
                         </div>
                         <div class="modal-body">
                             <h:outputText value="#{msgs.metseditorSaveExplanation}" />
@@ -51,7 +48,8 @@
                                 class="btn btn--red"
                                 jsf:action="#{Metadaten.discard}" 
                                 title="#{msgs.discard}">
-                                <i class="fa fa-trash-o" aria-hidden="true" style="margin-right: 5px"></i>
+                                <i class="fa fa-trash-o" style="margin-right: 5px" aria-hidden="true"></i>
+
                                 <h:outputText value="#{msgs.discard}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                             </button>
@@ -62,7 +60,8 @@
                                 jsf:action="#{Metadaten.XMLschreiben}"
                                 onclick="goobiWorkflowJS.progress.displayProgressBar()" 
                                 title="#{msgs.overwrite}">
-                                <i class="fa fa-floppy-o" aria-hidden="true" style="margin-right: 5px"></i>
+                                <i class="fa fa-floppy-o" style="margin-right: 5px" aria-hidden="true"></i>
+
                                 <h:outputText value="#{msgs.overwrite}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                             </button>

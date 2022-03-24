@@ -167,6 +167,9 @@ public class User implements DatabaseObject {
     @Getter
     @Setter
     private boolean displayGridView = false;
+    @Getter
+    @Setter
+    private boolean displayRulesetColumn = false;
 
     @Getter
     @Setter

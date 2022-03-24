@@ -140,7 +140,6 @@ public class DatabaseVersion {
                     }
                     updateToVersion9();
                     tempVersion ++;
-
                 case 9:
                     if (logger.isTraceEnabled()) {
                         logger.trace("Update database to version 10.");
@@ -207,7 +206,6 @@ public class DatabaseVersion {
                     }
                     updateToVersion20();
                     tempVersion ++;
-
                 case 20:
                     if (logger.isTraceEnabled()) {
                         logger.trace("Update database to version 21.");
@@ -220,7 +218,6 @@ public class DatabaseVersion {
                     }
                     updateToVersion22();
                     tempVersion ++;
-
                 case 22:
                     if (logger.isTraceEnabled()) {
                         logger.trace("Update database to version 23.");
@@ -233,7 +230,6 @@ public class DatabaseVersion {
                     }
                     updateToVersion24();
                     tempVersion ++;
-
                 case 24:
                     if (!checkIfColumnExists("benutzer", "customCss")) {
                         runSql("alter table benutzer add column customCss text DEFAULT null");
@@ -314,7 +310,6 @@ public class DatabaseVersion {
                     }
                     updateToVersion38();
                     tempVersion ++;
-
                 case 38:
                     if (logger.isTraceEnabled()) {
                         logger.trace("Update database to version 39.");
@@ -359,18 +354,17 @@ public class DatabaseVersion {
                     tempVersion ++;
                 case 45:
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 45.");
+                        logger.trace("Update database to version 46.");
                     }
                     updateToVersion46();
                     tempVersion ++;
                 case 46:
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 46.");
+                        logger.trace("Update database to version 47.");
                     }
                     updateToVersion47();
                     tempVersion ++;
                 default:
-
                     // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
                     if (logger.isTraceEnabled()) {
