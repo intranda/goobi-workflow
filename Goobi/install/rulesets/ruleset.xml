@@ -3257,16 +3257,8 @@
     <allowedchildtype>audio</allowedchildtype>
     <allowedchildtype>video</allowedchildtype>
     <allowedchildtype>object</allowedchildtype>
-    <metadata num="1o">PhysicalLocation</metadata>
-    <metadata num="1o">datedigit</metadata>
-    <metadata num="1o">shelfmarksource</metadata>
-    <metadata num="1o">mediumsource</metadata>
-    <metadata num="1o">FormatSourcePrint</metadata>
     <metadata num="*">_ucc_id</metadata>
-    <metadata num="1o">shelfmarkarchiveimageset</metadata>
     <metadata num="1o">pathimagefiles</metadata>
-    <metadata num="1o">imagedescr</metadata>
-    <metadata num="1o">copyrightimageset</metadata>
     <metadata num="1o">_urn</metadata>
     <metadata num="1o">_representative</metadata>
   </DocStrctType>

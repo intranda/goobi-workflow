@@ -22,7 +22,7 @@ import org.apache.commons.io.input.BOMInputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -96,7 +96,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
     private String importType = "merge";
 
     private List<Definition> removedDefinitions = null;
-
+    private DataFormatter dataFormatter = new DataFormatter();
+    
     /**
      * Constructor for class
      */
@@ -269,6 +270,13 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public void saveRecordEdition() {
         currentVocabRecord.setValid(true);
         for (Field field : currentVocabRecord.getFields()) {
+
+            // If the field is a text field, the value is trimmed to avoid leading or trailing whitespaces
+            String type = field.getDefinition().getType();
+            if (type.equals("input") || type.equals("textarea") || type.equals("html")) {
+                field.setValue(field.getValue().trim());
+            }
+
             field.setValidationMessage(null);
             if (field.getDefinition().isRequired()) {
                 if (StringUtils.isBlank(field.getValue())) {
@@ -325,8 +333,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
         int columnCounter = 0;
         for (Definition definition : definitionList) {
             headerRow.createCell(columnCounter)
-            .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
-                    : definition.getLabel());
+                    .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
+                            : definition.getLabel());
             columnCounter = columnCounter + 1;
         }
 
@@ -386,10 +394,11 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     private void loadUploadedFile() {
         InputStream file = null;
+        
 
         if (importFile.getFileName().toString().endsWith(".json")) {
 
-            List<VocabRecord> records =   ImportJsonVocabulary.convertJsonVocabulary(currentVocabulary, importFile);
+            List<VocabRecord> records = ImportJsonVocabulary.convertJsonVocabulary(currentVocabulary, importFile);
             VocabularyManager.saveVocabulary(currentVocabulary);
             VocabularyManager.insertNewRecords(records, currentVocabulary.getId());
 
@@ -399,6 +408,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
             try {
                 file = new FileInputStream(importFile.toFile());
+                log.debug("Importing file {}", importFile.toString());
                 BOMInputStream in = new BOMInputStream(file, false);
                 Workbook wb = WorkbookFactory.create(in);
                 Sheet sheet = wb.getSheetAt(0);
@@ -406,19 +416,23 @@ public class VocabularyBean extends BasicBean implements Serializable {
                 Row headerRow = rowIterator.next();
                 int numberOfCells = headerRow.getLastCellNum();
                 headerOrder = new ArrayList<>(numberOfCells);
+                log.debug("Found {} cell(s)", numberOfCells);
+
                 rowsToImport = new LinkedList<>();
                 for (int i = 0; i < numberOfCells; i++) {
                     Cell cell = headerRow.getCell(i);
                     if (cell != null) {
-                        String value = cell.getStringCellValue();
+                        String value = dataFormatter.formatCellValue(cell).trim();
+                        //String value = cell.getStringCellValue();
                         headerOrder.add(new MatchingField(value, i, CellReference.convertNumToColString(i), this));
                     }
                 }
+                log.debug("read header");
                 while (rowIterator.hasNext()) {
                     Row row = rowIterator.next();
                     rowsToImport.add(row);
                 }
-
+                log.debug("Found {} rows to import", rowsToImport.size());
                 for (MatchingField mf : headerOrder) {
                     String excelTitle = mf.getColumnHeader();
                     if (excelTitle.matches(".*\\(.{3}\\)")) {
@@ -539,6 +553,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
             currentVocabulary.setRecords(new ArrayList<>());
         }
         if (importType.equals("remove") || importType.equals("add")) {
+
             for (Row row : rowsToImport) {
                 VocabRecord record = new VocabRecord();
                 List<Field> fieldList = new ArrayList<>();
@@ -553,11 +568,14 @@ public class VocabularyBean extends BasicBean implements Serializable {
                     }
                 }
                 if (!fieldList.isEmpty()) {
+
+                    log.debug("Created record");
                     addFieldToRecord(record, fieldList);
                 }
 
             }
             VocabularyManager.insertNewRecords(currentVocabulary.getRecords(), currentVocabulary.getId());
+            log.debug("Stored {} new records", currentVocabulary.getRecords().size());
         }
 
         if (importType.equals("merge")) {
@@ -584,6 +602,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
                         }
                     }
                     if (recordToUpdate != null) {
+                        log.debug("merged row with existing record");
                         updateRecords.add(recordToUpdate);
                         // update existing record
                         for (MatchingField mf : headerOrder) {
@@ -606,6 +625,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
                         continue;
                     } else {
                         // create new record
+                        log.debug("create new record.");
                         VocabRecord record = new VocabRecord();
                         List<Field> fieldList = new ArrayList<>();
                         for (MatchingField mf : headerOrder) {
@@ -627,9 +647,11 @@ public class VocabularyBean extends BasicBean implements Serializable {
                 }
             }
             if (!newRecords.isEmpty()) {
+                log.debug("Created {} new record(s)", newRecords.size());
                 VocabularyManager.insertNewRecords(newRecords, currentVocabulary.getId());
             }
             if (!updateRecords.isEmpty()) {
+                log.debug("Updated {} record(s)", updateRecords.size());
                 VocabularyManager.batchUpdateRecords(updateRecords, currentVocabulary.getId());
             }
         }
@@ -667,19 +689,16 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @return
      */
     public Boolean useAuthorityServer() {
-
         return VocabularyUploader.isActive();
     }
 
     /**
      * returns the value of the current cell as string
      */
-    @SuppressWarnings("deprecation")
     private String getCellValue(Cell cell) {
         String value = "";
         if (cell != null) {
-            cell.setCellType(CellType.STRING);
-            value = cell.getStringCellValue();
+            value = dataFormatter.formatCellValue(cell).trim();
         }
         return value;
     }
