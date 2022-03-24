@@ -86,296 +86,296 @@ public class DatabaseVersion {
     }
 
     public static void updateDatabase(int currentVersion) {
-    	int tempVersion = currentVersion;
-    	try {
-	        switch (currentVersion) {
-	            case 0:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 1.");
-	                }
-	                updateToVersion1();
-	                currentVersion = 1;
-	                tempVersion = 1;
-	            case 1:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 2.");
-	                }
-	                updateToVersion2();
-	                tempVersion ++;
-	            case 2:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 3.");
-	                }
-	                updateToVersion3();
-	                tempVersion ++;
-	            case 3:
-	            	tempVersion ++;
-	            case 4:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 5.");
-	                }
-	                updateToVersion5();
-	                tempVersion ++;
-	            case 5:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 6.");
-	                }
-	                updateToVersion6();
-	                tempVersion ++;
-	            case 6:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 7.");
-	                }
-	                updateToVersion7();
-	                tempVersion ++;
-	            case 7:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 8.");
-	                }
-	                updateToVersion8();
-	                tempVersion ++;
-	            case 8:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 9.");
-	                }
-	                updateToVersion9();
-	                tempVersion ++;
-	
-	            case 9:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 10.");
-	                }
-	                updateToVersion10();
-	                tempVersion ++;
-	            case 10:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 11.");
-	                }
-	                updateToVersion11();
-	                tempVersion ++;
-	            case 11:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 12.");
-	                }
-	                updateToVersion12();
-	                tempVersion ++;
-	            case 12:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 13.");
-	                }
-	                updateToVersion13();
-	                tempVersion ++;
-	            case 13:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 14.");
-	                }
-	                updateToVersion14();
-	                tempVersion ++;
-	            case 14:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 15.");
-	                }
-	                updateToVersion15();
-	                tempVersion ++;
-	            case 15:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 16.");
-	                }
-	                updateToVersion16();
-					tempVersion ++;
-	            case 16:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 17.");
-	                }
-	                updateToVersion17();
-					tempVersion ++;
-	            case 17:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 18.");
-	                }
-	                updateToVersion18();
-					tempVersion ++;
-	            case 18:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 19.");
-	                }
-	                updateToVersion19();
-					tempVersion ++;
-	            case 19:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 20.");
-	                }
-	                updateToVersion20();
-					tempVersion ++;
-	
-	            case 20:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 21.");
-	                }
-	                updateToVersion21();
-					tempVersion ++;
-	            case 21:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 22.");
-	                }
-	                updateToVersion22();
-					tempVersion ++;
-	
-	            case 22:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 23.");
-	                }
-	                updateToVersion23();
-					tempVersion ++;
-	            case 23:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 24.");
-	                }
-	                updateToVersion24();
-					tempVersion ++;
-	
-	            case 24:
-	                if (!checkIfColumnExists("benutzer", "customCss")) {
-	                    runSql("alter table benutzer add column customCss text DEFAULT null");
-	                }
-	            case 25:
-	                if (!checkIfColumnExists("prozesse", "mediaFolderExists")) {
-	                    runSql("alter table prozesse add column mediaFolderExists boolean default false;");
-	                }
-	            case 26:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 27.");
-	                }
-	                updateToVersion27();
-					tempVersion ++;
-	            case 27:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 28.");
-	                }
-	                updateToVersion28();
-					tempVersion ++;
-	            case 28:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 29.");
-	                }
-	                updateToVersion29();
-					tempVersion ++;
-	            case 29:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 30.");
-	                }
-	                updateToVersion30();
-					tempVersion ++;
-	            case 30:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 31.");
-	                }
-	                updateToVersion31();
-					tempVersion ++;
-	            case 31:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 32.");
-	                }
-	                updateToVersion32();
-					tempVersion ++;
-	            case 32:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 33.");
-	                }
-	                updateToVersion33();
-					tempVersion ++;
-	            case 33:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 34.");
-	                }
-	                updateToVersion34();
-					tempVersion ++;
-	            case 34:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 35.");
-	                }
-	                updateToVersion35();
-					tempVersion ++;
-	            case 35:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 36.");
-	                }
-	                updateToVersion36();
-					tempVersion ++;
-	            case 36:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 37.");
-	                }
-	                updateToVersion37();
-					tempVersion ++;
-	            case 37:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 38.");
-	                }
-	                updateToVersion38();
-					tempVersion ++;
-	
-	            case 38:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 39.");
-	                }
-	                updateToVersion39();
-					tempVersion ++;
-	            case 39:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 40.");
-	                }
-	                updateToVersion40();
-					tempVersion ++;
-	            case 40:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 41.");
-	                }
-	                updateToVersion41();
-					tempVersion ++;
-	            case 41:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 42.");
-	                }
-	                updateToVersion42();
-					tempVersion ++;
-	            case 42:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 43.");
-	                }
-	                updateToVersion43();
-					tempVersion ++;
-	            case 43:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 44.");
-	                }
-	                updateToVersion44();
-					tempVersion ++;
-	            case 44:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 45.");
-	                }
-	                updateToVersion45();
-					tempVersion ++;
-	            case 45:
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Update database to version 45.");
-	                }
-	                updateToVersion46();
-					tempVersion ++;
-	            default:
-	
-	                // this has to be the last case
-	                updateDatabaseVersion(currentVersion, tempVersion);
-	                if (logger.isTraceEnabled()) {
-	                    logger.trace("Database is up to date.");
-	                }
-	        }
-    	}catch(Exception e) {
-    		logger.error(e);
-    		logger.warn("An Error occured trying to update Database to version "+(tempVersion+1));
-    		updateDatabaseVersion(currentVersion, tempVersion);
-    	}
+        int tempVersion = currentVersion;
+        try {
+            switch (currentVersion) {
+                case 0:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 1.");
+                    }
+                    updateToVersion1();
+                    currentVersion = 1;
+                    tempVersion = 1;
+                case 1:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 2.");
+                    }
+                    updateToVersion2();
+                    tempVersion ++;
+                case 2:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 3.");
+                    }
+                    updateToVersion3();
+                    tempVersion ++;
+                case 3:
+                    tempVersion ++;
+                case 4:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 5.");
+                    }
+                    updateToVersion5();
+                    tempVersion ++;
+                case 5:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 6.");
+                    }
+                    updateToVersion6();
+                    tempVersion ++;
+                case 6:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 7.");
+                    }
+                    updateToVersion7();
+                    tempVersion ++;
+                case 7:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 8.");
+                    }
+                    updateToVersion8();
+                    tempVersion ++;
+                case 8:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 9.");
+                    }
+                    updateToVersion9();
+                    tempVersion ++;
+    
+                case 9:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 10.");
+                    }
+                    updateToVersion10();
+                    tempVersion ++;
+                case 10:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 11.");
+                    }
+                    updateToVersion11();
+                    tempVersion ++;
+                case 11:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 12.");
+                    }
+                    updateToVersion12();
+                    tempVersion ++;
+                case 12:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 13.");
+                    }
+                    updateToVersion13();
+                    tempVersion ++;
+                case 13:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 14.");
+                    }
+                    updateToVersion14();
+                    tempVersion ++;
+                case 14:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 15.");
+                    }
+                    updateToVersion15();
+                    tempVersion ++;
+                case 15:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 16.");
+                    }
+                    updateToVersion16();
+                    tempVersion ++;
+                case 16:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 17.");
+                    }
+                    updateToVersion17();
+                    tempVersion ++;
+                case 17:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 18.");
+                    }
+                    updateToVersion18();
+                    tempVersion ++;
+                case 18:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 19.");
+                    }
+                    updateToVersion19();
+                    tempVersion ++;
+                case 19:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 20.");
+                    }
+                    updateToVersion20();
+                    tempVersion ++;
+    
+                case 20:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 21.");
+                    }
+                    updateToVersion21();
+                    tempVersion ++;
+                case 21:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 22.");
+                    }
+                    updateToVersion22();
+                    tempVersion ++;
+    
+                case 22:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 23.");
+                    }
+                    updateToVersion23();
+                    tempVersion ++;
+                case 23:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 24.");
+                    }
+                    updateToVersion24();
+                    tempVersion ++;
+    
+                case 24:
+                    if (!checkIfColumnExists("benutzer", "customCss")) {
+                        runSql("alter table benutzer add column customCss text DEFAULT null");
+                    }
+                case 25:
+                    if (!checkIfColumnExists("prozesse", "mediaFolderExists")) {
+                        runSql("alter table prozesse add column mediaFolderExists boolean default false;");
+                    }
+                case 26:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 27.");
+                    }
+                    updateToVersion27();
+                    tempVersion ++;
+                case 27:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 28.");
+                    }
+                    updateToVersion28();
+                    tempVersion ++;
+                case 28:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 29.");
+                    }
+                    updateToVersion29();
+                    tempVersion ++;
+                case 29:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 30.");
+                    }
+                    updateToVersion30();
+                    tempVersion ++;
+                case 30:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 31.");
+                    }
+                    updateToVersion31();
+                    tempVersion ++;
+                case 31:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 32.");
+                    }
+                    updateToVersion32();
+                    tempVersion ++;
+                case 32:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 33.");
+                    }
+                    updateToVersion33();
+                    tempVersion ++;
+                case 33:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 34.");
+                    }
+                    updateToVersion34();
+                    tempVersion ++;
+                case 34:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 35.");
+                    }
+                    updateToVersion35();
+                    tempVersion ++;
+                case 35:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 36.");
+                    }
+                    updateToVersion36();
+                    tempVersion ++;
+                case 36:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 37.");
+                    }
+                    updateToVersion37();
+                    tempVersion ++;
+                case 37:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 38.");
+                    }
+                    updateToVersion38();
+                    tempVersion ++;
+    
+                case 38:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 39.");
+                    }
+                    updateToVersion39();
+                    tempVersion ++;
+                case 39:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 40.");
+                    }
+                    updateToVersion40();
+                    tempVersion ++;
+                case 40:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 41.");
+                    }
+                    updateToVersion41();
+                    tempVersion ++;
+                case 41:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 42.");
+                    }
+                    updateToVersion42();
+                    tempVersion ++;
+                case 42:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 43.");
+                    }
+                    updateToVersion43();
+                    tempVersion ++;
+                case 43:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 44.");
+                    }
+                    updateToVersion44();
+                    tempVersion ++;
+                case 44:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 45.");
+                    }
+                    updateToVersion45();
+                    tempVersion ++;
+                case 45:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 45.");
+                    }
+                    updateToVersion46();
+                    tempVersion ++;
+                default:
+    
+                    // this has to be the last case
+                    updateDatabaseVersion(currentVersion, tempVersion);
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Database is up to date.");
+                    }
+            }
+        }catch(Exception e) {
+            logger.error(e);
+            logger.warn("An Error occured trying to update Database to version "+(tempVersion+1));
+            updateDatabaseVersion(currentVersion, tempVersion);
+        }
     }
 
     private static void updateToVersion46() throws SQLException {
@@ -2055,11 +2055,11 @@ public class DatabaseVersion {
         sb.append(columns);
         sb.append(");");
         try {
-			runSql(sb.toString());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			logger.error(e);
-		}
+            runSql(sb.toString());
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            logger.error(e);
+        }
     }
 
 }
