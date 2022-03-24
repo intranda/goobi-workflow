@@ -36,9 +36,9 @@
     <ui:define name="metseditorContent">
         <h:panelGroup id="logoutContainer">
             <h:panelGroup
+                layout="block"
                 rendered="#{SessionForm.logoutMessage != ''}"
-                styleClass="alert alert-danger"
-                style="display: block;">
+                styleClass="alert alert-danger">
                 <i class="fa fa-exclamation-triangle" />
                 <h:outputText value="#{SessionForm.logoutMessage}" />
             </h:panelGroup>
