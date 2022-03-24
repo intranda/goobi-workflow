@@ -621,7 +621,7 @@
                                         jsf:id="runPlugin"
                                         title="#{msgs.executePlugin}"
                                         aria-label="#{msgs.executePlugin}"
-                                        jsf:rendered="#{item.stepPlugin != '' and item.stepPlugin != null}"
+                                        jsf:rendered="#{item.stepPlugin != '' and item.stepPlugin != null  and !item.typExportDMS}"
                                         jsf:action="#{ProzessverwaltungForm.startPlugin}"
                                         onclick="preventDoubleSubmit(this);"
                                         class="button-link blue">
@@ -670,12 +670,16 @@
                                         title="#{msgs.exportDMS}"
                                         aria-label="#{msgs.exportDMS}"
                                         jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.typExportDMS}"
-                                        jsf:action="#{ProzessverwaltungForm.ExportDMS(item.id)}"
+                                        jsf:action="#{ProzessverwaltungForm.exportStep}"
                                         onclick="preventDoubleSubmit(this);"
                                         class="button-link blue">
                                         <f:passThroughAttribute
                                             name="data-toggle"
                                             value="tooltip" />
+                                        <x:updateActionListener
+                                            property="#{ProzessverwaltungForm.mySchritt}"
+                                            value="#{item}" />
+                                            
                                         <span class="btn fa fa-globe margin-right-5"></span>
                                     </button>
 

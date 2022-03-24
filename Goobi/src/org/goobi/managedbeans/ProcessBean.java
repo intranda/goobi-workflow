@@ -1090,10 +1090,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
     }
 
-    public void ExportDMS(int id) {
-        Step step = StepManager.getStepById(id);
-        String pluginName = step.getStepPlugin();
-        ProcessBean.executeExportPlugin(pluginName, this.myProzess);
+    public void exportStep() {
+        ProcessBean.executeExportPlugin(mySchritt.getStepPlugin(), this.myProzess);
     }
 
     private static void executeExportPlugin(String pluginName, Process process) {
@@ -1502,7 +1500,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             StepManager.saveStep(step);
             String message = "Changed step order for step '" + step.getTitel() + "' to position " + step.getReihenfolge()
-                    + " in process details.";
+            + " in process details.";
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, message);
             // set list to null to reload list of steps in new order
             this.myProzess.setSchritte(null);
