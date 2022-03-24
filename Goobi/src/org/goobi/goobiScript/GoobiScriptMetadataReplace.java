@@ -12,6 +12,7 @@ import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
@@ -140,13 +141,22 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
                 replace = "";
             }
 
+            
+            // get the content to be set and pipe it through the variable replacer
+            VariableReplacer replacer = new VariableReplacer(ff.getDigitalDocument(), p.getRegelsatz().getPreferences(), p, null);
+            String field = parameters.get("field");
+            String search = parameters.get("search");
+            field = replacer.replace(field);
+            search = replacer.replace(search);
+            replace = replacer.replace(replace);
+            
             // now change the searched metadata and save the file
-            replaceMetadata(dsList, parameters.get("field"), parameters.get("search"), replace, p.getRegelsatz().getPreferences(),
+            replaceMetadata(dsList, field, search, replace, p.getRegelsatz().getPreferences(),
                     searchFieldIsRegularExpression);
             p.writeMetadataFile(ff);
             Thread.sleep(2000);
             Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
-                    "Metadata changed using GoobiScript: " + parameters.get("field") + " - " + parameters.get("value"), username);
+                    "Metadata changed using GoobiScript: " + parameters.get("field") + " - " + parameters.get("search") + " - " + parameters.get("replace"), username);
             log.info("Metadata changed using GoobiScript for process with ID " + p.getId());
             gsr.setResultMessage("Metadata changed successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);

@@ -171,6 +171,26 @@ class StepMysqlHelper implements Serializable {
 
     };
 
+    public static ResultSetHandler<List<Step>> resultSetIdsToStepListHandler = new ResultSetHandler<List<Step>>() {
+
+        @Override
+        public List<Step> handle(ResultSet rs) throws SQLException {
+            List<Step> answer = new ArrayList<>();
+            try {
+                while (rs.next()) {
+                    Integer id = rs.getInt("schritteID");
+                    answer.add(getStepById(id));
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            return answer;
+        }
+
+    };
+
     private static void checkBatchStatus(List<Step> stepList) {
         List<StringPair> batchChecks = new ArrayList<>();
         for (Step step : stepList) {
@@ -275,6 +295,8 @@ class StepMysqlHelper implements Serializable {
         s.setHomeverzeichnisNutzen(rs.getShort("homeverzeichnisNutzen"));
         s.setTypMetadaten(rs.getBoolean("typMetadaten"));
         s.setTypAutomatisch(rs.getBoolean("typAutomatisch"));
+        s.setTypAutomaticThumbnail(rs.getBoolean("typAutomaticThumbnail"));
+        s.setAutomaticThumbnailSettingsYaml(rs.getString("automaticThumbnailSettingsYaml"));
         s.setTypImportFileUpload(rs.getBoolean("typImportFileUpload"));
         s.setTypExportRus(rs.getBoolean("typExportRus"));
         s.setTypImagesLesen(rs.getBoolean("typImagesLesen"));
@@ -615,6 +637,8 @@ class StepMysqlHelper implements Serializable {
                                             o.getHomeverzeichnisNutzen(), // homeverzeichnisNutzen
                                             o.isTypMetadaten(), // typMetadaten
                                             o.isTypAutomatisch(), // typAutomatisch
+                                            o.isTypAutomaticThumbnail(), // typAutomaticThumbnail
+                                            o.getAutomaticThumbnailSettingsYaml(), //automaticThumbnailSettingsYaml
                                             o.isTypImportFileUpload(), // typImportFileUpload
                                             o.isTypExportRus(), //typExportRus
                                             o.isTypImagesLesen(), //typImagesLesen
@@ -660,6 +684,8 @@ class StepMysqlHelper implements Serializable {
                                             o.getHomeverzeichnisNutzen(), // homeverzeichnisNutzen
                                             o.isTypMetadaten(), // typMetadaten
                                             o.isTypAutomatisch(), // typAutomatisch
+                                            o.isTypAutomaticThumbnail(), // typAutomaticThumbnail
+                                            o.getAutomaticThumbnailSettingsYaml(), //automaticThumbnailSettingsYaml
                                             o.isTypImportFileUpload(), // typImportFileUpload
                                             o.isTypExportRus(), //typExportRus
                                             o.isTypImagesLesen(), //typImagesLesen
@@ -700,9 +726,9 @@ class StepMysqlHelper implements Serializable {
 
     private static String generateValueQuery(boolean includeID) {
         if (!includeID) {
-            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         } else {
-            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
 
     }
@@ -713,7 +739,7 @@ class StepMysqlHelper implements Serializable {
             answer += " SchritteID, ";
         }
         answer += "Titel, Prioritaet, Reihenfolge, Bearbeitungsstatus, BearbeitungsZeitpunkt, BearbeitungsBeginn, BearbeitungsEnde, "
-                + "homeverzeichnisNutzen, typMetadaten, typAutomatisch, typImportFileUpload, typExportRus, typImagesLesen, typImagesSchreiben, "
+                + "homeverzeichnisNutzen, typMetadaten, typAutomatisch, typAutomaticThumbnail, automaticThumbnailSettingsYaml, typImportFileUpload, typExportRus, typImagesLesen, typImagesSchreiben, "
                 + "typExportDMS, typBeimAnnehmenModul, typBeimAnnehmenAbschliessen, typBeimAnnehmenModulUndAbschliessen, typAutomatischScriptpfad, "
                 + "typBeimAbschliessenVerifizieren, typModulName, BearbeitungsBenutzerID, ProzesseID, edittype, typScriptStep, scriptName1, "
                 + "scriptName2, typAutomatischScriptpfad2, scriptName3, typAutomatischScriptpfad3, scriptName4, typAutomatischScriptpfad4, "
@@ -735,6 +761,8 @@ class StepMysqlHelper implements Serializable {
         sql.append(" homeverzeichnisNutzen = ?,");
         sql.append(" typMetadaten = ?,");
         sql.append(" typAutomatisch = ?,");
+        sql.append(" typAutomaticThumbnail = ?,");
+        sql.append(" automaticThumbnailSettingsYaml = ?,");
         sql.append(" typImportFileUpload = ?,");
         sql.append(" typExportRus = ?,");
         sql.append(" typImagesLesen = ?,");
@@ -819,6 +847,8 @@ class StepMysqlHelper implements Serializable {
         joinQuery.append(" homeverzeichnisNutzen = " + tablename + ".homeverzeichnisNutzen,");
         joinQuery.append(" typMetadaten = " + tablename + ".typMetadaten,");
         joinQuery.append(" typAutomatisch = " + tablename + ".typAutomatisch,");
+        joinQuery.append(" typAutomaticThumbnail = " + tablename + ".typAutomaticThumbnail,");
+        joinQuery.append(" automaticThumbnailSettingsYaml = " + tablename + ".automaticThumbnailSettingsYaml");
         joinQuery.append(" typImportFileUpload = " + tablename + ".typImportFileUpload,");
         joinQuery.append(" typExportRus = " + tablename + ".typExportRus,");
         joinQuery.append(" typImagesLesen = " + tablename + ".typImagesLesen,");
@@ -1103,6 +1133,22 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
+    public static void removeUserFromAllSteps(User user) throws SQLException {
+        if (user.getId() != null) {
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                String sql = "DELETE FROM schritteberechtigtebenutzer WHERE BenutzerID = "+ user.getId();
+
+                new QueryRunner().update(connection, sql);
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+        }
+    }
+
     public static List<String> getScriptsForStep(int stepId) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -1273,6 +1319,16 @@ class StepMysqlHelper implements Serializable {
         try (Connection connection = MySQLHelper.getInstance().getConnection()) {
             QueryRunner run = new QueryRunner();
             return run.query(connection, sql.toString(), resultSetToStepListHandler, restartStepnames.toArray());
+        }
+    }
+
+    public static List<Step> getUserSchritte(User user) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM schritteberechtigtebenutzer WHERE BenutzerID=" + user.getId());
+
+        try (Connection connection = MySQLHelper.getInstance().getConnection()) {
+            QueryRunner run = new QueryRunner();
+            return run.query(connection, sql.toString(), resultSetIdsToStepListHandler);
         }
     }
 

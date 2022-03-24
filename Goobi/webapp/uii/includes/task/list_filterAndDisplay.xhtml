@@ -9,11 +9,25 @@
 	<composite:interface />
 
 	<composite:implementation>
+		<script type="text/javascript">
+        	function switchExpanded(id){
+        		console.log("called by: "+id);
+				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				console.log(x)
+				if (x == "true"){
+					x = "false"
+				} else {
+					x = "true"
+				}
+				document.getElementById(id).setAttribute("aria-expanded", x);
+        	}
+        </script>
 		<div class="dataTables_filter">
 			<div id="filterTableColumns" class="btn-group" data-toggle="tooltip" title="#{msgs.selectTableColumns}">
 				<!-- show columns -->
 				<div class="dropdown">
-                <button type="button" aria-label="#{msgs.selectTableColumns}" class="btn dropdown-toggle searchfieldbuttongroup focusable" data-toggle="dropdown"> 
+                <button id="columnDropdown" type="button" aria-label="#{msgs.selectTableColumns}" class="btn dropdown-toggle searchfieldbuttongroup focusable" 
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="switchExpanded(this.id)"> 
                     <span class="fa fa-columns margin-right-5" /> <span class="caret"></span>
                 </button>
 				<ul class="dropdown-menu">
@@ -57,13 +71,27 @@
 							<x:updateActionListener property="#{AktuelleSchritteForm.anzeigeAnpassen['lockings']}" value="#{not AktuelleSchritteForm.anzeigeAnpassen['lockings']}" />
 						</button>
 					</li>
+                        <li>
+                            <!-- show number of images --> 
+                            <button
+                                jsf:action="#{NavigationForm.Reload}"
+                                jsf:id="showNumberOfImages"
+                                class="dropdown-item">
+                                <i class="fa #{AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                                <h:outputText value="#{msgs.NumberOfImages}" />
+                                <x:updateActionListener
+                                    property="#{AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']}"
+                                    value="#{not AktuelleSchritteForm.anzeigeAnpassen['numberOfImages']}" />
+                            </button>
+                        </li>                    
+                    
 				</ul>
                 </div>
 			</div>
 
 			<div class="btn-group" data-toggle="tooltip" title="#{msgs.anzeigeAnpassen}">
                 <div class="dropdown">
-				<button type="button" aria-haspopup="true" aria-label="#{msgs.anzeigeAnpassen}" class="btn dropdown-toggle searchfieldbuttongroup focusable" data-toggle="dropdown"> 
+				<button id="anzeigeAnpassenDropdown" type="button" aria-haspopup="true" aria-expanded="false" onclick="switchExpanded(this.id)" aria-label="#{msgs.anzeigeAnpassen}" class="btn dropdown-toggle searchfieldbuttongroup focusable" data-toggle="dropdown"> 
                     <span class="fa fa-wrench margin-right-5" />
 					<span class="caret"></span>
 				</button>

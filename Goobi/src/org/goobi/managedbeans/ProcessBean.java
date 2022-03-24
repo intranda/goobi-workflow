@@ -283,6 +283,10 @@ public class ProcessBean extends BasicBean implements Serializable {
     @Getter
     private String goobiScriptHitsImage;
 
+    @Getter
+    @Setter
+    private List<Map<String, String>> parsedGoobiScripts;
+
     private List<Process> availableProcessTemplates = null;
 
     @Getter
@@ -312,6 +316,8 @@ public class ProcessBean extends BasicBean implements Serializable {
     public ProcessBean() {
         this.anzeigeAnpassen = new HashMap<>();
 
+        anzeigeAnpassen.put("numberOfImages", false);
+
         this.sortierung = "titel";
         /*
          * Vorgangsdatum generell anzeigen?
@@ -324,7 +330,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             this.anzeigeAnpassen.put("processId", login.getMyBenutzer().isDisplayIdColumn());
             this.anzeigeAnpassen.put("batchId", login.getMyBenutzer().isDisplayBatchColumn());
             this.anzeigeAnpassen.put("processDate", login.getMyBenutzer().isDisplayProcessDateColumn());
-
+            this.anzeigeAnpassen.put("processRuleset", login.getMyBenutzer().isDisplayRulesetColumn());
             this.anzeigeAnpassen.put("thumbnail", login.getMyBenutzer().isDisplayThumbColumn());
             this.anzeigeAnpassen.put("metadatadetails", login.getMyBenutzer().isDisplayMetadataColumn());
             this.anzeigeAnpassen.put("gridview", login.getMyBenutzer().isDisplayGridView());
@@ -350,6 +356,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             this.anzeigeAnpassen.put("batchId", false);
             this.anzeigeAnpassen.put("processDate", false);
             anzeigeAnpassen.put("institution", false);
+            this.anzeigeAnpassen.put("processRuleset",false);
         }
         DONEDIRECTORYNAME = ConfigurationHelper.getInstance().getDoneDirectoryName();
 
@@ -688,6 +695,10 @@ public class ProcessBean extends BasicBean implements Serializable {
             answer = "institution.shortName";
         } else if (sortierung.equals("institutionDesc")) {
             answer = "institution.shortName desc";
+        } else if (sortierung.equals("numberOfImagesAsc")) {
+            answer = "prozesse.sortHelperImages";
+        } else if (sortierung.equals("numberOfImagesDesc")) {
+            answer = "prozesse.sortHelperImages desc";
         }
 
         return answer;
@@ -949,7 +960,8 @@ public class ProcessBean extends BasicBean implements Serializable {
     private void updateUserPaginator() {
         String filter =
                 "benutzer.BenutzerID not in (select BenutzerID from schritteberechtigtebenutzer where schritteberechtigtebenutzer.schritteID = "
-                        + mySchritt.getId() + ")";
+                        + mySchritt.getId() + ") AND " +
+                        "benutzer.BenutzerID not in (select BenutzerID from benutzer where benutzer.isVisible = 'deleted')";
         UserManager m = new UserManager();
         userPaginator = new DatabasePaginator("Nachname", filter, m, "");
 
@@ -1072,30 +1084,39 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public void ExportDMS() {
         if (this.myProzess.getContainsExportStep()) {
-            IExportPlugin export = null;
             String pluginName = ProcessManager.getExportPluginName(myProzess.getId());
-            if (StringUtils.isNotEmpty(pluginName)) {
-                try {
-                    export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
-                } catch (Exception e) {
-                    logger.error("Can't load export plugin, use default plugin", e);
-                    export = new ExportDms();
-                }
-            }
-            if (export == null) {
-                export = new ExportDms();
-                Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started export using 'ExportDMS'.");
-            }
-            try {
-                export.startExport(this.myProzess);
-            } catch (Exception e) {
-                String[] parameter = { "DMS", this.myProzess.getTitel() };
-                Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
-                //            Helper.setFehlerMeldung("An error occured while trying to export to DMS for: " + this.myProzess.getTitel(), e);
-                logger.error("ExportDMS error", e);
-            }
+            ProcessBean.executeExportPlugin(pluginName, this.myProzess);
         } else {
             Helper.setFehlerMeldung("noExportTaskError");
+        }
+    }
+
+    public void exportStep() {
+        ProcessBean.executeExportPlugin(mySchritt.getStepPlugin(), this.myProzess);
+    }
+
+    private static void executeExportPlugin(String pluginName, Process process) {
+        IExportPlugin export = null;
+        if (StringUtils.isNotEmpty(pluginName)) {
+            try {
+                export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+            } catch (Exception e) {
+                logger.error("Can't load export plugin, use default export", e);
+                Helper.setFehlerMeldung("Can't load export plugin, use default export");
+                export = new ExportDms();
+            }
+        }
+        if (export == null) {
+            export = new ExportDms();
+            Helper.addMessageToProcessLog(process.getId(), LogType.DEBUG, "Started export using 'ExportDMS'.");
+        }
+        try {
+            export.startExport(process);
+        } catch (Exception e) {
+            String[] parameter = { "DMS", process.getTitel() };
+            Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
+            // Helper.setFehlerMeldung("An error occured while trying to export to DMS for: " + this.myProzess.getTitel(), e);
+            logger.error("ExportDMS error", e);
         }
     }
 
@@ -1110,7 +1131,9 @@ public class ProcessBean extends BasicBean implements Serializable {
                 try {
                     export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
                 } catch (Exception e) {
-                    logger.error("Can't load export plugin, use default plugin", e);
+                    logger.error("Can't load export plugin, use default export", e);
+                    Helper.setFehlerMeldung("Can't load export plugin, use default export");
+
                     export = new ExportDms();
                 }
             }
@@ -1155,7 +1178,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                     try {
                         export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
                     } catch (Exception e) {
-                        logger.error("Can't load export plugin, use default plugin", e);
+                        logger.error("Can't load export plugin, use default export", e);
+                        Helper.setFehlerMeldung("Can't load export plugin, use default export");
                         export = new ExportDms();
                     }
                 }
@@ -1184,7 +1208,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 try {
                     export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
                 } catch (Exception e) {
-                    logger.error("Can't load export plugin, use default plugin", e);
+                    logger.error("Can't load export plugin, use default export", e);
+                    Helper.setFehlerMeldung("Can't load export plugin, use default export");
                     export = new ExportDms();
                 }
             }
@@ -1476,7 +1501,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             StepManager.saveStep(step);
             String message = "Changed step order for step '" + step.getTitel() + "' to position " + step.getReihenfolge()
-                    + " in process details.";
+            + " in process details.";
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, message);
             // set list to null to reload list of steps in new order
             this.myProzess.setSchritte(null);
@@ -1730,7 +1755,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     public void prepareGoobiScriptHits() {
         this.goobiScriptHitsCount = this.paginator.getIdList().size();
         this.goobiScriptMode = "hits";
-        this.renderHitNumberImage();
+        this.parseGoobiScripts();
     }
 
     /**
@@ -1739,7 +1764,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     public void prepareGoobiScriptPage() {
         this.goobiScriptHitsCount = paginator.getList().size();
         this.goobiScriptMode = "page";
-        this.renderHitNumberImage();
+        this.parseGoobiScripts();
     }
 
     /**
@@ -1748,7 +1773,16 @@ public class ProcessBean extends BasicBean implements Serializable {
     public void prepareGoobiScriptSelection() {
         this.goobiScriptHitsCount = (int) paginator.getList().stream().filter(p -> ((Process) p).isSelected()).count();
         this.goobiScriptMode = "selection";
-        this.renderHitNumberImage();
+        this.parseGoobiScripts();
+    }
+
+    private void parseGoobiScripts() {
+        this.parsedGoobiScripts = GoobiScript.parseGoobiscripts(this.goobiScript);
+        if (this.parsedGoobiScripts != null) {
+            this.renderHitNumberImage();
+        } else {
+            Helper.setFehlerMeldung("goobiScriptfield", "", "Can't parse GoobiScript. Please check your Syntax. Only valid YAML is allowed.");
+        }
     }
 
     private boolean checkSecurityResult() {
@@ -1768,13 +1802,23 @@ public class ProcessBean extends BasicBean implements Serializable {
      * @return
      */
     public String runGoobiScript() {
-        switch (this.goobiScriptMode) {
-            case "hits":
-                return GoobiScriptHits();
-            case "page":
-                return GoobiScriptPage();
-            default:
-                return GoobiScriptSelection();
+        if (!checkSecurityResult()) {
+            Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
+            return "";
+        } else {
+            resetHitsCount();
+            switch (this.goobiScriptMode) {
+                case "hits":
+                    this.executeGoobiScriptHits();
+                    break;
+                case "page":
+                    this.executeGoobiScriptPage();
+                    break;
+                case "selection":
+                default:
+                    this.executeGoobiScriptSelection();
+            }
+            return "process_all?faces-redirect=true";
         }
     }
 
@@ -1799,58 +1843,37 @@ public class ProcessBean extends BasicBean implements Serializable {
     /**
      * Starte GoobiScript über alle Treffer
      */
-    public String GoobiScriptHits() {
-        if (!checkSecurityResult()) {
-            Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
-            return "";
-        } else {
-            resetHitsCount();
-            GoobiScript gs = new GoobiScript();
-            gs.execute(this.paginator.getIdList(), this.goobiScript, goobiScriptManager);
-            return "process_all?faces-redirect=true";
-        }
+    public void executeGoobiScriptHits() {
+        GoobiScript gs = new GoobiScript();
+        gs.execute(this.paginator.getIdList(), this.parsedGoobiScripts, goobiScriptManager);
     }
 
     /**
      * Starte GoobiScript über alle Treffer der Seite
      */
     @SuppressWarnings("unchecked")
-    public String GoobiScriptPage() {
-        if (!checkSecurityResult()) {
-            Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
-            return "";
-        } else {
-            resetHitsCount();
-            GoobiScript gs = new GoobiScript();
-            List<Integer> idList = new ArrayList<>();
-            for (Process p : (List<Process>) paginator.getList()) {
-                idList.add(p.getId());
-            }
-            gs.execute(idList, this.goobiScript, goobiScriptManager);
-            return "process_all?faces-redirect=true";
+    public void executeGoobiScriptPage() {
+        GoobiScript gs = new GoobiScript();
+        List<Integer> idList = new ArrayList<>();
+        for (Process p : (List<Process>) paginator.getList()) {
+            idList.add(p.getId());
         }
+        gs.execute(idList, this.parsedGoobiScripts, goobiScriptManager);
     }
 
     /**
      * Starte GoobiScript über alle selectierten Treffer
      */
     @SuppressWarnings("unchecked")
-    public String GoobiScriptSelection() {
-        if (!checkSecurityResult()) {
-            Helper.setFehlerMeldung("goobiScriptfield", "", "GoobiScript_wrong_answer");
-            return "";
-        } else {
-            resetHitsCount();
-            List<Integer> idList = new ArrayList<>();
-            for (Process p : (List<Process>) this.paginator.getList()) {
-                if (p.isSelected()) {
-                    idList.add(p.getId());
-                }
+    public void executeGoobiScriptSelection() {
+        List<Integer> idList = new ArrayList<>();
+        for (Process p : (List<Process>) this.paginator.getList()) {
+            if (p.isSelected()) {
+                idList.add(p.getId());
             }
-            GoobiScript gs = new GoobiScript();
-            gs.execute(idList, this.goobiScript, goobiScriptManager);
-            return "process_all?faces-redirect=true";
         }
+        GoobiScript gs = new GoobiScript();
+        gs.execute(idList, this.parsedGoobiScripts, goobiScriptManager);
     }
 
     @SuppressWarnings("unchecked")
@@ -2611,6 +2634,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public String startPlugin() {
         if (StringUtils.isNotBlank(mySchritt.getStepPlugin())) {
+
             if (mySchritt.isTypExportDMS()) {
                 IExportPlugin dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, mySchritt.getStepPlugin());
                 try {
@@ -2619,10 +2643,13 @@ public class ProcessBean extends BasicBean implements Serializable {
                         | TypeNotAllowedForParentException | IOException | InterruptedException | ExportFileException | UghHelperException
                         | SwapException | DAOException e) {
                     logger.error(e);
+                    Helper.setFehlerMeldung("Can't load export plugin.");
                 }
             } else if (mySchritt.isDelayStep()) {
                 Helper.setFehlerMeldung("cannotStartPlugin");
             } else {
+                Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG,
+                        "Plugin " + mySchritt.getStepPlugin() + " was executed from process details");
                 currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
                 if (currentPlugin != null) {
                     currentPlugin.initialize(mySchritt, "/process_edit");

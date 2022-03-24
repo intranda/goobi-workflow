@@ -263,9 +263,9 @@
 	                                    <button
 	                                        jsf:action="#{ProzessverwaltungForm.ExportDMS}"
 	                                        jsf:id="action21"
-	                                        aria-label="#{msgs.importDms}"
+	                                        aria-label="#{msgs.exportDMS}"
 	                                        class="btn btn-mini font-light"
-	                                        title="#{msgs.importDms}"
+	                                        title="#{msgs.exportDMS}"
 	                                        jsf:rel="tooltip"
 	                                        jsf:disabled="#{!ProzessverwaltungForm.myProzess.containsExportStep}"
 	                                        jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.myProzess.displayDMSButton}">
@@ -369,7 +369,7 @@
                                     <h:outputText value="#{ProzessverwaltungForm.myProzess.erstellungsdatum}" />
 
                                     <h:outputText value="#{msgs.regelsatz}:" />
-                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.regelsatz.titel}" />
+                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.regelsatz.titel}" title="#{ProzessverwaltungForm.myProzess.regelsatz.datei}" />
 
                                     <h:outputText value="#{msgs.docket}:" />
                                     <h:outputText value="#{ProzessverwaltungForm.myProzess.docket.name}" />

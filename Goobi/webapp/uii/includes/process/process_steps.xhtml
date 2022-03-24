@@ -26,6 +26,20 @@
 }
 </style>
 
+<script type="text/javascript">
+        	function switchExpanded(id){
+        		console.log("called by: "+id);
+				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				console.log(x)
+				if (x == "true"){
+					x = "false"
+				} else {
+					x = "true"
+				}
+				document.getElementById(id).setAttribute("aria-expanded", x);
+        	}
+        </script>
+
         <div class="row">
             <div class="col-sm-12">
 
@@ -47,6 +61,9 @@
                                         id="changeTemplate"
                                         class="btn btn-mini dropdown-toggle focusable"
                                         aria-label="#{msgs.process_changeTemplate}"
+                                        aria-haspopup="true"
+                                        aria-expanded="false"
+                                        onclick="switchExpanded(this.id)"
                                         data-toggle="dropdown"> <i class="fa fa-exchange margin-right-5" /> <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu pull-right">
@@ -467,14 +484,14 @@
                                     <ul class="colors small">
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'LOCKED'}">
                                             <li
-                                                class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
+                                                class="#{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
                                                 title="#{msgs.statusGesperrt}"
                                                 rel="tooltip"
                                                 data-toggle="tooltip"></li>
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'OPEN'}">
                                             <li
-                                                class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
+                                                class="#{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
                                                 title="#{msgs.statusOffen}"
                                                 rel="tooltip"
                                                 data-toggle="tooltip"></li>
@@ -482,14 +499,14 @@
 
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}">
                                             <li
-                                                class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
+                                                class="#{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
                                                 title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}"
                                                 rel="tooltip"
                                                 data-toggle="tooltip"></li>
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}">
                                             <li
-                                                class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
+                                                class="#{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
                                                 title="#{item.bearbeitungsstatusEnum.title}: #{item.editTypeEnum.title}"
                                                 rel="tooltip"
                                                 data-toggle="tooltip"></li>
@@ -497,14 +514,14 @@
 
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}">
                                             <li
-                                                class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
+                                                class="#{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
                                                 title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
                                                 rel="tooltip"
                                                 data-toggle="tooltip"></li>
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}">
                                             <li
-                                                class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
+                                                class="#{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
                                                 title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
                                                 rel="tooltip"
                                                 data-toggle="tooltip"></li>
@@ -512,20 +529,20 @@
 
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'ERROR' and !HelperForm.anonymized}">
                                             <li
-                                                class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
+                                                class="#{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
                                                 title="#{item.bearbeitungsstatusEnum.title}: #{item.bearbeitungsbenutzer!=null and item.bearbeitungsbenutzer.id!=0?item.bearbeitungsbenutzer.nachVorname:''} (#{item.bearbeitungszeitpunkt !=null?item.bearbeitungszeitpunktAsFormattedString:''})  - #{item.editTypeEnum.title}"
                                                 rel="tooltip"
                                                 data-toggle="tooltip"></li>
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'DEACTIVATED'}">
                                             <li
-                                                class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
+                                                class="#{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
                                                 title="#{msgs.statusDeactivated}"
                                                 data-toggle="tooltip"></li>
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{item.bearbeitungsstatusEnum == 'INFLIGHT'}">
                                             <li
-                                                class="#{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
+                                                class="#{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(item.bearbeitungsstatusEnum.color)}"
                                                 title="#{msgs.statusInFlight}"
                                                 data-toggle="tooltip"></li>
                                         </h:panelGroup>
@@ -533,7 +550,7 @@
                                     </ul>
                                     <h:outputText
                                         value="#{item.bearbeitungsstatusEnum.title}"
-                                        rendered="#{NavigationForm.showEasyRead}" />
+                                        rendered="#{LoginForm.myBenutzer.uiMode=='low_vision'}" />
                                     <!-- Bearbeitungsstatus hoch und runter -->
                                     <button
                                         type="button"
@@ -604,7 +621,7 @@
                                         jsf:id="runPlugin"
                                         title="#{msgs.executePlugin}"
                                         aria-label="#{msgs.executePlugin}"
-                                        jsf:rendered="#{item.stepPlugin != '' and item.stepPlugin != null}"
+                                        jsf:rendered="#{item.stepPlugin != '' and item.stepPlugin != null  and !item.typExportDMS}"
                                         jsf:action="#{ProzessverwaltungForm.startPlugin}"
                                         onclick="preventDoubleSubmit(this);"
                                         class="button-link blue">
@@ -646,6 +663,26 @@
                                             value="tooltip" />
                                         <span class="btn fa fa-cog margin-right-5"></span>
                                     </button>
+
+
+                                    <button
+                                        jsf:id="exportProcess"
+                                        title="#{msgs.exportDMS}"
+                                        aria-label="#{msgs.exportDMS}"
+                                        jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and item.typExportDMS}"
+                                        jsf:action="#{ProzessverwaltungForm.exportStep}"
+                                        onclick="preventDoubleSubmit(this);"
+                                        class="button-link blue">
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                        <x:updateActionListener
+                                            property="#{ProzessverwaltungForm.mySchritt}"
+                                            value="#{item}" />
+                                            
+                                        <span class="btn fa fa-globe margin-right-5"></span>
+                                    </button>
+
                                 </h:column>
 
                             </x:dataTable>

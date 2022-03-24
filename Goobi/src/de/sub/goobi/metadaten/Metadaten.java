@@ -41,9 +41,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
@@ -65,7 +68,6 @@ import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.AltoChange;
-import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.SimpleAlto;
@@ -75,6 +77,8 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.jdom2.JDOMException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.omnifaces.util.Faces;
 
 import com.google.gson.Gson;
@@ -373,11 +377,6 @@ public class Metadaten implements Serializable {
     private String pagesEnd = "";
     @Getter
     @Setter
-    private String pageArea = "";
-    @Getter
-    private boolean pageAreaEditionMode = false;
-    @Getter
-    @Setter
     private String pagesStartCurrentElement = "";
     @Getter
     @Setter
@@ -474,6 +473,9 @@ public class Metadaten implements Serializable {
 
     @Getter
     private String currentJsonAlto;
+
+    private PageAreaManager pageAreaManager;
+
 
     public enum MetadataTypes {
         PERSON,
@@ -1494,7 +1496,9 @@ public class Metadaten implements Serializable {
             Integer id = Integer.valueOf(Helper.getRequestParameter("ProzesseID"));
             this.myProzess = ProcessManager.getProcessById(id);
         } catch (NumberFormatException e1) {
-            Helper.setFehlerMeldung("error while loading process data" + e1.getMessage());
+            Helper.setFehlerMeldung("error while loading process data " + e1.getMessage());
+            System.out.println(e1);
+            e1.printStackTrace();         
             return Helper.getRequestParameter("zurueck");
             // } catch (DAOException e1) {
             // Helper.setFehlerMeldung("error while loading process data" + e1.getMessage());
@@ -1602,6 +1606,10 @@ public class Metadaten implements Serializable {
         if (this.logicalTopstruct == null) {
             throw new ReadException(Helper.getTranslation("metaDataError"));
         }
+
+        //initialize page area editor
+        this.pageAreaManager = new PageAreaManager(this.myPrefs, this.document);
+        
         checkImageNames();
         retrieveAllImages();
         // check filenames, correct them
@@ -1656,6 +1664,8 @@ public class Metadaten implements Serializable {
             // inserted to make Paginierung the starting view
             this.modusAnsicht = "Metadaten";
         }
+        
+        
         return "metseditor";
     }
 
@@ -1903,7 +1913,6 @@ public class Metadaten implements Serializable {
         if (!SperrungAktualisieren()) {
             return "metseditor_timeout";
         }
-        pageAreaEditionMode = false;
         return "metseditor";
     }
 
@@ -2120,6 +2129,26 @@ public class Metadaten implements Serializable {
             }
 
             this.myDocStruct.getParent().removeChild(this.myDocStruct);
+            if (this.myDocStruct.getAllToReferences() != null) {
+                List<DocStruct> pageAreas = this.myDocStruct.getAllToReferences()
+                        .stream()
+                        .map(ref -> ref.getTarget())
+                        .filter(t -> t != null)
+                        .filter(t -> StringUtils.isNotBlank(MetadatenErmitteln(t, "_COORDS")))
+                        .collect(Collectors.toList());
+                for (DocStruct area : pageAreas) {
+                    if (area.getAllFromReferences() != null) {
+                        List<DocStruct> referencedLogDs = area.getAllFromReferences()
+                                .stream()
+                                .map(Reference::getSource)
+                                .filter(t -> t != null)
+                                .collect(Collectors.toList());
+                        if (referencedLogDs.isEmpty() || (referencedLogDs.size() == 1 && referencedLogDs.get(0).equals(this.myDocStruct))) {
+                            area.getParent().removeChild(area);
+                        }
+                    }
+                }
+            }
             this.myDocStruct = tempParent;
 
         }
@@ -2322,9 +2351,16 @@ public class Metadaten implements Serializable {
                 }
                 this.myDocStruct = temp;
             }
-        } else if (!pageArea.equals("")) {
-            ds.addReferenceTo(lastAddedObject.getDocStruct(), "logical_physical");
         }
+        
+        //if page area was set, assign to docStruct
+        if(this.pageAreaManager.hasNewPageArea()) {
+            this.pageAreaManager.assignToPhysicalDocStruct(this.pageAreaManager.getNewPageArea(), getCurrentPage());
+            this.pageAreaManager.assignToLogicalDocStruct(this.pageAreaManager.getNewPageArea(), ds);
+            this.pageAreaManager.resetNewPageArea();
+            retrieveAllImages();
+        }
+        
         // if easy pagination is switched on, use the last page as first page for next structure element
         if (enableFastPagination) {
             pagesStart = pagesEnd;
@@ -2332,7 +2368,6 @@ public class Metadaten implements Serializable {
             pagesStart = "";
         }
         pagesEnd = "";
-        pageArea = "";
 
         oldDocstructName = "";
         createAddableData();
@@ -2512,9 +2547,8 @@ public class Metadaten implements Serializable {
                 pageMap.put(lastPhysPageNo, pi);
             } else {
                 // add placeholder for areas
-                pi.setPhysicalPageNo(lastPhysPageNo + "_" + meineListe.indexOf(pageStruct));
-                pi.setLogicalPageNo(lastPhysPageNo + ": " + lastLogPageNo);
-                pageMap.put(lastPhysPageNo + "_" + meineListe.indexOf(pageStruct), pi);
+                pi = this.pageAreaManager.createPhysicalObject(pageStruct);
+                pageMap.put(pi.getPhysicalPageNo(), pi);
             }
             pi.setType(pageStruct.getDocstructType());
             pi.setImagename(pageStruct.getImageName());
@@ -2528,156 +2562,72 @@ public class Metadaten implements Serializable {
         }
 
     }
-
-    public void addPageArea() {
-        BildGeheZu();
-        DocStruct page = currentPage.getDocStruct();
-        if (page != null) {
-            DocStructType dst = myPrefs.getDocStrctTypeByName("area");
-            try {
-                DocStruct ds = document.createDocStruct(dst);
-                page.addChild(ds);
-                Metadata logicalPageNumber = new Metadata(myPrefs.getMetadataTypeByName("logicalPageNumber"));
-                logicalPageNumber.setValue(MetadatenErmitteln(page, "logicalPageNumber"));
-                ds.addMetadata(logicalPageNumber);
-
-                Metadata physPageNumber = new Metadata(myPrefs.getMetadataTypeByName("physPageNumber"));
-                physPageNumber.setValue(MetadatenErmitteln(page, "physPageNumber"));
-                ds.addMetadata(physPageNumber);
-                Metadata md = new Metadata(myPrefs.getMetadataTypeByName("_COORDS"));
-                ds.addMetadata(md);
-                ds.setDocstructType("area");
-
-            } catch (TypeNotAllowedAsChildException | TypeNotAllowedForParentException | MetadataTypeNotAllowedException e) {
-                logger.error(e);
-            }
-        }
-        retrieveAllImages();
-        getRectangles();
+    
+    private String getRequestParameter(String name) {
+        Map<String, String> params = FacesContext.getCurrentInstance().
+                getExternalContext().getRequestParameterMap();
+        return params.get(name);
     }
 
-    DocStruct newPageArea;
 
-    public void addPageAreaAndAssignToDocststuct() {
-        DocStruct page = physicalTopstruct.getAllChildren().get(imageIndex);
-        newPageArea = null;
-        if (page != null) {
-            DocStructType dst = myPrefs.getDocStrctTypeByName("area");
-            try {
-                newPageArea = document.createDocStruct(dst);
-                page.addChild(newPageArea);
-                Metadata logicalPageNumber = new Metadata(myPrefs.getMetadataTypeByName("logicalPageNumber"));
-                logicalPageNumber.setValue(MetadatenErmitteln(page, "logicalPageNumber"));
-                newPageArea.addMetadata(logicalPageNumber);
-
-                Metadata physPageNumber = new Metadata(myPrefs.getMetadataTypeByName("physPageNumber"));
-                physPageNumber.setValue(MetadatenErmitteln(page, "physPageNumber"));
-                newPageArea.addMetadata(physPageNumber);
-                Metadata md = new Metadata(myPrefs.getMetadataTypeByName("_COORDS"));
-                newPageArea.addMetadata(md);
-                newPageArea.setDocstructType("area");
-
-            } catch (TypeNotAllowedAsChildException | TypeNotAllowedForParentException | MetadataTypeNotAllowedException e) {
-                logger.error(e);
-            }
-
-        }
-        retrieveAllImages();
-        getRectangles();
-        if (newPageArea != null) {
-            for (String pageObject : pageMap.getKeyList()) {
-                PhysicalObject object = pageMap.get(pageObject);
-                if (object.getDocStruct().equals(newPageArea)) {
-                    pagesStart = "";
-                    pagesEnd = "";
-                    pageArea = object.getLabel();
-                    lastAddedObject = object;
-                }
-            }
+    /**
+     * Add page area via commandScript
+     */
+    public void addPageAreaCommand() {
+        String addTo = getRequestParameter("addTo");
+        Integer x =  Integer.parseInt(getRequestParameter("x"));
+        Integer y =  Integer.parseInt(getRequestParameter("y"));
+        Integer w =  Integer.parseInt(getRequestParameter("w"));
+        Integer h =  Integer.parseInt(getRequestParameter("h"));
+        
+        DocStruct page = getCurrentPage();
+        DocStruct logicalDocStruct = "current".equalsIgnoreCase(addTo) ? this.myDocStruct : null;
+        try {
+            DocStruct pageArea = this.pageAreaManager.createPageArea(page, x,y,w,h);
+            if(logicalDocStruct != null) {
+                this.pageAreaManager.assignToPhysicalDocStruct(pageArea, page);
+                this.pageAreaManager.assignToLogicalDocStruct(pageArea, logicalDocStruct);
+                retrieveAllImages();
+            } else {
+                this.pageAreaManager.setNewPageArea(pageArea);           }
+        } catch (TypeNotAllowedAsChildException | TypeNotAllowedForParentException | MetadataTypeNotAllowedException e) {
+            logger.error(e);
         }
     }
 
-    public void setRectangles(String json) {
-        if (StringUtils.isBlank(json)) {
-            return;
-        }
-        PageAreaRectangle[] data = new Gson().fromJson(json, PageAreaRectangle[].class);
-        List<DocStruct> pages = document.getPhysicalDocStruct().getAllChildren();
-        DocStruct page = pages.get(imageIndex);
-
-        for (PageAreaRectangle rect : data) {
-            DocStruct area = page.getAllChildren().get(Integer.valueOf(rect.getId()));
-            for (Metadata md : area.getAllMetadataByType(myPrefs.getMetadataTypeByName("_COORDS"))) {
-                md.setValue(rect.getX() + "," + rect.getY() + "," + rect.getW() + "," + rect.getH());
-            }
-
-        }
+    /**
+     * Set coordinates for existing page area rectangles
+     * @param json
+     */
+    public void setPageAreaCommand() {
+        String id = getRequestParameter("areaId");
+        Integer x =  Integer.parseInt(getRequestParameter("x"));
+        Integer y =  Integer.parseInt(getRequestParameter("y"));
+        Integer w =  Integer.parseInt(getRequestParameter("w"));
+        Integer h =  Integer.parseInt(getRequestParameter("h"));
+        this.pageAreaManager.setRectangle(id, x,y,w,h, getCurrentPage());
 
     }
+    
 
-    public String getRectangles() {
-        StringBuilder sb = new StringBuilder();
-        List<DocStruct> pages = document.getPhysicalDocStruct().getAllChildren();
-        if (pages == null || pages.isEmpty() || pages.size() <= imageIndex) {
-            return "";
-        }
-        DocStruct page = pages.get(imageIndex);
-        sb.append("[");
-        if (page.getAllChildren() == null) {
-            return "";
-        }
-        int index = 0;
-        for (DocStruct area : page.getAllChildren()) {
-            String coordinates = MetadatenErmitteln(area, "_COORDS");
-            sb.append("{");
-            sb.append("\"id\":\"");
-            sb.append(index++);
-
-            String x = "";
-            String y = "";
-            String w = "";
-            String h = "";
-            if (StringUtils.isNotBlank(coordinates)) {
-
-                Pattern pattern = Pattern.compile("(\\d+),(\\d+),(\\d+),(\\d+)");
-                Matcher matcher = pattern.matcher(coordinates);
-
-                if (matcher.matches()) {
-                    x = matcher.group(1);
-                    y = matcher.group(2);
-                    w = matcher.group(3);
-                    h = matcher.group(4);
-                }
-
-                sb.append("\",\"x\":\"");
-                sb.append(x);
-                sb.append("\",\"y\":\"");
-                sb.append(y);
-                sb.append("\",\"w\":\"");
-                sb.append(w);
-                sb.append("\",\"h\":\"");
-                sb.append(h);
-            }
-            sb.append("\"},");
-            if (StringUtils.isBlank(x)) {
-                pageAreaEditionMode = true;
+    public void deletePageAreaCommand() {
+        DocStruct page = getCurrentPage();
+        String areaId = getRequestParameter("areaId");
+        if(this.pageAreaManager.hasNewPageArea() && Objects.equals(areaId, this.pageAreaManager.getNewPageArea().getIdentifier())) {
+            this.pageAreaManager.setNewPageArea(null);
+        } else if (page != null && StringUtils.isNotBlank(areaId) && page.getAllChildren() != null) {
+            DocStruct pageArea = page.getAllChildren().stream().filter(c -> areaId.equals(c.getIdentifier())).findAny().orElse(null);
+            if(pageArea != null) {
+                deletePageArea(pageArea);
             }
         }
-        if (sb.length() > 1) {
-            sb.deleteCharAt(sb.length() - 1);
-        }
-        sb.append("]");
-        return sb.toString();
     }
-
-    public void deletePageArea() {
-        if (currentPage == null || currentPage.getType().equals("div")) {
-            return;
-        }
-
-        DocStruct pageArea = currentPage.getDocStruct();
+    
+    public void deletePageArea(DocStruct pageArea) {
         DocStruct page = pageArea.getParent();
-        page.removeChild(pageArea);
+        if(page != null) {            
+            page.removeChild(pageArea);
+        }
         List<Reference> fromReferences = pageArea.getAllFromReferences();
         List<DocStruct> linkedDocstructs = new ArrayList<>();
         for (Reference ref : fromReferences) {
@@ -2685,23 +2635,44 @@ public class Metadaten implements Serializable {
         }
         for (DocStruct ds : linkedDocstructs) {
             ds.removeReferenceTo(pageArea);
+            if (page != null &&  ds.getAllToReferences() == null || ds.getAllToReferences().isEmpty()) {
+                ds.addReferenceTo(page, "logical_physical");
+            }
         }
         retrieveAllImages();
-        pageAreaEditionMode = false;
     }
 
     public void cancelPageAreaEdition() {
-        for (String pageObject : pageMap.getKeyList()) {
-            PhysicalObject object = pageMap.get(pageObject);
-            if (object.getDocStruct().equals(newPageArea)) {
-                currentPage = object;
-                break;
-            }
-        }
-        pageArea = "";
-        pageAreaEditionMode = false;
-        deletePageArea();
+        this.pageAreaManager.resetNewPageArea();
     }
+
+    /**
+     * Get all page areas of current page
+     * @return
+     */
+    public String getPageAreas() {
+        
+        return this.pageAreaManager.getRectangles(getCurrentPage(), myDocStruct);
+
+    }
+
+    public String getPageArea() {
+        return this.pageAreaManager.getNewPageAreaLabel();
+    }
+    
+    public void setPageArea(String label) {
+        logger.warn("Attempting to set page area to ", label);
+    }
+    
+    private DocStruct getCurrentPage() {
+        List<DocStruct> pages = document.getPhysicalDocStruct().getAllChildren();
+        if (pages == null || pages.isEmpty() || pages.size() <= imageIndex) {
+            return null;
+        }
+        DocStruct page = pages.get(imageIndex);
+        return page;
+    }
+
 
     /**
      * alle Seiten des aktuellen Strukturelements ermitteln ================================================================
@@ -2796,7 +2767,7 @@ public class Metadaten implements Serializable {
         if (inStrukturelement.getDocstructType().equals("div")) {
             pageIdentifier = MetadatenErmitteln(inStrukturelement, "physPageNumber");
         } else {
-            pageIdentifier = MetadatenErmitteln(inStrukturelement, "physPageNumber") + "_" + physicalDocStructs.indexOf(inStrukturelement);
+            pageIdentifier = this.pageAreaManager.createPhysicalPageNumberForArea(inStrukturelement, inStrukturelement.getParent());
         }
         for (Metadata meineSeite : listMetadaten) {
             this.structSeitenNeu[inZaehler] = new MetadatumImpl(meineSeite, inZaehler, this.myPrefs, this.myProzess, this);
@@ -3420,7 +3391,6 @@ public class Metadaten implements Serializable {
                 this.pagesStart = po.getLabel();
             }
         }
-        pageArea = "";
     }
 
     public void CurrentEndpage() {
@@ -3430,7 +3400,6 @@ public class Metadaten implements Serializable {
                 this.pagesEnd = po.getLabel();
             }
         }
-        pageArea = "";
     }
 
     public void startpage() {
@@ -3524,7 +3493,11 @@ public class Metadaten implements Serializable {
             List<String> pageIdentifierList = pageMap.getKeyList().subList(startPage, endPage + 1);
 
             for (String pageIdentifier : pageIdentifierList) {
-                myDocStruct.addReferenceTo(pageMap.get(pageIdentifier).getDocStruct(), "logical_physical");
+                DocStruct page = pageMap.get(pageIdentifier).getDocStruct();
+                //only add physical docStructs of type "page"/"div" to logical docstruct. Ignore page areas
+                if("div".equalsIgnoreCase(page.getDocstructType())) {                    
+                    myDocStruct.addReferenceTo(page, "logical_physical");
+                }
             }
 
         } else {
@@ -3653,7 +3626,10 @@ public class Metadaten implements Serializable {
      */
     public String SeitenWeg() {
         for (String key : this.structSeitenAuswahl) {
-            this.myDocStruct.removeReferenceTo(pageMap.get(key).getDocStruct());
+            DocStruct ds = Optional.ofNullable(pageMap.get(key)).map(PhysicalObject::getDocStruct).orElse(null);
+            if(ds != null) {                
+                this.myDocStruct.removeReferenceTo(ds);
+            }
         }
         StructSeitenErmitteln(this.myDocStruct);
         MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
@@ -4145,7 +4121,9 @@ public class Metadaten implements Serializable {
         List<String> alle = new ArrayList<>();
         for (String key : pageMap.getKeyList()) {
             PhysicalObject po = pageMap.get(key);
-            alle.add(po.getLabel());
+            if(po.getDocStruct().getType().getName().equals("page")) {                
+                alle.add(po.getLabel());
+            }
         }
 
         Iterator<String> iterator = alle.iterator();
@@ -4918,9 +4896,14 @@ public class Metadaten implements Serializable {
                 logger.error(e);
             }
         }
+        cancelPageAreaEdition();
     }
 
     public void checkSelectedThumbnail(int imageIndex) {
+        // The selection should only happen in "Paginierung"-mode
+        if (!this.modusAnsicht.equals("Paginierung")) {
+            return;
+        }
         if (pageMap != null && !pageMap.isEmpty()) {
             for (String pageObject : pageMap.getKeyList()) {
                 PhysicalObject po = pageMap.get(pageObject);
@@ -5279,5 +5262,9 @@ public class Metadaten implements Serializable {
         }
 
         getCommentHelper().setComment(this.imageFolderName, getImage().getImageName(), comment);
+    }
+    
+    public void refresh() {
+        
     }
 }

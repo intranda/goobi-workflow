@@ -87,6 +87,7 @@ import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
@@ -178,7 +179,7 @@ public class StepBean extends BasicBean implements Serializable {
     private IExportPlugin exportPlugin = null;
 
     @Getter
-    private Map<String, List<String>> displayableMetadataMap;
+    private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
 
     @Inject
     @Push
@@ -186,6 +187,7 @@ public class StepBean extends BasicBean implements Serializable {
 
     public StepBean() {
         this.anzeigeAnpassen = new HashMap<>();
+        anzeigeAnpassen.put("numberOfImages", false);
 
         /*
          * --------------------- Vorgangsdatum generell anzeigen? -------------------
@@ -305,6 +307,10 @@ public class StepBean extends BasicBean implements Serializable {
             answer = "institution.shortName";
         } else if (sortierung.equals("institutionDesc")) {
             answer = "institution.shortName desc";
+        } else if (sortierung.equals("numberOfImagesAsc")) {
+            answer = "prozesse.sortHelperImages";
+        } else if (sortierung.equals("numberOfImagesDesc")) {
+            answer = "prozesse.sortHelperImages desc";
         }
 
         return answer;
@@ -380,9 +386,12 @@ public class StepBean extends BasicBean implements Serializable {
         return "task_edit";
     }
 
-    public String EditStep() {
-        mySchritt = StepManager.getStepById(mySchritt.getId());
-        mySchritt.lazyLoad();
+    public String EditStep() throws SwapException, DAOException, IOException, InterruptedException {
+        try {
+            mySchritt = StepManager.getStepById(mySchritt.getId());
+            mySchritt.lazyLoad();
+        } catch(Exception e) {
+        }
 
         return "task_edit";
     }
@@ -1053,6 +1062,9 @@ public class StepBean extends BasicBean implements Serializable {
         loadDisplayableMetadata();
         if (this.mySchritt.getStepPlugin() != null && !this.mySchritt.getStepPlugin().isEmpty()) {
             myPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, this.mySchritt.getStepPlugin());
+            //            if(mySchritt.isTypAutomaticThumbnail()) {
+            //            	mySchritt.submitAutomaticThumbnailTicket();
+            //            }
             if (myPlugin == null) {
                 exportPlugin = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, this.mySchritt.getStepPlugin());
             }
@@ -1177,7 +1189,8 @@ public class StepBean extends BasicBean implements Serializable {
             try {
                 dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, mySchritt.getStepPlugin());
             } catch (Exception e) {
-                logger.error("Can't load export plugin, use default plugin", e);
+                logger.error("Can't load export plugin, use default export", e);
+                Helper.setFehlerMeldung("Can't load export plugin, use default export");
                 dms = new ExportDms();
             }
         }

@@ -70,10 +70,21 @@ table {
 	outline: 5px auto -webkit-focus-ring-color;
 }
 
+.outer-skip-link {
+  	position: relative;
+  	width: 100%;
+  	text-align: center;
+}
+
 .skip-main {
-	font-size: 0px;
+	position: absolute;
+	top: -50px;
+	height: 30px;
+	padding: 15px;
+	font-size: 25px;
 }
 
 .skip-main:focus {
-	font-size: inherit;
+	top: 0px;
+	position: relative;
 }

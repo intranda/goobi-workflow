@@ -14,6 +14,19 @@
 	<composite:interface />
 
 	<composite:implementation>
+		<script type="text/javascript">
+        	function switchExpanded(id){
+        		console.log("called by: "+id);
+				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				console.log(x)
+				if (x == "true"){
+					x = "false"
+				} else {
+					x = "true"
+				}
+				document.getElementById(id).setAttribute("aria-expanded", x);
+        	}
+        </script>
 		<!-- Load the main menu only if the user is logged in -->
 		<!-- The page "mailNotificationDisabled.xhtml needs the menu with user == null -->
 		<c:if test="#{LoginForm.myBenutzer != null}">
@@ -69,7 +82,9 @@
 								type="button"
 								data-toggle="dropdown"
 								class='rendered-in-wide-window dropdown-toggle btn'
-								aria-haspopup="true">
+								aria-haspopup="true"
+								aria-expanded="false"
+								onclick="switchExpanded(this.id)">
 								<span>#{msgs.workflow}</span>
 								<span class="caret"></span>
 							</button>
@@ -82,7 +97,7 @@
 									action="process_search"
 									filter="#{ProzessverwaltungForm.filter}"
 									rendered="#{LoginForm.hasRole('Workflow_General_Search')}"
-									icon="fa fa-search box-icon-fix-menu-up3 "
+									icon="fa fa-search box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
 								<!-- Prozessuebersicht -->
@@ -94,7 +109,7 @@
 									filter="#{ProzessverwaltungForm.filter}"
 									display="#{ProzessverwaltungForm.modusAnzeige}"
 									rendered="#{LoginForm.hasRole('Workflow_Processes')}"
-									icon="fa fa-tasks box-icon-fix-menu-up3 "
+									icon="fa fa-tasks box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
 								<!-- batches -->
@@ -105,7 +120,7 @@
 									action="#{BatchForm.FilterAlleStart}"
 									display="#{BatchForm.modusBearbeiten}"
 									rendered="#{LoginForm.hasRole('Workflow_General_Batches')}"
-									icon="fa fa-archive box-icon-fix-menu-up3 "
+									icon="fa fa-archive box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
 								<!-- Prozessvorlagen -->
@@ -116,7 +131,7 @@
 									action="#{ProzessverwaltungForm.FilterVorlagen}"
 									filter="#{ProzessverwaltungForm.filter}"
 									rendered="#{LoginForm.hasRole('Workflow_ProcessTemplates')}"
-									icon="fa fa-files-o box-icon-fix-menu-up3 "
+									icon="fa fa-files-o box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
 								<!-- Workflow-Plugins -->
@@ -131,7 +146,7 @@
 													action="#{NavigationForm.setPlugin(plugin)}"
 													id="plugin">
 													<span>
-														<i class="fa fa-plug box-icon-fix-menu-up3"></i>
+														<i class="fa fa-plug box-icon-fix-menu"></i>
 														<span class="margin-left-10">#{msgs[plugin]}</span>
 													</span>
 													<f:setPropertyActionListener
@@ -158,7 +173,9 @@
 								type="button"
 								data-toggle="dropdown"
 								class='rendered-in-wide-window dropdown-toggle btn'
-								aria-haspopup="true">
+								aria-haspopup="true"
+								aria-expanded="false"
+								onclick="switchExpanded(this.id)">
 								<span>#{msgs.administration}</span>
 								<span class="caret"></span>
 							</button>
@@ -170,7 +187,7 @@
 									label="#{msgs.benutzer}"
 									action="#{BenutzerverwaltungForm.FilterKein}"
 									rendered="#{LoginForm.hasRole('Admin_Users')}"
-									icon="fa fa-user box-icon-fix-menu-up3 "
+									icon="fa fa-user box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
 								<!-- Benutzergruppen -->
@@ -180,7 +197,7 @@
 									label="#{msgs.benutzergruppen}"
 									action="#{BenutzergruppenForm.FilterKein}"
 									rendered="#{LoginForm.hasRole('Admin_Usergroups')}"
-									icon="fa fa-users box-icon-fix-menu-up3 "
+									icon="fa fa-users box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
 								<!-- Projekte -->
@@ -190,7 +207,7 @@
 									label="#{msgs.projekte}"
 									action="#{ProjekteForm.FilterKein}"
 									rendered="#{LoginForm.hasRole('Admin_Projects')}"
-									icon="fa fa-compass box-icon-fix-menu-up3 "
+									icon="fa fa-compass box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
 								<!-- Institution -->
@@ -200,7 +217,7 @@
 									label="#{msgs.institutions}"
 									action="#{institutionBean.FilterKein}"
 									rendered="#{LoginForm.myBenutzer.superAdmin}"
-									icon="fa fa-building box-icon-fix-menu-up3"
+									icon="fa fa-building box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
 								<!-- Regelsaetze -->
@@ -210,7 +227,7 @@
 									label="#{msgs.regelsaetze}"
 									action="#{RegelsaetzeForm.FilterKein}"
 									rendered="#{LoginForm.hasRole('Admin_Rulesets')}"
-									icon="fa fa-wrench box-icon-fix-menu-up3 "
+									icon="fa fa-wrench box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
 								<!-- Laufzettel -->
@@ -220,7 +237,7 @@
 									label="#{msgs.dockets}"
 									action="#{DocketForm.FilterKein}"
 									rendered="#{LoginForm.hasRole('Admin_Dockets')}"
-									icon="fa fa-print box-icon-fix-menu-up3"
+									icon="fa fa-print box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
 								<!-- Ldapgruppen -->
@@ -230,7 +247,7 @@
 									label="#{msgs.authentication_configuration}"
 									action="#{LdapGruppenForm.FilterKein}"
 									rendered="#{LoginForm.hasRole('Admin_Ldap')}"
-									icon="fa fa-key box-icon-fix-menu-up3 "
+									icon="fa fa-key box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
 								<!-- Message Queue -->
@@ -240,7 +257,7 @@
 									label="#{msgs.menu_administration_currentQueue}"
 									action="queue"
 									rendered="#{LoginForm.hasRole('Admin_Queue')}"
-									icon="fa fa-spinner box-icon-fix-menu-up3"
+									icon="fa fa-spinner box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
 								<!-- Jobtypes -->
@@ -250,7 +267,7 @@
 									label="#{msgs.menu_administration_jobtypes}"
 									action="admin_jobtypes_all"
 									rendered="#{LoginForm.hasRole('Admin_Jobtypes')}"
-									icon="fa fa-gears box-icon-fix-menu-up3"
+									icon="fa fa-gears box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
 								<!-- Plugins overview -->
@@ -259,7 +276,7 @@
 									parentMenu="menu_administration"
 									label="#{msgs.menu_administration_plugins}"
 									action="plugins"
-									icon="fa fa-stethoscope box-icon-fix-menu-up3"
+									icon="fa fa-stethoscope box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
 								<!-- Vokabularverwaltung -->
@@ -269,7 +286,7 @@
 									label="#{msgs.vocabularyManager}"
 									action="#{vocabularyBean.FilterKein}"
 									rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
-									icon="fa fa-database box-icon-fix-menu-up3"
+									icon="fa fa-database box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
 								<!-- SWAGGER-API -->
@@ -278,7 +295,7 @@
 									parentMenu="menu_administration"
 									label="#{msgs.apiDescription}"
 									action="restApi.xhtml"
-									icon="fa fa-terminal box-icon-fix-menu-up3"
+									icon="fa fa-terminal box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
 								<!-- Superadmin -->
@@ -288,7 +305,7 @@
 									label="#{msgs.administrationsaufgaben}"
 									action="admin"
 									rendered="#{LoginForm.hasRole('Admin_Administrative_Tasks')}"
-									icon="fa fa-bullhorn box-icon-fix-menu-up3"
+									icon="fa fa-bullhorn box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
 								<!-- Admin-Plugins -->
@@ -303,7 +320,7 @@
 													action="#{AdministrationForm.setPlugin(plugin)}"
 													id="plugin">
 													<span>
-														<i class="fa fa-plug box-icon-fix-menu-up3"></i>
+														<i class="fa fa-plug box-icon-fix-menu"></i>
 														<span class="margin-left-10">#{msgs[plugin]}</span>
 													</span>
 													<f:setPropertyActionListener
@@ -330,7 +347,9 @@
 								type="button"
 								data-toggle="dropdown"
 								class='rendered-in-wide-window dropdown-toggle btn'
-								aria-haspopup="true">
+								aria-haspopup="true"
+								aria-expanded="false"
+								onclick="switchExpanded(this.id)">
 								<span>#{msgs.controlling}</span>
 								<span class="caret"></span>
 							</button>
@@ -341,7 +360,7 @@
 									label="#{msgs.statistik}"
 									action="statistics"
 									rendered="#{LoginForm.hasRole('Statistics_General')}"
-									icon="fa fa-bar-chart box-icon-fix-menu-up3 "
+									icon="fa fa-bar-chart box-icon-fix-menu"
 									fontclass="margin-left-10" />
 
 								<h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Plugins')}">
@@ -355,7 +374,7 @@
 													action="#{StatisticalQuestionBean.setStatisticalQuestion(statistics)}"
 													id="statistics">
 													<span>
-														<i class="fa fa-pie-chart box-icon-fix-menu-up3"></i>
+														<i class="fa fa-pie-chart box-icon-fix-menu"></i>
 														<span class="margin-left-10">#{msgs[statistics]}</span>
 													</span>
 													<f:setPropertyActionListener
