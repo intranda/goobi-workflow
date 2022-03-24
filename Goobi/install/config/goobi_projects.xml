@@ -18,14 +18,13 @@ Sequence for determining the right <project> element:
             <itemlist>
                 <item from="werk" multiselect="true">
                     Creator of digital edition
-                    <select label="Verbundzentrale des GBV (VZG)">Common Library Network</select>
+                    <select label="CHANGEME">CHANGEME</select>
 
                 </item>
-                <item from="werk" multiselect="false">
-                    Font type
-                    <select label="Antiqua">Antiqua </select>
-                    <select label="Gothic"> Gothic </select>
-                    <select label="Mixed">Mixed </select>
+                <item from="prozess" multiselect="false">
+                    FontType
+                    <select label="Antiqua"> Antiqua </select>
+                    <select label="Fracture"> Fracture </select>
                 </item>
 
                 <!-- Title for Monograph and Periodical -->
@@ -91,11 +90,11 @@ Sequence for determining the right <project> element:
                 </item>
                 <item metadata="_electronicPublisher" multiselect="true" required="true" ughbinding="true">
                     Creator of digital edition
-                    <select label="Goobi"> Goobi </select>
+                    <select label="CHANGEME"> CHANGEME </select>
                 </item>
                 <item metadata="_placeOfElectronicOrigin" multiselect="true" required="true" ughbinding="true">
                     Place of digital edition
-                    <select label="Göttingen"> Göttingen </select>
+                    <select label="CHANGEME"> CHANGEME </select>
                 </item>
                 <item metadata="_digitalOrigin" multiselect="true" required="true" ughbinding="true">
                     Digital origin
@@ -103,11 +102,11 @@ Sequence for determining the right <project> element:
                 </item>
                 <item docstruct="topstruct" isnotdoctype="periodical\|multivolume" from="vorlage" metadata="PhysicalLocation" multiselect="true" required="true" ughbinding="true">
                     Physical location
-                    <select label="Goobi"> Goobi </select>
+                    <select label="CHANGEME"> CHANGEME </select>
                 </item>
                 <item docstruct="firstchild" isdoctype="periodical\|multivolume" from="vorlage" metadata="PhysicalLocation" multiselect="true" required="true" ughbinding="true">
                     Physical location
-                    <select label="Goobi"> Goobi </select>
+                    <select label="CHANGEME"> CHANGEME </select>
                 </item>
                 <processtitle isdoctype="multivolume">ATS+TSL+'_'+Identifier digital (f)+'_'+Label number</processtitle>
                 <processtitle isdoctype="monograph">ATS+TSL+'_'+Identifier digital (a)</processtitle>

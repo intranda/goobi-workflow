@@ -13,7 +13,19 @@
     </composite:interface>
 
     <composite:implementation>
-
+		<script type="text/javascript">
+        	function switchExpanded(id){
+        		console.log("called by: "+id);
+				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				console.log(x)
+				if (x == "true"){
+					x = "false"
+				} else {
+					x = "true"
+				}
+				document.getElementById(id).setAttribute("aria-expanded", x);
+        	}
+        </script>
         <div class="dataTables_filter">
 
             <button
@@ -43,7 +55,11 @@
                         aria-label="#{msgs.selectTableColumns}"
                         id="selectDisplay"
                         class="btn dropdown-toggle searchfieldbuttongroup"
-                        data-toggle="dropdown"> <i class="fa fa-columns margin-right-5" /> <span class="caret"></span>
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        onclick="switchExpanded(this.id)"> 
+                        <i class="fa fa-columns margin-right-5" /> <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
                         <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
@@ -96,6 +112,20 @@
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['metadatadetails']}" />
                             </button>
                         </li>
+                        <li>
+                        	<!-- Regelsatz -->
+                        	<button
+                                jsf:action="#{NavigationForm.Reload}"
+                                jsf:id="showProcessRuleset"
+                                class="dropdown-item">
+                                <i
+                                    class="fa #{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                                <h:outputText value="#{msgs.regelsatz}" />
+                                <x:updateActionListener
+                                    property="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}"
+                                    value="#{not ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}" />
+                            </button>
+                        </li>
                         <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
                             <!-- Batch ID --> <button
                                 jsf:action="#{NavigationForm.Reload}"
@@ -144,6 +174,21 @@
                                     value="#{not ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}" />
                             </button>
                         </li>
+                        
+                        <li jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen'}">
+                            <!-- show number of images --> 
+                            <button
+                                jsf:action="#{NavigationForm.Reload}"
+                                jsf:id="showNumberOfImages"
+                                class="dropdown-item">
+                                <i class="fa #{ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+                                <h:outputText value="#{msgs.NumberOfImages}" />
+                                <x:updateActionListener
+                                    property="#{ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}"
+                                    value="#{not ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}" />
+                            </button>
+                        </li>
+                        
                     </ul>
                 </div>
                 </div>
@@ -156,10 +201,14 @@
                     title="#{msgs.anzeigeAnpassen}">
                     <div class="dropdown">
                     <button
+                    	id="modifyDisplay"
                         type="button"
                         aria-label="#{msgs.anzeigeAnpassen}"
                         class="btn dropdown-toggle searchfieldbuttongroup"
-                        data-toggle="dropdown"> <i class="fa fa-wrench margin-right-5" /> <span class="caret"></span>
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        onclick="switchExpanded(this.id)"> <i class="fa fa-wrench margin-right-5" /> <span class="caret"></span>
                     </button>
 
                     <!-- show or hide depending on filter -->
@@ -197,7 +246,6 @@
                 </div>
             </c:if>
         </div>
-
     </composite:implementation>
 
 </ui:composition>

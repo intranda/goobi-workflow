@@ -68,7 +68,6 @@ import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.beans.AltoChange;
-import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.SimpleAlto;
@@ -1497,7 +1496,9 @@ public class Metadaten implements Serializable {
             Integer id = Integer.valueOf(Helper.getRequestParameter("ProzesseID"));
             this.myProzess = ProcessManager.getProcessById(id);
         } catch (NumberFormatException e1) {
-            Helper.setFehlerMeldung("error while loading process data" + e1.getMessage());
+            Helper.setFehlerMeldung("error while loading process data " + e1.getMessage());
+            System.out.println(e1);
+            e1.printStackTrace();         
             return Helper.getRequestParameter("zurueck");
             // } catch (DAOException e1) {
             // Helper.setFehlerMeldung("error while loading process data" + e1.getMessage());
@@ -2766,7 +2767,7 @@ public class Metadaten implements Serializable {
         if (inStrukturelement.getDocstructType().equals("div")) {
             pageIdentifier = MetadatenErmitteln(inStrukturelement, "physPageNumber");
         } else {
-            pageIdentifier = MetadatenErmitteln(inStrukturelement, "physPageNumber") + "_" + physicalDocStructs.indexOf(inStrukturelement);
+            pageIdentifier = this.pageAreaManager.createPhysicalPageNumberForArea(inStrukturelement, inStrukturelement.getParent());
         }
         for (Metadata meineSeite : listMetadaten) {
             this.structSeitenNeu[inZaehler] = new MetadatumImpl(meineSeite, inZaehler, this.myPrefs, this.myProzess, this);
@@ -3492,7 +3493,11 @@ public class Metadaten implements Serializable {
             List<String> pageIdentifierList = pageMap.getKeyList().subList(startPage, endPage + 1);
 
             for (String pageIdentifier : pageIdentifierList) {
-                myDocStruct.addReferenceTo(pageMap.get(pageIdentifier).getDocStruct(), "logical_physical");
+                DocStruct page = pageMap.get(pageIdentifier).getDocStruct();
+                //only add physical docStructs of type "page"/"div" to logical docstruct. Ignore page areas
+                if("div".equalsIgnoreCase(page.getDocstructType())) {                    
+                    myDocStruct.addReferenceTo(page, "logical_physical");
+                }
             }
 
         } else {
@@ -3621,7 +3626,10 @@ public class Metadaten implements Serializable {
      */
     public String SeitenWeg() {
         for (String key : this.structSeitenAuswahl) {
-            this.myDocStruct.removeReferenceTo(pageMap.get(key).getDocStruct());
+            DocStruct ds = Optional.ofNullable(pageMap.get(key)).map(PhysicalObject::getDocStruct).orElse(null);
+            if(ds != null) {                
+                this.myDocStruct.removeReferenceTo(ds);
+            }
         }
         StructSeitenErmitteln(this.myDocStruct);
         MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
@@ -4892,6 +4900,10 @@ public class Metadaten implements Serializable {
     }
 
     public void checkSelectedThumbnail(int imageIndex) {
+        // The selection should only happen in "Paginierung"-mode
+        if (!this.modusAnsicht.equals("Paginierung")) {
+            return;
+        }
         if (pageMap != null && !pageMap.isEmpty()) {
             for (String pageObject : pageMap.getKeyList()) {
                 PhysicalObject po = pageMap.get(pageObject);

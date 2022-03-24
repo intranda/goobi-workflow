@@ -219,27 +219,34 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             }
 
             String ed = myProzess.getExportDirectory();
-            ed = replacer.replace(ed);
             Path exportFolder = Paths.get(ed);
             if (StorageProvider.getInstance().isFileExists(exportFolder) && StorageProvider.getInstance().isDirectory(exportFolder)) {
-                List<Path> subdir = StorageProvider.getInstance().listFiles(ed);
+                List<Path> filesInExportFolder = StorageProvider.getInstance().listFiles(ed);
 
-                for (Path dir : subdir) {
-                    if (StorageProvider.getInstance().isDirectory(dir) && !StorageProvider.getInstance().list(dir.toString()).isEmpty()) {
-                        if (!dir.getFileName().toString().matches(".+\\.\\d+")) {
-                            String suffix = dir.getFileName().toString().substring(dir.getFileName().toString().lastIndexOf("_"));
+                for (Path exportFile : filesInExportFolder) {
+                    if (StorageProvider.getInstance().isDirectory(exportFile) && !StorageProvider.getInstance().list(exportFile.toString()).isEmpty()) {
+                        if (!exportFile.getFileName().toString().matches(".+\\.\\d+")) {
+                            String suffix = exportFile.getFileName().toString().substring(exportFile.getFileName().toString().lastIndexOf("_"));
                             Path destination = Paths.get(benutzerHome.toString(), atsPpnBand + suffix);
                             if (!StorageProvider.getInstance().isFileExists(destination)) {
                                 StorageProvider.getInstance().createDirectories(destination);
                             }
-                            List<Path> files = StorageProvider.getInstance().listFiles(dir.toString());
+                            List<Path> files = StorageProvider.getInstance().listFiles(exportFile.toString());
                             for (Path file : files) {
                                 Path target = Paths.get(destination.toString(), file.getFileName().toString());
                                 StorageProvider.getInstance().copyFile(file, target);
                             }
                         }
+                    }else {
+                        // if it is a regular file, export it to source folder
+                        Path destination = Paths.get(benutzerHome.toString(), atsPpnBand + "_src");
+                        if (!StorageProvider.getInstance().isFileExists(destination)) {
+                            StorageProvider.getInstance().createDirectories(destination);
+                        }
+                        Path target = Paths.get(destination.toString(), exportFile.getFileName().toString());
+                        StorageProvider.getInstance().copyFile(exportFile, target);
                     }
-                    // TODO if it is a regular file, export it to source folder
+
                 }
             }
         }catch (AccessDeniedException e) {

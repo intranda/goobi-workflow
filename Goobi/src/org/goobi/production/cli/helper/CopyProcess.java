@@ -1236,7 +1236,6 @@ public class CopyProcess {
         /* jetzt den Bandtitel parsen */
         while (tokenizer.hasMoreTokens()) {
             String myString = tokenizer.nextToken();
-            // System.out.println(myString);
             /*
              * wenn der String mit ' anfängt und mit ' endet, dann den Inhalt so übernehmen
              */

@@ -40,19 +40,34 @@
 						</div>
 						<div class="box-content nopadding">
 
-							<intranda:formInputText id="title" name="titel" label="#{msgs.rulesetTitle}"
+							<intranda:formInputText
+								id="title"
+								name="titel"
+								label="#{msgs.rulesetTitle}"
 								field="#{RegelsaetzeForm.myRegelsatz.titel}"
-								help="#{msgs.helpRulesetTitle}" fieldStyle="form-control" />
+								fieldStyle="form-control"
+								help="#{msgs.helpRulesetTitle}" />
 
-							<intranda:formInputText id="file" name="filename" label="#{msgs.rulesetFile}"
+							<intranda:formInputDropDown
+								id="file_dropdown"
+								name="filename"
+								label="#{msgs.rulesetFile}"
 								field="#{RegelsaetzeForm.myRegelsatz.datei}"
-								help="#{msgs.helpRulesetFile}" fieldStyle="form-control" />
+								fieldStyle="form-control"
+								help="#{msgs.helpRulesetFile}"
+								selectItems="#{RegelsaetzeForm.availableRulesetFiles}"
+								required="true" />
 
-							<intranda:formInputCheckBox id="order" label="#{msgs.rulesetOrderByFile}"
+							<intranda:formInputCheckBox
+								id="order"
+								name="check"
+								label="#{msgs.rulesetOrderByFile}"
 								field="#{RegelsaetzeForm.myRegelsatz.orderMetadataByRuleset}"
-								help="#{msgs.helpRulesetOrderByFile}" name="check" />
-						
-							<intranda:formButtonArea id="buttons" form="#{RegelsaetzeForm}"
+								help="#{msgs.helpRulesetOrderByFile}" />
+
+							<intranda:formButtonArea
+								id="buttons"
+								form="#{RegelsaetzeForm}"
 								object="#{RegelsaetzeForm.myRegelsatz.id}"
 								actionCancel="#{RegelsaetzeForm.Cancel}" />
 

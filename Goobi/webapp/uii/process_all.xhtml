@@ -47,6 +47,20 @@
 				heigth:50px;	
 			}    
 	    </style>
+	    
+	    <script type="text/javascript">
+        	function switchExpanded(id){
+        		console.log("called by: "+id);
+				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				console.log(x)
+				if (x == "true"){
+					x = "false"
+				} else {
+					x = "true"
+				}
+				document.getElementById(id).setAttribute("aria-expanded", x);
+        	}
+        </script>
     	
         <main>
             <c:if test="#{LoginForm.hasRole('Workflow_Processes') or LoginForm.hasRole('Workflow_ProcessTemplates')}">
@@ -192,6 +206,12 @@
 				                                        value="#{msgs.vorgangsdatum}"
 				                                        rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}"
 				                                        ajaxRender=":myform" />
+				                                    <!-- Ruleset -->
+				                                    <intranda:columnheader
+														addClass="tableColumnOverflow maxWidth120"
+				                                        value="#{msgs.regelsatz}"
+				                                        rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}"
+				                                        sortable="false"/>
 				                                    <!-- Status -->
 													<intranda:columnheader
 														addClass="tableColumnOverflow width200"
@@ -201,7 +221,7 @@
 				                                        ajaxRender=":myform" />
 				                                    <!-- . -->
 													<intranda:columnheader
-														addClass="tableColumnOverflow maxWidth120 #{item.getProjekt().projectIsArchived?font-status-deactivated:font-black}"
+														addClass="tableColumnOverflow maxWidth120 #{item.getProjekt().projectIsArchived?'font-status-deactivated':'font-black'}"
 				                                        name="projekt"
 				                                        form="#{ProzessverwaltungForm}"
 				                                        value="#{msgs.projekt}"
@@ -246,6 +266,16 @@
 				                                        value="#{msgs.ausgelagert}"
 				                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}"
 				                                        sortable="false"/>
+                                                        
+                                                     <!-- number of images -->
+                                                    <intranda:columnheader
+                                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}"
+                                                        value="#{msgs.NumberOfImages}"
+                                                        addClass="tableColumnOverflow maxWidth120"
+                                                        name="numberOfImages"
+                                                        form="#{ProzessverwaltungForm}"
+                                                        ajaxRender=":myform"
+                                                        />                                                        
 				                                    <!-- Buttons -->
 													<intranda:columnheader
 														addClass="width200"
@@ -462,6 +492,10 @@
 															<!-- <f:convertDateTime locale="#{SpracheForm.locale}" type="date" dateStyle="medium"/> -->
 														</h:outputText>
 													</td>
+													<!-- Ruleset -->
+													<td jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}">
+														<h:outputText value="#{item.regelsatz.titel}" />
+													</td>
 													<!-- Status -->
 													<td>
 														<h:panelGroup
@@ -610,6 +644,12 @@
 													<td jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}">
 														<i class="fa #{item.swappedOutGui?'fa-check-square-o':'fa-square-o'}" />
 													</td>
+                                                         
+	                                                <td jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}">
+                                                       <h:outputText
+                                                    		value="#{item.sortHelperImages}"/>
+                                                    </td>
+                                                    
 													<!-- Buttons -->
 													<td class="width200">
 														<!-- Bearbeiten-Schaltknopf -->
@@ -777,7 +817,6 @@
 		                                                                <h:outputText value="#{msgs.metseditorTemporaryDataExplanation}" />
 		                                                            </div>
 		                                                            <div class="modal-footer">
-		
         
                                                            <h:commandLink onclick="sessionStorage.removeItem('columnWidths');" 
                                                            action="#{Metadaten.XMLlesen}" id="action15a" title="#{msgs.discard}" rel="tooltip"
@@ -811,8 +850,6 @@
                                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
                                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
                                                             </h:commandLink>
-        
-        
 		                                                            </div>
 		                                                        </div>
 		                                                    </div>
@@ -899,7 +936,11 @@
  		                                                        data-toggle="tooltip">
 		                                                        <div class="dropdown">
 		                                                        <button
-		                                                            class="btn #{item.containsUnreachableSteps?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
+		                                                        	id="availableProjectsDropdown"
+		                                                            class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
+		                                                            aria-haspopup="true"
+		                                                            aria-expanded="false"
+		                                                            onclick="switchExpanded(this.id)"
 		                                                            style="margin: 0; padding-left: 4px; padding-right: 4px;"
 		                                                            data-toggle="dropdown"> <span class="caret"></span>
 		                                                        </button>
@@ -968,7 +1009,11 @@
 		
 		                                                        <div class="dropdown">
 		                                                            <button
-		                                                                class="btn #{item.containsUnreachableSteps?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
+		                                                            	id="importProjectListDropdown"
+		                                                                class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
+		                                                                aria-haspopup="true"
+		                                                                aria-expanded="false"
+		                                                                onclick="switchExpanded(this.id)"
 		                                                                style="margin: 0; padding-left: 4px; padding-right: 4px;"
 		                                                                data-toggle="dropdown">
 		                                                                <span class="caret"></span>
@@ -1020,7 +1065,11 @@
 		                                                        data-toggle="tooltip">
 		                                                        <div class="dropdown">
 		                                                        <button
+		                                                        	id="additionalOptionsDropdown"
 		                                                            aria-label="#{msgs.additionalOptions}"
+		                                                            aria-haspopup="true"
+		                                                            aria-expanded="false"
+		                                                            onclick="switchExpanded(this.id)"
 		                                                            type="button"
 		                                                            class="btn dropdown-toggle fa fa-cog"
 		                                                            data-toggle="dropdown"> <span class="caret"></span>

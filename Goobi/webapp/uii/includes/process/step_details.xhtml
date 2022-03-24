@@ -13,7 +13,17 @@
     </composite:interface>
 
     <composite:implementation>
-
+		<link rel="stylesheet" href="template/css/codemirror/codemirror.css?v=#{HelperForm.buildVersion}"/>
+        <script type="text/javascript" src="template/js/codemirror/codemirror.js?v=#{HelperForm.buildVersion}"/>
+    	<script src="template/js/codemirror/mode/yaml/yaml.js?v=#{HelperForm.buildVersion}"/>
+    	
+    	<style>
+	        .CodeMirror{
+				border: 1px solid #ddd;
+				height:100px;	
+			}    
+	    </style>
+    	
         <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='schritt'}">
 
             <div class="box box-color box-bordered">
@@ -420,6 +430,31 @@
                             </span>
                         </div>
                     </div>
+                    
+                    <!-- help is still wrong -->
+                    <div class="form-group" style="">
+                    	<h:outputLabel
+                            for="autoThumbnail"
+                            styleClass="control-label col-sm-3"
+                            value="Auto Thumbnail" />
+                    	<div class="col-sm-9">
+		                    <x:selectBooleanCheckbox
+		                    	forceId="true"
+		                        id="autoThumbnail"
+		                        onclick="showThumbsSettings()"
+		                        value="#{ProzessverwaltungForm.mySchritt.typAutomaticThumbnail}"
+		                        />
+		                    
+		                    <span id="thumbsSettings">
+		                    	<h:inputTextarea
+			                        id="ThumbSettings"
+			                        forceId="true"
+			                        value="#{ProzessverwaltungForm.mySchritt.automaticThumbnailSettingsYaml}"
+			                        styleClass="form-control"
+			                        required="false" />
+	                    	</span>
+	                    </div>
+	                </div>
 
                     <div
                         class="form-group"
@@ -710,7 +745,7 @@
                                 property="#{ProzessverwaltungForm.modusBearbeiten}"
                                 value="" />
                         </button>
-
+ 
 
                         <!-- Cancel -->
                         <button
@@ -744,17 +779,23 @@
         <script type="text/javascript">
 									if (window.attachEvent) {
 										window.attachEvent('onload',
-												txtAutomatischAnzeigen());
+												function(){txtAutomatischAnzeigen(); initThumbCodeMirror(); showThumbsSettings();});
 									} else {
 										if (window.onload) {
 											var curronload = window.onload;
 											var newonload = function() {
 												curronload();
 												txtAutomatischAnzeigen();
+												initThumbCodeMirror();
+												showThumbsSettings();
 											};
 											window.onload = newonload;
 										} else {
-											window.onload = txtAutomatischAnzeigen();
+											window.onload = function() {
+												txtAutomatischAnzeigen();
+												initThumbCodeMirror();
+												showThumbsSettings();
+											}
 										}
 									}
 
@@ -825,6 +866,32 @@
 														.hide();
 											}
 										}
+									}
+									
+									function showThumbsSettings(){
+										var element = document.getElementById("autoThumbnail");
+										if(element != null){
+											if(element.checked){
+												document.getElementById("thumbsSettings").style.display="block";
+											}else{
+												document.getElementById("thumbsSettings").style.display="none";
+											}
+										}
+									}
+									
+									var yamlCodeMirror;
+									
+									function initThumbCodeMirror(){
+										var yamlTextArea = document.getElementById("myform:ThumbSettings")
+										if(yamlTextArea) {
+											yamlCodeMirror = CodeMirror.fromTextArea(yamlTextArea, {
+					    						lineNumbers: true,
+					    						mode: 'yaml'
+					    					});
+											yamlCodeMirror.on('change', editor => {
+					    						document.getElementById("myform:ThumbSettings").innerHTML = editor.getValue();   
+					    				    });
+					                	}
 									}
 								</script>
     </composite:implementation>

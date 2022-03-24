@@ -206,6 +206,7 @@ public class UserManager implements IManager, Serializable {
         r.setDisplayOnlyOpenTasks(rs.getBoolean("displayOnlyOpenTasks"));
         r.setDisplayOnlySelectedTasks(rs.getBoolean("displayOnlySelectedTasks"));
         r.setDisplayProcessDateColumn(rs.getBoolean("displayProcessDateColumn"));
+        r.setDisplayRulesetColumn(rs.getBoolean("displayRulesetColumn"));
         r.setDisplaySelectBoxes(rs.getBoolean("displaySelectBoxes"));
         r.setDisplaySwappingColumn(rs.getBoolean("displaySwappingColumn"));
         r.setHideCorrectionTasks(rs.getBoolean("hideCorrectionTasks"));

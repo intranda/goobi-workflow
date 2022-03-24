@@ -264,9 +264,9 @@ public class ConfigurationHelper implements Serializable {
     public String getPluginFolder() {
         return getGoobiFolder() + "plugins/";
     }
-    
+
     public String getLibFolder() {
-    	return getGoobiFolder() + "lib/";
+        return getGoobiFolder() + "lib/";
     }
 
     public String getPathForLocalMessages() {
@@ -1132,6 +1132,10 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isShowSSOLogoutPage() {
         return getLocalBoolean("showSSOLogoutPage", false);
+    }
+
+    public String getPluginServerUrl() {
+        return getLocalString("pluginServerUrl", "");
     }
 
     /**

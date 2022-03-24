@@ -107,7 +107,6 @@ public class UserBean extends BasicBean implements Serializable {
     @Getter
     private boolean unsubscribedGroupsExist;
 
-
     //changes since last save for each user:
     private Map<Integer, ArrayList<Integer>> addedToGroups = new HashMap<>();
     private Map<Integer, ArrayList<Integer>> removedFromGroups = new HashMap<>();
@@ -187,34 +186,53 @@ public class UserBean extends BasicBean implements Serializable {
             }
             sqlQuery += ")";
         }
-        this.paginator = new DatabasePaginator("Nachname, Vorname", sqlQuery, m, "user_all");
-        this.paginator.setList(this.sortUserList(this.convertDatabaseObjectsToUsers(paginator.getList())));
+
+        this.paginator = new DatabasePaginator(this.getSortTitle(), sqlQuery, m, "user_all");
+        List<? extends DatabaseObject> users = paginator.getList();
+
+        boolean sortProjects = this.sortierung.startsWith("projects");
+        boolean sortUserGroups = this.sortierung.startsWith("group");
+        if (sortProjects || sortUserGroups) {
+            List<User> list = new ArrayList<>();
+            for (int index = 0; index < users.size(); index++) {
+                list.add((User) (users.get(index)));
+            }
+            this.sortUserListByProjectOrGroup(list);
+            this.paginator.setList(list);
+        } else {
+            if (this.sortierung.endsWith("Desc")) {
+                Collections.reverse(users);
+            }
+            this.paginator.setList(users);
+        }
         return "user_all";
     }
 
-    private List<User> convertDatabaseObjectsToUsers(List<? extends DatabaseObject> objects) {
-        List<User> users = new ArrayList<>();
-        for (int index = 0; index < objects.size(); index++) {
-            users.add((User) (objects.get(index)));
+    private String getSortTitle() {
+        String sort = "";
+        if (this.sortierung.startsWith("name")) {
+            sort = "benutzer.Nachname, benutzer.Vorname";
+        } else if (this.sortierung.startsWith("login")) {
+            sort = "benutzer.login";
+        } else if (this.sortierung.startsWith("location")) {
+            sort = "benutzer.Standort";
+            //} else if (this.sortierung.startsWith("group")) {
+            //    sort = "benutzergruppen.titel";
+            //} else if (this.sortierung.startsWith("projects")) {
+            //    sort = "projekte.Titel";
+        } else if (this.sortierung.startsWith("institution")) {
+            sort = "institution.shortName";
         }
-        return users;
+        return sort;
     }
 
-    private List<User> sortUserList(List<User> users) {
+    private void sortUserListByProjectOrGroup(List<User> users) {
         // Find the fitting User-getter-method for the sorting routine depending on the sort strategy
         Function<User, String> function = null;
-        if (this.sortierung.startsWith("name")) {
-            function = User::getNachVorname;
-        } else if (this.sortierung.startsWith("login")) {
-            function = User::getLogin;
-        } else if (this.sortierung.startsWith("location")) {
-            function = User::getStandort;
-        } else if (this.sortierung.startsWith("group")) {
+        if (this.sortierung.startsWith("group")) {
             function = User::getFirstUserGroupTitle;
         } else if (this.sortierung.startsWith("projects")) {
             function = User::getFirstProjectTitle;
-        } else if (this.sortierung.startsWith("institution")) {
-            function = User::getInstitutionName;
         }
 
         // When there is no sorting routine, don't sort and return the original list
@@ -227,7 +245,6 @@ public class UserBean extends BasicBean implements Serializable {
             }
             Collections.sort(users, comparator);
         }
-        return users;
     }
 
     public String Speichern() {

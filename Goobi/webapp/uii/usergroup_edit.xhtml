@@ -133,10 +133,13 @@
 								</div>
 							</div>
 
-							<intranda:formButtonArea id="buttons" form="#{BenutzergruppenForm}"
+							<intranda:formButtonArea
+								id="buttons"
+								form="#{BenutzergruppenForm}"
 								object="#{BenutzergruppenForm.myBenutzergruppe.id}"
-								actionCancel="#{BenutzergruppenForm.Cancel}" />
-
+								actionCancel="#{BenutzergruppenForm.Cancel}"
+								grayeddelete="#{!BenutzergruppenForm.myBenutzergruppe.isDeletable()}"
+								grayeddeletetooltip="#{msgs.userGroupNotDeletable}"/>
 						</div>
 					</div>
 				</div>
