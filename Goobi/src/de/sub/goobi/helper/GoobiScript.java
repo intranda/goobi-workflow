@@ -3,7 +3,6 @@ package de.sub.goobi.helper;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -62,6 +61,10 @@ public class GoobiScript {
      */
     public String execute(List<Integer> processes, String allScripts, GoobiScriptManager gsm) {
         List<Map<String, String>> scripts = parseGoobiscripts(allScripts);
+        return this.execute(processes, scripts, gsm);
+    }
+
+    public String execute(List<Integer> processes, List<Map<String, String>> scripts, GoobiScriptManager gsm) {
         if (scripts == null) {
             return "";
         }
@@ -103,7 +106,7 @@ public class GoobiScript {
                         // initialize the GoobiScript to check if all is valid
                         List<GoobiScriptResult> scriptResults = gs.prepare(processes, currentScript.toString(), currentScript);
 
-                        // just execute the GoobiScript now if the initialisation was valid
+                        // just execute the GoobiScript now if the initialization was valid
                         if (!scriptResults.isEmpty()) {
                             Helper.setMeldung("goobiScriptfield", "", "GoobiScript added: " + gs.getAction());
                             gsm.enqueueScripts(scriptResults);
@@ -128,16 +131,13 @@ public class GoobiScript {
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<Map<String, String>> typeRef = new TypeReference<Map<String, String>>() {
         };
-        List<Map<String, String>> scripts = new ArrayList<>();
         try {
             YAMLParser yamlParser = yaml.createParser(allScripts);
-            scripts = mapper.readValues(yamlParser, typeRef).readAll();
-        } catch (IOException e1) {
-            log.error(e1);
-            Helper.setFehlerMeldung("goobiScriptfield", "Can't parse GoobiScript. Please check your Syntax. Only valid YAML is allowed.");
+            return mapper.readValues(yamlParser, typeRef).readAll();
+        } catch (IOException ioException) {
+            log.error(ioException);
             return null;
         }
-        return scripts;
     }
 
     /**

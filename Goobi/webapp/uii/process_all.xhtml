@@ -47,6 +47,20 @@
 				heigth:50px;	
 			}    
 	    </style>
+	    
+	    <script type="text/javascript">
+        	function switchExpanded(id){
+        		console.log("called by: "+id);
+				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				console.log(x)
+				if (x == "true"){
+					x = "false"
+				} else {
+					x = "true"
+				}
+				document.getElementById(id).setAttribute("aria-expanded", x);
+        	}
+        </script>
     	
         <main>
             <c:if test="#{LoginForm.hasRole('Workflow_Processes') or LoginForm.hasRole('Workflow_ProcessTemplates')}">
@@ -192,6 +206,12 @@
 				                                        value="#{msgs.vorgangsdatum}"
 				                                        rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processDate']}"
 				                                        ajaxRender=":myform" />
+				                                    <!-- Ruleset -->
+				                                    <intranda:columnheader
+														addClass="tableColumnOverflow maxWidth120"
+				                                        value="#{msgs.regelsatz}"
+				                                        rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}"
+				                                        sortable="false"/>
 				                                    <!-- Status -->
 													<intranda:columnheader
 														addClass="tableColumnOverflow width200"
@@ -201,7 +221,7 @@
 				                                        ajaxRender=":myform" />
 				                                    <!-- . -->
 													<intranda:columnheader
-														addClass="tableColumnOverflow maxWidth120 #{item.getProjekt().projectIsArchived?font-status-deactivated:font-black}"
+														addClass="tableColumnOverflow maxWidth120 #{item.getProjekt().projectIsArchived?'font-status-deactivated':'font-black'}"
 				                                        name="projekt"
 				                                        form="#{ProzessverwaltungForm}"
 				                                        value="#{msgs.projekt}"
@@ -246,6 +266,16 @@
 				                                        value="#{msgs.ausgelagert}"
 				                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}"
 				                                        sortable="false"/>
+                                                        
+                                                     <!-- number of images -->
+                                                    <intranda:columnheader
+                                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}"
+                                                        value="#{msgs.NumberOfImages}"
+                                                        addClass="tableColumnOverflow maxWidth120"
+                                                        name="numberOfImages"
+                                                        form="#{ProzessverwaltungForm}"
+                                                        ajaxRender=":myform"
+                                                        />                                                        
 				                                    <!-- Buttons -->
 													<intranda:columnheader
 														addClass="width200"
@@ -366,27 +396,27 @@
 																				<h:panelGroup
 																					rendered="#{step.bearbeitungsstatusEnum == 'LOCKED'}">
 																					<li
-																						class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+																						class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
 																						title="#{msgs.statusGesperrt}" rel="tooltip" />
 																				</h:panelGroup>
 																				<h:panelGroup
 																					rendered="#{step.bearbeitungsstatusEnum == 'OPEN'}">
 																					<li
-																						class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+																						class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
 																						title="#{msgs.statusOffen}" rel="tooltip" />
 																				</h:panelGroup>
 
 																				<h:panelGroup
 																					rendered="#{step.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}">
 																					<li
-																						class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+																						class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
 																						rel="tooltip"
 																						title="#{step.bearbeitungsstatusEnum.title} #{step.editTypeEnum.title}" />
 																				</h:panelGroup>
 																				<h:panelGroup
 																					rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}">
 																					<li
-																						class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+																						class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
 																						rel="tooltip"
 																						title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}" />
 																				</h:panelGroup>
@@ -394,28 +424,28 @@
 																				<h:panelGroup
 																					rendered="#{step.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}">
 																					<li
-																						class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+																						class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
 																						rel="tooltip"
 																						title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}" />
 																				</h:panelGroup>
 																				<h:panelGroup
 																					rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}">
 																					<li
-																						class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+																						class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
 																						rel="tooltip"
 																						title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}" />
 																				</h:panelGroup>
 																				<h:panelGroup
 																					rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and !HelperForm.anonymized}">
 																					<li
-																						class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+																						class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
 																						rel="tooltip"
 																						title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''})  - #{step.editTypeEnum.title}" />
 																				</h:panelGroup>
 																				<h:panelGroup
 																					rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and HelperForm.anonymized}">
 																					<li
-																						class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+																						class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
 																						rel="tooltip"
 																						title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}" />
 																				</h:panelGroup>
@@ -423,7 +453,7 @@
 																				<h:panelGroup
 																					rendered="#{step.bearbeitungsstatusEnum == 'DEACTIVATED'}">
 																					<li
-																						class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+																						class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
 																						title="#{step.bearbeitungsstatusEnum.title}"
 																						rel="tooltip" />
 																				</h:panelGroup>
@@ -431,14 +461,14 @@
 																				<h:panelGroup
 																					rendered="#{step.bearbeitungsstatusEnum == 'INFLIGHT'}">
 																					<li
-																						class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
+																						class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"
 																						title="#{msgs.statusInFlight}"
 																						data-toggle="tooltip"></li>
 																				</h:panelGroup>
 																			</ul>
 																			<h:outputText
 																				value="#{step.bearbeitungsstatusEnum.title}"
-																				rendered="#{NavigationForm.showEasyRead}" />
+																				rendered="#{LoginForm.myBenutzer.uiMode=='low_vision'}" />
 																		</h:column>
 
 																	</x:dataTable>
@@ -462,12 +492,16 @@
 															<!-- <f:convertDateTime locale="#{SpracheForm.locale}" type="date" dateStyle="medium"/> -->
 														</h:outputText>
 													</td>
+													<!-- Ruleset -->
+													<td jsf:rendered="#{ProzessverwaltungForm.anzeigeAnpassen['processRuleset']}">
+														<h:outputText value="#{item.regelsatz.titel}" />
+													</td>
 													<!-- Status -->
 													<td>
 														<h:panelGroup
 		                                                    rendered="#{item.fortschritt3 gt 0}"
 		                                                    data-toggle="tooltip"
-		                                                    styleClass="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-done'):('progress-bar-success'))}"
+		                                                    styleClass="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-done'):('progress-bar-success'))}"
 		                                                    style="width: #{item.fortschritt3}%;line-height:15px;"
 		                                                    pt:role="figure"
 		                                                    pt:aria-label="#{item.fortschritt3}% #{msgs.statusAbgeschlossen}">
@@ -495,7 +529,7 @@
 		                                                <h:panelGroup
 		                                                    rendered="#{item.fortschritt2 gt 0}"
 		                                                    data-toggle="tooltip"
-		                                                    styleClass="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-open'):('progress-bar-warning'))}"
+		                                                    styleClass="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-open'):('progress-bar-warning'))}"
 		                                                    style="width: #{item.fortschritt2}%;line-height:15px;"
 		                                                    pt:role="figure"
 		                                                    pt:aria-label="#{item.fortschritt2}% #{msgs.statusOffen} / #{msgs.statusInBearbeitung}">
@@ -523,7 +557,7 @@
 		                                                <h:panelGroup
 		                                                    rendered="#{item.fortschrittError gt 0}"
 		                                                    data-toggle="tooltip"
-		                                                    styleClass="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-error'):('progress-bar-danger progressbar-status-error'))} "
+		                                                    styleClass="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-error'):('progress-bar-danger progressbar-status-error'))} "
 		                                                    style="width: #{item.fortschrittError}%;line-height:15px;"
 		                                                    pt:role="figure"
 		                                                    pt:aria-label="#{item.fortschrittError}% #{msgs.statusError}">
@@ -551,7 +585,7 @@
 		                                                <h:panelGroup
 		                                                    rendered="#{item.fortschritt1 gt 0}"
 		                                                    data-toggle="tooltip"
-		                                                    styleClass="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-locked'):('progress-bar-danger'))} "
+		                                                    styleClass="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-locked'):('progress-bar-danger'))} "
 		                                                    style="width: #{item.fortschritt1}%;line-height:15px;"
 		                                                    pt:role="figure"
 		                                                    pt:aria-label="#{item.fortschritt1}% #{msgs.statusGesperrt}">
@@ -610,6 +644,12 @@
 													<td jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['swappedOut']}">
 														<i class="fa #{item.swappedOutGui?'fa-check-square-o':'fa-square-o'}" />
 													</td>
+                                                         
+	                                                <td jsf:rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and ProzessverwaltungForm.anzeigeAnpassen['numberOfImages']}">
+                                                       <h:outputText
+                                                    		value="#{item.sortHelperImages}"/>
+                                                    </td>
+                                                    
 													<!-- Buttons -->
 													<td class="width200">
 														<!-- Bearbeiten-Schaltknopf -->
@@ -761,12 +801,12 @@
 		                                                        <div class="modal-content">
 		                                                            <div class="modal-header">
 		
-		                                                                <button
-		                                                                    type="button"
+		                                                                <a
+		                                                                    href="#"
 		                                                                    class="btn btn-blue pull-right"
 		                                                                    title="#{msgs.cancel}"
 		                                                                    data-dismiss="modal"> <i class="fa fa-times"></i>
-		                                                                </button>
+		                                                                </a>
 		                                                                <h4
 		                                                                    class="modal-title"
 		                                                                    id="#{msgs.metseditorOpen}-#{item.id}">
@@ -777,88 +817,39 @@
 		                                                                <h:outputText value="#{msgs.metseditorTemporaryDataExplanation}" />
 		                                                            </div>
 		                                                            <div class="modal-footer">
-		
-		                                                                <button
-                                                                    jsf:onclick="sessionStorage.removeItem('columnWidths');"
-                                                                    jsf:action="#{Metadaten.XMLlesen}"
-                                                                    jsf:id="action15a"
-                                                                    title="#{msgs.discard}"
-                                                                    jsf:rel="tooltip"
-                                                                    class="btn btn-lightred pull-left">
-                                                                    <i class="fa fa-trash-o margin-right-10"></i>
-                                                                    <h:outputText value="#{msgs.discard}" />
-                                                                    <f:passThroughAttribute
-                                                                        name="data-toggle"
-                                                                        value="tooltip" />
-                                                                    <f:param
-                                                                        name="ProzesseID"
-                                                                        value="#{item.id}" />
-                                                                    <f:param
-                                                                        name="BenutzerID"
-                                                                        value="#{LoginForm.myBenutzer.id}" />
-                                                                    <f:param
-                                                                        name="zurueck"
-                                                                        value="process_all" />
-                                                                    <f:param
-                                                                        name="discardChanges"
-                                                                        value="true" />
-                                                                    <f:setPropertyActionListener
-                                                                        value="#{null}"
-                                                                        target="#{NavigationForm.uiStatus.mets_toc1}" />
-                                                                    <f:setPropertyActionListener
-                                                                        value="#{null}"
-                                                                        target="#{NavigationForm.uiStatus.mets_toc2}" />
-                                                                    <f:setPropertyActionListener
-                                                                        value="#{null}"
-                                                                        target="#{NavigationForm.uiStatus.mets_toc3}" />
-                                                                    <f:setPropertyActionListener
-                                                                        value="#{null}"
-                                                                        target="#{NavigationForm.uiStatus.mets_toc4}" />
-                                                                    <f:setPropertyActionListener
-                                                                        value="#{null}"
-                                                                        target="#{NavigationForm.uiStatus.mets_toc5}" />
-                                                                </button>
-                                                                <button
-                                                                    jsf:onclick="sessionStorage.removeItem('columnWidths');"
-                                                                    jsf:action="#{Metadaten.XMLlesen}"
-                                                                    jsf:id="action15b"
-                                                                    title="#{msgs.overwrite}"
-                                                                    jsf:rel="tooltip"
-                                                                    class="btn btn-green">
-                                                                    <i class="fa fa-floppy-o margin-right-10"></i>
-                                                                    <h:outputText value="#{msgs.overwrite}" />
-                                                                    <f:passThroughAttribute
-                                                                        name="data-toggle"
-                                                                        value="tooltip" />
-                                                                    <f:param
-                                                                        name="ProzesseID"
-                                                                        value="#{item.id}" />
-                                                                    <f:param
-                                                                        name="BenutzerID"
-                                                                        value="#{LoginForm.myBenutzer.id}" />
-                                                                    <f:param
-                                                                        name="zurueck"
-                                                                        value="process_all" />
-                                                                    <f:param
-                                                                        name="overwriteChanges"
-                                                                        value="true" />
-                                                                    <f:setPropertyActionListener
-                                                                        value="#{null}"
-                                                                        target="#{NavigationForm.uiStatus.mets_toc1}" />
-                                                                    <f:setPropertyActionListener
-                                                                        value="#{null}"
-                                                                        target="#{NavigationForm.uiStatus.mets_toc2}" />
-                                                                    <f:setPropertyActionListener
-                                                                        value="#{null}"
-                                                                        target="#{NavigationForm.uiStatus.mets_toc3}" />
-                                                                    <f:setPropertyActionListener
-                                                                        value="#{null}"
-                                                                        target="#{NavigationForm.uiStatus.mets_toc4}" />
-                                                                    <f:setPropertyActionListener
-                                                                        value="#{null}"
-                                                                        target="#{NavigationForm.uiStatus.mets_toc5}" />
-                                                                </button>
-		
+        
+                                                           <h:commandLink onclick="sessionStorage.removeItem('columnWidths');" 
+                                                           action="#{Metadaten.XMLlesen}" id="action15a" title="#{msgs.discard}" rel="tooltip"
+                                                                styleClass="btn btn-lightred pull-left">
+                                                                <i class="fa fa-trash-o margin-right-10"></i>
+                                                                <h:outputText value="#{msgs.discard}" />
+                                                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                                                <f:param name="ProzesseID" value="#{item.id}" />
+                                                                <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
+                                                                <f:param name="zurueck" value="process_all" />
+                                                                <f:param name="discardChanges" value="true" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
+                                                            </h:commandLink>
+
+                                                            <h:commandLink onclick="sessionStorage.removeItem('columnWidths');" action="#{Metadaten.XMLlesen}" id="action15b" title="#{msgs.overwrite}" rel="tooltip"
+                                                                styleClass="btn btn-green">
+                                                                <i class="fa fa-floppy-o margin-right-10"></i>
+                                                                <h:outputText value="#{msgs.overwrite}" />
+                                                                <f:passThroughAttribute name="data-toggle" value="tooltip" />
+                                                                <f:param name="ProzesseID" value="#{item.id}" />
+                                                                <f:param name="BenutzerID" value="#{LoginForm.myBenutzer.id}" />
+                                                                <f:param name="zurueck" value="process_all" />
+                                                                <f:param name="overwriteChanges" value="true" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc1}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc2}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
+                                                                <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
+                                                            </h:commandLink>
 		                                                            </div>
 		                                                        </div>
 		                                                    </div>
@@ -913,12 +904,16 @@
 		
 		                                                <!-- ProzessKopie-Schaltknopf -->
 		                                                <button
-		                                                    class="btn fa #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'fa-file-o btn-danger':'fa-file-o btn-primary'} button-schaltknopf"
+		                                                    class="btn fa fa-file-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-danger':'btn-primary'} button-schaltknopf"
 		                                                    jsf:action="#{ProzesskopieForm.Prepare}"
 		                                                    jsf:id="action22"
 		                                                    jsf:rel="tooltip"
 		                                                    onclick="preventDoubleSubmit(this);"
-		                                                    title="#{item.containsUnreachableSteps?(msgs.prozessvorlageMitUnvollstaendigenSchrittdetails):(item.getProjekt().projectIsArchived?msgs.projectIsArchived:msgs.eineKopieDieserProzessvorlageAnlegen)}"
+		                                                    title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:
+                                                                               (item.getProjekt().projectIsArchived ? msgs.projectIsArchived : 
+                                                                                    (ProzesskopieForm.isUserInProcessProject(item) ? msgs.eineKopieDieserProzessvorlageAnlegen : msgs.nutzerNichtFuerProjektZugeordnet)
+                                                                               )
+                                                                      }"
 		                                                    jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() eq 1}">
 		                                                    <f:passThroughAttribute
 		                                                        name="data-toggle"
@@ -932,11 +927,20 @@
 		                                                    rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Single') and ProzesskopieForm.availableProjects.size() gt 1}">
 		                                                    <div
 		                                                        class="btn-group"
-		                                                        title="#{ProzesskopieForm.isUserInProcessProject(item)?(item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:msgs.eineKopieDieserProzessvorlageAnlegen):msgs.nutzerNichtFuerProjektZugeordnet}"
-		                                                        data-toggle="tooltip">
+                                                                
+                                                                title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:
+                                                                               (item.getProjekt().projectIsArchived ? msgs.projectIsArchived : 
+                                                                                    (ProzesskopieForm.isUserInProcessProject(item) ? msgs.eineKopieDieserProzessvorlageAnlegen : msgs.nutzerNichtFuerProjektZugeordnet)
+                                                                               )
+                                                                      }"
+ 		                                                        data-toggle="tooltip">
 		                                                        <div class="dropdown">
 		                                                        <button
+		                                                        	id="availableProjectsDropdown"
 		                                                            class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
+		                                                            aria-haspopup="true"
+		                                                            aria-expanded="false"
+		                                                            onclick="switchExpanded(this.id)"
 		                                                            style="margin: 0; padding-left: 4px; padding-right: 4px;"
 		                                                            data-toggle="dropdown"> <span class="caret"></span>
 		                                                        </button>
@@ -957,9 +961,8 @@
 		                                                        </ul>
 		                                                        <button
 		                                                            jsf:id="copyProcessTempalte"
-		                                                            class="btn fa #{!ProzesskopieForm.isUserInProcessProject(item)?'disabled':''} #{item.containsUnreachableSteps?'fa-file-o btn-danger':'fa-file-o btn-primary'} "
+		                                                            class="btn fa fa-file-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-danger':'btn-primary'}"
 		                                                            aria-label="#{msgs.eineKopieDieserProzessvorlageAnlegen}"
-		                                                            
 		                                                            jsf:action="#{ProzesskopieForm.Prepare}"
 		                                                            jsf:rel="tooltip">
 		                                                            <f:passThroughAttribute
@@ -975,12 +978,16 @@
 		
 		                                                <!-- MassenImport -->
 		                                                <button
-		                                                    class="btn fa #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'fa-files-o btn-danger':'fa-files-o btn-primary'} button-schaltknopf"
+		                                                    class="btn fa fa-files-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-danger':'btn-primary'} button-schaltknopf"
 		                                                    jsf:action="#{MassImportForm.Prepare}"
 		                                                    jsf:id="action222"
 		                                                    jsf:rel="tooltip"
-		                                                    title="#{msgs.MassenImport}"
-		                                                    onclick="preventDoubleSubmit(this);"
+		                                                    title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:
+                                                                               (item.getProjekt().projectIsArchived ? msgs.projectIsArchived : 
+                                                                                    (ProzesskopieForm.isUserInProcessProject(item) ? msgs.MassenImport : msgs.nutzerNichtFuerProjektZugeordnet)
+                                                                               )
+                                                                      }"
+                                                            onclick="preventDoubleSubmit(this);"
 		                                                    jsf:rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() eq 1}">
 		                                                    <f:passThroughAttribute
 		                                                        name="data-toggle"
@@ -993,45 +1000,52 @@
 		                                                <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige=='vorlagen' and HelperForm.massImportAllowed and LoginForm.hasRole('Workflow_ProcessTemplates_Import_Multi') and ProzesskopieForm.availableProjects.size() gt 1}">
 		                                                    <div
 		                                                        class="btn-group"
-		                                                        title="#{item.getProjekt().projectIsArchived?msgs.projectIsArchived:msgs.MassenImport}"
+		                                                        title="#{item.containsUnreachableSteps?msgs.prozessvorlageMitUnvollstaendigenSchrittdetails:
+                                                                               (item.getProjekt().projectIsArchived ? msgs.projectIsArchived : 
+                                                                                    (ProzesskopieForm.isUserInProcessProject(item) ? msgs.MassenImport : msgs.nutzerNichtFuerProjektZugeordnet)
+                                                                               )
+                                                                      }"
 		                                                        data-toggle="tooltip">
 		
 		                                                        <div class="dropdown">
 		                                                            <button
+		                                                            	id="importProjectListDropdown"
 		                                                                class="btn #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'btn-danger':'btn-primary'} dropdown-toggle fa pull-right"
+		                                                                aria-haspopup="true"
+		                                                                aria-expanded="false"
+		                                                                onclick="switchExpanded(this.id)"
 		                                                                style="margin: 0; padding-left: 4px; padding-right: 4px;"
 		                                                                data-toggle="dropdown">
 		                                                                <span class="caret"></span>
 		                                                            </button>
 		                                                            <ul class="dropdown-menu  pull-right">
-		                                                            <ui:repeat
-		                                                                var="proj"
-		                                                                value="#{ProzesskopieForm.availableProjects}">
-		                                                                <li>
-		                                                                    <button
-		                                                                        jsf:action="#{MassImportForm.Prepare}"
-		                                                                        jsf:id="prepare"
-		                                                                        class="dropdown-item">
-		                                                                        <h:outputText value="#{proj.titel}" />
-		                                                                        <x:updateActionListener
-		                                                                            property="#{item.projekt}"
-		                                                                            value="#{proj}" />
-		                                                                        <x:updateActionListener
-		                                                                            property="#{item.projectId}"
-		                                                                            value="#{proj.id}" />
-		                                                                        <x:updateActionListener
-		                                                                            property="#{MassImportForm.template}"
-		                                                                            value="#{item}" />
-		                                                                    </button>
-		                                                                </li>
-		                                                            </ui:repeat>
-		                                                        </ul>
+    		                                                            <ui:repeat
+    		                                                                var="proj"
+    		                                                                value="#{ProzesskopieForm.availableProjects}">
+    		                                                                <li>
+    		                                                                    <button
+    		                                                                        jsf:action="#{MassImportForm.Prepare}"
+    		                                                                        jsf:id="prepare"
+    		                                                                        class="dropdown-item">
+    		                                                                        <h:outputText value="#{proj.titel}" />
+    		                                                                        <x:updateActionListener
+    		                                                                            property="#{item.projekt}"
+    		                                                                            value="#{proj}" />
+    		                                                                        <x:updateActionListener
+    		                                                                            property="#{item.projectId}"
+    		                                                                            value="#{proj.id}" />
+    		                                                                        <x:updateActionListener
+    		                                                                            property="#{MassImportForm.template}"
+    		                                                                            value="#{item}" />
+    		                                                                    </button>
+    		                                                                </li>
+    		                                                            </ui:repeat>
+    		                                                        </ul>
 		                                                            <button
-		                                                                class="btn fa #{item.containsUnreachableSteps or item.getProjekt().projectIsArchived?'fa-files-o btn-danger':'fa-files-o btn-primary'} "
+		                                                                class="btn fa fa-files-o #{!ProzesskopieForm.isUserInProcessProject(item) or item.getProjekt().projectIsArchived?'disabled':''} #{item.containsUnreachableSteps?'btn-danger':'btn-primary'}"
 		                                                                jsf:id="massImportPrepare"
 		                                                                jsf:action="#{MassImportForm.Prepare}"
-		                                                                jsf:rel="tooltip"
-		                                                                >                                                                
+		                                                                jsf:rel="tooltip">                                                                
 		                                                                <f:passThroughAttribute
 		                                                                    name="data-toggle"
 		                                                                    value="tooltip" />
@@ -1051,7 +1065,11 @@
 		                                                        data-toggle="tooltip">
 		                                                        <div class="dropdown">
 		                                                        <button
+		                                                        	id="additionalOptionsDropdown"
 		                                                            aria-label="#{msgs.additionalOptions}"
+		                                                            aria-haspopup="true"
+		                                                            aria-expanded="false"
+		                                                            onclick="switchExpanded(this.id)"
 		                                                            type="button"
 		                                                            class="btn dropdown-toggle fa fa-cog"
 		                                                            data-toggle="dropdown"> <span class="caret"></span>
@@ -1204,7 +1222,7 @@
                                                 jsf:action="#{ProzessverwaltungForm.NeuVorlage}"
                                                 jsf:immediate="true"
                                                 class="btn btn-primary font-size-s"
-                                                jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and ProzessverwaltungForm.modusAnzeige=='vorlagen'}"
+                                                jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details_Edit') and LoginForm.hasRole('Workflow_ProcessTemplates_Create') and ProzessverwaltungForm.modusAnzeige=='vorlagen'}"
                                                 jsf:id="new2">
                                                 <i class="fa fa-plus margin-right-5"></i>
                                                 <h:outputText value="#{msgs.eineNeueProzessvorlageAnlegen}" />

@@ -22,23 +22,26 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="unsavedChangesLabel">
+                            <h1 class="modal-title" id="unsavedChangesLabel">
                                 <h:outputText value="#{msgs.metseditorFinish}" />
-                            </h4>
-                            <button 
-                                type="button" 
-                                class="btn btn-blue pull-right"
-                                style="color:white" 
-                                title="#{msgs.cancel}"
-                                data-toggle="tooltip" 
-                                data-dismiss="modal">
-                                <i class="fa fa-times"></i>
-                            </button>
-
+                            </h1>
+                        
+                          <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                            <span aria-hidden="true">
+                                <h:outputText
+                                    value="&amp;times;"
+                                    escape="false" />
+                            </span>
+                        </button>
                         </div>
                         <div class="modal-body">
                             <h:outputText value="#{msgs.metseditorSaveExplanation}" />
                         </div>
+                        
                         <div class="modal-footer">
                             <button 
                                 jsf:id="discard" 
@@ -46,6 +49,7 @@
                                 jsf:action="#{Metadaten.discard}" 
                                 title="#{msgs.discard}">
                                 <i class="fa fa-trash-o" style="margin-right: 5px" aria-hidden="true"></i>
+
                                 <h:outputText value="#{msgs.discard}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                             </button>
@@ -57,6 +61,7 @@
                                 onclick="goobiWorkflowJS.progress.displayProgressBar()" 
                                 title="#{msgs.overwrite}">
                                 <i class="fa fa-floppy-o" style="margin-right: 5px" aria-hidden="true"></i>
+
                                 <h:outputText value="#{msgs.overwrite}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                             </button>

@@ -346,6 +346,20 @@
                                     help="#{msgs.help_user_dashboard_configuration}"
                                     name="user_dashboard_configuration"
                                     fieldStyle="form-control" />
+                                    
+                                    
+                                <intranda:formInputDropDown
+                                    classLeft="col-sm-5"
+                                    classRight="col-sm-7"
+                                    id="uiMode"
+                                    label="#{msgs.user_config_ui_mode}"
+                                    field="#{LoginForm.myBenutzer.uiMode}"
+                                    help="#{msgs.help_user_config_ui_mode}"
+                                    name="uiMode"
+                                    selectItems="#{LoginForm.myBenutzer.availableUiModes}"
+                                    fieldStyle="form-control" />
+                                    
+                                    
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{NavigationForm.uiStatus.user_config eq 'tab3'}">
@@ -402,6 +416,15 @@
                                     field="#{LoginForm.myBenutzer.displayProcessDateColumn}"
                                     help="#{msgs.helpDisplayProcessDateColumn}"
                                     name="displayProcessDateColumnName" />
+                                
+                                <intranda:formInputCheckBox
+                                    id="displayProcessRulesetColumn"
+                                    classLeft="col-sm-5"
+                                    classRight="col-sm-7"
+                                    label="#{msgs.displayRulesetColumn}"
+                                    field="#{LoginForm.myBenutzer.displayRulesetColumn}"
+                                    help="#{msgs.helpDisplayRulesetColumn}"
+                                    name="displayProcessRulesetColumnName" />
 
                                 <intranda:formInputCheckBox
                                     id="displayLocksColumn"

@@ -8,7 +8,8 @@
     xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
     xmlns:p="http://primefaces.org/ui"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:o="http://omnifaces.org/ui">
 
     <composite:interface />
 
@@ -140,7 +141,7 @@
                                     <span class="fa fa-trash fa-lg fa-with-bg" />
                                     <h:outputText value="#{msgs.strukturelementLoeschen}" />
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                                    <f:ajax execute="@form" render="@form :treeform" />
+                                    <f:ajax execute="@form" render="@form :treeform :openseadragonform:pageareas" />
                                 </button>
                             </li>
                             <!-- DUPLICATE ELEMENT -->
@@ -249,6 +250,52 @@
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <f:ajax execute="@form" render="@form :treeform" />
                             </button>
+                        </li>
+                        <!-- ADD PAGE AREA TO CURRENT DOCSTRUCT -->
+                        <li>
+                            <button class="btn btn--icon start-area-edition" type="button"
+                                 title="#{msgs.mets_createPageArea}"
+                                 aria-label="#{msgs.mets_createPageArea}"
+                                 onclick="goobiWorkflowJS.object.startDrawArea(this, 'current')"
+                                 data-toggle="tooltip" data-placement="top">
+                                 <span class="fa fa-crop fa-lg fa-with-bg" />
+                           		<h:outputText value="#{msgs.mets_addPageAreaToDocStruct}" />
+                           </button>
+                           <button class="btn btn--icon cancel-area-edition" type="button"
+                               title="#{msgs.mets_cancelPageArea}"
+                               aria-label="#{msgs.mets_cancelPageArea}"
+                               onclick="goobiWorkflowJS.object.cancelDrawArea(this)"
+                               data-toggle="tooltip" data-placement="top">
+                               <span class="fa fa-ban fa-lg fa-with-bg" style="background:red"/>
+                               <h:outputText value="#{msgs.mets_addPageAreaToDocStruct}" />
+                           </button>
+                        </li>
+                        <!-- DELETE PAGE AREA -->
+                        <li>
+                            <button class="btn btn--icon"
+                            		type="button"
+                                    title="#{msgs.mets_PageArea}"
+                                    aria-label="#{msgs.mets_deletePageArea}"
+                                    data-pagearea-delete="start"
+                                    data-renderimage="true"
+                                    data-toggle="tooltip"
+                                    data-placement="top">
+                                    <span class="fa fa-eraser fa-lg fa-with-bg" />
+                                    <h:outputText value="#{msgs.mets_deletePageArea}" />
+                                </button>
+                                <button
+                                	type="button"
+                                    class="btn btn--icon delete-page-area"
+                                    title="#{msgs.mets_cancelPageArea}"
+                                    aria-label="#{msgs.mets_cancelPageArea}"
+                                    data-pagearea-delete="cancel"
+                                    data-renderimage="true"
+                                    data-toggle="tooltip"
+                                    data-placement="top">
+                                    <span class="fa fa-ban fa-lg fa-with-bg" style="background:red"/>
+                                    <h:outputText value="#{msgs.mets_deletePageArea}" />
+                                </button>
+		                        
                         </li>
     
                     </ul>

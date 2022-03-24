@@ -14,7 +14,19 @@
 	<composite:interface />
 
 	<composite:implementation>
-
+		<script type="text/javascript">
+        	function switchExpanded(id){
+        		console.log("called by: "+id);
+				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				console.log(x)
+				if (x == "true"){
+					x = "false"
+				} else {
+					x = "true"
+				}
+				document.getElementById(id).setAttribute("aria-expanded", x);
+        	}
+        </script>
 		<div class="user pull-right">
 			<ul class="icon-nav">
 				<!-- Icon to enable help texts -->
@@ -49,6 +61,8 @@
 							aria-label="#{msgs.spracheAendern}"
 							data-toggle="dropdown"
 							aria-haspopup="true"
+							aria-expanded="false"
+							onclick="switchExpanded(this.id)"
 							class="dropdown-toggle btn"
 							title="#{msgs.spracheAendern}"
 							jsf:rel="tooltip">
@@ -97,6 +111,8 @@
 						type="button"
 						class="dropdown-toggle btn"
 						aria-haspopup="true"
+						aria-expanded="false"
+						onclick="switchExpanded(this.id)"
 						data-toggle="dropdown">
 						<h:outputText
 							rendered="#{LoginForm.myBenutzer != null}"
@@ -132,22 +148,6 @@
 								action="user_password"
 								icon="fa fa-key box-icon-fix-menu-up3" />
 						</h:panelGroup>
-
-						<!-- Enable style with more contrast -->
-						<li>
-							<button
-								jsf:id="showEasyRead"
-								jsf:action="#{NavigationForm.Reload}"
-								class="dropdown-item"
-								title="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}"
-								jsf:rel="tooltip">
-								<i class="fa fa-eye-slash margin-right-5" />
-								<h:outputText value="#{NavigationForm.showEasyRead?msgs.hideEasyRead:msgs.showEasyRead}" />
-								<f:setPropertyActionListener
-									target="#{NavigationForm.showEasyRead}"
-									value="#{not NavigationForm.showEasyRead}" />
-							</button>
-						</li>
 
 						<!-- Logout -->
 						<ui:fragment rendered="#{!LoginForm.showSSOLogoutPage}">
