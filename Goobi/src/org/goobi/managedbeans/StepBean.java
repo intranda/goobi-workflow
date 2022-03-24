@@ -87,6 +87,7 @@ import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
@@ -385,9 +386,12 @@ public class StepBean extends BasicBean implements Serializable {
         return "task_edit";
     }
 
-    public String EditStep() {
-        mySchritt = StepManager.getStepById(mySchritt.getId());
-        mySchritt.lazyLoad();
+    public String EditStep() throws SwapException, DAOException, IOException, InterruptedException {
+        try {
+            mySchritt = StepManager.getStepById(mySchritt.getId());
+            mySchritt.lazyLoad();
+        } catch(Exception e) {
+        }
 
         return "task_edit";
     }
@@ -1058,6 +1062,9 @@ public class StepBean extends BasicBean implements Serializable {
         loadDisplayableMetadata();
         if (this.mySchritt.getStepPlugin() != null && !this.mySchritt.getStepPlugin().isEmpty()) {
             myPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, this.mySchritt.getStepPlugin());
+            //            if(mySchritt.isTypAutomaticThumbnail()) {
+            //            	mySchritt.submitAutomaticThumbnailTicket();
+            //            }
             if (myPlugin == null) {
                 exportPlugin = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, this.mySchritt.getStepPlugin());
             }

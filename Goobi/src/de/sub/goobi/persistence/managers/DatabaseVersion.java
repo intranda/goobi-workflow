@@ -52,9 +52,9 @@ import de.sub.goobi.helper.exceptions.DAOException;
 
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 46;
+    public static final int EXPECTED_VERSION = 47;
     private static final Logger logger = LogManager.getLogger(DatabaseVersion.class);
-    
+
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
 
     private static final SimpleDateFormat processLogGermanDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
@@ -140,7 +140,6 @@ public class DatabaseVersion {
                     }
                     updateToVersion9();
                     tempVersion ++;
-    
                 case 9:
                     if (logger.isTraceEnabled()) {
                         logger.trace("Update database to version 10.");
@@ -207,7 +206,6 @@ public class DatabaseVersion {
                     }
                     updateToVersion20();
                     tempVersion ++;
-    
                 case 20:
                     if (logger.isTraceEnabled()) {
                         logger.trace("Update database to version 21.");
@@ -220,7 +218,6 @@ public class DatabaseVersion {
                     }
                     updateToVersion22();
                     tempVersion ++;
-    
                 case 22:
                     if (logger.isTraceEnabled()) {
                         logger.trace("Update database to version 23.");
@@ -233,7 +230,6 @@ public class DatabaseVersion {
                     }
                     updateToVersion24();
                     tempVersion ++;
-    
                 case 24:
                     if (!checkIfColumnExists("benutzer", "customCss")) {
                         runSql("alter table benutzer add column customCss text DEFAULT null");
@@ -314,7 +310,6 @@ public class DatabaseVersion {
                     }
                     updateToVersion38();
                     tempVersion ++;
-    
                 case 38:
                     if (logger.isTraceEnabled()) {
                         logger.trace("Update database to version 39.");
@@ -359,12 +354,17 @@ public class DatabaseVersion {
                     tempVersion ++;
                 case 45:
                     if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 45.");
+                        logger.trace("Update database to version 46.");
                     }
                     updateToVersion46();
                     tempVersion ++;
+                case 46:
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Update database to version 47.");
+                    }
+                    updateToVersion47();
+                    tempVersion ++;
                 default:
-    
                     // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
                     if (logger.isTraceEnabled()) {
@@ -377,6 +377,23 @@ public class DatabaseVersion {
             updateDatabaseVersion(currentVersion, tempVersion);
         }
     }
+
+    private static void updateToVersion47() throws SQLException {
+        if (!checkIfColumnExists("schritte", "typAutomaticThumbnail")) {
+            DatabaseVersion.runSql("ALTER TABLE schritte ADD COLUMN typAutomaticThumbnail boolean default false");
+        }
+        if(!checkIfColumnExists("schritte", "automaticThumbnailSettingsYaml")) {
+            String defaultYamlSettings= "'--- \n"
+                    +"Master: false  #use master image directory \n"
+                    +"Media: false  #use media image directory \n"
+                    +"Img_directory: \"\" #set path to custom image directory \n"
+                    +"Custom_script_command: \"\" #command to execute custom thumbnail generation script \n"
+                    +"Sizes: #define thumbnail sizes \n"
+                    +"- 800'";
+            DatabaseVersion.runSql("ALTER TABLE schritte ADD COLUMN automaticThumbnailSettingsYaml varchar(1000) DEFAULT "+defaultYamlSettings);
+        }
+    }
+
 
     private static void updateToVersion46() throws SQLException {
         if (!DatabaseVersion.checkIfColumnExists("schritte", "messageId")) {
@@ -1947,7 +1964,7 @@ public class DatabaseVersion {
      * Execute an sql statement to update the database on startup
      * 
      * @param sql
-     * @throws SQLException 
+     * @throws SQLException
      */
 
     public static void runSql(String sql) throws SQLException {

@@ -165,6 +165,10 @@ public class BeanHelper {
             stepneu.setHttpCloseStep(step.isHttpCloseStep());
             stepneu.setMessageQueue(step.getMessageQueue());
 
+
+            stepneu.setTypAutomaticThumbnail(step.isTypAutomaticThumbnail());
+            stepneu.setAutomaticThumbnailSettingsYaml(step.getAutomaticThumbnailSettingsYaml());
+
             /* --------------------------------
              * Benutzer übernehmen
              * --------------------------------*/
