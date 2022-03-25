@@ -3,6 +3,7 @@ package org.goobi.vocabulary.helper;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -25,7 +26,11 @@ public class ImportJsonVocabularyTest extends AbstractTest {
         vocab.setDescription("");
 
         Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        Path testFile = Paths.get(template.getParent().getParent().getParent().toString() + "/test/resources/" + "vocabulary.json");
+
+        Path testFile = Paths.get(template.getParent().getParent().toString() + "/src/test/resources/vocabulary.json"); // for junit tests in eclipse
+        if (!Files.exists(testFile)) {
+            testFile = Paths.get("target/test-classes/vocabulary.json"); // to run mvn test from cli or in jenkins
+        }
 
         ImportJsonVocabulary.convertJsonVocabulary(vocab, testFile);
         assertNotNull(vocab);
