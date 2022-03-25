@@ -7,5 +7,50 @@
 
 	<ignoreVersions>
 		<ignoreVersion type="regex">.*[-_\.](alpha|Alpha|ALPHA|beta|Beta|BETA|rc|RC|M|EA)[-_\.]?[0-9]?.*</ignoreVersion>
-	</ignoreVersions>
+    </ignoreVersions>
+
+    <rules>
+        <!-- updating to 2.4.0 currently breaks the file upload - leave at 2.3.8 for now -->
+        <rule groupId="org.glassfish" artifactId="javax.faces">
+            <ignoreVersions>
+                <ignoreVersion>2.4.0</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+
+        <!-- updating breaks compiling -->
+        <rule groupId="avalon-framework" artifactId="avalon-framework-api">
+            <ignoreVersions>
+                <ignoreVersion>4.3</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+        <rule groupId="opensymphony" artifactId="oscache">
+            <ignoreVersions>
+                <ignoreVersion>2.4.1</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+
+
+        <!-- The following rules exist, because updating to this major versions include changing the javax. to jakarta. namespaces.
+             Not all dependencies are compatible yet. Therefore excluding this is the best thing for now -->
+        <rule groupId="org.glassfish.jersey">
+            <ignoreVersions>
+                <ignoreVersion>3.0.0</ignoreVersion>
+                <ignoreVersion>3.0.1</ignoreVersion>
+                <ignoreVersion>3.0.2</ignoreVersion>
+                <ignoreVersion>3.0.3</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+        <rule groupId="org.jboss.weld.servlet" artifactId="weld-servlet-shaded">
+            <ignoreVersions>
+                <ignoreVersion type="regex">4.*</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+        <rule groupId="com.sun.xml.bind" artifactId="jaxb-*">
+            <ignoreVersions>
+                <ignoreVersion>2.4.0-b180725.0644</ignoreVersion>
+                <ignoreVersion>2.4.0-b180830.0438</ignoreVersion>
+                <ignoreVersion type="regex">3.*</ignoreVersion>
+            </ignoreVersions>
+        </rule>
+    </rules>
 </ruleset>
