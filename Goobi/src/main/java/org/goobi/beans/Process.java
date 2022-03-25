@@ -64,7 +64,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.goobi.io.BackupFileRotation;
+import org.goobi.io.BackupFileManager;
 import org.goobi.io.FileListFilter;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.StringPair;
@@ -88,6 +88,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.helper.tasks.ProcessSwapInTask;
 import de.sub.goobi.metadaten.Image;
+import de.sub.goobi.metadaten.ImageCommentHelper;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.DocketManager;
@@ -104,6 +105,7 @@ import io.goobi.workflow.xslt.XsltPreparatorMetadata;
 import io.goobi.workflow.xslt.XsltToPdf;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -116,6 +118,7 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
+@Log4j2
 public class Process implements Serializable, DatabaseObject, Comparable<Process> {
     private static final Logger logger = LogManager.getLogger(Process.class);
     private static final long serialVersionUID = -6503348094655786275L;
@@ -274,6 +277,16 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return false;
     }
 
+    public boolean getContainsExportStep() {
+        this.getSchritte();
+        for (int i = 0; i < this.schritte.size(); i++) {
+            if (this.schritte.get(i).isTypExportDMS() || this.schritte.get(i).isTypExportRus()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     //    public List<HistoryEvent> getHistory() {
 
     //        if (this.history == null && id != null) {
@@ -321,7 +334,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (MetadatenSperrung.isLocked(this.id.intValue())) {
             String benutzerID = this.msp.getLockBenutzer(this.id.intValue());
             try {
-                rueckgabe = UserManager.getUserById(new Integer(benutzerID));
+                rueckgabe = UserManager.getUserById(Integer.valueOf(benutzerID));
             } catch (Exception e) {
                 Helper.setFehlerMeldung(Helper.getTranslation("userNotFound"), e);
             }
@@ -545,7 +558,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrTxtDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     @Deprecated
@@ -555,27 +568,27 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrPdfDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrXmlDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getImportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getExportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException, InterruptedException, SwapException, DAOException {
@@ -586,10 +599,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         FilesystemHelper.createDirectory(pfad);
         return pfad;
     }
-
-    /*
-     * Thumbs
-     */
 
     /**
      * Get the process thumbnail directory which is located directly in the process directory and named 'thumbs'
@@ -607,7 +616,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     /**
      * Return all thumbnail directories containing thumbs for the images stored in the given images directory as a map hashed by the thumbnail size.
-     * If no thumbnail directories exist, an empty map is returned
+     * If no thumbnail directories exist, anfalse empty map is returned
      * 
      * @param imageDirectory The path of an image directory, either only the name or the entire path.
      * @return A map of folders containing thumbnails for the given imageDirectory hashed by thumbnail size
@@ -1054,79 +1063,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return ff;
     }
 
-    // backup of meta.xml
-
-    private void createBackupFile() throws IOException, InterruptedException, SwapException, DAOException {
-        int numberOfBackups = 0;
-        String FORMAT = "";
-        if (ConfigurationHelper.getInstance().getNumberOfMetaBackups() != 0) {
-            numberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
-            FORMAT = ConfigurationHelper.getInstance().getFormatOfMetsBackup();
-        }
-        if (numberOfBackups != 0) {
-            String typeOfBackup = ConfigurationHelper.getInstance().getTypeOfBackup();
-            if (typeOfBackup.equals("renameFile") && FORMAT != null) {
-                createBackup(numberOfBackups, FORMAT);
-            } else if (typeOfBackup.equals("")) {
-                BackupFileRotation bfr = new BackupFileRotation();
-                bfr.setNumberOfBackups(numberOfBackups);
-                bfr.setFormat("meta.*\\.xml");
-                bfr.setProcessDataDirectory(getProcessDataDirectory());
-                bfr.performBackup();
-            }
-        } else {
-            if (logger.isDebugEnabled()) {
-                logger.debug("No backup configured for meta data files.");
-            }
-        }
-        //            format = ConfigMain.getParameter("formatOfMetaBackups");
-        //        }
-        //        if (format != null) {
-        //            logger.info("Option 'formatOfMetaBackups' is deprecated and will be ignored.");
-        //        }
-
-    }
-
-    private void createBackup(int numberOfBackups, String FORMAT) throws IOException, InterruptedException, SwapException, DAOException {
-        DirectoryStream.Filter<Path> filter = new FileListFilter(FORMAT);
-        Path metaFilePath = Paths.get(getProcessDataDirectory());
-        Path metadataFile = Paths.get(getMetadataFilePath());
-        if (!StorageProvider.getInstance().isFileExists(metadataFile)) {
-            return;
-        }
-        List<Path> meta = StorageProvider.getInstance().listFiles(metaFilePath.toString(), filter);
-        if (meta != null) {
-            List<Path> files = new ArrayList<>(meta);
-            Collections.reverse(files);
-
-            int count;
-            if (meta != null) {
-                if (files.size() > numberOfBackups) {
-                    count = numberOfBackups;
-                } else {
-                    count = meta.size();
-                }
-                while (count > 0) {
-                    for (Path data : files) {
-                        if (StorageProvider.getInstance().getFileSize(data) != 0) {
-
-                            if (data.getFileName().toString().endsWith("xml." + (count - 1))) {
-                                Path newFile = Paths.get(data.toString().substring(0, data.toString().lastIndexOf(".")) + "." + (count));
-                                StorageProvider.getInstance().copyFile(data, newFile);
-                            }
-                            if (data.getFileName().toString().endsWith(".xml") && count == 1) {
-                                Path newFile = Paths.get(data.toString() + ".1");
-                                StorageProvider.getInstance().copyFile(data, newFile);
-
-                            }
-                        }
-                    }
-                    count--;
-                }
-            }
-        }
-    }
-
     private boolean checkForMetadataFile()
             throws IOException, InterruptedException, SwapException, DAOException, WriteException, PreferencesException {
         boolean result = true;
@@ -1141,26 +1077,41 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public synchronized void writeMetadataFile(Fileformat gdzfile)
             throws IOException, InterruptedException, SwapException, DAOException, WriteException, PreferencesException {
 
-        Fileformat ff;
-        String metadataFileName;
-        createBackupFile();
+        String path = this.getProcessDataDirectory();
+        int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
 
-        ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
+        // Backup meta.xml
+        String metaFileName = "meta.xml";
+        Path metaFile = Paths.get(path + metaFileName);
+        String backupMetaFileName = Process.createBackup(path, metaFileName, maximumNumberOfBackups);
+        Path backupMetaFile = Paths.get(path + backupMetaFileName);
 
-        metadataFileName = getMetadataFilePath();
+        // Backup meta_anchor.xml
+        String metaAnchorFileName = "meta_anchor.xml";
+        Path metaAnchorFile = Paths.get(path + metaAnchorFileName);
+        String backupMetaAnchorFileName = Process.createBackup(path, metaAnchorFileName, maximumNumberOfBackups);
+        Path backupMetaAnchorFile = Paths.get(path + backupMetaAnchorFileName);
+
+        Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
 
         synchronized (xmlWriteLock) {
             ff.setDigitalDocument(gdzfile.getDigitalDocument());
             try {
-                ff.write(metadataFileName);
-            } catch (UGHException e) {
-                //error writing. restore backup and rethrow error
-                Path meta = Paths.get(metadataFileName);
-                Path lastBackup = Paths.get(metadataFileName + ".1");
-                if ((!Files.exists(meta) || Files.size(meta) == 0) && Files.exists(lastBackup)) {
-                    Files.copy(lastBackup, meta, StandardCopyOption.REPLACE_EXISTING);
+                ff.write(path + metaFileName);
+            } catch (UGHException ughException) {
+                // Error while writing meta.xml or meta_anchor.xml. Restore backups and rethrow error
+
+                // Restore meta.xml
+                if ((!Files.exists(metaFile) || Files.size(metaFile) == 0) && Files.exists(backupMetaFile)) {
+                    Files.copy(backupMetaFile, metaFile, StandardCopyOption.REPLACE_EXISTING);
                 }
-                throw e;
+
+                // Restore meta_anchor.xml
+                if ((!Files.exists(metaAnchorFile) || Files.size(metaAnchorFile) == 0) && Files.exists(backupMetaAnchorFile)) {
+                    Files.copy(backupMetaAnchorFile, metaAnchorFile, StandardCopyOption.REPLACE_EXISTING);
+                }
+
+                throw ughException;
             }
         }
         Map<String, List<String>> metadata = MetadatenHelper.getMetadataOfFileformat(gdzfile, false);
@@ -1172,16 +1123,27 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         MetadataManager.updateJSONMetadata(id, jsonMetadata);
     }
 
+    private static String createBackup(String path, String fileName, int maximumNumberOfBackups) {
+        String backupFileName;
+        try {
+            backupFileName = BackupFileManager.createBackup(path, path, fileName, maximumNumberOfBackups, true);
+            // Output in the GUI is already done in BackupFileManager.createBackup()
+        } catch (IOException ioException) {
+            backupFileName = null;
+            // Output in the GUI is already done in BackupFileManager.createBackup()
+        }
+        return backupFileName;
+    }
+
     public void saveTemporaryMetsFile(Fileformat gdzfile)
             throws SwapException, DAOException, IOException, InterruptedException, PreferencesException, WriteException {
 
+        int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
+        Process.createBackup(this.getProcessDataDirectory(), "temp.xml", maximumNumberOfBackups);
+
         Fileformat ff = MetadatenHelper.getFileformatByName(getProjekt().getFileFormatInternal(), this.regelsatz);
-        String metadataFileName = getProcessDataDirectory() + "temp.xml";
-        createBackup(9, "temp.*\\.xml.*+");
-
         ff.setDigitalDocument(gdzfile.getDigitalDocument());
-
-        ff.write(metadataFileName);
+        ff.write(getProcessDataDirectory() + "temp.xml");
     }
 
     public void writeMetadataAsTemplateFile(Fileformat inFile)
@@ -1229,15 +1191,26 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public void overwriteMetadata() {
         try {
-            Path temporaryFile = Paths.get(getProcessDataDirectory(), "temp.xml");
-            Path temporaryAnchorFile = Paths.get(getProcessDataDirectory(), "temp_anchor.xml");
+            String path = this.getProcessDataDirectory();
+            Path temporaryFile = Paths.get(path, "temp.xml");
+            Path temporaryAnchorFile = Paths.get(path, "temp_anchor.xml");
+
+            int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
 
             if (StorageProvider.getInstance().isFileExists(temporaryFile)) {
-                Path meta = Paths.get(getProcessDataDirectory(), "meta.xml");
+                // backup meta.xml
+                Process.createBackup(path, "meta.xml", maximumNumberOfBackups);
+
+                // copy temp.xml to meta.xml
+                Path meta = Paths.get(path, "meta.xml");
                 StorageProvider.getInstance().copyFile(temporaryFile, meta);
             }
             if (StorageProvider.getInstance().isFileExists(temporaryAnchorFile)) {
-                Path metaAnchor = Paths.get(getProcessDataDirectory(), "meta_anchor.xml");
+                // backup meta_anchor.xml
+                Process.createBackup(path, "meta_anchor.xml", maximumNumberOfBackups);
+
+                // copy temp_anchor.xml to meta_anchor.xml
+                Path metaAnchor = Paths.get(path, "meta_anchor.xml");
                 StorageProvider.getInstance().copyFile(temporaryAnchorFile, metaAnchor);
             }
 
@@ -1330,10 +1303,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         this.swappedOut = inSwappedOut;
     }
 
-    /**
-     * starts generation of xml logfile for current process
-     */
-
     public void downloadXML() {
         XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
         try {
@@ -1344,6 +1313,35 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         } catch (InterruptedException e) {
             Helper.setFehlerMeldung("could not execute command to write logfile to home directory", e);
         }
+    }
+
+    /**
+     * download xml logfile for current process
+     */
+    public void downloadLogFile() {
+
+        XsltPreparatorDocket xmlExport = new XsltPreparatorDocket();
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        if (!facesContext.getResponseComplete()) {
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            String fileName = getTitel() + "_log.xml";
+            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(fileName);
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
+
+            // write to servlet output stream
+            try {
+                ServletOutputStream out = response.getOutputStream();
+                xmlExport.startExport(this, out);
+                out.flush();
+            } catch (IOException e) {
+                logger.error("IOException while exporting run note", e);
+            }
+
+            facesContext.responseComplete();
+        }
+        return;
     }
 
     public String downloadDocket() {
@@ -1499,7 +1497,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         Process p = new Process();
         p.setDocket(docket);
         p.setInAuswahllisteAnzeigen(false);
-        p.setIstTemplate(true);
+        p.setIstTemplate(istTemplate);
+        p.setProjectId(projectId);
         p.setProjekt(projekt);
         p.setRegelsatz(regelsatz);
         p.setSortHelperStatus(sortHelperStatus);
@@ -2064,7 +2063,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
                     List<Path> subdirs = StorageProvider.getInstance().listFiles(imageDirectory);
                     for (Path imagedir : subdirs) {
-                        if (StorageProvider.getInstance().isDirectory(imagedir)) {
+                        if (StorageProvider.getInstance().isDirectory(imagedir) || StorageProvider.getInstance().isSymbolicLink(imagedir)) {
                             StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
                         }
                     }
@@ -2077,7 +2076,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 if (StorageProvider.getInstance().isFileExists(dir) && StorageProvider.getInstance().isDirectory(dir)) {
                     List<Path> subdirs = StorageProvider.getInstance().listFiles(ocrDirectory);
                     for (Path imagedir : subdirs) {
-                        if (StorageProvider.getInstance().isDirectory(imagedir)) {
+                        if (StorageProvider.getInstance().isDirectory(imagedir) || StorageProvider.getInstance().isSymbolicLink(imagedir)) {
                             StorageProvider.getInstance().move(imagedir, Paths.get(imagedir.toString().replace(getTitel(), newTitle)));
                         }
                     }
@@ -2278,4 +2277,46 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
     }
 
+    //read the image comments files in the image folders, and return all of them as a list.
+    public List<ImageComment> getImageComments() throws IOException, InterruptedException, SwapException, DAOException {
+
+        List<ImageComment> lstComments = new ArrayList<>();
+
+        ImageCommentHelper helper = new ImageCommentHelper();
+
+        String folderMaster = this.getImagesOrigDirectory(true);
+        HashMap<String, String> masterComments = helper.getComments(folderMaster);
+
+        for (String imageName : masterComments.keySet()) {
+            String comment = masterComments.get(imageName);
+            if (!StringUtils.isBlank(comment)) {
+                lstComments.add(new ImageComment("Master", imageName, comment));
+            }
+        }
+
+        if (StorageProvider.getInstance().isFileExists(Paths.get(this.getImagesDirectory()))) {
+            String folderMedia = this.getImagesTifDirectory(true);
+            HashMap<String, String> mediaComments = helper.getComments(folderMedia);
+
+            for (String imageName : mediaComments.keySet()) {
+                String comment = mediaComments.get(imageName);
+                if (!StringUtils.isBlank(comment)) {
+                    lstComments.add(new ImageComment("Media", imageName, comment));
+                }
+            }
+        }
+
+        return lstComments;
+    }
+
+    public List<String> getArchivedImageFolders() throws IOException, InterruptedException, SwapException, DAOException {
+        if (this.id == null) {
+            return new ArrayList<>();
+        }
+        List<String> filesInImages = StorageProvider.getInstance().list(this.getImagesDirectory());
+        return filesInImages.stream()
+                .filter(p -> p.endsWith(".xml"))
+                .map(p -> Paths.get(p).getFileName().toString().replace(".xml", ""))
+                .collect(Collectors.toList());
+    }
 }

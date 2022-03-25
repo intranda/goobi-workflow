@@ -41,11 +41,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.api.mail.SendMail;
@@ -87,6 +87,7 @@ import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
@@ -99,7 +100,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named("AktuelleSchritteForm")
-@SessionScoped
+@WindowScoped
 public class StepBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 5841566727939692509L;
     private static final Logger logger = LogManager.getLogger(StepBean.class);
@@ -178,7 +179,7 @@ public class StepBean extends BasicBean implements Serializable {
     private IExportPlugin exportPlugin = null;
 
     @Getter
-    private Map<String, List<String>> displayableMetadataMap;
+    private Map<String, List<String>> displayableMetadataMap = new HashMap<>();
 
     @Inject
     @Push
@@ -186,6 +187,7 @@ public class StepBean extends BasicBean implements Serializable {
 
     public StepBean() {
         this.anzeigeAnpassen = new HashMap<>();
+        anzeigeAnpassen.put("numberOfImages", false);
 
         /*
          * --------------------- Vorgangsdatum generell anzeigen? -------------------
@@ -239,7 +241,7 @@ public class StepBean extends BasicBean implements Serializable {
         if (!sql.isEmpty()) {
             sql = sql + " AND ";
         }
-        sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
+        sql = sql + " projekte.projectIsArchived = false ";
         paginator = new DatabasePaginator(sortList(), sql, m, "task_all");
 
         return "task_all";
@@ -305,6 +307,10 @@ public class StepBean extends BasicBean implements Serializable {
             answer = "institution.shortName";
         } else if (sortierung.equals("institutionDesc")) {
             answer = "institution.shortName desc";
+        } else if (sortierung.equals("numberOfImagesAsc")) {
+            answer = "prozesse.sortHelperImages";
+        } else if (sortierung.equals("numberOfImagesDesc")) {
+            answer = "prozesse.sortHelperImages desc";
         }
 
         return answer;
@@ -380,9 +386,12 @@ public class StepBean extends BasicBean implements Serializable {
         return "task_edit";
     }
 
-    public String EditStep() {
-        mySchritt = StepManager.getStepById(mySchritt.getId());
-        mySchritt.lazyLoad();
+    public String EditStep() throws SwapException, DAOException, IOException, InterruptedException {
+        try {
+            mySchritt = StepManager.getStepById(mySchritt.getId());
+            mySchritt.lazyLoad();
+        } catch(Exception e) {
+        }
 
         return "task_edit";
     }
@@ -1053,6 +1062,9 @@ public class StepBean extends BasicBean implements Serializable {
         loadDisplayableMetadata();
         if (this.mySchritt.getStepPlugin() != null && !this.mySchritt.getStepPlugin().isEmpty()) {
             myPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, this.mySchritt.getStepPlugin());
+            //            if(mySchritt.isTypAutomaticThumbnail()) {
+            //            	mySchritt.submitAutomaticThumbnailTicket();
+            //            }
             if (myPlugin == null) {
                 exportPlugin = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, this.mySchritt.getStepPlugin());
             }
@@ -1177,7 +1189,8 @@ public class StepBean extends BasicBean implements Serializable {
             try {
                 dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, mySchritt.getStepPlugin());
             } catch (Exception e) {
-                logger.error("Can't load export plugin, use default plugin", e);
+                logger.error("Can't load export plugin, use default export", e);
+                Helper.setFehlerMeldung("Can't load export plugin, use default export");
                 dms = new ExportDms();
             }
         }

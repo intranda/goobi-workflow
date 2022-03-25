@@ -625,16 +625,17 @@ public class LdapAuthentication {
         env.put(Context.SECURITY_AUTHENTICATION, "simple");
         /* wenn die Verbindung über ssl laufen soll */
         if (inBenutzer.getLdapGruppe().isUseSsl()) {
-            String keystorepath = inBenutzer.getLdapGruppe().getPathToKeystore();
-            String keystorepasswd = inBenutzer.getLdapGruppe().getKeystorePassword();
+            String keystorepath = ConfigurationHelper.getInstance().getTruststore();
+            String keystorepasswd = ConfigurationHelper.getInstance().getTruststoreToken();
+            if (StringUtils.isNotBlank(keystorepath) && StringUtils.isNotBlank(keystorepasswd)) {
+                // add all necessary certificates first
+                loadCertificates(inBenutzer, keystorepath, keystorepasswd);
 
-            // add all necessary certificates first
-            loadCertificates(inBenutzer, keystorepath, keystorepasswd);
-
-            // set properties, so that the current keystore is used for SSL
-            System.setProperty("javax.net.ssl.keyStore", keystorepath);
-            System.setProperty("javax.net.ssl.trustStore", keystorepath);
-            System.setProperty("javax.net.ssl.keyStorePassword", keystorepasswd);
+                // set properties, so that the current keystore is used for SSL
+                System.setProperty("javax.net.ssl.keyStore", keystorepath);
+                System.setProperty("javax.net.ssl.trustStore", keystorepath);
+                System.setProperty("javax.net.ssl.keyStorePassword", keystorepasswd);
+            }
             env.put(Context.SECURITY_PROTOCOL, "ssl");
         }
         return env;

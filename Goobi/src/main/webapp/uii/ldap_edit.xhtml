@@ -21,7 +21,7 @@
             navId="a0" />
         <intranda:breadcrumb
             id="ldapgroups"
-            label="#{msgs.ldapgruppen}"
+            label="#{msgs.authentication}"
             action="#{LdapGruppenForm.paginator.returnToPreviousPage}" />
         <intranda:breadcrumb
             id="ldap"
@@ -369,24 +369,6 @@
                                             fieldStyle="form-control" />
 
                                         <intranda:formInputText
-                                            id="keystore"
-                                            name="keystore"
-                                            label="#{msgs.ldapKeystore}"
-                                            field="#{LdapGruppenForm.myLdapGruppe.pathToKeystore}"
-                                            required="false"
-                                            help="#{msgs.helpLdapKeystore}"
-                                            fieldStyle="form-control" />
-
-                                        <intranda:formInputText
-                                            id="keystoreToken"
-                                            name="keystoreToken"
-                                            label="#{msgs.ldapKeystoreToken}"
-                                            field="#{LdapGruppenForm.myLdapGruppe.keystorePassword}"
-                                            required="false"
-                                            help="#{msgs.helpLdapKeystoreToken}"
-                                            fieldStyle="form-control" />
-
-                                        <intranda:formInputText
                                             id="rootCertificate"
                                             name="rootCertificate"
                                             label="#{msgs.ldapRootCertificate}"
@@ -447,7 +429,7 @@
                                 id="buttons"
                                 form="#{LdapGruppenForm}"
                                 object="#{LdapGruppenForm.myLdapGruppe.id}"
-                                actionCancel="ldap_all" />
+                                actionCancel="#{LdapGruppenForm.Cancel}" />
 
                         </div>
                     </div>

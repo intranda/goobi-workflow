@@ -18,13 +18,17 @@ import org.goobi.beans.Browser;
 import org.goobi.beans.SessionInfo;
 import org.goobi.beans.User;
 import org.goobi.goobiScript.GoobiScriptManager;
+import org.goobi.managedbeans.LoginBean;
 import org.omnifaces.cdi.Push;
 import org.omnifaces.cdi.PushContext;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -56,6 +60,7 @@ import lombok.Setter;
  * @version 2.00 - 03.05.2021
  */
 
+@Log4j2
 @Named("SessionForm")
 @ApplicationScoped
 public class SessionForm implements Serializable {
@@ -92,12 +97,6 @@ public class SessionForm implements Serializable {
     private SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE', ' dd. MMMM yyyy");
 
     /**
-     * The formatter that is used for date- and time representation strings
-     */
-    private SimpleDateFormat fullFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-
-
-    /**
      * The request object of the current session
      */
     @Inject
@@ -127,10 +126,26 @@ public class SessionForm implements Serializable {
      */
     public List<SessionInfo> getSessions() {
         if (this.sessions != null) {
+            this.removeAbandonedSessions(false);
             return this.sessions;
         } else {
             return new ArrayList<>();
         }
+    }
+
+    /**
+     * Filters the sessions by real user sessions. All sessions that contain a name unequal to "-" are returned.
+     *
+     * @return The list of sessions with real users
+     */
+    private List<SessionInfo> filterRealUserSessions() {
+        List<SessionInfo> realUserSessions = new ArrayList<>();
+        for (int index = 0; index < this.sessions.size(); index++) {
+            if (!this.sessions.get(index).getUserName().equals(SessionForm.NOT_LOGGED_IN)) {
+                realUserSessions.add(this.sessions.get(index));
+            }
+        }
+        return realUserSessions;
     }
 
     /**
@@ -149,13 +164,27 @@ public class SessionForm implements Serializable {
     }
 
     /**
-     * Returns the number of currently existing sessions
+     * Returns the number of currently existing sessions.
      *
      * @return The number of sessions
      */
     public int getNumberOfSessions() {
         if (this.sessions != null) {
+            this.removeAbandonedSessions(false);
             return this.sessions.size();
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Returns the number of currently existing sessions. The list of sessions is filtered for real user sessions.
+     *
+     * @return The number of real user sessions
+     */
+    public int getNumberOfRealUserSessions() {
+        if (this.sessions != null) {
+            return this.filterRealUserSessions().size();
         } else {
             return 0;
         }
@@ -239,6 +268,9 @@ public class SessionForm implements Serializable {
         long now = System.currentTimeMillis();
         knownSession.setLastAccessTimestamp(now);
         knownSession.setLastAccessFormatted(this.timeFormatter.format(now));
+
+        // This is needed to remove out-of-timeout-sessions
+        this.removeAbandonedSessions(true);
     }
 
     /**
@@ -256,22 +288,26 @@ public class SessionForm implements Serializable {
         SessionInfo knownSession = this.getSessionInfoById(id);
 
         if (knownSession == null) {
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Created new session for user.");
             SessionInfo newSession = new SessionInfo();
             newSession.setUserName(LOGGED_OUT);
             newSession.setUserId(0);
             newSession.setSessionId("-1");
             this.sessions.add(newSession);
-            this.removeAbandonedSessions();
+            this.removeAbandonedSessions(true);
             return;
         }
 
         if (updatedUser == null) {
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Following user will be logged out:");
+            SessionForm.logUserInformation(knownSession);
             knownSession.setUserName(LOGGED_OUT);
             updatedSession.setAttribute("User", LOGGED_OUT);
             knownSession.setUserId(0);
-            this.removeAbandonedSessions();
+            this.removeAbandonedSessions(true);
             return;
         }
+        log.trace(LoginBean.LOGIN_LOG_PREFIX + "Session already exists and will be overwritten with new session.");
 
         String name = updatedUser.getNachVorname();
         int timeout = updatedUser.getSessiontimeout();
@@ -281,14 +317,18 @@ public class SessionForm implements Serializable {
         knownSession.setUserId(updatedUser.getId());
         knownSession.setUserTimeout(timeout);
         updatedSession.setMaxInactiveInterval(timeout);
-        this.removeAbandonedSessions();
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Removing old sessions...");
+        this.removeAbandonedSessions(true);
+        log.trace(LoginBean.LOGIN_LOG_PREFIX + "Sessions list is up to date.");
     }
 
     /**
      * Removes all unused sessions. All sessions where the user is null, the user has no name, the user is logged out or the IP address is null, are
      * unused.
+     *
+     * @param logKeptSessions Must be true to log all sessions (kept and removed) and must be false to only log removed sessions.
      */
-    private void removeAbandonedSessions() {
+    private void removeAbandonedSessions(boolean logKeptSessions) {
         for (int index = 0; index < this.sessions.size(); index++) {
 
             SessionInfo session = this.sessions.get(index);
@@ -297,16 +337,56 @@ public class SessionForm implements Serializable {
             long loginTimestamp = (session.getLastAccessTimestamp());
             long now = System.currentTimeMillis();
             long sessionDuration = (now - loginTimestamp) / 1000;
+            String counter = (index + 1) + "/" + this.sessions.size();
+            StringBuffer message = new StringBuffer();
+            message.append("Session " + counter);
+            message.append("\n- login name:       " + userName);
+            message.append("\n- browser:          " + session.getBrowserName());
+            message.append("\n- ip address:       " + session.getUserIpAddress());
+            message.append("\n- timeout:          " + userTimeout + " seconds");
+            message.append("\n- session duration: " + sessionDuration + " seconds");
 
             boolean overTimeout = sessionDuration > userTimeout;
-            //boolean notLoggedIn = userName.equals(NOT_LOGGED_IN);
-            boolean loggedOut = userName.equals(LOGGED_OUT);
+            // sessionDuration > 0 is needed to not remove the login screen while the user logs in
+            boolean loggedOut = userName.equals(LOGGED_OUT) || (userName.equals(NOT_LOGGED_IN) && sessionDuration > 0);
             boolean noAddress = session.getUserIpAddress() == null;
 
             if (overTimeout || loggedOut || noAddress) {
+                if (overTimeout) {
+                    log.debug(LoginBean.LOGIN_LOG_PREFIX + "Following user will be logged out because timeout is exceeded:");
+                    log.debug(LoginBean.LOGIN_LOG_PREFIX + "User name: " + session.getUserName());
+                }
+                message.append("\nSession " + counter + " will be removed because timeout is exceeded or session is abandoned.");
+                log.trace(message.toString());
                 this.sessions.remove(index);
                 index--;
+            } else {
+                message.append("\nSession " + counter + " is valid and is kept in the sessions list.");
+                if (logKeptSessions) {
+                    log.trace(message.toString());
+                }
             }
+        }
+    }
+
+    /**
+     * Prints the login name, the first name and the last name of the user in the given session object to the debug log output. If the user is
+     * unknown, no log is printed.
+     *
+     * @param session The object that contains the session information and the user information
+     */
+    public static void logUserInformation(SessionInfo session) {
+        try {
+            User user = UserManager.getUserById(session.getUserId());
+            if (user == null) {
+                return;
+            }
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login name: " + user.getLogin());
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "First name: " + user.getVorname());
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Last name: " + user.getNachname());
+        } catch (DAOException daoException) {
+            //log.debug("Unknown user will be logged out.");
+            //daoException.printStackTrace();
         }
     }
 

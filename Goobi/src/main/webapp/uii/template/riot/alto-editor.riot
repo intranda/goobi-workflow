@@ -58,6 +58,7 @@
     	console.log(this.opts)
     	this.msgs = this.opts.messages;
         this.lines = []; 
+        console.log(opts)
         let altoDiv = document.querySelector(opts.altoDivSelector);
         let altoJson = altoDiv.innerText;
         this.alto = JSON.parse(altoJson);

@@ -32,7 +32,9 @@ import org.goobi.production.plugin.interfaces.IImportPlugin;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ConfigPluginsTest {
+import de.sub.goobi.AbstractTest;
+
+public class ConfigPluginsTest extends AbstractTest {
 
     @BeforeClass
     public static void setUp() throws URISyntaxException {
@@ -56,6 +58,7 @@ public class ConfigPluginsTest {
 
         IImportPlugin plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, "JunitImportPlugin");
 
+        @SuppressWarnings("deprecation")
         XMLConfiguration config = ConfigPlugins.getPluginConfig(plugin);
         assertNotNull(config);
     }
@@ -65,6 +68,7 @@ public class ConfigPluginsTest {
 
         IImportPlugin plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, "JunitImportPluginError");
 
+        @SuppressWarnings("deprecation")
         XMLConfiguration config = ConfigPlugins.getPluginConfig(plugin);
         assertNotNull(config);
     }

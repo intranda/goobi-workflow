@@ -7,7 +7,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class ItemTest {
+import de.sub.goobi.AbstractTest;
+
+public class ItemTest extends AbstractTest {
 
     @Test
     public void testConstructor() {

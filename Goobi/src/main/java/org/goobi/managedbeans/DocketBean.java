@@ -31,9 +31,9 @@ import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Docket;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -46,7 +46,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named("DocketForm")
-@SessionScoped
+@WindowScoped
 public class DocketBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = 3006854499230483171L;
@@ -95,7 +95,11 @@ public class DocketBean extends BasicBean implements Serializable {
         }
         return FilterKein();
     }
-
+    
+    public String Cancel() {
+        return "docket_all";
+    }
+    
     private boolean hasAssignedProcesses(Docket d) {
         Integer number = ProcessManager.getNumberOfProcessesWithDocket(d.getId());
         if (number != null && number > 0) {
@@ -114,4 +118,5 @@ public class DocketBean extends BasicBean implements Serializable {
         FilterKein();
         return this.zurueck;
     }
+
 }

@@ -33,13 +33,16 @@ import java.io.Serializable;
 import java.nio.file.FileSystems;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -49,12 +52,14 @@ import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.api.mail.StepConfiguration;
 import org.goobi.api.mail.UserProjectConfiguration;
+import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Ldap;
 import org.goobi.beans.Project;
@@ -78,8 +83,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named("BenutzerverwaltungForm")
-@SessionScoped
-
+@WindowScoped
 public class UserBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = -3635859455444639614L;
     @Getter
@@ -100,6 +104,15 @@ public class UserBean extends BasicBean implements Serializable {
     @Getter
     private boolean unsubscribedProjectsExist;
 
+    @Getter
+    private boolean unsubscribedGroupsExist;
+
+    //changes since last save for each user:
+    private Map<Integer, ArrayList<Integer>> addedToGroups = new HashMap<>();
+    private Map<Integer, ArrayList<Integer>> removedFromGroups = new HashMap<>();
+    private Map<Integer, ArrayList<Integer>> addedToProjects = new HashMap<>();
+    private Map<Integer, ArrayList<Integer>> removedFromProjects = new HashMap<>();
+
     public String Neu() {
         this.myClass = new User();
         this.myClass.setVorname("");
@@ -111,11 +124,22 @@ public class UserBean extends BasicBean implements Serializable {
         this.myClass.setPasswordSalt(salt.toString());
         updateUsergroupPaginator();
         updateProjectPaginator();
+
+        resetChangeLists();
+
         return "user_edit";
     }
 
+    //set up the change recording lists
+    private void resetChangeLists() {
+        addedToGroups.put(myClass.getId(), new ArrayList<Integer>());
+        addedToProjects.put(myClass.getId(), new ArrayList<Integer>());
+        removedFromGroups.put(myClass.getId(), new ArrayList<Integer>());
+        removedFromProjects.put(myClass.getId(), new ArrayList<Integer>());
+    }
+
     private String getBasicFilter() {
-        String hide = "isVisible is null";
+        String hide = "isVisible IS null";
         if (this.hideInactiveUsers) {
             hide += " AND istAktiv=true";
         }
@@ -137,19 +161,90 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     public String FilterAlleStart() {
-        this.sortierung = "nachname, vorname";
         UserManager m = new UserManager();
-        String myfilter = getBasicFilter();
+        String sqlQuery = getBasicFilter();
         if (this.filter != null && this.filter.length() != 0) {
-            filter = MySQLHelper.escapeString(filter);
-            myfilter += " AND (concat (vorname, \" \", nachname) like '%" + StringEscapeUtils.escapeSql(this.filter)
-                    + "%' OR BenutzerID IN (select distinct BenutzerID from benutzergruppenmitgliedschaft, benutzergruppen where benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel like '%"
-                    + StringEscapeUtils.escapeSql(this.filter)
-                    + "%') OR BenutzerID IN (SELECT distinct BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE '%"
-                    + StringEscapeUtils.escapeSql(this.filter) + "%'))";
+            String[] searchParts = this.filter.trim().split("\\s+");
+            sqlQuery += " AND (";
+            for (int index = 0; index < searchParts.length; index++) {
+                String like = MySQLHelper.escapeString(searchParts[index]);
+                like = "\'%" + StringEscapeUtils.escapeSql(like) + "%\'";
+                String inGroup =
+                        "BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzergruppenmitgliedschaft, benutzergruppen WHERE benutzergruppenmitgliedschaft.BenutzerGruppenID = benutzergruppen.BenutzergruppenID AND benutzergruppen.titel LIKE "
+                                + like + ")";
+                String inProject =
+                        "BenutzerID IN (SELECT DISTINCT BenutzerID FROM projektbenutzer, projekte WHERE projektbenutzer.ProjekteID = projekte.ProjekteID AND projekte.titel LIKE "
+                                + like + ")";
+                String inInstitution =
+                        "BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzer, institution WHERE benutzer.institution_id = institution.id AND (institution.shortName LIKE "
+                                + like + " OR institution.longName LIKE " + like + "))";
+                String inName = "Vorname LIKE " + like + " OR Nachname LIKE " + like + " OR login LIKE " + like + " OR Standort LIKE " + like;
+                sqlQuery += inName + " OR " + inGroup + " OR " + inProject + " OR " + inInstitution;
+                if (index < searchParts.length - 1) {
+                    sqlQuery += " OR ";
+                }
+            }
+            sqlQuery += ")";
         }
-        paginator = new DatabasePaginator(sortierung, myfilter, m, "user_all");
+
+        this.paginator = new DatabasePaginator(this.getSortTitle(), sqlQuery, m, "user_all");
+        List<? extends DatabaseObject> users = paginator.getList();
+
+        boolean sortProjects = this.sortierung.startsWith("projects");
+        boolean sortUserGroups = this.sortierung.startsWith("group");
+        if (sortProjects || sortUserGroups) {
+            List<User> list = new ArrayList<>();
+            for (int index = 0; index < users.size(); index++) {
+                list.add((User) (users.get(index)));
+            }
+            this.sortUserListByProjectOrGroup(list);
+            this.paginator.setList(list);
+        } else {
+            if (this.sortierung.endsWith("Desc")) {
+                Collections.reverse(users);
+            }
+            this.paginator.setList(users);
+        }
         return "user_all";
+    }
+
+    private String getSortTitle() {
+        String sort = "";
+        if (this.sortierung.startsWith("name")) {
+            sort = "benutzer.Nachname, benutzer.Vorname";
+        } else if (this.sortierung.startsWith("login")) {
+            sort = "benutzer.login";
+        } else if (this.sortierung.startsWith("location")) {
+            sort = "benutzer.Standort";
+            //} else if (this.sortierung.startsWith("group")) {
+            //    sort = "benutzergruppen.titel";
+            //} else if (this.sortierung.startsWith("projects")) {
+            //    sort = "projekte.Titel";
+        } else if (this.sortierung.startsWith("institution")) {
+            sort = "institution.shortName";
+        }
+        return sort;
+    }
+
+    private void sortUserListByProjectOrGroup(List<User> users) {
+        // Find the fitting User-getter-method for the sorting routine depending on the sort strategy
+        Function<User, String> function = null;
+        if (this.sortierung.startsWith("group")) {
+            function = User::getFirstUserGroupTitle;
+        } else if (this.sortierung.startsWith("projects")) {
+            function = User::getFirstProjectTitle;
+        }
+
+        // When there is no sorting routine, don't sort and return the original list
+        if (function != null) {
+            Comparator<User> comparator = Comparator.comparing(function);
+
+            // Only when the sorting routine is descending, replace comparator by reversed comparator.
+            if (this.sortierung.endsWith("Desc")) {
+                comparator = Collections.reverseOrder(comparator);
+            }
+            Collections.sort(users, comparator);
+        }
     }
 
     public String Speichern() {
@@ -172,8 +267,20 @@ public class UserBean extends BasicBean implements Serializable {
                         && myClass.getPasswort() != null) {
                     myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
                 }
+                //if there is only one institution, then it is not shown in ui and the value may be null:
+                if (myClass.getInstitutionId() == null) {
+                    List<SelectItem> lstInst = getInstitutionsAsSelectList();
+                    if (lstInst.size() > 0) {
+                        Integer inst = (Integer) lstInst.get(0).getValue();
+                        myClass.setInstitutionId(inst);
+                    }
+                }
+
                 UserManager.saveUser(this.myClass);
                 paginator.load();
+
+                resetChangeLists();
+
                 return "user_all";
             } else {
                 Helper.setFehlerMeldung("", Helper.getTranslation("loginBereitsVergeben"));
@@ -234,17 +341,27 @@ public class UserBean extends BasicBean implements Serializable {
                 }
                 paginator.load();
             } catch (DAOException e) {
-                Helper.setFehlerMeldung("#{msgs.Error_hideUser}", e.getMessage());
+                Helper.setFehlerMeldung("Error_hideUser", e.getMessage());
                 return "";
             }
             return FilterKein();
         }
-        Helper.setFehlerMeldung("#{msgs.Error_selfDelete}");
+        Helper.setFehlerMeldung("Error_selfDelete");
         return "";
     }
 
     public String AusGruppeLoeschen() {
         int gruppenID = Integer.parseInt(Helper.getRequestParameter("ID"));
+        String strResult = AusGruppeLoeschen(gruppenID);
+
+        if (strResult != null) {
+            removedFromGroups.get(myClass.getId()).add(gruppenID);
+        }
+        return strResult;
+    }
+
+    private String AusGruppeLoeschen(int gruppenID) {
+
         List<Usergroup> neu = new ArrayList<>();
         for (Usergroup u : this.myClass.getBenutzergruppen()) {
             if (u.getId().intValue() != gruppenID) {
@@ -290,6 +407,15 @@ public class UserBean extends BasicBean implements Serializable {
 
     public String ZuGruppeHinzufuegen() {
         Integer gruppenID = Integer.valueOf(Helper.getRequestParameter("ID"));
+        String strResult = ZuGruppeHinzufuegen(gruppenID);
+
+        if (strResult != null) {
+            addedToGroups.get(myClass.getId()).add(gruppenID);
+        }
+        return strResult;
+    }
+
+    private String ZuGruppeHinzufuegen(int gruppenID) {
         try {
             Usergroup usergroup = UsergroupManager.getUsergroupById(gruppenID);
             for (Usergroup b : this.myClass.getBenutzergruppen()) {
@@ -309,6 +435,15 @@ public class UserBean extends BasicBean implements Serializable {
 
     public String AusProjektLoeschen() {
         int projektID = Integer.parseInt(Helper.getRequestParameter("ID"));
+        String strResult = AusProjektLoeschen(projektID);
+
+        if (strResult != null) {
+            removedFromProjects.get(myClass.getId()).add(projektID);
+        }
+        return strResult;
+    }
+
+    private String AusProjektLoeschen(int projektID) {
         List<Project> neu = new ArrayList<>();
         for (Project p : this.myClass.getProjekte()) {
             if (p.getId().intValue() != projektID) {
@@ -326,6 +461,16 @@ public class UserBean extends BasicBean implements Serializable {
 
     public String ZuProjektHinzufuegen() {
         Integer projektID = Integer.valueOf(Helper.getRequestParameter("ID"));
+
+        String strResult = ZuProjektHinzufuegen(projektID);
+
+        if (strResult != null) {
+            addedToProjects.get(myClass.getId()).add(projektID);
+        }
+        return strResult;
+    }
+
+    private String ZuProjektHinzufuegen(int projektID) {
         try {
             Project project = ProjectManager.getProjectById(projektID);
             for (Project p : this.myClass.getProjekte()) {
@@ -348,6 +493,10 @@ public class UserBean extends BasicBean implements Serializable {
 
         updateUsergroupPaginator();
         updateProjectPaginator();
+
+        if (!addedToGroups.containsKey(myClass.getId())) {
+            resetChangeLists();
+        }
         //        updateInstitutionPaginator();
 
     }
@@ -449,7 +598,7 @@ public class UserBean extends BasicBean implements Serializable {
         if ("REALLY" == "CANCEL") {
             return "index";
         }
-        */
+         */
 
         // Create the random password and save it
         if (userToResetPassword != null) {
@@ -528,6 +677,8 @@ public class UserBean extends BasicBean implements Serializable {
         }
         UsergroupManager m = new UsergroupManager();
         usergroupPaginator = new DatabasePaginator("titel", filter, m, "");
+
+        unsubscribedGroupsExist = usergroupPaginator.getTotalResults() > 0;
     }
 
     private void updateProjectPaginator() {
@@ -538,10 +689,10 @@ public class UserBean extends BasicBean implements Serializable {
         }
         ProjectManager m = new ProjectManager();
         projectPaginator = new DatabasePaginator("titel", filter, m, "");
-        
+
         unsubscribedProjectsExist = projectPaginator.getTotalResults() > 0;
     }
-    
+
     public Integer getCurrentInstitutionID() {
         if (myClass.getInstitution() != null) {
             return myClass.getInstitution().getId();
@@ -557,12 +708,12 @@ public class UserBean extends BasicBean implements Serializable {
         }
     }
 
-    public Integer getNumberOfInstitutions(){
-        
+    public Integer getNumberOfInstitutions() {
+
         List<Institution> lstInsts = InstitutionManager.getAllInstitutionsAsList();
         return lstInsts.size();
     }
-    
+
     public List<SelectItem> getInstitutionsAsSelectList() throws DAOException {
         List<SelectItem> institutions = new ArrayList<>();
         List<Institution> temp = null;
@@ -578,5 +729,27 @@ public class UserBean extends BasicBean implements Serializable {
             }
         }
         return institutions;
+    }
+
+    /*
+     * Undo the changes since last Save() was called
+     */
+    public String cancelEdit() {
+
+        for (Integer iGroup : addedToGroups.get(myClass.getId())) {
+            AusGruppeLoeschen(iGroup);
+        }
+        for (Integer iGroup : removedFromGroups.get(myClass.getId())) {
+            ZuGruppeHinzufuegen(iGroup);
+        }
+        for (Integer iProj : addedToProjects.get(myClass.getId())) {
+            AusProjektLoeschen(iProj);
+        }
+        for (Integer iProj : removedFromProjects.get(myClass.getId())) {
+            ZuProjektHinzufuegen(iProj);
+        }
+
+        resetChangeLists();
+        return "user_all";
     }
 }

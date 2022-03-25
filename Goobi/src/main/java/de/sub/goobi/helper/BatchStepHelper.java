@@ -37,7 +37,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.faces.model.SelectItem;
-import javax.inject.Inject;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -78,9 +77,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class BatchStepHelper {
-	
-	@Getter
-	@Setter
+
+    @Getter
+    @Setter
     private List<Step> steps;
     private static final Logger logger = LogManager.getLogger(BatchStepHelper.class);
     @Getter
@@ -132,8 +131,7 @@ public class BatchStepHelper {
     @Getter
     private Map<String, List<String>> displayableMetadataMap;
 
-    @Inject
-    private StepBean sb;
+    private StepBean sb = Helper.getBeanByClass(StepBean.class);
 
     public BatchStepHelper(List<Step> steps) {
         this.steps = steps;
@@ -171,7 +169,7 @@ public class BatchStepHelper {
     public int getPropertyListSize() {
         return this.processPropertyList.size();
     }
-    
+
     public void setProcessName(String processName) {
         this.processName = processName;
         for (Step s : this.steps) {
@@ -757,7 +755,8 @@ public class BatchStepHelper {
                 try {
                     dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, step.getStepPlugin());
                 } catch (Exception e) {
-                    logger.error("Can't load export plugin, use default plugin", e);
+                    logger.error("Can't load export plugin, use default export", e);
+                    Helper.setFehlerMeldung("Can't load export plugin, use default export");
                     dms = new ExportDms();
                 }
             }

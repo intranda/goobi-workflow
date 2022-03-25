@@ -10,7 +10,8 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     template="/uii/template/template_metseditor.html"
     xmlns:p="http://primefaces.org/ui"
-    xmlns:o="http://omnifaces.org/ui">
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
         name="myPageTitle"
@@ -35,6 +36,7 @@
     <ui:define name="metseditorContent">
         <h:panelGroup id="logoutContainer">
             <h:panelGroup
+                layout="block"
                 rendered="#{SessionForm.logoutMessage != ''}"
                 styleClass="alert alert-danger">
                 <i class="fa fa-exclamation-triangle" />
@@ -56,6 +58,11 @@
             showDetail="true"
             showSummary="true"
             tooltip="true" />
+            
+        <div class="alert alert-warning" jsf:rendered="#{Metadaten.myProzess.archivedImageFolders.size() gt 0}">
+            <h:outputText value="#{msgs.warningImageFoldersArchived}" escape="false" />
+            <ui:repeat var="folder" value="#{Metadaten.myProzess.archivedImageFolders}">#{folder}</ui:repeat>
+        </div>
             
         <ui:include src="includes/metseditor/metseditor_progress.xhtml" />
             
@@ -84,6 +91,7 @@
             <ui:include src="includes/metseditor/modals/inc_me_modal_viaf.xhtml" />
             <ui:include src="includes/metseditor/modals/inc_me_modal_vocabulary.xhtml" />
             <ui:include src="includes/metseditor/modals/inc_me_modal_altoeditor.xhtml" />
+            <ui:include src="includes/metseditor/modals/inc_me_modal_resetPagination.xhtml" />
             
         </h:form>
     </ui:define>

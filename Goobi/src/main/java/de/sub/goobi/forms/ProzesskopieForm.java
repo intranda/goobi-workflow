@@ -44,7 +44,6 @@ import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
-import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Default;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
@@ -54,6 +53,7 @@ import javax.servlet.http.Part;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.beans.LogEntry;
@@ -124,7 +124,7 @@ import ugh.exceptions.WriteException;
 import ugh.fileformats.mets.XStream;
 
 @Named("ProzesskopieForm")
-@SessionScoped
+@WindowScoped
 @Default
 public class ProzesskopieForm implements Serializable {
     /**
@@ -212,10 +212,15 @@ public class ProzesskopieForm implements Serializable {
 
             return "";
         }
+        if (this.prozessVorlage.getProjekt().getProjectIsArchived()) {
+
+            Helper.setFehlerMeldung("projectIsArchived");
+            return "";
+        }
 
         clearValues();
         this.co = ConfigOpac.getInstance();
-        catalogues = co.getAllCatalogues();
+        catalogues = co.getAllCatalogues(prozessVorlage.getTitel());
 
         catalogueTitles = new ArrayList<>(catalogues.size());
         for (ConfigOpacCatalogue coc : catalogues) {
@@ -330,11 +335,27 @@ public class ProzesskopieForm implements Serializable {
         // check if file upload is allowed
         enableFileUpload = cp.getParamBoolean("createNewProcess/fileupload/@use");
         configuredFolderNames = new ArrayList<>();
+        configuredFolderRegex = new ArrayList<>();
+        configuredFolderErrorMessageKeys = new ArrayList<>();
         if (enableFileUpload) {
-            List<String> folders = cp.getParamList("createNewProcess/fileupload/folder");
-            if (folders != null) {
-                for (String f : folders) {
-                    switch (f) {
+            List<HierarchicalConfiguration> folderObjects = cp.getList("createNewProcess/fileupload/folder");
+            if (folderObjects != null) {
+                for (HierarchicalConfiguration folderObject : folderObjects) {
+
+                    String regex = folderObject.getString("@regex");
+                    if (regex == null) {
+                        regex = "";
+                    }
+                    configuredFolderRegex.add(regex);
+
+                    String key = folderObject.getString("@messageKey");
+                    if (key == null) {
+                        key = "";
+                    }
+                    configuredFolderErrorMessageKeys.add(key);
+
+                    String name = folderObject.getString(".");
+                    switch (name) {
                         case "intern":
                             configuredFolderNames.add(new SelectItem("intern", Helper.getTranslation("process_log_file_FolderSelectionInternal")));
                             break;
@@ -351,8 +372,8 @@ public class ProzesskopieForm implements Serializable {
                             configuredFolderNames.add(new SelectItem("media", Helper.getTranslation("process_log_file_mediaFolder")));
                             break;
                         default:
-                            if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(f))) {
-                                configuredFolderNames.add(new SelectItem(f, Helper.getTranslation("process_log_file_" + f + "Folder")));
+                            if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(name))) {
+                                configuredFolderNames.add(new SelectItem(name, Helper.getTranslation("process_log_file_" + name + "Folder")));
                             }
                             break;
                     }
@@ -362,6 +383,7 @@ public class ProzesskopieForm implements Serializable {
                 enableFileUpload = false;
             } else {
                 uploadFolder = (String) configuredFolderNames.get(0).getValue();
+                uploadRegex = configuredFolderRegex.get(0);
             }
         }
     }
@@ -831,7 +853,7 @@ public class ProzesskopieForm implements Serializable {
                             Metadata md = this.ughHelper.getMetadata(myTempStruct, mdt);
                             if (md != null) {
                                 md.setValue(field.getWert());
-                            } else if (this.ughHelper.lastErrorMessage != null && field.getWert() != null && !field.getWert().isEmpty())//if the md could not be found, warn! 
+                            } else if (this.ughHelper.lastErrorMessage != null && field.getWert() != null && !field.getWert().isEmpty())//if the md could not be found, warn!
                             {
                                 Helper.setFehlerMeldung(this.ughHelper.lastErrorMessage);
                                 String strError = mdt.getName() + " : " + field.getWert();
@@ -1706,8 +1728,39 @@ public class ProzesskopieForm implements Serializable {
     private TreeSet<UploadImage> uploadedFiles = new TreeSet<>();
 
     @Getter
-    @Setter
     private String uploadFolder;
+
+    public void setUploadFolder(String folder) {
+        this.uploadFolder = folder;
+        this.uploadRegex = this.getRegexOfFolder(folder);
+        logger.debug("Regex: " + this.uploadRegex);
+    }
+
+    @Getter
+    @Setter
+    private String uploadRegex;
+
+    @Getter
+    @Setter
+    private String fileUploadErrorMessage;
+
+    public String generateFileUploadErrorMessage() {
+        String key = this.getErrorMessageKeyOfFolder(this.uploadFolder);
+        String message = "";
+
+        if (key != null && key.length() > 0) {
+            String result = Helper.getTranslation(key, this.uploadRegex);
+            if (result != null && result.length() > 0 && !result.equals(key)) {
+                message = result;
+            } else {
+                message = "";
+            }
+        }
+        if (message.length() == 0) {
+            message = "The selected file could not be uploaded because it does not match the specified file format.";
+        }
+        return message;
+    }
 
     @Getter
     @Setter
@@ -1721,7 +1774,30 @@ public class ProzesskopieForm implements Serializable {
     private List<SelectItem> configuredFolderNames;
 
     @Getter
+    private List<String> configuredFolderRegex;
+
+    @Getter
+    private List<String> configuredFolderErrorMessageKeys;
+
+    @Getter
     private boolean enableFileUpload = false;
+
+    private String getRegexOfFolder(String folder) {
+        return this.configuredFolderRegex.get(this.getIndexOfFolder(folder));
+    }
+
+    private String getErrorMessageKeyOfFolder(String folder) {
+        return this.configuredFolderErrorMessageKeys.get(this.getIndexOfFolder(folder));
+    }
+
+    private int getIndexOfFolder(String folder) {
+        for (int index = 0; index < this.configuredFolderNames.size(); index++) {
+            if (this.configuredFolderNames.get(index).getValue().equals(folder)) {
+                return index;
+            }
+        }
+        return -1;
+    }
 
     /**
      * Get get temporary folder to upload to

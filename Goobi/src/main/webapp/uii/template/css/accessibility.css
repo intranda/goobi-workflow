@@ -273,8 +273,39 @@ div#gndModalContent.modal-content, div#viafModalContent.modal-content {
 	border: 2px solid #1F79CC;
 }
 
+.modal .modal-dialog .modal-content {
+    border: 2px solid #1F79CC;
+}
+
+.modal .modal-dialog .modal-content .modal-header {
+    color: #fff;
+    background-color: #1F79CC;
+}
+
 /*++++++++++++++++++++++++++++ BACKGROUND ++++++++++++++++++++++ */
 
 html body.login {
 	background-color: #1F79CC;
+}
+
+/*+++++++++++++++++++++++++++ API Description +++++++++++++++++*/
+
+.swagger-ui .opblock.opblock-get .opblock-summary-method {
+	background-color: #0174E6 !important;
+}
+
+.swagger-ui .opblock.opblock-post .opblock-summary-method {
+	background-color: #218756 !important;
+}
+
+.swagger-ui .btn.authorize{
+	color: #218756 !important;
+}
+
+.swagger-ui .btn.authorize{
+	border-color: #218756 !important;
+}
+
+.swagger-ui .info a{
+	color: #1F79CC !important;
 }

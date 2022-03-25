@@ -29,7 +29,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 
@@ -50,10 +51,9 @@ public class DatabasePaginator implements Serializable {
     private String filter = new String();
     private IManager manager;
     private String returnPage;
-    @Getter
-    private List<Integer> idList;
-    private Institution institution;
 
+    private List<Integer> idList = new ArrayList<>();
+    private Institution institution;
 
     public DatabasePaginator(String order, String filter, IManager manager, String returnPage) {
         LoginBean login = Helper.getLoginBean();
@@ -71,7 +71,7 @@ public class DatabasePaginator implements Serializable {
         this.manager = manager;
         try {
             totalResults = manager.getHitSize(order, filter, institution);
-            idList = manager.getIdList(order, filter, institution);
+
             load();
         } catch (DAOException e) {
             logger.error("Failed to count results", e);
@@ -80,7 +80,7 @@ public class DatabasePaginator implements Serializable {
     }
 
     public int getLastPageNumber() {
-        int ret = new Double(Math.floor(this.totalResults / this.pageSize)).intValue();
+        int ret = Double.valueOf(Math.floor(this.totalResults / this.pageSize)).intValue();
         if (this.totalResults % this.pageSize == 0) {
             ret--;
         }
@@ -114,12 +114,16 @@ public class DatabasePaginator implements Serializable {
     // }
 
     public List<? extends DatabaseObject> getList() {
-        return results;
+        return this.results;
+    }
+
+    public void setList(List<? extends DatabaseObject> results) {
+        this.results = results;
     }
 
     public void load() {
         try {
-            results = manager.getList(order, filter, this.page * this.pageSize, pageSize, institution);
+            this.results = manager.getList(order, filter, this.page * this.pageSize, pageSize, institution);
             for (DatabaseObject d : results) {
                 d.lazyLoad();
             }
@@ -212,5 +216,12 @@ public class DatabasePaginator implements Serializable {
     public String returnToPreviousPage() {
         load();
         return returnPage;
+    }
+
+    public List<Integer> getIdList() {
+        if (idList.isEmpty()) {
+            idList = manager.getIdList(order, filter, institution);
+        }
+        return idList;
     }
 }

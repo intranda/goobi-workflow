@@ -2,10 +2,7 @@ package org.goobi.managedbeans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import javax.enterprise.context.SessionScoped;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -33,10 +30,10 @@ import javax.enterprise.context.SessionScoped;
  * exception statement from your version.
  */
 
-
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
 
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.UserRole;
@@ -49,14 +46,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named("BenutzergruppenForm")
-@SessionScoped
+@WindowScoped
 @Getter
 @Setter
 public class UsergroupBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 8051160917458068675L;
     private Usergroup myBenutzergruppe = new Usergroup();
+    private String tempTitle = "";	//title before editing
     private String tempRole;
 
+    public void setMyBenutzergruppe(Usergroup group) {
+    	this.myBenutzergruppe = group;
+    	this.tempTitle = group.getTitel();
+    }
+    
     public UsergroupBean() {
         sortierung = "titel";
     }
@@ -68,6 +71,15 @@ public class UsergroupBean extends BasicBean implements Serializable {
 
     public String Speichern() {
         try {
+            //if there is only one institution, then it is not shown in ui and the value may be null:
+            if (getCurrentInstitutionID() == 0) {
+                List<SelectItem> lstInst = getInstitutionsAsSelectList();
+                if (lstInst.size() > 0) {
+                    Integer inst = (Integer) lstInst.get(0).getValue();
+                    setCurrentInstitutionID(inst);
+                }
+            }
+
             UsergroupManager.saveUsergroup(myBenutzergruppe);
             paginator.load();
             return FilterKein();
@@ -95,9 +107,16 @@ public class UsergroupBean extends BasicBean implements Serializable {
         }
         return FilterKein();
     }
+    
+    public String Cancel() {
+    	this.myBenutzergruppe.setTitel(tempTitle);
+        return "usergroup_all";
+    }
 
     public String addRole() {
-        myBenutzergruppe.addUserRole(tempRole);
+    	if(! tempRole.isEmpty()) {
+        	myBenutzergruppe.addUserRole(tempRole);
+    	}
         tempRole = "";
         return "";
     }

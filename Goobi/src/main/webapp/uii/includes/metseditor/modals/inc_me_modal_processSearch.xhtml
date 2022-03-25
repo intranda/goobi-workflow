@@ -28,9 +28,8 @@
                 role="document">
                 <h:panelGroup id="processModalContent" class="modal-content" layout="block">
                     <div class="modal-header">
-                        <h5
-                            class="modal-title"
-                            id="processesSearchBoxLabel">#{msgs.NORM_processesSearch}</h5>
+                        <h1
+                            class="modal-title">#{msgs.NORM_processesSearch}</h1>
 
                         <button
                             type="button"
@@ -63,7 +62,7 @@
                                         <div class="searchgroup__container">
                                             <button
                                             	jsf:id="close"
-                                                class="searchgroup__container-close"
+                                                class="btn searchgroup__container-close"
                                                 jsf:action="#{Metadaten.currentMetadataToPerformSearch.searchRequest.deleteSearchGroup(globStatus.index)}">
                                                 <i class="fa fa-times" aria-hidden="true"></i>
                                                 <f:ajax
@@ -100,7 +99,7 @@
                                                             styleClass="form-control input"
                                                             id="input_processes" />
                                                     </div>
-                                                    <div class="col text-right">
+                                                    <div class="col text-right" style="flex-grow: 0;">
                                                         <button
                                                         	jsf:id="delete"
                                                             jsf:action="#{group.deleteFilter(status.index)}"
@@ -137,7 +136,7 @@
                                                     <button
                                                     	jsf:id="newFilter"
                                                         jsf:action="#{group.newFilter}"
-                                                        class="btn new-filter-btn">
+                                                        class="btn btn--link pull-right">
                                                         #{msgs.NORM_newFilter}
                                                         <f:ajax
                                                             execute=":normdataForm:processes_search"
@@ -151,12 +150,12 @@
                                         <div class="row">
                                             <h:panelGroup rendered="#{Metadaten.currentMetadataToPerformSearch.searchRequest.numGroups gt 1}">
                                                 <div
-                                                    class="col-sm-8"
+                                                    class="col-sm-8 group-conjunction"
                                                     style="padding-top: 4px;">
                                                     <strong>
                                                         <h:outputText value="#{msgs.NORM_groupconjunction}:" />
                                                     </strong>
-                                                    <h:selectOneRadio value="#{Metadaten.currentMetadataToPerformSearch.searchRequest.metadataConjunctive}">
+                                                    <h:selectOneRadio styleClass="table__radio" value="#{Metadaten.currentMetadataToPerformSearch.searchRequest.metadataConjunctive}">
                                                         <f:selectItem
                                                             itemValue="true"
                                                             itemLabel="#{msgs.NORM_conjunctive}" />
@@ -167,12 +166,12 @@
                                                     </h:selectOneRadio>
                                                 </div>
                                             </h:panelGroup>
-                                            <div class="#{Metadaten.currentMetadataToPerformSearch.searchRequest.numGroups gt 1 ? 'col-sm-4' : 'col-sm-12'}">
+                                            <div class="#{Metadaten.currentMetadataToPerformSearch.searchRequest.numGroups gt 1 ? 'col-sm-4' : 'col-sm-12'} text-right">
 
                                                 <button
                                                 	jsf:id="newGroup"
                                                     jsf:action="#{Metadaten.currentMetadataToPerformSearch.searchRequest.newGroup}"
-                                                    class="btn new-filter-btn">
+                                                    class="btn btn--link">
                                                     <f:ajax
                                                         execute=":normdataForm:processes_search"
                                                         render=":normdataForm:processes_search" />
@@ -184,8 +183,8 @@
                                     </div>
                                 </c:if>
                             </div>
-
-                            <button 
+                            <div class="text-right">
+                                <button 
                             			jsf:id="processSearch"
                                         class="btn btn--white btn--loader" 
                                         jsf:action="#{Metadaten.currentMetadataToPerformSearch.search}">
@@ -198,8 +197,8 @@
                                        <f:ajax
                                         execute="@form"
                                         render="processResults" />
-                             </button>    
-
+                                </button>    
+                            </div>
                             
                             <script>
 	                            $( 'input[id*="geonamesSearch"]' ).on( 'focus', function() {

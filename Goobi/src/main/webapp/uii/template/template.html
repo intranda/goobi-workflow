@@ -7,7 +7,8 @@
     xmlns:x="http://myfaces.apache.org/tomahawk" 
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:o="http://omnifaces.org/ui"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:ds="http://deltaspike.apache.org/jsf">
 <h:head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -85,7 +86,7 @@
 
 	<!-- WCAG compatibility CSS -->
 
-	<ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.renderAccessibilityCss}">
+	<ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.uiMode=='accessibility'}">
 		<link rel="stylesheet" href="template/css/accessibility.css?v=#{HelperForm.buildVersion}" />
 	</ui:fragment>
 
@@ -93,12 +94,15 @@
     <style>
         <h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false" />
     </style>
-    
+    <span class="outer-skip-link">
+    	<a class="skip-main sr-only" href="#main-content" tabindex="0">#{msgs.skipMainContent}</a>
+    </span>
 </h:head>
 
 <ui:insert name="metadata" />
 
 <h:body styleClass="#{LoginForm.myBenutzer == null?'login':'sidebar-right'}" style="#{LoginForm.myBenutzer == null?'height:300px;':''}">
+   <ds:windowId/>
     <f:view locale="#{SpracheForm.locale}">
 
         <h:panelGroup rendered="#{LoginForm.myBenutzer==null}">
@@ -106,20 +110,7 @@
         </h:panelGroup>
 
         <c:if test="#{LoginForm.myBenutzer!=null}">
-            <!-- MENU -->
-            <nav role="navigation" aria-label="navigation">
-	            <div id="navigation">
-	                <div class="container-fluid">
-	                    <ui:insert name="menu">
-	                        <ui:include src="inc_menu.xhtml" />
-	                    </ui:insert>
-	                </div>
-	
-	                <ui:insert name="menu_mobile">
-	                    <ui:include src="inc_menu_mobile.xhtml" />
-	                </ui:insert>
-	            </div>
-	        </nav>
+            <ui:include src="inc_menu.xhtml" />
 
             <div class="container-fluid" id="content" style="padding-bottom:20px">
                 <!-- 				<div id="left"> -->
@@ -132,13 +123,13 @@
 
                         <h:form id="header">
                             <o:socket channel="developerMessageChannel" connected="#{DevModeBean.developerMode}" onmessage="() => window.location.reload()" />
-                        	<header>
-	                            <div class="page-header">
+                            <header>
+                                <div class="page-header">
                                     <h:panelGroup id="globalWarningMessage">
-    	                                <h:panelGroup rendered="#{SessionForm.logoutMessage != ''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
-    	                                    <i class="fa fa-exclamation-triangle margin-right-10" />
-    	                                    <h:outputText value="#{SessionForm.logoutMessage}" />
-    	                                </h:panelGroup>
+                                        <h:panelGroup rendered="#{SessionForm.logoutMessage != ''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
+                                            <i class="fa fa-exclamation-triangle margin-right-10" />
+                                            <h:outputText value="#{SessionForm.logoutMessage}" />
+                                        </h:panelGroup>
                                     </h:panelGroup>
                                     <o:socket channel="adminMessageChannel">
                                         <f:ajax event="update" render="globalWarningMessage"/>
@@ -148,7 +139,6 @@
 	                                        <ui:insert name="title">
 	                                            <h:outputText value="#{myPageTitle}" />
 	                                        </ui:insert>
-                                            <a class="skip-main" href="#main-content" tabindex="1">Skip to main Content</a>
 	                                    </h1>
 	                                </div>
 	                                <div class="pull-right">
@@ -227,11 +217,11 @@
 	                        </h:form>
 						</nav>
 						<div role="complementary">
-							<h:panelGroup id="globalMessage">
+							<h:panelGroup id="globalMessage" style="display: inline">
                         		<h:messages escape="false" globalOnly="true" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
 			             	</h:panelGroup>
 			            </div>
-                        <div id="main-content">    
+                        <div jsf:id="main-content" tabindex="-1">    
                             <ui:insert name="content" />
                         </div>
                     </div>

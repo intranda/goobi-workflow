@@ -52,6 +52,7 @@
 
                             <intranda:formInputDropDown id="institution" label="#{msgs.institution}" field="#{BenutzergruppenForm.currentInstitutionID}" 
                                     help="#{msgs.helpUserInstitution}" name="institutionName" 
+                                    rendered="#{BenutzergruppenForm.institutionsAsSelectList.size()>1}"
                                     selectItems="#{BenutzergruppenForm.institutionsAsSelectList}" fieldStyle="form-control" required="true" />
 
 
@@ -75,7 +76,7 @@
 					                            		fn:startsWith(role,'Task_') ? 'badge-light-orange' : 
 					                            		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' : 
 					                            		'badge-light-greengrey'}" >
-													<h:outputText value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('roles_').concat(role)]}" />
+													<h:outputText value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('rights_').concat(role)]}" />
 													<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
 													<i class="fa fa-trash margin-left-5"></i>
 													 <f:ajax render="myform:rolediv" />
@@ -95,22 +96,33 @@
 					                            		fn:startsWith(role,'Task_') ? 'badge-light-orange' : 
 					                            		fn:startsWith(role,'Plugin_') ? 'badge-light-lila' : 
 					                            		'badge-light-greengrey'}" >
-													<h:outputText value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('roles_').concat(role)]}" />
+													<h:outputText value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('rights_').concat(role)]}" />
 													<f:setPropertyActionListener value="#{role}" target="#{BenutzergruppenForm.tempRole}"/>
 													<i class="fa fa-plus margin-left-5"></i>
 													<f:ajax render="myform:rolediv" />
 												</button>
 				                            </ui:repeat>
+																				
+											<h:outputText rendered="#{BenutzergruppenForm.allAvailableRoles.size() == 0}"
+												styleClass="alert alert-info alert-dismissable margin-bottom-10 margin-top-10"
+												value="#{msgs.usergroup_allRolesAssigned}"/>
 										
+											<hr style="border-top: 1px solid #ccc;"/>
+										
+											<h3 tabindex="0">#{msgs.usergroup_individualRoles}</h3>
 											<div class="input-group" style="margin-top:10px;">
                                       			<h:inputText id="userRoles" value="#{BenutzergruppenForm.tempRole}" styleClass="form-control"/>
                                       			<div class="input-group-addon" style="padding: 0px; margin: 0;">
-		                                            <button class="btn" tabindex="-1" title="#{msgs.usergroup_addRole}" jsf:action="#{BenutzergruppenForm.addRole}" style="padding-right:9px; padding-top: 1px; padding-bottom: 2px; height: 100%">
-		                                                <i class="fa fa-plus font-black" style="margin-left: 3px" />
-		                                                
+		                                            <button class="btn btn-primary" tabindex="-1" title="#{msgs.usergroup_addRole}" 
+		                                            	jsf:action="#{BenutzergruppenForm.addRole}" 
+		                                            	style="padding-right:9px; padding-top: 1px; padding-bottom: 2px; height: 100%">
+		                                                <i class="fa fa-plus" style="margin-left: 3px; margin-right:3px" />
 		                                            </button>
 		                                        </div>
                                   			</div>
+                                  			
+                                  			<br/>
+                                  			<br/>
 										</div>
 									</h:panelGroup>
 								
@@ -121,10 +133,13 @@
 								</div>
 							</div>
 
-							<intranda:formButtonArea id="buttons" form="#{BenutzergruppenForm}"
+							<intranda:formButtonArea
+								id="buttons"
+								form="#{BenutzergruppenForm}"
 								object="#{BenutzergruppenForm.myBenutzergruppe.id}"
-								actionCancel="usergroup_all" />
-
+								actionCancel="#{BenutzergruppenForm.Cancel}"
+								grayeddelete="#{!BenutzergruppenForm.myBenutzergruppe.isDeletable()}"
+								grayeddeletetooltip="#{msgs.userGroupNotDeletable}"/>
 						</div>
 					</div>
 				</div>

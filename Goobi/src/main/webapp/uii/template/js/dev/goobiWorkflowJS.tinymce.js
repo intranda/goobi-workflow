@@ -100,7 +100,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             goobiWorkflow.tinymce.renderInputFields();
     	   },
             initTinyMce: function () {
-                console.log("init tinymce", goobiWorkflow.tinymce.extendedTinyMceConfig);
+                if(_debug)console.log("init tinymce", goobiWorkflow.tinymce.extendedTinyMceConfig);
                 tinymce.init(goobiWorkflow.tinymce.extendedTinyMceConfig);
             },
 

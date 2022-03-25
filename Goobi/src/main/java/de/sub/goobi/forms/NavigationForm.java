@@ -32,15 +32,20 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.api.mail.SendMail;
+import org.goobi.production.enums.PluginGuiType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IPushPlugin;
 import org.goobi.production.plugin.interfaces.IWorkflowPlugin;
+import org.omnifaces.cdi.Push;
+import org.omnifaces.cdi.PushContext;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -48,7 +53,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named("NavigationForm")
-@SessionScoped
+@WindowScoped
 public class NavigationForm implements Serializable{
 
     /**
@@ -68,11 +73,39 @@ public class NavigationForm implements Serializable{
     @Setter
     private IWorkflowPlugin workflowPlugin;
 
-    public NavigationForm() {
-        possibleWorkflowPluginNames = PluginLoader.getListOfPlugins(PluginType.Workflow);
-        Collections.sort(possibleWorkflowPluginNames);
-        uiStatus.put("process_log_level_debug", "true");
-    }
+    /**
+     * Replaced by NavigationForm.parentMenu.
+     * Is still needed by some test classes, may not be removed until now.
+     */
+    @Getter
+    @Setter
+    @Deprecated
+    private String aktuell = "0";
+    @Getter
+    @Setter
+    private String parentMenu = "start_menu";
+    @Getter
+    @Setter
+    private boolean showHelp = false;
+
+    @Getter
+    @Setter
+    private boolean showExpertView = false;
+    @Getter
+    @Setter
+    private boolean showSidebar = true;
+    @Getter
+    @Setter
+    private String activeTab = "productionStatistics";
+    @Getter
+    @Setter
+    private String activeImportTab = "recordImport";
+    private HashMap<String, String> uiStatus = new HashMap<>();
+    private String currentTheme = "/uii";
+
+    @Inject
+    @Push
+    PushContext workflowPluginPush;
 
     public enum Theme {
         ui("ui"),
@@ -88,30 +121,12 @@ public class NavigationForm implements Serializable{
         }
 
     };
-    
-    @Getter
-    @Setter
-    private String aktuell = "0";
-    @Getter
-    @Setter
-    private boolean showHelp = false;
-    @Getter
-    @Setter
-    private boolean showEasyRead = false;
-    @Getter
-    @Setter
-    private boolean showExpertView = false;
-    @Getter
-    @Setter
-    private boolean showSidebar = true;
-    @Getter
-    @Setter
-    private String activeTab = "productionStatistics";
-    @Getter
-    @Setter
-    private String activeImportTab = "recordImport";
-    private HashMap<String, String> uiStatus = new HashMap<>();
-    private String currentTheme = "/uii";
+
+    public NavigationForm() {
+        possibleWorkflowPluginNames = PluginLoader.getListOfPlugins(PluginType.Workflow);
+        Collections.sort(possibleWorkflowPluginNames);
+        uiStatus.put("process_log_level_debug", "true");
+    }
 
     public String Reload() {
         return "";
@@ -169,6 +184,14 @@ public class NavigationForm implements Serializable{
     public String setPlugin(String pluginName) {
         currentWorkflowPluginName = pluginName;
         workflowPlugin = (IWorkflowPlugin) PluginLoader.getPluginByTitle(PluginType.Workflow, currentWorkflowPluginName);
+        if (workflowPlugin instanceof IPushPlugin) {
+            ((IPushPlugin) workflowPlugin).setPushContext(workflowPluginPush);
+        }
+
+        if (PluginGuiType.FULL == workflowPlugin.getPluginGuiType()) {
+            return workflowPlugin.getGui();
+        }
+
         return "workflow";
     }
 

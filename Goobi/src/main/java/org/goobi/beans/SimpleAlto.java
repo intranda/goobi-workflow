@@ -23,9 +23,13 @@ import lombok.Data;
 @Data
 public class SimpleAlto {
     private static Namespace altoNamespace = Namespace.getNamespace("alto", "http://www.loc.gov/standards/alto/ns-v2#");
+    private static Namespace altov4Namespace = Namespace.getNamespace("alto", "http://www.loc.gov/standards/alto/ns-v4#");
     private static XPathFactory xFactory = XPathFactory.instance();
     private static XPathExpression<Element> linesXpath = xFactory.compile("//alto:TextLine", Filters.element(), null, altoNamespace);
     private static XPathExpression<Element> wordXpath = xFactory.compile("./alto:String", Filters.element(), null, altoNamespace);
+
+    private static XPathExpression<Element> linesV4Xpath = xFactory.compile("//alto:TextLine", Filters.element(), null, altov4Namespace);
+    private static XPathExpression<Element> wordV4Xpath = xFactory.compile("./alto:String", Filters.element(), null, altov4Namespace);
 
     private List<SimpleAltoLine> lines;
     private Map<String, SimpleAltoLine> lineMap = new HashMap<>();
@@ -61,29 +65,34 @@ public class SimpleAlto {
         SimpleAlto alto = new SimpleAlto();
         alto.lines = new ArrayList<>();
 
+        boolean useV4 = false;
         List<Element> xmlLines = linesXpath.evaluate(doc);
+        if (xmlLines.isEmpty()) {
+            xmlLines = linesV4Xpath.evaluate(doc);
+            useV4 = true;
+        }
         for (Element xmlLine : xmlLines) {
             SimpleAltoLine line = new SimpleAltoLine();
             line.setId(xmlLine.getAttributeValue("ID"));
 
-            line.setX((int) Double.parseDouble(xmlLine.getAttributeValue("HPOS")));
-            line.setY((int) Double.parseDouble(xmlLine.getAttributeValue("VPOS")));
-            line.setWidth((int) Double.parseDouble(xmlLine.getAttributeValue("WIDTH")));
-            line.setHeight((int) Double.parseDouble(xmlLine.getAttributeValue("HEIGHT")));
+            line.setX((int) Double.parseDouble(xmlLine.getAttributeValue("HPOS", "0")));
+            line.setY((int) Double.parseDouble(xmlLine.getAttributeValue("VPOS", "0")));
+            line.setWidth((int) Double.parseDouble(xmlLine.getAttributeValue("WIDTH", "0")));
+            line.setHeight((int) Double.parseDouble(xmlLine.getAttributeValue("HEIGHT", "0")));
 
             List<SimpleAltoWord> words = new ArrayList<>();
 
-            List<Element> xmlWords = wordXpath.evaluate(xmlLine);
+            List<Element> xmlWords = useV4 ? wordV4Xpath.evaluate(xmlLine) : wordXpath.evaluate(xmlLine);
             for (Element xmlWord : xmlWords) {
                 SimpleAltoWord word = new SimpleAltoWord();
                 word.setId(xmlWord.getAttributeValue("ID"));
                 word.setValue(xmlWord.getAttributeValue("CONTENT"));
                 word.setLineId(line.getId());
 
-                word.setX((int) Double.parseDouble(xmlWord.getAttributeValue("HPOS")));
-                word.setY((int) Double.parseDouble(xmlWord.getAttributeValue("VPOS")));
-                word.setWidth((int) Double.parseDouble(xmlWord.getAttributeValue("WIDTH")));
-                word.setHeight((int) Double.parseDouble(xmlWord.getAttributeValue("HEIGHT")));
+                word.setX((int) Double.parseDouble(xmlWord.getAttributeValue("HPOS", "0")));
+                word.setY((int) Double.parseDouble(xmlWord.getAttributeValue("VPOS", "0")));
+                word.setWidth((int) Double.parseDouble(xmlWord.getAttributeValue("WIDTH", "0")));
+                word.setHeight((int) Double.parseDouble(xmlWord.getAttributeValue("HEIGHT", "0")));
 
                 words.add(word);
                 alto.wordMap.put(word.getId(), word);

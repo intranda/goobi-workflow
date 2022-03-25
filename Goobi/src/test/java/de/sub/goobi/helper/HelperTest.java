@@ -17,10 +17,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 
-public class HelperTest {
+public class HelperTest extends AbstractTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();

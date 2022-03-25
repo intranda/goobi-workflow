@@ -10,6 +10,7 @@ import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
@@ -140,7 +141,14 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
             if (condition == null) {
                 condition = "";
             }
-
+            
+            // get the content to be set and pipe it through the variable replacer
+            String newvalue = parameters.get("value");
+            VariableReplacer replacer = new VariableReplacer(ff.getDigitalDocument(), p.getRegelsatz().getPreferences(), p, null);
+            prefix = replacer.replace(prefix);
+            suffix = replacer.replace(suffix);
+            condition = replacer.replace(condition);
+            
             changeMetadata(dsList, parameters.get("field"), prefix, suffix, condition, p.getRegelsatz().getPreferences());
             p.writeMetadataFile(ff);
             Thread.sleep(2000);

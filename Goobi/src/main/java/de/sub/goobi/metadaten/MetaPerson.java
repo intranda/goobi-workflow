@@ -1,4 +1,21 @@
 package de.sub.goobi.metadaten;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import javax.faces.model.SelectItem;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.geonames.Toponym;
+import org.goobi.api.display.DisplayCase;
+import org.goobi.api.display.enums.DisplayType;
+import org.goobi.api.display.helper.NormDatabase;
+import org.goobi.beans.Process;
+import org.goobi.production.cli.helper.StringPair;
+import org.goobi.vocabulary.VocabRecord;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  *
@@ -33,22 +50,12 @@ import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.KulturNavImporter;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import lombok.Data;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.geonames.Toponym;
-import org.goobi.api.display.DisplayCase;
-import org.goobi.api.display.enums.DisplayType;
-import org.goobi.api.display.helper.NormDatabase;
-import org.goobi.beans.Process;
-import org.goobi.production.cli.helper.StringPair;
-import org.goobi.vocabulary.VocabRecord;
-import ugh.dl.*;
-
-import javax.faces.model.SelectItem;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import ugh.dl.DocStruct;
+import ugh.dl.HoldingElement;
+import ugh.dl.MetadataType;
+import ugh.dl.NamePart;
+import ugh.dl.Person;
+import ugh.dl.Prefs;
 
 /**
  * Die Klasse Schritt ist ein Bean für einen einzelnen Schritt mit dessen Eigenschaften und erlaubt die Bearbeitung der Schrittdetails
@@ -264,11 +271,6 @@ public class MetaPerson implements SearchableMetadata {
         return p.getType().isAllowNormdata();
     }
 
-    private void resetSearch() {
-        isSearchInViaf = false;
-        isSearchInKulturnav = false;
-    }
-
     @Override
     public String search() {
         if (!isSearchInViaf
@@ -286,7 +288,7 @@ public class MetaPerson implements SearchableMetadata {
             String knUrl = KulturNavImporter.constructSearchUrl(
                     getSearchValue(),
                     KulturNavImporter.getSourceForPerson()
-            );
+                    );
             normdataList = KulturNavImporter.importNormData(knUrl);
             showNotHits =  normdataList.isEmpty();
         }

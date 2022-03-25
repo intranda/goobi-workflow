@@ -32,11 +32,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
@@ -50,11 +50,14 @@ import org.jdom2.output.XMLOutputter;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.metadaten.Image;
+import de.sub.goobi.metadaten.MetadatenHelper;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
+import ugh.dl.MetadataType;
 import ugh.dl.Person;
+import ugh.dl.Prefs;
 
 /**
  * This class provides a simplified export of all metadata into a xml file
@@ -66,7 +69,8 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
 
     private static Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
 
-    private static final SimpleDateFormat dateConverter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private MetadatenHelper metahelper;
+    private Prefs prefs;
 
     /**
      * This method exports the METS metadata as xml to a given directory
@@ -97,11 +101,15 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
     @Override
     public void startExport(Process process, OutputStream os, String xslt) throws IOException {
         try {
+            this.prefs = process.getRegelsatz().getPreferences();
+            Fileformat ff = process.readMetadataFile();
+            DigitalDocument document = ff.getDigitalDocument();
+            this.metahelper = new MetadatenHelper(prefs, document);
+
             Document doc = createDocument(process, true);
 
             XMLOutputter outp = new XMLOutputter();
             outp.setFormat(Format.getPrettyFormat());
-
             outp.output(doc, os);
             os.close();
 
@@ -130,8 +138,7 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
         if (addNamespace) {
             Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
             mainElement.addNamespaceDeclaration(xsi);
-            Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd",
-                    xsi);
+            Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
             mainElement.setAttribute(attSchema);
         }
 
@@ -203,11 +210,29 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
                 }
             }
         }
+
+        //pages 
+        MutablePair<String, String> first = this.metahelper.getImageNumber(parentStruct, MetadatenHelper.PAGENUMBER_FIRST);
+        MutablePair<String, String> last = this.metahelper.getImageNumber(parentStruct, MetadatenHelper.PAGENUMBER_LAST);
+
+        if (first != null) {
+            Element mdPages = new Element("metadata", xmlns);
+            mdPages.setAttribute("name", Helper.getTranslation("Pages"));
+            mdPages.addContent(first.getRight() + " - " + last.getRight());
+            node.addContent(mdPages);
+            
+            Element mdImages = new Element("metadata", xmlns);
+            mdImages.setAttribute("name", Helper.getTranslation("Images"));
+            mdImages.addContent(first.getLeft() + " - " + last.getLeft());
+            node.addContent(mdImages);
+        }
+
         if (parentStruct.getAllChildren() != null) {
             for (DocStruct ds : parentStruct.getAllChildren()) {
                 addMetadataAndChildElements(ds, node);
             }
         }
+
         parentNode.addContent(node);
     }
 
@@ -240,8 +265,7 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
     }
 
     /**
-     * This method exports the production metadata for a list of processes as a
-     * single file to a given stream.
+     * This method exports the production metadata for a list of processes as a single file to a given stream.
      * 
      * @param processList
      * @param outputStream

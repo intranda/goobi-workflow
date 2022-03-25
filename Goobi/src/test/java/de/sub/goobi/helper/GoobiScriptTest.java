@@ -46,9 +46,9 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -61,7 +61,8 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 @PrepareForTest({ StepManager.class, UserManager.class, UsergroupManager.class, ProcessManager.class, RulesetManager.class, Helper.class })
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
 
-public class GoobiScriptTest {
+@SuppressWarnings("deprecation")
+public class GoobiScriptTest extends AbstractTest {
 
     private List<Integer> processList;
     private Process process;
@@ -220,7 +221,6 @@ public class GoobiScriptTest {
         PowerMock.replay(ProcessManager.class);
 
         PowerMock.mockStatic(Helper.class);
-        SessionForm sessionForm = new SessionForm();
         LoginBean loginBean = new LoginBean();
         loginBean.setMyBenutzer(user);
 
@@ -265,7 +265,6 @@ public class GoobiScriptTest {
         PowerMock.replay(ProcessManager.class);
 
         PowerMock.mockStatic(Helper.class);
-        SessionForm sessionForm = new SessionForm();
         LoginBean loginBean = new LoginBean();
         loginBean.setMyBenutzer(user);
 
@@ -293,7 +292,6 @@ public class GoobiScriptTest {
         PowerMock.replay(ProcessManager.class);
 
         PowerMock.mockStatic(Helper.class);
-        SessionForm sessionForm = new SessionForm();
         LoginBean loginBean = new LoginBean();
         loginBean.setMyBenutzer(user);
 

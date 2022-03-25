@@ -13,10 +13,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 
-public class FileUtilsTest {
+public class FileUtilsTest extends AbstractTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();

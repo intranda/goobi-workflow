@@ -19,10 +19,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.goobi.beans.Process;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -44,19 +41,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 @ContentServerBinding
 public class GoobiImageFolderResource {
 
-    private static final Logger logger = LoggerFactory.getLogger(GoobiImageFolderResource.class);
-
-    private final HttpServletRequest request;
     private final java.nio.file.Path folderPath;
 
     public GoobiImageFolderResource(HttpServletRequest request, String directory) {
-        this.request = request;
         this.folderPath = Paths.get(directory);
     }
 
     public GoobiImageFolderResource(@Context HttpServletRequest request, @PathParam("process") String process, @PathParam("folder") String folder)
             throws ContentLibException, IOException, InterruptedException, SwapException, DAOException {
-        this.request = request;
         this.folderPath = getImagesFolder(getProcess(process), folder);
     }
 
@@ -86,10 +78,11 @@ public class GoobiImageFolderResource {
 
     @GET
     @Path("/list")
-    @Operation(summary="Returns information about image directories", description="Returns information about image directories in JSON or JSONLD format")
-    @ApiResponse(responseCode="200", description="OK")
-    @ApiResponse(responseCode="500", description="Internal error")
-    @Produces({ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON})
+    @Operation(summary = "Returns information about image directories",
+    description = "Returns information about image directories in JSON or JSONLD format")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    @Produces({ ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
     @ContentServerImageInfoBinding
     public List<URI> getListAsJson(@Context ContainerRequestContext requestContext, @Context HttpServletRequest request,
             @Context HttpServletResponse response) throws ContentLibException, IOException {

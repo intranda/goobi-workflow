@@ -212,23 +212,27 @@ public class HelperSchritte {
                      */
 
                     if (myStep.getBearbeitungsstatusEnum().equals(StepStatus.LOCKED)) {
-                        myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
                         myStep.setBearbeitungszeitpunkt(myDate);
                         myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
-                        SendMail.getInstance().sendMailToAssignedUser(myStep, StepStatus.OPEN);
-                        HistoryManager.addHistory(myDate, new Integer(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(),
-                                HistoryEventType.stepOpen.getValue(), processId);
-                        /* wenn es ein automatischer Schritt mit Script ist */
-                        if (myStep.isTypAutomatisch()) {
-                            automatischeSchritte.add(myStep);
-                        } else if (myStep.isTypBeimAnnehmenAbschliessen()) {
-                            stepsToFinish.add(myStep);
-                        }
-                        try {
-                            StepManager.saveStep(myStep);
-                            Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + myStep.getTitel() + "' opened.");
-                        } catch (DAOException e) {
-                            logger.error("An exception occurred while saving a step for process with ID " + myStep.getProcessId(), e);
+                        if (myStep.isTypAutomaticThumbnail() && StringUtils.isNotBlank(myStep.getAutomaticThumbnailSettingsYaml())) {
+                            myStep.submitAutomaticThumbnailTicket();
+                        } else {
+                            myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
+                            SendMail.getInstance().sendMailToAssignedUser(myStep, StepStatus.OPEN);
+                            HistoryManager.addHistory(myDate, Integer.valueOf(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(),
+                                    HistoryEventType.stepOpen.getValue(), processId);
+                            /* wenn es ein automatischer Schritt mit Script ist */
+                            if (myStep.isTypAutomatisch()) {
+                                automatischeSchritte.add(myStep);
+                            } else if (myStep.isTypBeimAnnehmenAbschliessen()) {
+                                stepsToFinish.add(myStep);
+                            }
+                            try {
+                                StepManager.saveStep(myStep);
+                                Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + myStep.getTitel() + "' opened.");
+                            } catch (DAOException e) {
+                                logger.error("An exception occurred while saving a step for process with ID " + myStep.getProcessId(), e);
+                            }
                         }
                     }
                     matched = true;
@@ -659,7 +663,7 @@ public class HelperSchritte {
             try {
                 dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, step.getStepPlugin());
             } catch (Exception e) {
-                logger.error("Can't load export plugin, use default plugin for process with ID " + step.getProcessId(), e);
+                logger.error("Can't load export plugin, use default export for process with ID " + step.getProcessId(), e);
                 dms = new ExportDms(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
                 //                dms = new AutomaticDmsExport(ConfigurationHelper.isAutomaticExportWithImages());
             }

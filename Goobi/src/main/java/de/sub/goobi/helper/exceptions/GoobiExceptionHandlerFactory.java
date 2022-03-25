@@ -1,7 +1,7 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
  * 
@@ -40,6 +40,7 @@ public class GoobiExceptionHandlerFactory extends ExceptionHandlerFactory {
 
     private ExceptionHandlerFactory exceptionHandlerFactory;
 
+    @SuppressWarnings("deprecation")
     public GoobiExceptionHandlerFactory(ExceptionHandlerFactory exceptionHandlerFactory) {
         this.exceptionHandlerFactory = exceptionHandlerFactory;
     }

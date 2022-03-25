@@ -12,12 +12,13 @@ import org.goobi.beans.Process;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.mock.MockProcess;
 import ugh.dl.MetadataType;
 
-public class DisplayCaseTest {
+public class DisplayCaseTest extends AbstractTest {
 
     private Process process;
 

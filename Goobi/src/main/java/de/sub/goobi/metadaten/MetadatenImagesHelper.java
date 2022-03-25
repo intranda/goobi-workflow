@@ -592,10 +592,11 @@ public class MetadatenImagesHelper {
 
         if (ConfigurationHelper.getInstance().getContentServerUrl() == null) {
             logger.trace("api");
-            ImageManager im = conf.useS3() ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
+            ImageManager im = null;
             JpegInterpreter pi = null;
             try {
-                im = new ImageManager(Paths.get(inFileName).toUri());
+                im= conf.useS3() ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
+                //                im = new ImageManager(Paths.get(inFileName).toUri());
                 logger.trace("im");
                 ImageInterpreter ii = im.getMyInterpreter();
                 Dimension inputResolution = new Dimension((int) ii.getXResolution(), (int) ii.getYResolution());
@@ -706,9 +707,19 @@ public class MetadatenImagesHelper {
         Path dir = Paths.get(folder);
         if (StorageProvider.getInstance().isFileExists(dir)) {
             List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.DATA_FILTER);
+            List<String> dateien2 = StorageProvider.getInstance().list(dir.toString());
+            //checks for fileName errors / empty folder
             if (dateien == null || dateien.isEmpty()) {
-                String value = Helper.getTranslation("noObjectsFound", title);
-
+            	String[] parameters = {String.valueOf(dateien2.size()), dir.toString()};
+            	
+            	String value = Helper.getTranslation("noObjectsFound", title);
+            	
+            	//true if list is truly empty
+            	if(dateien.size() == dateien2.size()) {
+                	value = Helper.getTranslation("imagesFolderEmpty", parameters);
+            	}else {
+            		value = Helper.getTranslation("fileNameValidationError", parameters);
+            	}
                 Helper.setFehlerMeldung(value);
                 return false;
             }

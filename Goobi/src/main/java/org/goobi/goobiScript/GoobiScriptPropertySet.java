@@ -12,9 +12,7 @@ import org.goobi.production.enums.GoobiScriptResultType;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 public class GoobiScriptPropertySet extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override

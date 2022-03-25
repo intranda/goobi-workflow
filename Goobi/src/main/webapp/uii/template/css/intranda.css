@@ -25,13 +25,25 @@ body {
 
 /* ------------- General --------------- */
 
+.outer-skip-link {
+  	position: relative;
+  	width: 100%;
+  	text-align: center;
+}
+
 .skip-main {
-	font-size: 0px;
+	position: absolute;
+	top: -50px;
+	height: 30px;
+	padding: 15px;
+	font-size: 25px;
 }
 
 .skip-main:focus {
-	font-size: inherit;
+	position: relative;
+	top: 0px;
 }
+
 
 .focusable:focus {
 	outline-offset: 2px;
@@ -140,6 +152,10 @@ label {
     float: left;
 }
 
+#myform\:usergroups button {
+	color: #333;
+}
+
 /* changes color to dark when in lightgrey box */
 .box.lightgrey div.box-title h2.tableColumnMaxWidthExtraLong{
 	color: #333333;
@@ -181,12 +197,20 @@ label {
 /* Button styling as link */
 
 .button-link {
+	font-size: inherit;
 	background: none!important;
   	border: none;
   	padding: 0!important;
+  	-webkit-touch-callout: text;
+	-webkit-user-select: text;
+	-khtml-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
+	user-select: text;
 }
 
 .button-link-no-hover {
+	font-size: inherit;
 	background: none!important;
   	border: none;
   	padding: 0!important;
@@ -432,11 +456,6 @@ button.dropdown-item:hover {
     #navigation .toggle-mobile {
         display: block;
     }
-}
-
-/* CSS-Bugfix for rendered whitespace from h:panelGroup */
-#navigation .mobile-nav.open>li.has-submenu {
-    margin-bottom: -17px;
 }
 
 /* ------------- sub forms --------------- */
@@ -951,6 +970,10 @@ dropdown-menu>li>a {
     color: black;
 }
 
+.font-white {
+    color: white;
+}
+
 .font-size-xs {
     font-size: 11px;
 }
@@ -1056,12 +1079,10 @@ dropdown-menu>li>a {
     padding: 0px 0px 7px 0px;
 }
 
-.box-icon-fix-menu-up3 {
-    padding: 0px 5px 5px 0px;
-}
 
 .box-icon-fix-menu {
-    padding: 0px 7px 0px 0px;
+    padding: 0px 5px 5px 0px;
+    width: 15px;
 }
 
 .box-icon-fix-down {
@@ -2475,5 +2496,73 @@ ul>li.yellow, .label-yellow {
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
-    border: 1px solid #ccc;
+	border: 1px solid #ccc;
+}
+
+.plugin-installer-line-number {
+	line-height: 1.515em;
+	width: 100%;
+	color: rgb(166, 166, 181);
+}
+
+.plugin-installer-text {
+	display: inline-block;
+	color: rgb(0, 0, 0);
+}
+
+.plugin-installer-space {
+	display: inline-block;
+}
+
+.plugin-installer-line-number-inserted {
+	background-color: rgb(205, 255, 216);
+}
+
+.plugin-installer-line-number-deleted {
+	background-color: rgb(255, 229, 228);
+}
+
+.plugin-installer-inserted-passive {
+	background-color: rgb(230, 255, 237);
+}
+
+.plugin-installer-inserted-active {
+	background-color: rgb(172, 242, 189);
+}
+
+.plugin-installer-deleted-passive {
+	background-color: rgb(255, 238, 240);
+}
+
+.plugin-installer-deleted-active {
+	background-color: rgb(253, 184, 192);
+}
+
+.plugin-installer-diff-box {
+	line-height: 1.515em;
+	width: 100%;
+}
+
+.plugin-installer-next-to-eachother-5 {
+	display: inline-block;
+	width: 5%;
+}
+
+.plugin-installer-next-to-eachother-90 {
+	display: inline-block;
+	width: 90%;
+}
+
+.plugin-installer-separator {
+	clear: both;
+	margin-top: 60px;
+	margin-bottom: 60px;
+}
+
+.textarea_edit_file_destination {
+	display: none;
+}
+
+.space-to-bottom {
+	margin-bottom: 40px;
 }

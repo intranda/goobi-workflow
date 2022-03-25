@@ -42,6 +42,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.mock.MockProcess;
@@ -51,7 +52,7 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PropertyManager.class, MetadataManager.class})
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
-public class BatchStepHelperTest {
+public class BatchStepHelperTest extends AbstractTest {
 
     private List<Step> stepList;
 

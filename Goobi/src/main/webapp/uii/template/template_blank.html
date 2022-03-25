@@ -74,7 +74,7 @@
     <link rel="shortcut icon" href="template/img/favicon.ico" />
     <!-- Apple devices Homescreen icon -->
     <link rel="apple-touch-icon-precomposed" href="template/img/apple-touch-icon.png" />
-	<ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.renderAccessibilityCss}">
+	<ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.uiMode=='accessibility'}">
 		<link rel="stylesheet" href="template/css/accessibility.css" />
 	</ui:fragment>
 </h:head>

@@ -11,11 +11,12 @@ import javax.naming.ConfigurationException;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.JwtHelper;
 
-public class TestAuthorizationFilter {
+public class TestAuthorizationFilter extends AbstractTest {
 
     @Before
     public void setUp() throws Exception {

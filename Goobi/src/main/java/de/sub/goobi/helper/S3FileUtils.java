@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.amazonaws.AmazonClientException;
@@ -72,7 +73,7 @@ public class S3FileUtils implements StorageProviderInterface {
         if (!metadataFolder.endsWith("/")) {
             metadataFolder = metadataFolder + "/";
         }
-        processDirPattern = Pattern.compile(metadataFolder + "\\d*?/?");
+        processDirPattern = Pattern.compile(Matcher.quoteReplacement(metadataFolder) + "\\d*?/?");
     }
 
     public S3FileUtils() {
@@ -445,6 +446,7 @@ public class S3FileUtils implements StorageProviderInterface {
                 String key = path2Prefix(target) + fileName;
                 ObjectMetadata om = new ObjectMetadata();
                 om.setContentType(Files.probeContentType(p));
+                om.setContentLength(Files.size(p));
                 try (InputStream is = Files.newInputStream(p)) {
                     try {
                         Upload upload = transferManager.upload(getBucket(), key, is, om);
@@ -618,6 +620,11 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         String prefix = path2Prefix(path);
         return !s3.listObjects(getBucket(), prefix).getObjectSummaries().isEmpty();
+    }
+
+    @Override
+    public boolean isSymbolicLink(Path path) {
+        return false;
     }
 
     @Override

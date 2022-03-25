@@ -66,7 +66,6 @@ public class GoobiScriptSetProject extends AbstractIGoobiScript implements IGoob
 
     @Override
     public void execute(GoobiScriptResult gsr) {
-        Map<String, String> parameters = gsr.getParameters();
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
         gsr.setProcessTitle(p.getTitel());
         gsr.setResultType(GoobiScriptResultType.RUNNING);
@@ -75,9 +74,9 @@ public class GoobiScriptSetProject extends AbstractIGoobiScript implements IGoob
         p.setProjectId(project.getId());
         try {
             ProcessManager.saveProcess(p);
-            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Project '" + project + "' assigned using GoobiScript.", username);
-            log.info("Project '" + project + "' assigned using GoobiScript for process with ID " + p.getId());
-            gsr.setResultMessage("Project  '" + project + "' assigned successfully.");
+            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Project '" + project.getTitel() + "' assigned using GoobiScript.", username);
+            log.info("Project '" + project.getTitel() + "' assigned using GoobiScript for process with ID " + p.getId());
+            gsr.setResultMessage("Project  '" + project.getTitel()+ "' assigned successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);
         } catch (DAOException e) {
             gsr.setResultMessage("Problem assigning new project: " + e.getMessage());

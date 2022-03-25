@@ -3,9 +3,9 @@ package de.sub.goobi.helper.enums;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -18,28 +18,30 @@ package de.sub.goobi.helper.enums;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class HistoryEventTypeTest {
+import de.sub.goobi.AbstractTest;
+
+public class HistoryEventTypeTest extends AbstractTest {
 
     @Test
     public void testEnumValues() {
-        assertEquals(new Integer(0), HistoryEventType.unknown.getValue());
-        assertEquals(new Integer(1), HistoryEventType.storageDifference.getValue());
-        assertEquals(new Integer(2), HistoryEventType.imagesWorkDiff.getValue());
-        assertEquals(new Integer(3), HistoryEventType.imagesMasterDiff.getValue());
-        assertEquals(new Integer(4), HistoryEventType.metadataDiff.getValue());
-        assertEquals(new Integer(5), HistoryEventType.docstructDiff.getValue());
-        assertEquals(new Integer(6), HistoryEventType.stepDone.getValue());
-        assertEquals(new Integer(7), HistoryEventType.stepOpen.getValue());
-        assertEquals(new Integer(8), HistoryEventType.stepInWork.getValue());
-        assertEquals(new Integer(9), HistoryEventType.stepError.getValue());
-        assertEquals(new Integer(10), HistoryEventType.stepLocked.getValue());
-        assertEquals(new Integer(11), HistoryEventType.bitonal.getValue());
-        assertEquals(new Integer(12), HistoryEventType.grayScale.getValue());
-        assertEquals(new Integer(13), HistoryEventType.color.getValue());
+        assertEquals(Integer.valueOf(0), HistoryEventType.unknown.getValue());
+        assertEquals(Integer.valueOf(1), HistoryEventType.storageDifference.getValue());
+        assertEquals(Integer.valueOf(2), HistoryEventType.imagesWorkDiff.getValue());
+        assertEquals(Integer.valueOf(3), HistoryEventType.imagesMasterDiff.getValue());
+        assertEquals(Integer.valueOf(4), HistoryEventType.metadataDiff.getValue());
+        assertEquals(Integer.valueOf(5), HistoryEventType.docstructDiff.getValue());
+        assertEquals(Integer.valueOf(6), HistoryEventType.stepDone.getValue());
+        assertEquals(Integer.valueOf(7), HistoryEventType.stepOpen.getValue());
+        assertEquals(Integer.valueOf(8), HistoryEventType.stepInWork.getValue());
+        assertEquals(Integer.valueOf(9), HistoryEventType.stepError.getValue());
+        assertEquals(Integer.valueOf(10), HistoryEventType.stepLocked.getValue());
+        assertEquals(Integer.valueOf(11), HistoryEventType.bitonal.getValue());
+        assertEquals(Integer.valueOf(12), HistoryEventType.grayScale.getValue());
+        assertEquals(Integer.valueOf(13), HistoryEventType.color.getValue());
     }
 
     @Test
@@ -116,9 +118,9 @@ public class HistoryEventTypeTest {
 
     @Test
     public void testEnumTypeFromValue() {
-        HistoryEventType type = HistoryEventType.getTypeFromValue(new Integer(1));
+        HistoryEventType type = HistoryEventType.getTypeFromValue(Integer.valueOf(1));
         assertEquals(HistoryEventType.storageDifference, type);
-        type = HistoryEventType.getTypeFromValue(new Integer(999));
+        type = HistoryEventType.getTypeFromValue(Integer.valueOf(999));
         assertEquals(HistoryEventType.unknown, type);
 
     }

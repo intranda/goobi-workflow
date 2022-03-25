@@ -58,7 +58,7 @@ import lombok.Getter;
 
 public class SearchResultHelper {
 
-	@Getter
+    @Getter
     private List<SelectItem> possibleColumns = new ArrayList<>();
 
     public SearchResultHelper() {
@@ -254,7 +254,6 @@ public class SearchResultHelper {
         return;
     }
 
-    @SuppressWarnings("deprecation")
     public XSSFWorkbook getResult(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses,
             boolean showArchivedProjects) {
         List<SearchColumn> sortedList = new ArrayList<>(columnList.size());
@@ -324,7 +323,6 @@ public class SearchResultHelper {
         if (StringUtils.isNotBlank(order)) {
             sb.append(order.replace(" desc", "") + ", ");
         }
-        boolean includeProjects = false;
 
         boolean includeLog = false;
 
@@ -337,20 +335,20 @@ public class SearchResultHelper {
 
             else if (!sc.getTableName().startsWith("metadata")) {
                 sb.append(sc.getTableName() + "." + sc.getColumnName() + ", ");
-                if (sc.getTableName().startsWith("projekte")) {
-                    includeProjects = true;
-                }
+                //                if (sc.getTableName().startsWith("projekte")) {
+                //                    includeProjects = true;
+                //                }
 
             }
         }
 
         int length = sb.length();
         sb = sb.replace(length - 2, length, "");
-        if (order.startsWith("projekte") && !includeProjects) {
-            sb.append(" FROM projekte, prozesse ");
-        } else {
-            sb.append(" FROM prozesse ");
-        }
+        //        if (order.startsWith("projekte") && !includeProjects) {
+        //            sb.append(" FROM projekte, prozesse ");
+        //        } else {
+        sb.append(" FROM prozesse LEFT JOIN projekte on projekte.ProjekteID = prozesse.ProjekteID ");
+        //        }
         sb.append("left join batches on prozesse.batchId = batches.id ");
 
         if (includeLog) {
@@ -363,7 +361,7 @@ public class SearchResultHelper {
         for (SearchColumn sc : columnList) {
             if (sc.getTableName().startsWith("log.")) {
                 sb.append(" log.content ");
-            } else if (!sc.getTableName().startsWith("metadata")) {
+            } else if (!sc.getTableName().startsWith("metadata") && !sc.getTableName().startsWith("projekte")) {
                 String clause = sc.getJoinClause();
                 if (!clause.isEmpty()) {
                     if (!leftJoin) {
@@ -392,13 +390,13 @@ public class SearchResultHelper {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
             }
-            sql = sql + " prozesse.ProjekteID not in (select ProjekteID from projekte where projectIsArchived = true) ";
+            sql = sql + " projekte.projectIsArchived = false ";
         }
-        if (order.startsWith("projekte") && !includeProjects) {
-            sb.append(" WHERE projekte.ProjekteID = prozesse.ProjekteID AND ");
-        } else {
-            sb.append(" WHERE ");
-        }
+        //        if (order.startsWith("projekte") && !includeProjects) {
+        //            sb.append(" WHERE projekte.ProjekteID = prozesse.ProjekteID AND ");
+        //        } else {
+        sb.append(" WHERE ");
+        //        }
         sb.append(sql);
 
         if (order != null && !order.isEmpty()) {

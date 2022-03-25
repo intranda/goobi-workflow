@@ -254,21 +254,30 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- DMS-Export-Schaltknopf -->
-                                    <button
-                                        jsf:action="#{ProzessverwaltungForm.ExportDMS}"
-                                        jsf:id="action21"
-                                        aria-label="#{msgs.importDms}"
-                                        class="btn btn-mini font-light"
-                                        title="#{msgs.importDms}"
-                                        jsf:rel="tooltip"
-                                        jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.myProzess.displayDMSButton}">
-                                        <i class="fa fa-globe"></i>
-                                        <f:passThroughAttribute
-                                            name="data-toggle"
-                                            value="tooltip" />
-                                    </button>
+									<!-- Check if Export task exists -->
+									<div jsf:rel="tooltip" 
+										title="#{!ProzessverwaltungForm.myProzess.containsExportStep ? msgs.noExportTask : ''}" 
+										class="btn btn-mini" 
+										style="padding: 0;">
+	                                    <!-- DMS-Export-Schaltknopf -->
+	                                    <button
+	                                        jsf:action="#{ProzessverwaltungForm.ExportDMS}"
+	                                        jsf:id="action21"
+	                                        aria-label="#{msgs.exportDMS}"
+	                                        class="btn btn-mini font-light"
+	                                        title="#{msgs.exportDMS}"
+	                                        jsf:rel="tooltip"
+	                                        jsf:disabled="#{!ProzessverwaltungForm.myProzess.containsExportStep}"
+	                                        jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.myProzess.displayDMSButton}">
+	                                        <i class="fa fa-globe"></i>
+	                                        <f:passThroughAttribute
+	                                            name="data-toggle"
+	                                            value="tooltip" />
+	                                    </button>
+	                                    <f:passThroughAttribute
+	                                            name="data-toggle"
+	                                            value="tooltip" />
+	                                </div>
 
                                     <!-- DMS-Export-Schaltknopf greyed -->
                                     <button
@@ -360,7 +369,7 @@
                                     <h:outputText value="#{ProzessverwaltungForm.myProzess.erstellungsdatum}" />
 
                                     <h:outputText value="#{msgs.regelsatz}:" />
-                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.regelsatz.titel}" />
+                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.regelsatz.titel}" title="#{ProzessverwaltungForm.myProzess.regelsatz.datei}" />
 
                                     <h:outputText value="#{msgs.docket}:" />
                                     <h:outputText value="#{ProzessverwaltungForm.myProzess.docket.name}" />

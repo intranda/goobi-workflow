@@ -37,16 +37,6 @@ public class MQResultMysqlHelper {
 
     }
 
-    private static ResultSetHandler<MqStatusMessage> rsToStatusMessageHandler = new ResultSetHandler<MqStatusMessage>() {
-        @Override
-        public MqStatusMessage handle(ResultSet rs) throws SQLException {
-            if (rs.next()) {
-                return convertRow(rs);
-            }
-            return null;
-        }
-    };
-
     private static ResultSetHandler<List<MqStatusMessage>> rsToStatusMessageListHandler = new ResultSetHandler<List<MqStatusMessage>>() {
         @Override
         public List<MqStatusMessage> handle(ResultSet rs) throws SQLException {

@@ -1,5 +1,50 @@
 package de.sub.goobi.metadaten;
 
+import java.net.URL;
+import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.lang.StringUtils;
+import org.geonames.Style;
+import org.geonames.Toponym;
+import org.geonames.ToponymSearchCriteria;
+import org.geonames.ToponymSearchResult;
+import org.geonames.WebService;
+import org.goobi.api.display.DisplayCase;
+import org.goobi.api.display.Item;
+import org.goobi.api.display.enums.DisplayType;
+import org.goobi.api.display.helper.NormDatabase;
+import org.goobi.api.rest.model.RestMetadata;
+import org.goobi.api.rest.model.RestProcess;
+import org.goobi.api.rest.request.SearchRequest;
+import org.goobi.beans.Process;
+import org.goobi.beans.Project;
+import org.goobi.production.cli.helper.StringPair;
+import org.goobi.vocabulary.Field;
+import org.goobi.vocabulary.VocabRecord;
+import org.goobi.vocabulary.Vocabulary;
+
 import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.dante.DanteImport;
 import de.intranda.digiverso.normdataimporter.model.NormData;
@@ -16,40 +61,13 @@ import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.VocabularyManager;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.commons.lang.StringUtils;
-import org.geonames.*;
-import org.goobi.api.display.DisplayCase;
-import org.goobi.api.display.Item;
-import org.goobi.api.display.enums.DisplayType;
-import org.goobi.api.display.helper.NormDatabase;
-import org.goobi.api.rest.model.RestMetadata;
-import org.goobi.api.rest.model.RestProcess;
-import org.goobi.api.rest.request.SearchRequest;
-import org.goobi.beans.Process;
-import org.goobi.beans.Project;
-import org.goobi.production.cli.helper.StringPair;
-import org.goobi.vocabulary.Field;
-import org.goobi.vocabulary.VocabRecord;
-import org.goobi.vocabulary.Vocabulary;
-import ugh.dl.*;
+import ugh.dl.DocStruct;
+import ugh.dl.Metadata;
+import ugh.dl.MetadataGroup;
+import ugh.dl.MetadataGroupType;
+import ugh.dl.MetadataType;
+import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
-
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
-import java.net.URL;
-import java.nio.file.Paths;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -123,10 +141,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     private String pagePath;
     private String title;
-    private String data;
-    private String url;
-
-    private String selectedItem;
 
     protected List<RestProcess> results;
 
@@ -189,7 +203,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             showNotHits = false;
         }
         Collections.sort(records);
+
         vocabularyUrl = vocabularyBase.path("records").getUri().toString();
+
     }
 
     private void initializeValues() {
@@ -679,18 +695,15 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 }
                 for (NormData normdata : selectedRecord.getNormdataList()) {
                     if (normdata.getKey().equals("URI")) {
-                        md.setAutorityFile("dante", "https://uri.gbv.de/terminology/dante/",
-                                normdata.getValues().get(0).getText());
-                    } else if (StringUtils.isBlank(selectedRecord.getPreferredValue())
-                            && CollectionUtils.isEmpty(getLabelList())
+                        md.setAutorityFile("dante", "https://uri.gbv.de/terminology/dante/", normdata.getValues().get(0).getText());
+                    } else if (StringUtils.isBlank(selectedRecord.getPreferredValue()) && CollectionUtils.isEmpty(getLabelList())
                             && normdata.getKey().equals(field)) {
                         String value = normdata.getValues().get(0).getText();
                         md.setValue(filter(value));
                     }
                 }
 
-                if (StringUtils.isBlank(selectedRecord.getPreferredValue())
-                        && CollectionUtils.isNotEmpty(getLabelList())) {
+                if (StringUtils.isBlank(selectedRecord.getPreferredValue()) && CollectionUtils.isNotEmpty(getLabelList())) {
                     findPrioritisedMetadata: for (String fieldName : getLabelList()) {
                         for (NormData normdata : currentData) {
                             if (normdata.getKey().equals(fieldName)) {
@@ -709,11 +722,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     for (NormData normdata : selectedRecord.getNormdataList()) {
                         if (normdata.getKey().equals("URI")) {
                             String uriValue = normdata.getValues().get(0).getText();
-                            md.setAutorityFile(
-                                    DisplayType.kulturnav.name(),
-                                    KulturNavImporter.BASE_URL,
-                                    uriValue
-                            );
+                            md.setAutorityFile(DisplayType.kulturnav.name(), KulturNavImporter.BASE_URL, uriValue);
                             break;
                         }
                     }
@@ -722,8 +731,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 // use the first element in the list
                 if (StringUtils.isNotBlank(selectedRecord.getPreferredValue())) {
                     md.setValue(selectedRecord.getPreferredValue());
-                }
-                else if(CollectionUtils.isNotEmpty(selectedRecord.getValueList())) {
+                } else if (CollectionUtils.isNotEmpty(selectedRecord.getValueList())) {
                     md.setValue(selectedRecord.getValueList().get(0));
                 }
                 normdataList = new ArrayList<>();
@@ -760,8 +768,17 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         md.setValue(field.getValue());
                     }
                 }
-                md.setAutorityFile(vocabulary, vocabularyUrl,
-                        vocabularyUrl + "/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
+                if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getGoobiAuthorityServerUser())
+                        && StringUtils.isNotBlank(ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl())) {
+                    md.setAutorityFile(vocabulary, ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl(),
+                            ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl()
+                            + ConfigurationHelper.getInstance().getGoobiAuthorityServerUser() + "/vocabularies/"
+                            + selectedVocabularyRecord.getVocabularyId() + "/records/" + selectedVocabularyRecord.getId());
+                } else {
+                    md.setAutorityFile(vocabulary, vocabularyUrl,
+                            vocabularyUrl + "/vocabularies/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
+                }
+
             default:
                 break;
         }
@@ -817,14 +834,11 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     }
 
     /**
-     * This method is used to disable the edition of the identifier field,
-     * the default value is false, so it can be edited
+     * This method is used to disable the edition of the identifier field, the default value is false, so it can be edited
      */
 
     public boolean isDisableIdentifierField() {
-        return metadataDisplaytype == DisplayType.dante
-                || metadataDisplaytype == DisplayType.kulturnav
-                || metadataDisplaytype == DisplayType.easydb;
+        return metadataDisplaytype == DisplayType.dante || metadataDisplaytype == DisplayType.kulturnav || metadataDisplaytype == DisplayType.easydb;
     }
 
     /**
@@ -855,7 +869,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         //        this.searchRequest.addSearchGroup(group);
     }
 
-    @SuppressWarnings("unchecked")
     public void linkProcess(RestProcess rp) {
         Project p = this.getBean().getMyProzess().getProjekt();
         XMLConfiguration xmlConf = ConfigPlugins.getPluginConfig("ProcessPlugin");

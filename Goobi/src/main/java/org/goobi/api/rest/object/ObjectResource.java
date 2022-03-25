@@ -48,15 +48,10 @@ import javax.xml.ws.WebServiceException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.goobi.beans.Process;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import de.sub.goobi.helper.NIOFileUtils;
-import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import de.unigoettingen.sub.commons.contentlib.exceptions.ContentNotFoundException;
 
 /**
  * @author Florian Alpers
@@ -66,7 +61,6 @@ import de.unigoettingen.sub.commons.contentlib.exceptions.ContentNotFoundExcepti
 @Path("/view/object")
 public class ObjectResource {
 
-    private static final Logger logger = LoggerFactory.getLogger(ObjectResource.class);
 
     @GET
     @Path("/{processId}/{foldername}/{filename}/info.json")
@@ -128,13 +122,13 @@ public class ObjectResource {
         Collections.sort(resourceURIs);
         return resourceURIs;
     }
-    
+
     @GET
     @Path("/{processId}/{foldername}/{filename}.js")
     @Produces({ "application/javascript" })
     public String getJS(@Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
-            throws IOException, InterruptedException, SwapException, DAOException {
+                    throws IOException, InterruptedException, SwapException, DAOException {
 
         //        response.addHeader("Access-Control-Allow-Origin", "*");
         String filename = filenameBase + ".js";
@@ -159,13 +153,13 @@ public class ObjectResource {
             return xml;
         }
     }
-    
+
     @GET
     @Path("/{processId}/{foldername}/{filename}.xml")
     @Produces({ MediaType.TEXT_XML })
     public String getXml(@Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
-            throws IOException, InterruptedException, SwapException, DAOException {
+                    throws IOException, InterruptedException, SwapException, DAOException {
 
         //        response.addHeader("Access-Control-Allow-Origin", "*");
         String filename = filenameBase + ".xml";
@@ -190,13 +184,13 @@ public class ObjectResource {
             return xml;
         }
     }
-    
+
     @GET
     @Path("/{processId}/{foldername}/images/{filename}.jpg")
     @Produces({ "image/jpeg" })
     public void getJpeg(@Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
-            throws IOException, InterruptedException, SwapException, DAOException {
+                    throws IOException, InterruptedException, SwapException, DAOException {
 
         //        response.addHeader("Access-Control-Allow-Origin", "*");
         String filename = filenameBase + ".jpg";
@@ -229,7 +223,7 @@ public class ObjectResource {
     @Produces({ MediaType.APPLICATION_OCTET_STREAM })
     public StreamingOutput getObject(@Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filename)
-            throws IOException, InterruptedException, SwapException, DAOException {
+                    throws IOException, InterruptedException, SwapException, DAOException {
 
         //        response.addHeader("Access-Control-Allow-Origin", "*");
 
@@ -295,7 +289,7 @@ public class ObjectResource {
     public StreamingOutput getObjectResource(@Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("subfolder1") String subfolder1,
             @PathParam("subfolder2") String subfolder2, @PathParam("filename") String filename)
-            throws IOException, InterruptedException, SwapException, DAOException {
+                    throws IOException, InterruptedException, SwapException, DAOException {
 
         //        response.addHeader("Access-Control-Allow-Origin", "*");
 
@@ -314,7 +308,7 @@ public class ObjectResource {
     public StreamingOutput getObjectResource2(@Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("subfolder1") String subfolder1,
             @PathParam("subfolder2") String subfolder2, @PathParam("filename") String filename)
-            throws IOException, InterruptedException, SwapException, DAOException {
+                    throws IOException, InterruptedException, SwapException, DAOException {
         return getObjectResource(request, response, processId, foldername, subfolder1, subfolder2, filename);
     }
 

@@ -1,5 +1,8 @@
 package de.sub.goobi.helper;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -43,12 +46,17 @@ import org.goobi.beans.Templateproperty;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.LogType;
+import org.goobi.production.flow.jobs.HistoryAnalyserJob;
 
+import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.extern.log4j.Log4j2;
+import ugh.dl.Fileformat;
+import ugh.exceptions.UGHException;
 
 @Log4j2
 public class BeanHelper {
@@ -122,7 +130,7 @@ public class BeanHelper {
             stepneu.setTypAutomatischScriptpfad4(step.getTypAutomatischScriptpfad4());
             stepneu.setTypAutomatischScriptpfad5(step.getTypAutomatischScriptpfad5());
             stepneu.setBatchStep(step.getBatchStep());
-            stepneu.setTypScriptStep(step.getTypScriptStep());
+            stepneu.setTypScriptStep(step.isTypScriptStep());
             stepneu.setTypBeimAnnehmenAbschliessen(step.isTypBeimAnnehmenAbschliessen());
             stepneu.setTypBeimAnnehmenModul(step.isTypBeimAnnehmenModul());
             stepneu.setTypBeimAnnehmenModulUndAbschliessen(step.isTypBeimAnnehmenModulUndAbschliessen());
@@ -156,6 +164,10 @@ public class BeanHelper {
             stepneu.setHttpJsonBody(step.getHttpJsonBody());
             stepneu.setHttpCloseStep(step.isHttpCloseStep());
             stepneu.setMessageQueue(step.getMessageQueue());
+
+
+            stepneu.setTypAutomaticThumbnail(step.isTypAutomaticThumbnail());
+            stepneu.setAutomaticThumbnailSettingsYaml(step.getAutomaticThumbnailSettingsYaml());
 
             /* --------------------------------
              * Benutzer übernehmen
@@ -360,4 +372,68 @@ public class BeanHelper {
         }
         return true;
     }
+
+    public Process createAndSaveNewProcess(Process template, String processName, Fileformat fileformat) {
+
+        Process newProcess = new Process();
+        newProcess.setTitel(processName);
+        newProcess.setIstTemplate(false);
+        newProcess.setInAuswahllisteAnzeigen(false);
+        newProcess.setProjekt(template.getProjekt());
+        newProcess.setRegelsatz(template.getRegelsatz());
+        newProcess.setDocket(template.getDocket());
+        SchritteKopieren(template, newProcess);
+        ScanvorlagenKopieren(template, newProcess);
+        WerkstueckeKopieren(template, newProcess);
+        EigenschaftenKopieren(template, newProcess);
+
+        // update task edition dates
+        for (Step step : newProcess.getSchritteList()) {
+
+            step.setBearbeitungszeitpunkt(newProcess.getErstellungsdatum());
+            step.setEditTypeEnum(StepEditType.AUTOMATIC);
+
+            if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
+                step.setBearbeitungsbeginn(newProcess.getErstellungsdatum());
+                Date myDate = new Date();
+                step.setBearbeitungszeitpunkt(myDate);
+                step.setBearbeitungsende(myDate);
+            }
+        }
+
+        // save process
+        try {
+            ProcessManager.saveProcess(newProcess);
+        } catch (DAOException e) {
+            log.error("error on save: ", e);
+            return newProcess;
+        }
+
+        // write metadata file
+        try {
+            Path f = Paths.get(newProcess.getProcessDataDirectoryIgnoreSwapping());
+            if (!StorageProvider.getInstance().isFileExists(f)) {
+                StorageProvider.getInstance().createDirectories(f);
+            }
+            newProcess.writeMetadataFile(fileformat);
+        } catch (UGHException | IOException | InterruptedException | SwapException | DAOException e) {
+            log.error(e);
+        }
+
+        // Create history events
+        if (!HistoryAnalyserJob.updateHistoryForProzess(newProcess)) {
+            Helper.setFehlerMeldung("historyNotUpdated");
+        } else {
+            try {
+                ProcessManager.saveProcess(newProcess);
+            } catch (DAOException e) {
+                log.error("error on save: ", e);
+                return newProcess;
+            }
+        }
+
+        return newProcess;
+
+    }
+
 }

@@ -94,7 +94,7 @@
             <!-- METSEDITOR STRUCTURE -->
             <div class="table__structure">
                 <x:dataTable id="meStructure" forceId="true" value="#{Metadaten.strukturBaum3}" var="item" rowStyleClass="level-#{item.niveau}">
-                    <h:column>
+                    <h:column>                    
                         <button 
                             jsf:id="expand"
                             aria-label="#{msgs.expand}" 
@@ -105,7 +105,6 @@
                             <x:updateActionListener property="#{item.node.expanded}" value="#{not item.node.expanded}" />
                             <f:ajax execute="treeform" render="treeform" />
                         </button>
-
                         <ui:fragment rendered="#{Metadaten.treeProperties.showMetadataPopup}">
                             <button 
                                 jsf:id="link"
@@ -122,7 +121,6 @@
                                 <f:passThroughAttribute name="data-placement" value="top" />
                                 <f:passThroughAttribute name="data-html" value="true" />
                                 <f:passThroughAttribute name="data-content" value="#{item.node.metadataPopup}" />
-                                
                                 <h:outputText value="#{item.node.description}"
                                     rendered="#{not Metadaten.treeProperties.showtitle or (Metadaten.treeProperties.showtitle and item.node.mainTitle == '')}" />
                                 <h:outputText value="#{item.node.mainTitle}"
@@ -141,7 +139,7 @@
                                 <x:updateActionListener property="#{Metadaten.myStrukturelement}"
                                     value="#{item.node.struct}" />
                                 <f:ajax execute="@form"
-                                    render="@form #{Metadaten.bildZuStrukturelement ? ':openseadragonform :thumbnailsForm' : ''} :structureform :metadataform" />
+                                    render="@form #{Metadaten.bildZuStrukturelement ? ':openseadragonform :thumbnailsForm' : ''} :structureform :metadataform :openseadragonform:pageareas" />
                                 <f:passThroughAttribute name="data-renderimage" value="#{Metadaten.bildZuStrukturelement ? 'true':'false'}" />
                             </button>
                         </ui:fragment>
@@ -150,7 +148,7 @@
                             <button 
                                 jsf:id="link2" 
                                 jsf:immediate="true"
-                                class="#{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'}"
+                                class="button-link #{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'}"
                                 jsf:action="#{Metadaten.loadRightFrame}">
                                 <i class="fa fa-file-o" aria-hidden="true"></i>
 

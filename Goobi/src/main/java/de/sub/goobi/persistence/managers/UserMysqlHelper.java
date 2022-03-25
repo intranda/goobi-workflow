@@ -33,6 +33,7 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.goobi.api.mail.SendMail;
 import org.goobi.api.mail.StepConfiguration;
 import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.beans.Institution;
@@ -52,7 +53,7 @@ class UserMysqlHelper implements Serializable {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM benutzer");
+        sql.append("SELECT * FROM benutzer LEFT JOIN institution ON benutzer.institution_id = institution.id");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
             whereSet = true;
@@ -173,12 +174,12 @@ class UserMysqlHelper implements Serializable {
                 String propNames =
                         "Vorname, Nachname, login, IstAktiv, Standort, metadatensprache, css, mitMassendownload, Tabellengroesse, sessiontimeout, ldapgruppenID, isVisible, ldaplogin,"
                                 + "displayAutomaticTasks, displayBatchColumn, displayDeactivatedProjects, displayFinishedProcesses, displayIdColumn, displayLocksColumn, "
-                                + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks, email, shortcut, metseditortime, "
+                                + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displayRulesetColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks, email, shortcut, metseditortime, "
                                 + "metsDisplayHierarchy, metsDisplayPageAssignments, metsDisplayTitle, metsLinkImage, displayOtherTasks, encryptedPassword, salt, metsDisplayProcessID, displayGridView, displayMetadataColumn, "
                                 + "displayThumbColumn, customColumns, customCss, mailNotificationLanguage, institution_id, superadmin, displayInstitutionColumn, dashboardPlugin, ssoId"
-                                + ", processses_sort_field, processes_sort_order, tasks_sort_field, tasks_sort_order, displayLastEditionDate, displayLastEditionUser, displayLastEditionTask, dashboard_configuration ";
+                                + ", processses_sort_field, processes_sort_order, tasks_sort_field, tasks_sort_order, displayLastEditionDate, displayLastEditionUser, displayLastEditionTask, dashboard_configuration, ui_mode ";
                 String prop =
-                        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,? ";
+                        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?,?,? ";
                 Object[] param = { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
                         ro.getLogin() == null ? null : ro.getLogin(), ro.isIstAktiv(), ro.getStandort() == null ? null : ro.getStandort(),
                         ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), ro.getCss() == null ? null : ro.getCss(),
@@ -187,8 +188,8 @@ class UserMysqlHelper implements Serializable {
                         ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), visible, ro.getLdaplogin() == null ? null : ro.getLdaplogin(),
                         ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
                         ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
-                        ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
-                        ro.isHideCorrectionTasks(), ro.getEmail() == null ? null : ro.getEmail(),
+                        ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(),
+                        ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(), ro.getEmail() == null ? null : ro.getEmail(),
                         ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
                         ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
                         ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(), ro.isDisplayOtherTasks(),
@@ -198,6 +199,7 @@ class UserMysqlHelper implements Serializable {
                         ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(),
                         ro.getProcessListDefaultSortOrder(), ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(),
                         ro.isDisplayLastEditionDate(), ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionDate(), ro.getDashboardConfiguration() };
+
                 sql.append("INSERT INTO benutzer (");
                 sql.append(propNames.toString());
                 sql.append(") VALUES (");
@@ -238,6 +240,7 @@ class UserMysqlHelper implements Serializable {
                 sql.append("displayOnlyOpenTasks =  ?, ");
                 sql.append("displayOnlySelectedTasks =  ?, ");
                 sql.append("displayProcessDateColumn =  ?, ");
+                sql.append("displayRulesetColumn = ?, ");
                 sql.append("displaySelectBoxes =  ?, ");
                 sql.append("displaySwappingColumn =  ?, ");
                 sql.append("hideCorrectionTasks =  ?, ");
@@ -267,7 +270,8 @@ class UserMysqlHelper implements Serializable {
                 sql.append("processes_sort_order =  ?, ");
                 sql.append("tasks_sort_field =  ?, ");
                 sql.append("tasks_sort_order =  ?, ");
-                sql.append("displayLastEditionDate  =  ?, displayLastEditionUser  =  ?, displayLastEditionTask = ?, dashboard_configuration = ? ");
+                sql.append(
+                        "displayLastEditionDate  =  ?, displayLastEditionUser  =  ?, displayLastEditionTask = ?, dashboard_configuration = ?, ui_mode = ? ");
                 sql.append(" WHERE BenutzerID = " + ro.getId() + ";");
 
                 Object[] param = { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
@@ -278,8 +282,8 @@ class UserMysqlHelper implements Serializable {
                         ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), visible, ro.getLdaplogin() == null ? null : ro.getLdaplogin(),
                         ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
                         ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
-                        ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
-                        ro.isHideCorrectionTasks(), ro.getEmail() == null ? null : ro.getEmail(),
+                        ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(),
+                        ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(), ro.getEmail() == null ? null : ro.getEmail(),
                         ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
                         ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
                         ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(), ro.isDisplayOtherTasks(),
@@ -288,7 +292,8 @@ class UserMysqlHelper implements Serializable {
                         ro.getMailNotificationLanguage(), ro.getInstitution() == null ? null : ro.getInstitution().getId(), ro.isSuperAdmin(),
                         ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(),
                         ro.getProcessListDefaultSortOrder(), ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(),
-                        ro.isDisplayLastEditionDate(), ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration() };
+                        ro.isDisplayLastEditionDate(), ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(),
+                        ro.getUiMode() };
 
                 if (logger.isTraceEnabled()) {
                     logger.trace(sql.toString() + ", " + Arrays.toString(param));
@@ -296,28 +301,33 @@ class UserMysqlHelper implements Serializable {
                 run.update(connection, sql.toString(), param);
             }
 
-            String insert =
-                    "INSERT INTO user_email_configuration (userid, projectid, stepname, open, inWork, done, error) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            String update = "UPDATE user_email_configuration set open = ?, inWork = ?, done = ?, error = ? where id = ?";
-            if (ro.getEmailConfiguration() != null) {
-                for (UserProjectConfiguration upc : ro.getEmailConfiguration()) {
-                    for (StepConfiguration sc : upc.getStepList()) {
-                        if (sc.getId() == null) {
+            if (SendMail.getInstance().getConfig().isEnableMail()) {
 
-                            Integer id = run.insert(connection, insert, MySQLHelper.resultSetToIntegerHandler, ro.getId(), upc.getProjectId(),
-                                    sc.getStepName(), sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError());
-                            sc.setId(id);
-                        } else {
-                            if (!sc.isOpen() && !sc.isInWork() && !sc.isDone() && !sc.isError()) {
-                                run.update(connection, "DELETE FROM user_email_configuration WHERE id = ?", sc.getId());
+                String insert =
+                        "INSERT INTO user_email_configuration (userid, projectid, stepname, open, inWork, done, error) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                String update = "UPDATE user_email_configuration set open = ?, inWork = ?, done = ?, error = ? where id = ?";
+                if (ro.getEmailConfiguration() != null) {
+                    for (UserProjectConfiguration upc : ro.getEmailConfiguration()) {
+                        for (StepConfiguration sc : upc.getStepList()) {
+                            if (sc.getId() == null) {
+
+                                Integer id = run.insert(connection, insert, MySQLHelper.resultSetToIntegerHandler, ro.getId(), upc.getProjectId(),
+                                        sc.getStepName(), sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError());
+                                sc.setId(id);
                             } else {
-                                run.update(connection, update, sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError(), sc.getId());
+                                if (!sc.isOpen() && !sc.isInWork() && !sc.isDone() && !sc.isError()) {
+                                    run.update(connection, "DELETE FROM user_email_configuration WHERE id = ?", sc.getId());
+                                } else {
+                                    run.update(connection, update, sc.isOpen(), sc.isInWork(), sc.isDone(), sc.isError(), sc.getId());
+                                }
                             }
                         }
                     }
                 }
             }
-        } finally {
+        } finally
+
+        {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
             }
@@ -520,12 +530,44 @@ class UserMysqlHelper implements Serializable {
         }
     }
 
+    public static void deleteAllUsergroupAssignments(User user) throws SQLException {
+        if (user.getId() != null) {
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                String sql = " DELETE FROM benutzergruppenmitgliedschaft WHERE BenutzerID =" + user.getId();
+                new QueryRunner().update(connection, sql);
+
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+        }
+    }
+
     public static void deleteProjectAssignment(User user, int projektID) throws SQLException {
         if (user.getId() != null) {
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
                 String sql = "DELETE FROM projektbenutzer WHERE BenutzerID =" + user.getId() + " AND ProjekteID = " + projektID;
+
+                new QueryRunner().update(connection, sql);
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+        }
+    }
+
+    public static void deleteAllProjectAssignments(User user) throws SQLException {
+        if (user.getId() != null) {
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                String sql = "DELETE FROM projektbenutzer WHERE BenutzerID =" + user.getId();
 
                 new QueryRunner().update(connection, sql);
             } finally {
@@ -620,7 +662,7 @@ class UserMysqlHelper implements Serializable {
     public static List<UserProjectConfiguration> getEmailConfigurationForUser(List<Project> projects, Integer id, boolean showAllItems)
             throws SQLException {
         List<UserProjectConfiguration> answer = new ArrayList<>();
-        if (projects == null || projects.isEmpty()) {
+        if (projects == null || projects.isEmpty() || !SendMail.getInstance().getConfig().isEnableMail()) {
             return answer;
         }
 
@@ -673,16 +715,18 @@ class UserMysqlHelper implements Serializable {
             } else {
                 // older sql version without INTERSECT command
                 if (showAllItems) {
-                    sql.append("SELECT id, sub.titel AS stepName, open, inWork, done, error FROM (SELECT DISTINCT titel FROM schritte s1 WHERE  ");
-                    sql.append("s1.ProzesseID IN (SELECT ProzesseID FROM prozesse WHERE ProjekteID = ?) ORDER BY titel) sub LEFT JOIN  ");
-                    sql.append("user_email_configuration uec ON sub.titel = uec.stepname AND uec.projectid = ? AND uec.userid = ? ");
+                    sql.append("SELECT id, sub.titel AS stepName, open, inWork, done, error FROM (SELECT DISTINCT titel FROM schritte s1 WHERE ");
+                    sql.append("EXISTS (SELECT NULL FROM prozesse WHERE ProjekteID = ? AND ProzesseID = s1.ProzesseID) ORDER BY titel) sub ");
+                    sql.append("LEFT JOIN user_email_configuration uec ON sub.titel = uec.stepname AND uec.projectid = ? AND uec.userid = ? ");
                 } else {
                     sql.append("SELECT id, sub.titel AS stepName, open, inWork, done, error FROM (SELECT DISTINCT titel FROM schritte s1 WHERE ");
-                    sql.append("s1.ProzesseID IN (SELECT ProzesseID FROM prozesse WHERE ProjekteID = ?) AND s1.SchritteId IN (SELECT schritteID ");
-                    sql.append("FROM schritteberechtigtegruppen WHERE BenutzerGruppenID IN (SELECT b.BenutzerGruppenID FROM ");
-                    sql.append("benutzergruppenmitgliedschaft bm LEFT JOIN benutzergruppen b ON bm.BenutzerGruppenID = b.BenutzerGruppenID ");
-                    sql.append("WHERE bm.BenutzerID = ?)) ORDER BY titel) sub LEFT JOIN user_email_configuration uec ON sub.titel = ");
-                    sql.append("uec.stepname AND uec.projectid = ? AND uec.userid = ?");
+                    sql.append("EXISTS (SELECT NULL FROM prozesse WHERE ProjekteID = ? AND ProzesseID = s1.ProzesseID) ");
+
+                    sql.append("AND EXISTS (SELECT NULL FROM schritteberechtigtegruppen WHERE ");
+                    sql.append("s1.SchritteID = schritteberechtigtegruppen.schritteID AND schritteberechtigtegruppen.BenutzerGruppenID in ");
+                    sql.append("(SELECT benutzergruppenmitgliedschaft.BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE ");
+                    sql.append("benutzergruppenmitgliedschaft.BenutzerID = ?)) ORDER BY titel) sub LEFT JOIN user_email_configuration uec ON ");
+                    sql.append("sub.titel = uec.stepname AND uec.projectid = ? AND uec.userid = ?");
                 }
             }
             for (Project project : projects) {

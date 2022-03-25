@@ -37,6 +37,20 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 </style>
 
+<script type="text/javascript">
+        	function switchExpanded(id){
+        		console.log("called by: "+id);
+				var x = document.getElementById(id).getAttribute("aria-expanded"); 
+				console.log(x)
+				if (x == "true"){
+					x = "false"
+				} else {
+					x = "true"
+				}
+				document.getElementById(id).setAttribute("aria-expanded", x);
+        	}
+        </script>
+
 <div class="row margin-left-10 margin-right-10" >
 	<ui:repeat var="item" value="#{ProzessverwaltungForm.paginator.list}" varStatus="itemstatus" id="processgrid">
 		<div class="thumbgrid">
@@ -46,16 +60,16 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 					<!-- Progress bar -->
 					<div class="progress margin-bottom-no" style="border: 0px solid black;height:7px; margin-top:-1px;	">
 						<h:panelGroup rendered="#{item.fortschritt3 gt 0}">
-							<div title="#{msgs.statusAbgeschlossen}" aria-label="#{item.fortschritt3}% #{msgs.statusAbgeschlossen}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-done'):('progress-bar-success'))}" style="width: #{item.fortschritt3}%;margin-top:0px;"/>
+							<div title="#{msgs.statusAbgeschlossen}" aria-label="#{item.fortschritt3}% #{msgs.statusAbgeschlossen}" data-toggle="tooltip" class="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-done'):('progress-bar-success'))}" style="width: #{item.fortschritt3}%;margin-top:0px;"/>
 						</h:panelGroup>
 						<h:panelGroup rendered="#{item.fortschritt2 gt 0}">
-							<div title="#{msgs.statusOffen}" aria-label="#{item.fortschritt2}% #{msgs.statusOffen}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-open'):('progress-bar-warning'))}" style="width: #{item.fortschritt2}%;margin-top:0px;"/>
+							<div title="#{msgs.statusOffen}" aria-label="#{item.fortschritt2}% #{msgs.statusOffen}" data-toggle="tooltip" class="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-open'):('progress-bar-warning'))}" style="width: #{item.fortschritt2}%;margin-top:0px;"/>
 						</h:panelGroup>
 						<h:panelGroup rendered="#{item.fortschrittError gt 0}">
-							<div title="#{msgs.statusError}" aria-label="#{item.fortschrittError}% #{msgs.statusError}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-error'):('progress-bar-danger progressbar-status-error'))} " style="width: #{item.fortschrittError}%;margin-top:0px;"/>
+							<div title="#{msgs.statusError}" aria-label="#{item.fortschrittError}% #{msgs.statusError}" data-toggle="tooltip" class="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-error'):('progress-bar-danger progressbar-status-error'))} " style="width: #{item.fortschrittError}%;margin-top:0px;"/>
 						</h:panelGroup>
 						<h:panelGroup rendered="#{item.fortschritt1 gt 0}">
-							<div title="#{msgs.statusGesperrt}" aria-label="#{item.fortschritt1}% #{msgs.statusGesperrt}" data-toggle="tooltip" class="progress-bar #{(NavigationForm.showEasyRead?('easy-read-progressbar-status-locked'):('progress-bar-danger'))} " style="width: #{item.fortschritt1}%;margin-top:0px;"/>
+							<div title="#{msgs.statusGesperrt}" aria-label="#{item.fortschritt1}% #{msgs.statusGesperrt}" data-toggle="tooltip" class="progress-bar #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-progressbar-status-locked'):('progress-bar-danger'))} " style="width: #{item.fortschritt1}%;margin-top:0px;"/>
 						</h:panelGroup>
 					</div>
 				                                        
@@ -86,7 +100,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 											
 									<div class="btn-group pull-right" title="#{msgs.process_grid_options}" data-toggle="tooltip">
 										<div class="dropdown">
-										<button class="btn dropdown-toggle fa fa-cog" data-toggle="dropdown">
+										<button id="gridOptionsDropdown" class="btn dropdown-toggle fa fa-cog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="switchExpanded(this.id)">
 											<span class="caret"></span>
 										</button>
 										<ul class="dropdown-menu pull-right">
@@ -95,7 +109,7 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 												<!-- Bearbeiten-Schaltknopf -->
 												<button jsf:action="#{ProzessverwaltungForm.editProcess}" jsf:id="grid_edit"
 													jsf:rendered="#{LoginForm.hasRole('Workflow_General_Details')}" jsf:rel="tooltip" title="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}"
-													class="btn button-schaltknopf">
+													class="dropdown-item">
 													<i class="fa fa-pencil margin-right-10" />
 													<h:outputText value="#{ProzessverwaltungForm.modusAnzeige=='aktuell'?msgs.prozessBearbeiten:msgs.process_editTemplate}" />
 													<f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -268,34 +282,34 @@ xmlns:jsf="http://xmlns.jcp.org/jsf">
 							<h:column>
 								<ul class="colors small13">
 									<h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'LOCKED'}">
-										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" title="#{msgs.statusGesperrt}" data-toggle="tooltip" rel="tooltip"></li>
+										<li class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" title="#{msgs.statusGesperrt}" data-toggle="tooltip" rel="tooltip"></li>
 									</h:panelGroup>
 									<h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'OPEN'}">
-										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" title="#{msgs.statusOffen}" rel="tooltip"></li>
+										<li class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" title="#{msgs.statusOffen}" rel="tooltip"></li>
 									</h:panelGroup>			
 									<h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'DONE' and HelperForm.anonymized}">
-										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"  data-toggle="tooltip" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title} #{step.editTypeEnum.title}"></li>
+										<li class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"  data-toggle="tooltip" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title} #{step.editTypeEnum.title}"></li>
 									</h:panelGroup>
 									<h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and HelperForm.anonymized}">
-										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"  data-toggle="tooltip" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}"></li>
+										<li class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"  data-toggle="tooltip" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}"></li>
 									</h:panelGroup>
 									<h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'DONE' and !HelperForm.anonymized}">
-										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"  data-toggle="tooltip" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''}) - #{step.editTypeEnum.title}" ></li>
+										<li class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"  data-toggle="tooltip" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''}) - #{step.editTypeEnum.title}" ></li>
 									</h:panelGroup>
 									<h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'INWORK' and !HelperForm.anonymized}">
-										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"  data-toggle="tooltip" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''}) - #{step.editTypeEnum.title}"></li>
+										<li class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"  data-toggle="tooltip" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''}) - #{step.editTypeEnum.title}"></li>
 									</h:panelGroup>
 									<h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and !HelperForm.anonymized}">
-										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"  data-toggle="tooltip" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''}) - #{step.editTypeEnum.title}"></li>
+										<li class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"  data-toggle="tooltip" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.bearbeitungsbenutzer!=null and step.bearbeitungsbenutzer.id!=0?step.bearbeitungsbenutzer.nachVorname:''} (#{step.bearbeitungszeitpunkt !=null?step.bearbeitungszeitpunktAsFormattedString:''}) - #{step.editTypeEnum.title}"></li>
 									</h:panelGroup>
 									<h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'ERROR' and HelperForm.anonymized}">
-										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"  data-toggle="tooltip" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}"></li>
+										<li class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}"  data-toggle="tooltip" rel="tooltip" title="#{step.bearbeitungsstatusEnum.title}: #{step.editTypeEnum.title}"></li>
 									</h:panelGroup>
 									<h:panelGroup rendered="#{step.bearbeitungsstatusEnum == 'DEACTIVATED'}">
-										<li class="statusSmall #{(NavigationForm.showEasyRead?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" title="#{step.bearbeitungsstatusEnum.title}"  data-toggle="tooltip" rel="tooltip"></li>
+										<li class="statusSmall #{(LoginForm.myBenutzer.uiMode=='low_vision'?('easy-read-'):('')).concat(step.bearbeitungsstatusEnum.color)}" title="#{step.bearbeitungsstatusEnum.title}"  data-toggle="tooltip" rel="tooltip"></li>
 									</h:panelGroup> 
 								</ul>
-								<h:outputText value="#{step.bearbeitungsstatusEnum.title}" rendered="#{NavigationForm.showEasyRead}"/>
+								<h:outputText value="#{step.bearbeitungsstatusEnum.title}" rendered="#{LoginForm.myBenutzer.uiMode=='low_vision'}"/>
 							</h:column>
 						</x:dataTable>
 					</h:panelGroup>

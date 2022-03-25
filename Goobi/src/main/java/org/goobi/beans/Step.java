@@ -32,11 +32,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.goobi.api.mail.SendMail;
+import org.goobi.api.mq.AutomaticThumbnailHandler;
 import org.goobi.api.mq.QueueType;
+import org.goobi.api.mq.TaskTicket;
+import org.goobi.api.mq.TicketGenerator;
+import org.json.JSONObject;
+import org.yaml.snakeyaml.Yaml;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -68,7 +75,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private Integer bearbeitungsstatus;
     @Getter
     @Setter
-    private Date bearbeitungszeitpunkt;   
+    private Date bearbeitungszeitpunkt;
     @Getter
     @Setter
     private Date bearbeitungsbeginn;
@@ -96,6 +103,12 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private boolean typAutomatisch = false;
     @Getter
     @Setter
+    private boolean typAutomaticThumbnail = false;
+    @Getter
+    @Setter
+    private String automaticThumbnailSettingsYaml;
+    @Getter
+    @Setter
     private boolean typImportFileUpload = false;
     @Getter
     @Setter
@@ -117,8 +130,9 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     @Getter
     @Setter
     private boolean typBeimAnnehmenModulUndAbschliessen = false;
+    @Getter
     @Setter
-    private Boolean typScriptStep = false;
+    private boolean typScriptStep = false;
     @Getter
     @Setter
     private String scriptname1;
@@ -294,6 +308,31 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         return Helper.getDateAsFormattedString(this.bearbeitungsende);
     }
 
+    public JSONObject getAutoThumbnailSettingsJSON() {
+        //new JSONObject("{'Master':true,'Media':true, 'Sizes':[800] }");
+        Yaml yaml= new Yaml();
+        @SuppressWarnings("unchecked")
+        Map<String,Object> map= (Map<String, Object>) yaml.load(this.automaticThumbnailSettingsYaml);
+        return new JSONObject(map);
+    }
+
+    public void submitAutomaticThumbnailTicket() {
+        try {
+            TaskTicket ticket = new TaskTicket(AutomaticThumbnailHandler.HANDLERNAME);
+            ticket.setStepId(this.id);
+            ticket.setProcessId(this.getProcessId());
+            ticket.setStepName(this.titel);
+            if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
+                AutomaticThumbnailHandler handler = new AutomaticThumbnailHandler();
+                handler.call(ticket);
+            }else {
+                TicketGenerator.submitInternalTicket(ticket, QueueType.SLOW_QUEUE, this.titel, this.getProcessId());
+            }
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * set editType to specific value from {@link StepEditType}
      * 
@@ -459,6 +498,9 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
                 break;
             case LOCKED:
                 bearbeitungsstatus = 1;
+                //                if(this.typAutomaticThumbnail) {
+                //                    this.submitAutomaticThumbnailTicket();
+                //                }
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
                 break;
             case DONE:
@@ -477,6 +519,9 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
             case INFLIGHT:
             case INWORK:
                 bearbeitungsstatus = 1;
+                //                if(this.typAutomaticThumbnail) {
+                //                    this.submitAutomaticThumbnailTicket();
+                //                }
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
                 break;
 
@@ -518,13 +563,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     public void setBearbeitungsstatusAsString(String inbearbeitungsstatus) {
         this.bearbeitungsstatus = Integer.parseInt(inbearbeitungsstatus);
-    }
-
-    public Boolean getTypScriptStep() {
-        if (this.typScriptStep == null) {
-            this.typScriptStep = false;
-        }
-        return this.typScriptStep;
     }
 
     public ArrayList<String> getAllScriptPaths() {

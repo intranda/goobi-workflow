@@ -6,7 +6,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class LockingBeanTest {
+import de.sub.goobi.AbstractTest;
+
+@SuppressWarnings("static-access")
+public class LockingBeanTest extends AbstractTest {
 
     @Test
     public void testConstructor() {

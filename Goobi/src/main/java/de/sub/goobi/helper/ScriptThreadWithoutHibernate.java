@@ -118,8 +118,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
                 t.setProcessId(this.step.getProzess().getId());
                 t.setStepName(this.step.getTitel());
                 try {
-                    String messageId =
-                            TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue(), step.getTitel(), step.getProzess().getId());
+                    TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue(), step.getTitel(), step.getProzess().getId());
                     //                step.setMessageId(messageId);
                     step.setBearbeitungsstatusEnum(StepStatus.INFLIGHT);
                     step.setBearbeitungsbeginn(new Date());
@@ -154,7 +153,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
             logger.debug("step is automatic: " + automatic);
             logger.debug("found " + scriptPaths.size() + " scripts");
         }
-        if (step.getTypScriptStep() && !scriptPaths.isEmpty()) {
+        if (step.isTypScriptStep() && !scriptPaths.isEmpty()) {
             this.hs.executeAllScriptsForStep(this.step, automatic);
         } else if (this.step.isTypExportDMS()) {
             this.hs.executeDmsExport(this.step, automatic);
@@ -236,7 +235,8 @@ public class ScriptThreadWithoutHibernate extends Thread {
         t.setScripts(listOfScripts);
         t.setScriptNames(scriptNames);
         try {
-            String messageId = TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE, step.getTitel(), step.getProzess().getId());
+
+            TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE, step.getTitel(), step.getProzess().getId());
             //            automaticStep.setMessageId(messageId);
             automaticStep.setBearbeitungsbeginn(new Date());
             automaticStep.setBearbeitungsstatusEnum(StepStatus.INFLIGHT);

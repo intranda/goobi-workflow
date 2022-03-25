@@ -51,8 +51,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -92,7 +90,7 @@ import de.sub.goobi.forms.SpracheForm;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
 @WebListener
-public class Helper implements Serializable, Observer, ServletContextListener {
+public class Helper implements Serializable, ServletContextListener {
 
     /**
      * Always treat de-serialization as a full-blown constructor, by validating the final state of the de-serialized object.
@@ -577,30 +575,6 @@ public class Helper implements Serializable, Observer, ServletContextListener {
         }
 
         return value;
-    }
-
-    /**
-     * for easy access of the implemented Interface Observer
-     * 
-     * @return Observer -> can be added to an Observable
-     */
-    public Observer createObserver() {
-        return this;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-     */
-    @Override
-    public void update(Observable o, Object arg) {
-        if (!(arg instanceof String)) {
-            Helper.setFehlerMeldung("Usernotification failed by object: '" + arg.toString()
-                    + "' which isn't an expected String Object. This error is caused by an implementation of the Observer Interface in Helper");
-        } else {
-            Helper.setFehlerMeldung((String) arg);
-        }
     }
 
     public static String getBaseUrl() {

@@ -33,10 +33,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
+
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
@@ -46,7 +47,7 @@ import de.sub.goobi.helper.Helper;
  * The SpracheForm class serves to switch the displayed language for the current user in the running application
  */
 @Named("SpracheForm")
-@SessionScoped
+@WindowScoped
 public class SpracheForm implements Serializable {
 
     /**

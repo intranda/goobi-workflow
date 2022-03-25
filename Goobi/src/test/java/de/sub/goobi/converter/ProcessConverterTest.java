@@ -22,8 +22,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import javax.faces.convert.ConverterException;
-
 import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.junit.Test;
@@ -33,17 +31,18 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.persistence.managers.ProcessManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ProcessManager.class)
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
-public class ProcessConverterTest {
+public class ProcessConverterTest extends AbstractTest {
 
     @Test
     public void testGetAsObject() {
         Process process = new Process();
-        process.setId(new Integer(1));
+        process.setId(Integer.valueOf(1));
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(1)).andReturn(process);
         EasyMock.expectLastCall();
@@ -52,11 +51,6 @@ public class ProcessConverterTest {
         ProcessConverter conv = new ProcessConverter();
         Object fixture = conv.getAsObject(null, null, "1");
         assertNotNull(fixture);
-        String zero = (String) conv.getAsObject(null, null, "NAN");
-        assertEquals("0", zero);
-
-        String nullValue = (String) conv.getAsObject(null, null, null);
-        assertNull(nullValue);
     }
 
     @Test
@@ -67,16 +61,8 @@ public class ProcessConverterTest {
         ProcessConverter conv = new ProcessConverter();
         String value = conv.getAsString(null, null, process);
         assertEquals("42", value);
-        value = conv.getAsString(null, null, "test");
-        assertEquals("test", value);
 
         String nullValue = conv.getAsString(null, null, null);
         assertNull(nullValue);
-    }
-
-    @Test(expected = ConverterException.class)
-    public void testConverterException() {
-        ProcessConverter conv = new ProcessConverter();
-        conv.getAsString(null, null, 1);
     }
 }

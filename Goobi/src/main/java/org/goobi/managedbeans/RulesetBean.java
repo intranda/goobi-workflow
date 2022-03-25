@@ -30,15 +30,18 @@ import java.io.Serializable;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Ruleset;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.StorageProviderInterface;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
@@ -46,7 +49,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named("RegelsaetzeForm")
-@SessionScoped
+@WindowScoped
 public class RulesetBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = -8994941188718721705L;
@@ -60,6 +63,15 @@ public class RulesetBean extends BasicBean implements Serializable {
     }
 
     public String Speichern() {
+
+        // JSF returns this.myRegelsatz.datei = "true" (as non-null string) if no file is selected in the drop down menu
+        boolean isNoFileSelected = this.myRegelsatz.getDatei() == null || this.myRegelsatz.getDatei().equals("null");
+
+        if (isNoFileSelected) {
+            Helper.setFehlerMeldung("RulesetNotSpecified");
+            return "";
+        }
+
         try {
             if (hasValidRulesetFilePath(myRegelsatz, ConfigurationHelper.getInstance().getRulesetFolder())) {
                 RulesetManager.saveRuleset(myRegelsatz);
@@ -96,6 +108,10 @@ public class RulesetBean extends BasicBean implements Serializable {
         return FilterKein();
     }
 
+    public String Cancel() {
+        return "ruleset_all";
+    }
+
     private boolean hasAssignedProcesses(Ruleset r) {
         Integer number = ProcessManager.getNumberOfProcessesWithRuleset(r.getId());
         if (number != null && number > 0) {
@@ -113,5 +129,19 @@ public class RulesetBean extends BasicBean implements Serializable {
     public String FilterKeinMitZurueck() {
         FilterKein();
         return this.zurueck;
+    }
+
+    public List<String> getAvailableRulesetFiles() {
+        String rulesetPath = ConfigurationHelper.getInstance().getRulesetFolder();
+        StorageProviderInterface storage = StorageProvider.getInstance();
+        List<Path> files = storage.listFiles(rulesetPath);
+        List<String> fileNames = new ArrayList<>();
+        for (int index = 0; index < files.size(); index++) {
+            String name = files.get(index).getFileName().toString();
+            if (storage.isFileExists(files.get(index)) && name.endsWith(".xml")) {
+                fileNames.add(name);
+            }
+        }
+        return fileNames;
     }
 }

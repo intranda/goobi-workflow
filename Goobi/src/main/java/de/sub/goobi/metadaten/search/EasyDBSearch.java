@@ -148,7 +148,7 @@ public class EasyDBSearch {
                         for (String val : esf.getOverrideValueList()) {
                             if (esf.getFieldType().equalsIgnoreCase("numeric")) {
                                 if (StringUtils.isNumeric(val)) {
-                                    in.add(new Integer(val));
+                                    in.add(Integer.valueOf(val));
                                 } else {
                                     in.add(null);
                                 }
@@ -159,7 +159,7 @@ public class EasyDBSearch {
 
                     } else if (esf.getFieldType().equalsIgnoreCase("numeric")) {
                         if (StringUtils.isNumeric(searchValue)) {
-                            in.add(new Integer(searchValue));
+                            in.add(Integer.valueOf(searchValue));
                         } else {
                             in.add(null);
                         }

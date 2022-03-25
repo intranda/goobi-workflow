@@ -28,6 +28,7 @@ import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -264,6 +265,10 @@ public class ConfigurationHelper implements Serializable {
         return getGoobiFolder() + "plugins/";
     }
 
+    public String getLibFolder() {
+        return getGoobiFolder() + "lib/";
+    }
+
     public String getPathForLocalMessages() {
         return getGoobiFolder() + "config/";
     }
@@ -350,18 +355,18 @@ public class ConfigurationHelper implements Serializable {
     public int getGoobiAuthorityServerBackupFreq() {
         return getLocalInt("goobiAuthorityServerUploadFrequency", 0);
     }
-    
+
     public String getGoobiAuthorityServerUser() {
 
         return getLocalString("goobiAuthorityServerUser");
     }
-    
+
     // URLs
 
     public String getGoobiAuthorityServerUrl() {
         return getLocalString("goobiAuthorityServerUrl");
     }
-    
+
     public String getGoobiUrl() {
         return getLocalString("goobiUrl");
     }
@@ -387,7 +392,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getApplicationTitle() {
-        return getLocalString("ApplicationTitle", "http://goobi.intranda.com");
+        return getLocalString("ApplicationTitle", "http://goobi.io");
     }
 
     public String getApplicationWebsiteMsg() {
@@ -577,24 +582,22 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("ldap_nextFreeUnixId");
     }
 
-    @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    public String getLdapKeystore() {
-        return getLocalString("ldap_keystore");
+    public String getTruststore() {
+        return getLocalString("truststore");
     }
 
-    @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
      * 
      * @return
      */
-    public String getLdapKeystoreToken() {
-        return getLocalString("ldap_keystore_password");
+    public String getTruststoreToken() {
+        return getLocalString("truststore_password");
     }
 
     @Deprecated
@@ -689,6 +692,14 @@ public class ConfigurationHelper implements Serializable {
      */
     public boolean isLdapUseTLS() {
         return getLocalBoolean("ldap_useTLS", false);
+    }
+
+    public List<String> getAdditionalUserRights() {
+        List<String> additionalUserRights = getLocalList("userRight");
+        if (additionalUserRights == null || additionalUserRights.isEmpty()) {
+            additionalUserRights = Collections.emptyList();
+        }
+        return additionalUserRights;
     }
 
     public String getGeonamesCredentials() {
@@ -960,6 +971,14 @@ public class ConfigurationHelper implements Serializable {
 
     }
 
+    public boolean getMetsEditorShowImageComments() {
+        return isShowImageComments();
+    }
+
+    public boolean isShowImageComments() {
+        return getLocalBoolean("ShowImageComments", false);
+    }
+
     public boolean isShowSecondLogField() {
         return getLocalBoolean("ProcessLogShowSecondField", false);
     }
@@ -1012,6 +1031,14 @@ public class ConfigurationHelper implements Serializable {
     @Deprecated
     public boolean isUseH2DB() {
         return MySQLHelper.isUsingH2();
+    }
+
+    public boolean isUseFulltextSearch() {
+        return getLocalBoolean("useFulltextSearch", false);
+    }
+
+    public String getFulltextSearchMode() {
+        return getLocalString("FulltextSearchMode", "BOOLEAN MODE");
     }
 
     public boolean isAllowGravatar() {
@@ -1103,6 +1130,14 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("developing", false);
     }
 
+    public boolean isShowSSOLogoutPage() {
+        return getLocalBoolean("showSSOLogoutPage", false);
+    }
+
+    public String getPluginServerUrl() {
+        return getLocalString("pluginServerUrl", "");
+    }
+
     /**
      * Returns the memory size of the given unit in bytes
      * 
@@ -1156,7 +1191,7 @@ public class ConfigurationHelper implements Serializable {
             try (OutputStream out = Files.newOutputStream(fileLocal)) {
                 configLocal.save(out);
             } catch (IOException | ConfigurationException e) {
-                logger.error(e);
+                logger.error("Error saving local config: {}", e);
             }
         }
     }

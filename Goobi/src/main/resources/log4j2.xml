@@ -1,32 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
+
+	<Properties>
+		<Property name="baseDir">/opt/digiverso/logs</Property>
+	</Properties>
+
+
 	<Appenders>
-	    <!-- ******************************************************************* -->
-	    <!-- LOG File                                                                    -->
-	    <!-- ******************************************************************* -->
-	
-	    <RollingFile name="file" 
-	    	fileName="/opt/digiverso/logs/goobi.log" 
-	    	filePattern="/opt/digiverso/logs/goobi.log.%i" 
-	    	append="true">
-	    	<PatternLayout>
-	    		<Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n</Pattern>
-	    	</PatternLayout>
-	    	 <Policies>
-				<SizeBasedTriggeringPolicy size="10MB" />
+
+		<!-- ******************************************************************* -->
+		<!-- LOG File                                                            -->
+		<!-- ******************************************************************* -->
+		<RollingFile
+			name="file"
+			fileName="${baseDir}/goobi.log"
+			filePattern="${baseDir}/goobi-%d{yyyy-MM-dd}.log"
+			append="true">
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" />
 			</Policies>
-			<DefaultRolloverStrategy max="5" />
-            
-	    </RollingFile>
+			<!-- Due to the DSGVO, log outputs must be deleted after seven days because they may contain information about users -->
+			<DefaultRolloverStrategy>
+				<Delete basePath="${baseDir}">
+					<!-- Time format is ISO 8601 -->
+					<IfLastModified age="P7D" />
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
 	
-	    <!-- ******************************************************************* -->
-	    <!-- STDOUT                                                              -->
-	    <!-- ******************************************************************* -->
-	
-	    <Console name="STDOUT" target="SYSTEM_OUT">
-	    	<PatternLayout pattern="%-4r %-5p (%F:%L) - %m%n"/>
-	    </Console>
-    </Appenders>
+		<!-- ******************************************************************* -->
+		<!-- STDOUT                                                              -->
+		<!-- ******************************************************************* -->
+		<Console name="STDOUT" target="SYSTEM_OUT">
+			<PatternLayout pattern="%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %location%n        %msg%n"/>
+		</Console>
+
+	</Appenders>
 
     <!-- ******************************************************************* -->
     <!-- APPENDER                                                            -->
@@ -34,12 +46,12 @@
 	<Loggers>
        <Logger name="org.goobi.production.properties" level="error" additivity="false">
            <AppenderRef ref="file" />
-       </Logger>    
+       </Logger>
     
         <Logger name="de.sub.goobi" level="debug" additivity="false">
             <AppenderRef ref="file" level="debug"/>
             <AppenderRef ref="STDOUT" level="${env:LOG_LEVEL:-error}"/>
-        </Logger>    
+        </Logger>
 	    <Logger name="org.reflections" level="error" additivity="false">
 	        <AppenderRef ref="file" />
 	    </Logger>
@@ -69,7 +81,7 @@
         <Logger name="de.intranda.goobi" level="debug" additivity="false">
             <AppenderRef ref="file" level="debug"/>
             <AppenderRef ref="STDOUT" level="${env:LOG_LEVEL:-error}"/>
-        </Logger>	
+        </Logger>
 	
 	    <Logger name="org.quartz" level="error" additivity="false">
 	        <AppenderRef ref="file" />

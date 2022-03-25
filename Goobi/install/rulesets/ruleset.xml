@@ -3257,16 +3257,8 @@
     <allowedchildtype>audio</allowedchildtype>
     <allowedchildtype>video</allowedchildtype>
     <allowedchildtype>object</allowedchildtype>
-    <metadata num="1o">PhysicalLocation</metadata>
-    <metadata num="1o">datedigit</metadata>
-    <metadata num="1o">shelfmarksource</metadata>
-    <metadata num="1o">mediumsource</metadata>
-    <metadata num="1o">FormatSourcePrint</metadata>
     <metadata num="*">_ucc_id</metadata>
-    <metadata num="1o">shelfmarkarchiveimageset</metadata>
     <metadata num="1o">pathimagefiles</metadata>
-    <metadata num="1o">imagedescr</metadata>
-    <metadata num="1o">copyrightimageset</metadata>
     <metadata num="1o">_urn</metadata>
     <metadata num="1o">_representative</metadata>
   </DocStrctType>
@@ -3769,7 +3761,7 @@
         <conditionField/>
         <conditionValue/>
         <!-- run the regex and keep the value of $1 -->
-        <fieldReplacement/>
+        <fieldReplacement>s/[\xAC\x98\x9C]//g</fieldReplacement>
         <separateEntries>true</separateEntries>
         <separator>; </separator>
       </Metadata>
@@ -3792,6 +3784,7 @@
           <fieldInd2>any</fieldInd2>
         </field>
         <separateEntries>true</separateEntries>
+        <fieldReplacement>s/[\xAC\x98\x9C]//g</fieldReplacement>        
       </Metadata>
       <Metadata>
         <Name>TitleDocParallel</Name>
@@ -4302,7 +4295,7 @@
         <identifierReplacement>s/\(.+\)//g</identifierReplacement>
         <conditionField>4</conditionField>
         <conditionValue>/rcp/</conditionValue>
-        <separateEntries>false</separateEntries>
+        <separateEntries>true</separateEntries>
         <separator>; </separator>
       </Person>
       <Person>
@@ -4324,7 +4317,7 @@
         <identifierReplacement>s/\(.+\)//g</identifierReplacement>
         <conditionField>4</conditionField>
         <conditionValue>/ann/</conditionValue>
-        <separateEntries>false</separateEntries>
+        <separateEntries>true</separateEntries>
         <separator>; </separator>
       </Person>
       <Person>
@@ -4368,7 +4361,7 @@
         <identifierReplacement>s/\(.+\)//g</identifierReplacement>
         <conditionField>4</conditionField>
         <conditionValue>/aut/</conditionValue>
-        <separateEntries>false</separateEntries>
+        <separateEntries>true</separateEntries>
         <separator>; </separator>
       </Person>
 

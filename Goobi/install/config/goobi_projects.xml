@@ -18,14 +18,13 @@ Sequence for determining the right <project> element:
             <itemlist>
                 <item from="werk" multiselect="true">
                     Creator of digital edition
-                    <select label="Verbundzentrale des GBV (VZG)">Common Library Network</select>
+                    <select label="CHANGEME">CHANGEME</select>
 
                 </item>
-                <item from="werk" multiselect="false">
-                    Font type
-                    <select label="Antiqua">Antiqua </select>
-                    <select label="Gothic"> Gothic </select>
-                    <select label="Mixed">Mixed </select>
+                <item from="prozess" multiselect="false">
+                    FontType
+                    <select label="Antiqua"> Antiqua </select>
+                    <select label="Fracture"> Fracture </select>
                 </item>
 
                 <!-- Title for Monograph and Periodical -->
@@ -75,11 +74,11 @@ Sequence for determining the right <project> element:
                 <!-- ZVDD Anpassungen -->
                 <item docstruct="topstruct" isnotdoctype="periodical\|multivolume" metadata="_dateDigitization" multiselect="true" required="true" ughbinding="true">
                     Digitisation date
-                    <select label="2021"> 2021 </select>
+                    <select label="2022"> 2022 </select>
                 </item>
                 <item docstruct="firstchild" isdoctype="periodical\|multivolume" metadata="_dateDigitization" multiselect="true" required="true" ughbinding="true">
                     Digitisation date
-                    <select label="2021"> 2021</select>
+                    <select label="2022"> 2022</select>
                 </item>
                 <item docstruct="topstruct" isnotdoctype="periodical\|multivolume" metadata="_electronicEdition" multiselect="true" required="true" ughbinding="true">
                     Electronic ed.
@@ -91,11 +90,11 @@ Sequence for determining the right <project> element:
                 </item>
                 <item metadata="_electronicPublisher" multiselect="true" required="true" ughbinding="true">
                     Creator of digital edition
-                    <select label="Goobi"> Goobi </select>
+                    <select label="CHANGEME"> CHANGEME </select>
                 </item>
                 <item metadata="_placeOfElectronicOrigin" multiselect="true" required="true" ughbinding="true">
                     Place of digital edition
-                    <select label="Göttingen"> Göttingen </select>
+                    <select label="CHANGEME"> CHANGEME </select>
                 </item>
                 <item metadata="_digitalOrigin" multiselect="true" required="true" ughbinding="true">
                     Digital origin
@@ -103,11 +102,11 @@ Sequence for determining the right <project> element:
                 </item>
                 <item docstruct="topstruct" isnotdoctype="periodical\|multivolume" from="vorlage" metadata="PhysicalLocation" multiselect="true" required="true" ughbinding="true">
                     Physical location
-                    <select label="Goobi"> Goobi </select>
+                    <select label="CHANGEME"> CHANGEME </select>
                 </item>
                 <item docstruct="firstchild" isdoctype="periodical\|multivolume" from="vorlage" metadata="PhysicalLocation" multiselect="true" required="true" ughbinding="true">
                     Physical location
-                    <select label="Goobi"> Goobi </select>
+                    <select label="CHANGEME"> CHANGEME </select>
                 </item>
                 <processtitle isdoctype="multivolume">ATS+TSL+'_'+Identifier digital (f)+'_'+Label number</processtitle>
                 <processtitle isdoctype="monograph">ATS+TSL+'_'+Identifier digital (a)</processtitle>
@@ -123,11 +122,17 @@ Sequence for determining the right <project> element:
             <metadatageneration use="true" />
             
             <fileupload use="true">
-                <folder>intern</folder>
-                <folder>export</folder>
-                <folder>master</folder>
-                <folder>media</folder>
-            </fileupload>            
+                <!-- The regex strings must be enclosed in slashes. -->
+                <!-- Primefaces does not accept regex without slashes -->
+                <!-- and does not output an error otherwise -->
+                <!-- The messageKey parameter can be used to specify the text key of a customized error message -->
+                <!-- that is shown in the user interface if a file could not be uploaded because it did not match -->
+                <!-- to the regular expression. The messages can then be provided in the messages_xx.properties files for all languages. -->
+                <folder regex="/^.*\\.pdf$/" messageKey="uploadFileErrorIntern">intern</folder>
+                <folder regex="/^.*\\.pdf$/" messageKey="uploadFileErrorExport">export</folder>
+                <folder regex="/^.*\\.pdf$/" messageKey="uploadFileErrorMaster">master</folder>
+                <folder regex="/^.*\\.pdf$/" messageKey="uploadFileErrorMedia">media</folder>
+            </fileupload>
         </createNewProcess>
 
 

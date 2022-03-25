@@ -14,10 +14,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 @Data
-@RequiredArgsConstructor
 @XmlRootElement
 @NoArgsConstructor
 public class Definition {
@@ -41,22 +39,34 @@ public class Definition {
     private String validation;
 
     // define if the field is required
-    @NonNull
+
     private boolean required;
 
     // define if the field is the main entry
-    @NonNull
+
     private boolean mainEntry;
 
     // define if the field value must be unique within the vocabulary
-    @NonNull
+
     private boolean distinctive;
 
-    @NonNull
     private boolean titleField;
 
     // possible values to select
     private List<String> selecteableValues;
+
+    public Definition(String label, String language, String type, String validation, boolean required, boolean mainEntry, boolean distinctive,
+            boolean titleField) {
+        this.label = label;
+        this.language = language;
+        this.type = type;
+        this.validation = validation;
+        this.required = required;
+        this.mainEntry = mainEntry;
+        this.distinctive = distinctive;
+        this.titleField = titleField;
+
+    }
 
     @JsonIgnore
     public String getSelection() {
@@ -75,14 +85,14 @@ public class Definition {
 
     @JsonIgnore
     public void setSelection(String value) {
-        if (StringUtils.isNotBlank(value )) {
+        if (StringUtils.isNotBlank(value)) {
             selecteableValues = Arrays.asList(value.split("\\|"));
         } else {
             selecteableValues = null;
         }
 
-
     }
+
     @JsonIgnore
     public List<SelectItem> getSelectList() {
         List<SelectItem> list = new ArrayList<>();
@@ -94,7 +104,7 @@ public class Definition {
 
     @JsonIgnore
     public String getIdAsString() {
-        if (id==null) {
+        if (id == null) {
             return "";
         }
         return String.valueOf(id);

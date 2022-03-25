@@ -13,9 +13,7 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 
 import de.sub.goobi.helper.Helper;
-import lombok.extern.log4j.Log4j2;
 
-@Log4j2
 public class RestConfig {
 
     private static XMLConfiguration config = null;

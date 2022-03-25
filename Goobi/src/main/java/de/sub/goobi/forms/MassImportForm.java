@@ -38,7 +38,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -48,6 +47,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
@@ -86,7 +86,7 @@ import lombok.extern.log4j.Log4j2;
 import ugh.dl.Prefs;
 
 @Named("MassImportForm")
-@SessionScoped
+@WindowScoped
 @Log4j2
 public class MassImportForm implements Serializable {
     /**
@@ -195,6 +195,12 @@ public class MassImportForm implements Serializable {
             }
             return "";
         }
+        if (this.template.getProjekt().getProjectIsArchived()) {
+            
+            Helper.setFehlerMeldung("projectIsArchived");    
+            return "";
+        }
+        
         uploadedFile = null;
 
         initializePossibleDigitalCollections();
@@ -646,11 +652,11 @@ public class MassImportForm implements Serializable {
         this.currentPlugin = currentPlugin;
         if (currentPlugin != null && currentPlugin.length() > 0) {
             this.plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, this.currentPlugin);
+            plugin.setForm(this);
             if (this.plugin.getImportTypes().contains(ImportType.FOLDER)) {
                 this.allFilenames = this.plugin.getAllFilenames();
             }
             plugin.setPrefs(template.getRegelsatz().getPreferences());
-            plugin.setForm(this);
         }
     }
 

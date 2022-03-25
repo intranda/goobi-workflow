@@ -23,6 +23,7 @@ import spark.Service;
 import spark.route.ServletRoutes;
 import spark.servlet.SparkApplication;
 
+@SuppressWarnings("deprecation")
 @Log4j2
 public class SparkListener implements SparkApplication {
     private Path staticFilesLocation = Paths.get(ConfigurationHelper.getInstance().getGoobiFolder() + "/static_assets/");

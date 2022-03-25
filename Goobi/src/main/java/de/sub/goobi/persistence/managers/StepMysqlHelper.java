@@ -105,7 +105,9 @@ class StepMysqlHelper implements Serializable {
             if (logger.isTraceEnabled()) {
                 logger.trace(sql.toString());
             }
-            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
+
+            int val = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
+            return val;
 
         } finally {
             if (connection != null) {
@@ -169,6 +171,26 @@ class StepMysqlHelper implements Serializable {
 
     };
 
+    public static ResultSetHandler<List<Step>> resultSetIdsToStepListHandler = new ResultSetHandler<List<Step>>() {
+
+        @Override
+        public List<Step> handle(ResultSet rs) throws SQLException {
+            List<Step> answer = new ArrayList<>();
+            try {
+                while (rs.next()) {
+                    Integer id = rs.getInt("schritteID");
+                    answer.add(getStepById(id));
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            return answer;
+        }
+
+    };
+
     private static void checkBatchStatus(List<Step> stepList) {
         List<StringPair> batchChecks = new ArrayList<>();
         for (Step step : stepList) {
@@ -210,7 +232,9 @@ class StepMysqlHelper implements Serializable {
             }
             sb.append(whereClause.toString());
             //TODO activate this line only if sql_mode only_full_group_by is active
-            // sb.append("group by prozesse.batchID, schritte.titel ");
+            if (MySQLHelper.isUsingH2()) {
+                sb.append("group by prozesse.batchID, schritte.titel ");
+            }
             List<Object[]> rawData = ControllingManager.getResultsAsObjectList(sb.toString());
             for (Object[] row : rawData) {
                 int numberOfProcesses = Integer.parseInt((String) row[0]);
@@ -271,6 +295,8 @@ class StepMysqlHelper implements Serializable {
         s.setHomeverzeichnisNutzen(rs.getShort("homeverzeichnisNutzen"));
         s.setTypMetadaten(rs.getBoolean("typMetadaten"));
         s.setTypAutomatisch(rs.getBoolean("typAutomatisch"));
+        s.setTypAutomaticThumbnail(rs.getBoolean("typAutomaticThumbnail"));
+        s.setAutomaticThumbnailSettingsYaml(rs.getString("automaticThumbnailSettingsYaml"));
         s.setTypImportFileUpload(rs.getBoolean("typImportFileUpload"));
         s.setTypExportRus(rs.getBoolean("typExportRus"));
         s.setTypImagesLesen(rs.getBoolean("typImagesLesen"));
@@ -606,44 +632,46 @@ class StepMysqlHelper implements Serializable {
                     o.getReihenfolge(), //Reihenfolge
                     o.getBearbeitungsstatusAsString(), //Bearbeitungsstatus
                     o.getBearbeitungszeitpunkt() == null ? null : new Timestamp(o.getBearbeitungszeitpunkt().getTime()), // BearbeitungsZeitpunkt
-                    o.getBearbeitungsbeginn() == null ? null : new Timestamp(o.getBearbeitungsbeginn().getTime()), // BearbeitungsBeginn
-                    o.getBearbeitungsende() == null ? null : new Timestamp(o.getBearbeitungsende().getTime()), // BearbeitungsEnde
-                    o.getHomeverzeichnisNutzen(), // homeverzeichnisNutzen
-                    o.isTypMetadaten(), // typMetadaten
-                    o.isTypAutomatisch(), // typAutomatisch
-                    o.isTypImportFileUpload(), // typImportFileUpload
-                    o.isTypExportRus(), //typExportRus
-                    o.isTypImagesLesen(), //typImagesLesen
-                    o.isTypImagesSchreiben(), // typImagesSchreiben
-                    o.isTypExportDMS(), // typExportDMS
-                    o.isTypBeimAnnehmenModul(), // typBeimAnnehmenModul
-                    o.isTypBeimAnnehmenAbschliessen(), // typBeimAnnehmenAbschliessen
-                    o.isTypBeimAnnehmenModulUndAbschliessen(), // typBeimAnnehmenModulUndAbschliessen
-                    (o.getTypAutomatischScriptpfad() == null || o.getTypAutomatischScriptpfad().equals("")) ? null : o.getTypAutomatischScriptpfad(), // typAutomatischScriptpfad
-                    o.isTypBeimAbschliessenVerifizieren(), // typBeimAbschliessenVerifizieren
-                    (o.getTypModulName() == null || o.getTypModulName().equals("")) ? null : o.getTypModulName(), // typModulName
-                    o.getUserId() == null ? null : o.getUserId(), //BearbeitungsBenutzerID
-                    o.getProcessId() == null ? null : o.getProcessId(), //ProzesseID
-                    o.getEditTypeEnum().getValue(), //edittype
-                    o.getTypScriptStep(), //typScriptStep
-                    (o.getScriptname1() == null || o.getScriptname1().equals("")) ? null : o.getScriptname1(), //scriptName1
-                    (o.getScriptname2() == null || o.getScriptname2().equals("")) ? null : o.getScriptname2(), //scriptName2
-                    (o.getTypAutomatischScriptpfad2() == null || o.getTypAutomatischScriptpfad2().equals("")) ? null
-                            : o.getTypAutomatischScriptpfad2(), //typAutomatischScriptpfad2
-                    (o.getScriptname3() == null || o.getScriptname3().equals("")) ? null : o.getScriptname3(), //scriptName3
-                    (o.getTypAutomatischScriptpfad3() == null || o.getTypAutomatischScriptpfad3().equals("")) ? null
-                            : o.getTypAutomatischScriptpfad3(), //typAutomatischScriptpfad3
-                    (o.getScriptname4() == null || o.getScriptname4().equals("")) ? null : o.getScriptname4(), //scriptName4
-                    (o.getTypAutomatischScriptpfad4() == null || o.getTypAutomatischScriptpfad4().equals("")) ? null
-                            : o.getTypAutomatischScriptpfad4(), //typAutomatischScriptpfad4
-                    (o.getScriptname5() == null || o.getScriptname5().equals("")) ? null : o.getScriptname5(), //scriptName5
-                    (o.getTypAutomatischScriptpfad5() == null || o.getTypAutomatischScriptpfad5().equals("")) ? null
-                            : o.getTypAutomatischScriptpfad5(), //typAutomatischScriptpfad5
-                    o.getBatchStep(), //batchStep
-                    (o.getStepPlugin() == null || o.getStepPlugin().equals("")) ? null : o.getStepPlugin(), // stepPlugin
-                    (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin(), //validationPlugin
-                    (o.isDelayStep()), (o.isUpdateMetadataIndex()), o.isGenerateDocket(), o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(),
-                    o.getHttpJsonBody(), o.isHttpCloseStep(), o.isHttpEscapeBodyJson(), o.getMessageQueue().toString() }; //httpStep
+                            o.getBearbeitungsbeginn() == null ? null : new Timestamp(o.getBearbeitungsbeginn().getTime()), // BearbeitungsBeginn
+                                    o.getBearbeitungsende() == null ? null : new Timestamp(o.getBearbeitungsende().getTime()), // BearbeitungsEnde
+                                            o.getHomeverzeichnisNutzen(), // homeverzeichnisNutzen
+                                            o.isTypMetadaten(), // typMetadaten
+                                            o.isTypAutomatisch(), // typAutomatisch
+                                            o.isTypAutomaticThumbnail(), // typAutomaticThumbnail
+                                            o.getAutomaticThumbnailSettingsYaml(), //automaticThumbnailSettingsYaml
+                                            o.isTypImportFileUpload(), // typImportFileUpload
+                                            o.isTypExportRus(), //typExportRus
+                                            o.isTypImagesLesen(), //typImagesLesen
+                                            o.isTypImagesSchreiben(), // typImagesSchreiben
+                                            o.isTypExportDMS(), // typExportDMS
+                                            o.isTypBeimAnnehmenModul(), // typBeimAnnehmenModul
+                                            o.isTypBeimAnnehmenAbschliessen(), // typBeimAnnehmenAbschliessen
+                                            o.isTypBeimAnnehmenModulUndAbschliessen(), // typBeimAnnehmenModulUndAbschliessen
+                                            (o.getTypAutomatischScriptpfad() == null || o.getTypAutomatischScriptpfad().equals("")) ? null : o.getTypAutomatischScriptpfad(), // typAutomatischScriptpfad
+                                                    o.isTypBeimAbschliessenVerifizieren(), // typBeimAbschliessenVerifizieren
+                                                    (o.getTypModulName() == null || o.getTypModulName().equals("")) ? null : o.getTypModulName(), // typModulName
+                                                            o.getUserId() == null ? null : o.getUserId(), //BearbeitungsBenutzerID
+                                                                    o.getProcessId() == null ? null : o.getProcessId(), //ProzesseID
+                                                                            o.getEditTypeEnum().getValue(), //edittype
+                                                                            o.isTypScriptStep(), //typScriptStep
+                                                                            (o.getScriptname1() == null || o.getScriptname1().equals("")) ? null : o.getScriptname1(), //scriptName1
+                                                                                    (o.getScriptname2() == null || o.getScriptname2().equals("")) ? null : o.getScriptname2(), //scriptName2
+                                                                                            (o.getTypAutomatischScriptpfad2() == null || o.getTypAutomatischScriptpfad2().equals("")) ? null
+                                                                                                    : o.getTypAutomatischScriptpfad2(), //typAutomatischScriptpfad2
+                                                                                                    (o.getScriptname3() == null || o.getScriptname3().equals("")) ? null : o.getScriptname3(), //scriptName3
+                                                                                                            (o.getTypAutomatischScriptpfad3() == null || o.getTypAutomatischScriptpfad3().equals("")) ? null
+                                                                                                                    : o.getTypAutomatischScriptpfad3(), //typAutomatischScriptpfad3
+                                                                                                                    (o.getScriptname4() == null || o.getScriptname4().equals("")) ? null : o.getScriptname4(), //scriptName4
+                                                                                                                            (o.getTypAutomatischScriptpfad4() == null || o.getTypAutomatischScriptpfad4().equals("")) ? null
+                                                                                                                                    : o.getTypAutomatischScriptpfad4(), //typAutomatischScriptpfad4
+                                                                                                                                    (o.getScriptname5() == null || o.getScriptname5().equals("")) ? null : o.getScriptname5(), //scriptName5
+                                                                                                                                            (o.getTypAutomatischScriptpfad5() == null || o.getTypAutomatischScriptpfad5().equals("")) ? null
+                                                                                                                                                    : o.getTypAutomatischScriptpfad5(), //typAutomatischScriptpfad5
+                                                                                                                                                    o.getBatchStep(), //batchStep
+                                                                                                                                                    (o.getStepPlugin() == null || o.getStepPlugin().equals("")) ? null : o.getStepPlugin(), // stepPlugin
+                                                                                                                                                            (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin(), //validationPlugin
+                                                                                                                                                                    (o.isDelayStep()), (o.isUpdateMetadataIndex()), o.isGenerateDocket(), o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(),
+                                                                                                                                                                    o.getHttpJsonBody(), o.isHttpCloseStep(), o.isHttpEscapeBodyJson(), o.getMessageQueue().toString() }; //httpStep
             return param;
         } else {
             Object[] param = { o.getTitel(), //Titel
@@ -651,54 +679,56 @@ class StepMysqlHelper implements Serializable {
                     o.getReihenfolge(), //Reihenfolge
                     o.getBearbeitungsstatusAsString(), //Bearbeitungsstatus
                     o.getBearbeitungszeitpunkt() == null ? null : new Timestamp(o.getBearbeitungszeitpunkt().getTime()), // BearbeitungsZeitpunkt
-                    o.getBearbeitungsbeginn() == null ? null : new Timestamp(o.getBearbeitungsbeginn().getTime()), // BearbeitungsBeginn
-                    o.getBearbeitungsende() == null ? null : new Timestamp(o.getBearbeitungsende().getTime()), // BearbeitungsEnde
-                    o.getHomeverzeichnisNutzen(), // homeverzeichnisNutzen
-                    o.isTypMetadaten(), // typMetadaten
-                    o.isTypAutomatisch(), // typAutomatisch
-                    o.isTypImportFileUpload(), // typImportFileUpload
-                    o.isTypExportRus(), //typExportRus
-                    o.isTypImagesLesen(), //typImagesLesen
-                    o.isTypImagesSchreiben(), // typImagesSchreiben
-                    o.isTypExportDMS(), // typExportDMS
-                    o.isTypBeimAnnehmenModul(), // typBeimAnnehmenModul
-                    o.isTypBeimAnnehmenAbschliessen(), // typBeimAnnehmenAbschliessen
-                    o.isTypBeimAnnehmenModulUndAbschliessen(), // typBeimAnnehmenModulUndAbschliessen
-                    (o.getTypAutomatischScriptpfad() == null || o.getTypAutomatischScriptpfad().equals("")) ? null : o.getTypAutomatischScriptpfad(), // typAutomatischScriptpfad
-                    o.isTypBeimAbschliessenVerifizieren(), // typBeimAbschliessenVerifizieren
-                    (o.getTypModulName() == null || o.getTypModulName().equals("")) ? null : o.getTypModulName(), // typModulName
-                    o.getUserId() == null ? null : o.getUserId(), //BearbeitungsBenutzerID
-                    o.getProcessId() == null ? null : o.getProcessId(), //ProzesseID
-                    o.getEditTypeEnum().getValue(), //edittype
-                    o.getTypScriptStep(), //typScriptStep
-                    (o.getScriptname1() == null || o.getScriptname1().equals("")) ? null : o.getScriptname1(), //scriptName1
-                    (o.getScriptname2() == null || o.getScriptname2().equals("")) ? null : o.getScriptname2(), //scriptName2
-                    (o.getTypAutomatischScriptpfad2() == null || o.getTypAutomatischScriptpfad2().equals("")) ? null
-                            : o.getTypAutomatischScriptpfad2(), //typAutomatischScriptpfad2
-                    (o.getScriptname3() == null || o.getScriptname3().equals("")) ? null : o.getScriptname3(), //scriptName3
-                    (o.getTypAutomatischScriptpfad3() == null || o.getTypAutomatischScriptpfad3().equals("")) ? null
-                            : o.getTypAutomatischScriptpfad3(), //typAutomatischScriptpfad3
-                    (o.getScriptname4() == null || o.getScriptname4().equals("")) ? null : o.getScriptname4(), //scriptName4
-                    (o.getTypAutomatischScriptpfad4() == null || o.getTypAutomatischScriptpfad4().equals("")) ? null
-                            : o.getTypAutomatischScriptpfad4(), //typAutomatischScriptpfad4
-                    (o.getScriptname5() == null || o.getScriptname5().equals("")) ? null : o.getScriptname5(), //scriptName5
-                    (o.getTypAutomatischScriptpfad5() == null || o.getTypAutomatischScriptpfad5().equals("")) ? null
-                            : o.getTypAutomatischScriptpfad5(), //typAutomatischScriptpfad5
-                    o.getBatchStep(), //batchStep
-                    (o.getStepPlugin() == null || o.getStepPlugin().equals("")) ? null : o.getStepPlugin(), // stepPlugin
-                    (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin(), //validationPlugin
-                    (o.isDelayStep()), (o.isUpdateMetadataIndex()), o.isGenerateDocket(), o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(),
-                    o.getHttpJsonBody(), o.isHttpCloseStep(), o.isHttpEscapeBodyJson(),
-                    o.getMessageQueue() == null ? QueueType.NONE.toString() : o.getMessageQueue().toString() }; //httpStep
+                            o.getBearbeitungsbeginn() == null ? null : new Timestamp(o.getBearbeitungsbeginn().getTime()), // BearbeitungsBeginn
+                                    o.getBearbeitungsende() == null ? null : new Timestamp(o.getBearbeitungsende().getTime()), // BearbeitungsEnde
+                                            o.getHomeverzeichnisNutzen(), // homeverzeichnisNutzen
+                                            o.isTypMetadaten(), // typMetadaten
+                                            o.isTypAutomatisch(), // typAutomatisch
+                                            o.isTypAutomaticThumbnail(), // typAutomaticThumbnail
+                                            o.getAutomaticThumbnailSettingsYaml(), //automaticThumbnailSettingsYaml
+                                            o.isTypImportFileUpload(), // typImportFileUpload
+                                            o.isTypExportRus(), //typExportRus
+                                            o.isTypImagesLesen(), //typImagesLesen
+                                            o.isTypImagesSchreiben(), // typImagesSchreiben
+                                            o.isTypExportDMS(), // typExportDMS
+                                            o.isTypBeimAnnehmenModul(), // typBeimAnnehmenModul
+                                            o.isTypBeimAnnehmenAbschliessen(), // typBeimAnnehmenAbschliessen
+                                            o.isTypBeimAnnehmenModulUndAbschliessen(), // typBeimAnnehmenModulUndAbschliessen
+                                            (o.getTypAutomatischScriptpfad() == null || o.getTypAutomatischScriptpfad().equals("")) ? null : o.getTypAutomatischScriptpfad(), // typAutomatischScriptpfad
+                                                    o.isTypBeimAbschliessenVerifizieren(), // typBeimAbschliessenVerifizieren
+                                                    (o.getTypModulName() == null || o.getTypModulName().equals("")) ? null : o.getTypModulName(), // typModulName
+                                                            o.getUserId() == null ? null : o.getUserId(), //BearbeitungsBenutzerID
+                                                                    o.getProcessId() == null ? null : o.getProcessId(), //ProzesseID
+                                                                            o.getEditTypeEnum().getValue(), //edittype
+                                                                            o.isTypScriptStep(), //typScriptStep
+                                                                            (o.getScriptname1() == null || o.getScriptname1().equals("")) ? null : o.getScriptname1(), //scriptName1
+                                                                                    (o.getScriptname2() == null || o.getScriptname2().equals("")) ? null : o.getScriptname2(), //scriptName2
+                                                                                            (o.getTypAutomatischScriptpfad2() == null || o.getTypAutomatischScriptpfad2().equals("")) ? null
+                                                                                                    : o.getTypAutomatischScriptpfad2(), //typAutomatischScriptpfad2
+                                                                                                    (o.getScriptname3() == null || o.getScriptname3().equals("")) ? null : o.getScriptname3(), //scriptName3
+                                                                                                            (o.getTypAutomatischScriptpfad3() == null || o.getTypAutomatischScriptpfad3().equals("")) ? null
+                                                                                                                    : o.getTypAutomatischScriptpfad3(), //typAutomatischScriptpfad3
+                                                                                                                    (o.getScriptname4() == null || o.getScriptname4().equals("")) ? null : o.getScriptname4(), //scriptName4
+                                                                                                                            (o.getTypAutomatischScriptpfad4() == null || o.getTypAutomatischScriptpfad4().equals("")) ? null
+                                                                                                                                    : o.getTypAutomatischScriptpfad4(), //typAutomatischScriptpfad4
+                                                                                                                                    (o.getScriptname5() == null || o.getScriptname5().equals("")) ? null : o.getScriptname5(), //scriptName5
+                                                                                                                                            (o.getTypAutomatischScriptpfad5() == null || o.getTypAutomatischScriptpfad5().equals("")) ? null
+                                                                                                                                                    : o.getTypAutomatischScriptpfad5(), //typAutomatischScriptpfad5
+                                                                                                                                                    o.getBatchStep(), //batchStep
+                                                                                                                                                    (o.getStepPlugin() == null || o.getStepPlugin().equals("")) ? null : o.getStepPlugin(), // stepPlugin
+                                                                                                                                                            (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin(), //validationPlugin
+                                                                                                                                                                    (o.isDelayStep()), (o.isUpdateMetadataIndex()), o.isGenerateDocket(), o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(),
+                                                                                                                                                                    o.getHttpJsonBody(), o.isHttpCloseStep(), o.isHttpEscapeBodyJson(),
+                                                                                                                                                                    o.getMessageQueue() == null ? QueueType.NONE.toString() : o.getMessageQueue().toString() }; //httpStep
             return param;
         }
     }
 
     private static String generateValueQuery(boolean includeID) {
         if (!includeID) {
-            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         } else {
-            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
 
     }
@@ -709,7 +739,7 @@ class StepMysqlHelper implements Serializable {
             answer += " SchritteID, ";
         }
         answer += "Titel, Prioritaet, Reihenfolge, Bearbeitungsstatus, BearbeitungsZeitpunkt, BearbeitungsBeginn, BearbeitungsEnde, "
-                + "homeverzeichnisNutzen, typMetadaten, typAutomatisch, typImportFileUpload, typExportRus, typImagesLesen, typImagesSchreiben, "
+                + "homeverzeichnisNutzen, typMetadaten, typAutomatisch, typAutomaticThumbnail, automaticThumbnailSettingsYaml, typImportFileUpload, typExportRus, typImagesLesen, typImagesSchreiben, "
                 + "typExportDMS, typBeimAnnehmenModul, typBeimAnnehmenAbschliessen, typBeimAnnehmenModulUndAbschliessen, typAutomatischScriptpfad, "
                 + "typBeimAbschliessenVerifizieren, typModulName, BearbeitungsBenutzerID, ProzesseID, edittype, typScriptStep, scriptName1, "
                 + "scriptName2, typAutomatischScriptpfad2, scriptName3, typAutomatischScriptpfad3, scriptName4, typAutomatischScriptpfad4, "
@@ -731,6 +761,8 @@ class StepMysqlHelper implements Serializable {
         sql.append(" homeverzeichnisNutzen = ?,");
         sql.append(" typMetadaten = ?,");
         sql.append(" typAutomatisch = ?,");
+        sql.append(" typAutomaticThumbnail = ?,");
+        sql.append(" automaticThumbnailSettingsYaml = ?,");
         sql.append(" typImportFileUpload = ?,");
         sql.append(" typExportRus = ?,");
         sql.append(" typImagesLesen = ?,");
@@ -815,6 +847,8 @@ class StepMysqlHelper implements Serializable {
         joinQuery.append(" homeverzeichnisNutzen = " + tablename + ".homeverzeichnisNutzen,");
         joinQuery.append(" typMetadaten = " + tablename + ".typMetadaten,");
         joinQuery.append(" typAutomatisch = " + tablename + ".typAutomatisch,");
+        joinQuery.append(" typAutomaticThumbnail = " + tablename + ".typAutomaticThumbnail,");
+        joinQuery.append(" automaticThumbnailSettingsYaml = " + tablename + ".automaticThumbnailSettingsYaml");
         joinQuery.append(" typImportFileUpload = " + tablename + ".typImportFileUpload,");
         joinQuery.append(" typExportRus = " + tablename + ".typExportRus,");
         joinQuery.append(" typImagesLesen = " + tablename + ".typImagesLesen,");
@@ -1099,6 +1133,22 @@ class StepMysqlHelper implements Serializable {
         }
     }
 
+    public static void removeUserFromAllSteps(User user) throws SQLException {
+        if (user.getId() != null) {
+            Connection connection = null;
+            try {
+                connection = MySQLHelper.getInstance().getConnection();
+                String sql = "DELETE FROM schritteberechtigtebenutzer WHERE BenutzerID = "+ user.getId();
+
+                new QueryRunner().update(connection, sql);
+            } finally {
+                if (connection != null) {
+                    MySQLHelper.closeConnection(connection);
+                }
+            }
+        }
+    }
+
     public static List<String> getScriptsForStep(int stepId) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -1269,6 +1319,16 @@ class StepMysqlHelper implements Serializable {
         try (Connection connection = MySQLHelper.getInstance().getConnection()) {
             QueryRunner run = new QueryRunner();
             return run.query(connection, sql.toString(), resultSetToStepListHandler, restartStepnames.toArray());
+        }
+    }
+
+    public static List<Step> getUserSchritte(User user) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM schritteberechtigtebenutzer WHERE BenutzerID=" + user.getId());
+
+        try (Connection connection = MySQLHelper.getInstance().getConnection()) {
+            QueryRunner run = new QueryRunner();
+            return run.query(connection, sql.toString(), resultSetIdsToStepListHandler);
         }
     }
 

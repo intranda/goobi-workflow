@@ -10,6 +10,7 @@ import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.VariableReplacer;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
@@ -126,9 +127,16 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
 
             // check if values shall be ignored
             boolean ignoreValue = getParameterAsBoolean("ignoreValue");
-
+            
+            // get the content to be set and pipe it through the variable replacer
+            VariableReplacer replacer = new VariableReplacer(ff.getDigitalDocument(), p.getRegelsatz().getPreferences(), p, null);
+            String field = parameters.get("field");
+            String value = parameters.get("value");
+            field = replacer.replace(field);
+            value = replacer.replace(value);
+            
             // now find the metadata field to delete
-            deleteMetadata(dsList, parameters.get("field"), parameters.get("value"), ignoreValue, p.getRegelsatz().getPreferences());
+            deleteMetadata(dsList, field, value, ignoreValue, p.getRegelsatz().getPreferences());
             p.writeMetadataFile(ff);
             Thread.sleep(2000);
             Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,

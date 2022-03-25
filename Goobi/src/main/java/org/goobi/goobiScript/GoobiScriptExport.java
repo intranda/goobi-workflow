@@ -63,43 +63,50 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
             gsr.setResultType(GoobiScriptResultType.RUNNING);
             gsr.updateTimestamp();
 
-            IExportPlugin export = null;
-            String pluginName = ProcessManager.getExportPluginName(p.getId());
-            if (StringUtils.isNotEmpty(pluginName)) {
-                try {
-                    export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
-                } catch (Exception e) {
-                    log.error("Can't load export plugin, use default plugin", e);
+            if(!p.getContainsExportStep()) {
+                log.error("No task with type Export found in process " + p.getId());
+                gsr.setResultMessage(Helper.getString(Helper.getSessionLocale(), "noExportTaskError"));
+                gsr.setResultType(GoobiScriptResultType.ERROR);
+                return;
+            }else {
+                IExportPlugin export = null;
+                String pluginName = ProcessManager.getExportPluginName(p.getId());
+                if (StringUtils.isNotEmpty(pluginName)) {
+                    try {
+                        export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+                    } catch (Exception e) {
+                        log.error("Can't load export plugin, use default export", e);
+                        export = new ExportDms();
+                    }
+                }
+                String logextension = "without ocr results";
+                if (exportFulltext) {
+                    logextension = "including ocr results";
+                }
+                if (export == null) {
                     export = new ExportDms();
                 }
-            }
-            String logextension = "without ocr results";
-            if (exportFulltext) {
-                logextension = "including ocr results";
-            }
-            if (export == null) {
-                export = new ExportDms();
-            }
-            export.setExportFulltext(exportFulltext);
-            if (exportImages == false) {
-                logextension = "without images and " + logextension;
-                export.setExportImages(false);
-            } else {
-                logextension = "including images and " + logextension;
-                export.setExportImages(true);
-            }
+                export.setExportFulltext(exportFulltext);
+                if (exportImages == false) {
+                    logextension = "without images and " + logextension;
+                    export.setExportImages(false);
+                } else {
+                    logextension = "including images and " + logextension;
+                    export.setExportImages(true);
+                }
 
-            boolean success = export.startExport(p);
-            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Export " + logextension + " using GoobiScript.", username);
-            log.info("Export " + logextension + " using GoobiScript for process with ID " + p.getId());
+                boolean success = export.startExport(p);
+                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Export " + logextension + " using GoobiScript.", username);
+                log.info("Export " + logextension + " using GoobiScript for process with ID " + p.getId());
 
-            // set status to result of command
-            if (!success) {
-                gsr.setResultMessage("Errors occurred: " + export.getProblems().toString());
-                gsr.setResultType(GoobiScriptResultType.ERROR);
-            } else {
-                gsr.setResultMessage("Export done successfully");
-                gsr.setResultType(GoobiScriptResultType.OK);
+                // set status to result of command
+                if (!success) {
+                    gsr.setResultMessage("Errors occurred: " + export.getProblems().toString());
+                    gsr.setResultType(GoobiScriptResultType.ERROR);
+                } else {
+                    gsr.setResultMessage("Export done successfully");
+                    gsr.setResultType(GoobiScriptResultType.OK);
+                }
             }
         } catch (NoSuchMethodError | Exception e) {
             gsr.setResultMessage(e.getMessage());
@@ -108,5 +115,6 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
             log.error("Exception during the export of process " + p.getId(), e);
         }
         gsr.updateTimestamp();
+
     }
 }
