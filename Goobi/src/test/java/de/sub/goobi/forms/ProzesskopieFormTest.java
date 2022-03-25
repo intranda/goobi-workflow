@@ -54,6 +54,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
@@ -69,7 +70,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 @RunWith(PowerMockRunner.class)
 
 @PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class,
-    HistoryAnalyserJob.class, StepManager.class })
+    HistoryAnalyserJob.class, StepManager.class, Helper.class })
 public class ProzesskopieFormTest extends AbstractTest {
 
     private Process template;
@@ -417,6 +418,20 @@ public class ProzesskopieFormTest extends AbstractTest {
         //        FilesystemHelper.createDirectory(EasyMock.anyString());
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(null);
         //        EasyMock.expectLastCall().anyTimes();
+
+
+        PowerMock.mockStatic(Helper.class);
+        EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
+        EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
+        Helper.setFehlerMeldung(EasyMock.anyString());
+        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyObject(Exception.class));
+        //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+        EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("").anyTimes();
+        EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString())).andReturn("").anyTimes();
+        EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString())).andReturn("").anyTimes();
+
+        PowerMock.replay(Helper.class);
+
         PowerMock.replay(ProcessManager.class);
         PowerMock.replay(MetadataManager.class);
         PowerMock.replay(HistoryAnalyserJob.class);

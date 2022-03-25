@@ -68,11 +68,12 @@ import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.mock.MockUploadedFile;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ JobCreation.class, FacesContext.class, ExternalContext.class })
+@PrepareForTest({ JobCreation.class, FacesContext.class, ExternalContext.class , Helper.class})
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
 public class MassImportFormTest extends AbstractTest {
 
@@ -160,6 +161,15 @@ public class MassImportFormTest extends AbstractTest {
         facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
         facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
         facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
+
+        PowerMock.mockStatic(Helper.class);
+        EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("").anyTimes();
+        EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString())).andReturn("").anyTimes();
+        EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString())).andReturn("").anyTimes();
+        Helper.setFehlerMeldung(EasyMock.anyString());
+
+        EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
+        PowerMock.replay(Helper.class);
 
         EasyMock.replay(root);
         EasyMock.replay(application);
