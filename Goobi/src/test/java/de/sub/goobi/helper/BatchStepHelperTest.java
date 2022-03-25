@@ -50,7 +50,7 @@ import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ PropertyManager.class, MetadataManager.class})
+@PrepareForTest({ PropertyManager.class, MetadataManager.class, Helper.class})
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
 public class BatchStepHelperTest extends AbstractTest {
 
@@ -268,5 +268,11 @@ public class BatchStepHelperTest extends AbstractTest {
         PowerMock.replay(MetadataManager.class);
         PowerMock.replay(PropertyManager.class);
 
+        PowerMock.mockStatic(Helper.class);
+        EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
+        EasyMock.expect( Helper.getBeanByClass(EasyMock.anyObject())).andReturn(null).anyTimes();
+        Helper.setMeldung(EasyMock.anyString());
+        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+        PowerMock.replay(Helper.class);
     }
 }

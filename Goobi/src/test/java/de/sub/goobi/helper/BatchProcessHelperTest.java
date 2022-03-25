@@ -49,7 +49,7 @@ import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ PropertyManager.class, MetadataManager.class })
+@PrepareForTest({ PropertyManager.class, MetadataManager.class, Helper.class })
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
 public class BatchProcessHelperTest extends AbstractTest {
 
@@ -290,6 +290,13 @@ public class BatchProcessHelperTest extends AbstractTest {
 
         PowerMock.mockStatic(MetadataManager.class);
         EasyMock.expect(MetadataManager.getAllMetadataValues(EasyMock.anyInt(), EasyMock.anyString())).andReturn(new ArrayList<>()).anyTimes();
+
+        PowerMock.mockStatic(Helper.class);
+        EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
+        EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
+        Helper.setMeldung(EasyMock.anyString());
+        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+        PowerMock.replay(Helper.class);
 
         PowerMock.replay(MetadataManager.class);
         PowerMock.replay(PropertyManager.class);
