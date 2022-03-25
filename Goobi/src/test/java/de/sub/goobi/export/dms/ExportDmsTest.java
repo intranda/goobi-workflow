@@ -42,6 +42,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
@@ -59,8 +60,8 @@ import ugh.fileformats.mets.MetsMods;
 import ugh.fileformats.mets.MetsModsImportExport;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(MetadatenHelper.class)
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
+@PrepareForTest({MetadatenHelper.class, Helper.class})
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*", "javax.crypto.*"})
 public class ExportDmsTest {
 
     private Process testProcess = null;
@@ -84,6 +85,23 @@ public class ExportDmsTest {
         EasyMock.expect(MetadatenHelper.getFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class))).andReturn(new MetsMods(testProcess.getRegelsatz().getPreferences())).anyTimes();
         EasyMock.expect(MetadatenHelper.getExportFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class))).andReturn(new MetsModsImportExport(testProcess.getRegelsatz().getPreferences())).anyTimes();
         PowerMock.replay(MetadatenHelper.class);
+
+        PowerMock.mockStatic(Helper.class);
+        EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("").anyTimes();
+        EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
+        EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
+        EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
+        Helper.setFehlerMeldung(EasyMock.anyString());
+        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
+        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
+        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
+        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
+        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+
+        PowerMock.replay(Helper.class);
+
     }
 
     @Test

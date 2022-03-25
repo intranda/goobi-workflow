@@ -40,6 +40,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.mock.MockProcess;
@@ -48,7 +49,7 @@ import ugh.fileformats.mets.MetsModsImportExport;
 
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({MetadatenHelper.class, JwtHelper.class})
+@PrepareForTest({MetadatenHelper.class, JwtHelper.class, Helper.class})
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
 public class ExportMetsTest extends AbstractTest {
 
@@ -78,6 +79,15 @@ public class ExportMetsTest extends AbstractTest {
         PowerMock.mockStatic(JwtHelper.class);
         EasyMock.expect(JwtHelper.createApiToken(EasyMock.anyString(), EasyMock.anyObject())).andReturn("12356").anyTimes();
         PowerMock.replay(JwtHelper.class);
+
+        PowerMock.mockStatic(Helper.class);
+
+        EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
+        EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString())).andReturn("").anyTimes();
+        Helper.setFehlerMeldung(EasyMock.anyString());
+        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+
+        PowerMock.replay(Helper.class);
     }
 
     @Test
