@@ -415,7 +415,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 } else if (ProcessManager.countProcessTitle(myNewProcessTitle, myProzess.getProjekt().getInstitution()) != 0) {
                     this.modusBearbeiten = "prozess";
                     Helper.setFehlerMeldung(
-                            Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
+                            Helper.getTranslation("UngueltigeDaten:") + " " + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
                     return "";
 
                 } else {

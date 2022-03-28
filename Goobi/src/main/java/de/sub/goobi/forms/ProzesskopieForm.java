@@ -654,7 +654,7 @@ public class ProzesskopieForm implements Serializable {
             //          }
             if (anzahl > 0) {
                 valide = false;
-                Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten:") + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
+                Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten:") + " " + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
             }
         }
 
