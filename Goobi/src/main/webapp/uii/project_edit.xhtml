@@ -184,8 +184,28 @@
                                         </div>
                                     </div>
 
+                                    <!-- SRU URL -->
+                                    <intranda:formInputText
+                                        id="metsSruURL"
+                                        name="metsSruURLName"
+                                        label="#{msgs.metsSruURL}"
+                                        field="#{ProjekteForm.myProjekt.metsSruUrl}"
+                                        help="#{msgs.helpMetsSruUrl}"
+                                        fieldStyle="form-control"
+                                        required="false" />
 
-								</h:panelGroup>
+                                    <!-- IIIF URL -->
+                                    <intranda:formInputText
+                                        id="metsIIIFURL"
+                                        name="metsIIIFURLName"
+                                        label="#{msgs.metsIIIFURL}"
+                                        field="#{ProjekteForm.myProjekt.metsIIIFUrl}"
+                                        help="#{msgs.helpMetsIIIFUrl}"
+                                        fieldStyle="form-control"
+                                        required="false" />
+
+
+                                </h:panelGroup>
 								<h:panelGroup rendered="#{ProjekteForm.displayMode eq 'tab4' or ProjekteForm.displayMode eq 'filegroups'}">
                                 
                                     <!-- ===================== file groups ====================== -->

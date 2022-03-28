@@ -227,6 +227,9 @@ public class ProjectManager implements IManager, Serializable {
             Institution institution = InstitutionManager.getInstitutionById(institutionId);
             r.setInstitution(institution);
         }
+        r.setMetsIIIFUrl(rs.getString("iiifUrl"));
+        r.setMetsSruUrl(rs.getString("sruUrl"));
+
         return r;
     }
 

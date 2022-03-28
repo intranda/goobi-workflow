@@ -168,17 +168,15 @@ class ProjectMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             StringBuilder sql = new StringBuilder();
             if (ro.getId() == null) {
-
-                String propNames =
-                        "Titel, useDmsImport, dmsImportTimeOut, dmsImportRootPath, dmsImportImagesPath, dmsImportSuccessPath, dmsImportErrorPath, dmsImportCreateProcessFolder,"
-                                + " fileFormatInternal, fileFormatDmsExport, metsRightsOwner, metsRightsOwnerLogo, metsRightsOwnerSite, metsRightsOwnerMail, metsDigiprovReference, "
-                                + "metsDigiprovPresentation, metsDigiprovReferenceAnchor, metsDigiprovPresentationAnchor, metsPointerPath, metsPointerPathAnchor, metsPurl, "
-                                + "metsContentIDs, startDate, endDate, numberOfPages, numberOfVolumes, projectIsArchived, metsRightsSponsor, metsRightsSponsorLogo, metsRightsSponsorSiteURL, metsRightsLicense, institution_id, project_identifier";
-                //                StringBuilder propValues = new StringBuilder();
-
                 sql.append("INSERT INTO projekte (");
-                sql.append(propNames);
-                sql.append(") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                sql.append("Titel, useDmsImport, dmsImportTimeOut, dmsImportRootPath, dmsImportImagesPath, dmsImportSuccessPath, ");
+                sql.append("dmsImportErrorPath, dmsImportCreateProcessFolder, fileFormatInternal, fileFormatDmsExport, metsRightsOwner, ");
+                sql.append("metsRightsOwnerLogo, metsRightsOwnerSite, metsRightsOwnerMail, metsDigiprovReference, ");
+                sql.append("metsDigiprovPresentation, metsDigiprovReferenceAnchor, metsDigiprovPresentationAnchor, metsPointerPath, ");
+                sql.append("metsPointerPathAnchor, metsPurl, metsContentIDs, startDate, endDate, numberOfPages, numberOfVolumes,  ");
+                sql.append("projectIsArchived, metsRightsSponsor, metsRightsSponsorLogo, metsRightsSponsorSiteURL, metsRightsLicense, ");
+                sql.append("institution_id, project_identifier, iiifUrl, sruUrl");
+                sql.append(") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)");
 
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, ro.getTitel(), ro.isUseDmsImport(),
                         ro.getDmsImportTimeOut(), ro.getDmsImportRootPath(),
@@ -191,7 +189,8 @@ class ProjectMysqlHelper implements Serializable {
                         ro.getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()),
                                 ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()), ro.getNumberOfPages(), ro.getNumberOfVolumes(),
                                         ro.getProjectIsArchived(), ro.getMetsRightsSponsor(), ro.getMetsRightsSponsorLogo(), ro.getMetsRightsSponsorSiteURL(),
-                                        ro.getMetsRightsLicense(), ro.getInstitution() != null ? ro.getInstitution().getId() : null, ro.getProjectIdentifier());
+                                        ro.getMetsRightsLicense(), ro.getInstitution() != null ? ro.getInstitution().getId() : null, ro.getProjectIdentifier(),
+                                                ro.getMetsIIIFUrl(), ro.getMetsSruUrl());
                 if (id != null) {
                     ro.setId(id);
                 }
@@ -230,8 +229,9 @@ class ProjectMysqlHelper implements Serializable {
                 sql.append("metsRightsSponsorSiteURL =?, ");
                 sql.append("metsRightsLicense =?, ");
                 sql.append("institution_id =?, ");
-                sql.append("project_identifier =? ");
-
+                sql.append("project_identifier =?, ");
+                sql.append("iiifUrl =?, ");
+                sql.append("sruUrl =? ");
                 sql.append(" WHERE ProjekteID = " + ro.getId() + ";");
 
                 run.update(connection, sql.toString(), ro.getTitel(), ro.isUseDmsImport(), ro.getDmsImportTimeOut(), ro.getDmsImportRootPath(),
@@ -243,7 +243,8 @@ class ProjectMysqlHelper implements Serializable {
                         ro.getStartDate() == null ? null : new Timestamp(ro.getStartDate().getTime()),
                                 ro.getEndDate() == null ? null : new Timestamp(ro.getEndDate().getTime()), ro.getNumberOfPages(), ro.getNumberOfVolumes(),
                                         ro.getProjectIsArchived(), ro.getMetsRightsSponsor(), ro.getMetsRightsSponsorLogo(), ro.getMetsRightsSponsorSiteURL(),
-                                        ro.getMetsRightsLicense(), ro.getInstitution() != null ? ro.getInstitution().getId() : null, ro.getProjectIdentifier());
+                                        ro.getMetsRightsLicense(), ro.getInstitution() != null ? ro.getInstitution().getId() : null, ro.getProjectIdentifier(),
+                                                ro.getMetsIIIFUrl(), ro.getMetsSruUrl());
             }
         } finally {
             if (connection != null) {

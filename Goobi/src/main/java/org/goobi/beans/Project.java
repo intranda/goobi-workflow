@@ -154,6 +154,15 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
     @Setter
     private Institution institution;
 
+    @Getter
+    @Setter
+    private String metsSruUrl = "";
+
+    @Getter
+    @Setter
+    private String metsIIIFUrl = "";
+
+
     @Override
     public void lazyLoad() {
         //		try {

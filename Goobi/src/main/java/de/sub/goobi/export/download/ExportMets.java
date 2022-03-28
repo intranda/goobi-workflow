@@ -550,6 +550,9 @@ public class ExportMets {
 
         mm.setGoobiID(String.valueOf(myProzess.getId()));
 
+        mm.setIIIFUrl(vp.replace(myProzess.getProjekt().getMetsIIIFUrl()));
+        mm.setSruUrl(vp.replace(myProzess.getProjekt().getMetsSruUrl()));
+
         // if (!ConfigMain.getParameter("ImagePrefix", "\\d{8}").equals("\\d{8}")) {
         List<String> images = new ArrayList<>();
         if (config.isExportValidateImages()) {
@@ -649,9 +652,9 @@ public class ExportMets {
         //check for null to stop NullPointerException
         String projectFileSuffix = projectFileGroup.getSuffix();
         if(projectFileSuffix != null) {
-        	 v.setFileSuffix(projectFileSuffix.trim());
+            v.setFileSuffix(projectFileSuffix.trim());
         }else {
-        	v.setFileSuffix(projectFileSuffix);        
+            v.setFileSuffix(projectFileSuffix);
         }
         v.setFileExtensionsToIgnore(projectFileGroup.getIgnoreMimetypes());
         v.setIgnoreConfiguredMimetypeAndSuffix(projectFileGroup.isUseOriginalFiles());
