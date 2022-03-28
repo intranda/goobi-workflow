@@ -2423,28 +2423,28 @@ public class Metadaten implements Serializable {
 
         // added new
         if (ConfigurationHelper.getInstance().isMetsEditorEnableImageAssignment()) {
-            DocStruct log = this.document.getLogicalDocStruct();
-            if (log.getType().isAnchor()) {
-                if (log.getAllChildren() != null && log.getAllChildren().size() > 0) {
-                    log = log.getAllChildren().get(0);
+            DocStruct logical = this.document.getLogicalDocStruct();
+            if (logical.getType().isAnchor()) {
+                if (logical.getAllChildren() != null && logical.getAllChildren().size() > 0) {
+                	logical = logical.getAllChildren().get(0);
                 } else {
                     return "";
                 }
             }
 
-            if (log.getAllChildren() != null) {
-                for (DocStruct child : log.getAllChildren()) {
+            if (logical.getAllChildren() != null) {
+                for (DocStruct child : logical.getAllChildren()) {
                     List<Reference> childRefs = child.getAllReferences("to");
                     for (Reference toAdd : childRefs) {
                         boolean match = false;
-                        for (Reference ref : log.getAllReferences("to")) {
+                        for (Reference ref : logical.getAllReferences("to")) {
                             if (ref.getTarget().equals(toAdd.getTarget())) {
                                 match = true;
                                 break;
                             }
                         }
                         if (!match) {
-                            log.getAllReferences("to").add(toAdd);
+                        	logical.getAllReferences("to").add(toAdd);
                         }
                     }
                 }
