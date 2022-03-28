@@ -97,7 +97,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     private List<Definition> removedDefinitions = null;
     private DataFormatter dataFormatter = new DataFormatter();
-    
+
     /**
      * Constructor for class
      */
@@ -333,8 +333,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
         int columnCounter = 0;
         for (Definition definition : definitionList) {
             headerRow.createCell(columnCounter)
-                    .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
-                            : definition.getLabel());
+            .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
+                    : definition.getLabel());
             columnCounter = columnCounter + 1;
         }
 
@@ -394,7 +394,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     private void loadUploadedFile() {
         InputStream file = null;
-        
 
         if (importFile.getFileName().toString().endsWith(".json")) {
 
@@ -553,7 +552,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
             currentVocabulary.setRecords(new ArrayList<>());
         }
         if (importType.equals("remove") || importType.equals("add")) {
-
+            List<VocabRecord> recordsToAdd = new ArrayList<>(rowsToImport.size());
             for (Row row : rowsToImport) {
                 VocabRecord record = new VocabRecord();
                 List<Field> fieldList = new ArrayList<>();
@@ -568,14 +567,13 @@ public class VocabularyBean extends BasicBean implements Serializable {
                     }
                 }
                 if (!fieldList.isEmpty()) {
-
+                    recordsToAdd.add(record);
                     log.debug("Created record");
                     addFieldToRecord(record, fieldList);
                 }
-
             }
-            VocabularyManager.insertNewRecords(currentVocabulary.getRecords(), currentVocabulary.getId());
-            log.debug("Stored {} new records", currentVocabulary.getRecords().size());
+            VocabularyManager.insertNewRecords(recordsToAdd, currentVocabulary.getId());
+            log.debug("Stored {} new records", recordsToAdd.size());
         }
 
         if (importType.equals("merge")) {
@@ -606,20 +604,22 @@ public class VocabularyBean extends BasicBean implements Serializable {
                         updateRecords.add(recordToUpdate);
                         // update existing record
                         for (MatchingField mf : headerOrder) {
-                            Field fieldToUpdate = null;
-                            for (Field field : recordToUpdate.getFields()) {
-                                if (mf.getAssignedField().equals(field.getDefinition())) {
-                                    fieldToUpdate = field;
-                                    break;
+                            if (mf.getAssignedField() != null) {
+                                Field fieldToUpdate = null;
+                                for (Field field : recordToUpdate.getFields()) {
+                                    if (field.getDefinition() != null && mf.getAssignedField().equals(field.getDefinition())) {
+                                        fieldToUpdate = field;
+                                        break;
+                                    }
                                 }
-                            }
-                            String cellValue = getCellValue(row.getCell(mf.getColumnOrderNumber()));
-                            if (fieldToUpdate == null) {
-                                fieldToUpdate = new Field(mf.getAssignedField().getLabel(), mf.getAssignedField().getLanguage(), cellValue,
-                                        mf.getAssignedField());
-                                recordToUpdate.getFields().add(fieldToUpdate);
-                            } else {
-                                fieldToUpdate.setValue(cellValue);
+                                String cellValue = getCellValue(row.getCell(mf.getColumnOrderNumber()));
+                                if (fieldToUpdate == null) {
+                                    fieldToUpdate = new Field(mf.getAssignedField().getLabel(), mf.getAssignedField().getLanguage(), cellValue,
+                                            mf.getAssignedField());
+                                    recordToUpdate.getFields().add(fieldToUpdate);
+                                } else {
+                                    fieldToUpdate.setValue(cellValue);
+                                }
                             }
                         }
                         continue;
