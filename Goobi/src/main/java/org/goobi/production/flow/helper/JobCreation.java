@@ -33,8 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.production.cli.helper.CopyProcess;
@@ -49,28 +47,29 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import lombok.extern.log4j.Log4j2;
 import ugh.exceptions.PreferencesException;
 import ugh.exceptions.ReadException;
 import ugh.exceptions.WriteException;
 
+@Log4j2
 public class JobCreation {
-    private static final Logger logger = LogManager.getLogger(JobCreation.class);
 
     public static Process generateProcess(ImportObject io, Process vorlage) {
         String processTitle = io.getProcessTitle();
-        logger.trace("processtitle is " + processTitle);
+        log.trace("processtitle is " + processTitle);
         String metsfilename = io.getMetsFilename();
         String metsAnchorName = metsfilename.replace(".xml", "_anchor.xml");
-        logger.trace("mets filename is " + metsfilename);
+        log.trace("mets filename is " + metsfilename);
         String basepath = metsfilename.substring(0, metsfilename.length() - 4);
-        logger.trace("basepath is " + basepath);
+        log.trace("basepath is " + basepath);
         Path metsfile = Paths.get(metsfilename);
 
         Path metsAnchorFile = Paths.get(metsAnchorName);
 
         Process p = null;
         if (!testTitle(processTitle)) {
-            logger.error("cannot create process, process title \"" + processTitle + "\" is already in use");
+            log.error("cannot create process, process title \"" + processTitle + "\" is already in use");
             // removing all data
             Path imagesFolder = Paths.get(basepath);
             if (StorageProvider.getInstance().isFileExists(imagesFolder) && StorageProvider.getInstance().isFileExists(imagesFolder)) {
@@ -89,7 +88,7 @@ public class JobCreation {
                     StorageProvider.getInstance().deleteDir(metsAnchorFile);
                 }
             } catch (Exception e) {
-                logger.error("Can not delete file " + processTitle, e);
+                log.error("Can not delete file " + processTitle, e);
                 return null;
             }
             Path anchor = Paths.get(basepath + "_anchor.xml");
@@ -104,9 +103,9 @@ public class JobCreation {
         cp.setMetadataFile(metsfilename);
         cp.Prepare(io);
         cp.getProzessKopie().setTitel(processTitle);
-        logger.trace("testing title");
+        log.trace("testing title");
         if (cp.testTitle()) {
-            logger.trace("title is valid");
+            log.trace("title is valid");
             cp.OpacAuswerten();
             try {
                 p = cp.createProcess(io);
@@ -126,10 +125,10 @@ public class JobCreation {
                 }
             } catch (ReadException | PreferencesException | SwapException | WriteException | IOException | InterruptedException | DAOException e) {
                 Helper.setFehlerMeldung("Cannot read file " + processTitle, e);
-                logger.error(e);
+                log.error(e);
             }
         } else {
-            logger.error("Title " + processTitle + " is invalid");
+            log.error("Title " + processTitle + " is invalid");
         }
         return p;
     }

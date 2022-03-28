@@ -1,16 +1,20 @@
 package de.sub.goobi.metadaten.search;
 
-import de.intranda.digiverso.normdataimporter.model.NormData;
-import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.net.URLEncoder;
-import java.util.*;
+import de.intranda.digiverso.normdataimporter.model.NormData;
+import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
+import lombok.extern.log4j.Log4j2;
 
 
 /**
@@ -20,11 +24,11 @@ import java.util.*;
  * @author Hemed Ali Al Ruwehy
  * 2021-03-03
  */
+@Log4j2
 public class KulturNavImporter extends JsonDataLoader {
     public static final String BASE_URL = "https://kulturnav.org/";
     public static final String SUMMARY_URL = BASE_URL + "api/summary/";
-    private static final Logger logger = LoggerFactory.getLogger(KulturNavImporter.class);
-
+    
     public KulturNavImporter() {
     }
 
@@ -111,7 +115,7 @@ public class KulturNavImporter extends JsonDataLoader {
                         .replaceAll("\\s+", "%20");
             }
         } catch (Exception e) {
-            logger.error("Unable to parse search string {}, {}", searchString, e.toString());
+            log.error("Unable to parse search string {}, {}", searchString, e.toString());
         }
         return searchString;
     }
@@ -203,8 +207,8 @@ public class KulturNavImporter extends JsonDataLoader {
 
         if (!items.isEmpty() & !items.get(0).getSource().isEmpty()) {
             source = items.get(0).getSource();
-            if (logger.isDebugEnabled()) {
-                logger.debug("Found source with value {} for metadata {} and display type {}",
+            if (log.isDebugEnabled()) {
+                log.debug("Found source with value {} for metadata {} and display type {}",
                         source, metadataRef, DisplayType.kulturnav.name());
             }
         }

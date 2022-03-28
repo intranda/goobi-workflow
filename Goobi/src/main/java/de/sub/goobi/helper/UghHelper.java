@@ -36,12 +36,11 @@ import java.util.List;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.UghHelperException;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
@@ -49,8 +48,8 @@ import ugh.dl.Prefs;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
+@Log4j2
 public class UghHelper {
-    private static final Logger logger = LogManager.getLogger(UghHelper.class);
 
     public String lastErrorMessage;
 
@@ -102,8 +101,8 @@ public class UghHelper {
 
                     return md;
                 } catch (MetadataTypeNotAllowedException e) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(e.getMessage());
+                    if (log.isDebugEnabled()) {
+                        log.debug(e.getMessage());
                     }
                     lastErrorMessage = e.getMessage();
                     return null;
@@ -138,8 +137,8 @@ public class UghHelper {
 
                 return md;
             } catch (MetadataTypeNotAllowedException e) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(e);
+                if (log.isDebugEnabled()) {
+                    log.debug(e);
                 }
                 lastErrorMessage = e.getMessage();
             }
@@ -172,8 +171,8 @@ public class UghHelper {
 
                 return md;
             } catch (MetadataTypeNotAllowedException e) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(e);
+                if (log.isDebugEnabled()) {
+                    log.debug(e);
                 }
                 lastErrorMessage = e.getMessage();
             }
@@ -200,14 +199,14 @@ public class UghHelper {
         } catch (DocStructHasNoTypeException e) {
             Helper.setMeldung(null, "DocStructHasNoTypeException: " + inStruct.getType().getName() + " - " + inMetadataType + " - " + inValue,
                     e.getMessage());
-            logger.error(e);
+            log.error(e);
         } catch (MetadataTypeNotAllowedException e) {
             Helper.setMeldung(null, "MetadataTypeNotAllowedException: " + inStruct.getType().getName() + " - " + inMetadataType + " - " + inValue,
                     e.getMessage());
-            logger.error(e);
+            log.error(e);
         } catch (Exception e) {
             Helper.setMeldung(null, "Exception: " + inStruct.getType().getName() + " - " + inMetadataType + " - " + inValue, e.getMessage());
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -289,7 +288,7 @@ public class UghHelper {
             }
             in.close();
         } catch (IOException e) {
-            logger.error("IOException bei Umlautkonvertierung", e);
+            log.error("IOException bei Umlautkonvertierung", e);
         }
         return temp;
     }

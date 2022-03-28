@@ -39,8 +39,6 @@ import java.util.Date;
 
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 import org.jdom2.JDOMException;
 import org.mozilla.universalchardet.UniversalDetector;
@@ -51,12 +49,13 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider.StorageType;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Helper class for file system operations.
  */
+@Log4j2
 public class FilesystemHelper {
-    private static final Logger logger = LogManager.getLogger(FilesystemHelper.class);
 
     /**
      * Creates a directory with a name given. Under Linux a script is used to set the file system permissions accordingly. This cannot be done from
@@ -112,13 +111,13 @@ public class FilesystemHelper {
                 deleteSymLinkScript = new ShellScript(Paths.get(command));
                 deleteSymLinkScript.run(Arrays.asList(new String[] { symLink }));
             } catch (FileNotFoundException e) {
-                logger.error("FileNotFoundException in deleteSymLink()", e);
+                log.error("FileNotFoundException in deleteSymLink()", e);
                 Helper.setFehlerMeldung("Couldn't find script file, error", e.getMessage());
             } catch (IOException e) {
-                logger.error("IOException in deleteSymLink()", e);
+                log.error("IOException in deleteSymLink()", e);
                 Helper.setFehlerMeldung("Aborted deleteSymLink(), error", e.getMessage());
             } catch (InterruptedException e) {
-                logger.error("InterruptedException in deleteSymLink()", e);
+                log.error("InterruptedException in deleteSymLink()", e);
                 Helper.setFehlerMeldung("Command '" + command + "' is interrupted in deleteSymLink()!");
             }
         }
@@ -224,13 +223,13 @@ public class FilesystemHelper {
 
         } catch (FileNotFoundException e) {
             try {
-                logger.debug("no OCR file found for image " + inProcess.getImagesDirectory() + ocrFile);
+                log.debug("no OCR file found for image " + inProcess.getImagesDirectory() + ocrFile);
             } catch (IOException | InterruptedException | SwapException | DAOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         } catch (IOException | SwapException | DAOException | InterruptedException | XMLStreamException | JDOMException e) {
-            logger.error("Problem reading the OCR file", e);
+            log.error("Problem reading the OCR file", e);
 
         }
         return "- no ocr content -";

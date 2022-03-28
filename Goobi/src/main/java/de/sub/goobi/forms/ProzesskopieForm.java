@@ -54,8 +54,6 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
@@ -105,6 +103,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -126,12 +125,12 @@ import ugh.fileformats.mets.XStream;
 @Named("ProzesskopieForm")
 @WindowScoped
 @Default
+@Log4j2
 public class ProzesskopieForm implements Serializable {
     /**
      * 
      */
     private static final long serialVersionUID = 2579641488883675182L;
-    private static final Logger logger = LogManager.getLogger(ProzesskopieForm.class);
     private Helper help = new Helper();
     UghHelper ughHelper = new UghHelper();
     private BeanHelper bHelper = new BeanHelper();
@@ -454,7 +453,7 @@ public class ProzesskopieForm implements Serializable {
             }
         } catch (Exception e) {
             Helper.setFehlerMeldung("Error on reading opac ", e);
-            logger.error(e.toString(), e);
+            log.error(e.toString(), e);
         }
         return "";
     }
@@ -514,7 +513,7 @@ public class ProzesskopieForm implements Serializable {
                             }
                         }
                     } catch (UghHelperException e) {
-                        logger.error(e);
+                        log.error(e);
                         Helper.setFehlerMeldung(e.getMessage(), "");
                     }
                     if (field.getWert() != null && !field.getWert().equals("")) {
@@ -607,7 +606,7 @@ public class ProzesskopieForm implements Serializable {
             removeCollections(colStruct);
         } catch (PreferencesException e) {
             Helper.setFehlerMeldung("Error on creating process", e);
-            logger.error("Error on creating process", e);
+            log.error("Error on creating process", e);
         } catch (RuntimeException e) {
             /*
              * das Firstchild unterhalb des Topstructs konnte nicht ermittelt werden
@@ -933,7 +932,7 @@ public class ProzesskopieForm implements Serializable {
             } catch (UghHelperException | UGHException e) {
                 Helper.setFehlerMeldung("ProcessCreationError_mets_save_error");
                 Helper.setFehlerMeldung(e.getMessage());
-                logger.error("creation of new process throws an error: ", e);
+                log.error("creation of new process throws an error: ", e);
                 ProcessManager.deleteProcess(prozessKopie);
 
                 //this ensures that the process will be saved later, if corrected. If
@@ -1044,10 +1043,10 @@ public class ProzesskopieForm implements Serializable {
             }
         } catch (UghHelperException e) {
             Helper.setFehlerMeldung(e.getMessage(), "");
-            logger.error(e);
+            log.error(e);
         } catch (DocStructHasNoTypeException e) {
             Helper.setFehlerMeldung(e.getMessage(), "");
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -1088,11 +1087,11 @@ public class ProzesskopieForm implements Serializable {
             }
 
             //        } catch (TypeNotAllowedForParentException e) {
-            //            logger.error(e);
+            //            log.error(e);
             //        } catch (TypeNotAllowedAsChildException e) {
-            //            logger.error(e);
+            //            log.error(e);
         } catch (PreferencesException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -1194,12 +1193,12 @@ public class ProzesskopieForm implements Serializable {
                         }
                     }
                 } catch (PreferencesException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
                 try {
                     fillFieldsFromMetadataFile();
                 } catch (PreferencesException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1323,10 +1322,10 @@ public class ProzesskopieForm implements Serializable {
                 }
             }
         } catch (JDOMException e1) {
-            logger.error("error while parsing digital collections", e1);
+            log.error("error while parsing digital collections", e1);
             Helper.setFehlerMeldung("Error while parsing digital collections", e1);
         } catch (IOException e1) {
-            logger.error("error while parsing digital collections", e1);
+            log.error("error while parsing digital collections", e1);
             Helper.setFehlerMeldung("Error while parsing digital collections", e1);
         }
 
@@ -1661,7 +1660,7 @@ public class ProzesskopieForm implements Serializable {
                 prozessKopie.setMetadatenKonfigurationID(selected);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("Projekt kann nicht zugewiesen werden", "");
-                logger.error(e);
+                log.error(e);
             }
         }
     }
@@ -1733,7 +1732,7 @@ public class ProzesskopieForm implements Serializable {
     public void setUploadFolder(String folder) {
         this.uploadFolder = folder;
         this.uploadRegex = this.getRegexOfFolder(folder);
-        logger.debug("Regex: " + this.uploadRegex);
+        log.debug("Regex: " + this.uploadRegex);
     }
 
     @Getter
@@ -1809,7 +1808,7 @@ public class ProzesskopieForm implements Serializable {
             try {
                 temporaryFolder = Files.createTempDirectory(Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder()), "upload");
             } catch (IOException e) {
-                logger.error(e);
+                log.error(e);
             }
         }
         return temporaryFolder;
@@ -1825,7 +1824,7 @@ public class ProzesskopieForm implements Serializable {
             UploadedFile upload = event.getFile();
             saveFileTemporary(upload.getFileName(), upload.getInputstream());
         } catch (IOException e) {
-            logger.error("Error while uploading files", e);
+            log.error("Error while uploading files", e);
         }
     }
 
@@ -1852,20 +1851,20 @@ public class ProzesskopieForm implements Serializable {
             uploadedFiles.add(currentImage);
 
         } catch (IOException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
             if (out != null) {
                 try {
                     out.close();
                 } catch (IOException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }

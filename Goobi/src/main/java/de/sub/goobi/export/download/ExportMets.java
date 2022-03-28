@@ -72,8 +72,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
@@ -117,6 +115,7 @@ import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -134,13 +133,12 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
+@Log4j2
 public class ExportMets {
     protected Helper help = new Helper();
     protected Prefs myPrefs;
     @Getter
     protected List<String> problems = new ArrayList<>();
-
-    protected static final Logger logger = LogManager.getLogger(ExportMets.class);
 
     private static final Pattern descriptionPattern = Pattern.compile("\\D");
 
@@ -213,7 +211,7 @@ public class ExportMets {
             //delete file from directory
             StorageProvider.getInstance().deleteDir(targetDir);
         } catch (Exception e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -332,7 +330,7 @@ public class ExportMets {
             try {
                 myProzess.writeMetadataFile(gdzfile);
             } catch (UGHException | IOException | InterruptedException | SwapException | DAOException e) {
-                logger.error(e);
+                log.error(e);
             }
         } else {
             mih.checkImageNames(myProzess, imageFolder.getFileName().toString());
@@ -420,7 +418,7 @@ public class ExportMets {
                         md.setValue(myProzess.getProjekt().getTitel());
                         topElement.addMetadata(md);
                     } catch (MetadataTypeNotAllowedException e) {
-                        logger.warn("Configured metadata for project name is unknown or not allowed.");
+                        log.warn("Configured metadata for project name is unknown or not allowed.");
                     }
                     if (topElement.getParent() != null) {
                         try {
@@ -428,7 +426,7 @@ public class ExportMets {
                             md.setValue(myProzess.getProjekt().getTitel());
                             topElement.getParent().addMetadata(md);
                         } catch (MetadataTypeNotAllowedException e) {
-                            logger.warn("Configured metadata for project name is unknown or not allowed.");
+                            log.warn("Configured metadata for project name is unknown or not allowed.");
                         }
                     }
                 }
@@ -441,7 +439,7 @@ public class ExportMets {
                         md.setValue(myProzess.getProjekt().getInstitution().getLongName());
                         topElement.addMetadata(md);
                     } catch (MetadataTypeNotAllowedException e) {
-                        logger.warn("Configured metadata for institution name is unknown or not allowed.");
+                        log.warn("Configured metadata for institution name is unknown or not allowed.");
                     }
                     if (topElement.getParent() != null) {
                         try {
@@ -449,7 +447,7 @@ public class ExportMets {
                             md.setValue(myProzess.getProjekt().getInstitution().getLongName());
                             topElement.getParent().addMetadata(md);
                         } catch (MetadataTypeNotAllowedException e) {
-                            logger.warn("Configured metadata for institution name is unknown or not allowed.");
+                            log.warn("Configured metadata for institution name is unknown or not allowed.");
                         }
                     }
                 }
@@ -571,10 +569,10 @@ public class ExportMets {
                     }
                 }
             } catch (IndexOutOfBoundsException e) {
-                logger.error(e);
+                log.error(e);
                 return null;
             } catch (InvalidImagesException e) {
-                logger.error(e);
+                log.error(e);
                 return null;
             }
         } else {
@@ -705,13 +703,13 @@ public class ExportMets {
                 buildMPEGMetadata(doc, file, object);
             } else {
                 String message = "Data is of type not covered by the premis creation: " + mimeType;
-                logger.warn(message);
+                log.warn(message);
                 problems.add(message);
             }
 
             return techMd;
         } catch (ParserConfigurationException | IOException | UnsupportedAudioFileException | DataFormatException e) {
-            logger.error(e);
+            log.error(e);
         }
 
         return null;
@@ -784,7 +782,7 @@ public class ExportMets {
         try {
             size.setTextContent(String.valueOf(Files.size(file)));
         } catch (DOMException | IOException e) {
-            logger.error(e);
+            log.error(e);
         }
 
     }
@@ -806,7 +804,7 @@ public class ExportMets {
         } else {
             // abort if Dimensions of image cannot be read
             String message = "Unable to read imagesize for image " + file.getFileName();
-            logger.error(message);
+            log.error(message);
             throw new IOException(message);
         }
         // create remaining structure for the premis block and add information
@@ -872,7 +870,7 @@ public class ExportMets {
                         return Optional.of(new Dimension(image.getWidth(), image.getHeight()));
                     }
                 } catch (NullPointerException | IOException e1) {
-                    logger.error("Unable to read image size for " + filepath.getFileName().toString(), e);
+                    log.error("Unable to read image size for " + filepath.getFileName().toString(), e);
                 }
             }
         }
@@ -930,7 +928,7 @@ public class ExportMets {
                 return dim;
             }
         } else {
-            logger.debug("Not openjpeg image reader found");
+            log.debug("Not openjpeg image reader found");
         }
 
         throw new IOException("No valid image reader found for 'jpeg2000'");
@@ -952,9 +950,9 @@ public class ExportMets {
             if (width * height > 0) {
                 return new Dimension(width, height);
             }
-            logger.error("Error reading image dimensions of " + image + " with image reader " + reader.getClass().getSimpleName());
+            log.error("Error reading image dimensions of " + image + " with image reader " + reader.getClass().getSimpleName());
         } catch (IOException e) {
-            logger.error("Error reading " + image + " with image reader " + reader.getClass().getSimpleName());
+            log.error("Error reading " + image + " with image reader " + reader.getClass().getSimpleName());
         }
         return null;
     }
@@ -970,11 +968,11 @@ public class ExportMets {
             Object readerSpi = Class.forName("de.digitalcollections.openjpeg.imageio.OpenJp2ImageReaderSpi").getDeclaredConstructor().newInstance();
             reader = ((ImageReaderSpi) readerSpi).createReaderInstance();
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return null;
         } catch (NoClassDefFoundError | ClassNotFoundException | IllegalAccessException | InstantiationException | IllegalArgumentException
                 | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            logger.warn("No openjpeg reader");
+            log.warn("No openjpeg reader");
             return null;
         }
         return reader;
@@ -1153,7 +1151,7 @@ public class ExportMets {
 
             return shaString;
         } catch (NoSuchAlgorithmException e1) {
-            logger.error(algorithmName + " not supported for hash");
+            log.error(algorithmName + " not supported for hash");
             return null;
         }
     }
@@ -1243,7 +1241,7 @@ public class ExportMets {
             try {
                 audioFile = AudioFileIO.read(file.toFile());
             } catch (CannotReadException | TagException | ReadOnlyFileException | InvalidAudioFrameException e) {
-                logger.error(e);
+                log.error(e);
             }
             AudioHeader audioHeader = audioFile.getAudioHeader();
             MP3AudioHeader mp3Header = (MP3AudioHeader) audioHeader;

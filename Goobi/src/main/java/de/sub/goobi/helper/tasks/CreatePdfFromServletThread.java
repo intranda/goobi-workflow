@@ -46,7 +46,6 @@ import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -57,6 +56,7 @@ import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /*************************************************************************************
  * Creation of PDF-Files as long running task for GoobiContentServerServlet First of all the variables have to be set via the setters after that you
@@ -65,8 +65,8 @@ import lombok.Setter;
  * @author Steffen Hankiewicz
  * @version 12.02.2009
  *************************************************************************************/
+@Log4j2
 public class CreatePdfFromServletThread extends LongRunningTask {
-    private static final Logger logger = LogManager.getLogger(CreatePdfFromServletThread.class);
     @Setter
     private Path targetFolder;
     @Setter
@@ -170,8 +170,8 @@ public class CreatePdfFromServletThread extends LongRunningTask {
              * get pdf from servlet and forward response to file 
              * --------------------------------*/
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("Retrieving: " + goobiContentServerUrl.toString());
+            if (log.isDebugEnabled()) {
+                log.debug("Retrieving: " + goobiContentServerUrl.toString());
             }
             method = new HttpGet(goobiContentServerUrl.toString());
 
@@ -195,7 +195,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
                 }
 
             } catch (IOException e) {
-                logger.error(e);
+                log.error(e);
             } finally {
                 method.releaseConnection();
                 if (httpclient != null) {
@@ -205,14 +205,14 @@ public class CreatePdfFromServletThread extends LongRunningTask {
                     try {
                         istr.close();
                     } catch (IOException e) {
-                        logger.error(e);
+                        log.error(e);
                     }
                 }
                 if (ostr != null) {
                     try {
                         ostr.close();
                     } catch (IOException e) {
-                        logger.error(e);
+                        log.error(e);
                     }
                 }
             }
@@ -220,12 +220,12 @@ public class CreatePdfFromServletThread extends LongRunningTask {
             /* --------------------------------
              * copy pdf from temp to final destination
              * --------------------------------*/
-            if (logger.isDebugEnabled()) {
-                logger.debug("pdf file created: " + tempPdf.toString() + "; now copy it to " + finalPdf.toString());
+            if (log.isDebugEnabled()) {
+                log.debug("pdf file created: " + tempPdf.toString() + "; now copy it to " + finalPdf.toString());
             }
             StorageProvider.getInstance().copyFile(tempPdf, finalPdf);
-            if (logger.isDebugEnabled()) {
-                logger.debug("pdf copied to " + finalPdf.toString() + "; now start cleaning up");
+            if (log.isDebugEnabled()) {
+                log.debug("pdf copied to " + finalPdf.toString() + "; now start cleaning up");
             }
             StorageProvider.getInstance().deleteDir(tempPdf);
             if (this.metsURL != null) {
@@ -233,7 +233,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
                 StorageProvider.getInstance().deleteDir(tempMets);
             }
         } catch (Exception e) {
-            logger.error("Error while creating pdf for " + this.getProzess().getTitel(), e);
+            log.error("Error while creating pdf for " + this.getProzess().getTitel(), e);
             setStatusMessage("error " + e.getClass().getSimpleName() + " while pdf creation: " + e.getMessage());
             setStatusProgress(-1);
 
@@ -248,7 +248,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
                 output.write(text);
                 output.close();
             } catch (IOException e1) {
-                logger.error("Error while reporting error to user in file " + file.toString(), e);
+                log.error("Error while reporting error to user in file " + file.toString(), e);
             }
             return;
         } finally {

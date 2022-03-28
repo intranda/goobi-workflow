@@ -29,14 +29,13 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.HistoryEvent;
 
 import de.sub.goobi.helper.enums.HistoryEventType;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class HistoryMysqlHelper {
-    private static final Logger logger = LogManager.getLogger(HistoryMysqlHelper.class);
-
     public static List<HistoryEvent> getHistoryEvents(int processId) throws SQLException {
         String sql = "SELECT * FROM history WHERE processID = " + processId;
         Connection connection = null;
@@ -61,7 +60,7 @@ public class HistoryMysqlHelper {
             // String propNames = "numericValue, stringvalue, type, date, processId";
             Object[] param = { order, value == null ? null : value, type, datetime, processId };
             String sql = "Update history set numericValue = ?, stringvalue = ?,  type = ?, date = ?, processId =? WHERE historyid = " + id;
-            logger.trace("added history event " + sql + ", " + Arrays.toString(param));
+            log.trace("added history event " + sql + ", " + Arrays.toString(param));
             run.update(connection, sql, param);
         } finally {
             if (connection != null) {
@@ -80,7 +79,7 @@ public class HistoryMysqlHelper {
             // String propNames = "numericValue, stringvalue, type, date, processId";
             Object[] param = { order, value, type, datetime, processId };
             String sql = "INSERT INTO " + "history" + " (numericValue, stringvalue, type, date, processId) VALUES ( ?, ?, ?, ? ,?)";
-            logger.trace("added history event " + sql + ", " + Arrays.toString(param));
+            log.trace("added history event " + sql + ", " + Arrays.toString(param));
             run.update(connection, sql, param);
         } finally {
             if (connection != null) {
@@ -99,7 +98,7 @@ public class HistoryMysqlHelper {
             // String propNames = "numericValue, stringvalue, type, date, processId";
             Object[] param = { he.getNumericValue(), he.getStringValue(), he.getHistoryType().getValue(), datetime, he.getProcess().getId() };
             String sql = "UPDATE history set numericValue = ?, stringvalue = ?, type = ?, date = ?, processId = ? WHERE historyid =" + he.getId();
-            logger.trace("added history event " + sql + ", " + Arrays.toString(param));
+            log.trace("added history event " + sql + ", " + Arrays.toString(param));
             run.update(connection, sql, param);
         } finally {
             if (connection != null) {

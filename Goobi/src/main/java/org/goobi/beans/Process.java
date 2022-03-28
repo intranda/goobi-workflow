@@ -62,8 +62,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.io.BackupFileManager;
 import org.goobi.io.FileListFilter;
 import org.goobi.managedbeans.LoginBean;
@@ -120,7 +118,6 @@ import ugh.exceptions.WriteException;
 
 @Log4j2
 public class Process implements Serializable, DatabaseObject, Comparable<Process> {
-    private static final Logger logger = LogManager.getLogger(Process.class);
     private static final long serialVersionUID = -6503348094655786275L;
     @Getter
     @Setter
@@ -753,7 +750,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             try {
                 projekt = ProjectManager.getProjectById(projectId);
             } catch (DAOException e) {
-                logger.error(e);
+                log.error(e);
             }
         }
         return this.projekt;
@@ -1156,8 +1153,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (StorageProvider.getInstance().isFileExists(Paths.get(getTemplateFilePath()))) {
             Fileformat ff = null;
             String type = MetadatenHelper.getMetaFileType(getTemplateFilePath());
-            if (logger.isDebugEnabled()) {
-                logger.debug("current template.xml file type: " + type);
+            if (log.isDebugEnabled()) {
+                log.debug("current template.xml file type: " + type);
             }
             ff = MetadatenHelper.getFileformatByName(type, regelsatz);
             ff.read(getTemplateFilePath());
@@ -1178,7 +1175,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 }
             }
         } catch (SwapException | DAOException | IOException | InterruptedException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -1215,7 +1212,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
 
         } catch (SwapException | DAOException | IOException | InterruptedException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -1233,7 +1230,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
             }
         } catch (SwapException | DAOException | IOException | InterruptedException e) {
-            logger.error(e);
+            log.error(e);
         }
 
         return false;
@@ -1336,7 +1333,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 xmlExport.startExport(this, out);
                 out.flush();
             } catch (IOException e) {
-                logger.error("IOException while exporting run note", e);
+                log.error("IOException while exporting run note", e);
             }
 
             facesContext.responseComplete();
@@ -1346,8 +1343,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String downloadDocket() {
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("generate docket for process " + this.id);
+        if (log.isDebugEnabled()) {
+            log.debug("generate docket for process " + this.id);
         }
         String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
         Path xsltfile = Paths.get(rootpath, "docket.xsl");
@@ -1374,7 +1371,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorDocket());
                 out.flush();
             } catch (IOException e) {
-                logger.error("IOException while exporting run note", e);
+                log.error("IOException while exporting run note", e);
             }
 
             facesContext.responseComplete();
@@ -1386,7 +1383,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * generate simplified set of structure and metadata to provide a PDF generation for printing
      */
     public void downloadSimplifiedMetadataAsPDF() {
-        logger.debug("generate simplified metadata xml for process " + this.id);
+        log.debug("generate simplified metadata xml for process " + this.id);
         String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
         Path xsltfile = Paths.get(rootpath, "docket_metadata.xsl");
 
@@ -1415,7 +1412,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorMetadata());
                 out.flush();
             } catch (IOException e) {
-                logger.error("IOException while exporting simplefied metadata", e);
+                log.error("IOException while exporting simplefied metadata", e);
             }
 
             facesContext.responseComplete();
@@ -1476,7 +1473,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             try {
                 docket = DocketManager.getDocketById(docketId);
             } catch (DAOException e) {
-                logger.error(e);
+                log.error(e);
             }
         }
         return docket;
@@ -1534,7 +1531,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
             ProcessManager.saveProcess(p);
         } catch (DAOException e) {
-            logger.error("error on save: ", e);
+            log.error("error on save: ", e);
         }
 
         return p;
@@ -1619,7 +1616,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 return sb.toString();
             }
         } catch (IOException | InterruptedException | SwapException | DAOException e) {
-            logger.error("Error creating representative image url for process " + this.getId());
+            log.error("Error creating representative image url for process " + this.getId());
             String rootpath = "cs?action=image&format=jpg&sourcepath=file:///";
             return rootpath + representativeImage.replaceAll("\\\\", "/");
         }
@@ -1661,7 +1658,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                     return "uii/template/img/thumbnail-placeholder.png?version=1";
                 }
             } catch (IOException | InterruptedException | SwapException | DAOException e) {
-                logger.error(e);
+                log.error(e);
             }
         }
         return representativeImage;
@@ -1689,7 +1686,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
         } catch (IOException | InterruptedException | SwapException | DAOException e) {
 
-            logger.error(e);
+            log.error(e);
         }
 
         return folderAndFileMap;
@@ -1718,7 +1715,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                     Fileformat gdzfile = readMetadataFile();
                     dd = gdzfile.getDigitalDocument();
                 } catch (Exception e) {
-                    logger.error("error reading METS file for process " + id, e);
+                    log.error("error reading METS file for process " + id, e);
                 }
             }
             VariableReplacer replacer = new VariableReplacer(dd, myPrefs, this, null);
@@ -1791,7 +1788,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 }
 
             } catch (SwapException | DAOException | IOException | InterruptedException e) {
-                logger.error(e);
+                log.error(e);
             }
         }
         return folderList;
@@ -1871,7 +1868,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
             facesContext.responseComplete();
         } catch (IOException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -1907,7 +1904,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         try {
             StorageProvider.getInstance().deleteFile(path);
         } catch (IOException e) {
-            logger.error(e);
+            log.error(e);
         }
 
     }
@@ -1942,7 +1939,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             processLog.add(entry);
 
         } catch (SwapException | DAOException | IOException | InterruptedException e) {
-            logger.error(e);
+            log.error(e);
         }
         uploadedFile = null;
         content = "";
@@ -1982,21 +1979,21 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
 
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             Helper.setFehlerMeldung("uploadFailed");
         } finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
             if (outputStream != null) {
                 try {
                     outputStream.close();
                 } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
 
@@ -2083,7 +2080,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 }
             }
         } catch (Exception e) {
-            logger.trace("could not rename folder", e);
+            log.trace("could not rename folder", e);
         }
 
         if (!this.isIstTemplate()) {
@@ -2129,7 +2126,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 writeMetadataFile(fileFormat);
 
             } catch (IOException | InterruptedException | SwapException | DAOException | UghHelperException | UGHException e) {
-                logger.info("Could not rename paths in metadata file", e);
+                log.info("Could not rename paths in metadata file", e);
             }
         }
         /* Vorgangstitel */

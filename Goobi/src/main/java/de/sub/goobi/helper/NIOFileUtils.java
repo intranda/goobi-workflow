@@ -68,8 +68,6 @@ import java.util.zip.CRC32;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.extern.log4j.Log4j2;
@@ -81,8 +79,6 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class NIOFileUtils implements StorageProviderInterface {
-
-    private static final Logger logger = LogManager.getLogger(Helper.class);
 
     public static final CopyOption[] STANDARD_COPY_OPTIONS =
             new CopyOption[] { StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES };
@@ -429,7 +425,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                         }
                     }
                 } catch (AccessDeniedException | FileNotFoundException exception) {
-                    logger.error(exception);
+                    log.error(exception);
                 }
                 try {
                     PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
@@ -442,7 +438,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                         }
                     }
                 } catch (AccessDeniedException | FileNotFoundException exception) {
-                    logger.error(exception);
+                    log.error(exception);
                 }
                 UserDefinedFileAttributeView userAttrs = Files.getFileAttributeView(dir, UserDefinedFileAttributeView.class);
                 if (userAttrs != null) {

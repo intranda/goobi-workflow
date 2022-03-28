@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
@@ -46,12 +45,13 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 import lombok.Data;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 
 @Data
+@Log4j2
 public class BatchProcessHelper {
 
     private List<Process> processes;
-    private static final Logger logger = LogManager.getLogger(BatchProcessHelper.class);
     private Process currentProcess;
     private List<ProcessProperty> processPropertyList;
     private ProcessProperty processProperty;
@@ -71,8 +71,8 @@ public class BatchProcessHelper {
 
             this.processNameList.add(p.getTitel());
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug("loaded batch with " + this.processes.size() + " processes.");
+        if (log.isDebugEnabled()) {
+            log.debug("loaded batch with " + this.processes.size() + " processes.");
         }
         this.currentProcess = processes.get(0);
         this.processName = this.currentProcess.getTitel();

@@ -25,17 +25,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Institution;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 class UsergroupMysqlHelper implements Serializable {
-    /**
-     * 
-     */
     private static final long serialVersionUID = -6209215029673643876L;
-    private static final Logger logger = LogManager.getLogger(UsergroupMysqlHelper.class);
 
     public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         boolean whereSet = false;
@@ -63,8 +61,8 @@ class UsergroupMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             List<Usergroup> ret = new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupListHandler);
             return ret;
@@ -102,8 +100,8 @@ class UsergroupMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
@@ -119,8 +117,8 @@ class UsergroupMysqlHelper implements Serializable {
         sql.append("SELECT * FROM benutzergruppen WHERE BenutzergruppenID = " + id);
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             Usergroup ret = new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupHandler);
             return ret;
@@ -155,8 +153,8 @@ class UsergroupMysqlHelper implements Serializable {
                 sql.append(") VALUES (");
                 sql.append(propValues);
                 sql.append(")");
-                if (logger.isTraceEnabled()) {
-                    logger.trace(sql.toString() + ", " + Arrays.toString(param));
+                if (log.isTraceEnabled()) {
+                    log.trace(sql.toString() + ", " + Arrays.toString(param));
                 }
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
                 if (id != null) {
@@ -169,8 +167,8 @@ class UsergroupMysqlHelper implements Serializable {
                 sql.append("berechtigung = ?, ");
                 sql.append("roles = ?, institution_id = ? ");
                 sql.append(" WHERE BenutzergruppenID = " + ro.getId() + ";");
-                if (logger.isTraceEnabled()) {
-                    logger.trace(sql.toString() + ", " + Arrays.toString(param));
+                if (log.isTraceEnabled()) {
+                    log.trace(sql.toString() + ", " + Arrays.toString(param));
                 }
 
                 run.update(connection, sql.toString(), param);
@@ -189,8 +187,8 @@ class UsergroupMysqlHelper implements Serializable {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
                 String sql = "DELETE FROM benutzergruppen WHERE BenutzergruppenID = " + ro.getId() + ";";
-                if (logger.isTraceEnabled()) {
-                    logger.trace(sql);
+                if (log.isTraceEnabled()) {
+                    log.trace(sql);
                 }
                 run.update(connection, sql);
             } finally {
@@ -209,8 +207,8 @@ class UsergroupMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             Object[] param = { stepId };
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString() + ", " + Arrays.toString(param));
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString() + ", " + Arrays.toString(param));
             }
             return run.query(connection, sql, UsergroupManager.resultSetToUsergroupListHandler, param);
         } finally {
@@ -240,8 +238,8 @@ class UsergroupMysqlHelper implements Serializable {
         sql.append("SELECT * FROM benutzergruppen WHERE titel = ?");
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             Usergroup ret = new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupHandler, name);
             return ret;
@@ -259,8 +257,8 @@ class UsergroupMysqlHelper implements Serializable {
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             List<Usergroup> ret = new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupListHandler);
             return ret;

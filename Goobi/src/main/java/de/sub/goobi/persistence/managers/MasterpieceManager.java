@@ -23,22 +23,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Masterpiece;
 
-public class MasterpieceManager implements Serializable {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -8123847555204812322L;
-    private static final Logger logger = LogManager.getLogger(MasterpieceManager.class);
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
+public class MasterpieceManager implements Serializable {
+    private static final long serialVersionUID = -8123847555204812322L;
+    
     public static List<Masterpiece> getMasterpiecesForProcess(int processId) {
         List<Masterpiece> list = new ArrayList<Masterpiece>();
         try {
             list = MasterpieceMysqlHelper.getMasterpiecesForProcess(processId);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
 
         return list;
@@ -48,7 +46,7 @@ public class MasterpieceManager implements Serializable {
         try {
             return MasterpieceMysqlHelper.getMasterpieceForTemplateID(id);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return null;
     }
@@ -57,7 +55,7 @@ public class MasterpieceManager implements Serializable {
         try {
             return MasterpieceMysqlHelper.countMasterpieces();
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return 0;
     }
@@ -67,7 +65,7 @@ public class MasterpieceManager implements Serializable {
         try {
             MasterpieceMysqlHelper.saveMasterpiece(object);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -75,7 +73,7 @@ public class MasterpieceManager implements Serializable {
         try {
             MasterpieceMysqlHelper.deleteMasterpiece(object);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
 
     }

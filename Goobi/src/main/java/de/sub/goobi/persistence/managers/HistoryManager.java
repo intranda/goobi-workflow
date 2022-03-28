@@ -24,21 +24,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.HistoryEvent;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 public class HistoryManager implements Serializable {
-
     private static final long serialVersionUID = -6083287984702600461L;
-
-    private static final Logger logger = LogManager.getLogger(HistoryManager.class);
 
     public static List<HistoryEvent> getHistoryEvents(int id) {
 
         try {
             return HistoryMysqlHelper.getHistoryEvents(id);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return new ArrayList<HistoryEvent>();
     }
@@ -47,7 +46,7 @@ public class HistoryManager implements Serializable {
         try {
             HistoryMysqlHelper.addHistory(myDate, order, value, type, processId);
         } catch (SQLException e) {
-            logger.error("Cannot not save history event", e);
+            log.error("Cannot not save history event", e);
         }
     }
 
@@ -59,7 +58,7 @@ public class HistoryManager implements Serializable {
         try {
             HistoryMysqlHelper.updateHistoryEvent(he);
         } catch (SQLException e) {
-            logger.error("Cannot not save history event", e);
+            log.error("Cannot not save history event", e);
         }
     }
 
@@ -67,7 +66,7 @@ public class HistoryManager implements Serializable {
         try {
             HistoryMysqlHelper.deleteHistoryEvent(he);
         } catch (SQLException e) {
-            logger.error("Cannot not save history event", e);
+            log.error("Cannot not save history event", e);
         }
     }
 
@@ -75,7 +74,7 @@ public class HistoryManager implements Serializable {
         try {
             return HistoryMysqlHelper.getNumberOfImages(processId);
         } catch (SQLException e) {
-            logger.error("Cannot get number of images", e);
+            log.error("Cannot get number of images", e);
         }
         return 0;
     }

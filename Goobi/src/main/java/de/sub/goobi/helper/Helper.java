@@ -75,8 +75,6 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
@@ -88,8 +86,10 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.forms.SpracheForm;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.extern.log4j.Log4j2;
 
 @WebListener
+@Log4j2
 public class Helper implements Serializable, ServletContextListener {
 
     /**
@@ -106,7 +106,6 @@ public class Helper implements Serializable, ServletContextListener {
 
     }
 
-    private static final Logger logger = LogManager.getLogger(Helper.class);
     private static final long serialVersionUID = -7449236652821237059L;
 
     private String myMetadatenVerzeichnis;
@@ -283,9 +282,9 @@ public class Helper implements Serializable, ServletContextListener {
         } else {
             // wenn kein Kontext da ist, dann die Meldungen in Log
             if (nurInfo) {
-                logger.info(compoundMessage);
+                log.info(compoundMessage);
             } else {
-                logger.error(compoundMessage);
+                log.error(compoundMessage);
             }
 
         }
@@ -383,7 +382,7 @@ public class Helper implements Serializable, ServletContextListener {
                             if (fileName.startsWith("messages_")) {
                                 final String language = fileName.substring(9, 11);
                                 reloadNeededMap.put(language, true);
-                                logger.debug(String.format("File '%s' (language: %s) has been modified, triggering bundle reload...",
+                                log.debug(String.format("File '%s' (language: %s) has been modified, triggering bundle reload...",
                                         changed.getFileName().toString(), language));
                             }
                         }
@@ -393,7 +392,7 @@ public class Helper implements Serializable, ServletContextListener {
                         // Thread.sleep(100);
                     }
                 } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 } catch (InterruptedException e) {
                     //Is thrown on tomcat destroy, does not need to be handled
                 }
@@ -425,9 +424,9 @@ public class Helper implements Serializable, ServletContextListener {
             if (!Files.isRegularFile(messagesFile)) {
                 try {
                     Files.createFile(messagesFile);
-                    logger.info("Created missing file: " + messagesFile.toAbsolutePath());
+                    log.info("Created missing file: " + messagesFile.toAbsolutePath());
                 } catch (IOException ioException) {
-                    logger.error("IOException wile creating missing file: " + messagesFile.toAbsolutePath());
+                    log.error("IOException wile creating missing file: " + messagesFile.toAbsolutePath());
                     ioException.printStackTrace();
                 }
             }
@@ -469,7 +468,7 @@ public class Helper implements Serializable, ServletContextListener {
                         //                  commonMessages.put(language, common);
                         commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
                     } catch (Exception e) {
-                        logger.warn("Cannot load messages for language " + language.getLanguage());
+                        log.warn("Cannot load messages for language " + language.getLanguage());
                     }
                 }
                 Path file = Paths.get(ConfigurationHelper.getInstance().getPathForLocalMessages());
@@ -706,7 +705,7 @@ public class Helper implements Serializable, ServletContextListener {
             InitialContext initialContext = new InitialContext();
             return (BeanManager) initialContext.lookup("java:comp/BeanManager");
         } catch (NamingException e) {
-            logger.warn("Couldn't get BeanManager through JNDI", e);
+            log.warn("Couldn't get BeanManager through JNDI", e);
             return null;
         }
     }

@@ -32,8 +32,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.IStatisticalQuestionLimitedTimeframe;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
@@ -47,14 +45,13 @@ import de.intranda.commons.chart.results.DataTable;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.extern.log4j.Log4j2;
 
 /*****************************************************************************
  * Imlpementation of {@link IStatisticalQuestion}. Statistical Request with predefined Values in data Table
- * 
- * @author Wulf Riebensahm
  ****************************************************************************/
+@Log4j2
 public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe {
-    final private Logger logger = LogManager.getLogger(StatQuestThroughput.class);
 
     private Date timeFilterFrom;
     private TimeUnit timeGrouping;
@@ -309,8 +306,8 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
         // thrown out in the first row to build header columns
         String headerFromSQL = sqlGenerator.getSQL(requestedType, null, true, true);
 
-        this.logger.trace(natSQL);
-        this.logger.trace(headerFromSQL);
+        log.trace(natSQL);
+        log.trace(headerFromSQL);
 
         return buildDataTableFromSQL(natSQL, headerFromSQL);
     }
@@ -329,9 +326,7 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 
         // adding time restrictions
         String natSQL = sqlGenerator.getSQL(requestedType, step, true, this.flagIncludeLoops);
-
-        this.logger.trace(natSQL);
-
+        log.trace(natSQL);
         return buildDataTableFromSQL(natSQL, null);
     }
 

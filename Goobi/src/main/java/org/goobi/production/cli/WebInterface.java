@@ -40,16 +40,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.ICommandPlugin;
 import org.goobi.production.plugin.interfaces.IPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class WebInterface extends HttpServlet {
-    private static final Logger logger = LogManager.getLogger(WebInterface.class);
     private static final long serialVersionUID = 6187229284187412768L;
 
     private String command = null;
@@ -97,8 +97,8 @@ public class WebInterface extends HttpServlet {
                 generateAnswer(resp, 400, "Empty command", "No command given. Use help as command to get more information.");
                 return;
             }
-            if (logger.isDebugEnabled()) {
-                logger.debug("command: " + this.command);
+            if (log.isDebugEnabled()) {
+                log.debug("command: " + this.command);
             }
 
             // check if command is allowed for used IP

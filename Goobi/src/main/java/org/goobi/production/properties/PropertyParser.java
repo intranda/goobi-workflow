@@ -34,17 +34,16 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.persistence.managers.MetadataManager;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class PropertyParser {
-    private static final Logger logger = LogManager.getLogger(PropertyParser.class);
 
     private static XMLConfiguration config = null;
 
@@ -62,7 +61,7 @@ public class PropertyParser {
             config.setReloadingStrategy(new FileChangedReloadingStrategy());
             config.setExpressionEngine(new XPathExpressionEngine());
         } catch (ConfigurationException e) {
-            logger.error(e);
+            log.error(e);
             config = new XMLConfiguration();
         }
     }
@@ -191,7 +190,7 @@ public class PropertyParser {
         //            try {
         //                config = new XMLConfiguration(path);
         //            } catch (ConfigurationException e) {
-        //                logger.error(e);
+        //                log.error(e);
         //                config = new XMLConfiguration();
         //            }
         //            config.setListDelimiter('&');
@@ -368,8 +367,8 @@ public class PropertyParser {
                 for (int j = 0; j <= count; j++) {
                     pp.getPossibleValues().add(config.getString("/property[" + position + "]/value[" + (j + 1) + "]"));
                 }
-                if (logger.isDebugEnabled()) {
-                    logger.debug("add property A " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
+                if (log.isDebugEnabled()) {
+                    log.debug("add property A " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
                 }
                 properties.add(pp);
 
@@ -396,8 +395,8 @@ public class PropertyParser {
                             pnew.setProzesseigenschaft(pe);
                             pnew.setValue(pe.getWert());
                             pnew.setContainer(pe.getContainer());
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("add property B " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
+                            if (log.isDebugEnabled()) {
+                                log.debug("add property B " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
                             }
                             properties.add(pnew);
                         }
@@ -422,15 +421,15 @@ public class PropertyParser {
                 pp.setValue(pe.getWert());
                 pp.setContainer(pe.getContainer());
                 pp.setType(Type.TEXT);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("add property C " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
+                if (log.isDebugEnabled()) {
+                    log.debug("add property C " + pp.getName() + " - " + pp.getValue() + " - " + pp.getContainer());
                 }
                 properties.add(pp);
 
             }
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug("all properties are " + properties.size());
+        if (log.isDebugEnabled()) {
+            log.debug("all properties are " + properties.size());
         }
 
         return properties;

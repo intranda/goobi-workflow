@@ -38,11 +38,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
-
 import de.intranda.commons.chart.results.DataRow;
 import de.intranda.commons.chart.results.DataTable;
 import de.sub.goobi.helper.FacesContextHelper;
+import lombok.extern.log4j.Log4j2;
 
 /*************************************************************************************
  * ProjectStatusDraw class creates and paints the chart depending on given parameters. The value parameters are transfered as
@@ -54,8 +53,8 @@ import de.sub.goobi.helper.FacesContextHelper;
  * @version 27.10.2009
  *************************************************************************************/
 
+@Log4j2
 public class ProjectStatusDraw {
-    private static final Logger logger = LogManager.getLogger(ProjectStatusDraw.class);
     private static final long MILLICSECS_PER_DAY = 1000 * 60 * 60 * 24;
     private static final int BORDERTOP = 50;
     private static int BORDERRIGHT = 50;
@@ -193,8 +192,8 @@ public class ProjectStatusDraw {
         if (duration == 0) {
             duration = 1;
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug(datePosition + " / " + duration);
+        if (log.isDebugEnabled()) {
+            log.debug(datePosition + " / " + duration);
         }
         float dash1[] = { 2.0f };
         BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, dash1, 0.0f);

@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.ResultOutput;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
@@ -55,6 +54,7 @@ import de.sub.goobi.statistik.StatistikLaufzeitSchritte;
 import de.sub.goobi.statistik.StatistikStatus;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * The Class StatisticsManager organizes all statistical questions by choosing the right implementation depening on {@link StatisticsMode}
@@ -64,10 +64,9 @@ import lombok.Setter;
  * @author Steffen Hankiewicz
  * @version 20.05.2009
  ****************************************************************************/
+@Log4j2
 public class StatisticsManager implements Serializable {
-
     private static final long serialVersionUID = -1070332559779545423L;
-    private static final Logger logger = LogManager.getLogger(StatisticsManager.class);
     /* simple JFreeChart Dataset for the old simple statistics */
     private Dataset jfreeDataset;
     @Getter
@@ -184,8 +183,8 @@ public class StatisticsManager implements Serializable {
          * -------------------------------- some debugging here
          * --------------------------------
          */
-        if (logger.isDebugEnabled()) {
-            logger.debug(sourceDateFrom + " - " + sourceDateTo + " - " + sourceNumberOfTimeUnits + " - " + sourceTimeUnit + "\n" + targetTimeUnit
+        if (log.isDebugEnabled()) {
+            log.debug(sourceDateFrom + " - " + sourceDateTo + " - " + sourceNumberOfTimeUnits + " - " + sourceTimeUnit + "\n" + targetTimeUnit
                     + " - " + targetCalculationUnit + " - " + targetResultOutput + " - " + showAverage);
         }
 
@@ -203,8 +202,8 @@ public class StatisticsManager implements Serializable {
                 try {
                     ((StatQuestThroughput) question).setIncludeLoops(includeLoops);
                 } catch (Exception e) { // just in case -> shouldn't happen
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("unexpected Exception, wrong class loaded", e);
+                    if (log.isDebugEnabled()) {
+                        log.debug("unexpected Exception, wrong class loaded", e);
                     }
                 }
             }

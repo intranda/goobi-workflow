@@ -34,7 +34,9 @@ import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class TiffWriterTask extends LongRunningTask {
 
     @Override
@@ -56,7 +58,7 @@ public class TiffWriterTask extends LongRunningTask {
         try {
             imageFolder = getProzess().getImagesDirectory();
         } catch (Exception e) {
-            logger.error(e);
+            log.error(e);
             setStatusMessage("Error while getting process data folder: " + e.getClass().getName() + " - " + e.getMessage());
             setStatusProgress(-1);
             return;
@@ -69,12 +71,12 @@ public class TiffWriterTask extends LongRunningTask {
 
         List<Path> myTifs = new ArrayList<Path>();
         listAllTifFiles(Paths.get(imageFolder), myTifs);
-        logger.trace(myTifs.size());
+        log.trace(myTifs.size());
 
         int progressStepSizePerImage = 50 / myTifs.size();
         for (Path file : myTifs) {
             setStatusProgress(getStatusProgress() + progressStepSizePerImage);
-            logger.trace(getStatusProgress() + ": " + file.toString());
+            log.trace(getStatusProgress() + ": " + file.toString());
         }
 
         /* ---------------------

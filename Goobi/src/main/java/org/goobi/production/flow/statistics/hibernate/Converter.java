@@ -30,21 +30,17 @@ import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.production.flow.statistics.StatisticsManager;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * class helps to convert results returned from Projections or Queries, where data types don't match the target data type
- * 
- * @author Wulf Riebensahm
- * @version 23.05.2009
  */
+@Log4j2
 public class Converter {
-    private static final Logger logger = LogManager.getLogger(Converter.class);
 
     Object myObject = null;
-
     SimpleDateFormat sdf;
 
     /**
@@ -54,7 +50,7 @@ public class Converter {
         try {
             this.sdf = new SimpleDateFormat("yyyy.MM.dd", new DateFormatSymbols(StatisticsManager.getLocale()));
         } catch (NullPointerException e) {
-            logger.error("Class statistics.hibernate.Converter Error, can't get FacesContext");
+            log.error("Class statistics.hibernate.Converter Error, can't get FacesContext");
         }
     }
 

@@ -54,17 +54,17 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Ldap;
 import org.goobi.beans.User;
 
 import de.sub.goobi.helper.encryption.MD4;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * This class is used by the DirObj example. It is a DirContext class that can be stored by service providers like the LDAP system providers.
  */
+@Log4j2
 public class LdapUser implements DirContext {
-    private static final Logger logger = LogManager.getLogger(LdapUser.class);
     String type;
     Attributes myAttrs;
 
@@ -133,14 +133,14 @@ public class LdapUser implements DirContext {
             try {
                 this.myAttrs.put("sambaLMPassword", toHexString(lmHash(inPassword)));
             } catch (Exception e) {
-                logger.error(e);
+                log.error(e);
             }
             /* NTLM */
             try {
                 byte hmm[] = MD4.mdfour(inPassword.getBytes("UnicodeLittleUnmarked"));
                 this.myAttrs.put("sambaNTPassword", toHexString(hmm));
             } catch (UnsupportedEncodingException e) {
-                logger.error(e);
+                log.error(e);
             }
 
             /*
@@ -169,9 +169,9 @@ public class LdapUser implements DirContext {
         rueckgabe = rueckgabe.replaceAll("\\{user full name\\}", inUser.getVorname() + " " + inUser.getNachname());
         rueckgabe = rueckgabe.replaceAll("\\{uidnumber\\*2\\+1000\\}", String.valueOf(Integer.parseInt(inUidNumber) * 2 + 1000));
         rueckgabe = rueckgabe.replaceAll("\\{uidnumber\\*2\\+1001\\}", String.valueOf(Integer.parseInt(inUidNumber) * 2 + 1001));
-        if (logger.isDebugEnabled()) {
-            logger.debug("Replace instring: " + inString + " - " + inUser + " - " + inUidNumber);
-            logger.debug("Replace outstring: " + rueckgabe);
+        if (log.isDebugEnabled()) {
+            log.debug("Replace instring: " + inString + " - " + inUser + " - " + inUidNumber);
+            log.debug("Replace outstring: " + rueckgabe);
         }
         return rueckgabe;
     }

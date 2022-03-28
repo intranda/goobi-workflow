@@ -45,8 +45,6 @@ import javax.faces.model.SelectItem;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.beans.Ruleset;
 import org.reflections.Reflections;
@@ -56,6 +54,7 @@ import org.reflections.util.ConfigurationBuilder;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperComparator;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.Corporate;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -77,8 +76,8 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 
+@Log4j2
 public class MetadatenHelper implements Comparator<Object> {
-    private static final Logger logger = LogManager.getLogger(MetadatenHelper.class);
     public static final int PAGENUMBER_FIRST = 0;
     public static final int PAGENUMBER_LAST = 1;
 
@@ -311,7 +310,7 @@ public class MetadatenHelper implements Comparator<Object> {
                 newTypes.add(dst);
             } else {
                 Helper.setMeldung(null, "Regelsatz-Fehler: ", " DocstructType " + tempTitel + " nicht definiert");
-                logger.error("getAddableDocStructTypen() - Regelsatz-Fehler: DocstructType " + tempTitel + " nicht definiert");
+                log.error("getAddableDocStructTypen() - Regelsatz-Fehler: DocstructType " + tempTitel + " nicht definiert");
             }
         }
 
@@ -675,8 +674,8 @@ public class MetadatenHelper implements Comparator<Object> {
                 name1 = mdt1.getNameByLanguage(this.language);
                 name2 = mdt2.getNameByLanguage(this.language);
             } catch (java.lang.NullPointerException e) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Language " + language + " for metadata " + s1.getType() + " or " + s2.getType() + " is missing in ruleset");
+                if (log.isDebugEnabled()) {
+                    log.debug("Language " + language + " for metadata " + s1.getType() + " or " + s2.getType() + " is missing in ruleset");
                 }
                 return 0;
             }
@@ -830,7 +829,7 @@ public class MetadatenHelper implements Comparator<Object> {
             } catch (IllegalAccessException e) {
             } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             } catch (PreferencesException e) {
-                logger.error(e);
+                log.error(e);
             }
 
         }
@@ -851,7 +850,7 @@ public class MetadatenHelper implements Comparator<Object> {
             } catch (IllegalAccessException e) {
             } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             } catch (PreferencesException e) {
-                logger.error(e);
+                log.error(e);
             }
 
         }
@@ -874,7 +873,7 @@ public class MetadatenHelper implements Comparator<Object> {
             ds = gdzfile.getDigitalDocument().getPhysicalDocStruct();
             getMetadataFromDocstruct(includeAuthority, metadataList, ds);
         } catch (PreferencesException e) {
-            logger.error(e);
+            log.error(e);
         }
         return metadataList;
     }

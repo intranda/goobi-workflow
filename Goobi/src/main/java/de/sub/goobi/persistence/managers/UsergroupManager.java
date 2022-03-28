@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.User;
@@ -34,21 +33,18 @@ import org.goobi.beans.Usergroup;
 import org.jfree.util.Log;
 
 import de.sub.goobi.helper.exceptions.DAOException;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class UsergroupManager implements IManager, Serializable {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -6021826136861140126L;
-
-    private static final Logger logger = LogManager.getLogger(UsergroupManager.class);
+        private static final long serialVersionUID = -6021826136861140126L;
 
     public static Usergroup getUsergroupById(int id) throws DAOException {
         Usergroup o = null;
         try {
             o = UsergroupMysqlHelper.getUsergroupById(id);
         } catch (SQLException e) {
-            logger.error("error while getting Usergroup with id " + id, e);
+            log.error("error while getting Usergroup with id " + id, e);
             throw new DAOException(e);
         }
         return o;
@@ -58,7 +54,7 @@ public class UsergroupManager implements IManager, Serializable {
         try {
             UsergroupMysqlHelper.saveUsergroup(o);
         } catch (SQLException e) {
-            logger.error("error while saving Usergroup with id " + o.getId(), e);
+            log.error("error while saving Usergroup with id " + o.getId(), e);
             throw new DAOException(e);
         }
     }
@@ -67,7 +63,7 @@ public class UsergroupManager implements IManager, Serializable {
         try {
             UsergroupMysqlHelper.deleteUsergroup(o);
         } catch (SQLException e) {
-            logger.error("error while deleting Usergroup with id " + o.getId(), e);
+            log.error("error while deleting Usergroup with id " + o.getId(), e);
             throw new DAOException(e);
         }
     }
@@ -77,7 +73,7 @@ public class UsergroupManager implements IManager, Serializable {
         try {
             answer = UsergroupMysqlHelper.getUsergroups(order, filter, start, count, institution);
         } catch (SQLException e) {
-            logger.error("error while getting Usergroups", e);
+            log.error("error while getting Usergroups", e);
             throw new DAOException(e);
         }
         return answer;
@@ -88,7 +84,7 @@ public class UsergroupManager implements IManager, Serializable {
         try {
             answer = UsergroupMysqlHelper.getUsergroupsForUser(user);
         } catch (SQLException e) {
-            logger.error("error while getting Usergroups", e);
+            log.error("error while getting Usergroups", e);
             throw new DAOException(e);
         }
         return answer;
@@ -105,7 +101,7 @@ public class UsergroupManager implements IManager, Serializable {
         try {
             num = UsergroupMysqlHelper.getUsergroupCount(order, filter, institution);
         } catch (SQLException e) {
-            logger.error("error while getting Usergroup hit size", e);
+            log.error("error while getting Usergroup hit size", e);
             throw new DAOException(e);
         }
         return num;
@@ -172,7 +168,7 @@ public class UsergroupManager implements IManager, Serializable {
         try {
             userGroupList = UsergroupMysqlHelper.getUserGroupsForStep(stepId);
         } catch (SQLException e) {
-            logger.error("Cannot not load user for step with id " + stepId, e);
+            log.error("Cannot not load user for step with id " + stepId, e);
         }
         return userGroupList;
     }
@@ -202,7 +198,7 @@ public class UsergroupManager implements IManager, Serializable {
         try {
             o = UsergroupMysqlHelper.getUsergroupByName(name);
         } catch (SQLException e) {
-            logger.error("error while getting Usergroup with name " + name, e);
+            log.error("error while getting Usergroup with name " + name, e);
         }
         return o;
     }
@@ -212,7 +208,7 @@ public class UsergroupManager implements IManager, Serializable {
         try {
             answer = UsergroupMysqlHelper.getAllUsergroups();
         } catch (SQLException e) {
-            logger.error("error while getting Usergroups", e);
+            log.error("error while getting Usergroups", e);
         }
         return answer;
     }

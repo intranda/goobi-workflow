@@ -23,22 +23,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Template;
 
-public class TemplateManager implements Serializable {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -7969538039899200231L;
-    private static final Logger logger = LogManager.getLogger(TemplateManager.class);
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
+public class TemplateManager implements Serializable {
+    private static final long serialVersionUID = -7969538039899200231L;
+    
     public static List<Template> getTemplatesForProcess(int processId) {
         List<Template> templates = new ArrayList<Template>();
         try {
             templates = TemplateMysqlHelper.getTemplatesForProcess(processId);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
 
         return templates;
@@ -48,7 +46,7 @@ public class TemplateManager implements Serializable {
         try {
             return TemplateMysqlHelper.getTemplateForTemplateID(templateId);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return null;
     }
@@ -57,7 +55,7 @@ public class TemplateManager implements Serializable {
         try {
             return TemplateMysqlHelper.getCountOfTemplates();
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return 0;
     }
@@ -67,7 +65,7 @@ public class TemplateManager implements Serializable {
         try {
             TemplateMysqlHelper.saveTemplate(template);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -75,7 +73,7 @@ public class TemplateManager implements Serializable {
         try {
             TemplateMysqlHelper.deleteTemplate(template);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
 
     }

@@ -7,12 +7,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Date;
 import java.util.HashMap;
 
 import com.google.gson.Gson;
-
-import de.sub.goobi.helper.Helper;
 
 /**
  * Class for saving comments per image file

@@ -10,16 +10,13 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import com.google.gson.Gson;
 
 import de.sub.goobi.helper.Helper;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -30,9 +27,8 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 
+@Log4j2
 public class PageAreaManager {
-
-    private static final Logger logger = LogManager.getLogger(Metadaten.class);
 
     /**
      * Internal field to keep newly created page areas to be attached to a DocStruct yet to be created
@@ -169,7 +165,7 @@ public class PageAreaManager {
         try {
             page.addChild(pageArea);
         } catch (TypeNotAllowedAsChildException e) {
-            logger.error("Could not add area to page ", e);
+            log.error("Could not add area to page ", e);
         }
     }
 

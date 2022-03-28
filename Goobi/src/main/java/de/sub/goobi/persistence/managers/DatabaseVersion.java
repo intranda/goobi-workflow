@@ -35,8 +35,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.beans.Institution;
@@ -49,11 +47,12 @@ import org.goobi.vocabulary.Vocabulary;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class DatabaseVersion {
 
     public static final int EXPECTED_VERSION = 47;
-    private static final Logger logger = LogManager.getLogger(DatabaseVersion.class);
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
 
@@ -66,19 +65,19 @@ public class DatabaseVersion {
         sql.append("SELECT * FROM databaseversion");
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             int currentValue = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
             return currentValue;
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -90,143 +89,143 @@ public class DatabaseVersion {
         try {
             switch (currentVersion) {
                 case 0:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 1.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 1.");
                     }
                     updateToVersion1();
                     currentVersion = 1;
                     tempVersion = 1;
                 case 1:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 2.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 2.");
                     }
                     updateToVersion2();
                     tempVersion ++;
                 case 2:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 3.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 3.");
                     }
                     updateToVersion3();
                     tempVersion ++;
                 case 3:
                     tempVersion ++;
                 case 4:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 5.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 5.");
                     }
                     updateToVersion5();
                     tempVersion ++;
                 case 5:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 6.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 6.");
                     }
                     updateToVersion6();
                     tempVersion ++;
                 case 6:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 7.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 7.");
                     }
                     updateToVersion7();
                     tempVersion ++;
                 case 7:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 8.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 8.");
                     }
                     updateToVersion8();
                     tempVersion ++;
                 case 8:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 9.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 9.");
                     }
                     updateToVersion9();
                     tempVersion ++;
                 case 9:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 10.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 10.");
                     }
                     updateToVersion10();
                     tempVersion ++;
                 case 10:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 11.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 11.");
                     }
                     updateToVersion11();
                     tempVersion ++;
                 case 11:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 12.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 12.");
                     }
                     updateToVersion12();
                     tempVersion ++;
                 case 12:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 13.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 13.");
                     }
                     updateToVersion13();
                     tempVersion ++;
                 case 13:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 14.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 14.");
                     }
                     updateToVersion14();
                     tempVersion ++;
                 case 14:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 15.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 15.");
                     }
                     updateToVersion15();
                     tempVersion ++;
                 case 15:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 16.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 16.");
                     }
                     updateToVersion16();
                     tempVersion ++;
                 case 16:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 17.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 17.");
                     }
                     updateToVersion17();
                     tempVersion ++;
                 case 17:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 18.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 18.");
                     }
                     updateToVersion18();
                     tempVersion ++;
                 case 18:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 19.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 19.");
                     }
                     updateToVersion19();
                     tempVersion ++;
                 case 19:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 20.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 20.");
                     }
                     updateToVersion20();
                     tempVersion ++;
                 case 20:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 21.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 21.");
                     }
                     updateToVersion21();
                     tempVersion ++;
                 case 21:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 22.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 22.");
                     }
                     updateToVersion22();
                     tempVersion ++;
                 case 22:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 23.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 23.");
                     }
                     updateToVersion23();
                     tempVersion ++;
                 case 23:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 24.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 24.");
                     }
                     updateToVersion24();
                     tempVersion ++;
@@ -239,141 +238,141 @@ public class DatabaseVersion {
                         runSql("alter table prozesse add column mediaFolderExists boolean default false;");
                     }
                 case 26:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 27.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 27.");
                     }
                     updateToVersion27();
                     tempVersion ++;
                 case 27:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 28.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 28.");
                     }
                     updateToVersion28();
                     tempVersion ++;
                 case 28:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 29.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 29.");
                     }
                     updateToVersion29();
                     tempVersion ++;
                 case 29:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 30.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 30.");
                     }
                     updateToVersion30();
                     tempVersion ++;
                 case 30:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 31.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 31.");
                     }
                     updateToVersion31();
                     tempVersion ++;
                 case 31:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 32.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 32.");
                     }
                     updateToVersion32();
                     tempVersion ++;
                 case 32:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 33.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 33.");
                     }
                     updateToVersion33();
                     tempVersion ++;
                 case 33:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 34.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 34.");
                     }
                     updateToVersion34();
                     tempVersion ++;
                 case 34:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 35.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 35.");
                     }
                     updateToVersion35();
                     tempVersion ++;
                 case 35:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 36.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 36.");
                     }
                     updateToVersion36();
                     tempVersion ++;
                 case 36:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 37.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 37.");
                     }
                     updateToVersion37();
                     tempVersion ++;
                 case 37:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 38.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 38.");
                     }
                     updateToVersion38();
                     tempVersion ++;
                 case 38:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 39.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 39.");
                     }
                     updateToVersion39();
                     tempVersion ++;
                 case 39:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 40.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 40.");
                     }
                     updateToVersion40();
                     tempVersion ++;
                 case 40:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 41.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 41.");
                     }
                     updateToVersion41();
                     tempVersion ++;
                 case 41:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 42.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 42.");
                     }
                     updateToVersion42();
                     tempVersion ++;
                 case 42:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 43.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 43.");
                     }
                     updateToVersion43();
                     tempVersion ++;
                 case 43:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 44.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 44.");
                     }
                     updateToVersion44();
                     tempVersion ++;
                 case 44:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 45.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 45.");
                     }
                     updateToVersion45();
                     tempVersion ++;
                 case 45:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 46.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 46.");
                     }
                     updateToVersion46();
                     tempVersion ++;
                 case 46:
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Update database to version 47.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 47.");
                     }
                     updateToVersion47();
                     tempVersion ++;
                 default:
                     // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
-                    if (logger.isTraceEnabled()) {
-                        logger.trace("Database is up to date.");
+                    if (log.isTraceEnabled()) {
+                        log.trace("Database is up to date.");
                     }
             }
         }catch(Exception e) {
-            logger.error(e);
-            logger.warn("An Error occured trying to update Database to version "+(tempVersion+1));
+            log.error(e);
+            log.warn("An Error occured trying to update Database to version "+(tempVersion+1));
             updateDatabaseVersion(currentVersion, tempVersion);
         }
     }
@@ -436,7 +435,7 @@ public class DatabaseVersion {
                 UserManager.hideUser(user);
             }
         } catch (SQLException | DAOException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -593,7 +592,7 @@ public class DatabaseVersion {
                 DatabaseVersion.runSql("drop table vocabularies");
 
             } catch (SQLException e) {
-                logger.error(e);
+                log.error(e);
             } finally {
                 if (connection != null) {
                     try {
@@ -616,7 +615,7 @@ public class DatabaseVersion {
             runner.update(connection, "alter table benutzer add column tasks_sort_order varchar(255) DEFAULT NULL;");
 
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -643,7 +642,7 @@ public class DatabaseVersion {
                 runner.update(connection, "alter table prozesse add index status(sortHelperStatus);");
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -663,7 +662,7 @@ public class DatabaseVersion {
                 runner.update(connection, "alter table projekte add column project_identifier varchar(255) DEFAULT NULL");
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -689,7 +688,7 @@ public class DatabaseVersion {
                         "create table external_mq_results (ProzesseID int(11), SchritteID int(11), time datetime, scriptName varchar(255))");
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -854,7 +853,7 @@ public class DatabaseVersion {
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -866,7 +865,7 @@ public class DatabaseVersion {
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -879,7 +878,7 @@ public class DatabaseVersion {
                 runner.update(connection, "alter table schritte add column runInMessageQueue tinyint(1);");
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -927,7 +926,7 @@ public class DatabaseVersion {
                 runner.update(connection, sql.toString());
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -1006,14 +1005,14 @@ public class DatabaseVersion {
                         if (!"utf8mb4".equals(table[1])) {
                             String tableName = (String) table[0];
                             String conversion = "ALTER TABLE " + tableName + " CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
-                            logger.info("Convert table to utf8mb4, old encoding of " + tableName + " is " + table[1]);
+                            log.info("Convert table to utf8mb4, old encoding of " + tableName + " is " + table[1]);
                             runner.update(connection, conversion);
                         }
                     }
                 }
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -1032,7 +1031,7 @@ public class DatabaseVersion {
             QueryRunner runner = new QueryRunner();
             runner.update(connection, "alter table schritte add column httpCloseStep tinyint(1);");
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -1053,7 +1052,7 @@ public class DatabaseVersion {
             runner.update(connection, "alter table schritte add column httpUrl text;");
             runner.update(connection, "alter table schritte add column httpJsonBody text;");
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -1071,7 +1070,7 @@ public class DatabaseVersion {
             QueryRunner runner = new QueryRunner();
             runner.update(connection, "alter table processlog modify creationDate datetime default CURRENT_TIMESTAMP ");
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -1092,7 +1091,7 @@ public class DatabaseVersion {
             QueryRunner runner = new QueryRunner();
             runner.update(connection, "alter table benutzer add column customColumns text DEFAULT null");
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -1116,7 +1115,7 @@ public class DatabaseVersion {
             runner.update(connection,
                     "CREATE TABLE `metadata_json` (`processid` int(11) DEFAULT NULL, `value` text DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -1136,7 +1135,7 @@ public class DatabaseVersion {
             QueryRunner runner = new QueryRunner();
             runner.update(connection, "alter table schritte add column generateDocket tinyint(1) DEFAULT '0'");
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -1157,7 +1156,7 @@ public class DatabaseVersion {
                 new QueryRunner().update(connection,
                         "CREATE FULLTEXT INDEX idx_metadata_value ON metadata (value) COMMENT '' ALGORITHM DEFAULT LOCK DEFAULT");
             } catch (SQLException e) {
-                logger.error(e);
+                log.error(e);
             } finally {
                 if (connection != null) {
                     try {
@@ -1196,7 +1195,7 @@ public class DatabaseVersion {
             new QueryRunner().update(connection, createBatches.toString());
             new QueryRunner().update(connection, insertBatches);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -1249,13 +1248,13 @@ public class DatabaseVersion {
             runner.update(connection, "alter table vorlageneigenschaften change column IstObligatorisch IstObligatorisch tinyint(1) DEFAULT '0'");
             runner.update(connection, "alter table werkstueckeeigenschaften change column IstObligatorisch IstObligatorisch tinyint(1) DEFAULT '0'");
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1271,13 +1270,13 @@ public class DatabaseVersion {
             createUserColumns(connection, runner);
 
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1311,13 +1310,13 @@ public class DatabaseVersion {
         } catch (SQLException |
 
                 DAOException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1352,13 +1351,13 @@ public class DatabaseVersion {
                     "update benutzergruppen set roles='Statistics_CurrentUsers;Task_List;Task_Menu;Task_Mets_Metadata;Task_Mets_Pagination;Task_Mets_Structure;' where berechtigung = 4;");
 
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1374,13 +1373,13 @@ public class DatabaseVersion {
             runner.update(connection, "alter table benutzergruppen add column roles text default null;");
 
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1402,11 +1401,11 @@ public class DatabaseVersion {
             connection = MySQLHelper.getInstance().getConnection();
             runner.update(connection, sqlStatement);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
 
         try {
-            logger.info("Convert old wikifield to new process log. This might run a while.");
+            log.info("Convert old wikifield to new process log. This might run a while.");
             String sql = "SELECT ProzesseID, wikifield from prozesse where wikifield !=''";
             @SuppressWarnings("unchecked")
             List<Object> rawData = ProcessManager.runSQL(sql);
@@ -1456,8 +1455,8 @@ public class DatabaseVersion {
                                 try {
                                     date = getDate(dateString.substring(0, dateString.length() - 1));
                                 } catch (Exception e) {
-                                    if (logger.isDebugEnabled()) {
-                                        logger.debug("Process " + processId + ": cannot convert date " + dateString);
+                                    if (log.isDebugEnabled()) {
+                                        log.debug("Process " + processId + ": cannot convert date " + dateString);
                                     }
                                 }
                             }
@@ -1488,7 +1487,7 @@ public class DatabaseVersion {
                                 try {
                                     runner.update(connection, header + sb.toString());
                                 } catch (SQLException e) {
-                                    logger.error(e);
+                                    log.error(e);
                                 }
 
                                 sb = new StringBuilder();
@@ -1506,11 +1505,11 @@ public class DatabaseVersion {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
-        logger.info("Finished conversion of old wikifield to new process log.");
+        log.info("Finished conversion of old wikifield to new process log.");
     }
 
     @SuppressWarnings("deprecation")
@@ -1550,13 +1549,13 @@ public class DatabaseVersion {
             runner.update(connection, "alter table benutzer add column metsDisplayHierarchy boolean default false;");
 
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1570,13 +1569,13 @@ public class DatabaseVersion {
             QueryRunner runner = new QueryRunner();
             runner.update(connection, "alter table schritte add column updateMetadataIndex boolean default false;");
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1591,13 +1590,13 @@ public class DatabaseVersion {
             runner.update(connection, "alter table benutzer add column metseditortime int(11) default null");
             runner.update(connection, "alter table projekte add column srurl varchar(255) default null;");
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1611,13 +1610,13 @@ public class DatabaseVersion {
             runner.update(connection, "alter table metadata add column print text default null;");
             runner.update(connection, "ALTER TABLE metadata MODIFY print text CHARACTER SET utf8 COLLATE utf8_general_ci");
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1634,13 +1633,13 @@ public class DatabaseVersion {
             runner.update(connection, "alter table schritte modify typAutomatischScriptpfad4 text;");
             runner.update(connection, "alter table schritte modify typAutomatischScriptpfad5 text;");
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1656,13 +1655,13 @@ public class DatabaseVersion {
             runner.update(connection, "alter table projekte add column metsRightsSponsorSiteURL varchar(255) default null;");
             runner.update(connection, "alter table projekte add column metsRightsLicense varchar(255) default null;");
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1677,13 +1676,13 @@ public class DatabaseVersion {
             QueryRunner runner = new QueryRunner();
             runner.update(connection, sql.toString());
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1698,13 +1697,13 @@ public class DatabaseVersion {
             QueryRunner runner = new QueryRunner();
             runner.update(connection, sql.toString());
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1729,13 +1728,13 @@ public class DatabaseVersion {
             runner.update(connection, "alter table benutzer add column displayOnlyOpenTasks boolean default false;");
             runner.update(connection, "alter table benutzer add column displayModulesColumn boolean default false;");
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1748,21 +1747,21 @@ public class DatabaseVersion {
         sql.append("INSERT INTO databaseversion (version)  VALUES  (1)");
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             QueryRunner runner = new QueryRunner();
             runner.update(connection, "CREATE TABLE databaseversion (version int(11))");
             runner.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
             // check for column delayStep
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1771,7 +1770,7 @@ public class DatabaseVersion {
             QueryRunner runner = new QueryRunner();
             runner.query(connection, "Select delayStep from schritte limit 1", MySQLHelper.resultSetToBooleanHandler);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
             if (e.getMessage().startsWith("Unknown column")) {
                 QueryRunner runner = new QueryRunner();
                 try {
@@ -1785,7 +1784,7 @@ public class DatabaseVersion {
                             + "ALTER column typBeimAnnehmenModulUndAbschliessen SET DEFAULT false," + "ALTER column typScriptStep SET DEFAULT false,"
                             + "ALTER column batchStep SET DEFAULT false," + "ADD delayStep  boolean default false;");
                 } catch (SQLException e1) {
-                    logger.error(e1);
+                    log.error(e1);
                 }
             }
 
@@ -1794,7 +1793,7 @@ public class DatabaseVersion {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1807,19 +1806,19 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(tableMetadata);
+            if (log.isTraceEnabled()) {
+                log.trace(tableMetadata);
             }
             QueryRunner runner = new QueryRunner();
             runner.update(connection, tableMetadata);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1831,20 +1830,20 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(utf8);
+            if (log.isTraceEnabled()) {
+                log.trace(utf8);
             }
             QueryRunner runner = new QueryRunner();
             runner.update(connection, utf8);
             runner.update(connection, index);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
                     MySQLHelper.closeConnection(connection);
                 } catch (SQLException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1885,7 +1884,7 @@ public class DatabaseVersion {
                 UserManager.addUsergroupAssignment(user, usergroup.getId());
             }
         } catch (DAOException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -1911,7 +1910,7 @@ public class DatabaseVersion {
                 return StringUtils.isNotBlank(value);
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -1947,7 +1946,7 @@ public class DatabaseVersion {
                 return StringUtils.isNotBlank(value);
             }
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -1971,10 +1970,10 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            // logger.debug(sql);
+            // log.debug(sql);
             new QueryRunner().update(connection, sql);
         } catch (SQLException e) {
-            //logger.error(e);
+            //log.error(e);
             throw e;
         } finally {
             if (connection != null) {
@@ -2007,7 +2006,7 @@ public class DatabaseVersion {
             Integer value = new QueryRunner().query(connection, sb.toString(), MySQLHelper.resultSetToIntegerHandler);
             return value > 0;
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -2037,7 +2036,7 @@ public class DatabaseVersion {
                     new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler, connection.getCatalog(), tableName, indexName);
             return value > 0;
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         } finally {
             if (connection != null) {
                 try {
@@ -2075,7 +2074,7 @@ public class DatabaseVersion {
             runSql(sb.toString());
         } catch (SQLException e) {
             // TODO Auto-generated catch block
-            logger.error(e);
+            log.error(e);
         }
     }
 

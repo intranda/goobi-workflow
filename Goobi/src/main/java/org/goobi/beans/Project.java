@@ -30,8 +30,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.production.flow.statistics.StepInformation;
 
 import de.sub.goobi.helper.ProjectHelper;
@@ -40,10 +38,11 @@ import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class Project implements Serializable, DatabaseObject, Comparable<Project> {
     private static final long serialVersionUID = -8543713331407761617L;
-    private static final Logger logger = LogManager.getLogger(Project.class);
     @Getter
     @Setter
     private Integer id;
@@ -170,7 +169,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         //			this.prozesse = null;
         //			this.filegroups = null;
         //		} catch (DAOException e) {
-        //			logger.error("error during lazy loading of User", e);
+        //			log.error("error during lazy loading of User", e);
         //		}
     }
 
@@ -228,7 +227,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
      */
     public List<StepInformation> getWorkFlow() {
         if (this.commonWorkFlow == null) {
-            logger.trace("create common workflow");
+            log.trace("create common workflow");
             if (this.id != null) {
                 this.commonWorkFlow = ProjectHelper.getProjectWorkFlowOverview(this);
             } else {
@@ -383,7 +382,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         try {
             ProjectManager.saveProject(p);
         } catch (DAOException e) {
-            logger.error(e);
+            log.error(e);
         }
 
         try {
@@ -395,7 +394,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
                 }
             }
         } catch (DAOException e) {
-            logger.error(e);
+            log.error(e);
         }
 
         p.setFilegroups(getFilegroups());

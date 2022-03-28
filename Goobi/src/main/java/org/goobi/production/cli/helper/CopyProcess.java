@@ -42,8 +42,6 @@ import javax.naming.NamingException;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -62,7 +60,6 @@ import org.jdom2.input.SAXBuilder;
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.AdditionalField;
-import de.sub.goobi.forms.ProzesskopieForm;
 import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
@@ -77,6 +74,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.unigoettingen.sub.search.opac.ConfigOpac;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.DocStructType;
@@ -91,9 +89,9 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
+@Log4j2
 public class CopyProcess {
 
-    private static final Logger logger = LogManager.getLogger(ProzesskopieForm.class);
     UghHelper ughHelp = new UghHelper();
     private BeanHelper bhelp = new BeanHelper();
     private Fileformat myRdf;
@@ -165,9 +163,9 @@ public class CopyProcess {
             this.myRdf = MetadatenHelper.getFileformatByName(type, prozessVorlage.getRegelsatz());
             this.myRdf.read(this.metadataFile);
         } catch (ReadException e) {
-            logger.error(e);
+            log.error(e);
         } catch (IOException e) {
-            logger.error(e);
+            log.error(e);
         }
         ;
         this.prozessKopie = new Process();
@@ -207,9 +205,9 @@ public class CopyProcess {
             this.myRdf = MetadatenHelper.getFileformatByName(type, prozessVorlage.getRegelsatz());
             this.myRdf.read(this.metadataFile);
         } catch (ReadException e) {
-            logger.error(e);
+            log.error(e);
         } catch (IOException e) {
-            logger.error(e);
+            log.error(e);
         }
         ;
         this.prozessKopie = new Process();
@@ -491,7 +489,7 @@ public class CopyProcess {
             removeCollections(colStruct);
         } catch (PreferencesException e) {
             Helper.setFehlerMeldung("Fehler beim Anlegen des Vorgangs", e);
-            logger.error("Fehler beim Anlegen des Vorgangs", e);
+            log.error("Fehler beim Anlegen des Vorgangs", e);
         } catch (RuntimeException e) {
             /*
              * das Firstchild unterhalb des Topstructs konnte nicht ermittelt werden
@@ -667,7 +665,7 @@ public class CopyProcess {
             //			dao.refresh(this.prozessKopie);
         } catch (DAOException e) {
             e.printStackTrace();
-            logger.error("error on save: ", e);
+            log.error("error on save: ", e);
             return this.prozessKopie;
         }
 
@@ -801,15 +799,15 @@ public class CopyProcess {
 
                 } catch (ugh.exceptions.DocStructHasNoTypeException e) {
                     Helper.setFehlerMeldung("DocStructHasNoTypeException", e.getMessage());
-                    logger.error("creation of new process throws an error: ", e);
+                    log.error("creation of new process throws an error: ", e);
                 } catch (UghHelperException e) {
                     Helper.setFehlerMeldung("UghHelperException", e.getMessage());
-                    logger.error("creation of new process throws an error: ", e);
+                    log.error("creation of new process throws an error: ", e);
                 } catch (MetadataTypeNotAllowedException e) {
                     Helper.setFehlerMeldung("MetadataTypeNotAllowedException", e.getMessage());
-                    logger.error("creation of new process throws an error: ", e);
+                    log.error("creation of new process throws an error: ", e);
                 } catch (TypeNotAllowedForParentException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         } else {
@@ -825,7 +823,7 @@ public class CopyProcess {
                 ProcessManager.saveProcess(this.prozessKopie);
             } catch (DAOException e) {
                 e.printStackTrace();
-                logger.error("error on save: ", e);
+                log.error("error on save: ", e);
                 return this.prozessKopie;
             }
         }
@@ -876,7 +874,7 @@ public class CopyProcess {
             //			dao.refresh(this.prozessKopie);
         } catch (DAOException e) {
             e.printStackTrace();
-            logger.error("error on save: ", e);
+            log.error("error on save: ", e);
             return this.prozessKopie;
         }
 
@@ -892,7 +890,7 @@ public class CopyProcess {
             StorageProvider.getInstance().createDirectories(f);
         }
         //            Helper.setFehlerMeldung("Could not create process directory");
-        //            logger.error("Could not create process directory");
+        //            log.error("Could not create process directory");
         //            return this.prozessKopie;
         //        }
 
@@ -908,7 +906,7 @@ public class CopyProcess {
                 ProcessManager.saveProcess(this.prozessKopie);
             } catch (DAOException e) {
                 e.printStackTrace();
-                logger.error("error on save: ", e);
+                log.error("error on save: ", e);
                 return this.prozessKopie;
             }
         }
@@ -973,9 +971,9 @@ public class CopyProcess {
             ff = MetadatenHelper.getFileformatByName(type, prozessVorlage.getRegelsatz());
             ff.read(this.metadataFile);
         } catch (ReadException e) {
-            logger.error(e);
+            log.error(e);
         } catch (IOException e) {
-            logger.error(e);
+            log.error(e);
         }
 
     }
@@ -1152,10 +1150,10 @@ public class CopyProcess {
                 }
             }
         } catch (JDOMException e1) {
-            logger.error("error while parsing digital collections", e1);
+            log.error("error while parsing digital collections", e1);
             Helper.setFehlerMeldung("Error while parsing digital collections", e1);
         } catch (IOException e1) {
-            logger.error("error while parsing digital collections", e1);
+            log.error("error while parsing digital collections", e1);
             Helper.setFehlerMeldung("Error while parsing digital collections", e1);
         }
 

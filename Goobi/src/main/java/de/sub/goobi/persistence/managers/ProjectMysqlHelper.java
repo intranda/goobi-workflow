@@ -30,20 +30,16 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
 
-class ProjectMysqlHelper implements Serializable {
+import lombok.extern.log4j.Log4j2;
 
-    /**
-     * 
-     */
+@Log4j2
+class ProjectMysqlHelper implements Serializable {
     private static final long serialVersionUID = -495492266831804752L;
-    private static final Logger logger = LogManager.getLogger(ProjectMysqlHelper.class);
 
     public static List<Project> getProjects(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         boolean whereSet = false;
@@ -71,8 +67,8 @@ class ProjectMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             List<Project> ret = new QueryRunner().query(connection, sql.toString(), ProjectManager.resultSetToProjectListHandler);
             return ret;
@@ -114,8 +110,8 @@ class ProjectMysqlHelper implements Serializable {
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } finally {
@@ -131,8 +127,8 @@ class ProjectMysqlHelper implements Serializable {
         sql.append("SELECT * FROM projekte WHERE ProjekteID = " + id);
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             Project ret = new QueryRunner().query(connection, sql.toString(), ProjectManager.resultSetToProjectHandler);
             return ret;
@@ -149,8 +145,8 @@ class ProjectMysqlHelper implements Serializable {
         sql.append("SELECT * FROM projekte order by titel");
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             List<Project> ret = new QueryRunner().query(connection, sql.toString(), ProjectManager.resultSetToProjectListHandler);
             return ret;
@@ -260,8 +256,8 @@ class ProjectMysqlHelper implements Serializable {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
                 String sql = "DELETE FROM projekte WHERE ProjekteID = " + ro.getId() + ";";
-                if (logger.isTraceEnabled()) {
-                    logger.trace(sql);
+                if (log.isTraceEnabled()) {
+                    log.trace(sql);
                 }
                 run.update(connection, sql);
             } finally {
@@ -280,8 +276,8 @@ class ProjectMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             Object[] param = { projectId };
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString() + ", " + Arrays.toString(param));
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString() + ", " + Arrays.toString(param));
             }
             List<ProjectFileGroup> answer = new QueryRunner().query(connection, sql.toString(), resultSetToProjectFilegroupListHandler, param);
             return answer;
@@ -376,8 +372,8 @@ class ProjectMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             Object[] param = { projectId };
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString() + ", " + Arrays.toString(param));
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString() + ", " + Arrays.toString(param));
             }
             Integer answer = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, projectId);
             return answer;
@@ -466,8 +462,8 @@ class ProjectMysqlHelper implements Serializable {
         sql.append("SELECT * FROM projekte WHERE Titel = ?");
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             Project ret = new QueryRunner().query(connection, sql.toString(), ProjectManager.resultSetToProjectHandler, name);
             return ret;

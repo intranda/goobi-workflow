@@ -27,15 +27,14 @@ package org.goobi.beans;
  */
 import java.io.Serializable;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.Prefs;
 import ugh.exceptions.PreferencesException;
 
+@Log4j2
 public class Ruleset implements Serializable, DatabaseObject {
     private static final long serialVersionUID = -6663371963274685060L;
     @Getter
@@ -49,7 +48,6 @@ public class Ruleset implements Serializable, DatabaseObject {
     private String datei;
     private Prefs mypreferences;
     private Boolean orderMetadataByRuleset = false;
-    private static final Logger logger = LogManager.getLogger(Ruleset.class);
 
     //    private static Map<Integer, Prefs> loadedPrefs = new HashMap<Integer, Prefs>();
 
@@ -68,7 +66,7 @@ public class Ruleset implements Serializable, DatabaseObject {
         try {
             this.mypreferences.loadPrefs(ConfigurationHelper.getInstance().getRulesetFolder() + this.datei);
         } catch (PreferencesException e) {
-            logger.error(e);
+            log.error(e);
         }
         //        loadedPrefs.put(id, mypreferences);
         return this.mypreferences;
@@ -83,7 +81,7 @@ public class Ruleset implements Serializable, DatabaseObject {
     //                mypreferences.loadPrefs(ConfigurationHelper.getInstance().getRulesetFolder() + this.datei);
     //                loadedPrefs.put(id, mypreferences);
     //            } catch (PreferencesException e1) {
-    //                logger.error(e1);
+    //                log.error(e1);
     //            }
     //        }
     //    }

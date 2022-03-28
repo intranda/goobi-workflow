@@ -68,8 +68,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -162,6 +160,7 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 import io.goobi.workflow.xslt.XsltPreparatorDocket;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
@@ -171,9 +170,9 @@ import ugh.exceptions.WriteException;
 
 @Named("ProzessverwaltungForm")
 @WindowScoped
+@Log4j2
 public class ProcessBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 2838270843176821134L;
-    private static final Logger logger = LogManager.getLogger(ProcessBean.class);
     @Getter
     private Process myProzess = new Process();
     @Getter
@@ -484,7 +483,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             TicketGenerator.submitInternalTicket(importTicket, QueueType.FAST_QUEUE, "DatabaseInformationTicket", 0);
         } catch (JMSException e) {
-            logger.error("Error adding TaskTicket to queue", e);
+            log.error("Error adding TaskTicket to queue", e);
             LogEntry errorEntry = LogEntry.build(this.myProzess.getId())
                     .withType(LogType.ERROR)
                     .withContent("Error reading metadata for process" + this.myProzess.getTitel())
@@ -941,7 +940,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             try {
                 StepManager.saveStep(mySchritt);
             } catch (DAOException e) {
-                logger.error(e);
+                log.error(e);
             }
         }
         updateUsergroupPaginator();
@@ -980,7 +979,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             try {
                 StepManager.saveStep(mySchritt);
             } catch (DAOException e) {
-                logger.error(e);
+                log.error(e);
             }
         }
         updateUserPaginator();
@@ -1050,7 +1049,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
             //            ;An error occured while trying to export METS file for: " + this.myProzess.getTitel(), e);
-            logger.error("ExportMETS error", e);
+            log.error("ExportMETS error", e);
         }
     }
 
@@ -1064,7 +1063,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
             //            ;An error occured while trying to export METS file for: " + this.myProzess.getTitel(), e);
-            logger.error("ExportMETS error", e);
+            log.error("ExportMETS error", e);
         }
     }
 
@@ -1078,7 +1077,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
 
             Helper.setFehlerMeldung("An error occured while trying to export PDF file for: " + this.myProzess.getTitel(), e);
-            logger.error("ExportPDF error", e);
+            log.error("ExportPDF error", e);
         }
     }
 
@@ -1101,7 +1100,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             try {
                 export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
             } catch (Exception e) {
-                logger.error("Can't load export plugin, use default export", e);
+                log.error("Can't load export plugin, use default export", e);
                 Helper.setFehlerMeldung("Can't load export plugin, use default export");
                 export = new ExportDms();
             }
@@ -1116,7 +1115,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             String[] parameter = { "DMS", process.getTitel() };
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
             // Helper.setFehlerMeldung("An error occured while trying to export to DMS for: " + this.myProzess.getTitel(), e);
-            logger.error("ExportDMS error", e);
+            log.error("ExportDMS error", e);
         }
     }
 
@@ -1131,7 +1130,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 try {
                     export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
                 } catch (Exception e) {
-                    logger.error("Can't load export plugin, use default export", e);
+                    log.error("Can't load export plugin, use default export", e);
                     Helper.setFehlerMeldung("Can't load export plugin, use default export");
 
                     export = new ExportDms();
@@ -1155,7 +1154,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                     errorMessage = e.toString();
                 }
                 Helper.setFehlerMeldung("ExportErrorID" + proz.getId() + ":", errorMessage);
-                logger.error(e);
+                log.error(e);
                 flagError = true;
             }
         }
@@ -1178,7 +1177,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                     try {
                         export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
                     } catch (Exception e) {
-                        logger.error("Can't load export plugin, use default export", e);
+                        log.error("Can't load export plugin, use default export", e);
                         Helper.setFehlerMeldung("Can't load export plugin, use default export");
                         export = new ExportDms();
                     }
@@ -1191,7 +1190,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                     Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Started export using 'ExportDMSSelection'.");
                 } catch (Exception e) {
                     Helper.setFehlerMeldung("ExportError", e.getMessage());
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1208,7 +1207,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 try {
                     export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
                 } catch (Exception e) {
-                    logger.error("Can't load export plugin, use default export", e);
+                    log.error("Can't load export plugin, use default export", e);
                     Helper.setFehlerMeldung("Can't load export plugin, use default export");
                     export = new ExportDms();
                 }
@@ -1222,7 +1221,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Started export using 'ExportDMSHits'.");
             } catch (Exception e) {
                 Helper.setFehlerMeldung("ExportError", e.getMessage());
-                logger.error(e);
+                log.error(e);
             }
         }
         Helper.setMeldung(null, "ExportFinished", "");
@@ -1322,7 +1321,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             StepManager.saveStep(mySchritt);
         } catch (DAOException e) {
-            logger.error(e);
+            log.error(e);
         }
         myProzess.setSchritte(null);
         deleteSymlinksFromUserHomes();
@@ -1342,7 +1341,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             StepManager.saveStep(mySchritt);
             new HelperSchritte().updateProcessStatus(myProzess.getId());
         } catch (DAOException e) {
-            logger.error(e);
+            log.error(e);
         }
         myProzess.setSchritte(null);
         deleteSymlinksFromUserHomes();
@@ -1506,7 +1505,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             // set list to null to reload list of steps in new order
             this.myProzess.setSchritte(null);
         } catch (DAOException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -1537,7 +1536,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 this.myProzess.setProjectId(inProjektAuswahl);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("Projekt kann nicht zugewiesen werden", "");
-                logger.error(e);
+                log.error(e);
             }
         }
     }
@@ -1575,7 +1574,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 myProzess.setMetadatenKonfigurationID(selected);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("Projekt kann nicht zugewiesen werden", "");
-                logger.error(e);
+                log.error(e);
             }
         }
     }
@@ -1605,7 +1604,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 myProzess.setDocketId(selected);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("Docket kann nicht zugewiesen werden", "");
-                logger.error(e);
+                log.error(e);
             }
         }
     }
@@ -1745,7 +1744,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             this.goobiScriptHitsImage = "data:image/png;base64, " + Base64.getEncoder().encodeToString(baos.toByteArray());
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -2061,9 +2060,9 @@ public class ProcessBean extends BasicBean implements Serializable {
             int myid = Integer.valueOf(id).intValue();
             this.myProzess = ProcessManager.getProcessById(myid);
             //        } catch (DAOException e) {
-            //            logger.error(e);
+            //            log.error(e);
         } catch (NumberFormatException e) {
-            logger.warn(e);
+            log.warn(e);
         }
     }
 
@@ -2111,7 +2110,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
     }
 
-    public void downloadStatisticsAsCsv() {
+    @SuppressWarnings("deprecation")
+	public void downloadStatisticsAsCsv() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         CSVPrinter csvFilePrinter = null;
         if (!facesContext.getResponseComplete()) {
@@ -2359,7 +2359,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             this.myProzess = ProcessManager.getProcessById(this.myProzess.getId());
         } catch (Exception e) {
-            logger.warn("could not refresh process with id " + this.myProzess.getId(), e);
+            log.warn("could not refresh process with id " + this.myProzess.getId(), e);
         }
         this.containers = new TreeMap<>();
         this.processPropertyList = PropertyParser.getInstance().getPropertiesForProcess(this.myProzess);
@@ -2556,7 +2556,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         //            ProcessManager.saveProcess(this.myProzess);
         Helper.setMeldung("propertySaved");
         //        } catch (DAOException e) {
-        //            logger.error(e);
+        //            log.error(e);
         //            Helper.setFehlerMeldung("propertiesNotSaved");
         //        }
         loadProcessProperties();
@@ -2642,7 +2642,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 } catch (DocStructHasNoTypeException | PreferencesException | WriteException | MetadataTypeNotAllowedException | ReadException
                         | TypeNotAllowedForParentException | IOException | InterruptedException | ExportFileException | UghHelperException
                         | SwapException | DAOException e) {
-                    logger.error(e);
+                    log.error(e);
                     Helper.setFehlerMeldung("Can't load export plugin.");
                 }
             } else if (mySchritt.isDelayStep()) {

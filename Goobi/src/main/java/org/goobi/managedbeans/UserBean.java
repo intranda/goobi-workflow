@@ -53,8 +53,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.api.mail.StepConfiguration;
@@ -81,9 +79,11 @@ import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 @Named("BenutzerverwaltungForm")
 @WindowScoped
+@Log4j2
 public class UserBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = -3635859455444639614L;
     @Getter
@@ -91,7 +91,6 @@ public class UserBean extends BasicBean implements Serializable {
     @Getter
     @Setter
     private boolean hideInactiveUsers = true;
-    private static final Logger logger = LogManager.getLogger(UserBean.class);
     @Getter
     @Setter
     private String displayMode = "";
@@ -559,7 +558,7 @@ public class UserBean extends BasicBean implements Serializable {
         try {
             myLdap.createNewUser(this.myClass, this.myClass.getPasswort());
         } catch (Exception e) {
-            logger.warn("Could not generate ldap entry: " + e.getMessage());
+            log.warn("Could not generate ldap entry: " + e.getMessage());
             Helper.setFehlerMeldung("Error on writing to database", e);
         }
         return "";

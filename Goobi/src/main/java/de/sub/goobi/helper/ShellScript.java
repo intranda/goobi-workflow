@@ -40,21 +40,15 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 
-/**
- * The class ShellScript is intended to run shell scripts (or other system commands).
- * 
- * @author Matthias Ronge <matthias.ronge@zeutschel.de>
- */
+@Log4j2
 public class ShellScript {
-    private static final Logger logger = LogManager.getLogger(ShellScript.class);
-
+    
     public static final int ERRORLEVEL_ERROR = 1;
 
     private final String command;
@@ -225,7 +219,7 @@ public class ShellScript {
         try {
             inputStream.close();
         } catch (IOException e) {
-            logger.warn("Could not close stream.", e);
+            log.warn("Could not close stream.", e);
             Helper.setFehlerMeldung("Could not close open stream.");
         }
     }
@@ -247,8 +241,8 @@ public class ShellScript {
             return new ShellScriptReturnValue(0, null, null);
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug(parameter);
+        if (log.isDebugEnabled()) {
+            log.debug(parameter);
         }
 
         String scriptname = parameter.get(0);
@@ -278,7 +272,7 @@ public class ShellScript {
                 Helper.setFehlerMeldung(errorText);
             }
         } catch (FileNotFoundException e) {
-            logger.error("FileNotFoundException in callShell2()", e);
+            log.error("FileNotFoundException in callShell2()", e);
             Helper.addMessageToProcessLog(processID, LogType.ERROR,
                     "Exception occured while executing script '" + scriptname + "': " + e.getMessage());
             Helper.setFehlerMeldung("Couldn't find script file in callShell2(), error", e.getMessage());
@@ -356,7 +350,7 @@ public class ShellScript {
                 }
             }
         } catch (FileNotFoundException e) {
-            logger.error("FileNotFoundException in callShell2()", e);
+            log.error("FileNotFoundException in callShell2()", e);
             Helper.addMessageToProcessLog(processID, LogType.ERROR,
                     "Exception occured while executing script '" + nonSpacesafeScriptingCommand + "': " + e.getMessage());
             Helper.setFehlerMeldung("Couldn't find script file in callShell2(), error", e.getMessage());

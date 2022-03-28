@@ -25,27 +25,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Docket;
 import org.goobi.beans.Institution;
 
 import de.sub.goobi.helper.exceptions.DAOException;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class DocketManager implements IManager, Serializable {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 7112845186301877542L;
-
-    private static final Logger logger = LogManager.getLogger(DocketManager.class);
 
     public static Docket getDocketById(int id) throws DAOException {
         Docket o = null;
         try {
             o = DocketMysqlHelper.getDocketById(id);
         } catch (SQLException e) {
-            logger.error("error while getting Docket with id " + id, e);
+            log.error("error while getting Docket with id " + id, e);
             throw new DAOException(e);
         }
         return o;
@@ -55,7 +51,7 @@ public class DocketManager implements IManager, Serializable {
         try {
             DocketMysqlHelper.saveDocket(o);
         } catch (SQLException e) {
-            logger.error("error while saving Docket with id " + o.getId(), e);
+            log.error("error while saving Docket with id " + o.getId(), e);
             throw new DAOException(e);
         }
     }
@@ -64,7 +60,7 @@ public class DocketManager implements IManager, Serializable {
         try {
             DocketMysqlHelper.deleteDocket(o);
         } catch (SQLException e) {
-            logger.error("error while deleting Docket with id " + o.getId(), e);
+            log.error("error while deleting Docket with id " + o.getId(), e);
             throw new DAOException(e);
         }
     }
@@ -74,7 +70,7 @@ public class DocketManager implements IManager, Serializable {
         try {
             answer = DocketMysqlHelper.getDockets(order, filter, start, count, institution);
         } catch (SQLException e) {
-            logger.error("error while getting Dockets", e);
+            log.error("error while getting Dockets", e);
             throw new DAOException(e);
         }
         return answer;
@@ -91,7 +87,7 @@ public class DocketManager implements IManager, Serializable {
         try {
             num = DocketMysqlHelper.getDocketCount(order, filter, institution);
         } catch (SQLException e) {
-            logger.error("error while getting Docket hit size", e);
+            log.error("error while getting Docket hit size", e);
             throw new DAOException(e);
         }
         return num;
@@ -148,7 +144,7 @@ public class DocketManager implements IManager, Serializable {
         try {
             answer = DocketMysqlHelper.getAllDockets();
         } catch (SQLException e) {
-            logger.error("error while getting Dockets", e);
+            log.error("error while getting Dockets", e);
         }
 
         return answer;
@@ -164,7 +160,7 @@ public class DocketManager implements IManager, Serializable {
         try {
             o = DocketMysqlHelper.getDocketByName(name);
         } catch (SQLException e) {
-            logger.error("error while getting Docket with name " + name, e);
+            log.error("error while getting Docket with name " + name, e);
             throw new DAOException(e);
         }
         return o;

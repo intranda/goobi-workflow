@@ -23,25 +23,22 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Templateproperty;
 
-public class PropertyManager implements Serializable {
+import lombok.extern.log4j.Log4j2;
 
-    /**
-     * 
-     */
+@Log4j2
+public class PropertyManager implements Serializable {
     private static final long serialVersionUID = 900347502238407686L;
-    private static final Logger logger = LogManager.getLogger(PropertyManager.class);
 
     public static List<Processproperty> getProcessPropertiesForProcess(int processId) {
         List<Processproperty> propertyList = new ArrayList<Processproperty>();
         try {
             propertyList = PropertyMysqlHelper.getProcessPropertiesForProcess(processId);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return propertyList;
     }
@@ -50,7 +47,7 @@ public class PropertyManager implements Serializable {
         try {
             PropertyMysqlHelper.saveProcessproperty(pe);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -58,7 +55,7 @@ public class PropertyManager implements Serializable {
         try {
             PropertyMysqlHelper.deleteProcessProperty(pe);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -67,7 +64,7 @@ public class PropertyManager implements Serializable {
         try {
             titleList = PropertyMysqlHelper.getDistinctPropertyTitles();
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return titleList;
     }
@@ -77,7 +74,7 @@ public class PropertyManager implements Serializable {
         try {
             titleList = PropertyMysqlHelper.getDistinctTemplatePropertyTitles();
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return titleList;
     }
@@ -87,7 +84,7 @@ public class PropertyManager implements Serializable {
         try {
             titleList = PropertyMysqlHelper.getDistinctMasterpiecePropertyTitles();
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return titleList;
     }
@@ -97,7 +94,7 @@ public class PropertyManager implements Serializable {
         try {
             propertyList = PropertyMysqlHelper.getTemplateProperties(templateId);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return propertyList;
     }
@@ -107,7 +104,7 @@ public class PropertyManager implements Serializable {
             property = PropertyMysqlHelper.saveTemplateproperty(property);
             return property;
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return null;
     }
@@ -116,7 +113,7 @@ public class PropertyManager implements Serializable {
         try {
             PropertyMysqlHelper.deleteTemplateProperty(property);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -125,7 +122,7 @@ public class PropertyManager implements Serializable {
         try {
             propertyList = PropertyMysqlHelper.getMasterpieceProperties(templateId);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return propertyList;
     }
@@ -135,7 +132,7 @@ public class PropertyManager implements Serializable {
             property = PropertyMysqlHelper.saveMasterpieceProperty(property);
             return property;
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return null;
     }
@@ -144,7 +141,7 @@ public class PropertyManager implements Serializable {
         try {
             PropertyMysqlHelper.deleteMasterpieceProperty(property);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 

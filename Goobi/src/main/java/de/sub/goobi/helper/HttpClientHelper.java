@@ -39,19 +39,18 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class HttpClientHelper {
-
-    private static final Logger logger = LogManager.getLogger(HttpClientHelper.class);
 
     public static ResponseHandler<byte[]> byteArrayResponseHandler = new ResponseHandler<byte[]>() {
         @Override
         public byte[] handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                logger.error("Wrong status code : " + response.getStatusLine().getStatusCode());
+                log.error("Wrong status code : " + response.getStatusLine().getStatusCode());
                 return null;
             }
             HttpEntity entity = response.getEntity();
@@ -67,7 +66,7 @@ public class HttpClientHelper {
         @Override
         public String handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                logger.error("Wrong status code : " + response.getStatusLine().getStatusCode());
+                log.error("Wrong status code : " + response.getStatusLine().getStatusCode());
                 return null;
             }
             HttpEntity entity = response.getEntity();
@@ -83,7 +82,7 @@ public class HttpClientHelper {
         @Override
         public InputStream handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                logger.error("Wrong status code : " + response.getStatusLine().getStatusCode());
+                log.error("Wrong status code : " + response.getStatusLine().getStatusCode());
                 return null;
             }
             HttpEntity entity = response.getEntity();
@@ -119,8 +118,8 @@ public class HttpClientHelper {
 
         if (ConfigurationHelper.getInstance().isUseProxy()) {
             HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
-            if (logger.isDebugEnabled()) {
-                logger.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
+            if (log.isDebugEnabled()) {
+                log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
             }
 
             Builder builder = RequestConfig.custom();
@@ -134,7 +133,7 @@ public class HttpClientHelper {
         try {
             response = client.execute(method, HttpClientHelper.stringResponseHandler);
         } catch (IOException e) {
-            logger.error("Cannot execute URL " + url, e);
+            log.error("Cannot execute URL " + url, e);
         } finally {
             method.releaseConnection();
 
@@ -142,7 +141,7 @@ public class HttpClientHelper {
                 try {
                     client.close();
                 } catch (IOException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -166,8 +165,8 @@ public class HttpClientHelper {
 
         if (ConfigurationHelper.getInstance().isUseProxy()) {
             HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
-            if (logger.isDebugEnabled()) {
-                logger.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
+            if (log.isDebugEnabled()) {
+                log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
             }
 
             RequestConfig.Builder builder = RequestConfig.custom();
@@ -181,7 +180,7 @@ public class HttpClientHelper {
         try {
             response = client.execute(method, stringResponseHandler);
         } catch (IOException e) {
-            logger.error("Cannot execute URL " + url, e);
+            log.error("Cannot execute URL " + url, e);
         } finally {
             method.releaseConnection();
 
@@ -189,7 +188,7 @@ public class HttpClientHelper {
                 try {
                     client.close();
                 } catch (IOException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -224,8 +223,8 @@ public class HttpClientHelper {
 
             if (ConfigurationHelper.getInstance().isUseProxy()) {
                 HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
+                if (log.isDebugEnabled()) {
+                    log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
                 }
 
                 Builder builder = RequestConfig.custom();
@@ -244,7 +243,7 @@ public class HttpClientHelper {
 
             byte[] response = httpclient.execute(method, HttpClientHelper.byteArrayResponseHandler);
             if (response == null) {
-                logger.error("Response stream is null");
+                log.error("Response stream is null");
             }
             istr = new ByteArrayInputStream(response);
 
@@ -255,7 +254,7 @@ public class HttpClientHelper {
                 out.write(buf, 0, len);
             }
         } catch (Exception e) {
-            logger.error("Unable to connect to url " + url, e);
+            log.error("Unable to connect to url " + url, e);
 
         } finally {
             method.releaseConnection();
@@ -263,14 +262,14 @@ public class HttpClientHelper {
                 try {
                     httpclient.close();
                 } catch (IOException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
             if (istr != null) {
                 try {
                     istr.close();
                 } catch (IOException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }

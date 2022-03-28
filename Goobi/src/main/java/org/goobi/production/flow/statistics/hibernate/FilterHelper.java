@@ -34,8 +34,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrTokenizer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.User;
 import org.goobi.production.enums.UserRole;
 
@@ -43,17 +41,15 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.persistence.managers.MySQLHelper;
+import lombok.extern.log4j.Log4j2;
 import net.sf.ehcache.search.expression.Criteria;
 
 /**
  * class provides methods used by implementations of IEvaluableFilter
- * 
- * @author Wulf Riebensahm
- * 
  */
+@Log4j2
 public class FilterHelper {
 
-    private static final Logger logger = LogManager.getLogger(FilterHelper.class);
     private static String leftTruncationCharacter = "%";
     private static String rightTruncationCharacter = "%";
     static {
@@ -1074,7 +1070,7 @@ public class FilterHelper {
                     }
 
                 } catch (NumberFormatException e) {
-                    logger.warn("input " + tok.substring(tok.indexOf(":") + 1) + " is not a number.");
+                    log.warn("input " + tok.substring(tok.indexOf(":") + 1) + " is not a number.");
                 }
 
             } else if (tok.toLowerCase().startsWith(FilterString.WORKPIECE) || tok.toLowerCase().startsWith(FilterString.WERKSTUECK)) {
@@ -1171,7 +1167,7 @@ public class FilterHelper {
                     }
 
                 } catch (NumberFormatException e) {
-                    logger.warn("input " + tok.substring(tok.indexOf(":") + 1) + " is not a number.");
+                    log.warn("input " + tok.substring(tok.indexOf(":") + 1) + " is not a number.");
                 }
 
             } else if (tok.toLowerCase().startsWith(FilterString.PROCESS) || tok.toLowerCase().startsWith(FilterString.PROZESS)) {
@@ -1275,7 +1271,7 @@ public class FilterHelper {
                     }
 
                 } catch (NumberFormatException e) {
-                    logger.warn("input " + tok.substring(tok.indexOf(":") + 1) + " is not a number.");
+                    log.warn("input " + tok.substring(tok.indexOf(":") + 1) + " is not a number.");
                 }
             } else if (tok.toLowerCase().startsWith("|")) {
                 filter = checkStringBuilder(filter, false);
@@ -1372,7 +1368,7 @@ public class FilterHelper {
                 } catch (NullPointerException e) {
                     message = "stepdone is preset, don't use 'step' filters";
                 } catch (Exception e) {
-                    logger.error(e);
+                    log.error(e);
                     message = "filterpart '" + filterPart.substring(filterPart.indexOf(":") + 1) + "' in '" + filterPart + "' caused an error\n";
                 }
                 break;

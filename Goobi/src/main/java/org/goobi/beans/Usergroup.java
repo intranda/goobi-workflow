@@ -30,14 +30,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.InstitutionManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Usergroups owning different access rights, represented by integer values
@@ -47,9 +45,9 @@ import lombok.Setter;
  * 
  * ================================================================
  */
+@Log4j2
 public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseObject {
     private static final long serialVersionUID = -5924845694417474352L;
-    private static final Logger logger = LogManager.getLogger(Usergroup.class);
     @Getter
     @Setter
     private Integer id;
@@ -80,7 +78,7 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
         try {
             this.benutzer = UserManager.getUsersForUsergroup(this);
         } catch (DAOException e) {
-            logger.error("error during lazy loading of Usergroup", e);
+            log.error("error during lazy loading of Usergroup", e);
         }
     }
 
@@ -119,7 +117,7 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
             try {
                 benutzer = UserManager.getUsersForUsergroup(this);
             } catch (DAOException e) {
-                logger.error(e);
+                log.error(e);
             }
         }
         return this.benutzer;

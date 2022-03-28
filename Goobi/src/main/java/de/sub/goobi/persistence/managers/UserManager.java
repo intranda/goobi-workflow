@@ -25,30 +25,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
-import org.goobi.beans.Step;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 
 import de.sub.goobi.helper.exceptions.DAOException;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class UserManager implements IManager, Serializable {
 
     private static final long serialVersionUID = -5265381235116154785L;
-
-    private static final Logger logger = LogManager.getLogger(UserManager.class);
 
     public static User getUserById(int id) throws DAOException {
         User o = null;
         try {
             o = UserMysqlHelper.getUserById(id);
         } catch (SQLException e) {
-            logger.error("error while getting User with id " + id, e);
+            log.error("error while getting User with id " + id, e);
             throw new DAOException(e);
         }
         return o;
@@ -59,7 +56,7 @@ public class UserManager implements IManager, Serializable {
         try {
             o = UserMysqlHelper.getUserBySsoId(id);
         } catch (SQLException e) {
-            logger.error("error while getting User with id " + id, e);
+            log.error("error while getting User with id " + id, e);
         }
         return o;
     }
@@ -68,7 +65,7 @@ public class UserManager implements IManager, Serializable {
         try {
             return UserMysqlHelper.saveUser(o);
         } catch (SQLException e) {
-            logger.error("error while saving User with id " + o.getId(), e);
+            log.error("error while saving User with id " + o.getId(), e);
             throw new DAOException(e);
         }
     }
@@ -77,7 +74,7 @@ public class UserManager implements IManager, Serializable {
         try {
             UserMysqlHelper.deleteUser(o);
         } catch (SQLException e) {
-            logger.error("error while deleting User with id " + o.getId(), e);
+            log.error("error while deleting User with id " + o.getId(), e);
             throw new DAOException(e);
         }
     }
@@ -89,7 +86,7 @@ public class UserManager implements IManager, Serializable {
             UserMysqlHelper.deleteAllProjectAssignments(o);
             UserMysqlHelper.hideUser(o);
         } catch (SQLException e) {
-            logger.error("error while deleting User with id " + o.getId(), e);
+            log.error("error while deleting User with id " + o.getId(), e);
             throw new DAOException(e);
         }
     }
@@ -99,7 +96,7 @@ public class UserManager implements IManager, Serializable {
         try {
             answer = UserMysqlHelper.getUsers(order, filter, start, count, institution);
         } catch (SQLException e) {
-            logger.error("error while getting Users", e);
+            log.error("error while getting Users", e);
             throw new DAOException(e);
         }
         return answer;
@@ -110,7 +107,7 @@ public class UserManager implements IManager, Serializable {
         try {
             answer = UserMysqlHelper.getUsersForUsergroup(usergroup);
         } catch (SQLException e) {
-            logger.error("error while getting Users", e);
+            log.error("error while getting Users", e);
             throw new DAOException(e);
         }
         return answer;
@@ -128,7 +125,7 @@ public class UserManager implements IManager, Serializable {
         try {
             num = UserMysqlHelper.getUserCount(order, filter, institution);
         } catch (SQLException e) {
-            logger.error("error while getting User hit size", e);
+            log.error("error while getting User hit size", e);
             throw new DAOException(e);
         }
         return num;
@@ -141,7 +138,7 @@ public class UserManager implements IManager, Serializable {
         try {
             UserMysqlHelper.addFilterToUser(userId, filterstring);
         } catch (SQLException e) {
-            logger.error("Cannot not add filter to user with id " + userId, e);
+            log.error("Cannot not add filter to user with id " + userId, e);
         }
 
     }
@@ -153,7 +150,7 @@ public class UserManager implements IManager, Serializable {
         try {
             UserMysqlHelper.removeFilterFromUser(userId, filterstring);
         } catch (SQLException e) {
-            logger.error("Cannot not remove filter from user with id " + userId, e);
+            log.error("Cannot not remove filter from user with id " + userId, e);
         }
     }
 
@@ -162,7 +159,7 @@ public class UserManager implements IManager, Serializable {
         try {
             answer = UserMysqlHelper.getFilterForUser(userId);
         } catch (SQLException e) {
-            logger.error("Cannot not load filter for user with id " + userId, e);
+            log.error("Cannot not load filter for user with id " + userId, e);
         }
 
         return answer;
@@ -173,7 +170,7 @@ public class UserManager implements IManager, Serializable {
         try {
             userList = UserMysqlHelper.getUserForStep(stepId);
         } catch (SQLException e) {
-            logger.error("Cannot not load user for step with id " + stepId, e);
+            log.error("Cannot not load user for step with id " + stepId, e);
         }
         return userList;
     }
@@ -292,7 +289,7 @@ public class UserManager implements IManager, Serializable {
         try {
             UserMysqlHelper.addUsergroupAssignment(user, gruppenID);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -300,7 +297,7 @@ public class UserManager implements IManager, Serializable {
         try {
             UserMysqlHelper.addProjectAssignment(user, projektID);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
 
     }
@@ -309,7 +306,7 @@ public class UserManager implements IManager, Serializable {
         try {
             UserMysqlHelper.deleteUsergroupAssignment(user, gruppenID);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -317,7 +314,7 @@ public class UserManager implements IManager, Serializable {
         try {
             UserMysqlHelper.deleteProjectAssignment(user, projektID);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -331,7 +328,7 @@ public class UserManager implements IManager, Serializable {
         try {
             o = UserMysqlHelper.getUserByLogin(loginName);
         } catch (SQLException e) {
-            logger.error("error while getting User with login name " + loginName, e);
+            log.error("error while getting User with login name " + loginName, e);
         }
         return o;
     }
@@ -341,7 +338,7 @@ public class UserManager implements IManager, Serializable {
         try {
             answer = UserMysqlHelper.getAllUsers();
         } catch (SQLException e) {
-            logger.error("error while getting Users", e);
+            log.error("error while getting Users", e);
         }
         return answer;
     }
@@ -351,7 +348,7 @@ public class UserManager implements IManager, Serializable {
         try {
             answer = UserMysqlHelper.getEmailConfigurationForUser(projects, id, showAllItems);
         } catch (SQLException e) {
-            logger.error("error while getting Users", e);
+            log.error("error while getting Users", e);
         }
 
         return answer;
@@ -371,7 +368,7 @@ public class UserManager implements IManager, Serializable {
         try {
             answer = UserMysqlHelper.getUsersToInformByMail(stepName, projectId, stepStatus);
         } catch (SQLException e) {
-            logger.error("error while getting Users", e);
+            log.error("error while getting Users", e);
         }
         return answer;
     }
@@ -387,7 +384,7 @@ public class UserManager implements IManager, Serializable {
         try {
             UserMysqlHelper.deleteEmailAssignmentForProject(user, projektID);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -402,7 +399,7 @@ public class UserManager implements IManager, Serializable {
         try {
             UserMysqlHelper.deleteEmailAssignmentForStep(user, projectID, stepName);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 }

@@ -44,8 +44,6 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;
@@ -89,6 +87,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.metadaten.Image;
 import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * This class provides xml logfile generation. After the the generation the file will be written to user home directory
@@ -97,8 +96,8 @@ import de.sub.goobi.persistence.managers.MetadataManager;
  * @author Steffen Hankiewicz
  * 
  */
+@Log4j2
 public class XsltPreparatorDocket implements IXsltPreparator {
-    private static final Logger logger = LogManager.getLogger(XsltPreparatorDocket.class);
 
     private static Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
 
@@ -198,8 +197,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         // add user comments from the process log
         Element comment = new Element("comments", xmlns);
-        List<LogEntry> log = process.getProcessLog();
-        for (LogEntry entry : log) {
+        List<LogEntry> logEntry = process.getProcessLog();
+        for (LogEntry entry : logEntry) {
             Element commentLine = new Element("comment", xmlns);
             commentLine.setAttribute("type", entry.getType().getTitle());
             commentLine.setAttribute("user", entry.getUserName());
@@ -470,17 +469,17 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             }
 
         } catch (SwapException e) {
-            logger.error(e);
+            log.error(e);
         } catch (DAOException e) {
-            logger.error(e);
+            log.error(e);
         } catch (IOException e) {
-            logger.error(e);
+            log.error(e);
         } catch (InterruptedException e) {
-            logger.error(e);
+            log.error(e);
         } catch (JDOMException e) {
-            logger.error(e);
+            log.error(e);
         } catch (JaxenException e) {
-            logger.error(e);
+            log.error(e);
         }
         
         try {
@@ -526,7 +525,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             elements.add(logfiles);
             
         } catch (IOException | InterruptedException | SwapException | DAOException e1) {
-            logger.error("Error listing all files from content folders", e1);
+            log.error("Error listing all files from content folders", e1);
         }
         
         mainElement.setContent(elements);

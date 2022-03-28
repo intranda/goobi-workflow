@@ -33,8 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -48,10 +46,11 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 @Getter
+@Log4j2
 public class ConfigOpacCatalogue {
-    private static final Logger logger = LogManager.getLogger(ConfigOpacCatalogue.class);
     @Setter
     private String title = "";
     private String description = "";
@@ -152,7 +151,7 @@ public class ConfigOpacCatalogue {
             myHitlist = doutputter.output(doc);
             myHitlist = myHitlist.getFirstChild();
         } catch (JDOMException e) {
-            logger.error("JDOMException in executeBeautifier(Node)", e);
+            log.error("JDOMException in executeBeautifier(Node)", e);
         }
 
         /* Ausgabe des überarbeiteten Opac-Ergebnisses */
@@ -263,9 +262,9 @@ public class ConfigOpacCatalogue {
             FileOutputStream output = new FileOutputStream(fileName);
             outputter.output(tempDoc.getRootElement(), output);
         } catch (FileNotFoundException e) {
-            logger.error("debugMyNode(Node, String)", e);
+            log.error("debugMyNode(Node, String)", e);
         } catch (IOException e) {
-            logger.error("debugMyNode(Node, String)", e);
+            log.error("debugMyNode(Node, String)", e);
         }
 
     }

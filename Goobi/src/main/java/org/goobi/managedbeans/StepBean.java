@@ -46,8 +46,6 @@ import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.LogEntry;
@@ -98,12 +96,13 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 @Named("AktuelleSchritteForm")
 @WindowScoped
+@Log4j2
 public class StepBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 5841566727939692509L;
-    private static final Logger logger = LogManager.getLogger(StepBean.class);
     @Getter
     @Setter
     private Process myProzess = new Process();
@@ -365,7 +364,7 @@ public class StepBean extends BasicBean implements Serializable {
                 StepManager.saveStep(mySchritt);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung(Helper.getTranslation("stepSaveError"), e);
-                logger.error("step couldn't get saved", e);
+                log.error("step couldn't get saved", e);
                 //					} finally {
                 //						this.flagWait = false;
             }
@@ -472,7 +471,7 @@ public class StepBean extends BasicBean implements Serializable {
                     StepManager.saveStep(s);
                 } catch (DAOException e) {
                     Helper.setFehlerMeldung(Helper.getTranslation("stepSaveError"), e);
-                    logger.error("step couldn't get saved", e);
+                    log.error("step couldn't get saved", e);
                 }
 
             }
@@ -658,9 +657,9 @@ public class StepBean extends BasicBean implements Serializable {
             return "";
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("mySchritt.ID: " + this.mySchritt.getId().intValue());
-            logger.debug("Korrekturschritt.ID: " + this.myProblemID.intValue());
+        if (log.isDebugEnabled()) {
+            log.debug("mySchritt.ID: " + this.mySchritt.getId().intValue());
+            log.debug("Korrekturschritt.ID: " + this.myProblemID.intValue());
         }
         this.myDav.UploadFromHome(this.mySchritt.getProzess());
         Date myDate = new Date();
@@ -1032,7 +1031,7 @@ public class StepBean extends BasicBean implements Serializable {
                         this.gesamtAnzahlImages += StorageProvider.getInstance().getNumberOfFiles(step.getProzess().getImagesOrigDirectory(false));
                     }
                 } catch (Exception e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -1046,9 +1045,9 @@ public class StepBean extends BasicBean implements Serializable {
         try {
             schrittPerParameterLaden();
         } catch (NumberFormatException e) {
-            logger.error(e);
+            log.error(e);
         } catch (DAOException e) {
-            logger.error(e);
+            log.error(e);
         }
         return this.mySchritt;
     }
@@ -1091,10 +1090,10 @@ public class StepBean extends BasicBean implements Serializable {
         //        Helper.setMeldung(mySchritt.getStepPlugin());
         if (myPlugin.getPluginGuiType() == PluginGuiType.FULL || myPlugin.getPluginGuiType() == PluginGuiType.PART_AND_FULL) {
             String mypath = myPlugin.getPagePath();
-            if (logger.isDebugEnabled()) {
-                logger.debug("Plugin is full GUI");
+            if (log.isDebugEnabled()) {
+                log.debug("Plugin is full GUI");
                 //            String mypath = "/ui/plugins/step/" + myPlugin.getTitle() + "/plugin.xhtml";
-                logger.debug("open plugin GUI: " + mypath);
+                log.debug("open plugin GUI: " + mypath);
             }
             myPlugin.execute();
             return mypath;
@@ -1189,7 +1188,7 @@ public class StepBean extends BasicBean implements Serializable {
             try {
                 dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, mySchritt.getStepPlugin());
             } catch (Exception e) {
-                logger.error("Can't load export plugin, use default export", e);
+                log.error("Can't load export plugin, use default export", e);
                 Helper.setFehlerMeldung("Can't load export plugin, use default export");
                 dms = new ExportDms();
             }
@@ -1201,7 +1200,7 @@ public class StepBean extends BasicBean implements Serializable {
             dms.startExport(this.mySchritt.getProzess());
         } catch (Exception e) {
             Helper.setFehlerMeldung("Error on export", e.getMessage() == null ? "" : e.getMessage());
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -1311,7 +1310,7 @@ public class StepBean extends BasicBean implements Serializable {
             PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
             Helper.setMeldung("propertiesSaved");
             //            } catch (DAOException e) {
-            //                myLogger.error(e);
+            //                mylog.error(e);
             //                Helper.setFehlerMeldung("propertiesNotSaved");
             //            }
         }
@@ -1350,7 +1349,7 @@ public class StepBean extends BasicBean implements Serializable {
             //                ProcessManager.saveProcess(this.mySchritt.getProzess());
             Helper.setMeldung("propertySaved");
             //            } catch (DAOException e) {
-            //                myLogger.error(e);
+            //                mylog.error(e);
             //                Helper.setFehlerMeldung("propertyNotSaved");
             //            }
         }
@@ -1376,25 +1375,15 @@ public class StepBean extends BasicBean implements Serializable {
 
     public void deleteProperty() {
         this.processPropertyList.remove(this.processProperty);
-        // if (this.processProperty.getProzesseigenschaft().getId() != null) {
         this.mySchritt.getProzess().getEigenschaften().remove(this.processProperty.getProzesseigenschaft());
-        // this.mySchritt.getProzess().removeProperty(this.processProperty.getProzesseigenschaft());
-        // }
-
         List<Processproperty> props = this.mySchritt.getProzess().getEigenschaftenList();
         for (Processproperty pe : props) {
             if (pe.getTitel() == null) {
                 this.mySchritt.getProzess().getEigenschaften().remove(pe);
             }
         }
-        //        try {
-        //            ProcessManager.saveProcess(this.mySchritt.getProzess());
+
         PropertyManager.deleteProcessProperty(processProperty.getProzesseigenschaft());
-        //        } catch (DAOException e) {
-        //            myLogger.error(e);
-        //            Helper.setFehlerMeldung("propertiesNotDeleted");
-        //        }
-        // saveWithoutValidation();
         loadProcessProperties();
     }
 

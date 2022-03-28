@@ -27,18 +27,17 @@ package org.goobi.managedbeans;
  */
 import java.io.Serializable;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.User;
 
 import de.sub.goobi.helper.Helper;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class BasicBean implements Serializable {
     @SuppressWarnings("unused")
 
-    private static final Logger logger = LogManager.getLogger(BasicBean.class);
     private static final long serialVersionUID = 2950419497162710096L;
     @Getter
     protected DatabasePaginator paginator;
@@ -72,7 +71,7 @@ public class BasicBean implements Serializable {
         //		try {
         //			new BenutzerDAO().save(this.user);
         //		} catch (DAOException e) {
-        //			logger.error(e);
+        //			log.error(e);
         //		}
     }
 
@@ -84,7 +83,7 @@ public class BasicBean implements Serializable {
         //		try {
         //			new BenutzerDAO().save(this.user);
         //		} catch (DAOException e) {
-        //			logger.error(e);
+        //			log.error(e);
         //		}
     }
 }

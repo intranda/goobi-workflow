@@ -27,20 +27,17 @@ package org.goobi.production.plugin.interfaces;
  */
 import java.util.HashMap;
 
-import net.xeoh.plugins.base.annotations.PluginImplementation;
-
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.enums.StepReturnValue;
 
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
+import net.xeoh.plugins.base.annotations.PluginImplementation;
 
 @PluginImplementation
+@Log4j2
 public abstract class AbstractStepPlugin implements IStepPlugin {
-
-    private static final Logger logger = LogManager.getLogger(AbstractStepPlugin.class);
-
     protected String name = "Abstract Step Plugin";
     protected String version = "1.0";
     @Getter
@@ -72,16 +69,16 @@ public abstract class AbstractStepPlugin implements IStepPlugin {
 
     @Override
     public String finish() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("finish called");
+        if (log.isDebugEnabled()) {
+            log.debug("finish called");
         }
         return "/uii" + this.returnPath;
     }
 
     @Override
     public String cancel() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("cancel called");
+        if (log.isDebugEnabled()) {
+            log.debug("cancel called");
         }
         return "/uii" + this.returnPath;
     }

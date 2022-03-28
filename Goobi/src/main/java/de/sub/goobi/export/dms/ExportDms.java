@@ -35,8 +35,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger; //?? <- works?
 //import lombok.extern.log4j.Log4j2;		//doesnt work?
 import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
@@ -59,6 +57,7 @@ import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
 import ugh.dl.ExportFileformat;
 import ugh.dl.Fileformat;
@@ -69,8 +68,8 @@ import ugh.exceptions.PreferencesException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
+@Log4j2
 public class ExportDms extends ExportMets implements IExportPlugin {
-    private static final Logger logger = LogManager.getLogger(ExportDms.class);
     protected boolean exportWithImages = true;
     @Setter
     protected boolean exportFulltext = true;
@@ -130,7 +129,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
 
         } catch (Exception e) {
             Helper.setFehlerMeldung(Helper.getTranslation("exportError") + myProzess.getTitel(), e);
-            logger.error("Export abgebrochen, xml-LeseFehler", e);
+            log.error("Export abgebrochen, xml-LeseFehler", e);
             problems.add("Export cancelled: " + e.getMessage());
             return false;
         }
@@ -290,7 +289,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 } catch (InterruptedException e) {
                     Helper.setFehlerMeldung(myProzess.getTitel() + ": error on export - ", e.getMessage());
                     problems.add("Export problems: " + e.getMessage());
-                    logger.error(myProzess.getTitel() + ": error on export", e);
+                    log.error(myProzess.getTitel() + ": error on export", e);
                 }
                 if (agoraThread.rueckgabe.length() > 0) {
                     Helper.setFehlerMeldung(myProzess.getTitel() + ": ", agoraThread.rueckgabe);
@@ -408,7 +407,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     }
                 } catch (Exception e) {
                     Helper.setFehlerMeldung("Export canceled, error", "could not create destination directory");
-                    logger.error("could not create destination directory", e);
+                    log.error("could not create destination directory", e);
                 }
             }
 

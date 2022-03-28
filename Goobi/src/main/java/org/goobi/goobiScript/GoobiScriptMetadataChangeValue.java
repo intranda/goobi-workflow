@@ -143,7 +143,6 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
             }
             
             // get the content to be set and pipe it through the variable replacer
-            String newvalue = parameters.get("value");
             VariableReplacer replacer = new VariableReplacer(ff.getDigitalDocument(), p.getRegelsatz().getPreferences(), p, null);
             prefix = replacer.replace(prefix);
             suffix = replacer.replace(suffix);

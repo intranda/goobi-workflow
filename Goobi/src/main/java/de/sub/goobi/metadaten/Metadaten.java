@@ -44,8 +44,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.faces.application.FacesMessage;
@@ -62,8 +60,6 @@ import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.api.display.helper.NormDatabase;
@@ -77,8 +73,6 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.jdom2.JDOMException;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.omnifaces.util.Faces;
 
 import com.google.gson.Gson;
@@ -104,6 +98,7 @@ import de.unigoettingen.sub.search.opac.ConfigOpac;
 import de.unigoettingen.sub.search.opac.ConfigOpacCatalogue;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.Corporate;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -135,6 +130,7 @@ import ugh.exceptions.WriteException;
  */
 @Named("Metadaten")
 @WindowScoped
+@Log4j2
 public class Metadaten implements Serializable {
 
     /**
@@ -151,7 +147,6 @@ public class Metadaten implements Serializable {
     @Getter
     private Process filteredProcess = null;
     private String oldDocstructName = "";
-    private static final Logger logger = LogManager.getLogger(Metadaten.class);
     MetadatenImagesHelper imagehelper;
     MetadatenHelper metahelper;
     @Getter
@@ -592,7 +587,7 @@ public class Metadaten implements Serializable {
 
             } catch (Exception e) {
                 Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
-                logger.error(e);
+                log.error(e);
             }
             MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
             return "";
@@ -673,7 +668,7 @@ public class Metadaten implements Serializable {
 
         } catch (Exception e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
-            logger.error(e);
+            log.error(e);
         }
         MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         return "";
@@ -737,7 +732,7 @@ public class Metadaten implements Serializable {
             MetadataGroup newMetadataGroup = cloneMetadataGroup(currentGroup.getMetadataGroup());
             currentGroup.getMetadataGroup().getParent().addMetadataGroup(newMetadataGroup);
         } catch (MetadataTypeNotAllowedException e) {
-            logger.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e);
+            log.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e);
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
@@ -764,7 +759,7 @@ public class Metadaten implements Serializable {
 
             currentMetadata.getParent().addMetadata(md);
         } catch (MetadataTypeNotAllowedException e) {
-            logger.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e.getMessage());
+            log.error("Fehler beim Kopieren von Metadaten (MetadataTypeNotAllowedException): " + e.getMessage());
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         currentMetadata = null;
@@ -792,7 +787,7 @@ public class Metadaten implements Serializable {
 
             currentCorporate.getParent().addCorporate(corporate);
         } catch (MetadataTypeNotAllowedException e) {
-            logger.error(e);
+            log.error(e);
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         currentCorporate = null;
@@ -826,9 +821,9 @@ public class Metadaten implements Serializable {
 
             currentPerson.getParent().addPerson(per);
         } catch (IncompletePersonObjectException e) {
-            logger.error("Fehler beim Kopieren von Personen (IncompletePersonObjectException): " + e.getMessage());
+            log.error("Fehler beim Kopieren von Personen (IncompletePersonObjectException): " + e.getMessage());
         } catch (MetadataTypeNotAllowedException e) {
-            logger.error("Fehler beim Kopieren von Personen (MetadataTypeNotAllowedException): " + e.getMessage());
+            log.error("Fehler beim Kopieren von Personen (MetadataTypeNotAllowedException): " + e.getMessage());
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
         if (!SperrungAktualisieren()) {
@@ -847,7 +842,7 @@ public class Metadaten implements Serializable {
             } catch (DocStructHasNoTypeException | MetadataTypeNotAllowedException | TypeNotAllowedAsChildException
                     | TypeNotAllowedForParentException e) {
                 Helper.setFehlerMeldung("Error while changing DocStructTypes: ", e.getMessage());
-                logger.error("Error while changing DocStructTypes: " + e);
+                log.error("Error while changing DocStructTypes: " + e);
             }
         }
         return "metseditor";
@@ -875,12 +870,12 @@ public class Metadaten implements Serializable {
                         md2.setValue(this.selectedMetadatum.getValue());
                         this.myDocStruct.addMetadata(md2);
                     } catch (MetadataTypeNotAllowedException e) {
-                        logger.error("Error while adding title (MetadataTypeNotAllowedException): " + e.getMessage());
+                        log.error("Error while adding title (MetadataTypeNotAllowedException): " + e.getMessage());
                     }
                 }
             }
         } catch (MetadataTypeNotAllowedException e) {
-            logger.error("Error while adding metadata (MetadataTypeNotAllowedException): " + e.getMessage());
+            log.error("Error while adding metadata (MetadataTypeNotAllowedException): " + e.getMessage());
         }
 
         this.modusHinzufuegen = false;
@@ -957,7 +952,7 @@ public class Metadaten implements Serializable {
                 this.myDocStruct.addMetadataGroup(md);
             }
         } catch (MetadataTypeNotAllowedException e) {
-            logger.error("Error while adding metadata (MetadataTypeNotAllowedException): " + e.getMessage());
+            log.error("Error while adding metadata (MetadataTypeNotAllowedException): " + e.getMessage());
         }
 
         this.modeAddGroup = false;
@@ -1256,7 +1251,7 @@ public class Metadaten implements Serializable {
                 this.tempMetadatumList.add(mdum);
 
             } catch (MetadataTypeNotAllowedException e) {
-                logger.error("Fehler beim sortieren der Metadaten: " + e.getMessage());
+                log.error("Fehler beim sortieren der Metadaten: " + e.getMessage());
             }
         }
         if (StringUtils.isBlank(tempTyp) && !tempMetadatumList.isEmpty()) {
@@ -1310,7 +1305,7 @@ public class Metadaten implements Serializable {
                 this.tempMetadatumList.add(mdum);
 
             } catch (MetadataTypeNotAllowedException e) {
-                logger.error("Fehler beim sortieren der Metadaten: " + e.getMessage());
+                log.error("Fehler beim sortieren der Metadaten: " + e.getMessage());
             }
         }
         if (StringUtils.isBlank(tempTyp) && !tempMetadatumList.isEmpty()) {
@@ -1359,7 +1354,7 @@ public class Metadaten implements Serializable {
                 // TODO initialize all fields
 
             } catch (MetadataTypeNotAllowedException e) {
-                logger.error("Fehler beim sortieren der Metadaten: " + e.getMessage());
+                log.error("Fehler beim sortieren der Metadaten: " + e.getMessage());
             }
         }
         return myList;
@@ -1686,7 +1681,7 @@ public class Metadaten implements Serializable {
                 }
             }
         } catch (InvalidImagesException | SwapException | DAOException | IOException | InterruptedException e1) {
-            logger.error(e1);
+            log.error(e1);
         }
     }
 
@@ -1799,10 +1794,10 @@ public class Metadaten implements Serializable {
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
-            logger.error(e);
+            log.error(e);
         } catch (Exception e) {
             Helper.setFehlerMeldung("error while counting current images", e);
-            logger.error(e);
+            log.error(e);
         }
         /* xml-Datei speichern */
         // MetadatenDebuggen(gdzfile.getDigitalDocument().getLogicalDocStruct());
@@ -1822,7 +1817,7 @@ public class Metadaten implements Serializable {
             this.myProzess.writeMetadataFile(this.gdzfile);
         } catch (Exception e) {
             Helper.setFehlerMeldung("Metafile is not writable.", e);
-            logger.error(e);
+            log.error(e);
             return "Metadaten";
         }
         myProzess.removeTemporaryMetadataFiles();
@@ -2082,8 +2077,8 @@ public class Metadaten implements Serializable {
         try {
             this.metahelper.KnotenUp(this.myDocStruct);
         } catch (TypeNotAllowedAsChildException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Fehler beim Verschieben des Knotens: " + e.getMessage());
+            if (log.isDebugEnabled()) {
+                log.debug("Fehler beim Verschieben des Knotens: " + e.getMessage());
             }
         }
         return MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
@@ -2096,8 +2091,8 @@ public class Metadaten implements Serializable {
         try {
             this.metahelper.KnotenDown(this.myDocStruct);
         } catch (TypeNotAllowedAsChildException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Fehler beim Verschieben des Knotens: " + e.getMessage());
+            if (log.isDebugEnabled()) {
+                log.debug("Fehler beim Verschieben des Knotens: " + e.getMessage());
             }
         }
         return MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
@@ -2171,7 +2166,7 @@ public class Metadaten implements Serializable {
                 siblings.add(index + 1, ds);
                 myDocStruct = ds;
             } catch (TypeNotAllowedForParentException e) {
-                logger.error(e);
+                log.error(e);
             }
         }
 
@@ -2202,8 +2197,8 @@ public class Metadaten implements Serializable {
             }
             DocStruct parent = this.myDocStruct.getParent();
             if (parent == null) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("the current element has no parent element");
+                if (log.isDebugEnabled()) {
+                    log.debug("the current element has no parent element");
                 }
                 return "metseditor";
             }
@@ -2234,8 +2229,8 @@ public class Metadaten implements Serializable {
             ds = this.document.createDocStruct(dst);
             DocStruct parent = this.myDocStruct.getParent();
             if (parent == null) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("the current element has no parent element");
+                if (log.isDebugEnabled()) {
+                    log.debug("the current element has no parent element");
                 }
                 return "metseditor";
             }
@@ -2267,8 +2262,8 @@ public class Metadaten implements Serializable {
             ds = this.document.createDocStruct(dst);
             DocStruct parent = this.myDocStruct;
             if (parent == null) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("the current element has no parent element");
+                if (log.isDebugEnabled()) {
+                    log.debug("the current element has no parent element");
                 }
                 return "metseditor";
             }
@@ -2304,7 +2299,7 @@ public class Metadaten implements Serializable {
                     ds.addMetadata(md);
 
                 } catch (MetadataTypeNotAllowedException | DocStructHasNoTypeException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -2320,7 +2315,7 @@ public class Metadaten implements Serializable {
                     md.setAuthorityValue(p.getAuthorityValue());
                     ds.addPerson(p);
                 } catch (MetadataTypeNotAllowedException | IncompletePersonObjectException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -2330,7 +2325,7 @@ public class Metadaten implements Serializable {
                 try {
                     ds.addCorporate(corporate);
                 } catch (MetadataTypeNotAllowedException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -2412,7 +2407,7 @@ public class Metadaten implements Serializable {
         try {
             imagehelper.checkImageNames(this.myProzess, currentTifFolder);
         } catch (TypeNotAllowedForParentException | SwapException | DAOException | IOException | InterruptedException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -2591,7 +2586,7 @@ public class Metadaten implements Serializable {
             } else {
                 this.pageAreaManager.setNewPageArea(pageArea);           }
         } catch (TypeNotAllowedAsChildException | TypeNotAllowedForParentException | MetadataTypeNotAllowedException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -2661,7 +2656,7 @@ public class Metadaten implements Serializable {
     }
     
     public void setPageArea(String label) {
-        logger.warn("Attempting to set page area to ", label);
+        log.warn("Attempting to set page area to ", label);
     }
     
     private DocStruct getCurrentPage() {
@@ -3035,7 +3030,7 @@ public class Metadaten implements Serializable {
                     }
                     //
                 } catch (InvalidImagesException e1) {
-                    logger.error("Images could not be read", e1);
+                    log.error("Images could not be read", e1);
                     Helper.setFehlerMeldung("images could not be read", e1);
                 }
             } else {
@@ -3043,15 +3038,15 @@ public class Metadaten implements Serializable {
                     createPagination();
                     dataList = this.imagehelper.getImageFiles(document.getPhysicalDocStruct());
                 } catch (TypeNotAllowedForParentException e) {
-                    logger.error(e);
+                    log.error(e);
                 } catch (SwapException e) {
-                    logger.error(e);
+                    log.error(e);
                 } catch (DAOException e) {
-                    logger.error(e);
+                    log.error(e);
                 } catch (IOException e) {
-                    logger.error(e);
+                    log.error(e);
                 } catch (InterruptedException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -3107,7 +3102,7 @@ public class Metadaten implements Serializable {
                         this.imagehelper.scaleFile(tiffconverterpfad, myPfad + mySession, this.myBildGroesse, 0);
                     } catch (Exception e) {
                         Helper.setFehlerMeldung("could not find image folder", e);
-                        logger.error(e);
+                        log.error(e);
                     }
                     break;
                 }
@@ -3127,7 +3122,7 @@ public class Metadaten implements Serializable {
             }
         } catch (Exception e) {
             this.bildNummer = -1;
-            logger.error(e);
+            log.error(e);
         }
         /* wenn das Bild nicht existiert, den Status ändern */
         if (!exists) {
@@ -3211,7 +3206,7 @@ public class Metadaten implements Serializable {
                 this.myDocStruct.addMetadata(mdDin);
                 this.myDocStruct.addMetadata(mdIso);
             } catch (MetadataTypeNotAllowedException e) {
-                logger.error("Fehler beim Hinzufügen der Transliterationen (MetadataTypeNotAllowedException): " + e.getMessage());
+                log.error("Fehler beim Hinzufügen der Transliterationen (MetadataTypeNotAllowedException): " + e.getMessage());
             }
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
@@ -3247,7 +3242,7 @@ public class Metadaten implements Serializable {
                 this.myDocStruct.addPerson(mdDin);
                 this.myDocStruct.addPerson(mdIso);
             } catch (MetadataTypeNotAllowedException e) {
-                logger.error("Fehler beim Hinzufügen der Transliterationen (MetadataTypeNotAllowedException): " + e.getMessage());
+                log.error("Fehler beim Hinzufügen der Transliterationen (MetadataTypeNotAllowedException): " + e.getMessage());
             }
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
@@ -3284,7 +3279,7 @@ public class Metadaten implements Serializable {
                     Helper.setMeldung(null, "Opac abgefragt: ", "kein Ergebnis");
                 }
             } catch (Exception e) {
-                logger.error("Error while importing from catalogue: " + e.getMessage());
+                log.error("Error while importing from catalogue: " + e.getMessage());
             }
         }
         return "Metadaten3links";
@@ -3357,7 +3352,7 @@ public class Metadaten implements Serializable {
                     Helper.setMeldung(null, "Opac abgefragt: ", "kein Ergebnis");
                 }
             } catch (Exception e) {
-                logger.error("Error while importing from catalogue: " + e.getMessage());
+                log.error("Error while importing from catalogue: " + e.getMessage());
             }
         }
         MetadatenalsBeanSpeichern(this.myDocStruct);
@@ -3434,8 +3429,8 @@ public class Metadaten implements Serializable {
     }
 
     public List<String> getAjaxAlleSeiten(String prefix) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Ajax-Liste abgefragt");
+        if (log.isDebugEnabled()) {
+            log.debug("Ajax-Liste abgefragt");
         }
         List<String> li = new ArrayList<>();
         for (String pageObject : pageMap.getKeyList()) {
@@ -3738,7 +3733,7 @@ public class Metadaten implements Serializable {
             FacesContext.getCurrentInstance().addMessage("altoChanges", fm);
         } catch (JDOMException | IOException | SwapException | DAOException | InterruptedException e) {
             // TODO Auto-generated catch block
-            logger.error(e);
+            log.error(e);
             FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_ERROR, Helper.getTranslation("errorSavingAlto"), null);
             FacesContext.getCurrentInstance().addMessage("altoChanges", fm);
         }
@@ -3795,7 +3790,7 @@ public class Metadaten implements Serializable {
             this.selectedMetadatum = new MetadatumImpl(md, this.myMetadaten.size() + 1, this.myPrefs, this.myProzess, this);
             currentMetadataToPerformSearch = selectedMetadatum;
         } catch (MetadataTypeNotAllowedException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
         this.tempTyp = tempTyp;
     }
@@ -3835,7 +3830,7 @@ public class Metadaten implements Serializable {
                 MetadataGroup md = new MetadataGroup(mdt);
                 this.selectedGroup = new MetadataGroupImpl(myPrefs, myProzess, md, this, metahelper.getMetadataGroupTypeLanguage(mdt), null, 0);
             } catch (MetadataTypeNotAllowedException e) {
-                logger.error(e.getMessage());
+                log.error(e.getMessage());
             }
         }
         this.tempGroupType = tempTyp;
@@ -4319,7 +4314,7 @@ public class Metadaten implements Serializable {
             document.getFileSet().removeFile(pageToRemove.getAllContentFiles().get(0));
             // pageToRemove.removeContentFile(pageToRemove.getAllContentFiles().get(0));
             // } catch (ContentFileNotLinkedException e) {
-            // myLogger.error(e);
+            // mylog.error(e);
             // }
 
             document.getPhysicalDocStruct().removeChild(pageToRemove);
@@ -4378,13 +4373,13 @@ public class Metadaten implements Serializable {
             try {
                 imageDirectory = myProzess.getImagesDirectory();
             } catch (SwapException e) {
-                logger.error(e);
+                log.error(e);
             } catch (DAOException e) {
-                logger.error(e);
+                log.error(e);
             } catch (IOException e) {
-                logger.error(e);
+                log.error(e);
             } catch (InterruptedException e) {
-                logger.error(e);
+                log.error(e);
 
             }
             if (imageDirectory.equals("")) {
@@ -4453,7 +4448,7 @@ public class Metadaten implements Serializable {
                             try {
                                 StorageProvider.getInstance().move(file, tmpFileName);
                             } catch (IOException e) {
-                                logger.error(e);
+                                log.error(e);
                             }
                         }
                     }
@@ -4486,11 +4481,11 @@ public class Metadaten implements Serializable {
                                 try {
                                     StorageProvider.getInstance().move(file, renamedFile);
                                 } catch (IOException e) {
-                                    logger.error(e);
+                                    log.error(e);
                                 }
                             }
                         } else {
-                            logger.debug("the file to be renamed does not contain a '.': " + currentFolder.toString() + filenameToCheck);
+                            log.debug("the file to be renamed does not contain a '.': " + currentFolder.toString() + filenameToCheck);
                         }
                     }
                 }
@@ -4510,7 +4505,7 @@ public class Metadaten implements Serializable {
 
             Helper.setMeldung("finishedFileRenaming");
         } catch (Exception e) {
-            logger.error(e);
+            log.error(e);
             Helper.setFehlerMeldung("ErrorMetsEditorImageRenaming");
         }
     }
@@ -4538,7 +4533,7 @@ public class Metadaten implements Serializable {
                         try {
                             StorageProvider.getInstance().deleteFile(file);
                         } catch (IOException e) {
-                            logger.error(e);
+                            log.error(e);
                             Helper.setFehlerMeldung(Helper.getTranslation("fileNoWriteAccess", file.toString()));
                         }
                     }
@@ -4625,25 +4620,25 @@ public class Metadaten implements Serializable {
                         buildTree(treeOfFilteredProcess, filteredProcess.readMetadataFile().getDigitalDocument().getLogicalDocStruct(), false);
 
             } catch (PreferencesException e) {
-                logger.error("Error loading the tree for filtered processes (PreferencesException): ", e);
+                log.error("Error loading the tree for filtered processes (PreferencesException): ", e);
 
             } catch (ReadException e) {
-                logger.error("Error loading the tree for filtered processes (ReadException): ", e);
+                log.error("Error loading the tree for filtered processes (ReadException): ", e);
 
             } catch (SwapException e) {
-                logger.error("Error loading the tree for filtered processes (SwapException): ", e);
+                log.error("Error loading the tree for filtered processes (SwapException): ", e);
 
             } catch (DAOException e) {
-                logger.error("Error loading the tree for filtered processes (DAOException): ", e);
+                log.error("Error loading the tree for filtered processes (DAOException): ", e);
 
             } catch (WriteException e) {
-                logger.error("Error loading the tree for filtered processes (WriteException): ", e);
+                log.error("Error loading the tree for filtered processes (WriteException): ", e);
 
             } catch (IOException e) {
-                logger.error("Error loading the tree for filtered processes (IOException): ", e);
+                log.error("Error loading the tree for filtered processes (IOException): ", e);
 
             } catch (InterruptedException e) {
-                logger.error("Error loading the tree for filtered processes (InterruptedException): ", e);
+                log.error("Error loading the tree for filtered processes (InterruptedException): ", e);
 
             }
             activateAllTreeElements(treeOfFilteredProcess);
@@ -4792,7 +4787,7 @@ public class Metadaten implements Serializable {
                         }
                     }
                 } catch (TypeNotAllowedForParentException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
             addablePersondata = new LinkedList<>();
@@ -4812,7 +4807,7 @@ public class Metadaten implements Serializable {
                         }
                     }
                 } catch (TypeNotAllowedForParentException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
 
@@ -4832,7 +4827,7 @@ public class Metadaten implements Serializable {
                         }
                     }
                 } catch (TypeNotAllowedForParentException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -4893,7 +4888,7 @@ public class Metadaten implements Serializable {
                 SimpleAlto alto = new SimpleAlto("Error reading ALTO, see application log for details.");
 
                 this.currentJsonAlto = new Gson().toJson(alto);
-                logger.error(e);
+                log.error(e);
             }
         }
         cancelPageAreaEdition();
@@ -4930,7 +4925,7 @@ public class Metadaten implements Serializable {
 
     public int getImageWidth() {
         if (image == null) {
-            logger.error("Must set image before querying image size");
+            log.error("Must set image before querying image size");
             return 0;
         } else {
             return image.getSize().width;
@@ -4939,7 +4934,7 @@ public class Metadaten implements Serializable {
 
     public int getImageHeight() {
         if (image == null) {
-            logger.error("Must set image before querying image size");
+            log.error("Must set image before querying image size");
             return 0;
         } else {
             return image.getSize().height;
@@ -5114,7 +5109,7 @@ public class Metadaten implements Serializable {
                 bildNummer = -1;
             }
         } catch (InvalidImagesException | SwapException | DAOException | IOException | InterruptedException e1) {
-            logger.error(e1);
+            log.error(e1);
         }
 
     }

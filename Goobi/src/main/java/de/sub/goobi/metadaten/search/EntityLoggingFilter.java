@@ -41,19 +41,17 @@ import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.ext.WriterInterceptor;
 import javax.ws.rs.ext.WriterInterceptorContext;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 
 @Priority(Integer.MIN_VALUE)
+@Log4j2
 public class EntityLoggingFilter implements ClientRequestFilter, ClientResponseFilter, WriterInterceptor {
-
-    private static final Logger logger = LogManager.getLogger(EntityLoggingFilter.class.getName());
     private static final String ENTITY_STREAM_PROPERTY = "EntityLoggingFilter.entityStream";
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     private final int maxEntitySize = 1024 * 8;
 
     private void log(StringBuilder sb) {
-        logger.info(sb.toString());
+        log.info(sb.toString());
     }
 
     private InputStream logInboundEntity(final StringBuilder b, InputStream stream, final Charset charset) throws IOException {

@@ -42,8 +42,6 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.api.mq.QueueType;
 import org.goobi.production.flow.statistics.hibernate.SearchIndexField;
 
@@ -51,12 +49,12 @@ import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.MySQLHelper;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class ConfigurationHelper implements Serializable {
 
     private static final long serialVersionUID = -8139954646653507720L;
-
-    private static final Logger logger = LogManager.getLogger(ConfigurationHelper.class);
     private static String imagesPath = null;
     private static ConfigurationHelper instance;
     public static String CONFIG_FILE_NAME = "goobi_config.properties";
@@ -68,17 +66,17 @@ public class ConfigurationHelper implements Serializable {
             config = new PropertiesConfiguration(CONFIG_FILE_NAME);
             config.setReloadingStrategy(new FileChangedReloadingStrategy());
             // Load local config file
-            logger.info("Default configuration file loaded: " + config.getFile().getAbsolutePath());
+            log.info("Default configuration file loaded: " + config.getFile().getAbsolutePath());
             Path fileLocal = Paths.get(getConfigLocalPath(), CONFIG_FILE_NAME);
             if (Files.exists(fileLocal)) {
                 configLocal = new PropertiesConfiguration(fileLocal.toFile());
                 configLocal.setReloadingStrategy(new FileChangedReloadingStrategy());
-                logger.info("Local configuration file '" + fileLocal.toString() + "' loaded.");
+                log.info("Local configuration file '" + fileLocal.toString() + "' loaded.");
             } else {
                 configLocal = new PropertiesConfiguration();
             }
         } catch (ConfigurationException e) {
-            logger.error(e);
+        	log.error(e);
             config = new PropertiesConfiguration();
         }
 
@@ -104,7 +102,7 @@ public class ConfigurationHelper implements Serializable {
         try {
             return configLocal.getInt(inPath, config.getInt(inPath, inDefault));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+        	log.error(e.getMessage(), e);
             return inDefault;
         }
     }
@@ -113,7 +111,7 @@ public class ConfigurationHelper implements Serializable {
         try {
             return configLocal.getInt(inPath, config.getInt(inPath));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+        	log.error(e.getMessage(), e);
             return 0;
         }
     }
@@ -122,7 +120,7 @@ public class ConfigurationHelper implements Serializable {
         try {
             return configLocal.getLong(inPath, config.getLong(inPath, inDefault));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+        	log.error(e.getMessage(), e);
             return inDefault;
         }
     }
@@ -131,7 +129,7 @@ public class ConfigurationHelper implements Serializable {
         try {
             return configLocal.getString(inPath, config.getString(inPath, inDefault));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+        	log.error(e.getMessage(), e);
             return inDefault;
         }
     }
@@ -160,7 +158,7 @@ public class ConfigurationHelper implements Serializable {
         try {
             return configLocal.getBoolean(inPath, config.getBoolean(inPath, inDefault));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return inDefault;
         }
     }
@@ -179,7 +177,7 @@ public class ConfigurationHelper implements Serializable {
                 return local;
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return inDefault;
         }
     }
@@ -215,7 +213,7 @@ public class ConfigurationHelper implements Serializable {
             try {
                 FilesystemHelper.createDirectory(filename);
             } catch (Exception ioe) {
-                logger.error("IO error: " + ioe);
+            	log.error("IO error: " + ioe);
                 Helper.setFehlerMeldung(Helper.getTranslation("couldNotCreateImageFolder"), ioe.getMessage());
             }
         }
@@ -1191,7 +1189,7 @@ public class ConfigurationHelper implements Serializable {
             try (OutputStream out = Files.newOutputStream(fileLocal)) {
                 configLocal.save(out);
             } catch (IOException | ConfigurationException e) {
-                logger.error("Error saving local config: {}", e);
+            	log.error("Error saving local config: {}", e);
             }
         }
     }

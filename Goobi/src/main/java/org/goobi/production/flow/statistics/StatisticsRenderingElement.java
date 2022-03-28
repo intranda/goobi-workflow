@@ -34,8 +34,6 @@ import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
-
 import de.intranda.commons.chart.renderer.CSVRenderer;
 import de.intranda.commons.chart.renderer.ChartRenderer;
 import de.intranda.commons.chart.renderer.ExcelRenderer;
@@ -45,7 +43,9 @@ import de.intranda.commons.chart.renderer.PieChartRenderer;
 import de.intranda.commons.chart.results.DataTable;
 import de.sub.goobi.config.ConfigurationHelper;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class StatisticsRenderingElement implements Serializable {
 
     private static final long serialVersionUID = 9211752003070422596L;
@@ -61,8 +61,7 @@ public class StatisticsRenderingElement implements Serializable {
     private String localImagePath;
     @Getter
     private String imageUrl;
-    private static final Logger logger = LogManager.getLogger(StatisticsRenderingElement.class);
-
+    
     public StatisticsRenderingElement(DataTable inDataTable, IStatisticalQuestion inQuestion) {
         dataTable = inDataTable;
         myQuestion = inQuestion;
@@ -127,7 +126,7 @@ public class StatisticsRenderingElement implements Serializable {
         try {
             ImageIO.write(image, "png", outputfile.toFile());
         } catch (IOException e) {
-            logger.error(e);
+            log.error(e);
         }
 
     }

@@ -24,27 +24,23 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Ldap;
 
 import de.sub.goobi.helper.exceptions.DAOException;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class LdapManager implements IManager, Serializable {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 3377701492551707071L;
-
-    private static final Logger logger = LogManager.getLogger(LdapManager.class);
 
     public static Ldap getLdapById(int id) throws DAOException {
         Ldap o = null;
         try {
             o = LdapMysqlHelper.getLdapById(id);
         } catch (SQLException e) {
-            logger.error("error while getting ldap with id " + id, e);
+            log.error("error while getting ldap with id " + id, e);
             throw new DAOException(e);
         }
         return o;
@@ -54,7 +50,7 @@ public class LdapManager implements IManager, Serializable {
         try {
             LdapMysqlHelper.saveLdap(ldap);
         } catch (SQLException e) {
-            logger.error("error while saving ldap with id " + ldap.getId(), e);
+            log.error("error while saving ldap with id " + ldap.getId(), e);
             throw new DAOException(e);
         }
     }
@@ -63,7 +59,7 @@ public class LdapManager implements IManager, Serializable {
         try {
             LdapMysqlHelper.deleteLdap(ldap);
         } catch (SQLException e) {
-            logger.error("error while deleting ldap with id " + ldap.getId(), e);
+            log.error("error while deleting ldap with id " + ldap.getId(), e);
             throw new DAOException(e);
         }
     }
@@ -73,7 +69,7 @@ public class LdapManager implements IManager, Serializable {
         try {
             answer = LdapMysqlHelper.getLdaps(order, filter, start, count, institution);
         } catch (SQLException e) {
-            logger.error("error while getting ldaps", e);
+            log.error("error while getting ldaps", e);
             throw new DAOException(e);
         }
         return answer;
@@ -90,7 +86,7 @@ public class LdapManager implements IManager, Serializable {
         try {
             num = LdapMysqlHelper.getLdapCount(order, filter, institution);
         } catch (SQLException e) {
-            logger.error("error while getting ldap hit size", e);
+            log.error("error while getting ldap hit size", e);
             throw new DAOException(e);
         }
         return num;
@@ -165,7 +161,7 @@ public class LdapManager implements IManager, Serializable {
         try {
             idList = LdapMysqlHelper.getIdList(filter, institution);
         } catch (SQLException e) {
-            logger.error("error while getting id list", e);
+            log.error("error while getting id list", e);
         }
         return idList;
     }
@@ -175,7 +171,7 @@ public class LdapManager implements IManager, Serializable {
         try {
             answer = LdapMysqlHelper.getAllLdapsAsList();
         } catch (SQLException e) {
-            logger.error("error while getting ldaps", e);
+            log.error("error while getting ldaps", e);
         }
         return answer;
     }

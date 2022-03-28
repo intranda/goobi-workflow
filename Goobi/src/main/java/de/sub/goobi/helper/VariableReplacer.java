@@ -43,8 +43,6 @@ import javax.naming.ConfigurationException;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.text.StrTokenizer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -62,12 +60,14 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.MetadataManager;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 
+@Log4j2
 public class VariableReplacer {
 
     private enum MetadataLevel {
@@ -75,8 +75,6 @@ public class VariableReplacer {
         FIRSTCHILD,
         TOPSTRUCT;
     }
-
-    private static final Logger logger = LogManager.getLogger(VariableReplacer.class);
     private static Pattern pTifUrl = Pattern.compile("\\$?(?:\\(|\\{)tifurl(?:\\}|\\))");
     private static Pattern pOrigurl = Pattern.compile("\\$?(?:\\(|\\{)origurl(?:\\}|\\))");
     private static Pattern pImageUrl = Pattern.compile("\\$?(?:\\(|\\{)imageurl(?:\\}|\\))");
@@ -290,7 +288,7 @@ public class VariableReplacer {
             inString = piiifMasterFolder.matcher(inString).replaceAll(Matcher.quoteReplacement(getIiifImageUrls(process, "master")));
 
         } catch (IOException | InterruptedException | SwapException | DAOException e) {
-            logger.error(e);
+            log.error(e);
         }
         String myprefs = ConfigurationHelper.getInstance().getRulesetFolder() + this.process.getRegelsatz().getDatei();
 
@@ -311,7 +309,7 @@ public class VariableReplacer {
                     String token = JwtHelper.createChangeStepToken(step);
                     inString = tokenMatcher.replaceAll(token);
                 } catch (ConfigurationException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -369,7 +367,7 @@ public class VariableReplacer {
                 String value = process.getConfiguredImageFolder(folderName);
                 inString = inString.replace(r.group(), value);
             } catch (IOException | InterruptedException | SwapException | DAOException e) {
-                logger.error(e);
+                log.error(e);
             }
         }
 
@@ -418,7 +416,7 @@ public class VariableReplacer {
                 case FIRSTCHILD:
                     /* ohne vorhandenes FirstChild, kann dieses nicht zurückgegeben werden */
                     if (resultFirst == null) {
-                        logger.info("Can not replace firstChild-variable for METS: " + metadata);
+                        log.info("Can not replace firstChild-variable for METS: " + metadata);
                         result = "";
                     } else {
                         result = resultFirst;
@@ -428,7 +426,7 @@ public class VariableReplacer {
                 case TOPSTRUCT:
                     if (resultTop == null) {
                         result = "";
-                        logger.warn("Can not replace topStruct-variable for METS: " + metadata);
+                        log.warn("Can not replace topStruct-variable for METS: " + metadata);
                     } else {
                         result = resultTop;
                     }
@@ -441,7 +439,7 @@ public class VariableReplacer {
                         result = resultTop;
                     } else {
                         result = "";
-                        logger.warn("Can not replace variable for METS: " + metadata);
+                        log.warn("Can not replace variable for METS: " + metadata);
                     }
                     break;
 
@@ -504,14 +502,14 @@ public class VariableReplacer {
             try {
                 folder = Paths.get(process.getImagesTifDirectory(false));
             } catch (IOException | InterruptedException | SwapException | DAOException e) {
-                logger.error(e);
+                log.error(e);
                 return "";
             }
         } else {
             try {
                 folder = Paths.get(process.getImagesOrigDirectory(false));
             } catch (IOException | InterruptedException | SwapException | DAOException e) {
-                logger.error(e);
+                log.error(e);
                 return "";
             }
         }
@@ -536,7 +534,7 @@ public class VariableReplacer {
 
                 iifUrls.add(iiifUriString);
             } catch (ConfigurationException | MalformedURIException e) {
-                logger.error(e);
+                log.error(e);
                 return "";
             }
         }

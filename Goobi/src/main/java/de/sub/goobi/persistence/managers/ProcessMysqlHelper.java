@@ -32,8 +32,6 @@ import java.util.List;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Institution;
 import org.goobi.beans.LogEntry;
@@ -46,14 +44,11 @@ import org.goobi.production.enums.LogType;
 import org.joda.time.LocalDate;
 
 import de.sub.goobi.helper.exceptions.DAOException;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 class ProcessMysqlHelper implements Serializable {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 5087816359001071079L;
-
-    private static final Logger logger = LogManager.getLogger(ProcessMysqlHelper.class);
 
     public static Process getProcessById(int id) throws SQLException {
         Connection connection = null;
@@ -146,7 +141,7 @@ class ProcessMysqlHelper implements Serializable {
             }
 
         } catch (SQLException e) {
-            //            logger.error("Error while saving process " + o.getTitel(), e);
+            //            log.error("Error while saving process " + o.getTitel(), e);
             throw new DAOException(e);
         }
     }
@@ -283,8 +278,8 @@ class ProcessMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             //            if (filter != null && !filter.isEmpty()) {
             //                return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
@@ -316,8 +311,8 @@ class ProcessMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             List<Process> ret = null;
             ret = new QueryRunner().query(connection, sql.toString(), resultSetToProcessListHandler);
@@ -346,8 +341,8 @@ class ProcessMysqlHelper implements Serializable {
         }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             List<Integer> ret = null;
             ret = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler);
@@ -365,8 +360,8 @@ class ProcessMysqlHelper implements Serializable {
         sql.append("SELECT * FROM prozesse");
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             List<Process> ret = new QueryRunner().query(connection, sql.toString(), resultSetToProcessListHandler);
             return ret;
@@ -389,7 +384,7 @@ class ProcessMysqlHelper implements Serializable {
                             answer.add(o);
                         }
                     } catch (DAOException e) {
-                        logger.error(e);
+                        log.error(e);
                     }
                 }
             } finally {
@@ -410,7 +405,7 @@ class ProcessMysqlHelper implements Serializable {
                         Process o = convert(rs);
                         return o;
                     } catch (DAOException e) {
-                        logger.error(e);
+                        log.error(e);
                     }
                 }
             } finally {
@@ -429,8 +424,8 @@ class ProcessMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString() + ", " + Arrays.toString(param));
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString() + ", " + Arrays.toString(param));
             }
             Integer id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
             if (id != null) {
@@ -573,8 +568,8 @@ class ProcessMysqlHelper implements Serializable {
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             return new QueryRunner().query(connection, sql.toString(), resultSetToBatchHandler, batchID);
         } finally {
@@ -598,8 +593,8 @@ class ProcessMysqlHelper implements Serializable {
         //        }
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             List<Integer> ret = null;
             ret = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerListHandler);
@@ -680,8 +675,8 @@ class ProcessMysqlHelper implements Serializable {
             StringBuilder sql = new StringBuilder();
             Object[] param = { numberOfFiles, processId };
             sql.append("UPDATE prozesse SET sortHelperImages = ? WHERE ProzesseID = ?");
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString() + ", " + Arrays.toString(param));
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString() + ", " + Arrays.toString(param));
             }
             run.update(connection, sql.toString(), param);
         } finally {
@@ -700,8 +695,8 @@ class ProcessMysqlHelper implements Serializable {
             Object[] param = { value, processId };
 
             sql.append("UPDATE prozesse SET sortHelperStatus = ? WHERE ProzesseID = ?");
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString() + ", " + Arrays.toString(param));
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString() + ", " + Arrays.toString(param));
             }
             run.update(connection, sql.toString(), param);
         } finally {

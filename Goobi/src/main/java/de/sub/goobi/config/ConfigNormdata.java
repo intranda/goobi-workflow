@@ -24,14 +24,12 @@ import java.util.List;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.apache.logging.log4j.LogManager;
-//testing this
-import org.apache.logging.log4j.Logger;
 import org.goobi.api.display.helper.NormDatabase;
 
-public class ConfigNormdata {
-    private static final Logger logger = LogManager.getLogger(ConfigNormdata.class);
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
+public class ConfigNormdata {
     public static List<NormDatabase> getConfiguredNormdatabases() {
         List<NormDatabase> answer = new ArrayList<NormDatabase>();
         XMLConfiguration config = getNormdataConfiguration();
@@ -55,7 +53,7 @@ public class ConfigNormdata {
         try {
             config.load(configurationFile);
         } catch (ConfigurationException e) {
-            logger.error(e);
+            log.error(e);
         }
         config.setReloadingStrategy(new FileChangedReloadingStrategy());
         return config;

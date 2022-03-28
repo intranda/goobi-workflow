@@ -30,20 +30,16 @@ import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Templateproperty;
 
 import de.sub.goobi.helper.enums.PropertyType;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 class PropertyMysqlHelper implements Serializable {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 5175567943231852013L;
-
-    private static final Logger logger = LogManager.getLogger(PropertyMysqlHelper.class);
 
     public static List<Processproperty> getProcessPropertiesForProcess(int processId) throws SQLException {
         String sql = "SELECT * FROM prozesseeigenschaften WHERE prozesseID = ? ORDER BY container, Titel";
@@ -318,8 +314,8 @@ class PropertyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString() + ", " + Arrays.toString(param));
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString() + ", " + Arrays.toString(param));
             }
             Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
             if (id != null) {
@@ -372,8 +368,8 @@ class PropertyMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
         } finally {
@@ -388,8 +384,8 @@ class PropertyMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
         } finally {
@@ -404,8 +400,8 @@ class PropertyMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (logger.isTraceEnabled()) {
-                logger.trace(sql.toString());
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
             }
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
         } finally {

@@ -31,8 +31,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.IStatisticalQuestionLimitedTimeframe;
 import org.goobi.production.flow.statistics.StepInformation;
@@ -48,18 +46,17 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.enums.HistoryEventType;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 
 /*****************************************************************************
  * Imlpementation of {@link IStatisticalQuestion}. This is used for the generation of a Datatable relfecting the progress of a project, based on it's
  * processes workflow. Only the workflow common to all processes is used. A reference step is taken and it's progress is calculated against the
  * average throughput. The average throughput is based on the duration and volume of a project.
- * 
- * @author Wulf Riebensahm
  ****************************************************************************/
+@Log4j2
 public class StatQuestProjectProgressData implements IStatisticalQuestionLimitedTimeframe, Serializable {
 
     private static final long serialVersionUID = 5488469945490611200L;
-    private static final Logger logger = LogManager.getLogger(StatQuestProjectProgressData.class);
     private Date timeFilterFrom;
     private TimeUnit timeGrouping = TimeUnit.months;
     private Date timeFilterTo;
@@ -96,33 +93,33 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
     public Boolean isDataComplete() {
         Boolean error = false;
         if (this.timeFilterFrom == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("time from is not set");
+            if (log.isDebugEnabled()) {
+                log.debug("time from is not set");
             }
             error = true;
         }
         if (this.timeFilterTo == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("time to is not set");
+            if (log.isDebugEnabled()) {
+                log.debug("time to is not set");
             }
             error = true;
         }
         if (this.requiredDailyOutput == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("daily output is not set");
+            if (log.isDebugEnabled()) {
+                log.debug("daily output is not set");
             }
             error = true;
         }
         if (this.terminatingStep == null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("terminating step is not set");
+            if (log.isDebugEnabled()) {
+                log.debug("terminating step is not set");
             }
             error = true;
         }
         if (this.myIDlist == null) {
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("processes filter is not set");
+            if (log.isDebugEnabled()) {
+                log.debug("processes filter is not set");
             }
             error = true;
         }
@@ -240,13 +237,14 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
             message = message + " - empty DataTable";
         }
 
-        logger.error(message);
+        log.error(message);
         return null;
 
     }
 
     /*
      * (non-Javadoc)
+     * 
      * 
      * @see
      * org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables

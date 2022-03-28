@@ -23,14 +23,12 @@ import java.sql.SQLException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sub.goobi.persistence.managers.DatabaseVersion;
 import de.sub.goobi.persistence.managers.MySQLHelper;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class GoobiDatabaseVersionListener implements ServletContextListener {
-    private static final Logger logger = LogManager.getLogger(GoobiDatabaseVersionListener.class);
 
     @Override
     public void contextDestroyed(ServletContextEvent arg0) {
@@ -38,19 +36,19 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent arg0) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Checking for database version");
+        if (log.isDebugEnabled()) {
+            log.debug("Checking for database version");
         }
         int currentVersion = DatabaseVersion.getCurrentVersion();
-        if (logger.isDebugEnabled()) {
-            logger.debug("Current version is " + currentVersion);
+        if (log.isDebugEnabled()) {
+            log.debug("Current version is " + currentVersion);
         }
         if (currentVersion == DatabaseVersion.EXPECTED_VERSION) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Database version is up to date.");
+            if (log.isDebugEnabled()) {
+                log.debug("Database version is up to date.");
             }
         } else {
-            logger.warn("Database version is too old, updating schema from version " + currentVersion + " to current version "
+            log.warn("Database version is too old, updating schema from version " + currentVersion + " to current version "
                     + DatabaseVersion.EXPECTED_VERSION);
             DatabaseVersion.updateDatabase(currentVersion);
         }
@@ -106,14 +104,14 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS priority_x_status ON schritte(Prioritaet, Bearbeitungsstatus) ");
                 DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS stepstatus ON schritte(Bearbeitungsstatus) ");
             }catch(SQLException e) {
-                logger.error(e);
+                log.error(e);
             }
         } else {
             if (!DatabaseVersion.checkIfIndexExists("schritte", "priority_x_status")) {
                 DatabaseVersion.createIndexOnTable("schritte", "priority_x_status", "Prioritaet, Bearbeitungsstatus", null);
             }
             if (!DatabaseVersion.checkIfIndexExists("schritte", "stepstatus")) {
-                logger.info("Create index 'stepstatus' on table 'schritte'.");
+                log.info("Create index 'stepstatus' on table 'schritte'.");
                 DatabaseVersion.createIndexOnTable("schritte", "stepstatus", "Bearbeitungsstatus", null);
             }
         }

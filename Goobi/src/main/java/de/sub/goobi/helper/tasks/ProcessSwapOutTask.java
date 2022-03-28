@@ -43,7 +43,9 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class ProcessSwapOutTask extends LongRunningTask {
 
     @Override
@@ -86,7 +88,7 @@ public class ProcessSwapOutTask extends LongRunningTask {
             processDirectory = getProzess().getProcessDataDirectoryIgnoreSwapping();
             //TODO: Don't catch Exception (the super class)
         } catch (Exception e) {
-            logger.warn("Exception:", e);
+            log.warn("Exception:", e);
             setStatusMessage("Error while getting process data folder: " + e.getClass().getName() + " - " + e.getMessage());
             setStatusProgress(-1);
             return;
@@ -102,7 +104,7 @@ public class ProcessSwapOutTask extends LongRunningTask {
         try {
             StorageProvider.getInstance().createDirectories(fileOut);
         } catch (IOException e1) {
-            logger.error(e1);
+            log.error(e1);
         }
 
         /* ---------------------
@@ -128,7 +130,7 @@ public class ProcessSwapOutTask extends LongRunningTask {
             setStatusMessage("copying process folder");
             Helper.copyDirectoryWithCrc32Check(fileIn, fileOut, help.getGoobiDataDirectory().length(), root);
         } catch (IOException e) {
-            logger.warn("IOException:", e);
+            log.warn("IOException:", e);
             setStatusMessage("IOException in copyDirectory: " + e.getMessage());
             setStatusProgress(-1);
             return;
@@ -149,7 +151,7 @@ public class ProcessSwapOutTask extends LongRunningTask {
             fos.close();
             //TODO: Don't catch Exception (the super class)
         } catch (Exception e) {
-            logger.warn("Exception:", e);
+            log.warn("Exception:", e);
             setStatusMessage(e.getClass().getName() + " in xmlOut.output: " + e.getMessage());
             setStatusProgress(-1);
             return;
@@ -164,7 +166,7 @@ public class ProcessSwapOutTask extends LongRunningTask {
             ProcessManager.saveProcess(myProzess);
         } catch (DAOException e) {
             setStatusMessage("DAOException while saving process: " + e.getMessage());
-            logger.warn("DAOException:", e);
+            log.warn("DAOException:", e);
             setStatusProgress(-1);
             return;
         }

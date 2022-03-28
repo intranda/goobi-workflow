@@ -27,8 +27,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
@@ -37,21 +35,18 @@ import org.goobi.beans.User;
 import org.jfree.util.Log;
 
 import de.sub.goobi.helper.exceptions.DAOException;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class ProjectManager implements IManager, Serializable {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 6722792758015394586L;
-
-    private static final Logger logger = LogManager.getLogger(ProjectManager.class);
 
     public static Project getProjectById(int id) throws DAOException {
         Project o = null;
         try {
             o = ProjectMysqlHelper.getProjectById(id);
         } catch (SQLException e) {
-            logger.error("error while getting Project with id " + id, e);
+            log.error("error while getting Project with id " + id, e);
             throw new DAOException(e);
         }
         return o;
@@ -64,7 +59,7 @@ public class ProjectManager implements IManager, Serializable {
                 saveProjectFileGroups(o.getFilegroups());
             }
         } catch (SQLException e) {
-            logger.error("error while saving Project with id " + o.getId(), e);
+            log.error("error while saving Project with id " + o.getId(), e);
             throw new DAOException(e);
         }
     }
@@ -73,7 +68,7 @@ public class ProjectManager implements IManager, Serializable {
         try {
             ProjectMysqlHelper.deleteProject(o);
         } catch (SQLException e) {
-            logger.error("error while deleting Project with id " + o.getId(), e);
+            log.error("error while deleting Project with id " + o.getId(), e);
             throw new DAOException(e);
         }
     }
@@ -83,7 +78,7 @@ public class ProjectManager implements IManager, Serializable {
         try {
             answer = ProjectMysqlHelper.getProjects(order, filter, start, count, institution);
         } catch (SQLException e) {
-            logger.error("error while getting Projects", e);
+            log.error("error while getting Projects", e);
             throw new DAOException(e);
         }
         return answer;
@@ -100,7 +95,7 @@ public class ProjectManager implements IManager, Serializable {
         try {
             num = ProjectMysqlHelper.getProjectCount(order, filter, institution);
         } catch (SQLException e) {
-            logger.error("error while getting Project hit size", e);
+            log.error("error while getting Project hit size", e);
             throw new DAOException(e);
         }
         return num;
@@ -111,7 +106,7 @@ public class ProjectManager implements IManager, Serializable {
         try {
             projectList = ProjectMysqlHelper.getAllProjects();
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return projectList;
     }
@@ -121,7 +116,7 @@ public class ProjectManager implements IManager, Serializable {
         try {
             answer = ProjectMysqlHelper.getProjectsForUser(user, activeProjectsOnly);
         } catch (SQLException e) {
-            logger.error("error while getting Usergroups", e);
+            log.error("error while getting Usergroups", e);
             throw new DAOException(e);
         }
         return answer;
@@ -135,7 +130,7 @@ public class ProjectManager implements IManager, Serializable {
             }
             return filegroups;
         } catch (SQLException e) {
-            logger.error("Cannot not load project filegroups with id " + projectId, e);
+            log.error("Cannot not load project filegroups with id " + projectId, e);
         }
         return null;
     }
@@ -144,7 +139,7 @@ public class ProjectManager implements IManager, Serializable {
         try {
             ProjectMysqlHelper.deleteProjectFileGroup(pfg);
         } catch (SQLException e) {
-            logger.error("error while deleting ProjectFileGroup", e);
+            log.error("error while deleting ProjectFileGroup", e);
         }
     }
 
@@ -152,7 +147,7 @@ public class ProjectManager implements IManager, Serializable {
         try {
             ProjectMysqlHelper.saveProjectFileGroups(pfgList);
         } catch (SQLException e) {
-            logger.error("error while saving ProjectFileGroups", e);
+            log.error("error while saving ProjectFileGroups", e);
         }
     }
 
@@ -160,7 +155,7 @@ public class ProjectManager implements IManager, Serializable {
         try {
             ProjectMysqlHelper.saveProjectFileGroup(pfg);
         } catch (SQLException e) {
-            logger.error("error while saving ProjectFileGroups", e);
+            log.error("error while saving ProjectFileGroups", e);
         }
     }
 
@@ -168,7 +163,7 @@ public class ProjectManager implements IManager, Serializable {
         try {
             return ProjectMysqlHelper.getNumberOfProcessesForProject(projectId);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return null;
     }
@@ -304,7 +299,7 @@ public class ProjectManager implements IManager, Serializable {
         try {
             o = ProjectMysqlHelper.getProjectByName(name);
         } catch (SQLException e) {
-            logger.error("error while getting Project with name " + name, e);
+            log.error("error while getting Project with name " + name, e);
             throw new DAOException(e);
         }
         return o;

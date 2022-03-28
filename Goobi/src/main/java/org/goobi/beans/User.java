@@ -37,8 +37,6 @@ import java.util.Set;
 import javax.faces.model.SelectItem;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
@@ -57,10 +55,11 @@ import jgravatar.Gravatar;
 import jgravatar.GravatarRating;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class User implements DatabaseObject {
 
-    private static final Logger logger = LogManager.getLogger(User.class);
     @Getter
     @Setter
     private Integer id;
@@ -288,7 +287,7 @@ public class User implements DatabaseObject {
             this.benutzergruppen = UsergroupManager.getUsergroupsForUser(this);
             this.projekte = ProjectManager.getProjectsForUser(this, false);
         } catch (DAOException e) {
-            logger.error("error during lazy loading of User", e);
+            log.error("error during lazy loading of User", e);
         }
     }
 
@@ -324,7 +323,7 @@ public class User implements DatabaseObject {
             try {
                 this.benutzergruppen = UsergroupManager.getUsergroupsForUser(this);
             } catch (DAOException e) {
-                logger.error(e);
+                log.error(e);
             }
         }
         return benutzergruppen;
@@ -359,7 +358,7 @@ public class User implements DatabaseObject {
             try {
                 this.projekte = ProjectManager.getProjectsForUser(this, false);
             } catch (DAOException e) {
-                logger.error(e);
+                log.error(e);
             }
         }
 

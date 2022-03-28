@@ -39,18 +39,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 public class MySQLHelper implements Serializable {
 
     private static final long serialVersionUID = -1396485589047649760L;
     private static final int MAX_TRIES_NEW_CONNECTION = 5;
     private static final int TIME_FOR_CONNECTION_VALID_CHECK = 5;
-
-    private static final Logger logger = LogManager.getLogger(MySQLHelper.class);
 
     private static MySQLHelper helper = new MySQLHelper();
     private ConnectionManager cm = null;
@@ -72,7 +71,7 @@ public class MySQLHelper implements Serializable {
             String dbType = meta.getDatabaseProductName();
             return (dbType.equals("H2"));
         } catch (SQLException e) {
-            logger.error("Error getting database provider information", e);
+            log.error("Error getting database provider information", e);
         }
         return false;
     }
@@ -88,7 +87,7 @@ public class MySQLHelper implements Serializable {
             String dbVersion = meta.getDatabaseProductVersion();
             return (checkMariadbVersion(dbVersion));
         } catch (SQLException e) {
-            logger.error("Error getting database provider information", e);
+            log.error("Error getting database provider information", e);
         }
         return false;
     }
@@ -132,7 +131,7 @@ public class MySQLHelper implements Serializable {
             try {
                 nums[i] = Integer.parseInt(numStrs[i]);
             } catch (NumberFormatException e) {
-                logger.error("error parsing database version: " + dbVersion);
+                log.error("error parsing database version: " + dbVersion);
                 return false;
             }
         }
@@ -163,7 +162,7 @@ public class MySQLHelper implements Serializable {
 
         for (int i = 0; i < MAX_TRIES_NEW_CONNECTION; i++) {
 
-            logger.warn("Connection failed: Trying to get new connection. Attempt:" + i);
+            log.warn("Connection failed: Trying to get new connection. Attempt:" + i);
 
             connection = this.cm.getDataSource().getConnection();
 
@@ -172,7 +171,7 @@ public class MySQLHelper implements Serializable {
             }
         }
 
-        logger.warn("Connection failed: Trying to get a connection from a new ConnectionManager");
+        log.warn("Connection failed: Trying to get a connection from a new ConnectionManager");
         this.cm = new ConnectionManager();
         connection = this.cm.getDataSource().getConnection();
 
@@ -180,7 +179,7 @@ public class MySQLHelper implements Serializable {
             return connection;
         }
 
-        logger.error("Connection failed!");
+        log.error("Connection failed!");
 
         return connection;
     }

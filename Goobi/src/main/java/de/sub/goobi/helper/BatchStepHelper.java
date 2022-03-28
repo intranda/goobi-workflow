@@ -39,8 +39,6 @@ import java.util.TreeMap;
 import javax.faces.model.SelectItem;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.LogEntry;
@@ -75,13 +73,14 @@ import de.sub.goobi.persistence.managers.PropertyManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class BatchStepHelper {
 
     @Getter
     @Setter
     private List<Step> steps;
-    private static final Logger logger = LogManager.getLogger(BatchStepHelper.class);
     @Getter
     @Setter
     private Step currentStep;
@@ -415,7 +414,7 @@ public class BatchStepHelper {
             ProcessManager.saveProcessInformation(this.currentStep.getProzess());
             StepManager.saveStep(currentStep);
         } catch (DAOException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -755,7 +754,7 @@ public class BatchStepHelper {
                 try {
                     dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, step.getStepPlugin());
                 } catch (Exception e) {
-                    logger.error("Can't load export plugin, use default export", e);
+                    log.error("Can't load export plugin, use default export", e);
                     Helper.setFehlerMeldung("Can't load export plugin, use default export");
                     dms = new ExportDms();
                 }
@@ -767,7 +766,7 @@ public class BatchStepHelper {
                 dms.startExport(step.getProzess());
             } catch (Exception e) {
                 Helper.setFehlerMeldung("Error on export", e.getMessage());
-                logger.error(e);
+                log.error(e);
             }
         }
     }

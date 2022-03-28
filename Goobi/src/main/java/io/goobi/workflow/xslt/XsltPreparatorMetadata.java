@@ -37,8 +37,6 @@ import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
@@ -51,11 +49,11 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.metadaten.Image;
 import de.sub.goobi.metadaten.MetadatenHelper;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
-import ugh.dl.MetadataType;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
 
@@ -64,9 +62,8 @@ import ugh.dl.Prefs;
  * 
  * @author Steffen Hankiewicz
  */
+@Log4j2
 public class XsltPreparatorMetadata implements IXsltPreparator {
-    private static final Logger logger = LogManager.getLogger(XsltPreparatorMetadata.class);
-
     private static Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
 
     private MetadatenHelper metahelper;
@@ -171,7 +168,7 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
             representative.setAttribute("url", repimage.getThumbnailUrl());
             mainElement.addContent(representative);
         } catch (IOException e1) {
-            logger.error("Error added the representative to the metadata docket", e1);
+            log.error("Error added the representative to the metadata docket", e1);
         }
 
         // add all important mets content
@@ -184,7 +181,7 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
                 addMetadataAndChildElements(logicalTopstruct, mainElement);
             }
         } catch (Exception e) {
-            logger.error("Error while creating a pdf file", e);
+            log.error("Error while creating a pdf file", e);
         }
         return doc;
     }

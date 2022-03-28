@@ -54,8 +54,6 @@ import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
@@ -95,6 +93,7 @@ import de.sub.goobi.persistence.managers.HistoryManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.DigitalDocument;
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
@@ -104,8 +103,8 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
+@Log4j2
 public class HelperSchritte {
-    private static final Logger logger = LogManager.getLogger(HelperSchritte.class);
     public final static String DIRECTORY_PREFIX = "orig_";
     private static final Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
     private static final Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
@@ -137,7 +136,7 @@ public class HelperSchritte {
             StepManager.saveStep(currentStep);
             Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + currentStep.getTitel() + "' closed.");
         } catch (DAOException e) {
-            logger.error("An exception occurred while closing the step '" + currentStep.getTitel() + "' of process with ID " + processId, e);
+            log.error("An exception occurred while closing the step '" + currentStep.getTitel() + "' of process with ID " + processId, e);
         }
 
         if (currentStep.isUpdateMetadataIndex()) {
@@ -172,7 +171,7 @@ public class HelperSchritte {
                 }
 
             } catch (SwapException | DAOException | IOException | InterruptedException e1) {
-                logger.error("An exception occurred while updating the metadata file process with ID " + processId, e1);
+                log.error("An exception occurred while updating the metadata file process with ID " + processId, e1);
             }
         }
 
@@ -231,7 +230,7 @@ public class HelperSchritte {
                                 StepManager.saveStep(myStep);
                                 Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + myStep.getTitel() + "' opened.");
                             } catch (DAOException e) {
-                                logger.error("An exception occurred while saving a step for process with ID " + myStep.getProcessId(), e);
+                                log.error("An exception occurred while saving a step for process with ID " + myStep.getProcessId(), e);
                             }
                         }
                     }
@@ -256,7 +255,7 @@ public class HelperSchritte {
             }
 
         } catch (Exception e) {
-            logger.error("An exception occurred while closing a step for process with ID " + po.getId(), e);
+            log.error("An exception occurred while closing a step for process with ID " + po.getId(), e);
         }
 
         updateProcessStatus(processId);
@@ -273,11 +272,11 @@ public class HelperSchritte {
                 Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG,
                         "Step '" + automaticStep.getTitel() + "' started to work automatically.");
             } catch (DAOException e) {
-                logger.error("An exception occurred while saving an automatic step for process with ID " + automaticStep.getProcessId(), e);
+                log.error("An exception occurred while saving an automatic step for process with ID " + automaticStep.getProcessId(), e);
             }
             // save
-            if (logger.isDebugEnabled()) {
-                logger.debug("Starting scripts for step with stepId " + automaticStep.getId() + " and processId " + automaticStep.getProcessId());
+            if (log.isDebugEnabled()) {
+                log.debug("Starting scripts for step with stepId " + automaticStep.getId() + " and processId " + automaticStep.getProcessId());
             }
             ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(automaticStep);
             myThread.startOrPutToQueue();
@@ -332,8 +331,8 @@ public class HelperSchritte {
         int size = scriptpaths.size();
         ShellScriptReturnValue returnParameter = null;
         outerloop: for (String script : scriptpaths) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Starting script " + script + " for process with ID " + step.getProcessId());
+            if (log.isDebugEnabled()) {
+                log.debug("Starting script " + script + " for process with ID " + step.getProcessId());
             }
 
             if (script != null && !script.equals(" ") && script.length() != 0) {
@@ -384,7 +383,7 @@ public class HelperSchritte {
             prefs = po.getRegelsatz().getPreferences();
             Fileformat ff = po.readMetadataFile();
             if (ff == null) {
-                logger.info("Metadata file is not readable for process with ID " + step.getProcessId());
+                log.info("Metadata file is not readable for process with ID " + step.getProcessId());
                 LogEntry le = new LogEntry();
                 le.setProcessId(step.getProzess().getId());
                 le.setContent("Metadata file is not readable");
@@ -395,7 +394,7 @@ public class HelperSchritte {
                 dd = ff.getDigitalDocument();
             }
         } catch (Exception e2) {
-            logger.info("An exception occurred while reading the metadata file for process with ID " + step.getProcessId(), e2);
+            log.info("An exception occurred while reading the metadata file for process with ID " + step.getProcessId(), e2);
             LogEntry le = new LogEntry();
             le.setProcessId(step.getProzess().getId());
             le.setContent("error reading metadata file");
@@ -429,7 +428,7 @@ public class HelperSchritte {
             le.setUserName("http step");
             ProcessManager.saveLogEntry(le);
             errorStep(step);
-            logger.error(e1);
+            log.error(e1);
             return;
         }
         // END dirty hack
@@ -463,7 +462,7 @@ public class HelperSchritte {
                             encoding = Charset.forName(resp.getEntity().getContentEncoding().getValue());
                         } catch (Exception e) {
                             //we can do nothing here
-                            logger.error(e);
+                            log.error(e);
                         }
                     }
                     IOUtils.copy(resp.getEntity().getContent(), writer, encoding);
@@ -479,7 +478,7 @@ public class HelperSchritte {
                     le.setUserName("http step");
                     ProcessManager.saveLogEntry(le);
                     errorStep(step);
-                    logger.error(respStr);
+                    log.error(respStr);
                     return;
                 }
                 LogEntry le = new LogEntry();
@@ -492,7 +491,7 @@ public class HelperSchritte {
                 if (step.isHttpCloseStep()) {
                     CloseStepObjectAutomatic(step);
                 }
-                logger.info(respStr);
+                log.info(respStr);
             } else {
                 LogEntry le = new LogEntry();
                 le.setCreationDate(new Date());
@@ -511,7 +510,7 @@ public class HelperSchritte {
             le.setUserName("http step");
             ProcessManager.saveLogEntry(le);
             errorStep(step);
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -570,7 +569,7 @@ public class HelperSchritte {
         try {
             parameterList = createShellParamsForBashScript(step, script);
         } catch (Exception e) {
-            logger.error("Error reading metadata for step " + step.getId(), e);
+            log.error("Error reading metadata for step " + step.getId(), e);
             LogEntry errorEntry = LogEntry.build(step.getProcessId())
                     .withType(LogType.ERROR)
                     .withContent("Error reading metadata for step" + step.getTitel())
@@ -582,7 +581,7 @@ public class HelperSchritte {
         //        script = replacer.replace(script);
         ShellScriptReturnValue rueckgabe = null;
         try {
-            logger.info("Calling the shell: " + script + " for process with ID " + step.getProcessId());
+            log.info("Calling the shell: " + script + " for process with ID " + step.getProcessId());
 
             StringBuilder message = new StringBuilder();
             message.append("Calling the shell: ");
@@ -619,7 +618,7 @@ public class HelperSchritte {
                         Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
                                 "Script for '" + step.getTitel() + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode()
                                 + ". The script returned: " + rueckgabe.getErrorText());
-                        logger.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
+                        log.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
                         + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
                     }
                 }
@@ -628,7 +627,7 @@ public class HelperSchritte {
             Helper.setFehlerMeldung("An exception occured while running a script", e.getMessage());
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
                     "Exception while executing a script for '" + step.getTitel() + "': " + e.getMessage());
-            logger.error("Exception occurred while running a script for process with ID " + step.getProcessId(), e);
+            log.error("Exception occurred while running a script for process with ID " + step.getProcessId(), e);
         }
         return rueckgabe;
     }
@@ -645,7 +644,7 @@ public class HelperSchritte {
                 dd = ff.getDigitalDocument();
             }
         } catch (IOException e) {
-            logger.info(e);
+            log.info(e);
         }
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
         List<String> parameterList = replacer.replaceBashScript(script);
@@ -663,7 +662,7 @@ public class HelperSchritte {
             try {
                 dms = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, step.getStepPlugin());
             } catch (Exception e) {
-                logger.error("Can't load export plugin, use default export for process with ID " + step.getProcessId(), e);
+                log.error("Can't load export plugin, use default export for process with ID " + step.getProcessId(), e);
                 dms = new ExportDms(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
                 //                dms = new AutomaticDmsExport(ConfigurationHelper.isAutomaticExportWithImages());
             }
@@ -690,7 +689,7 @@ public class HelperSchritte {
             return validate;
         } catch (DAOException | UGHException | SwapException | IOException | InterruptedException | DocStructHasNoTypeException | UghHelperException
                 | ExportFileException e) {
-            logger.error("Exception occurred while trying to export process with ID " + step.getProcessId(), e);
+            log.error("Exception occurred while trying to export process with ID " + step.getProcessId(), e);
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
                     "An exception occurred during the export for process with ID " + step.getProcessId() + ": " + e.getMessage());
             errorStep(step);
@@ -706,7 +705,7 @@ public class HelperSchritte {
         try {
             StepManager.saveStep(step);
         } catch (DAOException e) {
-            logger.error("Error while saving a workflow step for process with ID " + step.getProcessId(), e);
+            log.error("Error while saving a workflow step for process with ID " + step.getProcessId(), e);
         }
     }
 
@@ -718,7 +717,7 @@ public class HelperSchritte {
             try {
                 StepManager.saveStep(step);
             } catch (DAOException e) {
-                logger.error("Error while saving a workflow step for process with ID " + step.getProcessId(), e);
+                log.error("Error while saving a workflow step for process with ID " + step.getProcessId(), e);
             }
         }
 
@@ -787,8 +786,8 @@ public class HelperSchritte {
             metadataPairs.put("DocStruct", Collections.singletonList(docType));
 
         } catch (Exception e) {
-            logger.error(e);
-            logger.error("Cannot extract metadata from " + metadataFile.toString());
+            log.error(e);
+            log.error("Cannot extract metadata from " + metadataFile.toString());
         }
     }
 

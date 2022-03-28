@@ -34,8 +34,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.FilenameUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.intranda.api.iiif.image.ImageInformation;
 import de.intranda.api.iiif.image.ImageTile;
@@ -57,6 +55,7 @@ import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
 import de.unigoettingen.sub.commons.util.PathConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.extern.log4j.Log4j2;
 import spark.utils.StringUtils;
 
 /**
@@ -68,6 +67,7 @@ import spark.utils.StringUtils;
 
 @javax.ws.rs.Path("/process/image")
 @ContentServerBinding
+@Log4j2
 public class GoobiImageResource {
 
     private static final String IIIF_IMAGE_SIZE_REGEX = "^!?(\\d{0,9}),(\\d{0,9})$";
@@ -79,8 +79,6 @@ public class GoobiImageResource {
     private static final int IMAGE_SIZES_NUM_ENTRIES_TO_DELETE_ON_OVERFLOW = 10;
     private static long availableThumbnailFoldersLastUpdate = 0;
     private static final long AVAILABLE_THUMBNAIL_FOLDERS_TTL = 30000;// 30s
-
-    private static final Logger logger = LoggerFactory.getLogger(GoobiImageResource.class);
 
     private static final Map<String, Dimension> IMAGE_SIZES = new ConcurrentHashMap<>();
     private static Map<String, List<String>> availableThumbnailFolders = new ConcurrentHashMap<>();
@@ -110,7 +108,7 @@ public class GoobiImageResource {
         try {
             filename = URLDecoder.decode(filename, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
         ImageResource imageResource = createImageResource(processIdString, folder, filename);
 
@@ -173,7 +171,7 @@ public class GoobiImageResource {
         try {
             filename = URLDecoder.decode(filename, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
         ImageResource imageResource = createImageResource(processIdString, folder, filename);
         return imageResource.isInCache(region, size, rotation, quality, format, command);
@@ -189,7 +187,7 @@ public class GoobiImageResource {
         try {
             filename = URLDecoder.decode(filename, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
         ImageResource imageResource = createImageResource(processIdString, folder, filename);
         return imageResource.getPdf();
@@ -205,7 +203,7 @@ public class GoobiImageResource {
         try {
             filename = URLDecoder.decode(filename, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
         ImageResource imageResource = createImageResource(processIdString, folder, filename);
         return imageResource.getImage(region, size, rotation, quality, format);
@@ -262,7 +260,7 @@ public class GoobiImageResource {
                     getThumbnailSize(imagePath.getParent().getFileName().toString())
                     .map(sizeString -> calcThumbnailScale(imageSize, sizeString, size, requestedRegionSize.isPresent()))
                     .ifPresent(scale -> setThumbnailScale(scale, request));
-                    logger.debug("Using thumbnail {} for image width {} and region width {}", imagePath,
+                    log.debug("Using thumbnail {} for image width {} and region width {}", imagePath,
                             requestedImageSize.map(Object::toString).orElse("max"),
                             requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
                 } else if (imageTooLarge) {
@@ -303,7 +301,7 @@ public class GoobiImageResource {
                     imageTooLarge = true;
                 }
             } catch (IOException e) {
-                logger.error("IO error when requesting image size. Image will be delivered regardless");
+                log.error("IO error when requesting image size. Image will be delivered regardless");
             }
         }
         return imageTooLarge;
@@ -462,7 +460,7 @@ public class GoobiImageResource {
             long referenceDate = StorageProvider.getInstance().getLastModifiedDate(referencePath);
             return date > referenceDate;
         } catch (IOException e) {
-            logger.error("Unable to compare file ages of " + path + " and " + referencePath + ": " + e.toString());
+            log.error("Unable to compare file ages of " + path + " and " + referencePath + ": " + e.toString());
             return false;
         }
     }
@@ -567,7 +565,7 @@ public class GoobiImageResource {
                         .replace(URLEncoder.encode("{folder}", "utf-8"), URLEncoder.encode(folder, "utf-8"))
                         .replace(URLEncoder.encode("{filename}", "utf-8"), URLEncoder.encode(filename, "utf-8")));
             } catch (URISyntaxException | UnsupportedEncodingException e) {
-                logger.error("Failed to create image request uri");
+                log.error("Failed to create image request uri");
                 throw new IllegalRequestException("Unable to evaluate request to '" + processId + "', '" + folder + "', '" + filename + "'");
             }
         } else {
@@ -597,9 +595,9 @@ public class GoobiImageResource {
                 size = new Dimension(manager.getMyInterpreter().getOriginalImageWidth(), manager.getMyInterpreter().getOriginalImageHeight());
                 setImageSize(uri, size);
             } catch (ContentLibException e) {
-                logger.error("Error retrieving image size of " + uri);
+                log.error("Error retrieving image size of " + uri);
             } catch (FileNotFoundException e1) {
-                logger.error("Error retrieving image size of " + uri + ". Reason: url could not be resolved");
+                log.error("Error retrieving image size of " + uri + ". Reason: url could not be resolved");
 
             }
         }
@@ -658,7 +656,7 @@ public class GoobiImageResource {
                 Integer scale = Integer.parseInt(scaleString);
                 scales.add(scale);
             } catch (NullPointerException | NumberFormatException e) {
-                logger.error("Unable to parse tile scale " + scaleString);
+                log.error("Unable to parse tile scale " + scaleString);
             }
         }
         if (scales.isEmpty()) {
@@ -671,7 +669,7 @@ public class GoobiImageResource {
                 ImageTile tile = new ImageTile(size, size, scales);
                 tiles.add(tile);
             } catch (NullPointerException | NumberFormatException e) {
-                logger.error("Unable to parse tile size " + sizeString);
+                log.error("Unable to parse tile size " + sizeString);
             }
         }
         return tiles;

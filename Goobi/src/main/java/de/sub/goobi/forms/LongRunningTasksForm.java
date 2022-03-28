@@ -28,15 +28,15 @@ import java.lang.reflect.InvocationTargetException;
  */
 import java.util.LinkedList;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.tasks.LongRunningTask;
 import de.sub.goobi.helper.tasks.LongRunningTaskManager;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class LongRunningTasksForm {
     @Getter
     @Setter
@@ -44,7 +44,6 @@ public class LongRunningTasksForm {
     @Getter
     @Setter
     private LongRunningTask task;
-    private static final Logger logger = LogManager.getLogger(LongRunningTask.class);
 
     public LinkedList<LongRunningTask> getTasks() {
         return LongRunningTaskManager.getInstance().getTasks();
@@ -73,7 +72,7 @@ public class LongRunningTasksForm {
                 LongRunningTaskManager.getInstance().executeTask(lrt);
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
                     | SecurityException e) {
-                logger.error(e);
+                log.error(e);
             }
         }
     }

@@ -36,17 +36,16 @@ import javax.sql.DataSource;
 
 import org.apache.commons.pool2.ObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPool;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * 
  * @author Robert Sehr
  * 
  */
+@Log4j2
 public class ConnectionManager {
-
-    private static final Logger logger = LogManager.getLogger(ConnectionManager.class);
 
     private DataSource ds = null;
     @SuppressWarnings("rawtypes")
@@ -60,31 +59,31 @@ public class ConnectionManager {
             //			connectToDB(config);
             connectToDB();
         } catch (Exception e) {
-            logger.error("Failed to construct ConnectionManager", e);
+            log.error("Failed to construct ConnectionManager", e);
         }
     }
 
     private void connectToDB() {
-        if (logger.isTraceEnabled()) {
-            logger.trace("Trying to connect to database...");
+        if (log.isTraceEnabled()) {
+            log.trace("Trying to connect to database...");
         }
         try {
             Context ctx = new InitialContext();
             ds = (DataSource) ctx.lookup("java:comp/env/goobi");
-            if (logger.isTraceEnabled()) {
-                logger.trace("Connection attempt to database succeeded.");
+            if (log.isTraceEnabled()) {
+                log.trace("Connection attempt to database succeeded.");
             }
         } catch (Exception e) {
-            logger.error("Error when attempting to connect to DB ", e);
+            log.error("Error when attempting to connect to DB ", e);
         }
     }
 
     @SuppressWarnings("rawtypes")
     public static void printDriverStats() throws Exception {
         ObjectPool connectionPool = ConnectionManager._pool;
-        if (logger.isTraceEnabled()) {
-            logger.trace("NumActive: " + connectionPool.getNumActive());
-            logger.trace("NumIdle: " + connectionPool.getNumIdle());
+        if (log.isTraceEnabled()) {
+            log.trace("NumActive: " + connectionPool.getNumActive());
+            log.trace("NumIdle: " + connectionPool.getNumIdle());
         }
     }
 
@@ -108,8 +107,8 @@ public class ConnectionManager {
                 }
             }
         } catch (Exception e) {
-            if (logger.isTraceEnabled()) {
-                logger.trace("Failed to get get Locked Connections - Exception: " + e.toString());
+            if (log.isTraceEnabled()) {
+                log.trace("Failed to get get Locked Connections - Exception: " + e.toString());
             }
         } finally {
             try {
@@ -117,7 +116,7 @@ public class ConnectionManager {
                 p_stmt.close();
                 con.close();
             } catch (java.sql.SQLException ex) {
-                logger.error(ex.toString());
+                log.error(ex.toString());
             }
         }
         return num_locked_connections;

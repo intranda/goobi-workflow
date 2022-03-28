@@ -19,9 +19,6 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.intranda.api.iiif.image.ImageInformation;
 import de.intranda.api.iiif.image.ImageTile;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -33,12 +30,12 @@ import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageIn
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ImageResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.extern.log4j.Log4j2;
 
 @Path("/image/file/{path}")
 @ContentServerBinding
+@Log4j2
 public class GeneralImageResource extends ImageResource {
-
-    private static final Logger logger = LoggerFactory.getLogger(GeneralImageResource.class);
 
     public GeneralImageResource(@Context ContainerRequestContext context,
             @Context HttpServletRequest request,
@@ -75,7 +72,7 @@ public class GeneralImageResource extends ImageResource {
 
                 resourceURI = new URI(uriBase.toString().replace(URLEncoder.encode("{path}", "utf-8"), URLEncoder.encode(filePath, "utf-8")));
             } catch (URISyntaxException | UnsupportedEncodingException e) {
-                logger.error("Failed to create image request uri");
+                log.error("Failed to create image request uri");
                 throw new IllegalRequestException("Unable to evaluate request to '" + filePath + "'");
             }
         } else {
@@ -127,7 +124,7 @@ public class GeneralImageResource extends ImageResource {
                 Integer scale = Integer.parseInt(scaleString);
                 scales.add(scale);
             } catch (NullPointerException | NumberFormatException e) {
-                logger.error("Unable to parse tile scale " + scaleString);
+                log.error("Unable to parse tile scale " + scaleString);
             }
         }
         if (scales.isEmpty()) {
@@ -140,7 +137,7 @@ public class GeneralImageResource extends ImageResource {
                 ImageTile tile = new ImageTile(size, size, scales);
                 tiles.add(tile);
             } catch (NullPointerException | NumberFormatException e) {
-                logger.error("Unable to parse tile size " + sizeString);
+                log.error("Unable to parse tile size " + sizeString);
             }
         }
         return tiles;
@@ -154,7 +151,7 @@ public class GeneralImageResource extends ImageResource {
                 Dimension imageSize = new Dimension(size, (int) (size * heightToWidthRatio));
                 sizes.add(imageSize);
             } catch (NullPointerException | NumberFormatException e) {
-                logger.error("Unable to parse image size " + string);
+                log.error("Unable to parse image size " + string);
             }
         }
         return sizes;

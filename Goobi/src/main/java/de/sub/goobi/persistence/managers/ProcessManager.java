@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Batch;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
@@ -33,19 +32,18 @@ import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.exceptions.DAOException;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class ProcessManager implements IManager, Serializable {
-
     private static final long serialVersionUID = 3898081063234221110L;
-
-    private static final Logger logger = LogManager.getLogger(ProcessManager.class);
 
     @Override
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         try {
             return ProcessMysqlHelper.getProcessCount(order, filter, institution);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
             return 0;
         }
     }
@@ -60,7 +58,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             answer = ProcessMysqlHelper.getProcesses(order, filter, start, count);
         } catch (SQLException e) {
-            logger.error("error while getting process list", e);
+            log.error("error while getting process list", e);
         }
         return answer;
     }
@@ -70,7 +68,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             answer = ProcessMysqlHelper.getProcessIdList(order, filter, start, count);
         } catch (SQLException e) {
-            logger.error("error while getting process list", e);
+            log.error("error while getting process list", e);
         }
         return answer;
     }
@@ -84,7 +82,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             p = ProcessMysqlHelper.getProcessById(id);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
 
         return p;
@@ -95,7 +93,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             p = ProcessMysqlHelper.getProcessByTitle(inTitle);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
 
         return p;
@@ -106,7 +104,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             p = ProcessMysqlHelper.getProcessByExactTitle(inTitle);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
 
         return p;
@@ -116,7 +114,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             return ProcessMysqlHelper.getSumOfFieldValue(columnname, filter);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return 0;
     }
@@ -125,7 +123,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             return ProcessMysqlHelper.getCountOfFieldValue(columnname, filter);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return 0;
     }
@@ -138,7 +136,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             ProcessMysqlHelper.saveProcess(o, true);
         } catch (DAOException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -146,7 +144,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             ProcessMysqlHelper.deleteProcess(o);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -155,7 +153,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             answer = ProcessMysqlHelper.getAllProcesses();
         } catch (SQLException e) {
-            logger.error("error while getting process list", e);
+            log.error("error while getting process list", e);
         }
         return answer;
     }
@@ -164,7 +162,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             return ProcessMysqlHelper.getProcessCount(null, "prozesse.titel = '" + StringEscapeUtils.escapeSql(title) + "'", institution);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return 0;
     }
@@ -173,7 +171,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             return ProcessMysqlHelper.countProcesses(filter);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return 0;
     }
@@ -182,7 +180,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             ProcessMysqlHelper.saveBatch(batch);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -191,7 +189,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             return ProcessMysqlHelper.getIDList(null, filter);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return new ArrayList<>();
     }
@@ -201,7 +199,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             return ProcessMysqlHelper.getBatches(limit);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return new ArrayList<>();
     }
@@ -211,7 +209,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             return ProcessMysqlHelper.loadBatch(id);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return null;
     }
@@ -220,7 +218,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             ProcessMysqlHelper.deleteBatch(batch);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -229,7 +227,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             return ProcessMysqlHelper.runSQL(sql);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return new ArrayList();
     }
@@ -239,7 +237,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             answer = ProcessMysqlHelper.getCountOfProcessesWithTitle(title);
         } catch (SQLException e) {
-            logger.error("Cannot not load information about processes with title " + title, e);
+            log.error("Cannot not load information about processes with title " + title, e);
         }
         return answer;
     }
@@ -249,7 +247,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             answer = ProcessMysqlHelper.getCountOfProcessesWithRuleset(rulesetId);
         } catch (SQLException e) {
-            logger.error("Cannot not load information about ruleset with id " + rulesetId, e);
+            log.error("Cannot not load information about ruleset with id " + rulesetId, e);
         }
         return answer;
     }
@@ -259,7 +257,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             answer = ProcessMysqlHelper.getCountOfProcessesWithDocket(docketId);
         } catch (SQLException e) {
-            logger.error("Cannot not load information about docket with id " + docketId, e);
+            log.error("Cannot not load information about docket with id " + docketId, e);
         }
         return answer;
     }
@@ -268,7 +266,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             ProcessMysqlHelper.updateImages(numberOfFiles, processId);
         } catch (SQLException e) {
-            logger.error("Cannot not update status for process with id " + processId, e);
+            log.error("Cannot not update status for process with id " + processId, e);
         }
 
     }
@@ -277,7 +275,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             ProcessMysqlHelper.updateProcessStatus(value, processId);
         } catch (SQLException e) {
-            logger.error("Cannot not update status for process with id " + processId, e);
+            log.error("Cannot not update status for process with id " + processId, e);
         }
     }
 
@@ -286,7 +284,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             answer = ProcessMysqlHelper.getProcessTitle(processId);
         } catch (SQLException e) {
-            logger.error("Cannot not load information about process with id " + processId, e);
+            log.error("Cannot not load information about process with id " + processId, e);
         }
         return answer;
     }
@@ -296,7 +294,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             answer = ProcessMysqlHelper.getExportPluginName(processId);
         } catch (SQLException e) {
-            logger.error("Cannot not load information about process with id " + processId, e);
+            log.error("Cannot not load information about process with id " + processId, e);
         }
 
         return answer;
@@ -308,7 +306,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             idList = ProcessMysqlHelper.getIDList(order, filter);
         } catch (SQLException e) {
-            logger.error("error while getting id list", e);
+            log.error("error while getting id list", e);
         }
         return idList;
     }
@@ -317,7 +315,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             ProcessMysqlHelper.saveLogEntry(entry);
         } catch (SQLException e) {
-            logger.error("Cannot not update process log for process with id " + entry.getProcessId(), e);
+            log.error("Cannot not update process log for process with id " + entry.getProcessId(), e);
         }
     }
 
@@ -332,7 +330,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             ProcessMysqlHelper.deleteLogEntry(entry);
         } catch (SQLException e) {
-            logger.error("Cannot not update process log for process with id " + entry.getProcessId(), e);
+            log.error("Cannot not update process log for process with id " + entry.getProcessId(), e);
         }
     }
 

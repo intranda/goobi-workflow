@@ -25,8 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.JobType;
@@ -38,19 +36,20 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import de.sub.goobi.helper.exceptions.DAOException;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class StepManager implements IManager, Serializable {
 
     private static final Gson gson = new Gson();
     private static final long serialVersionUID = -8285339735960375871L;
-    private static final Logger logger = LogManager.getLogger(StepManager.class);
 
     @Override
     public int getHitSize(String order, String filter, Institution institution) throws DAOException {
         try {
             return StepMysqlHelper.getStepCount(order, filter);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return 0;
 
@@ -67,7 +66,7 @@ public class StepManager implements IManager, Serializable {
         try {
             answer = StepMysqlHelper.getSteps(order, filter, start, count);
         } catch (SQLException e) {
-            logger.error("error while getting process list", e);
+            log.error("error while getting process list", e);
         }
         return answer;
     }
@@ -77,7 +76,7 @@ public class StepManager implements IManager, Serializable {
         try {
             stepList = StepMysqlHelper.getStepsForProcess(processId);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
 
         return stepList;
@@ -88,7 +87,7 @@ public class StepManager implements IManager, Serializable {
         try {
             p = StepMysqlHelper.getStepById(id);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
 
         return p;
@@ -98,7 +97,7 @@ public class StepManager implements IManager, Serializable {
         try {
             StepMysqlHelper.saveStep(o);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
             throw new DAOException(e);
         }
 
@@ -108,7 +107,7 @@ public class StepManager implements IManager, Serializable {
         try {
             StepMysqlHelper.deleteStep(o);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -117,7 +116,7 @@ public class StepManager implements IManager, Serializable {
         try {
             answer = StepMysqlHelper.getAllSteps();
         } catch (SQLException e) {
-            logger.error("error while getting process list", e);
+            log.error("error while getting process list", e);
         }
         return answer;
     }
@@ -126,7 +125,7 @@ public class StepManager implements IManager, Serializable {
         try {
             StepMysqlHelper.updateBatchList(stepList);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -134,7 +133,7 @@ public class StepManager implements IManager, Serializable {
         try {
             StepMysqlHelper.insertBatchStepList(stepList);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -142,7 +141,7 @@ public class StepManager implements IManager, Serializable {
         try {
             return StepMysqlHelper.getStepCount(order, filter);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return 0;
     }
@@ -151,7 +150,7 @@ public class StepManager implements IManager, Serializable {
         try {
             return StepMysqlHelper.getAllStepsCount();
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return 0;
     }
@@ -166,7 +165,7 @@ public class StepManager implements IManager, Serializable {
         try {
             return StepMysqlHelper.getIDList(filter);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return new ArrayList<>();
     }
@@ -176,7 +175,7 @@ public class StepManager implements IManager, Serializable {
         try {
             return StepMysqlHelper.getDistinctStepTitlesAndOrder("Titel", null);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return new ArrayList<>();
     }
@@ -186,7 +185,7 @@ public class StepManager implements IManager, Serializable {
         try {
             return StepMysqlHelper.getDistinctStepTitlesAndOrder(order, filter);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return new ArrayList<>();
     }
@@ -196,7 +195,7 @@ public class StepManager implements IManager, Serializable {
         try {
             return StepMysqlHelper.getDistinctStepTitles("Titel", null);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return new ArrayList<>();
     }
@@ -206,7 +205,7 @@ public class StepManager implements IManager, Serializable {
         try {
             return StepMysqlHelper.getDistinctStepTitles(order, filter);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return new ArrayList<>();
     }
@@ -216,7 +215,7 @@ public class StepManager implements IManager, Serializable {
         try {
             return StepMysqlHelper.getDistinctStepPluginTitles();
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return new HashSet<>();
     }
@@ -225,7 +224,7 @@ public class StepManager implements IManager, Serializable {
         try {
             StepMysqlHelper.saveUserAssignment(step);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -233,7 +232,7 @@ public class StepManager implements IManager, Serializable {
         try {
             StepMysqlHelper.removeUsergroupFromStep(step, usergroup);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
 
     }
@@ -242,7 +241,7 @@ public class StepManager implements IManager, Serializable {
         try {
             StepMysqlHelper.removeUserFromStep(step, user);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
     }
 
@@ -250,7 +249,7 @@ public class StepManager implements IManager, Serializable {
         try {
             return StepMysqlHelper.getCountOfFieldValue(columnname, filter, order, group);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return 0l;
     }
@@ -259,7 +258,7 @@ public class StepManager implements IManager, Serializable {
         try {
             return StepMysqlHelper.getSumOfFieldValue(columnname, filter, order, group);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return 0l;
     }
@@ -268,7 +267,7 @@ public class StepManager implements IManager, Serializable {
         try {
             return StepMysqlHelper.getAverageOfFieldValue(columnname, filter, order, group);
         } catch (SQLException e) {
-            logger.error(e);
+            log.error(e);
         }
         return 0.0;
     }

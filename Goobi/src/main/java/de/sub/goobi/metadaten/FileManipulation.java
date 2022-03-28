@@ -16,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.production.cli.helper.OrderedKeyMap;
 
@@ -31,6 +29,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -41,8 +40,8 @@ import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 
+@Log4j2
 public class FileManipulation {
-    private static final Logger logger = LogManager.getLogger(FileManipulation.class);
     private Metadaten metadataBean;
 
     public FileManipulation(Metadaten metadataBean) {
@@ -123,10 +122,10 @@ public class FileManipulation {
             }
             basename = basename.replace("[^\\p{ASCII}]", "_");
             basename = basename.replace("[\\:\\*\\?\\|\\/]", "_").replace(" ", "_");
-            logger.trace("folder to import: " + currentFolder);
+            log.trace("folder to import: " + currentFolder);
             String filename = metadataBean.getMyProzess().getImagesDirectory() + currentFolder + FileSystems.getDefault().getSeparator() + basename;
 
-            logger.trace("filename to import: " + filename);
+            log.trace("filename to import: " + filename);
 
             if (StorageProvider.getInstance().isFileExists(Paths.get(filename))) {
                 Helper.setFehlerMeldung(Helper.getTranslation("fileExists", basename));
@@ -135,12 +134,12 @@ public class FileManipulation {
 
             inputStream = this.uploadedFile.getInputStream();
             StorageProvider.getInstance().uploadFile(inputStream, Paths.get(filename));
-            logger.trace(filename + " was imported");
+            log.trace(filename + " was imported");
             // if file was uploaded into media folder, update pagination sequence
             if (metadataBean.getMyProzess()
                     .getImagesTifDirectory(false)
                     .equals(metadataBean.getMyProzess().getImagesDirectory() + currentFolder + FileSystems.getDefault().getSeparator())) {
-                logger.trace("update pagination for " + metadataBean.getMyProzess().getTitel());
+                log.trace("update pagination for " + metadataBean.getMyProzess().getTitel());
                 updatePagination(filename);
 
             }
@@ -148,21 +147,21 @@ public class FileManipulation {
             Helper.setMeldung(Helper.getTranslation("metsEditorFileUploadSuccessful"));
         } catch (IOException | SwapException | DAOException | InterruptedException | TypeNotAllowedForParentException
                 | MetadataTypeNotAllowedException e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             Helper.setFehlerMeldung("uploadFailed", e);
         } finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
             if (outputStream != null) {
                 try {
                     outputStream.close();
                 } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
+                    log.error(e.getMessage(), e);
                 }
             }
         }
@@ -288,7 +287,7 @@ public class FileManipulation {
                 }
             }
         } catch (SwapException | DAOException | IOException | InterruptedException e1) {
-            logger.error(e1);
+            log.error(e1);
         }
 
         if (downloadFile == null || !StorageProvider.getInstance().isFileExists(downloadFile)) {
@@ -318,20 +317,20 @@ public class FileManipulation {
                 }
                 out.flush();
             } catch (IOException e) {
-                logger.error("IOException while exporting run note", e);
+                log.error("IOException while exporting run note", e);
             } finally {
                 if (in != null) {
                     try {
                         in.close();
                     } catch (IOException e) {
-                        logger.error(e);
+                        log.error(e);
                     }
                 }
                 if (out != null) {
                     try {
                         out.close();
                     } catch (IOException e) {
-                        logger.error(e);
+                        log.error(e);
                     }
                 }
             }
@@ -367,7 +366,7 @@ public class FileManipulation {
             try {
                 StorageProvider.getInstance().createDirectories(fileuploadFolder);
             } catch (IOException e) {
-                logger.error(e);
+                log.error(e);
             }
         }
         Path destination = Paths.get(fileuploadFolder.toString() + FileSystems.getDefault().getSeparator() + metadataBean.getMyProzess().getTitel());
@@ -375,7 +374,7 @@ public class FileManipulation {
             try {
                 StorageProvider.getInstance().createDirectories(destination);
             } catch (IOException e) {
-                logger.error(e);
+                log.error(e);
             }
         }
 
@@ -404,13 +403,13 @@ public class FileManipulation {
                     }
 
                 } catch (SwapException e) {
-                    logger.error(e);
+                    log.error(e);
                 } catch (DAOException e) {
-                    logger.error(e);
+                    log.error(e);
                 } catch (IOException e) {
-                    logger.error(e);
+                    log.error(e);
                 } catch (InterruptedException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -490,7 +489,7 @@ public class FileManipulation {
                                 StorageProvider.getInstance().copyFile(object, dest);
                             }
                         } catch (SwapException | DAOException | IOException | InterruptedException e) {
-                            logger.error(e);
+                            log.error(e);
                         }
                     } else {
                         if (subfolder.getFileName().toString().contains("_")) {
@@ -511,7 +510,7 @@ public class FileManipulation {
                                     }
 
                                 } catch (IOException | SwapException | DAOException | InterruptedException e) {
-                                    logger.error(e);
+                                    log.error(e);
                                 }
 
                             }
@@ -533,7 +532,7 @@ public class FileManipulation {
                                     Path dest = Paths.get(directory.toString(), object.getFileName().toString());
                                     StorageProvider.getInstance().copyFile(object, dest);
                                 } catch (IOException | SwapException | DAOException | InterruptedException e) {
-                                    logger.error(e);
+                                    log.error(e);
                                 }
                             }
                         }
@@ -554,7 +553,7 @@ public class FileManipulation {
             }
         } catch (TypeNotAllowedForParentException | SwapException | DAOException | MetadataTypeNotAllowedException | IOException
                 | InterruptedException e) {
-            logger.error(e);
+            log.error(e);
         }
 
         // delete folder

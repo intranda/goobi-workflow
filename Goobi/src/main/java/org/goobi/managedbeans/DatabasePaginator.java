@@ -29,8 +29,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 
@@ -38,10 +36,11 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.IManager;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class DatabasePaginator implements Serializable {
     private static final long serialVersionUID = 1571881092118205104L;
-    private static final Logger logger = LogManager.getLogger(DatabasePaginator.class);
     private List<? extends DatabaseObject> results;
     private int pageSize = 10;
     private int page = 0;
@@ -74,7 +73,7 @@ public class DatabasePaginator implements Serializable {
 
             load();
         } catch (DAOException e) {
-            logger.error("Failed to count results", e);
+            log.error("Failed to count results", e);
         }
         this.returnPage = returnPage;
     }
@@ -108,7 +107,7 @@ public class DatabasePaginator implements Serializable {
     // }
     //
     // } catch (DAOException e) {
-    // logger.error("Failed to load paginated results", e);
+    // log.error("Failed to load paginated results", e);
     // }
     // return results;
     // }
@@ -129,7 +128,7 @@ public class DatabasePaginator implements Serializable {
             }
 
         } catch (DAOException e) {
-            logger.error("Failed to load paginated results", e);
+            log.error("Failed to load paginated results", e);
         }
     }
 
@@ -208,7 +207,7 @@ public class DatabasePaginator implements Serializable {
         try {
             return manager.getList(order, filter, 0, Integer.MAX_VALUE, institution);
         } catch (DAOException e) {
-            logger.error("Failed to load paginated results", e);
+            log.error("Failed to load paginated results", e);
         }
         return new ArrayList<>();
     }

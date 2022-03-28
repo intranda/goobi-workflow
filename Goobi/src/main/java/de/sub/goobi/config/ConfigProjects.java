@@ -39,15 +39,12 @@ import org.apache.commons.configuration.SubnodeConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import de.sub.goobi.helper.Helper;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class ConfigProjects {
-    private static final Logger logger = LogManager.getLogger(ConfigProjects.class);
-
-
     private SubnodeConfiguration config;
 
     public ConfigProjects(String projectTitle) throws IOException {
@@ -68,7 +65,7 @@ public class ConfigProjects {
         try {
             config.load(configPfad);
         } catch (ConfigurationException e) {
-            logger.error(e);
+            log.error(e);
         }
         String projectNameInFile = null;
         // get all project names from file
@@ -131,7 +128,7 @@ public class ConfigProjects {
             String rueckgabe = this.config.getString(inParameter);
             return cleanXmlFormatedString(rueckgabe);
         } catch (RuntimeException e) {
-            logger.error(e);
+        	log.error(e);
             return null;
         }
     }
@@ -185,7 +182,7 @@ public class ConfigProjects {
         try {
             return this.config.getLong(inParameter);
         } catch (RuntimeException e) {
-            logger.error(e);
+        	log.error(e);
             return 0;
         }
     }
@@ -199,7 +196,7 @@ public class ConfigProjects {
         try {
             return Arrays.asList(this.config.getStringArray(inParameter));
         } catch (RuntimeException e) {
-            logger.error(e);
+        	log.error(e);
             return new ArrayList<>();
         }
     }
@@ -208,7 +205,7 @@ public class ConfigProjects {
         try {
             return config.configurationsAt(inParameter);
         } catch (RuntimeException e) {
-            logger.error(e);
+        	log.error(e);
             return new ArrayList<>();
         }
     }

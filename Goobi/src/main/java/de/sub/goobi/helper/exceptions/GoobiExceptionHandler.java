@@ -44,22 +44,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.sub.goobi.helper.FacesContextHelper;
+import lombok.extern.log4j.Log4j2;
 
-/**
- * 
- * @author Robert Sehr
- *
- */
+@Log4j2
 public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
-
-    private static final Logger logger = LogManager.getLogger(GoobiExceptionHandler.class);
-
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
-
     private ExceptionHandler exceptionHandler;
 
     @SuppressWarnings("deprecation")
@@ -81,7 +71,7 @@ public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
 
             // Handle ViewExpiredExceptions here ... or even others :)
             if (!t.getClass().equals(ViewExpiredException.class)) {
-                logger.error("CLASS: " + t.getClass().getName());
+                log.error("CLASS: " + t.getClass().getName());
             }
             FacesContext fc = FacesContextHelper.getCurrentFacesContext();
             Map<String, Object> requestMap = fc.getExternalContext().getRequestMap();
@@ -98,7 +88,7 @@ public class GoobiExceptionHandler extends ExceptionHandlerWrapper {
                     i.remove();
                 }
             } else {
-                logger.error(t.getMessage(), t);
+                log.error(t.getMessage(), t);
                 try {
                     // Push some useful stuff to the request scope for use in the page
                     requestMap.put("errorDetails", sdf.format(new Date()) + ": " + t.getMessage());

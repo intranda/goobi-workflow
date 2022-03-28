@@ -54,6 +54,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.helper.tasks.CreatePdfFromServletThread;
 import de.sub.goobi.metadaten.MetadatenHelper;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.Fileformat;
 import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
@@ -62,6 +63,7 @@ import ugh.exceptions.ReadException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 import ugh.exceptions.WriteException;
 
+@Log4j2
 public class ExportPdf extends ExportMets {
 
     @Override
@@ -84,9 +86,7 @@ public class ExportPdf extends ExportMets {
         writeMetsFile(myProzess, metsTempFile.toString(), gdzfile, true);
         Helper.setMeldung(null, myProzess.getTitel() + ": ", "mets file created");
         Helper.setMeldung(null, myProzess.getTitel() + ": ", "start pdf generation now");
-        if (logger.isDebugEnabled()) {
-            logger.debug("METS file created: " + metsTempFile);
-        }
+        log.debug("METS file created: " + metsTempFile);
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
         HttpServletRequest req = (HttpServletRequest) context.getExternalContext().getRequest();
         String fullpath = req.getRequestURL().toString();
@@ -112,10 +112,8 @@ public class ExportPdf extends ExportMets {
             pdf.setImagePath(imagesPath);
             pdf.setPdfPath(pdfPath);
             pdf.setAltoPath(altoPath);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Taget directory: " + zielVerzeichnis);
-                logger.debug("Using ContentServer2 base URL: " + myBasisUrl);
-            }
+            log.debug("Taget directory: " + zielVerzeichnis);
+            log.debug("Using ContentServer2 base URL: " + myBasisUrl);
             pdf.initialize(myProzess);
             pdf.start();
         } else {
@@ -175,9 +173,7 @@ public class ExportPdf extends ExportMets {
                  */
 
                 if (!context.getResponseComplete()) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Redirecting pdf request to " + goobiContentServerUrl.toString());
-                    }
+                    log.debug("Redirecting pdf request to " + goobiContentServerUrl.toString());
                     HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
                     String fileName = myProzess.getTitel() + ".pdf";
                     ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
@@ -200,7 +196,7 @@ public class ExportPdf extends ExportMets {
                 String text = "error while pdf creation: " + e.getMessage();
                 Path file = Paths.get(zielVerzeichnis, myProzess.getTitel() + ".PDF-ERROR.log");
                 try {
-                    logger.error(e);
+                    log.error(e);
                     output = new BufferedWriter(new FileWriter(file.toFile()));
                     output.write(text);
                     output.close();

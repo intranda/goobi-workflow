@@ -48,8 +48,6 @@ import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -62,6 +60,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.HttpClientHelper;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 /*******************************************************************************
  * Connects to OPAC system.
@@ -79,8 +78,8 @@ import lombok.Setter;
  * CHANGELOG: 19.07.2005 Ludwig: first Version
  *************************************************************************/
 
+@Log4j2
 public class GetOpac {
-    private static final Logger logger = LogManager.getLogger(GetOpac.class);
 
     // the output xml
     public static final String PICA_COLLECTION_RECORDS = "collection";
@@ -380,7 +379,7 @@ public class GetOpac {
             if (picaPlusLong != null) {
                 result.appendChild(picaPlusRaw.importNode(picaPlusLong, true));
             } else {
-                logger.error("Could not retrieve data for hit nr:" + i);
+                log.error("Could not retrieve data for hit nr:" + i);
             }
         }
 
@@ -478,12 +477,12 @@ public class GetOpac {
                 + this.cat.getPort() + this.cat.getCbs();
 
         if (this.verbose) {
-            logger.info("Searching the opac for " + query.getQueryUrl());
+            log.info("Searching the opac for " + query.getQueryUrl());
         }
 
         if (this.lastQuery.equals(querySummary)) {
             if (this.verbose) {
-                logger.info("Using cached result because last query was: " + querySummary);
+                log.info("Using cached result because last query was: " + querySummary);
             }
             return this.lastOpacResult;
         }
@@ -577,11 +576,11 @@ public class GetOpac {
         try {
             return this.docBuilder.parse(source);
         } catch (SAXException e) {
-            logger.info("Dokument?");
+            log.info("Dokument?");
 
             InputStream bs = source.getByteStream();
 
-            logger.info(bs.toString());
+            log.info(bs.toString());
             e.printStackTrace();
 
         } catch (IOException e) {
@@ -628,7 +627,7 @@ public class GetOpac {
     private String retrieveDataFromOPAC(String url) throws IOException {
 
         if (verbose) {
-            logger.info("Retrieving URL: " + cat.getProtocol() + this.cat.getServerAddress() + ":" + this.cat.getPort() + url + this.cat.getCbs());
+            log.info("Retrieving URL: " + cat.getProtocol() + this.cat.getServerAddress() + ":" + this.cat.getPort() + url + this.cat.getCbs());
         }
 
         HttpGet opacRequest = null;
@@ -640,13 +639,13 @@ public class GetOpac {
 
         }
         try {
-            if (logger.isDebugEnabled()) {
-                logger.debug("use proxy configuration: " + ConfigurationHelper.getInstance().isUseProxy());
+            if (log.isDebugEnabled()) {
+                log.debug("use proxy configuration: " + ConfigurationHelper.getInstance().isUseProxy());
             }
             if (ConfigurationHelper.getInstance().isUseProxy()) {
                 HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
+                if (log.isDebugEnabled()) {
+                    log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
                 }
 
                 Builder builder = RequestConfig.custom();

@@ -39,8 +39,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -52,6 +50,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManagerException;
 import de.unigoettingen.sub.commons.contentlib.imagelib.ImageManager;
 import lombok.Data;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * This class encapsulates all functionality required to display an image in Goobi. It provides methods to get thumbnail urls, IIIF urls and legacy
@@ -73,10 +72,8 @@ import lombok.Data;
  * 
  * TODO: implement {@link #getObjectUrl()} for audio/video to deliver the appropriate file/information
  */
+@Log4j2
 public @Data class Image {
-
-    private static final Logger logger = LogManager.getLogger(Image.class);
-
     private static final int LARGE_THUMBNAIL_SIZE_FACTOR = 3;
     private static final String PLACEHOLDER_URL_3D = "/uii/template/img/goobi_3d_object_placeholder_large.png?version=1";
     private static final String PLACEHOLDER_URL_VIDEO = "/uii/template/img/goobi_placeholder_video_large.png?version=1";
@@ -371,7 +368,7 @@ public @Data class Image {
                 try {
                     this.size = getImageSize(getImagePath());
                 } catch (ImageManagerException | FileNotFoundException e) {
-                    logger.error("Error reading image size of " + getImagePath(), e);
+                    log.error("Error reading image size of " + getImagePath(), e);
                 }
             } else {
                 this.size = new Dimension();
@@ -392,7 +389,7 @@ public @Data class Image {
                 try {
                     this.imageLevels = createImageLevels(getImagePath(), getLargeImageFormat(), getLayerSizes());
                 } catch (ImageManagerException | FileNotFoundException e) {
-                    logger.error("Error creating image levels for " + getImagePath(), e);
+                    log.error("Error creating image levels for " + getImagePath(), e);
                     this.imageLevels = new ArrayList<>();
                 }
             } else {
@@ -575,7 +572,7 @@ public @Data class Image {
                 ImageLevel layer = new ImageLevel(imageUrl, dim);
                 levels.add(layer);
             } catch (NullPointerException | NumberFormatException e) {
-                logger.error("Cannot build image with size " + sizeString);
+                log.error("Cannot build image with size " + sizeString);
             }
         }
         return levels;

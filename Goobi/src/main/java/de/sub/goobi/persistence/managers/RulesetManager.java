@@ -25,27 +25,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Ruleset;
 
 import de.sub.goobi.helper.exceptions.DAOException;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class RulesetManager implements IManager, Serializable {
-    /**
-     * 
-     */
     private static final long serialVersionUID = -7947612330017761755L;
-
-    private static final Logger logger = LogManager.getLogger(RulesetManager.class);
 
     public static Ruleset getRulesetById(int id) throws DAOException {
         Ruleset o = null;
         try {
             o = RulesetMysqlHelper.getRulesetForId(id);
         } catch (SQLException e) {
-            logger.error("error while getting ruleset with id " + id, e);
+            log.error("error while getting ruleset with id " + id, e);
             throw new DAOException(e);
         }
         return o;
@@ -55,7 +51,7 @@ public class RulesetManager implements IManager, Serializable {
         try {
             RulesetMysqlHelper.saveRuleset(ruleset);
         } catch (SQLException e) {
-            logger.error("error while saving ruleset with id " + ruleset.getId(), e);
+            log.error("error while saving ruleset with id " + ruleset.getId(), e);
             throw new DAOException(e);
         }
     }
@@ -64,7 +60,7 @@ public class RulesetManager implements IManager, Serializable {
         try {
             RulesetMysqlHelper.deleteRuleset(ruleset);
         } catch (SQLException e) {
-            logger.error("error while deleting ruleset with id " + ruleset.getId(), e);
+            log.error("error while deleting ruleset with id " + ruleset.getId(), e);
             throw new DAOException(e);
         }
     }
@@ -74,7 +70,7 @@ public class RulesetManager implements IManager, Serializable {
         try {
             answer = RulesetMysqlHelper.getRulesets(order, filter, start, count, institution);
         } catch (SQLException e) {
-            logger.error("error while getting rulesets", e);
+            log.error("error while getting rulesets", e);
             throw new DAOException(e);
         }
         return answer;
@@ -85,7 +81,7 @@ public class RulesetManager implements IManager, Serializable {
         try {
             answer = RulesetMysqlHelper.getAllRulesets();
         } catch (SQLException e) {
-            logger.error("error while getting rulesets", e);
+            log.error("error while getting rulesets", e);
         }
         return answer;
     }
@@ -101,7 +97,7 @@ public class RulesetManager implements IManager, Serializable {
         try {
             num = RulesetMysqlHelper.getRulesetCount(order, filter, institution);
         } catch (SQLException e) {
-            logger.error("error while getting ruleset hit size", e);
+            log.error("error while getting ruleset hit size", e);
             throw new DAOException(e);
         }
         return num;
@@ -165,7 +161,7 @@ public class RulesetManager implements IManager, Serializable {
         try {
             o = RulesetMysqlHelper.getRulesetByName(rulesetName);
         } catch (SQLException e) {
-            logger.error("error while getting ruleset with name " + rulesetName, e);
+            log.error("error while getting ruleset with name " + rulesetName, e);
             throw new DAOException(e);
         }
         return o;

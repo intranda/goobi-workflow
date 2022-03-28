@@ -42,8 +42,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Batch;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Process;
@@ -58,6 +56,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import io.goobi.workflow.xslt.XsltToPdf;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.extern.log4j.Log4j2;
 
 //import de.sub.goobi.persistence.ProzessDAO;
 
@@ -65,11 +64,10 @@ import lombok.EqualsAndHashCode;
 @WindowScoped
 @Data
 @EqualsAndHashCode(callSuper = false)
+@Log4j2
 public class BatchBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = 8234897225425856549L;
-
-    private static final Logger logger = LogManager.getLogger(BatchBean.class);
 
     private List<Process> currentProcesses = new ArrayList<>();
     private List<Process> selectedProcesses = new ArrayList<>();
@@ -244,8 +242,8 @@ public class BatchBean extends BasicBean implements Serializable {
     }
 
     public String downloadDocket() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("generate docket for process list");
+        if (log.isDebugEnabled()) {
+            log.debug("generate docket for process list");
         }
         String rootpath = ConfigurationHelper.getInstance().getXsltFolder();
         Path xsltfile = Paths.get(rootpath, "docket_multipage.xsl");
@@ -278,7 +276,7 @@ public class BatchBean extends BasicBean implements Serializable {
                     ern.startExport(docket, out, xsltfile.toString());
                     out.flush();
                 } catch (IOException e) {
-                    logger.error("IOException while exporting run note", e);
+                    log.error("IOException while exporting run note", e);
                 }
 
                 facesContext.responseComplete();

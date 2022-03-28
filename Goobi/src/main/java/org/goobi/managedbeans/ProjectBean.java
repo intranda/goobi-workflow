@@ -49,8 +49,6 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.goobi.beans.Institution;
 import org.goobi.beans.Project;
@@ -84,13 +82,14 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
 @Named("ProjekteForm")
 @WindowScoped
+@Log4j2
 public class ProjectBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 6735912903249358786L;
-    private static final Logger logger = LogManager.getLogger(ProjectBean.class);
-
+    
     @Getter
     private Project myProjekt = new Project();
     @Getter
@@ -199,7 +198,6 @@ public class ProjectBean extends BasicBean implements Serializable {
                     setCurrentInstitutionID(inst);
                 }
             } catch (DAOException e) {
-                file: ///home/joel/eclipse-workspace/.metadata/.plugins/org.eclipse.jdt.ui/jdt-images/0.png
                 Helper.setFehlerMeldung("could not save", e.getMessage());
                 return "";
             }
@@ -219,7 +217,7 @@ public class ProjectBean extends BasicBean implements Serializable {
 
     public String Apply() {
         // call this to make saving and deleting permanent
-        logger.trace("Apply wird aufgerufen...");
+        log.trace("Apply wird aufgerufen...");
         if (!checkProjectTitle()) {
             return "";
         }
@@ -296,7 +294,7 @@ public class ProjectBean extends BasicBean implements Serializable {
             try {
                 ProjectManager.saveProject(myProjekt);
             } catch (DAOException e) {
-                logger.error(e);
+                log.error(e);
             }
         }
         ProjectManager.saveProjectFileGroup(myFilegroup);
@@ -545,7 +543,7 @@ public class ProjectBean extends BasicBean implements Serializable {
         DateTime start = new DateTime(this.myProjekt.getStartDate().getTime());
         DateTime end = new DateTime(this.myProjekt.getEndDate().getTime());
         Weeks weeks = Weeks.weeksBetween(start, end);
-        logger.trace(weeks.getWeeks());
+        log.trace(weeks.getWeeks());
         int days = (weeks.getWeeks() * 5);
 
         if (days < 1) {
@@ -663,8 +661,8 @@ public class ProjectBean extends BasicBean implements Serializable {
             try {
                 ImageIO.write(bi, "png", outputfile.toFile());
             } catch (IOException e) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("couldn't write project progress chart to file", e);
+                if (log.isDebugEnabled()) {
+                    log.debug("couldn't write project progress chart to file", e);
                 }
             }
         }
@@ -763,7 +761,8 @@ public class ProjectBean extends BasicBean implements Serializable {
         }
     }
 
-    public void downloadStatisticsAsCsv() {
+    @SuppressWarnings("deprecation")
+	public void downloadStatisticsAsCsv() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         CSVPrinter csvFilePrinter = null;
         if (!facesContext.getResponseComplete()) {
@@ -827,7 +826,7 @@ public class ProjectBean extends BasicBean implements Serializable {
                 }
             } catch (DAOException e) {
                 Helper.setFehlerMeldung("Projekt kann nicht zugewiesen werden", "");
-                logger.error(e);
+                log.error(e);
             }
         } else {
             myProjekt = null;

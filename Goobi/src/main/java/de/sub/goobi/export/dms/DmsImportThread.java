@@ -30,15 +30,14 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class DmsImportThread extends Thread {
-    private static final Logger logger = LogManager.getLogger(DmsImportThread.class);
     private Path fileError;
     private Path fileXml;
     private Path fileSuccess;
@@ -71,14 +70,14 @@ public class DmsImportThread extends Thread {
             try {
                 this.timeFileError = StorageProvider.getInstance().getLastModifiedDate(fileError);
             } catch (IOException e) {
-                logger.error(e);
+            	log.error(e);
             }
         }
         if (StorageProvider.getInstance().isFileExists(this.fileSuccess)) {
             try {
                 this.timeFileSuccess = StorageProvider.getInstance().getLastModifiedDate(fileSuccess);
             } catch (IOException e) {
-                logger.error(e);
+            	log.error(e);
             }
         }
     }
@@ -113,7 +112,7 @@ public class DmsImportThread extends Thread {
                     }
                 }
             } catch (Throwable t) {
-                logger.error("Unexception exception", t);
+            	log.error("Unexception exception", t);
             }
         }
         if (!ConfigurationHelper.getInstance().isExportWithoutTimeLimit()) {

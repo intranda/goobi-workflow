@@ -21,7 +21,6 @@ import java.util.Date;
  */
 import java.util.List;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.LogType;
@@ -34,9 +33,10 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class DelayJob extends AbstractGoobiJob {
-    private static final Logger logger = LogManager.getLogger(DelayJob.class);
 
     private List<Step> getListOfStepsWithDelay() {
         String filter = " delayStep = true AND stepPlugin is not NULL AND Bearbeitungsstatus = 2";
@@ -50,12 +50,12 @@ public class DelayJob extends AbstractGoobiJob {
 
     @Override
     public void execute() {
-        if (logger.isDebugEnabled()) {
-            logger.debug("execute delay job");
+        if (log.isDebugEnabled()) {
+            log.debug("execute delay job");
         }
         List<Step> stepsWithDelay = getListOfStepsWithDelay();
-        if (logger.isDebugEnabled()) {
-            logger.debug(stepsWithDelay.size() + " steps are waiting");
+        if (log.isDebugEnabled()) {
+            log.debug(stepsWithDelay.size() + " steps are waiting");
         }
         for (Step step : stepsWithDelay) {
             IStepPlugin plugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
@@ -74,8 +74,8 @@ public class DelayJob extends AbstractGoobiJob {
                     ProcessManager.saveLogEntry(logEntry);
                     new HelperSchritte().CloseStepObjectAutomatic(step);
                 } else {
-                    if (logger.isTraceEnabled()) {
-                        logger.trace(step.getProzess().getTitel() + ": remaining delay is " + delay.getRemainingDelay());
+                    if (log.isTraceEnabled()) {
+                        log.trace(step.getProzess().getTitel() + ": remaining delay is " + delay.getRemainingDelay());
                     }
                 }
             }

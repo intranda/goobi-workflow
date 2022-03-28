@@ -33,8 +33,6 @@ import java.util.Random;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -46,16 +44,13 @@ import de.sub.goobi.persistence.managers.StepManager;
 import de.sub.goobi.persistence.managers.TemplateManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
+import lombok.extern.log4j.Log4j2;
 
 @Named("StatistikForm")
 @ApplicationScoped
-
+@Log4j2
 public class StatisticsBean implements Serializable {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 8974769449562593234L;
-    private static final Logger logger = LogManager.getLogger(StatisticsBean.class);
     Calendar cal = new GregorianCalendar();
     int n = 200;
 
@@ -161,7 +156,7 @@ public class StatisticsBean implements Serializable {
         try {
             return StepManager.countSteps(null, filter);
         } catch (DAOException e) {
-            logger.error(e);
+            log.error(e);
         }
         return 0;
 

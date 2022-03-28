@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang.SystemUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 import org.goobi.goobiScript.GoobiScriptManager;
 import org.goobi.goobiScript.GoobiScriptResult;
@@ -35,7 +33,6 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 
 @Log4j2
 public class GoobiScript {
-    private static final Logger logger = LogManager.getLogger(GoobiScript.class);
     public final static String DIRECTORY_SUFFIX = "_tif";
 
     /**
@@ -153,7 +150,7 @@ public class GoobiScript {
                 myRdf.getDigitalDocument().addAllContentFiles();
                 proz.writeMetadataFile(myRdf);
                 Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "ContentFiles updated using GoobiScript.");
-                logger.info("ContentFiles updated using GoobiScript for process with ID " + proz.getId());
+                log.info("ContentFiles updated using GoobiScript for process with ID " + proz.getId());
                 Helper.setMeldung("goobiScriptfield", "ContentFiles updated: ", proz.getTitel());
             } catch (ugh.exceptions.DocStructHasNoTypeException e) {
                 Helper.setFehlerMeldung("DocStructHasNoTypeException", e.getMessage());
@@ -178,7 +175,7 @@ public class GoobiScript {
             LongRunningTaskManager.getInstance().addTask(task);
             LongRunningTaskManager.getInstance().executeTask(task);
             Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Swapping out started using GoobiScript.");
-            logger.info("Swapping out started using GoobiScript for process with ID " + p.getId());
+            log.info("Swapping out started using GoobiScript for process with ID " + p.getId());
         }
         Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'swapOut' executed.");
     }
@@ -196,7 +193,7 @@ public class GoobiScript {
             LongRunningTaskManager.getInstance().addTask(task);
             LongRunningTaskManager.getInstance().executeTask(task);
             Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Swapping in started using GoobiScript.");
-            logger.info("Swapping in started using GoobiScript for process with ID " + p.getId());
+            log.info("Swapping in started using GoobiScript for process with ID " + p.getId());
         }
         Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'swapIn' executed.");
     }
@@ -215,7 +212,7 @@ public class GoobiScript {
                     StorageProvider.getInstance().deleteDir(tiffheaderfile);
                 }
                 Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "TiffHeaderFile deleted using GoobiScript.");
-                logger.info("TiffHeaderFile deleted using GoobiScript for process with ID " + proz.getId());
+                log.info("TiffHeaderFile deleted using GoobiScript for process with ID " + proz.getId());
                 Helper.setMeldung("goobiScriptfield", "TiffHeaderFile deleted: ", proz.getTitel());
             } catch (Exception e) {
                 Helper.setFehlerMeldung("goobiScriptfield", "Error while deleting TiffHeader", e);
@@ -252,7 +249,7 @@ public class GoobiScript {
                 myRdf.getDigitalDocument().getPhysicalDocStruct().addMetadata(newmd);
                 proz.writeMetadataFile(myRdf);
                 Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "ImagePath updated using GoobiScript.");
-                logger.info("ImagePath updated using GoobiScript for process with ID " + proz.getId());
+                log.info("ImagePath updated using GoobiScript for process with ID " + proz.getId());
                 Helper.setMeldung("goobiScriptfield", "ImagePath updated: ", proz.getTitel());
 
             } catch (ugh.exceptions.DocStructHasNoTypeException e) {

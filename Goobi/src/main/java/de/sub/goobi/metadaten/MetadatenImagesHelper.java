@@ -57,8 +57,6 @@ import org.apache.http.client.config.RequestConfig.Builder;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
@@ -76,6 +74,7 @@ import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManipulatorExcept
 import de.unigoettingen.sub.commons.contentlib.imagelib.ImageInterpreter;
 import de.unigoettingen.sub.commons.contentlib.imagelib.ImageManager;
 import de.unigoettingen.sub.commons.contentlib.imagelib.JpegInterpreter;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.ContentFile;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -90,8 +89,8 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.TypeNotAllowedAsChildException;
 import ugh.exceptions.TypeNotAllowedForParentException;
 
+@Log4j2
 public class MetadatenImagesHelper {
-    private static final Logger logger = LogManager.getLogger(MetadatenImagesHelper.class);
     private Prefs myPrefs;
     private DigitalDocument mydocument;
     private int myLastImage = 0;
@@ -144,7 +143,7 @@ public class MetadatenImagesHelper {
                     }
                     imageNamesInMetsFile.put(filename, page);
                 } else {
-                    logger.error("cannot find image");
+                    log.error("cannot find image");
                 }
             }
         }
@@ -169,8 +168,8 @@ public class MetadatenImagesHelper {
                 }
             }
             if (!match) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("adding docstruct with missing file " + imageNameInMets + " to abandoned list.");
+                if (log.isDebugEnabled()) {
+                    log.debug("adding docstruct with missing file " + imageNameInMets + " to abandoned list.");
                 }
                 pagesWithoutFiles.add(imageNamesInMetsFile.get(imageNameInMets));
             }
@@ -202,8 +201,8 @@ public class MetadatenImagesHelper {
                     }
                 }
                 if (!match) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("adding " + imagename + " to list of images without docstructs");
+                    if (log.isDebugEnabled()) {
+                        log.debug("adding " + imagename + " to list of images without docstructs");
                     }
                     imagesWithoutDocstruct.add(imagename);
                 }
@@ -220,8 +219,8 @@ public class MetadatenImagesHelper {
             String currentFile = imagesWithoutDocstruct.get(i);
             DocStruct currentPage = pagesWithoutFiles.get(i);
             currentPage.setImageName(folder.toString() + FileSystems.getDefault().getSeparator() + currentFile);
-            if (logger.isDebugEnabled()) {
-                logger.debug("set image " + currentFile + " to docstruct "
+            if (log.isDebugEnabled()) {
+                log.debug("set image " + currentFile + " to docstruct "
                         + currentPage.getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0).getValue());
             }
         }
@@ -280,7 +279,7 @@ public class MetadatenImagesHelper {
                 physicaldocstruct.addMetadata(mdForPath);
             }
         } catch (Exception e) {
-            logger.error(e);
+            log.error(e);
         }
 
         Path folderToCheck = null;
@@ -345,7 +344,7 @@ public class MetadatenImagesHelper {
                             page.removeContentFile(page.getAllContentFiles().get(0));
                             pageElementsWithoutImages.add(page);
                         } catch (ContentFileNotLinkedException e) {
-                            logger.error(e);
+                            log.error(e);
                         }
                     }
                 } else {
@@ -366,7 +365,7 @@ public class MetadatenImagesHelper {
                 }
             }
         } catch (InvalidImagesException e1) {
-            logger.error(e1);
+            log.error(e1);
         }
 
         // handle possible cases
@@ -449,9 +448,9 @@ public class MetadatenImagesHelper {
                     dsPage.addContentFile(cf);
 
                 } catch (TypeNotAllowedAsChildException e) {
-                    logger.error(e);
+                    log.error(e);
                 } catch (MetadataTypeNotAllowedException e) {
-                    logger.error(e);
+                    log.error(e);
                 }
             }
         }
@@ -539,9 +538,9 @@ public class MetadatenImagesHelper {
                         dsPage.addContentFile(cf);
 
                     } catch (TypeNotAllowedAsChildException e) {
-                        logger.error(e);
+                        log.error(e);
                     } catch (MetadataTypeNotAllowedException e) {
-                        logger.error(e);
+                        log.error(e);
                     }
                 }
 
@@ -580,46 +579,46 @@ public class MetadatenImagesHelper {
             s3URI = new URI("s3://" + conf.getS3Bucket() + "/" + S3FileUtils.path2Key(inPath));
         } catch (URISyntaxException e) {
             // TODO Auto-generated catch block
-            logger.error(e);
+            log.error(e);
         }
-        logger.trace("start scaleFile");
+        log.trace("start scaleFile");
 
         int tmpSize = inSize;
         if (tmpSize < 1) {
             tmpSize = 1;
         }
-        logger.trace("Scale to " + tmpSize + "%");
+        log.trace("Scale to " + tmpSize + "%");
 
         if (ConfigurationHelper.getInstance().getContentServerUrl() == null) {
-            logger.trace("api");
+            log.trace("api");
             ImageManager im = null;
             JpegInterpreter pi = null;
             try {
                 im= conf.useS3() ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
                 //                im = new ImageManager(Paths.get(inFileName).toUri());
-                logger.trace("im");
+                log.trace("im");
                 ImageInterpreter ii = im.getMyInterpreter();
                 Dimension inputResolution = new Dimension((int) ii.getXResolution(), (int) ii.getYResolution());
-                logger.trace("input resolution: " + inputResolution.width + "x" + inputResolution.height + "dpi");
+                log.trace("input resolution: " + inputResolution.width + "x" + inputResolution.height + "dpi");
                 Dimension outputResolution = new Dimension(144, 144);
-                logger.trace("output resolution: " + outputResolution.width + "x" + outputResolution.height + "dpi");
+                log.trace("output resolution: " + outputResolution.width + "x" + outputResolution.height + "dpi");
                 Dimension dim = new Dimension(tmpSize * outputResolution.width / inputResolution.width,
                         tmpSize * outputResolution.height / inputResolution.height);
-                logger.trace("Absolute scale: " + dim.width + "x" + dim.height + "%");
+                log.trace("Absolute scale: " + dim.width + "x" + dim.height + "%");
                 RenderedImage ri = im.scaleImageByPixel(dim, ImageManager.SCALE_BY_PERCENT, intRotation);
-                logger.trace("ri");
+                log.trace("ri");
                 pi = new JpegInterpreter(ri);
-                logger.trace("pi");
+                log.trace("pi");
                 pi.setXResolution(outputResolution.width);
-                logger.trace("xres = " + pi.getXResolution());
+                log.trace("xres = " + pi.getXResolution());
                 pi.setYResolution(outputResolution.height);
-                logger.trace("yres = " + pi.getYResolution());
+                log.trace("yres = " + pi.getYResolution());
                 FileOutputStream outputFileStream = new FileOutputStream(outFileName);
-                logger.trace("output");
+                log.trace("output");
                 pi.writeToStream(null, outputFileStream);
-                logger.trace("write stream");
+                log.trace("write stream");
                 outputFileStream.close();
-                logger.trace("close stream");
+                log.trace("close stream");
             } finally {
                 if (im != null) {
                     im.close();
@@ -632,7 +631,7 @@ public class MetadatenImagesHelper {
             String imageURIString = conf.useS3() ? s3URI.toString() : inFileName;
             String cs = conf.getContentServerUrl() + imageURIString + "&scale=" + tmpSize + "&rotate=" + intRotation + "&format=jpg";
             cs = cs.replace("\\", "/");
-            logger.trace("url: " + cs);
+            log.trace("url: " + cs);
             URL csUrl = new URL(cs);
             CloseableHttpClient httpclient = null;
             HttpGet method = null;
@@ -641,7 +640,7 @@ public class MetadatenImagesHelper {
             try {
                 httpclient = HttpClientBuilder.create().build();
                 method = new HttpGet(csUrl.toString());
-                logger.trace("get");
+                log.trace("get");
                 Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
                 Builder builder = RequestConfig.custom();
                 builder.setSocketTimeout(contentServerTimeOut);
@@ -650,7 +649,7 @@ public class MetadatenImagesHelper {
 
                 byte[] response = httpclient.execute(method, HttpClientHelper.byteArrayResponseHandler);
                 if (response == null) {
-                    logger.error("Response stream is null");
+                    log.error("Response stream is null");
                     return;
                 }
                 istr = new ByteArrayInputStream(response);
@@ -663,7 +662,7 @@ public class MetadatenImagesHelper {
                     fos.write(buf, 0, len);
                 }
             } catch (Exception e) {
-                logger.error("Unable to connect to url " + cs, e);
+                log.error("Unable to connect to url " + cs, e);
                 return;
             } finally {
                 method.releaseConnection();
@@ -674,14 +673,14 @@ public class MetadatenImagesHelper {
                     try {
                         istr.close();
                     } catch (IOException e) {
-                        logger.error(e);
+                        log.error(e);
                     }
                 }
                 if (fos != null) {
                     try {
                         fos.close();
                     } catch (IOException e) {
-                        logger.error(e);
+                        log.error(e);
                     }
                 }
             }
@@ -858,7 +857,7 @@ public class MetadatenImagesHelper {
                     dir = Paths.get(thumbsFolder);
                 }
             } catch (IOException | InterruptedException | SwapException | DAOException e) {
-                logger.error("Error reading thumbs folder for " + dir, e);
+                log.error("Error reading thumbs folder for " + dir, e);
             }
         }
 
@@ -923,7 +922,7 @@ public class MetadatenImagesHelper {
                 if (filename != null) {
                     orderedFileList.add(filename);
                 } else {
-                    logger.error("cannot find image");
+                    log.error("cannot find image");
                 }
             }
         }
