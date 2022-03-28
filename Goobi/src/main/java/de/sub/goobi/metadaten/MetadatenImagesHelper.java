@@ -104,10 +104,10 @@ public class MetadatenImagesHelper {
             throws TypeNotAllowedForParentException, SwapException, DAOException, IOException, InterruptedException {
         DocStruct physical = this.mydocument.getPhysicalDocStruct();
 
-        DocStruct log = this.mydocument.getLogicalDocStruct();
-        if (log.getType().isAnchor()) {
-            if (log.getAllChildren() != null && log.getAllChildren().size() > 0) {
-                log = log.getAllChildren().get(0);
+        DocStruct logical = this.mydocument.getLogicalDocStruct();
+        if (logical.getType().isAnchor()) {
+            if (logical.getAllChildren() != null && logical.getAllChildren().size() > 0) {
+                logical = logical.getAllChildren().get(0);
             }
         }
         if (physical == null) {
@@ -248,10 +248,10 @@ public class MetadatenImagesHelper {
 
         DocStruct physicaldocstruct = this.mydocument.getPhysicalDocStruct();
 
-        DocStruct log = this.mydocument.getLogicalDocStruct();
-        if (log.getType().isAnchor()) {
-            if (log.getAllChildren() != null && log.getAllChildren().size() > 0) {
-                log = log.getAllChildren().get(0);
+        DocStruct logical = this.mydocument.getLogicalDocStruct();
+        if (logical.getType().isAnchor()) {
+            if (logical.getAllChildren() != null && logical.getAllChildren().size() > 0) {
+                logical = logical.getAllChildren().get(0);
             }
         }
         MetadataType MDTypeForPath = this.myPrefs.getMetadataTypeByName("pathimagefiles");
@@ -435,7 +435,7 @@ public class MetadatenImagesHelper {
                     }
 
                     dsPage.addMetadata(mdTemp);
-                    log.addReferenceTo(dsPage, "logical_physical");
+                    logical.addReferenceTo(dsPage, "logical_physical");
 
                     // image name
                     ContentFile cf = new ContentFile();
@@ -525,7 +525,7 @@ public class MetadatenImagesHelper {
                         }
 
                         dsPage.addMetadata(mdTemp);
-                        log.addReferenceTo(dsPage, "logical_physical");
+                        logical.addReferenceTo(dsPage, "logical_physical");
 
                         // image name
                         ContentFile cf = new ContentFile();
@@ -709,16 +709,16 @@ public class MetadatenImagesHelper {
             List<String> dateien2 = StorageProvider.getInstance().list(dir.toString());
             //checks for fileName errors / empty folder
             if (dateien == null || dateien.isEmpty()) {
-            	String[] parameters = {String.valueOf(dateien2.size()), dir.toString()};
-            	
-            	String value = Helper.getTranslation("noObjectsFound", title);
-            	
-            	//true if list is truly empty
-            	if(dateien.size() == dateien2.size()) {
-                	value = Helper.getTranslation("imagesFolderEmpty", parameters);
-            	}else {
-            		value = Helper.getTranslation("fileNameValidationError", parameters);
-            	}
+                String[] parameters = {String.valueOf(dateien2.size()), dir.toString()};
+
+                String value = Helper.getTranslation("noObjectsFound", title);
+
+                //true if list is truly empty
+                if(dateien.size() == dateien2.size()) {
+                    value = Helper.getTranslation("imagesFolderEmpty", parameters);
+                }else {
+                    value = Helper.getTranslation("fileNameValidationError", parameters);
+                }
                 Helper.setFehlerMeldung(value);
                 return false;
             }
