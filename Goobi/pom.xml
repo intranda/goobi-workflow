@@ -65,7 +65,7 @@
         <httpcore.version>4.4.15</httpcore.version>
         <imageio-openjpeg.version>0.6.2</imageio-openjpeg.version>
         <javassist.version>3.28.0-GA</javassist.version>
-        <java-jwt.version>3.18.2</java-jwt.version>
+        <java-jwt.version>3.19.1</java-jwt.version>
         <jaxb-impl.version>2.3.6</jaxb-impl.version>
         <jackson.version>2.13.1</jackson.version>
         <jersey.version>2.35</jersey.version>
