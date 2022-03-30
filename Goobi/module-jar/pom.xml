@@ -42,7 +42,7 @@
               <skipProvidedScope>true</skipProvidedScope>
               <skipTestScope>true</skipTestScope>
               <suppressionFiles>
-                        <suppressionFile>goobi-suppression.xml</suppressionFile>
+<!--                        <suppressionFile>goobi-suppression.xml</suppressionFile>-->
                     </suppressionFiles>
                 </configuration>
                 <executions>
