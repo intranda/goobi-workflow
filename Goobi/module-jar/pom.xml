@@ -30,6 +30,30 @@
             </testResource>
 		</testResources> 
 		<plugins>
+		
+            <plugin>
+              <groupId>org.owasp</groupId>
+              <artifactId>dependency-check-maven</artifactId>
+              <version>7.0.4</version>
+              <configuration>
+              <!--
+                  <failBuildOnCVSS>8.0</failBuildOnCVSS>
+              -->
+              <skipProvidedScope>true</skipProvidedScope>
+              <skipTestScope>true</skipTestScope>
+              <suppressionFiles>
+                        <suppressionFile>goobi-suppression.xml</suppressionFile>
+                    </suppressionFiles>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+              
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.7.0</version>
