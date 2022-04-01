@@ -44,6 +44,7 @@
               <suppressionFiles>
                   <suppressionFile>${project.basedir}/goobi-suppression.xml</suppressionFile>
                     </suppressionFiles>
+                    <format>ALL</format>
                 </configuration>
                 <executions>
                     <execution>
