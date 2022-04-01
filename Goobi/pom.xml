@@ -846,6 +846,7 @@
             <artifactId>rome</artifactId>
             <version>1.0</version>
         </dependency>
+<!--        
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-all</artifactId>
@@ -861,6 +862,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+-->        
         <dependency>
             <groupId>org.apache.taglibs</groupId>
             <artifactId>taglibs-standard-impl</artifactId>
@@ -937,6 +939,10 @@
 							<exclusion>
 								<groupId>org.slf4j</groupId>
 								<artifactId>slf4j-api</artifactId>
+							</exclusion>
+							<exclusion>
+							    <groupId>org.eclipse.jetty.websocket</groupId>
+							    <artifactId>websocket-servlet</artifactId>
 							</exclusion>
 						</exclusions>
 					</dependency>
@@ -1326,6 +1332,12 @@
             <groupId>org.dspace</groupId>
             <artifactId>handle</artifactId>
             <version>9.2.0.v20190814</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.jetty.aggregate</groupId>
+                    <artifactId>jetty-all</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.hierynomus</groupId>
