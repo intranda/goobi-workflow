@@ -38,7 +38,7 @@
         <!-- intranda internal -->
         <ics.version>3.3.3</ics.version>
         <normdataimporter.version>1.9.1</normdataimporter.version>
-        <ugh-core.version>5.0.4</ugh-core.version>
+        <ugh-core.version>5.0.5</ugh-core.version>
         <ugh-marc.version>1.3.1</ugh-marc.version>
         <ugh-lido.version>0.0.12</ugh-lido.version>
 
@@ -80,6 +80,7 @@
         <metadata-extractor.version>2.17.0</metadata-extractor.version>
         <mimepull.version>1.9.15</mimepull.version>
         <omnifaces.version>3.13</omnifaces.version>
+        <openpdf.version>1.3.27</openpdf.version>
         <pdfbox.version>2.0.25</pdfbox.version>
         <poi.version>5.2.2</poi.version>
         <powermock.version>2.0.9</powermock.version>
@@ -242,10 +243,6 @@
             <exclusions>
                 <exclusion>
                     <groupId>bouncycastle</groupId>
-                    <artifactId>bcprov-jdk14</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.bouncycastle</groupId>
                     <artifactId>bcprov-jdk14</artifactId>
                 </exclusion>
             </exclusions>
@@ -1237,8 +1234,17 @@
                     <groupId>xml-apis</groupId>
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
+                <exclusion>
+					<groupId>com.lowagie</groupId>
+					<artifactId>itext</artifactId>
+				</exclusion>
             </exclusions>
         </dependency>
+		<dependency>
+			<groupId>com.github.librepdf</groupId>
+			<artifactId>openpdf</artifactId>
+			<version>${openpdf.version}</version>
+		</dependency>        
         <dependency>
             <groupId>javax.xml.ws</groupId>
             <artifactId>jaxws-api</artifactId>
