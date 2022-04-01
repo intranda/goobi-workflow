@@ -862,7 +862,14 @@
                 </exclusion>
             </exclusions>
         </dependency>
--->        
+-->
+		<!-- https://mvnrepository.com/artifact/org.apache.shiro/shiro-crypto-core -->
+		<dependency>
+		    <groupId>org.apache.shiro</groupId>
+		    <artifactId>shiro-core</artifactId>
+		    <version>1.9.0</version>
+		</dependency>
+        
         <dependency>
             <groupId>org.apache.taglibs</groupId>
             <artifactId>taglibs-standard-impl</artifactId>
