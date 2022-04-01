@@ -1,72 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-    <suppress>
-        <notes><![CDATA[
-            This suppresses false positives identified on activemq.
-            ]]></notes>
-        <gav regex="true">org\.apache\.activemq:activemq-core.*</gav>
-        <vulnerabilityName regex="true"></vulnerabilityName>
-    </suppress>
-    
-    
-<!-- 
-    <suppress>
-        <notes><![CDATA[
-            This suppresses a CVE identified by OSS Index using the vulnerability name and packageUrl.
-            ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.eclipse\.jetty/jetty-server@.*$</packageUrl>
-        <vulnerabilityName>CVE-2017-7656</vulnerabilityName>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-            This suppresses cpe:/a:csv:csv:1.0 for some.jar in the "c:\path\to" directory.
-            ]]></notes>
-        <filePath>c:\path\to\some.jar</filePath>
-        <cpe>cpe:/a:csv:csv:1.0</cpe>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-            This suppresses any jboss:jboss cpe for any test.jar in any directory.
-            ]]></notes>
-        <filePath regex="true">.*\btest\.jar</filePath>
-        <cpe>cpe:/a:jboss:jboss</cpe>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-            This suppresses a specific cve for any test.jar in any directory.
-            ]]></notes>
-        <filePath regex="true">.*\btest\.jar</filePath>
-        <cve>CVE-2013-1337</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-            This suppresses a specific cve for any dependency in any directory that has the specified sha1 checksum.
-            ]]></notes>
-        <sha1>384FAA82E193D4E4B0546059CA09572654BC3970</sha1>
-        <cve>CVE-2013-1337</cve>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-            This suppresses all CVE entries that have a score below CVSS 7.
-            ]]></notes>
-        <cvssBelow>7</cvssBelow>
-    </suppress>
-    <suppress>
-        <notes><![CDATA[
-            This suppresses false positives identified on spring security.
-            ]]></notes>
-        <gav regex="true">org\.springframework\.security:spring.*</gav>
-        <cpe>cpe:/a:vmware:springsource_spring_framework</cpe>
-        <cpe>cpe:/a:springsource:spring_framework</cpe>
-        <cpe>cpe:/a:mod_security:mod_security</cpe>
-    </suppress>
 
-    <suppress until="2020-01-01Z">
-        <notes><![CDATA[
-            This suppresses a specific cve for any dependency in any directory that has the specified sha1 checksum. If current date is not yet on or beyond 1 Jan 2020.
-            ]]></notes>
-        <sha1>384FAA82E193D4E4B0546059CA09572654BC3970</sha1>
-        <cve>CVE-2013-1337</cve>
-    </suppress>
-     -->
+<!-- false positives -->
+<suppress>
+   <notes><![CDATA[
+   file name: bcmail-jdk14-138.jar
+   ]]></notes>
+   <packageUrl regex="true">^pkg:maven/bouncycastle/bcmail\-jdk14@.*$</packageUrl>
+   <cpe>cpe:/a:bouncycastle:legion-of-the-bouncy-castle</cpe>
+</suppress>
+<suppress>
+   <notes><![CDATA[
+   file name: commons-digester3-3.2-with-deps.jar (shaded: commons-beanutils:commons-beanutils:1.8.3)
+   ]]></notes>
+   <packageUrl regex="true">^pkg:maven/commons\-beanutils/commons\-beanutils@.*$</packageUrl>
+   <cpe>cpe:/a:apache:commons_beanutils</cpe>
+</suppress>
+<suppress>
+   <notes><![CDATA[
+   file name: jackson-databind-2.13.2.jar
+   ]]></notes>
+   <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson\-databind@.*$</packageUrl>
+   <cpe>cpe:/a:fasterxml:jackson-databind</cpe>
+</suppress>
+<suppress>
+   <notes><![CDATA[
+   file name: jai-imageio-core-1.3.1.jar
+   ]]></notes>
+   <packageUrl regex="true">^pkg:maven/com\.github\.jai\-imageio/jai\-imageio\-core@.*$</packageUrl>
+   <vulnerabilityName>CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')</vulnerabilityName>
+</suppress>
+<suppress>
+   <notes><![CDATA[
+   file name: javax.ws.rs-api-2.1.1.jar
+   ]]></notes>
+   <packageUrl regex="true">^pkg:maven/javax\.ws\.rs/javax\.ws\.rs\-api@.*$</packageUrl>
+   <cpe>cpe:/a:eclipse:eclipse_ide</cpe>
+</suppress>
+
+
+<!-- shiro dependencies -->
+<suppress>
+   <notes><![CDATA[
+   file name: shiro-core-1.4.2.jar
+   ]]></notes>
+   <packageUrl regex="true">^pkg:maven/org\.apache\.shiro/shiro\-core@.*$</packageUrl>
+   <cpe>cpe:/a:apache:shiro</cpe>
+</suppress>
+<suppress>
+   <notes><![CDATA[
+   file name: shiro-hazelcast-1.4.2.jar
+   ]]></notes>
+   <packageUrl regex="true">^pkg:maven/org\.apache\.shiro/shiro\-hazelcast@.*$</packageUrl>
+   <cpe>cpe:/a:apache:shiro</cpe>
+</suppress>
+<suppress>
+   <notes><![CDATA[
+   file name: hazelcast-3.7.2.jar
+   ]]></notes>
+   <packageUrl regex="true">^pkg:maven/com\.hazelcast/hazelcast@.*$</packageUrl>
+   <cpe>cpe:/a:hazelcast:hazelcast</cpe>
+</suppress>    
+    
+    
+    
 </suppressions>
