@@ -1,15 +1,60 @@
 <beans
   xmlns="http://www.springframework.org/schema/beans"
-  xmlns:amq="http://activemq.apache.org/schema/core"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
   http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
-    <broker xmlns="http://activemq.apache.org/schema/core" brokerName="localhost" schedulerSupport="true" schedulerDirectory="/opt/digiverso/goobi/activemq/scheduler">
+
+    <broker xmlns="http://activemq.apache.org/schema/core" brokerName="localhost" dataDirectory="/opt/digiverso/goobi/activemq" schedulerSupport="true">
+
+        <destinationPolicy>
+            <policyMap>
+              <policyEntries>
+                <policyEntry topic=">" >
+                    <!-- The constantPendingMessageLimitStrategy is used to prevent
+                         slow topic consumers to block producers and affect other consumers
+                         by limiting the number of messages that are retained
+                         For more information, see:
+
+                         http://activemq.apache.org/slow-consumer-handling.html
+
+                    -->
+                  <pendingMessageLimitStrategy>
+                    <constantPendingMessageLimitStrategy limit="1000"/>
+                  </pendingMessageLimitStrategy>
+                </policyEntry>
+              </policyEntries>
+            </policyMap>
+        </destinationPolicy>
+
+        <managementContext>
+            <managementContext createConnector="false"/>
+        </managementContext>
+
+        <persistenceAdapter>
+            <kahaDB directory="/opt/digiverso/goobi/activemq/messages" journalMaxFileLength="32mb"/>
+        </persistenceAdapter>
+        <systemUsage>
+            <systemUsage>
+                <memoryUsage>
+                    <memoryUsage limit="64 mb"/>
+            </memoryUsage>
+            <storeUsage>
+                    <storeUsage limit="512 mb"/>
+            </storeUsage>
+            <tempUsage>
+                    <tempUsage limit="128 mb"/>
+            </tempUsage>
+            </systemUsage>
+        </systemUsage>
+
         <transportConnectors>
-            <transportConnector name="stomp" uri="stomp://localhost:61613" />
-            <transportConnector name="tcp" uri="tcp://localhost:61616" />
+            <!-- DOS protection, limit concurrent connections to 1000 and frame size to 100MB -->
+            <transportConnector name="openwire" uri="tcp://0.0.0.0:61616?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
+            <transportConnector name="stomp" uri="stomp://0.0.0.0:61613?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
         </transportConnectors>
+     
         <plugins>
+        
             <redeliveryPlugin fallbackToDeadLetter="true" 
                 sendToDlqIfMaxRetriesExceeded="true">
                 <redeliveryPolicyMap>
@@ -22,7 +67,6 @@
                                 useExponentialBackOff="true"/>
                         </redeliveryPolicyEntries>
                         <defaultEntry>
-                            <!-- the fallback policy for all other destinations -->
                             <redeliveryPolicy maximumRedeliveries="10" 
                                 initialRedeliveryDelay="300000"
                                 backOffMultiplier="1.5"
@@ -53,22 +97,5 @@
                 </map>
             </authorizationPlugin>
         </plugins>
-        <persistenceAdapter>
-            <kahaDB directory="/opt/digiverso/goobi/activemq/messages"
-                journalMaxFileLength="32mb" />
-        </persistenceAdapter>
-        <systemUsage>
-                <systemUsage>
-                        <memoryUsage>
-                                <memoryUsage limit="64 mb"/>
-                        </memoryUsage>
-                        <storeUsage>
-                                <storeUsage limit="512 mb"/>
-                        </storeUsage>
-                        <tempUsage>
-                                <tempUsage limit="128 mb"/>
-                        </tempUsage>
-                </systemUsage>
-        </systemUsage>
     </broker>
 </beans>
