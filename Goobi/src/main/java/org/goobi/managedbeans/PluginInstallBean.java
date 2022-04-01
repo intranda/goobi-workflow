@@ -83,7 +83,7 @@ public class PluginInstallBean implements Serializable {
         }
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        List<PluginInstallInfo> installInfos = new ArrayList<PluginInstallInfo>();
+        List<PluginInstallInfo> installInfos = new ArrayList<>();
         String goobiVersion = helperForm.getVersion();
         if (goobiVersion.endsWith("-dev")) {
             goobiVersion = getLatestGoobiVersionFromNexus().orElse(goobiVersion);
@@ -140,6 +140,9 @@ public class PluginInstallBean implements Serializable {
     }
 
     public String parseUploadedPlugin() throws IOException, JDOMException {
+        if (tempDir == null || !Files.exists(tempDir)) {
+            this.tempDir = Files.createTempDirectory("goobi_plugin_installer");
+        }
         if (!Files.exists(tempDir)) {
             this.tempDir = Files.createTempDirectory("goobi_plugin_installer");
         }
