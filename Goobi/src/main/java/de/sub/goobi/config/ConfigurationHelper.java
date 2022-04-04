@@ -520,6 +520,12 @@ public class ConfigurationHelper implements Serializable {
     }
 
     // authentication
+
+    public int getMinimumPasswordLength() {
+        int minimum = getLocalInt("minimumPasswordLength", 8);
+        return minimum >= 1 ? minimum : 1;
+    }
+
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
