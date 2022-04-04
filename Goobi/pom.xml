@@ -303,12 +303,13 @@
             <artifactId>commons-digester</artifactId>
             <version>2.1</version>
         </dependency>
-<dependency>
-	<groupId>de.mhus.osgi.ports</groupId>
-	<artifactId>commons-discovery</artifactId>
-	<version>1.0.5</version>
-</dependency>
-
+		<!--
+		<dependency>
+			<groupId>de.mhus.osgi.ports</groupId>
+			<artifactId>commons-discovery</artifactId>
+			<version>1.0.5</version>
+		</dependency>
+		-->
         <dependency>
             <groupId>commons-el</groupId>
             <artifactId>commons-el</artifactId>
@@ -845,7 +846,7 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>7.0</version>
+            <version>11.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
