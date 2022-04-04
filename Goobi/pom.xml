@@ -714,8 +714,8 @@
             <version>1.1.1</version>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
+            <groupId>javax.servlet.jsp.jstl</groupId>
+            <artifactId>jstl-api</artifactId>
             <version>1.2</version>
         </dependency>
         <dependency>
@@ -732,6 +732,12 @@
             <groupId>org.jxls</groupId>
             <artifactId>jxls</artifactId>
             <version>2.11.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jxls</groupId>
@@ -850,11 +856,11 @@
             <artifactId>xml-resolver</artifactId>
             <version>1.2</version>
         </dependency>
-        <dependency>
-            <groupId>rome</groupId>
-            <artifactId>rome</artifactId>
-            <version>1.0</version>
-        </dependency>
+		<dependency>
+		    <groupId>com.rometools</groupId>
+		    <artifactId>rome</artifactId>
+		    <version>1.18.0</version>
+		</dependency>
 <!--        
         <dependency>
             <groupId>org.apache.shiro</groupId>
