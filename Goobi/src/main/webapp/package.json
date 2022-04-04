@@ -4,7 +4,12 @@
   "description": "New template for Goobi workflow.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sass:dev": "sass uii/template/css/src/main.scss uii/template/css/dist/bundle.css --watch",
+    "sass:prod": "sass uii/template/css/src/main.scss uii/template/css/src/bundle.css --no-source-map",
+    "postcss": "postcss uii/template/css/src/bundle.css --output uii/template/css/dist/bundle.css --verbose",
+    "start": "npm run sass:dev",
+    "css:prod": "npm run sass:prod && npm run postcss"
   },
   "repository": {
     "type": "git",
@@ -13,12 +18,20 @@
   "author": "intranda GmbH",
   "license": "ISC",
   "devDependencies": {
+    "autoprefixer": "^10.4.4",
+    "cssnano": "^5.1.7",
     "grunt": "*",
     "grunt-contrib-concat": "*",
     "grunt-contrib-less": "*",
     "grunt-contrib-watch": "*",
     "grunt-riot": "*",
     "grunt-sync": "*",
-    "less-plugin-autoprefix": "*"
+    "less-plugin-autoprefix": "*",
+    "postcss": "^8.4.12",
+    "postcss-cli": "^9.1.0",
+    "sass": "^1.49.11"
+  },
+  "dependencies": {
+    "bootstrap": "~5.1.3"
   }
 }

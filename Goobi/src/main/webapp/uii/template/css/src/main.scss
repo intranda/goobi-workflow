@@ -1,0 +1,31 @@
+// https://getbootstrap.com/docs/5.1/customize/sass/
+
+// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+@import "../../../../node_modules/bootstrap/scss/functions";
+
+// 2. Include any default variable overrides here
+
+// 3. Include remainder of required Bootstrap stylesheets
+@import "../../../../node_modules/bootstrap/scss/variables",
+  "../../../../node_modules/bootstrap/scss/mixins",
+  "../../../../node_modules/bootstrap/scss/root";
+
+// 4. Include any optional Bootstrap CSS as needed
+/* prettier-ignore */
+@import
+  // "../../../../node_modules/bootstrap/scss/utilities",
+  "../../../../node_modules/bootstrap/scss/reboot",
+  "../../../../node_modules/bootstrap/scss/type",
+  "../../../../node_modules/bootstrap/scss/images",
+  "../../../../node_modules/bootstrap/scss/containers",
+  "../../../../node_modules/bootstrap/scss/grid";
+//"../../../../node_modules/bootstrap/scss/helpers";
+
+// 5. Optionally include utilities API last to generate classes based on the Sass map in `_utilities.scss`
+// @import "../../../../node_modules/bootstrap/scss/utilities/api";
+
+// 6. Add additional custom code here
+@import "base";
+@import "layout";
+@import "utilities";
+@import "components/nav";
