@@ -45,7 +45,7 @@ import lombok.extern.log4j.Log4j2;
 class UserMysqlHelper implements Serializable {
     private static final long serialVersionUID = 6133952688951728602L;
 
-        public static List<User> getUsers(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
+    public static List<User> getUsers(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -194,7 +194,8 @@ class UserMysqlHelper implements Serializable {
                         ro.getMailNotificationLanguage(), ro.getInstitution() == null ? null : ro.getInstitution().getId(), ro.isSuperAdmin(),
                         ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(),
                         ro.getProcessListDefaultSortOrder(), ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(),
-                        ro.isDisplayLastEditionDate(), ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionDate(), ro.getDashboardConfiguration() };
+                        ro.isDisplayLastEditionDate(), ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionDate(), ro.getDashboardConfiguration(),
+                        ro.getUiMode() };
 
                 sql.append("INSERT INTO benutzer (");
                 sql.append(propNames.toString());
