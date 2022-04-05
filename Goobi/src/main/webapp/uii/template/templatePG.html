@@ -139,7 +139,7 @@
                         <h:form id="header">
                             <o:socket channel="developerMessageChannel" connected="#{DevModeBean.developerMode}" onmessage="() => window.location.reload()" />
                             <header>
-                                <div class="page-header">
+                                <div class="flow page-header">
                                     <h:panelGroup id="globalWarningMessage">
                                         <h:panelGroup rendered="#{SessionForm.logoutMessage != ''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
                                             <i class="fa fa-exclamation-triangle margin-right-10" />
