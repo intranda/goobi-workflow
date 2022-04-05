@@ -1,0 +1,19 @@
+.navigation-breadcrumb {
+  --flow-space: 2.1rem;
+}
+
+.breadcrumbs {
+  background-color: var(--clr-neutral-200, #f4f4f4);
+  ul {
+    list-style: none;
+    padding-left: 0;
+    line-height: 2.1rem;
+  }
+  a {
+    color: #666;
+    text-decoration: none;
+    padding: 0.2rem 0.6rem;
+    padding-left: 1rem;
+    display: block;
+  }
+}

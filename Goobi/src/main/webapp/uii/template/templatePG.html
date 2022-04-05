@@ -134,7 +134,7 @@
                 <!-- 					</ui:insert> -->
                 <!-- 				</div> -->
                 <div id="main" style="margin-right: 0px;">
-                    <div class="container-fluid">
+                    <div class="flow container-fluid">
 
                         <h:form id="header">
                             <o:socket channel="developerMessageChannel" connected="#{DevModeBean.developerMode}" onmessage="() => window.location.reload()" />
@@ -215,7 +215,7 @@
 	                            </div>
                             </header>
                         </h:form>
-                        <nav aria-label="navigationBreadcrumb">
+                        <nav class="navigation-breadcrumb" aria-label="navigationBreadcrumb">
 	                        <h:form style="margin:0px;" id="breadcrumb">
 
 	                            <div class="breadcrumbs">
