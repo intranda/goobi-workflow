@@ -2,38 +2,59 @@
 	<parent>
 		<groupId>de.intranda.goobi.workflow</groupId>
 		<artifactId>goobi-core</artifactId>
-		<version>22.02.2</version>
+		<version>22.03</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.intranda.goobi.workflow</groupId>
 	<artifactId>goobi-core-jar</artifactId>
-	<version>22.02.2</version>
+	<version>22.03</version>
 	<packaging>jar</packaging>
 	
 	<build>
-		<sourceDirectory>${project.basedir}/../src</sourceDirectory>
-		<testSourceDirectory>${project.basedir}/../test/src</testSourceDirectory>
+		<sourceDirectory>${project.basedir}/../src/main/java</sourceDirectory>
+		<testSourceDirectory>${project.basedir}/../src/test/java</testSourceDirectory>
 		<resources>
 			<resource>
-				<directory>../src</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
+				<directory>${project.basedir}/../src/main/resources</directory>
 			</resource>
 		</resources>
 		<testResources>
 			<testResource>
-				<directory>../test/src</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
+				<directory>${project.basedir}/../src/test/resources</directory>
 			</testResource>
             <testResource>
-                <directory>../test/resources/config</directory>
-                <targetPath>test/resources/config</targetPath>
+                <directory>${project.basedir}/../src/main/java</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
             </testResource>
-		</testResources>
+		</testResources> 
 		<plugins>
+		
+            <plugin>
+              <groupId>org.owasp</groupId>
+              <artifactId>dependency-check-maven</artifactId>
+              <version>7.0.4</version>
+              <configuration>
+              <!--
+                  <failBuildOnCVSS>8.0</failBuildOnCVSS>
+              -->
+              <skipProvidedScope>true</skipProvidedScope>
+              <skipTestScope>true</skipTestScope>
+              <suppressionFiles>
+                  <suppressionFile>${project.basedir}/goobi-suppression.xml</suppressionFile>
+                    </suppressionFiles>
+                    <format>ALL</format>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+              
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.7.0</version>
@@ -49,9 +70,16 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.12.4</version>
                 <configuration>
+<!--                           <skipTests>true</skipTests> -->
                     <includes>
                         <include>**/de/sub/goobi/TestAll.java</include>
                     </includes>
+                    <systemProperties>
+                        <property>
+                            <name>java.util.logging.config.file</name>
+                            <value>src/test/resources/log4j2.test.xml</value>
+                        </property>
+                    </systemProperties>                    
                     <argLine>--add-exports java.base/jdk.internal.loader=ALL-UNNAMED</argLine>
                 </configuration>
 
