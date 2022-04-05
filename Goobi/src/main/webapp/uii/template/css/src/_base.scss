@@ -1,0 +1,16 @@
+:root {
+  --clr-primary-400: #368ee0;
+  --clr-primary-600: #1b67af;
+
+  --fs-400: 1.2rem;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+.tooltip {
+  top: 80px;
+  background-color: var(--clr-black, #000);
+  color: var(--clr-white, #fff);
+}
