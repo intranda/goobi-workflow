@@ -290,7 +290,9 @@
             });
 
             $(document).ready(function () {
-                $('[data-toggle="tooltip"]').tooltip();
+                $('[data-toggle="tooltip"]').tooltip({
+                    trigger: 'hover'
+                });
                 $('[data-toggle="popover"]').popover();
                 if ($('.popover.fade.right.in').length > 0) {
                     $('.popover.fade.right.in').remove();
