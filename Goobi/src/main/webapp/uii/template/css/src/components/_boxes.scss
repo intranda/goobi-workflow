@@ -1,0 +1,28 @@
+.box {
+  border: 2px solid var(--clr-neutral, #ddd);
+  margin-top: 1rem; // remove + use flow class on cols in
+}
+
+.box-title {
+  padding: 7px 0 7px 10px;
+  border-bottom: 2px solid var(--clr-neutral, #ddd);
+
+  h2 {
+    font-size: 15px;
+    line-height: 24px;
+    color: var(--clr-black, #000);
+    margin: 3px 0 3px 0;
+  }
+
+  i {
+    margin: 0 10px 0 5px;
+  }
+}
+
+.box-content {
+  padding: 2rem;
+
+  &.nopadding {
+    padding: 0;
+  }
+}
