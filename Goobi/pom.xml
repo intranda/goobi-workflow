@@ -43,7 +43,7 @@
 
         <!-- Be careful with updates here -->
         <avalon-framework.version>4.2.0</avalon-framework.version>
-        <h2.version>1.4.200</h2.version>
+        <h2.version>2.1.210</h2.version>
         <oscache.version>2.3</oscache.version>
         <shiro.version>1.4.2</shiro.version>
 		<activemq.version>5.17.0</activemq.version>
