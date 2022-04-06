@@ -1,0 +1,68 @@
+.navbar {
+  background-color: var(--clr-primary-400);
+  font-size: var(--fs-400);
+  padding-top: 0;
+  padding-bottom: 0;
+
+  .container-fluid {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    @include media-breakpoint-down(lg) {
+      justify-content: end;
+
+      // when changing the alignment -> jusjustify-content: end
+      // keep the brand in the left corner
+      #brand {
+        flex: 1;
+      }
+    }
+  }
+
+  #brand img {
+    margin-right: 2rem;
+    width: auto;
+    height: 3rem;
+  }
+
+  .nav-link {
+    height: 4.7rem;
+    display: flex;
+    align-items: center;
+    color: var(--clr-white, #fff);
+    padding: 1rem 1.5rem !important; // BS override
+
+    &:hover {
+      background-color: var(--clr-primary-600);
+    }
+  }
+
+  .navbar-toggler {
+    &:focus {
+      box-shadow: unset;
+    }
+    &-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='white' stroke-linecap='round' stroke-miterlimit='10' stroke-width='3' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+  }
+}
+
+.navbar .user {
+  display: flex;
+
+  .nav-link:after {
+    display: none;
+  }
+
+  &__account-menu__name {
+    margin-right: 0.8rem;
+  }
+
+  @include media-breakpoint-up(lg) {
+    order: 1;
+  }
+
+  .icon-nav {
+    display: flex;
+    align-items: center;
+  }
+}

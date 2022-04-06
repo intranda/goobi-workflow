@@ -108,7 +108,7 @@
 										<f:setPropertyActionListener
 											value="#{null}"
 											target="#{SessionForm.dateFormatter}" />
-										<h:graphicImage value="template/img/flags/#{availableLanguage.id}.gif" />
+										<h:graphicImage value="&#127760;" />
 										<span>
 											<h:outputText value="#{msgs[availableLanguage.displayLanguageSelf]}" />
 										</span>
@@ -122,11 +122,13 @@
 			<!-- Account menu (only rendered when user is logged in) -->
 			<!-- mailNotificationDisabled.xhtml does not need this block when no user is logged in -->
 			<c:if test="#{LoginForm.myBenutzer != null}">
-				<div class="dropdown">
+				<div class="user__account-menu dropdown">
 					<a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-						<h:outputText
-							rendered="#{LoginForm.myBenutzer != null}"
-							value="#{LoginForm.myBenutzer.vorname} #{LoginForm.myBenutzer.nachname}" />
+						<span class="user__account-menu__name">
+							<h:outputText
+								rendered="#{LoginForm.myBenutzer != null}"
+								value="#{LoginForm.myBenutzer.vorname} #{LoginForm.myBenutzer.nachname}" />
+						</span>
 						<c:if test="#{empty LoginForm.myBenutzer.imageUrl}">
 							<img
 								alt=""
