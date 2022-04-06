@@ -2,23 +2,34 @@
 
 .box {
   border: 2px solid var(--clr-neutral, #ddd);
+  border-radius: 2px;
   margin-top: 1rem; // remove + use flow class on cols in
 }
 
 .box-title {
+  color: var(--clr-white, #fff);
+  display: flex;
+  justify-content: space-between;
   padding: 7px 0 7px 10px;
   border-bottom: 2px solid var(--clr-neutral, #ddd);
   background-color: var(--clr-neutral, #ddd);
 
+  a,
+  button {
+    color: currentColor;
+    .fa {
+      color: currentColor;
+      font-size: 1.4rem;
+    }
+  }
+
   h2 {
     font-size: 15px;
     line-height: 24px;
-    color: var(--clr-white, #fff);
     margin: 3px 0 3px 0;
-  }
-
-  i {
-    margin: 0 10px 0 5px;
+    .fa {
+      margin: 0 10px 0 5px;
+    }
   }
 }
 
@@ -30,18 +41,29 @@
   }
 }
 
+/* Box content without padding */
+
+.box-content.nopadding {
+  padding: 0;
+}
+
 /* Box colors */
-$colors: (
+
+/* A base box can be colored using one of the utility classes below
+ * Essentially the box header and the box border will change colors
+ * The class list should look like so: class="box orange"
+ * class="box box-color" is a legacy fallback
+ * originally these boxes were of the color blue
+ */
+
+$box-colors: (
   box-color: var(--clr-primary-400, #368ee0),
   blue: var(--clr-primary-400, #368ee0),
   orange: var(--clr-orange-400, #e8860c),
   lightgrey: var(--clr-gray-400, #666666),
 );
 
-@each $name, $color in $colors {
-  box.#{$name} {
-    color: $color;
-  }
+@each $name, $color in $box-colors {
   .box.#{$name} {
     border-color: $color;
     & .box-title {
@@ -50,19 +72,13 @@ $colors: (
     }
   }
 }
-
-/*
+/* For each color in the $colors map, the fn returns snippets like this:
+ *
 .box.orange {
-  border-color: #f0f;
+  border-color: var(--clr-orange-400, #e8860c);
   & .box-title {
-    background-color: #f0f;
-    border-color: #f0f;
+    background-color: var(--clr-orange-400, #e8860c);
+    border-color: var(--clr-orange-400, #e8860c);
   }
 }
 */
-
-/* Box content without padding */
-
-.box-content.nopadding {
-  padding: 0;
-}

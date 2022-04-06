@@ -27,6 +27,9 @@
   "../../../../node_modules/bootstrap/scss/dropdown",
   "../../../../node_modules/bootstrap/scss/tooltip",
   "../../../../node_modules/bootstrap/scss/tables",
+  "../../../../node_modules/bootstrap/scss/buttons",
+  "../../../../node_modules/bootstrap/scss/forms",
+  "../../../../node_modules/bootstrap/scss/progress",
   "../../../../node_modules/bootstrap/scss/transitions"
   ;
 // 5. Optionally include utilities API last to generate classes based on the Sass map in `_utilities.scss`
@@ -42,4 +45,5 @@
 @import "components/breadcrumbs";
 @import "components/boxes";
 @import "components/tables-custom";
+@import "components/forms-custom";
 @import "components/buttons";
