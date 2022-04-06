@@ -59,23 +59,29 @@
 				</configuration>
 			</plugin>
 			<plugin>
-<artifactId>maven-war-plugin</artifactId>
-                <version>3.0.0</version>
-                <configuration>
-                    <webResources>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<version>${project.version}</version>
+							<Implementation-Version>${buildNumber}</Implementation-Version>
+							<Implementation-Build-Date>${buildDate}</Implementation-Build-Date>
+							<Public-Version>${publicVersion}</Public-Version>
+						</manifestEntries>
+					</archive>
+					<webResources>
+						<resource>
+							<directory>${project.basedir}/../src/main/java</directory>
+							<targetPath>WEB-INF/classes</targetPath>
+						</resource>
+						<resource>
+							<directory>${project.basedir}/../src/main/webapp</directory>
+							<targetPath>.</targetPath>
+						</resource>
+					</webResources>
+				</configuration>
 
-                        <resource>
-                            <directory>${project.basedir}/../src/main/java</directory>
-                            <targetPath>WEB-INF/classes</targetPath>
-                        </resource>
-                        
-                        <resource>
-                            <directory>${project.basedir}/../src/main/webapp</directory>
-                            <targetPath>.</targetPath>
-                        </resource>
-                    </webResources>
-                </configuration>
-				
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
