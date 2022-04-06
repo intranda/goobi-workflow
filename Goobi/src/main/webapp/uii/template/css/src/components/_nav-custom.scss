@@ -24,11 +24,19 @@
     height: 3rem;
   }
 
+  .nav-item {
+    color: var(--clr-white, #fff);
+  }
+  .nav-item.active {
+    background-color: var(--clr-white);
+    color: var(--clr-black);
+  }
+
   .nav-link {
+    color: currentColor;
     height: 4.7rem;
     display: flex;
     align-items: center;
-    color: var(--clr-white, #fff);
     padding: 1rem 1.5rem !important; // BS override
 
     &:hover {
@@ -45,6 +53,8 @@
     }
   }
 }
+
+/* Locale switcher user menu etc */
 
 .navbar .user {
   display: flex;

@@ -2,7 +2,7 @@
 
 .box {
   border: 2px solid var(--clr-neutral, #ddd);
-  border-radius: 2px;
+  border-radius: var(--border-radius);
   margin-top: 1rem; // remove + use flow class on cols in
 }
 
