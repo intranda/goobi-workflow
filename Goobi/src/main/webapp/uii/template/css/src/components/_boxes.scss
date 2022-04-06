@@ -1,3 +1,5 @@
+/* Base box */
+
 .box {
   border: 2px solid var(--clr-neutral, #ddd);
   margin-top: 1rem; // remove + use flow class on cols in
@@ -6,11 +8,12 @@
 .box-title {
   padding: 7px 0 7px 10px;
   border-bottom: 2px solid var(--clr-neutral, #ddd);
+  background-color: var(--clr-neutral, #ddd);
 
   h2 {
     font-size: 15px;
     line-height: 24px;
-    color: var(--clr-black, #000);
+    color: var(--clr-white, #fff);
     margin: 3px 0 3px 0;
   }
 
@@ -25,4 +28,41 @@
   &.nopadding {
     padding: 0;
   }
+}
+
+/* Box colors */
+$colors: (
+  box-color: var(--clr-primary-400, #368ee0),
+  blue: var(--clr-primary-400, #368ee0),
+  orange: var(--clr-orange-400, #e8860c),
+  lightgrey: var(--clr-gray-400, #666666),
+);
+
+@each $name, $color in $colors {
+  box.#{$name} {
+    color: $color;
+  }
+  .box.#{$name} {
+    border-color: $color;
+    & .box-title {
+      background-color: $color;
+      border-color: $color;
+    }
+  }
+}
+
+/*
+.box.orange {
+  border-color: #f0f;
+  & .box-title {
+    background-color: #f0f;
+    border-color: #f0f;
+  }
+}
+*/
+
+/* Box content without padding */
+
+.box-content.nopadding {
+  padding: 0;
 }
