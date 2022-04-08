@@ -1381,20 +1381,26 @@
 						<groupId>com.googlecode.redbox-mint</groupId>
 						<artifactId>sruclient-mint</artifactId>
 						<version>1.9</version>
-						 <exclusions>
-                <exclusion>
-                     <groupId>com.googlecode.the-fascinator</groupId>
-    <artifactId>fascinator-vocabulary</artifactId>
-                </exclusion>
-            </exclusions>
+						<exclusions>
+							<exclusion>
+								<groupId>com.googlecode.the-fascinator</groupId>
+								<artifactId>fascinator-vocabulary</artifactId>
+							</exclusion>
+							<exclusion>
+							    <groupId>org.apache.activemq</groupId>
+							    <artifactId>activemq-core</artifactId>
+							</exclusion>
+							<exclusion>
+							    <groupId>ch.qos.logback</groupId>
+							    <artifactId>logback-core</artifactId>
+							</exclusion>
+							<exclusion>
+							    <groupId>ch.qos.logback</groupId>
+							    <artifactId>logback-classic</artifactId>
+							</exclusion>
+						</exclusions>
 					</dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.googlecode.the-fascinator/fascinator-common -->
-<!--<dependency>-->
-<!--    <groupId>com.googlecode.the-fascinator</groupId>-->
-<!--    <artifactId>fascinator-common</artifactId>-->
-<!--    <version>1.4.0.1</version>-->
-<!--</dependency>-->
 
     </dependencies>
     <build>
