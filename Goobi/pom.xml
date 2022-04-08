@@ -1376,6 +1376,26 @@
             <artifactId>sshj</artifactId>
             <version>${sshj.version}</version>
         </dependency>
+        
+					<dependency>
+						<groupId>com.googlecode.redbox-mint</groupId>
+						<artifactId>sruclient-mint</artifactId>
+						<version>1.9</version>
+						 <exclusions>
+                <exclusion>
+                     <groupId>com.googlecode.the-fascinator</groupId>
+    <artifactId>fascinator-vocabulary</artifactId>
+                </exclusion>
+            </exclusions>
+					</dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.googlecode.the-fascinator/fascinator-common -->
+<!--<dependency>-->
+<!--    <groupId>com.googlecode.the-fascinator</groupId>-->
+<!--    <artifactId>fascinator-common</artifactId>-->
+<!--    <version>1.4.0.1</version>-->
+<!--</dependency>-->
+
     </dependencies>
     <build>
         <plugins>
