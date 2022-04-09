@@ -4,7 +4,7 @@
     <artifactId>goobi-core</artifactId>
     <!-- When updating the version, make sure to also update the version in
         the submodules -->
-    <version>22.03</version>
+    <version>22.03.1</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -33,7 +33,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <publicVersion>22.03</publicVersion>
+        <publicVersion>22.03.1</publicVersion>
         <!-- intranda internal -->
         <ics.version>3.3.3</ics.version>
         <normdataimporter.version>1.9.1</normdataimporter.version>
@@ -1376,6 +1376,32 @@
             <artifactId>sshj</artifactId>
             <version>${sshj.version}</version>
         </dependency>
+        
+					<dependency>
+						<groupId>com.googlecode.redbox-mint</groupId>
+						<artifactId>sruclient-mint</artifactId>
+						<version>1.9</version>
+						<exclusions>
+							<exclusion>
+								<groupId>com.googlecode.the-fascinator</groupId>
+								<artifactId>fascinator-vocabulary</artifactId>
+							</exclusion>
+							<exclusion>
+							    <groupId>org.apache.activemq</groupId>
+							    <artifactId>activemq-core</artifactId>
+							</exclusion>
+							<exclusion>
+							    <groupId>ch.qos.logback</groupId>
+							    <artifactId>logback-core</artifactId>
+							</exclusion>
+							<exclusion>
+							    <groupId>ch.qos.logback</groupId>
+							    <artifactId>logback-classic</artifactId>
+							</exclusion>
+						</exclusions>
+					</dependency>
+
+
     </dependencies>
     <build>
         <plugins>
