@@ -4,7 +4,7 @@
     <artifactId>goobi-core</artifactId>
     <!-- When updating the version, make sure to also update the version in
         the submodules -->
-    <version>22.03.1-SNAPSHOT</version>
+    <version>22.03.1</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -33,7 +33,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <publicVersion>22.03.1-SNAPSHOT</publicVersion>
+        <publicVersion>22.03.1</publicVersion>
         <!-- intranda internal -->
         <ics.version>3.3.3</ics.version>
         <normdataimporter.version>1.9.1</normdataimporter.version>
