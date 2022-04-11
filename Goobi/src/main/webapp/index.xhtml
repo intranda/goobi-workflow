@@ -10,6 +10,7 @@
     <meta name="version" content="#{HelperForm.applicationHeaderTitle} - #{HelperForm.buildVersion}" />
 
     <link rel="shortcut icon" href="#{HelperForm.contextPath}/uii/favicon.ico" />
+    <link rel="stylesheet" href="#{HelperForm.contextPath}/uii/template/css/bootstrap.min.css?v=#{HelperForm.buildVersion}" />
  	<link rel="stylesheet" href="#{HelperForm.contextPath}/uii/template/css/style.css?v=#{HelperForm.buildVersion}" />
     <link rel="stylesheet" href="#{HelperForm.contextPath}/uii/template/css/themes.css?v=#{HelperForm.buildVersion}" />
     <link rel="stylesheet" href="#{HelperForm.contextPath}/uii/template/css/intranda.css?v=#{HelperForm.buildVersion}" />
@@ -20,15 +21,15 @@
 </h:head>
 
 	<body class="login" style="height:300px;">
-		<div class="wrapper" style="height:300px;">
+		<div class="wrapper wide" style="height:300px;">
 			<h1>
 				<a href="index.xhtml"><h:outputText value="#{HelperForm.applicationHeaderTitle}" /></a>
 			</h1>
-			<div class="login-body" style="text-align:center;padding:70px;margin-bottom:5px;margin-top:0px;">
+			<div class="login-body" style="text-align:center;padding:70px;margin-bottom:5px;">
 				<img src="#{HelperForm.contextPath}/uii/template/img/goobi/ajaxloader2.gif" />
 				<p style="color:#aaa;font-weight:bold;">Goobi is loading</p>
 			</div>
-			<a style="color: #FFFFFF;text-decoration:none;" href="https://goobi.io">Goobi - developed by intranda</a>
+			<a style="color: #FFFFFF;text-decoration:none;" href="https://goobi.io">Goobi workflow - developed by intranda</a>
 			<h:outputText style="color:#FFFFFF;" styleClass="pull-right" value="v#{HelperForm.version}" />
 		</div>
 	</body>

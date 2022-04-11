@@ -16,22 +16,23 @@ import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
+import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
 @Log4j2
-public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptMetadataChangePersonType extends AbstractIGoobiScript implements IGoobiScript {
     // action:metadataTypeChange position:work oldType:singleDigCollection newType:DDC
 
     @Override
     public String getAction() {
-        return "metadataChangeType";
+        return "metadataChangePersonType";
     }
 
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewActionToSampleCall(sb, "This GoobiScript allows to change the type of an existing metadata.");
+        addNewActionToSampleCall(sb, "This GoobiScript allows to change the type of an existing person.");
         addParameterToSampleCall(sb, "oldType", "old",
                 "Define the current type that shall be changed. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
         addParameterToSampleCall(sb, "newType", "new", "Define the type that shall be used as new type. Use the internal name here as well.");
@@ -165,24 +166,25 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
     private boolean changeMetadataType(List<DocStruct> dsList, String oldMetadataType, String newMetadataType, Prefs prefs, boolean ignoreErrors)
             throws MetadataTypeNotAllowedException {
         for (DocStruct ds : dsList) {
-            // search for all metadata with type of oldMetadataType
-            List<? extends Metadata> mdList = ds.getAllMetadataByType(prefs.getMetadataTypeByName(oldMetadataType));
+            // search for all persons with type of oldMetadataType
+            List<? extends Person> mdList = ds.getAllPersonsByType(prefs.getMetadataTypeByName(oldMetadataType));
             if (mdList == null || mdList.isEmpty()) {
                 return false;
             }
             MetadataType type = prefs.getMetadataTypeByName(newMetadataType);
 
             // for each metadata create new metadata with new type
-            for (Metadata oldMd : mdList) {
+            for (Person oldMd : mdList) {
                 try {
-                    Metadata newMd = new Metadata(type);
+                	Person newMd = new Person(type);
                     // copy value from existing metadata
-                    newMd.setValue(oldMd.getValue());
+                    newMd.setFirstname(oldMd.getFirstname());
+                    newMd.setLastname(oldMd.getLastname());
                     newMd.setAutorityFile(oldMd.getAuthorityID(), oldMd.getAuthorityURI(), oldMd.getAuthorityValue());
                     // add all new metadata
-                    ds.addMetadata(newMd);
+                    ds.addPerson(newMd);
                     // delete oldMetadata from ds
-                    ds.removeMetadata(oldMd);
+                    ds.removePerson(oldMd);
                 } catch (MetadataTypeNotAllowedException e) {
                     if (!ignoreErrors) {
                         throw e;

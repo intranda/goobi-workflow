@@ -3,7 +3,7 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:fo="http://www.w3.org/1999/XSL/Format"
     xmlns:goobi="http://www.goobi.io/logfile"
-    version="1.1"
+    version="1.0"
     exclude-result-prefixes="fo"
 >
     <xsl:output

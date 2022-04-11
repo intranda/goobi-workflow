@@ -168,7 +168,7 @@
 										<!-- IMPORTANT: allowTypes="" only works with "/regex/" (included in slashes) -->
 										<!-- Even if other regular expressions would be valid too, only "/regex/" works in contrast to "regex" -->
 										<p:fileUpload
-											fileUploadListener="#{ProzesskopieForm.uploadFile}"
+											listener="#{ProzesskopieForm.uploadFile}"
 											id="upload"
 											auto="true"
 											mode="advanced"
@@ -179,7 +179,8 @@
 											fileLimit="42000"
 											update=":imageform"
 											allowTypes="#{ProzesskopieForm.getUploadRegex()}"
-											invalidFileMessage="#{ProzesskopieForm.generateFileUploadErrorMessage()}">
+											invalidFileMessage="#{ProzesskopieForm.generateFileUploadErrorMessage()}"
+                                            >
 										</p:fileUpload>
 										<h:outputText
 											styleClass="help-block font-light"

@@ -76,7 +76,7 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
 
 import de.schlichtherle.io.FileOutputStream;
 import de.sub.goobi.config.ConfigProjects;
@@ -360,7 +360,7 @@ public class ProzesskopieForm implements Serializable {
                             break;
                         case "export":
                             configuredFolderNames
-                                    .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
+                            .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
                             break;
                         case "master":
                             if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
@@ -1822,7 +1822,7 @@ public class ProzesskopieForm implements Serializable {
     public void uploadFile(FileUploadEvent event) {
         try {
             UploadedFile upload = event.getFile();
-            saveFileTemporary(upload.getFileName(), upload.getInputstream());
+            saveFileTemporary(upload.getFileName(), upload.getInputStream());
         } catch (IOException e) {
             log.error("Error while uploading files", e);
         }
