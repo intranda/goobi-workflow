@@ -24,6 +24,7 @@
   }
 
   h2 {
+    color: currentColor;
     font-size: 15px;
     line-height: 24px;
     margin: 3px 0 3px 0;
@@ -47,6 +48,11 @@
   padding: 0;
 }
 
+.blank .box-title {
+  color: var(--clr-text-400);
+  background: transparent;
+}
+
 /* Box colors */
 
 /* A base box can be colored using one of the utility classes below
@@ -57,10 +63,15 @@
  */
 
 $box-colors: (
-  box-color: var(--clr-primary-400, #368ee0),
-  blue: var(--clr-primary-400, #368ee0),
-  orange: var(--clr-orange-400, #e8860c),
-  lightgrey: var(--clr-gray-400, #666666),
+  // legacy .box modifiers
+  lightgrey: var(--clr-info-200),
+  box-color: var(--clr-info-400),
+  blue: var(--clr-info-400),
+  orange: var(--clr-action-400),
+  // current .box modifiers
+  box--info-400: var(--clr-info-400),
+  box--info-200: var(--clr-info-200),
+  box--action-400: var(--clr-action-400)
 );
 
 @each $name, $color in $box-colors {
@@ -72,6 +83,7 @@ $box-colors: (
     }
   }
 }
+
 /* For each color in the $colors map, the fn returns snippets like this:
  *
 .box.orange {
