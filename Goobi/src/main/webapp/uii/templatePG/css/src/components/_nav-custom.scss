@@ -25,11 +25,11 @@
   }
 
   .nav-item {
-    color: var(--clr-white, #fff);
+    color: var(--text-nav, #fff);
   }
   .nav-item.active {
-    background-color: var(--clr-white);
-    color: var(--clr-black);
+    background-color: var(--bg-body, #fff);
+    color: var(--text-active);
   }
 
   .nav-link {
@@ -64,6 +64,7 @@
   }
 
   &__account-menu__name {
+    color: currentColor;
     margin-right: 0.8rem;
   }
 

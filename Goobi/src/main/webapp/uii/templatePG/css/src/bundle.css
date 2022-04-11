@@ -9294,22 +9294,20 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+/*
+$clr-green: #339933;
+*/
 :root {
   --clr-primary-400: #368ee0;
   --clr-primary-600: #1b67af;
-  /* Named colors */
-  --clr-orange-400: #e8860c;
-  --clr-white: #fff;
-  --clr-black: #000;
-  --clr-gray-100: #f4f4f4;
-  --clr-gray-200: #ddd;
-  --clr-gray-400: #666666;
-  /* Font sizes */
-  --fs-400: 1.2rem;
-  /* Flow -> margin on top of elements */
-  --flow-space: 1.6rem;
-  --border-radius: 2px;
-  /* DEVELOPMENT */
+  --clr-neutral-200: #f4f4f4;
+  --clr-neutral-400: #dddddd;
+  --clr-neutral-600: #666666;
+  --clr-action-400: #e8860c;
+  --clr-action-600: #e51400;
+  --clr-info-200: var(--clr-neutral-600);
+  --clr-info-400: var(--clr-primary-400);
+  --clr-text-400: #2a2a2a;
   --clr-primary-400: #ba324f;
 }
 
@@ -9326,7 +9324,7 @@ a:focus, a:hover, a:active {
 }
 
 hr {
-  color: var(--clr-gray-400);
+  color: var(--clr-neutral-200);
 }
 
 .pull-left,
@@ -9399,11 +9397,11 @@ body {
   height: 3rem;
 }
 .navbar .nav-item {
-  color: var(--clr-white, #fff);
+  color: var(--text-nav, #fff);
 }
 .navbar .nav-item.active {
-  background-color: var(--clr-white);
-  color: var(--clr-black);
+  background-color: var(--bg-body, #fff);
+  color: var(--text-active);
 }
 .navbar .nav-link {
   color: currentColor;
@@ -9430,6 +9428,7 @@ body {
   display: none;
 }
 .navbar .user__account-menu__name {
+  color: currentColor;
   margin-right: 0.8rem;
 }
 @media (min-width: 992px) {
@@ -9537,6 +9536,7 @@ body {
   font-size: 1.4rem;
 }
 .box-title h2, .box-title .h2 {
+  color: currentColor;
   font-size: 15px;
   line-height: 24px;
   margin: 3px 0 3px 0;
@@ -9557,6 +9557,11 @@ body {
   padding: 0;
 }
 
+.blank .box-title {
+  color: var(--clr-text-400);
+  background: transparent;
+}
+
 /* Box colors */
 /* A base box can be colored using one of the utility classes below
  * Essentially the box header and the box border will change colors
@@ -9564,36 +9569,60 @@ body {
  * class="box box-color" is a legacy fallback
  * originally these boxes were of the color blue
  */
+.box.lightgrey {
+  border-color: var(--clr-info-200);
+}
+.box.lightgrey .box-title {
+  background-color: var(--clr-info-200);
+  border-color: var(--clr-info-200);
+}
+
 .box.box-color {
-  border-color: var(--clr-primary-400, #368ee0);
+  border-color: var(--clr-info-400);
 }
 .box.box-color .box-title {
-  background-color: var(--clr-primary-400, #368ee0);
-  border-color: var(--clr-primary-400, #368ee0);
+  background-color: var(--clr-info-400);
+  border-color: var(--clr-info-400);
 }
 
 .box.blue {
-  border-color: var(--clr-primary-400, #368ee0);
+  border-color: var(--clr-info-400);
 }
 .box.blue .box-title {
-  background-color: var(--clr-primary-400, #368ee0);
-  border-color: var(--clr-primary-400, #368ee0);
+  background-color: var(--clr-info-400);
+  border-color: var(--clr-info-400);
 }
 
 .box.orange {
-  border-color: var(--clr-orange-400, #e8860c);
+  border-color: var(--clr-action-400);
 }
 .box.orange .box-title {
-  background-color: var(--clr-orange-400, #e8860c);
-  border-color: var(--clr-orange-400, #e8860c);
+  background-color: var(--clr-action-400);
+  border-color: var(--clr-action-400);
 }
 
-.box.lightgrey {
-  border-color: var(--clr-gray-400, #666666);
+.box.box--info-400 {
+  border-color: var(--clr-info-400);
 }
-.box.lightgrey .box-title {
-  background-color: var(--clr-gray-400, #666666);
-  border-color: var(--clr-gray-400, #666666);
+.box.box--info-400 .box-title {
+  background-color: var(--clr-info-400);
+  border-color: var(--clr-info-400);
+}
+
+.box.box--info-200 {
+  border-color: var(--clr-info-200);
+}
+.box.box--info-200 .box-title {
+  background-color: var(--clr-info-200);
+  border-color: var(--clr-info-200);
+}
+
+.box.box--action-400 {
+  border-color: var(--clr-action-400);
+}
+.box.box--action-400 .box-title {
+  background-color: var(--clr-action-400);
+  border-color: var(--clr-action-400);
 }
 
 /* For each color in the $colors map, the fn returns snippets like this:
