@@ -64,10 +64,10 @@
 
 $box-colors: (
   // legacy .box modifiers
-  lightgrey: var(--clr-info-200),
-  box-color: var(--clr-info-400),
-  blue: var(--clr-info-400),
-  orange: var(--clr-action-400),
+  "lightgrey": var(--clr-info-200),
+  "box-color": var(--clr-info-400),
+  "blue": var(--clr-info-400),
+  "orange": var(--clr-action-400),
   // current .box modifiers
   box--info-400: var(--clr-info-400),
   box--info-200: var(--clr-info-200),
