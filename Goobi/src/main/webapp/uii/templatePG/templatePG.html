@@ -28,30 +28,49 @@
     <meta name="builddate" content="#{HelperForm.buildDate}" />
     <title><h:outputText value="#{HelperForm.applicationHeaderTitle} - #{HelperForm.version}" /></title>
 
-    <!-- Bootstrap -->
-    <!--
-    <link rel="stylesheet" href="template/css/bootstrap.min.css?v=#{HelperForm.buildVersion}" />
-    <link rel="stylesheet" href="template/css/bootstrap-slider.css?v=#{HelperForm.buildVersion}" />
-	-->
-    <!-- Theme CSS -->
-    <!--
-    <link rel="stylesheet" href="template/css/style.css?v=#{HelperForm.buildVersion}" />
-    -->
-    <!-- Font Awesome CSS -->
-    <link rel="stylesheet" href="template/css/font-awesome.css?v=#{HelperForm.buildVersion}" />
-    <!-- Color CSS -->
 
-    <!--
-    <link rel="stylesheet" href="template/css/themes.css?v=#{HelperForm.buildVersion}" />
-    -->
-    <!-- intranda -->
-    <!--
-    <link rel="stylesheet" href="template/css/intranda.css?v=#{HelperForm.buildVersion}" />
-    -->
-    <link rel="stylesheet" href="template/css/dist/bundle.css?v=#{HelperForm.buildVersion}" />
+    <!-- ========================================
+          CSS
+      ======================================== -->
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="templatePG/css/lib/font-awesome.css?v=#{HelperForm.buildVersion}" />
+
+    <!-- Main styles (BS + custom styles) -->
+    <link rel="stylesheet" href="templatePG/css/dist/bundle.css?v=#{HelperForm.buildVersion}" />
+
+    <!-- Mets Editor -->
     <!-- <link rel="stylesheet" href="template/css/dist/goobiWorkflow.min.css?v=#{HelperForm.buildVersion}" /> -->
 
+    <!-- WCAG compatibility CSS -->
+    <ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.uiMode=='accessibility'}">
+      <link rel="stylesheet" href="template/css/accessibility.css?v=#{HelperForm.buildVersion}" />
+    </ui:fragment>
+
+    <!-- CUSTOM CSS (user specific)-->
+    <style>
+        <h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false" />
+    </style>
+
+
+    <!-- ========================================
+        JAVASCRIPT
+      ======================================== -->
+
+    <!-- Bootstrap -->
+
+    <!-- BS 3 -->
+    <!--
+    <script src="template/js/bootstrap.min.js?v=#{HelperForm.buildVersion}"></script>
+    -->
+
+    <!-- BS 5 -->
+    <script src="template/js/PG/bootstrap.bundle.min.js?v=#{HelperForm.buildVersion}"></script>
+
+
+    <!-- INTRANDA JS -->
     <script src="template/js/intranda.js?v=1.2"></script>
+
     <!-- jQuery -->
     <h:outputScript library="primefaces" name="jquery/jquery.js?v=#{HelperForm.buildVersion}" target="head" />
     <!-- Mobile nav swipe -->
@@ -64,22 +83,22 @@
     <script src="template/js/plugins/jquery-ui/jquery-ui.js?v=#{HelperForm.buildVersion}"></script>
     <!-- slimScroll -->
     <script src="template/js/plugins/slimscroll/jquery.slimscroll.min.js?v=#{HelperForm.buildVersion}"></script>
-    <!-- Bootstrap -->
-    <!--
-    <script src="template/js/bootstrap.min.js?v=#{HelperForm.buildVersion}"></script>
-    -->
 
-    <script src="template/js/PG/bootstrap.bundle.min.js?v=#{HelperForm.buildVersion}"></script>
+
+
+
+
     <script src="template/js/bootstrap-slider.js?v=#{HelperForm.buildVersion}"></script>
     <!-- Bootbox -->
     <script src="template/js/plugins/bootbox/jquery.bootbox.js?v=#{HelperForm.buildVersion}"></script>
     <!-- Bootbox -->
     <script src="template/js/plugins/form/jquery.form.min.js?v=#{HelperForm.buildVersion}"></script>
+
     <!-- Validation -->
     <script src="template/js/plugins/validation/jquery.validate.min.js?v=#{HelperForm.buildVersion}"></script>
     <script src="template/js/plugins/validation/additional-methods.min.js?v=#{HelperForm.buildVersion}"></script>
-	<!-- shortcuts -->
-	<script src="template/js/jquery.hotkeys.js?v=#{HelperForm.buildVersion}"></script>
+      <!-- shortcuts -->
+      <script src="template/js/jquery.hotkeys.js?v=#{HelperForm.buildVersion}"></script>
     <!-- Theme framework -->
     <!-- <script src="template/js/eakroko.js?v=#{HelperForm.buildVersion}"></script> -->
     <!-- Theme scripts -->
@@ -93,25 +112,17 @@
 			});
 		</script>
 	<![endif]-->
+
     <!-- Favicon -->
     <link rel="shortcut icon" href="template/img/favicon.ico" />
     <!-- Apple devices Homescreen icon -->
     <link rel="apple-touch-icon-precomposed" href="template/img/apple-touch-icon.png" />
 
-	<!-- WCAG compatibility CSS -->
-
-	<ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.uiMode=='accessibility'}">
-		<link rel="stylesheet" href="template/css/accessibility.css?v=#{HelperForm.buildVersion}" />
-	</ui:fragment>
-
-    <!-- CUSTOM CSS -->
-    <style>
-        <h:outputText value="#{LoginForm.myBenutzer.customCss}" escape="false" />
-    </style>
+    <!-- SKIP LINK MARKUP -->
     <span class="outer-skip-link">
     	<a class="skip-main sr-only" href="#main-content" tabindex="0">#{msgs.skipMainContent}</a>
     </span>
-    <script>console.log('%ctemplatePG', 'background:#368ee0; color:#232327; padding: 0 8px')</script>
+
 </h:head>
 
 <ui:insert name="metadata" />
@@ -121,7 +132,7 @@
     <f:view locale="#{SpracheForm.locale}">
 
         <h:panelGroup rendered="#{LoginForm.myBenutzer==null}">
-            <ui:include src="inc_login.xhtml" />
+            <ui:include src="../template/inc_login.xhtml" />
         </h:panelGroup>
 
         <c:if test="#{LoginForm.myBenutzer!=null}">

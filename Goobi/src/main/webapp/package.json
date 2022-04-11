@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "sass:dev": "sass uii/template/css/src/main.scss /opt/digiverso/dev/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/Goobi/uii/template/css/dist/bundle.css --watch",
-    "sass:prod": "sass uii/template/css/src/main.scss uii/template/css/src/bundle.css --no-source-map",
-    "postcss": "echo 'postcss: ' && postcss ./uii/template/css/src/bundle.css --output ./uii/template/css/dist/bundle.css --verbose",
+    "sass:dev": "sass uii/templatePG/css/src/main.scss /opt/digiverso/dev/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/Goobi/uii/template/css/dist/bundle.css --watch",
+    "sass:prod": "sass uii/templatePG/css/src/main.scss uii/templatePG/css/src/bundle.css --no-source-map",
+    "postcss": "echo 'postcss: ' && postcss ./uii/templatePG/css/src/bundle.css --output ./uii/templatePG/css/dist/bundle.css --verbose",
     "start": "npm run sass:dev",
     "css:build": "npm run sass:prod && npm run postcss"
   },
