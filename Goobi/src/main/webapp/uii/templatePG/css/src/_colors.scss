@@ -1,0 +1,27 @@
+/*
+$clr-green: #339933;
+*/
+
+$colors: (
+  primary-400: #368ee0,
+  primary-600: #1b67af,
+  neutral-200: #f4f4f4,
+  neutral-400: #dddddd,
+  neutral-600: #666666,
+  action-400: #e8860c,
+  action-600: #e51400,
+  info-200: var(--clr-neutral-600),
+  info-400: var(--clr-primary-400),
+  text-400: #2a2a2a,
+);
+
+:root {
+  // Generate a custom property for every entry in the $colors map, e.g:
+  // --clr-primary-400: #368ee0;
+  @each $name, $color in $colors {
+    --clr-#{$name}: #{$color};
+  }
+
+  // DEVELOPMENT
+  --clr-primary-400: #ba324f;
+}

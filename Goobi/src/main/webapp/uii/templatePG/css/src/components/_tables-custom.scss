@@ -1,0 +1,24 @@
+.table {
+  margin-bottom: 0; // BS override
+}
+
+thead {
+  background-color: var(--clr-gray-100);
+  button {
+    background-color: transparent;
+    border: 0;
+  }
+}
+
+.table > :not(:first-child) {
+  border-top: unset;
+}
+
+td,
+th {
+  border-color: var(--clr-gray-200);
+}
+
+.table-hover > tbody > tr:hover > * {
+  --bs-table-accent-bg: var(--clr-gray-100);
+}

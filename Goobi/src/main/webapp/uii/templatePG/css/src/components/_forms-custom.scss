@@ -1,0 +1,15 @@
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1.2rem;
+}
+
+.form-group {
+  border-bottom: 1px solid #ddd;
+  padding: 20px;
+  margin-bottom: 0;
+
+  label {
+    margin-bottom: 0.5rem;
+  }
+}

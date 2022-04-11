@@ -1,0 +1,23 @@
+#processTable {
+  tr td:nth-of-type(2) {
+    span {
+      display: inline-block;
+      transform: translateY(50%);
+    }
+  }
+  .btn-group {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+}
+.progress-bar-success {
+  background-color: #5cb85c;
+}
+
+.progress-bar-warning {
+  background-color: #f0ad4e;
+}
+
+.progress-bar-danger {
+  background-color: #d9534f;
+}

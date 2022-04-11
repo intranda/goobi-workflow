@@ -1,0 +1,25 @@
+html {
+  font-size: 62.5%;
+}
+
+a {
+  text-decoration: none;
+  color: var(--clr-primary-400);
+
+  &:focus,
+  &:hover,
+  &:active {
+    color: var(--clr-primary-600);
+  }
+}
+
+hr {
+  color: var(--clr-neutral-200);
+}
+
+// Overrides for font-awesome.css
+// Might be removed, once font-awesome is updated
+.pull-left,
+.pull-right {
+  float: unset;
+}
