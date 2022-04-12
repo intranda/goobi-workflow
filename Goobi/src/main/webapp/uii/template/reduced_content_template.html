@@ -156,7 +156,7 @@
     <f:view locale="#{SpracheForm.locale}">
 
         <h:panelGroup rendered="#{LoginForm.myBenutzer==null}">
-            <ui:include src="inc_login.xhtml" />
+            <ui:include src="external_login.xhtml" />
         </h:panelGroup>
 
         <c:if test="#{LoginForm.myBenutzer!=null}">
