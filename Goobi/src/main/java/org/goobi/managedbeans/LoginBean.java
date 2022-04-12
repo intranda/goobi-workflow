@@ -178,6 +178,13 @@ public class LoginBean implements Serializable {
             // Log output is done in findUserByLoginName()
             return "";
         }
+        // TODO check if user is allwed to log in
+        //        if (user.getStatus() == User.UserStatus.REGISTERED) {
+        //            // registration not finished, login not allowed
+        //        }
+        //        else if (user.getStatus() == User.UserStatus.DELETED || user.getStatus() == User.UserStatus.INACTIVE) {
+        //            // disabled, login not allowed
+        //        }
 
         // Check whether the user is an active user and is not invisible
         if (user.getIsVisible() != null || !user.isIstAktiv()) {
@@ -441,4 +448,36 @@ public class LoginBean implements Serializable {
     public boolean isUserCreationEnabled() {
         return ConfigurationHelper.getInstance().isEnableExternalUserLogin();
     }
+    @Getter
+    @Setter
+    private String accountName;
+    @Getter
+    @Setter
+    private String emailAddress;
+    @Getter
+    @Setter
+    private String firstname;
+    @Getter
+    @Setter
+    private String lastname;
+    @Getter
+    @Setter
+    private String address;
+
+    public void createAccount () {
+        // validate entries
+
+        // check that account name is not used yet
+        // check that email address is valid?
+        // check that firstname + lastname are filled
+
+        // create new user
+
+        // generate password
+
+        // save user, send mail with password
+
+        // change ui status
+    }
+
 }

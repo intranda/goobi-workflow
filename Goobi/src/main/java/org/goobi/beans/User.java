@@ -278,6 +278,9 @@ public class User implements DatabaseObject {
     @Setter
     private String uiMode;
 
+    @Getter
+    @Setter
+    private UserStatus status = UserStatus.ACTIVE;
 
     private List<SelectItem> availableUiModes = null;
 
@@ -636,7 +639,7 @@ public class User implements DatabaseObject {
 
     public List<SelectItem> getAvailableUiModes() {
         if (availableUiModes == null) {
-            availableUiModes = new ArrayList<> ();
+            availableUiModes = new ArrayList<>();
             availableUiModes.add(new SelectItem("regular", Helper.getTranslation("user_ui_mode_regular")));
             availableUiModes.add(new SelectItem("low_vision", Helper.getTranslation("user_ui_mode_low_vision")));
             availableUiModes.add(new SelectItem("accessibility", Helper.getTranslation("user_ui_mode_accessibility_compatible")));
@@ -656,7 +659,6 @@ public class User implements DatabaseObject {
         }
         return dashboards;
     }
-
 
     public List<SelectItem> getTaskListColumnNames() {
         List<SelectItem> taskList = new ArrayList<>();
@@ -703,6 +705,29 @@ public class User implements DatabaseObject {
         }
 
         return taskList;
+    }
+
+    public enum UserStatus {
+        REGISTERED("registered"),
+        ACTIVE("active"),
+        INACTIVE("inactive"),
+        DELETED("deleted");
+
+        @Getter
+        private String name;
+
+        private UserStatus(String name) {
+            this.name = name;
+        }
+
+        public UserStatus getStatusByName(String name) {
+            for (UserStatus status : UserStatus.values()) {
+                if (status.getName().equals(name)) {
+                    return status;
+                }
+            }
+            return ACTIVE; // default status
+        }
     }
 
 }
