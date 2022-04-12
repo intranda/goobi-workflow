@@ -1,9 +1,10 @@
+// BS override, make table end at bottom of the box
 .table {
-  margin-bottom: 0; // BS override
+  margin-bottom: 0;
 }
 
 thead {
-  background-color: var(--clr-gray-100);
+  background-color: var(--clr-neutral-200);
   button {
     background-color: transparent;
     border: 0;
@@ -16,9 +17,18 @@ thead {
 
 td,
 th {
-  border-color: var(--clr-gray-200);
+  border-color: var(--clr-neutral-400);
+  span {
+    font-weight: bold;
+  }
+}
+
+td {
+  .btn-group .btn:not(:first-of-type) {
+    margin-right: 0.8rem;
+  }
 }
 
 .table-hover > tbody > tr:hover > * {
-  --bs-table-accent-bg: var(--clr-gray-100);
+  --bs-table-accent-bg: var(--clr-neutral-200);
 }
