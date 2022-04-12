@@ -436,4 +436,9 @@ public class LoginBean implements Serializable {
         }
         return myColumns;
     }
+
+
+    public boolean isUserCreationEnabled() {
+        return ConfigurationHelper.getInstance().isEnableExternalUserLogin();
+    }
 }
