@@ -8,6 +8,7 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:o="http://omnifaces.org/ui"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <composite:interface>
@@ -15,9 +16,9 @@
 
     <composite:implementation>
         <main>
-            <div
-                class="wrapper wide"
-                style="height: 300px;">
+            <h:panelGroup layout="block"
+                styleClass="wrapper wide"
+                style="#{NavigationForm.uiStatus.loginStatus == 'accountCreation'? 'top: 30%' : 'top: 50%' } ">
                 <h1>
                     <a href="index.xhtml">
                         <h:outputText
@@ -137,7 +138,109 @@
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{NavigationForm.uiStatus.loginStatus == 'accountCreation'}">
+                                <!-- account name -->
+                                <div class="form-group">
+                                    <h:outputLabel
+                                        for="accountName"
+                                        value="#{msgs.accountName}" />
+                                    <div class="email controls">
+                                        <x:inputText
+                                            id="accountName"
+                                            pt:aria-label="#{msgs.accountName}"
+                                            forceId="true"
+                                            styleClass="form-control"
+                                            value="#{LoginForm.accountName}">
+                                            <f:passThroughAttribute
+                                                name="placeholder"
+                                                value="#{msgs.accountName}" />
+                                        </x:inputText>
+                                    </div>
+                                </div>
+                                <!-- email address -->
+                                <div class="form-group">
+                                    <h:outputLabel
+                                        for="emailAddress"
+                                        value="#{msgs.emailAddress}" />
+                                    <div class="email controls">
+                                        <x:inputText
+                                            id="emailAddress"
+                                            pt:aria-label="#{msgs.emailAddress}"
+                                            forceId="true"
+                                            styleClass="form-control"
+                                            value="#{LoginForm.emailAddress}">
+                                            <f:passThroughAttribute
+                                                name="placeholder"
+                                                value="#{msgs.emailAddress}" />
+                                        </x:inputText>
+                                    </div>
+                                </div>
+                                                                                               <!-- firstname -->
+                                <div class="form-group">
+                                    <h:outputLabel
+                                        for="firstname"
+                                        value="#{msgs.firstname}" />
+                                    <div class="email controls">
+                                        <x:inputText
+                                            id="firstname"
+                                            pt:aria-label="#{msgs.firstname}"
+                                            forceId="true"
+                                            styleClass="form-control"
+                                            value="#{LoginForm.firstname}">
+                                            <f:passThroughAttribute
+                                                name="placeholder"
+                                                value="#{msgs.firstname}" />
+                                        </x:inputText>
+                                    </div>
+                                </div> 
+                                                                <!-- lastname -->
+                                <div class="form-group">
+                                    <h:outputLabel
+                                        for="lastname"
+                                        value="#{msgs.lastname}" />
+                                    <div class="email controls">
+                                        <x:inputText
+                                            id="lastname"
+                                            pt:aria-label="#{msgs.lastname}"
+                                            forceId="true"
+                                            styleClass="form-control"
+                                            value="#{LoginForm.lastname}">
+                                            <f:passThroughAttribute
+                                                name="placeholder"
+                                                value="#{msgs.lastname}" />
+                                        </x:inputText>
+                                    </div>
+                                </div>
 
+                                
+                                
+                                <!-- address -->
+                                <div class="form-group">
+                                    <h:outputLabel
+                                        for="address"
+                                        value="#{msgs.address}" />
+                                    <div class="email controls">
+                                        <x:inputTextarea
+                                            id="address"
+                                            pt:aria-label="#{msgs.address}"
+                                            forceId="true"
+                                            styleClass="form-control"
+                                            value="#{LoginForm.address}">
+                                            <f:passThroughAttribute
+                                                name="placeholder"
+                                                value="#{msgs.address}" />
+                                        </x:inputTextarea>
+                                    </div>
+                                </div>
+                                <div class="submit">
+                                <!-- create button -->
+                                <button
+                                    jsf:action="#{LoginForm.create}"
+                                    jsf:id="create"
+                                    class="pull-right btn font-size-s"
+                                    style="background: #fff; outline: 1px solid #368ee0;">
+                                    <h:outputText value="#{msgs.create}" />
+                                </button>
+                                <!-- cancel button -->
                                 <button
                                     jsf:id="back"
                                     class="float-left btn font-size-s"
@@ -147,6 +250,7 @@
                                         target="#{NavigationForm.uiStatus.loginStatus}" />
                                     <h:outputText value="#{msgs.abbrechen}" />
                                 </button>
+                                </div>
                             </h:panelGroup>
 
                         </h:form>
@@ -210,7 +314,7 @@
                     styleClass="pull-right"
                     value="#{msgs.version} #{HelperForm.version}" />
 
-            </div>
+            </h:panelGroup>
         </main>
     </composite:implementation>
 
