@@ -9,6 +9,11 @@
     padding-left: 0;
     line-height: 2.1rem;
   }
+  ul,
+  li {
+    display: flex;
+    align-items: center;
+  }
   a {
     color: #666;
     text-decoration: none;
