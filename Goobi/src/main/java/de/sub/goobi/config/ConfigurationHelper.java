@@ -1095,6 +1095,11 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("EnableExternalUserLogin", false);
     }
 
+
+    public String getExternalUserDefaultInstitutionName() {
+        return getLocalString("ExternalUserDefaultInstitution");
+    }
+
     public boolean isRenderReimport() {
         return getLocalBoolean("renderReimport", false);
     }

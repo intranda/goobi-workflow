@@ -52,9 +52,12 @@ import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.goobi.api.mail.SendMail;
 import org.goobi.api.mail.StepConfiguration;
 import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.beans.DatabaseObject;
@@ -62,11 +65,13 @@ import org.goobi.beans.Institution;
 import org.goobi.beans.Ldap;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
+import org.goobi.beans.User.UserStatus;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.UserRole;
 import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.forms.NavigationForm;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -753,4 +758,91 @@ public class UserBean extends BasicBean implements Serializable {
         resetChangeLists();
         return "user_all";
     }
+
+    @Getter
+    @Setter
+    private String accountName;
+    @Getter
+    @Setter
+    private String emailAddress;
+    @Getter
+    @Setter
+    private String firstname;
+    @Getter
+    @Setter
+    private String lastname;
+    @Getter
+    @Setter
+    private String address;
+
+    public void createAccount() {
+        // validate entries
+        if (StringUtils.isBlank(accountName)) {
+            Helper.setFehlerMeldung("keinLoginAngegeben");
+            return;
+        } else {
+            // check that account name only uses valid characters
+            if (!LoginValide(accountName)) {
+                Helper.setFehlerMeldung("loginNotValid");
+                return;
+            }
+            // check that the account name was not used yet
+            String query = "login='" + StringEscapeUtils.escapeSql(accountName) + "'";
+
+            try {
+                int num = new UserManager().getHitSize(null, query, null);
+                if (num > 0) {
+                    Helper.setFehlerMeldung("loginBereitsVergeben");
+                    return;
+                }
+            } catch (DAOException e) {
+                log.error(e);
+            }
+        }
+
+        // check that email address is valid?
+        if (!EmailValidator.getInstance().isValid(emailAddress)) {
+            Helper.setFehlerMeldung("emailNotValid");
+            return;
+        }
+
+        // create new user
+        User user = new User();
+        user.setVorname(firstname);
+        user.setNachname(lastname);
+        user.setLogin(accountName);
+        user.setLdaplogin("");
+        user.setStatus(UserStatus.REGISTERED);
+        user.setEmail(emailAddress);
+        RandomNumberGenerator rng = new SecureRandomNumberGenerator();
+        Object salt = rng.nextBytes();
+        user.setPasswordSalt(salt.toString());
+
+        Institution i = InstitutionManager.getInstitutionByName(ConfigurationHelper.getInstance().getExternalUserDefaultInstitutionName());
+        user.setInstitution(i);
+
+        // generate random password
+        String password = createRandomPassword(LoginBean.DEFAULT_PASSWORD_LENGTH);
+        user.setEncryptedPassword(user.getPasswordHash(password));
+        // save user
+        try {
+            UserManager.saveUser(user);
+        } catch (DAOException e) {
+            log.error(e);
+        }
+
+        // send mail with password
+
+        String messageSubject = SendMail.getInstance().getConfig().getUserCreationMailSubject();
+        String messageBody =
+                SendMail.getInstance().getConfig().getUserCreationMailBody().replace("{password}", password).replace("{login}", accountName);
+        SendMail.getInstance().sendMailToUser(messageSubject, messageBody, emailAddress);
+
+        // change ui status
+
+        NavigationForm form = (NavigationForm) Helper.getBeanByName("NavigationForm", NavigationForm.class);
+        form.getUiStatus().put("loginStatus", "");
+
+    }
+
 }

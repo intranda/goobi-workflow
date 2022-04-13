@@ -9,4 +9,19 @@
         <smtpSenderAddress>do-not-reply@example.com</smtpSenderAddress>
     </configuration>
     <apiUrl>https://example.com/goobi/api/mails/disable</apiUrl>
+    
+    
+    <userCreation>
+        <subject>Registration successful</subject>
+        <body>
+The account registration was successful.&lt;br /&gt;
+You will be able to log in as soon as the account has been activated by an administrator.&lt;br /&gt;
+&lt;br /&gt;
+The login name is {login}&lt;br /&gt;
+And your password is: {password}&lt;br /&gt;
+&lt;br /&gt;
+The password can be changed at any time in the user settings.
+        </body>
+    </userCreation>    
+    
 </goobiMail>
