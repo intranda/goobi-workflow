@@ -142,17 +142,18 @@
                                 <div class="form-group">
                                     <h:outputLabel
                                         for="accountName"
-                                        value="#{msgs.accountName}" />
+                                        value="#{msgs.login_new_account_accountName}" />
                                     <div class="email controls">
                                         <x:inputText
                                             id="accountName"
-                                            pt:aria-label="#{msgs.accountName}"
+                                            pt:aria-label="#{msgs.login_new_account_accountName}"
                                             forceId="true"
                                             styleClass="form-control"
-                                            value="#{LoginForm.accountName}">
+                                            value="#{BenutzerverwaltungForm.accountName}"
+                                            required="true">
                                             <f:passThroughAttribute
                                                 name="placeholder"
-                                                value="#{msgs.accountName}" />
+                                                value="#{msgs.login_new_account_accountName}" />
                                         </x:inputText>
                                     </div>
                                 </div>
@@ -160,21 +161,22 @@
                                 <div class="form-group">
                                     <h:outputLabel
                                         for="emailAddress"
-                                        value="#{msgs.emailAddress}" />
+                                        value="#{msgs.login_new_account_emailAddress}" />
                                     <div class="email controls">
                                         <x:inputText
                                             id="emailAddress"
-                                            pt:aria-label="#{msgs.emailAddress}"
+                                            pt:aria-label="#{msgs.login_new_account_emailAddress}"
                                             forceId="true"
                                             styleClass="form-control"
-                                            value="#{LoginForm.emailAddress}">
+                                            value="#{BenutzerverwaltungForm.emailAddress}"
+                                            required="true">
                                             <f:passThroughAttribute
                                                 name="placeholder"
-                                                value="#{msgs.emailAddress}" />
+                                                value="#{msgs.login_new_account_emailAddress}" />
                                         </x:inputText>
                                     </div>
                                 </div>
-                                                                                               <!-- firstname -->
+                                <!-- firstname -->
                                 <div class="form-group">
                                     <h:outputLabel
                                         for="firstname"
@@ -185,14 +187,14 @@
                                             pt:aria-label="#{msgs.firstname}"
                                             forceId="true"
                                             styleClass="form-control"
-                                            value="#{LoginForm.firstname}">
+                                            value="#{BenutzerverwaltungForm.firstname}">
                                             <f:passThroughAttribute
                                                 name="placeholder"
                                                 value="#{msgs.firstname}" />
                                         </x:inputText>
                                     </div>
                                 </div> 
-                                                                <!-- lastname -->
+                                <!-- lastname -->
                                 <div class="form-group">
                                     <h:outputLabel
                                         for="lastname"
@@ -203,7 +205,7 @@
                                             pt:aria-label="#{msgs.lastname}"
                                             forceId="true"
                                             styleClass="form-control"
-                                            value="#{LoginForm.lastname}">
+                                            value="#{BenutzerverwaltungForm.lastname}">
                                             <f:passThroughAttribute
                                                 name="placeholder"
                                                 value="#{msgs.lastname}" />
@@ -211,40 +213,40 @@
                                     </div>
                                 </div>
 
-                                
-                                
                                 <!-- address -->
                                 <div class="form-group">
                                     <h:outputLabel
                                         for="address"
-                                        value="#{msgs.address}" />
+                                        value="#{msgs.login_new_account_address}" />
                                     <div class="email controls">
                                         <x:inputTextarea
                                             id="address"
-                                            pt:aria-label="#{msgs.address}"
+                                            pt:aria-label="#{msgs.login_new_account_address}"
                                             forceId="true"
                                             styleClass="form-control"
-                                            value="#{LoginForm.address}">
+                                            value="#{BenutzerverwaltungForm.address}">
                                             <f:passThroughAttribute
                                                 name="placeholder"
-                                                value="#{msgs.address}" />
+                                                value="#{msgs.login_new_account_address}" />
                                         </x:inputTextarea>
                                     </div>
                                 </div>
                                 <div class="submit">
                                 <!-- create button -->
                                 <button
-                                    jsf:action="#{LoginForm.create}"
+                                    jsf:action="#{BenutzerverwaltungForm.createAccount}"
                                     jsf:id="create"
                                     class="pull-right btn font-size-s"
                                     style="background: #fff; outline: 1px solid #368ee0;">
-                                    <h:outputText value="#{msgs.create}" />
+                                    <h:outputText value="#{msgs.login_new_account_createAccount}" />
                                 </button>
                                 <!-- cancel button -->
                                 <button
                                     jsf:id="back"
                                     class="float-left btn font-size-s"
-                                    style="background: #fff; outline: 1px solid #368ee0;">
+                                    style="background: #fff; outline: 1px solid #368ee0;"
+                                    jsf:immediate="true"
+                                    >
                                     <f:setPropertyActionListener
                                         value=""
                                         target="#{NavigationForm.uiStatus.loginStatus}" />
