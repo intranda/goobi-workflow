@@ -93,7 +93,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             }
         }
 
-        if(!DatabaseVersion.checkIfColumnExists("benutzer", "status")) {
+        if(!DatabaseVersion.checkIfColumnExists("benutzer", "userstatus")) {
             try {
                 DatabaseVersion.runSql("alter table benutzer add column userstatus varchar(190) default null;");
                 DatabaseVersion.runSql("update benutzer set userstatus = 'active' where IstAktiv=true and isVisible is null;");
