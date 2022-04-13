@@ -178,20 +178,18 @@ public class LoginBean implements Serializable {
             // Log output is done in findUserByLoginName()
             return "";
         }
-        // TODO check if user is allwed to log in
-        //        if (user.getStatus() == User.UserStatus.REGISTERED) {
-        //            // registration not finished, login not allowed
-        //        }
-        //        else if (user.getStatus() == User.UserStatus.DELETED || user.getStatus() == User.UserStatus.INACTIVE) {
-        //            // disabled, login not allowed
-        //        }
-
-        // Check whether the user is an active user and is not invisible
-        if (user.getIsVisible() != null || !user.isIstAktiv()) {
+        // check if user is allwed to log in
+        if (user.getStatus() == User.UserStatus.REGISTERED) {
+            // registration not finished, login not allowed
             Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
-            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User could not log in because account is not visible or not active.");
-            return "";
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User could not log in because account is not activated.");
         }
+        else if (user.getStatus() == User.UserStatus.DELETED || user.getStatus() == User.UserStatus.INACTIVE) {
+            // disabled, login not allowed
+            Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User could not log in because account is not active.");
+        }
+
         log.trace(LoginBean.LOGIN_LOG_PREFIX + "The user is able to log in (user is visible and active).");
 
         // Check the password
@@ -466,9 +464,17 @@ public class LoginBean implements Serializable {
 
     public void createAccount () {
         // validate entries
+        if (StringUtils.isBlank(accountName)) {
 
-        // check that account name is not used yet
+        } else {
+            // check that account name uses valid characters and is not used yet
+            // see UserBean.Speichern
+
+        }
+
+
         // check that email address is valid?
+
         // check that firstname + lastname are filled
 
         // create new user

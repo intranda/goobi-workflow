@@ -81,8 +81,8 @@ public class UserManager implements IManager, Serializable {
 
     public static void hideUser(User o) throws DAOException {
         try {
-        	StepMysqlHelper.removeUserFromAllSteps(o);
-        	UserMysqlHelper.deleteAllUsergroupAssignments(o);
+            StepMysqlHelper.removeUserFromAllSteps(o);
+            UserMysqlHelper.deleteAllUsergroupAssignments(o);
             UserMysqlHelper.deleteAllProjectAssignments(o);
             UserMysqlHelper.hideUser(o);
         } catch (SQLException e) {
@@ -186,7 +186,6 @@ public class UserManager implements IManager, Serializable {
         r.setPasswort(rs.getString("passwort"));
         r.setEncryptedPassword(rs.getString("encryptedPassword"));
         r.setPasswordSalt(rs.getString("salt"));
-        r.setIstAktiv(rs.getBoolean("IstAktiv"));
         r.setStandort(rs.getString("Standort"));
         r.setMetadatenSprache(rs.getString("metadatensprache"));
         r.setCss(rs.getString("css"));
@@ -237,7 +236,6 @@ public class UserManager implements IManager, Serializable {
         } catch (DAOException e) {
             throw new SQLException(e);
         }
-        r.setIsVisible(rs.getString("isVisible"));
         r.setLdaplogin(rs.getString("ldaplogin"));
         r.setInstitutionId(rs.getInt("institution_id"));
         r.setSuperAdmin(rs.getBoolean("superadmin"));
@@ -246,6 +244,7 @@ public class UserManager implements IManager, Serializable {
         r.setSsoId(rs.getString("ssoId"));
         r.setDashboardConfiguration(rs.getString("dashboard_configuration"));
         r.setUiMode(rs.getString("ui_mode"));
+        r.setStatus(User.UserStatus.getStatusByName(rs.getString("userstatus")));
         return r;
     }
 

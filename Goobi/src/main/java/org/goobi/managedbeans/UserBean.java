@@ -138,9 +138,11 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     private String getBasicFilter() {
-        String hide = "isVisible IS null";
+        String hide;
         if (this.hideInactiveUsers) {
-            hide += " AND istAktiv=true";
+            hide = "userstatus='active'";
+        } else {
+            hide = "userstatus!='deleted'";
         }
         return hide;
     }

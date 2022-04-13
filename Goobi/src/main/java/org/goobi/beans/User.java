@@ -80,12 +80,6 @@ public class User implements DatabaseObject {
     private String passwort;
     @Getter
     @Setter
-    private boolean istAktiv = true;
-    @Getter
-    @Setter
-    private String isVisible;
-    @Getter
-    @Setter
     private String standort;
     @Setter
     private Integer tabellengroesse = Integer.valueOf(10);
@@ -525,14 +519,13 @@ public class User implements DatabaseObject {
      */
 
     public User selfDestruct() {
-        this.isVisible = "deleted";
         this.login = null;
-        this.istAktiv = false;
         this.vorname = null;
         this.nachname = null;
         this.standort = null;
         this.benutzergruppen = null;
         this.projekte = null;
+        this.status = UserStatus.DELETED;
         return this;
     }
 
@@ -541,8 +534,6 @@ public class User implements DatabaseObject {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((isVisible == null) ? 0 : isVisible.hashCode());
-        result = prime * result + (istAktiv ? 1231 : 1237);
         result = prime * result + ((login == null) ? 0 : login.hashCode());
         result = prime * result + ((nachname == null) ? 0 : nachname.hashCode());
         result = prime * result + ((vorname == null) ? 0 : vorname.hashCode());
@@ -566,16 +557,6 @@ public class User implements DatabaseObject {
                 return false;
             }
         } else if (!id.equals(other.id)) {
-            return false;
-        }
-        if (isVisible == null) {
-            if (other.isVisible != null) {
-                return false;
-            }
-        } else if (!isVisible.equals(other.isVisible)) {
-            return false;
-        }
-        if (istAktiv != other.istAktiv) {
             return false;
         }
         if (login == null) {
@@ -707,6 +688,18 @@ public class User implements DatabaseObject {
         return taskList;
     }
 
+    public boolean isActive() {
+        return status == UserStatus.ACTIVE;
+    }
+
+    public void setActive(boolean active) {
+        if (active) {
+            status = UserStatus.ACTIVE;
+        } else if (status == UserStatus.ACTIVE) {
+            status = UserStatus.INACTIVE;
+        }
+    }
+
     public enum UserStatus {
         REGISTERED("registered"),
         ACTIVE("active"),
@@ -720,7 +713,7 @@ public class User implements DatabaseObject {
             this.name = name;
         }
 
-        public UserStatus getStatusByName(String name) {
+        public static UserStatus getStatusByName(String name) {
             for (UserStatus status : UserStatus.values()) {
                 if (status.getName().equals(name)) {
                     return status;
