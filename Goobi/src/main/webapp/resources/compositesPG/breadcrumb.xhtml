@@ -1,0 +1,33 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk">
+
+	<composite:interface>
+		<composite:attribute name="action" targets="link" />
+		<composite:attribute name="label" />
+		<composite:attribute name="navId" />
+		<composite:attribute name="noSeparator" />
+	</composite:interface>
+
+	<composite:implementation>
+		<li>
+			<h:commandLink id="link">
+				<span>#{cc.attrs.label}</span>
+				<c:if test="#{not empty cc.attrs.navId}">
+					<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="#{cc.attrs.navId}"/>
+				</c:if>
+			</h:commandLink>
+			<h:panelGroup rendered="#{empty cc.attrs.noSeparator}">
+				<i class="fa fa-angle-right"></i>
+			</h:panelGroup>
+		</li>
+
+	</composite:implementation>
+
+</ui:composition>
+
+

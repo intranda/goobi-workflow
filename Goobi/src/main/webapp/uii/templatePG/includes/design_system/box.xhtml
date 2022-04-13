@@ -1,0 +1,74 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<composite:interface />
+
+	<composite:implementation>
+	
+
+	<intranda:box
+		boxType="blank"
+		icon="fa-search"
+		title="#{msgs.search}"
+		padding="p-0">
+
+        <h:form
+          id="myform"
+          styleClass="form-vertical form-striped form-bordered"
+          onkeypress="submitOnEnter(event);">
+          <div class="form-group">
+            <h:outputLabel
+              styleClass="control-label "
+              value="#{msgs.nachEinemBandSuchen}:" />
+            <x:inputText
+              pt:aria-label="#{msgs.search}"
+              styleClass="form-control"
+              value="#{ProzessverwaltungForm.filter}" />
+          </div>
+
+          <div class="form-group">
+            <h:outputLabel
+              styleClass="control-label "
+              value="#{msgs.anzeige}:" />
+            <div class="checkbox">
+              <label> <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showClosedProcesses}" />
+                #{msgs.showClosedProcesses}
+              </label>
+            </div>
+            <div class="checkbox">
+              <label> <h:selectBooleanCheckbox value="#{ProzessverwaltungForm.showArchivedProjects}" />
+                #{msgs.showArchivedProjects}
+              </label>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button
+				disabled="disabled"
+              class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+              jsf:id="absenden"
+              type="submit"
+              jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
+              <i class="fa fa-search margin-right-5"></i>
+              <h:outputText value="#{msgs.search}" />
+              <f:setPropertyActionListener
+                target="#{NavigationForm.aktuell}"
+                value="a22" />
+            </button>
+          </div>
+        </h:form>
+        </intranda:box>
+
+
+	</composite:implementation>
+</ui:composition>
