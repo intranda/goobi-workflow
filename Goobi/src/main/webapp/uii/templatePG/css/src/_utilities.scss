@@ -1,6 +1,7 @@
 // Apply these styles to every element in a wrapper but the first one
+// ignore style tags
 // Use it to easily apply equal flow space on all elements in a wrapper
-.flow > * + * {
+.flow > *:not(style) + * {
   margin-top: var(--flow-space, 1.6rem);
 }
 
