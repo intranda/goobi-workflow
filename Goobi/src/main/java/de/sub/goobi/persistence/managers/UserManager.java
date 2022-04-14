@@ -245,6 +245,8 @@ public class UserManager implements IManager, Serializable {
         r.setDashboardConfiguration(rs.getString("dashboard_configuration"));
         r.setUiMode(rs.getString("ui_mode"));
         r.setStatus(User.UserStatus.getStatusByName(rs.getString("userstatus")));
+        r.setAdditionalData (MySQLHelper.convertStringToMap(rs.getString("additional_data")));
+
         return r;
     }
 

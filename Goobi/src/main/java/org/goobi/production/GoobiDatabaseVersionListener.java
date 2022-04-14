@@ -104,10 +104,15 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             } catch (SQLException e) {
                 log.error(e);
             }
-
-
         }
 
+        if(!DatabaseVersion.checkIfColumnExists("benutzer", "additional_data")) {
+            try {
+                DatabaseVersion.runSql("alter table benutzer add column additional_data text default null;");
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
     }
 
 

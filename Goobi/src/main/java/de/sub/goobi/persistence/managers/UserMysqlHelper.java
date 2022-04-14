@@ -160,6 +160,8 @@ class UserMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             StringBuilder sql = new StringBuilder();
 
+            String additionalData = MySQLHelper.convertDataToString(ro.getAdditionalData());
+
             if (ro.getId() == null) {
 
                 String propNames = "Vorname, Nachname, login, Standort, metadatensprache, "
@@ -173,9 +175,9 @@ class UserMysqlHelper implements Serializable {
                         + "customCss, mailNotificationLanguage, institution_id, superadmin, displayInstitutionColumn, "
                         + "dashboardPlugin, ssoId, processses_sort_field, processes_sort_order, tasks_sort_field, "
                         + "tasks_sort_order, displayLastEditionDate, displayLastEditionUser, displayLastEditionTask, dashboard_configuration, "
-                        + "ui_mode, userstatus ";
+                        + "ui_mode, userstatus, additional_data ";
                 String prop =
-                        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?,   ?, ?, ?, ?, ?,?, ?, ?, ?, ?,   ?, ?, ?, ?, ?,?, ?, ?, ?, ?,   ?, ?, ?, ?, ?,?, ?, ?, ?, ?,   ?, ?, ?, ?, ?,?, ?, ?, ?, ?,   ?, ?, ?, ?, ?,   ?,?";
+                        "?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,   ?,?,?";
 
                 sql.append("INSERT INTO benutzer (");
                 sql.append(propNames.toString());
@@ -199,7 +201,7 @@ class UserMysqlHelper implements Serializable {
                                         ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(),
                                         ro.getProcessListDefaultSortOrder(), ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(),
                                         ro.isDisplayLastEditionDate(), ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(),
-                                        ro.getUiMode(), ro.getStatus().getName());
+                                        ro.getUiMode(), ro.getStatus().getName(), additionalData);
                 if (id != null) {
                     ro.setId(id);
                 }
@@ -258,7 +260,7 @@ class UserMysqlHelper implements Serializable {
                 sql.append("tasks_sort_field =  ?, ");
                 sql.append("tasks_sort_order =  ?, ");
                 sql.append("displayLastEditionDate  =  ?, displayLastEditionUser  =  ?, displayLastEditionTask = ?, dashboard_configuration = ?, ");
-                sql.append("ui_mode = ?, userstatus = ? WHERE BenutzerID = " + ro.getId() + ";");
+                sql.append("ui_mode = ?, userstatus = ?, additional_data = ? WHERE BenutzerID = " + ro.getId() + ";");
 
                 run.update(connection, sql.toString(), ro.getVorname(), ro.getNachname(), ro.getLogin(), ro.getStandort(), ro.getMetadatenSprache(),
                         ro.getCss(), ro.isMitMassendownload(), ro.getTabellengroesse(), ro.getSessiontimeout(), ro.getLdapGruppe()==null? null: ro.getLdapGruppe().getId(),
@@ -274,7 +276,7 @@ class UserMysqlHelper implements Serializable {
                                         ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(),
                                         ro.getProcessListDefaultSortOrder(), ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(),
                                         ro.isDisplayLastEditionDate(), ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(),
-                                        ro.getUiMode(), ro.getStatus().getName());
+                                        ro.getUiMode(), ro.getStatus().getName(), additionalData);
             }
 
             if (SendMail.getInstance().getConfig().isEnableMail()) {
