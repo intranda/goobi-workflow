@@ -814,6 +814,9 @@ public class UserBean extends BasicBean implements Serializable {
         user.setLdaplogin("");
         user.setStatus(UserStatus.REGISTERED);
         user.setEmail(emailAddress);
+
+        user.getAdditionalData().put("address", address);
+
         RandomNumberGenerator rng = new SecureRandomNumberGenerator();
         Object salt = rng.nextBytes();
         user.setPasswordSalt(salt.toString());
@@ -825,6 +828,7 @@ public class UserBean extends BasicBean implements Serializable {
         String password = createRandomPassword(LoginBean.DEFAULT_PASSWORD_LENGTH);
         user.setEncryptedPassword(user.getPasswordHash(password));
         // save user
+
         try {
             UserManager.saveUser(user);
         } catch (DAOException e) {

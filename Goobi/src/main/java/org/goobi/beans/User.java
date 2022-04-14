@@ -36,6 +36,8 @@ import java.util.Set;
 
 import javax.faces.model.SelectItem;
 
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.goobi.api.mail.UserProjectConfiguration;
@@ -277,6 +279,13 @@ public class User implements DatabaseObject {
     private UserStatus status = UserStatus.ACTIVE;
 
     private List<SelectItem> availableUiModes = null;
+
+    @Getter
+    @Setter
+    // any additional data is hold in a map and gets stored in an xml column, it is searchable using xpath
+    // individual values can be extracted: 'select ExtractValue(additional_data, '/root/key') from benutzer'
+    private MultiValuedMap<String, String> additionalData = new ArrayListValuedHashMap<>();
+
 
     @Override
     public void lazyLoad() {

@@ -32,15 +32,26 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -431,4 +442,72 @@ public class MySQLHelper implements Serializable {
         return answer;
     }
 
+    public static String convertDataToString(MultiValuedMap<String, String> additionalData) {
+        if (additionalData != null && !additionalData.isEmpty()) {
+            XStream xstream = new XStream();
+            xstream.registerConverter(new MapToStringConverter());
+            xstream.alias("root", ArrayListValuedHashMap.class);
+            return xstream.toXML(additionalData);
+        }
+        return null;
+    }
+
+    public static MultiValuedMap<String, String> convertStringToMap(String additionalData) {
+
+        if (StringUtils.isNotBlank(additionalData)) {
+            XStream xstream = new XStream();
+            xstream.registerConverter(new MapToStringConverter());
+            xstream.alias("root", ArrayListValuedHashMap.class);
+            xstream.allowTypes(new Class[] { org.apache.commons.collections4.multimap.ArrayListValuedHashMap.class });
+            @SuppressWarnings("unchecked")
+            MultiValuedMap<String, String> map = (MultiValuedMap<String, String>) xstream.fromXML(additionalData);
+            return map;
+        }
+
+        return null;
+    }
+
+    public static class MapToStringConverter implements Converter {
+
+        @Override
+        public boolean canConvert(@SuppressWarnings("rawtypes") Class clazz) {
+            return MultiValuedMap.class.isAssignableFrom(clazz);
+        }
+
+        @Override
+        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+
+            @SuppressWarnings("unchecked")
+            MultiValuedMap<String, String> map = (MultiValuedMap<String, String>) object;
+            for (String key : map.keySet()) {
+                Collection<String> values = map.get(key);
+                for (String val : values) {
+                    writer.startNode(key.toString());
+                    if (null != val) {
+                        writer.setValue(val.toString());
+                    }
+                    writer.endNode();
+                }
+            }
+        }
+
+        @Override
+        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+
+            MultiValuedMap<String, String> map = new ArrayListValuedHashMap<>();
+
+            while (reader.hasMoreChildren()) {
+                reader.moveDown();
+
+                String key = reader.getNodeName();
+                String value = reader.getValue();
+                map.put(key, value);
+
+                reader.moveUp();
+            }
+
+            return map;
+        }
+
+    }
 }
