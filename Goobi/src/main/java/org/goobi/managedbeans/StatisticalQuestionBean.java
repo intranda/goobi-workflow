@@ -68,7 +68,7 @@ public class StatisticalQuestionBean implements Serializable {
     @Inject
     @Push
     PushContext statisticsPluginPush;
-    
+
     public StatisticalQuestionBean() {
         possiblePluginNames = PluginLoader.getListOfPlugins(PluginType.Statistics);
         Collections.sort(possiblePluginNames);
@@ -94,9 +94,14 @@ public class StatisticalQuestionBean implements Serializable {
     }
 
     public void calculate() {
-        setTimeFrameToStatisticalQuestion();
-        currentPlugin.setStartDate(calculatedStartDate);
-        currentPlugin.setEndDate(calculatedEndDate);
+        if (this.sourceNumberOfTimeUnits > 0) {
+            setTimeFrameToStatisticalQuestion();
+            currentPlugin.setStartDate(calculatedStartDate);
+            currentPlugin.setEndDate(calculatedEndDate);
+        } else {
+            currentPlugin.setStartDate(timeFilterFrom);
+            currentPlugin.setEndDate(timeFilterTo);
+        }
         currentPlugin.calculate();
     }
 
