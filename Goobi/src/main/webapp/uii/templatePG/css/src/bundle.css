@@ -10069,8 +10069,16 @@ body {
 .navbar .navbar-toggler-icon {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='white' stroke-linecap='round' stroke-miterlimit='10' stroke-width='3' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
+.navbar .dropdown-menu {
+  margin-top: 0;
+  border-top: 0;
+  border-radius: 0;
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+  border-color: var(--clr-primary-400);
+  border-width: 2px;
+}
 
-/* Locale switcher user menu etc */
 .navbar .user {
   display: flex;
 }
@@ -10080,6 +10088,11 @@ body {
 .navbar .user__account-menu__name {
   color: currentColor;
   margin-right: 0.8rem;
+}
+@media (max-width: 575.98px) {
+  .navbar .user__account-menu__name {
+    display: none;
+  }
 }
 @media (min-width: 992px) {
   .navbar .user {
@@ -10091,6 +10104,48 @@ body {
   align-items: center;
 }
 
+@media (min-width: 992px) {
+  #navigation {
+    position: relative;
+  }
+  #navigation #main-menu-set-class {
+    margin-left: auto;
+    padding-bottom: 1.6rem;
+    margin-bottom: 1.6rem;
+  }
+  #navigation #navbarSupportedContent {
+    position: absolute;
+    top: 47px;
+    right: 0;
+    background-color: var(--clr-primary-600);
+  }
+  #navigation #navbarSupportedContent .dropdown-menu {
+    display: block;
+    padding: 0;
+    margin-left: 2.4rem;
+    border: 0;
+  }
+  #navigation #navbarSupportedContent .nav-item {
+    background-color: var(--clr-primary-600);
+    padding-bottom: 1.6rem;
+  }
+  #navigation #navbarSupportedContent .nav-item:not(:last-child) {
+    border-bottom: 1px solid white;
+  }
+  #navigation #navbarSupportedContent .dropdown-item {
+    background-color: var(--clr-primary-600);
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    color: #fff;
+  }
+  #navigation #navbarSupportedContent .dropdown-menu[data-bs-popper] {
+    margin-top: 0;
+  }
+  #navigation #navbarSupportedContent .nav-item.dropdown.active {
+    background-color: var(--clr-primary-600);
+    color: #fff;
+  }
+}
 .page-header {
   display: flex;
   justify-content: space-between;
