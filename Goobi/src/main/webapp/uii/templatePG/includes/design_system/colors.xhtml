@@ -1,0 +1,68 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<composite:interface />
+
+	<composite:implementation>
+	
+  
+    <!-- BACKGROUND COLORS -->
+    <article class="flow">
+      <h3 class="description">Backgrounds</h3>
+
+      <c:forEach var="color" items="#{colors}">
+      <div class="color-box bg-#{color[0]} text-white d-flex flex-row p-3">
+          <div class="d-flex flex-column">
+
+            <c:forEach var="colorVal" items="#{color[1]}">
+              <div>#{colorVal}</div>
+            </c:forEach>
+
+          </div>
+          <div class="ms-auto p-3 fw-bold" style="border: 1px solid">
+            .bg-#{color[0]}
+          </div>
+        </div>
+      </c:forEach>
+
+    </article>
+
+    <!-- TEXT COLORS -->
+    <article class="flow">
+      <h3 class="description">Text</h3>
+
+      <c:forEach var="color" items="#{textColors}">
+      <div
+        class="d-flex flex-row p-3 #{color[0]}"
+        style="background-color: #{color[2]}; border: 1px solid #{colors[0][1][0]}"
+      >
+        <div class="d-flex flex-column">
+
+          <c:forEach var="colorVal" items="#{color[1]}">
+            <div>#{colorVal}</div>
+          </c:forEach>
+
+        </div>
+        <div class="ms-auto p-3 fw-bold" style="border: 1px solid">
+          .#{color[0]}
+        </div>
+      </div>
+
+      </c:forEach>
+
+    </article>
+
+
+  	</composite:implementation>
+</ui:composition>
+  

@@ -16,11 +16,13 @@
 	<composite:implementation>
 	
 
+    <!-- Example box -->
+
 	<intranda:box
 		boxType="blank"
 		icon="fa-search"
 		title="#{msgs.search}"
-		padding="p-0">
+		padding="false">
 
         <h:form
           id="myform"
@@ -68,7 +70,57 @@
           </div>
         </h:form>
         </intranda:box>
+        
+         <div class="flow">
+      <h3 class="description">Box variants - boxes can be styled using the &lt;intranda:box&gt; composite</h3>
 
+      <!-- Color switch -->
+      <div class="switch">
+
+        <!-- Button styles -->
+        <button type="button" class="btn btn-blank" style="border: 2px solid var(--clr-neutral-400)">blank</button>
+
+        <c:forEach var="color" items="#{colors}">
+          <button type="button" class="btn btn-#{color[0]}">#{color[0]}</button>
+        </c:forEach>
+
+      </div>
+
+      <!-- Code block -->
+      <div class="code-block">
+        <pre class="bg-primary text-white" style="border-radius: var(--border-radius)">
+			<code></code>
+        </pre>
+      </div>
+
+    </div>
+
+    <!-- Change box color + code block content -->
+    <script>
+      const boxCode = `
+        &lt;intranda:box
+          boxType=&quot;{%type%}&quot;
+          icon=&quot;fa-search&quot;
+          title=&quot;#{msgs.search}&quot;
+          padding=&quot;false&quot;&gt; // default: true
+
+        &lt;!-- Your markup here --&gt;
+
+        &lt;/intranda:box&gt;
+      `
+      const applyStyles = (e) => {
+        const box = document.querySelector('.boxes .box');
+        const codeBlock = document.querySelector('.code-block code')
+        const clName = e.target.classList[1].replace('btn-', 'box--');
+        box.classList.remove(box.classList[1])
+        box.classList.add(clName)
+        codeBlock.innerText =  boxCode.replace('{%type%}', clName.replace('box--', ''));
+      }
+
+      document.querySelectorAll('.switch > .btn').forEach((btn) => btn.addEventListener('click', applyStyles));
+      document.querySelector('.switch > .btn-blank').click();
+      console.log(1)
+    </script>
 
 	</composite:implementation>
 </ui:composition>
