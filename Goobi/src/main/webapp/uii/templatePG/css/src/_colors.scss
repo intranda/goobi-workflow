@@ -8,7 +8,8 @@ $colors: (
   primary-400: #368ee0,
   primary-600: #1b67af,
   neutral-200: #f4f4f4,
-  neutral-400: #dddddd,
+  // neutral-400: #dddddd,
+  neutral-400: #aaaaaa,
   neutral-600: #666666,
   "white": #ffffff,
   "black": #2a2a2a,
@@ -36,7 +37,7 @@ $colors: (
 
 @each $name, $color in $colors {
   .bg-#{$name} {
-    background-color: #{$color};
+    background-color: var(--clr-#{$name});
   }
 }
 
