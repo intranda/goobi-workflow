@@ -12,8 +12,8 @@
   --clr-primary: #368ee0;
   --clr-success: #198754;
   --clr-info: #666666;
-  --clr-text-400: #2a2a2a;
   --clr-blank: transparent;
+  --clr-text-400: #2a2a2a;
 }
 
 .bg-primary-400 {
@@ -64,12 +64,68 @@
   background-color: var(--clr-info);
 }
 
+.bg-blank {
+  background-color: var(--clr-blank);
+}
+
 .bg-text-400 {
   background-color: var(--clr-text-400);
 }
 
-.bg-blank {
-  background-color: var(--clr-blank);
+.text-primary-400 {
+  color: var(--clr-primary-400);
+}
+
+.text-primary-600 {
+  color: var(--clr-primary-600);
+}
+
+.text-neutral-200 {
+  color: var(--clr-neutral-200);
+}
+
+.text-neutral-400 {
+  color: var(--clr-neutral-400);
+}
+
+.text-neutral-600 {
+  color: var(--clr-neutral-600);
+}
+
+.text-white {
+  color: var(--clr-white);
+}
+
+.text-black {
+  color: var(--clr-black);
+}
+
+.text-action {
+  color: var(--clr-action);
+}
+
+.text-hot {
+  color: var(--clr-hot);
+}
+
+.text-primary {
+  color: var(--clr-primary);
+}
+
+.text-success {
+  color: var(--clr-success);
+}
+
+.text-info {
+  color: var(--clr-info);
+}
+
+.text-blank {
+  color: var(--clr-blank);
+}
+
+.text-text-400 {
+  color: var(--clr-text-400);
 }
 
 .btn-primary-400 {
@@ -216,6 +272,21 @@
   color: #fff;
 }
 
+.btn-blank {
+  background-color: transparent;
+  border-color: transparent;
+  color: #000;
+  border: 2px solid var(--clr-neutral-400);
+}
+
+.btn-blank:hover {
+  background-color: rgba(0, 0, 0, 0);
+  border-color: rgba(0, 0, 0, 0);
+  color: var(--clr-white);
+  background-color: #a5a5a5;
+  border-color: #a5a5a5;
+}
+
 .btn-text-400 {
   background-color: #2a2a2a;
   border-color: #2a2a2a;
@@ -226,18 +297,6 @@
   background-color: #1d1d1d;
   border-color: #1d1d1d;
   color: #fff;
-}
-
-.btn-blank {
-  background-color: transparent;
-  border-color: transparent;
-  color: #000;
-}
-
-.btn-blank:hover {
-  background-color: rgba(0, 0, 0, 0);
-  border-color: rgba(0, 0, 0, 0);
-  color: #000;
 }
 
 /* A base box can be colored using these utility classes
@@ -394,8 +453,8 @@
   --bs-primary: #368ee0;
   --bs-success: #198754;
   --bs-info: #666666;
-  --bs-text-400: #2a2a2a;
   --bs-blank: transparent;
+  --bs-text-400: #2a2a2a;
   --bs-gray-100: #f8f9fa;
   --bs-gray-200: #e9ecef;
   --bs-gray-300: #dee2e6;
@@ -428,8 +487,8 @@
   --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
-  --bs-body-font-family: var(--bs-font-sans-serif);
-  --bs-body-font-size: 1rem;
+  --bs-body-font-family: Goobi2, sans-serif;
+  --bs-body-font-size: 1.2rem;
   --bs-body-font-weight: 400;
   --bs-body-line-height: 1.5;
   --bs-body-color: #212529;
@@ -482,47 +541,52 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
 }
 
 h1, .h1 {
-  font-size: calc(1.375rem + 1.5vw);
+  font-size: calc(1.425rem + 2.1vw);
 }
 @media (min-width: 1200px) {
   h1, .h1 {
-    font-size: 2.5rem;
+    font-size: 3rem;
   }
 }
 
 h2, .h2 {
-  font-size: calc(1.325rem + 0.9vw);
+  font-size: calc(1.365rem + 1.38vw);
 }
 @media (min-width: 1200px) {
   h2, .h2 {
-    font-size: 2rem;
+    font-size: 2.4rem;
   }
 }
 
 h3, .h3 {
-  font-size: calc(1.3rem + 0.6vw);
+  font-size: calc(1.335rem + 1.02vw);
 }
 @media (min-width: 1200px) {
   h3, .h3 {
-    font-size: 1.75rem;
+    font-size: 2.1rem;
   }
 }
 
 h4, .h4 {
-  font-size: calc(1.275rem + 0.3vw);
+  font-size: calc(1.305rem + 0.66vw);
 }
 @media (min-width: 1200px) {
   h4, .h4 {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
 }
 
 h5, .h5 {
-  font-size: 1.25rem;
+  font-size: calc(1.275rem + 0.3vw);
+}
+@media (min-width: 1200px) {
+  h5, .h5 {
+    font-size: 1.5rem;
+  }
 }
 
 h6, .h6 {
-  font-size: 1rem;
+  font-size: 1.2rem;
 }
 
 p {
@@ -855,8 +919,13 @@ progress {
 }
 
 .lead {
-  font-size: 1.25rem;
+  font-size: calc(1.275rem + 0.3vw);
   font-weight: 300;
+}
+@media (min-width: 1200px) {
+  .lead {
+    font-size: 1.5rem;
+  }
 }
 
 .display-1 {
@@ -949,7 +1018,12 @@ progress {
 
 .blockquote {
   margin-bottom: 1rem;
-  font-size: 1.25rem;
+  font-size: calc(1.275rem + 0.3vw);
+}
+@media (min-width: 1200px) {
+  .blockquote {
+    font-size: 1.5rem;
+  }
 }
 .blockquote > :last-child {
   margin-bottom: 0;
@@ -2645,12 +2719,17 @@ progress {
   justify-content: space-between;
 }
 .navbar-brand {
-  padding-top: 0.3125rem;
-  padding-bottom: 0.3125rem;
+  padding-top: 0.275rem;
+  padding-bottom: 0.275rem;
   margin-right: 1rem;
-  font-size: 1.25rem;
+  font-size: calc(1.275rem + 0.3vw);
   text-decoration: none;
   white-space: nowrap;
+}
+@media (min-width: 1200px) {
+  .navbar-brand {
+    font-size: 1.5rem;
+  }
 }
 .navbar-nav {
   display: flex;
@@ -2680,12 +2759,17 @@ progress {
 
 .navbar-toggler {
   padding: 0.25rem 0.75rem;
-  font-size: 1.25rem;
+  font-size: calc(1.275rem + 0.3vw);
   line-height: 1;
   background-color: transparent;
   border: 1px solid transparent;
   border-radius: 0.25rem;
   transition: box-shadow 0.15s ease-in-out;
+}
+@media (min-width: 1200px) {
+  .navbar-toggler {
+    font-size: 1.5rem;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .navbar-toggler {
@@ -3134,7 +3218,7 @@ progress {
   min-width: 10rem;
   padding: 0.5rem 0;
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: #212529;
   text-align: left;
   list-style: none;
@@ -3369,7 +3453,7 @@ progress {
   display: block;
   padding: 0.5rem 1rem;
   margin-bottom: 0;
-  font-size: 0.875rem;
+  font-size: 1.05rem;
   color: #6c757d;
   white-space: nowrap;
 }
@@ -3414,7 +3498,7 @@ progress {
   z-index: 1080;
   display: block;
   margin: 0;
-  font-family: var(--bs-font-sans-serif);
+  font-family: Goobi2, sans-serif;
   font-style: normal;
   font-weight: 400;
   line-height: 1.5;
@@ -3428,7 +3512,7 @@ progress {
   word-spacing: normal;
   white-space: normal;
   line-break: auto;
-  font-size: 0.875rem;
+  font-size: 1.05rem;
   word-wrap: break-word;
   opacity: 0;
 }
@@ -3721,7 +3805,7 @@ progress {
   background-color: transparent;
   border: 1px solid transparent;
   padding: 0.375rem 0.75rem;
-  font-size: 1rem;
+  font-size: 1.2rem;
   border-radius: 0.25rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
@@ -4196,13 +4280,18 @@ progress {
 
 .btn-lg {
   padding: 0.5rem 1rem;
-  font-size: 1.25rem;
+  font-size: calc(1.275rem + 0.3vw);
   border-radius: 0.3rem;
+}
+@media (min-width: 1200px) {
+  .btn-lg {
+    font-size: 1.5rem;
+  }
 }
 
 .btn-sm {
   padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+  font-size: 1.05rem;
   border-radius: 0.2rem;
 }
 
@@ -4221,13 +4310,18 @@ progress {
 .col-form-label-lg {
   padding-top: calc(0.5rem + 1px);
   padding-bottom: calc(0.5rem + 1px);
-  font-size: 1.25rem;
+  font-size: calc(1.275rem + 0.3vw);
+}
+@media (min-width: 1200px) {
+  .col-form-label-lg {
+    font-size: 1.5rem;
+  }
 }
 
 .col-form-label-sm {
   padding-top: calc(0.25rem + 1px);
   padding-bottom: calc(0.25rem + 1px);
-  font-size: 0.875rem;
+  font-size: 1.05rem;
 }
 
 .form-text {
@@ -4240,7 +4334,7 @@ progress {
   display: block;
   width: 100%;
   padding: 0.375rem 0.75rem;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 400;
   line-height: 1.5;
   color: #212529;
@@ -4344,7 +4438,7 @@ progress {
 .form-control-sm {
   min-height: calc(1.5em + 0.5rem + 2px);
   padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+  font-size: 1.05rem;
   border-radius: 0.2rem;
 }
 .form-control-sm::file-selector-button {
@@ -4361,8 +4455,13 @@ progress {
 .form-control-lg {
   min-height: calc(1.5em + 1rem + 2px);
   padding: 0.5rem 1rem;
-  font-size: 1.25rem;
+  font-size: calc(1.275rem + 0.3vw);
   border-radius: 0.3rem;
+}
+@media (min-width: 1200px) {
+  .form-control-lg {
+    font-size: 1.5rem;
+  }
 }
 .form-control-lg::file-selector-button {
   padding: 0.5rem 1rem;
@@ -4407,7 +4506,7 @@ textarea.form-control-lg {
   width: 100%;
   padding: 0.375rem 2.25rem 0.375rem 0.75rem;
   -moz-padding-start: calc(0.75rem - 3px);
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 400;
   line-height: 1.5;
   color: #212529;
@@ -4447,7 +4546,7 @@ textarea.form-control-lg {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
   padding-left: 0.5rem;
-  font-size: 0.875rem;
+  font-size: 1.05rem;
   border-radius: 0.2rem;
 }
 
@@ -4455,13 +4554,18 @@ textarea.form-control-lg {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   padding-left: 1rem;
-  font-size: 1.25rem;
+  font-size: calc(1.275rem + 0.3vw);
   border-radius: 0.3rem;
+}
+@media (min-width: 1200px) {
+  .form-select-lg {
+    font-size: 1.5rem;
+  }
 }
 
 .form-check {
   display: block;
-  min-height: 1.5rem;
+  min-height: 1.8rem;
   padding-left: 1.5em;
   margin-bottom: 0.125rem;
 }
@@ -4726,7 +4830,7 @@ textarea.form-control-lg {
   display: flex;
   align-items: center;
   padding: 0.375rem 0.75rem;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 400;
   line-height: 1.5;
   color: #212529;
@@ -4742,8 +4846,16 @@ textarea.form-control-lg {
 .input-group-lg > .input-group-text,
 .input-group-lg > .btn {
   padding: 0.5rem 1rem;
-  font-size: 1.25rem;
+  font-size: calc(1.275rem + 0.3vw);
   border-radius: 0.3rem;
+}
+@media (min-width: 1200px) {
+  .input-group-lg > .form-control,
+.input-group-lg > .form-select,
+.input-group-lg > .input-group-text,
+.input-group-lg > .btn {
+    font-size: 1.5rem;
+  }
 }
 
 .input-group-sm > .form-control,
@@ -4751,7 +4863,7 @@ textarea.form-control-lg {
 .input-group-sm > .input-group-text,
 .input-group-sm > .btn {
   padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+  font-size: 1.05rem;
   border-radius: 0.2rem;
 }
 
@@ -4792,7 +4904,7 @@ textarea.form-control-lg {
   max-width: 100%;
   padding: 0.25rem 0.5rem;
   margin-top: 0.1rem;
-  font-size: 0.875rem;
+  font-size: 1.05rem;
   color: #fff;
   background-color: rgba(25, 135, 84, 0.9);
   border-radius: 0.25rem;
@@ -4881,7 +4993,7 @@ textarea.form-control-lg {
   max-width: 100%;
   padding: 0.25rem 0.5rem;
   margin-top: 0.1rem;
-  font-size: 0.875rem;
+  font-size: 1.05rem;
   color: #fff;
   background-color: rgba(220, 53, 69, 0.9);
   border-radius: 0.25rem;
@@ -4963,7 +5075,7 @@ textarea.form-control-lg {
   display: flex;
   height: 1rem;
   overflow: hidden;
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   background-color: #e9ecef;
   border-radius: 0.25rem;
 }
@@ -5995,27 +6107,27 @@ textarea.form-control-lg {
 }
 
 .fs-1 {
-  font-size: calc(1.375rem + 1.5vw) !important;
+  font-size: calc(1.425rem + 2.1vw) !important;
 }
 
 .fs-2 {
-  font-size: calc(1.325rem + 0.9vw) !important;
+  font-size: calc(1.365rem + 1.38vw) !important;
 }
 
 .fs-3 {
-  font-size: calc(1.3rem + 0.6vw) !important;
+  font-size: calc(1.335rem + 1.02vw) !important;
 }
 
 .fs-4 {
-  font-size: calc(1.275rem + 0.3vw) !important;
+  font-size: calc(1.305rem + 0.66vw) !important;
 }
 
 .fs-5 {
-  font-size: 1.25rem !important;
+  font-size: calc(1.275rem + 0.3vw) !important;
 }
 
 .fs-6 {
-  font-size: 1rem !important;
+  font-size: 1.2rem !important;
 }
 
 .fst-italic {
@@ -9621,18 +9733,22 @@ textarea.form-control-lg {
 }
 @media (min-width: 1200px) {
   .fs-1 {
-    font-size: 2.5rem !important;
+    font-size: 3rem !important;
   }
 
   .fs-2 {
-    font-size: 2rem !important;
+    font-size: 2.4rem !important;
   }
 
   .fs-3 {
-    font-size: 1.75rem !important;
+    font-size: 2.1rem !important;
   }
 
   .fs-4 {
+    font-size: 1.8rem !important;
+  }
+
+  .fs-5 {
     font-size: 1.5rem !important;
   }
 }
@@ -9690,8 +9806,8 @@ textarea.form-control-lg {
   --clr-primary: #368ee0;
   --clr-success: #198754;
   --clr-info: #666666;
-  --clr-text-400: #2a2a2a;
   --clr-blank: transparent;
+  --clr-text-400: #2a2a2a;
 }
 
 .bg-primary-400 {
@@ -9742,12 +9858,68 @@ textarea.form-control-lg {
   background-color: var(--clr-info);
 }
 
+.bg-blank {
+  background-color: var(--clr-blank);
+}
+
 .bg-text-400 {
   background-color: var(--clr-text-400);
 }
 
-.bg-blank {
-  background-color: var(--clr-blank);
+.text-primary-400 {
+  color: var(--clr-primary-400);
+}
+
+.text-primary-600 {
+  color: var(--clr-primary-600);
+}
+
+.text-neutral-200 {
+  color: var(--clr-neutral-200);
+}
+
+.text-neutral-400 {
+  color: var(--clr-neutral-400);
+}
+
+.text-neutral-600 {
+  color: var(--clr-neutral-600);
+}
+
+.text-white {
+  color: var(--clr-white);
+}
+
+.text-black {
+  color: var(--clr-black);
+}
+
+.text-action {
+  color: var(--clr-action);
+}
+
+.text-hot {
+  color: var(--clr-hot);
+}
+
+.text-primary {
+  color: var(--clr-primary);
+}
+
+.text-success {
+  color: var(--clr-success);
+}
+
+.text-info {
+  color: var(--clr-info);
+}
+
+.text-blank {
+  color: var(--clr-blank);
+}
+
+.text-text-400 {
+  color: var(--clr-text-400);
 }
 
 .btn-primary-400 {
@@ -9894,6 +10066,21 @@ textarea.form-control-lg {
   color: #fff;
 }
 
+.btn-blank {
+  background-color: transparent;
+  border-color: transparent;
+  color: #000;
+  border: 2px solid var(--clr-neutral-400);
+}
+
+.btn-blank:hover {
+  background-color: rgba(0, 0, 0, 0);
+  border-color: rgba(0, 0, 0, 0);
+  color: var(--clr-white);
+  background-color: #a5a5a5;
+  border-color: #a5a5a5;
+}
+
 .btn-text-400 {
   background-color: #2a2a2a;
   border-color: #2a2a2a;
@@ -9904,18 +10091,6 @@ textarea.form-control-lg {
   background-color: #1d1d1d;
   border-color: #1d1d1d;
   color: #fff;
-}
-
-.btn-blank {
-  background-color: transparent;
-  border-color: transparent;
-  color: #000;
-}
-
-.btn-blank:hover {
-  background-color: rgba(0, 0, 0, 0);
-  border-color: rgba(0, 0, 0, 0);
-  color: #000;
 }
 
 /* A base box can be colored using these utility classes
@@ -10092,8 +10267,20 @@ hr {
   font-style: normal;
 }
 body {
-  font-family: Goobi2, sans-serif;
   font-size: var(--fs-400, 1.2rem);
+}
+
+:root {
+  --fs-200: 1rem;
+  --fs-400: 1.2rem;
+}
+
+.fs-200 {
+  font-size: var(--fs-200);
+}
+
+.fs-400 {
+  font-size: var(--fs-400);
 }
 
 .flow > *:not(style) + * {
@@ -10424,6 +10611,16 @@ td .btn-group .btn:not(:first-of-type) {
   margin-right: 0.8rem;
 }
 
+.box th:first-child,
+.box td:first-child {
+  border-left: 0px;
+}
+
+.box th:last-child,
+.box td:last-child {
+  border-right: 0px;
+}
+
 .table-hover > tbody > tr:hover > * {
   --bs-table-accent-bg: var(--clr-neutral-200);
 }
@@ -10478,9 +10675,17 @@ button,
   font-size: var(--fs-400);
   border-radius: var(--border-radius, 2px);
 }
-button .fa,
-.btn .fa {
-  margin-right: 0.4rem;
+
+button.badge {
+  color: var(--clr-white);
+  padding: 2px 4px;
+  border: 0;
+}
+button.badge i {
+  margin-inline-start: 4px;
+}
+button.badge:not(:last-child) {
+  margin-inline-end: 8px;
 }
 
 #designSystem {
