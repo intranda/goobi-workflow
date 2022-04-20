@@ -14,7 +14,7 @@
 	<composite:interface />
 
 	<composite:implementation>
-	
+
 
     <!-- Example box -->
 
@@ -56,7 +56,7 @@
 
           <div class="form-actions">
             <button
-				disabled="disabled"
+				      disabled="disabled"
               class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
               jsf:id="absenden"
               type="submit"
@@ -70,7 +70,7 @@
           </div>
         </h:form>
         </intranda:box>
-        
+
          <div class="flow">
       <h3 class="description">Box variants - boxes can be styled using the &lt;intranda:box&gt; composite</h3>
 
@@ -87,40 +87,40 @@
       </div>
 
       <!-- Code block -->
-      <div class="code-block">
-        <pre class="bg-primary text-white" style="border-radius: var(--border-radius)">
-			<code></code>
-        </pre>
-      </div>
+		<pre class="code--box bg-primary text-white p-3" style="border-radius: var(--border-radius)">
+      <code class="microlight"></code>
+		</pre>
 
     </div>
 
-    <!-- Change box color + code block content -->
-    <script>
-      const boxCode = `
-        &lt;intranda:box
-          boxType=&quot;{%type%}&quot;
-          icon=&quot;fa-search&quot;
-          title=&quot;#{msgs.search}&quot;
-          padding=&quot;false&quot;&gt; // default: true
+<!-- Change box color + code block content -->
+<script>
 
-        &lt;!-- Your markup here --&gt;
+const boxCode =`
+&lt;intranda:box
+  boxType=&quot;{%type%}&quot;
+  icon=&quot;fa-search&quot;
+  title=&quot;#{msgs.search}&quot;
+  padding=&quot;false&quot;&gt; // default: true
 
-        &lt;/intranda:box&gt;
-      `
-      const applyStyles = (e) => {
-        const box = document.querySelector('.boxes .box');
-        const codeBlock = document.querySelector('.code-block code')
-        const clName = e.target.classList[1].replace('btn-', 'box--');
-        box.classList.remove(box.classList[1])
-        box.classList.add(clName)
-        codeBlock.innerText =  boxCode.replace('{%type%}', clName.replace('box--', ''));
-      }
+&lt;!-- Your markup here --&gt;
 
-      document.querySelectorAll('.switch > .btn').forEach((btn) => btn.addEventListener('click', applyStyles));
-      document.querySelector('.switch > .btn-blank').click();
-      console.log(1)
-    </script>
+&lt;/intranda:box&gt;`
+
+const applyStyles = (e) => {
+  const box = document.querySelector('.boxes .box');
+  const codeBlock = document.querySelector('.code--box code')
+  const clName = e.target.classList[1].replace('btn-', 'box--');
+  box.classList.remove(box.classList[1])
+  box.classList.add(clName)
+  codeBlock.textContent =  boxCode.replace('{%type%}', clName.replace('box--', ''));
+  microlight.reset();
+}
+
+document.querySelectorAll('.switch > .btn').forEach((btn) => btn.addEventListener('click', applyStyles));
+document.querySelector('.switch > .btn-blank').click();
+
+</script>
 
 	</composite:implementation>
 </ui:composition>
