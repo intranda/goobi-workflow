@@ -20,7 +20,7 @@
 	</composite:interface>
 
 	<composite:implementation>
-		<div class="form-group" style="#{cc.attrs.style}">
+		<div class="form-group d-flex" style="#{cc.attrs.style}">
 			<div class="#{cc.attrs.classLeft} control-label" tabindex="-1">
 				<h:outputLabel for="#{cc.attrs.name}" value="#{cc.attrs.label}" />
 				<h:panelGroup rendered="#{cc.attrs.required or cc.attrs.displayAsRequired}">

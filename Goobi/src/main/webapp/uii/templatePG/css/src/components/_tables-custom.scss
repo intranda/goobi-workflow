@@ -28,6 +28,15 @@ td {
     margin-right: 0.8rem;
   }
 }
+// Remove borders left + right if the table is in a box
+.box th:first-child,
+.box td:first-child {
+  border-left: 0px;
+}
+.box th:last-child,
+.box td:last-child {
+  border-right: 0px;
+}
 
 .table-hover > tbody > tr:hover > * {
   --bs-table-accent-bg: var(--clr-neutral-200);

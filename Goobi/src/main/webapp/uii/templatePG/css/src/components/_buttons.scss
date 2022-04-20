@@ -12,7 +12,17 @@ button,
 .btn {
   font-size: var(--fs-400);
   border-radius: var(--border-radius, 2px);
-  .fa {
-    margin-right: 0.4rem;
+}
+
+button.badge {
+  color: var(--clr-white);
+  padding: 2px 4px;
+  border: 0;
+
+  i {
+    margin-inline-start: 4px;
+  }
+  &:not(:last-child) {
+    margin-inline-end: 8px;
   }
 }
