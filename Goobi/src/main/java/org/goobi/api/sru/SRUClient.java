@@ -30,6 +30,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -450,6 +452,13 @@ public class SRUClient {
         // Unit testing... don't perform a real search
         if (testingResponseString != null) {
             return testingResponseString;
+        }
+
+        try {
+            URI uri = new URI(searchUrl);
+            searchUrl = uri.toString();
+        } catch (URISyntaxException e) {
+            log.error(e);
         }
 
         return HttpClientHelper.getStringFromUrl(searchUrl);
