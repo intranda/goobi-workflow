@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 
@@ -53,6 +55,12 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
     private List<InstitutionConfigurationObject> allowedStatisticsPlugins = new ArrayList<>();
     private List<InstitutionConfigurationObject> allowedDashboardPlugins = new ArrayList<>();
     private List<InstitutionConfigurationObject> allowedWorkflowPlugins = new ArrayList<>();
+
+    @Getter
+    @Setter
+    // any additional data is hold in a map and gets stored in an xml column, it is searchable using xpath
+    // individual values can be extracted: 'select ExtractValue(additional_data, '/root/key') from institution'
+    private MultiValuedMap<String, String> additionalData = new ArrayListValuedHashMap<>();
 
     @Override
     public int compareTo(Institution o) {
