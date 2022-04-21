@@ -32,14 +32,13 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringUtils;
@@ -442,7 +441,7 @@ public class MySQLHelper implements Serializable {
         return answer;
     }
 
-    public static String convertDataToString(MultiValuedMap<String, String> additionalData) {
+    public static String convertDataToString(Map<String, String> additionalData) {
         if (additionalData != null && !additionalData.isEmpty()) {
             XStream xstream = new XStream();
             xstream.registerConverter(new MapToStringConverter());
@@ -452,40 +451,39 @@ public class MySQLHelper implements Serializable {
         return null;
     }
 
-    public static MultiValuedMap<String, String> convertStringToMap(String additionalData) {
+    public static Map<String, String> convertStringToMap(String additionalData) {
 
         if (StringUtils.isNotBlank(additionalData)) {
             XStream xstream = new XStream();
             xstream.registerConverter(new MapToStringConverter());
-            xstream.alias("root", ArrayListValuedHashMap.class);
-            xstream.allowTypes(new Class[] { org.apache.commons.collections4.multimap.ArrayListValuedHashMap.class });
+            xstream.alias("root", LinkedHashMap.class);
+            xstream.allowTypes(new Class[] { LinkedHashMap.class });
             @SuppressWarnings("unchecked")
-            MultiValuedMap<String, String> map = (MultiValuedMap<String, String>) xstream.fromXML(additionalData);
+
+            Map<String, String> map = (LinkedHashMap<String, String>) xstream.fromXML(additionalData);
             return map;
         }
 
-        return null;
+        return new LinkedHashMap<>();
     }
 
     public static class MapToStringConverter implements Converter {
 
         @Override
         public boolean canConvert(@SuppressWarnings("rawtypes") Class clazz) {
-            return MultiValuedMap.class.isAssignableFrom(clazz);
+            return LinkedHashMap.class.isAssignableFrom(clazz);
         }
 
         @Override
         public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
 
             @SuppressWarnings("unchecked")
-            MultiValuedMap<String, String> map = (MultiValuedMap<String, String>) object;
+            Map<String, String> map = (LinkedHashMap<String, String>) object;
             for (String key : map.keySet()) {
-                Collection<String> values = map.get(key);
-                for (String val : values) {
-                    writer.startNode(key.toString());
-                    if (null != val) {
-                        writer.setValue(val.toString());
-                    }
+                String val = map.get(key);
+                writer.startNode(key.toString());
+                if (null != val) {
+                    writer.setValue(val.toString());
                     writer.endNode();
                 }
             }
@@ -494,7 +492,7 @@ public class MySQLHelper implements Serializable {
         @Override
         public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 
-            MultiValuedMap<String, String> map = new ArrayListValuedHashMap<>();
+            Map<String, String> map = new LinkedHashMap<>();
 
             while (reader.hasMoreChildren()) {
                 reader.moveDown();

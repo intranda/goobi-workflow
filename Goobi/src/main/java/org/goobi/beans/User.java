@@ -31,13 +31,13 @@ import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.faces.model.SelectItem;
 
-import org.apache.commons.collections4.MultiValuedMap;
-import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.goobi.api.mail.UserProjectConfiguration;
@@ -284,8 +284,7 @@ public class User implements DatabaseObject {
     @Setter
     // any additional data is hold in a map and gets stored in an xml column, it is searchable using xpath
     // individual values can be extracted: 'select ExtractValue(additional_data, '/root/key') from benutzer'
-    private MultiValuedMap<String, String> additionalData = new ArrayListValuedHashMap<>();
-
+    private Map<String, String> additionalData = new LinkedHashMap<>();
 
     @Override
     public void lazyLoad() {
