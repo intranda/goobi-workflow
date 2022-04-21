@@ -8,8 +8,11 @@ $colors: (
   primary-400: #368ee0,
   primary-600: #1b67af,
   neutral-200: #f4f4f4,
-  neutral-400: #dddddd,
+  // neutral-400: #dddddd,
+  neutral-400: #aaaaaa,
   neutral-600: #666666,
+  "white": #ffffff,
+  "black": #2a2a2a,
   action: #e8860c,
   hot: #ba324f,
   // #e51400,
@@ -21,30 +24,34 @@ $colors: (
 );
 
 :root {
-  // Generate a custom property for every entry in the $colors map, e.g:
+  // Generate a custom property for every entry in the $colors map; e.g:
+  // `--clr-primary-400: #368ee0;`
 
-  // --clr-primary-400: #368ee0;
   @each $name, $color in $colors {
     --clr-#{$name}: #{$color};
   }
 }
 
-// Generate background utilities (.bg-*)
+// Generate background utilities; e.g:
+// `.bg-action`
+
 @each $name, $color in $colors {
   .bg-#{$name} {
-    background-color: #{$color};
+    background-color: var(--clr-#{$name});
   }
 }
 
-// Generate button utilities (.btn-*)
+// Generate button utilities; e.g:
+// `.btn-action`
+
 @each $name, $color in $colors {
   .btn-#{$name} {
     background-color: #{$color};
     border-color: #{$color};
     @if $name == blank {
-      color: #000;
+      color: #000; // bg is transparent
     } @else {
-      color: #fff;
+      color: #fff; // bg is a color
     }
   }
   .btn-#{$name}:hover {
