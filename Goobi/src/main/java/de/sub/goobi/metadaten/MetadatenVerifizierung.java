@@ -30,9 +30,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.StringUtils;
+import org.goobi.api.display.Item;
+import org.goobi.api.display.enums.DisplayType;
+import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigProjects;
@@ -78,8 +82,10 @@ public class MetadatenVerifizierung {
         try {
             gdzfile = inProzess.readMetadataFile();
         } catch (Exception e) {
-            Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataReadError"), e.getMessage());
-            problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataReadError") + ": " + e.getMessage());
+            Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataReadError"),
+                    e.getMessage());
+            problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataReadError") + ": "
+                    + e.getMessage());
             return false;
         }
         return validate(gdzfile, myPrefs, inProzess);
@@ -97,8 +103,10 @@ public class MetadatenVerifizierung {
         try {
             dd = gdzfile.getDigitalDocument();
         } catch (Exception e) {
-            Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataDigitalDocumentError") + inProzess.getTitel(), e.getMessage());
-            problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataDigitalDocumentError") + ": " + e.getMessage());
+            Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
+                    + Helper.getTranslation("MetadataDigitalDocumentError") + inProzess.getTitel(), e.getMessage());
+            problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataDigitalDocumentError")
+                    + ": " + e.getMessage());
             ergebnis = false;
         }
 
@@ -110,8 +118,10 @@ public class MetadatenVerifizierung {
                     String[] parameter = { identifierTopStruct.getType().getNameByLanguage(metadataLanguage),
                             logical.getType().getNameByLanguage(metadataLanguage) };
 
-                    Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("InvalidIdentifierCharacter", parameter));
-                    problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("InvalidIdentifierCharacter") + ": " + parameter);
+                    Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
+                            + Helper.getTranslation("InvalidIdentifierCharacter", parameter));
+                    problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
+                            + Helper.getTranslation("InvalidIdentifierCharacter") + ": " + parameter);
                     ergebnis = false;
                 }
                 DocStruct firstChild = logical.getAllChildren().get(0);
@@ -119,22 +129,27 @@ public class MetadatenVerifizierung {
                 if (identifierTopStruct.getValue() != null && identifierTopStruct.getValue() != ""
                         && identifierTopStruct.getValue().equals(identifierFirstChild.getValue())) {
                     String[] parameter = { identifierTopStruct.getType().getName(), logical.getType().getName(), firstChild.getType().getName() };
-                    Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("InvalidIdentifierSame", parameter));
-                    problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("InvalidIdentifierSame") + ": " + parameter);
+                    Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
+                            + Helper.getTranslation("InvalidIdentifierSame", parameter));
+                    problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("InvalidIdentifierSame")
+                            + ": " + parameter);
                     ergebnis = false;
                 }
                 if (!identifierFirstChild.getValue().replaceAll("[\\w|-]", "").equals("")) {
                     String[] parameter = { identifierTopStruct.getType().getNameByLanguage(metadataLanguage),
                             firstChild.getType().getNameByLanguage(metadataLanguage) };
-                    Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("InvalidIdentifierCharacter", parameter));
-                    problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("InvalidIdentifierCharacter") + ": " + parameter);
+                    Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
+                            + Helper.getTranslation("InvalidIdentifierCharacter", parameter));
+                    problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
+                            + Helper.getTranslation("InvalidIdentifierCharacter") + ": " + parameter);
                     ergebnis = false;
                 }
             } catch (Exception e) {
                 // no firstChild or no identifier
             }
         } else {
-            Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataMissingIdentifier"));
+            Helper.setFehlerMeldung(
+                    this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataMissingIdentifier"));
             problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataMissingIdentifier"));
             ergebnis = false;
         }
@@ -151,7 +166,8 @@ public class MetadatenVerifizierung {
          */
         DocStruct logicalTop = dd.getLogicalDocStruct();
         if (logicalTop == null) {
-            Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationError"));
+            Helper.setFehlerMeldung(
+                    this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationError"));
             problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationError"));
             ergebnis = false;
         }
@@ -163,9 +179,11 @@ public class MetadatenVerifizierung {
             if (this.docStructsOhneSeiten.size() != 0) {
                 for (Iterator<DocStruct> iter = this.docStructsOhneSeiten.iterator(); iter.hasNext();) {
                     DocStruct ds = iter.next();
-                    Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationStructure")
-                    + ds.getType().getNameByLanguage(metadataLanguage));
-                    problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationStructure") + ds.getType().getNameByLanguage(metadataLanguage));
+                    Helper.setFehlerMeldung(
+                            this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationStructure")
+                                    + ds.getType().getNameByLanguage(metadataLanguage));
+                    problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
+                            + Helper.getTranslation("MetadataPaginationStructure") + ds.getType().getNameByLanguage(metadataLanguage));
                 }
                 ergebnis = false;
             }
@@ -184,12 +202,34 @@ public class MetadatenVerifizierung {
             if (seitenOhneDocstructs != null && seitenOhneDocstructs.size() != 0) {
                 for (Iterator<String> iter = seitenOhneDocstructs.iterator(); iter.hasNext();) {
                     String seite = iter.next();
-                    Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationPages"), seite);
-                    problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationPages") + ": " + seite);
+                    Helper.setFehlerMeldung(
+                            this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationPages"),
+                            seite);
+                    problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationPages")
+                            + ": " + seite);
                 }
                 ergebnis = false;
             }
         }
+
+        /*
+         * -------------------------------- check selec1 menus configured in metadataDisplayRules.xml --------------------------------
+         */
+
+        List<String> select1List = checkSelectOneMenus(myProzess, dd.getLogicalDocStruct(), new ArrayList<String>(), metadataLanguage);
+        if (select1List.size() > 0) {
+            for (Iterator<String> iter = select1List.iterator(); iter.hasNext();) {
+                String temp = iter.next();
+                Helper.setFehlerMeldung(
+                        this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataSelectOneInvalidElement"),
+                        temp);
+                problems.add(
+                        this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataSelectOneInvalidElement")
+                                + ": " + temp);
+            }
+            ergebnis = false;
+        }
+
         /*
          * -------------------------------- auf mandatory Values der Metadaten prüfen --------------------------------
          */
@@ -197,8 +237,10 @@ public class MetadatenVerifizierung {
         if (mandatoryList.size() != 0) {
             for (Iterator<String> iter = mandatoryList.iterator(); iter.hasNext();) {
                 String temp = iter.next();
-                Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataMandatoryElement"), temp);
-                problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataMandatoryElement") + ": " + temp);
+                Helper.setFehlerMeldung(
+                        this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataMandatoryElement"), temp);
+                problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataMandatoryElement")
+                        + ": " + temp);
             }
             ergebnis = false;
         }
@@ -211,8 +253,10 @@ public class MetadatenVerifizierung {
         if (configuredList.size() != 0) {
             for (Iterator<String> iter = configuredList.iterator(); iter.hasNext();) {
                 String temp = iter.next();
-                Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataInvalidData"), temp);
-                problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataInvalidData") + ": " + temp);
+                Helper.setFehlerMeldung(
+                        this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataInvalidData"), temp);
+                problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataInvalidData") + ": "
+                        + temp);
             }
             ergebnis = false;
         }
@@ -335,6 +379,37 @@ public class MetadatenVerifizierung {
         return rueckgabe;
     }
 
+    private List<String> checkSelectOneMenus(Process inProcess, DocStruct inStruct, ArrayList<String> inList, String language) {
+        String projectTitle = inProcess.getProjekt().getTitel();
+        ConfigDisplayRules displayRules = ConfigDisplayRules.getInstance();
+        DocStructType dst = inStruct.getType();
+        List<MetadataType> allMDTypes = dst.getAllMetadataTypes();
+        for (MetadataType mdt : allMDTypes) {
+            DisplayType displayType = displayRules.getElementTypeByName(projectTitle, mdt.getName());
+            if (displayType == DisplayType.select1) {
+                List<Item> allowedItems = displayRules.getItemsByNameAndType(projectTitle, mdt.getName(), displayType);
+                List<String> allowedValues = allowedItems.stream().map(item -> item.getValue()).collect(Collectors.toList());
+                List<? extends Metadata> ll = null;
+                ll = inStruct.getAllMetadataByType(mdt);
+                for (Metadata md : ll) {
+                    String actualValue = md.getValue();
+                    if (!allowedValues.contains(actualValue)) {
+                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                + Helper.getTranslation("MetadataNotConfiguredInDisplayRules", actualValue));
+                    }
+                }
+            }
+        }
+
+        if (inStruct.getAllChildren() != null) {
+            for (DocStruct child : inStruct.getAllChildren()) {
+                checkSelectOneMenus(inProcess, child, inList, language);
+            }
+        }
+
+        return inList;
+    }
+
     private List<String> checkMandatoryValues(DocStruct inStruct, ArrayList<String> inList, String language) {
         DocStructType dst = inStruct.getType();
         List<MetadataType> allMDTypes = dst.getAllMetadataTypes();
@@ -416,7 +491,7 @@ public class MetadatenVerifizierung {
             }
             if (allowedNumber.equals("1m") && realNumber != 1) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation("MetadataNotOneElement")
-                + " " + realNumber + Helper.getTranslation("MetadataTimes"));
+                        + " " + realNumber + Helper.getTranslation("MetadataTimes"));
             }
             if (allowedNumber.equals("1o") && realNumber > 1) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
@@ -501,7 +576,7 @@ public class MetadatenVerifizierung {
             String prop_doctype = val.getString("@docstruct");
             String prop_startswith = val.getString("@startswith");
             String prop_endswith = val.getString("@endswith");
-            String prop_createElementFrom =val.getString("@createelementfrom");
+            String prop_createElementFrom = val.getString("@createelementfrom");
             DocStruct myStruct = inStruct;
             MetadataType mdt = null;
             try {
@@ -704,8 +779,9 @@ public class MetadatenVerifizierung {
                             if (StringUtils.isNotBlank(errorMessage)) {
                                 errorList.add(errorMessage.replace("{}", md.getValue()));
                             } else {
-                                errorList.add(Helper.getTranslation("mets_ErrorRegularExpression", md.getType().getNameByLanguage(lang), md.getValue(),
-                                        regularExpression));
+                                errorList
+                                        .add(Helper.getTranslation("mets_ErrorRegularExpression", md.getType().getNameByLanguage(lang), md.getValue(),
+                                                regularExpression));
                             }
                         }
                     }
