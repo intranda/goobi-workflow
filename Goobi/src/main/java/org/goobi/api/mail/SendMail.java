@@ -158,8 +158,8 @@ public class SendMail {
                 smtpSenderAddress = config.getString("/configuration/smtpSenderAddress", null);
                 apiUrl = config.getString("/apiUrl", null);
 
-                userCreationMailSubject=config.getString("/userCreation/subject", null);
-                userCreationMailBody=config.getString("/userCreation/body", null);
+                userCreationMailSubject = config.getString("/userCreation/subject", null);
+                userCreationMailBody = config.getString("/userCreation/body", null);
             }
         }
 
@@ -176,7 +176,7 @@ public class SendMail {
      * @throws UnsupportedEncodingException
      */
 
-    private void postMail(List<User> recipients, String messageType, Step step) throws MessagingException, UnsupportedEncodingException {
+    private void sendStepStatusMail(List<User> recipients, String messageType, Step step) throws MessagingException, UnsupportedEncodingException {
 
         if (!config.isEnableMail()) {
             return;
@@ -347,13 +347,22 @@ public class SendMail {
             }
         }
         try {
-            postMail(recipients, stepStatus.getTitle(), step);
+            sendStepStatusMail(recipients, stepStatus.getTitle(), step);
         } catch (UnsupportedEncodingException | MessagingException e) {
             log.error(e);
         }
     }
 
-    public void sendMailToUser(String messageSubject, String messageBody, String email) {
+    /**
+     * Create a mail and send it to the recipient. Uses the configured {@link MailConfiguration} for communication with the mail server.
+     * 
+     * @param messageSubject the subject of the message
+     * @param messageBody the message body
+     * @param recipients list of email addresses
+     * 
+     */
+
+    public void sendMailToUser(String messageSubject, String messageBody, String recipient) {
 
         if (!config.isEnableMail()) {
             return;
@@ -361,7 +370,7 @@ public class SendMail {
         Properties props = prepareMail();
 
         try {
-            Address address = new InternetAddress(email);
+            Address address = new InternetAddress(recipient);
 
             Session session = Session.getDefaultInstance(props, null);
             Message msg = new MimeMessage(session);
@@ -391,4 +400,60 @@ public class SendMail {
         }
     }
 
+    /**
+     * Create a mail and send it to multiple recipients. Uses the configured {@link MailConfiguration} for communication with the mail server.
+     * 
+     * @param messageSubject the subject of the message
+     * @param messageBody the message body
+     * @param recipient destination email address
+     * @param blindCopy defines, if the mail is send as TO or as BCC
+     */
+
+    public void sendMailToUser(String messageSubject, String messageBody, List<String> recipients, boolean blindCopy) {
+
+        if (!config.isEnableMail()) {
+            return;
+        }
+        Properties props = prepareMail();
+
+        List<Address> addresses = new ArrayList<>(recipients.size());
+        // create a mail for each user
+        try {
+            for (String receiver : recipients) {
+                Address address = new InternetAddress(receiver);
+                addresses.add(address);
+            }
+
+            Session session = Session.getDefaultInstance(props, null);
+            Message msg = new MimeMessage(session);
+
+            InternetAddress addressFrom = new InternetAddress(config.getSmtpSenderAddress());
+            msg.setFrom(addressFrom);
+            if (blindCopy) {
+                msg.setRecipients(Message.RecipientType.BCC, addresses.toArray(new Address[addresses.size()]));
+            } else {
+                msg.setRecipients(Message.RecipientType.TO, addresses.toArray(new Address[addresses.size()]));
+            }
+            // create mail
+            MimeMultipart multipart = new MimeMultipart();
+
+            msg.setSubject(messageSubject);
+            MimeBodyPart messageHtmlPart = new MimeBodyPart();
+            messageHtmlPart.setText(messageBody, "utf-8");
+            messageHtmlPart.setHeader("Content-Type", "text/html; charset=\"utf-8\"");
+            multipart.addBodyPart(messageHtmlPart);
+
+            msg.setContent(multipart);
+            msg.setSentDate(new Date());
+
+            Transport transport = session.getTransport();
+            transport.connect(config.getSmtpUser(), config.getSmtpPassword());
+            transport.sendMessage(msg, msg.getRecipients(Message.RecipientType.TO));
+            transport.close();
+
+        } catch (MessagingException e) {
+            log.error(e);
+        }
+
+    }
 }
