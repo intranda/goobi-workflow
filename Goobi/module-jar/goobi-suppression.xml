@@ -44,6 +44,35 @@
    <cpe>cpe:/a:eclipse:eclipse_ide</cpe>
 </suppress>
 
+    <!-- ignore javax.faces-2.3.9.jar, all known reports are for other products we don't use, not for the jar itself -->
+    <suppress>
+        <notes><![CDATA[
+       file name: javax.faces-2.3.9.jar
+       ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.glassfish/javax\.faces@.*$</packageUrl>
+        <cve>CVE-2000-1235</cve>
+        <cve>CVE-2000-1236</cve>
+        <cve>CVE-2002-0655</cve>
+        <cve>CVE-2002-0656</cve>
+        <cve>CVE-2002-0659</cve>
+        <cve>CVE-2002-1635</cve>
+        <cve>CVE-2002-1637</cve>
+        <cve>CVE-2004-1362</cve>
+        <cve>CVE-2004-1363</cve>
+        <cve>CVE-2004-1364</cve>
+        <cve>CVE-2004-1365</cve>
+        <cve>CVE-2004-1366</cve>
+        <cve>CVE-2004-1367</cve>
+        <cve>CVE-2004-1368</cve>
+        <cve>CVE-2004-1369</cve>
+        <cve>CVE-2004-1370</cve>
+        <cve>CVE-2004-1371</cve>
+        <cve>CVE-2004-1707</cve>
+        <cve>CVE-2006-0435</cve>
+        <cve>CVE-2008-2583</cve>
+        <cve>CVE-2009-1999</cve>    
+    </suppress>
+
 
     
     
