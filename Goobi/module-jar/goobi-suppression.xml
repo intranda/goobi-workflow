@@ -1,48 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
 
-<!-- false positives -->
+    <!-- false positives -->
 
-<!-- suppressed as commons-beanutils:commons-beanutils:1.8.3 is ommited and 1.9.4 is used -->
-<suppress>
-   <notes><![CDATA[
-   file name: commons-digester3-3.2-with-deps.jar (shaded: commons-beanutils:commons-beanutils:1.8.3)
-   ]]></notes>
-   <packageUrl regex="true">^pkg:maven/commons\-beanutils/commons\-beanutils@.*$</packageUrl>
-   <cpe>cpe:/a:apache:commons_beanutils</cpe>
-</suppress>
-<suppress>
-   <notes><![CDATA[
-   file name: commons-digester3-3.2-with-deps.jar (shaded: commons-beanutils:commons-beanutils:1.8.3)
-   ]]></notes>
-   <packageUrl regex="true">^pkg:maven/commons\-beanutils/commons\-beanutils@.*$</packageUrl>
-   <vulnerabilityName>CVE-2014-0114</vulnerabilityName>
-</suppress>
-<suppress>
-   <notes><![CDATA[
-   file name: commons-digester3-3.2-with-deps.jar (shaded: commons-beanutils:commons-beanutils:1.8.3)
-   ]]></notes>
-   <packageUrl regex="true">^pkg:maven/commons\-beanutils/commons\-beanutils@.*$</packageUrl>
-   <vulnerabilityName>CVE-2019-10086</vulnerabilityName>
-</suppress>
-
-<!-- regular user are not able to execute this as they cannot influence the input streams -->
-<suppress>
-   <notes><![CDATA[
-   file name: jai-imageio-core-1.3.1.jar
-   ]]></notes>
-   <packageUrl regex="true">^pkg:maven/com\.github\.jai\-imageio/jai\-imageio\-core@.*$</packageUrl>
-   <vulnerabilityName>CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')</vulnerabilityName>
-</suppress>
-
-<!-- jsp sites are not included, so the error cannot occur -->
-<suppress>
-   <notes><![CDATA[
-   file name: javax.ws.rs-api-2.1.1.jar
-   ]]></notes>
-   <packageUrl regex="true">^pkg:maven/javax\.ws\.rs/javax\.ws\.rs\-api@.*$</packageUrl>
-   <cpe>cpe:/a:eclipse:eclipse_ide</cpe>
-</suppress>
+    <!-- suppressed as commons-beanutils:commons-beanutils:1.8.3 is ommited and 1.9.4 is used -->
+    <suppress>
+       <notes><![CDATA[
+       file name: commons-digester3-3.2-with-deps.jar (shaded: commons-beanutils:commons-beanutils:1.8.3)
+       ]]></notes>
+       <packageUrl regex="true">^pkg:maven/commons\-beanutils/commons\-beanutils@.*$</packageUrl>
+       <cpe>cpe:/a:apache:commons_beanutils</cpe>
+    </suppress>
+    <suppress>
+       <notes><![CDATA[
+       file name: commons-digester3-3.2-with-deps.jar (shaded: commons-beanutils:commons-beanutils:1.8.3)
+       ]]></notes>
+       <packageUrl regex="true">^pkg:maven/commons\-beanutils/commons\-beanutils@.*$</packageUrl>
+       <vulnerabilityName>CVE-2014-0114</vulnerabilityName>
+    </suppress>
+    <suppress>
+       <notes><![CDATA[
+       file name: commons-digester3-3.2-with-deps.jar (shaded: commons-beanutils:commons-beanutils:1.8.3)
+       ]]></notes>
+       <packageUrl regex="true">^pkg:maven/commons\-beanutils/commons\-beanutils@.*$</packageUrl>
+       <vulnerabilityName>CVE-2019-10086</vulnerabilityName>
+    </suppress>
+    
+    <!-- regular user are not able to execute this as they cannot influence the input streams -->
+    <suppress>
+       <notes><![CDATA[
+       file name: jai-imageio-core-1.3.1.jar
+       ]]></notes>
+       <packageUrl regex="true">^pkg:maven/com\.github\.jai\-imageio/jai\-imageio\-core@.*$</packageUrl>
+       <vulnerabilityName>CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')</vulnerabilityName>
+    </suppress>
+    
+    <!-- jsp sites are not included, so the error cannot occur -->
+    <suppress>
+       <notes><![CDATA[
+       file name: javax.ws.rs-api-2.1.1.jar
+       ]]></notes>
+       <packageUrl regex="true">^pkg:maven/javax\.ws\.rs/javax\.ws\.rs\-api@.*$</packageUrl>
+       <cpe>cpe:/a:eclipse:eclipse_ide</cpe>
+    </suppress>
 
     <!-- ignore javax.faces-2.3.9.jar, all known reports are for other products we don't use, not for the jar itself -->
     <suppress>
@@ -73,7 +73,25 @@
         <cve>CVE-2009-1999</cve>    
     </suppress>
 
-
+    <!-- ignore weld-servlet reports, as they are for bootstrap, probe.js,  or jquery versions we don't use -->
+    <!-- keep only relevant reports -->
+    <suppress>
+       <notes><![CDATA[
+       file name: weld-servlet-shaded-3.1.9.Final.jar: probe.js
+       ]]></notes>
+       <packageUrl regex="true">^pkg:javascript/bootstrap@.*$</packageUrl>
+       <cve>CVE-2015-9251</cve>
+       <cve>CVE-2015-9251</cve>
+       <cve>CVE-2016-10735</cve>
+       <cve>CVE-2017-18214</cve>
+       <cve>CVE-2018-14040</cve>
+       <cve>CVE-2018-14041</cve>
+       <cve>CVE-2018-14042</cve>
+       <cve>CVE-2019-11358</cve>
+       <cve>CVE-2019-8331</cve>
+       <cve>CVE-2020-11022</cve>
+       <cve>CVE-2020-11023</cve>
+    </suppress>
     
     
 </suppressions>
