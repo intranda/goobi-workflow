@@ -394,8 +394,10 @@ public class MetadatenVerifizierung {
                 for (Metadata md : ll) {
                     String actualValue = md.getValue();
                     if (!allowedValues.contains(actualValue)) {
-                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                                + Helper.getTranslation("MetadataNotConfiguredInDisplayRules", actualValue));
+                        String errorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                + Helper.getTranslation("MetadataNotConfiguredInDisplayRules", actualValue);
+                        inList.add(errorMessage);
+                        addErrorToDocStructAndMetadata(inStruct, md, Helper.getTranslation("MetadataNotConfiguredInDisplayRules", actualValue));
                     }
                 }
             }
@@ -720,8 +722,10 @@ public class MetadatenVerifizierung {
                         }
                     }
                     if (!isOk && !this.autoSave) {
-                        inFehlerList.add(md.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataWithValue") + " "
-                                + md.getValue() + " " + Helper.getTranslation("MetadataDoesNotStartWith") + " " + prop_startswith);
+                        String errorMessage = md.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataWithValue") + " "
+                                + md.getValue() + " " + Helper.getTranslation("MetadataDoesNotStartWith") + " " + prop_startswith;
+                        inFehlerList.add(errorMessage);
+                        addErrorToDocStructAndMetadata(myStruct, md, errorMessage);
                     }
                     if (!isOk && this.autoSave) {
                         md.setValue(new StringTokenizer(prop_startswith, "|").nextToken() + md.getValue());
@@ -738,8 +742,10 @@ public class MetadatenVerifizierung {
                         }
                     }
                     if (!isOk && !this.autoSave) {
-                        inFehlerList.add(md.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataWithValue") + " "
-                                + md.getValue() + " " + Helper.getTranslation("MetadataDoesNotEndWith") + " " + prop_endswith);
+                        String errorMessage = md.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataWithValue") + " "
+                                + md.getValue() + " " + Helper.getTranslation("MetadataDoesNotEndWith") + " " + prop_endswith;
+                        inFehlerList.add(errorMessage);
+                        addErrorToDocStructAndMetadata(myStruct, md, errorMessage);
                     }
                     if (!isOk && this.autoSave) {
                         md.setValue(md.getValue() + new StringTokenizer(prop_endswith, "|").nextToken());
@@ -747,6 +753,13 @@ public class MetadatenVerifizierung {
                 }
             }
         }
+    }
+
+    private void addErrorToDocStructAndMetadata(DocStruct myStruct, Metadata md, String errorMessage) {
+        myStruct.setValidationErrorPresent(true);
+        myStruct.setValidationMessage(Helper.getTranslation(errorMessage));
+        md.setValidationErrorPresent(true);
+        md.setValidationMessage(Helper.getTranslation(errorMessage));
     }
 
     private List<String> validateMetadatValues(DocStruct inStruct, String lang) {
@@ -760,9 +773,13 @@ public class MetadatenVerifizierung {
                         String errorMessage = md.getType().getValidationErrorMessages().get(lang);
                         if (StringUtils.isNotBlank(errorMessage)) {
                             errorList.add(errorMessage.replace("{}", md.getValue()));
+                            addErrorToDocStructAndMetadata(inStruct, md, errorMessage.replace("{}", md.getValue()));
                         } else {
                             errorList.add(Helper.getTranslation("mets_ErrorRegularExpression", md.getType().getNameByLanguage(lang), md.getValue(),
                                     regularExpression));
+                            addErrorToDocStructAndMetadata(inStruct, md,
+                                    Helper.getTranslation("mets_ErrorRegularExpression", md.getType().getNameByLanguage(lang), md.getValue(),
+                                            regularExpression));
                         }
                     }
                 }
@@ -778,9 +795,13 @@ public class MetadatenVerifizierung {
                             String errorMessage = md.getType().getValidationErrorMessages().get(lang);
                             if (StringUtils.isNotBlank(errorMessage)) {
                                 errorList.add(errorMessage.replace("{}", md.getValue()));
+                                addErrorToDocStructAndMetadata(inStruct, md, errorMessage.replace("{}", md.getValue()));
                             } else {
                                 errorList
                                         .add(Helper.getTranslation("mets_ErrorRegularExpression", md.getType().getNameByLanguage(lang), md.getValue(),
+                                                regularExpression));
+                                addErrorToDocStructAndMetadata(inStruct, md,
+                                        Helper.getTranslation("mets_ErrorRegularExpression", md.getType().getNameByLanguage(lang), md.getValue(),
                                                 regularExpression));
                             }
                         }

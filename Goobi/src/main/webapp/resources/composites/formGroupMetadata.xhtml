@@ -28,7 +28,7 @@
 
     <composite:implementation>
         <!-- FORM GROUP METADATA -->
-        <div class="form-group form-group--flex">
+        <div class="form-group form-group--flex #{cc.attrs.metadata.validationErrorPresent ? 'has-validation-error' : ''}">
             <div class="row justify-content-between">
                 <!-- LABEL -->
                 <div class="col-3">
@@ -545,6 +545,7 @@
                     </div>
                 </ui:fragment>
             </div>
+            #{cc.attrs.metadata.validationMessage}
         </div>
 
         <hr />

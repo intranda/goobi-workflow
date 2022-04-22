@@ -110,7 +110,7 @@
                                 jsf:id="link"
                                 aria-label="#{msgs.seite}" 
                                 jsf:immediate="true"
-                                class="button-link #{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'}"
+                                class="button-link #{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'} #{item.node.validationErrorPresent ? 'has-validation-error' : ''}"
                                 jsf:action="#{Metadaten.loadRightFrame}">
                                 <i class="fa fa-file-o" aria-hidden="true"></i>
 

@@ -40,8 +40,8 @@ import ugh.dl.DocStruct;
 
 public class TreeNodeStruct3 extends TreeNode {
 
-	@Getter
-	@Setter
+    @Getter
+    @Setter
     private DocStruct struct;
 
     private List<StringPair> displayableMetadata = new ArrayList<>();
@@ -57,6 +57,13 @@ public class TreeNodeStruct3 extends TreeNode {
     @Getter
     @Setter
     private boolean einfuegenErlaubt = true;
+
+    @Getter
+    @Setter
+    private boolean validationErrorPresent;
+    @Getter
+    @Setter
+    private String validationMessage;
 
     /**
      * Konstruktoren
@@ -113,6 +120,11 @@ public class TreeNodeStruct3 extends TreeNode {
             answer.append(sp.getOne());
             answer.append("</li><li>");
             answer.append(sp.getTwo());
+            answer.append("</li>");
+        }
+        if (validationErrorPresent) {
+            answer.append("<li class=\"stuct-metadata-error\">");
+            answer.append(validationMessage);
             answer.append("</li>");
         }
         answer.append("</ul>");
