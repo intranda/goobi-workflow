@@ -70,14 +70,15 @@ public class XsltToPdf {
      * @param xsltfile The provided template file
      * @param inexport The xslt preparator instance to start the export process
      * @param type The type of the exported docker file. This could be MimeConstants.MIME_PDF or MimeConstants.MIME_TIFF for example
+     * @param dpi The resolution of the output file (in dots per inch)
      * @throws IOException If anything went wrong while writing to the output stream
      */
-    public void startExport(Process process, OutputStream os, String xsltfile, IXsltPreparator inexport, String type) throws IOException {
+    public void startExport(Process process, OutputStream os, String xsltfile, IXsltPreparator inexport, String type, int dpi) throws IOException {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         inexport.startExport(process, out, null);
 
-        this.writeExportToFile(os, out, xsltfile, type, false);
+        this.writeExportToFile(os, out, xsltfile, type, dpi, false);
     }
 
     /**
@@ -88,20 +89,22 @@ public class XsltToPdf {
      * @param os The output stream to write the PDF file to
      * @param xsltfile The provided template file
      * @param type The type of the exported docker file. This could be MimeConstants.MIME_PDF or MimeConstants.MIME_TIFF for example
+     * @param dpi The resolution of the output file (in dots per inch)
      * @throws IOException If anything went wrong while writing to the output stream
      */
-    public void startExport(List<Process> processList, OutputStream os, String xsltfile, String type) throws IOException {
+    public void startExport(List<Process> processList, OutputStream os, String xsltfile, String type, int dpi) throws IOException {
 
         XsltPreparatorDocket inexport = new XsltPreparatorDocket();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         inexport.startExport(processList, out, null);
 
-        this.writeExportToFile(os, out, xsltfile, type, true);
+        this.writeExportToFile(os, out, xsltfile, type, dpi, true);
     }
 
     /**
      * Generates the docket PDF file for one process and writes the result to the given output stream. For the configuration of the parser,
-     * goobi/xslt/config.xml must be present. The provided template (xslt file) is used to build the PDF file.
+     * goobi/xslt/config.xml must be present. The provided template (xslt file) is used to build the PDF file. The default DPI (dots per inch value)
+     * is 300.
      *
      * @param process The process to export
      * @param os The output stream to write the PDF file to
@@ -114,12 +117,13 @@ public class XsltToPdf {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         inexport.startExport(process, out, null);
 
-        this.writeExportToFile(os, out, xsltfile, MimeConstants.MIME_PDF, false);
+        this.writeExportToFile(os, out, xsltfile, MimeConstants.MIME_PDF, 300, false);
     }
 
     /**
      * Generates the docket PDF file for multiple processes and writes the result to the given output stream. For the configuration of the parser,
-     * goobi/xslt/config.xml must be present. The provided template (xslt file) is used to build the PDF file.
+     * goobi/xslt/config.xml must be present. The provided template (xslt file) is used to build the PDF file. The default DPI (dots per inch value)
+     * is 300.
      *
      * @param processList The list of processes to export
      * @param os The output stream to write the PDF file to
@@ -132,7 +136,7 @@ public class XsltToPdf {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         inexport.startExport(processList, out, null);
 
-        this.writeExportToFile(os, out, xsltfile, MimeConstants.MIME_PDF, true);
+        this.writeExportToFile(os, out, xsltfile, MimeConstants.MIME_PDF, 300, true);
     }
 
     /**
@@ -143,10 +147,12 @@ public class XsltToPdf {
      * @param out The prepared byte output stream from the other methods
      * @param xsltfile The xslt template file to generate the docket file with
      * @param type The type of the exported docker file. This could be MimeConstants.MIME_PDF or MimeConstants.MIME_TIFF for example
+     * @param dpi The resolution of the output file (in dots per inch)
      * @param isList Must be true if the above method was called with a list of processes, otherwise false
      * @throws IOException If something went wrong while writing to the output streams
      */
-    private void writeExportToFile(OutputStream os, ByteArrayOutputStream out, String xsltfile, String type, boolean isList) throws IOException {
+    private void writeExportToFile(OutputStream os, ByteArrayOutputStream out, String xsltfile, String type, int dpi, boolean isList)
+            throws IOException {
 
         // generate pdf file
         StreamSource source = new StreamSource(new ByteArrayInputStream(out.toByteArray()));
@@ -164,15 +170,15 @@ public class XsltToPdf {
         // transform xml
         try {
             Transformer xslfoTransformer;
+            FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
+            foUserAgent.setTargetResolution(dpi);
             Fop fop;
             if (isList) {
                 xslfoTransformer = TransformerFactory.newInstance().newTransformer(transformSource);
-                fop = fopFactory.newFop(type, outStream);
             } else {
                 xslfoTransformer = XsltToPdf.getTransformer(transformSource);
-                FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-                fop = fopFactory.newFop(type, foUserAgent, outStream);
             }
+            fop = fopFactory.newFop(type, foUserAgent, outStream);
             Result res = new SAXResult(fop.getDefaultHandler());
             xslfoTransformer.transform(source, res);
         } catch (FOPException e) {
