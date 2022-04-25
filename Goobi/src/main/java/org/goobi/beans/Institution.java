@@ -2,7 +2,7 @@ package org.goobi.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +60,7 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
     @Setter
     // any additional data is hold in a map and gets stored in an xml column, it is searchable using xpath
     // individual values can be extracted: 'select ExtractValue(additional_data, '/root/key') from institution'
-    private Map<String, String> additionalData = new LinkedHashMap<>();
+    private Map<String, String> additionalData = new HashMap<>();
 
     @Override
     public int compareTo(Institution o) {

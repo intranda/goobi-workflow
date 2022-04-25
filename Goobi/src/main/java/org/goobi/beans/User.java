@@ -30,8 +30,8 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -284,7 +284,7 @@ public class User implements DatabaseObject {
     @Setter
     // any additional data is hold in a map and gets stored in an xml column, it is searchable using xpath
     // individual values can be extracted: 'select ExtractValue(additional_data, '/root/key') from benutzer'
-    private Map<String, String> additionalData = new LinkedHashMap<>();
+    private Map<String, String> additionalData = new HashMap<>();
 
     @Override
     public void lazyLoad() {

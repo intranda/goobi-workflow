@@ -31,15 +31,14 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.format.DateTimeFormat;
@@ -445,7 +444,7 @@ public class MySQLHelper implements Serializable {
         if (additionalData != null && !additionalData.isEmpty()) {
             XStream xstream = new XStream();
             xstream.registerConverter(new MapToStringConverter());
-            xstream.alias("root", ArrayListValuedHashMap.class);
+            xstream.alias("root", Map.class);
             return xstream.toXML(additionalData);
         }
         return null;
@@ -456,48 +455,50 @@ public class MySQLHelper implements Serializable {
         if (StringUtils.isNotBlank(additionalData)) {
             XStream xstream = new XStream();
             xstream.registerConverter(new MapToStringConverter());
-            xstream.alias("root", LinkedHashMap.class);
-            xstream.allowTypes(new Class[] { LinkedHashMap.class });
+            xstream.alias("root", Map.class);
+            xstream.allowTypes(new Class[] { Map.class });
             @SuppressWarnings("unchecked")
 
-            Map<String, String> map = (LinkedHashMap<String, String>) xstream.fromXML(additionalData);
+            Map<String, String> map = (HashMap<String, String>) xstream.fromXML(additionalData);
             return map;
         }
 
-        return new LinkedHashMap<>();
+        return new HashMap<>();
     }
 
     public static class MapToStringConverter implements Converter {
 
+
         @Override
-        public boolean canConvert(@SuppressWarnings("rawtypes") Class clazz) {
-            return LinkedHashMap.class.isAssignableFrom(clazz);
+        public boolean canConvert(Class clazz) {
+            return AbstractMap.class.isAssignableFrom(clazz);
         }
 
         @Override
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
 
-            @SuppressWarnings("unchecked")
-            Map<String, String> map = (LinkedHashMap<String, String>) object;
-            for (String key : map.keySet()) {
-                String val = map.get(key);
-                writer.startNode(key.toString());
-                if (null != val) {
+            AbstractMap map = (AbstractMap) value;
+            for (Object obj : map.entrySet()) {
+                Map.Entry entry = (Map.Entry) obj;
+                writer.startNode(entry.getKey().toString());
+                Object val = entry.getValue();
+                if ( null != val ) {
                     writer.setValue(val.toString());
-                    writer.endNode();
                 }
+                writer.endNode();
             }
+
         }
 
         @Override
         public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 
-            Map<String, String> map = new LinkedHashMap<>();
+            Map<String, String> map = new HashMap<>();
 
-            while (reader.hasMoreChildren()) {
+            while(reader.hasMoreChildren()) {
                 reader.moveDown();
 
-                String key = reader.getNodeName();
+                String key = reader.getNodeName(); // nodeName aka element's name
                 String value = reader.getValue();
                 map.put(key, value);
 
