@@ -75,7 +75,7 @@
         <jsonpath.version>2.7.0</jsonpath.version>
         <jwks-rsa.version>0.20.0</jwks-rsa.version>
         <log4j.version>2.17.2</log4j.version>
-        <lombok.version>1.18.22</lombok.version>
+        <lombok.version>1.18.24</lombok.version>
         <metadata-extractor.version>2.17.0</metadata-extractor.version>
         <mimepull.version>1.9.15</mimepull.version>
         <omnifaces.version>3.13</omnifaces.version>
