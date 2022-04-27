@@ -134,6 +134,9 @@ public class SendMail {
         private String userCreationMailSubject;
         private String userCreationMailBody;
 
+        private String userActivationMailSubject;
+        private String userActivationMailBody;
+
         public MailConfiguration() {
             String configurationFile = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_mail.xml";
             if (StorageProvider.getInstance().isFileExists(Paths.get(configurationFile))) {
@@ -160,6 +163,10 @@ public class SendMail {
 
                 userCreationMailSubject = config.getString("/userCreation/subject", null);
                 userCreationMailBody = config.getString("/userCreation/body", null);
+
+                userActivationMailSubject = config.getString("/userActivation/subject", null);
+                userActivationMailBody = config.getString("/userActivation/body", null);
+
             }
         }
 

@@ -824,6 +824,15 @@ public class UserBean extends BasicBean implements Serializable {
         Institution i = InstitutionManager.getInstitutionByName(ConfigurationHelper.getInstance().getExternalUserDefaultInstitutionName());
         user.setInstitution(i);
 
+        try {
+            Ldap ldap = LdapManager.getLdapById(0);
+            user.setLdapGruppe(ldap);
+        } catch (DAOException e1) {
+            log.error(e1);
+        }
+
+        // TODO default dashboard plugin
+
         // generate random password
         String password = createRandomPassword(LoginBean.DEFAULT_PASSWORD_LENGTH);
         user.setEncryptedPassword(user.getPasswordHash(password));
