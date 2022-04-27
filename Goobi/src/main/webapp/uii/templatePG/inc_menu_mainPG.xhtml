@@ -33,7 +33,7 @@
 		<!-- The page "mailNotificationDisabled.xhtml needs the menu with user == null -->
 		<c:if test="#{LoginForm.myBenutzer != null}">
 			<ui:insert name="menu-content">
-				<ul id="main-menu-set-class" class="navbar-nav me-auto">
+				<ul id="main-menu-set-class" class="navbar-nav">
 					<!-- Dropdown-Menü: "Startseite" / "Home page" -->
 					<li class="nav-item #{NavigationForm.parentMenu == 'menu_start' ? 'active' : ''}">
 						<h:commandLink

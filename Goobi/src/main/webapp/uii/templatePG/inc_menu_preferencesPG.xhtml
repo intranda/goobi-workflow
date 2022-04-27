@@ -61,7 +61,6 @@
 					<a
 						class="nav-link dropdown-toggle"
 						href="#"
-						id="navbarScrollingDropdown"
 						role="button"
 						data-bs-toggle="dropdown"
 						aria-expanded="false"
@@ -122,7 +121,7 @@
 			<!-- mailNotificationDisabled.xhtml does not need this block when no user is logged in -->
 			<c:if test="#{LoginForm.myBenutzer != null}">
 				<div class="nav-item user__account-menu dropdown">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 						<span class="user__account-menu__name">
 							<h:outputText
 								rendered="#{LoginForm.myBenutzer != null}"

@@ -161,7 +161,7 @@ class LdapMysqlHelper implements Serializable {
                 sql.append("nextFreeUnixId, pathToRootCertificate, pathToPdcCertificate, encryptionType, ");
                 sql.append("useSsl, authenticationType, readonly, readDirectoryAnonymous, useLocalDirectoryConfiguration, ");
                 sql.append("ldapHomeDirectoryAttributeName, useTLS) VALUES ( ");
-                sql.append("?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?");
+                sql.append("?,?,?,?,?,  ?,?,?,?,?,  ?,?,?,?,?,  ?,?,?,?,?,  ?,?,?,?,?,  ?,?,?,?,?,  ?,?,?,?,?");
                 sql.append(") ");
 
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, ro.getTitel(), ro.getHomeDirectory(),

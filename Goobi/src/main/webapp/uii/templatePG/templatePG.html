@@ -44,7 +44,10 @@
 
     <!-- WCAG compatibility CSS -->
     <ui:fragment rendered="#{LoginForm.myBenutzer == null ? HelperForm.renderAccessibilityCss : LoginForm.myBenutzer.uiMode=='accessibility'}">
+    <!--
       <link rel="stylesheet" href="template/css/accessibility.css?v=#{HelperForm.buildVersion}" />
+    -->
+      <link rel="stylesheet" href="templatePG/css/dist/accessibility.css?v=#{HelperForm.buildVersion}" />
     </ui:fragment>
 
     <!-- CUSTOM CSS (user specific)-->
@@ -193,7 +196,7 @@
 
 
 	                                        <h:panelGroup rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
-	                                            <li class='background-color-A'>
+	                                            <li class='bg-neutral-400'>
 	                                                <button jsf:action="currentUsers" jsf:id="currentUsers" class="button-no-style">
 	                                                    <i class="fa fa-users" style="margin-top:3px;"></i>
 	                                                    <div class="details">
@@ -204,7 +207,7 @@
 	                                                </button>
 	                                            </li>
 	                                        </h:panelGroup>
-	                                        <li class='background-color-A'>
+	                                        <li class='bg-neutral-400'>
 	                                            <i class="fa fa-calendar" style="margin-top:3px;"></i>
 	                                            <div class="details">
 	                                                <span class="big">

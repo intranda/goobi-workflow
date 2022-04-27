@@ -37,7 +37,7 @@
         <!-- intranda internal -->
         <ics.version>3.3.3</ics.version>
         <normdataimporter.version>1.9.1</normdataimporter.version>
-        <ugh-core.version>5.0.5</ugh-core.version>
+        <ugh-core.version>5.0.6</ugh-core.version>
         <ugh-marc.version>1.3.1</ugh-marc.version>
         <ugh-lido.version>0.0.12</ugh-lido.version>
 
@@ -75,18 +75,18 @@
         <jsonpath.version>2.7.0</jsonpath.version>
         <jwks-rsa.version>0.20.0</jwks-rsa.version>
         <log4j.version>2.17.2</log4j.version>
-        <lombok.version>1.18.22</lombok.version>
+        <lombok.version>1.18.24</lombok.version>
         <metadata-extractor.version>2.17.0</metadata-extractor.version>
         <mimepull.version>1.9.15</mimepull.version>
         <omnifaces.version>3.13</omnifaces.version>
         <openpdf.version>1.3.27</openpdf.version>
-        <pdfbox.version>2.0.25</pdfbox.version>
+        <pdfbox.version>2.0.26</pdfbox.version>
         <poi.version>5.2.2</poi.version>
         <powermock.version>2.0.9</powermock.version>
         <reflections.version>0.10.2</reflections.version>
         <slf4j.version>1.7.36</slf4j.version>
         <spark.version>2.9.3</spark.version>
-        <spring.version>5.3.18</spring.version>
+        <spring.version>5.3.19</spring.version>
         <sshj.version>0.32.0</sshj.version>
         <swagger.version>2.1.13</swagger.version>
         <weld.version>3.1.9.Final</weld.version>
@@ -302,6 +302,12 @@
             <artifactId>commons-digester</artifactId>
             <version>2.1</version>
         </dependency>
+        <dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-digester3</artifactId>
+		    <version>3.2</version>
+		</dependency>
+
 		<!--
 		<dependency>
 			<groupId>de.mhus.osgi.ports</groupId>
@@ -754,6 +760,10 @@
                     <groupId>asm</groupId>
                     <artifactId>asm</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-digester3</artifactId>
+                </exclusion>                
             </exclusions>
         </dependency>
         <dependency>
@@ -804,7 +814,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.42</version>
+            <version>8.0.28</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -1053,14 +1063,14 @@
 					<dependency>
 						<groupId>org.bouncycastle</groupId>
 						<artifactId>bcmail-jdk15on</artifactId>
-						<version>1.68</version> <!-- TODO update to 1.70 after mvn central is updated-->
+						<version>1.70</version>
 						<scope>runtime</scope>
 					</dependency>
 					<!-- https://mvnrepository.com/artifact/org.apache.ant/ant -->
 					<dependency>
 						<groupId>org.apache.ant</groupId>
 						<artifactId>ant</artifactId>
-						<version>1.10.12</version> <!-- TODO update to 1.10.12 after mvn central is updated-->
+						<version>1.10.12</version>
 					</dependency>
 
 
