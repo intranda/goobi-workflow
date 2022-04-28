@@ -35,7 +35,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <publicVersion>22.03.2-SNAPSHOT</publicVersion>
         <!-- intranda internal -->
-        <ics.version>3.3.3</ics.version>
+        <ics.version>3.3.4</ics.version>
         <normdataimporter.version>1.9.1</normdataimporter.version>
         <ugh-core.version>5.0.6</ugh-core.version>
         <ugh-marc.version>1.3.1</ugh-marc.version>
@@ -47,24 +47,24 @@
         <oscache.version>2.3</oscache.version>
         <shiro.version>1.4.2</shiro.version>
 		<activemq.version>5.17.0</activemq.version>
-        <aspectj.version>1.9.9</aspectj.version>
-        <aws.version>1.12.188</aws.version>
+        <aspectj.version>1.9.9.1</aspectj.version>
+        <aws.version>1.12.208</aws.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <cdi.version>2.0.SP1</cdi.version>
         <commons-csv.version>1.9.0</commons-csv.version>
         <commons-dbcp2.version>2.9.0</commons-dbcp2.version>
         <commons-net.version>3.8.0</commons-net.version>
         <commons-pool2.version>2.11.1</commons-pool2.version>
-        <deltaspike.version>1.9.5</deltaspike.version>
+        <deltaspike.version>1.9.6</deltaspike.version>
         <el-impl.version>2.2.1-b05</el-impl.version>
         <freemarker.version>2.3.31</freemarker.version>
         <guava.version>31.1-jre</guava.version>
-        <gson.version>2.8.9</gson.version>
+        <gson.version>2.9.0</gson.version>
         <httpclient.version>4.5.13</httpclient.version>
         <httpcore.version>4.4.15</httpcore.version>
         <imageio-openjpeg.version>0.6.2</imageio-openjpeg.version>
         <javassist.version>3.28.0-GA</javassist.version>
-        <java-jwt.version>3.19.0</java-jwt.version>
+        <java-jwt.version>3.19.1</java-jwt.version>
         <jaxb-impl.version>2.3.6</jaxb-impl.version>
         <jackson.version>2.13.2</jackson.version>
         <jersey.version>2.35</jersey.version>
@@ -73,11 +73,11 @@
         <joda.version>2.10.14</joda.version>
         <junit.version>4.13.2</junit.version>
         <jsonpath.version>2.7.0</jsonpath.version>
-        <jwks-rsa.version>0.20.0</jwks-rsa.version>
+        <jwks-rsa.version>0.21.1</jwks-rsa.version>
         <log4j.version>2.17.2</log4j.version>
         <lombok.version>1.18.24</lombok.version>
         <metadata-extractor.version>2.17.0</metadata-extractor.version>
-        <mimepull.version>1.9.15</mimepull.version>
+        <mimepull.version>1.10.0</mimepull.version>
         <omnifaces.version>3.13</omnifaces.version>
         <openpdf.version>1.3.27</openpdf.version>
         <pdfbox.version>2.0.26</pdfbox.version>
@@ -87,8 +87,8 @@
         <slf4j.version>1.7.36</slf4j.version>
         <spark.version>2.9.3</spark.version>
         <spring.version>5.3.19</spring.version>
-        <sshj.version>0.32.0</sshj.version>
-        <swagger.version>2.1.13</swagger.version>
+        <sshj.version>0.33.0</sshj.version>
+        <swagger.version>2.2.0</swagger.version>
         <weld.version>3.1.9.Final</weld.version>
         <hk2.version>2.6.1</hk2.version>
         <xmlgraphics-commons.version>2.7</xmlgraphics-commons.version>
@@ -358,7 +358,7 @@
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>compiler</artifactId>
-            <version>2.21ea81</version>
+            <version>2.21ea82</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.sun.java</groupId>
@@ -814,7 +814,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.28</version>
+            <version>8.0.29</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
