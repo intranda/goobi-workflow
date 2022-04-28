@@ -93,5 +93,20 @@
        <cve>CVE-2020-11023</cve>
     </suppress>
     
+    <!-- this vulnerability impacts npm (server), we don't use npm -->
+    <suppress>
+        <notes><![CDATA[
+   file name: primefaces-11.0.0.jar: moment.js
+   ]]></notes>
+        <packageUrl regex="true">^pkg:javascript/moment\.js@.*$</packageUrl>
+        <cve>CVE-2022-24785</cve>
+    </suppress>
+    <suppress>
+       <notes><![CDATA[
+       file name: weld-servlet-shaded-3.1.9.Final.jar: probe.js
+       ]]></notes>
+       <packageUrl regex="true">^pkg:javascript/bootstrap@.*$</packageUrl>
+       <cve>CVE-2022-24785</cve>
+    </suppress>
     
 </suppressions>
