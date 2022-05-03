@@ -90,25 +90,24 @@ public abstract class BackupFileManager {
         try {
             if (limit > 0) {
                 backupFileName = BackupFileManager.createBackupFile(path, backupPath, fileName);
+                log.trace("The backup file {} was created successfully.", backupPath + backupFileName);
             }
         } catch (Exception exception) {
-            String messageFail = Helper.getTranslation("noBackupCreated");
             if (createFrontendMessage) {
+                String messageFail = Helper.getTranslation("noBackupCreated");
                 Helper.setFehlerMeldung(messageFail);
             }
-            throw new IOException(messageFail);
+            throw new IOException("A backup file could not be created. Please make sure that the required access rights are set.");
         }
-        String messageSuccess = Helper.getTranslation("backupCreated") + " " + backupPath + backupFileName + ".";
-        log.info(messageSuccess);
         //if (createFrontendMessage) {
         //    Helper.setMeldung(messageSuccess);
         //}
         try {
             BackupFileManager.removeTooOldBackupFiles(backupPath, fileName, limit);
         } catch (Exception exception) {
-            String messageFail = Helper.getTranslation("noOldBackupsDeleted");
-            log.warn(messageFail);
+            log.warn("Old backup files could not be deleted. Please make sure that the required access rights are set.");
             if (createFrontendMessage) {
+                String messageFail = Helper.getTranslation("noOldBackupsDeleted");
                 Helper.setFehlerMeldung(messageFail);
             }
             // This exception should not be thrown because the important thing is that the backup file could be created.
@@ -162,11 +161,12 @@ public abstract class BackupFileManager {
 
         // remove oldest files until list length is equal to limit
         while (files.size() > limit) {
+            Path file = files.get(0);
             try {
-                StorageProvider.getInstance().deleteFile(files.get(0));
-                log.info("Deleted old backup file: " + path + fileName);
+                StorageProvider.getInstance().deleteFile(file);
+                log.debug("Deleted old backup file: " + file.toString());
             } catch (IOException ioException) {
-                log.warn("Could not delete old backup file: " + path + fileName);
+                log.warn("Could not delete old backup file: " + file.toString());
                 log.warn(ioException);
                 throw ioException;
             }

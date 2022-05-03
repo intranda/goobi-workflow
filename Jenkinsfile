@@ -24,6 +24,7 @@ pipeline {
       steps {
               sh 'mvn -f Goobi/pom.xml clean install'
               recordIssues enabledForFailure: true, aggregatingResults: true, tools: [java(), javaDoc()]
+              dependencyCheckPublisher pattern: '**/target/dependency-check-report.xml'
       }
     }
     stage('deployment to maven repository') {

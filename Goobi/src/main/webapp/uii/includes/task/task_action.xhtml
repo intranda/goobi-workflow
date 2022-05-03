@@ -258,7 +258,7 @@
                                                         </div>
                                                         <div class="modal-footer">
 
-                                                            <button onclick="sessionStorage.removeItem('columnWidths');" jsf:action="#{Metadaten.XMLlesen}" jsf:id="action15a" title="#{msgs.discard}" jsf:rel="tooltip" class="btn btn-lightred pull-left">
+                                                            <h:commandLink onclick="sessionStorage.removeItem('columnWidths');" action="#{Metadaten.XMLlesen}" id="action15a" title="#{msgs.discard}" rel="tooltip" styleClass="btn btn-lightred pull-left">
                                                                 <i class="fa fa-trash-o margin-right-5"></i>
                                                                 <h:outputText value="#{msgs.discard}" />
                                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
@@ -271,12 +271,10 @@
                                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
                                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
                                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
-                                                            </button>
+                                                            </h:commandLink>
 
 
-
-                                                            <button onclick="sessionStorage.removeItem('columnWidths');" jsf:action="#{Metadaten.XMLlesen}" jsf:id="action15b" title="#{msgs.overwrite}" jsf:rel="tooltip" class="btn btn-green">
-                                                                <i class="fa fa-floppy-o margin-right-5"></i>
+                                                            <h:commandLink onclick="sessionStorage.removeItem('columnWidths');" action="#{Metadaten.XMLlesen}" id="action15b" title="#{msgs.overwrite}" rel="tooltip" styleClass="btn btn-green">                                                                <i class="fa fa-floppy-o margin-right-5"></i>
                                                                 <h:outputText value="#{msgs.overwrite}" />
                                                                 <f:setPropertyActionListener target="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" value="#{AktuelleSchritteForm.mySchritt.bearbeitungszeitpunktNow}" />
                                                                 <f:param name="ProzesseID" value="#{AktuelleSchritteForm.mySchritt.prozess.id}" />
@@ -288,8 +286,7 @@
                                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc3}" />
                                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc4}" />
                                                                 <f:setPropertyActionListener value="#{null}" target="#{NavigationForm.uiStatus.mets_toc5}" />
-                                                            </button>
-
+                                                            </h:commandLink>
                                                         </div>
                                                     </div>
                                                 </div>

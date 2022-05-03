@@ -1,0 +1,153 @@
+.navbar {
+  background-color: var(--clr-primary-400);
+  font-size: var(--fs-400);
+  padding-top: 0;
+  padding-bottom: 0;
+
+  .container-fluid {
+    padding-left: 2rem;
+    padding-right: 2rem;
+
+    // Keep burger menu + icon-nav (user menu, lang switch) next to each other in the right corner
+    @include media-breakpoint-down(lg) {
+      justify-content: end;
+      // keep the logo in the left corner
+      #brand {
+        flex: 1;
+      }
+    }
+  }
+
+  // Goobi logo
+  #brand img {
+    margin-right: 2rem;
+    width: auto;
+    height: 3rem;
+  }
+
+  // Nav items
+  .nav-item {
+    color: var(--text-nav, var(--clr-white));
+  }
+  .nav-item.active {
+    background-color: var(--bg-body, var(--clr-white));
+    color: var(--text-active);
+  }
+
+  .nav-link {
+    color: currentColor;
+    height: 4.7rem;
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem !important; // BS override
+
+    &:hover {
+      background-color: var(--clr-primary-600);
+    }
+  }
+
+  // Mobile nav toggler (burger menu)
+  .navbar-toggler {
+    &:focus {
+      box-shadow: unset;
+    }
+    &-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='white' stroke-linecap='round' stroke-miterlimit='10' stroke-width='3' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+  }
+
+  // Menu item dropdown styles
+  .dropdown-menu {
+    margin-top: 0;
+    border-top: 0;
+    border-radius: 0;
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    border-color: var(--clr-primary-400);
+    border-width: 1px;
+
+    li {
+      font-size: 1.2rem;
+    }
+  }
+}
+
+// Locale switch, user menu etc
+.navbar .user {
+  display: flex;
+  .nav-link:after {
+    display: none;
+  }
+
+  &__account-menu__name {
+    color: currentColor;
+    margin-right: 0.8rem;
+    @include media-breakpoint-down(sm) {
+      display: none;
+    }
+  }
+
+  @include media-breakpoint-up(lg) {
+    order: 1;
+  }
+
+  .icon-nav {
+    display: flex;
+    align-items: center;
+  }
+}
+
+//Mobile nav styles
+@include media-breakpoint-down(lg) {
+  #navigation {
+    position: relative;
+
+    #main-menu-set-class {
+      margin-left: auto;
+      padding-bottom: 1.6rem;
+      margin-bottom: 1.6rem;
+      z-index: 1000;
+    }
+
+    #navbarSupportedContent {
+      position: absolute;
+      top: 47px;
+      right: 0;
+      background-color: var(--clr-primary-600);
+      border-bottom-left-radius: var(--border-radius);
+      border-bottom-right-radius: var(--border-radius);
+
+      // Always show dropdown menus on mobile
+      .dropdown-menu {
+        display: block;
+        padding: 0;
+        margin-left: 2.4rem;
+        border: 0;
+      }
+      .nav-item {
+        background-color: var(--clr-primary-600);
+        padding-bottom: 1.6rem;
+
+        &:not(:last-child) {
+          border-bottom: 1px solid var(--clr-white);
+        }
+        // Do not show active states when using the mobile menu
+        &.dropdown.active {
+          background-color: var(--clr-primary-600);
+          color: var(--clr-white);
+        }
+      }
+      .dropdown-item {
+        background-color: var(--clr-primary-600);
+        padding-top: 0.4rem;
+        padding-bottom: 0.4rem;
+        color: var(--clr-white);
+      }
+
+      // Prevent layout shifts when clicking on a .nav-item (.open has a different margin)
+      .dropdown-menu[data-bs-popper] {
+        margin-top: 0;
+      }
+    }
+  }
+}

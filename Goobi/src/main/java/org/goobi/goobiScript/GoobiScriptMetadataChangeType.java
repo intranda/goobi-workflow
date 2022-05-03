@@ -178,6 +178,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                     Metadata newMd = new Metadata(type);
                     // copy value from existing metadata
                     newMd.setValue(oldMd.getValue());
+                    newMd.setAutorityFile(oldMd.getAuthorityID(), oldMd.getAuthorityURI(), oldMd.getAuthorityValue());
                     // add all new metadata
                     ds.addMetadata(newMd);
                     // delete oldMetadata from ds

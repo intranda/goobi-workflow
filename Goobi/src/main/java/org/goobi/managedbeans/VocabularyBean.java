@@ -36,6 +36,7 @@ import org.goobi.vocabulary.Vocabulary;
 import org.goobi.vocabulary.VocabularyUploader;
 import org.goobi.vocabulary.helper.ImportJsonVocabulary;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.file.UploadedFile;
 
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
@@ -380,15 +381,13 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     public void handleFileUpload(FileUploadEvent event) {
         try {
-            filename = event.getFile().getFileName();
-            copyFile(filename, event.getFile().getInputstream());
-
+            UploadedFile upload = event.getFile();
+            copyFile(upload.getFileName(), upload.getInputStream());
+            loadUploadedFile();
         } catch (IOException e) {
-            log.error(e);
+            log.error("Error while uploading files", e);
         }
-        loadUploadedFile();
     }
-
     /**
      * internal method to manage the file upload for vocabulary records
      */

@@ -8,6 +8,7 @@
 
 	<composite:interface>
 		<composite:attribute name="id"/>
+		<composite:attribute name="linkClass"/>
 		<composite:attribute name="action" targets="link"/>
 		<composite:attribute name="label"/>
 		<composite:attribute name="filter"/>
@@ -21,7 +22,8 @@
 
 	<composite:implementation>
 		<li class="#{NavigationForm.aktuell == cc.attrs.id?'active':''}">
-			<h:commandLink id="link" action="#{cc.attrs.action}">
+		<script>console.log('menu item')</script>
+		<h:commandLink id="link" styleClass="#{cc.attrs.linkClass}" action="#{cc.attrs.action}">
 				<i class="#{cc.attrs.icon}"></i>
 				<span class="#{cc.attrs.fontclass}">#{cc.attrs.label}</span>
 				<f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="#{cc.attrs.id}" />
