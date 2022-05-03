@@ -1848,6 +1848,11 @@ public class Metadaten implements Serializable {
             for (Metadata metadata : myTempMetadata) {
                 MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this);
                 meta.getSelectedItem();
+                meta.setValidationErrorPresent(metadata.isValidationErrorPresent());
+                meta.setValidationMessage(metadata.getValidationMessage());
+                //the validation error has been moved to the UI class (MetadatumImpl) and can be deleted from the UGH object
+                metadata.setValidationErrorPresent(false);
+                metadata.setValidationMessage(null);
                 lsMeta.add(meta);
             }
         }
@@ -1966,6 +1971,7 @@ public class Metadaten implements Serializable {
      * @param inStrukturelement ============================================================== ==
      */
     private void MetadatenalsTree3Einlesen2(DocStruct inStrukturelement, TreeNodeStruct3 OberKnoten) {
+        //TODO: Hier eventuelle Fehlermeldungen/flags in den TreeNodeStuct3 Knoten übernehmen
         if (currentTopstruct != null && currentTopstruct.getType().getName().equals("BoundBook")) {
             if (inStrukturelement.getAllMetadata() != null) {
                 String phys = "";
@@ -2006,6 +2012,16 @@ public class Metadaten implements Serializable {
         // wenn es ein Periodical oder PeriodicalVolume ist, dann ausklappen
         if (inStrukturelement.getType().getName().equals("Periodical") || inStrukturelement.getType().getName().equals("PeriodicalVolume")) {
             OberKnoten.setExpanded(true);
+        }
+        if (inStrukturelement != null) {
+            if (OberKnoten != null) {
+                OberKnoten.setValidationErrorPresent(inStrukturelement.isValidationErrorPresent());
+                OberKnoten.setValidationMessage(inStrukturelement.getValidationMessage());
+            }
+            //we moved the validation information to the UI class (TreeNodeStruct3), so we don't need it on the docStruct anymore
+            //because of that, we reset the validation error on the docStruct, so the next validation run won't have false positives
+            inStrukturelement.setValidationErrorPresent(false);
+            inStrukturelement.setValidationMessage(null);
         }
 
         /*
@@ -3368,6 +3384,8 @@ public class Metadaten implements Serializable {
         if (valid) {
             Helper.setMeldung("ValidationSuccessful");
         }
+
+        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
         MetadatenalsBeanSpeichern(this.myDocStruct);
     }
 
