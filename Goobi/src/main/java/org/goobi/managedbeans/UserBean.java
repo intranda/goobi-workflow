@@ -247,21 +247,31 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     public String Speichern() {
+
         String bla = this.myClass.getLogin();
 
         if (!LoginValide(bla)) {
             return "";
         }
 
-        Integer blub = this.myClass.getId();
+        Integer userId = this.myClass.getId();
         try {
             /* prüfen, ob schon ein anderer Benutzer mit gleichem Login existiert */
-            String query = "login='" + bla + "'AND BenutzerID !=" + blub;
-            if (blub == null) {
+            String query = "login='" + bla + "'AND BenutzerID !=" + userId;
+            if (userId == null) {
                 query = "login='" + bla + "'AND BenutzerID is not null";
             }
             int num = new UserManager().getHitSize(null, query, null);
             if (num == 0) {
+
+                // The new password must fulfill the minimum password length (read from default configuration file)
+                int minimumLength = ConfigurationHelper.getInstance().getMinimumPasswordLength();
+                if (myClass.getPasswort() != null && myClass.getPasswort().length() < minimumLength) {
+                    this.displayMode = "";
+                    Helper.setFehlerMeldung("neuesPasswortNichtLangGenug", "" + minimumLength);
+                    return "";
+                }
+
                 if (myClass.getId() == null && !AuthenticationType.OPENID.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())
                         && myClass.getPasswort() != null) {
                     myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
@@ -280,7 +290,13 @@ public class UserBean extends BasicBean implements Serializable {
 
                 resetChangeLists();
 
-                return "user_all";
+                if (this.displayMode.equals("") && userId == null) {
+                    this.displayMode = "tab2";
+                    return "user_edit";
+                } else {
+                    this.displayMode = "";
+                    return "user_all";
+                }
             } else {
                 Helper.setFehlerMeldung("", Helper.getTranslation("loginBereitsVergeben"));
                 return "";
@@ -546,11 +562,17 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     public String createUser() {
-        if (!Speichern().equals("") && AuthenticationType.LDAP.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())) {
+        // TODO
+        // If result is empty -> error. Otherwise -> success
+        String resultFromSaving = Speichern();
+        boolean savedSuccessfully = !resultFromSaving.equals("");
+
+        if (savedSuccessfully && AuthenticationType.LDAP.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())) {
             LdapKonfigurationSchreiben();
         }
-        this.displayMode = "tab2";
-        return "user_edit";
+
+        // Tab was set in Speichern()
+        return resultFromSaving;
     }
 
     public String LdapKonfigurationSchreiben() {
@@ -602,7 +624,11 @@ public class UserBean extends BasicBean implements Serializable {
         // Create the random password and save it
         if (userToResetPassword != null) {
             try {
-                String password = createRandomPassword(LoginBean.DEFAULT_PASSWORD_LENGTH);
+
+                // The custom minimum password is >= 1. The random password should have a length of >= 11.
+                int length = ConfigurationHelper.getInstance().getMinimumPasswordLength() + 10;
+                String password = createRandomPassword(length);
+
                 if (AuthenticationType.LDAP.equals(userToResetPassword.getLdapGruppe().getAuthenticationTypeEnum())
                         && !userToResetPassword.getLdapGruppe().isReadonly()) {
 
