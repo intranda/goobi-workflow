@@ -545,7 +545,14 @@
                     </div>
                 </ui:fragment>
             </div>
-            #{cc.attrs.metadata.validationMessage}
+            <h:panelGroup layout="block"
+                class="validation-error"
+                rendered="#{cc.attrs.metadata.validationErrorPresent}">
+                <i
+                    class="fa fa-exclamation-circle"
+                    aria-hidden="true"></i>
+                <h:outputText value="#{cc.attrs.metadata.validationMessage}" />
+            </h:panelGroup>
         </div>
 
         <hr />

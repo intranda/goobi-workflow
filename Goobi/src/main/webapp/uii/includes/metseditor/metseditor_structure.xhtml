@@ -135,7 +135,7 @@
 	                                <h:outputText styleClass="page-info" value="#{item.node.lastImage.right}" rendered="#{item.node.lastImage != null}" />
 	                                <h:outputText styleClass="page-infoLight" value=")" />
                                 </h:panelGroup>
-                                
+                                <i jsf:rendered="#{item.node.validationErrorPresent}" class="fa fa-exclamation-circle" style="margin-left: 5px" aria-hidden="true"></i>                          
                                 <x:updateActionListener property="#{Metadaten.myStrukturelement}"
                                     value="#{item.node.struct}" />
                                 <f:ajax execute="@form"
