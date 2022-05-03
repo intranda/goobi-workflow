@@ -165,6 +165,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     private String vocabularyUrl;
     private VocabRecord selectedVocabularyRecord;
 
+    private boolean validationErrorPresent;
+    private String validationMessage;
+
     /**
      * Allgemeiner Konstruktor ()
      */
@@ -772,8 +775,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         && StringUtils.isNotBlank(ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl())) {
                     md.setAutorityFile(vocabulary, ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl(),
                             ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl()
-                            + ConfigurationHelper.getInstance().getGoobiAuthorityServerUser() + "/vocabularies/"
-                            + selectedVocabularyRecord.getVocabularyId() + "/records/" + selectedVocabularyRecord.getId());
+                                    + ConfigurationHelper.getInstance().getGoobiAuthorityServerUser() + "/vocabularies/"
+                                    + selectedVocabularyRecord.getVocabularyId() + "/records/" + selectedVocabularyRecord.getId());
                 } else {
                     md.setAutorityFile(vocabulary, vocabularyUrl,
                             vocabularyUrl + "/vocabularies/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
