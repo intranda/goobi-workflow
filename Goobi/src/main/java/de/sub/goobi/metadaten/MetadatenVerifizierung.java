@@ -263,7 +263,7 @@ public class MetadatenVerifizierung {
         List<String> expressionList = validateMetadatValues(dd.getLogicalDocStruct(), metadataLanguage);
         if (!expressionList.isEmpty()) {
             for (String text : expressionList) {
-                Helper.setFehlerMeldung(text);
+                //                Helper.setFehlerMeldung(text);
                 problems.add(text);
             }
             ergebnis = false;
@@ -432,19 +432,21 @@ public class MetadatenVerifizierung {
                     if (StringUtils.isEmpty(p.getFirstname()) && StringUtils.isEmpty(p.getLastname())) {
                         inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                                 + Helper.getTranslation("MetadataIsEmpty"));
+                        addErrorToDocStructAndMetadata(inStruct, p, language);
                     }
                 } else if (mdt.isCorporate()) {
                     Corporate c = (Corporate) ll.get(0);
                     if (StringUtils.isEmpty(c.getMainName())) {
                         inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                                 + Helper.getTranslation("MetadataIsEmpty"));
+                        addErrorToDocStructAndMetadata(inStruct, c, language);
                     }
                 } else {
                     Metadata md = ll.get(0);
                     if (md.getValue() == null || md.getValue().equals("")) {
-                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                                + Helper.getTranslation("MetadataIsEmpty"));
-
+                        //                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                        //                                + Helper.getTranslation("MetadataIsEmpty"));
+                        addErrorToDocStructAndMetadata(inStruct, md, mdt.getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
                     }
                 }
 

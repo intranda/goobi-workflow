@@ -123,7 +123,8 @@ public class TreeNodeStruct3 extends TreeNode {
             answer.append("</li>");
         }
         if (validationErrorPresent) {
-            answer.append("<li class=\"stuct-metadata-error\">");
+            answer.append("<li class=\"table__stuct-metadata-error\">");
+            answer.append("<i class=\"fa fa-exclamation-circle\"></i>");
             answer.append(validationMessage);
             answer.append("</li>");
         }
