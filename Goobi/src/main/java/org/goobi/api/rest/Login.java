@@ -102,7 +102,12 @@ public class Login {
         }
         //the header we read the ssoID from is configurable
         String ssoHeaderName = config.getSsoHeaderName();
-        String ssoId = servletRequest.getHeader(ssoHeaderName);
+        String ssoId = null;
+        if ("header".equalsIgnoreCase(config.getSsoParameterType())) {
+            ssoId = servletRequest.getHeader(ssoHeaderName);
+        } else {
+            ssoId = (String) servletRequest.getAttribute(ssoHeaderName);
+        }
         LoginBean userBean = Helper.getLoginBeanFromSession(servletRequest.getSession());
         User user = UserManager.getUserBySsoId(ssoId);
         if (user == null) {
