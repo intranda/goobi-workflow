@@ -111,6 +111,25 @@ public class MetadatenVerifizierung {
         }
 
         DocStruct logical = dd.getLogicalDocStruct();
+        if (logical == null) {
+            Helper.setFehlerMeldung(
+                    this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationError"));
+            problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationError"));
+            ergebnis = false;
+        }
+        // reset old errors
+
+        resetValidationErrors(logical);
+        // run through all metadata, reset validation messages
+        List<DocStruct> children = logical.getAllChildrenAsFlatList();
+        if (children != null) {
+            for (DocStruct child: children) {
+                resetValidationErrors(child);
+            }
+        }
+
+
+
         if (logical.getAllIdentifierMetadata() != null && logical.getAllIdentifierMetadata().size() > 0) {
             Metadata identifierTopStruct = logical.getAllIdentifierMetadata().get(0);
             try {
@@ -166,18 +185,12 @@ public class MetadatenVerifizierung {
         /*
          * -------------------------------- auf Docstructs ohne Seiten prüfen --------------------------------
          */
-        DocStruct logicalTop = dd.getLogicalDocStruct();
-        if (logicalTop == null) {
-            Helper.setFehlerMeldung(
-                    this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationError"));
-            problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationError"));
-            ergebnis = false;
-        }
+
 
         if (ConfigurationHelper.getInstance().isMetsEditorValidateImages()) {
 
             this.docStructsOhneSeiten = new ArrayList<>();
-            this.checkDocStructsOhneSeiten(logicalTop);
+            this.checkDocStructsOhneSeiten(logical);
             if (this.docStructsOhneSeiten.size() != 0) {
                 for (Iterator<DocStruct> iter = this.docStructsOhneSeiten.iterator(); iter.hasNext();) {
                     DocStruct ds = iter.next();
@@ -314,6 +327,62 @@ public class MetadatenVerifizierung {
             problems.add(Helper.getTranslation("Error while writing metadata") + ": " + e.getMessage());
         }
         return ergebnis;
+    }
+
+    private void resetValidationErrors(DocStruct ds) {
+        if (ds.getAllMetadata() != null) {
+            for (Metadata md : ds.getAllMetadata()) {
+                md.setValidationErrorPresent(false);
+                md.setValidationMessage(null);
+            }
+        }
+        if (ds.getAllCorporates()!=null) {
+            for (Corporate md : ds.getAllCorporates()) {
+                md.setValidationErrorPresent(false);
+                md.setValidationMessage(null);
+            }
+
+        }
+        if (ds.getAllPersons()!=null) {
+            for (Person md : ds.getAllPersons()) {
+                md.setValidationErrorPresent(false);
+                md.setValidationMessage(null);
+            }
+        }
+        if (ds.getAllMetadataGroups()!=null) {
+            for (MetadataGroup mg : ds.getAllMetadataGroups()) {
+                resetMetadataGroupValidationErrors(mg);
+            }
+        }
+    }
+
+    private void resetMetadataGroupValidationErrors(MetadataGroup mg) {
+        if (mg.getMetadataList() != null) {
+            for (Metadata md : mg.getMetadataList()) {
+                md.setValidationErrorPresent(false);
+                md.setValidationMessage(null);
+            }
+        }
+        if (mg.getCorporateList()!=null) {
+            for (Corporate md : mg.getCorporateList()) {
+                md.setValidationErrorPresent(false);
+                md.setValidationMessage(null);
+            }
+
+        }
+        if (mg.getPersonList()!=null) {
+            for (Person md : mg.getPersonList()) {
+                md.setValidationErrorPresent(false);
+                md.setValidationMessage(null);
+            }
+        }
+        if (mg.getAllMetadataGroups()!=null) {
+            for (MetadataGroup sub : mg.getAllMetadataGroups()) {
+                resetMetadataGroupValidationErrors(sub);
+            }
+        }
+
+
     }
 
     private boolean isValidPathImageFiles(DocStruct phys, Prefs myPrefs) {
