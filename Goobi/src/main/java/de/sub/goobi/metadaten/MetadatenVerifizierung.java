@@ -444,8 +444,8 @@ public class MetadatenVerifizierung {
                 } else {
                     Metadata md = ll.get(0);
                     if (md.getValue() == null || md.getValue().equals("")) {
-                        //                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                        //                                + Helper.getTranslation("MetadataIsEmpty"));
+                                                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                                        + Helper.getTranslation("MetadataIsEmpty"));
                         addErrorToDocStructAndMetadata(inStruct, md, mdt.getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
                     }
                 }
