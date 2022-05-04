@@ -1788,7 +1788,7 @@ public class Metadaten implements Serializable {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -1851,8 +1851,8 @@ public class Metadaten implements Serializable {
                 meta.setValidationErrorPresent(metadata.isValidationErrorPresent());
                 meta.setValidationMessage(metadata.getValidationMessage());
                 //the validation error has been moved to the UI class (MetadatumImpl) and can be deleted from the UGH object
-                metadata.setValidationErrorPresent(false);
-                metadata.setValidationMessage(null);
+                //                metadata.setValidationErrorPresent(false);
+                //                metadata.setValidationMessage(null);
                 lsMeta.add(meta);
             }
         }
@@ -4557,7 +4557,7 @@ public class Metadaten implements Serializable {
                 }
             } else {
                 Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString()
-                        + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
+                + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
             }
         }
 

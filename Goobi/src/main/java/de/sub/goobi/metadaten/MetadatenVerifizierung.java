@@ -113,8 +113,6 @@ public class MetadatenVerifizierung {
         DocStruct logical = dd.getLogicalDocStruct();
         if (logical.getAllIdentifierMetadata() != null && logical.getAllIdentifierMetadata().size() > 0) {
             Metadata identifierTopStruct = logical.getAllIdentifierMetadata().get(0);
-            identifierTopStruct.setValidationErrorPresent(false);
-            identifierTopStruct.setValidationMessage("");
             try {
                 if (!identifierTopStruct.getValue().replaceAll("[\\w|-]", "").equals("")) {
                     String[] parameter = { identifierTopStruct.getType().getNameByLanguage(metadataLanguage),
@@ -223,9 +221,9 @@ public class MetadatenVerifizierung {
         if (select1List.size() > 0) {
             for (Iterator<String> iter = select1List.iterator(); iter.hasNext();) {
                 String temp = iter.next();
-                                Helper.setFehlerMeldung(
-                                        this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataSelectOneInvalidElement"),
-                                        temp);
+                Helper.setFehlerMeldung(
+                        this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataSelectOneInvalidElement"),
+                        temp);
                 problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
                         + Helper.getTranslation("MetadataSelectOneInvalidElement") + ": " + temp);
             }
@@ -266,7 +264,7 @@ public class MetadatenVerifizierung {
         List<String> expressionList = validateMetadatValues(dd.getLogicalDocStruct(), metadataLanguage);
         if (!expressionList.isEmpty()) {
             for (String text : expressionList) {
-                                Helper.setFehlerMeldung(text);
+                Helper.setFehlerMeldung(text);
                 problems.add(text);
             }
             ergebnis = false;
@@ -447,8 +445,8 @@ public class MetadatenVerifizierung {
                 } else {
                     Metadata md = ll.get(0);
                     if (md.getValue() == null || md.getValue().equals("")) {
-                                                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                                                        + Helper.getTranslation("MetadataIsEmpty"));
+                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                + Helper.getTranslation("MetadataIsEmpty"));
                         addErrorToDocStructAndMetadata(inStruct, md, mdt.getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
                     }
                 }
