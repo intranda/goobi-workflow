@@ -1,0 +1,253 @@
+<ui:composition
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:f="http://xmlns.jcp.org/jsf/core"
+  template="/uii/templatePG/templatePG.html"
+  xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+  xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+  xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<ui:param
+  name="myPageTitle"
+  value="Design System" />
+
+<ui:define name="breadcrumb">
+    <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+    <intranda:breadcrumb id="admin" label="#{myPageTitle}" action="administration" noSeparator="#{true}" />
+</ui:define>
+
+<ui:define name="info">
+</ui:define>
+
+<ui:define name="content">
+<main id="designSystem" class="flow">
+
+  <c:set var="colors" value="#{[
+    ['primary', ['#368ee0', 'rgb(54, 142, 224)', 'hsl(209, 73%, 55%)']],
+    ['info', ['#666666', 'rgb(102, 102, 102)', 'hsl(0, 0%, 40%)']],
+    ['action', ['#e8860c', 'rgb(232, 134, 12))', 'hsl(33, 90%, 48%)']],
+    ['success', ['#198754', '	rgb(25, 135, 84)', '	hsl(152, 69%, 31%)']],
+    ['hot', ['#ba324f', 'rgb(186, 50, 79)', 'hsl(347, 58%, 46%)']]
+  ]}" />
+
+  <c:set var="textColors" value="#{[
+    ['text-white', ['	#ffffff', 'rgb(255, 255, 255)', 'hsl(0, 0%, 100%)'],'#2a2a2a' ],
+    ['text-400', ['#2a2a2a', 'rgb(42, 42, 42)', 'hsl(0, 0%, 16%)'], '#ffffff']
+  ]}" />
+
+  <!-- COLORS -->
+  <section class="colors">
+    <h2>Colors</h2>
+
+    <!-- BACKGROUND COLORS -->
+    <article class="flow">
+      <h3 class="description">Backgrounds</h3>
+
+      <c:forEach var="color" items="#{colors}">
+      <div class="color-box bg-#{color[0]} text-white d-flex flex-row p-3">
+          <div class="d-flex flex-column">
+
+            <c:forEach var="colorVal" items="#{color[1]}">
+              <div>#{colorVal}</div>
+            </c:forEach>
+
+          </div>
+          <div class="ms-auto p-3 fw-bold" style="border: 1px solid">
+            .bg-#{color[0]}
+          </div>
+        </div>
+      </c:forEach>
+
+    </article>
+
+    <!-- TEXT COLORS -->
+    <article class="flow">
+      <h3 class="description">Text</h3>
+
+      <c:forEach var="color" items="#{textColors}">
+      <div
+        class="d-flex flex-row p-3 #{color[0]}"
+        style="background-color: #{color[2]}; border: 1px solid #{colors[0][1][0]}"
+      >
+        <div class="d-flex flex-column">
+
+          <c:forEach var="colorVal" items="#{color[1]}">
+            <div>#{colorVal}</div>
+          </c:forEach>
+
+        </div>
+        <div class="ms-auto p-3 fw-bold" style="border: 1px solid">
+          .#{color[0]}
+        </div>
+      </div>
+
+      </c:forEach>
+
+    </article>
+
+  </section>
+
+
+  <!-- TYPOGRAPHY -->
+  <section class="typography">
+    <h2>Typography</h2>
+
+    <!-- HEADING STYLES -->
+    <article class="headings">
+      <h3 class="description">
+        Heading 1 - Goobi2 (Open Sans Regular) - 3rem (30px)
+      </h3>
+      <div class="page-header">
+        <h1>User groups</h1>
+      </div>
+
+      <h3 class="description">
+        Heading 2 - Goobi2 (Open Sans Regular) - 1.5rem (15px)
+      </h3>
+
+      <div class="flow">
+       <intranda:box
+          boxType="blank"
+          icon="fa-hand-spock-o"
+          title="Box heading"
+          padding="p-3">
+       </intranda:box>
+
+       <intranda:box
+         id="index"
+          boxType="primary"
+          icon="fa-heart"
+          title="Box heading"
+          padding="p-3">
+       </intranda:box>
+
+       <intranda:box
+         id="index1"
+          boxType="action"
+          icon="fa-heart"
+          title="Box heading"
+          padding="p-3">
+       </intranda:box>
+
+      </div>
+    </article>
+
+    <!-- BODY TEXT -->
+    <article>
+      <h3 class="description">
+        Body text - Goobi2 (Open Sans Regular) - 1.2rem (12px)
+      </h3>
+      <div class="fs-400">
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellendus ipsa nobis, dolores blanditiis praesentium aperiam! Nesciunt, inventore delectus sequi nobis, dolorum cumque illo necessitatibus voluptatibus temporibus veritatis tempora facilis perspiciatis.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellendus ipsa nobis, dolores blanditiis praesentium aperiam! Nesciunt, inventore delectus sequi nobis, dolorum cumque illo necessitatibus voluptatibus temporibus veritatis tempora facilis perspiciatis.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellendus ipsa nobis, dolores blanditiis praesentium aperiam! Nesciunt, inventore delectus sequi nobis, dolorum cumque illo necessitatibus voluptatibus temporibus veritatis tempora facilis perspiciatis.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellendus ipsa nobis, dolores blanditiis praesentium aperiam! Nesciunt, inventore delectus sequi nobis, dolorum cumque illo necessitatibus voluptatibus temporibus veritatis tempora facilis perspiciatis.</p>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- INTERACTIVE ELEMENTS -->
+  <section class="interactive-els">
+    <h2>Interactive Elements</h2>
+    <article>
+      <h3 class="description">Buttons</h3>
+
+      <!-- Link appearing like a button -->
+      <a class="btn btn-primary" href="#" role="button">Link</a>
+
+      <!-- Button styles -->
+      <c:forEach var="color" items="#{colors}">
+        <button type="button" class="btn btn-#{color[0]}">#{color[0]}</button>
+      </c:forEach>
+
+    </article>
+    <article>
+      <h3 class="description">Links</h3>
+    </article>
+  </section>
+
+  <!-- BOXES -->
+  <section class="boxes">
+    <h2>Boxes</h2>
+
+    <!-- Example box -->
+    <ui:include src="templatePG/includes/design_system/box.xhtml" />
+
+    <div class="flow">
+      <h3 class="description">Box variants - boxes can be styled using the &lt;intranda:box&gt; composite</h3>
+
+      <!-- Color switch -->
+      <div class="switch">
+
+        <!-- Button styles -->
+        <button type="button" class="btn btn-blank" style="border: 2px solid var(--clr-neutral-400)">blank</button>
+
+        <c:forEach var="color" items="#{colors}">
+          <button type="button" class="btn btn-#{color[0]}">#{color[0]}</button>
+        </c:forEach>
+
+      </div>
+
+      <!-- Code block -->
+      <div class="code-block">
+        <pre class="bg-primary text-white" style="border-radius: var(--border-radius)"><code>
+          &lt;intranda:box
+            boxType=&quot;blank&quot;
+            icon=&quot;fa-search&quot;
+            title=&quot;#{msgs.search}&quot;
+            padding=&quot;p-0&quot;&gt;
+
+          &lt;!-- Your markup here --&gt;
+
+          &lt;/intranda:box&gt;
+        </code></pre>
+      </div>
+
+    </div>
+
+    <!-- Change box color + code block content -->
+    <script>
+      const boxCode = `
+        &lt;intranda:box
+          boxType=&quot;{%type%}&quot;
+          icon=&quot;fa-search&quot;
+          title=&quot;#{msgs.search}&quot;
+          padding=&quot;p-0&quot;&gt;
+
+        &lt;!-- Your markup here --&gt;
+
+        &lt;/intranda:box&gt;
+      `
+      const applyStyles = (e) => {
+        const box = document.querySelector('.boxes .box');
+        const codeBlock = document.querySelector('.code-block code')
+        const clName = e.target.classList[1].replace('btn-', 'box--');
+        box.classList.remove(box.classList[1])
+        box.classList.add(clName)
+        codeBlock.innerText =  boxCode.replace('{%type%}', clName.replace('box--', ''));
+      }
+
+      document.querySelectorAll('.switch > .btn').forEach((btn) => btn.addEventListener('click', applyStyles));
+    </script>
+
+  </section>
+
+  <!-- TABLES -->
+  <section class="tables">
+    <h2>Tables</h2>
+  </section>
+
+  <!-- FORMS -->
+  <section class="forms">
+    <h2>Forms</h2>
+  </section>
+
+</main>
+
+</ui:define>
+</ui:composition>

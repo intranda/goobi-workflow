@@ -1,0 +1,65 @@
+/* Base box */
+
+.box {
+  border: 2px solid var(--clr-neutral, #ddd);
+  border-radius: var(--border-radius);
+  // margin-top: 1rem; // remove + use flow class on cols in
+}
+
+.box-title {
+  color: var(--clr-white, #fff);
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0 7px 10px;
+  border-bottom: 2px solid var(--clr-neutral, #ddd);
+  background-color: var(--clr-neutral, #ddd);
+
+  a,
+  button {
+    color: currentColor;
+    .fa {
+      color: currentColor;
+      font-size: 1.4rem;
+    }
+  }
+
+  h2 {
+    color: currentColor;
+    font-size: 15px;
+    line-height: 24px;
+    margin: 3px 0 3px 0;
+    .fa {
+      margin: 0 10px 0 5px;
+    }
+  }
+}
+
+.box-content {
+  padding: 2rem;
+
+  &.nopadding {
+    padding: 0;
+  }
+}
+
+/* Box content without padding */
+
+.box-content.nopadding {
+  padding: 0;
+}
+
+.box--blank .box-title {
+  color: var(--clr-text-400);
+  background: transparent;
+}
+
+/* For each color in the $colors map, the fn returns snippets like this:
+ *
+.box.orange {
+  border-color: var(--clr-orange-400, #e8860c);
+  & .box-title {
+    background-color: var(--clr-orange-400, #e8860c);
+    border-color: var(--clr-orange-400, #e8860c);
+  }
+}
+*/

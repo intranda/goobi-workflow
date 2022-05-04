@@ -110,7 +110,7 @@
                                 jsf:id="link"
                                 aria-label="#{msgs.seite}" 
                                 jsf:immediate="true"
-                                class="button-link #{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'}"
+                                class="button-link #{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'} #{item.node.validationErrorPresent ? 'has-validation-error' : ''}"
                                 jsf:action="#{Metadaten.loadRightFrame}">
                                 <i class="fa fa-file-o" aria-hidden="true"></i>
 
@@ -135,7 +135,7 @@
 	                                <h:outputText styleClass="page-info" value="#{item.node.lastImage.right}" rendered="#{item.node.lastImage != null}" />
 	                                <h:outputText styleClass="page-infoLight" value=")" />
                                 </h:panelGroup>
-                                
+                                <i jsf:rendered="#{item.node.validationErrorPresent}" class="fa fa-exclamation-circle" style="margin-left: 5px" aria-hidden="true"></i>                          
                                 <x:updateActionListener property="#{Metadaten.myStrukturelement}"
                                     value="#{item.node.struct}" />
                                 <f:ajax execute="@form"

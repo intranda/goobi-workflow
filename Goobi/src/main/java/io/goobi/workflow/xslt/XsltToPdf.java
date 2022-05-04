@@ -50,7 +50,6 @@ import org.apache.fop.apps.MimeConstants;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.exceptions.ExportFileException;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -63,41 +62,123 @@ import lombok.extern.log4j.Log4j2;
 public class XsltToPdf {
 
     /**
-     * This method exports the production metadata as run note to a given stream. the docket.xsl has to be in the config-folder
-     * 
-     * @param process the process to export
-     * @param os the OutputStream to write the contents to
-     * @throws IOException
-     * @throws ExportFileException
+     * Generates the docket file (configurable type) for one process and writes the result to the given output stream. For the configuration of the
+     * parser, goobi/xslt/config.xml must be present. The provided template (xslt file) is used to build the docket file.
+     *
+     * @param process The process to export
+     * @param os The output stream to write the docket file to
+     * @param xsltfile The provided template file
+     * @param inexport The xslt preparator instance to start the export process
+     * @param type The type of the exported docker file. This could be MimeConstants.MIME_PDF or MimeConstants.MIME_TIFF for example
+     * @param dpi The resolution of the output file (in dots per inch)
+     * @throws IOException If anything went wrong while writing to the output stream
+     */
+    public void startExport(Process process, OutputStream os, String xsltfile, IXsltPreparator inexport, String type, int dpi) throws IOException {
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        inexport.startExport(process, out, null);
+
+        this.writeExportToFile(os, out, xsltfile, type, dpi, false);
+    }
+
+    /**
+     * Generates the docket file (configurable type) for multiple processes and writes the result to the given output stream. For the configuration of
+     * the parser, goobi/xslt/config.xml must be present. The provided template (xslt file) is used to build the docket file.
+     *
+     * @param processList The list of processes to export
+     * @param os The output stream to write the PDF file to
+     * @param xsltfile The provided template file
+     * @param type The type of the exported docker file. This could be MimeConstants.MIME_PDF or MimeConstants.MIME_TIFF for example
+     * @param dpi The resolution of the output file (in dots per inch)
+     * @throws IOException If anything went wrong while writing to the output stream
+     */
+    public void startExport(List<Process> processList, OutputStream os, String xsltfile, String type, int dpi) throws IOException {
+
+        XsltPreparatorDocket inexport = new XsltPreparatorDocket();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        inexport.startExport(processList, out, null);
+
+        this.writeExportToFile(os, out, xsltfile, type, dpi, true);
+    }
+
+    /**
+     * Generates the docket PDF file for one process and writes the result to the given output stream. For the configuration of the parser,
+     * goobi/xslt/config.xml must be present. The provided template (xslt file) is used to build the PDF file. The default DPI (dots per inch value)
+     * is 300.
+     *
+     * @param process The process to export
+     * @param os The output stream to write the PDF file to
+     * @param xsltfile The provided template file
+     * @param inexport The xslt preparator instance to start the export process
+     * @throws IOException If anything went wrong while writing to the output stream
      */
     public void startExport(Process process, OutputStream os, String xsltfile, IXsltPreparator inexport) throws IOException {
 
-        IXsltPreparator exl = inexport;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        exl.startExport(process, out, null);
+        inexport.startExport(process, out, null);
+
+        this.writeExportToFile(os, out, xsltfile, MimeConstants.MIME_PDF, 300, false);
+    }
+
+    /**
+     * Generates the docket PDF file for multiple processes and writes the result to the given output stream. For the configuration of the parser,
+     * goobi/xslt/config.xml must be present. The provided template (xslt file) is used to build the PDF file. The default DPI (dots per inch value)
+     * is 300.
+     *
+     * @param processList The list of processes to export
+     * @param os The output stream to write the PDF file to
+     * @param xsltfile The provided template file
+     * @throws IOException If anything went wrong while writing to the output stream
+     */
+    public void startExport(List<Process> processList, OutputStream os, String xsltfile) throws IOException {
+
+        XsltPreparatorDocket inexport = new XsltPreparatorDocket();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        inexport.startExport(processList, out, null);
+
+        this.writeExportToFile(os, out, xsltfile, MimeConstants.MIME_PDF, 300, true);
+    }
+
+    /**
+     * Generates the docket file (using the xslt file and the prepared byte output stream) and writes the byte output stream to the output stream. For
+     * the configuration of the parser, goobi/xslt/config.xml must be present.
+     *
+     * @param os The output stream to write the docket output to
+     * @param out The prepared byte output stream from the other methods
+     * @param xsltfile The xslt template file to generate the docket file with
+     * @param type The type of the exported docker file. This could be MimeConstants.MIME_PDF or MimeConstants.MIME_TIFF for example
+     * @param dpi The resolution of the output file (in dots per inch)
+     * @param isList Must be true if the above method was called with a list of processes, otherwise false
+     * @throws IOException If something went wrong while writing to the output streams
+     */
+    private void writeExportToFile(OutputStream os, ByteArrayOutputStream out, String xsltfile, String type, int dpi, boolean isList)
+            throws IOException {
 
         // generate pdf file
         StreamSource source = new StreamSource(new ByteArrayInputStream(out.toByteArray()));
         StreamSource transformSource = new StreamSource(xsltfile);
-        File xconf = new File(ConfigurationHelper.getInstance().getXsltFolder() + "config.xml");
-        FopConfParser parser = null;
-        try {
-            //parsing configuration
-            parser = new FopConfParser(xconf);
-        } catch (Exception e) {
-            log.error(e);
-            return;
 
+        FopConfParser parser = this.initializeFopConfParser();
+        if (parser == null) {
+            return;
         }
         //building the factory with the user options
         FopFactoryBuilder builder = parser.getFopFactoryBuilder();
         FopFactory fopFactory = builder.build();
-        FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+
         // transform xml
-        Transformer xslfoTransformer = getTransformer(transformSource);
         try {
-            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, outStream);
+            Transformer xslfoTransformer;
+            FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
+            foUserAgent.setTargetResolution(dpi);
+            Fop fop;
+            if (isList) {
+                xslfoTransformer = TransformerFactory.newInstance().newTransformer(transformSource);
+            } else {
+                xslfoTransformer = XsltToPdf.getTransformer(transformSource);
+            }
+            fop = fopFactory.newFop(type, foUserAgent, outStream);
             Result res = new SAXResult(fop.getDefaultHandler());
             xslfoTransformer.transform(source, res);
         } catch (FOPException e) {
@@ -112,58 +193,24 @@ public class XsltToPdf {
     }
 
     /**
-     * This method is used to generate the PDF out of the xls and xml file and writes
-     * it into the given output stream
-     * 
-     * @param processList list of processes to use for the xml generation
-     * @param os OutputStream where to write to
-     * @param xsltfile the name of the xsl file to use for the conversion
-     * 
-     * @throws IOException
+     * Initializes and returns the FOP parser. The config.xml file from goobi/xslt is used to setup the parser.
+     *
+     * @return The configured parser
      */
-    public void startExport(List<Process> processList, OutputStream os, String xsltfile) throws IOException {
-
-        XsltPreparatorDocket exl = new XsltPreparatorDocket();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        exl.startExport(processList, out, null);
-
-        // generate pdf file
-        StreamSource source = new StreamSource(new ByteArrayInputStream(out.toByteArray()));
-        StreamSource transformSource = new StreamSource(xsltfile);
-
+    private FopConfParser initializeFopConfParser() {
         File xconf = new File(ConfigurationHelper.getInstance().getXsltFolder() + "config.xml");
-        FopConfParser parser = null;
         try {
             //parsing configuration
-            parser = new FopConfParser(xconf);
+            return new FopConfParser(xconf);
         } catch (Exception e) {
             log.error(e);
-            return;
-
+            return null;
         }
-        //building the factory with the user options
-        FopFactoryBuilder builder = parser.getFopFactoryBuilder();
-        FopFactory fopFactory = builder.build();
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        // transform xml
-        try {
-            Transformer xslfoTransformer = TransformerFactory.newInstance().newTransformer(transformSource);
-            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, outStream);
-            Result res = new SAXResult(fop.getDefaultHandler());
-            xslfoTransformer.transform(source, res);
-        } catch (FOPException e) {
-            throw new IOException("FOPException occured", e);
-        } catch (TransformerException e) {
-            throw new IOException("TransformerException occured", e);
-        }
-
-        // write the content to output stream
-        byte[] pdfBytes = outStream.toByteArray();
-        os.write(pdfBytes);
     }
 
     /**
      * internal method to get a transformer object
+     * 
      * @param streamSource
      * @return
      */

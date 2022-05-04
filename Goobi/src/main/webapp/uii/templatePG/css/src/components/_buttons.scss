@@ -1,0 +1,18 @@
+.btn-link {
+  text-decoration: none;
+  background-color: transparent;
+  border-color: transparent;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+button,
+.btn {
+  font-size: var(--fs-400);
+  border-radius: var(--border-radius, 2px);
+  .fa {
+    margin-right: 0.4rem;
+  }
+}

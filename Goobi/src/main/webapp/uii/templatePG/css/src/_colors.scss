@@ -1,0 +1,105 @@
+@use "sass:color"; // Built-In Module to work with + manipulate colors
+
+// BS Overrides
+$primary: #368ee0;
+$info: #666666;
+
+$colors: (
+  primary-400: #368ee0,
+  primary-600: #1b67af,
+  neutral-200: #f4f4f4,
+  // neutral-400: #dddddd,
+  neutral-400: #aaaaaa,
+  neutral-600: #666666,
+  "white": #ffffff,
+  "black": #2a2a2a,
+  action: #e8860c,
+  hot: #ba324f,
+  // #e51400,
+  primary: #368ee0,
+  success: #198754,
+  info: #666666,
+  text-400: #2a2a2a,
+  blank: transparent,
+);
+
+:root {
+  // Generate a custom property for every entry in the $colors map; e.g:
+  // `--clr-primary-400: #368ee0;`
+
+  @each $name, $color in $colors {
+    --clr-#{$name}: #{$color};
+  }
+}
+
+// Generate background utilities; e.g:
+// `.bg-action`
+
+@each $name, $color in $colors {
+  .bg-#{$name} {
+    background-color: var(--clr-#{$name});
+  }
+}
+
+// Generate button utilities; e.g:
+// `.btn-action`
+
+@each $name, $color in $colors {
+  .btn-#{$name} {
+    background-color: #{$color};
+    border-color: #{$color};
+    @if $name == blank {
+      color: #000; // bg is transparent
+    } @else {
+      color: #fff; // bg is a color
+    }
+  }
+  .btn-#{$name}:hover {
+    background-color: darken($color, 5%);
+    border-color: darken($color, 5%);
+    @if $name == blank {
+      color: #000;
+    } @else {
+      color: #fff;
+    }
+  }
+}
+
+// Box utilities
+
+/* A base box can be colored using these utility classes
+ * Essentially the box header and the box border will change colors
+ * The class list should look like so: class="box box--action"
+ * $legacy-box-colors contains legacy classes
+ */
+
+@each $name, $color in $colors {
+  @if $name != blank {
+    .box.box--#{$name} {
+      border-color: $color;
+      & .box-title {
+        background-color: $color;
+        border-color: $color;
+      }
+    }
+  }
+}
+
+// Generate utilities for legacy classes
+$legacy-box-colors: (
+  // legacy .box modifiers
+  "lightgrey": var(--clr-info),
+  "box-color": var(--clr-primary-400),
+  "blue": var(--clr-primary-400),
+  "orange": var(--clr-action)
+);
+
+@each $name, $color in $legacy-box-colors {
+  .box.#{$name} {
+    border-color: $color;
+    & .box-title {
+      background-color: $color;
+      border-color: $color;
+    }
+  }
+}

@@ -117,7 +117,7 @@
 
                                     <intranda:formOutputText label="#{msgs.prozessvorlage}" field="#{MassImportForm.template.titel}" name="prozessvorlage" fieldStyle="form-control"/>
 
-                                    <intranda:formInputDropDownAjax id="plugin" ajaxEvent="change" ajaxRender="@form" label="#{msgs.importplugin}" field="#{MassImportForm.currentPlugin}" help="#{msgs.help_import_ImportPlugin}" name="firsttab_plugins" selectItems="#{MassImportForm.usablePluginsForRecords}" fieldStyle="form-control" required="true" var="step" itemLabel="#{step}" itemValue="#{step}" />
+                                    <intranda:formInputDropDownAjax id="plugin" ajaxEvent="change" ajaxRender="@form" label="#{msgs.importplugin}" field="#{MassImportForm.currentPlugin}" help="#{msgs.help_import_ImportPlugin}" name="firsttab_plugins" selectItems="#{MassImportForm.usablePluginsForRecords}" fieldStyle="form-control" required="true" var="step" itemLabel="#{step}" itemValue="#{step}" hidePleaseSelectMessage="#{MassImportForm.usablePluginsForFiles.size() gt 1 ? 'false' : 'true'}" />
 
                                     <intranda:formInputSelectMany id="collections" label="#{msgs.digitaleKollektionen}" field="#{MassImportForm.digitalCollections}" help="#{msgs.help_import_DigitalCollection}" name="firsttab_digitaleKollektionen" selectItems="#{MassImportForm.possibleDigitalCollection}" fieldStyle="form-control massimportListHeight" required="false" var="step" itemLabel="#{step}" itemValue="#{step}" />
 
@@ -132,7 +132,7 @@
 
                                     <intranda:formOutputText label="#{msgs.prozessvorlage}" field="#{MassImportForm.template.titel}" name="secondtab_prozessvorlage" fieldStyle="form-control" />
 
-                                   <intranda:formInputDropDownAjax id="plugin2" ajaxEvent="change" ajaxRender="@form" label="#{msgs.importplugin}" field="#{MassImportForm.currentPlugin}" help="#{msgs.help_import_ImportPlugin}" name="secondtab_plugins" selectItems="#{MassImportForm.usablePluginsForIDs}" fieldStyle="form-control" required="true" var="step" itemLabel="#{step}" itemValue="#{step}" />
+                                   <intranda:formInputDropDownAjax id="plugin2" ajaxEvent="change" ajaxRender="@form" label="#{msgs.importplugin}" field="#{MassImportForm.currentPlugin}" help="#{msgs.help_import_ImportPlugin}" name="secondtab_plugins" selectItems="#{MassImportForm.usablePluginsForIDs}" fieldStyle="form-control" required="true" var="step" itemLabel="#{step}" itemValue="#{step}" hidePleaseSelectMessage="#{MassImportForm.usablePluginsForFiles.size() gt 1 ? 'false' : 'true'}" />
 
                                     <intranda:formInputSelectMany id="collections2" label="#{msgs.digitaleKollektionen}" field="#{MassImportForm.digitalCollections}" help="#{msgs.help_import_DigitalCollection}" name="secondtab_digitaleKollektionen" selectItems="#{MassImportForm.possibleDigitalCollection}" fieldStyle="form-control massimportListHeight" required="false" var="step" itemLabel="#{step}" itemValue="#{step}" />
 
@@ -146,7 +146,7 @@
 
                                     <intranda:formOutputText label="#{msgs.prozessvorlage}" field="#{MassImportForm.template.titel}" name="third_prozessvorlage" fieldStyle="form-control" />
 
-                                    <intranda:formInputDropDownAjax id="plugin3" ajaxEvent="change" ajaxRender="@form" label="#{msgs.importplugin}" field="#{MassImportForm.currentPlugin}" help="#{msgs.help_import_ImportPlugin}" name="third_plugins" selectItems="#{MassImportForm.usablePluginsForFiles}" fieldStyle="form-control" required="true" var="step" itemLabel="#{step}" itemValue="#{step}" />
+                                    <intranda:formInputDropDownAjax id="plugin3" ajaxEvent="change" ajaxRender="@form" label="#{msgs.importplugin}" field="#{MassImportForm.currentPlugin}" help="#{msgs.help_import_ImportPlugin}" name="third_plugins" selectItems="#{MassImportForm.usablePluginsForFiles}" fieldStyle="form-control" required="true" var="step" itemLabel="#{step}" itemValue="#{step}" hidePleaseSelectMessage="#{MassImportForm.usablePluginsForFiles.size() gt 1 ? 'false' : 'true'}" />
 
                                     <intranda:formInputSelectMany id="collections3" label="#{msgs.digitaleKollektionen}" field="#{MassImportForm.digitalCollections}" help="#{msgs.help_import_DigitalCollection}" name="third_digitaleKollektionen" selectItems="#{MassImportForm.possibleDigitalCollection}" fieldStyle="form-control massimportListHeight" required="false" var="step" itemLabel="#{step}" itemValue="#{step}" />
 
@@ -180,7 +180,7 @@
                                         <h:outputLabel for="forth_plugins" styleClass="control-label col-sm-3" value="#{msgs.importplugin}" />
                                         <div class="col-sm-9">
                                             <h:selectOneMenu id="forth_plugins" styleClass="form-control" value="#{MassImportForm.currentPlugin}">
-                                                <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" itemDisabled="true" />
+                                                <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" itemDisabled="#{MassImportForm.usablePluginsForFiles.size() gt 1 ? 'false' : 'true'}" />
                                                 <f:selectItems value="#{MassImportForm.usablePluginsForFolder}" var="step" itemLabel="#{step}" itemValue="#{step}" />
                                                 <f:ajax render="@form" event="change" />
                                             </h:selectOneMenu>
