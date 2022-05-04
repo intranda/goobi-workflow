@@ -120,6 +120,7 @@ public class MetadatenVerifizierung {
                     String[] parameter = { identifierTopStruct.getType().getNameByLanguage(metadataLanguage),
                             logical.getType().getNameByLanguage(metadataLanguage) };
                     String errorText =  Helper.getTranslation("InvalidIdentifierCharacter", parameter);
+                    Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("InvalidIdentifierCharacter", parameter));
                     problems.add(errorText);
                     ergebnis = false;
                     addErrorToDocStructAndMetadata(logical, identifierTopStruct, errorText);
@@ -131,6 +132,7 @@ public class MetadatenVerifizierung {
                     String[] parameter = { identifierTopStruct.getType().getName(), logical.getType().getName(), firstChild.getType().getName() };
 
                     String errorText = Helper.getTranslation("InvalidIdentifierSame", parameter);
+                    Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("InvalidIdentifierSame", parameter));
                     problems.add(errorText);
                     ergebnis = false;
                     addErrorToDocStructAndMetadata(logical, identifierTopStruct, errorText);
@@ -140,6 +142,7 @@ public class MetadatenVerifizierung {
                 if (!identifierFirstChild.getValue().replaceAll("[\\w|-]", "").equals("")) {
                     String[] parameter = { identifierTopStruct.getType().getNameByLanguage(metadataLanguage),
                             firstChild.getType().getNameByLanguage(metadataLanguage) };
+                    Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("InvalidIdentifierCharacter", parameter));
                     String errorText = Helper.getTranslation("InvalidIdentifierCharacter", parameter);
                     problems.add(errorText);
                     ergebnis = false;
@@ -220,9 +223,9 @@ public class MetadatenVerifizierung {
         if (select1List.size() > 0) {
             for (Iterator<String> iter = select1List.iterator(); iter.hasNext();) {
                 String temp = iter.next();
-                //                Helper.setFehlerMeldung(
-                //                        this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataSelectOneInvalidElement"),
-                //                        temp);
+                                Helper.setFehlerMeldung(
+                                        this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataSelectOneInvalidElement"),
+                                        temp);
                 problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
                         + Helper.getTranslation("MetadataSelectOneInvalidElement") + ": " + temp);
             }
@@ -263,7 +266,7 @@ public class MetadatenVerifizierung {
         List<String> expressionList = validateMetadatValues(dd.getLogicalDocStruct(), metadataLanguage);
         if (!expressionList.isEmpty()) {
             for (String text : expressionList) {
-                //                Helper.setFehlerMeldung(text);
+                                Helper.setFehlerMeldung(text);
                 problems.add(text);
             }
             ergebnis = false;
