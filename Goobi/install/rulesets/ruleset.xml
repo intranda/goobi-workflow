@@ -2871,6 +2871,7 @@
     <metadata num="*">Note</metadata>
     <metadata num="*">Abstract</metadata>
     <metadata num="1o">_directionRTL</metadata>
+    <metadata num="1o">_dateDigitization</metadata>
   </DocStrctType>
   <DocStrctType>
     <Name>Obituary</Name>
