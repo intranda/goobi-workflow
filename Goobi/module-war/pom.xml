@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.intranda.goobi.workflow</groupId>
 	<artifactId>goobi-core-war</artifactId>
-	<version>22.04.1-SNAPSHOT</version>
+	<version>LOGIN</version>
 	<packaging>war</packaging>
 	<scm>
 		<url>scm:git:https://github.com/intranda/goobi-workflow</url>

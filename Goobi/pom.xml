@@ -4,7 +4,7 @@
     <artifactId>goobi-core</artifactId>
     <!-- When updating the version, make sure to also update the version in
         the submodules -->
-    <version>22.04.1-SNAPSHOT</version>
+    <version>LOGIN</version>
     <packaging>pom</packaging>
 
     <modules>
