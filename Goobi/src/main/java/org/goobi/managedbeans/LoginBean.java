@@ -108,6 +108,9 @@ public class LoginBean implements Serializable {
     @Setter
     private String ssoError;
 
+    // Length needed in "createRandomPassword(int length)"
+    public static final int DEFAULT_PASSWORD_LENGTH = 10;
+
     public LoginBean() {
         super();
         ConfigurationHelper config = ConfigurationHelper.getInstance();
