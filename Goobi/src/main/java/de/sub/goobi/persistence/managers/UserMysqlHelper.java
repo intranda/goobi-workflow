@@ -277,6 +277,7 @@ class UserMysqlHelper implements Serializable {
                                         ro.getProcessListDefaultSortOrder(), ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(),
                                         ro.isDisplayLastEditionDate(), ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(),
                                         ro.getUiMode(), ro.getStatus().getName(), additionalData);
+
             }
 
             if (SendMail.getInstance().getConfig().isEnableMail()) {

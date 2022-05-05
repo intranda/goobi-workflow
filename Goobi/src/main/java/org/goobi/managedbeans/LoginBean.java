@@ -108,9 +108,6 @@ public class LoginBean implements Serializable {
     @Setter
     private String ssoError;
 
-    // Length needed in "createRandomPassword(int length)"
-    public static final int DEFAULT_PASSWORD_LENGTH = 10;
-
     public LoginBean() {
         super();
         ConfigurationHelper config = ConfigurationHelper.getInstance();
@@ -271,41 +268,46 @@ public class LoginBean implements Serializable {
 
     public String PasswortAendernSpeichern() {
 
-        // User has to insert his old password a last time
-        if (this.myBenutzer.istPasswortKorrekt(this.passwortAendernAlt)) {
-
-            // Both new passwords have to be the same
-            if (this.passwortAendernNeu1.equals(this.passwortAendernNeu2)) {
-
-                try {
-                    // Passwords are correct, now the new password can be stored
-
-                    if (AuthenticationType.LDAP.equals(this.myBenutzer.getLdapGruppe().getAuthenticationTypeEnum())
-                            && !myBenutzer.getLdapGruppe().isReadonly()) {
-
-                        LdapAuthentication myLdap = new LdapAuthentication();
-                        myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
-                    }
-                    User currentUser = UserManager.getUserById(this.myBenutzer.getId());
-                    // TODO
-                    // temp.setPasswortCrypt(this.passwortAendernNeu1);
-                    UserBean.saltAndSaveUserPassword(currentUser, this.passwortAendernNeu1);
-
-                    this.myBenutzer = currentUser;
-
-                    Helper.setMeldung("passwortGeaendert");
-                } catch (DAOException e) {
-                    Helper.setFehlerMeldung("could not save", e.getMessage());
-                } catch (NoSuchAlgorithmException e) {
-                    Helper.setFehlerMeldung("ldap errror", e.getMessage());
-                }
-            } else {
-                // New passwords weren't the same
-                Helper.setFehlerMeldung("neuesPasswortNichtGleich");
-            }
-        } else {
-            // Old password incorrect
+        // The user may only change the password with further authentication
+        if (!this.myBenutzer.istPasswortKorrekt(this.passwortAendernAlt)) {
             Helper.setFehlerMeldung("altesPasswortFalschEingegeben");
+            return "";
+        }
+
+        // Both text fields for the new password must contain the same password
+        if (!this.passwortAendernNeu1.equals(this.passwortAendernNeu2)) {
+            Helper.setFehlerMeldung("neuesPasswortNichtGleich");
+            return "";
+        }
+
+        // The new password must fulfill the minimum password length (read from default configuration file)
+        int minimumLength = ConfigurationHelper.getInstance().getMinimumPasswordLength();
+        if (this.passwortAendernNeu1.length() < minimumLength) {
+            Helper.setFehlerMeldung("neuesPasswortNichtLangGenug", "" + minimumLength);
+            return "";
+        }
+
+        try {
+            // Passwords are correct, now the new password can be stored
+
+            if (AuthenticationType.LDAP.equals(this.myBenutzer.getLdapGruppe().getAuthenticationTypeEnum())
+                    && !myBenutzer.getLdapGruppe().isReadonly()) {
+
+                LdapAuthentication myLdap = new LdapAuthentication();
+                myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
+            }
+            User currentUser = UserManager.getUserById(this.myBenutzer.getId());
+            // TODO
+            // temp.setPasswortCrypt(this.passwortAendernNeu1);
+            UserBean.saltAndSaveUserPassword(currentUser, this.passwortAendernNeu1);
+
+            this.myBenutzer = currentUser;
+
+            Helper.setMeldung("passwortGeaendert");
+        } catch (DAOException e) {
+            Helper.setFehlerMeldung("could not save", e.getMessage());
+        } catch (NoSuchAlgorithmException e) {
+            Helper.setFehlerMeldung("ldap errror", e.getMessage());
         }
         return "";
     }
