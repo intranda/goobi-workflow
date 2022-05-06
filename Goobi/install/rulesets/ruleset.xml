@@ -83,6 +83,11 @@
     <language name="es">Ubicación física</language>
   </MetadataType>
   <MetadataType>
+    <Name>ResourceLink</Name>
+    <language name="de">Link zur Ressource</language>
+    <language name="en">Resource link</language>
+  </MetadataType>  
+  <MetadataType>
     <Name>Sublocation</Name>
     <language name="de">Besitzende Institution</language>
     <language name="en">Possessing Institution</language>
@@ -1289,6 +1294,8 @@
     <metadata num="*">PhysicalLocation</metadata>
     <metadata num="*">StatementOfResponsibility</metadata>
     <metadata num="*">Abstract</metadata>
+    <metadata num="1o">ResourceLink</metadata>  
+    <metadata num="1o">Copyright</metadata>  
   </DocStrctType>
   <DocStrctType>
     <Name>Appendix</Name>
@@ -1893,6 +1900,8 @@
     <metadata num="*">BindingNote</metadata>
     <metadata num="*">CustodialHistory</metadata>
     <metadata num="*">Abstract</metadata>
+    <metadata num="1o">ResourceLink</metadata>
+    <metadata num="1o">Copyright</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>Incunable</Name>
@@ -2038,6 +2047,8 @@
     <metadata num="*">CustodialHistory</metadata>
     <metadata num="*">Abstract</metadata>
     <metadata num="1o">_directionRTL</metadata>
+    <metadata num="1o">ResourceLink</metadata>
+    <metadata num="1o">Copyright</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>Manuscript</Name>
@@ -2183,6 +2194,8 @@
     <metadata num="*">ReproductionNote</metadata>
     <metadata num="*">Abstract</metadata>
     <metadata num="1o">_directionRTL</metadata>
+    <metadata num="1o">ResourceLink</metadata>
+    <metadata num="1o">Copyright</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>SingleMap</Name>
@@ -2319,6 +2332,8 @@
     <metadata DefaultDisplay="true" num="*">Coordinates</metadata>
     <metadata num="*">Abstract</metadata>
     <metadata num="1o">_directionRTL</metadata>
+    <metadata num="1o">ResourceLink</metadata>
+    <metadata num="1o">Copyright</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>MusicSupplies</Name>
@@ -2435,6 +2450,8 @@
     <metadata num="*">Note</metadata>
     <metadata num="*">Abstract</metadata>
     <metadata num="1o">_directionRTL</metadata>
+    <metadata num="1o">ResourceLink</metadata>
+    <metadata num="1o">Copyright</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>ContainedWork</Name>
@@ -2539,6 +2556,8 @@
     <metadata num="*">Note</metadata>
     <metadata num="*">Abstract</metadata>
     <metadata num="1o">_directionRTL</metadata>
+    <metadata num="1o">ResourceLink</metadata>
+    <metadata num="1o">Copyright</metadata>
   </DocStrctType>
   <DocStrctType>
     <Name>AttachedWork</Name>
@@ -2872,6 +2891,8 @@
     <metadata num="*">Abstract</metadata>
     <metadata num="1o">_directionRTL</metadata>
     <metadata num="1o">_dateDigitization</metadata>
+    <metadata num="1o">ResourceLink</metadata>
+    <metadata num="1o">Copyright</metadata>
   </DocStrctType>
   <DocStrctType>
     <Name>Obituary</Name>
@@ -6135,6 +6156,10 @@
         <WriteXPath>./mods:mods/mods:location/#mods:shelfLocator
         </WriteXPath>
       </Metadata>
+         <Metadata>
+        <InternalName>ResourceLink</InternalName>
+        <WriteXPath>./mods:mods/mods:location/#url</WriteXPath>
+      </Metadata>
       <Metadata>
         <InternalName>_purl</InternalName>
         <WriteXPath>./mods:mods/mods:identifier[@type='purl']</WriteXPath>
@@ -6323,6 +6348,12 @@
         <InternalName>URN</InternalName>
         <WriteXPath>./mods:mods/#mods:identifier[@type='urn']</WriteXPath>
       </Metadata>
+      
+      <Metadata>
+        <InternalName>Copyright</InternalName>
+        <WriteXPath>./mods:mods/#mods:note[@type='creation/production credits']</WriteXPath>
+      </Metadata>      
+      
       <!-- Persons start -->
       <Metadata>
         <InternalName>Addressee</InternalName>
