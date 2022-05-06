@@ -38,8 +38,8 @@
         <ics.version>3.3.4</ics.version>
         <normdataimporter.version>1.9.1</normdataimporter.version>
         <ugh-core.version>5.0.6</ugh-core.version>
-        <ugh-marc.version>1.3.1</ugh-marc.version>
-        <ugh-lido.version>0.0.12</ugh-lido.version>
+        <ugh-marc.version>1.3.2</ugh-marc.version>
+        <ugh-lido.version>0.0.13</ugh-lido.version>
 
         <!-- Be careful with updates here -->
         <avalon-framework.version>4.2.0</avalon-framework.version>
