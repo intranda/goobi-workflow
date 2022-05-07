@@ -83,6 +83,11 @@
     <language name="es">Ubicación física</language>
   </MetadataType>
   <MetadataType>
+    <Name>ResourceLink</Name>
+    <language name="de">Link zur Ressource</language>
+    <language name="en">Resource link</language>
+  </MetadataType>  
+  <MetadataType>
     <Name>Sublocation</Name>
     <language name="de">Besitzende Institution</language>
     <language name="en">Possessing Institution</language>
@@ -605,7 +610,7 @@
     <language name="es">Idioma</language>
     <validationExpression>[a-z]{3}</validationExpression>
     <validationErrorMessage name="de">Der Wert muss ein dreistelliger ISO 639 Code sein. Vorgefunden wurde jedoch der Wert '{}'.</validationErrorMessage>
-    <validationErrorMessage name="en">The value '{}' does not correspond to a three-letter ISO 639 code.</validationErrorMessage>    
+    <validationErrorMessage name="en">The value '{}' does not correspond to a three-letter ISO 639 code.</validationErrorMessage>
   </MetadataType>
   <MetadataType>
     <Name>OrigLanguage</Name>
@@ -1289,6 +1294,8 @@
     <metadata num="*">PhysicalLocation</metadata>
     <metadata num="*">StatementOfResponsibility</metadata>
     <metadata num="*">Abstract</metadata>
+    <metadata num="1o">ResourceLink</metadata>  
+    <metadata num="1o">Copyright</metadata>  
   </DocStrctType>
   <DocStrctType>
     <Name>Appendix</Name>
@@ -1893,6 +1900,8 @@
     <metadata num="*">BindingNote</metadata>
     <metadata num="*">CustodialHistory</metadata>
     <metadata num="*">Abstract</metadata>
+    <metadata num="1o">ResourceLink</metadata>
+    <metadata num="1o">Copyright</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>Incunable</Name>
@@ -2038,6 +2047,8 @@
     <metadata num="*">CustodialHistory</metadata>
     <metadata num="*">Abstract</metadata>
     <metadata num="1o">_directionRTL</metadata>
+    <metadata num="1o">ResourceLink</metadata>
+    <metadata num="1o">Copyright</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>Manuscript</Name>
@@ -2183,6 +2194,8 @@
     <metadata num="*">ReproductionNote</metadata>
     <metadata num="*">Abstract</metadata>
     <metadata num="1o">_directionRTL</metadata>
+    <metadata num="1o">ResourceLink</metadata>
+    <metadata num="1o">Copyright</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>SingleMap</Name>
@@ -2319,6 +2332,8 @@
     <metadata DefaultDisplay="true" num="*">Coordinates</metadata>
     <metadata num="*">Abstract</metadata>
     <metadata num="1o">_directionRTL</metadata>
+    <metadata num="1o">ResourceLink</metadata>
+    <metadata num="1o">Copyright</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>MusicSupplies</Name>
@@ -2435,6 +2450,8 @@
     <metadata num="*">Note</metadata>
     <metadata num="*">Abstract</metadata>
     <metadata num="1o">_directionRTL</metadata>
+    <metadata num="1o">ResourceLink</metadata>
+    <metadata num="1o">Copyright</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>ContainedWork</Name>
@@ -2539,6 +2556,8 @@
     <metadata num="*">Note</metadata>
     <metadata num="*">Abstract</metadata>
     <metadata num="1o">_directionRTL</metadata>
+    <metadata num="1o">ResourceLink</metadata>
+    <metadata num="1o">Copyright</metadata>
   </DocStrctType>
   <DocStrctType>
     <Name>AttachedWork</Name>
@@ -2871,6 +2890,9 @@
     <metadata num="*">Note</metadata>
     <metadata num="*">Abstract</metadata>
     <metadata num="1o">_directionRTL</metadata>
+    <metadata num="1o">_dateDigitization</metadata>
+    <metadata num="1o">ResourceLink</metadata>
+    <metadata num="1o">Copyright</metadata>
   </DocStrctType>
   <DocStrctType>
     <Name>Obituary</Name>
@@ -3219,7 +3241,6 @@
     <metadata num="1m">logicalPageNumber</metadata>
     <metadata num="1m">physPageNumber</metadata>
   </DocStrctType>
-
   <DocStrctType>
     <Name>video</Name>
     <language name="de">Video</language>
@@ -3228,7 +3249,6 @@
     <metadata num="1m">logicalPageNumber</metadata>
     <metadata num="1m">physPageNumber</metadata>
   </DocStrctType>
-
   <DocStrctType>
     <Name>object</Name>
     <language name="de">3D Objekt</language>
@@ -3369,7 +3389,6 @@
             name (<Groupname> element) and the  name of the Metadata object in which the
             content should be stored.
             ================================================================================ -->
-
     <PicaPlus>
       <Metadata>
         <Name>Subject</Name>
@@ -3593,8 +3612,6 @@
         <picaSubTag type="partName">n</picaSubTag>
         <picaSubTag type="identifier">7</picaSubTag>
       </Person>
-
-
       <Metadata>
         <Name>Sublocation</Name>
         <picaMainTag>209A</picaMainTag>
@@ -3784,7 +3801,7 @@
           <fieldInd2>any</fieldInd2>
         </field>
         <separateEntries>true</separateEntries>
-        <fieldReplacement>s/[\xAC\x98\x9C]//g</fieldReplacement>        
+        <fieldReplacement>s/[\xAC\x98\x9C]//g</fieldReplacement>
       </Metadata>
       <Metadata>
         <Name>TitleDocParallel</Name>
@@ -3849,7 +3866,6 @@
         <fieldReplacement>s/\(.+\)//g</fieldReplacement>
         <separateEntries>true</separateEntries>
       </Metadata>
-
       <Metadata>
         <Name>DDC</Name>
         <field>
@@ -3865,9 +3881,8 @@
           <fieldInd2>any</fieldInd2>
         </field>
         <separateEntries>false</separateEntries>
-        <separator></separator>
+        <separator/>
       </Metadata>
-
       <Metadata>
         <Name>PlaceOfPublication</Name>
         <field>
@@ -4364,7 +4379,6 @@
         <separateEntries>true</separateEntries>
         <separator>; </separator>
       </Person>
-
       <Person>
         <Name>Cartographer</Name>
         <field>
@@ -4475,7 +4489,6 @@
         <separateEntries>true</separateEntries>
         <separator>; </separator>
       </Person>
-
       <Person>
         <Name>Dedicator</Name>
         <field>
@@ -4828,7 +4841,6 @@
         <separateEntries>true</separateEntries>
         <separator>; </separator>
       </Person>
-
       <!-- Persons end -->
       <!-- Corporations start -->
       <Corporate>
@@ -4909,7 +4921,6 @@
         <separateEntries>true</separateEntries>
         <separator>; </separator>
       </Corporate>
-
       <Corporate>
         <Name>CorporateCompiler</Name>
         <field>
@@ -5144,7 +5155,6 @@
         <separateEntries>true</separateEntries>
         <separator>; </separator>
       </Corporate>
-
       <Corporate>
         <Name>Degree granting institution</Name>
         <field>
@@ -5854,7 +5864,6 @@
             the MODSName element can have a role-attribute if the value of MODSName is
             "person".
             ================================================================================ -->
-
     <METS>
       <!-- Namespace definitions :
                                 If the METS' <NamespaceDefinition> has the attribute default="true", the METS namespace
@@ -6137,7 +6146,6 @@
         <InternalName>RestrictionOnAccessLicense</InternalName>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='restriction on access']</WriteXPath>
       </Metadata>
-
       <Metadata>
         <InternalName>PhysicalLocation</InternalName>
         <WriteXPath>./mods:mods/mods:location/#mods:physicalLocation
@@ -6147,6 +6155,10 @@
         <InternalName>shelfmarksource</InternalName>
         <WriteXPath>./mods:mods/mods:location/#mods:shelfLocator
         </WriteXPath>
+      </Metadata>
+         <Metadata>
+        <InternalName>ResourceLink</InternalName>
+        <WriteXPath>./mods:mods/mods:location/#url</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>_purl</InternalName>
@@ -6336,6 +6348,12 @@
         <InternalName>URN</InternalName>
         <WriteXPath>./mods:mods/#mods:identifier[@type='urn']</WriteXPath>
       </Metadata>
+      
+      <Metadata>
+        <InternalName>Copyright</InternalName>
+        <WriteXPath>./mods:mods/#mods:note[@type='creation/production credits']</WriteXPath>
+      </Metadata>      
+      
       <!-- Persons start -->
       <Metadata>
         <InternalName>Addressee</InternalName>
@@ -6377,7 +6395,6 @@
         <IdentifierXPath>../mods:name[@authority='gbv'][@ID='']
         </IdentifierXPath>
       </Metadata>
-
       <Metadata>
         <InternalName>Bearbeiter</InternalName>
         <WriteXPath>./mods:mods/#mods:name[@type='personal'][mods:role/mods:roleTerm="edt"[@authority='marcrelator'][@type='code']]
@@ -6448,7 +6465,6 @@
         <IdentifierXPath>../mods:name[@authority='gbv'][@ID='']
         </IdentifierXPath>
       </Metadata>
-
       <Metadata>
         <InternalName>Draftsman</InternalName>
         <WriteXPath>./mods:mods/#mods:name[@type='personal'][mods:role/mods:roleTerm="drm"[@authority='marcrelator'][@type='code']]
@@ -6598,8 +6614,6 @@
         <IdentifierXPath>../mods:name[@authority='gbv'][@ID='']
         </IdentifierXPath>
       </Metadata>
-
-
       <!-- Persons end -->
       <!-- Corporations start -->
       <Metadata>
@@ -6616,7 +6630,6 @@
         <SubNameXPath>./mods:namePart</SubNameXPath>
         <PartNameXPath>./mods:namePart</PartNameXPath>
       </Metadata>
-
       <Metadata>
         <InternalName>CorporateCompiler</InternalName>
         <WriteXPath>./mods:mods/#mods:name[@type='corporate'][mods:role/mods:roleTerm="com"[@authority='marcrelator'][@type='code']]</WriteXPath>
@@ -6680,7 +6693,6 @@
         <SubNameXPath>./mods:namePart</SubNameXPath>
         <PartNameXPath>./mods:namePart</PartNameXPath>
       </Metadata>
-
       <Metadata>
         <InternalName>HostInstitution</InternalName>
         <WriteXPath>./mods:mods/#mods:name[@type='corporate'][mods:role/mods:roleTerm="his"[@authority='marcrelator'][@type='code']]</WriteXPath>
@@ -6708,7 +6720,6 @@
         <InternalName>Subject</InternalName>
         <WriteXPath>./mods:mods/mods:extension/intranda:intranda/#intranda:subject</WriteXPath>
       </Metadata>
-
       <Metadata>
         <InternalName>SubjectCorporate</InternalName>
         <WriteXPath>./mods:mods/mods:subject/#mods:name[@type='corporate'][mods:role/mods:roleTerm="oth"[@authority='marcrelator'][@type='code']]</WriteXPath>
@@ -6716,7 +6727,6 @@
         <SubNameXPath>./mods:namePart</SubNameXPath>
         <PartNameXPath>./mods:namePart</PartNameXPath>
       </Metadata>
-
       <Metadata>
         <InternalName>SubjectForm</InternalName>
         <WriteXPath>./mods:mods/#mods:genre</WriteXPath>
