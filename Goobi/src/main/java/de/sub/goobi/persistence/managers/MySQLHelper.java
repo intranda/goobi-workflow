@@ -31,6 +31,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,8 +40,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -431,4 +440,73 @@ public class MySQLHelper implements Serializable {
         return answer;
     }
 
+    public static String convertDataToString(Map<String, String> additionalData) {
+        if (additionalData != null && !additionalData.isEmpty()) {
+            XStream xstream = new XStream();
+            xstream.registerConverter(new MapToStringConverter());
+            xstream.alias("root", Map.class);
+            return xstream.toXML(additionalData);
+        }
+        return null;
+    }
+
+    public static Map<String, String> convertStringToMap(String additionalData) {
+
+        if (StringUtils.isNotBlank(additionalData)) {
+            XStream xstream = new XStream();
+            xstream.registerConverter(new MapToStringConverter());
+            xstream.alias("root", Map.class);
+            xstream.allowTypes(new Class[] { Map.class });
+            @SuppressWarnings("unchecked")
+
+            Map<String, String> map = (HashMap<String, String>) xstream.fromXML(additionalData);
+            return map;
+        }
+
+        return new HashMap<>();
+    }
+
+    public static class MapToStringConverter implements Converter {
+
+
+        @Override
+        public boolean canConvert(Class clazz) {
+            return AbstractMap.class.isAssignableFrom(clazz);
+        }
+
+        @Override
+        public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
+
+            AbstractMap map = (AbstractMap) value;
+            for (Object obj : map.entrySet()) {
+                Map.Entry entry = (Map.Entry) obj;
+                writer.startNode(entry.getKey().toString());
+                Object val = entry.getValue();
+                if ( null != val ) {
+                    writer.setValue(val.toString());
+                }
+                writer.endNode();
+            }
+
+        }
+
+        @Override
+        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+
+            Map<String, String> map = new HashMap<>();
+
+            while(reader.hasMoreChildren()) {
+                reader.moveDown();
+
+                String key = reader.getNodeName(); // nodeName aka element's name
+                String value = reader.getValue();
+                map.put(key, value);
+
+                reader.moveUp();
+            }
+
+            return map;
+        }
+
+    }
 }

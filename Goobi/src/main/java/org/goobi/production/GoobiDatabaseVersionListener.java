@@ -56,43 +56,6 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         checkIndexes();
 
         DatabaseVersion.checkIfEmptyDatabase();
-
-
-        // TODO move to DatabaseVersion after merge into develop
-        if(!DatabaseVersion.checkIfColumnExists("benutzer", "displayrulesetcolumn")) {
-            try {
-                DatabaseVersion.runSql("ALTER TABLE benutzer ADD COLUMN displayrulesetcolumn boolean default false");
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        if(DatabaseVersion.checkIfColumnExists("projekte", "srurl")) {
-            try {
-                DatabaseVersion.runSql("alter table projekte drop column srurl;");
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-
-        if(!DatabaseVersion.checkIfColumnExists("projekte", "iiifUrl")) {
-            try {
-                DatabaseVersion.runSql("alter table projekte add column iiifUrl varchar(255) default null;");
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        if(!DatabaseVersion.checkIfColumnExists("projekte", "sruUrl")) {
-            try {
-                DatabaseVersion.runSql("alter table projekte add column sruUrl varchar(255) default null;");
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-
     }
 
 

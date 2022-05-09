@@ -139,8 +139,8 @@ public class LoginBean implements Serializable {
         try {
             if (config.isUseOIDCSSOLogout()) {
                 URIBuilder builder = new URIBuilder(config.getOIDCLogoutEndpoint());
-                builder.addParameter("post_logout_redirect_uri", hreq.getScheme() + "://" + hreq.getServerName() + ":"
-                        + hreq.getServerPort() + applicationPath + "/uii/logout.xhtml");
+                builder.addParameter("post_logout_redirect_uri",
+                        hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/uii/logout.xhtml");
                 ec.redirect(builder.build().toString());
             } else {
                 ec.redirect(applicationPath + "/uii/logout.xhtml");
@@ -175,13 +175,17 @@ public class LoginBean implements Serializable {
             // Log output is done in findUserByLoginName()
             return "";
         }
-
-        // Check whether the user is an active user and is not invisible
-        if (user.getIsVisible() != null || !user.isIstAktiv()) {
+        // check if user is allwed to log in
+        if (user.getStatus() == User.UserStatus.REGISTERED) {
+            // registration not finished, login not allowed
             Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
-            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User could not log in because account is not visible or not active.");
-            return "";
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User could not log in because account is not activated.");
+        } else if (user.getStatus() == User.UserStatus.DELETED || user.getStatus() == User.UserStatus.INACTIVE) {
+            // disabled, login not allowed
+            Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User could not log in because account is not active.");
         }
+
         log.trace(LoginBean.LOGIN_LOG_PREFIX + "The user is able to log in (user is visible and active).");
 
         // Check the password
@@ -342,8 +346,8 @@ public class LoginBean implements Serializable {
             URIBuilder builder = new URIBuilder(config.getOIDCAuthEndpoint());
             builder.addParameter("client_id", config.getOIDCClientID());
             builder.addParameter("response_type", "id_token");
-            builder.addParameter("redirect_uri", hreq.getScheme() + "://" + hreq.getServerName() + ":"
-                    + hreq.getServerPort() + applicationPath + "/api/login/openid");
+            builder.addParameter("redirect_uri",
+                    hreq.getScheme() + "://" + hreq.getServerName() + ":" + hreq.getServerPort() + applicationPath + "/api/login/openid");
             builder.addParameter("response_mode", "form_post");
             builder.addParameter("scope", "openid");
             builder.addParameter("nonce", nonce);
@@ -369,8 +373,7 @@ public class LoginBean implements Serializable {
             for (String filename : dateien) {
                 Path file = Paths.get(myPfad + filename);
                 try {
-                    if (System.currentTimeMillis()
-                            - StorageProvider.getInstance().getLastModifiedDate(file) > 7200000) {
+                    if (System.currentTimeMillis() - StorageProvider.getInstance().getLastModifiedDate(file) > 7200000) {
                         StorageProvider.getInstance().deleteDir(file);
                     }
                 } catch (IOException e) {
@@ -437,5 +440,9 @@ public class LoginBean implements Serializable {
             myColumns.add(string.trim());
         }
         return myColumns;
+    }
+
+    public boolean isUserCreationEnabled() {
+        return ConfigurationHelper.getInstance().isEnableExternalUserLogin();
     }
 }

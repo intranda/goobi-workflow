@@ -24,7 +24,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;
@@ -57,7 +56,7 @@ class InstitutionMysqlHelper implements Serializable {
                 log.trace(sql.toString());
             }
 
-            List<Institution> ret = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(Institution.class));
+            List<Institution> ret = new QueryRunner().query(connection, sql.toString(), InstitutionManager.resultSetToInstitutionListHandler);
             return ret;
         } finally {
             if (connection != null) {
@@ -95,7 +94,7 @@ class InstitutionMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            Institution ret = new QueryRunner().query(connection, sql.toString(), new BeanHandler<>(Institution.class));
+            Institution ret = new QueryRunner().query(connection, sql.toString(), InstitutionManager.resultSetToInstitutionHandler);
             return ret;
         } finally {
             if (connection != null) {
@@ -107,13 +106,13 @@ class InstitutionMysqlHelper implements Serializable {
     static Institution getInstitutionByName(String longName) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM institution WHERE longName  = ?" );
+        sql.append("SELECT * FROM institution WHERE longName  = ?");
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            Institution ret = new QueryRunner().query(connection, sql.toString(), new BeanHandler<>(Institution.class), longName);
+            Institution ret = new QueryRunner().query(connection, sql.toString(),InstitutionManager.resultSetToInstitutionHandler, longName);
             return ret;
         } finally {
             if (connection != null) {
@@ -122,7 +121,6 @@ class InstitutionMysqlHelper implements Serializable {
         }
     }
 
-
     static void saveInstitution(Institution ro) throws SQLException {
         Connection connection = null;
         try {
@@ -130,25 +128,27 @@ class InstitutionMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             StringBuilder sql = new StringBuilder();
 
+            String additionalData = MySQLHelper.convertDataToString(ro.getAdditionalData());
+
             if (ro.getId() == null) {
                 sql.append("INSERT INTO institution ( ");
-                sql.append("shortName, longName, allowAllRulesets, allowAllDockets, allowAllAuthentications, allowAllPlugins ");
+                sql.append("shortName, longName, allowAllRulesets, allowAllDockets, allowAllAuthentications, allowAllPlugins, additional_data ");
                 sql.append(") VALUES (");
-                sql.append("?,?,?,?,?,?");
+                sql.append("?,?,?,?,?,?,?");
                 sql.append(")");
 
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, ro.getShortName(), ro.getLongName(),
-                        ro.isAllowAllRulesets(), ro.isAllowAllDockets(), ro.isAllowAllAuthentications(), ro.isAllowAllPlugins());
+                        ro.isAllowAllRulesets(), ro.isAllowAllDockets(), ro.isAllowAllAuthentications(), ro.isAllowAllPlugins(), additionalData);
                 if (id != null) {
                     ro.setId(id);
                 }
             } else {
                 sql.append("update institution set ");
-                sql.append(
-                        "shortName = ?, longName = ?,  allowAllRulesets = ?, allowAllDockets = ?, allowAllAuthentications = ?, allowAllPlugins = ? ");
+                sql.append("shortName = ?, longName = ?,  allowAllRulesets = ?, allowAllDockets = ?, allowAllAuthentications = ?, ");
+                sql.append("allowAllPlugins = ?, additional_data = ? ");
                 sql.append(" WHERE id = ?");
-                run.update(connection, sql.toString(), ro.getShortName(), ro.getLongName(), ro.isAllowAllRulesets(),
-                        ro.isAllowAllDockets(), ro.isAllowAllAuthentications(), ro.isAllowAllPlugins(), ro.getId());
+                run.update(connection, sql.toString(), ro.getShortName(), ro.getLongName(), ro.isAllowAllRulesets(), ro.isAllowAllDockets(),
+                        ro.isAllowAllAuthentications(), ro.isAllowAllPlugins(), additionalData, ro.getId());
             }
 
             // save list of configured rulests, dockets, auth
@@ -254,7 +254,7 @@ class InstitutionMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Institution> ret = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(Institution.class));
+            List<Institution> ret = new QueryRunner().query(connection, sql.toString(),InstitutionManager.resultSetToInstitutionListHandler);
             return ret;
         } finally {
             if (connection != null) {
@@ -412,7 +412,6 @@ class InstitutionMysqlHelper implements Serializable {
             }
         }
     }
-
 
     static List<InstitutionConfigurationObject> getConfiguredDashboardPlugins(Integer institutionId, List<String> pluginNames) throws SQLException {
         StringBuilder sql = getPluginStatement(pluginNames, "dashboardPlugin");

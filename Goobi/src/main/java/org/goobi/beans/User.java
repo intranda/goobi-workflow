@@ -30,8 +30,10 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.faces.model.SelectItem;
@@ -78,12 +80,6 @@ public class User implements DatabaseObject {
     @Getter
     @Setter
     private String passwort;
-    @Getter
-    @Setter
-    private boolean istAktiv = true;
-    @Getter
-    @Setter
-    private String isVisible;
     @Getter
     @Setter
     private String standort;
@@ -278,8 +274,17 @@ public class User implements DatabaseObject {
     @Setter
     private String uiMode;
 
+    @Getter
+    @Setter
+    private UserStatus status = UserStatus.ACTIVE;
 
     private List<SelectItem> availableUiModes = null;
+
+    @Getter
+    @Setter
+    // any additional data is hold in a map and gets stored in an xml column, it is searchable using xpath
+    // individual values can be extracted: 'select ExtractValue(additional_data, '/root/key') from benutzer'
+    private Map<String, String> additionalData = new HashMap<>();
 
     @Override
     public void lazyLoad() {
@@ -522,14 +527,13 @@ public class User implements DatabaseObject {
      */
 
     public User selfDestruct() {
-        this.isVisible = "deleted";
         this.login = null;
-        this.istAktiv = false;
         this.vorname = null;
         this.nachname = null;
         this.standort = null;
         this.benutzergruppen = null;
         this.projekte = null;
+        this.status = UserStatus.DELETED;
         return this;
     }
 
@@ -538,8 +542,6 @@ public class User implements DatabaseObject {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((isVisible == null) ? 0 : isVisible.hashCode());
-        result = prime * result + (istAktiv ? 1231 : 1237);
         result = prime * result + ((login == null) ? 0 : login.hashCode());
         result = prime * result + ((nachname == null) ? 0 : nachname.hashCode());
         result = prime * result + ((vorname == null) ? 0 : vorname.hashCode());
@@ -563,16 +565,6 @@ public class User implements DatabaseObject {
                 return false;
             }
         } else if (!id.equals(other.id)) {
-            return false;
-        }
-        if (isVisible == null) {
-            if (other.isVisible != null) {
-                return false;
-            }
-        } else if (!isVisible.equals(other.isVisible)) {
-            return false;
-        }
-        if (istAktiv != other.istAktiv) {
             return false;
         }
         if (login == null) {
@@ -636,7 +628,7 @@ public class User implements DatabaseObject {
 
     public List<SelectItem> getAvailableUiModes() {
         if (availableUiModes == null) {
-            availableUiModes = new ArrayList<> ();
+            availableUiModes = new ArrayList<>();
             availableUiModes.add(new SelectItem("regular", Helper.getTranslation("user_ui_mode_regular")));
             availableUiModes.add(new SelectItem("low_vision", Helper.getTranslation("user_ui_mode_low_vision")));
             availableUiModes.add(new SelectItem("accessibility", Helper.getTranslation("user_ui_mode_accessibility_compatible")));
@@ -656,7 +648,6 @@ public class User implements DatabaseObject {
         }
         return dashboards;
     }
-
 
     public List<SelectItem> getTaskListColumnNames() {
         List<SelectItem> taskList = new ArrayList<>();
@@ -703,6 +694,41 @@ public class User implements DatabaseObject {
         }
 
         return taskList;
+    }
+
+    public boolean isActive() {
+        return status == UserStatus.ACTIVE;
+    }
+
+    public void setActive(boolean active) {
+        if (active) {
+            status = UserStatus.ACTIVE;
+        } else if (status == UserStatus.ACTIVE) {
+            status = UserStatus.INACTIVE;
+        }
+    }
+
+    public enum UserStatus {
+        REGISTERED("registered"),
+        ACTIVE("active"),
+        INACTIVE("inactive"),
+        DELETED("deleted");
+
+        @Getter
+        private String name;
+
+        private UserStatus(String name) {
+            this.name = name;
+        }
+
+        public static UserStatus getStatusByName(String name) {
+            for (UserStatus status : UserStatus.values()) {
+                if (status.getName().equals(name)) {
+                    return status;
+                }
+            }
+            return ACTIVE; // default status
+        }
     }
 
 }

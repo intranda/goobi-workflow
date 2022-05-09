@@ -101,6 +101,23 @@ public class XsltToPdf {
         this.writeExportToFile(os, out, xsltfile, type, dpi, true);
     }
 
+
+    public void startExport(Process process, OutputStream os, String xsltfile, IXsltPreparator inexport, String type, int dpi, boolean includeImage) throws IOException {
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        inexport.startExport(process, out, null, includeImage);
+
+        this.writeExportToFile(os, out, xsltfile, type, dpi, false);
+    }
+    public void startExport(List<Process> processList, OutputStream os, String xsltfile, String type, int dpi, boolean includeImage) throws IOException {
+
+        XsltPreparatorDocket inexport = new XsltPreparatorDocket();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        inexport.startExport(processList, out, null, includeImage);
+
+        this.writeExportToFile(os, out, xsltfile, type, dpi, true);
+    }
+
     /**
      * Generates the docket PDF file for one process and writes the result to the given output stream. For the configuration of the parser,
      * goobi/xslt/config.xml must be present. The provided template (xslt file) is used to build the PDF file. The default DPI (dots per inch value)
@@ -138,6 +155,9 @@ public class XsltToPdf {
 
         this.writeExportToFile(os, out, xsltfile, MimeConstants.MIME_PDF, 300, true);
     }
+
+
+
 
     /**
      * Generates the docket file (using the xslt file and the prepared byte output stream) and writes the byte output stream to the output stream. For

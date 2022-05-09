@@ -39,6 +39,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.goobi.managedbeans.LoginBean;
 
+import de.sub.goobi.config.ConfigurationHelper;
+
 public class SecurityCheckFilter implements Filter {
 
     @Inject
@@ -62,7 +64,9 @@ public class SecurityCheckFilter implements Filter {
         HttpServletRequest hreq = (HttpServletRequest) request;
         String url = hreq.getRequestURI();
         String destination = "index.xhtml";
-        if (((userBean == null || userBean.getMyBenutzer() == null)) && !url.contains("javax.faces.resource") && !url.contains("wi?")
+        if (url.contains("external_index.xhtml") && ConfigurationHelper.getInstance().isEnableExternalUserLogin()) {
+            chain.doFilter(request, response);
+        } else if (((userBean == null || userBean.getMyBenutzer() == null)) && !url.contains("javax.faces.resource") && !url.contains("wi?")
                 && !url.contains("currentUsers.xhtml") && !url.contains("logout.xhtml") && !url.contains("technicalBackground.xhtml")
                 && !url.contains("mailNotificationDisabled.xhtml") && !url.contains(destination)) {
             ((HttpServletResponse) response).sendRedirect(destination);

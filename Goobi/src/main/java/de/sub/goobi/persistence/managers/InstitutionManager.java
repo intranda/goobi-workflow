@@ -19,11 +19,13 @@ package de.sub.goobi.persistence.managers;
  * 
  */
 import java.io.Serializable;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;
@@ -200,4 +202,57 @@ public class InstitutionManager implements IManager, Serializable {
         }
         return answer;
     }
+
+
+    public static ResultSetHandler<Institution> resultSetToInstitutionHandler = new ResultSetHandler<Institution>() {
+        @Override
+        public Institution handle(ResultSet rs) throws SQLException {
+            try {
+                if (rs.next()) {
+                    return convert(rs);
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            return null;
+        }
+    };
+
+    public static ResultSetHandler<List<Institution>> resultSetToInstitutionListHandler = new ResultSetHandler<List<Institution>>() {
+        @Override
+        public List<Institution> handle(ResultSet rs) throws SQLException {
+            List<Institution> answer = new ArrayList<>();
+            try {
+                while (rs.next()) {
+                    Institution o = convert(rs);
+                    if (o != null) {
+                        answer.add(o);
+                    }
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            return answer;
+        }
+    };
+
+
+
+    private static Institution convert(ResultSet rs) throws SQLException {
+        Institution r = new Institution();
+        r.setId(rs.getInt("id"));
+        r.setShortName(rs.getString("shortName"));
+        r.setLongName(rs.getString("longName"));
+        r.setAllowAllRulesets(rs.getBoolean("allowAllRulesets"));
+        r.setAllowAllDockets(rs.getBoolean("allowAllDockets"));
+        r.setAllowAllAuthentications(rs.getBoolean("allowAllAuthentications"));
+        r.setAllowAllPlugins(rs.getBoolean("allowAllPlugins"));
+        r.setAdditionalData (MySQLHelper.convertStringToMap(rs.getString("additional_data")));
+        return r;
+    }
+
 }
