@@ -13,6 +13,24 @@
 }
 
 body {
-  font-family: Goobi2, sans-serif;
+  // font-family: Goobi2, sans-serif;
   font-size: var(--fs-400, 1.2rem);
+}
+
+:root {
+  --fs-200: 1rem;
+  --fs-400: 1.2rem;
+  --fs-600: 1.6rem;
+}
+
+.fs-200 {
+  font-size: var(--fs-200);
+}
+
+.fs-400 {
+  font-size: var(--fs-400);
+}
+
+.fs-600 {
+  font-size: var(--fs-600);
 }

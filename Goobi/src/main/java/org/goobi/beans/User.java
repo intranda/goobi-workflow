@@ -86,7 +86,7 @@ public class User implements DatabaseObject {
     @Setter
     private Integer tabellengroesse = Integer.valueOf(10);
     @Setter
-    private Integer sessiontimeout = 7200;
+    private Integer sessiontimeout = 14400;
     //	private boolean confVorgangsdatumAnzeigen = false;
     @Getter
     @Setter
@@ -456,7 +456,7 @@ public class User implements DatabaseObject {
 
     public Integer getSessiontimeout() {
         if (this.sessiontimeout == null) {
-            this.sessiontimeout = 7200;
+            this.sessiontimeout = 14400;
         }
         return this.sessiontimeout;
     }

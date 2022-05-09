@@ -27,6 +27,19 @@ td {
   .btn-group .btn:not(:first-of-type) {
     margin-right: 0.8rem;
   }
+  .btn {
+    // Display a margin when buttons are stacked
+    margin: 1px;
+  }
+}
+// Remove borders left + right if the table is in a box
+.box th:first-child,
+.box td:first-child {
+  border-left: 0px;
+}
+.box th:last-child,
+.box td:last-child {
+  border-right: 0px;
 }
 
 .table-hover > tbody > tr:hover > * {

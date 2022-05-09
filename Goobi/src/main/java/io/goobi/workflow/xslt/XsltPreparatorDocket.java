@@ -124,7 +124,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
     public void startExport(Process p, ServletOutputStream out) throws IOException {
         startExport(p, out, null);
     }
-    
+
     /**
      * This method exports the production metadata as xml to a given stream.
      * 
@@ -136,7 +136,23 @@ public class XsltPreparatorDocket implements IXsltPreparator {
     @Override
     public void startExport(Process process, OutputStream os, String xslt) throws IOException {
         try {
-            Document doc = createDocument(process, true);
+            Document doc = createDocument(process, true, true);
+
+            XMLOutputter outp = new XMLOutputter();
+            outp.setFormat(Format.getPrettyFormat());
+
+            outp.output(doc, os);
+            os.close();
+
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+    }
+
+    @Override
+    public void startExport(Process process, OutputStream os, String xslt, boolean includeImages) throws IOException {
+        try {
+            Document doc = createDocument(process, true, includeImages);
 
             XMLOutputter outp = new XMLOutputter();
             outp.setFormat(Format.getPrettyFormat());
@@ -156,7 +172,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @return a new xml document
      * @throws ConfigurationException
      */
-    public Document createDocument(Process process, boolean addNamespace) {
+    public Document createDocument(Process process, boolean addNamespace, boolean includeImages) {
 
         Element mainElement = new Element("process");
         Document doc = new Document(mainElement);
@@ -172,7 +188,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
             mainElement.setAttribute(attSchema);
         }
-        
+
         // add some general process information
         ArrayList<Element> elements = new ArrayList<>();
         Element processTitle = new Element("title", xmlns);
@@ -481,53 +497,54 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         } catch (JaxenException e) {
             log.error(e);
         }
-        
+
         try {
             // add the representative image
-            Element representative = new Element("representative", xmlns);
-            Path repImagePath = Paths.get(process.getRepresentativeImageAsString());
-            Image repimage = new Image(repImagePath, 0, 30000);
-            representative.setAttribute("path", process.getRepresentativeImageAsString());
-            representative.setAttribute("url", repimage.getThumbnailUrl());
-            elements.add(representative);
+            if (includeImages) {
+                Element representative = new Element("representative", xmlns);
+                Path repImagePath = Paths.get(process.getRepresentativeImageAsString());
+                Image repimage = new Image(repImagePath, 0, 30000);
+                representative.setAttribute("path", process.getRepresentativeImageAsString());
+                representative.setAttribute("url", repimage.getThumbnailUrl());
+                elements.add(representative);
 
-            // add all internal files
-            Path pIntern = Paths.get(process.getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
-            elements.add(getContentFiles("intern", pIntern.toString()));
+                // add all internal files
+                Path pIntern = Paths.get(process.getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
+                elements.add(getContentFiles("intern", pIntern.toString()));
 
-            // add all files from export folder
-            elements.add(getContentFiles("export", process.getExportDirectory()));
+                // add all files from export folder
+                elements.add(getContentFiles("export", process.getExportDirectory()));
 
-            // add all master files
-            elements.add(getContentFiles("master", process.getImagesOrigDirectory(false)));
+                // add all master files
+                elements.add(getContentFiles("master", process.getImagesOrigDirectory(false)));
 
-            // add all master files
-            elements.add(getContentFiles("media", process.getImagesTifDirectory(false)));
-        
+                // add all master files
+                elements.add(getContentFiles("media", process.getImagesTifDirectory(false)));
+            }
             // all log files together with their comments
             Element logfiles = new Element("log", xmlns);
             for (LogEntry entry : process.getProcessLog()) {
-                if (entry.getType()==LogType.FILE) {
+                if (entry.getType() == LogType.FILE) {
                     Element cf = new Element("file", xmlns);
                     //cf.addContent(entry.getThirdContent());
-                    if (entry.getContent()!= null) {
+                    if (entry.getContent() != null) {
                         cf.setAttribute("comment", entry.getContent());
                     }
                     cf.setAttribute("path", entry.getThirdContent());
-                    
+
                     Path imagePath = Paths.get(entry.getThirdContent());
                     Image image = new Image(imagePath, 0, 30000);
                     cf.setAttribute("url", image.getThumbnailUrl());
-                    
+
                     logfiles.addContent(cf);
                 }
             }
             elements.add(logfiles);
-            
+
         } catch (IOException | InterruptedException | SwapException | DAOException e1) {
             log.error("Error listing all files from content folders", e1);
         }
-        
+
         mainElement.setContent(elements);
         return doc;
     }
@@ -539,9 +556,9 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @param folder the folder to run through to list all files
      * 
      * @return the main xml element
-     * @throws IOException 
+     * @throws IOException
      */
-    private Element getContentFiles(String label, String folder) throws IOException{
+    private Element getContentFiles(String label, String folder) throws IOException {
         Element contentfiles = new Element(label, xmlns);
         List<Path> files = StorageProvider.getInstance().listFiles(folder, NIOFileUtils.fileFilter);
         for (Path p : files) {
@@ -553,7 +570,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         }
         return contentfiles;
     }
-    
+
     public List<Element> getMetsValues(String expression, Object element, List<Namespace> namespaces) throws JaxenException {
         XPathExpression<Element> xpath = XPathFactory.instance().compile(expression, Filters.element(), null, namespaces);
         return xpath.evaluate(element);
@@ -590,7 +607,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
     }
 
     public void startTransformation(Process p, OutputStream out, String filename) throws ConfigurationException, XSLTransformException, IOException {
-        Document doc = createDocument(p, true);
+        Document doc = createDocument(p, true, true);
         XmlTransformation(out, doc, filename);
     }
 
@@ -631,7 +648,44 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
         root.setAttribute(attSchema);
         for (Process p : processList) {
-            Document doc = createDocument(p, false);
+            Document doc = createDocument(p, false, true);
+            Element processRoot = doc.getRootElement();
+            processRoot.detach();
+            root.addContent(processRoot);
+        }
+
+        XMLOutputter outp = new XMLOutputter();
+        outp.setFormat(Format.getPrettyFormat());
+
+        try {
+
+            outp.output(answer, outputStream);
+        } catch (IOException e) {
+
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    outputStream = null;
+                }
+            }
+        }
+    }
+
+    public void startExport(List<Process> processList, OutputStream outputStream, String xslt, boolean includeImages) {
+        Document answer = new Document();
+        Element root = new Element("processes");
+        answer.setRootElement(root);
+        Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
+
+        Namespace xsi = Namespace.getNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        root.addNamespaceDeclaration(xsi);
+        root.setNamespace(xmlns);
+        Attribute attSchema = new Attribute("schemaLocation", "http://www.goobi.io/logfile" + " XML-logfile.xsd", xsi);
+        root.setAttribute(attSchema);
+        for (Process p : processList) {
+            Document doc = createDocument(p, false, includeImages);
             Element processRoot = doc.getRootElement();
             processRoot.detach();
             root.addContent(processRoot);
@@ -657,8 +711,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
     }
 
     /**
-     * Internal method to read additional fields from a separate configuration file. 
-     * There additional fields can be listed to request these as xpathes from METS afterwards 
+     * Internal method to read additional fields from a separate configuration file. There additional fields can be listed to request these as xpathes
+     * from METS afterwards
      * 
      * @param useAnchor
      * @return
@@ -692,7 +746,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
     }
 
     /**
-     * generate a namespace for the xml file 
+     * generate a namespace for the xml file
      * 
      * @return a list of namespaces
      */
@@ -1486,6 +1540,5 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         sorting.setAttribute("mediaFolderExists", String.valueOf(process.isMediaFolderExists()));
         processElement.addContent(sorting);
     }
-
 
 }

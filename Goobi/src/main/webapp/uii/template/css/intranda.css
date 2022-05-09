@@ -2397,6 +2397,18 @@ ul>li.yellow, .label-yellow {
 
 /* file upload button */
 
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+    border: 0;
+}
+
+body .ui-progressbar {
+    border-radius: 0px;
+}
+
+body .ui-progressbar .ui-progressbar-value {
+    border-radius: 0px;
+}
+
 .uploader:focus-within {
 	outline-offset: 2px;
 	outline: 5px auto -webkit-focus-ring-color;
@@ -2406,10 +2418,6 @@ ul>li.yellow, .label-yellow {
     border: none;
 }
 
-#upload .ui-widget-header {
-    background: #fff none repeat scroll 0 0;
-}
-
 #upload .ui-fileupload-choose {
     background: #368ee0 none repeat scroll 0 0;
     color: #fff;
@@ -2417,6 +2425,7 @@ ul>li.yellow, .label-yellow {
     border: 0 none;
     padding: 0.3em 1em;
     font-weight: 400;
+    border-radius: 0px;
 }
 
 #upload .ui-fileupload-buttonbar span.ui-button .ui-button-text {
@@ -2424,20 +2433,6 @@ ul>li.yellow, .label-yellow {
 }
 
 #upload .ui-fileupload-buttonbar span.ui-button span.ui-button-icon-left{
-    display: none;
-}
-
-#upload .ui-fileupload-files {
-    width: 100%;
-}
-
-.ui-fileupload-content .ui-progressbar {
-    width: 100px;
-    height: 20px;
-    margin: 0px;
-}
-
-#upload .ui-fileupload-files td:first-child {
     display: none;
 }
 
@@ -2459,8 +2454,37 @@ ul>li.yellow, .label-yellow {
     padding-top: 20px;
 }
 
-#upload .ui-fileupload-preview {
-    display: none;
+body .ui-button {
+    background: #368ee0;
+    color: #ffffff;
+    border: 0;
+    border-radius: 0px;
+    transition: 0;
+}
+
+body .ui-button.ui-button-icon-only .ui-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -0.7rem;
+    margin-left: -0.5rem;
+}
+
+body .ui-fileupload .ui-fileupload-buttonbar {
+	border: 0px solid #dee2e6;
+	background-color: white !important;
+}
+
+#upload .ui-widget-header {
+	background: #368ee0 none repeat scroll 0 0;
+}
+
+body .ui-widget {
+ 	font-size: 1.2rem;
+}
+
+body .ui-fileupload .ui-fileupload-content {
+    padding: 0.4rem;
 }
 
 .table.dataTable th:focus {
@@ -2493,10 +2517,6 @@ ul>li.yellow, .label-yellow {
 .swagger-ui .info .title small pre {
 	 background-color: transparent;
 	 border: none; 
-}
-
-.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
-	border: 1px solid #ccc;
 }
 
 .plugin-installer-line-number {
