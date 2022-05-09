@@ -2397,6 +2397,18 @@ ul>li.yellow, .label-yellow {
 
 /* file upload button */
 
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+    border: 0;
+}
+
+body .ui-progressbar {
+    border-radius: 0px;
+}
+
+body .ui-progressbar .ui-progressbar-value {
+    border-radius: 0px;
+}
+
 .uploader:focus-within {
 	outline-offset: 2px;
 	outline: 5px auto -webkit-focus-ring-color;
@@ -2413,6 +2425,7 @@ ul>li.yellow, .label-yellow {
     border: 0 none;
     padding: 0.3em 1em;
     font-weight: 400;
+    border-radius: 0px;
 }
 
 #upload .ui-fileupload-buttonbar span.ui-button .ui-button-text {
@@ -2439,6 +2452,14 @@ ul>li.yellow, .label-yellow {
 .draganddroparea {
     border: 2px dashed silver;
     padding-top: 20px;
+}
+
+body .ui-button {
+    background: #368ee0;
+    color: #ffffff;
+    border: 0;
+    border-radius: 0px;
+    transition: 0;
 }
 
 body .ui-button.ui-button-icon-only .ui-icon {
@@ -2496,10 +2517,6 @@ body .ui-fileupload .ui-fileupload-content {
 .swagger-ui .info .title small pre {
 	 background-color: transparent;
 	 border: none; 
-}
-
-.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
-	border: 1px solid #ccc;
 }
 
 .plugin-installer-line-number {
