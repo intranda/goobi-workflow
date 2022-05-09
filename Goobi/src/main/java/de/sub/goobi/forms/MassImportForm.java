@@ -100,6 +100,7 @@ public class MassImportForm implements Serializable {
     private ImportFormat format = null;
     // private List<String> usablePlugins = new ArrayList<String>();
     private final ImportPluginLoader ipl = new ImportPluginLoader();
+
     @Getter
     private String currentPlugin = "";
 
@@ -196,41 +197,46 @@ public class MassImportForm implements Serializable {
             return "";
         }
         if (this.template.getProjekt().getProjectIsArchived()) {
-            
-            Helper.setFehlerMeldung("projectIsArchived");    
+
+            Helper.setFehlerMeldung("projectIsArchived");
             return "";
         }
-        
+
         uploadedFile = null;
 
         initializePossibleDigitalCollections();
         // get navigationBean to set current tab and load the first selected plugin
+        // The plugin will only be set if there is exactly one plugin in the concerning list.
+        // Otherwise the user should select one in the GUI
 
-        if (!usablePluginsForRecords.isEmpty()) {
-            // select fist plugin
-            setCurrentPlugin(usablePluginsForRecords.get(0));
-            // activate first tab
+        if (!this.usablePluginsForRecords.isEmpty()) {
+            if (this.usablePluginsForRecords.size() == 1) {
+                this.setCurrentPlugin(this.usablePluginsForRecords.get(0));
+            }
             if (bean != null) {
                 bean.setActiveImportTab("recordImport");
             }
+
         } else if (!usablePluginsForIDs.isEmpty()) {
-            // select fist plugin
-            setCurrentPlugin(usablePluginsForIDs.get(0));
-            // activate first tab
+            if (this.usablePluginsForIDs.size() == 1) {
+                setCurrentPlugin(usablePluginsForIDs.get(0));
+            }
             if (bean != null) {
                 bean.setActiveImportTab("idImport");
             }
+
         } else if (!usablePluginsForFiles.isEmpty()) {
-            // select fist plugin
-            setCurrentPlugin(usablePluginsForFiles.get(0));
-            // activate first tab
+            if (this.usablePluginsForFiles.size() == 1) {
+                setCurrentPlugin(usablePluginsForFiles.get(0));
+            }
             if (bean != null) {
                 bean.setActiveImportTab("uploadImport");
             }
+
         } else if (!usablePluginsForFolder.isEmpty()) {
-            // select fist plugin
-            setCurrentPlugin(usablePluginsForFolder.get(0));
-            // activate first tab
+            if (this.usablePluginsForFolder.size() == 1) {
+                setCurrentPlugin(usablePluginsForFolder.get(0));
+            }
             if (bean != null) {
                 bean.setActiveImportTab("folder");
             }

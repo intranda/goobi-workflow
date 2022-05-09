@@ -76,7 +76,7 @@ public class ConfigurationHelper implements Serializable {
                 configLocal = new PropertiesConfiguration();
             }
         } catch (ConfigurationException e) {
-        	log.error(e);
+            log.error(e);
             config = new PropertiesConfiguration();
         }
 
@@ -102,7 +102,7 @@ public class ConfigurationHelper implements Serializable {
         try {
             return configLocal.getInt(inPath, config.getInt(inPath, inDefault));
         } catch (Exception e) {
-        	log.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return inDefault;
         }
     }
@@ -111,7 +111,7 @@ public class ConfigurationHelper implements Serializable {
         try {
             return configLocal.getInt(inPath, config.getInt(inPath));
         } catch (Exception e) {
-        	log.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return 0;
         }
     }
@@ -120,7 +120,7 @@ public class ConfigurationHelper implements Serializable {
         try {
             return configLocal.getLong(inPath, config.getLong(inPath, inDefault));
         } catch (Exception e) {
-        	log.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return inDefault;
         }
     }
@@ -129,7 +129,7 @@ public class ConfigurationHelper implements Serializable {
         try {
             return configLocal.getString(inPath, config.getString(inPath, inDefault));
         } catch (Exception e) {
-        	log.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             return inDefault;
         }
     }
@@ -213,7 +213,7 @@ public class ConfigurationHelper implements Serializable {
             try {
                 FilesystemHelper.createDirectory(filename);
             } catch (Exception ioe) {
-            	log.error("IO error: " + ioe);
+                log.error("IO error: " + ioe);
                 Helper.setFehlerMeldung(Helper.getTranslation("couldNotCreateImageFolder"), ioe.getMessage());
             }
         }
@@ -520,6 +520,12 @@ public class ConfigurationHelper implements Serializable {
     }
 
     // authentication
+
+    public int getMinimumPasswordLength() {
+        int minimum = getLocalInt("minimumPasswordLength", 8);
+        return minimum >= 1 ? minimum : 1;
+    }
+
     @Deprecated
     /**
      * This method is deprecated. The information was moved to the database. The method is still needed during the migration
@@ -1091,6 +1097,11 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("EnableHeaderLogin", false);
     }
 
+    public String getSsoParameterType() {
+        // 'header' or 'attribute'
+        return getLocalString("SsoParameterType", "header");
+    }
+
     public boolean isRenderReimport() {
         return getLocalBoolean("renderReimport", false);
     }
@@ -1189,7 +1200,7 @@ public class ConfigurationHelper implements Serializable {
             try (OutputStream out = Files.newOutputStream(fileLocal)) {
                 configLocal.save(out);
             } catch (IOException | ConfigurationException e) {
-            	log.error("Error saving local config: {}", e);
+                log.error("Error saving local config: {}", e);
             }
         }
     }

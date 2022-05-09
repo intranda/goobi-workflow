@@ -112,7 +112,15 @@
             <AppenderRef ref="STDOUT" />
         </Logger>
         
-        
+        <Logger name="org.goobi.api.mq.GoobiInternalDLQListener" level="fatal" additivity="false">
+            <AppenderRef ref="file" />
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+        <Logger name="org.goobi.api.mq.GoobiDefaultQueueListener" level="fatal" additivity="false">
+            <AppenderRef ref="file" />
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+                
         <Logger name="org.apache.catalina.connector.ClientAbortException" level="error" additivity="false">
             <AppenderRef ref="file" />
         </Logger>
