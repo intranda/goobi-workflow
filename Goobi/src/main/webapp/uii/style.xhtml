@@ -26,11 +26,13 @@
 <ui:define name="content">
 <main id="designSystem" class="flow">
 
+  <script src="https://cdn.jsdelivr.net/npm/microlight@0.0.7/microlight.min.js"></script>
+
 
 	<!-- COLOR VARS -->
 	<c:set var="colors" value="#{[
-    ['primary', ['#368ee0', 'rgb(54, 142, 224)', 'hsl(209, 73%, 55%)']],
-    ['info', ['#666666', 'rgb(102, 102, 102)', 'hsl(0, 0%, 40%)']],
+    ['primary-400', ['#368ee0', 'rgb(54, 142, 224)', 'hsl(209, 73%, 55%)']],
+    ['neutral-600', ['#666666', 'rgb(102, 102, 102)', 'hsl(0, 0%, 40%)']],
     ['action', ['#e8860c', 'rgb(232, 134, 12))', 'hsl(33, 90%, 48%)']],
     ['success', ['#198754', '	rgb(25, 135, 84)', '	hsl(152, 69%, 31%)']],
     ['hot', ['#ba324f', 'rgb(186, 50, 79)', 'hsl(347, 58%, 46%)']]
@@ -40,7 +42,6 @@
     ['text-white', ['	#ffffff', 'rgb(255, 255, 255)', 'hsl(0, 0%, 100%)'],'#2a2a2a' ],
     ['text-400', ['#2a2a2a', 'rgb(42, 42, 42)', 'hsl(0, 0%, 16%)'], '#ffffff']
   ]}" />
-
 
 
   <!-- COLORS -->
@@ -53,6 +54,18 @@
   <section class="typography">
     <h2>Typography</h2>
   	<ui:include src="templatePG/includes/design_system/typography.xhtml" />
+  </section>
+
+  <!-- Interactive Elements -->
+  <section class="interactive-els">
+    <h2>Interactive Elements</h2>
+  	<ui:include src="templatePG/includes/design_system/interactive_elements.xhtml" />
+  </section>
+
+  <!-- Spacing -->
+  <section class="typography">
+    <h2>Spacing</h2>
+
   </section>
 
   <!-- BOXES -->
@@ -69,6 +82,76 @@
   <!-- FORMS -->
   <section class="forms">
     <h2>Forms</h2>
+
+
+<article class="flow">
+  <h3 class="description">Form Actions</h3>
+
+	<intranda:box
+		boxType="blank"
+		icon="fa-puzzle-piece"
+		title="Example Form Actions"
+		padding="false">
+
+    <form>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Email address</label>
+        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
+        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+      </div>
+    </form>
+
+    <!-- FORM ACTIONS (save, cancel, delete)-->
+    <div class="form-actions">
+      <button class="btn btn-hot me-2"
+        onclick=""
+        jsf:action="#{yourBean.yourProp}"
+        jsf:rendered="#{not yourBean.yourProp}">
+        <i class="fa fa-trash ms-2"></i>
+        <span>#{msgs.loeschen}</span>
+      </button>
+      <button class="btn btn-primary-400 me-2" jsf:action="#{yourBean.yourProp}">
+        <i class="fa fa-save ms-2"></i>
+        <span>#{msgs.save}</span>
+      </button>
+      <button class="btn btn-blank"
+        jsf:immediate="true"
+        jsf:action="#{yourBean.yourMethod}">
+        <span>#{msgs.cancel}</span>
+      </button>
+    </div>
+
+  </intranda:box>
+
+      <!-- Code block -->
+<pre class="code--form-actions bg-primary text-white p-3" style="border-radius: var(--border-radius)">
+  <code class="microlight">
+
+&lt;!-- FORM ACTIONS (save, cancel, delete)--&gt;
+&lt;div class=&quot;form-actions&quot;&gt;
+  &lt;button class=&quot;btn btn-hot me-2&quot;
+    onclick=&quot;&quot;
+    jsf:action=&quot;#{yourBean.yourProp}&quot;
+    jsf:rendered=&quot;#{not yourBean.yourProp}&quot;&gt;
+    &lt;i class=&quot;fa fa-trash ms-2&quot;&gt;&lt;/i&gt;
+    &lt;span;&gt;#{msgs.loeschen}&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;button class=&quot;btn btn-primary-400 me-2&quot; jsf:action=&quot;#{yourBean.yourProp}&quot;&gt;
+    &lt;i class=&quot;fa fa-save ms-2&quot;&gt;&lt;/i&gt;
+    &lt;span;&gt;#{msgs.save}&lt;/span&gt;
+  &lt;/button&gt;
+  &lt;button class=&quot;btn btn-blank&quot;
+    jsf:immediate=&quot;true&quot;
+    jsf:action=&quot;#{yourBean.yourMethod}&quot;&gt;
+    &lt;span;&gt;#{msgs.cancel}&lt;/span&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  </code>
+</pre>
+
+</article>
+
   </section>
 
 </main>
