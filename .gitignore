@@ -2,10 +2,13 @@
 goobi1.9/work
 /build
 goobi1.9/build
-/WEB-INF/classes 
+/WEB-INF/classes
 goobi1.9/WEB-INF/classes
-.idea 
+.idea
 *.iml
 /.project
 *~
 /.DS_Store
+.DS_Store
+
+
