@@ -10783,6 +10783,7 @@ td .btn {
 }
 .form-group label {
   margin-bottom: 0.5rem;
+  font-weight: 600;
 }
 
 #processTable tr td:nth-of-type(2) span {
