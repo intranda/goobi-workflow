@@ -208,7 +208,7 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
             }
         }
 
-        //pages 
+        //pages
         MutablePair<String, String> first = this.metahelper.getImageNumber(parentStruct, MetadatenHelper.PAGENUMBER_FIRST);
         MutablePair<String, String> last = this.metahelper.getImageNumber(parentStruct, MetadatenHelper.PAGENUMBER_LAST);
 
@@ -217,7 +217,7 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
             mdPages.setAttribute("name", Helper.getTranslation("Pages"));
             mdPages.addContent(first.getRight() + " - " + last.getRight());
             node.addContent(mdPages);
-            
+
             Element mdImages = new Element("metadata", xmlns);
             mdImages.setAttribute("name", Helper.getTranslation("Images"));
             mdImages.addContent(first.getLeft() + " - " + last.getLeft());
@@ -300,5 +300,10 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
                 }
             }
         }
+    }
+
+    @Override
+    public void startExport(Process process, OutputStream os, String xsltfile, boolean includeImages) throws IOException {
+        startExport(process, os, xsltfile);
     }
 }
