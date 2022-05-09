@@ -4,8 +4,9 @@
     <artifactId>goobi-core</artifactId>
     <!-- When updating the version, make sure to also update the version in
         the submodules -->
-    <version>LOGIN</version>
+    <version>22.04.3-SNAPSHOT</version>
     <packaging>pom</packaging>
+
     <modules>
         <module>module-jar</module>
         <module>module-war</module>

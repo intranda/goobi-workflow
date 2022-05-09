@@ -7,7 +7,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.intranda.goobi.workflow</groupId>
 	<artifactId>goobi-core-jar</artifactId>
-	<version>LOGIN</version>
+	<version>22.04.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	
 	<build>
