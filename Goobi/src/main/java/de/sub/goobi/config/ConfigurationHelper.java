@@ -1102,6 +1102,18 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("SsoParameterType", "header");
     }
 
+    public boolean isEnableExternalUserLogin() {
+        return getLocalBoolean("EnableExternalUserLogin", false);
+    }
+
+    public String getExternalUserDefaultInstitutionName() {
+        return getLocalString("ExternalUserDefaultInstitution");
+    }
+
+    public String getExternalUserDefaultAuthenticationType() {
+        return getLocalString("ExternalUserDefaultAuthentication");
+    }
+
     public boolean isRenderReimport() {
         return getLocalBoolean("renderReimport", false);
     }

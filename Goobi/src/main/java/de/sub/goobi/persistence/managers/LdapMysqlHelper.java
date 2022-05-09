@@ -129,6 +129,24 @@ class LdapMysqlHelper implements Serializable {
         }
     }
 
+    public static Ldap getLdapByName(String name) throws SQLException {
+        Connection connection = null;
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM ldapgruppen WHERE titel = ?");
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            if (log.isTraceEnabled()) {
+                log.trace(sql.toString());
+            }
+            Ldap ret = new QueryRunner().query(connection, sql.toString(), new BeanHandler<>(Ldap.class), name);
+            return ret;
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
     public static void saveLdap(Ldap ro) throws SQLException {
         Connection connection = null;
         try {

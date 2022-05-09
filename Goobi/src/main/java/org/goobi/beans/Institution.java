@@ -2,7 +2,9 @@ package org.goobi.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
@@ -53,6 +55,12 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
     private List<InstitutionConfigurationObject> allowedStatisticsPlugins = new ArrayList<>();
     private List<InstitutionConfigurationObject> allowedDashboardPlugins = new ArrayList<>();
     private List<InstitutionConfigurationObject> allowedWorkflowPlugins = new ArrayList<>();
+
+    @Getter
+    @Setter
+    // any additional data is hold in a map and gets stored in an xml column, it is searchable using xpath
+    // individual values can be extracted: 'select ExtractValue(additional_data, '/root/key') from institution'
+    private Map<String, String> additionalData = new HashMap<>();
 
     @Override
     public int compareTo(Institution o) {
@@ -125,7 +133,6 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
         return allowedWorkflowPlugins;
     }
 
-
     public boolean isAdministrationPluginAllowed(String pluginName) {
         if (isAllowAllPlugins()) {
             return true;
@@ -174,4 +181,15 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
         return false;
     }
 
+    //    public String getAdditionalData(String key) {
+    //        String value = "";
+    //        if (additionalData.containsKey(key)) {
+    //            Collection<String> values = additionalData.get(key);
+    //            value = values.stream().findFirst().get();
+    //        } else {
+    //            additionalData.put(key, value);
+    //        }
+    //
+    //        return value;
+    //    }
 }

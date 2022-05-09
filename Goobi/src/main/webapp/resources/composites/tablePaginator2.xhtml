@@ -20,13 +20,13 @@
 				<button class="btn margin-sides-10 font-size-s"
 					jsf:action="#{cc.attrs.paginator.cmdMoveFirst}" jsf:id="navfirst2">
 					<i class="fa fa-angle-double-left"></i>
-					<f:ajax render=":myform" />
+					<f:ajax render="@form" />
 				</button>
 				<button class="btn btn-primary font-size-s"
 					jsf:action="#{cc.attrs.paginator.cmdMovePrevious}" jsf:id="navprev2">
 					<i class="fa fa-angle-left"></i>
 							#{msgs.pagePrevious}
-					<f:ajax render=":myform" />
+					<f:ajax render="@form" />
 				</button>
 
 				<div class="margin-sides-10">
@@ -53,12 +53,12 @@
 					jsf:action="#{cc.attrs.paginator.cmdMoveNext}" jsf:id="navnext2">
 							#{msgs.pageNext}
 							<i class="fa fa-angle-right"></i>
-					<f:ajax render=":myform" />
+					<f:ajax render="@form" />
 				</button>
 				<button class="btn margin-sides-10 font-size-s"
 					jsf:action="#{cc.attrs.paginator.cmdMoveLast}" jsf:id="navlast2">
 					<i class="fa fa-angle-double-right"></i>
-					<f:ajax render=":myform" />
+					<f:ajax render="@form" />
 				</button>
 			</div>
 		</h:panelGroup>

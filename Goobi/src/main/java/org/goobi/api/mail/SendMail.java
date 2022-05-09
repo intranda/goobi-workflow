@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -130,6 +131,12 @@ public class SendMail {
 
         private String apiUrl;
 
+        private String userCreationMailSubject;
+        private String userCreationMailBody;
+
+        private String userActivationMailSubject;
+        private String userActivationMailBody;
+
         public MailConfiguration() {
             String configurationFile = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_mail.xml";
             if (StorageProvider.getInstance().isFileExists(Paths.get(configurationFile))) {
@@ -153,6 +160,13 @@ public class SendMail {
                 smtpUseSsl = config.getBoolean("/configuration/smtpUseSsl", false);
                 smtpSenderAddress = config.getString("/configuration/smtpSenderAddress", null);
                 apiUrl = config.getString("/apiUrl", null);
+
+                userCreationMailSubject = config.getString("/userCreation/subject", null);
+                userCreationMailBody = config.getString("/userCreation/body", null);
+
+                userActivationMailSubject = config.getString("/userActivation/subject", null);
+                userActivationMailBody = config.getString("/userActivation/body", null);
+
             }
         }
 
@@ -169,36 +183,14 @@ public class SendMail {
      * @throws UnsupportedEncodingException
      */
 
-    private void postMail(List<User> recipients, String messageType, Step step) throws MessagingException, UnsupportedEncodingException {
+    private void sendStepStatusMail(List<User> recipients, String messageType, Step step) throws MessagingException, UnsupportedEncodingException {
 
         if (!config.isEnableMail()) {
             return;
         }
 
         // Set the host smtp address
-        Properties props = new Properties();
-        if (config.isSmtpUseStartTls()) {
-            props.setProperty("mail.transport.protocol", "smtp");
-            props.setProperty("mail.smtp.auth", "true");
-            props.setProperty("mail.smtp.port", "25");
-            props.setProperty("mail.smtp.host", config.getSmtpServer());
-            props.setProperty("mail.smtp.ssl.trust", "*");
-            props.setProperty("mail.smtp.starttls.enable", "true");
-            props.setProperty("mail.smtp.starttls.required", "true");
-        } else if (config.isSmtpUseSsl()) {
-            props.setProperty("mail.transport.protocol", "smtp");
-            props.setProperty("mail.smtp.host", config.getSmtpServer());
-            props.setProperty("mail.smtp.auth", "true");
-            props.setProperty("mail.smtp.port", "465");
-            props.setProperty("mail.smtp.ssl.enable", "true");
-            props.setProperty("mail.smtp.ssl.trust", "*");
-
-        } else {
-            props.setProperty("mail.transport.protocol", "smtp");
-            props.setProperty("mail.smtp.auth", "true");
-            props.setProperty("mail.smtp.port", "25");
-            props.setProperty("mail.smtp.host", config.getSmtpServer());
-        }
+        Properties props = prepareMail();
 
         // create a mail for each user
         for (User user : recipients) {
@@ -292,6 +284,33 @@ public class SendMail {
         }
     }
 
+    private Properties prepareMail() {
+        Properties props = new Properties();
+        if (config.isSmtpUseStartTls()) {
+            props.setProperty("mail.transport.protocol", "smtp");
+            props.setProperty("mail.smtp.auth", "true");
+            props.setProperty("mail.smtp.port", "25");
+            props.setProperty("mail.smtp.host", config.getSmtpServer());
+            props.setProperty("mail.smtp.ssl.trust", "*");
+            props.setProperty("mail.smtp.starttls.enable", "true");
+            props.setProperty("mail.smtp.starttls.required", "true");
+        } else if (config.isSmtpUseSsl()) {
+            props.setProperty("mail.transport.protocol", "smtp");
+            props.setProperty("mail.smtp.host", config.getSmtpServer());
+            props.setProperty("mail.smtp.auth", "true");
+            props.setProperty("mail.smtp.port", "465");
+            props.setProperty("mail.smtp.ssl.enable", "true");
+            props.setProperty("mail.smtp.ssl.trust", "*");
+
+        } else {
+            props.setProperty("mail.transport.protocol", "smtp");
+            props.setProperty("mail.smtp.auth", "true");
+            props.setProperty("mail.smtp.port", "25");
+            props.setProperty("mail.smtp.host", config.getSmtpServer());
+        }
+        return props;
+    }
+
     // replace the placeholder in mail template with variables
 
     private static String replaceParameterInString(String translatedTemplate, Map<String, String> parameterMap) {
@@ -335,10 +354,113 @@ public class SendMail {
             }
         }
         try {
-            postMail(recipients, stepStatus.getTitle(), step);
+            sendStepStatusMail(recipients, stepStatus.getTitle(), step);
         } catch (UnsupportedEncodingException | MessagingException e) {
             log.error(e);
         }
     }
 
+    /**
+     * Create a mail and send it to the recipient. Uses the configured {@link MailConfiguration} for communication with the mail server.
+     * 
+     * @param messageSubject the subject of the message
+     * @param messageBody the message body
+     * @param recipients list of email addresses
+     * 
+     */
+
+    public void sendMailToUser(String messageSubject, String messageBody, String recipient) {
+
+        if (!config.isEnableMail()) {
+            return;
+        }
+        Properties props = prepareMail();
+
+        try {
+            Address address = new InternetAddress(recipient);
+
+            Session session = Session.getDefaultInstance(props, null);
+            Message msg = new MimeMessage(session);
+
+            InternetAddress addressFrom = new InternetAddress(config.getSmtpSenderAddress());
+            msg.setFrom(addressFrom);
+            msg.setRecipient(Message.RecipientType.TO, address);
+
+            // create mail
+            MimeMultipart multipart = new MimeMultipart();
+
+            msg.setSubject(messageSubject);
+            MimeBodyPart messageHtmlPart = new MimeBodyPart();
+            messageHtmlPart.setText(messageBody, "utf-8");
+            messageHtmlPart.setHeader("Content-Type", "text/html; charset=\"utf-8\"");
+            multipart.addBodyPart(messageHtmlPart);
+
+            msg.setContent(multipart);
+            msg.setSentDate(new Date());
+
+            Transport transport = session.getTransport();
+            transport.connect(config.getSmtpUser(), config.getSmtpPassword());
+            transport.sendMessage(msg, msg.getRecipients(Message.RecipientType.TO));
+            transport.close();
+        } catch (MessagingException e) {
+            log.error(e);
+        }
+    }
+
+    /**
+     * Create a mail and send it to multiple recipients. Uses the configured {@link MailConfiguration} for communication with the mail server.
+     * 
+     * @param messageSubject the subject of the message
+     * @param messageBody the message body
+     * @param recipient destination email address
+     * @param blindCopy defines, if the mail is send as TO or as BCC
+     */
+
+    public void sendMailToUser(String messageSubject, String messageBody, List<String> recipients, boolean blindCopy) {
+
+        if (!config.isEnableMail()) {
+            return;
+        }
+        Properties props = prepareMail();
+
+        List<Address> addresses = new ArrayList<>(recipients.size());
+        // create a mail for each user
+        try {
+            for (String receiver : recipients) {
+                Address address = new InternetAddress(receiver);
+                addresses.add(address);
+            }
+
+            Session session = Session.getDefaultInstance(props, null);
+            Message msg = new MimeMessage(session);
+
+            InternetAddress addressFrom = new InternetAddress(config.getSmtpSenderAddress());
+            msg.setFrom(addressFrom);
+            if (blindCopy) {
+                msg.setRecipients(Message.RecipientType.BCC, addresses.toArray(new Address[addresses.size()]));
+            } else {
+                msg.setRecipients(Message.RecipientType.TO, addresses.toArray(new Address[addresses.size()]));
+            }
+            // create mail
+            MimeMultipart multipart = new MimeMultipart();
+
+            msg.setSubject(messageSubject);
+            MimeBodyPart messageHtmlPart = new MimeBodyPart();
+            messageHtmlPart.setText(messageBody, "utf-8");
+            messageHtmlPart.setHeader("Content-Type", "text/html; charset=\"utf-8\"");
+            multipart.addBodyPart(messageHtmlPart);
+
+            msg.setContent(multipart);
+            msg.setSentDate(new Date());
+
+            Transport transport = session.getTransport();
+            transport.connect(config.getSmtpUser(), config.getSmtpPassword());
+            transport.sendMessage(msg, msg.getRecipients(Message.RecipientType.TO));
+            transport.close();
+
+        } catch (MessagingException e) {
+            log.error(e);
+        }
+
+    }
 }
