@@ -6,6 +6,13 @@
   // margin-top: 1rem; // remove + use flow class on cols in
 }
 
+// Limit a box' size to half of the view port, and
+// put it in the center of the screen if there is only one box in the view
+.box {
+  max-width: 100rem;
+  margin: auto;
+}
+
 .box-title {
   color: var(--clr-white, #fff);
   display: flex;

@@ -1,0 +1,36 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<composite:interface />
+
+	<composite:implementation>
+
+    <article>
+      <h3 class="description">Buttons</h3>
+
+      <!-- Link appearing like a button -->
+      <a class="btn btn-primary" href="#" role="button">Link</a>
+
+      <!-- Button styles -->
+      <c:forEach var="color" items="#{colors}">
+        <button type="button" class="btn btn-#{color[0]}">#{color[0]}</button>
+      </c:forEach>
+
+    </article>
+    <article>
+      <h3 class="description">Links</h3>
+    </article>
+
+
+	</composite:implementation>
+</ui:composition>
