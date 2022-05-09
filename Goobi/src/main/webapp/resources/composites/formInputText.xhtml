@@ -22,11 +22,11 @@
 	</composite:interface>
 
 	<composite:implementation>
-		<div class="form-group d-flex" style="#{cc.attrs.style}">
+		<div class="form-group" style="#{cc.attrs.style}">
 			<div class="#{cc.attrs.classLeft} control-label" tabindex="-1" >
 				<h:outputLabel for="#{cc.attrs.name}" value="#{cc.attrs.label}" styleClass="d-flex">
 					<h:panelGroup rendered="#{cc.attrs.required or cc.attrs.displayAsRequired}" >
-						<i class="fa fa-asterisk pull-right font-asterisk ps-2 text-neutral-400 fs-200" title="#{msgs.requiredField}" data-toggle="tooltip"/>
+						<i class="fa fa-asterisk pull-right font-asterisk ps-2 text-neutral-400 fs-200" data-bs-original-title="#{msgs.requiredField}" data-toggle="tooltip"/>
 					</h:panelGroup>
 				</h:outputLabel>
 			</div>
@@ -35,7 +35,7 @@
 					styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}" required="#{cc.attrs.required}"
 					readonly="#{cc.attrs.readonly}" onfocus="#{cc.attrs.onfocus}" tabindex="#{cc.attrs.tabindex}" />
 				<h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger" />
-				<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
+				<h:outputText styleClass="help-block font-light text-neutral-600" rendered="#{NavigationForm.showHelp}"
 					value="#{cc.attrs.help}" />
 			</div>
 		</div>

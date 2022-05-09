@@ -38,6 +38,9 @@ $colors: (
   .bg-#{$name} {
     background-color: var(--clr-#{$name});
   }
+  .text-#{$name} {
+    color: var(--text-#{$name});
+  }
 }
 
 // Generate text utilities; e.g:
@@ -54,11 +57,11 @@ $colors: (
 
 @each $name, $color in $colors {
   .btn-#{$name} {
-    background-color: #{$color};
+    background-color: var(--clr-#{$name});
     border-color: #{$color};
     @if $name == blank {
       color: #000; // bg is transparent
-      border: 2px solid var(--clr-neutral-400);
+      border: 1px solid var(--clr-neutral-400);
     } @else {
       color: #fff; // bg is a color
     }
@@ -87,10 +90,10 @@ $colors: (
 @each $name, $color in $colors {
   @if $name != blank {
     .box.box--#{$name} {
-      border-color: $color;
+      border-color: var(--clr-#{$name});
       & .box-title {
-        background-color: $color;
-        border-color: $color;
+        background-color: var(--clr-#{$name});
+        border-color: var(--clr-#{$name});
       }
     }
   }

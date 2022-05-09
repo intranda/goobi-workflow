@@ -35,20 +35,23 @@
 
 				<intranda:formInputText label="#{msgs.titel}" id="title"
 					field="#{JobTypesBean.currentJobType.name}"
-					help="#{msgs.helpTitel}" name="titel" fieldStyle="form-control" />
-				<intranda:formInputCheckBox label="#{msgs.paused}" id="paused"
+					help="#{msgs.helpTitel}" name="titel" fieldStyle="form-control"
+					classRight="col-sm-12"
+					/>
+
+				<intranda:formInputCheckBox label="#{msgs.paused}" id="paused" styleClass="d-block"
 					field="#{JobTypesBean.currentJobType.paused}"
 					help="#{msgs.helpTitel}" name="titel" />
 
-				<div class="form-group d-flex">
+				<div class="form-group">
 					<div class="col-sm-3 control-label">
 						<label>#{msgs.steps}</label>
 					</div>
 					<div class="col-sm-9 d-flex">
 						<div class="col-sm-6">
-							<h3 tabindex="0">#{msgs.jobtypes_assignedSteps}</h3>
+							<h3 class="fs-400" tabindex="0">#{msgs.jobtypes_assignedSteps}</h3>
 							<ui:repeat var="stepTitle" value="#{JobTypesBean.currentJobType.stepNameList}">
-								<button class="badge bg-success me-2"
+								<button class="badge text-success me-2"
 									 jsf:action="#{JobTypesBean.removeStepFromCurrentJobType(stepTitle)}">
 									 <f:ajax render="@form" execute="@form"/>
 									 #{stepTitle}
@@ -57,9 +60,9 @@
 							</ui:repeat>
 						</div>
 						<div class="col-sm-6 ps-3">
-							<h3 tabindex="0">#{msgs.jobtypes_availableSteps}</h3>
+							<h3 class="fs-400" tabindex="0">#{msgs.jobtypes_availableSteps}</h3>
 							<ui:repeat var="stepTitle" value="#{JobTypesBean.availableStepTitles}">
-								<button class="badge bg-primary-400"
+								<button class="badge text-primary-400"
 									 jsf:action="#{JobTypesBean.addStepToCurrentJobType(stepTitle)}">
 									 <f:ajax render="@form" execute="@form"/>
 									 #{stepTitle}
@@ -76,16 +79,16 @@
 						jsf:action="#{JobTypesBean.deleteCurrentJobType}"
 						jsf:rendered="#{not JobTypesBean.currentJobTypeNew}">
 						<i class="fa fa-trash"></i>
-						#{msgs.loeschen}
+						<span>#{msgs.loeschen}</span>
 					</button>
 					<button class="btn btn-primary-400 me-2" jsf:action="#{JobTypesBean.saveCurrentJobType}">
 						<i class="fa fa-save ms-2"></i>
-						#{msgs.save}
+						<span>#{msgs.save}</span>
 					</button>
 					<button class="btn btn-blank"
 						jsf:immediate="true"
 						jsf:action="#{JobTypesBean.cancelJobTypeEdit}">
-						#{msgs.cancel}
+						<span>#{msgs.cancel}</span>
 					</button>
 				</div>
 

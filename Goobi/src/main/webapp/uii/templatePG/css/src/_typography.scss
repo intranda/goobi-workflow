@@ -20,6 +20,7 @@ body {
 :root {
   --fs-200: 1rem;
   --fs-400: 1.2rem;
+  --fs-600: 1.6rem;
 }
 
 .fs-200 {
@@ -28,4 +29,8 @@ body {
 
 .fs-400 {
   font-size: var(--fs-400);
+}
+
+.fs-600 {
+  font-size: var(--fs-600);
 }
