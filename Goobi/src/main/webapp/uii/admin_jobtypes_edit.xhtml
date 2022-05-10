@@ -1,103 +1,98 @@
-<ui:composition
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
+<ui:composition 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+	xmlns:h="http://xmlns.jcp.org/jsf/html" 
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:o="http://omnifaces.org/ui"
-	xmlns:of="http://omnifaces.org/functions"
-	template="/uii/templatePG/templatePG.html"
-	xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"  
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:o="http://omnifaces.org/ui" 
+	xmlns:of="http://omnifaces.org/functions" 
+	template="/uii/template/template.html" 
+	xmlns:x="http://myfaces.apache.org/tomahawk" 
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	
+    <ui:param name="myPageTitle" value="#{msgs.manageAutomaticTasks}" />
 
-	<ui:param name="myPageTitle" value="#{msgs.manageAutomaticTasks}" />
+    <ui:define name="breadcrumb">
+        <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
+        <intranda:breadcrumb id="admin_jobtypes_all" label="#{msgs.manageAutomaticTasks}" action="admin_jobtypes_all.xhtml" />
+        <intranda:breadcrumb id="admin_jobtypes_edit" label="#{msgs.editJobType}" action="admin_jobtypes_edit.xhtml" noSeparator="#{true}" />
+    </ui:define>
 
-	<ui:define name="breadcrumb">
-			<intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-			<intranda:breadcrumb id="admin_jobtypes_all" label="#{msgs.manageAutomaticTasks}" action="admin_jobtypes_all.xhtml" />
-			<intranda:breadcrumb id="admin_jobtypes_edit" label="#{msgs.editJobType}" action="admin_jobtypes_edit.xhtml" noSeparator="#{true}" />
-	</ui:define>
+    <ui:define name="info">
+    </ui:define>
 
-	<ui:define name="info">
-	</ui:define>
-
-	<ui:define name="content">
-			<h:form rendered="#{LoginForm.hasRole('Admin_Jobtypes')}">
-			<div class="row" role="main">
-			<div class="col-sm-12">
-
-			<intranda:box
-				boxType="action"
-				icon="fa-gears"
-				title="#{msgs.editJobType}"
-				padding="false">
-
-				<intranda:formInputText label="#{msgs.titel}" id="title"
-					field="#{JobTypesBean.currentJobType.name}"
-					help="#{msgs.helpTitel}" name="titel" fieldStyle="form-control"
-					classRight="col-sm-12"
-					/>
-
-				<intranda:formInputCheckBox label="#{msgs.paused}" id="paused" styleClass="d-block"
-					field="#{JobTypesBean.currentJobType.paused}"
-					help="#{msgs.helpTitel}" name="titel" />
-
-				<div class="form-group">
-					<div class="col-sm-3 control-label">
-						<label>#{msgs.steps}</label>
-					</div>
-					<div class="col-sm-9 d-flex">
-						<div class="col-sm-6">
-							<h3 class="fs-400" tabindex="0">#{msgs.jobtypes_assignedSteps}</h3>
-							<ui:repeat var="stepTitle" value="#{JobTypesBean.currentJobType.stepNameList}">
-								<button class="badge text-success me-2"
-									 jsf:action="#{JobTypesBean.removeStepFromCurrentJobType(stepTitle)}">
-									 <f:ajax render="@form" execute="@form"/>
-									 #{stepTitle}
-									 <i class="fa fa-minus ms-2"></i>
-								</button>
-							</ui:repeat>
+    <ui:define name="content">
+        <h:form styleClass="form-horizontal form-bordered" rendered="#{LoginForm.hasRole('Admin_Jobtypes')}">
+        <div class="row" role="main">
+				<div class="col-sm-12">
+            <div class="box box-bordered box-color orange">
+                <div class="box-title">
+                    <h2>
+                        <i class="fa fa-gears"></i>
+                        <h:outputText value="#{msgs.editJobType}" />
+                    </h2>
+                </div>
+                <div class="box-content nopadding">
+                	<intranda:formInputText label="#{msgs.titel}" id="title"
+						field="#{JobTypesBean.currentJobType.name}"
+						help="#{msgs.helpTitel}" name="titel" fieldStyle="form-control" />
+					<intranda:formInputCheckBox label="#{msgs.paused}" id="paused"
+						field="#{JobTypesBean.currentJobType.paused}"
+						help="#{msgs.helpTitel}" name="titel" />
+					<div class="form-group">
+						<div class="col-sm-3 control-label">
+							<label>#{msgs.steps}</label>
 						</div>
-						<div class="col-sm-6 ps-3">
-							<h3 class="fs-400" tabindex="0">#{msgs.jobtypes_availableSteps}</h3>
-							<ui:repeat var="stepTitle" value="#{JobTypesBean.availableStepTitles}">
-								<button class="badge text-primary-400"
-									 jsf:action="#{JobTypesBean.addStepToCurrentJobType(stepTitle)}">
-									 <f:ajax render="@form" execute="@form"/>
-									 #{stepTitle}
-									 <i class="fa fa-plus"></i>
-								 </button>
-							</ui:repeat>
+						<div class="col-sm-9">
+							<div class="col-sm-6">
+								<h3 tabindex="0">#{msgs.jobtypes_assignedSteps}</h3>
+								<ui:repeat var="stepTitle" value="#{JobTypesBean.currentJobType.stepNameList}">
+									<button class="badge badge-no-radius badge-light-blue" 
+					                       jsf:action="#{JobTypesBean.removeStepFromCurrentJobType(stepTitle)}">
+					                       <f:ajax render="@form" execute="@form"/>
+					                       #{stepTitle}
+					                       <i class="fa fa-minus margin-left-5"></i>
+					                   </button>
+								</ui:repeat>
+							</div>
+							<div class="col-sm-6" style="border-left: 1px solid #ddd; padding-left:10px;">
+								<h3 tabindex="0">#{msgs.jobtypes_availableSteps}</h3>	
+								<ui:repeat var="stepTitle" value="#{JobTypesBean.availableStepTitles}">
+									<button class="badge badge-no-radius badge-light-blue" 
+					                       jsf:action="#{JobTypesBean.addStepToCurrentJobType(stepTitle)}">
+					                       <f:ajax render="@form" execute="@form"/>
+					                       #{stepTitle}
+					                       <i class="fa fa-plus margin-left-5"></i>
+					                   </button>
+								</ui:repeat>
+							</div>
 						</div>
-					</div>
-				</div>
-
-				<div class="form-actions">
-					<button class="btn btn-hot me-2"
-						onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
-						jsf:action="#{JobTypesBean.deleteCurrentJobType}"
-						jsf:rendered="#{not JobTypesBean.currentJobTypeNew}">
-						<i class="fa fa-trash"></i>
-						<span>#{msgs.loeschen}</span>
-					</button>
-					<button class="btn btn-primary-400 me-2" jsf:action="#{JobTypesBean.saveCurrentJobType}">
-						<i class="fa fa-save ms-2"></i>
-						<span>#{msgs.save}</span>
-					</button>
-					<button class="btn btn-blank"
-						jsf:immediate="true"
-						jsf:action="#{JobTypesBean.cancelJobTypeEdit}">
-						<span>#{msgs.cancel}</span>
-					</button>
-				</div>
-
-			</intranda:box>
-
-		</div> <!-- end col-sm-12 -->
-	</div> <!-- end row -->
-
-	</h:form>
-</ui:define>
-
+				    </div>
+				    <div class="form-actions" style="padding-bottom: 10px;">
+                        <button class="btn btn-danger" 
+                            onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
+                            jsf:action="#{JobTypesBean.deleteCurrentJobType}"
+                            jsf:rendered="#{not JobTypesBean.currentJobTypeNew}">
+                            <i class="fa fa-trash margin-right-5"></i>
+                            #{msgs.loeschen}
+                        </button>
+					    <button class="btn btn-blue pull-right" jsf:action="#{JobTypesBean.saveCurrentJobType}">
+					    	<i class="fa fa-save margin-right-5"></i>
+					    	#{msgs.save}
+					    </button>
+					    <button class="btn margin-sides-10 pull-right"
+                            jsf:immediate="true"
+                            jsf:action="#{JobTypesBean.cancelJobTypeEdit}">
+					    	#{msgs.cancel}
+					    </button>
+					    <div class="clearfix"></div>
+				    </div>
+                </div>
+        	</div>
+        	</div>
+        	</div>
+        </h:form>
+    </ui:define>
+    
 </ui:composition>
