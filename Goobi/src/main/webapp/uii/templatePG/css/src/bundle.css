@@ -10666,11 +10666,6 @@ body {
   border-radius: var(--border-radius);
 }
 
-.box {
-  max-width: 100rem;
-  margin: auto;
-}
-
 .box-title {
   color: var(--clr-white, #fff);
   display: flex;
