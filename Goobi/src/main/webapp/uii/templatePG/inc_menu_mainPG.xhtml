@@ -140,7 +140,9 @@
 											<li class="#{NavigationForm.aktuell == 'a28' and NavigationForm.parentMenu == 'menu_workflow' and NavigationForm.currentWorkflowPluginName == plugin ?'active':''}">
 												<h:commandLink
 													action="#{NavigationForm.setPlugin(plugin)}"
-													id="plugin">
+													id="plugin"
+													styleClass="dropdown-item"
+													>
 													<span>
 														<i class="fa fa-plug box-icon-fix-menu"></i>
 														<span class="margin-left-10">#{msgs[plugin]}</span>
@@ -306,7 +308,9 @@
 											<li class="#{NavigationForm.aktuell == 'a38' and NavigationForm.parentMenu == 'menu_administration' and AdministrationForm.currentAdministrationPluginName == plugin ?'active':''}">
 												<h:commandLink
 													action="#{AdministrationForm.setPlugin(plugin)}"
-													id="plugin">
+													id="plugin"
+													styleClass="dropdown-item"
+													>
 													<span>
 														<i class="fa fa-plug box-icon-fix-menu"></i>
 														<span class="margin-left-10">#{msgs[plugin]}</span>
