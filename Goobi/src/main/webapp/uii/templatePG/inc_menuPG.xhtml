@@ -24,19 +24,16 @@
 
 				</a>
 
+				<div class="navbar navbar-collapse collapse" id="navbarSupportedContent">
+					<ui:include src="inc_menu_mainPG.xhtml" />
+				</div>
+
 				<!-- The menu in the right corner -->
 				<ui:include src="inc_menu_preferencesPG.xhtml" />
 
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>
-
-				<!-- The main menu with "Start", "My Tasks", "Workflow", "Administration" and "Controlling" -->
-				<!-- This must be AFTER the preferences menu because the main menu is a dropdown menu in the small-mode. Otherwise it cannot be openend correctly-->
-
-				<div class="navbar navbar-collapse collapse" id="navbarSupportedContent">
-					<ui:include src="inc_menu_mainPG.xhtml" />
-				</div>
 
 			</h:form>
 		</nav>

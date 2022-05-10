@@ -46,6 +46,17 @@ public class LdapManager implements IManager, Serializable {
         return o;
     }
 
+    public static Ldap getLdapByName(String name) throws DAOException {
+        Ldap o = null;
+        try {
+            o = LdapMysqlHelper.getLdapByName(name);
+        } catch (SQLException e) {
+            log.error("error while getting ldap with name " + name, e);
+            throw new DAOException(e);
+        }
+        return o;
+    }
+
     public static void saveLdap(Ldap ldap) throws DAOException {
         try {
             LdapMysqlHelper.saveLdap(ldap);

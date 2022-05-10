@@ -1,16 +1,16 @@
-<ui:composition 
-	xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
-	xmlns:h="http://xmlns.jcp.org/jsf/html" 
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:jsf="http://xmlns.jcp.org/jsf"  
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-	xmlns:o="http://omnifaces.org/ui" 
-	xmlns:of="http://omnifaces.org/functions" 
-	template="/uii/template/template.html" 
-	xmlns:x="http://myfaces.apache.org/tomahawk" 
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	template="/uii/templatePG/templatePG.html"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
-	
+
     <ui:param name="myPageTitle" value="#{msgs.manageAutomaticTasks}" />
 
     <ui:define name="breadcrumb">
@@ -23,15 +23,14 @@
 
     <ui:define name="content">
         <h:form rendered="#{LoginForm.hasRole('Admin_Jobtypes')}">
-            <div class="box box-bordered box-color">
-                <div class="box-title">
-                    <h2>
-                        <i class="fa fa-gears"></i>
-                        <h:outputText value="#{msgs.jobTypes}" />
-                    </h2>
-                </div>
-                <div class="box-content nopadding">
-                	<div class="dataTables_wrapper">
+        <intranda:box
+          boxType="primary"
+          icon="fa-gears"
+          title="#{msgs.jobTypes}"
+          padding="false">
+
+            <!-- Box content -->
+            <div class="dataTables_wrapper">
         			<h:dataTable value="#{JobTypesBean.jobTypes}" var="jobType" styleClass="table table-hover dataTable table-bordered responsive">
 	        				<h:column>
 	        					<f:facet name="header">#{msgs.name}</f:facet>
@@ -39,52 +38,54 @@
 	       					</h:column>
 	       					<h:column>
 	       						<f:facet name="header">#{msgs.steps}</f:facet>
-	                         <ui:repeat var="stepTitle" value="#{jobType.stepNames}">
-	                             <span class="badge badge-no-radius badge-light-blue">
-	                                 #{stepTitle}
-	                             </span>
-	                         </ui:repeat>
-	                        </h:column>
-                            <h:column>
-                                <f:facet name="header">#{msgs.status}</f:facet>
-                                <h:outputText rendered="#{jobType.paused}" value="#{msgs.jobtypes_paused}" />
-                                <h:outputText rendered="#{not jobType.paused}" value="#{msgs.jobtypes_running}" />
-                            </h:column>
-	                        <h:column>
-	                        	<f:facet name="header">#{msgs.auswahl}</f:facet>
-                                <button class="btn btn-blue" 
-                                    aria-label="#{msgs.editJobType}"
-                                    title="#{msgs.editJobType}"
-                                    jsf:action="#{JobTypesBean.editJobType(jobType)}">
-                                    <i class="fa fa-pencil"></i>
-                                </button>
-                                <button class="btn btn-blue margin-left-5"
-                                    title="#{msgs.unPauseJobType}"
-                                    aria-label="#{msgs.unPauseJobType}" 
-                                    jsf:rendered="#{jobType.paused}"
-                                    jsf:action="#{JobTypesBean.unPauseJobType(jobType)}">
-                                    <f:ajax render="@form" />
-                                    <i class="fa fa-play"></i>
-                                </button>
-                                <button class="btn btn-blue margin-left-5" 
-                                    title="#{msgs.pauseJobType}"
-                                    aria-label="#{msgs.pauseJobType}"
-                                    jsf:rendered="#{not jobType.paused}"
-                                    jsf:action="#{JobTypesBean.pauseJobType(jobType)}">
-                                    <f:ajax render="@form" />
-                                    <i class="fa fa-pause"></i>
-                                </button>
-	                        </h:column>
-	                    </h:dataTable>
-                    	<div class="dataTables_info">
-		                    <button class=" btn btn-blue" jsf:action="#{JobTypesBean.addNewJobType}">
-		                       #{msgs.createNewJobType}
-		                    </button>
-                    	</div>
-                   	</div>
-                </div>
-        	</div>
-        </h:form>
-    </ui:define>
-    
+	                      <ui:repeat var="stepTitle" value="#{jobType.stepNames}">
+                           <span class="badge text-success">
+                               #{stepTitle}
+	                          </span>
+	                      </ui:repeat>
+	                  </h:column>
+                    <h:column>
+                        <f:facet name="header">#{msgs.status}</f:facet>
+                        <h:outputText rendered="#{jobType.paused}" value="#{msgs.jobtypes_paused}" />
+                        <h:outputText rendered="#{not jobType.paused}" value="#{msgs.jobtypes_running}" />
+                    </h:column>
+                  <h:column>
+                    <f:facet name="header">#{msgs.auswahl}</f:facet>
+                        <button class="btn btn-primary me-2"
+                            aria-label="#{msgs.editJobType}"
+                            title="#{msgs.editJobType}"
+                            jsf:action="#{JobTypesBean.editJobType(jobType)}">
+                            <i class="fa fa-pencil"></i>
+                        </button>
+                        <button class="btn btn-primary me-2"
+                            title="#{msgs.unPauseJobType}"
+                            aria-label="#{msgs.unPauseJobType}"
+                            jsf:rendered="#{jobType.paused}"
+                            jsf:action="#{JobTypesBean.unPauseJobType(jobType)}">
+                            <f:ajax render="@form" />
+                            <i class="fa fa-play"></i>
+                        </button>
+                        <button class="btn btn-primary me-2"
+                            title="#{msgs.pauseJobType}"
+                            aria-label="#{msgs.pauseJobType}"
+                            jsf:rendered="#{not jobType.paused}"
+                            jsf:action="#{JobTypesBean.pauseJobType(jobType)}">
+                            <f:ajax render="@form" />
+                            <i class="fa fa-pause"></i>
+                        </button>
+	                  </h:column>
+	              </h:dataTable>
+
+              <div class="form-actions">
+                <button class="btn btn-primary me-auto" jsf:action="#{JobTypesBean.addNewJobType}">
+                   #{msgs.createNewJobType}
+                </button>
+              </div>
+
+            </div>
+        </intranda:box>
+    </h:form>
+
+</ui:define>
+
 </ui:composition>

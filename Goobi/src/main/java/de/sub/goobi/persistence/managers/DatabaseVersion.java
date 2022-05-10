@@ -52,7 +52,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 47;
+    public static final int EXPECTED_VERSION = 48;
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
 
@@ -363,6 +363,12 @@ public class DatabaseVersion {
                     }
                     updateToVersion47();
                     tempVersion ++;
+                case 47:
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 48.");
+                    }
+                    updateToVersion48();
+                    tempVersion ++;
                 default:
                     // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
@@ -374,6 +380,70 @@ public class DatabaseVersion {
             log.error(e);
             log.warn("An Error occured trying to update Database to version "+(tempVersion+1));
             updateDatabaseVersion(currentVersion, tempVersion);
+        }
+    }
+
+
+
+
+    private static void updateToVersion48() throws SQLException {
+        if(!DatabaseVersion.checkIfColumnExists("benutzer", "displayrulesetcolumn")) {
+            try {
+                DatabaseVersion.runSql("ALTER TABLE benutzer ADD COLUMN displayrulesetcolumn boolean default false");
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+        if(DatabaseVersion.checkIfColumnExists("projekte", "srurl")) {
+            try {
+                DatabaseVersion.runSql("alter table projekte drop column srurl;");
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+
+        if(!DatabaseVersion.checkIfColumnExists("projekte", "iiifUrl")) {
+            try {
+                DatabaseVersion.runSql("alter table projekte add column iiifUrl varchar(255) default null;");
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+        if(!DatabaseVersion.checkIfColumnExists("projekte", "sruUrl")) {
+            try {
+                DatabaseVersion.runSql("alter table projekte add column sruUrl varchar(255) default null;");
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+
+        if(!DatabaseVersion.checkIfColumnExists("benutzer", "userstatus")) {
+            try {
+                DatabaseVersion.runSql("alter table benutzer add column userstatus varchar(190) default null;");
+                DatabaseVersion.runSql("update benutzer set userstatus = 'active' where IstAktiv=true and isVisible is null;");
+                DatabaseVersion.runSql("update benutzer set userstatus = 'inactive' where IstAktiv=false and isVisible is null;");
+                DatabaseVersion.runSql("update benutzer set userstatus = 'deleted' where isVisible='deleted';");
+                DatabaseVersion.runSql("alter table benutzer drop column IstAktiv;");
+                DatabaseVersion.runSql("alter table benutzer drop column isVisible;");
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+
+        if(!DatabaseVersion.checkIfColumnExists("benutzer", "additional_data")) {
+            try {
+                DatabaseVersion.runSql("alter table benutzer add column additional_data text default null;");
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+
+        if(!DatabaseVersion.checkIfColumnExists("institution", "additional_data")) {
+            try {
+                DatabaseVersion.runSql("alter table institution add column additional_data text default null;");
+            } catch (SQLException e) {
+                log.error(e);
+            }
         }
     }
 

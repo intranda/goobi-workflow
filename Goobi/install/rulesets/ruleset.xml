@@ -1902,6 +1902,7 @@
     <metadata num="*">Abstract</metadata>
     <metadata num="1o">ResourceLink</metadata>
     <metadata num="1o">Copyright</metadata>
+    <metadata num="1o">_directionRTL</metadata>
   </DocStrctType>
   <DocStrctType topStruct="true">
     <Name>Incunable</Name>
@@ -6158,7 +6159,7 @@
       </Metadata>
          <Metadata>
         <InternalName>ResourceLink</InternalName>
-        <WriteXPath>./mods:mods/mods:location/#url</WriteXPath>
+        <WriteXPath>./mods:mods/mods:location/#mods:url</WriteXPath>
       </Metadata>
       <Metadata>
         <InternalName>_purl</InternalName>

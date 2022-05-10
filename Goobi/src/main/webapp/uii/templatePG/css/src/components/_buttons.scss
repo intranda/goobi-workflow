@@ -1,3 +1,5 @@
+/* Styles for Buttons, Badges, Links */
+
 .btn-link {
   text-decoration: none;
   background-color: transparent;
@@ -12,7 +14,46 @@ button,
 .btn {
   font-size: var(--fs-400);
   border-radius: var(--border-radius, 2px);
-  .fa {
-    margin-right: 0.4rem;
+
+  i ~ * {
+    margin-inline-start: 8px;
   }
+}
+
+// Badges
+button.badge,
+span.badge {
+  background-color: transparent;
+  border: 1px solid currentColor;
+  padding: 2px 4px;
+
+  i {
+    margin-inline-start: 4px;
+  }
+  &:not(:last-child) {
+    margin-inline-end: 8px;
+  }
+}
+
+// Badge colors
+.badge--primary-400 {
+  color: var(--clr-primary-400);
+}
+
+.badge--success {
+  color: var(--clr-success);
+}
+
+// Skip link
+.skip-main {
+  position: absolute;
+  top: -50px;
+  height: 30px;
+  padding: 15px;
+  font-size: 25px;
+}
+
+.skip-main:focus {
+  position: relative;
+  top: 0px;
 }
