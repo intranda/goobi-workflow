@@ -128,10 +128,11 @@ Sequence for determining the right <project> element:
                 <!-- The messageKey parameter can be used to specify the text key of a customized error message -->
                 <!-- that is shown in the user interface if a file could not be uploaded because it did not match -->
                 <!-- to the regular expression. The messages can then be provided in the messages_xx.properties files for all languages. -->
-                <folder regex="/^.*\\.pdf$/" messageKey="uploadFileErrorIntern">intern</folder>
+                <folder regex="/^.*$/" messageKey="uploadFileErrorIntern">intern</folder>
+                <folder regex="/^.*\\.(jpg|jpeg|png|tif|jp2)$/" messageKey="uploadFileErrorMaster">master</folder>
+                <folder regex="/^.*\\.jpg$/" messageKey="uploadFileErrorMedia">media</folder>
                 <folder regex="/^.*\\.pdf$/" messageKey="uploadFileErrorExport">export</folder>
-                <folder regex="/^.*\\.pdf$/" messageKey="uploadFileErrorMaster">master</folder>
-                <folder regex="/^.*\\.pdf$/" messageKey="uploadFileErrorMedia">media</folder>
+                
             </fileupload>
         </createNewProcess>
 
