@@ -10495,6 +10495,9 @@ body {
   background-color: var(--clr-primary-400);
   color: var(--clr-white);
 }
+.navbar .dropdown-menu .dropdown-item i {
+  margin-inline-end: 8px;
+}
 
 .language-select__icon {
   margin-right: 0.8rem;
