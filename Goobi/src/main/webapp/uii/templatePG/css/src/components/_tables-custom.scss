@@ -18,9 +18,9 @@ thead {
 td,
 th {
   border-color: var(--clr-neutral-400);
-  span {
-    font-weight: bold;
-  }
+}
+th span {
+  font-weight: bold;
 }
 
 td {

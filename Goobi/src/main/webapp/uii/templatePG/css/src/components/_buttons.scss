@@ -21,7 +21,8 @@ button,
 }
 
 // Badges
-button.badge {
+button.badge,
+span.badge {
   background-color: transparent;
   border: 1px solid currentColor;
   padding: 2px 4px;
