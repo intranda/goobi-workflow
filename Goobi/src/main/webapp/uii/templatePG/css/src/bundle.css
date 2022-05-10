@@ -10468,6 +10468,7 @@ body {
 }
 .navbar .nav-link:hover {
   background-color: var(--clr-primary-600);
+  color: var(--clr-white);
 }
 .navbar .navbar-toggler:focus {
   box-shadow: unset;
@@ -10744,7 +10745,7 @@ td,
 th {
   border-color: var(--clr-neutral-400);
 }
-td span,
+
 th span {
   font-weight: bold;
 }
@@ -10827,15 +10828,18 @@ button i ~ *,
   margin-inline-start: 8px;
 }
 
-button.badge {
+button.badge,
+span.badge {
   background-color: transparent;
   border: 1px solid currentColor;
   padding: 2px 4px;
 }
-button.badge i {
+button.badge i,
+span.badge i {
   margin-inline-start: 4px;
 }
-button.badge:not(:last-child) {
+button.badge:not(:last-child),
+span.badge:not(:last-child) {
   margin-inline-end: 8px;
 }
 
