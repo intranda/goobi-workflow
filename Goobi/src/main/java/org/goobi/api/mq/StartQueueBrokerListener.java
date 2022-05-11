@@ -137,6 +137,9 @@ public class StartQueueBrokerListener implements ServletContextListener {
             for (GoobiDefaultQueueListener l : listeners) {
                 l.close();
             }
+
+            dlqListener.close();
+
             if (broker != null) {
                 broker.stop();
             }
