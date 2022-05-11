@@ -39,7 +39,7 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
         addParameterToSampleCall(sb, "suffix", "color",
                 "Define a string that shall be added behind the existing metadata value here. In case leading blanks are wanted please put the suffix into quotes like \" this\".");
         addParameterToSampleCall(sb, "position", "work",
-                "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any`");
+                "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
         addParameterToSampleCall(sb, "condition", "blue",
                 "Define a value here that shall be present in the metdata field. The metadata is only updated if this term can be found inside of the metadata value.");
         return sb.toString();
@@ -85,9 +85,9 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
             Fileformat ff = p.readMetadataFile();
             // first get the top element
             DocStruct ds = ff.getDigitalDocument().getLogicalDocStruct();
-
+            DocStruct physical = ff.getDigitalDocument().getPhysicalDocStruct();
             // find the right elements to adapt
-            List<DocStruct> dsList = new ArrayList<DocStruct>();
+            List<DocStruct> dsList = new ArrayList<>();
             switch (parameters.get("position")) {
 
                 // just the anchor element
@@ -101,7 +101,7 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
                     }
                     break;
 
-                // fist the first child element
+                    // fist the first child element
                 case "child":
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -112,13 +112,20 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
                     }
                     break;
 
-                // any element in the hierarchy
+                    // any element in the hierarchy
                 case "any":
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
+                    if (physical!= null) {
+                        dsList.add(physical);
+                    }
                     break;
-
-                // default "work", which is the first child or the main top element if it is not an anchor
+                case "physical":
+                    if (physical!= null) {
+                        dsList.add(physical);
+                    }
+                    break;
+                    // default "work", which is the first child or the main top element if it is not an anchor
                 default:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -141,13 +148,13 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
             if (condition == null) {
                 condition = "";
             }
-            
+
             // get the content to be set and pipe it through the variable replacer
             VariableReplacer replacer = new VariableReplacer(ff.getDigitalDocument(), p.getRegelsatz().getPreferences(), p, null);
             prefix = replacer.replace(prefix);
             suffix = replacer.replace(suffix);
             condition = replacer.replace(condition);
-            
+
             changeMetadata(dsList, parameters.get("field"), prefix, suffix, condition, p.getRegelsatz().getPreferences());
             p.writeMetadataFile(ff);
             Thread.sleep(2000);

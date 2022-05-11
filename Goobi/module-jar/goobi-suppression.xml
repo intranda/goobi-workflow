@@ -3,29 +3,6 @@
 
     <!-- false positives -->
 
-    <!-- suppressed as commons-beanutils:commons-beanutils:1.8.3 is ommited and 1.9.4 is used -->
-    <suppress>
-       <notes><![CDATA[
-       file name: commons-digester3-3.2-with-deps.jar (shaded: commons-beanutils:commons-beanutils:1.8.3)
-       ]]></notes>
-       <packageUrl regex="true">^pkg:maven/commons\-beanutils/commons\-beanutils@.*$</packageUrl>
-       <cpe>cpe:/a:apache:commons_beanutils</cpe>
-    </suppress>
-    <suppress>
-       <notes><![CDATA[
-       file name: commons-digester3-3.2-with-deps.jar (shaded: commons-beanutils:commons-beanutils:1.8.3)
-       ]]></notes>
-       <packageUrl regex="true">^pkg:maven/commons\-beanutils/commons\-beanutils@.*$</packageUrl>
-       <vulnerabilityName>CVE-2014-0114</vulnerabilityName>
-    </suppress>
-    <suppress>
-       <notes><![CDATA[
-       file name: commons-digester3-3.2-with-deps.jar (shaded: commons-beanutils:commons-beanutils:1.8.3)
-       ]]></notes>
-       <packageUrl regex="true">^pkg:maven/commons\-beanutils/commons\-beanutils@.*$</packageUrl>
-       <vulnerabilityName>CVE-2019-10086</vulnerabilityName>
-    </suppress>
-    
     <!-- regular user are not able to execute this as they cannot influence the input streams -->
     <suppress>
        <notes><![CDATA[
@@ -91,6 +68,8 @@
        <cve>CVE-2019-8331</cve>
        <cve>CVE-2020-11022</cve>
        <cve>CVE-2020-11023</cve>
+       <vulnerabilityName>reDOS - regular expression denial of service</vulnerabilityName>
+       <vulnerabilityName>Regular Expression Denial of Service (ReDoS)</vulnerabilityName>
     </suppress>
     
     <!-- this vulnerability impacts npm (server), we don't use npm -->
