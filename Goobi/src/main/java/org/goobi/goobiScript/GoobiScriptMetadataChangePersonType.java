@@ -14,7 +14,6 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
-import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
@@ -37,7 +36,7 @@ public class GoobiScriptMetadataChangePersonType extends AbstractIGoobiScript im
                 "Define the current type that shall be changed. Use the internal name here (e.g. `TitleDocMain`), not the translated display name (e.g. `Main title`).");
         addParameterToSampleCall(sb, "newType", "new", "Define the type that shall be used as new type. Use the internal name here as well.");
         addParameterToSampleCall(sb, "position", "work",
-                "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any`");
+                "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
         addParameterToSampleCall(sb, "ignoreErrors", "true",
                 "Define if the further processing shall be cancelled for a Goobi process if an error occures (`false`) or if the processing should skip errors and move on (`true`).\\n# This is especially useful if the the value `any` was selected for the position.");
         return sb.toString();
@@ -82,9 +81,10 @@ public class GoobiScriptMetadataChangePersonType extends AbstractIGoobiScript im
             Fileformat ff = p.readMetadataFile();
             // first get the top element
             DocStruct ds = ff.getDigitalDocument().getLogicalDocStruct();
+            DocStruct physical = ff.getDigitalDocument().getPhysicalDocStruct();
 
             // find the right elements to adapt
-            List<DocStruct> dsList = new ArrayList<DocStruct>();
+            List<DocStruct> dsList = new ArrayList<>();
             switch (parameters.get("position")) {
 
                 // just the anchor element
@@ -98,7 +98,7 @@ public class GoobiScriptMetadataChangePersonType extends AbstractIGoobiScript im
                     }
                     break;
 
-                // fist the first child element
+                    // fist the first child element
                 case "child":
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -109,13 +109,18 @@ public class GoobiScriptMetadataChangePersonType extends AbstractIGoobiScript im
                     }
                     break;
 
-                // any element in the hierarchy
+                    // any element in the hierarchy
                 case "any":
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
                     break;
+                case "physical":
+                    if (physical!= null) {
+                        dsList.add(physical);
+                    }
+                    break;
 
-                // default "work", which is the first child or the main top element if it is not an anchor
+                    // default "work", which is the first child or the main top element if it is not an anchor
                 default:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -176,7 +181,7 @@ public class GoobiScriptMetadataChangePersonType extends AbstractIGoobiScript im
             // for each metadata create new metadata with new type
             for (Person oldMd : mdList) {
                 try {
-                	Person newMd = new Person(type);
+                    Person newMd = new Person(type);
                     // copy value from existing metadata
                     newMd.setFirstname(oldMd.getFirstname());
                     newMd.setLastname(oldMd.getLastname());
