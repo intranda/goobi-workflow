@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -71,14 +72,30 @@ public class PluginsBean implements Serializable {
     }
 
     public static Map<String, List<PluginInfo>> getPluginsFromFS() {
-        Map<String, List<PluginInfo>> plugins = new TreeMap<>();
+        Map<String, List<PluginInfo>> plugins = new LinkedHashMap<>();
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         Path pluginsFolder = Paths.get(config.getPluginFolder());
         Path libFolder = Paths.get(config.getLibFolder());
         plugins.putAll(getPluginsFromPath(pluginsFolder, true));
         plugins.putAll(getPluginsFromPath(libFolder, false));
-
+        PluginsBean.moveGUIPluginsToBottom(plugins);
         return plugins;
+    }
+
+    /**
+     * If the GUI plugins category exists and is not empty, it is moved to the end of the list by removing and putting it as the last element. Because
+     * this is an ordered map, the order is kept.
+     *
+     * @param categories The map of plugin categories and plugin lists
+     */
+    private static void moveGUIPluginsToBottom(Map<String, List<PluginInfo>> categories) {
+        List<PluginInfo> guiPlugins = categories.get("GUI");
+        System.out.println("guiPlugins: " + guiPlugins);
+        if (guiPlugins != null && guiPlugins.size() > 0) {
+            System.out.println("guiPlugins.size: " + guiPlugins.size());
+            categories.remove("GUI");
+            categories.put("GUI", guiPlugins);
+        }
     }
 
     //get plugins from any folder (including subfolders or not)
@@ -200,5 +217,9 @@ public class PluginsBean implements Serializable {
         }
         //compared == 0, plugin Goobi version matches running version 
         return "badge-intranda-green";
+    }
+
+    public String getPluginFolder() {
+        return ConfigurationHelper.getInstance().getPluginFolder();
     }
 }
