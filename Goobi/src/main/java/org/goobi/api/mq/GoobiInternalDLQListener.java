@@ -64,12 +64,21 @@ public class GoobiInternalDLQListener {
                             MQResultManager.insertResult(statusMessage);
                         }
                     } catch (JMSException e) {
-                        // TODO Auto-generated catch block
-                        log.error(e);
+                        if (!shouldStop) {
+                            // back off a little bit, maybe we have a problem with the connection or we are shutting down
+                            try {
+                                Thread.sleep(1500);
+                            } catch (InterruptedException e1) {
+                            }
+                            if (!shouldStop) {
+                                log.error(e);
+                            }
+                        }
                     }
                 }
             }
         };
+
         thread = new Thread(run);
         thread.setDaemon(true);
 
