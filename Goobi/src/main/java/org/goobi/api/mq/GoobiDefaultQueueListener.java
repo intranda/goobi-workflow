@@ -110,11 +110,13 @@ public class GoobiDefaultQueueListener {
                         }
                     } catch (JMSException e) {
                         if (!shouldStop) {
-                            log.error(e);
-                            // back off a little bit, maybe we have a problem with the connection
+                            // back off a little bit, maybe we have a problem with the connection or we are shutting down
                             try {
                                 Thread.sleep(1500);
                             } catch (InterruptedException e1) {
+                            }
+                            if (!shouldStop) {
+                                log.error(e);
                             }
                         }
                     }
