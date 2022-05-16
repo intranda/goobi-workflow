@@ -136,7 +136,7 @@
 									<ui:repeat var="folder" value="#{pluginsBean.plugins.keySet().toArray()}">
 
 										<h3 class="folder--line" jsf:id="pluginFolderTitle" jsf:rendered="#{not pluginsBean.plugins[folder].isEmpty()}">
-											<h:outputText value="#{folder}" styleClass="text"/>
+											<h:outputText value="#{pluginsBean.getTranslatedFolderName(folder)}" styleClass="text"/>
 										</h3>
 										<h:outputText class="pull-right" style="margin-bottom: 10px;" value="#{pluginsBean.getPluginFolder()}#{folder}/" />
 

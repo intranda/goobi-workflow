@@ -34,6 +34,7 @@ import org.goobi.production.plugin.interfaces.IPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.HelperForm;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -90,11 +91,19 @@ public class PluginsBean implements Serializable {
      */
     private static void moveGUIPluginsToBottom(Map<String, List<PluginInfo>> categories) {
         List<PluginInfo> guiPlugins = categories.get("GUI");
-        System.out.println("guiPlugins: " + guiPlugins);
         if (guiPlugins != null && guiPlugins.size() > 0) {
-            System.out.println("guiPlugins.size: " + guiPlugins.size());
             categories.remove("GUI");
             categories.put("GUI", guiPlugins);
+        }
+    }
+
+    public String getTranslatedFolderName(String folder) {
+        String prefix = "plugin_list_title_";
+        String translated = Helper.getTranslation(prefix + folder);
+        if (translated.startsWith(prefix)) {
+            return folder;
+        } else {
+            return translated;
         }
     }
 
