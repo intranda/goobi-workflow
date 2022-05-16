@@ -69,9 +69,18 @@ public class PluginsBean implements Serializable {
     @Setter
     private String mode = "installed";
 
+    private static PluginsBean instance;
+
     public PluginsBean() {
+        if (PluginsBean.instance == null) {
+            PluginsBean.instance = this;
+        }
         this.translations = new ArrayList<>();
         this.plugins = this.getPluginsFromFS();
+    }
+
+    public static PluginsBean getInstance() {
+        return PluginsBean.instance;
     }
 
     public Map<String, List<PluginInfo>> getPluginsFromFS() {
@@ -118,7 +127,6 @@ public class PluginsBean implements Serializable {
                     String folder = pluginDir.getFileName().toString();
                     plugins.put(folder, dirList);
                     translations.add(this.getTranslatedFolderName(folder));
-                    System.out.println("Added " + this.getTranslatedFolderName(folder));
                 } else { //if plugin is directly inside directory
                     if (pluginDir.getFileName().toString().endsWith("jar")) {
                         dirList.add(getPluginInfo(pluginDir.toAbsolutePath(), stepPluginsInUse, instantiate));
@@ -129,7 +137,6 @@ public class PluginsBean implements Serializable {
                 String folder = pluginsFolder.getFileName().toString();
                 plugins.put(folder, dirList); // add the plugins to the list
                 translations.add(this.getTranslatedFolderName(folder));
-                System.out.println("Added " + this.getTranslatedFolderName(folder));
             }
         } catch (IOException e) {
             log.error(e);
