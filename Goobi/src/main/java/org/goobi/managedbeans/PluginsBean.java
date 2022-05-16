@@ -63,22 +63,24 @@ public class PluginsBean implements Serializable {
 
     @Getter
     private Map<String, List<PluginInfo>> plugins;
+    private List<String> translations;
 
     @Getter
     @Setter
     private String mode = "installed";
 
     public PluginsBean() {
-        this.plugins = getPluginsFromFS();
+        this.translations = new ArrayList<>();
+        this.plugins = this.getPluginsFromFS();
     }
 
-    public static Map<String, List<PluginInfo>> getPluginsFromFS() {
+    public Map<String, List<PluginInfo>> getPluginsFromFS() {
         Map<String, List<PluginInfo>> plugins = new LinkedHashMap<>();
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         Path pluginsFolder = Paths.get(config.getPluginFolder());
         Path libFolder = Paths.get(config.getLibFolder());
-        plugins.putAll(getPluginsFromPath(pluginsFolder, true));
-        plugins.putAll(getPluginsFromPath(libFolder, false));
+        plugins.putAll(this.getPluginsFromPath(pluginsFolder, true));
+        plugins.putAll(this.getPluginsFromPath(libFolder, false));
         PluginsBean.moveGUIPluginsToBottom(plugins);
         return plugins;
     }
@@ -97,18 +99,8 @@ public class PluginsBean implements Serializable {
         }
     }
 
-    public String getTranslatedFolderName(String folder) {
-        String prefix = "plugin_list_title_";
-        String translated = Helper.getTranslation(prefix + folder);
-        if (translated.startsWith(prefix)) {
-            return folder;
-        } else {
-            return translated;
-        }
-    }
-
     //get plugins from any folder (including subfolders or not)
-    public static Map<String, List<PluginInfo>> getPluginsFromPath(Path pluginsFolder, boolean instantiate) {
+    public Map<String, List<PluginInfo>> getPluginsFromPath(Path pluginsFolder, boolean instantiate) {
         Set<String> stepPluginsInUse = StepManager.getDistinctStepPluginTitles();
         Map<String, List<PluginInfo>> plugins = new TreeMap<>();
         try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(pluginsFolder)) {
@@ -123,7 +115,10 @@ public class PluginsBean implements Serializable {
                             }
                         }
                     }
-                    plugins.put(pluginDir.getFileName().toString(), dirList);
+                    String folder = pluginDir.getFileName().toString();
+                    plugins.put(folder, dirList);
+                    translations.add(this.getTranslatedFolderName(folder));
+                    System.out.println("Added " + this.getTranslatedFolderName(folder));
                 } else { //if plugin is directly inside directory
                     if (pluginDir.getFileName().toString().endsWith("jar")) {
                         dirList.add(getPluginInfo(pluginDir.toAbsolutePath(), stepPluginsInUse, instantiate));
@@ -131,12 +126,25 @@ public class PluginsBean implements Serializable {
                 }
             }
             if (!dirList.isEmpty()) { //if there were plugins inside the directory dirList will not be empty
-                plugins.put(pluginsFolder.getFileName().toString(), dirList); // add the plugins to the list
+                String folder = pluginsFolder.getFileName().toString();
+                plugins.put(folder, dirList); // add the plugins to the list
+                translations.add(this.getTranslatedFolderName(folder));
+                System.out.println("Added " + this.getTranslatedFolderName(folder));
             }
         } catch (IOException e) {
             log.error(e);
         }
         return plugins;
+    }
+
+    public String getTranslatedFolderName(String folder) {
+        String prefix = "plugin_list_title_";
+        String translated = Helper.getTranslation(prefix + folder);
+        if (translated.startsWith(prefix)) {
+            return folder;
+        } else {
+            return translated;
+        }
     }
 
     private static PluginInfo getPluginInfo(Path pluginP, Set<String> stepPluginsInUse, boolean instantiate) throws ZipException, IOException {
