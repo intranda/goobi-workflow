@@ -21,7 +21,10 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class GoobiInternalDLQListener {
+    private Thread thread;
     private ActiveMQConnection conn;
+    private MessageConsumer consumer;
+    private volatile boolean shouldStop = false;
 
     public void register(String username, String password, QueueType queue) throws JMSException {
         ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory("vm://localhost");
@@ -34,41 +37,64 @@ public class GoobiInternalDLQListener {
         final Session sess = conn.createSession(false, Session.CLIENT_ACKNOWLEDGE);
         final Destination dest = sess.createQueue(queue.toString());
 
-        final MessageConsumer cons = sess.createConsumer(dest);
+        consumer = sess.createConsumer(dest);
 
         Runnable run = new Runnable() {
             @Override
             public void run() {
-                while (true) {
+                while (!shouldStop) {
                     try {
-                        Message message = cons.receive();
+                        Message message = consumer.receive();
                         // write to DB that there was a poison ACK for this JMS message ID
-                        String id = message.getJMSMessageID();
-                        String origMessage = null;
-                        if (message instanceof TextMessage) {
-                            TextMessage tm = (TextMessage) message;
-                            origMessage = tm.getText();
+                        if (message != null) {
+                            String id = message.getJMSMessageID();
+                            String origMessage = null;
+                            if (message instanceof TextMessage) {
+                                TextMessage tm = (TextMessage) message;
+                                origMessage = tm.getText();
+                            }
+                            if (message instanceof BytesMessage) {
+                                BytesMessage bm = (BytesMessage) message;
+                                byte[] bytes = new byte[(int) bm.getBodyLength()];
+                                bm.readBytes(bytes);
+                                origMessage = new String(bytes);
+                            }
+                            MqStatusMessage statusMessage =
+                                    new MqStatusMessage(id, new Date(), MessageStatus.ERROR_DLQ, "Message failed after retries.", origMessage);
+                            MQResultManager.insertResult(statusMessage);
                         }
-                        if (message instanceof BytesMessage) {
-                            BytesMessage bm = (BytesMessage) message;
-                            byte[] bytes = new byte[(int) bm.getBodyLength()];
-                            bm.readBytes(bytes);
-                            origMessage = new String(bytes);
-                        }
-                        MqStatusMessage statusMessage =
-                                new MqStatusMessage(id, new Date(), MessageStatus.ERROR_DLQ, "Message failed after retries.", origMessage);
-                        MQResultManager.insertResult(statusMessage);
                     } catch (JMSException e) {
-                        // TODO Auto-generated catch block
-                        log.error(e);
+                        if (!shouldStop) {
+                            // back off a little bit, maybe we have a problem with the connection or we are shutting down
+                            try {
+                                Thread.sleep(1500);
+                            } catch (InterruptedException e1) {
+                            }
+                            if (!shouldStop) {
+                                log.error(e);
+                            }
+                        }
                     }
                 }
             }
         };
-        Thread t = new Thread(run);
-        t.setDaemon(true);
+
+        thread = new Thread(run);
+        thread.setDaemon(true);
 
         conn.start();
-        t.start();
+        thread.start();
     }
+
+    public void close() throws JMSException {
+        this.shouldStop = true;
+        this.consumer.close();
+        this.conn.close();
+        try {
+            this.thread.join(3000);
+        } catch (InterruptedException e) {
+            log.error(e);
+        }
+    }
+
 }

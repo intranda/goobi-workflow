@@ -36,7 +36,7 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
         addParameterToSampleCall(sb, "value", "This is my content.",
                 "This is used to define the value that shall be stored inside of the newly created metadata field.");
         addParameterToSampleCall(sb, "position", "work",
-                "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any`");
+                "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
         addParameterToSampleCall(sb, "ignoreErrors", "true",
                 "Define if the further processing shall be cancelled for a Goobi process if an error occures (`false`) or if the processing should skip errors and move on (`true`).\\n# This is especially useful if the the value `any` was selected for the position.");
         return sb.toString();
@@ -84,9 +84,10 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
             Fileformat ff = p.readMetadataFile();
             // first get the top element
             DocStruct ds = ff.getDigitalDocument().getLogicalDocStruct();
+            DocStruct physical = ff.getDigitalDocument().getPhysicalDocStruct();
 
             // find the right elements to adapt
-            List<DocStruct> dsList = new ArrayList<DocStruct>();
+            List<DocStruct> dsList = new ArrayList<>();
             switch (parameters.get("position")) {
 
                 // just the anchor element
@@ -100,7 +101,7 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                     }
                     break;
 
-                // fist the first child element
+                    // fist the first child element
                 case "child":
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -111,13 +112,19 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                     }
                     break;
 
-                // any element in the hierarchy
+                    // any element in the hierarchy
                 case "any":
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
                     break;
+                case "physical":
+                    if (physical!= null) {
+                        dsList.add(physical);
+                    }
+                    break;
 
-                // default "work", which is the first child or the main top element if it is not an anchor
+
+                    // default "work", which is the first child or the main top element if it is not an anchor
                 default:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -134,7 +141,7 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
             String newvalue = parameters.get("value");
             VariableReplacer replacer = new VariableReplacer(ff.getDigitalDocument(), p.getRegelsatz().getPreferences(), p, null);
             newvalue = replacer.replace(newvalue);
-            
+
             // now add the new metadata and save the file
             addMetadata(dsList, parameters.get("field"), newvalue, p.getRegelsatz().getPreferences(), ignoreErrors);
             p.writeMetadataFile(ff);
@@ -145,8 +152,8 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
             gsr.setResultMessage("Metadata added successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);
         } catch (Exception e1) {
-        	Helper.addMessageToProcessLog(p.getId(), LogType.ERROR,
-        			"Problem while adding the metadata using GoobiScript for process with id: " + p.getId(), username);
+            Helper.addMessageToProcessLog(p.getId(), LogType.ERROR,
+                    "Problem while adding the metadata using GoobiScript for process with id: " + p.getId(), username);
             log.error("Problem while adding the metadata using GoobiScript for process with id: " + p.getId(), e1);
             gsr.setResultMessage("Error while adding metadata: " + e1.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);
