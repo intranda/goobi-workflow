@@ -22,7 +22,7 @@ pipeline {
     }
     stage('build') {
       steps {
-              sh 'mvn -f Goobi/pom.xml clean install'
+              sh 'mvn -f Goobi/pom.xml clean verify'
               recordIssues enabledForFailure: true, aggregatingResults: true, tools: [java(), javaDoc()]
               dependencyCheckPublisher pattern: '**/target/dependency-check-report.xml'
       }
