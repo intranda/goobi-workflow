@@ -58,7 +58,7 @@ $colors: (
 @each $name, $color in $colors {
   .btn-#{$name} {
     background-color: var(--clr-#{$name});
-    border-color: #{$color};
+    border-color: var(--clr-#{$name});
     @if $name == blank {
       color: #000; // bg is transparent
       border: 1px solid var(--clr-neutral-400);
