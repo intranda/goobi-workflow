@@ -63,7 +63,6 @@ public class PluginsBean implements Serializable {
 
     @Getter
     private Map<String, List<PluginInfo>> plugins;
-    private List<String> translations;
 
     @Getter
     @Setter
@@ -75,7 +74,6 @@ public class PluginsBean implements Serializable {
         if (PluginsBean.instance == null) {
             PluginsBean.instance = this;
         }
-        this.translations = new ArrayList<>();
         this.plugins = this.getPluginsFromFS();
     }
 
@@ -113,30 +111,30 @@ public class PluginsBean implements Serializable {
         Set<String> stepPluginsInUse = StepManager.getDistinctStepPluginTitles();
         Map<String, List<PluginInfo>> plugins = new TreeMap<>();
         try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(pluginsFolder)) {
+            // dirList collects plugins that are directly located in the plugins/ folder
             List<PluginInfo> dirList = new ArrayList<>();
             for (Path pluginDir : dirStream) {
                 if (Files.isDirectory(pluginDir)) {
-                    dirList = new ArrayList<>();
+                    List<PluginInfo> subDirList = new ArrayList<>();
                     try (DirectoryStream<Path> pluginStream = Files.newDirectoryStream(pluginDir)) {
                         for (Path pluginP : pluginStream) {
                             if (pluginP.getFileName().toString().endsWith("jar")) {
-                                dirList.add(getPluginInfo(pluginP.toAbsolutePath(), stepPluginsInUse, instantiate));
+                                subDirList.add(getPluginInfo(pluginP.toAbsolutePath(), stepPluginsInUse, instantiate));
                             }
                         }
                     }
                     String folder = pluginDir.getFileName().toString();
-                    plugins.put(folder, dirList);
-                    translations.add(this.getTranslatedFolderName(folder));
-                } else { //if plugin is directly inside directory
+                    plugins.put(folder, subDirList);
+                } else { // if plugin is directly inside directory
                     if (pluginDir.getFileName().toString().endsWith("jar")) {
                         dirList.add(getPluginInfo(pluginDir.toAbsolutePath(), stepPluginsInUse, instantiate));
                     }
                 }
             }
-            if (!dirList.isEmpty()) { //if there were plugins inside the directory dirList will not be empty
+            // if there were plugins inside the directory dirList will not be empty
+            if (!dirList.isEmpty()) {
                 String folder = pluginsFolder.getFileName().toString();
                 plugins.put(folder, dirList); // add the plugins to the list
-                translations.add(this.getTranslatedFolderName(folder));
             }
         } catch (IOException e) {
             log.error(e);
