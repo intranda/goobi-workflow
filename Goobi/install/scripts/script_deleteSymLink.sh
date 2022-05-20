@@ -21,7 +21,6 @@ OCR_LINK_USED=0
 # get name of temporary ocr directory
 PROCESSTITLE=$(basename "$LINKNAME" | sed -r "s/__\[[0-9]+\]$//")
 ALTODIR="${PROCESSTITLE}_alto"
-ALTODIR_DEST="${PROCESSTITLE}_alto"
 
 # determine source directory
 SOURCEDIR=$(readlink "${LINKNAME}")
@@ -46,14 +45,14 @@ if [ -d "${LINKNAME}/${ALTODIR}" ]
 then
 	if [ -d "${SOURCEDIR}/../ocr/${ALTODIR}" ]
 	then
-		mv "${SOURCEDIR}/${ALTODIR}" "${SOURCEDIR}/../ocr/${ALTODIR_DEST}-$(date +%s)"
-		echo "moving ${ALTODIR} to ocr/${ALTODIR_DEST}-$(date +%s)"
+		mv "${SOURCEDIR}/${ALTODIR}" "${SOURCEDIR}/../ocr/${ALTODIR}-$(date +%s)"
+		echo "moving ${ALTODIR} to ocr/${ALTODIR}-$(date +%s)"
 	else
 		if ! [ -d "${SOURCEDIR}/../ocr" ]
 		then
 			mkdir "${SOURCEDIR}/../ocr"
 		fi
-		mv "${SOURCEDIR}/${ALTODIR}" "${SOURCEDIR}/../ocr/${ALTODIR_DEST}"
+		mv "${SOURCEDIR}/${ALTODIR}" "${SOURCEDIR}/../ocr/"
 	fi
 fi
 
