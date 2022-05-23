@@ -814,6 +814,13 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.29</version>
         </dependency>
+<!-- https://mvnrepository.com/artifact/software.aws.rds/aws-mysql-jdbc -->
+<dependency>
+    <groupId>software.aws.rds</groupId>
+    <artifactId>aws-mysql-jdbc</artifactId>
+    <version>1.0.0</version>
+</dependency>
+        
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml-full</artifactId>
