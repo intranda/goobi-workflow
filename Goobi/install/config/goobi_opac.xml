@@ -44,10 +44,10 @@
         </type>
     </doctypes>
     <catalogue title="K10Plus">
-        <config address="kxp.k10plus.de" database="2.1" description="K10plus" iktlist="IKTLIST-GBV.xml" port="80" ucnf="UCNF=NFC&amp;XPNOFF=1" />
+        <config address="kxp.k10plus.de" database="2.1" description="K10plus" charset="ISO-8859-1" iktlist="IKTLIST-GBV.xml" port="80" ucnf="UCNF=NFC&amp;XPNOFF=1" />
     </catalogue>
     <catalogue title="Library of Congress">
-        <config address="http://opac.intranda.com/sru/DB=1" database="1" ucnf="XPNOFF=1" description="Library of Congress SRU (Voyager)" iktlist="IKTLIST.xml" port="80" opacType="GBV-MARC"/>
+        <config address="http://opac.intranda.com/sru/DB=1" database="1" ucnf="XPNOFF=1" description="Library of Congress SRU (Voyager)" charset="ISO-8859-1" iktlist="IKTLIST.xml" port="80" opacType="GBV-MARC"/>
         <searchFields>
             <searchField label="LCCN" value="12" />
             <searchField label="ISBN" value="7" />

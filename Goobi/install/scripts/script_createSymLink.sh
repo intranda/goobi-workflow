@@ -35,10 +35,9 @@ echo "$LINKNAME"
 if [ ${MOVE_ALTO} -eq 1 ]
 then
 	ALTODIR="${PROCESSTITLE}_alto"
-	ALTODIR_DEST="${PROCESSTITLE}_alto"
 	if [ -d "$SOURCEDIR/../ocr" ]; then
-		if [ -d "${SOURCEDIR}/../ocr/${ALTODIR_DEST}" ]; then
-			mv "$SOURCEDIR/../ocr/${ALTODIR_DEST}" "${SOURCEDIR}/${ALTODIR}"
+		if [ -d "${SOURCEDIR}/../ocr/${ALTODIR}" ]; then
+			mv "$SOURCEDIR/../ocr/${ALTODIR}" "${SOURCEDIR}/"
 		else
 			mkdir "${SOURCEDIR}/${ALTODIR}"
 		fi
