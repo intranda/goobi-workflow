@@ -87,5 +87,9 @@
        <packageUrl regex="true">^pkg:javascript/bootstrap@.*$</packageUrl>
        <cve>CVE-2022-24785</cve>
     </suppress>
-    
+    <suppress>
+        <notes><![CDATA[Ignored since we are not vulnerable, see https://github.com/spring-projects/spring-framework/issues/24434#issuecomment-1132113566]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring.*$</packageUrl>
+        <cve>CVE-2016-1000027</cve>
+    </suppress>
 </suppressions>
