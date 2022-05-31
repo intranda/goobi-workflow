@@ -23,6 +23,10 @@
     margin-right: 2rem;
     width: auto;
     height: 3rem;
+
+    @media screen and (max-width: 350px) {
+      margin-right: 1rem;
+    }
   }
 
   // Nav items
@@ -119,6 +123,10 @@
   .icon-nav {
     display: flex;
     align-items: center;
+
+    .nav-link.btn-link {
+      margin-inline-end: 0;
+    }
   }
 }
 

@@ -3,6 +3,7 @@
   --clr-primary-400: #368ee0;
   --clr-primary-600: #1b67af;
   --clr-neutral-200: #f4f4f4;
+  --clr-neutral-300: #ced4da;
   --clr-neutral-400: #aaaaaa;
   --clr-neutral-600: #666666;
   --clr-white: #ffffff;
@@ -38,6 +39,14 @@
 
 .text-neutral-200 {
   color: var(--text-neutral-200);
+}
+
+.bg-neutral-300 {
+  background-color: var(--clr-neutral-300);
+}
+
+.text-neutral-300 {
+  color: var(--text-neutral-300);
 }
 
 .bg-neutral-400 {
@@ -140,6 +149,10 @@
   color: var(--clr-neutral-200);
 }
 
+.text-neutral-300 {
+  color: var(--clr-neutral-300);
+}
+
 .text-neutral-400 {
   color: var(--clr-neutral-400);
 }
@@ -217,6 +230,18 @@
 .btn-neutral-200:hover {
   background-color: #e7e7e7;
   border-color: #e7e7e7;
+  color: #fff;
+}
+
+.btn-neutral-300 {
+  background-color: var(--clr-neutral-300);
+  border-color: var(--clr-neutral-300);
+  color: #fff;
+}
+
+.btn-neutral-300:hover {
+  background-color: #bfc7cf;
+  border-color: #bfc7cf;
   color: #fff;
 }
 
@@ -384,6 +409,14 @@
   border-color: var(--clr-neutral-200);
 }
 
+.box.box--neutral-300 {
+  border-color: var(--clr-neutral-300);
+}
+.box.box--neutral-300 .box-title {
+  background-color: var(--clr-neutral-300);
+  border-color: var(--clr-neutral-300);
+}
+
 .box.box--neutral-400 {
   border-color: var(--clr-neutral-400);
 }
@@ -500,6 +533,7 @@
   --bs-primary-400: #368ee0;
   --bs-primary-600: #1b67af;
   --bs-neutral-200: #f4f4f4;
+  --bs-neutral-300: #ced4da;
   --bs-neutral-400: #aaaaaa;
   --bs-neutral-600: #666666;
   --bs-white: #ffffff;
@@ -9906,6 +9940,7 @@ textarea.form-control-lg {
   --clr-primary-400: #368ee0;
   --clr-primary-600: #1b67af;
   --clr-neutral-200: #f4f4f4;
+  --clr-neutral-300: #ced4da;
   --clr-neutral-400: #aaaaaa;
   --clr-neutral-600: #666666;
   --clr-white: #ffffff;
@@ -9941,6 +9976,14 @@ textarea.form-control-lg {
 
 .text-neutral-200 {
   color: var(--text-neutral-200);
+}
+
+.bg-neutral-300 {
+  background-color: var(--clr-neutral-300);
+}
+
+.text-neutral-300 {
+  color: var(--text-neutral-300);
 }
 
 .bg-neutral-400 {
@@ -10043,6 +10086,10 @@ textarea.form-control-lg {
   color: var(--clr-neutral-200);
 }
 
+.text-neutral-300 {
+  color: var(--clr-neutral-300);
+}
+
 .text-neutral-400 {
   color: var(--clr-neutral-400);
 }
@@ -10120,6 +10167,18 @@ textarea.form-control-lg {
 .btn-neutral-200:hover {
   background-color: #e7e7e7;
   border-color: #e7e7e7;
+  color: #fff;
+}
+
+.btn-neutral-300 {
+  background-color: var(--clr-neutral-300);
+  border-color: var(--clr-neutral-300);
+  color: #fff;
+}
+
+.btn-neutral-300:hover {
+  background-color: #bfc7cf;
+  border-color: #bfc7cf;
   color: #fff;
 }
 
@@ -10287,6 +10346,14 @@ textarea.form-control-lg {
   border-color: var(--clr-neutral-200);
 }
 
+.box.box--neutral-300 {
+  border-color: var(--clr-neutral-300);
+}
+.box.box--neutral-300 .box-title {
+  background-color: var(--clr-neutral-300);
+  border-color: var(--clr-neutral-300);
+}
+
 .box.box--neutral-400 {
   border-color: var(--clr-neutral-400);
 }
@@ -10438,6 +10505,7 @@ body {
 :root {
   --fs-200: 1rem;
   --fs-400: 1.2rem;
+  --fs-500: 1.4rem;
   --fs-600: 1.6rem;
 }
 
@@ -10504,6 +10572,11 @@ body {
   margin-right: 2rem;
   width: auto;
   height: 3rem;
+}
+@media screen and (max-width: 350px) {
+  .navbar #brand img {
+    margin-right: 1rem;
+  }
 }
 .navbar .nav-item {
   color: var(--text-nav, var(--clr-white));
@@ -10586,6 +10659,9 @@ body {
   display: flex;
   align-items: center;
 }
+.navbar .user .icon-nav .nav-link.btn-link {
+  margin-inline-end: 0;
+}
 
 @media (max-width: 991.98px) {
   #navigation {
@@ -10650,7 +10726,7 @@ body {
 .page-header h1, .page-header .h1 {
   font-size: 3rem;
   color: #2a2a2a;
-  line-height: 2.4rem;
+  line-height: 3.2rem;
   font-weight: 400;
   margin: 2rem 0;
 }
@@ -10711,6 +10787,7 @@ body {
 .breadcrumbs li {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 }
 .breadcrumbs a {
   color: #666;
@@ -10745,8 +10822,8 @@ body {
 }
 .box-title h2, .box-title .h2 {
   color: currentColor;
-  font-size: 15px;
-  line-height: 24px;
+  font-size: 1.5rem;
+  line-height: 2.4rem;
   margin: 3px 0 3px 0;
 }
 .box-title h2 .fa, .box-title .h2 .fa {
@@ -10756,30 +10833,30 @@ body {
 .box-content {
   padding: 2rem;
 }
-.box-content.nopadding {
+.box-content > .row {
+  border-bottom: 1px solid var(--clr-neutral-300);
+}
+.box-content .row > [class^=col-] .row > [class^=col-] {
   padding: 0;
+}
+
+.box-content:not(.p-0) tr {
+  border-left: 1px solid var(--clr-neutral-300);
+  border-right: 1px solid var(--clr-neutral-300);
 }
 
 /* Box content without padding */
-.box-content.nopadding {
-  padding: 0;
+.box-content.p-0 {
+  /* prevent rows from overlapping boxes */
+}
+.box-content.p-0 .row,
+.box-content.p-0 [class^=col-] {
+  margin: 0;
+}
+.box-content.p-0 .row > [class^=col-] {
+  padding: 1.6rem 0.8rem;
 }
 
-.box--blank .box-title {
-  color: var(--clr-text-400);
-  background: transparent;
-}
-
-/* For each color in the $colors map, the fn returns snippets like this:
- *
-.box.orange {
-  border-color: var(--clr-orange-400, #e8860c);
-  & .box-title {
-    background-color: var(--clr-orange-400, #e8860c);
-    border-color: var(--clr-orange-400, #e8860c);
-  }
-}
-*/
 .table {
   margin-bottom: 0;
 }
@@ -10809,7 +10886,11 @@ td .btn-group .btn:not(:first-of-type) {
   margin-right: 0.8rem;
 }
 td .btn {
-  margin: 1px;
+  margin-top: 1px;
+}
+td .btn ~ .btn {
+  margin-inline-start: 0;
+  margin-inline-end: 0;
 }
 
 .box th:first-child,
@@ -10836,9 +10917,27 @@ td .btn {
   padding: 20px;
   margin-bottom: 0;
 }
-.form-group label {
-  margin-bottom: 0.5rem;
-  font-weight: 600;
+
+label,
+.form__label {
+  font-size: var(--fs-500);
+}
+
+.form-text {
+  font-size: var(--fs-400);
+}
+
+.label-col {
+  background-color: var(--clr-neutral-200);
+  border-right: 1px solid var(--clr-neutral-300);
+}
+@media screen and (max-width: 767px) {
+  .label-col {
+    border-right: 0;
+  }
+}
+.label-col .fa-asterisk {
+  vertical-align: super;
 }
 
 #processTable tr td:nth-of-type(2) span {
@@ -10874,19 +10973,29 @@ td .btn {
 
 button,
 .btn {
-  font-size: var(--fs-400);
+  font-size: var(--fs-500);
   border-radius: var(--border-radius, 2px);
 }
 button i ~ *,
 .btn i ~ * {
-  margin-inline-start: 8px;
+  margin-inline-start: 0.8rem;
+}
+button.btn-hot,
+.btn.btn-hot {
+  margin-inline-end: auto;
+}
+button ~ .btn,
+.btn ~ .btn {
+  margin-inline-start: 0.8rem;
 }
 
 button.badge,
 span.badge {
+  display: inline-block;
   background-color: transparent;
   border: 1px solid currentColor;
   padding: 2px 4px;
+  margin: 2px 4px;
 }
 button.badge i,
 span.badge i {
