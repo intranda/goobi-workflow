@@ -45,6 +45,10 @@
                   <suppressionFile>${project.basedir}/goobi-suppression.xml</suppressionFile>
                     </suppressionFiles>
                     <format>ALL</format>
+                    <ossIndexWarnOnlyOnRemoteErrors>true</ossIndexWarnOnlyOnRemoteErrors>
+                    <failOnError>false</failOnError>
+                    <ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled>
+                    
                 </configuration>
                 <executions>
                     <execution>
