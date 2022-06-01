@@ -1,11 +1,15 @@
 /**
  * This is an Antlr4 grammar for the Extended Date Time Format (EDTF).
  * EDTF specification website: http://www.loc.gov/standards/datetime/
- * Version of the spec supported: Draft Submission, updated September 10, 2012
+ * Version of the spec supported: Level 1 except Y long form years.
  *
- * Author: Kevin S. Clarke (ksclarke@gmail.com)
+ * Original Author: Kevin S. Clarke (ksclarke@gmail.com)
  * Created: 2013/02/06
  * Updated: 2013/02/23
+ *
+ * Modified to comply with updated EDTF standard & LUX requirements
+ * Author of modifications: Janos Seboek (janos.seboek@intranda.com)
+ * Modifications Updated: 2022/06/01
  *
  * License: BSD 2-Clause http://github.com/ksclarke/freelib-edtf/LICENSE
  */
