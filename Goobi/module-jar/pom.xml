@@ -13,7 +13,7 @@
     <properties>
         <sonar.projectBaseDir>..</sonar.projectBaseDir>
         <sonar.sources>../src/main/java,pom.xml</sonar.sources>
-        <sonar.skip>false</sonar.skip>
+        <sonar.skip>true</sonar.skip>
     </properties>
 
 	<build>
