@@ -17,6 +17,15 @@
             <id>intranda-public</id>
             <url>https://nexus.intranda.com/repository/maven-public</url>
         </repository>
+        <repository>
+            <id>oss-snapshots-repo</id>
+            <name>Sonatype OSS Maven Repository</name>
+            <url>https://oss.sonatype.org/content/groups/public</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
     </repositories>
 
     <distributionManagement>
@@ -34,6 +43,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <publicVersion>22.04.6-SNAPSHOT</publicVersion>
+
+        <!-- Sonar -->
+        <sonar.projectKey>intranda_goobi-workflow</sonar.projectKey>
+        <sonar.organization>intranda</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.java.source>11</sonar.java.source>
+        <sonar.java.target>11</sonar.java.target>
+
         <!-- intranda internal -->
         <ics.version>3.4.0</ics.version>
         <normdataimporter.version>1.9.1</normdataimporter.version>
