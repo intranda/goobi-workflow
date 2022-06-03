@@ -51,6 +51,7 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.java.source>11</sonar.java.source>
         <sonar.java.target>11</sonar.java.target>
+        <sonar.java.binaries>module-jar/target/</sonar.java.binaries>
         <sonar.skip>false</sonar.skip>
 
         <!-- intranda internal -->
