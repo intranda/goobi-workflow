@@ -104,9 +104,9 @@
 				<version>2.12.4</version>
                 <configuration>
 <!--                           <skipTests>true</skipTests> -->
-                    <includes>
-                        <include>**/de/sub/goobi/TestAll.java</include>
-                    </includes>
+                    <excludes>
+                        <exclude>**/de/sub/goobi/TestAll.java</exclude>
+                    </excludes>
                     <systemProperties>
                         <property>
                             <name>java.util.logging.config.file</name>
@@ -116,7 +116,7 @@
                     <argLine>--add-exports java.base/jdk.internal.loader=ALL-UNNAMED</argLine>
                 </configuration>
 
-			</plugin>
+            </plugin>
 		</plugins>
 	</build>
 
