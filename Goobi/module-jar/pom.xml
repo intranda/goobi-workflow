@@ -68,6 +68,7 @@
               <!--
                   <failBuildOnCVSS>8.0</failBuildOnCVSS>
               -->
+              <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
               <skipProvidedScope>true</skipProvidedScope>
               <skipTestScope>true</skipTestScope>
               <suppressionFiles>
