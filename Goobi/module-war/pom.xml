@@ -16,7 +16,8 @@
 	<properties>
 		<maven.deploy.skip>true</maven.deploy.skip>
 		<maven.build.timestamp.format>yyyy-MM-dd_HH-mm</maven.build.timestamp.format>
-   		<buildDate>${maven.build.timestamp}</buildDate>
+        <buildDate>${maven.build.timestamp}</buildDate>
+        <sonar.skip>true</sonar.skip>
 	</properties>
 
 	<build>
