@@ -2,8 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.intranda.goobi.workflow</groupId>
     <artifactId>goobi-core</artifactId>
-    <!-- When updating the version, make sure to also update the version in
-        the submodules -->
+    <!-- When updating the version, make sure to also update the version in the submodules -->
     <version>22.04.6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -51,7 +50,6 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.java.source>11</sonar.java.source>
         <sonar.java.target>11</sonar.java.target>
-        <sonar.java.binaries>module-jar/target/</sonar.java.binaries>
         <sonar.skip>false</sonar.skip>
 
         <!-- intranda internal -->
@@ -303,21 +301,16 @@
             <artifactId>commons-dbcp2</artifactId>
             <version>${commons-dbcp2.version}</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
             <version>1.9</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-dbutils/commons-dbutils -->
-
         <dependency>
             <groupId>commons-dbutils</groupId>
             <artifactId>commons-dbutils</artifactId>
             <version>1.7</version>
         </dependency>
-
         <!-- uncommented because very likely not needed
         <dependency>
 		    <groupId>org.apache.commons</groupId>
@@ -325,7 +318,6 @@
 		    <version>3.2</version>
 		</dependency>
          -->
-
 		<!--
 		<dependency>
 			<groupId>de.mhus.osgi.ports</groupId>
@@ -388,7 +380,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>el-impl</artifactId>
@@ -704,7 +695,6 @@
             <artifactId>javax.ws.rs-api</artifactId>
             <version>2.1.1</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/jfree/jfreechart -->
         <dependency>
             <groupId>jfree</groupId>
             <artifactId>jfreechart</artifactId>
@@ -721,8 +711,7 @@
             <artifactId>jna-platform</artifactId>
             <version>${jna.version}</version>
         </dependency>
--->
-        <!-- https://mvnrepository.com/artifact/com.github.jnr/jnr-x86asm -->
+        -->
         <dependency>
             <groupId>com.github.jnr</groupId>
             <artifactId>jnr-x86asm</artifactId>
@@ -890,7 +879,7 @@
 		    <artifactId>rome</artifactId>
 		    <version>1.18.0</version>
 		</dependency>
-<!--        
+        <!--        
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-all</artifactId>
@@ -906,14 +895,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
--->
-		<!-- https://mvnrepository.com/artifact/org.apache.shiro/shiro-crypto-core -->
+        -->
 		<dependency>
 		    <groupId>org.apache.shiro</groupId>
 		    <artifactId>shiro-core</artifactId>
 		    <version>1.9.0</version>
 		</dependency>
-        
         <dependency>
             <groupId>org.apache.taglibs</groupId>
             <artifactId>taglibs-standard-impl</artifactId>
@@ -1049,7 +1036,6 @@
 						<version>${spring.version}</version>
 						<scope>runtime</scope>
 					</dependency>
-					<!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
 					<dependency>
 						<groupId>org.springframework</groupId>
 						<artifactId>spring-context</artifactId>
@@ -1068,23 +1054,18 @@
 						<version>${spring.version}</version>
 						<scope>runtime</scope>
 					</dependency>
-					
-					<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on -->
 					<dependency>
 						<groupId>org.bouncycastle</groupId>
 						<artifactId>bcpkix-jdk15on</artifactId>
 						<version>1.70</version>
 						<scope>runtime</scope>
-
 					</dependency>
-					<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcmail-jdk15on -->
 					<dependency>
 						<groupId>org.bouncycastle</groupId>
 						<artifactId>bcmail-jdk15on</artifactId>
 						<version>1.70</version>
 						<scope>runtime</scope>
 					</dependency>
-					<!-- https://mvnrepository.com/artifact/org.apache.ant/ant -->
 					<dependency>
 						<groupId>org.apache.ant</groupId>
 						<artifactId>ant</artifactId>
@@ -1415,7 +1396,7 @@
                     <rulesUri>file://${basedir}/version-number-rules.xml</rulesUri>
                 </configuration>
             </plugin>
-                        <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.1.2</version>
@@ -1439,18 +1420,12 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.7</version>
+                <version>0.8.8</version>
                 <executions>
                     <execution>
+                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
                         </goals>
                     </execution>
                 </executions>
