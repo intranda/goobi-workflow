@@ -6,7 +6,10 @@
     <version>22.04.6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <name>Goobi workflow</name>
+
     <modules>
+        <module>module-ci</module>
         <module>module-jar</module>
         <module>module-war</module>
     </modules>
@@ -51,6 +54,7 @@
         <sonar.java.source>11</sonar.java.source>
         <sonar.java.target>11</sonar.java.target>
         <sonar.skip>false</sonar.skip>
+        <sonar.exclusions>**/module-jar/**/*,**/module-war/**/*</sonar.exclusions>
 
         <!-- intranda internal -->
         <ics.version>3.4.0</ics.version>
@@ -1300,7 +1304,7 @@
         <dependency>
             <groupId>de.intranda.goobi</groupId>
             <artifactId>alto</artifactId>
-            <version>[1,)</version>
+            <version>1.5.9</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
@@ -1414,19 +1418,6 @@
                                 <ignoredUnusedDeclaredDependency>com.google.zxing:javase</ignoredUnusedDeclaredDependency>
                             </ignoredUnusedDeclaredDependencies>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.8</version>
-                <executions>
-                    <execution>
-                        <id>prepare-agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>

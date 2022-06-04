@@ -8,16 +8,20 @@
 	<groupId>de.intranda.goobi.workflow</groupId>
 	<artifactId>goobi-core-war</artifactId>
 	<version>22.04.6-SNAPSHOT</version>
-	<packaging>war</packaging>
+    <packaging>war</packaging>
+
+    <name>Goobi workflow: Build war package</name>
+
 	<scm>
 		<url>scm:git:https://github.com/intranda/goobi-workflow</url>
 		<connection>scm:git:https://github.com/intranda/goobi-workflow</connection>
 	</scm>
 	<properties>
-		<maven.deploy.skip>true</maven.deploy.skip>
 		<maven.build.timestamp.format>yyyy-MM-dd_HH-mm</maven.build.timestamp.format>
         <buildDate>${maven.build.timestamp}</buildDate>
-        <sonar.skip>true</sonar.skip>
+		<maven.deploy.skip>true</maven.deploy.skip>
+        <skipTests>true</skipTests>
+        <mdep.analyze.skip>true</mdep.analyze.skip>
 	</properties>
 
 	<build>
@@ -54,7 +58,8 @@
             <plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.7.0</version>
-				<configuration>
+                <configuration>
+                    <compilerArgument>-Xlint:deprecation</compilerArgument>
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
