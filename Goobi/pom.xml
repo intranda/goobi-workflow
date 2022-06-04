@@ -54,7 +54,6 @@
         <sonar.java.source>11</sonar.java.source>
         <sonar.java.target>11</sonar.java.target>
         <sonar.skip>false</sonar.skip>
-        <sonar.exclusions>**/module-jar/**/*,**/module-war/**/*</sonar.exclusions>
 
         <!-- intranda internal -->
         <ics.version>3.4.0</ics.version>

@@ -56,19 +56,17 @@
                 <version>0.8.8</version>
                 <executions>
                     <execution>
-                    <id>report-aggregate</id>
-                    <phase>prepare-package</phase>
-                    <goals>
-                        <goal>report-aggregate</goal>
-                    </goals>
-                    <configuration>
-                        <title>JaCoCo</title>
-                        <footer>Code Coverage Report for JaCoCo ${project.version}</footer>
-                        <includes>
-                            <include>**/*.class</include>
-                        </includes>
-                    </configuration>
-                  </execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
 
@@ -136,7 +134,7 @@
                 <configuration>
                     <skipTests>${skipTests}</skipTests>
                     <excludes>
-                        <exclude>**/de/sub/goobi/TestAll.java</exclude>
+                        <exclude>**/*/TestAll.java</exclude>
                     </excludes>
                     <systemProperties>
                         <property>
@@ -144,7 +142,8 @@
                             <value>src/test/resources/log4j2.test.xml</value>
                         </property>
                     </systemProperties>                    
-                    <argLine>--add-exports java.base/jdk.internal.loader=ALL-UNNAMED</argLine>
+                    <!-- This line overwrites the Jacoco argLine which results in a missing code coverate report -->
+                    <!--argLine>add-exports java.base/jdk.internal.loader=ALL-UNNAMED</argLine-->
                 </configuration>
 
             </plugin>
