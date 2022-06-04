@@ -16,25 +16,24 @@
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
         <skipTests>false</skipTests>
+        <basedir>${project.basedir}</basedir>
         <sonar.projectBaseDir>..</sonar.projectBaseDir>
-        <sonar.sources>${project.basedir}/../src/main/java,pom.xml</sonar.sources>
-        <sonar.skip>true</sonar.skip>
     </properties>
 
 	<build>
-		<sourceDirectory>${project.basedir}/../src/main/java</sourceDirectory>
-		<testSourceDirectory>${project.basedir}/../src/test/java</testSourceDirectory>
+		<sourceDirectory>../src/main/java</sourceDirectory>
+		<testSourceDirectory>../src/test/java</testSourceDirectory>
 		<resources>
 			<resource>
-				<directory>${project.basedir}/../src/main/resources</directory>
+				<directory>../src/main/resources</directory>
 			</resource>
 		</resources>
 		<testResources>
 			<testResource>
-				<directory>${project.basedir}/../src/test/resources</directory>
+				<directory>../src/test/resources</directory>
 			</testResource>
             <testResource>
-                <directory>${project.basedir}/../src/main/java</directory>
+                <directory>../src/main/java</directory>
                 <excludes>
                     <exclude>**/*.java</exclude>
                 </excludes>
@@ -64,7 +63,7 @@
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.7.0.1746</version>
+                <version>3.9.1.2184</version>
                   <executions>
                      <execution>
                         <id>sonar-run</id>
@@ -150,7 +149,6 @@
                     <!-- This line overwrites the Jacoco argLine which results in a missing code coverate report -->
                     <!--argLine>add-exports java.base/jdk.internal.loader=ALL-UNNAMED</argLine-->
                 </configuration>
-
             </plugin>
 		</plugins>
 	</build>
