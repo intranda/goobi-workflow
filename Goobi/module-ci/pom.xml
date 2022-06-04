@@ -21,14 +21,6 @@
         <sonar.skip>true</sonar.skip>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>goobi-core-jar</artifactId>
-            <version>22.04.6-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
-
 	<build>
 		<sourceDirectory>${project.basedir}/../src/main/java</sourceDirectory>
 		<testSourceDirectory>${project.basedir}/../src/test/java</testSourceDirectory>
@@ -69,7 +61,20 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.7.0.1746</version>
+                  <executions>
+                     <execution>
+                        <id>sonar-run</id>
+                        <phase>verify</phase>
+                          <goals>
+                             <goal>sonar</goal>
+                          </goals>
+                     </execution>
+                 </executions>
+            </plugin>
 
 			<!-- make test script executable  -->
 			<plugin>

@@ -53,6 +53,8 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.java.source>11</sonar.java.source>
         <sonar.java.target>11</sonar.java.target>
+        <sonar.sources>../src/main/java</sonar.sources>
+        <!--sonar.coverage.jacoco.xmlReportPaths>**/*/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths-->
         <sonar.skip>false</sonar.skip>
 
         <!-- intranda internal -->
