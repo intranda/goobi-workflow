@@ -54,6 +54,13 @@ pipeline {
   post {
     always {
       junit "**/target/surefire-reports/*.xml"
+      step([
+        $class           : 'JacocoPublisher',
+        execPattern      : 'Goobi/module-ci/target/jacoco.exec',
+        classPattern     : 'Goobi/module-ci/target/classes/',
+        sourcePattern    : 'Goobi/src/main/java',
+        exclusionPattern : '**/*Test.class'
+      ])
     }
     success {
       archiveArtifacts artifacts: 'Goobi/module-war/target/*.war, Goobi/install/db/goobi.sql', fingerprint: true
