@@ -47,6 +47,12 @@
     </distributionManagement>
 
 
+    <scm>
+        <url>scm:git:https://github.com/intranda/goobi-workflow</url>
+        <connection>scm:git:https://github.com/intranda/goobi-workflow</connection>
+    </scm>
+
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

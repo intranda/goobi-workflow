@@ -18,41 +18,33 @@
     <name>Goobi workflow: Build war package</name>
 
 
-    <scm>
-        <url>scm:git:https://github.com/intranda/goobi-workflow</url>
-        <connection>scm:git:https://github.com/intranda/goobi-workflow</connection>
-    </scm>
-
-
     <properties>
         <maven.build.timestamp.format>yyyy-MM-dd_HH-mm</maven.build.timestamp.format>
         <buildDate>${maven.build.timestamp}</buildDate>
+
+        <!-- Do not deploy artifacts from here to Nexus -->
         <maven.deploy.skip>true</maven.deploy.skip>
+        <!-- Tests are performed in the module-ci already -->
         <skipTests>true</skipTests>
+        <!-- Don't analyze for dependency vulnerabilities  -->
         <mdep.analyze.skip>true</mdep.analyze.skip>
+        <!-- The basedir from this module is the project basedir. Setting it here
+             allows relative URLs afterwards -->
+        <basedir>${project.basedir}</basedir>
     </properties>
 
 
     <build>
         <finalName>goobi</finalName>
-        <sourceDirectory>${project.basedir}/../src/main/java</sourceDirectory>
-        <testSourceDirectory>${project.basedir}/../test/src</testSourceDirectory>
+        <sourceDirectory>../src/main/java</sourceDirectory>
         <resources>
             <resource>
-                <directory>${project.basedir}/../src/main/resources</directory>
+                <directory>../src/main/resources</directory>
                 <excludes>
                     <exclude>goobi_config.properties</exclude>
                 </excludes>
             </resource>
         </resources>
-        <testResources>
-            <testResource>
-                <directory>../test/src</directory>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </testResource>
-        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -87,22 +79,10 @@
                     </archive>
                     <webResources>
                         <resource>
-                            <directory>${project.basedir}/../src/main/java</directory>
-                            <targetPath>WEB-INF/classes</targetPath>
-                        </resource>
-                        <resource>
-                            <directory>${project.basedir}/../src/main/webapp</directory>
+                            <directory>../src/main/webapp</directory>
                             <targetPath>.</targetPath>
                         </resource>
                     </webResources>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.12.4</version>
-                <configuration>
-                    <skipTests>true</skipTests>
                 </configuration>
             </plugin>
             <plugin>
