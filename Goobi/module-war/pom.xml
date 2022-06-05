@@ -19,7 +19,8 @@
 
 
     <properties>
-        <maven.build.timestamp.format>yyyy-MM-dd_HH-mm</maven.build.timestamp.format>
+        <!-- Manifest information -->
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
         <buildDate>${maven.build.timestamp}</buildDate>
 
         <!-- Do not deploy artifacts from here to Nexus -->
@@ -66,10 +67,10 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
+                            <ApplicationName>Goobi workflow</ApplicationName>
                             <version>${project.version}</version>
                             <Implementation-Version>${buildNumber}</Implementation-Version>
                             <Implementation-Build-Date>${buildDate}</Implementation-Build-Date>
-                            <Public-Version>${publicVersion}</Public-Version>
                         </manifestEntries>
                     </archive>
                     <webResources>
@@ -80,10 +81,11 @@
                     </webResources>
                 </configuration>
             </plugin>
+            <!-- get git version number -->
             <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
-                <version>2.2.1</version>
+                <version>4.9.10</version>
                 <executions>
                     <execution>
                         <goals>
@@ -111,10 +113,11 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <shortRevisionLength>10</shortRevisionLength>
+                    <shortRevisionLength>7</shortRevisionLength>
                     <doCheck>false</doCheck>
                 </configuration>
             </plugin>
+            <!-- Add template.properties as goobi_config.properties within goobi.war -->
             <plugin>
                 <groupId>com.coderplus.maven.plugins</groupId>
                 <artifactId>copy-rename-maven-plugin</artifactId>
@@ -132,6 +135,15 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- Use single version-number-rules.xml for entire project -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <rulesUri>file://${project.basedir}/../version-number-rules.xml</rulesUri>
+                </configuration>
             </plugin>
         </plugins>
     </build>
