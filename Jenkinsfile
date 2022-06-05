@@ -22,9 +22,7 @@ pipeline {
     }
     stage('build') {
       steps {
-              sh 'mvn -f Goobi/pom.xml clean verify'
-              recordIssues enabledForFailure: true, aggregatingResults: true, tools: [java(), javaDoc()]
-              dependencyCheckPublisher pattern: '**/target/dependency-check-report.xml'
+        sh 'mvn -f Goobi/pom.xml clean verify'
       }
     }
     stage('sonarcloud') {
@@ -61,6 +59,11 @@ pipeline {
         sourcePattern    : 'Goobi/src/main/java',
         exclusionPattern : '**/*Test.class'
       ])
+      recordIssues (
+        enabledForFailure: true, aggregatingResults: false,
+        tools: [checkStyle(pattern: '**/target/checkstyle-result.xml', reportEncoding: 'UTF-8')]
+      )
+      dependencyCheckPublisher pattern: '**/target/dependency-check-report.xml'
     }
     success {
       archiveArtifacts artifacts: 'Goobi/module-war/target/*.war, Goobi/install/db/goobi.sql', fingerprint: true

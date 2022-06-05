@@ -1,50 +1,59 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<parent>
-		<groupId>de.intranda.goobi.workflow</groupId>
-		<artifactId>goobi-core</artifactId>
-		<version>22.04.6-SNAPSHOT</version>
-	</parent>
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.intranda.goobi.workflow</groupId>
-	<artifactId>goobi-core-war</artifactId>
-	<version>22.04.6-SNAPSHOT</version>
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>de.intranda.goobi.workflow</groupId>
+        <artifactId>goobi-core</artifactId>
+        <version>22.04.6-SNAPSHOT</version>
+        <relativePath>../</relativePath>
+    </parent>
+
+
+    <groupId>de.intranda.goobi.workflow</groupId>
+    <artifactId>goobi-core-war</artifactId>
+    <version>22.04.6-SNAPSHOT</version>
     <packaging>war</packaging>
+
 
     <name>Goobi workflow: Build war package</name>
 
-	<scm>
-		<url>scm:git:https://github.com/intranda/goobi-workflow</url>
-		<connection>scm:git:https://github.com/intranda/goobi-workflow</connection>
-	</scm>
-	<properties>
-		<maven.build.timestamp.format>yyyy-MM-dd_HH-mm</maven.build.timestamp.format>
+
+    <scm>
+        <url>scm:git:https://github.com/intranda/goobi-workflow</url>
+        <connection>scm:git:https://github.com/intranda/goobi-workflow</connection>
+    </scm>
+
+
+    <properties>
+        <maven.build.timestamp.format>yyyy-MM-dd_HH-mm</maven.build.timestamp.format>
         <buildDate>${maven.build.timestamp}</buildDate>
-		<maven.deploy.skip>true</maven.deploy.skip>
+        <maven.deploy.skip>true</maven.deploy.skip>
         <skipTests>true</skipTests>
         <mdep.analyze.skip>true</mdep.analyze.skip>
-	</properties>
+    </properties>
 
-	<build>
-		<finalName>goobi</finalName>
-		<sourceDirectory>${project.basedir}/../src/main/java</sourceDirectory>
-		<testSourceDirectory>${project.basedir}/../test/src</testSourceDirectory>
-		<resources>
-			<resource>
-				<directory>${project.basedir}/../src/main/resources</directory>
-				<excludes>
-					<exclude>goobi_config.properties</exclude>
-				</excludes>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>../test/src</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</testResource>
-		</testResources>		
-		<plugins>
+
+    <build>
+        <finalName>goobi</finalName>
+        <sourceDirectory>${project.basedir}/../src/main/java</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/../test/src</testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/../src/main/resources</directory>
+                <excludes>
+                    <exclude>goobi_config.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>../test/src</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </testResource>
+        </testResources>
+        <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -56,102 +65,99 @@
                 </configuration>
             </plugin>
             <plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
                 <configuration>
                     <compilerArgument>-Xlint:deprecation</compilerArgument>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>3.0.0</version>
-				<configuration>
-					<archive>
-						<manifestEntries>
-							<version>${project.version}</version>
-							<Implementation-Version>${buildNumber}</Implementation-Version>
-							<Implementation-Build-Date>${buildDate}</Implementation-Build-Date>
-							<Public-Version>${publicVersion}</Public-Version>
-						</manifestEntries>
-					</archive>
-					<webResources>
-						<resource>
-							<directory>${project.basedir}/../src/main/java</directory>
-							<targetPath>WEB-INF/classes</targetPath>
-						</resource>
-						<resource>
-							<directory>${project.basedir}/../src/main/webapp</directory>
-							<targetPath>.</targetPath>
-						</resource>
-					</webResources>
-				</configuration>
-
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.12.4</version>
-				<configuration>
-					<skipTests>true</skipTests>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>pl.project13.maven</groupId>
-				<artifactId>git-commit-id-plugin</artifactId>
-				<version>2.2.1</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>revision</goal>
-						</goals>
-					</execution>
-				</executions>
-
-				<configuration>
-					<commitIdGenerationMode>flat</commitIdGenerationMode>
-					<gitDescribe>
-						<skip>true</skip>
-					</gitDescribe>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>buildnumber-maven-plugin</artifactId>
-				<version>1.4</version>
-
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>create</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<shortRevisionLength>10</shortRevisionLength>
-					<doCheck>false</doCheck>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.coderplus.maven.plugins</groupId>
-				<artifactId>copy-rename-maven-plugin</artifactId>
-				<version>1.0</version>
-				<executions>
-					<execution>
-						<id>copy-and-rename-file</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>rename</goal>
-						</goals>
-						<configuration>
-							<sourceFile>${project.build.directory}/classes/template.properties</sourceFile>
-							<destinationFile>${project.build.directory}/classes/goobi_config.properties</destinationFile>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <version>${project.version}</version>
+                            <Implementation-Version>${buildNumber}</Implementation-Version>
+                            <Implementation-Build-Date>${buildDate}</Implementation-Build-Date>
+                            <Public-Version>${publicVersion}</Public-Version>
+                        </manifestEntries>
+                    </archive>
+                    <webResources>
+                        <resource>
+                            <directory>${project.basedir}/../src/main/java</directory>
+                            <targetPath>WEB-INF/classes</targetPath>
+                        </resource>
+                        <resource>
+                            <directory>${project.basedir}/../src/main/webapp</directory>
+                            <targetPath>.</targetPath>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.12.4</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <commitIdGenerationMode>flat</commitIdGenerationMode>
+                    <gitDescribe>
+                        <skip>true</skip>
+                    </gitDescribe>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <shortRevisionLength>10</shortRevisionLength>
+                    <doCheck>false</doCheck>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-and-rename-file</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>rename</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>${project.build.directory}/classes/template.properties</sourceFile>
+                            <destinationFile>${project.build.directory}/classes/goobi_config.properties</destinationFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
