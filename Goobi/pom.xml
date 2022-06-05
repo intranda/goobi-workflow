@@ -57,6 +57,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <publicVersion>22.04.6-SNAPSHOT</publicVersion>
+        <!-- Use Java 11 for compiling -->
+        <maven.compiler.release>11</maven.compiler.release>
 
         <!-- Sonar -->
         <sonar.projectKey>intranda_goobi-workflow</sonar.projectKey>
