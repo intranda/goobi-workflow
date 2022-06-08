@@ -63,7 +63,7 @@ public class MessagesWs {
     }
 
     private static void loadMessages(Locale locale) {
-        locale2BundleMap.put(locale, ResourceBundle.getBundle("messages.messages", locale));
+        locale2BundleMap.put(locale, ResourceBundle.getBundle("messages", locale));
     }
 
     private class MessageRequest {

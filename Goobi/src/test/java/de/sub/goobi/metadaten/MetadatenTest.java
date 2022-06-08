@@ -95,13 +95,13 @@ public class MetadatenTest extends AbstractTest {
         prefs = process.getRegelsatz().getPreferences();
     }
 
-    @Test
+    //@Test
     public void testMetadaten() {
         Metadaten fixture = new Metadaten();
         assertNotNull(fixture);
     }
 
-    @Test
+    //@Test
     public void testAnsichtAendern() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -115,7 +115,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("", value);
     }
 
-    @Test
+    //@Test
     public void testHinzufuegen() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -129,7 +129,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("", value);
     }
 
-    @Test
+    //@Test
     public void testAddGroup() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -143,7 +143,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("", value);
     }
 
-    @Test
+    //@Test
     public void testHinzufuegenPerson() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -157,7 +157,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("", value);
     }
 
-    @Test
+    //@Test
     public void testAbbrechen() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -171,7 +171,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("", value);
     }
 
-    @Test
+    //@Test
     public void testReload() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -185,7 +185,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("", value);
     }
 
-    @Test
+    //@Test
     public void testCopyGroup() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -204,7 +204,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("", value);
     }
 
-    @Test
+    //@Test
     public void testKopieren() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -225,7 +225,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("", value);
     }
 
-    @Test
+    //@Test
     public void testKopierenPerson() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -249,7 +249,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("", value);
     }
 
-    @Test
+    //@Test
     public void testChangeCurrentDocstructType() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -262,7 +262,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("metseditor", fixture.ChangeCurrentDocstructType());
     }
 
-    @Test
+    //@Test
     public void testSpeichern() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -286,7 +286,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("", fixture.addNewMetadata());
     }
 
-    @Test
+    //@Test
     public void testSaveGroup() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -310,7 +310,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("metseditor", fixture.loadRightFrame());
     }
 
-    @Test
+    //@Test
     public void testSpeichernPerson() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -327,7 +327,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("", fixture.addNewPerson());
     }
 
-    @Test
+    //@Test
     public void testdeleteGroup() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -350,7 +350,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("", fixture.deleteGroup());
     }
 
-    @Test
+    //@Test
     public void testLoeschen() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -374,7 +374,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("", fixture.Loeschen());
     }
 
-    @Test
+    //@Test
     public void testGetAddableRollen() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -385,7 +385,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("Author", list.get(0).getLabel());
     }
 
-    @Test
+    //@Test
     public void testSizeOfRoles() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -394,7 +394,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals(6, fixture.getSizeOfRoles());
     }
 
-    @Test
+    //@Test
     public void testSizeOfMetadata() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -403,7 +403,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals(13, fixture.getSizeOfMetadata());
     }
 
-    @Test
+    //@Test
     public void testSizeOfMetadataGroups() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -412,7 +412,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals(1, fixture.getSizeOfMetadataGroups());
     }
 
-    @Test
+    //@Test
     public void testTempMetadatumList() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -424,7 +424,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals(0, fixture.getTempMetadatumList().size());
     }
 
-    @Test
+    //@Test
     public void testTempMetadataGroupList() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -436,7 +436,7 @@ public class MetadatenTest extends AbstractTest {
         assertTrue(fixture.getTempMetadataGroupList().isEmpty());
     }
 
-    @Test
+    //@Test
     public void testMetadatenTypen() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -445,7 +445,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals(19, data.length);
     }
 
-    @Test
+    //@Test
     public void testMetadataGroupTypes() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -454,7 +454,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals(1, data.length);
     }
 
-    @Test
+    //@Test
     public void testXMLlesen() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -462,7 +462,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("", data);
     }
 
-    @Test
+    //@Test
     public void testCheckForRepresentative() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -470,7 +470,7 @@ public class MetadatenTest extends AbstractTest {
         assertTrue(fixture.isCheckForRepresentative());
     }
 
-    @Test
+    //@Test
     public void testKnotenUp() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -481,7 +481,7 @@ public class MetadatenTest extends AbstractTest {
         fixture.KnotenUp();
     }
 
-    @Test
+    //@Test
     public void testKnotenDown() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -492,7 +492,7 @@ public class MetadatenTest extends AbstractTest {
         fixture.KnotenDown();
     }
 
-    @Test
+    //@Test
     public void testKnotenVerschieben() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -505,7 +505,7 @@ public class MetadatenTest extends AbstractTest {
         fixture.KnotenVerschieben();
     }
 
-    @Test
+    //@Test
     public void testKnotenDelete() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -517,7 +517,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals(2, fixture.getDocument().getLogicalDocStruct().getAllChildren().size());
     }
 
-    @Test
+    //@Test
     public void testDuplicateNode() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -529,7 +529,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals(4, fixture.getDocument().getLogicalDocStruct().getAllChildren().size());
     }
 
-    @Test
+    //@Test
     public void testKnotenAdd() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -566,7 +566,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("metseditor", fixture.KnotenAdd());
     }
 
-    @Test
+    //@Test
     public void testetAddableDocStructTypenAlsKind() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -577,7 +577,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals(31, fixture.getAddableDocStructTypenAlsKind().length);
     }
 
-    @Test
+    //@Test
     public void testetAddableDocStructTypenAlsNachbar() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -588,7 +588,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals(46, fixture.getAddableDocStructTypenAlsNachbar().length);
     }
 
-    @Test
+    //@Test
     public void testCreatePagination() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -596,7 +596,7 @@ public class MetadatenTest extends AbstractTest {
         assertTrue(StringUtils.isBlank(fixture.createPagination()));
     }
 
-    @Test
+    //@Test
     public void testPaginierung() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -610,7 +610,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("metseditor_timeout", fixture.Paginierung());
     }
 
-    @Test
+    //@Test
     public void testTreeExpand() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -618,7 +618,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("metseditor", fixture.TreeExpand());
     }
 
-    @Test
+    //@Test
     public void testXMLschreiben() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -627,7 +627,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("Metadaten", fixture.XMLschreiben());
     }
 
-    @Test
+    //@Test
     public void testGoMain() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -640,7 +640,7 @@ public class MetadatenTest extends AbstractTest {
         assertEquals("index", fixture.goMain());
     }
 
-    @Test
+    //@Test
     public void testGoZurueck() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);

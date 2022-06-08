@@ -36,14 +36,14 @@ public class MetadataGroupImplTest extends AbstractTest {
         prefs = process.getRegelsatz().getPreferences();
     }
 
-    @Test
+    //@Test
     public void testMetadataGroupImpl() throws MetadataTypeNotAllowedException {
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
         MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
         assertNotNull(fixture);
     }
 
-    @Test
+    //@Test
     public void testGetPersonList() throws MetadataTypeNotAllowedException {
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
         MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
@@ -53,7 +53,7 @@ public class MetadataGroupImplTest extends AbstractTest {
         assertEquals("junitPerson", mp.getRolle());
     }
 
-    @Test
+    //@Test
     public void testSetPersonList() throws MetadataTypeNotAllowedException {
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
         MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
@@ -62,7 +62,7 @@ public class MetadataGroupImplTest extends AbstractTest {
         assertTrue(fixture.getPersonList().isEmpty());
     }
 
-    @Test
+    //@Test
     public void testGetMetadataList() throws MetadataTypeNotAllowedException {
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
         MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
@@ -72,7 +72,7 @@ public class MetadataGroupImplTest extends AbstractTest {
         assertEquals("junitMetadata", mp.getTyp());
     }
 
-    @Test
+    //@Test
     public void testSetMetadataList() throws MetadataTypeNotAllowedException {
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
         MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
@@ -81,14 +81,14 @@ public class MetadataGroupImplTest extends AbstractTest {
         assertTrue(fixture.getMetadataList().isEmpty());
     }
 
-    @Test
+    //@Test
     public void testGetMyPrefs() throws MetadataTypeNotAllowedException {
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
         MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
         assertEquals(prefs, fixture.getMyPrefs());
     }
 
-    @Test
+    //@Test
     public void testSetMyPrefs() throws MetadataTypeNotAllowedException {
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
         MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
@@ -96,14 +96,14 @@ public class MetadataGroupImplTest extends AbstractTest {
         assertNull(fixture.getMyPrefs());
     }
 
-    @Test
+    //@Test
     public void testGetMyProcess() throws MetadataTypeNotAllowedException {
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
         MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
         assertEquals(process, fixture.getMyProcess());
     }
 
-    @Test
+    //@Test
     public void testSetMyProcess() throws MetadataTypeNotAllowedException {
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
         MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
@@ -111,7 +111,7 @@ public class MetadataGroupImplTest extends AbstractTest {
         assertNull(fixture.getMyProcess());
     }
 
-    @Test
+    //@Test
     public void testMetadataGroup() throws MetadataTypeNotAllowedException {
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
         MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
@@ -119,7 +119,7 @@ public class MetadataGroupImplTest extends AbstractTest {
         assertEquals(md, fixture.getMetadataGroup());
     }
 
-    @Test
+    //@Test
     public void testGetName() throws MetadataTypeNotAllowedException {
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
         MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);

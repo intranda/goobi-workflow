@@ -466,7 +466,7 @@ public class Helper implements Serializable, ServletContextListener {
                         // http://stackoverflow.com/questions/4659929/how-to-use-utf-8-in-resource-properties-with-resourcebundle
                         //                  ResourceBundle common = ResourceBundle.getBundle("messages.messages", language, new UTF8Control());
                         //                  commonMessages.put(language, common);
-                        commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
+                        commonMessages.put(language, ResourceBundle.getBundle("messages", language));
                     } catch (Exception e) {
                         log.warn("Cannot load messages for language " + language.getLanguage());
                     }
@@ -497,7 +497,7 @@ public class Helper implements Serializable, ServletContextListener {
             String data = System.getenv("junitdata");
             if (data == null || data.isEmpty()) {
                 Locale defaullLocale = new Locale("EN");
-                commonMessages.put(defaullLocale, ResourceBundle.getBundle("messages.messages", defaullLocale));
+                commonMessages.put(defaullLocale, ResourceBundle.getBundle("messages", defaullLocale));
             }
         }
     }

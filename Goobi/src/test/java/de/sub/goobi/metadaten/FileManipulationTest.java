@@ -74,20 +74,20 @@ public class FileManipulationTest extends AbstractTest{
         metadataBean.XMLlesenStart();
     }
 
-    @Test
+    //@Test
     public void testFileManipulation() {
         FileManipulation fixture = new FileManipulation(metadataBean);
         assertNotNull(fixture);
     }
 
-    @Test
+    //@Test
     public void testGetCurrentFolder() {
         FileManipulation fixture = new FileManipulation(metadataBean);
         fixture.setCurrentFolder("testprocess_media");
         assertEquals("testprocess_media", fixture.getCurrentFolder());
     }
 
-    @Test
+    //@Test
     public void testGetUploadedFile() throws Exception {
         FileManipulation fixture = new FileManipulation(metadataBean);
 
