@@ -52,8 +52,8 @@ import org.goobi.beans.Templateproperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
 
-import com.sun.org.apache.xerces.internal.util.URI;
-import com.sun.org.apache.xerces.internal.util.URI.MalformedURIException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -533,7 +533,7 @@ public class VariableReplacer {
                 String iiifUriString = "\"" + iiifUri + "\"";
 
                 iifUrls.add(iiifUriString);
-            } catch (ConfigurationException | MalformedURIException e) {
+            } catch (ConfigurationException | URISyntaxException e) {
                 log.error(e);
                 return "";
             }

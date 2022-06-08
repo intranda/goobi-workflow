@@ -1,23 +1,39 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>de.intranda.goobi.workflow</groupId>
     <artifactId>goobi-core</artifactId>
-    <!-- When updating the version, make sure to also update the version in
-        the submodules -->
+    <!-- When updating the version, make sure to also update the version in the submodules -->
     <version>22.04.6-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+
+    <name>Goobi workflow</name>
+
+
     <modules>
+        <module>module-ci</module>
         <module>module-jar</module>
         <module>module-war</module>
     </modules>
+
 
     <repositories>
         <repository>
             <id>intranda-public</id>
             <url>https://nexus.intranda.com/repository/maven-public</url>
         </repository>
+        <repository>
+            <id>oss-snapshots-repo</id>
+            <name>Sonatype OSS Maven Repository</name>
+            <url>https://oss.sonatype.org/content/groups/public</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
     </repositories>
+
 
     <distributionManagement>
         <repository>
@@ -30,10 +46,33 @@
         </snapshotRepository>
     </distributionManagement>
 
+
+    <scm>
+        <url>scm:git:https://github.com/intranda/goobi-workflow</url>
+        <connection>scm:git:https://github.com/intranda/goobi-workflow</connection>
+    </scm>
+
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <publicVersion>22.04.6-SNAPSHOT</publicVersion>
+        <!-- Use Java 11 for compiling -->
+        <maven.compiler.release>11</maven.compiler.release>
+
+        <!-- Sonar -->
+        <sonar.projectKey>intranda_goobi-workflow</sonar.projectKey>
+        <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
+        <sonar.organization>intranda</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.java.source>11</sonar.java.source>
+        <sonar.java.target>11</sonar.java.target>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../module-ci/target/site/jacoco/jacoco.xml,>${project.basedir}/module-ci/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <!-- Tests need to be excluded here, otherwise they would be indexed for analysis
+             in the module-ci AND the parent project and this leads to an error because
+             one file cannot be added twice -->
+        <sonar.test.exclusions>src/test/java/**/*</sonar.test.exclusions>
+
         <!-- intranda internal -->
         <ics.version>3.4.0</ics.version>
         <normdataimporter.version>1.9.1</normdataimporter.version>
@@ -42,11 +81,12 @@
         <ugh-lido.version>0.0.13</ugh-lido.version>
 
         <!-- Be careful with updates here -->
+        <antlr4.version>4.10.1</antlr4.version>
         <avalon-framework.version>4.2.0</avalon-framework.version>
         <h2.version>1.4.200</h2.version>
         <oscache.version>2.3</oscache.version>
         <shiro.version>1.4.2</shiro.version>
-		<activemq.version>5.17.0</activemq.version>
+        <activemq.version>5.17.0</activemq.version>
         <aspectj.version>1.9.9.1</aspectj.version>
         <aws.version>1.12.208</aws.version>
         <bouncycastle.version>1.70</bouncycastle.version>
@@ -283,36 +323,31 @@
             <artifactId>commons-dbcp2</artifactId>
             <version>${commons-dbcp2.version}</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
             <version>1.9</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/commons-dbutils/commons-dbutils -->
-
         <dependency>
             <groupId>commons-dbutils</groupId>
             <artifactId>commons-dbutils</artifactId>
             <version>1.7</version>
         </dependency>
-
-        <!-- uncommented because very likely not needed
+        <!-- uncommented because very likely not needed -->
+        <!--
         <dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-digester3</artifactId>
-		    <version>3.2</version>
-		</dependency>
-         -->
-
-		<!--
-		<dependency>
-			<groupId>de.mhus.osgi.ports</groupId>
-			<artifactId>commons-discovery</artifactId>
-			<version>1.0.5</version>
-		</dependency>
-		-->
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-digester3</artifactId>
+            <version>3.2</version>
+        </dependency>
+        -->
+        <!--
+        <dependency>
+            <groupId>de.mhus.osgi.ports</groupId>
+            <artifactId>commons-discovery</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+        -->
         <dependency>
             <groupId>commons-el</groupId>
             <artifactId>commons-el</artifactId>
@@ -368,7 +403,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>el-impl</artifactId>
@@ -684,7 +718,6 @@
             <artifactId>javax.ws.rs-api</artifactId>
             <version>2.1.1</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/jfree/jfreechart -->
         <dependency>
             <groupId>jfree</groupId>
             <artifactId>jfreechart</artifactId>
@@ -696,13 +729,14 @@
             <artifactId>jna</artifactId>
             <version>${jna.version}</version>
         </dependency>
+        -->
+        <!--
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
             <version>${jna.version}</version>
         </dependency>
--->
-        <!-- https://mvnrepository.com/artifact/com.github.jnr/jnr-x86asm -->
+        -->
         <dependency>
             <groupId>com.github.jnr</groupId>
             <artifactId>jnr-x86asm</artifactId>
@@ -761,7 +795,7 @@
                 <exclusion>
                     <groupId>org.apache.commons</groupId>
                     <artifactId>commons-digester3</artifactId>
-                </exclusion>                
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -862,12 +896,12 @@
             <artifactId>xml-resolver</artifactId>
             <version>1.2</version>
         </dependency>
-		<dependency>
-		    <groupId>com.rometools</groupId>
-		    <artifactId>rome</artifactId>
-		    <version>1.18.0</version>
-		</dependency>
-<!--        
+        <dependency>
+            <groupId>com.rometools</groupId>
+            <artifactId>rome</artifactId>
+            <version>1.18.0</version>
+        </dependency>
+        <!--
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-all</artifactId>
@@ -883,14 +917,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
--->
-		<!-- https://mvnrepository.com/artifact/org.apache.shiro/shiro-crypto-core -->
-		<dependency>
-		    <groupId>org.apache.shiro</groupId>
-		    <artifactId>shiro-core</artifactId>
-		    <version>1.9.0</version>
-		</dependency>
-        
+        -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>1.9.0</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.taglibs</groupId>
             <artifactId>taglibs-standard-impl</artifactId>
@@ -947,44 +979,43 @@
             <artifactId>jwks-rsa</artifactId>
             <version>${jwks-rsa.version}</version>
         </dependency>
-					<dependency>
-						<groupId>com.sparkjava</groupId>
-						<artifactId>spark-core</artifactId>
-						<version>${spark.version}</version>
-						<exclusions>
-							<exclusion>
-								<groupId>org.eclipse.jetty</groupId>
-								<artifactId>jetty-webapp</artifactId>
-							</exclusion>
-							<exclusion>
-								<groupId>org.eclipse.jetty</groupId>
-								<artifactId>jetty-server</artifactId>
-							</exclusion>
-							<exclusion>
-								<groupId>org.eclipse.jetty.websocket</groupId>
-								<artifactId>websocket-server</artifactId>
-							</exclusion>
-							<exclusion>
-								<groupId>org.slf4j</groupId>
-								<artifactId>slf4j-api</artifactId>
-							</exclusion>
-							<exclusion>
-							    <groupId>org.eclipse.jetty.websocket</groupId>
-							    <artifactId>websocket-servlet</artifactId>
-							</exclusion>
-						</exclusions>
-					</dependency>
-					<dependency>
-						<groupId>org.slf4j</groupId>
-						<artifactId>slf4j-api</artifactId>
-						<version>${slf4j.version}</version>
-					</dependency>
-					<dependency>
-						<groupId>org.apache.logging.log4j</groupId>
-						<artifactId>log4j-slf4j-impl</artifactId>
-						<version>${log4j.version}</version>
-					</dependency>
-
+                    <dependency>
+                        <groupId>com.sparkjava</groupId>
+                        <artifactId>spark-core</artifactId>
+                        <version>${spark.version}</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>org.eclipse.jetty</groupId>
+                                <artifactId>jetty-webapp</artifactId>
+                            </exclusion>
+                            <exclusion>
+                                <groupId>org.eclipse.jetty</groupId>
+                                <artifactId>jetty-server</artifactId>
+                            </exclusion>
+                            <exclusion>
+                                <groupId>org.eclipse.jetty.websocket</groupId>
+                                <artifactId>websocket-server</artifactId>
+                            </exclusion>
+                            <exclusion>
+                                <groupId>org.slf4j</groupId>
+                                <artifactId>slf4j-api</artifactId>
+                            </exclusion>
+                            <exclusion>
+                                <groupId>org.eclipse.jetty.websocket</groupId>
+                                <artifactId>websocket-servlet</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                        <version>${slf4j.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-slf4j-impl</artifactId>
+                        <version>${log4j.version}</version>
+                    </dependency>
 					<dependency>
 						<groupId>org.apache.activemq</groupId>
 						<artifactId>activemq-broker</artifactId>
@@ -1067,7 +1098,12 @@
 						<artifactId>ant</artifactId>
 						<version>1.10.12</version>
 					</dependency>
-
+		
+		<dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>${antlr4.version}</version>
+        </dependency>
 
         <!-- ################################################################# -->
         <!-- Dependencies for test execution only -->
@@ -1259,16 +1295,16 @@
                     <artifactId>xml-apis</artifactId>
                 </exclusion>
                 <exclusion>
-					<groupId>com.lowagie</groupId>
-					<artifactId>itext</artifactId>
-				</exclusion>
+                    <groupId>com.lowagie</groupId>
+                    <artifactId>itext</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
-		<dependency>
-			<groupId>com.github.librepdf</groupId>
-			<artifactId>openpdf</artifactId>
-			<version>${openpdf.version}</version>
-		</dependency>        
+        <dependency>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf</artifactId>
+            <version>${openpdf.version}</version>
+        </dependency>
         <dependency>
             <groupId>javax.xml.ws</groupId>
             <artifactId>jaxws-api</artifactId>
@@ -1296,7 +1332,7 @@
         <dependency>
             <groupId>de.intranda.goobi</groupId>
             <artifactId>alto</artifactId>
-            <version>[1,)</version>
+            <version>1.5.9</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
@@ -1382,17 +1418,35 @@
             <version>${sshj.version}</version>
         </dependency>
     </dependencies>
+
+
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>${antlr4.version}</version>
+                <configuration>
+                    <outputDirectory>src/main/java/de/sub/goobi/validator</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>antlr</id>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.7</version>
                 <configuration>
-                    <rulesUri>file://${basedir}/version-number-rules.xml</rulesUri>
+                    <rulesUri>file://${project.basedir}/version-number-rules.xml</rulesUri>
                 </configuration>
             </plugin>
-                        <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.1.2</version>
