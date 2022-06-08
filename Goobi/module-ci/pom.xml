@@ -73,21 +73,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- This plugin is needed for the Sonar code analysis -->
-            <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.9.1.2184</version>
-                  <executions>
-                     <execution>
-                        <id>sonar-run</id>
-                        <phase>verify</phase>
-                          <goals>
-                             <goal>sonar</goal>
-                          </goals>
-                     </execution>
-                 </executions>
-            </plugin>
             <!-- Makes a script executable which would fail otherwise in the unit tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
