@@ -13,6 +13,7 @@
         <composite:attribute name="var" default="var" />
         <composite:attribute name="itemValue" default="#{var.itemValue}" />
         <composite:attribute name="itemLabel" default="#{var.itemLabel}" />
+        <composite:attribute name="readonly" default="false" />
         <composite:attribute name="required" default="true"/>
 		<composite:attribute name="displayAsRequired" default="false" />
  		<composite:attribute name="classLeft" default="col-sm-3" />
@@ -33,14 +34,14 @@
 			</div>
             <div class="#{cc.attrs.classRight}">
             <h:panelGroup rendered="#{cc.attrs.onevent != null}">
-            	<h:selectOneMenu id="#{cc.attrs.name}_withEvent" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}">
+            	<h:selectOneMenu id="#{cc.attrs.name}_withEvent" styleClass="#{cc.attrs.fieldStyle}" readonly="#{cc.attrs.readonly}" value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}">
                     <f:ajax event="#{cc.attrs.ajaxEvent}" render="#{cc.attrs.ajaxRender}" onevent="#{cc.attrs.onevent}"/>
                     <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" itemDisabled="#{cc.attrs.hidePleaseSelectMessage}" />
                     <f:selectItems value="#{cc.attrs.selectItems}" var="#{cc.attrs.var}" itemLabel="#{cc.attrs.itemLabel}" itemValue="#{cc.attrs.itemValue}" />
                 </h:selectOneMenu>
             </h:panelGroup>
             <h:panelGroup rendered="#{cc.attrs.onevent == null}">
-                <h:selectOneMenu id="#{cc.attrs.name}" styleClass="#{cc.attrs.fieldStyle}" value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}">
+                <h:selectOneMenu id="#{cc.attrs.name}" styleClass="#{cc.attrs.fieldStyle}" readonly="#{cc.attrs.readonly}" value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}">
                     <f:ajax event="#{cc.attrs.ajaxEvent}" render="#{cc.attrs.ajaxRender}" />
                     <f:selectItem itemValue="" itemLabel="#{msgs.bitteAuswaehlen}" itemDisabled="#{cc.attrs.hidePleaseSelectMessage}" />
                     <f:selectItems value="#{cc.attrs.selectItems}" var="#{cc.attrs.var}" itemLabel="#{cc.attrs.itemLabel}" itemValue="#{cc.attrs.itemValue}" />
