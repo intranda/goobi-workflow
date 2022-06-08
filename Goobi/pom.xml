@@ -81,6 +81,7 @@
         <ugh-lido.version>0.0.13</ugh-lido.version>
 
         <!-- Be careful with updates here -->
+        <antlr4.version>4.10.1</antlr4.version>
         <avalon-framework.version>4.2.0</avalon-framework.version>
         <h2.version>1.4.200</h2.version>
         <oscache.version>2.3</oscache.version>
@@ -1018,82 +1019,95 @@
                         <artifactId>log4j-slf4j-impl</artifactId>
                         <version>${log4j.version}</version>
                     </dependency>
+					<dependency>
+						<groupId>org.apache.activemq</groupId>
+						<artifactId>activemq-broker</artifactId>
+						<version>${activemq.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.activemq</groupId>
+						<artifactId>activemq-client</artifactId>
+						<version>${activemq.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.activemq</groupId>
+						<artifactId>activemq-kahadb-store</artifactId>
+						<version>${activemq.version}</version>
+						<scope>runtime</scope>
+					</dependency>
 
-                    <dependency>
-                        <groupId>org.apache.activemq</groupId>
-                        <artifactId>activemq-broker</artifactId>
-                        <version>${activemq.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.apache.activemq</groupId>
-                        <artifactId>activemq-client</artifactId>
-                        <version>${activemq.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.apache.activemq</groupId>
-                        <artifactId>activemq-kahadb-store</artifactId>
-                        <version>${activemq.version}</version>
-                        <scope>runtime</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.apache.activemq</groupId>
-                        <artifactId>activemq-jaas</artifactId>
-                        <version>${activemq.version}</version>
-                        <scope>runtime</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.apache.activemq</groupId>
-                        <artifactId>activemq-stomp</artifactId>
-                        <version>${activemq.version}</version>
-                        <scope>runtime</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.apache.activemq</groupId>
-                        <artifactId>activemq-spring</artifactId>
-                        <version>${activemq.version}</version>
-                        <scope>runtime</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                        <version>${spring.version}</version>
-                        <scope>runtime</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                        <version>${spring.version}</version>
-                        <scope>runtime</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                        <version>${spring.version}</version>
-                        <scope>runtime</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-expression</artifactId>
-                        <version>${spring.version}</version>
-                        <scope>runtime</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.bouncycastle</groupId>
-                        <artifactId>bcpkix-jdk15on</artifactId>
-                        <version>1.70</version>
-                        <scope>runtime</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.bouncycastle</groupId>
-                        <artifactId>bcmail-jdk15on</artifactId>
-                        <version>1.70</version>
-                        <scope>runtime</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.apache.ant</groupId>
-                        <artifactId>ant</artifactId>
-                        <version>1.10.12</version>
-                    </dependency>
+					<dependency>
+						<groupId>org.apache.activemq</groupId>
+						<artifactId>activemq-jaas</artifactId>
+						<version>${activemq.version}</version>
+						<scope>runtime</scope>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.activemq</groupId>
+						<artifactId>activemq-stomp</artifactId>
+						<version>${activemq.version}</version>
+						<scope>runtime</scope>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.activemq</groupId>
+						<artifactId>activemq-spring</artifactId>
+						<version>${activemq.version}</version>
+						<scope>runtime</scope>
+					</dependency>
+					<dependency>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-beans</artifactId>
+						<version>${spring.version}</version>
+						<scope>runtime</scope>
+					</dependency>
+					<!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+					<dependency>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-context</artifactId>
+						<version>${spring.version}</version>
+						<scope>runtime</scope>
+					</dependency>
+					<dependency>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+						<version>${spring.version}</version>
+						<scope>runtime</scope>
+					</dependency>
+					<dependency>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-expression</artifactId>
+						<version>${spring.version}</version>
+						<scope>runtime</scope>
+					</dependency>
+					
+					<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on -->
+					<dependency>
+						<groupId>org.bouncycastle</groupId>
+						<artifactId>bcpkix-jdk15on</artifactId>
+						<version>1.70</version>
+						<scope>runtime</scope>
+
+					</dependency>
+					<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcmail-jdk15on -->
+					<dependency>
+						<groupId>org.bouncycastle</groupId>
+						<artifactId>bcmail-jdk15on</artifactId>
+						<version>1.70</version>
+						<scope>runtime</scope>
+					</dependency>
+					<!-- https://mvnrepository.com/artifact/org.apache.ant/ant -->
+					<dependency>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant</artifactId>
+						<version>1.10.12</version>
+					</dependency>
+		
+		<dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>${antlr4.version}</version>
+        </dependency>
+
         <!-- ################################################################# -->
         <!-- Dependencies for test execution only -->
         <!-- ################################################################# -->
@@ -1411,6 +1425,22 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>${antlr4.version}</version>
+                <configuration>
+                    <outputDirectory>src/main/java/de/sub/goobi/validator</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>antlr</id>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>

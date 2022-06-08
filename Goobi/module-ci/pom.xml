@@ -27,7 +27,7 @@
         <!-- The Sonar basedir is one level up... -->
         <sonar.projectBaseDir>..</sonar.projectBaseDir>
         <!-- Maximum number of Checkstyle validations before the run fails with an error -->
-        <checkstyle.max.violations>3000</checkstyle.max.violations>
+        <checkstyle.max.violations>5000</checkstyle.max.violations>
     </properties>
 
 
