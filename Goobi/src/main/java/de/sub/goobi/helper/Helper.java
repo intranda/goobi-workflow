@@ -115,7 +115,7 @@ public class Helper implements Serializable, ServletContextListener {
     private static final Map<String, Boolean> reloadNeededMap = new ConcurrentHashMap<>();
     private static final Map<Path, Thread> watcherMap = new ConcurrentHashMap<>();
     private static final String MESSAGES = "messages";
-    
+
     /**
      * Ermitteln eines bestimmten Paramters des Requests
      * 
@@ -463,10 +463,6 @@ public class Helper implements Serializable, ServletContextListener {
                 Locale language = polyglot.next();
                 if (!localOnly) {
                     try {
-                        // load message bundles using UTF8 as here described:
-                        // http://stackoverflow.com/questions/4659929/how-to-use-utf-8-in-resource-properties-with-resourcebundle
-                        //                  ResourceBundle common = ResourceBundle.getBundle("messages.messages", language, new UTF8Control());
-                        //                  commonMessages.put(language, common);
                         commonMessages.put(language, ResourceBundle.getBundle(MESSAGES, language));
                     } catch (Exception e) {
                         log.warn("Cannot load messages for language " + language.getLanguage());
