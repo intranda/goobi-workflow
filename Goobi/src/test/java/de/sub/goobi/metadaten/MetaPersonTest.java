@@ -12,13 +12,20 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
+import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.AbstractTest;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.mock.MockProcess;
 import ugh.dl.DocStruct;
 import ugh.dl.NamePart;
@@ -26,6 +33,8 @@ import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ ViafSearch.class, Helper.class})
 public class MetaPersonTest extends AbstractTest {
 
     private Prefs prefs;
@@ -44,16 +53,26 @@ public class MetaPersonTest extends AbstractTest {
         prefs = process.getRegelsatz().getPreferences();
         docstruct = process.readMetadataFile().getDigitalDocument().getLogicalDocStruct();
 
+        ViafSearch viafSearch = PowerMock.createMock(ViafSearch.class);
+        PowerMock.expectNew(ViafSearch.class).andReturn(viafSearch).anyTimes();
+        PowerMock.replay(viafSearch);
+
+        PowerMock.mockStatic(Helper.class);
+        EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
+        EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
+        EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("").anyTimes();
+        PowerMock.replay(Helper.class);
+
     }
 
-    //@Test
+    @Test
     public void testMetaPerson() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
         assertNotNull(mp);
     }
 
-    //@Test
+    @Test
     public void testIdentifier() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
@@ -63,7 +82,7 @@ public class MetaPersonTest extends AbstractTest {
         assertNotEquals(0, mp.getIdentifier());
     }
 
-    //@Test
+    @Test
     public void testPerson() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
@@ -72,7 +91,7 @@ public class MetaPersonTest extends AbstractTest {
         assertSame(p, mp.getP());
     }
 
-    //@Test
+    @Test
     public void testFirstname() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
@@ -84,7 +103,7 @@ public class MetaPersonTest extends AbstractTest {
         assertEquals("", mp.getVorname());
     }
 
-    //@Test
+    @Test
     public void testLastname() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
@@ -96,7 +115,7 @@ public class MetaPersonTest extends AbstractTest {
         assertEquals("", mp.getNachname());
     }
 
-    //@Test
+    @Test
     public void testRole() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
@@ -106,7 +125,7 @@ public class MetaPersonTest extends AbstractTest {
         assertEquals(METADATA_TYPE, mp.getRolle());
     }
 
-    //@Test
+    @Test
     public void testAddableRollen() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
@@ -116,7 +135,7 @@ public class MetaPersonTest extends AbstractTest {
         assertEquals(6, fixture.size());
     }
 
-    //@Test
+    @Test
     public void testAdditionalNameParts() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
@@ -130,7 +149,7 @@ public class MetaPersonTest extends AbstractTest {
         assertEquals(1, mp.getAdditionalNameParts().size());
     }
 
-    //@Test
+    @Test
     public void testPossibleDatabases() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
@@ -139,7 +158,7 @@ public class MetaPersonTest extends AbstractTest {
         assertEquals("gnd", fixture.get(0));
     }
 
-    //@Test
+    @Test
     public void testPossibleNameparts() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
@@ -149,7 +168,7 @@ public class MetaPersonTest extends AbstractTest {
         assertEquals("termsOfAddress", fixture.get(1));
     }
 
-    //@Test
+    @Test
     public void testNormdataValue() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
@@ -159,7 +178,7 @@ public class MetaPersonTest extends AbstractTest {
         assertEquals(fixture, mp.getNormdataValue());
     }
 
-    //@Test
+    @Test
     public void testNormDatabase() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
@@ -169,7 +188,7 @@ public class MetaPersonTest extends AbstractTest {
         assertEquals(fixture, mp.getNormDatabase());
     }
 
-    //@Test
+    @Test
     public void testAdditionalParts() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);
@@ -179,7 +198,7 @@ public class MetaPersonTest extends AbstractTest {
         assertFalse(mp.isAdditionalParts());
     }
 
-    //@Test
+    @Test
     public void testNormdata() throws MetadataTypeNotAllowedException {
         Person p = new Person(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetaPerson mp = new MetaPerson(p, 0, prefs, docstruct, process, null);

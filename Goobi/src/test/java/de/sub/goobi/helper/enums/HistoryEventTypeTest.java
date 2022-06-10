@@ -44,6 +44,8 @@ public class HistoryEventTypeTest extends AbstractTest {
         assertEquals(Integer.valueOf(13), HistoryEventType.color.getValue());
     }
 
+    // TODO fails in eclipse, but not in jenkins/mvn
+    // Can't find bundle for base name messages, locale en
     @Test
     public void testEnumTitles() {
         assertEquals("unknown", HistoryEventType.unknown.getTitle());

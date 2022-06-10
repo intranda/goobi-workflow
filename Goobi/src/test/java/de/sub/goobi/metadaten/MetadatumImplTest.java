@@ -9,18 +9,27 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
+import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.AbstractTest;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.mock.MockProcess;
 import ugh.dl.Metadata;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ ViafSearch.class, Helper.class})
 public class MetadatumImplTest extends AbstractTest {
 
     private Prefs prefs;
@@ -34,16 +43,26 @@ public class MetadatumImplTest extends AbstractTest {
 
         process = MockProcess.createProcess();
         prefs = process.getRegelsatz().getPreferences();
+
+        ViafSearch viafSearch = PowerMock.createMock(ViafSearch.class);
+        PowerMock.expectNew(ViafSearch.class).andReturn(viafSearch).anyTimes();
+        PowerMock.replay(viafSearch);
+
+        PowerMock.mockStatic(Helper.class);
+        EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
+        EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
+        EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("").anyTimes();
+        PowerMock.replay(Helper.class);
     }
 
-    //@Test
+    @Test
     public void testMetadatumImpl() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
         assertNotNull(md);
     }
 
-    //@Test
+    @Test
     public void testWert() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
@@ -52,7 +71,7 @@ public class MetadatumImplTest extends AbstractTest {
         assertEquals(value, m.getValue());
     }
 
-    //@Test
+    @Test
     public void testTyp() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
@@ -60,7 +79,7 @@ public class MetadatumImplTest extends AbstractTest {
         assertEquals(METADATA_TYPE, md.getTyp());
     }
 
-    //@Test
+    @Test
     public void testGetIdentifier() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
@@ -68,7 +87,7 @@ public class MetadatumImplTest extends AbstractTest {
         assertEquals(1, md.getIdentifier());
     }
 
-    //@Test
+    @Test
     public void testtMd() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
@@ -78,14 +97,14 @@ public class MetadatumImplTest extends AbstractTest {
 
     }
 
-    //@Test
+    @Test
     public void testGetOutputType() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
         assertEquals("input", md.getOutputType());
     }
 
-    //@Test
+    @Test
     public void testGetItems() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
@@ -94,7 +113,7 @@ public class MetadatumImplTest extends AbstractTest {
 
     }
 
-    //@Test
+    @Test
     public void testGetSelectedItems() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
@@ -102,7 +121,7 @@ public class MetadatumImplTest extends AbstractTest {
         assertNotNull(items);
     }
 
-    //@Test
+    @Test
     public void testGetSelectedItem() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
@@ -110,7 +129,7 @@ public class MetadatumImplTest extends AbstractTest {
         assertNotNull(item);
     }
 
-    //@Test
+    @Test
     public void testGetValue() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
@@ -120,7 +139,7 @@ public class MetadatumImplTest extends AbstractTest {
 
     }
 
-    //@Test
+    @Test
     public void testGetPossibleDatabases() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
@@ -128,7 +147,7 @@ public class MetadatumImplTest extends AbstractTest {
         assertNotNull(databases);
     }
 
-    //@Test
+    @Test
     public void testGetNormdataValue() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
@@ -136,7 +155,7 @@ public class MetadatumImplTest extends AbstractTest {
         assertNull(id);
     }
 
-    //@Test
+    @Test
     public void testSetNormdataValue() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
@@ -147,7 +166,7 @@ public class MetadatumImplTest extends AbstractTest {
 
     }
 
-    //@Test
+    @Test
     public void testNormDatabase() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
@@ -156,7 +175,7 @@ public class MetadatumImplTest extends AbstractTest {
         assertEquals("gnd", md.getNormDatabase());
     }
 
-    //@Test
+    @Test
     public void testIsNormdata() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);

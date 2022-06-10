@@ -15,6 +15,8 @@ public class StepStatusTest extends AbstractTest {
         assertTrue(StepStatus.LOCKED.getValue() == 0);
     }
 
+    // TODO fails in eclipse, but not in jenkins/mvn
+    // Can't find bundle for base name messages, locale en
     @Test
     public void testStepStatusGetTitle() {
         assertEquals(Helper.getTranslation("statusGesperrt"), StepStatus.LOCKED.getTitle());

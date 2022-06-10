@@ -23,8 +23,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({  MetadatenSperrungTest.class})
+@SuiteClasses({ MetadatenSperrungTest.class, MetadatenTest.class, FileManipulationTest.class, MetadataGroupImplTest.class, MetadatumImplTest.class,
+    MetaPersonTest.class, PaginatorTest.class, TreeNodeStruct3Test.class })
 public class TestAll {
-    //    FileManipulationTest.class,PaginatorTest.class, MetadataGroupImplTest.class, MetadatumImplTest.class,
-    //    MetadatenTest.class, MetaPersonTest.class, TreeNodeStruct3Test.class
+
 }

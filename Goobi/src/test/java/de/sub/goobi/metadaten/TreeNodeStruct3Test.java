@@ -57,22 +57,22 @@ public class TreeNodeStruct3Test extends AbstractTest {
         assertEquals("title", tree.getMainTitle());
     }
 
-    // @Test
+    @Test
     public void testFirstImage() {
         TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
         assertNotNull(tree);
         tree.setFirstImage(new MutablePair<>("aaa", "bbb"));
         assertEquals("aaa", tree.getFirstImage().getLeft());
-        assertEquals("bbb", tree.getFirstImage().getLeft());
+        assertEquals("bbb", tree.getFirstImage().getRight());
     }
 
-    // @Test
+    @Test
     public void testLastImage() {
         TreeNodeStruct3 tree = new TreeNodeStruct3("label", docstruct);
         assertNotNull(tree);
         tree.setLastImage(new MutablePair<>("aaa", "bbb"));
         assertEquals("aaa", tree.getLastImage().getLeft());
-        assertEquals("bbb", tree.getLastImage().getLeft());
+        assertEquals("bbb", tree.getLastImage().getRight());
     }
 
     @Test
