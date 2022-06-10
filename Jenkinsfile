@@ -45,7 +45,7 @@ pipeline {
         }
       }
       steps {
-        sh 'mvn -f Goobi/pom.xml deploy'
+        sh 'mvn -f Goobi/pom.xml -pl module-jar deploy'
       }
     }
   }
