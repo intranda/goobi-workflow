@@ -355,7 +355,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             this.anzeigeAnpassen.put("batchId", false);
             this.anzeigeAnpassen.put("processDate", false);
             anzeigeAnpassen.put("institution", false);
-            this.anzeigeAnpassen.put("processRuleset",false);
+            this.anzeigeAnpassen.put("processRuleset", false);
         }
         DONEDIRECTORYNAME = ConfigurationHelper.getInstance().getDoneDirectoryName();
 
@@ -1500,7 +1500,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             StepManager.saveStep(step);
             String message = "Changed step order for step '" + step.getTitel() + "' to position " + step.getReihenfolge()
-            + " in process details.";
+                    + " in process details.";
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, message);
             // set list to null to reload list of steps in new order
             this.myProzess.setSchritte(null);
@@ -1806,19 +1806,42 @@ public class ProcessBean extends BasicBean implements Serializable {
             return "";
         } else {
             resetHitsCount();
+            List<Integer> processIds;
             switch (this.goobiScriptMode) {
                 case "hits":
-                    this.executeGoobiScriptHits();
+                    processIds = this.getProcessIdsForHits();
                     break;
                 case "page":
-                    this.executeGoobiScriptPage();
+                    processIds = this.getProcessIdsForPage();
                     break;
                 case "selection":
                 default:
-                    this.executeGoobiScriptSelection();
+                    processIds = this.getProcessIdsForSelection();
             }
+            this.logGoobiScriptExecution(processIds);
+            GoobiScript gs = new GoobiScript();
+            gs.execute(processIds, this.parsedGoobiScripts, goobiScriptManager);
             return "process_all?faces-redirect=true";
         }
+    }
+
+    /**
+     * Logs the started goobi scripts on the DEBUG level in the log4j log. The output contains information about the executing user, the entered
+     * script and the list of ids of all affected processes.
+     * 
+     * @param processIds The list of ids of affected processes
+     */
+    private void logGoobiScriptExecution(List<Integer> processIds) {
+        Collections.sort(processIds);
+        User user = Helper.getCurrentUser();
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("User \"");
+        buffer.append(user != null ? user.getLogin() : "[unknown user]");
+        buffer.append("\" executed GoobiScript ...\n");
+        buffer.append(this.goobiScript);
+        buffer.append("\n... for the processes with following ids:\n");
+        buffer.append(processIds.toString());
+        log.debug(buffer.toString());
     }
 
     /**
@@ -1840,39 +1863,42 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Starte GoobiScript über alle Treffer
+     * Returns the list of process ids for the current search results.
+     *
+     * @return The list of ids of all found processes
      */
-    public void executeGoobiScriptHits() {
-        GoobiScript gs = new GoobiScript();
-        gs.execute(this.paginator.getIdList(), this.parsedGoobiScripts, goobiScriptManager);
+    private List<Integer> getProcessIdsForHits() {
+        return this.paginator.getIdList();
     }
 
     /**
-     * Starte GoobiScript über alle Treffer der Seite
+     * Returns the list of process ids for the current page.
+     *
+     * @return The list of ids of all processes on the current page
      */
-    @SuppressWarnings("unchecked")
-    public void executeGoobiScriptPage() {
-        GoobiScript gs = new GoobiScript();
+    private List<Integer> getProcessIdsForPage() {
         List<Integer> idList = new ArrayList<>();
-        for (Process p : (List<Process>) paginator.getList()) {
-            idList.add(p.getId());
+        for (Object processObject : paginator.getList()) {
+            Process process = (Process) processObject;
+            idList.add(process.getId());
         }
-        gs.execute(idList, this.parsedGoobiScripts, goobiScriptManager);
+        return idList;
     }
 
     /**
-     * Starte GoobiScript über alle selectierten Treffer
+     * Returns the list of process ids for the current selection.
+     *
+     * @return The list of ids of selected processes
      */
-    @SuppressWarnings("unchecked")
-    public void executeGoobiScriptSelection() {
+    private List<Integer> getProcessIdsForSelection() {
         List<Integer> idList = new ArrayList<>();
-        for (Process p : (List<Process>) this.paginator.getList()) {
-            if (p.isSelected()) {
-                idList.add(p.getId());
+        for (Object processObject : this.paginator.getList()) {
+            Process process = (Process) processObject;
+            if (process.isSelected()) {
+                idList.add(process.getId());
             }
         }
-        GoobiScript gs = new GoobiScript();
-        gs.execute(idList, this.parsedGoobiScripts, goobiScriptManager);
+        return idList;
     }
 
     @SuppressWarnings("unchecked")
