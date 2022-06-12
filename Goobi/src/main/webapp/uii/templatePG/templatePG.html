@@ -139,7 +139,7 @@
         </h:panelGroup>
 
         <c:if test="#{LoginForm.myBenutzer!=null}">
-            <ui:include src="inc_menuPG.xhtml" />
+            <ui:include src="inc_menu.xhtml" />
 
             <div class="container-fluid" id="content" style="padding-bottom:20px">
                 <!-- 				<div id="left"> -->
@@ -303,19 +303,15 @@
                 }
             });
 
-            $(document).ready(function () {
-                $('[data-toggle="tooltip"]').tooltip({
-                    trigger: 'hover'
-                });
-                $('[data-toggle="popover"]').popover();
-                if ($('.popover.fade.right.in').length > 0) {
-                    $('.popover.fade.right.in').remove();
-                }
-                setTimeout(scrollDownScrollDowns(), 100);
-                if(typeof updateGoobiScriptIndicator !== 'undefined') {
-                	setTimeout(updateGoobiScriptIndicator, 500);
-                }
-            });
+
+            /*
+            Initialize all BS Tooltips
+            [data-bs-toggle="tooltip"] => also grab legacy tool tips
+            */
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"], [data-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+              return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
 
             $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function () {
                 var myButton = $("a[id$=':navnext']")

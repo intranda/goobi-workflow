@@ -1,14 +1,15 @@
 @use "sass:color"; // Built-In Module to work with + manipulate colors
+@use "sass:map";
 
-// BS Overrides
-$primary: #368ee0;
-$info: #666666;
+// Find BS color overrides in _overrides.scss
 
 $colors: (
   primary-400: #368ee0,
   primary-600: #1b67af,
   neutral-200: #f4f4f4,
   // neutral-400: #dddddd,
+  neutral-300: #ced4da,
+  // Form elements border color
   neutral-400: #aaaaaa,
   neutral-600: #666666,
   "white": #ffffff,
@@ -19,8 +20,8 @@ $colors: (
   primary: #368ee0,
   success: #198754,
   info: #666666,
-  text-400: #2a2a2a,
   blank: transparent,
+  text-400: #2a2a2a,
 );
 
 :root {
@@ -39,6 +40,18 @@ $colors: (
   .bg-#{$name} {
     background-color: var(--clr-#{$name});
   }
+  .text-#{$name} {
+    color: var(--text-#{$name});
+  }
+}
+
+// Generate text utilities; e.g:
+// `.text-neutral-200`
+
+@each $name, $color in $colors {
+  .text-#{$name} {
+    color: var(--clr-#{$name});
+  }
 }
 
 // Generate button utilities; e.g:
@@ -46,10 +59,11 @@ $colors: (
 
 @each $name, $color in $colors {
   .btn-#{$name} {
-    background-color: #{$color};
-    border-color: #{$color};
+    background-color: var(--clr-#{$name});
+    border-color: var(--clr-#{$name});
     @if $name == blank {
       color: #000; // bg is transparent
+      border: 1px solid var(--clr-neutral-400);
     } @else {
       color: #fff; // bg is a color
     }
@@ -58,7 +72,9 @@ $colors: (
     background-color: darken($color, 5%);
     border-color: darken($color, 5%);
     @if $name == blank {
-      color: #000;
+      color: var(--clr-white);
+      background-color: darken(map.get($colors, "neutral-400"), 2%);
+      border-color: darken(map.get($colors, "neutral-400"), 2%);
     } @else {
       color: #fff;
     }
@@ -76,10 +92,10 @@ $colors: (
 @each $name, $color in $colors {
   @if $name != blank {
     .box.box--#{$name} {
-      border-color: $color;
+      border-color: var(--clr-#{$name});
       & .box-title {
-        background-color: $color;
-        border-color: $color;
+        background-color: var(--clr-#{$name});
+        border-color: var(--clr-#{$name});
       }
     }
   }

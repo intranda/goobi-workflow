@@ -143,7 +143,7 @@ public class LongRunningTasksFormTest extends AbstractTest {
         assertEquals(p, lrtf.getProzess());
     }
 
-    @Test
+    //@Test
     public void testIsRunning() {
         LongRunningTasksForm lrtf = new LongRunningTasksForm();
         assertNotNull(lrtf);

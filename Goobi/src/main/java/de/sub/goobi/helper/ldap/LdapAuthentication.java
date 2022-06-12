@@ -70,7 +70,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class LdapAuthentication {
 
-	public LdapAuthentication() {
+    public LdapAuthentication() {
 
     }
 
@@ -264,7 +264,7 @@ public class LdapAuthentication {
      */
     public String getUserHomeDirectory(User inBenutzer) {
         // skip ldap check, when user is inactive or deleted
-        if (!inBenutzer.isIstAktiv() || StringUtils.isNotBlank(inBenutzer.getIsVisible())) {
+        if (inBenutzer.getStatus() != User.UserStatus.ACTIVE) {
             return "";
         }
         if (inBenutzer.getLdapGruppe().isUseLocalDirectoryConfiguration()) {

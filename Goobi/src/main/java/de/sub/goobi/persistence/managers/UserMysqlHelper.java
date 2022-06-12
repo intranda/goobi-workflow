@@ -160,42 +160,24 @@ class UserMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             StringBuilder sql = new StringBuilder();
 
-            String visible = null;
-            if (ro.getIsVisible() != null) {
-                visible = "'" + ro.getIsVisible() + "'";
-            }
+            String additionalData = MySQLHelper.convertDataToString(ro.getAdditionalData());
 
             if (ro.getId() == null) {
 
-                String propNames =
-                        "Vorname, Nachname, login, IstAktiv, Standort, metadatensprache, css, mitMassendownload, Tabellengroesse, sessiontimeout, ldapgruppenID, isVisible, ldaplogin,"
-                                + "displayAutomaticTasks, displayBatchColumn, displayDeactivatedProjects, displayFinishedProcesses, displayIdColumn, displayLocksColumn, "
-                                + "displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, displayProcessDateColumn, displayRulesetColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks, email, shortcut, metseditortime, "
-                                + "metsDisplayHierarchy, metsDisplayPageAssignments, metsDisplayTitle, metsLinkImage, displayOtherTasks, encryptedPassword, salt, metsDisplayProcessID, displayGridView, displayMetadataColumn, "
-                                + "displayThumbColumn, customColumns, customCss, mailNotificationLanguage, institution_id, superadmin, displayInstitutionColumn, dashboardPlugin, ssoId"
-                                + ", processses_sort_field, processes_sort_order, tasks_sort_field, tasks_sort_order, displayLastEditionDate, displayLastEditionUser, displayLastEditionTask, dashboard_configuration, ui_mode ";
+                String propNames = "Vorname, Nachname, login, Standort, metadatensprache, "
+                        + "css, mitMassendownload, Tabellengroesse, sessiontimeout, ldapgruppenID, "
+                        + "ldaplogin, displayAutomaticTasks, displayBatchColumn, displayDeactivatedProjects, displayFinishedProcesses, "
+                        + "displayIdColumn, displayLocksColumn, displayModulesColumn, displayOnlyOpenTasks, displayOnlySelectedTasks, "
+                        + "displayProcessDateColumn, displayRulesetColumn, displaySelectBoxes, displaySwappingColumn, hideCorrectionTasks, "
+                        + "email, shortcut, metseditortime, metsDisplayHierarchy, metsDisplayPageAssignments, "
+                        + "metsDisplayTitle, metsLinkImage, displayOtherTasks, encryptedPassword, salt, "
+                        + "metsDisplayProcessID, displayGridView, displayMetadataColumn, displayThumbColumn, customColumns, "
+                        + "customCss, mailNotificationLanguage, institution_id, superadmin, displayInstitutionColumn, "
+                        + "dashboardPlugin, ssoId, processses_sort_field, processes_sort_order, tasks_sort_field, "
+                        + "tasks_sort_order, displayLastEditionDate, displayLastEditionUser, displayLastEditionTask, dashboard_configuration, "
+                        + "ui_mode, userstatus, additional_data ";
                 String prop =
-                        "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,  ?,?,?,?,?,?,?,?,?,? ";
-                Object[] param = { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
-                        ro.getLogin() == null ? null : ro.getLogin(), ro.isIstAktiv(), ro.getStandort() == null ? null : ro.getStandort(),
-                        ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), ro.getCss() == null ? null : ro.getCss(),
-                        ro.isMitMassendownload(), ro.getTabellengroesse() == null ? null : ro.getTabellengroesse(),
-                        ro.getSessiontimeout() == null ? null : ro.getSessiontimeout(),
-                        ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), visible, ro.getLdaplogin() == null ? null : ro.getLdaplogin(),
-                        ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
-                        ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
-                        ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(),
-                        ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(), ro.getEmail() == null ? null : ro.getEmail(),
-                        ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
-                        ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
-                        ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(), ro.isDisplayOtherTasks(),
-                        ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(), ro.isDisplayGridView(),
-                        ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
-                        ro.getMailNotificationLanguage(), ro.getInstitution() == null ? null : ro.getInstitution().getId(), ro.isSuperAdmin(),
-                        ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(),
-                        ro.getProcessListDefaultSortOrder(), ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(),
-                        ro.isDisplayLastEditionDate(), ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionDate(), ro.getDashboardConfiguration(),
-                        ro.getUiMode() };
+                        "?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,   ?,?,?";
 
                 sql.append("INSERT INTO benutzer (");
                 sql.append(propNames.toString());
@@ -203,11 +185,23 @@ class UserMysqlHelper implements Serializable {
                 sql.append(prop);
                 sql.append(")");
 
-                if (log.isTraceEnabled()) {
-                    log.trace(sql.toString() + ", " + Arrays.toString(param));
-                }
+                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, ro.getVorname(), ro.getNachname(),
+                        ro.getLogin(), ro.getStandort(), ro.getMetadatenSprache(), ro.getCss(), ro.isMitMassendownload(), ro.getTabellengroesse(),
+                        ro.getSessiontimeout(), ro.getLdapGruppe()==null? null: ro.getLdapGruppe().getId(), ro.getLdaplogin(), ro.isDisplayAutomaticTasks(),
+                                ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(), ro.isDisplayIdColumn(),
+                                ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(),
+                                ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
+                                ro.isHideCorrectionTasks(),
 
-                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
+                                ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(), ro.getMetsEditorTime(),
+                                        ro.isMetsDisplayHierarchy(), ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(),
+                                        ro.isDisplayOtherTasks(), ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(),
+                                        ro.isDisplayGridView(), ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
+                                        ro.getMailNotificationLanguage(), ro.getInstitution().getId(), ro.isSuperAdmin(),
+                                        ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(),
+                                        ro.getProcessListDefaultSortOrder(), ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(),
+                                        ro.isDisplayLastEditionDate(), ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(),
+                                        ro.getUiMode(), ro.getStatus().getName(), additionalData);
                 if (id != null) {
                     ro.setId(id);
                 }
@@ -217,7 +211,6 @@ class UserMysqlHelper implements Serializable {
                 sql.append("Vorname = ?, ");
                 sql.append("Nachname = ?, ");
                 sql.append("login = ?, ");
-                sql.append("IstAktiv = ?, ");
                 sql.append("Standort =  ?, ");
                 sql.append("metadatensprache =  ?, ");
                 sql.append("css =  ?, ");
@@ -225,7 +218,6 @@ class UserMysqlHelper implements Serializable {
                 sql.append("Tabellengroesse =  ?, ");
                 sql.append("sessiontimeout =  ?, ");
                 sql.append("ldapgruppenID =  ?, ");
-                sql.append("isVisible =  ?, ");
                 sql.append("ldaplogin =  ?, ");
                 sql.append("displayAutomaticTasks =  ?, ");
                 sql.append("displayBatchColumn =  ?, ");
@@ -267,35 +259,25 @@ class UserMysqlHelper implements Serializable {
                 sql.append("processes_sort_order =  ?, ");
                 sql.append("tasks_sort_field =  ?, ");
                 sql.append("tasks_sort_order =  ?, ");
-                sql.append(
-                        "displayLastEditionDate  =  ?, displayLastEditionUser  =  ?, displayLastEditionTask = ?, dashboard_configuration = ?, ui_mode = ? ");
-                sql.append(" WHERE BenutzerID = " + ro.getId() + ";");
+                sql.append("displayLastEditionDate  =  ?, displayLastEditionUser  =  ?, displayLastEditionTask = ?, dashboard_configuration = ?, ");
+                sql.append("ui_mode = ?, userstatus = ?, additional_data = ? WHERE BenutzerID = " + ro.getId() + ";");
 
-                Object[] param = { ro.getVorname() == null ? null : ro.getVorname(), ro.getNachname() == null ? null : ro.getNachname(),
-                        ro.getLogin() == null ? null : ro.getLogin(), ro.isIstAktiv(), ro.getStandort() == null ? null : ro.getStandort(),
-                                ro.getMetadatenSprache() == null ? null : ro.getMetadatenSprache(), ro.getCss() == null ? null : ro.getCss(),
-                                        ro.isMitMassendownload(), ro.getTabellengroesse() == null ? null : ro.getTabellengroesse(),
-                                                ro.getSessiontimeout() == null ? null : ro.getSessiontimeout(),
-                                                        ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), visible, ro.getLdaplogin() == null ? null : ro.getLdaplogin(),
-                                                                ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
-                                                                ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
-                                                                ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(),
-                                                                ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(), ro.getEmail() == null ? null : ro.getEmail(),
-                                                                        ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
-                                                                                ro.getMetsEditorTime() == null ? null : ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
-                                                                                        ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(), ro.isDisplayOtherTasks(),
-                                                                                        ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(), ro.isDisplayGridView(),
-                                                                                        ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
-                                                                                        ro.getMailNotificationLanguage(), ro.getInstitution() == null ? null : ro.getInstitution().getId(), ro.isSuperAdmin(),
-                                                                                                ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(),
-                                                                                                ro.getProcessListDefaultSortOrder(), ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(),
-                                                                                                ro.isDisplayLastEditionDate(), ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(),
-                                                                                                ro.getUiMode() };
+                run.update(connection, sql.toString(), ro.getVorname(), ro.getNachname(), ro.getLogin(), ro.getStandort(), ro.getMetadatenSprache(),
+                        ro.getCss(), ro.isMitMassendownload(), ro.getTabellengroesse(), ro.getSessiontimeout(), ro.getLdapGruppe()==null? null: ro.getLdapGruppe().getId(),
+                                ro.getLdaplogin(), ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(),
+                                ro.isDisplayFinishedProcesses(), ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(),
+                                ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(),
+                                ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(), ro.getEmail(),
+                                ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(), ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
+                                        ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(), ro.isDisplayOtherTasks(),
+                                        ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(), ro.isDisplayGridView(),
+                                        ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
+                                        ro.getMailNotificationLanguage(), ro.getInstitution().getId(), ro.isSuperAdmin(),
+                                        ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(),
+                                        ro.getProcessListDefaultSortOrder(), ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(),
+                                        ro.isDisplayLastEditionDate(), ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(),
+                                        ro.getUiMode(), ro.getStatus().getName(), additionalData);
 
-                if (log.isTraceEnabled()) {
-                    log.trace(sql.toString() + ", " + Arrays.toString(param));
-                }
-                run.update(connection, sql.toString(), param);
             }
 
             if (SendMail.getInstance().getConfig().isEnableMail()) {
@@ -342,8 +324,7 @@ class UserMysqlHelper implements Serializable {
                 QueryRunner run = new QueryRunner();
                 StringBuilder deactivateUserQuery = new StringBuilder();
                 deactivateUserQuery.append("UPDATE benutzer SET ");
-                deactivateUserQuery.append("isVisible = 'deleted', ");
-                deactivateUserQuery.append("IstAktiv = false, ");
+                deactivateUserQuery.append("userstatus = 'deleted', ");
                 deactivateUserQuery.append("login= 'deletedUser" + ro.getId() + "', ");
                 deactivateUserQuery.append("email = '', ");
                 deactivateUserQuery.append("Vorname ='deleted', ");

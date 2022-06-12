@@ -2118,11 +2118,15 @@ public class Metadaten implements Serializable {
      * @throws TypeNotAllowedAsChildException ============================================================ == ==
      */
     public String KnotenVerschieben() throws TypeNotAllowedAsChildException {
-        this.myDocStruct.getParent().removeChild(this.myDocStruct);
-        this.tempStrukturelement.addChild(this.myDocStruct);
-        MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
-        this.neuesElementWohin = "1";
-        return "metseditor";
+        if(this.myDocStruct != null && this.myDocStruct.getParent() != null) {            
+            this.myDocStruct.getParent().removeChild(this.myDocStruct);
+            this.tempStrukturelement.addChild(this.myDocStruct);
+            MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
+            this.neuesElementWohin = "1";
+            return "metseditor";
+        } else {
+            return "";
+        }
     }
 
     /**
@@ -2742,7 +2746,7 @@ public class Metadaten implements Serializable {
         }
 
         /*
-         * Wenn eine Verkn�pfung zwischen Strukturelement und Bildern sein soll, das richtige Bild anzeigen
+         * Wenn eine Verknuepfung zwischen Strukturelement und Bildern sein soll, das richtige Bild anzeigen
          */
         if (this.bildZuStrukturelement && !this.noUpdateImageIndex) {
             if (currentTopstruct != null && currentTopstruct.getType().getName().equals("BoundBook")) {

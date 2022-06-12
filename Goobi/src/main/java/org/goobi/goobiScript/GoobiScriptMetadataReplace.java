@@ -42,7 +42,7 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
         addParameterToSampleCall(sb, "regularExpression", "false",
                 "If the search term shall used used as regular expression set this value to `true` here.");
         addParameterToSampleCall(sb, "position", "work",
-                "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any`");
+                "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
         return sb.toString();
     }
 
@@ -90,9 +90,9 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
             Fileformat ff = p.readMetadataFile();
             // first get the top element
             DocStruct ds = ff.getDigitalDocument().getLogicalDocStruct();
-
+            DocStruct physical = ff.getDigitalDocument().getPhysicalDocStruct();
             // find the right elements to adapt
-            List<DocStruct> dsList = new ArrayList<DocStruct>();
+            List<DocStruct> dsList = new ArrayList<>();
             switch (parameters.get("position")) {
 
                 // just the anchor element
@@ -106,7 +106,7 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
                     }
                     break;
 
-                // fist the first child element
+                    // fist the first child element
                 case "child":
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -117,13 +117,21 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
                     }
                     break;
 
-                // any element in the hierarchy
+                    // any element in the hierarchy
                 case "any":
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
+                    if (physical!= null) {
+                        dsList.add(physical);
+                    }
+                    break;
+                case "physical":
+                    if (physical!= null) {
+                        dsList.add(physical);
+                    }
                     break;
 
-                // default "work", which is the first child or the main top element if it is not an anchor
+                    // default "work", which is the first child or the main top element if it is not an anchor
                 default:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -141,7 +149,7 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
                 replace = "";
             }
 
-            
+
             // get the content to be set and pipe it through the variable replacer
             VariableReplacer replacer = new VariableReplacer(ff.getDigitalDocument(), p.getRegelsatz().getPreferences(), p, null);
             String field = parameters.get("field");
@@ -149,7 +157,7 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
             field = replacer.replace(field);
             search = replacer.replace(search);
             replace = replacer.replace(replace);
-            
+
             // now change the searched metadata and save the file
             replaceMetadata(dsList, field, search, replace, p.getRegelsatz().getPreferences(),
                     searchFieldIsRegularExpression);

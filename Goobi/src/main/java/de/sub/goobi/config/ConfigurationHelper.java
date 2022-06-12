@@ -1102,6 +1102,18 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("SsoParameterType", "header");
     }
 
+    public boolean isEnableExternalUserLogin() {
+        return getLocalBoolean("EnableExternalUserLogin", false);
+    }
+
+    public String getExternalUserDefaultInstitutionName() {
+        return getLocalString("ExternalUserDefaultInstitution");
+    }
+
+    public String getExternalUserDefaultAuthenticationType() {
+        return getLocalString("ExternalUserDefaultAuthentication");
+    }
+
     public boolean isRenderReimport() {
         return getLocalBoolean("renderReimport", false);
     }
@@ -1169,13 +1181,13 @@ public class ConfigurationHelper implements Serializable {
                 return 1E3;
             case "TIB":
             case "TI":
-                return 1024 * 1024 * 1024 * 1024;
+                return Math.pow(1024, 4);
             case "GIB":
             case "GI":
-                return 1024 * 1024 * 1024;
+                return Math.pow(1024, 3);
             case "MIB":
             case "MI":
-                return 1024 * 1024;
+                return Math.pow(1024, 2);
             case "KIB":
             case "KI":
                 return 1024;

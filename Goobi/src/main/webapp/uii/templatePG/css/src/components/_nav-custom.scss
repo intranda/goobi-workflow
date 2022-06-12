@@ -23,6 +23,10 @@
     margin-right: 2rem;
     width: auto;
     height: 3rem;
+
+    @media screen and (max-width: 350px) {
+      margin-right: 1rem;
+    }
   }
 
   // Nav items
@@ -43,6 +47,7 @@
 
     &:hover {
       background-color: var(--clr-primary-600);
+      color: var(--clr-white);
     }
   }
 
@@ -69,10 +74,31 @@
     li {
       font-size: 1.2rem;
     }
+    .dropdown-item {
+      padding: 0.8rem 1.6rem;
+      &:hover,
+      &:focus {
+        background-color: var(--clr-primary-400);
+        color: var(--clr-white);
+      }
+
+      i {
+        margin-inline-end: 8px;
+      }
+    }
   }
 }
 
 // Locale switch, user menu etc
+
+.language-select {
+  &__icon {
+    margin-right: 0.8rem;
+  }
+  &__locale {
+    text-transform: uppercase;
+  }
+}
 .navbar .user {
   display: flex;
   .nav-link:after {
@@ -86,6 +112,9 @@
       display: none;
     }
   }
+  &__account-menu__avatar-default {
+    max-height: 100%;
+  }
 
   @include media-breakpoint-up(lg) {
     order: 1;
@@ -94,6 +123,10 @@
   .icon-nav {
     display: flex;
     align-items: center;
+
+    .nav-link.btn-link {
+      margin-inline-end: 0;
+    }
   }
 }
 
@@ -117,6 +150,10 @@
       border-bottom-left-radius: var(--border-radius);
       border-bottom-right-radius: var(--border-radius);
 
+      .mobile-nav {
+        border-left: 1px solid var(--clr-primary-600);
+      }
+
       // Always show dropdown menus on mobile
       .dropdown-menu {
         display: block;
@@ -127,6 +164,11 @@
       .nav-item {
         background-color: var(--clr-primary-600);
         padding-bottom: 1.6rem;
+
+        &.active {
+          background-color: var(--clr-white);
+          color: var(--text-400);
+        }
 
         &:not(:last-child) {
           border-bottom: 1px solid var(--clr-white);

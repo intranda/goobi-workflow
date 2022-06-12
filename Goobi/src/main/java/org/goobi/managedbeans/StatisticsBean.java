@@ -73,7 +73,7 @@ public class StatisticsBean implements Serializable {
 
     public int getAnzahlBenutzer() {
         try {
-            return new UserManager().getHitSize(null, "isVisible is null", null);
+            return new UserManager().getHitSize(null, "userstatus != 'deleted'", null);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerBeimEinlesen", e.getMessage());
             return 0;

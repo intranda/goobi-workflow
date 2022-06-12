@@ -26,6 +26,7 @@ import javax.servlet.http.Part;
 
 import org.easymock.EasyMock;
 import org.goobi.beans.Process;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -38,40 +39,49 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.AbstractTest;
-import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.mock.MockUploadedFile;
+import de.sub.goobi.persistence.managers.MetadataManager;
+import de.sub.goobi.persistence.managers.ProcessManager;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ FacesContext.class, ExternalContext.class, HttpSession.class })
+@PrepareForTest({ FacesContext.class, ExternalContext.class, HttpSession.class, Helper.class, MetadataManager.class , ProcessManager.class })
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
+
 public class FileManipulationTest extends AbstractTest{
 
     private Metadaten metadataBean;
-
+    private Process testProcess ;
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
     @Before
     public void setUp() throws Exception {
-        Path template = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
-        Path goobiFolder = Paths.get(template.getParent().getParent().toString() + "/src/test/resources/config/goobi_config.properties"); // for junit tests in eclipse
-        if (!Files.exists(goobiFolder)) {
-            goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
-        }
-        ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
 
         prepareMocking();
 
         ConfigurationHelper.setImagesPath("/tmp/");
         metadataBean = new Metadaten();
-        Process testProcess = MockProcess.createProcess();
+        metadataBean.setMyBenutzerID("1");
+        testProcess = MockProcess.createProcess();
         testProcess.setId(1);
+
+
+
         metadataBean.setMyProzess(testProcess);
         metadataBean.XMLlesenStart();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        // delete uploaded files, if exists
+        Path file1 = Paths.get( testProcess.getImagesTifDirectory(false), "fixture.tif");
+        Path file2 = Paths.get( testProcess.getImagesTifDirectory(false), "fixture2.tif");
+        Files.deleteIfExists(file1);
+        Files.deleteIfExists(file2);
     }
 
     @Test
@@ -97,7 +107,7 @@ public class FileManipulationTest extends AbstractTest{
         assertEquals(uploadedFile, fixture.getUploadedFile());
     }
 
-    // @Test
+    @Test
     public void testUploadedFileName() {
         FileManipulation fixture = new FileManipulation(metadataBean);
         String filename = "test.tif";
@@ -105,7 +115,7 @@ public class FileManipulationTest extends AbstractTest{
         assertEquals(filename, fixture.getUploadedFileName());
     }
 
-    // @Test
+    @Test
     public void testInsertPage() {
         FileManipulation fixture = new FileManipulation(metadataBean);
         String pageNo = "5";
@@ -113,16 +123,22 @@ public class FileManipulationTest extends AbstractTest{
         assertEquals(pageNo, fixture.getInsertPage());
     }
 
-    // @Test
+    @Test
     public void testUploadFileWithoutSelection() throws Exception {
         FileManipulation fixture = new FileManipulation(metadataBean);
         fixture.uploadFile();
     }
 
-    // @Test
+    @Test
     public void testUploadFile() throws Exception {
         FileManipulation fixture = new FileManipulation(metadataBean);
-        InputStream stream = new FileInputStream("/opt/digiverso/junit/data/00000001.tif");
+        Path p = Paths.get("src/test/resources/file_example_TIFF_1MB.tif");
+        if (!Files.exists(p)) {
+            p = Paths.get("target/test-classes/file_example_TIFF_1MB.tif");
+        }
+
+
+        InputStream stream =Files.newInputStream(p);
         Part uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
 
         fixture.setUploadedFile(uploadedFile);
@@ -138,7 +154,7 @@ public class FileManipulationTest extends AbstractTest{
         fixture.uploadFile();
     }
 
-    // @Test
+    @Test
     public void testInsertMode() {
         FileManipulation fixture = new FileManipulation(metadataBean);
         String mode = "uncounted";
@@ -146,7 +162,7 @@ public class FileManipulationTest extends AbstractTest{
         assertEquals(mode, fixture.getInsertMode());
     }
 
-    // @Test
+    @Test
     public void testImageSelection() {
         FileManipulation fixture = new FileManipulation(metadataBean);
         String selection = "1";
@@ -154,10 +170,15 @@ public class FileManipulationTest extends AbstractTest{
         assertEquals(selection, fixture.getImageSelection());
     }
 
-    // @Test
-    public void testDownloadFile() throws FileNotFoundException {
+    //    @Test
+    public void testDownloadFile() throws Exception {
         FileManipulation fixture = new FileManipulation(metadataBean);
-        InputStream stream = new FileInputStream("/opt/digiverso/junit/data/00000001.tif");
+        Path p = Paths.get("src/test/resources/file_example_TIFF_1MB.tif");
+        if (!Files.exists(p)) {
+            p = Paths.get("target/test-classes/file_example_TIFF_1MB.tif");
+        }
+        InputStream stream =Files.newInputStream(p);
+
         Part uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
 
         fixture.setUploadedFile(uploadedFile);
@@ -170,13 +191,15 @@ public class FileManipulationTest extends AbstractTest{
         fixture.downloadFile();
     }
 
-    // @Test
+
+
+    @Test
     public void testExportFilesWithoutSelection() {
         FileManipulation fixture = new FileManipulation(metadataBean);
         fixture.exportFiles();
     }
 
-    // @Test
+    @Test
     public void testSelectedFiles() {
         FileManipulation fixture = new FileManipulation(metadataBean);
 
@@ -188,7 +211,7 @@ public class FileManipulationTest extends AbstractTest{
 
     }
 
-    // @Test
+    @Test
     public void testDeleteFilesAfterMove() {
         FileManipulation fixture = new FileManipulation(metadataBean);
         fixture.setDeleteFilesAfterMove(false);
@@ -221,7 +244,7 @@ public class FileManipulationTest extends AbstractTest{
         fixture.exportFiles();
     }
 
-    // @Test
+    @Test
     public void testIsMoveFilesInAllFolder() {
         FileManipulation fixture = new FileManipulation(metadataBean);
         fixture.setMoveFilesInAllFolder(false);
@@ -260,7 +283,7 @@ public class FileManipulationTest extends AbstractTest{
 
     }
 
-    // @Test
+    @Test
     public void testImportFiles() {
         FileManipulation fixture = new FileManipulation(metadataBean);
         List<String> list = fixture.getAllImportFolder();
@@ -277,6 +300,7 @@ public class FileManipulationTest extends AbstractTest{
         PowerMock.mockStatic(ExternalContext.class);
         PowerMock.mockStatic(FacesContext.class);
         PowerMock.mockStatic(HttpSession.class);
+        PowerMock.mockStatic(Helper.class);
 
         FacesContext facesContext = EasyMock.createMock(FacesContext.class);
         ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
@@ -285,7 +309,7 @@ public class FileManipulationTest extends AbstractTest{
         HttpServletRequest request = EasyMock.createMock(HttpServletRequest.class);
 
         FacesContextHelper.setFacesContext(facesContext);
-
+        //        facesContext.responseComplete();
         EasyMock.expect(FacesContext.getCurrentInstance()).andReturn(facesContext).anyTimes();
         EasyMock.expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
         EasyMock.expect(externalContext.getSession(EasyMock.anyBoolean())).andReturn(session).anyTimes();
@@ -315,16 +339,28 @@ public class FileManipulationTest extends AbstractTest{
         EasyMock.expect(root.getLocale()).andReturn(Locale.GERMAN).anyTimes();
         EasyMock.expect(application.getSupportedLocales()).andReturn(locale.iterator()).anyTimes();
         EasyMock.expect(application.createValueBinding(EasyMock.anyString())).andReturn(null).anyTimes();
-        //        EasyMock.expect(facesContext.getResponseComplete()).andReturn(true);
 
-        //        facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
-        //        facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
-        //        facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
-        //        facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
-        //        facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
-        //        facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
-        //        facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
-        //        facesContext.addMessage(EasyMock.anyString(), EasyMock.anyObject(FacesMessage.class));
+
+        EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("").anyTimes();
+        EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
+        EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
+        EasyMock.expect(Helper.getRequestParameter(EasyMock.anyString())).andReturn("1").anyTimes();
+        EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
+        Helper.setMeldung(EasyMock.anyString());
+        Helper.setFehlerMeldung(EasyMock.anyString());
+        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
+        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
+        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
+        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
+        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
+        Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyObject(Exception.class));
+        Helper.setFehlerMeldung(EasyMock.anyString());
+        PowerMock.mockStatic(MetadataManager.class);
+        MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject());
+
+        PowerMock.replay(Helper.class);
         EasyMock.replay(request);
         EasyMock.replay(root);
         EasyMock.replay(session);

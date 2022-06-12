@@ -960,7 +960,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         String filter =
                 "benutzer.BenutzerID not in (select BenutzerID from schritteberechtigtebenutzer where schritteberechtigtebenutzer.schritteID = "
                         + mySchritt.getId() + ") AND " +
-                        "benutzer.BenutzerID not in (select BenutzerID from benutzer where benutzer.isVisible = 'deleted')";
+                        "benutzer.BenutzerID not in (select BenutzerID from benutzer where benutzer.userstatus = 'deleted')";
         UserManager m = new UserManager();
         userPaginator = new DatabasePaginator("Nachname", filter, m, "");
 
@@ -2111,7 +2111,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     @SuppressWarnings("deprecation")
-	public void downloadStatisticsAsCsv() {
+    public void downloadStatisticsAsCsv() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         CSVPrinter csvFilePrinter = null;
         if (!facesContext.getResponseComplete()) {
