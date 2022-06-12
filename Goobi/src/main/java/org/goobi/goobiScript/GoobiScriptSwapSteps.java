@@ -19,9 +19,6 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobiScript {
-    private int reihenfolge1;
-    private int reihenfolge2;
-
     @Override
     public String getAction() {
         return "swapSteps";
@@ -40,6 +37,8 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
 
     @Override
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
+        int swap1nr;
+        int swap2nr;
         super.prepare(processes, command, parameters);
 
         if (parameters.get("swap1nr") == null || parameters.get("swap1nr").equals("")) {
@@ -60,8 +59,8 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
         }
 
         try {
-            reihenfolge1 = Integer.parseInt(parameters.get("swap1nr"));
-            reihenfolge2 = Integer.parseInt(parameters.get("swap2nr"));
+            swap1nr = Integer.parseInt(parameters.get("swap1nr"));
+            swap2nr = Integer.parseInt(parameters.get("swap2nr"));
         } catch (NumberFormatException e1) {
             Helper.setFehlerMeldung("goobiScriptfield", "Invalid order number used: ", parameters.get("swap1nr") + " - " + parameters.get("swap2nr"));
             return new ArrayList<>();
@@ -78,6 +77,8 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
     @Override
     public void execute(GoobiScriptResult gsr) {
         Map<String, String> parameters = gsr.getParameters();
+        int swap1nr = Integer.parseInt(parameters.get("swap1nr"));
+        int swap2nr = Integer.parseInt(parameters.get("swap2nr"));
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
         gsr.setProcessTitle(p.getTitel());
         gsr.setResultType(GoobiScriptResultType.RUNNING);
@@ -87,10 +88,10 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
         Step s2 = null;
         for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
             Step s = iterator.next();
-            if (s.getTitel().equals(parameters.get("swap1title")) && s.getReihenfolge().intValue() == reihenfolge1) {
+            if (s.getTitel().equals(parameters.get("swap1title")) && s.getReihenfolge().intValue() == swap1nr) {
                 s1 = s;
             }
-            if (s.getTitel().equals(parameters.get("swap2title")) && s.getReihenfolge().intValue() == reihenfolge2) {
+            if (s.getTitel().equals(parameters.get("swap2title")) && s.getReihenfolge().intValue() == swap2nr) {
                 s2 = s;
             }
         }
@@ -98,8 +99,8 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
             StepStatus statustemp = s1.getBearbeitungsstatusEnum();
             s1.setBearbeitungsstatusEnum(s2.getBearbeitungsstatusEnum());
             s2.setBearbeitungsstatusEnum(statustemp);
-            s1.setReihenfolge(Integer.valueOf(reihenfolge2));
-            s2.setReihenfolge(Integer.valueOf(reihenfolge1));
+            s1.setReihenfolge(Integer.valueOf(swap2nr));
+            s2.setReihenfolge(Integer.valueOf(swap1nr));
             try {
                 StepManager.saveStep(s1);
                 StepManager.saveStep(s2);

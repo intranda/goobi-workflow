@@ -15,6 +15,7 @@
 		<composite:attribute name="value" />
 		<composite:attribute name="ajaxRender" />
 		<composite:attribute name="sortable" default="true" />
+		<composite:attribute name="reverseOrder" default="false" />
 		<composite:attribute name="id"/>
 		<composite:attribute name="addAction" default="false" />
 		<composite:attribute name="customActionBean" type="java.lang.Object"/>
@@ -36,7 +37,7 @@
 					class="pull-right table-sort-icon fa #{cc.attrs.form.sortierung== descendingLabel ?'fa-sort-desc':cc.attrs.form.sortierung== ascendingLabel ?'fa-sort-asc':'fa-sort'}"></span>
 				<f:setPropertyActionListener
 					target="#{cc.attrs.form.sortierung}"
-					value="#{cc.attrs.form.sortierung== ascendingLabel ? descendingLabel : ascendingLabel }" />
+					value="#{cc.attrs.reverseOrder and cc.attrs.form.sortierung eq descendingLabel? ascendingLabel : (not cc.attrs.reverseOrder and cc.attrs.form.sortierung ne ascendingLabel ? ascendingLabel : descendingLabel)}" />
 				<f:ajax render="#{cc.attrs.ajaxRender}" />
 			</button>
 		</th>

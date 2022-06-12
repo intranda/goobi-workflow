@@ -47,7 +47,7 @@ public class DmsImportThread extends Thread {
 
     public String rueckgabe = "";
 
-    public boolean stop = false;
+    public boolean cancel = false;
 
     public DmsImportThread(Process inProzess, String inAts) {
         setDaemon(true);
@@ -84,14 +84,14 @@ public class DmsImportThread extends Thread {
 
     @Override
     public void run() {
-        while (!this.stop) {
+        while (!this.cancel) {
             try {
                 Thread.sleep(550);
                 if (!StorageProvider.getInstance().isFileExists(this.fileXml) && (StorageProvider.getInstance().isFileExists(this.fileError)
                         || StorageProvider.getInstance().isFileExists(this.fileSuccess))) {
                     if (StorageProvider.getInstance().isFileExists(this.fileError)
                             && StorageProvider.getInstance().getLastModifiedDate(fileError) > this.timeFileError) {
-                        this.stop = true;
+                        this.cancel = true;
                         /* die Logdatei mit der Fehlerbeschreibung einlesen */
                         StringBuffer myBuf = new StringBuffer();
                         myBuf.append("Beim Import ist ein Importfehler aufgetreten: ");
@@ -108,7 +108,7 @@ public class DmsImportThread extends Thread {
                     }
                     if (StorageProvider.getInstance().isFileExists(this.fileSuccess)
                             && StorageProvider.getInstance().getLastModifiedDate(fileSuccess) > this.timeFileSuccess) {
-                        this.stop = true;
+                        this.cancel = true;
                     }
                 }
             } catch (Throwable t) {
@@ -123,7 +123,7 @@ public class DmsImportThread extends Thread {
 
     public void stopThread() {
         this.rueckgabe = "Import wurde wegen Zeitüberschreitung abgebrochen";
-        this.stop = true;
+        this.cancel = true;
     }
 
 }

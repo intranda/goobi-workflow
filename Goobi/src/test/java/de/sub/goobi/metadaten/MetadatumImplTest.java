@@ -9,18 +9,27 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
+import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.AbstractTest;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.mock.MockProcess;
 import ugh.dl.Metadata;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ ViafSearch.class, Helper.class})
 public class MetadatumImplTest extends AbstractTest {
 
     private Prefs prefs;
@@ -34,6 +43,16 @@ public class MetadatumImplTest extends AbstractTest {
 
         process = MockProcess.createProcess();
         prefs = process.getRegelsatz().getPreferences();
+
+        ViafSearch viafSearch = PowerMock.createMock(ViafSearch.class);
+        PowerMock.expectNew(ViafSearch.class).andReturn(viafSearch).anyTimes();
+        PowerMock.replay(viafSearch);
+
+        PowerMock.mockStatic(Helper.class);
+        EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
+        EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
+        EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("").anyTimes();
+        PowerMock.replay(Helper.class);
     }
 
     @Test

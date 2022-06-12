@@ -29,7 +29,12 @@ td {
   }
   .btn {
     // Display a margin when buttons are stacked
-    margin: 1px;
+    margin-top: 1px;
+
+    & ~ .btn {
+      margin-inline-start: 0;
+      margin-inline-end: 0;
+    }
   }
 }
 // Remove borders left + right if the table is in a box

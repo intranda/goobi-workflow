@@ -87,5 +87,28 @@
        <packageUrl regex="true">^pkg:javascript/bootstrap@.*$</packageUrl>
        <cve>CVE-2022-24785</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[Ignored since we are not vulnerable, see https://github.com/spring-projects/spring-framework/issues/24434#issuecomment-1132113566]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework/spring.*$</packageUrl>
+        <cve>CVE-2016-1000027</cve>
+    </suppress>
+    
+    <!-- removed old obsolete mysql 5.x warnings. aws client is based on the latest mysql 8.x driver -->
+    <suppress>
+        <notes><![CDATA[file name: aws-mysql-jdbc-1.0.0.jar]]></notes>
+        <packageUrl regex="true">^pkg:maven/software\.aws\.rds/aws\-mysql\-jdbc@.*$</packageUrl>
+        <cve>CVE-2007-1420</cve>
+        <cve>CVE-2007-2691</cve>
+        <cve>CVE-2007-5925</cve>
+        <cve>CVE-2009-0819</cve>
+        <cve>CVE-2009-4028</cve>
+        <cve>CVE-2010-1621</cve>
+        <cve>CVE-2010-1626</cve>
+        <cve>CVE-2010-3677</cve>
+        <cve>CVE-2010-3682</cve>
+        <cve>CVE-2015-2575</cve>
+        <cve>CVE-2017-15945</cve>
+    </suppress>
+    
     
 </suppressions>

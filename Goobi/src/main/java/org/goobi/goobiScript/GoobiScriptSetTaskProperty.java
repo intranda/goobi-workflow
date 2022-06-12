@@ -17,8 +17,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class GoobiScriptSetTaskProperty extends AbstractIGoobiScript implements IGoobiScript {
-    private String property;
-    private String value;
+
 
     @Override
     public String getAction() {
@@ -40,6 +39,8 @@ public class GoobiScriptSetTaskProperty extends AbstractIGoobiScript implements 
     @Override
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
+        String property;
+        String value;
 
         /*
          * -------------------------------- Validierung der Actionparameter --------------------------------
@@ -107,17 +108,19 @@ public class GoobiScriptSetTaskProperty extends AbstractIGoobiScript implements 
 
     @Override
     public void execute(GoobiScriptResult gsr) {
+
         Map<String, String> parameters = gsr.getParameters();
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
         gsr.setProcessTitle(p.getTitel());
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
+        String property = parameters.get("property");
+        String value = parameters.get("value");
 
         if (p.getSchritte() != null) {
             for (Iterator<Step> iterator = p.getSchritte().iterator(); iterator.hasNext();) {
                 Step s = iterator.next();
                 if (s.getTitel().equals(parameters.get("steptitle"))) {
-
                     if (property.equals("metadata")) {
                         s.setTypMetadaten(Boolean.parseBoolean(value));
                     }

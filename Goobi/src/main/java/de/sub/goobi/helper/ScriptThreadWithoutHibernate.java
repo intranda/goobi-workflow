@@ -68,7 +68,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
     HelperSchritte hs = new HelperSchritte();
     private Step step;
     public String rueckgabe = "";
-    public boolean stop = false;
+    public boolean cancel = false;
 
     public ScriptThreadWithoutHibernate(Step step) {
         this.step = step;
@@ -194,7 +194,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
 
     public void stopThread() {
         this.rueckgabe = "Import wurde wegen Zeitüberschreitung abgebrochen";
-        this.stop = true;
+        this.cancel = true;
     }
 
     public void addStepScriptsToExternalQueue(Step automaticStep) {

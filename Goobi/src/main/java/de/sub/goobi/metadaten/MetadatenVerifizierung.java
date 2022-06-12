@@ -716,7 +716,7 @@ public class MetadatenVerifizierung {
                 Metadata createdElement = new Metadata(mdt);
                 StringBuffer myValue = new StringBuffer();
                 /*
-                 * alle anzufügenden Metadaten durchlaufen und an das Element anh�ngen
+                 * alle anzufügenden Metadaten durchlaufen und an das Element anhaengen
                  */
                 for (MetadataType mdttemp : inListOfFromMdts) {
 

@@ -155,8 +155,8 @@
 
 	<!-- ##########################################################################
          ##  Metadata types for the physical structure                           ##
-         ########################################################################## -->
-
+         ########################################################################## -->  
+    
 	<!-- !!DO NOT CHANGE!! -->
 	<MetadataType>
 		<Name>physPageNumber</Name>
@@ -427,7 +427,39 @@
 		<language name="de">VD17 Nr.</language>
 		<language name="en">VD17 No.</language>
 	</MetadataType>
-	
+  <MetadataType>
+    <Name>_representative</Name>
+    <language name="de">Repräsentant</language>
+    <language name="en">Representative</language>
+  </MetadataType>	
+    
+    
+<!-- metadata for unit tests -->
+    <MetadataType>
+        <Name>junitMetadata</Name>
+        <language name="de">junitMetadata</language>
+        <language name="en">junitMetadata</language>
+    </MetadataType>
+    <MetadataType type="person" namepart="true" normdata="true">
+        <Name>junitPerson</Name>
+        <language name="de">junitPerson</language>
+        <language name="en">junitPerson</language>
+    </MetadataType>
+    <MetadataType type="corporate">
+        <Name>junitCorporate</Name>
+        <language name="de">junitCorporate</language>
+        <language name="en">junitCorporate</language>
+    </MetadataType>
+    <Group>
+        <Name>junitgrp</Name>
+        <language name="de">junitgrp</language>
+        <language name="en">junitgrp</language>
+        <metadata>junitMetadata</metadata>
+        <metadata>junitPerson</metadata>
+        <metadata>junitCorporate</metadata>
+    </Group>   
+    
+    
 	<!-- ##########################################################################
          ##  Logical document structure types                                    ##
          ########################################################################## -->
@@ -1033,6 +1065,10 @@
 		<metadata num="1o">CatalogFieldVDseventeen</metadata>
 		<metadata num="*">CatalogFieldVDeighteen</metadata>
 		<metadata num="1o">_purl</metadata>
+        <metadata num="*">junitMetadata</metadata>
+        <metadata num="*">junitPerson</metadata>
+        <metadata num="*">junitCorporate</metadata>
+        <group num="*">junitgrp</group>
 	</DocStrctType>
 	<DocStrctType>
 		<Name>ContainedWork</Name>
@@ -1637,6 +1673,8 @@
 		<metadata num="1o">datedigit</metadata>
 		<metadata num="1o">pathimagefiles</metadata>
 		<allowedchildtype>page</allowedchildtype>
+            <metadata num="1o">_representative</metadata>
+        
 	</DocStrctType>
 	<!-- DO NOT CHANGE!! -->
 
