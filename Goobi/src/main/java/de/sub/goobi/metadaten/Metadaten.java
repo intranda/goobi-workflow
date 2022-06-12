@@ -2746,7 +2746,7 @@ public class Metadaten implements Serializable {
         }
 
         /*
-         * Wenn eine Verkn�pfung zwischen Strukturelement und Bildern sein soll, das richtige Bild anzeigen
+         * Wenn eine Verknuepfung zwischen Strukturelement und Bildern sein soll, das richtige Bild anzeigen
          */
         if (this.bildZuStrukturelement && !this.noUpdateImageIndex) {
             if (currentTopstruct != null && currentTopstruct.getType().getName().equals("BoundBook")) {

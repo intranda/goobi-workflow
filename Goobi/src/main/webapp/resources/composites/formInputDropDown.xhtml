@@ -14,6 +14,7 @@
 		<composite:attribute name="selectItems" />
 		<composite:attribute name="fieldStyle" />
 		<composite:attribute name="style" />
+        <composite:attribute name="readonly" default="false" />
 		<composite:attribute name="required" default="false" />
 		<composite:attribute name="displayAsRequired" default="false" />
         <composite:attribute name="classLeft" default="col-sm-3" />
@@ -32,7 +33,7 @@
 			</div>
 			<div class="#{cc.attrs.classRight}">
 				<h:selectOneMenu id="#{cc.attrs.name}" styleClass="#{cc.attrs.fieldStyle}"
-					value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}">
+					value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}" readonly="#{cc.attrs.readonly}">
 					<f:selectItem itemValue="null" itemLabel="#{msgs.bitteAuswaehlen}" />
 					<f:selectItems value="#{cc.attrs.selectItems}" />
 				</h:selectOneMenu>

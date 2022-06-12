@@ -12,20 +12,30 @@
 
 button,
 .btn {
-  font-size: var(--fs-400);
+  font-size: var(--fs-500);
   border-radius: var(--border-radius, 2px);
 
   i ~ * {
-    margin-inline-start: 8px;
+    margin-inline-start: 0.8rem;
+  }
+
+  &.btn-hot {
+    margin-inline-end: auto;
+  }
+
+  & ~ .btn {
+    margin-inline-start: 0.8rem;
   }
 }
 
 // Badges
 button.badge,
 span.badge {
+  display: inline-block;
   background-color: transparent;
   border: 1px solid currentColor;
   padding: 2px 4px;
+  margin: 2px 4px;
 
   i {
     margin-inline-start: 4px;
