@@ -1837,9 +1837,9 @@ public class ProcessBean extends BasicBean implements Serializable {
         StringBuffer buffer = new StringBuffer();
         buffer.append("User \"");
         buffer.append(user != null ? user.getLogin() : "[unknown user]");
-        buffer.append("\" executed GoobiScript \"\n");
+        buffer.append("\" executed GoobiScript ...\n");
         buffer.append(this.goobiScript);
-        buffer.append("\n\" for the processes with following ids:\n");
+        buffer.append("\n... for the processes with following ids:\n");
         buffer.append(processIds.toString());
         log.debug(buffer.toString());
     }
