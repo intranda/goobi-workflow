@@ -39,7 +39,7 @@
 					<div class="box-title">
 						<h2>
 							<i class="fa fa-stethoscope"></i>
-							<h:outputText value="#{msgs.menu_administration_plugins}" />
+							<h:outputText value="#{msgs.menu_administration_plugins} - #{HelperForm.version}" />
 						</h2>
 					</div>
 					<div class="box-content">
@@ -131,45 +131,46 @@
 								</h:form>
 							</h:panelGroup>
 							<h:panelGroup layout="block" rendered="#{pluginsBean.mode eq 'installed'}">
-								<h4>#{msgs.runningGoobiVersion}: #{HelperForm.version}</h4>
 								<h:form id="plugins_form">
 									<ui:repeat var="folder" value="#{pluginsBean.plugins.keySet().toArray()}">
 
-										<h3 class="folder--line" jsf:id="pluginFolderTitle" jsf:rendered="#{not pluginsBean.plugins[folder].isEmpty()}">
-											<h:outputText value="#{pluginsBean.getTranslatedFolderName(folder)}" styleClass="text"/>
-										</h3>
-										<h:outputText class="pull-right" style="margin-bottom: 10px;" value="#{pluginsBean.getPluginFolder()}#{folder}/" />
-
-										<table jsf:id="pluginInfoTable"
-											jsf:rendered="#{not pluginsBean.plugins[folder].isEmpty()}"
-											class="table table-hover table-nomargin dataTable table-bordered responsive">
-											<thead>
-												<tr>
-													<th>#{msgs.filename}</th>
-													<th>#{msgs.containedPlugins}</th>
-													<th>#{msgs.pluginsUsedInWorkflows}</th>
-													<th>#{msgs.gitHash}</th>
-													<th>#{msgs.buildDate}</th>
-													<th>#{msgs.compatibleWith}</th>
-												</tr>
-											</thead>
-											<tbody>
-												<ui:repeat var="pluginInfo" value="#{pluginsBean.plugins[folder]}">
+										<ui:fragment rendered="#{not pluginsBean.plugins[folder].isEmpty()}">
+											
+											<p class="folder--line" jsf:id="pluginFolderTitle2" >
+												<h:outputText value="#{pluginsBean.getTranslatedFolderName(folder)}" styleClass="text"/>
+												<h:outputText class="pull-right" value="#{pluginsBean.getPluginFolder()}#{folder}/" styleClass="textright"/>
+											</p>
+	
+											<table jsf:id="pluginInfoTable"
+												class="table table-hover table-nomargin dataTable table-bordered responsive">
+												<thead>
 													<tr>
-														<td><h:outputText value="#{pluginInfo.filename}" /></td>
-														<td style="width: 300px;"><h:outputText rendered="#{not pluginInfo.containedPlugins.isEmpty()}" value="#{pluginInfo.containedPlugins}" /></td>
-														<td style="width: 300px;"><h:outputText rendered="#{not pluginInfo.pluginsUsedInWorkflows.isEmpty()}" value="#{pluginInfo.pluginsUsedInWorkflows}" /></td>
-														<td class="tableColumnOverflow width200"><h:outputText value="#{pluginInfo.gitHash}" /></td>
-														<td class="tableColumnOverFlow width200"><h:outputText value="#{pluginInfo.buildDate}" /></td>
-														<td class="tableColumnOverFlow width200">
-															<h:outputText 
-																styleClass="badge #{pluginsBean.getBadgeClassForGoobiVersion(pluginInfo.goobiVersion)}" 
-																value="#{pluginInfo.goobiVersion eq 'N/A'?'' : 'Goobi '}#{pluginInfo.goobiVersion}" />
-														</td>
+														<th>#{msgs.filename}</th>
+														<th>#{msgs.containedPlugins}</th>
+														<th>#{msgs.pluginsUsedInWorkflows}</th>
+														<th>#{msgs.gitHash}</th>
+														<th>#{msgs.buildDate}</th>
+														<th>#{msgs.compatibleWith}</th>
 													</tr>
-												</ui:repeat>
-											</tbody>
-										</table>
+												</thead>
+												<tbody>
+													<ui:repeat var="pluginInfo" value="#{pluginsBean.plugins[folder]}">
+														<tr>
+															<td><h:outputText value="#{pluginInfo.filename}" /></td>
+															<td style="width: 300px;"><h:outputText rendered="#{not pluginInfo.containedPlugins.isEmpty()}" value="#{pluginInfo.containedPlugins}" /></td>
+															<td style="width: 300px;"><h:outputText rendered="#{not pluginInfo.pluginsUsedInWorkflows.isEmpty()}" value="#{pluginInfo.pluginsUsedInWorkflows}" /></td>
+															<td class="tableColumnOverflow width200"><h:outputText value="#{pluginInfo.gitHash}" /></td>
+															<td class="tableColumnOverFlow width200"><h:outputText value="#{pluginInfo.buildDate}" /></td>
+															<td class="tableColumnOverFlow width200">
+																<h:outputText 
+																	styleClass="badge #{pluginsBean.getBadgeClassForGoobiVersion(pluginInfo.goobiVersion)}" 
+																	value="#{pluginInfo.goobiVersion eq 'N/A'?'' : 'Goobi '}#{pluginInfo.goobiVersion}" />
+															</td>
+														</tr>
+													</ui:repeat>
+												</tbody>
+											</table>
+										</ui:fragment>
 									</ui:repeat>
 								</h:form>
 							</h:panelGroup>
