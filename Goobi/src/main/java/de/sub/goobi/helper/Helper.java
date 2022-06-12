@@ -114,6 +114,7 @@ public class Helper implements Serializable, ServletContextListener {
     private static Map<Locale, ResourceBundle> localMessages = null;
     private static final Map<String, Boolean> reloadNeededMap = new ConcurrentHashMap<>();
     private static final Map<Path, Thread> watcherMap = new ConcurrentHashMap<>();
+    private static final String MESSAGES = "messages";
 
     /**
      * Ermitteln eines bestimmten Paramters des Requests
@@ -462,11 +463,7 @@ public class Helper implements Serializable, ServletContextListener {
                 Locale language = polyglot.next();
                 if (!localOnly) {
                     try {
-                        // load message bundles using UTF8 as here described:
-                        // http://stackoverflow.com/questions/4659929/how-to-use-utf-8-in-resource-properties-with-resourcebundle
-                        //                  ResourceBundle common = ResourceBundle.getBundle("messages.messages", language, new UTF8Control());
-                        //                  commonMessages.put(language, common);
-                        commonMessages.put(language, ResourceBundle.getBundle("messages.messages", language));
+                        commonMessages.put(language, ResourceBundle.getBundle(MESSAGES, language));
                     } catch (Exception e) {
                         log.warn("Cannot load messages for language " + language.getLanguage());
                     }
@@ -484,7 +481,7 @@ public class Helper implements Serializable, ServletContextListener {
                                 return new URLClassLoader(new URL[] { resourceURL });
                             }
                         });
-                        ResourceBundle localBundle = ResourceBundle.getBundle("messages", language, urlLoader);
+                        ResourceBundle localBundle = ResourceBundle.getBundle(MESSAGES, language, urlLoader);
                         if (localBundle != null) {
                             localMessages.put(language, localBundle);
                         }
@@ -497,7 +494,7 @@ public class Helper implements Serializable, ServletContextListener {
             String data = System.getenv("junitdata");
             if (data == null || data.isEmpty()) {
                 Locale defaullLocale = new Locale("EN");
-                commonMessages.put(defaullLocale, ResourceBundle.getBundle("messages.messages", defaullLocale));
+                commonMessages.put(defaullLocale, ResourceBundle.getBundle(MESSAGES, defaullLocale));
             }
         }
     }

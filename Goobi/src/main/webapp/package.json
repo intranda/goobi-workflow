@@ -6,9 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "sass:dev": "sass --watch uii/templatePG/css/src/main.scss:/opt/digiverso/dev/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/Goobi/uii/templatePG/css/dist/bundle.css uii/templatePG/css/src/accessibility.scss:uii/templatePG/css/dist/accessibility.css",
+    "sass:dev2": "sass --watch uii/templatePG/css/src/main.scss:uii/templatePG/css/dist/bundle.css uii/templatePG/css/src/accessibility.scss:uii/templatePG/css/dist/accessibility.css",
     "sass:prod": "sass --no-source-map uii/templatePG/css/src/main.scss:uii/templatePG/css/src/bundle.css uii/templatePG/css/src/accessibility.scss:uii/templatePG/css/dist/accessibility.css",
     "postcss": "echo 'postcss: ' && postcss ./uii/templatePG/css/src/bundle.css --output ./uii/templatePG/css/dist/bundle.css --verbose",
-    "start": "npm run sass:dev",
+    "start": "npm run sass:dev2",
     "css:build": "npm run sass:prod && npm run postcss"
   },
   "repository": {

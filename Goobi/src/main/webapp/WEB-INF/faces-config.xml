@@ -40,10 +40,9 @@
 			<var>msgs</var>
 		</resource-bundle>
 		
-		<message-bundle>messages.messages</message-bundle>
-		
+		<message-bundle>messages</message-bundle>
 		<resource-bundle>
-			<base-name>messages.messages</base-name>
+			<base-name>messages</base-name>
 			<var>msgsClassic</var>
 		</resource-bundle>
 		

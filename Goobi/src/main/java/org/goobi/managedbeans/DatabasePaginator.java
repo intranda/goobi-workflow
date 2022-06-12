@@ -41,18 +41,18 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class DatabasePaginator implements Serializable {
     private static final long serialVersionUID = 1571881092118205104L;
-    private List<? extends DatabaseObject> results;
-    private int pageSize = 10;
-    private int page = 0;
+    protected List<? extends DatabaseObject> results;
+    protected int pageSize = 10;
+    protected int page = 0;
     @Getter
-    private int totalResults = 0;
-    private String order = "";
-    private String filter = new String();
-    private IManager manager;
+    protected int totalResults = 0;
+    protected String order = "";
+    protected String filter = new String();
+    protected IManager manager;
     private String returnPage;
 
-    private List<Integer> idList = new ArrayList<>();
-    private Institution institution;
+    protected List<Integer> idList = new ArrayList<>();
+    protected Institution institution;
 
     public DatabasePaginator(String order, String filter, IManager manager, String returnPage) {
         LoginBean login = Helper.getLoginBean();
