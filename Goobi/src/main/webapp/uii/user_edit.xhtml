@@ -217,7 +217,8 @@
                                             <intranda:formInputText
                                                 id="ldapname"
                                                 label="#{msgs.ldaplogin}"
-                                                required="false"
+                                                required="#{not BenutzerverwaltungForm.myClass.ldapGruppe.readonly}"
+                                                displayAsRequired="#{not BenutzerverwaltungForm.myClass.ldapGruppe.readonly}"
                                                 field="#{BenutzerverwaltungForm.myClass.ldaplogin}"
                                                 help="#{msgs.helpLdaplogin}"
                                                 name="ldaplogin"
