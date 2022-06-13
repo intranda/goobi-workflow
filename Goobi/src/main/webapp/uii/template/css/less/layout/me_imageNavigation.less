@@ -5,12 +5,28 @@
 .image {
     &__navigation {
         margin-bottom: 1rem;
+
+        #jumpToImageAutocomplete_input {
+          width: 100%;
+          height: 100%;
+        }
+
+        #jumpToImageAutocomplete {
+        margin-left: 0;
+        }
+
+        #autocomplete {
+          display: flex;
+          cursor: pointer;
+        }
+
         ul {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: center;
         }
+
         li {
             margin-right: 5px;
             margin-left: 5px;
@@ -35,14 +51,14 @@
                 &:hover {
                     background-color: @white;
                 }
-                a, 
+                a,
                 button,
                 span {
                     min-width: inherit;
                 }
             }
         }
-        a, 
+        a,
         button,
         span {
             display: block;
@@ -104,7 +120,7 @@
 }
 
 /* BREAKPOINT FOR LARGE DESKTOPS */
-@media screen and (max-width: @largeBreakpoint) {} 
+@media screen and (max-width: @largeBreakpoint) {}
 
 /* BREAKPOINT FOR DESKTOPS */
 @media screen and (max-width: @mediumBreakpoint) {}

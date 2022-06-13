@@ -9,7 +9,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
     
     goobiWorkflow.jumpToPage = {
         /**
-         * @description Method to initialize the menu module.
+         * @description Toggle between current page info and an input field in the METS editor. The input field is activated on click.
          * @method init
          */
     	init: function() {
@@ -17,18 +17,27 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                 console.log( 'Initializing: goobiWorkflowJS.jumpToPage.init' );
             }
             
-           
             
-            
-            $( 'body' ).on( 'click', '#currentPage', function() {
-                $( this ).hide();
-                $( this ).next().css( "display", "inherit" )
+            $( 'body' ).on( 'click', '#currentPage, #currentPagePrefix', function() {
+				var curPagePre = $('#currentPagePrefix');
+
+				// Make input span at the same size as #curPagePrefix
+				// this prevents layout shifts
+				var currentPageWidth =  curPagePre[0].getBoundingClientRect().width;
+				var currentPageHeight =  curPagePre[0].getBoundingClientRect().height;
+                curPagePre.next().css('width', currentPageWidth);
+                curPagePre.next().css('height', currentPageHeight);
+                
+                // Show span containing an input field
+                curPagePre.hide();
+                curPagePre.next().css( "display", "inline-block" )
+
                 $('#jumpToImageAutocomplete input').focus();
             } );
             
             $( 'body' ).on( 'blur', '#jumpToImageAutocomplete input', function() {
                 $( '#jumpToImageAutocomplete' ).hide();
-                $(  '#currentPage'  ).show();
+                $(  '#currentPagePrefix'  ).show();
             } );    
             
             $( 'body' ).on( 'click', '#jumpToPage', function() {

@@ -69,7 +69,11 @@
                 </li> -->
                 
                 <li id="autocomplete" class="image__controls-jump-to-image no-hover">
+                <!-- 
+				<span id="currentPageIndicator">#{Metadaten.imageIndex +1} / #{Metadaten.sizeOfImageList}</span>
                     <span id="currentPage">#{msgs.mets_currentImage} #{Metadaten.imageIndex +1} #{msgs.von} #{Metadaten.sizeOfImageList}</span>
+                    -->
+                    <span id="currentPagePrefix">#{msgs.mets_currentImage}</span>
                    
                     <p:autoComplete
                         id="jumpToImageAutocomplete" 
@@ -84,6 +88,8 @@
                         <f:ajax execute="@form :pageareas" render="@form :pageareas" />
                         <f:passThroughAttribute name="data-renderimage" value="true" />
                     </h:commandButton>
+                    
+                    <span id="currentPage">#{Metadaten.imageIndex +1} #{msgs.von} #{Metadaten.sizeOfImageList}</span>
                 </li>            
                 
                 <!-- IMAGE NEXT -->
