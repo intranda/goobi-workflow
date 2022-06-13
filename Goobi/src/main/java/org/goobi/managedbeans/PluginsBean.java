@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +34,7 @@ import org.goobi.production.plugin.interfaces.IPlugin;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.HelperForm;
+import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -66,51 +68,88 @@ public class PluginsBean implements Serializable {
     @Setter
     private String mode = "installed";
 
+    private static PluginsBean instance;
+
     public PluginsBean() {
-        this.plugins = getPluginsFromFS();
+        if (PluginsBean.instance == null) {
+            PluginsBean.instance = this;
+        }
+        this.plugins = this.getPluginsFromFS();
     }
 
-    public static Map<String, List<PluginInfo>> getPluginsFromFS() {
-        Map<String, List<PluginInfo>> plugins = new TreeMap<>();
+    public static PluginsBean getInstance() {
+        return PluginsBean.instance;
+    }
+
+    public Map<String, List<PluginInfo>> getPluginsFromFS() {
+        Map<String, List<PluginInfo>> plugins = new LinkedHashMap<>();
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         Path pluginsFolder = Paths.get(config.getPluginFolder());
         Path libFolder = Paths.get(config.getLibFolder());
-        plugins.putAll(getPluginsFromPath(pluginsFolder, true));
-        plugins.putAll(getPluginsFromPath(libFolder, false));
-
+        plugins.putAll(this.getPluginsFromPath(pluginsFolder, true));
+        plugins.putAll(this.getPluginsFromPath(libFolder, false));
+        PluginsBean.moveGUIPluginsToBottom(plugins);
         return plugins;
     }
 
+    /**
+     * If the GUI plugins category exists and is not empty, it is moved to the end of the list by removing and putting it as the last element. Because
+     * this is an ordered map, the order is kept.
+     *
+     * @param categories The map of plugin categories and plugin lists
+     */
+    private static void moveGUIPluginsToBottom(Map<String, List<PluginInfo>> categories) {
+        List<PluginInfo> guiPlugins = categories.get("GUI");
+        if (guiPlugins != null && guiPlugins.size() > 0) {
+            categories.remove("GUI");
+            categories.put("GUI", guiPlugins);
+        }
+    }
+
     //get plugins from any folder (including subfolders or not)
-    public static Map<String, List<PluginInfo>> getPluginsFromPath(Path pluginsFolder, boolean instantiate) {
+    public Map<String, List<PluginInfo>> getPluginsFromPath(Path pluginsFolder, boolean instantiate) {
         Set<String> stepPluginsInUse = StepManager.getDistinctStepPluginTitles();
         Map<String, List<PluginInfo>> plugins = new TreeMap<>();
         try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(pluginsFolder)) {
+            // dirList collects plugins that are directly located in the plugins/ folder
             List<PluginInfo> dirList = new ArrayList<>();
             for (Path pluginDir : dirStream) {
                 if (Files.isDirectory(pluginDir)) {
-                    dirList = new ArrayList<>();
+                    List<PluginInfo> subDirList = new ArrayList<>();
                     try (DirectoryStream<Path> pluginStream = Files.newDirectoryStream(pluginDir)) {
                         for (Path pluginP : pluginStream) {
                             if (pluginP.getFileName().toString().endsWith("jar")) {
-                                dirList.add(getPluginInfo(pluginP.toAbsolutePath(), stepPluginsInUse, instantiate));
+                                subDirList.add(getPluginInfo(pluginP.toAbsolutePath(), stepPluginsInUse, instantiate));
                             }
                         }
                     }
-                    plugins.put(pluginDir.getFileName().toString(), dirList);
-                } else { //if plugin is directly inside directory
+                    String folder = pluginDir.getFileName().toString();
+                    plugins.put(folder, subDirList);
+                } else { // if plugin is directly inside directory
                     if (pluginDir.getFileName().toString().endsWith("jar")) {
                         dirList.add(getPluginInfo(pluginDir.toAbsolutePath(), stepPluginsInUse, instantiate));
                     }
                 }
             }
-            if (!dirList.isEmpty()) { //if there were plugins inside the directory dirList will not be empty
-                plugins.put(pluginsFolder.getFileName().toString(), dirList); // add the plugins to the list
+            // if there were plugins inside the directory dirList will not be empty
+            if (!dirList.isEmpty()) {
+                String folder = pluginsFolder.getFileName().toString();
+                plugins.put(folder, dirList); // add the plugins to the list
             }
         } catch (IOException e) {
             log.error(e);
         }
         return plugins;
+    }
+
+    public String getTranslatedFolderName(String folder) {
+        String prefix = "plugin_list_title_";
+        String translated = Helper.getTranslation(prefix + folder);
+        if (translated.startsWith(prefix)) {
+            return folder;
+        } else {
+            return translated;
+        }
     }
 
     private static PluginInfo getPluginInfo(Path pluginP, Set<String> stepPluginsInUse, boolean instantiate) throws ZipException, IOException {
@@ -200,5 +239,9 @@ public class PluginsBean implements Serializable {
         }
         //compared == 0, plugin Goobi version matches running version 
         return "badge-intranda-green";
+    }
+
+    public String getPluginFolder() {
+        return ConfigurationHelper.getInstance().getPluginFolder();
     }
 }

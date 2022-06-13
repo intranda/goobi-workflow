@@ -8,6 +8,8 @@ $colors: (
   primary-600: #1b67af,
   neutral-200: #f4f4f4,
   // neutral-400: #dddddd,
+  neutral-300: #ced4da,
+  // Form elements border color
   neutral-400: #aaaaaa,
   neutral-600: #666666,
   "white": #ffffff,
@@ -58,7 +60,7 @@ $colors: (
 @each $name, $color in $colors {
   .btn-#{$name} {
     background-color: var(--clr-#{$name});
-    border-color: #{$color};
+    border-color: var(--clr-#{$name});
     @if $name == blank {
       color: #000; // bg is transparent
       border: 1px solid var(--clr-neutral-400);

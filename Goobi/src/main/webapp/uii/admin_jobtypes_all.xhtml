@@ -57,7 +57,7 @@
                             jsf:action="#{JobTypesBean.editJobType(jobType)}">
                             <i class="fa fa-pencil"></i>
                         </button>
-                        <button class="btn btn-primary me-2"
+                        <button class="btn btn-primary"
                             title="#{msgs.unPauseJobType}"
                             aria-label="#{msgs.unPauseJobType}"
                             jsf:rendered="#{jobType.paused}"
@@ -65,7 +65,7 @@
                             <f:ajax render="@form" />
                             <i class="fa fa-play"></i>
                         </button>
-                        <button class="btn btn-primary me-2"
+                        <button class="btn btn-primary"
                             title="#{msgs.pauseJobType}"
                             aria-label="#{msgs.pauseJobType}"
                             jsf:rendered="#{not jobType.paused}"

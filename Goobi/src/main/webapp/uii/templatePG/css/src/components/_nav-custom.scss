@@ -23,6 +23,10 @@
     margin-right: 2rem;
     width: auto;
     height: 3rem;
+
+    @media screen and (max-width: 350px) {
+      margin-right: 1rem;
+    }
   }
 
   // Nav items
@@ -119,6 +123,10 @@
   .icon-nav {
     display: flex;
     align-items: center;
+
+    .nav-link.btn-link {
+      margin-inline-end: 0;
+    }
   }
 }
 
@@ -142,6 +150,10 @@
       border-bottom-left-radius: var(--border-radius);
       border-bottom-right-radius: var(--border-radius);
 
+      .mobile-nav {
+        border-left: 1px solid var(--clr-primary-600);
+      }
+
       // Always show dropdown menus on mobile
       .dropdown-menu {
         display: block;
@@ -154,7 +166,8 @@
         padding-bottom: 1.6rem;
 
         &.active {
-          color: var(--clr-white);
+          background-color: var(--clr-white);
+          color: var(--text-400);
         }
 
         &:not(:last-child) {

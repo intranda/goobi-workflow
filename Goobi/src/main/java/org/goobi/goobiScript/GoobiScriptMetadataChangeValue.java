@@ -41,7 +41,7 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
         addParameterToSampleCall(sb, "position", "work",
                 "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
         addParameterToSampleCall(sb, "condition", "blue",
-                "Define a value here that shall be present in the metdata field. The metadata is only updated if this term can be found inside of the metadata value.");
+                "Define a value here that shall be present in the metadata field. The metadata is only updated if this term can be found inside of the metadata value  (check if it is contained).");
         return sb.toString();
     }
 

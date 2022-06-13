@@ -39,7 +39,7 @@
 					<div class="box-title">
 						<h2>
 							<i class="fa fa-stethoscope"></i>
-							<h:outputText value="#{msgs.menu_administration_plugins}" />
+							<h:outputText value="#{msgs.menu_administration_plugins} - #{HelperForm.version}" />
 						</h2>
 					</div>
 					<div class="box-content">
@@ -67,24 +67,24 @@
 							<h:panelGroup layout="block" rendered="#{pluginsBean.mode eq 'installNew'}">
 								<h3>#{msgs.install_plugin_install_new}</h3>
 								<h:form enctype="multipart/form-data">
-                                    <ui:fragment rendered="#{pluginInstallBean.pluginInstaller.pluginInfo eq null}">
-                                        <ui:repeat value="#{pluginInstallBean.availablePlugins.keySet()}" var="type">
-                                            <h4>#{type}</h4>
-                                            <table class="table table-bordered table-hover">
-                                                <ui:repeat value="#{pluginInstallBean.availablePlugins[type]}" var="plugin">
-                                                    <tr>
-                                                        <td>#{plugin.name}</td>
-                                                        <td class="tableColumnOverFlow width200">
-                                                            <button class="btn fa fa-download" jsf:action="#{pluginInstallBean.downloadAndInstallPlugin(plugin)}"></button>
-                                                        </td>
-                                                    </tr>
-                                                </ui:repeat>
-                                            </table>
-                                        </ui:repeat>
-    									<h:inputFile value="#{pluginInstallBean.uploadedPluginFile}" >
-    										<f:ajax listener="#{pluginInstallBean.parseUploadedPlugin}" render="@form"/>
-    									</h:inputFile>
-                                    </ui:fragment>
+									<ui:fragment rendered="#{pluginInstallBean.pluginInstaller.pluginInfo eq null}">
+										<ui:repeat value="#{pluginInstallBean.availablePlugins.keySet()}" var="type">
+											<h4>#{type}</h4>
+											<table class="table table-bordered table-hover">
+												<ui:repeat value="#{pluginInstallBean.availablePlugins[type]}" var="plugin">
+													<tr>
+														<td>#{plugin.name}</td>
+														<td class="tableColumnOverFlow width200">
+															<button class="btn fa fa-download" jsf:action="#{pluginInstallBean.downloadAndInstallPlugin(plugin)}"></button>
+														</td>
+													</tr>
+												</ui:repeat>
+											</table>
+										</ui:repeat>
+										<h:inputFile value="#{pluginInstallBean.uploadedPluginFile}" >
+											<f:ajax listener="#{pluginInstallBean.parseUploadedPlugin}" render="@form"/>
+										</h:inputFile>
+									</ui:fragment>
 									<ui:fragment rendered="#{pluginInstallBean.pluginInstaller.pluginInfo != null}">
 										<div class="row">
 											<div class="col-md-12">
@@ -131,46 +131,47 @@
 								</h:form>
 							</h:panelGroup>
 							<h:panelGroup layout="block" rendered="#{pluginsBean.mode eq 'installed'}">
-                                <h4>#{msgs.runningGoobiVersion}: #{HelperForm.version}</h4>
 								<h:form id="plugins_form">
-									<ui:repeat var="folder"
-									value="#{pluginsBean.plugins.keySet().toArray()}">
-									
-									<h3 class="folder--line" jsf:id="pluginFolderTitle" jsf:rendered="#{not pluginsBean.plugins[folder].isEmpty()}">
-										<h:outputText value="#{folder} #{msgs.plugins}" styleClass="text"/>
-									</h3>
+									<ui:repeat var="folder" value="#{pluginsBean.plugins.keySet().toArray()}">
 
-									<table jsf:id="pluginInfoTable"
-										jsf:rendered="#{not pluginsBean.plugins[folder].isEmpty()}"
-										class="table table-hover table-nomargin dataTable table-bordered responsive">
-                                        <thead>
-                                            <tr>
-                                                <th>#{msgs.filename}</th>
-                                                <th>#{msgs.containedPlugins}</th>
-                                                <th>#{msgs.pluginsUsedInWorkflows}</th>
-                                                <th>#{msgs.gitHash}</th>
-                                                <th>#{msgs.buildDate}</th>
-                                                <th>#{msgs.compatibleWith}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <ui:repeat var="pluginInfo" value="#{pluginsBean.plugins[folder]}">
-                                                <tr>
-                                                    <td><h:outputText value="#{pluginInfo.filename}" /></td>
-                                                    <td style="width: 300px;"><h:outputText rendered="#{not pluginInfo.containedPlugins.isEmpty()}" value="#{pluginInfo.containedPlugins}" /></td>
-                                                    <td style="width: 300px;"><h:outputText rendered="#{not pluginInfo.pluginsUsedInWorkflows.isEmpty()}" value="#{pluginInfo.pluginsUsedInWorkflows}" /></td>
-                                                    <td class="tableColumnOverflow width200"><h:outputText value="#{pluginInfo.gitHash}" /></td>
-                                                    <td class="tableColumnOverFlow width200"><h:outputText value="#{pluginInfo.buildDate}" /></td>
-                                                    <td class="tableColumnOverFlow width200">
-                                                        <h:outputText 
-                                                            styleClass="badge #{pluginsBean.getBadgeClassForGoobiVersion(pluginInfo.goobiVersion)}" 
-                                                            value="#{pluginInfo.goobiVersion eq 'N/A'?'' : 'Goobi '}#{pluginInfo.goobiVersion}" />
-                                                    </td>
-                                                </tr>
-                                            </ui:repeat>
-                                        </tbody>
-									</table>
-								</ui:repeat>
+										<ui:fragment rendered="#{not pluginsBean.plugins[folder].isEmpty()}">
+											
+											<p class="folder--line" jsf:id="pluginFolderTitle2" >
+												<h:outputText value="#{pluginsBean.getTranslatedFolderName(folder)}" styleClass="text"/>
+												<h:outputText class="pull-right" value="#{pluginsBean.getPluginFolder()}#{folder}/" styleClass="textright"/>
+											</p>
+	
+											<table jsf:id="pluginInfoTable"
+												class="table table-hover table-nomargin dataTable table-bordered responsive">
+												<thead>
+													<tr>
+														<th>#{msgs.filename}</th>
+														<th>#{msgs.containedPlugins}</th>
+														<th>#{msgs.pluginsUsedInWorkflows}</th>
+														<th>#{msgs.gitHash}</th>
+														<th>#{msgs.buildDate}</th>
+														<th>#{msgs.compatibleWith}</th>
+													</tr>
+												</thead>
+												<tbody>
+													<ui:repeat var="pluginInfo" value="#{pluginsBean.plugins[folder]}">
+														<tr>
+															<td><h:outputText value="#{pluginInfo.filename}" /></td>
+															<td style="width: 300px;"><h:outputText rendered="#{not pluginInfo.containedPlugins.isEmpty()}" value="#{pluginInfo.containedPlugins}" /></td>
+															<td style="width: 300px;"><h:outputText rendered="#{not pluginInfo.pluginsUsedInWorkflows.isEmpty()}" value="#{pluginInfo.pluginsUsedInWorkflows}" /></td>
+															<td class="tableColumnOverflow width200"><h:outputText value="#{pluginInfo.gitHash}" /></td>
+															<td class="tableColumnOverFlow width200"><h:outputText value="#{pluginInfo.buildDate}" /></td>
+															<td class="tableColumnOverFlow width200">
+																<h:outputText 
+																	styleClass="badge #{pluginsBean.getBadgeClassForGoobiVersion(pluginInfo.goobiVersion)}" 
+																	value="#{pluginInfo.goobiVersion eq 'N/A'?'' : 'Goobi '}#{pluginInfo.goobiVersion}" />
+															</td>
+														</tr>
+													</ui:repeat>
+												</tbody>
+											</table>
+										</ui:fragment>
+									</ui:repeat>
 								</h:form>
 							</h:panelGroup>
 						</h:panelGroup>

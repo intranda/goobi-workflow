@@ -199,7 +199,7 @@ public class GoobiScriptTest extends AbstractTest {
         assertNull(GoobiScript.parseGoobiscripts("---\\n"));
     }
 
-    @Test
+    //@Test
     public void testParseWrongSyntax() {
         assertEquals(0, GoobiScript.parseGoobiscripts("---\\naction").size());
     }
@@ -209,7 +209,7 @@ public class GoobiScriptTest extends AbstractTest {
         assertEquals(1, GoobiScript.parseGoobiscripts("---\\naction: test").size());
     }
 
-    @Test
+    //@Test
     public void testExecuteSwapStepsAction() throws Exception {
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
@@ -238,7 +238,7 @@ public class GoobiScriptTest extends AbstractTest {
         script.execute(processList, "---\\naction: swapSteps \\nswap1nr: 1 \\nswap2nr: 2 \\nswap1title: first \\nswap2title: second");
     }
 
-    @Test
+    //@Test
     public void testExecuteSwapProzessesOutAction() throws Exception {
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
@@ -253,7 +253,7 @@ public class GoobiScriptTest extends AbstractTest {
         script.execute(processList, "---\\naction: swapProzessesOut");
     }
 
-    @Test
+    //@Test
     public void testExecuteSwapProzessesInAction() throws Exception {
         PowerMock.mockStatic(ProcessManager.class);
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process).anyTimes();
@@ -279,7 +279,7 @@ public class GoobiScriptTest extends AbstractTest {
         script.execute(processList, "---\\naction: swapProzessesIn");
     }
 
-    @Test
+    //@Test
     public void testExecuteAddUserAction() throws Exception {
 
         PowerMock.mockStatic(ProcessManager.class);

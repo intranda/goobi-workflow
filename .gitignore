@@ -10,5 +10,4 @@ goobi1.9/WEB-INF/classes
 *~
 /.DS_Store
 .DS_Store
-
-
+hotswap-agent.properties
