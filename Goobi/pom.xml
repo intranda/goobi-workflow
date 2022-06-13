@@ -4,7 +4,7 @@
     <groupId>de.intranda.goobi.workflow</groupId>
     <artifactId>goobi-core</artifactId>
     <!-- When updating the version, make sure to also update the version in the submodules -->
-    <version>22.04.6-SNAPSHOT</version>
+    <version>22.05</version>
     <packaging>pom</packaging>
 
 
@@ -56,7 +56,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <publicVersion>22.04.6-SNAPSHOT</publicVersion>
+        <publicVersion>22.05</publicVersion>
         <!-- Use Java 11 for compiling -->
         <maven.compiler.release>11</maven.compiler.release>
 
@@ -67,7 +67,7 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.java.source>11</sonar.java.source>
         <sonar.java.target>11</sonar.java.target>
-        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../module-ci/target/site/jacoco/jacoco.xml,>${project.basedir}/module-ci/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../module-ci/target/site/jacoco/jacoco.xml,&gt;${project.basedir}/module-ci/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <!-- Tests need to be excluded here, otherwise they would be indexed for analysis
              in the module-ci AND the parent project and this leads to an error because
              one file cannot be added twice -->
