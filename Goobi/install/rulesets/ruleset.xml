@@ -629,6 +629,11 @@
     <language name="en">Publication year</language>
     <language name="es">Año de publicación</language>
     <validationExpression>\d+</validationExpression>
+    <!--
+    <validationExpression>\d{4}(-\d{2}){0,2}</validationExpression>
+    <validationErrorMessage name="de">Der Wert muss entweder als Jahreszahl im Format YYYY oder als Datum im Format YYYY-MM-DD eingegeben werden.</validationErrorMessage>
+    <validationErrorMessage name="en">The value must be entered either as a year in the format YYYY or as a date in the format YYYY-MM-DD.</validationErrorMessage>
+    -->
   </MetadataType>
   <MetadataType>
     <Name>CatalogIDSuccessorPeriodical</Name>
