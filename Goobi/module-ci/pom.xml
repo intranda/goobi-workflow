@@ -163,7 +163,7 @@
                             <logViolationsToConsole>true</logViolationsToConsole>
                             <maxAllowedViolations>${checkstyle.max.violations}</maxAllowedViolations>
                             <violationSeverity>warning</violationSeverity>
-                            <configLocation>checkstyle.xml</configLocation>
+                            <configLocation>file://${project.basedir}/../checkstyle.xml</configLocation>
                         </configuration>
                         <goals>
                             <goal>check</goal>
