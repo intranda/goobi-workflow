@@ -51,6 +51,7 @@ def main():
     old_version = get_old_version("Goobi/pom.xml")
     new_version = get_new_version(old_version, bump_month=bump_month)
     update_pom("Goobi/pom.xml", new_version)
+    update_pom("Goobi/module-ci/pom.xml", new_version, child=True)
     update_pom("Goobi/module-jar/pom.xml", new_version, child=True)
     update_pom("Goobi/module-war/pom.xml", new_version, child=True)
 
