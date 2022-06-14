@@ -67,7 +67,7 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.java.source>11</sonar.java.source>
         <sonar.java.target>11</sonar.java.target>
-        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../module-ci/target/site/jacoco/jacoco.xml,&gt;${project.basedir}/module-ci/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../module-ci/target/site/jacoco/jacoco.xml,${project.basedir}/module-ci/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <!-- Tests need to be excluded here, otherwise they would be indexed for analysis
              in the module-ci AND the parent project and this leads to an error because
              one file cannot be added twice -->
