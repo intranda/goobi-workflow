@@ -45,7 +45,7 @@ pipeline {
         }
       }
       steps {
-        sh 'mvn -f Goobi/pom.xml -pl module-jar deploy'
+        sh 'mvn -f Goobi/pom.xml -DskipTests=true -Dcheckstyle.skip=true -Dmdep.analyze.skip=true deploy'
       }
     }
   }
