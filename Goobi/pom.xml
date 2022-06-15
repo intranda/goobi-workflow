@@ -59,6 +59,7 @@
         <publicVersion>22.05.7-SNAPSHOT</publicVersion>
         <!-- Use Java 11 for compiling -->
         <maven.compiler.release>11</maven.compiler.release>
+        <maven.deploy.skip>false</maven.deploy.skip>
 
         <!-- Sonar -->
         <sonar.projectKey>intranda_goobi-workflow</sonar.projectKey>
