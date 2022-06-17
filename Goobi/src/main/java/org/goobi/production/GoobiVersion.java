@@ -1,7 +1,7 @@
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -42,7 +42,7 @@ public class GoobiVersion {
     private static String version = "N/A";
     @Getter
     private static String buildversion = "N/A";
-    // after a long discussion about earth climate change we decided that a subtraction of 2000 years is probably the easiest way 
+    // after a long discussion about earth climate change we decided that a subtraction of 2000 years is probably the easiest way
     // to get a two character year number. Just remember to change that value in 81 years from now on :)
     @Getter
     private static String publicVersion = String.format("%02d.%02d-dev", now.getYear()-2000, now.getMonthOfYear());
@@ -55,7 +55,7 @@ public class GoobiVersion {
         version = getOptionalValue(mainAttributes, "Implementation-Version").orElse(version);
         buildversion = version;
         builddate = getOptionalValue(mainAttributes, "Implementation-Build-Date").orElse(builddate);
-        publicVersion = getOptionalValue(mainAttributes, "Public-Version").orElse(publicVersion);
+        publicVersion = getOptionalValue(mainAttributes, "version").orElse(publicVersion);
     }
 
     private static Optional<String> getOptionalValue(Attributes attributes, String attributeName) throws IllegalArgumentException {
