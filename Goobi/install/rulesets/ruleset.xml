@@ -3407,6 +3407,46 @@
         <picaSubTag>a</picaSubTag>
       </Metadata>
       <Metadata>
+        <Name>Subject</Name>
+        <picaMainTag>244Z</picaMainTag>
+        <picaSubTag>a</picaSubTag>
+      </Metadata>
+      <Metadata>
+        <Name>SubjectCorporate</Name>
+        <picaMainTag>044AK</picaMainTag>
+        <picaSubTag>d</picaSubTag>
+      </Metadata>
+      <Metadata>
+        <Name>SubjectForm</Name>
+        <picaMainTag>013@</picaMainTag>
+        <picaSubTag>0</picaSubTag>
+      </Metadata>
+      <Metadata>
+        <Name>SubjectGeographic</Name>
+        <picaMainTag>044AG</picaMainTag>
+        <picaSubTag>b</picaSubTag>
+      </Metadata>
+      <Metadata>
+        <Name>SubjectPerson</Name>
+        <picaMainTag>044AP</picaMainTag>
+        <picaSubTag>c</picaSubTag>
+      </Metadata>
+      <Metadata>
+        <Name>SubjectTemporal</Name>
+        <picaMainTag>031@01</picaMainTag>
+        <picaSubTag>0</picaSubTag>
+      </Metadata>
+      <Metadata>
+        <Name>SubjectTitle</Name>
+        <picaMainTag>044LT</picaMainTag>
+        <picaSubTag>f</picaSubTag>
+      </Metadata>
+      <Metadata>
+        <Name>SubjectTopic</Name>
+        <picaMainTag>044LS</picaMainTag>
+        <picaSubTag>e</picaSubTag>
+      </Metadata>
+      <Metadata>
         <Name>PublisherName</Name>
         <picaMainTag>033A</picaMainTag>
         <picaSubTag>n</picaSubTag>
