@@ -334,16 +334,18 @@ public class BatchBean extends BasicBean implements Serializable {
     public void removeProcessesFromBatch() {
         //		Session session = Helper.getHibernateSession();
         for (Process p : this.selectedProcesses) {
-            LogEntry logEntry = new LogEntry();
-            logEntry.setContent("removed process from batch " + p.getBatch().getBatchId());
-            logEntry.setCreationDate(new Date());
-            logEntry.setProcessId(p.getId());
-            logEntry.setType(LogType.DEBUG);
-            logEntry.setUserName("-batch-");
-            ProcessManager.saveLogEntry(logEntry);
+            if (p.getBatch() != null) {
+                LogEntry logEntry = new LogEntry();
+                logEntry.setContent("removed process from batch " + p.getBatch().getBatchId());
+                logEntry.setCreationDate(new Date());
+                logEntry.setProcessId(p.getId());
+                logEntry.setType(LogType.DEBUG);
+                logEntry.setUserName("-batch-");
+                ProcessManager.saveLogEntry(logEntry);
 
-            p.setBatch(null);
-            ProcessManager.saveProcessInformation(p);
+                p.setBatch(null);
+                ProcessManager.saveProcessInformation(p);
+            }
         }
 
         FilterAlleStart();
@@ -379,7 +381,7 @@ public class BatchBean extends BasicBean implements Serializable {
         } else {
             if (this.selectedBatches.get(0) != null && !this.selectedBatches.get(0).equals("") && !this.selectedBatches.get(0).equals("null")) {
                 List<Process> propertyBatch = ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + this.selectedBatches.get(0)
-                .getBatchId(), 0, getBatchMaxSize());
+                        .getBatchId(), 0, getBatchMaxSize());
                 this.batchHelper = new BatchProcessHelper(propertyBatch, selectedBatches.get(0));
                 return "batch_edit";
             } else {
