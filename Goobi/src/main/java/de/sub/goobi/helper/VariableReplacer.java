@@ -65,6 +65,7 @@ import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataType;
+import ugh.dl.Person;
 import ugh.dl.Prefs;
 
 @Log4j2
@@ -458,8 +459,14 @@ public class VariableReplacer {
     private String getMetadataValue(DocStruct inDocstruct, MetadataType mdt) {
         List<? extends Metadata> mds = inDocstruct.getAllMetadataByType(mdt);
         if (mds.size() > 0) {
-            return ((Metadata) mds.get(0)).getValue();
-        } else {
+        	Metadata m = mds.get(0);
+        	if (m.getType().getIsPerson()) {
+        		Person p = (Person) m;
+        		return p.getLastname() + ", " + p.getFirstname();
+        	} else {
+        		return m.getValue();
+        	}
+    	} else {
             return null;
         }
     }
