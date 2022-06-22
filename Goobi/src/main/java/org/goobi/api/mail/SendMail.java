@@ -137,6 +137,9 @@ public class SendMail {
         private String userActivationMailSubject;
         private String userActivationMailBody;
 
+        private String passwordResetSubject;
+        private String passwordResetBody;
+
         public MailConfiguration() {
             String configurationFile = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_mail.xml";
             if (StorageProvider.getInstance().isFileExists(Paths.get(configurationFile))) {
@@ -166,6 +169,9 @@ public class SendMail {
 
                 userActivationMailSubject = config.getString("/userActivation/subject", null);
                 userActivationMailBody = config.getString("/userActivation/body", null);
+
+                passwordResetSubject = config.getString("/resetPassword/subject", null);
+                passwordResetBody = config.getString("/resetPassword/body", null);
 
             }
         }

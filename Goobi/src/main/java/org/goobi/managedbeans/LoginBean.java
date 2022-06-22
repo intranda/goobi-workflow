@@ -48,6 +48,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.goobi.api.mail.SendMail;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.enums.UserRole;
@@ -174,12 +175,11 @@ public class LoginBean implements Serializable {
 
         // TODO check if email or account name was used
         User user = null;
-        if (EmailValidator.getInstance().isValid(login)){
+        if (EmailValidator.getInstance().isValid(login)) {
             user = LoginBean.findUserByMail(login);
         } else {
             user = LoginBean.findUserByLoginName(this.login);
         }
-
 
         if (user == null) {
             // Log output is done in findUserByLoginName()
@@ -272,7 +272,6 @@ public class LoginBean implements Serializable {
             return null;
         }
     }
-
 
     public String EinloggenAls() {
         if (!hasRole(UserRole.Admin_Users_Allow_Switch.name())) {
@@ -476,4 +475,64 @@ public class LoginBean implements Serializable {
     public boolean isUserCreationEnabled() {
         return ConfigurationHelper.getInstance().isEnableExternalUserLogin();
     }
+
+    public void resetPassword() {
+        if (StringUtils.isBlank(login)) {
+            Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
+            return;
+        }
+
+        if (!SendMail.getInstance().getConfig().isEnableMail()) {
+            Helper.setFehlerMeldung("login", "", Helper.getTranslation("mailConfigurationDisabled"));
+            return;
+        }
+
+        // load user by account name or email field
+        User user = null;
+        if (EmailValidator.getInstance().isValid(login)) {
+            user = LoginBean.findUserByMail(login);
+        } else {
+            user = LoginBean.findUserByLoginName(this.login);
+        }
+
+        if (user == null) {
+            // Log output is done in findUserByLoginName()
+            return;
+        }
+
+        // check if mail address was filled
+        if (StringUtils.isBlank(user.getEmail())) {
+            Helper.setFehlerMeldung("login", "", Helper.getTranslation("loginNoEmail"));
+            return;
+        }
+
+        // check if value is an email
+        String email = user.getEmail();
+        if (!EmailValidator.getInstance().isValid(email)) {
+            Helper.setFehlerMeldung("login", "", Helper.getTranslation("loginInvalidEmail"));
+            return;
+        }
+
+        // generate new password
+        int passwordLength = ConfigurationHelper.getInstance().getMinimumPasswordLength();
+        String password = UserBean.createRandomPassword(passwordLength);
+        if (AuthenticationType.LDAP.equals(user.getLdapGruppe().getAuthenticationTypeEnum()) && !user.getLdapGruppe().isReadonly()) {
+
+            LdapAuthentication myLdap = new LdapAuthentication();
+            try {
+                myLdap.changeUserPassword(user, null, password);
+            } catch (NoSuchAlgorithmException e) {
+                log.error(e);
+            }
+        }
+        UserBean.saltAndSaveUserPassword(user, password);
+
+        // send mail
+        String messageSubject = SendMail.getInstance().getConfig().getPasswordResetSubject();
+        String messageBody =
+                SendMail.getInstance().getConfig().getPasswordResetBody().replace("{password}", password).replace("{login}", user.getLogin());
+        SendMail.getInstance().sendMailToUser(messageSubject, messageBody, email);
+
+    }
+
 }
