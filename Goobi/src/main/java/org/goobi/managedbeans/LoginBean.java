@@ -45,6 +45,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.goobi.beans.User;
@@ -170,7 +171,16 @@ public class LoginBean implements Serializable {
         log.trace(LoginBean.LOGIN_LOG_PREFIX + "The login data is available for further processing.");
 
         // Get user account from database
-        User user = LoginBean.findUserByLoginName(this.login);
+
+        // TODO check if email or account name was used
+        User user = null;
+        if (EmailValidator.getInstance().isValid(login)){
+            user = LoginBean.findUserByMail(login);
+        } else {
+            user = LoginBean.findUserByLoginName(this.login);
+        }
+
+
         if (user == null) {
             // Log output is done in findUserByLoginName()
             return "";
@@ -242,6 +252,27 @@ public class LoginBean implements Serializable {
             return null;
         }
     }
+
+    private static User findUserByMail(String email) {
+        try {
+            String userString = "email='" + StringEscapeUtils.escapeSql(email) + "'";
+            List<User> users = UserManager.getUsers(null, userString, null, null, null);
+            if (users != null && users.size() == 1 && users.get(0) != null) {
+                log.debug(LoginBean.LOGIN_LOG_PREFIX + "Found user with email " + email + " in database.");
+                return users.get(0);
+            } else {
+                Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
+                log.error(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User with email " + email + " does not exist.");
+                return null;
+            }
+        } catch (DAOException exception) {
+            Helper.setFehlerMeldung("Could not read database ", exception.getMessage());
+            log.error(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. Could not read database in login process.");
+            log.error(exception);
+            return null;
+        }
+    }
+
 
     public String EinloggenAls() {
         if (!hasRole(UserRole.Admin_Users_Allow_Switch.name())) {
