@@ -148,8 +148,7 @@
 											<f:ajax event="change" execute="@this" />
 											<f:ajax event="click" update="@form" render="@form" />
 										</h:selectOneRadio>
-										<h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
-											value="#{msgs.helpDamageDocFolderSelection}" />
+										<intranda:formHelp content="#{msgs.helpDamageDocFolderSelection}" />
 									</div>
 								</div>
 								<!-- // selection of the target folder -->
@@ -182,10 +181,7 @@
 											invalidFileMessage="#{ProzesskopieForm.generateFileUploadErrorMessage()}"
                                             >
 										</p:fileUpload>
-										<h:outputText
-											styleClass="help-block font-light"
-											rendered="#{NavigationForm.showHelp}"
-											value="#{msgs.helpDamageDocFileUpload}" />
+										<intranda:formHelp content="#{msgs.helpDamageDocFileUpload}" />
 									</div>
 								</div>
 								<!-- // Upload of the files -->

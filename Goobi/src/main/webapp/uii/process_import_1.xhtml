@@ -164,8 +164,7 @@
         	                                    	<div style="margin-top:5px;" />
     	                                        </h:panelGroup>
 											</h:panelGroup>
-
-                                            <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs.help_import_FileUpload}" />
+											<intranda:formHelp content="#{msgs.help_import_FileUpload}" />
                                         </div>
                                     </div>
                                 </h:panelGroup>
@@ -185,7 +184,7 @@
                                                 <f:ajax render="@form" event="change" />
                                             </h:selectOneMenu>
                                             <h:message for="forth_plugins" showDetail="true" styleClass="help-inline font-danger" />
-                                            <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs.help_import_ImportPlugin}" />
+                                            <intranda:formHelp content="#{msgs.help_import_ImportPlugin}" />
                                         </div>
                                     </div>
 
