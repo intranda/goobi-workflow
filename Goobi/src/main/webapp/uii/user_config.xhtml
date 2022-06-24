@@ -205,10 +205,7 @@
                                                 value=","
                                                 rendered="#{rowIndex + 1 lt rowCount}" />
                                         </x:dataList>
-                                        <h:outputText
-                                            styleClass="help-block font-light"
-                                            rendered="#{NavigationForm.showHelp}"
-                                            value="#{msgs.helpProjects}" />
+                                        <intranda:formHelp content="#{msgs.helpProjects}" />
                                     </div>
                                 </div>
 
@@ -234,10 +231,7 @@
                                                 value=","
                                                 rendered="#{rowIndex + 1 lt rowCount}" />
                                         </x:dataList>
-                                        <h:outputText
-                                            styleClass="help-block font-light"
-                                            rendered="#{NavigationForm.showHelp}"
-                                            value="#{msgs.helpUsergroups}" />
+                                        <intranda:formHelp content="#{msgs.helpUsergroups}" />
                                     </div>
                                 </div>
 
@@ -275,10 +269,7 @@
                                             </h:outputText>
                                         </ui:repeat>
 
-                                        <h:outputText
-                                            styleClass="help-block font-light"
-                                            rendered="#{NavigationForm.showHelp}"
-                                            value="#{msgs.helpUserRoles}" />
+                                        <intranda:formHelp content="#{msgs.helpUserRoles}" />
                                     </div>
                                 </div>
 
@@ -673,11 +664,7 @@
                                             for="metadataSaveTime"
                                             showDetail="true"
                                             styleClass="help-inline font-danger" />
-                                        <h:outputText
-                                            styleClass="help-block font-light"
-                                            rendered="#{NavigationForm.showHelp}"
-                                            value="#{msgs.helpMetadataSaveTime}" />
-
+                                        <intranda:formHelp content="#{msgs.helpMetadataSaveTime}" />
                                     </div>
                                 </div>
 

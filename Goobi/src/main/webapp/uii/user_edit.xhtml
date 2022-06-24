@@ -161,10 +161,7 @@
                                             <h:message for="loginAs"
                                                 showDetail="true"
                                                 styleClass="help-inline font-danger" />
-                                            <h:outputText
-                                                styleClass="help-block font-light"
-                                                rendered="#{NavigationForm.showHelp}"
-                                                value="#{msgs.helpLogin}" />
+                                            <intranda:formHelp content="#{msgs.helpLogin}" />
                                         </div>
                                     </div>
 
@@ -202,10 +199,7 @@
                                             <h:message for="ldapGruppe"
                                                 showDetail="true"
                                                 styleClass="help-inline font-danger" />
-                                            <h:outputText
-                                                styleClass="help-block font-light"
-                                                rendered="#{NavigationForm.showHelp}"
-                                                value="#{msgs.helpLdapGruppe}" />
+                                            <intranda:formHelp content="#{msgs.helpLdapGruppe}" />
                                         </div>
                                     </div>
 
@@ -481,10 +475,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <h:outputText
-                                                    styleClass="help-block font-light"
-                                                    value="#{msgs.helpBenutzergruppen}"
-                                                    rendered="#{NavigationForm.showHelp}" />
+                                                <intranda:formHelp content="#{msgs.helpBenutzergruppen}" />
                                             </h:panelGroup>
 
                                         </div>
@@ -664,10 +655,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <h:outputText
-                                                    styleClass="help-block font-light"
-                                                    value="#{msgs.helpProjekte}"
-                                                    rendered="#{NavigationForm.showHelp}" />
+                                                <intranda:formHelp content="#{msgs.helpProjekte}" />
                                             </h:panelGroup>
 
                                         </div>
