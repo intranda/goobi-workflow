@@ -56,7 +56,7 @@ class ProcessMysqlHelper implements Serializable {
         Object[] param = { id };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            Process p = new QueryRunner().query(connection, sql, resultSetToProcessHandler, param);
+            Process p = new QueryRunner().query(connection, sql, ProcessManager.resultSetToProcessHandler, param);
             return p;
         } finally {
             if (connection != null) {
@@ -71,7 +71,7 @@ class ProcessMysqlHelper implements Serializable {
         Object[] param = { inTitle };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            Process p = new QueryRunner().query(connection, sql, resultSetToProcessHandler, param);
+            Process p = new QueryRunner().query(connection, sql, ProcessManager.resultSetToProcessHandler, param);
             return p;
         } finally {
             if (connection != null) {
@@ -86,7 +86,7 @@ class ProcessMysqlHelper implements Serializable {
         Object[] param = { inTitle };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            Process p = new QueryRunner().query(connection, sql, resultSetToProcessHandler, param);
+            Process p = new QueryRunner().query(connection, sql, ProcessManager.resultSetToProcessHandler, param);
             return p;
         } finally {
             if (connection != null) {
@@ -315,7 +315,7 @@ class ProcessMysqlHelper implements Serializable {
                 log.trace(sql.toString());
             }
             List<Process> ret = null;
-            ret = new QueryRunner().query(connection, sql.toString(), resultSetToProcessListHandler);
+            ret = new QueryRunner().query(connection, sql.toString(), ProcessManager.resultSetToProcessListHandler);
             return ret;
         } finally {
             if (connection != null) {
@@ -363,7 +363,7 @@ class ProcessMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Process> ret = new QueryRunner().query(connection, sql.toString(), resultSetToProcessListHandler);
+            List<Process> ret = new QueryRunner().query(connection, sql.toString(), ProcessManager.resultSetToProcessListHandler);
             return ret;
         } finally {
             if (connection != null) {
@@ -371,51 +371,6 @@ class ProcessMysqlHelper implements Serializable {
             }
         }
     }
-
-    public static ResultSetHandler<List<Process>> resultSetToProcessListHandler = new ResultSetHandler<List<Process>>() {
-        @Override
-        public List<Process> handle(ResultSet rs) throws SQLException {
-            List<Process> answer = new ArrayList<>();
-            try {
-                while (rs.next()) {
-                    try {
-                        Process o = convert(rs);
-                        if (o != null) {
-                            answer.add(o);
-                        }
-                    } catch (DAOException e) {
-                        log.error(e);
-                    }
-                }
-            } finally {
-                if (rs != null) {
-                    rs.close();
-                }
-            }
-            return answer;
-        }
-    };
-
-    public static ResultSetHandler<Process> resultSetToProcessHandler = new ResultSetHandler<Process>() {
-        @Override
-        public Process handle(ResultSet rs) throws SQLException {
-            try {
-                if (rs.next()) {
-                    try {
-                        Process o = convert(rs);
-                        return o;
-                    } catch (DAOException e) {
-                        log.error(e);
-                    }
-                }
-            } finally {
-                if (rs != null) {
-                    rs.close();
-                }
-            }
-            return null;
-        }
-    };
 
     private static void insertProcess(Process o) throws SQLException {
         String sql = "INSERT INTO prozesse " + generateInsertQuery(false) + generateValueQuery(false);
@@ -474,7 +429,7 @@ class ProcessMysqlHelper implements Serializable {
             Object[] param = { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
                     o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(), o.getRegelsatz().getId(),
                     o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatch() == null ? null : o.getBatch().getBatchId(),
-                    o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution() };
+                            o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution() };
 
             return param;
         } else {
@@ -482,7 +437,7 @@ class ProcessMysqlHelper implements Serializable {
                     o.isInAuswahllisteAnzeigen(), o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime,
                     o.getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
                     o.getBatch() == null ? null : o.getBatch().getBatchId(), o.getDocket() == null ? null : o.getDocket().getId(),
-                    o.isMediaFolderExists(), o.isPauseAutomaticExecution() };
+                            o.isMediaFolderExists(), o.isPauseAutomaticExecution() };
 
             return param;
         }
@@ -522,44 +477,6 @@ class ProcessMysqlHelper implements Serializable {
                 MySQLHelper.closeConnection(connection);
             }
         }
-    }
-
-    private static Process convert(ResultSet rs) throws DAOException, SQLException {
-        Process p = new Process();
-        p.setId(rs.getInt("ProzesseID"));
-        p.setTitel(rs.getString("Titel"));
-        p.setAusgabename(rs.getString("ausgabename"));
-        p.setIstTemplate(rs.getBoolean("IstTemplate"));
-        p.setSwappedOutHibernate(rs.getBoolean("swappedOut"));
-        p.setInAuswahllisteAnzeigen(rs.getBoolean("inAuswahllisteAnzeigen"));
-        p.setSortHelperStatus(rs.getString("sortHelperStatus"));
-        p.setSortHelperImages(rs.getInt("sortHelperImages"));
-        p.setSortHelperArticles(rs.getInt("sortHelperArticles"));
-        Timestamp time = rs.getTimestamp("erstellungsdatum");
-        if (time != null) {
-            p.setErstellungsdatum(new Date(time.getTime()));
-        }
-        p.setProjectId(rs.getInt("ProjekteID"));
-        p.setRegelsatz(RulesetManager.getRulesetById(rs.getInt("MetadatenKonfigurationID")));
-        p.setSortHelperDocstructs(rs.getInt("sortHelperDocstructs"));
-        p.setSortHelperMetadata(rs.getInt("sortHelperMetadata"));
-        //        p.setWikifield(rs.getString("wikifield"));
-        Integer batchID = rs.getInt("batchID");
-        if (!rs.wasNull()) {
-            Batch batch = loadBatch(batchID);
-            p.setBatch(batch);
-
-        } else {
-        }
-        p.setDocket(DocketManager.getDocketById(rs.getInt("docketID")));
-
-        p.setProcessLog(getLogEntriesForProcess(p.getId()));
-
-        p.setMediaFolderExists(rs.getBoolean("mediaFolderExists"));
-
-        p.setPauseAutomaticExecution(rs.getBoolean("pauseAutomaticExecution"));
-
-        return p;
     }
 
     public static Batch loadBatch(Integer batchID) throws SQLException {
@@ -828,7 +745,7 @@ class ProcessMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             run.update(connection, sql, logEntry.getProcessId(),
                     logEntry.getCreationDate() == null ? null : new Timestamp(logEntry.getCreationDate().getTime()), logEntry.getUserName(),
-                    logEntry.getType().getTitle(), logEntry.getContent(), logEntry.getSecondContent(), logEntry.getThirdContent(), logEntry.getId());
+                            logEntry.getType().getTitle(), logEntry.getContent(), logEntry.getSecondContent(), logEntry.getThirdContent(), logEntry.getId());
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -845,9 +762,9 @@ class ProcessMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             int id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, logEntry.getProcessId(),
                     logEntry.getCreationDate() == null ? null : new Timestamp(logEntry.getCreationDate().getTime()), logEntry.getUserName(),
-                    logEntry.getType().getTitle(), logEntry.getContent(), logEntry.getSecondContent(), logEntry.getThirdContent()
+                            logEntry.getType().getTitle(), logEntry.getContent(), logEntry.getSecondContent(), logEntry.getThirdContent()
 
-            );
+                    );
             logEntry.setId(id);
             return logEntry;
         } finally {
