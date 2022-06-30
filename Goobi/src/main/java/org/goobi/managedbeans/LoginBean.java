@@ -123,14 +123,29 @@ public class LoginBean implements Serializable {
             new MetadatenSperrung().alleBenutzerSperrungenAufheben(this.myBenutzer.getId());
         }
 
+        HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
+        Helper.getSessionBean().updateSessionUserName(mySession, this.myBenutzer);
+        this.myBenutzer = null;
+        if (mySession != null) {
+            mySession.invalidate();
+        }
+        return "index";
+    }
+
+    public String logoutExternalUser() {
+        if (this.myBenutzer != null) {
+            new MetadatenSperrung().alleBenutzerSperrungenAufheben(this.myBenutzer.getId());
+        }
+
         this.myBenutzer = null;
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
         Helper.getSessionBean().updateSessionUserName(mySession, this.myBenutzer);
         if (mySession != null) {
             mySession.invalidate();
         }
-        return "index";
+        return "external_index";
     }
+
 
     public void logoutOpenId() {
         this.Ausloggen();
