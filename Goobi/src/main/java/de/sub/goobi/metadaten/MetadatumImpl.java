@@ -654,7 +654,12 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         .replace("ö", "%C3%B6")
                         .replace("ü", "%C3%BC")
                         .replace("ß", "%C3%9F");
-                dataList = NormDataImporter.importNormDataList(string, 3);
+                if (ConfigurationHelper.getInstance().isUseProxy()) {
+                    dataList = NormDataImporter.importNormDataList(string, 3, ConfigurationHelper.getInstance().getProxyUrl(),
+                            "" + ConfigurationHelper.getInstance().getProxyPort());
+                } else {
+                    dataList = NormDataImporter.importNormDataList(string, 3);
+                }
                 if (dataList.isEmpty()) {
                     showNotHits = true;
                 } else {
@@ -775,8 +780,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         && StringUtils.isNotBlank(ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl())) {
                     md.setAutorityFile(vocabulary, ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl(),
                             ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl()
-                                    + ConfigurationHelper.getInstance().getGoobiAuthorityServerUser() + "/vocabularies/"
-                                    + selectedVocabularyRecord.getVocabularyId() + "/records/" + selectedVocabularyRecord.getId());
+                            + ConfigurationHelper.getInstance().getGoobiAuthorityServerUser() + "/vocabularies/"
+                            + selectedVocabularyRecord.getVocabularyId() + "/records/" + selectedVocabularyRecord.getId());
                 } else {
                     md.setAutorityFile(vocabulary, vocabularyUrl,
                             vocabularyUrl + "/vocabularies/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
