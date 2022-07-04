@@ -88,7 +88,7 @@ class StepMysqlHelper implements Serializable {
     public static int getStepCount(String order, String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(SchritteID) FROM schritte USE INDEX (stepstatus) INNER JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
+        sql.append("SELECT COUNT(SchritteID) FROM schritte INNER JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
         sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
         sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
         sql.append("INNER JOIN institution on projekte.institution_id = institution.id ");
@@ -116,7 +116,7 @@ class StepMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT schritte.* ");
-        sql.append(" FROM schritte use index (stepstatus) ");
+        sql.append(" FROM schritte ");
         sql.append("INNER JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
         sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
         sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
@@ -209,7 +209,7 @@ class StepMysqlHelper implements Serializable {
             sb.append("SELECT ");
             sb.append("COUNT(SchritteID), schritte.titel, prozesse.batchID ");
             sb.append("FROM  ");
-            sb.append("schritte USE INDEX (STEPSTATUS) ");
+            sb.append("schritte ");
             sb.append("LEFT JOIN ");
             sb.append("prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
             sb.append("LEFT JOIN ");
