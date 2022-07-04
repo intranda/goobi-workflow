@@ -40,6 +40,7 @@ import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
 import org.goobi.production.cli.helper.StringPair;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
@@ -88,10 +89,14 @@ class StepMysqlHelper implements Serializable {
     public static int getStepCount(String order, String filter) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT COUNT(SchritteID) FROM schritte INNER JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
+        sql.append("SELECT COUNT(SchritteID) FROM schritte ");
+        if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getSqlTasksIndexname())) {
+            sql.append("use index ("+ ConfigurationHelper.getInstance().getSqlTasksIndexname() + ") ");
+        }
+        sql.append("LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
         sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
-        sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
-        sql.append("INNER JOIN institution on projekte.institution_id = institution.id ");
+        sql.append("LEFT JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("LEFT JOIN institution on projekte.institution_id = institution.id ");
 
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
@@ -117,10 +122,13 @@ class StepMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT schritte.* ");
         sql.append(" FROM schritte ");
-        sql.append("INNER JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
+        if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getSqlTasksIndexname())) {
+            sql.append("use index ("+ ConfigurationHelper.getInstance().getSqlTasksIndexname() + ") ");
+        }
+        sql.append("LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
         sql.append("LEFT JOIN batches ON prozesse.batchID = batches.id ");
-        sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
-        sql.append("INNER JOIN institution on projekte.institution_id = institution.id ");
+        sql.append("LEFT JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("LEFT JOIN institution on projekte.institution_id = institution.id ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
@@ -139,7 +147,6 @@ class StepMysqlHelper implements Serializable {
             }
             List<Step> ret = new QueryRunner().query(connection, sql.toString(), resultSetToStepListHandler);
             checkBatchStatus(ret);
-
             return ret;
         } finally {
             if (connection != null) {
@@ -210,6 +217,9 @@ class StepMysqlHelper implements Serializable {
             sb.append("COUNT(SchritteID), schritte.titel, prozesse.batchID ");
             sb.append("FROM  ");
             sb.append("schritte ");
+            if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getSqlTasksIndexname())) {
+                sb.append("use index ("+ ConfigurationHelper.getInstance().getSqlTasksIndexname() + ") ");
+            }
             sb.append("LEFT JOIN ");
             sb.append("prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
             sb.append("LEFT JOIN ");
