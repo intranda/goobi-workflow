@@ -32,10 +32,10 @@
 				<!-- Icon to enable help texts -->
 				<li>
 					<button
+						type="button"
 						class="btn"
 						jsf:id="showHelp"
 						aria-label="#{msgs.showHelpMessages}"
-						jsf:action="#{NavigationForm.Reload}"
 						title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
 						jsf:rel="tooltip"
 						data-placement="bottom">
@@ -46,9 +46,11 @@
 						<f:setPropertyActionListener
 							target="#{NavigationForm.showHelp}"
 							value="#{not NavigationForm.showHelp}" />
+						<f:ajax render="@this" execute="@form"
+							onevent="toggle_help" />
 					</button>
 				</li>
-
+				
 				<!-- Icon to select language -->
 				<li class="dropdown language-select">
 					<div

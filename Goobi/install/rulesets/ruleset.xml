@@ -765,12 +765,6 @@
     <language name="en">Counter</language>
     <language name="es">Counter zzz</language>
   </MetadataType>
-  <MetadataType type="person">
-    <Name>Bearbeiter</Name>
-    <language name="de">Bearbeiter</language>
-    <language name="en">Adapter</language>
-    <language name="es">Adaptor</language>
-  </MetadataType>
   <MetadataType>
     <Name>Location</Name>
     <language name="de">Erscheinungsort</language>

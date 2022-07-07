@@ -1,7 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
 	<composite:interface>
 		<composite:attribute name="name" />
@@ -51,8 +51,7 @@
 				<!-- Help message -->
 				<span class="form__help">
 					<h:message for="#{cc.attrs.name}" showDetail="true" />
-					<h:outputText styleClass="text-neutral-600" rendered="#{NavigationForm.showHelp}"
-						value="#{cc.attrs.help}" />
+					<intranda:formHelp content="#{cc.attrs.help}" />
 				</span>
 
 			</div> <!-- end col -->

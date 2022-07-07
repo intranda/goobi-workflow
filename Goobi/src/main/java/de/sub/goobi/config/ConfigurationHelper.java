@@ -1045,6 +1045,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("FulltextSearchMode", "BOOLEAN MODE");
     }
 
+    public String getSqlTasksIndexname() {
+        return getLocalString("SqlTasksIndexname",null);
+    }
+
     public boolean isAllowGravatar() {
         return getLocalBoolean("enableGravatar", true);
     }

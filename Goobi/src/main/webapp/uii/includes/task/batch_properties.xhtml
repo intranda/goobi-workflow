@@ -1,6 +1,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:p="http://primefaces.org/ui"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
     <composite:interface>
     </composite:interface>
@@ -148,8 +148,7 @@
 	                                        readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}">
 	                                    </x:inputText>
 	                                    <h:message for="value" showDetail="true" styleClass="help-inline font-danger" />
-	                                    <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
-	                                        value="#{msgs.helpPropertyValue}" />
+	                                    <intranda:formHelp content="#{msgs.helpPropertyValue}" />
 	                                </div>
 	                            </div>
 	                        </h:panelGroup>
@@ -164,8 +163,7 @@
 	                                        <f:validateLongRange minimum="0" />
 	                                    </x:inputText>
 	                                    <h:message for="number" showDetail="true" styleClass="help-inline font-danger" />
-	                                    <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
-	                                        value="#{msgs.helpPropertyValue}" />
+	                                     <intranda:formHelp content="#{msgs.helpPropertyValue}" />
 	                                </div>
 	                            </div>
 	                        </h:panelGroup>
@@ -182,8 +180,7 @@
 	                                            itemValue="#{myprocess_items}" />
 	                                    </h:selectOneMenu>
 	                                    <h:message for="select" showDetail="true" styleClass="help-inline font-danger" />
-	                                    <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
-	                                        value="#{msgs.helpPropertyValue}" />
+	                                     <intranda:formHelp content="#{msgs.helpPropertyValue}" />
 	                                </div>
 	                            </div>
 	                        </h:panelGroup>
@@ -199,8 +196,7 @@
 	                                            itemValue="#{myprocess_items}" />
 	                                    </h:selectManyListbox>
 	                                    <h:message for="selectmany" showDetail="true" styleClass="help-inline font-danger" />
-	                                    <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
-	                                        value="#{msgs.helpPropertyValue}" />
+	                                    <intranda:formHelp content="#{msgs.helpPropertyValue}" />
 	                                </div>
 	                            </div>
 	                        </h:panelGroup>
@@ -223,8 +219,7 @@
 	                                	</h:panelGroup>
                                 	
                                 	    <h:message for="boolean" showDetail="true" styleClass="help-inline font-danger" />
-	                                    <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
-	                                        value="#{msgs.helpPropertyValue}" />
+	                                     <intranda:formHelp content="#{msgs.helpPropertyValue}" />
 	                                </div>
 	                            </div>
 	                        </h:panelGroup>
@@ -237,8 +232,7 @@
 	                                <div class="col-sm-9">
 	                                    <p:calendar id="date" value="#{myprocess_item.dateValue}" locale="#{SpracheForm.locale}" readonly="#{myprocess_item.currentStepAccessCondition == 'READ'}"/>
 	                                    <h:message for="date" showDetail="true" styleClass="help-inline font-danger" />
-	                                    <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
-	                                        value="#{msgs.helpPropertyValue}" />
+	                                     <intranda:formHelp content="#{msgs.helpPropertyValue}" />
 	                                </div>
 	                            </div>
 	                        </h:panelGroup>
@@ -250,7 +244,7 @@
  	                                <div class="col-sm-9">
 	                                    <x:inputTextarea id="valueArea" forceId="true" styleClass="form-control" value="#{myprocess_item.value}" readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"></x:inputTextarea>
 	                                    <h:message for="valueArea" showDetail="true" styleClass="help-inline font-danger" />
-	                                    <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{msgs.helpPropertyValue}" />
+	                                    <intranda:formHelp content="#{msgs.helpPropertyValue}" />
                                     </div>
                                 </div>
                              </h:panelGroup>

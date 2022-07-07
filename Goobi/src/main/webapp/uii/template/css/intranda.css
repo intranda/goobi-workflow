@@ -121,6 +121,7 @@ label {
 
 .help-block {
     margin-bottom: 1px;
+    display: none;
 }
 
 #main .page-header {

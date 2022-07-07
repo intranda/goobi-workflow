@@ -18,6 +18,7 @@ import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
 import de.intranda.digiverso.normdataimporter.model.TagDescription;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import lombok.Data;
@@ -126,7 +127,13 @@ public class MetaCorporate implements SearchableMetadata {
                 .replace("ö", "%C3%B6")
                 .replace("ü", "%C3%BC")
                 .replace("ß", "%C3%9F");
-        dataList = NormDataImporter.importNormDataList(string, 3);
+
+        if (ConfigurationHelper.getInstance().isUseProxy()) {
+            dataList = NormDataImporter.importNormDataList(string, 3, ConfigurationHelper.getInstance().getProxyUrl(),
+                    "" + ConfigurationHelper.getInstance().getProxyPort());
+        } else {
+            dataList = NormDataImporter.importNormDataList(string, 3);
+        }
 
         if (dataList == null || dataList.isEmpty()) {
             showNotHits = true;

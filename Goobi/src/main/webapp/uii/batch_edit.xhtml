@@ -42,14 +42,14 @@
     <ui:define name="content">
     <main>
         <style>
-.columnLabel {
-    width: 30%;
-}
-
-.columnValue {
-    width: 70%;
-}
-</style>
+		.columnLabel {
+		    width: 30%;
+		}
+		
+		.columnValue {
+		    width: 70%;
+		}
+		</style>
 
         <ui:include src="includes/calendarJavaScript.xhtml" />
 
@@ -489,11 +489,8 @@
                                                     for="value"
                                                     showDetail="true"
                                                     styleClass="help-inline font-danger" />
-                                                <h:outputText
-                                                    styleClass="help-block font-light"
-                                                    rendered="#{NavigationForm.showHelp}"
-                                                    value="#{msgs.helpPropertyValue}" />
-                                            </div>
+                                                <intranda:formHelp content="#{msgs.helpPropertyValue}" />
+		                                    </div>
                                         </div>
                                     </h:panelGroup>
 
@@ -517,10 +514,7 @@
                                                     for="number"
                                                     showDetail="true"
                                                     styleClass="help-inline font-danger" />
-                                                <h:outputText
-                                                    styleClass="help-block font-light"
-                                                    rendered="#{NavigationForm.showHelp}"
-                                                    value="#{msgs.helpPropertyValue}" />
+                                                <intranda:formHelp content="#{msgs.helpPropertyValue}" />
                                             </div>
                                         </div>
                                     </h:panelGroup>
@@ -549,10 +543,7 @@
                                                     for="select"
                                                     showDetail="true"
                                                     styleClass="help-inline font-danger" />
-                                                <h:outputText
-                                                    styleClass="help-block font-light"
-                                                    rendered="#{NavigationForm.showHelp}"
-                                                    value="#{msgs.helpPropertyValue}" />
+                                                <intranda:formHelp content="#{msgs.helpPropertyValue}" />
                                             </div>
                                         </div>
                                     </h:panelGroup>
@@ -581,10 +572,7 @@
                                                     for="selectmany"
                                                     showDetail="true"
                                                     styleClass="help-inline font-danger" />
-                                                <h:outputText
-                                                    styleClass="help-block font-light"
-                                                    rendered="#{NavigationForm.showHelp}"
-                                                    value="#{msgs.helpPropertyValue}" />
+                                                <intranda:formHelp content="#{msgs.helpPropertyValue}" />
                                             </div>
                                         </div>
                                     </h:panelGroup>
@@ -607,10 +595,7 @@
                                                     for="boolean"
                                                     showDetail="true"
                                                     styleClass="help-inline font-danger" />
-                                                <h:outputText
-                                                    styleClass="help-block font-light"
-                                                    rendered="#{NavigationForm.showHelp}"
-                                                    value="#{msgs.helpPropertyValue}" />
+                                                <intranda:formHelp content="#{msgs.helpPropertyValue}" />
                                             </div>
                                         </div>
                                     </h:panelGroup>
@@ -632,10 +617,7 @@
                                                     for="date"
                                                     showDetail="true"
                                                     styleClass="help-inline font-danger" />
-                                                <h:outputText
-                                                    styleClass="help-block font-light"
-                                                    rendered="#{NavigationForm.showHelp}"
-                                                    value="#{msgs.helpPropertyValue}" />
+                                                <intranda:formHelp content="#{msgs.helpPropertyValue}" />
                                             </div>
                                         </div>
                                     </h:panelGroup>
@@ -658,10 +640,7 @@
                                                     for="valueArea"
                                                     showDetail="true"
                                                     styleClass="help-inline font-danger" />
-                                                <h:outputText
-                                                    styleClass="help-block font-light"
-                                                    rendered="#{NavigationForm.showHelp}"
-                                                    value="#{msgs.helpPropertyValue}" />
+                                                <intranda:formHelp content="#{msgs.helpPropertyValue}" />
                                             </div>
                                         </div>
                                     </h:panelGroup>

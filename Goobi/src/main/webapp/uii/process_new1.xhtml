@@ -157,10 +157,7 @@
                                                 itemLabel="#{step.localizedLabel}"
                                                 itemValue="#{step.title}" />
                                         </h:selectOneMenu>
-                                        <h:outputText
-                                            styleClass="help-block font-light"
-                                            rendered="#{NavigationForm.showHelp}"
-                                            value="#{msgs.help_import_DocType}" />
+                                        <intranda:formHelp content="#{msgs.help_import_DocType}" />
                                     </div>
                                 </div>
                             </h:panelGroup>
@@ -222,10 +219,7 @@
                                                         itemValue="{item}"
                                                         var="item" />
                                                 </h:selectManyListbox>
-                                                <h:outputText
-                                                    styleClass="help-block font-light"
-                                                    rendered="#{NavigationForm.showHelp}"
-                                                    value="#{HelperForm.getTranslation ('help_import_', intern.titel)}" />
+                                                <intranda:formHelp content="#{HelperForm.getTranslation ('help_import_', intern.titel)}" />
                                             </div>
                                         </div>
                                     </h:panelGroup>
