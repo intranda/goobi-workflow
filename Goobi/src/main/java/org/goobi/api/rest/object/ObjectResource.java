@@ -68,7 +68,7 @@ public class ObjectResource {
     public ObjectInfo getInfo(@Context HttpServletRequest request, @Context HttpServletResponse response, @PathParam("processId") int processId,
             @PathParam("foldername") String foldername, @PathParam("filename") String filename) {
 
-        response.addHeader("Access-Control-Allow-Origin", "*");  //NOSONAR
+        response.addHeader("Access-Control-Allow-Origin", "*");  //NOSONAR, CORS is needed
         filename = Paths.get(filename).getFileName().toString();
         String objectURI = request.getRequestURL().toString().replace("/info.json", "");
         String baseURI = objectURI.replace(filename, "");
@@ -114,7 +114,7 @@ public class ObjectResource {
 
         java.nio.file.Path resourceFolderPath = Paths.get(baseFolder, baseFilename);
         if (resourceFolderPath.toFile().isDirectory()) {
-            try (DirectoryStream<java.nio.file.Path> directoryStream = Files.newDirectoryStream(resourceFolderPath)) { //NOSONAR
+            try (DirectoryStream<java.nio.file.Path> directoryStream = Files.newDirectoryStream(resourceFolderPath)) { //NOSONAR, input parameter are checked
                 for (java.nio.file.Path path : directoryStream) {
                     java.nio.file.Path relPath = resourceFolderPath.getParent().relativize(path);
                     resourceURIs.add(new URI(baseURI + relPath.toString().replace(File.separator, "/")));

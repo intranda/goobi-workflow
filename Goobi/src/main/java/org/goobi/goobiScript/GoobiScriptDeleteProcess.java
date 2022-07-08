@@ -105,7 +105,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                         List<Path> dataInProcessFolder = StorageProvider.getInstance().listFiles(p.getProcessDataDirectory());
                         for (Path path : dataInProcessFolder) {
                             // keep the mets file, but delete everything else
-                            if (!path.getFileName().toString().matches("meta.*xml.*")) { //NOSONAR
+                            if (!path.getFileName().toString().matches("meta.*xml.*")) { //NOSONAR, regex is not vulnerable to backtracking
                                 StorageProvider.getInstance().deleteDir(path);
                             }
                         }
