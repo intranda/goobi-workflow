@@ -98,7 +98,7 @@ public class ConnectionManager {
         PreparedStatement p_stmt = null;
         ResultSet rs = null;
         try {
-            con = this.ds.getConnection();
+            con = this.ds.getConnection(); //NOSONAR as it is closed in the finally statement
             p_stmt = con.prepareStatement("SHOW PROCESSLIST");
             rs = p_stmt.executeQuery();
             while (rs.next()) {

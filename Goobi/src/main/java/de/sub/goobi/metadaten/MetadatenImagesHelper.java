@@ -594,7 +594,7 @@ public class MetadatenImagesHelper {
             ImageManager im = null;
             JpegInterpreter pi = null;
             try {
-                im= conf.useS3() ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
+                im = conf.useS3() ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
                 //                im = new ImageManager(Paths.get(inFileName).toUri());
                 log.trace("im");
                 ImageInterpreter ii = im.getMyInterpreter();
@@ -635,8 +635,7 @@ public class MetadatenImagesHelper {
             URL csUrl = new URL(cs);
             CloseableHttpClient httpclient = null;
             HttpGet method = null;
-            InputStream istr = null;
-            OutputStream fos = null;
+
             try {
                 httpclient = HttpClientBuilder.create().build();
                 method = new HttpGet(csUrl.toString());
@@ -652,14 +651,14 @@ public class MetadatenImagesHelper {
                     log.error("Response stream is null");
                     return;
                 }
-                istr = new ByteArrayInputStream(response);
-                fos = new FileOutputStream(outFileName);
+                try (InputStream istr = new ByteArrayInputStream(response); OutputStream fos = new FileOutputStream(outFileName)) {
 
-                // Transfer bytes from in to out
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = istr.read(buf)) > 0) {
-                    fos.write(buf, 0, len);
+                    // Transfer bytes from in to out
+                    byte[] buf = new byte[1024];
+                    int len;
+                    while ((len = istr.read(buf)) > 0) {
+                        fos.write(buf, 0, len);
+                    }
                 }
             } catch (Exception e) {
                 log.error("Unable to connect to url " + cs, e);
@@ -668,20 +667,6 @@ public class MetadatenImagesHelper {
                 method.releaseConnection();
                 if (httpclient != null) {
                     httpclient.close();
-                }
-                if (istr != null) {
-                    try {
-                        istr.close();
-                    } catch (IOException e) {
-                        log.error(e);
-                    }
-                }
-                if (fos != null) {
-                    try {
-                        fos.close();
-                    } catch (IOException e) {
-                        log.error(e);
-                    }
                 }
             }
         }
@@ -709,14 +694,14 @@ public class MetadatenImagesHelper {
             List<String> dateien2 = StorageProvider.getInstance().list(dir.toString());
             //checks for fileName errors / empty folder
             if (dateien == null || dateien.isEmpty()) {
-                String[] parameters = {String.valueOf(dateien2.size()), dir.toString()};
+                String[] parameters = { String.valueOf(dateien2.size()), dir.toString() };
 
                 String value = Helper.getTranslation("noObjectsFound", title);
 
                 //true if list is truly empty
-                if(dateien.size() == dateien2.size()) {
+                if (dateien.size() == dateien2.size()) {
                     value = Helper.getTranslation("imagesFolderEmpty", parameters);
-                }else {
+                } else {
                     value = Helper.getTranslation("fileNameValidationError", parameters);
                 }
                 Helper.setFehlerMeldung(value);

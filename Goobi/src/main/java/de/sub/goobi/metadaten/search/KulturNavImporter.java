@@ -28,7 +28,7 @@ import lombok.extern.log4j.Log4j2;
 public class KulturNavImporter extends JsonDataLoader {
     public static final String BASE_URL = "https://kulturnav.org/";
     public static final String SUMMARY_URL = BASE_URL + "api/summary/";
-    
+
     public KulturNavImporter() {
     }
 
@@ -43,7 +43,7 @@ public class KulturNavImporter extends JsonDataLoader {
      * @return a record of type NormDataRecord
      */
     private static NormDataRecord createNormDataRecord(Map<String, Object> jsonMap,
-                                                       List<String> defaultLabelList) {
+            List<String> defaultLabelList) {
         NormDataRecord normDataRecord = new NormDataRecord();
         List<NormData> normDataValuesList = new ArrayList<>();
 
@@ -107,8 +107,8 @@ public class KulturNavImporter extends JsonDataLoader {
                 String[] tokens = searchString.split("\\s+");
                 for (String token : tokens) {
                     encodedString
-                            .append(URLEncoder.encode(token.trim(), "UTF-8"))
-                            .append(' ');
+                    .append(URLEncoder.encode(token.trim(), "UTF-8"))
+                    .append(' ');
                 }
                 return encodedString.toString()
                         .trim()
@@ -205,7 +205,7 @@ public class KulturNavImporter extends JsonDataLoader {
         List<Item> items = ConfigDisplayRules.getInstance()
                 .getItemsByNameAndType("*", metadataRef, DisplayType.kulturnav);
 
-        if (!items.isEmpty() & !items.get(0).getSource().isEmpty()) {
+        if (!items.isEmpty() && !items.get(0).getSource().isEmpty()) {
             source = items.get(0).getSource();
             if (log.isDebugEnabled()) {
                 log.debug("Found source with value {} for metadata {} and display type {}",

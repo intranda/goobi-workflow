@@ -602,22 +602,22 @@ public class MetadatenHelper implements Comparator<Object> {
         types.put("Lido", "lido:lido");
 
         FileReader input = new FileReader(file);
-        BufferedReader bufRead = new BufferedReader(input);
-        char[] buffer = new char[200];
-        while ((bufRead.read(buffer)) >= 0) {
+        try (BufferedReader bufRead = new BufferedReader(input)){
+            char[] buffer = new char[200];
+            while ((bufRead.read(buffer)) >= 0) {
 
-            String temp = new String(buffer).toLowerCase();
-            Iterator<Entry<String, String>> i = types.entrySet().iterator();
-            while (i.hasNext()) {
-                Entry<String, String> entry = i.next();
-                if (temp.contains(entry.getValue())) {
-                    bufRead.close();
-                    input.close();
-                    return entry.getKey();
+                String temp = new String(buffer).toLowerCase();
+                Iterator<Entry<String, String>> i = types.entrySet().iterator();
+                while (i.hasNext()) {
+                    Entry<String, String> entry = i.next();
+                    if (temp.contains(entry.getValue())) {
+                        bufRead.close();
+                        input.close();
+                        return entry.getKey();
+                    }
                 }
             }
         }
-        bufRead.close();
 
         return "-";
     }
@@ -877,14 +877,14 @@ public class MetadatenHelper implements Comparator<Object> {
         }
         return metadataList;
     }
-    
+
     public static Optional<Metadata> getSingleMetadata(DocStruct docStruct, String metadataType) {
         return docStruct.getAllMetadata()
                 .stream()
                 .filter(md -> md.getType().getName().equalsIgnoreCase(metadataType))
                 .findAny();
     }
-    
+
     public static Optional<String> getSingleMetadataValue(DocStruct docStruct, String metadataType) {
         return getSingleMetadata(docStruct, metadataType).map(Metadata::getValue);
     }
@@ -1065,6 +1065,6 @@ public class MetadatenHelper implements Comparator<Object> {
             value.add(md.getAuthorityID());
         }
     }
-    
-  
+
+
 }
