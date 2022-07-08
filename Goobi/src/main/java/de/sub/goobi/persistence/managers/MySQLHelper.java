@@ -164,7 +164,7 @@ public class MySQLHelper implements Serializable {
 
     public Connection getConnection() throws SQLException {
 
-        Connection connection = this.cm.getDataSource().getConnection();
+        Connection connection = this.cm.getDataSource().getConnection(); //NOSONAR
         if (connection.isValid(TIME_FOR_CONNECTION_VALID_CHECK)) {
             return connection;
         }
@@ -173,7 +173,7 @@ public class MySQLHelper implements Serializable {
 
             log.warn("Connection failed: Trying to get new connection. Attempt:" + i);
 
-            connection = this.cm.getDataSource().getConnection();
+            connection = this.cm.getDataSource().getConnection(); //NOSONAR
 
             if (connection.isValid(TIME_FOR_CONNECTION_VALID_CHECK)) {
                 return connection;
@@ -182,7 +182,7 @@ public class MySQLHelper implements Serializable {
 
         log.warn("Connection failed: Trying to get a connection from a new ConnectionManager");
         this.cm = new ConnectionManager();
-        connection = this.cm.getDataSource().getConnection();
+        connection = this.cm.getDataSource().getConnection(); //NOSONAR
 
         if (connection.isValid(TIME_FOR_CONNECTION_VALID_CHECK)) {
             return connection;

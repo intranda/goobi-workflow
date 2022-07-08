@@ -48,7 +48,7 @@ public class GoobiExternalJobQueueDLQListener {
         Runnable run = new Runnable() {
             @Override
             public void run() {
-                while (true) {
+                while (true) { //NOSONAR
                     try {
                         Message message = cons.receive();
                         // check command and if the token allows this.

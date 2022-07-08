@@ -47,18 +47,17 @@ public class ProjectFileGroup implements Serializable {
     // list of mimetypes to ignore during export. Can be images/jpeg or images/*
     private String ignoreMimetypes;
 
-
     private Project project;
 
-    @Override
-    public ProjectFileGroup clone() {
-        ProjectFileGroup pfg = new ProjectFileGroup();
-        pfg.setFolder(folder);
-        pfg.setMimetype(mimetype);
-        pfg.setName(name);
-        pfg.setPath(path);
-        pfg.setSuffix(suffix);
-        return pfg;
+    public ProjectFileGroup() {
+    }
+
+    public ProjectFileGroup(ProjectFileGroup source) {
+        setFolder(source.getFolder());
+        setMimetype(source.getMimetype());
+        setName(source.getName());
+        setPath(source.getPath());
+        setSuffix(source.getSuffix());
     }
 
 }

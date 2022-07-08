@@ -49,7 +49,8 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
     @Getter
     @Setter
     private String titel;
-    @Getter @Setter
+    @Getter
+    @Setter
     private String projectIdentifier;
 
     @Getter
@@ -161,7 +162,6 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
     @Setter
     private String metsIIIFUrl = "";
 
-
     @Override
     public void lazyLoad() {
         //		try {
@@ -183,6 +183,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         this.fileFormatInternal = "Mets";
         this.fileFormatDmsExport = "Mets";
     }
+
     /**
      * here differet Getters and Setters for the same value, because Hibernate does not like bit-Fields with null Values (thats why Boolean) and
      * MyFaces seams not to like Boolean (thats why boolean for the GUI) ================================================================
@@ -338,49 +339,47 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         return result;
     }
 
-    @Override
-    public Project clone() {
-        Project p = new Project();
-        p.setDmsImportCreateProcessFolder(this.isDmsImportCreateProcessFolder());
-        p.setDmsImportErrorPath(this.getDmsImportErrorPath());
-        p.setDmsImportImagesPath(getDmsImportImagesPath());
-        p.setDmsImportRootPath(getDmsImportRootPath());
-        p.setDmsImportSuccessPath(getDmsImportSuccessPath());
+    public Project(Project source) {
+        setDmsImportCreateProcessFolder(source.isDmsImportCreateProcessFolder());
+        setDmsImportErrorPath(source.getDmsImportErrorPath());
+        setDmsImportImagesPath(source.getDmsImportImagesPath());
+        setDmsImportRootPath(source.getDmsImportRootPath());
+        setDmsImportSuccessPath(source.getDmsImportSuccessPath());
 
-        p.setDmsImportTimeOut(getDmsImportTimeOut());
-        p.setEndDate(getEndDate());
-        p.setFileFormatDmsExport(getFileFormatDmsExport());
-        p.setFileFormatInternal(getFileFormatInternal());
+        setDmsImportTimeOut(source.getDmsImportTimeOut());
+        setEndDate(source.getEndDate());
+        setFileFormatDmsExport(source.getFileFormatDmsExport());
+        setFileFormatInternal(source.getFileFormatInternal());
 
-        p.setMetsContentIDs(getMetsContentIDs());
-        p.setMetsDigiprovPresentation(metsDigiprovPresentation);
-        p.setMetsDigiprovPresentationAnchor(metsDigiprovPresentationAnchor);
+        setMetsContentIDs(source.getMetsContentIDs());
+        setMetsDigiprovPresentation(source.getMetsDigiprovPresentation());
+        setMetsDigiprovPresentationAnchor(source.getMetsDigiprovPresentationAnchor());
 
-        p.setMetsDigiprovReference(metsDigiprovReference);
-        p.setMetsDigiprovReferenceAnchor(metsDigiprovReferenceAnchor);
+        setMetsDigiprovReference(source.getMetsDigiprovReference());
+        setMetsDigiprovReferenceAnchor(source.getMetsDigiprovReferenceAnchor());
 
-        p.setMetsPointerPath(metsPointerPath);
-        p.setMetsPointerPathAnchor(metsPointerPathAnchor);
+        setMetsPointerPath(source.getMetsPointerPath());
+        setMetsPointerPathAnchor(source.getMetsPointerPathAnchor());
 
-        p.setMetsPurl(metsPurl);
-        p.setMetsRightsLicense(metsRightsLicense);
-        p.setMetsRightsOwner(metsRightsOwner);
-        p.setMetsRightsOwnerLogo(metsRightsOwnerLogo);
-        p.setMetsRightsOwnerMail(getMetsRightsOwnerMail());
-        p.setMetsRightsOwnerSite(metsRightsOwnerSite);
-        p.setMetsRightsSponsor(metsRightsSponsor);
-        p.setMetsRightsSponsorLogo(metsRightsSponsorLogo);
-        p.setMetsRightsSponsorSiteURL(metsRightsSponsorSiteURL);
-        p.setNumberOfPages(numberOfPages);
-        p.setNumberOfVolumes(numberOfVolumes);
-        p.setProjectIsArchived(projectIsArchived);
-        p.setStartDate(startDate);
-        p.setTitel(this.getTitel() + "_copy");
-        p.setUseDmsImport(useDmsImport);
-        p.setInstitution(getInstitution());
-        p.setProjectIdentifier(getProjectIdentifier());
+        setMetsPurl(source.getMetsPurl());
+        setMetsRightsLicense(source.getMetsRightsLicense());
+        setMetsRightsOwner(source.getMetsRightsOwner());
+        setMetsRightsOwnerLogo(source.getMetsRightsOwnerLogo());
+        setMetsRightsOwnerMail(source.getMetsRightsOwnerMail());
+        setMetsRightsOwnerSite(source.getMetsRightsOwnerSite());
+        setMetsRightsSponsor(source.getMetsRightsSponsor());
+        setMetsRightsSponsorLogo(source.getMetsRightsSponsorLogo());
+        setMetsRightsSponsorSiteURL(source.getMetsRightsSponsorSiteURL());
+        setNumberOfPages(source.getNumberOfPages());
+        setNumberOfVolumes(source.getNumberOfVolumes());
+        setProjectIsArchived(source.getProjectIsArchived());
+        setStartDate(source.getStartDate());
+        setTitel(source.getTitel() + "_copy");
+        setUseDmsImport(source.isUseDmsImport());
+        setInstitution(source.getInstitution());
+        setProjectIdentifier(source.getProjectIdentifier());
         try {
-            ProjectManager.saveProject(p);
+            ProjectManager.saveProject(this);
         } catch (DAOException e) {
             log.error(e);
         }
@@ -389,23 +388,22 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
             List<User> allUsers = UserManager.getUsers(null, "", null, null, null);
             for (User user : allUsers) {
                 if (user.getProjekte().contains(this)) {
-                    user.getProjekte().add(p);
-                    UserManager.addProjectAssignment(user, p.getId());
+                    user.getProjekte().add(this);
+                    UserManager.addProjectAssignment(user, getId());
                 }
             }
         } catch (DAOException e) {
             log.error(e);
         }
 
-        p.setFilegroups(getFilegroups());
+        setFilegroups(source.getFilegroups());
         List<ProjectFileGroup> projectFileGroupList = new ArrayList<>();
         for (ProjectFileGroup pfg : getFilegroups()) {
-            ProjectFileGroup newGroup = pfg.clone();
-            newGroup.setProject(p);
+            ProjectFileGroup newGroup = new ProjectFileGroup(pfg);
+            newGroup.setProject(this);
             projectFileGroupList.add(newGroup);
         }
         ProjectManager.saveProjectFileGroups(projectFileGroupList);
 
-        return p;
     }
 }

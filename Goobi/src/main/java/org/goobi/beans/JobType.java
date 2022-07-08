@@ -19,22 +19,18 @@ import lombok.Data;
 public class JobType {
     private String id;
     private String name;
-    private Set<String> stepNames = new TreeSet<String>();
+    private Set<String> stepNames = new TreeSet<>();
     private boolean paused;
 
     public JobType() {
         this.id = UUID.randomUUID().toString();
     }
 
-    @Override
-    public JobType clone() {
-        JobType other = new JobType();
-        other.id = this.id;
-        other.name = this.name;
-        other.stepNames = new TreeSet<>(this.stepNames);
-        other.paused = this.paused;
-
-        return other;
+    public JobType(JobType source) {
+        this.id = source.id;
+        this.name = source.name;
+        this.stepNames = new TreeSet<>(source.stepNames);
+        this.paused = source.paused;
     }
 
     public List<String> getStepNameList() {

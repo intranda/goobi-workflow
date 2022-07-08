@@ -89,7 +89,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ProjectBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 6735912903249358786L;
-    
+
     @Getter
     private Project myProjekt = new Project();
     @Getter
@@ -310,7 +310,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     public String filegroupCancel() {
-//        Cancel();
+        //        Cancel();
         return "";
     }
 
@@ -607,8 +607,8 @@ public class ProjectBean extends BasicBean implements Serializable {
                 this.projectProgressData.setRequiredDailyOutput(this.getThroughputPerDay());
                 this.projectProgressData.setTimeFrame(this.getMyProjekt().getStartDate(), this.getMyProjekt().getEndDate());
                 this.projectProgressData
-                        .setDataSource(FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"", false,
-                                null, null, null, true, false) + " AND prozesse.istTemplate = false ");
+                .setDataSource(FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"", false,
+                        null, null, null, true, false) + " AND prozesse.istTemplate = false ");
 
                 if (this.projectProgressImage == null) {
                     this.projectProgressImage = "";
@@ -762,7 +762,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     @SuppressWarnings("deprecation")
-	public void downloadStatisticsAsCsv() {
+    public void downloadStatisticsAsCsv() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         CSVPrinter csvFilePrinter = null;
         if (!facesContext.getResponseComplete()) {
@@ -847,7 +847,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     public String cloneProject() {
-        myProjekt.clone();
+        new Project( myProjekt);
         Cancel();
         return FilterKein();
     }

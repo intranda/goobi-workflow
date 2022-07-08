@@ -98,7 +98,7 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
                     }
                     String basename = FilenameUtils.getBaseName(img.toString());
 
-                    OutputStream out = new FileOutputStream(thumbnailDirectory+FileSystems.getDefault().getSeparator()+basename+"_"+size+".jpg");
+                    OutputStream out = new FileOutputStream(thumbnailDirectory+FileSystems.getDefault().getSeparator()+basename+"_"+size+".jpg"); //NOSONAR
                     ImageRequest request = new ImageRequest(new URI(img.getAbsolutePath().replace(" ", "%20")), RegionRequest.FULL, scale, Rotation.NONE, Colortype.DEFAULT, ImageFileFormat.JPG, Map.of("ignoreWatermark", "true"));   //remove spaces from url
                     new GetImageAction().writeImage(request, out);
                 }
