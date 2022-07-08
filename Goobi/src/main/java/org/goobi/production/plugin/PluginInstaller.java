@@ -107,8 +107,8 @@ public class PluginInstaller {
                     log.error(ioException);
                 }
             });
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
+        } catch (IOException e) {
+            log.error(e);
         }
     }
 
@@ -122,14 +122,12 @@ public class PluginInstaller {
             }
         } catch (Exception exception) {
             log.error(exception);
-            exception.printStackTrace();
             return;
         }
         try {
             Files.write(file, IOUtils.toByteArray(Files.newInputStream(this.uploadedArchiveFile)));
         } catch (IOException ioException) {
             log.error(ioException);
-            ioException.printStackTrace();
         }
     }
 
@@ -232,8 +230,7 @@ public class PluginInstaller {
                 }
             });
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         }
         PluginInstaller.setNumbersForAllConflicts(conflicts.values().toArray());
         PluginPreInstallCheck checkReport = new PluginPreInstallCheck(extractedPluginPath, info, conflicts, null);

@@ -77,12 +77,8 @@ public enum StatisticsMode {
             try {
 
                 question = inQuestion.getDeclaredConstructor().newInstance();
-            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException
+                    | IllegalAccessException e) {
             }
         }
         this.renderIncludeLoops = renderIncludeLoops;

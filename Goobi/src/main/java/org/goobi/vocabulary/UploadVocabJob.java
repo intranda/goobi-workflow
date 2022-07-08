@@ -51,8 +51,7 @@ public class UploadVocabJob extends AbstractGoobiJob {
             }
 
         } catch (DAOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         }
 
         log.debug("Vocabulary Uploader completed");

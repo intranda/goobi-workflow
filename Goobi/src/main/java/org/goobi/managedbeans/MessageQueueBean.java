@@ -79,7 +79,6 @@ public class MessageQueueBean extends BasicBean implements Serializable {
                 queueSession = connection.createQueueSession(false, Session.CLIENT_ACKNOWLEDGE);
             } catch (JMSException e) {
                 log.error(e);
-                e.printStackTrace();
             }
             paginator = new DatabasePaginator(null, null, new MQResultManager(), "queue.xhtml");
         }

@@ -322,7 +322,7 @@ public class CopyProcess {
 
         } catch (Exception e) {
             Helper.setFehlerMeldung("Fehler beim Einlesen des Opac-Ergebnisses ", e);
-            e.printStackTrace();
+            log.error(e);
         }
         return "";
     }
@@ -348,7 +348,7 @@ public class CopyProcess {
 
         } catch (Exception e) {
             Helper.setFehlerMeldung("Fehler beim Einlesen des Opac-Ergebnisses ", e);
-            e.printStackTrace();
+            log.error(e);
         }
         return "";
     }
@@ -665,7 +665,6 @@ public class CopyProcess {
             ProcessManager.saveProcess(this.prozessKopie);
             //			dao.refresh(this.prozessKopie);
         } catch (DAOException e) {
-            e.printStackTrace();
             log.error("error on save: ", e);
             return this.prozessKopie;
         }
@@ -823,7 +822,6 @@ public class CopyProcess {
             try {
                 ProcessManager.saveProcess(this.prozessKopie);
             } catch (DAOException e) {
-                e.printStackTrace();
                 log.error("error on save: ", e);
                 return this.prozessKopie;
             }
@@ -874,7 +872,6 @@ public class CopyProcess {
             ProcessManager.saveProcess(this.prozessKopie);
             //			dao.refresh(this.prozessKopie);
         } catch (DAOException e) {
-            e.printStackTrace();
             log.error("error on save: ", e);
             return this.prozessKopie;
         }
@@ -906,7 +903,6 @@ public class CopyProcess {
             try {
                 ProcessManager.saveProcess(this.prozessKopie);
             } catch (DAOException e) {
-                e.printStackTrace();
                 log.error("error on save: ", e);
                 return this.prozessKopie;
             }
@@ -928,15 +924,9 @@ public class CopyProcess {
                 md.setValue(s);
                 md.setParent(colStruct);
                 colStruct.addMetadata(md);
-            } catch (UghHelperException e) {
+            } catch (UghHelperException |DocStructHasNoTypeException |MetadataTypeNotAllowedException e) {
                 Helper.setFehlerMeldung(e.getMessage(), "");
-                e.printStackTrace();
-            } catch (DocStructHasNoTypeException e) {
-                Helper.setFehlerMeldung(e.getMessage(), "");
-                e.printStackTrace();
-            } catch (MetadataTypeNotAllowedException e) {
-                Helper.setFehlerMeldung(e.getMessage(), "");
-                e.printStackTrace();
+                log.error(e);
             }
         }
     }
@@ -953,12 +943,9 @@ public class CopyProcess {
                     colStruct.removeMetadata(md, true);
                 }
             }
-        } catch (UghHelperException e) {
+        } catch (UghHelperException |DocStructHasNoTypeException e) {
             Helper.setFehlerMeldung(e.getMessage(), "");
-            e.printStackTrace();
-        } catch (DocStructHasNoTypeException e) {
-            Helper.setFehlerMeldung(e.getMessage(), "");
-            e.printStackTrace();
+            log.error(e);
         }
     }
 
