@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.goobi.beans.Process;
@@ -162,7 +163,10 @@ public class JobCreation {
             if (ConfigurationHelper.getInstance().useS3()) {
                 String rootFolderName = p.getProcessDataDirectory();
                 List<Path> filesToUpload = new ArrayList<>();
-                Files.find(importFolder, 3, (path, file) -> file.isRegularFile()).forEach(path -> filesToUpload.add(path));
+
+                try (Stream<Path> input = Files.find(importFolder, 3, (path, file) -> file.isRegularFile()))  {
+                    input.forEach(path -> filesToUpload.add(path));
+                }
 
                 for (Path file : filesToUpload) {
                     Path destination = Paths.get(file.toString().replace(importFolder.toString(), rootFolderName));

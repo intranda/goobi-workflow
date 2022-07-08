@@ -105,6 +105,8 @@ public class ObjectResource {
             throws IOException, InterruptedException, SwapException, DAOException, URISyntaxException {
         List<URI> resourceURIs = new ArrayList<>();
 
+        baseFilename = Paths.get(baseFilename).getFileName().toString();
+
         java.nio.file.Path mtlFilePath = Paths.get(baseFolder, baseFilename + ".mtl");
         if (mtlFilePath.toFile().isFile()) {
             resourceURIs.add(new URI(baseURI + Paths.get(baseFolder).relativize(mtlFilePath)));
