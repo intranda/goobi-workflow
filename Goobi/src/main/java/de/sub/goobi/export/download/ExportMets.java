@@ -631,15 +631,15 @@ public class ExportMets {
     }
 
     private void writeToZip(Path pathTarget, ZipOutputStream out) throws IOException {
-        InputStream in = StorageProvider.getInstance().newInputStream(pathTarget);
-        out.putNextEntry(new ZipEntry(pathTarget.getFileName().toString()));
-        byte[] b = new byte[1024];
-        int count;
+        try (InputStream in = StorageProvider.getInstance().newInputStream(pathTarget)) {
+            out.putNextEntry(new ZipEntry(pathTarget.getFileName().toString()));
+            byte[] b = new byte[1024];
+            int count;
 
-        while ((count = in.read(b)) > 0) {
-            out.write(b, 0, count);
+            while ((count = in.read(b)) > 0) {
+                out.write(b, 0, count);
+            }
         }
-        in.close();
     }
 
     private VirtualFileGroup createFilegroup(VariableReplacer variableRplacer, ProjectFileGroup projectFileGroup) {

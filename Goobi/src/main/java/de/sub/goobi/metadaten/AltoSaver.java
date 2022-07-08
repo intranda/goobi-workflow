@@ -5,6 +5,8 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import javax.xml.XMLConstants;
+
 import org.goobi.beans.AltoChange;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -25,6 +27,10 @@ public class AltoSaver {
         if (changes == null || changes.length == 0) {
             return;
         }
+        sax.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        sax.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        sax.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        sax.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         Document doc = sax.build(altoFile.toFile());
         Namespace namespace = Namespace.getNamespace("alto", doc.getRootElement().getNamespaceURI());
 

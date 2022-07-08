@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
+
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -47,16 +49,18 @@ public class SimpleAlto {
     public SimpleAlto(String errorMessage) {
         SimpleAltoWord word = new SimpleAltoWord();
         word.setValue(errorMessage);
-        List<SimpleAltoWord> words = new ArrayList<SimpleAltoWord>();
+        List<SimpleAltoWord> words = new ArrayList<>();
         words.add(word);
         SimpleAltoLine line = new SimpleAltoLine();
         line.setWords(words);
-        lines = new ArrayList<SimpleAltoLine>();
+        lines = new ArrayList<>();
         lines.add(line);
     }
 
     public static SimpleAlto readAlto(Path altoPath) throws IOException, JDOMException {
         SAXBuilder sax = new SAXBuilder();
+        sax.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        sax.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         Document doc = null;
         try (InputStream in = StorageProvider.getInstance().newInputStream(altoPath)) {
             doc = sax.build(in);
