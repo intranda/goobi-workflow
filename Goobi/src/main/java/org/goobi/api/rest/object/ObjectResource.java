@@ -69,7 +69,7 @@ public class ObjectResource {
             @PathParam("foldername") String foldername, @PathParam("filename") String filename) {
 
         response.addHeader("Access-Control-Allow-Origin", "*");  //NOSONAR
-
+        filename = Paths.get(filename).getFileName().toString();
         String objectURI = request.getRequestURL().toString().replace("/info.json", "");
         String baseURI = objectURI.replace(filename, "");
         String baseFilename = FilenameUtils.getBaseName(filename);
@@ -133,6 +133,10 @@ public class ObjectResource {
         //        response.addHeader("Access-Control-Allow-Origin", "*");
         String filename = filenameBase + ".js";
         Process process = ProcessManager.getProcessById(processId);
+
+        foldername = Paths.get(foldername).getFileName().toString();
+        filename = Paths.get(filename).getFileName().toString();
+
         java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, filename);
         if (!objectPath.toFile().isFile()) {
 
@@ -163,6 +167,10 @@ public class ObjectResource {
 
         //        response.addHeader("Access-Control-Allow-Origin", "*");
         String filename = filenameBase + ".xml";
+
+        foldername = Paths.get(foldername).getFileName().toString();
+        filename = Paths.get(filename).getFileName().toString();
+
         Process process = ProcessManager.getProcessById(processId);
         java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, filename);
         if (!objectPath.toFile().isFile()) {
@@ -194,6 +202,10 @@ public class ObjectResource {
 
         //        response.addHeader("Access-Control-Allow-Origin", "*");
         String filename = filenameBase + ".jpg";
+
+        foldername = Paths.get(foldername).getFileName().toString();
+        filename = Paths.get(filename).getFileName().toString();
+
         Process process = ProcessManager.getProcessById(processId);
         java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, "images", filename);
         if (!objectPath.toFile().isFile()) {
@@ -226,7 +238,7 @@ public class ObjectResource {
                     throws IOException, InterruptedException, SwapException, DAOException {
 
         //        response.addHeader("Access-Control-Allow-Origin", "*");
-
+        foldername = Paths.get(foldername).getFileName().toString();
         Process process = ProcessManager.getProcessById(processId);
         java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, filename);
         if (!objectPath.toFile().isFile()) {

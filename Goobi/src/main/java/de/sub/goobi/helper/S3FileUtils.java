@@ -881,7 +881,7 @@ public class S3FileUtils implements StorageProviderInterface {
         if (getPathStorageType(dest) == StorageType.LOCAL) {
             return nio.newOutputStream(dest);
         }
-        final PipedInputStream in = new PipedInputStream();
+        final PipedInputStream in = new PipedInputStream(); //NOSONAR
         PipedOutputStream out = new PipedOutputStream(in);
         new Thread(new Runnable() {
             @Override
