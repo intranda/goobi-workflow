@@ -1971,6 +1971,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             if (basename.contains("\\")) {
                 basename = basename.substring(basename.lastIndexOf("\\") + 1);
             }
+            basename = Paths.get(basename).getFileName().toString();
+
             tempFileToImport = Files.createTempFile(basename, "");
             inputStream = this.uploadedFile.getInputStream();
             outputStream = new FileOutputStream(tempFileToImport.toString());
