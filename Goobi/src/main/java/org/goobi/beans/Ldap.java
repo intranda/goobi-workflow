@@ -53,8 +53,8 @@ public class Ldap implements Serializable, DatabaseObject, IAuthenticationProvid
     private String sambaLogonScript = "_{login}.bat";
     private String sambaPrimaryGroupSID = "CHANGE_ME";
 
-    private String sambaPwdMustChange = "2147483647";
-    private String sambaPasswordHistory = "0000000000000000000000000000000000000000000000000000000000000000";
+    private String sambaPwdMustChange = "2147483647"; //NOSONAR, its no password, its the time until a pw change is required
+    private String sambaPasswordHistory = "0000000000000000000000000000000000000000000000000000000000000000"; //NOSONAR no password
     private String sambaLogonHours = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
     private String sambaKickoffTime = "0";
 
