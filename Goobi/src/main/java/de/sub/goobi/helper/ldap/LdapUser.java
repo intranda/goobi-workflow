@@ -191,7 +191,7 @@ public class LdapUser implements DirContext {
         Key lowKey = createDESKey(keyBytes, 0);
         Key highKey = createDESKey(keyBytes, 7);
         byte[] magicConstant = "KGS!@#$%".getBytes("US-ASCII");
-        Cipher des = Cipher.getInstance("DES/ECB/NoPadding");
+        Cipher des = Cipher.getInstance("DES/ECB/NoPadding"); //NOSONAR
         des.init(Cipher.ENCRYPT_MODE, lowKey);
         byte[] lowHash = des.doFinal(magicConstant);
         des.init(Cipher.ENCRYPT_MODE, highKey);

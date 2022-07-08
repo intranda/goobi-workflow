@@ -114,7 +114,7 @@ public class ObjectResource {
 
         java.nio.file.Path resourceFolderPath = Paths.get(baseFolder, baseFilename);
         if (resourceFolderPath.toFile().isDirectory()) {
-            try (DirectoryStream<java.nio.file.Path> directoryStream = Files.newDirectoryStream(resourceFolderPath)) {
+            try (DirectoryStream<java.nio.file.Path> directoryStream = Files.newDirectoryStream(resourceFolderPath)) { //NOSONAR
                 for (java.nio.file.Path path : directoryStream) {
                     java.nio.file.Path relPath = resourceFolderPath.getParent().relativize(path);
                     resourceURIs.add(new URI(baseURI + relPath.toString().replace(File.separator, "/")));

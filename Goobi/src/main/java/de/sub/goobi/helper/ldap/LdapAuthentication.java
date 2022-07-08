@@ -331,7 +331,7 @@ public class LdapAuthentication {
                 }
             }
         } else if (inBenutzer.getLdapGruppe().isReadDirectoryAnonymous()) {
-            env.put(Context.SECURITY_AUTHENTICATION, "none");
+            env.put(Context.SECURITY_AUTHENTICATION, "none"); //NOSONAR
         } else {
             env.put(Context.SECURITY_AUTHENTICATION, "simple");
             env.put(Context.SECURITY_PRINCIPAL, inBenutzer.getLdapGruppe().getAdminLogin());
@@ -524,7 +524,7 @@ public class LdapAuthentication {
                 }
             }
         } else if (inBenutzer.getLdapGruppe().isReadDirectoryAnonymous()) {
-            env.put(Context.SECURITY_AUTHENTICATION, "none");
+            env.put(Context.SECURITY_AUTHENTICATION, "none"); //NOSONAR
         } else {
             env.put(Context.SECURITY_AUTHENTICATION, "simple");
             env.put(Context.SECURITY_PRINCIPAL, inBenutzer.getLdapGruppe().getAdminLogin());
