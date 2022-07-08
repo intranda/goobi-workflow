@@ -333,21 +333,6 @@
             <artifactId>commons-dbutils</artifactId>
             <version>1.7</version>
         </dependency>
-        <!-- uncommented because very likely not needed -->
-        <!--
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-digester3</artifactId>
-            <version>3.2</version>
-        </dependency>
-        -->
-        <!--
-        <dependency>
-            <groupId>de.mhus.osgi.ports</groupId>
-            <artifactId>commons-discovery</artifactId>
-            <version>1.0.5</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>commons-el</groupId>
             <artifactId>commons-el</artifactId>
@@ -723,20 +708,6 @@
             <artifactId>jfreechart</artifactId>
             <version>1.0.1</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna</artifactId>
-            <version>${jna.version}</version>
-        </dependency>
-        -->
-        <!--
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna-platform</artifactId>
-            <version>${jna.version}</version>
-        </dependency>
-        -->
         <dependency>
             <groupId>com.github.jnr</groupId>
             <artifactId>jnr-x86asm</artifactId>
@@ -901,23 +872,6 @@
             <artifactId>rome</artifactId>
             <version>1.18.0</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-all</artifactId>
-            <version>${shiro.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.opensymphony.quartz</groupId>
-                    <artifactId>quartz</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        -->
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
