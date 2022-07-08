@@ -765,7 +765,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
         public void setCurrentDefinition(String value) {
 
             if (StringUtils.isNotBlank(value) && !"-".equals(value)) {
-                if (value.matches(".*\\(.*\\)")) {
+                if (value.matches(".*\\(.*\\)")) {  //NOSONAR
                     String titlePart = value.substring(0, value.lastIndexOf("(")).trim();
                     String languagePart = value.substring(value.lastIndexOf("(") + 1, value.lastIndexOf(")")).trim();
                     for (Definition def : currentVocabulary.getStruct()) {

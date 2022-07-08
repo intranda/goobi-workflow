@@ -1,6 +1,7 @@
 package org.goobi.managedbeans;
 
 import java.io.Serializable;
+import java.security.SecureRandom;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -28,7 +29,6 @@ import java.io.Serializable;
  */
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Random;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
@@ -136,7 +136,7 @@ public class StatisticsBean implements Serializable {
      */
     public int getDummy() {
         this.n++;
-        return new Random().nextInt(this.n);
+        return new SecureRandom().nextInt(this.n);
     }
 
     public int getAnzahlAktuelleSchritte() {

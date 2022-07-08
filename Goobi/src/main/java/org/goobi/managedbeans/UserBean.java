@@ -32,13 +32,13 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.nio.file.FileSystems;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -683,7 +683,7 @@ public class UserBean extends BasicBean implements Serializable {
      * @return The generated password
      */
     public static String createRandomPassword(int length) {
-        Random r = new Random();
+        SecureRandom r = new SecureRandom();
         StringBuilder password = new StringBuilder();
         while (password.length() < length) {
             // ASCII interval: [97 + 0, 97 + 25] => [97, 122] => [a, z]

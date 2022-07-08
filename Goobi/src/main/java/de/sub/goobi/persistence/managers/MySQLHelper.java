@@ -120,7 +120,7 @@ public class MySQLHelper implements Serializable {
             if (dbv.contains("~")) {
                 version = dbv.substring(mariaIdx + 8, dbv.indexOf('+'));
             } else {
-                Pattern p = Pattern.compile("5.*-(.*?)-maria");
+                Pattern p = Pattern.compile("5.*-(.*?)-maria"); //NOSONAR
                 Matcher m = p.matcher(dbv);
                 if (m.find()) {
                     version = m.group(1);
@@ -468,7 +468,6 @@ public class MySQLHelper implements Serializable {
 
     public static class MapToStringConverter implements Converter {
 
-
         @Override
         public boolean canConvert(Class clazz) {
             return AbstractMap.class.isAssignableFrom(clazz);
@@ -482,7 +481,7 @@ public class MySQLHelper implements Serializable {
                 Map.Entry entry = (Map.Entry) obj;
                 writer.startNode(entry.getKey().toString());
                 Object val = entry.getValue();
-                if ( null != val ) {
+                if (null != val) {
                     writer.setValue(val.toString());
                 }
                 writer.endNode();
@@ -495,7 +494,7 @@ public class MySQLHelper implements Serializable {
 
             Map<String, String> map = new HashMap<>();
 
-            while(reader.hasMoreChildren()) {
+            while (reader.hasMoreChildren()) {
                 reader.moveDown();
 
                 String key = reader.getNodeName(); // nodeName aka element's name
