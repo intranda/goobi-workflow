@@ -202,7 +202,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
     }
 
     public void setDataSource(String filter) {
-        this.myIDlist = ProcessManager.getIDList(filter);
+        this.myIDlist = ProcessManager.getIdsForFilter(filter);
         this.isDirty = true;
     }
 

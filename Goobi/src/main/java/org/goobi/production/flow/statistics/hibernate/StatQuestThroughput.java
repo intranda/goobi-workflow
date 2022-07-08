@@ -114,7 +114,7 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 
         // gathering IDs from the filter passed by dataSource
         //		try {
-        this.myIDlist = ProcessManager.getIDList(filter);
+        this.myIDlist = ProcessManager.getIdsForFilter(filter);
         //		} catch (UnsupportedOperationException e) {
         //		}
         //
