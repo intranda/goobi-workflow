@@ -39,12 +39,17 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ConfigPlugins {
 
+
+    private ConfigPlugins() {
+
+    }
+
     /**
      * pass back the right configuration file by giving the plugin class
      *
      * @deprecated use getPluginConfig(String pluginname) for this instead
      */
-    @Deprecated
+    @Deprecated (since ="3.0", forRemoval = false)
     public static XMLConfiguration getPluginConfig(IPlugin inPlugin) {
         return getPluginConfig(inPlugin.getClass().getSimpleName());
     }
@@ -74,9 +79,9 @@ public class ConfigPlugins {
      * sub-configuration for a specific project or step. If no sub-configuration can
      * be found use the defaults
      * 
-     * The order of configuration is: 
-     *      1.) project name and step name matches 
-     *      2.) step name matches and project is 
+     * The order of configuration is:
+     *      1.) project name and step name matches
+     *      2.) step name matches and project is
      *      3.) project name matches and step name is
      *      4.) project name and step name are
      * 
@@ -85,14 +90,14 @@ public class ConfigPlugins {
      * @param step       Step to be used to detect the right sub-configuration
      */
     public static SubnodeConfiguration getProjectAndStepConfig(String pluginname, Step step) {
-        
+
         // find out the project and the configuration file name to load it
         String projectName = step.getProzess().getProjekt().getTitel();
         XMLConfiguration xmlConfig = getPluginConfig(pluginname);
         xmlConfig.setExpressionEngine(new XPathExpressionEngine());
         xmlConfig.setReloadingStrategy(new FileChangedReloadingStrategy());
 
-        // find out the sub-configuration node for the right project and step 
+        // find out the sub-configuration node for the right project and step
         SubnodeConfiguration myconfig = null;
         try {
             myconfig = xmlConfig

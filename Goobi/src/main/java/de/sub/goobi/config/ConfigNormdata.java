@@ -3,7 +3,7 @@ package de.sub.goobi.config;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
@@ -30,8 +30,12 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class ConfigNormdata {
+
+    private ConfigNormdata() {
+    }
+
     public static List<NormDatabase> getConfiguredNormdatabases() {
-        List<NormDatabase> answer = new ArrayList<NormDatabase>();
+        List<NormDatabase> answer = new ArrayList<>();
         XMLConfiguration config = getNormdataConfiguration();
         int numberOfNormdatabases = config.getMaxIndex("normdatabase");
         for (int i = 0; i <= numberOfNormdatabases; i++) {
