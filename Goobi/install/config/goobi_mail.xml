@@ -23,5 +23,18 @@ And your password is: {password}&lt;br /&gt;
 The password can be changed at any time in the user settings.
         </body>
     </userCreation>    
-    
+
+    <userActivation>
+        <subject>Activation successful</subject>
+        <body>
+Your Goobi account was activated.&lt;br /&gt;
+        </body>
+    </userActivation>
+
+
+    <resetPassword>
+        <subject>Your password has been reset</subject>
+        <body>Your password has been reset, the new password is: {password}</body>
+    </resetPassword>
+        
 </goobiMail>

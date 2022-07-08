@@ -120,7 +120,7 @@
 
 <ui:insert name="metadata" />
 
-<body styleClass="#{LoginForm.myBenutzer == null?'login':''}" data-layout-sidebar="fixed" data-layout-topbar="fixed">
+<body class="#{LoginForm.myBenutzer == null?'login':''}" data-layout-sidebar="fixed" data-layout-topbar="fixed">
 	<f:view locale="#{SpracheForm.locale}">
 
 		<h:panelGroup rendered="#{LoginForm.myBenutzer==null}">

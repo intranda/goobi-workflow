@@ -19,11 +19,15 @@ package de.sub.goobi.persistence.managers;
  * 
  */
 import java.io.Serializable;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.goobi.beans.Batch;
 import org.goobi.beans.DatabaseObject;
@@ -332,6 +336,91 @@ public class ProcessManager implements IManager, Serializable {
         } catch (SQLException e) {
             log.error("Cannot not update process log for process with id " + entry.getProcessId(), e);
         }
+    }
+
+
+    public static ResultSetHandler<Process> resultSetToProcessHandler = new ResultSetHandler<Process>() {
+        @Override
+        public Process handle(ResultSet rs) throws SQLException {
+            try {
+                if (rs.next()) {
+                    try {
+                        Process o = convert(rs);
+                        return o;
+                    } catch (DAOException e) {
+                        log.error(e);
+                    }
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            return null;
+        }
+    };
+
+
+    public static ResultSetHandler<List<Process>> resultSetToProcessListHandler = new ResultSetHandler<List<Process>>() {
+        @Override
+        public List<Process> handle(ResultSet rs) throws SQLException {
+            List<Process> answer = new ArrayList<>();
+            try {
+                while (rs.next()) {
+                    try {
+                        Process o = convert(rs);
+                        if (o != null) {
+                            answer.add(o);
+                        }
+                    } catch (DAOException e) {
+                        log.error(e);
+                    }
+                }
+            } finally {
+                if (rs != null) {
+                    rs.close();
+                }
+            }
+            return answer;
+        }
+    };
+
+    private static Process convert(ResultSet rs) throws DAOException, SQLException {
+        Process p = new Process();
+        p.setId(rs.getInt("ProzesseID"));
+        p.setTitel(rs.getString("Titel"));
+        p.setAusgabename(rs.getString("ausgabename"));
+        p.setIstTemplate(rs.getBoolean("IstTemplate"));
+        p.setSwappedOutHibernate(rs.getBoolean("swappedOut"));
+        p.setInAuswahllisteAnzeigen(rs.getBoolean("inAuswahllisteAnzeigen"));
+        p.setSortHelperStatus(rs.getString("sortHelperStatus"));
+        p.setSortHelperImages(rs.getInt("sortHelperImages"));
+        p.setSortHelperArticles(rs.getInt("sortHelperArticles"));
+        Timestamp time = rs.getTimestamp("erstellungsdatum");
+        if (time != null) {
+            p.setErstellungsdatum(new Date(time.getTime()));
+        }
+        p.setProjectId(rs.getInt("ProjekteID"));
+        p.setRegelsatz(RulesetManager.getRulesetById(rs.getInt("MetadatenKonfigurationID")));
+        p.setSortHelperDocstructs(rs.getInt("sortHelperDocstructs"));
+        p.setSortHelperMetadata(rs.getInt("sortHelperMetadata"));
+        //        p.setWikifield(rs.getString("wikifield"));
+        Integer batchID = rs.getInt("batchID");
+        if (!rs.wasNull()) {
+            Batch batch = ProcessMysqlHelper.loadBatch(batchID);
+            p.setBatch(batch);
+
+        } else {
+        }
+        p.setDocket(DocketManager.getDocketById(rs.getInt("docketID")));
+
+        p.setProcessLog(ProcessMysqlHelper.getLogEntriesForProcess(p.getId()));
+
+        p.setMediaFolderExists(rs.getBoolean("mediaFolderExists"));
+
+        p.setPauseAutomaticExecution(rs.getBoolean("pauseAutomaticExecution"));
+
+        return p;
     }
 
 }

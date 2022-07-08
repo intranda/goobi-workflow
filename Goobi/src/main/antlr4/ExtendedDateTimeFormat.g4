@@ -1,156 +1,252 @@
-/**
- * This is an Antlr4 grammar for the Extended Date Time Format (EDTF).
- * EDTF specification website: http://www.loc.gov/standards/datetime/
- * Version of the spec supported: Level 1 except Y long form years.
- *
- * Original Author: Kevin S. Clarke (ksclarke@gmail.com)
- * Created: 2013/02/06
- * Updated: 2013/02/23
- *
- * Modified to comply with updated EDTF standard & LUX requirements
- * Author of modifications: Janos Seboek (janos.seboek@intranda.com)
- * Modifications Updated: 2022/06/01
- *
- * License: BSD 2-Clause http://github.com/ksclarke/freelib-edtf/LICENSE
- */
-
 grammar ExtendedDateTimeFormat;
 
-@header {
-package de.sub.goobi.validator;
-}
-
-edtf : (level0Expression | level1Expression) EOF;
-
-// **************************   Level 0: Tokens   *************************** //
+// Tokens //
 
 T : 'T';
 Z : 'Z';
-Dash : '-';
-Plus : '+';
-Colon : ':';
-Slash : '/';
+X : 'X';
+E : 'E';
+S : 'S';
+LONGYEAR : 'Y';
+DOTS : '.' '.';
+UNKNOWN : 'u' 'n' 'k' 'n' 'o' 'w' 'n';
+UA : '~' | '?' | '%';
 
-Year : PositiveYear | NegativeYear | YearZero;
-NegativeYear : Dash PositiveYear;
-PositiveYear
-    : PositiveDigit Digit Digit Digit
-    | Digit PositiveDigit Digit Digit
-    | Digit Digit PositiveDigit Digit
-    | Digit Digit Digit PositiveDigit
-    ;
-Digit : PositiveDigit | '0';
-PositiveDigit : '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
-YearZero : '0000';
-Month : OneThru12;
-MonthDay
-    : ( '01' | '03' | '05' | '07' | '08' | '10' | '12' ) Dash OneThru31
-    | ( '04' | '06' | '09' | '11' ) Dash OneThru30
-    | '02' Dash OneThru29
-    ;
-YearMonth : Year Dash Month;
-YearMonthDay : Year Dash MonthDay;
-Day : OneThru31;
-Hour : ZeroThru23;
-Minute : ZeroThru59;
-Second : ZeroThru59;
+// Rules //
 
-OneThru12
-    : '01' | '02' | '03' | '04' | '05' | '06'  | '07' | '08' | '09' | '10'
-    | '11' | '12'
-    ;
-OneThru13 : OneThru12 | '13';
-OneThru23
-    : OneThru13 | '14' | '15' | '16' | '17'  | '18' | '19' | '20' | '21'
-    | '22' | '23'
-    ;
-ZeroThru23 : '00' | OneThru23;
-OneThru29 : OneThru23 | '24' | '25' | '26' | '27' | '28' | '29';
-OneThru30 : OneThru29 | '30';
-OneThru31 : OneThru30 | '31';
-OneThru59 : OneThru31
-    | '32' | '33' | '34' | '35' | '36' | '37' | '38' | '39' | '40' | '41'
-    | '42' | '43' | '44' | '45' | '46' | '47' | '48' | '49' | '50' | '51'
-    | '52' | '53' | '54' | '55' | '56' | '57' | '58' | '59'
-    ;
-ZeroThru59 : '00' | OneThru59;
-Time : Hour Colon Minute Colon Second | '24' Colon '00' Colon '00';
-ZOffset : (Plus | Dash) OffsetTime;
-OffsetTime : OneThru13 (Colon Minute)?
-    | '14' Colon '00'
-    | '00' Colon OneThru59
-    ;
+edtf : edtf_expression ('\r'? '\n')? EOF;
 
-// ***********************   Level 0: Parser Rules   ************************ //
+edtf_expression : level_0_expression
+                 | level_1_expression
+                 | level_2_expression
+                 ;
 
-level0Expression : date | dateTime | dateTimeZ | level0Interval;
-date : Year | YearMonth | YearMonthDay;
-dateTime : YearMonthDay T Time ZOffset?;
-dateTimeZ : YearMonthDay T Time Z;
-// (Z | ((Plus | Dash) ZOffset))?;
+// Level 0 / ISO 8601 //
 
-// *******************  Level 0: Interval Parser Rules  ********************* //
+level_0_expression : date
+                   | date_time
+                   ;
 
-level0Interval : date Slash date;
+date : year
+     | year_month
+     | year_month_day
+     ;
 
-// ***************************   Level 1: Tokens   ************************** //
+date_time : date T time;
 
-U : 'X';
-UU : 'XX';
-Tilde : '~';
-Open : '..';
-QuestionMark : '?';
-QuestionMarkTilde : '%';
+time : base_time
+     | base_time zone_offset
+     ;
 
-YearUA : Year UASymbol;
-SeasonUA : Season UASymbol;
-YearMonthUA : YearMonth UASymbol;
-YearMonthDayUA : YearMonthDay UASymbol;
+base_time : hour ':' minute ':' second
+          | midnight
+          ;
 
-Season : Year Dash ('21' | '22' | '23' | '24');
-UASymbol : QuestionMark | Tilde | QuestionMarkTilde;
-YearWithOneUnspecifedDigit : Digit Digit Digit U;
-YearWithTwoUnspecifedDigits : Digit Digit U U;
+midnight : '2' '4' ':' '0' '0' ':' '0' '0';
 
-// *************************  Level 1: Parser Rules  ************************ //
+zone_offset : Z
+            | '-' zone_offset_hour_minute
+            | '-' zone_offset_hour
+            | '+' positive_zone_offset_hour_minute
+            | '+' positive_zone_offset_hour
+            ;
 
-level1Expression
-    : uncertainOrApproxDate
-    | unspecifiedDate
-    | level1Interval
-    | season
-    ;
-unspecifiedDate
-    : yearUnspecified
-    | monthUnspecified
-    | dayUnspecified
-    | dayAndMonthUnspecified
-    ;
-monthUnspecified : Year Dash UU;
-uncertainOrApproxDate : YearUA | YearMonthUA | YearMonthDayUA;
-dayUnspecified : YearMonth Dash UU;
-dayAndMonthUnspecified : Year Dash UU Dash UU;
-yearUnspecified : YearWithOneUnspecifedDigit | YearWithTwoUnspecifedDigits;
+positive_zone_offset_hour : zone_offset_hour
+                          | '0' '0'
+                          ;
 
-// Keeps our parse levels consistent with the least amount of added structure
-open : Open;
-season : Season;
 
-// *******************  Level 1: Interval Parser Rules  ********************* //
+positive_zone_offset_hour_minute : zone_offset_hour_minute
+                                 | '0' '0' ':' '0' '0'
+                                 ;
 
-level1Interval : (dateOrSeason Slash open) | (open Slash dateOrSeason) | (dateOrSeason Slash dateOrSeason) | unknownBeginning | unknownEnd;
+zone_offset_hour : d01_13
+                 | '1' '4'
+                 | '0' '0'
+                 ;
 
-dateOrSeason
-	: YearUA | Year
-	| SeasonUA | Season
-	| YearMonthUA | YearMonth
-	| YearMonthDayUA | YearMonthDay
-	;
 
-unknownBeginning
-	: (Slash dateOrSeason)
-	;
-	
-unknownEnd
-	: (dateOrSeason Slash)
-	;
+zone_offset_hour_minute : d01_13 ':' minute
+                        | '1' '4' ':' '0' '0'
+                        | '0' '0' ':' d01_59
+                        ;
+
+year : positive_year
+     | '-' positive_year
+     ;
+
+positive_year : digit digit digit digit;
+
+month : d01_12;
+
+day : d01_31;
+
+year_month : year '-' month;
+
+year_month_day : year_month '-' day;
+
+hour : d00_23;
+minute : d00_59;
+second : d00_59;
+
+// Level 1 Extension //
+
+level_1_expression : UNKNOWN
+                   | unspecified
+                   | level_1_interval
+                   | long_year_simple
+                   | season
+                   ;
+
+unspecified : unspecified_year
+            | unspecified_month
+            | unspecified_day
+            | unspecified_day_and_month
+            ;
+
+unspecified_year : positive_unspecified_year
+                 | '-' positive_unspecified_year
+                 ;
+
+positive_unspecified_year : digit digit digit X
+                          | digit digit X X
+                          ;
+
+unspecified_month : year '-' X X;
+
+unspecified_day : year_month '-' X X;
+
+unspecified_day_and_month : year '-' X X '-' X X;
+
+level_1_interval : level_1_element '/' level_1_element
+                 | '/' level_1_element
+                 | level_1_element '/'
+                 ;
+
+level_1_element : date
+                | partial_uncertain_or_approximate_or_both
+                | unspecified
+                | partial_unspecified
+                | UNKNOWN
+                | DOTS
+                ;
+
+long_year_simple : LONGYEAR long_year
+                 | LONGYEAR '-' long_year
+                 ;
+
+long_year : positive_digit digit digit digit digit
+          | long_year digit
+          ;
+
+season : year '-' season_number UA?;
+
+season_number : '2' '1'
+              | '2' '2'
+              | '2' '3'
+              | '2' '4'
+              ;
+
+// Level 2 Extension Rules //
+
+level_2_expression : partial_uncertain_or_approximate_or_both
+                   | partial_unspecified
+                   | long_year_scientific
+                   ;
+
+long_year_scientific : long_year_simple E integer
+                     | LONGYEAR int1_4 E integer
+                     | LONGYEAR '-' int1_4 E integer
+                     ;
+
+partial_unspecified : unspecified_year '-' month '-' day
+                    | unspecified_year '-' month
+                    | unspecified_year '-' X X '-' day
+                    | unspecified_year '-' X X '-' X X
+                    | unspecified_year '-' month '-' X X
+                    | year '-' X X '-' day
+                    ;
+
+partial_uncertain_or_approximate_or_both : pua_base;
+
+pua_base : pua_year
+         | pua_year_month
+         | pua_year_month_day
+         ;
+
+pua_year : year UA;
+
+pua_year_month : pua_year '-' month UA
+               | year '-' month UA
+               ;
+
+pua_year_month_day : pua_year_month '-' day UA
+                   | year_month '-' day UA
+                   ;
+
+// Vocabulary rules
+
+digit : '0'
+      | positive_digit
+      ;
+
+positive_digit : '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
+
+d01_12 : '0' positive_digit
+       | '1' '0'
+       | '1' '1'
+       | '1' '2'
+       ;
+
+d01_13 : d01_12
+       | '1' '3'
+       ;
+
+d01_23 : '0' positive_digit
+       | '1' digit
+       | '2' '0'
+       | '2' '1'
+       | '2' '2'
+       | '2' '3'
+       ;
+
+d00_23 : '0' '0'
+       | d01_23
+       ;
+
+d01_29 : d01_23
+       | '2' '4'
+       | '2' '5'
+       | '2' '6'
+       | '2' '7'
+       | '2' '8'
+       | '2' '9'
+       ;
+
+d01_30 : d01_29
+       | '3' '0'
+       ;
+
+d01_31 : d01_30
+       | '3' '1'
+       ;
+
+d01_59 : d01_29
+       | '3' digit
+       | '4' digit
+       | '5' digit
+       ;
+
+d00_59 : '0' '0'
+       | d01_59
+       ;
+
+int1_4 : positive_digit
+       | positive_digit digit
+       | positive_digit digit digit
+       | positive_digit digit digit digit
+       ;
+
+integer : positive_digit
+        | integer digit
+        ;

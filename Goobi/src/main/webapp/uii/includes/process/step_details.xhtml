@@ -406,7 +406,7 @@
                                 styleClass="help-inline font-danger" />
                             <h:outputText
                                 styleClass="block font-light"
-                                rendered="#{NavigationForm.showHelp}"
+                                style="display:#{NavigationForm.showHelp ? 'block' : 'none'}"
                                 value="#{msgs.helpProcessStepAutomatic}" />
 
                             <span id="messageQueueDropDown"> <h:selectOneMenu
@@ -423,10 +423,8 @@
                                 </h:selectOneMenu> <h:message
                                     for="messageQueue"
                                     showDetail="true"
-                                    styleClass="help-inline font-danger" /> <h:outputText
-                                    styleClass="help-block font-light"
-                                    rendered="#{NavigationForm.showHelp}"
-                                    value="#{msgs.helpMessageQueueSelection}" />
+                                    styleClass="help-inline font-danger" /> 
+                                <intranda:formHelp content="#{msgs.helpMessageQueueSelection}" />
                             </span>
                         </div>
                     </div>
@@ -478,7 +476,7 @@
                                 styleClass="help-inline font-danger" />
                             <h:outputText
                                 styleClass="block font-light"
-                                rendered="#{NavigationForm.showHelp}"
+                                style="display:#{NavigationForm.showHelp ? 'block' : 'none'}"
                                 value="#{msgs.helpProcessScripts}" />
 
                             <x:panelGrid
@@ -598,7 +596,7 @@
                                 styleClass="help-inline font-danger" />
                             <h:outputText
                                 styleClass="block font-light"
-                                rendered="#{NavigationForm.showHelp}"
+                                style="display:#{NavigationForm.showHelp ? 'block' : 'none'}"
                                 value="#{msgs.helpHttpStep}" />
 
 
@@ -619,7 +617,7 @@
                                         styleClass="help-inline font-danger" />
                                     <h:outputText
                                         styleClass="block font-light"
-                                        rendered="#{NavigationForm.showHelp}"
+                                        style="display:#{NavigationForm.showHelp ? 'block' : 'none'}"
                                         value="#{msgs.helpHttpCloseStep}" />
                                 </div>
 

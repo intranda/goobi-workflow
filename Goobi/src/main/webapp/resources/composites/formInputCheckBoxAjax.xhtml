@@ -1,4 +1,13 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core">
+<ui:composition 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" 
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite" 
+	xmlns:h="http://xmlns.jcp.org/jsf/html" 
+	xmlns:f="http://xmlns.jcp.org/jsf/core" 
+	xmlns:x="http://myfaces.apache.org/tomahawk" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
     <composite:interface>
         <composite:attribute name="name" />
@@ -30,7 +39,7 @@
                     <f:ajax event="#{cc.attrs.ajaxEvent}" render="#{cc.attrs.ajaxRender}" tabindex="#{cc.attrs.tabindex}" pt:aria-label="#{cc.attrs.label}"/>
                 </h:selectBooleanCheckbox>
                 <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger" />
-                <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}" value="#{cc.attrs.help}" />
+                <intranda:formHelp content="#{cc.attrs.help}" />
             </div>
         </div>
 

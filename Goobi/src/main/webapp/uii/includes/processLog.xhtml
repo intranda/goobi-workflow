@@ -6,7 +6,8 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
 
     <composite:interface>
     </composite:interface>
@@ -317,10 +318,7 @@
 			                                     listener="#{process.uploadFile}"
 			                                      />
 		                              </h:inputFile>
-		                              <h:outputText
-		                                  styleClass="help-block font-light"
-		                                  rendered="#{NavigationForm.showHelp}"
-		                                  value="#{msgs.help_import_FileUpload}" />
+		                              <intranda:formHelp content="#{msgs.help_import_FileUpload}" />
 		                              <h:selectOneRadio
 		                                      id="folderSelection"
 		                                      value="#{process.uploadFolder}"

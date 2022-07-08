@@ -11,7 +11,7 @@ import javax.faces.validator.FacesValidator;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 
-@FacesValidator("org.sub.goobi.validator.EDTFValidator")
+@FacesValidator("de.sub.goobi.validator.EDTFValidator")
 public class EDTFValidator implements Validator<String> {
     
     @Override

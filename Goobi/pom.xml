@@ -4,7 +4,7 @@
     <groupId>de.intranda.goobi.workflow</groupId>
     <artifactId>goobi-core</artifactId>
     <!-- When updating the version, make sure to also update the version in the submodules -->
-    <version>22.05.8-SNAPSHOT</version>
+    <version>22.06.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
 
@@ -56,7 +56,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <publicVersion>22.05.8-SNAPSHOT</publicVersion>
+        <publicVersion>22.06.1-SNAPSHOT</publicVersion>
         <!-- Use Java 11 for compiling -->
         <maven.compiler.release>11</maven.compiler.release>
 
@@ -75,7 +75,7 @@
 
         <!-- intranda internal -->
         <ics.version>3.4.0</ics.version>
-        <normdataimporter.version>1.9.1</normdataimporter.version>
+        <normdataimporter.version>1.9.2</normdataimporter.version>
         <ugh-core.version>5.0.11</ugh-core.version>
         <ugh-marc.version>1.3.2</ugh-marc.version>
         <ugh-lido.version>0.0.13</ugh-lido.version>

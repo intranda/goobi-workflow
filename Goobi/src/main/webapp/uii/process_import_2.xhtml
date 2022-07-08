@@ -86,8 +86,7 @@
                                                 <x:inputText id="number" styleClass="form-control" value="#{property.value}"
                                                     required="#{property.required}" />
                                                 <h:message for="number" showDetail="true" styleClass="help-inline font-danger" />
-                                                <h:outputText styleClass="help-block font-light" rendered="#{NavigationForm.showHelp}"
-                                                    value="#{msgs.helpProperty}" />
+                                                <intranda:formHelp content="#{msgs.helpProperty}" />
                                             </div>
                                         </div>
                                     </h:panelGroup>

@@ -271,10 +271,4 @@ public class ExtendedDateTimeFormatGrammarTest {
                 ExtendedDateTimeFormatParser parser = getParserFromString("1934%1935");
                 assertTrue("String '1934%1935' parsed as valid interval. '%' should not be able to act as an interval divider, expected '/'", hasErrors(parser));
         }
-
-        @Test
-        public void impossibleDateTest() {
-                ExtendedDateTimeFormatParser parser = getParserFromString("1985-02-31");
-                assertTrue("1985-02-31 detected as valid date even though February does not have that many days.", hasErrors(parser));
-        }
 }
