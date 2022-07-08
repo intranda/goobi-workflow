@@ -5,8 +5,6 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import javax.xml.XMLConstants;
-
 import org.goobi.beans.AltoChange;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -19,18 +17,16 @@ import org.jdom2.output.XMLOutputter;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 
+import de.sub.goobi.helper.XmlTools;
+
 public class AltoSaver {
-    private static SAXBuilder sax = new SAXBuilder();
+    private static SAXBuilder sax = XmlTools.getSAXBuilder();
     private static XPathFactory xFactory = XPathFactory.instance();
 
     public static void saveAltoChanges(Path altoFile, AltoChange[] changes) throws JDOMException, IOException {
         if (changes == null || changes.length == 0) {
             return;
         }
-        sax.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        sax.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-        sax.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        sax.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         Document doc = sax.build(altoFile.toFile());
         Namespace namespace = Namespace.getNamespace("alto", doc.getRootElement().getNamespaceURI());
 

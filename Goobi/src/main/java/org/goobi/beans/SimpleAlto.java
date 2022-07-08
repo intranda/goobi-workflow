@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.XMLConstants;
-
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -20,6 +18,7 @@ import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.XmlTools;
 import lombok.Data;
 
 @Data
@@ -58,9 +57,7 @@ public class SimpleAlto {
     }
 
     public static SimpleAlto readAlto(Path altoPath) throws IOException, JDOMException {
-        SAXBuilder sax = new SAXBuilder();
-        sax.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        sax.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        SAXBuilder sax = XmlTools.getSAXBuilder();
         Document doc = null;
         try (InputStream in = StorageProvider.getInstance().newInputStream(altoPath)) {
             doc = sax.build(in);

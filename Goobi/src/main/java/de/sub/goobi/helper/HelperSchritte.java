@@ -42,8 +42,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.xml.XMLConstants;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
@@ -733,9 +731,7 @@ public class HelperSchritte {
         XPathExpression<Element> authorityMetaXpath =
                 xFactory.compile("//mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata[goobi:authorityValue]", Filters.element(), null,
                         mods, mets, goobiNamespace);
-        SAXBuilder builder = new SAXBuilder();
-        builder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        builder.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        SAXBuilder builder = XmlTools.getSAXBuilder();
         Document doc;
         try {
             doc = builder.build(metadataFile.toString());
@@ -759,9 +755,7 @@ public class HelperSchritte {
     }
 
     public static void extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) {
-        SAXBuilder builder = new SAXBuilder();
-        builder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        builder.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        SAXBuilder builder = XmlTools.getSAXBuilder();
         Document doc;
         try {
             doc = builder.build(metadataFile.toString());

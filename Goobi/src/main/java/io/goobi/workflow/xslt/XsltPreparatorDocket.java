@@ -39,7 +39,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
-import javax.xml.XMLConstants;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -82,6 +81,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.XmlTools;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -446,9 +446,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         try {
             String filename = process.getMetadataFilePath();
-            SAXBuilder builder = new SAXBuilder();
-            builder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            builder.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            SAXBuilder builder = XmlTools.getSAXBuilder();
             Document metsDoc = builder.build(filename);
             Document anchorDoc = null;
             String anchorfilename = process.getMetadataFilePath().replace("meta.xml", "meta_anchor.xml");

@@ -29,14 +29,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.xml.XMLConstants;
-
 import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Process;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
+
+import de.sub.goobi.helper.XmlTools;
 
 public class DigitalCollections {
 
@@ -49,9 +49,7 @@ public class DigitalCollections {
         }
 
         /* Datei einlesen und Root ermitteln */
-        SAXBuilder builder = new SAXBuilder();
-        builder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        builder.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        SAXBuilder builder = XmlTools.getSAXBuilder();
         Document doc = builder.build(filename);
         Element root = doc.getRootElement();
         /* alle Projekte durchlaufen */
@@ -87,9 +85,7 @@ public class DigitalCollections {
         String firstCollection = "";
 
         /* Datei einlesen und Root ermitteln */
-        SAXBuilder builder = new SAXBuilder();
-        builder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        builder.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        SAXBuilder builder = XmlTools.getSAXBuilder();
         Document doc = builder.build(filename);
         Element root = doc.getRootElement();
         /* alle Projekte durchlaufen */
