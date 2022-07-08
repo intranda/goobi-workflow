@@ -594,7 +594,7 @@ public class MetadatenImagesHelper {
             ImageManager im = null;
             JpegInterpreter pi = null;
             try {
-                im = conf.useS3() ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
+                im = conf.useS3() && s3URI != null ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
                 //                im = new ImageManager(Paths.get(inFileName).toUri());
                 log.trace("im");
                 ImageInterpreter ii = im.getMyInterpreter();
@@ -628,7 +628,7 @@ public class MetadatenImagesHelper {
                 }
             }
         } else {
-            String imageURIString = conf.useS3() ? s3URI.toString() : inFileName;
+            String imageURIString = conf.useS3() && s3URI != null ? s3URI.toString() : inFileName;
             String cs = conf.getContentServerUrl() + imageURIString + "&scale=" + tmpSize + "&rotate=" + intRotation + "&format=jpg";
             cs = cs.replace("\\", "/");
             log.trace("url: " + cs);
