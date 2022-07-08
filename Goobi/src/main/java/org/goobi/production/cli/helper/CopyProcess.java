@@ -39,6 +39,7 @@ import java.util.StringTokenizer;
 
 import javax.faces.model.SelectItem;
 import javax.naming.NamingException;
+import javax.xml.XMLConstants;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.StringUtils;
@@ -1109,6 +1110,8 @@ public class CopyProcess {
         try {
             /* Datei einlesen und Root ermitteln */
             SAXBuilder builder = new SAXBuilder();
+            builder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            builder.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             Document doc = builder.build(filename);
             Element root = doc.getRootElement();
             /* alle Projekte durchlaufen */

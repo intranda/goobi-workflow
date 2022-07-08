@@ -170,6 +170,10 @@
                     <groupId>bouncycastle</groupId>
                     <artifactId>bcprov-jdk14</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -1297,6 +1301,10 @@
                 <exclusion>
                     <groupId>com.lowagie</groupId>
                     <artifactId>itext</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xercesImpl</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

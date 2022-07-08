@@ -3,7 +3,7 @@ package de.sub.goobi.helper.tasks;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -31,6 +31,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import javax.xml.XMLConstants;
 
 import org.goobi.beans.Process;
 import org.jdom2.Document;
@@ -107,6 +109,8 @@ public class ProcessSwapInTask extends LongRunningTask {
         }
 
         SAXBuilder builder = new SAXBuilder();
+        builder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        builder.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         Document docOld;
         try {
             Path swapLogFile = Paths.get(processDirectory, "swapped.xml");
@@ -125,7 +129,7 @@ public class ProcessSwapInTask extends LongRunningTask {
         setStatusMessage("reading checksums");
         Element rootOld = docOld.getRootElement();
 
-        HashMap<String, String> crcMap = new HashMap<String, String>();
+        HashMap<String, String> crcMap = new HashMap<>();
 
         // TODO: Don't use Iterators
         for (Iterator<Element> it = rootOld.getChildren("file").iterator(); it.hasNext();) {

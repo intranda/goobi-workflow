@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
+import javax.xml.XMLConstants;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -445,12 +446,15 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         try {
             String filename = process.getMetadataFilePath();
-            Document metsDoc = new SAXBuilder().build(filename);
+            SAXBuilder builder = new SAXBuilder();
+            builder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            builder.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            Document metsDoc = builder.build(filename);
             Document anchorDoc = null;
             String anchorfilename = process.getMetadataFilePath().replace("meta.xml", "meta_anchor.xml");
             Path anchorFile = Paths.get(anchorfilename);
             if (StorageProvider.getInstance().isFileExists(anchorFile) && StorageProvider.getInstance().isReadable(anchorFile)) {
-                anchorDoc = new SAXBuilder().build(anchorfilename);
+                anchorDoc = builder.build(anchorfilename);
             }
 
             List<Namespace> namespaces = getNamespacesFromConfig();

@@ -38,6 +38,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
+
 import org.apache.commons.io.IOUtils;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -168,6 +170,8 @@ public class SRUClient {
         namespaces = new HashMap<>();
         namespaces.put("srw", "http://www.loc.gov/zing/srw/");
         saxReader = new SAXBuilder();
+        saxReader.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        saxReader.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         saxReader.setXMLReaderFactory(XMLReaders.NONVALIDATING);
     }
 

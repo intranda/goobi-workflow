@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
+
 import org.goobi.api.rest.model.RestMetadata;
 import org.goobi.api.rest.model.RestProcess;
 import org.goobi.api.rest.request.SearchRequest;
@@ -53,6 +55,8 @@ public class MetadataUtils {
         Map<String, Map<String, String>> metaName2LanguagesMap = new HashMap<>();
         Path rulesetPath = Paths.get(ConfigurationHelper.getInstance().getRulesetFolder(), ruleset);
         Document doc;
+        builder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        builder.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         try (InputStream in = Files.newInputStream(rulesetPath)) {
             doc = builder.build(in);
         } catch (JDOMException | IOException e) {
