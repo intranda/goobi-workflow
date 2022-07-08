@@ -21,8 +21,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.xml.XMLConstants;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -41,6 +39,7 @@ import org.jdom2.xpath.XPathFactory;
 import com.google.common.collect.Sets;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.XmlTools;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
@@ -198,9 +197,7 @@ public class PluginInstaller {
     }
 
     private static Document parsePomXml(Path pluginFolder, String pomFilePath) throws JDOMException, IOException {
-        SAXBuilder saxBuilder = new SAXBuilder();
-        saxBuilder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        saxBuilder.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        SAXBuilder saxBuilder = XmlTools.getSAXBuilder();
         Path pomPath = pluginFolder.resolve(pomFilePath);
         Document pluginPomDocument = saxBuilder.build(pomPath.toFile());
         return pluginPomDocument;

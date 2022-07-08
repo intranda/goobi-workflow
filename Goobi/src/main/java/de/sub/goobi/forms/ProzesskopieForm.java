@@ -49,7 +49,6 @@ import javax.faces.model.SelectItem;
 import javax.inject.Named;
 import javax.naming.NamingException;
 import javax.servlet.http.Part;
-import javax.xml.XMLConstants;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.StringUtils;
@@ -87,6 +86,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.UghHelper;
+import de.sub.goobi.helper.XmlTools;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -1281,9 +1281,7 @@ public class ProzesskopieForm implements Serializable {
         this.digitalCollections = new ArrayList<>();
         try {
             /* Datei einlesen und Root ermitteln */
-            SAXBuilder builder = new SAXBuilder();
-            builder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            builder.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            SAXBuilder builder = XmlTools.getSAXBuilder();
             Document doc = builder.build(filename);
             Element root = doc.getRootElement();
             /* alle Projekte durchlaufen */

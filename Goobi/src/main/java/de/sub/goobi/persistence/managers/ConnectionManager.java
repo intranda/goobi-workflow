@@ -99,8 +99,8 @@ public class ConnectionManager {
         ResultSet rs = null;
         try {
             con = this.ds.getConnection(); //NOSONAR as it is closed in the finally statement
-            p_stmt = con.prepareStatement("SHOW PROCESSLIST");
-            rs = p_stmt.executeQuery();
+            p_stmt = con.prepareStatement("SHOW PROCESSLIST"); //NOSONAR as it is closed in the finally statement
+            rs = p_stmt.executeQuery(); //NOSONAR as it is closed in the finally statement
             while (rs.next()) {
                 if (rs.getString("State") != null && rs.getString("State").equals("Locked")) {
                     num_locked_connections++;

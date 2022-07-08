@@ -18,7 +18,6 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.Part;
-import javax.xml.XMLConstants;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
@@ -45,6 +44,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.HelperForm;
+import de.sub.goobi.helper.XmlTools;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -103,9 +103,7 @@ public class PluginInstallBean implements Serializable {
     }
 
     private Optional<String> getLatestGoobiVersionFromNexus() throws ClientProtocolException, IOException, JDOMException {
-        SAXBuilder saxB = new SAXBuilder();
-        saxB.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        saxB.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        SAXBuilder saxB = XmlTools.getSAXBuilder();
         String nexusUrl = "https://nexus.intranda.com/repository/maven-public/de/intranda/goobi/workflow/goobi-core-jar/maven-metadata.xml";
         try (InputStream in = Request.Get(nexusUrl).execute().returnContent().asStream()) {
             Document doc = saxB.build(in);

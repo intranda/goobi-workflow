@@ -32,8 +32,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.xml.XMLConstants;
-
 import org.goobi.beans.Process;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -42,6 +40,7 @@ import org.jdom2.input.SAXBuilder;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.XmlTools;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
@@ -108,9 +107,7 @@ public class ProcessSwapInTask extends LongRunningTask {
             return;
         }
 
-        SAXBuilder builder = new SAXBuilder();
-        builder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        builder.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        SAXBuilder builder = XmlTools.getSAXBuilder();
         Document docOld;
         try {
             Path swapLogFile = Paths.get(processDirectory, "swapped.xml");
