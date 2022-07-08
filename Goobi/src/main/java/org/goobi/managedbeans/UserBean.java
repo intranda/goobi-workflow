@@ -326,17 +326,16 @@ public class UserBean extends BasicBean implements Serializable {
                 + FileSystems.getDefault().getSeparator() + "goobi_loginBlacklist.txt";
         /* Datei zeilenweise durchlaufen und die auf ungültige Zeichen vergleichen */
         try {
-            FileInputStream fis = new FileInputStream(filename);
-            InputStreamReader isr = new InputStreamReader(fis, "UTF8");
-            BufferedReader in = new BufferedReader(isr);
-            String str;
-            while ((str = in.readLine()) != null) {
-                if (str.length() > 0 && inLogin.equalsIgnoreCase(str)) {
-                    valide = false;
-                    Helper.setFehlerMeldung("", "Login " + str + Helper.getTranslation("loginNotValid"));
+            try (FileInputStream fis = new FileInputStream(filename); InputStreamReader isr = new InputStreamReader(fis, "UTF8");
+                    BufferedReader in = new BufferedReader(isr);) {
+                String str;
+                while ((str = in.readLine()) != null) {
+                    if (str.length() > 0 && inLogin.equalsIgnoreCase(str)) {
+                        valide = false;
+                        Helper.setFehlerMeldung("", "Login " + str + Helper.getTranslation("loginNotValid"));
+                    }
                 }
             }
-            in.close();
         } catch (IOException e) {
         }
         return valide;

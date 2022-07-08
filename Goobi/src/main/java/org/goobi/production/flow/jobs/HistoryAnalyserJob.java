@@ -259,7 +259,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 
                 case OPEN:
 
-                    //do not change Bearbeitungszeitpunkt for open steps.                   
+                    //do not change Bearbeitungszeitpunkt for open steps.
                     //                    // fix missing editing date
                     //                    if (step.getBearbeitungszeitpunkt() == null) {
                     //                        isDirty = true;
@@ -276,7 +276,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                     if (step.getBearbeitungsende() != null) {
                         step.setBearbeitungsende(null);
                         isDirty = true;
-                        
+
                         // fix missing editing date
                         if (step.getBearbeitungszeitpunkt() == null) {
                             isDirty = true;
@@ -286,7 +286,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                                 step.setBearbeitungszeitpunkt(getTimestampFromPreviousStep(inProcess, step));
                             }
                         }
-                        
+
                         he = addHistoryEvent(step.getBearbeitungszeitpunkt(), step.getReihenfolge(), step.getTitel(), HistoryEventType.stepOpen,
                                 inProcess);
 
@@ -422,7 +422,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
                 log.debug("updating history entries for " + proc.getTitel());
                 try {
                     if (!proc.isSwappedOutGui()) {
-                        if (true == updateHistory(proc) | updateHistoryForSteps(proc)) {
+                        if (true == updateHistory(proc) || updateHistoryForSteps(proc)) {
                             ProcessManager.saveProcess(proc);
                             log.debug("history updated for process " + proc.getId());
                         }
