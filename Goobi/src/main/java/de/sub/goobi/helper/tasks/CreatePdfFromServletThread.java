@@ -3,7 +3,7 @@ package de.sub.goobi.helper.tasks;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -151,7 +151,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
 
                 List<Path> meta =
                         StorageProvider.getInstance().listFiles(this.getProzess().getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
-                ArrayList<String> filenames = new ArrayList<String>();
+                ArrayList<String> filenames = new ArrayList<>();
                 for (Path data : meta) {
                     String file = "";
                     file += data.toUri().toURL();
@@ -167,7 +167,7 @@ public class CreatePdfFromServletThread extends LongRunningTask {
             }
 
             /* --------------------------------
-             * get pdf from servlet and forward response to file 
+             * get pdf from servlet and forward response to file
              * --------------------------------*/
 
             if (log.isDebugEnabled()) {
@@ -180,40 +180,25 @@ public class CreatePdfFromServletThread extends LongRunningTask {
             RequestConfig rc = builder.build();
             method.setConfig(rc);
 
-            InputStream istr = null;
-            OutputStream ostr = null;
+
             try {
                 byte[] response = httpclient.execute(method, HttpClientHelper.byteArrayResponseHandler);
-                istr = new ByteArrayInputStream(response);
-                ostr = new FileOutputStream(tempPdf.toFile());
+                try ( InputStream istr = new ByteArrayInputStream(response);
+                        OutputStream ostr = new FileOutputStream(tempPdf.toFile())) {
 
-                // Transfer bytes from in to out
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = istr.read(buf)) > 0) {
-                    ostr.write(buf, 0, len);
+                    // Transfer bytes from in to out
+                    byte[] buf = new byte[1024];
+                    int len;
+                    while ((len = istr.read(buf)) > 0) {
+                        ostr.write(buf, 0, len);
+                    }
                 }
-
             } catch (IOException e) {
                 log.error(e);
             } finally {
                 method.releaseConnection();
                 if (httpclient != null) {
                     httpclient.close();
-                }
-                if (istr != null) {
-                    try {
-                        istr.close();
-                    } catch (IOException e) {
-                        log.error(e);
-                    }
-                }
-                if (ostr != null) {
-                    try {
-                        ostr.close();
-                    } catch (IOException e) {
-                        log.error(e);
-                    }
                 }
             }
 
@@ -240,13 +225,12 @@ public class CreatePdfFromServletThread extends LongRunningTask {
             /* --------------------------------
              * report Error to User as Error-Log
              * --------------------------------*/
-            Writer output = null;
             String text = "error while pdf creation: " + e.getMessage();
             Path file = Paths.get(this.targetFolder.toString(), this.getProzess().getTitel() + ".PDF-ERROR.log");
             try {
-                output = new BufferedWriter(new FileWriter(file.toFile()));
-                output.write(text);
-                output.close();
+                try (Writer output = new BufferedWriter(new FileWriter(file.toFile()))) {
+                    output.write(text);
+                }
             } catch (IOException e1) {
                 log.error("Error while reporting error to user in file " + file.toString(), e);
             }

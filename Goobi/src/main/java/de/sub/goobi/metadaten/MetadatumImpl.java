@@ -786,7 +786,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     md.setAutorityFile(vocabulary, vocabularyUrl,
                             vocabularyUrl + "/vocabularies/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
                 }
-
+                break;
             default:
                 break;
         }

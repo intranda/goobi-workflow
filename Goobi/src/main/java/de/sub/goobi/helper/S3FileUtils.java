@@ -889,8 +889,7 @@ public class S3FileUtils implements StorageProviderInterface {
                 try {
                     StorageProvider.getInstance().uploadFile(in, dest);
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    log.error(e);
                 }
             }
         }).start();

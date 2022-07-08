@@ -450,6 +450,7 @@ public class HelperSchritte {
                     break;
                 case "GET":
                     resp = executor.execute(Request.Get(url)).returnResponse();
+                    break;
                 default:
                     //TODO: error to process log
                     break;
