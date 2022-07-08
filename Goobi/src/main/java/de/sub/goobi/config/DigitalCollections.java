@@ -2,7 +2,7 @@
  * This file is part of the Goobi Application - a Workflow tool for the support of
  * mass digitization.
  *
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
  *
@@ -29,18 +29,20 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.XMLConstants;
+
+import org.apache.commons.lang.StringUtils;
+import org.goobi.beans.Process;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
-import org.apache.commons.lang.StringUtils;
-import org.goobi.beans.Process;
 
 public class DigitalCollections {
 
     public static List<String> possibleDigitalCollectionsForProcess(Process process) throws JDOMException, IOException {
 
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         String filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_digitalCollections.xml";
         if (!Files.exists(Paths.get(filename))) {
             throw new FileNotFoundException("File not found: " + filename);
@@ -48,6 +50,8 @@ public class DigitalCollections {
 
         /* Datei einlesen und Root ermitteln */
         SAXBuilder builder = new SAXBuilder();
+        builder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        builder.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         Document doc = builder.build(filename);
         Element root = doc.getRootElement();
         /* alle Projekte durchlaufen */
@@ -84,6 +88,8 @@ public class DigitalCollections {
 
         /* Datei einlesen und Root ermitteln */
         SAXBuilder builder = new SAXBuilder();
+        builder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        builder.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         Document doc = builder.build(filename);
         Element root = doc.getRootElement();
         /* alle Projekte durchlaufen */
