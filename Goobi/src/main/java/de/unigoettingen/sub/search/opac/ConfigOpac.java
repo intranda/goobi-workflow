@@ -82,7 +82,7 @@ public class ConfigOpac {
             try {
                 instance = new ConfigOpac();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error(e);
             }
         }
         return instance;

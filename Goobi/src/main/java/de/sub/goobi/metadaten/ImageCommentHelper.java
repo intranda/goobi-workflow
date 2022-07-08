@@ -11,21 +11,24 @@ import java.util.HashMap;
 
 import com.google.gson.Gson;
 
+import lombok.extern.log4j.Log4j2;
+
 /**
  * Class for saving comments per image file
  * 
  * @author joel
  *
  */
+@Log4j2
 public class ImageCommentHelper {
 
     private static Gson gson = new Gson();
-    //dictionary of comment files, so each is only read once    
+    //dictionary of comment files, so each is only read once
     private HashMap<String, ImageComments> commentFiles;
 
     public ImageCommentHelper() {
 
-        commentFiles = new HashMap<String, ImageComments>();
+        commentFiles = new HashMap<>();
 
     }
 
@@ -53,8 +56,7 @@ public class ImageCommentHelper {
                 }
 
             } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                log.error(e);
             }
         }
 
@@ -77,8 +79,7 @@ public class ImageCommentHelper {
         try (Writer writer = new FileWriter(imageFolderName + "imageComments.json")) {
             gson.toJson(commentsClass, writer);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         }
 
     }
@@ -93,7 +94,7 @@ public class ImageCommentHelper {
         public HashMap<String, String> comments;
 
         public ImageComments() {
-            comments = new HashMap<String, String>();
+            comments = new HashMap<>();
         }
 
         public String getComment(String imageName) {

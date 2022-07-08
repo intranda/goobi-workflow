@@ -666,8 +666,8 @@ public class UserBean extends BasicBean implements Serializable {
             user.setEncryptedPassword(encryptedPassword);
             // Save salt and password
             UserManager.saveUser(user);
-        } catch (DAOException daoe) {
-            daoe.printStackTrace();
+        } catch (DAOException e) {
+            log.error(e);
             Helper.setFehlerMeldung("Couldn't set password of user \"" + user.getNachVorname() + "!");
         }
     }

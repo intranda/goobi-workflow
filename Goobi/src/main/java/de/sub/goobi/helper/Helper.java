@@ -428,7 +428,6 @@ public class Helper implements Serializable, ServletContextListener {
                     log.info("Created missing file: " + messagesFile.toAbsolutePath());
                 } catch (IOException ioException) {
                     log.error("IOException wile creating missing file: " + messagesFile.toAbsolutePath());
-                    ioException.printStackTrace();
                 }
             }
         }

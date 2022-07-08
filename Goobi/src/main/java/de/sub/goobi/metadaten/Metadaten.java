@@ -1491,8 +1491,7 @@ public class Metadaten implements Serializable {
             this.myProzess = ProcessManager.getProcessById(id);
         } catch (NumberFormatException e1) {
             Helper.setFehlerMeldung("error while loading process data " + e1.getMessage());
-            System.out.println(e1);
-            e1.printStackTrace();
+            log.error(e1);
             return Helper.getRequestParameter("zurueck");
             // } catch (DAOException e1) {
             // Helper.setFehlerMeldung("error while loading process data" + e1.getMessage());
@@ -2118,7 +2117,7 @@ public class Metadaten implements Serializable {
      * @throws TypeNotAllowedAsChildException ============================================================ == ==
      */
     public String KnotenVerschieben() throws TypeNotAllowedAsChildException {
-        if(this.myDocStruct != null && this.myDocStruct.getParent() != null) {            
+        if(this.myDocStruct != null && this.myDocStruct.getParent() != null) {
             this.myDocStruct.getParent().removeChild(this.myDocStruct);
             this.tempStrukturelement.addChild(this.myDocStruct);
             MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
@@ -3574,7 +3573,7 @@ public class Metadaten implements Serializable {
             setImageIndex(pageNumber - 1);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return "";
     }

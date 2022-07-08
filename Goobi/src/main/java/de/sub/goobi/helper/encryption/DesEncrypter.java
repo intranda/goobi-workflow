@@ -83,12 +83,7 @@ public class DesEncrypter {
             byte[] enc = this.ecipher.doFinal(utf8);
             // Encode bytes to base64 to get a string
             return new String(Base64.encodeBase64(enc));
-        } catch (BadPaddingException e) {
-            // e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            // e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            // e.printStackTrace();
+        } catch (BadPaddingException | IllegalBlockSizeException |UnsupportedEncodingException e) {
         }
         return null;
     }
