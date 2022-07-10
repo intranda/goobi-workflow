@@ -48,12 +48,6 @@ public class ConfigPluginsTest extends AbstractTest {
     }
 
     @Test
-    public void testConstructor() {
-        ConfigPlugins cp = new ConfigPlugins();
-        assertNotNull(cp);
-    }
-
-    @Test
     public void testConfigPluginsWithoutFile() {
 
         IImportPlugin plugin = (IImportPlugin) PluginLoader.getPluginByTitle(PluginType.Import, "JunitImportPlugin");

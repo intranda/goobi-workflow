@@ -32,13 +32,13 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.nio.file.FileSystems;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -326,17 +326,16 @@ public class UserBean extends BasicBean implements Serializable {
                 + FileSystems.getDefault().getSeparator() + "goobi_loginBlacklist.txt";
         /* Datei zeilenweise durchlaufen und die auf ungültige Zeichen vergleichen */
         try {
-            FileInputStream fis = new FileInputStream(filename);
-            InputStreamReader isr = new InputStreamReader(fis, "UTF8");
-            BufferedReader in = new BufferedReader(isr);
-            String str;
-            while ((str = in.readLine()) != null) {
-                if (str.length() > 0 && inLogin.equalsIgnoreCase(str)) {
-                    valide = false;
-                    Helper.setFehlerMeldung("", "Login " + str + Helper.getTranslation("loginNotValid"));
+            try (FileInputStream fis = new FileInputStream(filename); InputStreamReader isr = new InputStreamReader(fis, "UTF8");
+                    BufferedReader in = new BufferedReader(isr);) {
+                String str;
+                while ((str = in.readLine()) != null) {
+                    if (str.length() > 0 && inLogin.equalsIgnoreCase(str)) {
+                        valide = false;
+                        Helper.setFehlerMeldung("", "Login " + str + Helper.getTranslation("loginNotValid"));
+                    }
                 }
             }
-            in.close();
         } catch (IOException e) {
         }
         return valide;
@@ -666,8 +665,8 @@ public class UserBean extends BasicBean implements Serializable {
             user.setEncryptedPassword(encryptedPassword);
             // Save salt and password
             UserManager.saveUser(user);
-        } catch (DAOException daoe) {
-            daoe.printStackTrace();
+        } catch (DAOException e) {
+            log.error(e);
             Helper.setFehlerMeldung("Couldn't set password of user \"" + user.getNachVorname() + "!");
         }
     }
@@ -683,7 +682,7 @@ public class UserBean extends BasicBean implements Serializable {
      * @return The generated password
      */
     public static String createRandomPassword(int length) {
-        Random r = new Random();
+        SecureRandom r = new SecureRandom();
         StringBuilder password = new StringBuilder();
         while (password.length() < length) {
             // ASCII interval: [97 + 0, 97 + 25] => [97, 122] => [a, z]

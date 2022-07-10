@@ -388,6 +388,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
             log.error("Error while uploading files", e);
         }
     }
+
     /**
      * internal method to manage the file upload for vocabulary records
      */
@@ -408,49 +409,49 @@ public class VocabularyBean extends BasicBean implements Serializable {
                 file = new FileInputStream(importFile.toFile());
                 log.debug("Importing file {}", importFile.toString());
                 BOMInputStream in = new BOMInputStream(file, false);
-                Workbook wb = WorkbookFactory.create(in);
-                Sheet sheet = wb.getSheetAt(0);
-                Iterator<Row> rowIterator = sheet.rowIterator();
-                Row headerRow = rowIterator.next();
-                int numberOfCells = headerRow.getLastCellNum();
-                headerOrder = new ArrayList<>(numberOfCells);
-                log.debug("Found {} cell(s)", numberOfCells);
+                try (Workbook wb = WorkbookFactory.create(in)) {
+                    Sheet sheet = wb.getSheetAt(0);
+                    Iterator<Row> rowIterator = sheet.rowIterator();
+                    Row headerRow = rowIterator.next();
+                    int numberOfCells = headerRow.getLastCellNum();
+                    headerOrder = new ArrayList<>(numberOfCells);
+                    log.debug("Found {} cell(s)", numberOfCells);
 
-                rowsToImport = new LinkedList<>();
-                for (int i = 0; i < numberOfCells; i++) {
-                    Cell cell = headerRow.getCell(i);
-                    if (cell != null) {
-                        String value = dataFormatter.formatCellValue(cell).trim();
-                        //String value = cell.getStringCellValue();
-                        headerOrder.add(new MatchingField(value, i, CellReference.convertNumToColString(i), this));
-                    }
-                }
-                log.debug("read header");
-                while (rowIterator.hasNext()) {
-                    Row row = rowIterator.next();
-                    rowsToImport.add(row);
-                }
-                log.debug("Found {} rows to import", rowsToImport.size());
-                for (MatchingField mf : headerOrder) {
-                    String excelTitle = mf.getColumnHeader();
-                    if (excelTitle.matches(".*\\(.{3}\\)")) {
-                        String titlePart = excelTitle.substring(0, excelTitle.lastIndexOf("(")).trim();
-                        String languagePart = excelTitle.substring(excelTitle.lastIndexOf("(") + 1, excelTitle.lastIndexOf(")")).trim();
-                        for (Definition def : currentVocabulary.getStruct()) {
-                            if (def.getLabel().equals(titlePart) && def.getLanguage().equals(languagePart)) {
-                                mf.setAssignedField(def);
-                            }
-                        }
-                    } else {
-                        String titlePart = excelTitle.trim();
-                        for (Definition def : currentVocabulary.getStruct()) {
-                            if (def.getLabel().equals(titlePart) && StringUtils.isBlank(def.getLanguage())) {
-                                mf.setAssignedField(def);
-                            }
+                    rowsToImport = new LinkedList<>();
+                    for (int i = 0; i < numberOfCells; i++) {
+                        Cell cell = headerRow.getCell(i);
+                        if (cell != null) {
+                            String value = dataFormatter.formatCellValue(cell).trim();
+                            //String value = cell.getStringCellValue();
+                            headerOrder.add(new MatchingField(value, i, CellReference.convertNumToColString(i), this));
                         }
                     }
+                    log.debug("read header");
+                    while (rowIterator.hasNext()) {
+                        Row row = rowIterator.next();
+                        rowsToImport.add(row);
+                    }
+                    log.debug("Found {} rows to import", rowsToImport.size());
+                    for (MatchingField mf : headerOrder) {
+                        String excelTitle = mf.getColumnHeader();
+                        if (excelTitle.matches(".*\\(.{3}\\)")) {
+                            String titlePart = excelTitle.substring(0, excelTitle.lastIndexOf("(")).trim();
+                            String languagePart = excelTitle.substring(excelTitle.lastIndexOf("(") + 1, excelTitle.lastIndexOf(")")).trim();
+                            for (Definition def : currentVocabulary.getStruct()) {
+                                if (def.getLabel().equals(titlePart) && def.getLanguage().equals(languagePart)) {
+                                    mf.setAssignedField(def);
+                                }
+                            }
+                        } else {
+                            String titlePart = excelTitle.trim();
+                            for (Definition def : currentVocabulary.getStruct()) {
+                                if (def.getLabel().equals(titlePart) && StringUtils.isBlank(def.getLanguage())) {
+                                    mf.setAssignedField(def);
+                                }
+                            }
+                        }
+                    }
                 }
-
             } catch (Exception e) {
                 Helper.setFehlerMeldung("file not readable", e);
                 log.error(e);
@@ -765,7 +766,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
         public void setCurrentDefinition(String value) {
 
             if (StringUtils.isNotBlank(value) && !"-".equals(value)) {
-                if (value.matches(".*\\(.*\\)")) {
+                if (value.matches(".*\\(.*\\)")) { //NOSONAR, regex is not vulnerable to backtracking
                     String titlePart = value.substring(0, value.lastIndexOf("(")).trim();
                     String languagePart = value.substring(value.lastIndexOf("(") + 1, value.lastIndexOf(")")).trim();
                     for (Definition def : currentVocabulary.getStruct()) {

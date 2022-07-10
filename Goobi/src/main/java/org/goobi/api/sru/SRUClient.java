@@ -46,6 +46,7 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.input.sax.XMLReaders;
 
 import de.sub.goobi.helper.HttpClientHelper;
+import de.sub.goobi.helper.XmlTools;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -167,7 +168,7 @@ public class SRUClient {
     private void saxInit() {
         namespaces = new HashMap<>();
         namespaces.put("srw", "http://www.loc.gov/zing/srw/");
-        saxReader = new SAXBuilder();
+        saxReader = XmlTools.getSAXBuilder();
         saxReader.setXMLReaderFactory(XMLReaders.NONVALIDATING);
     }
 

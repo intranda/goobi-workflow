@@ -959,8 +959,8 @@ public class ProcessBean extends BasicBean implements Serializable {
     private void updateUserPaginator() {
         String filter =
                 "benutzer.BenutzerID not in (select BenutzerID from schritteberechtigtebenutzer where schritteberechtigtebenutzer.schritteID = "
-                        + mySchritt.getId() + ") AND " +
-                        "benutzer.BenutzerID not in (select BenutzerID from benutzer where benutzer.userstatus = 'deleted')";
+                        + mySchritt.getId() + ") AND "
+                        + "benutzer.BenutzerID not in (select BenutzerID from benutzer where benutzer.userstatus = 'deleted')";
         UserManager m = new UserManager();
         userPaginator = new DatabasePaginator("Nachname", filter, m, "");
 
@@ -1499,8 +1499,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     private void saveStepInStepManager(Step step) {
         try {
             StepManager.saveStep(step);
-            String message = "Changed step order for step '" + step.getTitel() + "' to position " + step.getReihenfolge()
-                    + " in process details.";
+            String message = "Changed step order for step '" + step.getTitel() + "' to position " + step.getReihenfolge() + " in process details.";
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, message);
             // set list to null to reload list of steps in new order
             this.myProzess.setSchritte(null);
@@ -2239,32 +2238,31 @@ public class ProcessBean extends BasicBean implements Serializable {
                     }
                     rowList.add(row);
                 }
-                Document document = new Document();
-                Rectangle a4quer = new Rectangle(PageSize.A4.getHeight(), PageSize.A4.getWidth());
-                PdfWriter.getInstance(document, out);
-                document.setPageSize(a4quer);
-                document.open();
-                if (rowList.size() > 0) {
-                    //                    Paragraph p = new Paragraph(rowList.get(0).get(0).toString());
-                    //                    document.add(p);
-                    PdfPTable table = new PdfPTable(rowList.get(0).size());
-                    table.setSpacingBefore(20);
+                try (Document document = new Document()) {
+                    Rectangle a4quer = new Rectangle(PageSize.A4.getHeight(), PageSize.A4.getWidth());
+                    PdfWriter.getInstance(document, out);
+                    document.setPageSize(a4quer);
+                    document.open();
+                    if (rowList.size() > 0) {
+                        //                    Paragraph p = new Paragraph(rowList.get(0).get(0).toString());
+                        //                    document.add(p);
+                        PdfPTable table = new PdfPTable(rowList.get(0).size());
+                        table.setSpacingBefore(20);
 
-                    for (int i = 0; i < rowList.size(); i++) {
+                        for (int i = 0; i < rowList.size(); i++) {
 
-                        List<XSSFCell> row = rowList.get(i);
-                        table.completeRow();
-                        for (int j = 0; j < row.size(); j++) {
-                            XSSFCell myCell = row.get(j);
-                            String stringCellValue = myCell.toString();
-                            table.addCell(stringCellValue);
+                            List<XSSFCell> row = rowList.get(i);
+                            table.completeRow();
+                            for (int j = 0; j < row.size(); j++) {
+                                XSSFCell myCell = row.get(j);
+                                String stringCellValue = myCell.toString();
+                                table.addCell(stringCellValue);
+                            }
+
                         }
-
+                        document.add(table);
                     }
-                    document.add(table);
                 }
-
-                document.close();
                 out.flush();
                 facesContext.responseComplete();
 
@@ -2654,7 +2652,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     public String cloneProcess() {
-        myProzess.clone();
+        new Process(myProzess);
         return FilterVorlagen();
     }
 
@@ -2768,8 +2766,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     public boolean isFoldersArchived() throws IOException, InterruptedException, SwapException, DAOException {
         Path images = Paths.get(this.myProzess.getImagesDirectory());
         try (Stream<Path> filesInImages = Files.list(images)) {
-            return filesInImages
-                    .anyMatch(p -> Files.isRegularFile(p) && p.getFileName().toString().endsWith(".xml"));
+            return filesInImages.anyMatch(p -> Files.isRegularFile(p) && p.getFileName().toString().endsWith(".xml"));
         }
     }
 

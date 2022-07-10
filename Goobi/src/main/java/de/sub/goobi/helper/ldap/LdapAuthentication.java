@@ -331,7 +331,7 @@ public class LdapAuthentication {
                 }
             }
         } else if (inBenutzer.getLdapGruppe().isReadDirectoryAnonymous()) {
-            env.put(Context.SECURITY_AUTHENTICATION, "none");
+            env.put(Context.SECURITY_AUTHENTICATION, "none"); //NOSONAR, authentication type is dependent on configuration
         } else {
             env.put(Context.SECURITY_AUTHENTICATION, "simple");
             env.put(Context.SECURITY_PRINCIPAL, inBenutzer.getLdapGruppe().getAdminLogin());
@@ -524,7 +524,7 @@ public class LdapAuthentication {
                 }
             }
         } else if (inBenutzer.getLdapGruppe().isReadDirectoryAnonymous()) {
-            env.put(Context.SECURITY_AUTHENTICATION, "none");
+            env.put(Context.SECURITY_AUTHENTICATION, "none"); //NOSONAR, authentication type is dependent on configuration
         } else {
             env.put(Context.SECURITY_AUTHENTICATION, "simple");
             env.put(Context.SECURITY_PRINCIPAL, inBenutzer.getLdapGruppe().getAdminLogin());
@@ -645,27 +645,27 @@ public class LdapAuthentication {
         Path myPfad = Paths.get(path);
         if (!StorageProvider.getInstance().isFileExists(myPfad)) {
             try {
-                FileOutputStream ksos = new FileOutputStream(path);
                 // TODO: Rename parameters to something more meaningful, this is quite specific for the GDZ
-                FileInputStream cacertFile = new FileInputStream(inBenutzer.getLdapGruppe().getPathToRootCertificate());
-                FileInputStream certFile2 = new FileInputStream(inBenutzer.getLdapGruppe().getPathToPdcCertificate());
+                try (FileOutputStream ksos = new FileOutputStream(path);
+                        FileInputStream cacertFile = new FileInputStream(inBenutzer.getLdapGruppe().getPathToRootCertificate());
+                        FileInputStream certFile2 = new FileInputStream(inBenutzer.getLdapGruppe().getPathToPdcCertificate())) {
 
-                CertificateFactory cf = CertificateFactory.getInstance("X.509");
-                X509Certificate cacert = (X509Certificate) cf.generateCertificate(cacertFile);
-                X509Certificate servercert = (X509Certificate) cf.generateCertificate(certFile2);
+                    CertificateFactory cf = CertificateFactory.getInstance("X.509");
+                    X509Certificate cacert = (X509Certificate) cf.generateCertificate(cacertFile);
+                    X509Certificate servercert = (X509Certificate) cf.generateCertificate(certFile2);
 
-                KeyStore ks = KeyStore.getInstance("jks");
-                char[] password = passwd.toCharArray();
+                    KeyStore ks = KeyStore.getInstance("jks");
+                    char[] password = passwd.toCharArray();
 
-                // TODO: Let this method really load a keystore if configured
-                // initalize the keystore, if file is available, load the keystore
-                ks.load(null);
+                    // TODO: Let this method really load a keystore if configured
+                    // initalize the keystore, if file is available, load the keystore
+                    ks.load(null);
 
-                ks.setCertificateEntry("ROOTCERT", cacert);
-                ks.setCertificateEntry("PDC", servercert);
+                    ks.setCertificateEntry("ROOTCERT", cacert);
+                    ks.setCertificateEntry("PDC", servercert);
 
-                ks.store(ksos, password);
-                ksos.close();
+                    ks.store(ksos, password);
+                }
             } catch (Exception e) {
                 log.error(e);
             }

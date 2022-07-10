@@ -1,12 +1,12 @@
-package org.goobi.beans;
+package de.sub.goobi.helper;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -25,39 +25,23 @@ package org.goobi.beans;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import java.io.Serializable;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.jdom2.input.SAXBuilder;
 
-@Getter
-@Setter
-public class ProjectFileGroup implements Serializable {
-    private static final long serialVersionUID = -5506252462891480484L;
-    private Integer id;
-    private String name;
-    private String path;
-    private String mimetype; // optional
-    private String suffix; // optional
-    private String folder;
+import lombok.extern.log4j.Log4j2;
 
-    // use original mimetype, suffix in export
-    private boolean useOriginalFiles = false;
+@Log4j2
+public class XmlTools {
 
-    // list of mimetypes to ignore during export. Can be images/jpeg or images/*
-    private String ignoreMimetypes;
+    public static SAXBuilder getSAXBuilder() {
+        SAXBuilder builder = new SAXBuilder();
+        // Disable access to external entities
+        builder.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        builder.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        builder.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
 
-    private Project project;
-
-    public ProjectFileGroup() {
+        return builder;
     }
 
-    public ProjectFileGroup(ProjectFileGroup source) {
-        setFolder(source.getFolder());
-        setMimetype(source.getMimetype());
-        setName(source.getName());
-        setPath(source.getPath());
-        setSuffix(source.getSuffix());
-    }
 
 }

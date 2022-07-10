@@ -349,14 +349,14 @@ public class HelperSchritte {
                     case 99:
 
                         break;
-                    // return code 98: re-open task
+                        // return code 98: re-open task
                     case 98:
                         reOpenStep(step);
                         break;
-                    // return code 0: script returned without error
+                        // return code 0: script returned without error
                     case 0:
                         break;
-                    // everything else: error
+                        // everything else: error
                     default:
                         errorStep(step);
                         break outerloop;
@@ -448,6 +448,7 @@ public class HelperSchritte {
                     break;
                 case "GET":
                     resp = executor.execute(Request.Get(url)).returnResponse();
+                    break;
                 default:
                     //TODO: error to process log
                     break;
@@ -619,9 +620,9 @@ public class HelperSchritte {
                         StepManager.saveStep(step);
                         Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
                                 "Script for '" + step.getTitel() + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode()
-                                        + ". The script returned: " + rueckgabe.getErrorText());
+                                + ". The script returned: " + rueckgabe.getErrorText());
                         log.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
-                                + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
+                        + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
                     }
                 }
             }
@@ -685,7 +686,7 @@ public class HelperSchritte {
                 CloseStepObjectAutomatic(step);
             } else {
                 Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
-                        + "' was cancelled because of validation errors: " + dms.getProblems().toString());
+                + "' was cancelled because of validation errors: " + dms.getProblems().toString());
                 errorStep(step);
             }
             return validate;
@@ -730,7 +731,7 @@ public class HelperSchritte {
         XPathExpression<Element> authorityMetaXpath =
                 xFactory.compile("//mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata[goobi:authorityValue]", Filters.element(), null,
                         mods, mets, goobiNamespace);
-        SAXBuilder builder = new SAXBuilder();
+        SAXBuilder builder = XmlTools.getSAXBuilder();
         Document doc;
         try {
             doc = builder.build(metadataFile.toString());
@@ -754,7 +755,7 @@ public class HelperSchritte {
     }
 
     public static void extractMetadata(Path metadataFile, Map<String, List<String>> metadataPairs) {
-        SAXBuilder builder = new SAXBuilder();
+        SAXBuilder builder = XmlTools.getSAXBuilder();
         Document doc;
         try {
             doc = builder.build(metadataFile.toString());

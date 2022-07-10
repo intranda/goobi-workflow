@@ -881,7 +881,7 @@ public class S3FileUtils implements StorageProviderInterface {
         if (getPathStorageType(dest) == StorageType.LOCAL) {
             return nio.newOutputStream(dest);
         }
-        final PipedInputStream in = new PipedInputStream();
+        final PipedInputStream in = new PipedInputStream(); //NOSONAR, it gets closed when PipedOutputStream gets closed
         PipedOutputStream out = new PipedOutputStream(in);
         new Thread(new Runnable() {
             @Override
@@ -889,8 +889,7 @@ public class S3FileUtils implements StorageProviderInterface {
                 try {
                     StorageProvider.getInstance().uploadFile(in, dest);
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    log.error(e);
                 }
             }
         }).start();

@@ -1,6 +1,5 @@
 package org.goobi.goobiScript;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,7 @@ public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGo
     private static final String CONTENT_EMPTY = "empty"; // just the metadata
     private static final String CONTENT_PART = "part"; // still unused
     private static final String CONTENT_MORE = "more"; // still unused
-    
+
     @Override
     public String getAction() {
         return "cloneProcess";
@@ -77,13 +76,13 @@ public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGo
         gsr.setProcessTitle(p.getTitel());
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
-        
+
         String title = parameters.get("title");
         try {
 
             // first duplicate the process inside of the database
-            Process newprocess = p.clone();
-            
+            Process newprocess = new Process(p);
+
             // copy the files and other content over to the new process
             String c = parameters.get("content");
             if (c.equals(CONTENT_ALL)) {
@@ -96,21 +95,21 @@ public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGo
                     StorageProvider.getInstance().copyFile(Paths.get(p.getProcessDataDirectory(), "meta_anchor.xml"), Paths.get(newprocess.getProcessDataDirectory(), "meta_anchor.xml"));
                 }
             }
-            
+
             // get the title to be set and pipe it through the variable replacer
             Fileformat ff = p.readMetadataFile();
             VariableReplacer replacer = new VariableReplacer(ff.getDigitalDocument(), p.getRegelsatz().getPreferences(), p, null);
             title = replacer.replace(title);
-            
+
             // assign the old process title to be able to change that and all folders correctly
             newprocess.setTitel(p.getTitel());
             newprocess.changeProcessTitle(title);
             ProcessManager.saveProcess(newprocess);
-            
+
             // all successfull, yeah
             gsr.setResultMessage("Process '" + p.getTitel() + "' successfully cloned under the new name '" + parameters.get("title") + "' with id: " + newprocess.getId());
             gsr.setResultType(GoobiScriptResultType.OK);
-        
+
         } catch (Exception e) {
             Helper.addMessageToProcessLog(p.getId(), LogType.ERROR,
                     "Problem while cloning the process '" + p.getTitel() + "' under the new name '" + title + "'", username);
@@ -119,7 +118,7 @@ public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGo
             gsr.setResultType(GoobiScriptResultType.ERROR);
             gsr.setErrorText(e.getMessage());
         }
-        
+
         gsr.updateTimestamp();
     }
 

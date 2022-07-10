@@ -16,7 +16,9 @@ import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class GoobiScriptMoveWorkflowBackward extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
@@ -67,7 +69,7 @@ public class GoobiScriptMoveWorkflowBackward extends AbstractIGoobiScript implem
             gsr.setResultMessage("Workflow was moved backward successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);
         } catch (DAOException e) {
-            e.printStackTrace();
+            log.error(e);
             gsr.setResultMessage("Errow while moving the workflow backward: " + e.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);
             gsr.setErrorText(e.getMessage());

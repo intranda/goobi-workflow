@@ -30,7 +30,6 @@ import java.nio.file.AccessDeniedException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +54,6 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
-import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
@@ -73,8 +71,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
     protected boolean exportWithImages = true;
     @Setter
     protected boolean exportFulltext = true;
-    @Getter
-    protected List<String> problems = new ArrayList<>();
+
     public final static String DIRECTORY_SUFFIX = "_tif";
 
     public ExportDms() {

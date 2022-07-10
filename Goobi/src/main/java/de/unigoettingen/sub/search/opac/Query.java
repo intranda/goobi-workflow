@@ -3,7 +3,7 @@ package de.unigoettingen.sub.search.opac;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -28,10 +28,12 @@ package de.unigoettingen.sub.search.opac;
 import java.net.URLEncoder;
 
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class Query {
 
-	@Getter
+    @Getter
     private String queryUrl;
     private int queryTermNumber = 0;
 
@@ -54,7 +56,7 @@ public class Query {
         this.addQuery(null, query, fieldNumber);
     }
 
-    //operation must be Query.AND, .OR, .NOT 
+    //operation must be Query.AND, .OR, .NOT
     public void addQuery(String operation, String query, String fieldNumber) {
 
         //ignore boolean operation for first term
@@ -69,7 +71,7 @@ public class Query {
         try {
             this.queryUrl += QUERY + this.queryTermNumber + "=" + URLEncoder.encode(query, GetOpac.URL_CHARACTER_ENCODING);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
 
         this.queryTermNumber++;

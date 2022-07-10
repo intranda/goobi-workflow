@@ -385,8 +385,7 @@ public class SessionForm implements Serializable {
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "First name: " + user.getVorname());
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "Last name: " + user.getNachname());
         } catch (DAOException daoException) {
-            //log.debug("Unknown user will be logged out.");
-            //daoException.printStackTrace();
+            log.trace(daoException);
         }
     }
 

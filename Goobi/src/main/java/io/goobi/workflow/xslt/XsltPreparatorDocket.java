@@ -81,6 +81,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.XmlTools;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
@@ -445,12 +446,13 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         try {
             String filename = process.getMetadataFilePath();
-            Document metsDoc = new SAXBuilder().build(filename);
+            SAXBuilder builder = XmlTools.getSAXBuilder();
+            Document metsDoc = builder.build(filename);
             Document anchorDoc = null;
             String anchorfilename = process.getMetadataFilePath().replace("meta.xml", "meta_anchor.xml");
             Path anchorFile = Paths.get(anchorfilename);
             if (StorageProvider.getInstance().isFileExists(anchorFile) && StorageProvider.getInstance().isReadable(anchorFile)) {
-                anchorDoc = new SAXBuilder().build(anchorfilename);
+                anchorDoc = builder.build(anchorfilename);
             }
 
             List<Namespace> namespaces = getNamespacesFromConfig();

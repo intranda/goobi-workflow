@@ -88,313 +88,310 @@ public class DatabaseVersion {
         int tempVersion = currentVersion;
         try {
             switch (currentVersion) {
-                case 0:
+                case 0: //NOSONAR, no break on purpose to run through all cases,
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 1.");
                     }
                     updateToVersion1();
                     currentVersion = 1;
                     tempVersion = 1;
-                case 1:
+                case 1://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 2.");
                     }
                     updateToVersion2();
-                    tempVersion ++;
-                case 2:
+                    tempVersion++;
+                case 2://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 3.");
                     }
                     updateToVersion3();
-                    tempVersion ++;
-                case 3:
-                    tempVersion ++;
-                case 4:
+                    tempVersion++;
+                case 3://NOSONAR, no break on purpose to run through all cases
+                    tempVersion++;
+                case 4://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 5.");
                     }
                     updateToVersion5();
-                    tempVersion ++;
-                case 5:
+                    tempVersion++;
+                case 5://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 6.");
                     }
                     updateToVersion6();
-                    tempVersion ++;
-                case 6:
+                    tempVersion++;
+                case 6://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 7.");
                     }
                     updateToVersion7();
-                    tempVersion ++;
-                case 7:
+                    tempVersion++;
+                case 7://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 8.");
                     }
                     updateToVersion8();
-                    tempVersion ++;
-                case 8:
+                    tempVersion++;
+                case 8://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 9.");
                     }
                     updateToVersion9();
-                    tempVersion ++;
-                case 9:
+                    tempVersion++;
+                case 9://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 10.");
                     }
                     updateToVersion10();
-                    tempVersion ++;
-                case 10:
+                    tempVersion++;
+                case 10://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 11.");
                     }
                     updateToVersion11();
-                    tempVersion ++;
-                case 11:
+                    tempVersion++;
+                case 11://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 12.");
                     }
                     updateToVersion12();
-                    tempVersion ++;
-                case 12:
+                    tempVersion++;
+                case 12://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 13.");
                     }
                     updateToVersion13();
-                    tempVersion ++;
-                case 13:
+                    tempVersion++;
+                case 13://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 14.");
                     }
                     updateToVersion14();
-                    tempVersion ++;
-                case 14:
+                    tempVersion++;
+                case 14://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 15.");
                     }
                     updateToVersion15();
-                    tempVersion ++;
-                case 15:
+                    tempVersion++;
+                case 15://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 16.");
                     }
                     updateToVersion16();
-                    tempVersion ++;
-                case 16:
+                    tempVersion++;
+                case 16://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 17.");
                     }
                     updateToVersion17();
-                    tempVersion ++;
-                case 17:
+                    tempVersion++;
+                case 17://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 18.");
                     }
                     updateToVersion18();
-                    tempVersion ++;
-                case 18:
+                    tempVersion++;
+                case 18://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 19.");
                     }
                     updateToVersion19();
-                    tempVersion ++;
-                case 19:
+                    tempVersion++;
+                case 19://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 20.");
                     }
                     updateToVersion20();
-                    tempVersion ++;
-                case 20:
+                    tempVersion++;
+                case 20://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 21.");
                     }
                     updateToVersion21();
-                    tempVersion ++;
-                case 21:
+                    tempVersion++;
+                case 21://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 22.");
                     }
                     updateToVersion22();
-                    tempVersion ++;
-                case 22:
+                    tempVersion++;
+                case 22://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 23.");
                     }
                     updateToVersion23();
-                    tempVersion ++;
-                case 23:
+                    tempVersion++;
+                case 23://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 24.");
                     }
                     updateToVersion24();
-                    tempVersion ++;
-                case 24:
+                    tempVersion++;
+                case 24://NOSONAR, no break on purpose to run through all cases
                     if (!checkIfColumnExists("benutzer", "customCss")) {
                         runSql("alter table benutzer add column customCss text DEFAULT null");
                     }
-                case 25:
+                case 25://NOSONAR, no break on purpose to run through all cases
                     if (!checkIfColumnExists("prozesse", "mediaFolderExists")) {
                         runSql("alter table prozesse add column mediaFolderExists boolean default false;");
                     }
-                case 26:
+                case 26://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 27.");
                     }
                     updateToVersion27();
-                    tempVersion ++;
-                case 27:
+                    tempVersion++;
+                case 27://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 28.");
                     }
                     updateToVersion28();
-                    tempVersion ++;
-                case 28:
+                    tempVersion++;
+                case 28://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 29.");
                     }
                     updateToVersion29();
-                    tempVersion ++;
-                case 29:
+                    tempVersion++;
+                case 29://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 30.");
                     }
                     updateToVersion30();
-                    tempVersion ++;
-                case 30:
+                    tempVersion++;
+                case 30://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 31.");
                     }
                     updateToVersion31();
-                    tempVersion ++;
-                case 31:
+                    tempVersion++;
+                case 31://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 32.");
                     }
                     updateToVersion32();
-                    tempVersion ++;
-                case 32:
+                    tempVersion++;
+                case 32://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 33.");
                     }
                     updateToVersion33();
-                    tempVersion ++;
-                case 33:
+                    tempVersion++;
+                case 33://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 34.");
                     }
                     updateToVersion34();
-                    tempVersion ++;
-                case 34:
+                    tempVersion++;
+                case 34://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 35.");
                     }
                     updateToVersion35();
-                    tempVersion ++;
-                case 35:
+                    tempVersion++;
+                case 35://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 36.");
                     }
                     updateToVersion36();
-                    tempVersion ++;
-                case 36:
+                    tempVersion++;
+                case 36://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 37.");
                     }
                     updateToVersion37();
-                    tempVersion ++;
-                case 37:
+                    tempVersion++;
+                case 37://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 38.");
                     }
                     updateToVersion38();
-                    tempVersion ++;
-                case 38:
+                    tempVersion++;
+                case 38://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 39.");
                     }
                     updateToVersion39();
-                    tempVersion ++;
-                case 39:
+                    tempVersion++;
+                case 39://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 40.");
                     }
                     updateToVersion40();
-                    tempVersion ++;
-                case 40:
+                    tempVersion++;
+                case 40://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 41.");
                     }
                     updateToVersion41();
-                    tempVersion ++;
-                case 41:
+                    tempVersion++;
+                case 41://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 42.");
                     }
                     updateToVersion42();
-                    tempVersion ++;
-                case 42:
+                    tempVersion++;
+                case 42://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 43.");
                     }
                     updateToVersion43();
-                    tempVersion ++;
-                case 43:
+                    tempVersion++;
+                case 43://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 44.");
                     }
                     updateToVersion44();
-                    tempVersion ++;
-                case 44:
+                    tempVersion++;
+                case 44://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 45.");
                     }
                     updateToVersion45();
-                    tempVersion ++;
-                case 45:
+                    tempVersion++;
+                case 45://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 46.");
                     }
                     updateToVersion46();
-                    tempVersion ++;
-                case 46:
+                    tempVersion++;
+                case 46://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 47.");
                     }
                     updateToVersion47();
-                    tempVersion ++;
-                case 47:
+                    tempVersion++;
+                case 47://NOSONAR, no break on purpose to run through all cases
                     if (log.isTraceEnabled()) {
                         log.trace("Update database to version 48.");
                     }
                     updateToVersion48();
-                    tempVersion ++;
-                default:
+                    tempVersion++;
+                default://NOSONAR, no break on purpose to run through all cases
                     // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
                     if (log.isTraceEnabled()) {
                         log.trace("Database is up to date.");
                     }
             }
-        }catch(Exception e) {
+        } catch (Exception e) {
             log.error(e);
-            log.warn("An Error occured trying to update Database to version "+(tempVersion+1));
+            log.warn("An Error occured trying to update Database to version " + (tempVersion + 1));
             updateDatabaseVersion(currentVersion, tempVersion);
         }
     }
 
-
-
-
     private static void updateToVersion48() throws SQLException {
-        if(!DatabaseVersion.checkIfColumnExists("benutzer", "displayrulesetcolumn")) {
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "displayrulesetcolumn")) {
             try {
                 DatabaseVersion.runSql("ALTER TABLE benutzer ADD COLUMN displayrulesetcolumn boolean default false");
             } catch (SQLException e) {
                 log.error(e);
             }
         }
-        if(DatabaseVersion.checkIfColumnExists("projekte", "srurl")) {
+        if (DatabaseVersion.checkIfColumnExists("projekte", "srurl")) {
             try {
                 DatabaseVersion.runSql("alter table projekte drop column srurl;");
             } catch (SQLException e) {
@@ -402,14 +399,14 @@ public class DatabaseVersion {
             }
         }
 
-        if(!DatabaseVersion.checkIfColumnExists("projekte", "iiifUrl")) {
+        if (!DatabaseVersion.checkIfColumnExists("projekte", "iiifUrl")) {
             try {
                 DatabaseVersion.runSql("alter table projekte add column iiifUrl varchar(255) default null;");
             } catch (SQLException e) {
                 log.error(e);
             }
         }
-        if(!DatabaseVersion.checkIfColumnExists("projekte", "sruUrl")) {
+        if (!DatabaseVersion.checkIfColumnExists("projekte", "sruUrl")) {
             try {
                 DatabaseVersion.runSql("alter table projekte add column sruUrl varchar(255) default null;");
             } catch (SQLException e) {
@@ -417,7 +414,7 @@ public class DatabaseVersion {
             }
         }
 
-        if(!DatabaseVersion.checkIfColumnExists("benutzer", "userstatus")) {
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "userstatus")) {
             try {
                 DatabaseVersion.runSql("alter table benutzer add column userstatus varchar(190) default null;");
                 DatabaseVersion.runSql("update benutzer set userstatus = 'active' where IstAktiv=true and isVisible is null;");
@@ -430,7 +427,7 @@ public class DatabaseVersion {
             }
         }
 
-        if(!DatabaseVersion.checkIfColumnExists("benutzer", "additional_data")) {
+        if (!DatabaseVersion.checkIfColumnExists("benutzer", "additional_data")) {
             try {
                 DatabaseVersion.runSql("alter table benutzer add column additional_data text default null;");
             } catch (SQLException e) {
@@ -438,7 +435,7 @@ public class DatabaseVersion {
             }
         }
 
-        if(!DatabaseVersion.checkIfColumnExists("institution", "additional_data")) {
+        if (!DatabaseVersion.checkIfColumnExists("institution", "additional_data")) {
             try {
                 DatabaseVersion.runSql("alter table institution add column additional_data text default null;");
             } catch (SQLException e) {
@@ -451,18 +448,14 @@ public class DatabaseVersion {
         if (!checkIfColumnExists("schritte", "typAutomaticThumbnail")) {
             DatabaseVersion.runSql("ALTER TABLE schritte ADD COLUMN typAutomaticThumbnail boolean default false");
         }
-        if(!checkIfColumnExists("schritte", "automaticThumbnailSettingsYaml")) {
-            String defaultYamlSettings= "'--- \n"
-                    +"Master: false  #use master image directory \n"
-                    +"Media: false  #use media image directory \n"
-                    +"Img_directory: \"\" #set path to custom image directory \n"
-                    +"Custom_script_command: \"\" #command to execute custom thumbnail generation script \n"
-                    +"Sizes: #define thumbnail sizes \n"
-                    +"- 800'";
-            DatabaseVersion.runSql("ALTER TABLE schritte ADD COLUMN automaticThumbnailSettingsYaml varchar(1000) DEFAULT "+defaultYamlSettings);
+        if (!checkIfColumnExists("schritte", "automaticThumbnailSettingsYaml")) {
+            String defaultYamlSettings = "'--- \n" + "Master: false  #use master image directory \n" + "Media: false  #use media image directory \n"
+                    + "Img_directory: \"\" #set path to custom image directory \n"
+                    + "Custom_script_command: \"\" #command to execute custom thumbnail generation script \n" + "Sizes: #define thumbnail sizes \n"
+                    + "- 800'";
+            DatabaseVersion.runSql("ALTER TABLE schritte ADD COLUMN automaticThumbnailSettingsYaml varchar(1000) DEFAULT " + defaultYamlSettings);
         }
     }
-
 
     private static void updateToVersion46() throws SQLException {
         if (!DatabaseVersion.checkIfColumnExists("schritte", "messageId")) {

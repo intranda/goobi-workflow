@@ -78,6 +78,7 @@ import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.XmlTools;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import io.goobi.workflow.xslt.XsltToPdf;
 import lombok.Getter;
@@ -260,7 +261,7 @@ public class MassImportForm implements Serializable {
         this.digitalCollections = new ArrayList<>();
         try {
             /* Datei einlesen und Root ermitteln */
-            SAXBuilder builder = new SAXBuilder();
+            SAXBuilder builder = XmlTools.getSAXBuilder();
             Document doc = builder.build(filename);
             Element root = doc.getRootElement();
             /* alle Projekte durchlaufen */

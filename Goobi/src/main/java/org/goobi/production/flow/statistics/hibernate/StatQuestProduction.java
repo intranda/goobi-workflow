@@ -93,7 +93,7 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
         // we have to build a query from scratch by reading the ID's
         List<Integer> IDlist = null;
         try {
-            IDlist = ProcessManager.getIDList(sqlFilter);
+            IDlist = ProcessManager.getIdsForFilter(sqlFilter);
         } catch (UnsupportedOperationException e) {
         }
         if (IDlist == null || IDlist.size() == 0) {

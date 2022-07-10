@@ -39,6 +39,7 @@ import org.jdom2.xpath.XPathFactory;
 import com.google.common.collect.Sets;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.XmlTools;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
@@ -71,43 +72,43 @@ public class PluginInstaller {
         this.saveArchiveFile();
         try (Stream<Path> walkStream = Files.walk(this.extractedArchivePath)) {
             walkStream.filter(Files::isRegularFile)
-                    .forEach(path -> {
+            .forEach(path -> {
 
-                        Path relativePath = this.extractedArchivePath.relativize(path);
-                        if (pathBlacklist.contains(relativePath.toString())) {
-                            return;
-                        }
+                Path relativePath = this.extractedArchivePath.relativize(path);
+                if (pathBlacklist.contains(relativePath.toString())) {
+                    return;
+                }
 
-                        Path installPath = goobiDirectory.resolve(relativePath);
-                        PluginInstallConflict conflict = this.check.getConflicts().get(relativePath.toString());
-                        if (conflict == null) {
-                            try {
-                                Files.createDirectories(installPath.getParent());
-                                Files.copy(path, installPath, StandardCopyOption.REPLACE_EXISTING);
-                            } catch (IOException ioException) {
-                                log.error(ioException);
-                            }
-                            return;
-                        }
+                Path installPath = goobiDirectory.resolve(relativePath);
+                PluginInstallConflict conflict = this.check.getConflicts().get(relativePath.toString());
+                if (conflict == null) {
+                    try {
+                        Files.createDirectories(installPath.getParent());
+                        Files.copy(path, installPath, StandardCopyOption.REPLACE_EXISTING);
+                    } catch (IOException ioException) {
+                        log.error(ioException);
+                    }
+                    return;
+                }
 
-                        String fileContent;
-                        if (conflict.getConflictsMode().equals("edit_existing_file")) {
-                            fileContent = conflict.getEditedExistingVersion();
-                        } else {
-                            fileContent = conflict.getEditedUploadedVersion();
-                        }
+                String fileContent;
+                if (conflict.getConflictsMode().equals("edit_existing_file")) {
+                    fileContent = conflict.getEditedExistingVersion();
+                } else {
+                    fileContent = conflict.getEditedUploadedVersion();
+                }
 
-                        try {
-                            Charset charset = Charset.forName("UTF-8");
-                            StandardOpenOption truncate = StandardOpenOption.TRUNCATE_EXISTING;
-                            StandardOpenOption create = StandardOpenOption.CREATE;
-                            Files.write(installPath, Arrays.asList(fileContent.split("\n")), charset, truncate, create);
-                        } catch (IOException ioException) {
-                            log.error(ioException);
-                        }
-                    });
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
+                try {
+                    Charset charset = Charset.forName("UTF-8");
+                    StandardOpenOption truncate = StandardOpenOption.TRUNCATE_EXISTING;
+                    StandardOpenOption create = StandardOpenOption.CREATE;
+                    Files.write(installPath, Arrays.asList(fileContent.split("\n")), charset, truncate, create);
+                } catch (IOException ioException) {
+                    log.error(ioException);
+                }
+            });
+        } catch (IOException e) {
+            log.error(e);
         }
     }
 
@@ -121,14 +122,12 @@ public class PluginInstaller {
             }
         } catch (Exception exception) {
             log.error(exception);
-            exception.printStackTrace();
             return;
         }
         try {
             Files.write(file, IOUtils.toByteArray(Files.newInputStream(this.uploadedArchiveFile)));
         } catch (IOException ioException) {
             log.error(ioException);
-            ioException.printStackTrace();
         }
     }
 
@@ -196,7 +195,7 @@ public class PluginInstaller {
     }
 
     private static Document parsePomXml(Path pluginFolder, String pomFilePath) throws JDOMException, IOException {
-        SAXBuilder saxBuilder = new SAXBuilder();
+        SAXBuilder saxBuilder = XmlTools.getSAXBuilder();
         Path pomPath = pluginFolder.resolve(pomFilePath);
         Document pluginPomDocument = saxBuilder.build(pomPath.toFile());
         return pluginPomDocument;
@@ -207,32 +206,31 @@ public class PluginInstaller {
         Map<String, PluginInstallConflict> conflicts = new HashMap<>();
         try (Stream<Path> walkStream = Files.walk(extractedPluginPath)) {
             walkStream.filter(Files::isRegularFile)
-                    .forEach(p -> {
-                        String fileEnding = getFileEnding(p);
-                        Path relativePath = extractedPluginPath.relativize(p);
-                        if (endingWhitelist.contains(fileEnding)
-                                || pathBlacklist.contains(relativePath.toString())) {
-                            return;
-                        }
-                        Path installPath = goobiDirectory.resolve(relativePath);
-                        if (checkForConflict(installPath, p)) {
-                            Path archivedArchiveFile =
-                                    Paths.get(goobiDirectory.toString(), pluginPackagePath, archiveFileName);
-                            String archivedVersion = PluginInstaller.getContentFromFileInArchive(archivedArchiveFile, p.getFileName().toString());
-                            try {
-                                String existingVersion = Files.readAllLines(installPath).stream().collect(Collectors.joining("\n"));
-                                String uploadedVersion = Files.readAllLines(p).stream().collect(Collectors.joining("\n"));
-                                PluginInstallConflict conflict = new PluginInstallConflict(installPath.toString(), ResolveTactic.unknown,
-                                        existingVersion, uploadedVersion, archivedVersion);
-                                conflicts.put(relativePath.toString(), conflict);
-                            } catch (IOException e) {
-                                //TODO: handle error
-                            }
-                        }
-                    });
+            .forEach(p -> {
+                String fileEnding = getFileEnding(p);
+                Path relativePath = extractedPluginPath.relativize(p);
+                if (endingWhitelist.contains(fileEnding)
+                        || pathBlacklist.contains(relativePath.toString())) {
+                    return;
+                }
+                Path installPath = goobiDirectory.resolve(relativePath);
+                if (checkForConflict(installPath, p)) {
+                    Path archivedArchiveFile =
+                            Paths.get(goobiDirectory.toString(), pluginPackagePath, archiveFileName);
+                    String archivedVersion = PluginInstaller.getContentFromFileInArchive(archivedArchiveFile, p.getFileName().toString());
+                    try {
+                        String existingVersion = Files.readAllLines(installPath).stream().collect(Collectors.joining("\n"));
+                        String uploadedVersion = Files.readAllLines(p).stream().collect(Collectors.joining("\n"));
+                        PluginInstallConflict conflict = new PluginInstallConflict(installPath.toString(), ResolveTactic.unknown,
+                                existingVersion, uploadedVersion, archivedVersion);
+                        conflicts.put(relativePath.toString(), conflict);
+                    } catch (IOException e) {
+                        //TODO: handle error
+                    }
+                }
+            });
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         }
         PluginInstaller.setNumbersForAllConflicts(conflicts.values().toArray());
         PluginPreInstallCheck checkReport = new PluginPreInstallCheck(extractedPluginPath, info, conflicts, null);
@@ -437,11 +435,11 @@ public class PluginInstaller {
             } else {
                 // Otherwise a deleted line and an inserted line are generated.
                 fileContent
-                        .add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], "deletion"));
+                .add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], "deletion"));
                 lineTypes.add("deletion");
                 lineNumbers.add(String.valueOf(existingLineIndex + 1));
                 fileContent
-                        .add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], "insertion"));
+                .add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], "insertion"));
                 lineTypes.add("insertion");
                 lineNumbers.add(String.valueOf(uploadedLineIndex + 1));
             }

@@ -17,8 +17,10 @@ import org.jdom2.output.XMLOutputter;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 
+import de.sub.goobi.helper.XmlTools;
+
 public class AltoSaver {
-    private static SAXBuilder sax = new SAXBuilder();
+    private static SAXBuilder sax = XmlTools.getSAXBuilder();
     private static XPathFactory xFactory = XPathFactory.instance();
 
     public static void saveAltoChanges(Path altoFile, AltoChange[] changes) throws JDOMException, IOException {

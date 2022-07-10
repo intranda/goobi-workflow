@@ -1489,34 +1489,39 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public void lazyLoad() {
     }
 
-    @Override
-    public Process clone() {
-        Process p = new Process();
-        p.setDocket(docket);
-        p.setInAuswahllisteAnzeigen(false);
-        p.setIstTemplate(istTemplate);
-        p.setProjectId(projectId);
-        p.setProjekt(projekt);
-        p.setRegelsatz(regelsatz);
-        p.setSortHelperStatus(sortHelperStatus);
-        p.setTitel(this.getTitel() + "_copy");
+    public Process(Process source) {
+        swappedOut = false;
+        istTemplate = false;
+        inAuswahllisteAnzeigen = false;
+        eigenschaften = new ArrayList<>();
+        schritte = new ArrayList<>();
+        erstellungsdatum = new Date();
 
-        this.bhelp.SchritteKopieren(this, p);
-        this.bhelp.ScanvorlagenKopieren(this, p);
-        this.bhelp.WerkstueckeKopieren(this, p);
-        this.bhelp.EigenschaftenKopieren(this, p);
+        setDocket(source.getDocket());
+        setInAuswahllisteAnzeigen(false);
+        setIstTemplate(source.isIstTemplate());
+        setProjectId(source.getProjectId());
+        setProjekt(source.getProjekt());
+        setRegelsatz(source.getRegelsatz());
+        setSortHelperStatus(source.getSortHelperStatus());
+        setTitel(source.getTitel() + "_copy");
+
+        this.bhelp.SchritteKopieren(source, this);
+        this.bhelp.ScanvorlagenKopieren(source, this);
+        this.bhelp.WerkstueckeKopieren(source, this);
+        this.bhelp.EigenschaftenKopieren(source, this);
         LoginBean loginForm = Helper.getLoginBean();
 
-        for (Step step : p.getSchritteList()) {
+        for (Step step : getSchritteList()) {
 
-            step.setBearbeitungszeitpunkt(p.getErstellungsdatum());
+            step.setBearbeitungszeitpunkt(getErstellungsdatum());
             step.setEditTypeEnum(StepEditType.AUTOMATIC);
             if (loginForm != null) {
                 step.setBearbeitungsbenutzer(loginForm.getMyBenutzer());
             }
 
             if (step.getBearbeitungsstatusEnum() == StepStatus.DONE) {
-                step.setBearbeitungsbeginn(p.getErstellungsdatum());
+                step.setBearbeitungsbeginn(getErstellungsdatum());
                 // this concerns steps, which are set as done right on creation
                 // bearbeitungsbeginn is set to creation timestamp of process
                 // because the creation of it is basically begin of work
@@ -1529,12 +1534,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         try {
 
-            ProcessManager.saveProcess(p);
+            ProcessManager.saveProcess(this);
         } catch (DAOException e) {
             log.error("error on save: ", e);
         }
-
-        return p;
     }
 
     public void addLogEntry() {
@@ -1968,6 +1971,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             if (basename.contains("\\")) {
                 basename = basename.substring(basename.lastIndexOf("\\") + 1);
             }
+            basename = Paths.get(basename).getFileName().toString();
+
             tempFileToImport = Files.createTempFile(basename, "");
             inputStream = this.uploadedFile.getInputStream();
             outputStream = new FileOutputStream(tempFileToImport.toString());

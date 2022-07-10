@@ -73,7 +73,7 @@ public class JobTypesBean implements Serializable {
     }
 
     public String editJobType(JobType jobType) {
-        this.currentJobType = jobType.clone();
+        this.currentJobType = new JobType(jobType);
         this.availableStepTitles = new ArrayList<>(this.stepTitles);
         this.availableStepTitles.removeAll(this.currentJobType.getStepNameList());
         return "admin_jobtypes_edit.xhtml";

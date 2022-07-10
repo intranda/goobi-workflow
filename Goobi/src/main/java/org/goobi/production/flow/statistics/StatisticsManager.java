@@ -132,7 +132,7 @@ public class StatisticsManager implements Serializable {
                         List<Integer> processList = ProcessManager.getProcessIdList(null, filter, 0, Integer.MAX_VALUE);
                         jfreeImage = StatistikLaufzeitSchritte.createChart(processList);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        log.error(e);
                     }
                     //				jfreeDataset = StatistikLaufzeitSchritte.getDiagramm(inDataSource.getSourceData());
                     break;

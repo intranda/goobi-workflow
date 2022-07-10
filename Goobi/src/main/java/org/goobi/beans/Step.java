@@ -54,7 +54,9 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     private static final long serialVersionUID = 6831844584239811846L;
 
@@ -329,7 +331,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
                 TicketGenerator.submitInternalTicket(ticket, QueueType.SLOW_QUEUE, this.titel, this.getProcessId());
             }
         }catch(Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
     }
 

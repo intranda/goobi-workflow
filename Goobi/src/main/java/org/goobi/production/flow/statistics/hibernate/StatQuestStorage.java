@@ -84,7 +84,7 @@ public class StatQuestStorage implements IStatisticalQuestionLimitedTimeframe {
         //gathering IDs from the filter passed by dataSource
         List<Integer> IDlist = null;
         //		try {
-        IDlist = ProcessManager.getIDList(filter);
+        IDlist = ProcessManager.getIdsForFilter(filter);
         //		} catch (UnsupportedOperationException e) {
         //		}
         //		if (IDlist == null || IDlist.size() == 0) {
