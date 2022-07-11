@@ -1973,7 +1973,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
             basename = Paths.get(basename).getFileName().toString();
 
-            tempFileToImport = Files.createTempFile(basename, "");
+            tempFileToImport = Files.createTempFile(basename, ""); //NOSONAR, using temporary file is save here
             inputStream = this.uploadedFile.getInputStream();
             outputStream = new FileOutputStream(tempFileToImport.toString());
 

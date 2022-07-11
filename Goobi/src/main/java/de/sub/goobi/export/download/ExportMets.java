@@ -182,8 +182,7 @@ public class ExportMets {
         String atsPpnBand = process.getTitel();
         Fileformat gdzfile = process.readMetadataFile();
 
-        //String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
-        Path targetDir = Files.createTempDirectory("mets_export"); //only save file in /tmp/ directory
+        Path targetDir = Files.createTempDirectory("mets_export"); //NOSONAR, using temporary file is save here
 
         String targetFileName = targetDir.resolve(atsPpnBand + "_mets.xml").toAbsolutePath().toString();
         writeMetsFile(process, targetFileName, gdzfile, false, true);

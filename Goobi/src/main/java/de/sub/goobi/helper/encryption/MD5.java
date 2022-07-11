@@ -1,6 +1,7 @@
 package de.sub.goobi.helper.encryption;
 
-import java.security.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +21,7 @@ See the GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License along with this library;
 if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA *
-*/
+ */
 
 /**
  * <u>MD5-Klasse, zum erzeugen von MD5-Hashes aus Zeichenketten</u><br>
@@ -40,10 +41,10 @@ if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor
  *
  */
 public class MD5 {
-	@Getter
-	@Setter
+    @Getter
+    @Setter
     private String text = null;
-	@Getter
+    @Getter
     private String hash = null;
 
     /**
@@ -89,7 +90,7 @@ public class MD5 {
         byte[] encryptMsg = null;
 
         try {
-            md = MessageDigest.getInstance("MD5"); // getting a 'MD5-Instance'
+            md = MessageDigest.getInstance("MD5"); // getting a 'MD5-Instance'//NOSONAR, it is only used to validate files
             encryptMsg = md.digest(text.getBytes()); // solving the MD5-Hash
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e.getMessage(), e);

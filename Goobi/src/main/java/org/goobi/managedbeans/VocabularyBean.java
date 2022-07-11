@@ -471,7 +471,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
         OutputStream out = null;
         try {
             String extension = fileName.substring(fileName.indexOf("."));
-            importFile = Files.createTempFile(fileName, extension);
+            importFile = Files.createTempFile(fileName, extension); // NOSONAR, temp file is save to use
             out = new FileOutputStream(importFile.toFile());
             int read = 0;
             byte[] bytes = new byte[1024];

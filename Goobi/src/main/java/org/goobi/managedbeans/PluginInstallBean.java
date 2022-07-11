@@ -131,7 +131,7 @@ public class PluginInstallBean implements Serializable {
         match.find();
         filename = match.group(1);
         if (tempDir == null || !Files.exists(tempDir)) {
-            this.tempDir = Files.createTempDirectory("goobi_plugin_installer");
+            this.tempDir = Files.createTempDirectory("goobi_plugin_installer"); //NOSONAR, using temporary file is save here
         }
         Path tarPath = tempDir.resolve(filename);
         try (InputStream responseStream = response.getEntity().getContent()) {
@@ -142,10 +142,10 @@ public class PluginInstallBean implements Serializable {
 
     public String parseUploadedPlugin() throws IOException, JDOMException {
         if (tempDir == null || !Files.exists(tempDir)) {
-            this.tempDir = Files.createTempDirectory("goobi_plugin_installer");
+            this.tempDir = Files.createTempDirectory("goobi_plugin_installer"); //NOSONAR, using temporary file is save here
         }
         if (!Files.exists(tempDir)) {
-            this.tempDir = Files.createTempDirectory("goobi_plugin_installer");
+            this.tempDir = Files.createTempDirectory("goobi_plugin_installer"); //NOSONAR, using temporary file is save here
         }
         Path tarPath = tempDir.resolve(uploadedPluginFile.getSubmittedFileName());
         try (InputStream responseStream = uploadedPluginFile.getInputStream()) {
@@ -167,11 +167,9 @@ public class PluginInstallBean implements Serializable {
         if (currentExtractedPluginPath != null && Files.exists(currentExtractedPluginPath)) {
             FileUtils.deleteQuietly(currentExtractedPluginPath.toFile());
         }
-        TarInputStream tarIn = null;
-        try (InputStream input = Files.newInputStream(inputPath)) {
+        try (InputStream input = Files.newInputStream(inputPath);TarInputStream tarIn = new TarInputStream(input)) {
 
-            tarIn = new TarInputStream(input);
-            currentExtractedPluginPath = Files.createTempDirectory("plugin_extracted_");
+            currentExtractedPluginPath = Files.createTempDirectory("plugin_extracted_"); //NOSONAR, using temporary file is save here
             TarEntry tarEntry = tarIn.getNextEntry();
             while (tarEntry != null) {
                 if (!tarEntry.isDirectory()) {
@@ -185,15 +183,8 @@ public class PluginInstallBean implements Serializable {
             }
         } catch (IOException ioException) {
             log.error(ioException);
-        } finally {
-            try {
-                tarIn.close();
-            } catch (IOException ioException) {
-                log.error(ioException);
-            }
         }
-        PluginInstaller pluginInstaller = PluginInstaller.createFromExtractedArchive(currentExtractedPluginPath, inputPath);
-        return pluginInstaller;
+        return PluginInstaller.createFromExtractedArchive(currentExtractedPluginPath, inputPath);
     }
 
     public String install() {

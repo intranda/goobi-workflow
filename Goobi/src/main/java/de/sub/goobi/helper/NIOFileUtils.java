@@ -676,7 +676,7 @@ public class NIOFileUtils implements StorageProviderInterface {
 
     @Override
     public Path createTemporaryFile(String prefix, String suffix) throws IOException {
-        return Files.createTempFile(prefix, suffix);
+        return Files.createTempFile(prefix, suffix); //NOSONAR, the purpose of this function is to create temporary files
     }
 
     @Override

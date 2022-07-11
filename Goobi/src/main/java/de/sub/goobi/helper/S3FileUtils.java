@@ -815,7 +815,7 @@ public class S3FileUtils implements StorageProviderInterface {
             return;
         }
         // if contentLength is not set, s3.putObject loads the whole stream into RAM and only then uploads the file
-        Path tempFile = Files.createTempFile("upload", null);
+        Path tempFile = Files.createTempFile("upload", null); //NOSONAR, using temporary file is save here
         try {
             Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
             Long contentLength = Files.size(tempFile);
