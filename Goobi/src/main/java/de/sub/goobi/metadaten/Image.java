@@ -615,6 +615,8 @@ public @Data class Image {
                     return Type.video;
                 } else if (mimetype.equals("application/mxf")) {
                     return Type.video;
+                } else if (mimetype.startsWith("image/")) {
+                    return Type.image;
                 }
             }
 
