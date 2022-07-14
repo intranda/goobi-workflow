@@ -218,7 +218,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
                 }
                 List<String> params = HelperSchritte.createShellParamsForBashScript(automaticStep, script);
                 listOfScripts.add(params);
-            } catch (PreferencesException | ReadException | WriteException | IOException | InterruptedException | SwapException | DAOException e) {
+            } catch (PreferencesException | ReadException | WriteException | IOException | SwapException | DAOException e) {
                 log.error("error trying to put script-step to external queue: ", e);
                 return;
             }

@@ -434,7 +434,7 @@ public class S3FileUtils implements StorageProviderInterface {
                 }
             }
         } catch (InterruptedException e) {
-            throw new IOException(e);
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -453,8 +453,10 @@ public class S3FileUtils implements StorageProviderInterface {
                     try {
                         Upload upload = transferManager.upload(getBucket(), key, is, om);
                         upload.waitForCompletion();
-                    } catch (AmazonClientException | InterruptedException e) {
+                    } catch (AmazonClientException  e) {
                         log.error(e);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
                     }
 
                 }
@@ -468,7 +470,6 @@ public class S3FileUtils implements StorageProviderInterface {
 
             @Override
             public FileVisitResult postVisitDirectory(Path p, IOException e) throws IOException {
-                // TODO Auto-generated method stub
                 return FileVisitResult.CONTINUE;
             }
 
@@ -507,8 +508,10 @@ public class S3FileUtils implements StorageProviderInterface {
         try {
             copy.waitForCompletion();
             s3.deleteObject(getBucket(), oldKey);
-        } catch (AmazonClientException | InterruptedException e) {
+        } catch (AmazonClientException  e) {
             throw new IOException(e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
         return key2Path(newKey);
     }
@@ -543,33 +546,27 @@ public class S3FileUtils implements StorageProviderInterface {
                 Download dl = transferManager.download(getBucket(), path2Key(srcFile), destFile.toFile());
                 try {
                     dl.waitForCompletion();
-                } catch (AmazonClientException | InterruptedException e) {
+                } catch (AmazonClientException e) {
                     throw new IOException(e);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
             }
         }
-
-        /*
-         * String oldKey = path2Key(srcFile); String newKey = path2Key(destFile);
-         * s3.copyObject(getBucket(), oldKey, getBucket(), newKey);
-         */
     }
 
     @Override
     public Long createChecksum(Path file) throws IOException {
-        // TODO: not used, remove from interface
         return null;
     }
 
     @Override
     public Long start(Path srcFile, Path destFile) throws IOException {
-        // TODO: check if used in GDZ, else remove
         return null;
     }
 
     @Override
     public long checksumMappedFile(String filepath) throws IOException {
-        // TODO: check if used in GDZ, else remove
         return 0;
     }
 
@@ -702,8 +699,10 @@ public class S3FileUtils implements StorageProviderInterface {
                 Upload upload = transferManager.upload(getBucket(), path2Key(newPath), oldPath.toFile());
                 upload.waitForCompletion();
                 Files.delete(oldPath);
-            } catch (AmazonClientException | InterruptedException e) {
+            } catch (AmazonClientException e) {
                 throw new IOException(e);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         }
         if ((oldType == StorageType.S3 || oldType == StorageType.BOTH) && newType == StorageType.LOCAL) {
@@ -723,8 +722,10 @@ public class S3FileUtils implements StorageProviderInterface {
             try {
                 copy.waitForCompletion();
                 s3.deleteObject(getBucket(), path2Key(oldPath));
-            } catch (AmazonClientException | InterruptedException e) {
+            } catch (AmazonClientException e) {
                 throw new IOException(e);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         }
 
@@ -845,8 +846,10 @@ public class S3FileUtils implements StorageProviderInterface {
             // use multipart upload for larger files larger than 1GB
             Upload upload = transferManager.upload(getBucket(), path2Key(dest), in, om);
             upload.waitForCompletion();
-        } catch (AmazonClientException | InterruptedException e) {
+        } catch (AmazonClientException e) {
             throw new IOException(e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
