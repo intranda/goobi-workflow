@@ -112,7 +112,11 @@ public class Paginator {
     private void assertValidPaginationStartValue() {
         // arabic numbers
         if (paginationType == Paginator.Type.ARABIC) {
-            Integer.parseInt(paginationStartValue);
+            try {
+                Integer.parseInt(paginationStartValue);
+            } catch (NumberFormatException e) {
+                Helper.setFehlerMeldung(Helper.getTranslation("NoRomanNumber", paginationStartValue));
+            }
         }
         // roman numbers
         if (paginationType == Paginator.Type.ROMAN) {
@@ -132,7 +136,7 @@ public class Paginator {
 
         int end = 0;
         if (paginationMode.equals(Mode.DOUBLE_PAGES) || paginationMode.equals(Paginator.Mode.RECTOVERSO_FOLIATION)) {
-            end = determinePaginationEndValue(2, start) +1;
+            end = determinePaginationEndValue(2, start) + 1;
             doublePageDiscriminator = "-";
         } else {
             end = determinePaginationEndValue(increment, start);
@@ -267,6 +271,8 @@ public class Paginator {
             case ARABIC:
                 sequence = new IntegerSequence(start, end, increment);
                 break;
+            default:
+                sequence = new IntegerSequence(start, end, increment);
         }
         return sequence;
     }
@@ -291,7 +297,7 @@ public class Paginator {
 
     @SuppressWarnings("rawtypes")
     private void applyFromFirstSelected(List sequence) {
-        int first = selectedPages[0]-1;
+        int first = selectedPages[0] - 1;
         Iterator seqit = sequence.iterator();
         for (int pageNum = first; pageNum < pagesToPaginate.length; pageNum++) {
             if (!seqit.hasNext()) {
@@ -308,7 +314,7 @@ public class Paginator {
             if (!seqit.hasNext()) {
                 seqit = sequence.iterator();
             }
-            pagesToPaginate[num-1].setWert(String.valueOf(seqit.next()));
+            pagesToPaginate[num - 1].setWert(String.valueOf(seqit.next()));
         }
     }
 

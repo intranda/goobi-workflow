@@ -106,7 +106,7 @@ public class MetadatenImagesHelper {
 
         DocStruct logical = this.mydocument.getLogicalDocStruct();
         if (logical.getType().isAnchor()) {
-            if (logical.getAllChildren() != null && logical.getAllChildren().size() > 0) {
+            if (logical.getAllChildren() != null && !logical.getAllChildren().isEmpty()) {
                 logical = logical.getAllChildren().get(0);
             }
         }
@@ -134,7 +134,7 @@ public class MetadatenImagesHelper {
         Map<String, DocStruct> imageNamesInMetsFile = new HashMap<>();
 
         List<DocStruct> pages = physical.getAllChildren();
-        if (pages != null && pages.size() > 0) {
+        if (pages != null && !pages.isEmpty()) {
             for (DocStruct page : pages) {
                 String filename = page.getImageName();
                 if (filename != null) {
@@ -658,9 +658,10 @@ public class MetadatenImagesHelper {
                 }
             } catch (Exception e) {
                 log.error("Unable to connect to url " + cs, e);
-                return;
             } finally {
-                method.releaseConnection();
+                if (method != null) {
+                    method.releaseConnection();
+                }
                 if (httpclient != null) {
                     httpclient.close();
                 }
@@ -689,7 +690,7 @@ public class MetadatenImagesHelper {
             List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.DATA_FILTER);
             List<String> dateien2 = StorageProvider.getInstance().list(dir.toString());
             //checks for fileName errors / empty folder
-            if (dateien == null || dateien.isEmpty()) {
+            if (dateien.isEmpty()) {
                 String[] parameters = { String.valueOf(dateien2.size()), dir.toString() };
 
                 String value = Helper.getTranslation("noObjectsFound", title);
@@ -837,7 +838,7 @@ public class MetadatenImagesHelper {
                 if (StringUtils.isNotBlank(thumbsFolder)) {
                     dir = Paths.get(thumbsFolder);
                 }
-            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+            } catch (IOException | SwapException e) {
                 log.error("Error reading thumbs folder for " + dir, e);
             }
         }

@@ -69,6 +69,7 @@ public class GoobiInternalDLQListener {
                             try {
                                 Thread.sleep(1500);
                             } catch (InterruptedException e1) {
+                                Thread.currentThread().interrupt();
                             }
                             if (!shouldStop) {
                                 log.error(e);
@@ -94,6 +95,7 @@ public class GoobiInternalDLQListener {
             this.thread.join(3000);
         } catch (InterruptedException e) {
             log.error(e);
+            Thread.currentThread().interrupt();
         }
     }
 

@@ -82,7 +82,7 @@ public class MediaResource {
         } catch (IOException | SwapException | DAOException e) {
             log.error(e);
         }
-        return null;
+        return processFolder.resolve("images").resolve(folder);
     }
 
     /**

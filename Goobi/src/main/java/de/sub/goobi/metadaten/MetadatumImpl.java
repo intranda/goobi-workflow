@@ -885,13 +885,15 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         }
         HierarchicalConfiguration use = getConfigForProject(p, xmlConf);
         Map<String, List<RestMetadata>> addMetadata = new HashMap<>();
-        List<HierarchicalConfiguration> mappings = use.configurationsAt("mapping");
-        for (HierarchicalConfiguration mapping : mappings) {
-            String from = mapping.getString("[@from]");
-            String to = mapping.getString("[@to]");
-            List<RestMetadata> fromMeta = rp.getMetadata().get(from);
-            if (fromMeta != null) {
-                addMetadata.put(to, fromMeta);
+        if (use != null) {
+            List<HierarchicalConfiguration> mappings = use.configurationsAt("mapping");
+            for (HierarchicalConfiguration mapping : mappings) {
+                String from = mapping.getString("[@from]");
+                String to = mapping.getString("[@to]");
+                List<RestMetadata> fromMeta = rp.getMetadata().get(from);
+                if (fromMeta != null) {
+                    addMetadata.put(to, fromMeta);
+                }
             }
         }
         Prefs prefs = this.getBean().getMyPrefs();

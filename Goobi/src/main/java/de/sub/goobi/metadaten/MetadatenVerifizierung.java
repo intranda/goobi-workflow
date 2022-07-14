@@ -117,55 +117,57 @@ public class MetadatenVerifizierung {
             ergebnis = false;
         }
         // reset old errors
-
-        resetValidationErrors(logical);
-        // run through all metadata, reset validation messages
-        List<DocStruct> children = logical.getAllChildrenAsFlatList();
-        if (children != null) {
-            for (DocStruct child: children) {
-                resetValidationErrors(child);
+        if (logical != null) {
+            resetValidationErrors(logical);
+            // run through all metadata, reset validation messages
+            List<DocStruct> children = logical.getAllChildrenAsFlatList();
+            if (children != null) {
+                for (DocStruct child : children) {
+                    resetValidationErrors(child);
+                }
             }
-        }
 
+            if (logical.getAllIdentifierMetadata() != null && !logical.getAllIdentifierMetadata().isEmpty()) {
+                Metadata identifierTopStruct = logical.getAllIdentifierMetadata().get(0);
+                try {
+                    if (!identifierTopStruct.getValue().replaceAll("[\\w|-]", "").equals("")) {
+                        String[] parameter = { identifierTopStruct.getType().getNameByLanguage(metadataLanguage),
+                                logical.getType().getNameByLanguage(metadataLanguage) };
+                        String errorText = Helper.getTranslation("InvalidIdentifierCharacter", parameter);
+                        Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
+                                + Helper.getTranslation("InvalidIdentifierCharacter", parameter));
+                        problems.add(errorText);
+                        ergebnis = false;
+                        addErrorToDocStructAndMetadata(logical, identifierTopStruct, errorText);
+                    }
+                    DocStruct firstChild = logical.getAllChildren().get(0);
+                    Metadata identifierFirstChild = firstChild.getAllIdentifierMetadata().get(0);
+                    if (StringUtils.isNotBlank(identifierTopStruct.getValue())
+                            && identifierTopStruct.getValue().equals(identifierFirstChild.getValue())) {
+                        String[] parameter = { identifierTopStruct.getType().getName(), logical.getType().getName(), firstChild.getType().getName() };
 
+                        String errorText = Helper.getTranslation("InvalidIdentifierSame", parameter);
+                        Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
+                                + Helper.getTranslation("InvalidIdentifierSame", parameter));
+                        problems.add(errorText);
+                        ergebnis = false;
+                        addErrorToDocStructAndMetadata(logical, identifierTopStruct, errorText);
+                        addErrorToDocStructAndMetadata(firstChild, identifierFirstChild, errorText);
 
-        if (logical.getAllIdentifierMetadata() != null && logical.getAllIdentifierMetadata().size() > 0) {
-            Metadata identifierTopStruct = logical.getAllIdentifierMetadata().get(0);
-            try {
-                if (!identifierTopStruct.getValue().replaceAll("[\\w|-]", "").equals("")) {
-                    String[] parameter = { identifierTopStruct.getType().getNameByLanguage(metadataLanguage),
-                            logical.getType().getNameByLanguage(metadataLanguage) };
-                    String errorText =  Helper.getTranslation("InvalidIdentifierCharacter", parameter);
-                    Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("InvalidIdentifierCharacter", parameter));
-                    problems.add(errorText);
-                    ergebnis = false;
-                    addErrorToDocStructAndMetadata(logical, identifierTopStruct, errorText);
+                    }
+                    if (!identifierFirstChild.getValue().replaceAll("[\\w|-]", "").equals("")) {
+                        String[] parameter = { identifierTopStruct.getType().getNameByLanguage(metadataLanguage),
+                                firstChild.getType().getNameByLanguage(metadataLanguage) };
+                        Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
+                                + Helper.getTranslation("InvalidIdentifierCharacter", parameter));
+                        String errorText = Helper.getTranslation("InvalidIdentifierCharacter", parameter);
+                        problems.add(errorText);
+                        ergebnis = false;
+                        addErrorToDocStructAndMetadata(firstChild, identifierFirstChild, errorText);
+                    }
+                } catch (Exception e) {
+                    // no firstChild or no identifier
                 }
-                DocStruct firstChild = logical.getAllChildren().get(0);
-                Metadata identifierFirstChild = firstChild.getAllIdentifierMetadata().get(0);
-                if (identifierTopStruct.getValue() != null && identifierTopStruct.getValue() != ""
-                        && identifierTopStruct.getValue().equals(identifierFirstChild.getValue())) {
-                    String[] parameter = { identifierTopStruct.getType().getName(), logical.getType().getName(), firstChild.getType().getName() };
-
-                    String errorText = Helper.getTranslation("InvalidIdentifierSame", parameter);
-                    Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("InvalidIdentifierSame", parameter));
-                    problems.add(errorText);
-                    ergebnis = false;
-                    addErrorToDocStructAndMetadata(logical, identifierTopStruct, errorText);
-                    addErrorToDocStructAndMetadata(firstChild, identifierFirstChild, errorText);
-
-                }
-                if (!identifierFirstChild.getValue().replaceAll("[\\w|-]", "").equals("")) {
-                    String[] parameter = { identifierTopStruct.getType().getNameByLanguage(metadataLanguage),
-                            firstChild.getType().getNameByLanguage(metadataLanguage) };
-                    Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("InvalidIdentifierCharacter", parameter));
-                    String errorText = Helper.getTranslation("InvalidIdentifierCharacter", parameter);
-                    problems.add(errorText);
-                    ergebnis = false;
-                    addErrorToDocStructAndMetadata(firstChild, identifierFirstChild, errorText);
-                }
-            } catch (Exception e) {
-                // no firstChild or no identifier
             }
         } else {
             Helper.setFehlerMeldung(
@@ -185,12 +187,11 @@ public class MetadatenVerifizierung {
          * -------------------------------- auf Docstructs ohne Seiten prüfen --------------------------------
          */
 
-
-        if (ConfigurationHelper.getInstance().isMetsEditorValidateImages()) {
+        if (ConfigurationHelper.getInstance().isMetsEditorValidateImages() && logical != null) {
 
             this.docStructsOhneSeiten = new ArrayList<>();
             this.checkDocStructsOhneSeiten(logical);
-            if (this.docStructsOhneSeiten.size() != 0) {
+            if (!this.docStructsOhneSeiten.isEmpty()) {
                 for (Iterator<DocStruct> iter = this.docStructsOhneSeiten.iterator(); iter.hasNext();) {
                     DocStruct ds = iter.next();
                     Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
@@ -335,20 +336,20 @@ public class MetadatenVerifizierung {
                 md.setValidationMessage(null);
             }
         }
-        if (ds.getAllCorporates()!=null) {
+        if (ds.getAllCorporates() != null) {
             for (Corporate md : ds.getAllCorporates()) {
                 md.setValidationErrorPresent(false);
                 md.setValidationMessage(null);
             }
 
         }
-        if (ds.getAllPersons()!=null) {
+        if (ds.getAllPersons() != null) {
             for (Person md : ds.getAllPersons()) {
                 md.setValidationErrorPresent(false);
                 md.setValidationMessage(null);
             }
         }
-        if (ds.getAllMetadataGroups()!=null) {
+        if (ds.getAllMetadataGroups() != null) {
             for (MetadataGroup mg : ds.getAllMetadataGroups()) {
                 resetMetadataGroupValidationErrors(mg);
             }
@@ -362,25 +363,24 @@ public class MetadatenVerifizierung {
                 md.setValidationMessage(null);
             }
         }
-        if (mg.getCorporateList()!=null) {
+        if (mg.getCorporateList() != null) {
             for (Corporate md : mg.getCorporateList()) {
                 md.setValidationErrorPresent(false);
                 md.setValidationMessage(null);
             }
 
         }
-        if (mg.getPersonList()!=null) {
+        if (mg.getPersonList() != null) {
             for (Person md : mg.getPersonList()) {
                 md.setValidationErrorPresent(false);
                 md.setValidationMessage(null);
             }
         }
-        if (mg.getAllMetadataGroups()!=null) {
+        if (mg.getAllMetadataGroups() != null) {
             for (MetadataGroup sub : mg.getAllMetadataGroups()) {
                 resetMetadataGroupValidationErrors(sub);
             }
         }
-
 
     }
 
@@ -515,7 +515,8 @@ public class MetadatenVerifizierung {
                     if (md.getValue() == null || md.getValue().equals("")) {
                         inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                                 + Helper.getTranslation("MetadataIsEmpty"));
-                        addErrorToDocStructAndMetadata(inStruct, md, mdt.getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
+                        addErrorToDocStructAndMetadata(inStruct, md,
+                                mdt.getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
                     }
                 }
 
@@ -905,7 +906,7 @@ public class MetadatenVerifizierung {
                 language = "en";
             }
 
-            if (uppermostStruct.getAllIdentifierMetadata() != null && uppermostStruct.getAllIdentifierMetadata().size() > 0) {
+            if (uppermostStruct.getAllIdentifierMetadata() != null && !uppermostStruct.getAllIdentifierMetadata().isEmpty()) {
                 Metadata identifierTopStruct = uppermostStruct.getAllIdentifierMetadata().get(0);
                 try {
                     if (identifierTopStruct.getValue() == null || identifierTopStruct.getValue().length() == 0) {
@@ -929,7 +930,7 @@ public class MetadatenVerifizierung {
                                 + uppermostStruct.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataIsEmpty"));
                         return false;
                     }
-                    if (identifierTopStruct.getValue() != null && identifierTopStruct.getValue() != ""
+                    if (StringUtils.isNotBlank(identifierTopStruct.getValue())
                             && identifierTopStruct.getValue().equals(identifierFirstChild.getValue())) {
                         Helper.setFehlerMeldung(Helper.getTranslation("MetadataIdentifierError") + identifierTopStruct.getType().getName()
                                 + Helper.getTranslation("MetadataIdentifierSame") + uppermostStruct.getType().getName() + " and "

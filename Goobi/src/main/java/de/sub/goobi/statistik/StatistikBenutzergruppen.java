@@ -3,7 +3,7 @@ package de.sub.goobi.statistik;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -28,12 +28,11 @@ package de.sub.goobi.statistik;
 import java.util.Iterator;
 import java.util.List;
 
+import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.Usergroup;
 import org.jfree.data.general.Dataset;
 import org.jfree.data.general.DefaultPieDataset;
-
-import org.goobi.beans.Process;
 
 public class StatistikBenutzergruppen {
 
@@ -47,7 +46,7 @@ public class StatistikBenutzergruppen {
                 for (Iterator<Usergroup> iter2 = step.getBenutzergruppenList().iterator(); iter2.hasNext();) {
                     Usergroup group = iter2.next();
                     if (dataset.getIndex(group.getTitel()) != -1) {
-                        dataset.setValue(group.getTitel(), dataset.getValue(group.getTitel()).intValue() + 1);
+                        dataset.setValue(group.getTitel(), dataset.getValue(group.getTitel()).intValue() + 1d);
                     } else {
                         dataset.setValue(group.getTitel(), 1);
                     }

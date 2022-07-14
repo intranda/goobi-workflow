@@ -102,7 +102,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
     private static Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
 
-    private static final SimpleDateFormat dateConverter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private SimpleDateFormat dateConverter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     /**
      * This method exports the production metadata as xml to a given directory

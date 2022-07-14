@@ -672,12 +672,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * 
      * @param imageDirectory The path of an image directory, either only the name or the entire path.
      * @return The full path to the largest thumbnail directory or null if no matching directory was found
-     * @throws DAOException
      * @throws SwapException
-     * @throws InterruptedException
      * @throws IOException
      */
-    public String getLargestThumbsDirectory(String imageDirectory) throws IOException, InterruptedException, SwapException, DAOException {
+    public String getLargestThumbsDirectory(String imageDirectory) throws IOException, SwapException {
         Map<Integer, String> dirMap = getThumbsDirectories(imageDirectory);
         Optional<Integer> bestSize = dirMap.keySet().stream().sorted((i1, i2) -> i2.compareTo(i1)).findFirst();
         if (bestSize.isPresent()) {
@@ -1317,7 +1315,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             xmlExport.startExport(this, ziel);
         } catch (IOException e) {
             Helper.setFehlerMeldung("could not write logfile to home directory: ", e);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
             Helper.setFehlerMeldung("could not execute command to write logfile to home directory", e);
         }
     }
@@ -2024,7 +2022,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
             }
         }
-        return null;
+        return "";
     }
 
     /**

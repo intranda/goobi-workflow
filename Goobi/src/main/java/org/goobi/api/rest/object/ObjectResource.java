@@ -83,7 +83,7 @@ public class ObjectResource {
             ObjectInfo info = new ObjectInfo(objectURI);
             info.setResources(resourceURIs);
             return info;
-        } catch (IOException | InterruptedException | SwapException | DAOException | URISyntaxException e) {
+        } catch (IOException |  SwapException | URISyntaxException e) {
             throw new WebServiceException(e);
         }
 
@@ -102,7 +102,7 @@ public class ObjectResource {
      * @throws URISyntaxException
      */
     private List<URI> getResources(String baseFolder, String baseFilename, String baseURI)
-            throws IOException, InterruptedException, SwapException, DAOException, URISyntaxException {
+            throws IOException, URISyntaxException {
         List<URI> resourceURIs = new ArrayList<>();
 
         baseFilename = Paths.get(baseFilename).getFileName().toString();

@@ -113,7 +113,7 @@ public class GoobiImageResource {
         ImageResource imageResource = createImageResource(processIdString, folder, filename);
 
         ImageInformation info = imageResource.getInfoAsJson();
-        
+
         double heightToWidthRatio = info.getHeight() / (double) info.getWidth();
         List<Dimension> sizes = new ArrayList<>();
 
@@ -235,41 +235,43 @@ public class GoobiImageResource {
 
                 boolean imageTooLarge = isFileTooLarge(imagePath);
                 Dimension imageSize = getImageSize(originalImageURI.toString());
-                if (!imageTooLarge) {
-                    int maxImageSize = ConfigurationHelper.getInstance().getMaximalImageSize();
-                    imageTooLarge = maxImageSize > 0 && Math.max(imageSize.getWidth(), imageSize.getHeight()) > maxImageSize;
-                }
-
-                Optional<Dimension> requestedRegionSize = getRequestedRegionSize(request);
-                requestedImageSize = completeRequestedSize(requestedImageSize, requestedRegionSize, imageSize);
-
-                if (hasThumbnailDirectories(imageFolder, thumbnailFolder)) {
-                    // For requests covering only part of the image, calculate the size of the
-                    // requested image if the entire image were requested
-                    if (requestedImageSize.isPresent() && requestedRegionSize.isPresent()) {
-                        double regionScaleW = requestedImageSize.get().getWidth() / requestedRegionSize.get().getWidth();
-                        double regionScaleH = requestedImageSize.get().getHeight() / requestedRegionSize.get().getHeight();
-                        requestedImageSize = Optional.of(new Dimension((int) Math.round(regionScaleW * imageSize.getWidth()),
-                                (int) Math.round(regionScaleH * imageSize.getHeight())));
+                if (imageSize != null) {
+                    if (!imageTooLarge) {
+                        int maxImageSize = ConfigurationHelper.getInstance().getMaximalImageSize();
+                        imageTooLarge = maxImageSize > 0 && Math.max(imageSize.getWidth(), imageSize.getHeight()) > maxImageSize;
                     }
-                    // set the path of the thumbnail/image to use
-                    imagePath = getThumbnailPath(imagePath, thumbnailFolder, requestedImageSize, imageTooLarge).orElse(imagePath);
-                    // add an attribute to the request on how to scale the requested region to its
-                    // size on the original image
-                    Dimension size = requestedImageSize.orElse(null);
-                    getThumbnailSize(imagePath.getParent().getFileName().toString())
-                    .map(sizeString -> calcThumbnailScale(imageSize, sizeString, size, requestedRegionSize.isPresent()))
-                    .ifPresent(scale -> setThumbnailScale(scale, request));
-                    log.debug("Using thumbnail {} for image width {} and region width {}", imagePath,
-                            requestedImageSize.map(Object::toString).orElse("max"),
-                            requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
-                } else if (imageTooLarge) {
-                    //image too large for display and no thumbnails available
-                    throw new ContentLibException(
-                            "Image size is larger than the allowed maximal size. Please consider using a compressed derivate or generating thumbnails for these images.");
-                } else {
-                    // ignore thumbnail folder for this request
-                    this.thumbnailFolder = null;
+
+                    Optional<Dimension> requestedRegionSize = getRequestedRegionSize(request);
+                    requestedImageSize = completeRequestedSize(requestedImageSize, requestedRegionSize, imageSize);
+
+                    if (hasThumbnailDirectories(imageFolder, thumbnailFolder)) {
+                        // For requests covering only part of the image, calculate the size of the
+                        // requested image if the entire image were requested
+                        if (requestedImageSize.isPresent() && requestedRegionSize.isPresent()) {
+                            double regionScaleW = requestedImageSize.get().getWidth() / requestedRegionSize.get().getWidth();
+                            double regionScaleH = requestedImageSize.get().getHeight() / requestedRegionSize.get().getHeight();
+                            requestedImageSize = Optional.of(new Dimension((int) Math.round(regionScaleW * imageSize.getWidth()),
+                                    (int) Math.round(regionScaleH * imageSize.getHeight())));
+                        }
+                        // set the path of the thumbnail/image to use
+                        imagePath = getThumbnailPath(imagePath, thumbnailFolder, requestedImageSize, imageTooLarge).orElse(imagePath);
+                        // add an attribute to the request on how to scale the requested region to its
+                        // size on the original image
+                        Dimension size = requestedImageSize.orElse(null);
+                        getThumbnailSize(imagePath.getParent().getFileName().toString())
+                        .map(sizeString -> calcThumbnailScale(imageSize, sizeString, size, requestedRegionSize.isPresent()))
+                        .ifPresent(scale -> setThumbnailScale(scale, request));
+                        log.debug("Using thumbnail {} for image width {} and region width {}", imagePath,
+                                requestedImageSize.map(Object::toString).orElse("max"),
+                                requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
+                    } else if (imageTooLarge) {
+                        //image too large for display and no thumbnails available
+                        throw new ContentLibException(
+                                "Image size is larger than the allowed maximal size. Please consider using a compressed derivate or generating thumbnails for these images.");
+                    } else {
+                        // ignore thumbnail folder for this request
+                        this.thumbnailFolder = null;
+                    }
                 }
             } else {
                 //info request
@@ -279,7 +281,7 @@ public class GoobiImageResource {
 
         } catch (NumberFormatException | NullPointerException e) {
             throw new ContentNotFoundException("No process found with id " + processFolder.getFileName().toString(), e);
-        } catch (IOException | InterruptedException | SwapException | DAOException | ContentLibException e) {
+        } catch (IOException | SwapException | DAOException | ContentLibException e) {
             throw new ContentNotFoundException(
                     "Error initializing image resource for  " + processFolder.getFileName().toString() + ". Reason: " + e.getMessage(), e);
 
@@ -411,13 +413,8 @@ public class GoobiImageResource {
      * @param process the process in which the image is located
      * @param useFallback if set to true, the largest thumbnail folder will be used if the requested image is larger than all thumnails
      * @return An Optional containing the full filepath to the most suitable thumbnail image, or an empty Optional if no matching thumnail was found
-     * @throws IOException
-     * @throws InterruptedException
-     * @throws SwapException
-     * @throws DAOException
      */
-    private Optional<Path> getThumbnailPath(Path imagePath, Path thumbnailFolder, Optional<Dimension> requestedImageSize, boolean useFallback)
-            throws IOException, InterruptedException, SwapException, DAOException {
+    private Optional<Path> getThumbnailPath(Path imagePath, Path thumbnailFolder, Optional<Dimension> requestedImageSize, boolean useFallback) {
         List<String> validThumbnailFolders = getThumbnailFolders(imagePath.getParent(), thumbnailFolder);
         if (imagePath.startsWith(thumbnailFolder)) {
             return Optional.of(imagePath);
@@ -519,8 +516,7 @@ public class GoobiImageResource {
         return Optional.empty();
     }
 
-    private Path getImagesFolder(Path processFolder, String folder)
-            throws ContentNotFoundException, IOException, InterruptedException, SwapException, DAOException {
+    private Path getImagesFolder(Path processFolder, String folder) throws IOException, SwapException, DAOException {
         switch (folder.toLowerCase()) {
             case "master":
             case "orig":
