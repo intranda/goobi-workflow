@@ -114,6 +114,9 @@ public class DmsImportThread extends Thread {
                 }
             } catch (Throwable t) {
                 log.error("Unexception exception", t);
+                if (t instanceof InterruptedException) {
+                    Thread.currentThread().interrupt();
+                }
             }
         }
         if (!ConfigurationHelper.getInstance().isExportWithoutTimeLimit()) {

@@ -261,7 +261,7 @@ public class ExportMets {
         if (myBenutzer != null) {
             try {
                 FilesystemHelper.createDirectoryForUser(target, myBenutzer.getLogin());
-            } catch (Exception e) {
+            } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
                 Helper.setFehlerMeldung("Export canceled, could not create destination directory: " + inTargetFolder, e);
             }
         }
@@ -328,7 +328,7 @@ public class ExportMets {
             mih.createPagination(myProzess, null);
             try {
                 myProzess.writeMetadataFile(gdzfile);
-            } catch (UGHException | IOException | InterruptedException | SwapException | DAOException e) {
+            } catch (UGHException | IOException |  SwapException e) {
                 log.error(e);
             }
         } else {

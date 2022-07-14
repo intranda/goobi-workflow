@@ -43,7 +43,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -173,7 +172,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     @Getter
     @Setter
-    private List<LogEntry> processLog = new LinkedList<>();
+    private List<LogEntry> processLog = new ArrayList<>();
 
     private BeanHelper bhelp = new BeanHelper();
 
@@ -529,7 +528,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return sourceFolder.toString();
     }
 
-    public String getProcessDataDirectory() throws IOException, InterruptedException, SwapException, DAOException {
+    public String getProcessDataDirectory() throws IOException, SwapException {
         String pfad = getProcessDataDirectoryIgnoreSwapping();
 
         if (isSwappedOutGui()) {
@@ -588,12 +587,17 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         + FileSystems.getDefault().getSeparator();
     }
 
-    public String getProcessDataDirectoryIgnoreSwapping() throws IOException, InterruptedException, SwapException, DAOException {
+    public String getProcessDataDirectoryIgnoreSwapping() throws IOException {
         String pfad = this.help.getGoobiDataDirectory() + this.id.intValue() + FileSystems.getDefault().getSeparator();
         if (!ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
             pfad = pfad.replaceAll(" ", "__");
         }
-        FilesystemHelper.createDirectory(pfad);
+
+        try {
+            FilesystemHelper.createDirectory(pfad);
+        } catch (IOException | InterruptedException e) {
+            log.error(e); //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+        }
         return pfad;
     }
 
@@ -1071,8 +1075,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return result;
     }
 
-    public synchronized void writeMetadataFile(Fileformat gdzfile)
-            throws IOException, InterruptedException, SwapException, DAOException, WriteException, PreferencesException {
+    public synchronized void writeMetadataFile(Fileformat gdzfile) throws IOException, SwapException, WriteException, PreferencesException {
 
         String path = this.getProcessDataDirectory();
         int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
@@ -1174,7 +1177,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                     StorageProvider.getInstance().deleteDir(file);
                 }
             }
-        } catch (SwapException | DAOException | IOException | InterruptedException e) {
+        } catch (SwapException | IOException e) {
             log.error(e);
         }
     }
@@ -1211,7 +1214,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 StorageProvider.getInstance().copyFile(temporaryAnchorFile, metaAnchor);
             }
 
-        } catch (SwapException | DAOException | IOException | InterruptedException e) {
+        } catch (SwapException | IOException e) {
             log.error(e);
         }
     }
