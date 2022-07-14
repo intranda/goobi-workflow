@@ -10,7 +10,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class LongRunningTask extends Thread {
-    
+
     @Getter
     @Setter
     private int statusProgress = 0;
@@ -35,7 +35,7 @@ public class LongRunningTask extends Thread {
         this.statusProgress = 1;
         this.statusMessage = "running";
         this.isSingleThread = false;
-        run();
+        this.start();
     }
 
     public void cancel() {

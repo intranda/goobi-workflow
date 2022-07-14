@@ -287,7 +287,7 @@ public class VariableReplacer {
             inString = piiifMediaFolder.matcher(inString).replaceAll(Matcher.quoteReplacement(getIiifImageUrls(process, "media")));
             inString = piiifMasterFolder.matcher(inString).replaceAll(Matcher.quoteReplacement(getIiifImageUrls(process, "master")));
 
-        } catch (IOException | InterruptedException | SwapException | DAOException e) {
+        } catch (IOException | SwapException | DAOException e) {
             log.error(e);
         }
         String myprefs = ConfigurationHelper.getInstance().getRulesetFolder() + this.process.getRegelsatz().getDatei();
@@ -366,7 +366,7 @@ public class VariableReplacer {
             try {
                 String value = process.getConfiguredImageFolder(folderName);
                 inString = inString.replace(r.group(), value);
-            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+            } catch (IOException |  SwapException | DAOException e) {
                 log.error(e);
             }
         }

@@ -1525,22 +1525,7 @@ public class Metadaten implements Serializable {
         } catch (SwapException e) {
             Helper.setFehlerMeldung(e);
             return Helper.getRequestParameter("zurueck");
-        } catch (ReadException e) {
-            Helper.setFehlerMeldung(e.getMessage());
-            return Helper.getRequestParameter("zurueck");
-        } catch (PreferencesException e) {
-            Helper.setFehlerMeldung("Error while loading metadata", e);
-            return Helper.getRequestParameter("zurueck");
-        } catch (WriteException e) {
-            Helper.setFehlerMeldung("Error while loading metadata", e);
-            return Helper.getRequestParameter("zurueck");
-        } catch (IOException e) {
-            Helper.setFehlerMeldung("Error while loading metadata", e);
-            return Helper.getRequestParameter("zurueck");
-        } catch (InterruptedException e) {
-            Helper.setFehlerMeldung("Error while loading metadata", e);
-            return Helper.getRequestParameter("zurueck");
-        } catch (DAOException e) {
+        } catch (ReadException | PreferencesException | IOException | DAOException e) {
             Helper.setFehlerMeldung("Error while loading metadata", e);
             return Helper.getRequestParameter("zurueck");
         }
@@ -1564,8 +1549,7 @@ public class Metadaten implements Serializable {
      * @throws WriteException
      */
 
-    public String XMLlesenStart()
-            throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException, WriteException {
+    public String XMLlesenStart() throws ReadException, IOException, PreferencesException, SwapException, DAOException {
         currentRepresentativePage = "";
         this.myPrefs = this.myProzess.getRegelsatz().getPreferences();
         enablePageArea = myPrefs.getDocStrctTypeByName("area") != null;
@@ -1677,7 +1661,7 @@ public class Metadaten implements Serializable {
                     setImageIndex(0);
                 }
             }
-        } catch (InvalidImagesException | SwapException | DAOException | IOException | InterruptedException e1) {
+        } catch (InvalidImagesException | SwapException | DAOException | IOException e1) {
             log.error(e1);
         }
     }
@@ -2117,7 +2101,7 @@ public class Metadaten implements Serializable {
      * @throws TypeNotAllowedAsChildException ============================================================ == ==
      */
     public String KnotenVerschieben() throws TypeNotAllowedAsChildException {
-        if(this.myDocStruct != null && this.myDocStruct.getParent() != null) {
+        if (this.myDocStruct != null && this.myDocStruct.getParent() != null) {
             this.myDocStruct.getParent().removeChild(this.myDocStruct);
             this.tempStrukturelement.addChild(this.myDocStruct);
             MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
@@ -2150,11 +2134,8 @@ public class Metadaten implements Serializable {
                         .collect(Collectors.toList());
                 for (DocStruct area : pageAreas) {
                     if (area.getAllFromReferences() != null) {
-                        List<DocStruct> referencedLogDs = area.getAllFromReferences()
-                                .stream()
-                                .map(Reference::getSource)
-                                .filter(t -> t != null)
-                                .collect(Collectors.toList());
+                        List<DocStruct> referencedLogDs =
+                                area.getAllFromReferences().stream().map(Reference::getSource).filter(t -> t != null).collect(Collectors.toList());
                         if (referencedLogDs.isEmpty() || (referencedLogDs.size() == 1 && referencedLogDs.get(0).equals(this.myDocStruct))) {
                             area.getParent().removeChild(area);
                         }
@@ -2423,7 +2404,7 @@ public class Metadaten implements Serializable {
     private void checkImageNames() {
         try {
             imagehelper.checkImageNames(this.myProzess, currentTifFolder);
-        } catch (TypeNotAllowedForParentException | SwapException | DAOException | IOException | InterruptedException e) {
+        } catch (TypeNotAllowedForParentException | SwapException | DAOException | IOException e) {
             log.error(e);
         }
     }
@@ -2434,7 +2415,7 @@ public class Metadaten implements Serializable {
      * @throws DAOException
      * @throws SwapException
      */
-    public String createPagination() throws TypeNotAllowedForParentException, IOException, InterruptedException, SwapException, DAOException {
+    public String createPagination() throws TypeNotAllowedForParentException, IOException, SwapException, DAOException {
         this.imagehelper.createPagination(this.myProzess, this.currentTifFolder);
         retrieveAllImages();
 
@@ -2985,7 +2966,7 @@ public class Metadaten implements Serializable {
         return this.allTifFolders;
     }
 
-    public void readAllTifFolders() throws IOException, InterruptedException, SwapException, DAOException {
+    public void readAllTifFolders() throws IOException, SwapException {
         this.allTifFolders = new ArrayList<>();
         Path dir = Paths.get(this.myProzess.getImagesDirectory());
 
@@ -3060,8 +3041,6 @@ public class Metadaten implements Serializable {
                 } catch (DAOException e) {
                     log.error(e);
                 } catch (IOException e) {
-                    log.error(e);
-                } catch (InterruptedException e) {
                     log.error(e);
                 }
             }
@@ -3719,7 +3698,7 @@ public class Metadaten implements Serializable {
         return ocrResult;
     }
 
-    public void loadJsonAlto() throws IOException, JDOMException, SwapException, DAOException, InterruptedException {
+    public void loadJsonAlto() throws IOException, JDOMException, SwapException, DAOException {
         Path altoFile = getCurrentAltoPath();
         SimpleAlto alto = new SimpleAlto();
         if (StorageProvider.getInstance().isFileExists(altoFile)) {
@@ -3733,7 +3712,7 @@ public class Metadaten implements Serializable {
         return currentJsonAlto;
     }
 
-    private Path getCurrentAltoPath() throws SwapException, DAOException, IOException, InterruptedException {
+    private Path getCurrentAltoPath() throws SwapException, IOException {
         String ocrFileNew = image.getTooltip().substring(0, image.getTooltip().lastIndexOf("."));
         Path altoFile = Paths.get(myProzess.getOcrAltoDirectory(), ocrFileNew + ".xml");
         if (!StorageProvider.getInstance().isFileExists(altoFile)) {
@@ -3749,7 +3728,7 @@ public class Metadaten implements Serializable {
             this.loadJsonAlto();
             FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_INFO, Helper.getTranslation("savedAlto"), null);
             FacesContext.getCurrentInstance().addMessage("altoChanges", fm);
-        } catch (JDOMException | IOException | SwapException | DAOException | InterruptedException e) {
+        } catch (JDOMException | IOException | SwapException | DAOException e) {
             // TODO Auto-generated catch block
             log.error(e);
             FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_ERROR, Helper.getTranslation("errorSavingAlto"), null);
@@ -3946,7 +3925,7 @@ public class Metadaten implements Serializable {
     }
 
     public String getNeuesElementWohin() {
-        if (this.neuesElementWohin == null || this.neuesElementWohin == "") {
+        if (StringUtils.isBlank(neuesElementWohin)) {
             this.neuesElementWohin = "4";
         }
         return this.neuesElementWohin;
@@ -4411,12 +4390,12 @@ public class Metadaten implements Serializable {
             for (Path p : allFolderAndAllFiles.keySet()) {
                 List<Path> files = allFolderAndAllFiles.get(p);
                 if (oldfilenames.size() != files.size()) {
-                    files = Collections.emptyList();
+                    files.clear();
                 }
             }
 
             progress = 0;
-            totalImageNo = oldfilenames.size() * 2;
+            totalImageNo = oldfilenames.size() * 2d;
             currentImageNo = 0;
 
             boolean isWriteable = true;
@@ -4642,7 +4621,9 @@ public class Metadaten implements Serializable {
             } catch (IOException e) {
                 log.error("Error loading the tree for filtered processes (IOException): ", e);
             }
-            activateAllTreeElements(treeOfFilteredProcess);
+            if (treeOfFilteredProcess != null) {
+                activateAllTreeElements(treeOfFilteredProcess);
+            }
         }
     }
 
@@ -4885,7 +4866,7 @@ public class Metadaten implements Serializable {
             bildNummer = this.imageIndex;
             try {
                 this.loadJsonAlto();
-            } catch (IOException | JDOMException | SwapException | DAOException | InterruptedException e) {
+            } catch (IOException | JDOMException | SwapException | DAOException e) {
                 SimpleAlto alto = new SimpleAlto("Error reading ALTO, see application log for details.");
 
                 this.currentJsonAlto = new Gson().toJson(alto);
@@ -5016,11 +4997,11 @@ public class Metadaten implements Serializable {
     }
 
     public int getLastPageNumber() {
-        int ret = Double.valueOf(Math.floor(this.allImages.size() / numberOfImagesPerPage)).intValue();
+        int ret =  this.allImages.size() / numberOfImagesPerPage;
         if (this.allImages.size() % numberOfImagesPerPage == 0) {
             ret--;
         }
-        return ret;
+        return  ret;
     }
 
     public boolean isFirstPage() {
@@ -5040,11 +5021,11 @@ public class Metadaten implements Serializable {
     }
 
     public Long getPageNumberCurrent() {
-        return Long.valueOf(this.pageNo + 1);
+        return Long.valueOf(this.pageNo + 1l);
     }
 
     public Long getPageNumberLast() {
-        return Long.valueOf(getLastPageNumber() + 1);
+        return Long.valueOf(getLastPageNumber() + 1l);
     }
 
     public int getSizeOfImageList() {
@@ -5109,7 +5090,7 @@ public class Metadaten implements Serializable {
             } else {
                 bildNummer = -1;
             }
-        } catch (InvalidImagesException | SwapException | DAOException | IOException | InterruptedException e1) {
+        } catch (InvalidImagesException | SwapException | DAOException | IOException e1) {
             log.error(e1);
         }
 

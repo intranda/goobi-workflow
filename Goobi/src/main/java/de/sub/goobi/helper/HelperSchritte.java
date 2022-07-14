@@ -690,8 +690,7 @@ public class HelperSchritte {
                 errorStep(step);
             }
             return validate;
-        } catch (DAOException | UGHException | SwapException | IOException | ExportFileException | DocStructHasNoTypeException | UghHelperException
-                | InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is handled in the export task
+        } catch (DAOException | UGHException | SwapException | IOException | ExportFileException | DocStructHasNoTypeException | UghHelperException | InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is handled in the export task
             log.error("Exception occurred while trying to export process with ID " + step.getProcessId(), e);
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
                     "An exception occurred during the export for process with ID " + step.getProcessId() + ": " + e.getMessage());

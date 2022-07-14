@@ -528,8 +528,10 @@ public class S3FileUtils implements StorageProviderInterface {
                     // use multipart upload for larger files larger than 1GB
                     Upload upload = transferManager.upload(getBucket(), path2Key(destFile), srcFile.toFile());
                     upload.waitForCompletion();
-                } catch (AmazonClientException | InterruptedException e) {
+                } catch (AmazonClientException e) {
                     throw new IOException(e);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
             }
         } else {
@@ -538,8 +540,10 @@ public class S3FileUtils implements StorageProviderInterface {
                 Copy copy = transferManager.copy(getBucket(), path2Key(srcFile), getBucket(), path2Key(destFile));
                 try {
                     copy.waitForCompletion();
-                } catch (AmazonClientException | InterruptedException e) {
+                } catch (AmazonClientException e) {
                     throw new IOException(e);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
             } else {
                 // src on s3 and dest local => download file from s3 to local location
@@ -711,8 +715,10 @@ public class S3FileUtils implements StorageProviderInterface {
             Download dl = transferManager.download(getBucket(), path2Key(oldPath), newPath.toFile());
             try (S3Object obj = s3.getObject(getBucket(), path2Key(oldPath)); InputStream in = obj.getObjectContent()) {
                 dl.waitForCompletion();
-            } catch (AmazonClientException | InterruptedException e) {
+            } catch (AmazonClientException  e) {
                 throw new IOException(e);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
             s3.deleteObject(getBucket(), path2Key(oldPath));
         }

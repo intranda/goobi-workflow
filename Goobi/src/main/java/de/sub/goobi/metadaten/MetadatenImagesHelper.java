@@ -101,7 +101,7 @@ public class MetadatenImagesHelper {
     }
 
     public void checkImageNames(Process myProzess, String directoryName)
-            throws TypeNotAllowedForParentException, SwapException, DAOException, IOException, InterruptedException {
+            throws TypeNotAllowedForParentException, SwapException, DAOException, IOException {
         DocStruct physical = this.mydocument.getPhysicalDocStruct();
 
         DocStruct logical = this.mydocument.getLogicalDocStruct();
@@ -233,16 +233,12 @@ public class MetadatenImagesHelper {
      * 
      * @return null
      * @throws TypeNotAllowedForParentException
-     * @throws TypeNotAllowedForParentException
-     * @throws InterruptedException
-     * @throws IOException
-     * @throws InterruptedException
      * @throws IOException
      * @throws DAOException
      * @throws SwapException
      */
     public void createPagination(Process inProzess, String directory)
-            throws TypeNotAllowedForParentException, IOException, InterruptedException, SwapException, DAOException {
+            throws TypeNotAllowedForParentException, IOException, SwapException, DAOException {
         String mediaFolder = inProzess.getImagesTifDirectory(false);
         String mediaFolderWithFallback = inProzess.getImagesTifDirectory(true);
 
@@ -680,7 +676,7 @@ public class MetadatenImagesHelper {
      * @throws DAOException
      * @throws SwapException
      */
-    public boolean checkIfImagesValid(String title, String folder)  {
+    public boolean checkIfImagesValid(String title, String folder) {
         boolean isValid = true;
         this.myLastImage = 0;
 

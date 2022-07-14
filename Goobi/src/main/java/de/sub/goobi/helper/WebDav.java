@@ -42,13 +42,14 @@ import org.goobi.io.WebDavFilter;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.download.TiffHeader;
+import de.sub.goobi.helper.exceptions.SwapException;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class WebDav implements Serializable {
 
     private static final long serialVersionUID = -1929234096626965538L;
-    
+
     /*
      * Kopieren bzw. symbolische Links für einen Prozess in das Benutzerhome
      */
@@ -66,17 +67,21 @@ public class WebDav implements Serializable {
     public List<String> UploadFromHomeAlle(String inVerzeichnis) {
         List<String> rueckgabe = new ArrayList<>();
         User aktuellerBenutzer = Helper.getCurrentUser();
-        String VerzeichnisAlle;
+        String folder;
 
         try {
-            VerzeichnisAlle = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
-        } catch (Exception ioe) {
-            log.error("Exception UploadFromHomeAlle()", ioe);
-            Helper.setFehlerMeldung("UploadFromHomeAlle abgebrochen, Fehler", ioe.getMessage());
+            folder = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
+        } catch (IOException  e) {
+            log.error("Exception UploadFromHomeAlle()", e);
+            Helper.setFehlerMeldung("UploadFromHomeAlle abgebrochen, Fehler", e.getMessage());
+            return rueckgabe;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             return rueckgabe;
         }
 
-        List<String> dateien = StorageProvider.getInstance().list(VerzeichnisAlle, new WebDavFilter());
+
+        List<String> dateien = StorageProvider.getInstance().list(folder, new WebDavFilter());
 
         return dateien;
 
@@ -85,21 +90,23 @@ public class WebDav implements Serializable {
     /**
      * Remove Folders from Directory ================================================================
      */
-    // TODO: Use generic types
     public void removeFromHomeAlle(List<String> inList, String inVerzeichnis) {
-        String VerzeichnisAlle;
+        String folder;
         User aktuellerBenutzer = Helper.getCurrentUser();
         try {
-            VerzeichnisAlle = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
-        } catch (Exception ioe) {
+            folder = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
+        } catch (IOException ioe) {
             log.error("Exception RemoveFromHomeAlle()", ioe);
             Helper.setFehlerMeldung("Upload stopped, error", ioe.getMessage());
+            return;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             return;
         }
 
         for (Iterator<String> it = inList.iterator(); it.hasNext();) {
             String myname = it.next();
-            FilesystemHelper.deleteSymLink(VerzeichnisAlle + myname);
+            FilesystemHelper.deleteSymLink(folder + myname);
         }
     }
 
@@ -179,9 +186,12 @@ public class WebDav implements Serializable {
                 FilesystemHelper.createDirectoryForUser(doneDir, aktuellerBenutzer.getLogin());
             }
 
-        } catch (Exception ioe) {
+        } catch (IOException | SwapException ioe) {
             log.error("Exception DownloadToHome()", ioe);
             Helper.setFehlerMeldung("Aborted download to home, error", ioe.getMessage());
+            return;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             return;
         }
 
@@ -230,6 +240,7 @@ public class WebDav implements Serializable {
                 log.error("InterruptedException DownloadToHome()", e);
                 Helper.setFehlerMeldung("Download aborted, InterruptedException", e.getMessage());
                 log.error(e);
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -258,8 +269,11 @@ public class WebDav implements Serializable {
             String VerzeichnisAlle = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
 
             return StorageProvider.getInstance().list(VerzeichnisAlle, new WebDavFilter()).size();
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.error(e);
+            return 0;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             return 0;
         }
     }

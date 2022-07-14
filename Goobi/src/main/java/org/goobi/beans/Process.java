@@ -532,7 +532,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return pfad;
     }
 
-    public String getSourceDirectory() throws IOException, InterruptedException, SwapException, DAOException {
+    public String getSourceDirectory() throws IOException, SwapException {
         Path sourceFolder = Paths.get(getImagesDirectory(),
                 VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesSourceDirectoryName(), this));
         if (ConfigurationHelper.getInstance().isCreateSourceFolder() && !StorageProvider.getInstance().isDirectory(sourceFolder)) {
@@ -1144,7 +1144,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public void saveTemporaryMetsFile(Fileformat gdzfile)
-            throws SwapException, DAOException, IOException, InterruptedException, PreferencesException, WriteException {
+            throws SwapException, IOException, PreferencesException, WriteException {
 
         int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
         Process.createBackup(this.getProcessDataDirectory(), "temp.xml", maximumNumberOfBackups);
@@ -1155,7 +1155,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public void writeMetadataAsTemplateFile(Fileformat inFile)
-            throws IOException, InterruptedException, SwapException, DAOException, WriteException, PreferencesException {
+            throws IOException, SwapException, WriteException, PreferencesException {
         inFile.write(getTemplateFilePath());
     }
 
@@ -1624,7 +1624,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 sb.append(thumbnailWidth);
                 return sb.toString();
             }
-        } catch (IOException | InterruptedException | SwapException | DAOException e) {
+        } catch (IOException | SwapException | DAOException e) {
             log.error("Error creating representative image url for process " + this.getId());
             String rootpath = "cs?action=image&format=jpg&sourcepath=file:///";
             return rootpath + representativeImage.replaceAll("\\\\", "/");
@@ -1796,7 +1796,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                     }
                 }
 
-            } catch (SwapException | DAOException | IOException | InterruptedException e) {
+            } catch (SwapException | DAOException | IOException e) {
                 log.error(e);
             }
         }
@@ -2157,7 +2157,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @throws DAOException
      */
 
-    public String getConfiguredImageFolder(String folderName) throws IOException, InterruptedException, SwapException, DAOException {
+    public String getConfiguredImageFolder(String folderName) throws IOException, SwapException, DAOException {
         if ("master".equals(folderName)) {
             return getImagesOrigDirectory(false);
         } else if ("main".equals(folderName) || "media".equals(folderName)) {

@@ -158,7 +158,7 @@ public @Data class Image {
      * @throws DAOException From {@link Process#getImagesDirectory()}
      */
     public Image(Process process, String imageFolderName, String filename, int order, Integer thumbnailSize)
-            throws IOException, InterruptedException, SwapException, DAOException {
+            throws IOException, SwapException, DAOException {
         imageFolderName = Paths.get(imageFolderName).getFileName().toString();
         this.imagePath = getImagePath(process, imageFolderName, filename);
         this.imageName = this.imagePath.getFileName().toString();
@@ -494,7 +494,7 @@ public @Data class Image {
     }
 
     private static Path getImagePath(org.goobi.beans.Process process, String imageFolderName, String filename)
-            throws IOException, InterruptedException, SwapException, DAOException {
+            throws IOException, SwapException {
         Path path = Paths.get(process.getImagesDirectory(), imageFolderName, filename);
         if (!Files.exists(path)) {
             path = Paths.get(process.getThumbsDirectory(), imageFolderName, filename);
@@ -563,6 +563,9 @@ public @Data class Image {
         String baseUrl = new HelperForm().getServletPathWithHostAsUrl();
         Dimension originalSize = getImageSize(path);
         List<ImageLevel> levels = new ArrayList<>();
+        if (originalSize == null) {
+            return levels;
+        }
         for (String sizeString : sizes) {
             try {
                 int size = Integer.parseInt(sizeString);
