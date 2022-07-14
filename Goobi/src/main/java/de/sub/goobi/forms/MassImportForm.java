@@ -576,7 +576,7 @@ public class MassImportForm implements Serializable {
                 return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
             }
         }
-        return null;
+        return "";
     }
 
     /**

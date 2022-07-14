@@ -1839,7 +1839,12 @@ public class ProzesskopieForm implements Serializable {
     private void saveFileTemporary(String fileName, InputStream in) throws IOException {
         OutputStream out = null;
         try {
-            File file = new File(getTemporaryFolder().toString(), fileName);
+            Path tmpFolder = getTemporaryFolder();
+            if (tmpFolder == null) {
+                tmpFolder = Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder());
+            }
+            String folderName = tmpFolder.toString();
+            File file = new File(folderName, fileName);
             out = new FileOutputStream(file);
             int read = 0;
             byte[] bytes = new byte[1024];

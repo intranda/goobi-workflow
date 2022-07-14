@@ -93,7 +93,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
      * @throws InterruptedException
      * @throws IOException
      */
-    public static Boolean updateHistory(Process inProcess) throws IOException, InterruptedException, SwapException, DAOException {
+    public static Boolean updateHistory(Process inProcess) throws IOException, SwapException, DAOException {
         boolean updated = false;
         /* storage */
         if (updateHistoryEvent(inProcess, HistoryEventType.storageDifference,

@@ -224,7 +224,7 @@ public class FilesystemHelper {
         } catch (FileNotFoundException e) {
             try {
                 log.debug("no OCR file found for image " + inProcess.getImagesDirectory() + ocrFile);
-            } catch (IOException | InterruptedException | SwapException | DAOException e1) {
+            } catch (IOException | SwapException  e1) {
                 log.error(e1);
             }
         } catch (IOException | SwapException | DAOException | InterruptedException | XMLStreamException | JDOMException e) {

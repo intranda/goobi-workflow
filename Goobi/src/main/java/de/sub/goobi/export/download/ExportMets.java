@@ -1242,10 +1242,12 @@ public class ExportMets {
             } catch (CannotReadException | TagException | ReadOnlyFileException | InvalidAudioFrameException e) {
                 log.error(e);
             }
-            AudioHeader audioHeader = audioFile.getAudioHeader();
-            MP3AudioHeader mp3Header = (MP3AudioHeader) audioHeader;
-            duration = mp3Header.getPreciseTrackLength();
-            bitrate = mp3Header.getBitRate();
+            if (audioFile != null) {
+                AudioHeader audioHeader = audioFile.getAudioHeader();
+                MP3AudioHeader mp3Header = (MP3AudioHeader) audioHeader;
+                duration = mp3Header.getPreciseTrackLength();
+                bitrate = mp3Header.getBitRate();
+            }
         } else {
             try (InputStream audioSrc = Files.newInputStream(file); InputStream bufferedIn = new BufferedInputStream(audioSrc);
                     AudioInputStream ais = AudioSystem.getAudioInputStream(bufferedIn)) {

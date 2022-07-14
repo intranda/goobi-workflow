@@ -37,7 +37,7 @@ public class MediaResource {
     @Operation(summary="Serves a media resource", description="Serves a media resource consisting of a process name, a directory name and a resource name")
     @ApiResponse(responseCode="200", description="OK")
     @ApiResponse(responseCode="500", description="Internal error")
-    
+
     public Response serveMediaContent(@PathParam("process") String processIdString, @PathParam("folder") String folder,
             @PathParam("filename") String filename) {
 
@@ -79,7 +79,7 @@ public class MediaResource {
                         return processFolder.resolve("images").resolve(folder);
                     }
             }
-        } catch (IOException | InterruptedException | SwapException | DAOException e) {
+        } catch (IOException | SwapException | DAOException e) {
             log.error(e);
         }
         return null;

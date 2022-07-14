@@ -543,7 +543,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             }
             elements.add(logfiles);
 
-        } catch (IOException | InterruptedException | SwapException | DAOException e1) {
+        } catch (IOException | SwapException | DAOException e1) {
             log.error("Error listing all files from content folders", e1);
         }
 

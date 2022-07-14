@@ -4392,15 +4392,8 @@ public class Metadaten implements Serializable {
             String imageDirectory = "";
             try {
                 imageDirectory = myProzess.getImagesDirectory();
-            } catch (SwapException e) {
+            } catch (SwapException | IOException e) {
                 log.error(e);
-            } catch (DAOException e) {
-                log.error(e);
-            } catch (IOException e) {
-                log.error(e);
-            } catch (InterruptedException e) {
-                log.error(e);
-
             }
             if (imageDirectory.equals("")) {
                 Helper.setFehlerMeldung("ErrorMetsEditorImageRenaming");

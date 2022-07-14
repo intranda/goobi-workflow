@@ -43,7 +43,6 @@ import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.UghHelper;
-import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
@@ -309,7 +308,7 @@ public class MetadatenVerifizierung {
                         return false;
                     }
                 }
-            } catch (InvalidImagesException | IOException | InterruptedException | SwapException | DAOException e1) {
+            } catch (InvalidImagesException | IOException | SwapException e1) {
                 Helper.setFehlerMeldung(inProzess.getTitel() + ": ", e1);
                 problems.add("InvalidImagesException: " + e1.getMessage());
                 ergebnis = false;
