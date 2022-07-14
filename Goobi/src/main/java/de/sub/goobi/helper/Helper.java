@@ -396,6 +396,7 @@ public class Helper implements Serializable, ServletContextListener {
                     log.error(e.getMessage(), e);
                 } catch (InterruptedException e) {
                     //Is thrown on tomcat destroy, does not need to be handled
+                    Thread.currentThread().interrupt();
                 }
             }
         };
@@ -588,8 +589,10 @@ public class Helper implements Serializable, ServletContextListener {
     public static LoginBean getLoginBean() {
         LoginBean bean = (LoginBean) getBeanByName("LoginForm", LoginBean.class);
         try {
-            bean.getLogin();
-        } catch (ContextNotActiveException | NullPointerException e) {
+            if (bean != null) {
+                bean.getLogin();
+            }
+        } catch (ContextNotActiveException e) {
             return null;
         }
         return bean;
@@ -598,8 +601,10 @@ public class Helper implements Serializable, ServletContextListener {
     public static SessionForm getSessionBean() {
         SessionForm bean = (SessionForm) getBeanByName("SessionForm", SessionForm.class);
         try {
-            bean.getLogoutMessage();
-        } catch (ContextNotActiveException | NullPointerException e) {
+            if (bean != null) {
+                bean.getLogoutMessage();
+            }
+        } catch (ContextNotActiveException e) {
             return null;
         }
         return bean;
@@ -608,8 +613,10 @@ public class Helper implements Serializable, ServletContextListener {
     public static SpracheForm getLanguageBean() {
         SpracheForm bean = (SpracheForm) getBeanByName("SpracheForm", SpracheForm.class);
         try {
-            bean.getLocale();
-        } catch (ContextNotActiveException | NullPointerException e) {
+            if (bean != null) {
+                bean.getLocale();
+            }
+        } catch (ContextNotActiveException e) {
             return null;
         }
         return bean;
@@ -670,7 +677,7 @@ public class Helper implements Serializable, ServletContextListener {
             try {
                 t.interrupt();
                 t.join(1000);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException e) { //NOSONAR, this is expected behavior
                 // this InterruptedException is expected - don't even log it
 
             }

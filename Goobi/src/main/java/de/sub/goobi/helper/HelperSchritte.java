@@ -170,7 +170,7 @@ public class HelperSchritte {
                     ProcessManager.saveProcessInformation(currentStep.getProzess());
                 }
 
-            } catch (SwapException | DAOException | IOException | InterruptedException e1) {
+            } catch (SwapException | DAOException | IOException e1) {
                 log.error("An exception occurred while updating the metadata file process with ID " + processId, e1);
             }
         }
@@ -178,17 +178,17 @@ public class HelperSchritte {
         List<Step> automatischeSchritte = new ArrayList<>();
         List<Step> stepsToFinish = new ArrayList<>();
         SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.DONE);
-        HistoryManager.addHistory(myDate, Integer.valueOf(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(),
-                HistoryEventType.stepDone.getValue(), processId);
+        HistoryManager.addHistory(myDate, currentStep.getReihenfolge().doubleValue(), currentStep.getTitel(), HistoryEventType.stepDone.getValue(),
+                processId);
 
         /* prüfen, ob es Schritte gibt, die parallel stattfinden aber noch nicht abgeschlossen sind */
         List<Step> steps = StepManager.getStepsForProcess(processId);
         List<Step> allehoeherenSchritte = new ArrayList<>();
         int offeneSchritteGleicherReihenfolge = 0;
         for (Step so : steps) {
-            if (so.getReihenfolge() == currentStep.getReihenfolge()
+            if (so.getReihenfolge().equals(currentStep.getReihenfolge())
                     && !(so.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || so.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED))
-                    && so.getId() != currentStep.getId()) {
+                    && !so.getId().equals(currentStep.getId())) {
                 offeneSchritteGleicherReihenfolge++;
             } else if (so.getReihenfolge() > currentStep.getReihenfolge()) {
                 allehoeherenSchritte.add(so);
@@ -218,7 +218,7 @@ public class HelperSchritte {
                         } else {
                             myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
                             SendMail.getInstance().sendMailToAssignedUser(myStep, StepStatus.OPEN);
-                            HistoryManager.addHistory(myDate, Integer.valueOf(myStep.getReihenfolge()).doubleValue(), myStep.getTitel(),
+                            HistoryManager.addHistory(myDate, myStep.getReihenfolge().doubleValue(), myStep.getTitel(),
                                     HistoryEventType.stepOpen.getValue(), processId);
                             /* wenn es ein automatischer Schritt mit Script ist */
                             if (myStep.isTypAutomatisch()) {
@@ -569,7 +569,7 @@ public class HelperSchritte {
         List<String> parameterList = new ArrayList<>();
         try {
             parameterList = createShellParamsForBashScript(step, script);
-        } catch (Exception e) {
+        } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
             String message = "Error while reading metadata for step " + step.getTitel();
             log.error(message, e);
             LogEntry errorEntry = LogEntry.build(step.getProcessId())
@@ -626,7 +626,7 @@ public class HelperSchritte {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
             Helper.setFehlerMeldung("An exception occured while running a script", e.getMessage());
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
                     "Exception while executing a script for '" + step.getTitel() + "': " + e.getMessage());
@@ -691,7 +691,7 @@ public class HelperSchritte {
             }
             return validate;
         } catch (DAOException | UGHException | SwapException | IOException | InterruptedException | DocStructHasNoTypeException | UghHelperException
-                | ExportFileException e) {
+                | ExportFileException e) { //NOSONAR InterruptedException must not be re-thrown as it is handled in the export task
             log.error("Exception occurred while trying to export process with ID " + step.getProcessId(), e);
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
                     "An exception occurred during the export for process with ID " + step.getProcessId() + ": " + e.getMessage());

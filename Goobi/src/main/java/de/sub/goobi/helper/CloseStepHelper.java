@@ -94,7 +94,7 @@ public class CloseStepHelper {
 
         }
         SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.DONE);
-        HistoryManager.addHistory(currentStep.getBearbeitungsende(), Integer.valueOf(currentStep.getReihenfolge()).doubleValue(), currentStep.getTitel(),
+        HistoryManager.addHistory(currentStep.getBearbeitungsende(), currentStep.getReihenfolge().doubleValue(), currentStep.getTitel(),
                 HistoryEventType.stepDone.getValue(), currentStep.getProzess().getId());
 
         List<Step> automaticTasks = new ArrayList<>();
@@ -104,9 +104,9 @@ public class CloseStepHelper {
         List<Step> followingSteps = new ArrayList<>();
         int openStepsInSameOrder = 0;
         for (Step so : steps) {
-            if (so.getReihenfolge() == currentStep.getReihenfolge()
+            if (so.getReihenfolge().equals(currentStep.getReihenfolge())
                     && !(so.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || so.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED))
-                    && so.getId() != currentStep.getId()) {
+                    && !so.getId().equals(currentStep.getId())) {
                 openStepsInSameOrder++;
             } else if (so.getReihenfolge() > currentStep.getReihenfolge()) {
                 followingSteps.add(so);
@@ -133,7 +133,7 @@ public class CloseStepHelper {
                         myStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
                         myStep.setBearbeitungszeitpunkt(currentStep.getBearbeitungsende());
                         myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
-                        HistoryManager.addHistory(currentStep.getBearbeitungsende(), Integer.valueOf(myStep.getReihenfolge()).doubleValue(),
+                        HistoryManager.addHistory(currentStep.getBearbeitungsende(), myStep.getReihenfolge().doubleValue(),
                                 myStep.getTitel(), HistoryEventType.stepOpen.getValue(), currentStep.getProzess().getId());
                         /* wenn es ein automatischer Schritt mit Script ist */
                         if (myStep.isTypAutomatisch()) {
@@ -236,7 +236,7 @@ public class CloseStepHelper {
                 ProcessManager.saveProcessInformation(currentStep.getProzess());
             }
 
-        } catch (SwapException | DAOException | IOException | InterruptedException e1) {
+        } catch (SwapException | DAOException | IOException e1) {
             log.error("An exception occurred while updating the metadata file process with ID " + currentStep.getProzess().getId(), e1);
         }
 

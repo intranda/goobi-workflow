@@ -561,36 +561,36 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return pfad;
     }
 
-    public String getOcrDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrDirectory() throws SwapException, IOException {
         return getProcessDataDirectory() + "ocr" + FileSystems.getDefault().getSeparator();
     }
 
-    public String getOcrTxtDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrTxtDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
         + FileSystems.getDefault().getSeparator();
     }
 
     @Deprecated
-    public String getOcrWcDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrWcDirectory() throws SwapException, IOException {
         return getOcrDirectory() + this.titel + "_wc" + FileSystems.getDefault().getSeparator();
     }
 
-    public String getOcrPdfDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrPdfDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
         + FileSystems.getDefault().getSeparator();
     }
 
-    public String getOcrAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrAltoDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
         + FileSystems.getDefault().getSeparator();
     }
 
-    public String getOcrXmlDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrXmlDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
         + FileSystems.getDefault().getSeparator();
     }
 
-    public String getImportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getImportDirectory() throws SwapException, IOException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
         + FileSystems.getDefault().getSeparator();
     }
@@ -1033,7 +1033,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return abgeschlossen2;
     }
 
-    public String getMetadataFilePath() throws IOException, InterruptedException, SwapException, DAOException {
+    public String getMetadataFilePath() throws IOException, SwapException {
         return getProcessDataDirectory() + "meta.xml";
     }
 
@@ -1046,7 +1046,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public Fileformat readMetadataFile()
-            throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException, WriteException {
+            throws ReadException, IOException, SwapException {
         if (!checkForMetadataFile()) {
             throw new IOException(Helper.getTranslation("metadataFileNotFound") + " " + getMetadataFilePath());
         }
@@ -1073,7 +1073,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     private boolean checkForMetadataFile()
-            throws IOException, InterruptedException, SwapException, DAOException, WriteException, PreferencesException {
+            throws IOException, SwapException {
         boolean result = true;
         Path f = Paths.get(getMetadataFilePath());
         if (!StorageProvider.getInstance().isFileExists(f)) {
@@ -1239,7 +1239,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 return tempTime > metaTime;
 
             }
-        } catch (SwapException | DAOException | IOException | InterruptedException e) {
+        } catch (SwapException | IOException e) {
             log.error(e);
         }
 
@@ -1693,7 +1693,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             for (Path folder : ocrFolders) {
                 folderAndFileMap.put(folder, StorageProvider.getInstance().listFiles(folder.toString(), NIOFileUtils.fileFilter));
             }
-        } catch (IOException | InterruptedException | SwapException | DAOException e) {
+        } catch (IOException | SwapException e) {
 
             log.error(e);
         }
@@ -2136,7 +2136,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
                 writeMetadataFile(fileFormat);
 
-            } catch (IOException | InterruptedException | SwapException | DAOException | UghHelperException | UGHException e) {
+            } catch (IOException | SwapException | UghHelperException | UGHException e) {
                 log.info("Could not rename paths in metadata file", e);
             }
         }

@@ -4631,7 +4631,6 @@ public class Metadaten implements Serializable {
             try {
                 treeOfFilteredProcess =
                         buildTree(treeOfFilteredProcess, filteredProcess.readMetadataFile().getDigitalDocument().getLogicalDocStruct(), false);
-
             } catch (PreferencesException e) {
                 log.error("Error loading the tree for filtered processes (PreferencesException): ", e);
 
@@ -4640,19 +4639,8 @@ public class Metadaten implements Serializable {
 
             } catch (SwapException e) {
                 log.error("Error loading the tree for filtered processes (SwapException): ", e);
-
-            } catch (DAOException e) {
-                log.error("Error loading the tree for filtered processes (DAOException): ", e);
-
-            } catch (WriteException e) {
-                log.error("Error loading the tree for filtered processes (WriteException): ", e);
-
             } catch (IOException e) {
                 log.error("Error loading the tree for filtered processes (IOException): ", e);
-
-            } catch (InterruptedException e) {
-                log.error("Error loading the tree for filtered processes (InterruptedException): ", e);
-
             }
             activateAllTreeElements(treeOfFilteredProcess);
         }

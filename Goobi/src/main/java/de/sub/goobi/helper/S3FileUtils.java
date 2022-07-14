@@ -66,7 +66,7 @@ public class S3FileUtils implements StorageProviderInterface {
     private NIOFileUtils nio;
     private static Pattern processDirPattern;
 
-    private static final int MB = 1024 * 1024;
+    private static final long MB = 1024l * 1024l;
 
     static {
         String metadataFolder = ConfigurationHelper.getInstance().getMetadataFolder();
@@ -186,8 +186,10 @@ public class S3FileUtils implements StorageProviderInterface {
         Download dl = transferManager.download(os.getBucketName(), key, targetPath.toFile());
         try {
             dl.waitForCompletion();
-        } catch (AmazonClientException | InterruptedException e) {
+        } catch (AmazonClientException e) {
             throw new IOException(e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 

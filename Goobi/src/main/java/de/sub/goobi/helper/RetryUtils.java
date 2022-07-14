@@ -2,6 +2,7 @@ package de.sub.goobi.helper;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
+
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -17,7 +18,7 @@ public class RetryUtils {
                 try {
                     Thread.sleep(wait.toMillis() * counter);
                 } catch (InterruptedException ignored) {
-
+                    Thread.currentThread().interrupt();
                 }
             }
         }

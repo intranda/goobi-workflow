@@ -47,7 +47,6 @@ import de.intranda.digiverso.ocr.alto.model.structureclasses.logical.AltoDocumen
 import de.intranda.digiverso.ocr.conversion.ConvertAbbyyToAltoStaX;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider.StorageType;
-import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import lombok.extern.log4j.Log4j2;
 
@@ -116,7 +115,7 @@ public class FilesystemHelper {
             } catch (IOException e) {
                 log.error("IOException in deleteSymLink()", e);
                 Helper.setFehlerMeldung("Aborted deleteSymLink(), error", e.getMessage());
-            } catch (InterruptedException e) {
+            } catch (InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
                 log.error("InterruptedException in deleteSymLink()", e);
                 Helper.setFehlerMeldung("Command '" + command + "' is interrupted in deleteSymLink()!");
             }
@@ -177,7 +176,7 @@ public class FilesystemHelper {
                 StorageProviderInterface sp = StorageProvider.getInstance();
                 return sp.isFileExists(xml) || sp.isFileExists(txt) || sp.isFileExists(alto);
             }
-        } catch (SwapException | DAOException | IOException | InterruptedException e) {
+        } catch (SwapException | IOException e) {
             return false;
         }
     }
@@ -227,7 +226,7 @@ public class FilesystemHelper {
             } catch (IOException | SwapException  e1) {
                 log.error(e1);
             }
-        } catch (IOException | SwapException | DAOException | InterruptedException | XMLStreamException | JDOMException e) {
+        } catch (IOException | SwapException | XMLStreamException | JDOMException e) {
             log.error("Problem reading the OCR file", e);
 
         }

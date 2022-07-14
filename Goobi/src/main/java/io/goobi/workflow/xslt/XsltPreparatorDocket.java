@@ -488,11 +488,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         } catch (SwapException e) {
             log.error(e);
-        } catch (DAOException e) {
-            log.error(e);
         } catch (IOException e) {
-            log.error(e);
-        } catch (InterruptedException e) {
             log.error(e);
         } catch (JDOMException e) {
             log.error(e);

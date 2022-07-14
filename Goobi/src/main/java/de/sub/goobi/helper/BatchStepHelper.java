@@ -517,9 +517,11 @@ public class BatchStepHelper {
                 logEntry.setCreationDate(new Date());
                 logEntry.setProcessId(currentStep.getProzess().getId());
                 logEntry.setType(LogType.ERROR);
-
-                logEntry.setUserName(ben.getNachVorname());
-
+                if (ben != null) {
+                    logEntry.setUserName(ben.getNachVorname());
+                } else {
+                    logEntry.setUserName("-");
+                }
                 ProcessManager.saveLogEntry(logEntry);
 
                 temp.getEigenschaften().add(se);

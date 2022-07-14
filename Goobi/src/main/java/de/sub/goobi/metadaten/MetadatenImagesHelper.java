@@ -680,7 +680,7 @@ public class MetadatenImagesHelper {
      * @throws DAOException
      * @throws SwapException
      */
-    public boolean checkIfImagesValid(String title, String folder) throws IOException, InterruptedException, SwapException, DAOException {
+    public boolean checkIfImagesValid(String title, String folder)  {
         boolean isValid = true;
         this.myLastImage = 0;
 

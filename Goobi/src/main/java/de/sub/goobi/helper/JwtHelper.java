@@ -33,7 +33,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class JwtHelper {
 
-    private final static long rotationDuration = 1000 * 60 * 60 * 24; //24 hours 
+    private final static long rotationDuration = 1000l * 60l * 60l * 24l; //24 hours
 
     /**
      * creates a rotated token. Rotation is done by appending a timestamp
@@ -115,13 +115,16 @@ public class JwtHelper {
         }
         try {
             DecodedJWT jwt = verifyToken(token, secret, System::currentTimeMillis);
-
-            for (String key : map.keySet()) {
-                String tokenValue = jwt.getClaim(key).asString();
-                if (StringUtils.isBlank(tokenValue) || !tokenValue.equals(map.get(key))) {
-                    log.debug("token rejected: parameter " + key + " with value " + tokenValue + " does not match " + map.get(key));
-                    return false;
+            if (jwt != null) {
+                for (String key : map.keySet()) {
+                    String tokenValue = jwt.getClaim(key).asString();
+                    if (StringUtils.isBlank(tokenValue) || !tokenValue.equals(map.get(key))) {
+                        log.debug("token rejected: parameter " + key + " with value " + tokenValue + " does not match " + map.get(key));
+                        return false;
+                    }
                 }
+            } else {
+                return false;
             }
         } catch (JWTVerificationException exception) {
             //Invalid signature/claims
@@ -204,6 +207,10 @@ public class JwtHelper {
         }
         try {
             DecodedJWT jwt = verifyToken(token, secret, System::currentTimeMillis);
+            if (jwt == null) {
+                return false;
+            }
+
             Integer claimId = jwt.getClaim("stepId").asInt();
             if (claimId == null || !stepId.equals(claimId)) {
                 log.debug("token rejected: step IDs do not match");
