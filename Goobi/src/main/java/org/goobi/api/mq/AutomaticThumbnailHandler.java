@@ -52,54 +52,58 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
     //returns true if changed and false if not
     private boolean checkIfChanged(File outputDirectory, File[] fileList) {
         File thumbnailFile = outputDirectory.listFiles()[0];
-        for(File img: fileList) {
-            if(img.lastModified() > thumbnailFile.lastModified()) {
+        for (File img : fileList) {
+            if (img.lastModified() > thumbnailFile.lastModified()) {
                 return true;
             }
         }
         return false;
     }
 
-    private void generateThumbnails(Process process, Boolean master, Boolean media, String imgDirectory, String command, int[] sizes, Step step) throws IOException, InterruptedException, SwapException, DAOException, ContentLibException {
+    private void generateThumbnails(Process process, boolean master, boolean media, String imgDirectory, String command, int[] sizes, Step step)
+            throws IOException, SwapException, DAOException, ContentLibException {
         String defaultImageDirectory;
-        if(master) {
+        if (master) {
             defaultImageDirectory = process.getImagesOrigDirectory(false);
             generateThumbnailsFromDirectory(process, defaultImageDirectory, sizes, command);
         }
-        if(media) {
+        if (media) {
             defaultImageDirectory = process.getImagesTifDirectory(false);
             generateThumbnailsFromDirectory(process, defaultImageDirectory, sizes, command);
         }
-        if(! imgDirectory.isEmpty()) {
+        if (!imgDirectory.isEmpty()) {
             generateThumbnailsFromDirectory(process, imgDirectory, sizes, command);
         }
-        if(! command.isEmpty()) {
+        if (!command.isEmpty()) {
             new HelperSchritte().executeScriptForStepObject(step, command, false);
         }
     }
 
-    private void generateThumbnailsFromDirectory(Process process, String imageDirectory, int[] sizes, String command) throws SwapException, DAOException, ContentLibException {
+    private void generateThumbnailsFromDirectory(Process process, String imageDirectory, int[] sizes, String command)
+            throws SwapException, DAOException, ContentLibException {
         try {
             File[] fileList = new File(imageDirectory).listFiles();
-            for(int size : sizes) {
-                String thumbnailDirectory = process.getThumbsDirectory()+Paths.get(imageDirectory).getFileName().toString()+"_"+String.valueOf(size);
+            for (int size : sizes) {
+                String thumbnailDirectory = process.getThumbsDirectory() + Paths.get(imageDirectory).getFileName().toString() + "_" + size;
                 File outputDirectory = new File(thumbnailDirectory);
-                if(outputDirectory.exists()) {
-                    if(! checkIfChanged(outputDirectory, fileList)) {
+                if (outputDirectory.exists()) {
+                    if (!checkIfChanged(outputDirectory, fileList)) {
                         return;
                     }
-                }else {
+                } else {
                     outputDirectory.mkdirs();
                 }
-                Scale scale = new Scale.ScaleToBox(new Dimension(size,size));
-                for(File img : fileList) {
-                    if(img.isDirectory()) {
+                Scale scale = new Scale.ScaleToBox(new Dimension(size, size));
+                for (File img : fileList) {
+                    if (img.isDirectory()) {
                         continue;
                     }
                     String basename = FilenameUtils.getBaseName(img.toString());
 
-                    OutputStream out = new FileOutputStream(thumbnailDirectory+FileSystems.getDefault().getSeparator()+basename+"_"+size+".jpg"); //NOSONAR, parameter are checked in calling method
-                    ImageRequest request = new ImageRequest(new URI(img.getAbsolutePath().replace(" ", "%20")), RegionRequest.FULL, scale, Rotation.NONE, Colortype.DEFAULT, ImageFileFormat.JPG, Map.of("ignoreWatermark", "true"));   //remove spaces from url
+                    OutputStream out =
+                            new FileOutputStream(thumbnailDirectory + FileSystems.getDefault().getSeparator() + basename + "_" + size + ".jpg"); //NOSONAR, parameter are checked in calling method
+                    ImageRequest request = new ImageRequest(new URI(img.getAbsolutePath().replace(" ", "%20")), RegionRequest.FULL, scale,
+                            Rotation.NONE, Colortype.DEFAULT, ImageFileFormat.JPG, Map.of("ignoreWatermark", "true")); //remove spaces from url
                     new GetImageAction().writeImage(request, out);
                 }
             }
@@ -109,30 +113,30 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
 
     }
 
-    private void generateThumbnailsWithSettings(Step step, Process process) throws IOException, InterruptedException, SwapException, DAOException {
+    private void generateThumbnailsWithSettings(Step step, Process process) throws IOException, SwapException, DAOException {
         JSONObject settings = step.getAutoThumbnailSettingsJSON();
-        Boolean master = false;
-        Boolean media = false;
+        boolean master = false;
+        boolean media = false;
         String imgDirectory = "";
         String scriptCommand = "";
         int[] sizes = {};
 
-        if(settings.has("Master")) {
+        if (settings.has("Master")) {
             master = settings.getBoolean("Master");
         }
-        if(settings.has("Media")) {
+        if (settings.has("Media")) {
             media = settings.getBoolean("Media");
         }
-        if(settings.has("Img_directory")) {
+        if (settings.has("Img_directory")) {
             imgDirectory = settings.getString("Img_directory");
         }
-        if(settings.has("Custom_script_command")) {
+        if (settings.has("Custom_script_command")) {
             scriptCommand = settings.getString("Custom_script_command");
         }
-        if(settings.has("Sizes")) {
+        if (settings.has("Sizes")) {
             JSONArray arr = settings.getJSONArray("Sizes");
             sizes = new int[arr.length()];
-            for(int i = 0; i < arr.length(); i++) {
+            for (int i = 0; i < arr.length(); i++) {
                 sizes[i] = arr.optInt(i);
             }
         }
@@ -149,20 +153,19 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
         Step step = StepManager.getStepById(ticket.getStepId());
         Process process = ProcessManager.getProcessById(ticket.getProcessId());
         try {
-            this.generateThumbnailsWithSettings(step,process);
-        }catch(Exception e) {
+            this.generateThumbnailsWithSettings(step, process);
+        } catch (Exception e) {
             return PluginReturnValue.ERROR;
         }
         if (step.isTypAutomatisch()) {
             // close automatic task
             new HelperSchritte().CloseStepObjectAutomatic(step);
-        }
-        else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
+        } else if (step.getBearbeitungsstatusEnum() == StepStatus.LOCKED) {
             // open manual task
             step.setBearbeitungsstatusEnum(StepStatus.OPEN);
             SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.OPEN);
-            HistoryManager.addHistory(new Date(), Integer.valueOf(step.getReihenfolge()).doubleValue(), step.getTitel(),
-                    HistoryEventType.stepOpen.getValue(), (step.getProcessId()));
+            HistoryManager.addHistory(new Date(), step.getReihenfolge().doubleValue(), step.getTitel(), HistoryEventType.stepOpen.getValue(),
+                    (step.getProcessId()));
             try {
                 StepManager.saveStep(step);
             } catch (DAOException e) {

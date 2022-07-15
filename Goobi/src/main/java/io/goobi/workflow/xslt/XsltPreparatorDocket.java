@@ -102,7 +102,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
     private static Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
 
-    private static final SimpleDateFormat dateConverter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private SimpleDateFormat dateConverter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     /**
      * This method exports the production metadata as xml to a given directory
@@ -488,11 +488,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         } catch (SwapException e) {
             log.error(e);
-        } catch (DAOException e) {
-            log.error(e);
         } catch (IOException e) {
-            log.error(e);
-        } catch (InterruptedException e) {
             log.error(e);
         } catch (JDOMException e) {
             log.error(e);
@@ -543,7 +539,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             }
             elements.add(logfiles);
 
-        } catch (IOException | InterruptedException | SwapException | DAOException e1) {
+        } catch (IOException | SwapException | DAOException e1) {
             log.error("Error listing all files from content folders", e1);
         }
 

@@ -282,11 +282,10 @@ public class PluginInstaller {
     }
 
     private static String sha256Hex(Path p) {
-        String hash = null;
+        String hash = "";
         try (InputStream in = Files.newInputStream(p)) {
             hash = DigestUtils.sha256Hex(in);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             log.error(e);
         }
         return hash;

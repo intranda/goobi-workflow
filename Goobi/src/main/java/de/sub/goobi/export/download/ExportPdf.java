@@ -187,7 +187,7 @@ public class ExportPdf extends ExportMets {
                 //                    Path tempMets = Paths.get(metsTempFile.toUri().toURL().toString());
                 //                    Files.delete(metsTempFile);
                 //                }
-            } catch (Exception e) {
+            } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
 
                 /*
                  * -------------------------------- report Error to User as Error-Log --------------------------------

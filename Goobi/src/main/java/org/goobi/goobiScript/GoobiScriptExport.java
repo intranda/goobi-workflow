@@ -53,8 +53,8 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
         Map<String, String> parameters = gsr.getParameters();
         String exportFulltextParameter = parameters.get("exportOcr");
         String exportImagesParameter = parameters.get("exportImages");
-        boolean exportFulltext = exportFulltextParameter.toLowerCase().equals("true");
-        boolean exportImages = exportImagesParameter.toLowerCase().equals("true");
+        boolean exportFulltext = exportFulltextParameter.equalsIgnoreCase("true");
+        boolean exportImages = exportImagesParameter.equalsIgnoreCase("true");
 
         // execute all jobs that are still in waiting state
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
@@ -108,7 +108,9 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
                     gsr.setResultType(GoobiScriptResultType.OK);
                 }
             }
-        } catch (NoSuchMethodError | Exception e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (NoSuchMethodError | Exception  e) {
             gsr.setResultMessage(e.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);
             gsr.setErrorText(e.getMessage());

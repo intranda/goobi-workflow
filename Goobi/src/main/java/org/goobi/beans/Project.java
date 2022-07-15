@@ -291,7 +291,10 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object obj) { // NOSONAR
+        if (obj == null) {
+            return false;
+        }
         return this.getTitel().equals(((Project) obj).getTitel())
                 && (getInstitution().getShortName().equals(((Project) obj).getInstitution().getShortName()));
     }

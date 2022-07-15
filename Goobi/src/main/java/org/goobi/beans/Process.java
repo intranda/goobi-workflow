@@ -43,7 +43,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -173,7 +172,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     @Getter
     @Setter
-    private List<LogEntry> processLog = new LinkedList<>();
+    private List<LogEntry> processLog = new ArrayList<>();
 
     private BeanHelper bhelp = new BeanHelper();
 
@@ -347,7 +346,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return this.msp.getLockSekunden(this.id) % 60;
     }
 
-    public String getImagesTifDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
+    public String getImagesTifDirectory(boolean useFallBack) throws IOException, SwapException {
         if (this.imagesTiffDirectory != null && StorageProvider.getInstance().isDirectory(Paths.get(this.imagesTiffDirectory))) {
             return this.imagesTiffDirectory;
         }
@@ -388,7 +387,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             rueckgabe += FileSystems.getDefault().getSeparator();
         }
         if (!ConfigurationHelper.getInstance().isUseMasterDirectory() && ConfigurationHelper.getInstance().isCreateMasterDirectory()) {
-            FilesystemHelper.createDirectory(rueckgabe);
+            try {
+                FilesystemHelper.createDirectory(rueckgabe);
+            } catch (InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+                log.error(e);
+            }
         }
         this.imagesTiffDirectory = rueckgabe;
         return rueckgabe;
@@ -428,7 +431,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return true;
     }
 
-    public String getImagesOrigDirectory(boolean useFallBack) throws IOException, InterruptedException, SwapException, DAOException {
+    public String getImagesOrigDirectory(boolean useFallBack) throws IOException, SwapException, DAOException {
         if (this.imagesOrigDirectory != null) {
             return this.imagesOrigDirectory;
         }
@@ -490,7 +493,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
             if (ConfigurationHelper.getInstance().isUseMasterDirectory() && this.getSortHelperStatus() != "100000000"
                     && ConfigurationHelper.getInstance().isCreateMasterDirectory()) {
-                FilesystemHelper.createDirectory(rueckgabe);
+                try {
+                    FilesystemHelper.createDirectory(rueckgabe);
+                } catch (InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+                    log.error(e);
+                }
             }
             this.imagesOrigDirectory = rueckgabe;
             return rueckgabe;
@@ -514,13 +521,18 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
     }
 
-    public String getImagesDirectory() throws IOException, InterruptedException, SwapException, DAOException {
+    public String getImagesDirectory() throws IOException, SwapException {
         String pfad = getProcessDataDirectory() + "images" + FileSystems.getDefault().getSeparator();
-        FilesystemHelper.createDirectory(pfad);
+        try {
+            FilesystemHelper.createDirectory(pfad);
+        } catch (InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+            log.error(e);
+        }
+
         return pfad;
     }
 
-    public String getSourceDirectory() throws IOException, InterruptedException, SwapException, DAOException {
+    public String getSourceDirectory() throws IOException, SwapException {
         Path sourceFolder = Paths.get(getImagesDirectory(),
                 VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImagesSourceDirectoryName(), this));
         if (ConfigurationHelper.getInstance().isCreateSourceFolder() && !StorageProvider.getInstance().isDirectory(sourceFolder)) {
@@ -529,7 +541,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return sourceFolder.toString();
     }
 
-    public String getProcessDataDirectory() throws IOException, InterruptedException, SwapException, DAOException {
+    public String getProcessDataDirectory() throws IOException, SwapException {
         String pfad = getProcessDataDirectoryIgnoreSwapping();
 
         if (isSwappedOutGui()) {
@@ -549,51 +561,56 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return pfad;
     }
 
-    public String getOcrDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrDirectory() throws SwapException, IOException {
         return getProcessDataDirectory() + "ocr" + FileSystems.getDefault().getSeparator();
     }
 
-    public String getOcrTxtDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrTxtDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
         + FileSystems.getDefault().getSeparator();
     }
 
     @Deprecated
-    public String getOcrWcDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrWcDirectory() throws SwapException, IOException {
         return getOcrDirectory() + this.titel + "_wc" + FileSystems.getDefault().getSeparator();
     }
 
-    public String getOcrPdfDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrPdfDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
         + FileSystems.getDefault().getSeparator();
     }
 
-    public String getOcrAltoDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrAltoDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
         + FileSystems.getDefault().getSeparator();
     }
 
-    public String getOcrXmlDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getOcrXmlDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
         + FileSystems.getDefault().getSeparator();
     }
 
-    public String getImportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getImportDirectory() throws SwapException, IOException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
         + FileSystems.getDefault().getSeparator();
     }
 
-    public String getExportDirectory() throws SwapException, DAOException, IOException, InterruptedException {
+    public String getExportDirectory() throws SwapException, IOException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
         + FileSystems.getDefault().getSeparator();
     }
 
-    public String getProcessDataDirectoryIgnoreSwapping() throws IOException, InterruptedException, SwapException, DAOException {
+    public String getProcessDataDirectoryIgnoreSwapping() throws IOException {
         String pfad = this.help.getGoobiDataDirectory() + this.id.intValue() + FileSystems.getDefault().getSeparator();
         if (!ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
             pfad = pfad.replaceAll(" ", "__");
         }
-        FilesystemHelper.createDirectory(pfad);
+
+        try {
+            FilesystemHelper.createDirectory(pfad);
+        } catch (IOException | InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+            log.error(e);
+        }
         return pfad;
     }
 
@@ -602,13 +619,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * 
      * @return The full path to the thumbnail directory ending with a path separator
      * @throws IOException
-     * @throws InterruptedException
-     * @throws SwapException
      * @throws DAOException
      */
-    public String getThumbsDirectory() throws IOException, InterruptedException, SwapException, DAOException {
-        String pfad = getProcessDataDirectory() + "thumbs" + FileSystems.getDefault().getSeparator();
-        return pfad;
+    public String getThumbsDirectory() throws IOException, SwapException {
+        return getProcessDataDirectory() + "thumbs" + FileSystems.getDefault().getSeparator();
     }
 
     /**
@@ -618,11 +632,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @param imageDirectory The path of an image directory, either only the name or the entire path.
      * @return A map of folders containing thumbnails for the given imageDirectory hashed by thumbnail size
      * @throws DAOException
-     * @throws SwapException
-     * @throws InterruptedException
      * @throws IOException
      */
-    public Map<Integer, String> getThumbsDirectories(String imageDirectory) throws IOException, InterruptedException, SwapException, DAOException {
+    public Map<Integer, String> getThumbsDirectories(String imageDirectory) throws IOException, SwapException {
         final String thumbsDirectory = getThumbsDirectory();
         final String imageDirectoryFinal = Paths.get(imageDirectory).getFileName().toString(); //only use the directory name, not the entire path
         return StorageProvider.getInstance()
@@ -660,12 +672,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * 
      * @param imageDirectory The path of an image directory, either only the name or the entire path.
      * @return The full path to the largest thumbnail directory or null if no matching directory was found
-     * @throws DAOException
      * @throws SwapException
-     * @throws InterruptedException
      * @throws IOException
      */
-    public String getLargestThumbsDirectory(String imageDirectory) throws IOException, InterruptedException, SwapException, DAOException {
+    public String getLargestThumbsDirectory(String imageDirectory) throws IOException, SwapException {
         Map<Integer, String> dirMap = getThumbsDirectories(imageDirectory);
         Optional<Integer> bestSize = dirMap.keySet().stream().sorted((i1, i2) -> i2.compareTo(i1)).findFirst();
         if (bestSize.isPresent()) {
@@ -1021,11 +1031,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return abgeschlossen2;
     }
 
-    public String getMetadataFilePath() throws IOException, InterruptedException, SwapException, DAOException {
+    public String getMetadataFilePath() throws IOException, SwapException {
         return getProcessDataDirectory() + "meta.xml";
     }
 
-    public String getTemplateFilePath() throws IOException, InterruptedException, SwapException, DAOException {
+    public String getTemplateFilePath() throws IOException, SwapException {
         return getProcessDataDirectory() + "template.xml";
     }
 
@@ -1034,7 +1044,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public Fileformat readMetadataFile()
-            throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException, WriteException {
+            throws ReadException, IOException, SwapException {
         if (!checkForMetadataFile()) {
             throw new IOException(Helper.getTranslation("metadataFileNotFound") + " " + getMetadataFilePath());
         }
@@ -1061,7 +1071,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     private boolean checkForMetadataFile()
-            throws IOException, InterruptedException, SwapException, DAOException, WriteException, PreferencesException {
+            throws IOException, SwapException {
         boolean result = true;
         Path f = Paths.get(getMetadataFilePath());
         if (!StorageProvider.getInstance().isFileExists(f)) {
@@ -1071,8 +1081,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return result;
     }
 
-    public synchronized void writeMetadataFile(Fileformat gdzfile)
-            throws IOException, InterruptedException, SwapException, DAOException, WriteException, PreferencesException {
+    public synchronized void writeMetadataFile(Fileformat gdzfile) throws IOException, SwapException, WriteException, PreferencesException {
 
         String path = this.getProcessDataDirectory();
         int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
@@ -1133,7 +1142,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public void saveTemporaryMetsFile(Fileformat gdzfile)
-            throws SwapException, DAOException, IOException, InterruptedException, PreferencesException, WriteException {
+            throws SwapException, IOException, PreferencesException, WriteException {
 
         int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
         Process.createBackup(this.getProcessDataDirectory(), "temp.xml", maximumNumberOfBackups);
@@ -1144,12 +1153,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public void writeMetadataAsTemplateFile(Fileformat inFile)
-            throws IOException, InterruptedException, SwapException, DAOException, WriteException, PreferencesException {
+            throws IOException, SwapException, WriteException, PreferencesException {
         inFile.write(getTemplateFilePath());
     }
 
-    public Fileformat readMetadataAsTemplateFile()
-            throws ReadException, IOException, InterruptedException, PreferencesException, SwapException, DAOException {
+    public Fileformat readMetadataAsTemplateFile() throws ReadException, IOException, PreferencesException, SwapException {
         if (StorageProvider.getInstance().isFileExists(Paths.get(getTemplateFilePath()))) {
             Fileformat ff = null;
             String type = MetadatenHelper.getMetaFileType(getTemplateFilePath());
@@ -1174,7 +1182,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                     StorageProvider.getInstance().deleteDir(file);
                 }
             }
-        } catch (SwapException | DAOException | IOException | InterruptedException e) {
+        } catch (SwapException | IOException e) {
             log.error(e);
         }
     }
@@ -1211,7 +1219,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 StorageProvider.getInstance().copyFile(temporaryAnchorFile, metaAnchor);
             }
 
-        } catch (SwapException | DAOException | IOException | InterruptedException e) {
+        } catch (SwapException | IOException e) {
             log.error(e);
         }
     }
@@ -1229,7 +1237,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 return tempTime > metaTime;
 
             }
-        } catch (SwapException | DAOException | IOException | InterruptedException e) {
+        } catch (SwapException | IOException e) {
             log.error(e);
         }
 
@@ -1307,7 +1315,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             xmlExport.startExport(this, ziel);
         } catch (IOException e) {
             Helper.setFehlerMeldung("could not write logfile to home directory: ", e);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
             Helper.setFehlerMeldung("could not execute command to write logfile to home directory", e);
         }
     }
@@ -1457,11 +1465,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
         } catch (SwapException e) {
 
-        } catch (DAOException e) {
-
         } catch (IOException e) {
-
-        } catch (InterruptedException e) {
 
         }
 
@@ -1618,7 +1622,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 sb.append(thumbnailWidth);
                 return sb.toString();
             }
-        } catch (IOException | InterruptedException | SwapException | DAOException e) {
+        } catch (IOException | SwapException | DAOException e) {
             log.error("Error creating representative image url for process " + this.getId());
             String rootpath = "cs?action=image&format=jpg&sourcepath=file:///";
             return rootpath + representativeImage.replaceAll("\\\\", "/");
@@ -1660,7 +1664,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 if (StringUtils.isBlank(representativeImage)) {
                     return "uii/template/img/thumbnail-placeholder.png?version=1";
                 }
-            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+            } catch (IOException | SwapException | DAOException e) {
                 log.error(e);
             }
         }
@@ -1687,7 +1691,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             for (Path folder : ocrFolders) {
                 folderAndFileMap.put(folder, StorageProvider.getInstance().listFiles(folder.toString(), NIOFileUtils.fileFilter));
             }
-        } catch (IOException | InterruptedException | SwapException | DAOException e) {
+        } catch (IOException | SwapException e) {
 
             log.error(e);
         }
@@ -1790,7 +1794,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                     }
                 }
 
-            } catch (SwapException | DAOException | IOException | InterruptedException e) {
+            } catch (SwapException | DAOException | IOException e) {
                 log.error(e);
             }
         }
@@ -1941,7 +1945,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             ProcessManager.saveLogEntry(entry);
             processLog.add(entry);
 
-        } catch (SwapException | DAOException | IOException | InterruptedException e) {
+        } catch (SwapException | IOException e) {
             log.error(e);
         }
         uploadedFile = null;
@@ -2018,7 +2022,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
             }
         }
-        return null;
+        return "";
     }
 
     /**
@@ -2130,7 +2134,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
                 writeMetadataFile(fileFormat);
 
-            } catch (IOException | InterruptedException | SwapException | DAOException | UghHelperException | UGHException e) {
+            } catch (IOException | SwapException | UghHelperException | UGHException e) {
                 log.info("Could not rename paths in metadata file", e);
             }
         }
@@ -2151,7 +2155,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @throws DAOException
      */
 
-    public String getConfiguredImageFolder(String folderName) throws IOException, InterruptedException, SwapException, DAOException {
+    public String getConfiguredImageFolder(String folderName) throws IOException, SwapException, DAOException {
         if ("master".equals(folderName)) {
             return getImagesOrigDirectory(false);
         } else if ("main".equals(folderName) || "media".equals(folderName)) {

@@ -168,7 +168,7 @@ public class ConfigurationHelper implements Serializable {
             String[] local = configLocal.getStringArray(inPath);
             if (local == null || local.length == 0) {
                 String[] global = config.getStringArray(inPath);
-                if (global == null || local.length == 0) {
+                if (global == null || local == null || local.length == 0) {
                     return inDefault;
                 } else {
                     return global;
@@ -212,7 +212,7 @@ public class ConfigurationHelper implements Serializable {
             /* den Ordner neu anlegen, wenn er nicht existiert */
             try {
                 FilesystemHelper.createDirectory(filename);
-            } catch (Exception ioe) {
+            } catch (Exception ioe) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
                 log.error("IO error: " + ioe);
                 Helper.setFehlerMeldung(Helper.getTranslation("couldNotCreateImageFolder"), ioe.getMessage());
             }
@@ -1046,7 +1046,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getSqlTasksIndexname() {
-        return getLocalString("SqlTasksIndexname",null);
+        return getLocalString("SqlTasksIndexname", null);
     }
 
     public boolean isAllowGravatar() {

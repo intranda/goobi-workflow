@@ -1,13 +1,17 @@
-package org.goobi.api.mq;
+package org.goobi.beans;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+
+import org.junit.Test;
+
+import de.sub.goobi.AbstractTest;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information.
- *          - https://goobi.io
- *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi-workflow
- *          - http://digiverso.com
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -26,31 +30,39 @@ package org.goobi.api.mq;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-import org.goobi.beans.Step;
-import org.goobi.production.enums.PluginReturnValue;
 
-import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
-import de.sub.goobi.persistence.managers.StepManager;
+public class AltoChangeTest extends AbstractTest {
 
-public class GenericAutomaticStepHandler implements TicketHandler<PluginReturnValue> {
-
-    public static String HANDLERNAME = "generic_automatic_step";
-
-    @Override
-    public String getTicketHandlerName() {
-        return HANDLERNAME;
+    @Test
+    public void testConstructor() {
+        AltoChange fixture = new AltoChange();
+        assertNotNull(fixture);
     }
 
-    @Override
-    public PluginReturnValue call(TaskTicket ticket) {
-        Step step = StepManager.getStepById(ticket.getStepId());
-        try {
-            ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(step);
-            myThread.start();
-        } catch (Exception e) {
-            return PluginReturnValue.ERROR;
-        }
-        return PluginReturnValue.FINISH;
+    @Test
+    public void testWordId() {
+        AltoChange fixture = new AltoChange();
+        fixture.setWordId(null);
+        assertNull(fixture.getWordId());
+        fixture.setWordId("666");
+        assertSame("666", fixture.getWordId());
     }
 
+    @Test
+    public void testAction() {
+        AltoChange fixture = new AltoChange();
+        fixture.setAction(null);
+        assertNull(fixture.getAction());
+        fixture.setAction("666");
+        assertSame("666", fixture.getAction());
+    }
+
+    @Test
+    public void testValue() {
+        AltoChange fixture = new AltoChange();
+        fixture.setValue(null);
+        assertNull(fixture.getValue());
+        fixture.setValue("666");
+        assertSame("666", fixture.getValue());
+    }
 }

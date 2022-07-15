@@ -3,7 +3,7 @@ package org.goobi.production.cli;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -52,8 +52,6 @@ import lombok.extern.log4j.Log4j2;
 public class WebInterface extends HttpServlet {
     private static final long serialVersionUID = 6187229284187412768L;
 
-    private String command = null;
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html");
@@ -91,28 +89,28 @@ public class WebInterface extends HttpServlet {
                 return;
             }
 
-            this.command = parameter.get("command")[0];
-            if (this.command == null) {
+            String command = parameter.get("command")[0];
+            if (command == null) {
                 // error, no command found
                 generateAnswer(resp, 400, "Empty command", "No command given. Use help as command to get more information.");
                 return;
             }
             if (log.isDebugEnabled()) {
-                log.debug("command: " + this.command);
+                log.debug("command: " + command);
             }
 
             // check if command is allowed for used IP
             List<String> allowedCommandos = WebInterfaceConfig.getCredencials(ip, password);
-            if (!allowedCommandos.contains(this.command)) {
+            if (!allowedCommandos.contains(command)) {
                 // error, no command found
-                generateAnswer(resp, 401, "command not allowed", "command " + this.command + " is not allowed for your IP (" + ip
+                generateAnswer(resp, 401, "command not allowed", "command " + command + " is not allowed for your IP (" + ip
                         + ") and credentials. You are allowed to use the following commands:" + allowedCommandos);
                 return;
             }
 
             // hand parameters over to command
             Map<String, String[]> map = req.getParameterMap();
-            HashMap<String, String> params = new HashMap<String, String>();
+            HashMap<String, String> params = new HashMap<>();
             Iterator<Entry<String, String[]>> i = map.entrySet().iterator();
             while (i.hasNext()) {
                 Entry<String, String[]> entry = i.next();
@@ -121,17 +119,25 @@ public class WebInterface extends HttpServlet {
                 }
             }
 
-            if (this.command.equals("help")) {
+            if (command.equals("help")) {
                 if (!params.containsKey("for")) {
-                    generateHelp(resp, null);
+                    try {
+                        generateHelp(resp, null);
+                    } catch (IOException e) {
+                        log.error(e);
+                    }
                 } else {
-                    generateHelp(resp, params.get("for"));
+                    try {
+                        generateHelp(resp, params.get("for"));
+                    } catch (IOException e) {
+                        log.error(e);
+                    }
                 }
                 return;
             }
 
             // get correct plugin from list
-            ICommandPlugin myCommandPlugin = (ICommandPlugin) PluginLoader.getPluginByTitle(PluginType.Command, this.command);
+            ICommandPlugin myCommandPlugin = (ICommandPlugin) PluginLoader.getPluginByTitle(PluginType.Command, command);
             if (myCommandPlugin == null) {
                 generateAnswer(resp, 400, "invalid command", "command not found in list of command plugins");
                 return;
@@ -154,8 +160,6 @@ public class WebInterface extends HttpServlet {
             }
             cr = myCommandPlugin.execute();
             generateAnswer(resp, cr.getStatus(), cr.getTitle(), cr.getMessage());
-            return;
-
         } else {
             generateAnswer(resp, 404, "web api deactivated", "web api not configured");
         }
@@ -163,7 +167,11 @@ public class WebInterface extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
+        try {
+            doGet(req, resp);
+        } catch (ServletException | IOException e) {
+            log.error(e);
+        }
     }
 
     private void generateHelp(HttpServletResponse resp, String forCommand) throws IOException {
@@ -183,11 +191,11 @@ public class WebInterface extends HttpServlet {
         generateAnswer(resp, 200, "Goobi Web API Help", allHelp);
     }
 
-    private void generateAnswer(HttpServletResponse resp, int status, String title, String message) throws IOException {
+    private void generateAnswer(HttpServletResponse resp, int status, String title, String message) {
         generateAnswer(resp, new CommandResponse(status, title, message));
     }
 
-    private void generateAnswer(HttpServletResponse resp, CommandResponse cr) throws IOException {
+    private void generateAnswer(HttpServletResponse resp, CommandResponse cr) {
         resp.setStatus(cr.getStatus());
         String answer = "";
         answer += "<!DOCTYPE HTML>";
@@ -216,7 +224,11 @@ public class WebInterface extends HttpServlet {
         answer += " </div>";
         answer += "</body>";
         answer += "</html>";
-        resp.getOutputStream().print(answer);
+        try {
+            resp.getOutputStream().print(answer);
+        } catch (IOException e) {
+            log.error(e);
+        }
     }
 
     private static Comparator<IPlugin> pluginComparator = new Comparator<IPlugin>() {

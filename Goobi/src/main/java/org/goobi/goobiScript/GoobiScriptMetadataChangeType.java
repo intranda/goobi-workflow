@@ -150,6 +150,8 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
 
             gsr.setResultMessage("Metadata changed successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         } catch (Exception e1) {
             log.error("Problem while changing the metadata using GoobiScript for process with id: " + p.getId(), e1);
             gsr.setResultMessage("Error while changing metadata: " + e1.getMessage());

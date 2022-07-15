@@ -47,7 +47,6 @@ public abstract class BackupFileManager {
      */
     private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd-HHmmssSSS";
     private static final String TIMESTAMP_REGEX = "\\d{4}-\\d{2}-\\d{2}-\\d{9}";
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(BackupFileManager.TIMESTAMP_FORMAT);
     private static final int TIMESTAMP_LENGTH = BackupFileManager.TIMESTAMP_FORMAT.length();
 
     /**
@@ -279,6 +278,6 @@ public abstract class BackupFileManager {
      */
     private static String getCurrentTimestamp() {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        return BackupFileManager.DATE_FORMAT.format(timestamp);
+        return new SimpleDateFormat(BackupFileManager.TIMESTAMP_FORMAT).format(timestamp);
     }
 }

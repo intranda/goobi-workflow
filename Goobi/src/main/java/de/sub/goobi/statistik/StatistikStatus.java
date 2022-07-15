@@ -3,7 +3,7 @@ package de.sub.goobi.statistik;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -27,11 +27,10 @@ package de.sub.goobi.statistik;
  */
 import java.util.List;
 
-import org.jfree.data.general.Dataset;
-import org.jfree.data.general.DefaultPieDataset;
-
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.general.DefaultPieDataset;
 
 public class StatistikStatus {
 
@@ -45,7 +44,7 @@ public class StatistikStatus {
                 /* prüfen, ob der Schritt schon erfasst wurde, wenn ja hochzählen */
                 String kurztitel = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step.getTitel());
                 if (dataset.getIndex(kurztitel) != -1) {
-                    dataset.setValue(kurztitel, dataset.getValue(kurztitel).intValue() + 1);
+                    dataset.setValue(kurztitel, dataset.getValue(kurztitel).intValue() + 1d);
                 } else {
                     dataset.setValue(kurztitel, 1);
                 }

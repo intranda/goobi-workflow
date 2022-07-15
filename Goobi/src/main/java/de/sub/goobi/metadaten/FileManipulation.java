@@ -61,7 +61,7 @@ public class FileManipulation {
     @Getter
     @Setter
     private String insertMode = "uncounted";
-    
+
     @Getter
     @Setter
     private Part uploadedFile = null;
@@ -145,8 +145,7 @@ public class FileManipulation {
             }
 
             Helper.setMeldung(Helper.getTranslation("metsEditorFileUploadSuccessful"));
-        } catch (IOException | SwapException | DAOException | InterruptedException | TypeNotAllowedForParentException
-                | MetadataTypeNotAllowedException e) {
+        } catch (IOException | SwapException | DAOException | TypeNotAllowedForParentException | MetadataTypeNotAllowedException e) {
             log.error(e.getMessage(), e);
             Helper.setFehlerMeldung("uploadFailed", e);
         } finally {
@@ -178,11 +177,11 @@ public class FileManipulation {
                 return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
             }
         }
-        return null;
+        return "";
     }
 
     private void updatePagination(String filename)
-            throws TypeNotAllowedForParentException, IOException, InterruptedException, SwapException, DAOException, MetadataTypeNotAllowedException {
+            throws TypeNotAllowedForParentException, IOException, SwapException, DAOException, MetadataTypeNotAllowedException {
         if (!matchesFileConfiguration(filename)) {
             return;
         }
@@ -197,8 +196,8 @@ public class FileManipulation {
 
             List<DocStruct> pageList = physical.getAllChildren();
 
-            int indexToImport = Math.max(Integer.parseInt(insertPage)-1, 0);
-            
+            int indexToImport = Math.max(Integer.parseInt(insertPage) - 1, 0);
+
             DocStructType newPageType = prefs.getDocStrctTypeByName("page");
             DocStruct newPage = doc.createDocStruct(newPageType);
             MetadataType physicalPageNoType = prefs.getMetadataTypeByName("physPageNumber");
@@ -286,7 +285,7 @@ public class FileManipulation {
                     break;
                 }
             }
-        } catch (SwapException | DAOException | IOException | InterruptedException e1) {
+        } catch (SwapException | IOException e1) {
             log.error(e1);
         }
 
@@ -402,13 +401,7 @@ public class FileManipulation {
 
                     }
 
-                } catch (SwapException e) {
-                    log.error(e);
-                } catch (DAOException e) {
-                    log.error(e);
-                } catch (IOException e) {
-                    log.error(e);
-                } catch (InterruptedException e) {
+                } catch (SwapException | IOException e) {
                     log.error(e);
                 }
             }
@@ -488,7 +481,7 @@ public class FileManipulation {
                                 Path dest = Paths.get(masterDirectory.toString(), object.getFileName().toString());
                                 StorageProvider.getInstance().copyFile(object, dest);
                             }
-                        } catch (SwapException | DAOException | IOException | InterruptedException e) {
+                        } catch (SwapException | DAOException | IOException e) {
                             log.error(e);
                         }
                     } else {
@@ -509,7 +502,7 @@ public class FileManipulation {
                                         StorageProvider.getInstance().copyFile(object, dest);
                                     }
 
-                                } catch (IOException | SwapException | DAOException | InterruptedException e) {
+                                } catch (IOException | SwapException e) {
                                     log.error(e);
                                 }
 
@@ -531,7 +524,7 @@ public class FileManipulation {
                                     }
                                     Path dest = Paths.get(directory.toString(), object.getFileName().toString());
                                     StorageProvider.getInstance().copyFile(object, dest);
-                                } catch (IOException | SwapException | DAOException | InterruptedException e) {
+                                } catch (IOException | SwapException e) {
                                     log.error(e);
                                 }
                             }
@@ -551,8 +544,7 @@ public class FileManipulation {
                     insertPage = String.valueOf(++indexToImport);
                 }
             }
-        } catch (TypeNotAllowedForParentException | SwapException | DAOException | MetadataTypeNotAllowedException | IOException
-                | InterruptedException e) {
+        } catch (TypeNotAllowedForParentException | SwapException | DAOException | MetadataTypeNotAllowedException | IOException e) {
             log.error(e);
         }
 
@@ -568,7 +560,7 @@ public class FileManipulation {
         // save current state
         metadataBean.Reload();
     }
-    
+
     private static boolean matchesFileConfiguration(String filename) {
 
         if (filename == null) {

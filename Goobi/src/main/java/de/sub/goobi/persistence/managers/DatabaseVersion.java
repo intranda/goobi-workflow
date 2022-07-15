@@ -56,8 +56,6 @@ public class DatabaseVersion {
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
 
-    private static final SimpleDateFormat processLogGermanDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-
     public static int getCurrentVersion() {
 
         Connection connection = null;
@@ -961,31 +959,18 @@ public class DatabaseVersion {
                 StringBuilder sql = new StringBuilder();
                 runner.update(connection, "alter table benutzer add column mailNotificationLanguage varchar(255);");
 
-                if (MySQLHelper.isUsingH2()) {
-                    sql.append("CREATE TABLE `user_email_configuration` ( ");
-                    sql.append("`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, ");
-                    sql.append("`userid` INT(10) UNSIGNED NOT NULL, ");
-                    sql.append("`projectid` INT(10) UNSIGNED NOT NULL,  ");
-                    sql.append("`stepname` TEXT DEFAULT NULL,  ");
-                    sql.append("`open` tinyint(1) DEFAULT '0', ");
-                    sql.append("`inWork` tinyint(1) DEFAULT '0', ");
-                    sql.append("`done` tinyint(1) DEFAULT '0', ");
-                    sql.append("`error` tinyint(1) DEFAULT '0', ");
-                    sql.append("PRIMARY KEY (`id`) ");
-                    sql.append(")  ENGINE=INNODB DEFAULT CHARSET=UTF8; ");
-                } else {
-                    sql.append("CREATE TABLE `user_email_configuration` ( ");
-                    sql.append("`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, ");
-                    sql.append("`userid` INT(10) UNSIGNED NOT NULL, ");
-                    sql.append("`projectid` INT(10) UNSIGNED NOT NULL,  ");
-                    sql.append("`stepname` TEXT DEFAULT NULL,  ");
-                    sql.append("`open` tinyint(1) DEFAULT '0', ");
-                    sql.append("`inWork` tinyint(1) DEFAULT '0', ");
-                    sql.append("`done` tinyint(1) DEFAULT '0', ");
-                    sql.append("`error` tinyint(1) DEFAULT '0', ");
-                    sql.append("PRIMARY KEY (`id`) ");
-                    sql.append(")  ENGINE=INNODB DEFAULT CHARSET=UTF8; ");
-                }
+                sql.append("CREATE TABLE `user_email_configuration` ( ");
+                sql.append("`id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, ");
+                sql.append("`userid` INT(10) UNSIGNED NOT NULL, ");
+                sql.append("`projectid` INT(10) UNSIGNED NOT NULL,  ");
+                sql.append("`stepname` TEXT DEFAULT NULL,  ");
+                sql.append("`open` tinyint(1) DEFAULT '0', ");
+                sql.append("`inWork` tinyint(1) DEFAULT '0', ");
+                sql.append("`done` tinyint(1) DEFAULT '0', ");
+                sql.append("`error` tinyint(1) DEFAULT '0', ");
+                sql.append("PRIMARY KEY (`id`) ");
+                sql.append(")  ENGINE=INNODB DEFAULT CHARSET=UTF8; ");
+
                 runner.update(connection, sql.toString());
             }
         } catch (SQLException e) {
@@ -1577,6 +1562,8 @@ public class DatabaseVersion {
 
     @SuppressWarnings("deprecation")
     private static Date getDate(String dateString) {
+        SimpleDateFormat processLogGermanDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+
         Date date = null;
         try {
             date = new Date(dateString);

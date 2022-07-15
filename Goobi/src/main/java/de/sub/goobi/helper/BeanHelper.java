@@ -165,7 +165,6 @@ public class BeanHelper {
             stepneu.setHttpCloseStep(step.isHttpCloseStep());
             stepneu.setMessageQueue(step.getMessageQueue());
 
-
             stepneu.setTypAutomaticThumbnail(step.isTypAutomaticThumbnail());
             stepneu.setAutomaticThumbnailSettingsYaml(step.getAutomaticThumbnailSettingsYaml());
 
@@ -416,7 +415,7 @@ public class BeanHelper {
                 StorageProvider.getInstance().createDirectories(f);
             }
             newProcess.writeMetadataFile(fileformat);
-        } catch (UGHException | IOException | InterruptedException | SwapException | DAOException e) {
+        } catch (UGHException | IOException | SwapException e) {
             log.error(e);
         }
 
