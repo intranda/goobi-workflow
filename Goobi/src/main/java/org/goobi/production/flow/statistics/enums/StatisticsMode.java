@@ -129,7 +129,7 @@ public enum StatisticsMode {
      ****************************************************************************/
     public static StatisticsMode getByClassName(Class<? extends IStatisticalQuestion> inQuestion) {
         for (StatisticsMode sm : values()) {
-            if (sm.getStatisticalQuestion() != null && sm.getStatisticalQuestion().getClass().getName().equals(inQuestion.getName())) {
+            if (sm.getStatisticalQuestion() != null && sm.getStatisticalQuestion().getClass().isAssignableFrom(inQuestion.getClass())) {
                 return sm;
             }
         }

@@ -73,13 +73,13 @@ public class JobCreation {
             log.error("cannot create process, process title \"" + processTitle + "\" is already in use");
             // removing all data
             Path imagesFolder = Paths.get(basepath);
-            if (StorageProvider.getInstance().isFileExists(imagesFolder) && StorageProvider.getInstance().isFileExists(imagesFolder)) {
+            if (StorageProvider.getInstance().isFileExists(imagesFolder)) {
                 deleteDirectory(imagesFolder);
             } else {
                 String folderRule = ConfigurationHelper.getInstance().getProcessImagesMainDirectoryName();
                 folderRule = folderRule.replace("{processtitle}", basepath);
                 imagesFolder = Paths.get(folderRule);
-                if (StorageProvider.getInstance().isFileExists(imagesFolder) && StorageProvider.getInstance().isFileExists(imagesFolder)) {
+                if (StorageProvider.getInstance().isFileExists(imagesFolder)) {
                     deleteDirectory(imagesFolder);
                 }
             }
@@ -124,9 +124,11 @@ public class JobCreation {
                     }
                     StorageProvider.getInstance().deleteDir(metsfile);
                 }
-            } catch (ReadException | PreferencesException | SwapException | WriteException | IOException | InterruptedException | DAOException e) {
+            } catch (ReadException | PreferencesException | SwapException | WriteException | IOException  | DAOException e) {
                 Helper.setFehlerMeldung("Cannot read file " + processTitle, e);
                 log.error(e);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         } else {
             log.error("Title " + processTitle + " is invalid");

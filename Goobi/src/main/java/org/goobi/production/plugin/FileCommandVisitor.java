@@ -66,7 +66,7 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
     @Override
     public void visitDeleteCommand(Character character) {
         this.handleCharacter(SpanTag.TEXT_DELETED_ACTIVE, character, "deletion");
-        }
+    }
 
     /**
      * Handles a character. Adds a new SpanTag object and sets the current mode.
@@ -97,7 +97,7 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
             }
         }
         if (which.equals("keep") || which.equals("insertion")) {
-            if (this.currentInsertionMode != mode || spaceMode) {
+            if (!this.currentInsertionMode.equals(mode) || spaceMode) {
                 if (this.currentInsertionText.length() > 0) {
                     this.insertionSpanTags.add(new SpanTag(this.currentInsertionText, this.currentInsertionMode));
                 }
@@ -107,7 +107,7 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
             this.currentInsertionText += this.escapeCharacter(character);
         }
         if (which.equals("keep") || which.equals("deletion")) {
-            if (this.currentDeletionMode != mode || spaceMode) {
+            if (!this.currentDeletionMode.equals(mode) || spaceMode) {
                 if (this.currentDeletionText.length() > 0) {
                     this.deletionSpanTags.add(new SpanTag(this.currentDeletionText, this.currentDeletionMode));
                 }
@@ -129,7 +129,7 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
             return "";
         }
         //if (character == '\t') {
-            //return "    ";
+        //return "    ";
         //}
         return String.valueOf(character);
     }
