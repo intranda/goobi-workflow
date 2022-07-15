@@ -216,7 +216,7 @@ public class ProjectStatusDraw {
         g2d.setStroke(new BasicStroke());
         g2d.draw(new Rectangle2D.Double(xpos, ypos - width / 2d - padding, chartWidth, width + 2d * padding));
 
-        GradientPaint verlauf = new GradientPaint(xpos - length / 2, ypos, Color.white, xpos + (float) length, ypos, col);
+        GradientPaint verlauf = new GradientPaint(xpos - length / 2f, ypos, Color.white, xpos + (float) length, ypos, col);
         g2d.setPaint(verlauf);
         g2d.fill(new Rectangle2D.Double(xpos + (double)padding, ypos - width / 2d, length - 2d * padding, width + 1d));
 

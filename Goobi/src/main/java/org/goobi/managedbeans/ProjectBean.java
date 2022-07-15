@@ -342,7 +342,7 @@ public class ProjectBean extends BasicBean implements Serializable {
 
         for (Integer id : this.deletedFileGroups) {
             for (ProjectFileGroup f : this.myProjekt.getFilegroups()) {
-                if (f.getId() == id) {
+                if (f.getId().equals(id)) {
                     filteredFileGroupList.remove(f);
                     break;
                 }

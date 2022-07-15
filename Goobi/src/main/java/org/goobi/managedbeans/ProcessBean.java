@@ -1130,49 +1130,10 @@ public class ProcessBean extends BasicBean implements Serializable {
     @SuppressWarnings("unchecked")
     public void ExportDMSPage() {
 
-        Boolean flagError = false;
         for (Process proz : (List<Process>) this.paginator.getList()) {
-            IExportPlugin export = null;
-            String pluginName = ProcessManager.getExportPluginName(proz.getId());
-            if (StringUtils.isNotEmpty(pluginName)) {
-                try {
-                    export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
-                } catch (Exception e) {
-                    log.error("Can't load export plugin, use default export", e);
-                    Helper.setFehlerMeldung("Can't load export plugin, use default export");
-
-                    export = new ExportDms();
-                }
-            }
-            if (export == null) {
-                export = new ExportDms();
-            }
-            try {
-                export.startExport(proz);
-                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Started export using 'ExportDMSPage'.");
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            } catch (Exception e) {
-                // without this a new exception is thrown, if an exception
-                // caught here doesn't have an
-                // errorMessage
-                String errorMessage;
-
-                if (e.getMessage() != null) {
-                    errorMessage = e.getMessage();
-                } else {
-                    errorMessage = e.toString();
-                }
-                Helper.setFehlerMeldung("ExportErrorID" + proz.getId() + ":", errorMessage);
-                log.error(e);
-                flagError = true;
-            }
+            exportSingleProcess(proz);
         }
-        if (flagError) {
-            Helper.setFehlerMeldung("ExportFinishedWithErrors");
-        } else {
-            Helper.setMeldung(null, "ExportFinished", "");
-        }
+
     }
 
     @SuppressWarnings("unchecked")
@@ -1181,62 +1142,43 @@ public class ProcessBean extends BasicBean implements Serializable {
         for (Process proz : (List<Process>) this.paginator.getList()) {
 
             if (proz.isSelected()) {
-                IExportPlugin export = null;
-                String pluginName = ProcessManager.getExportPluginName(proz.getId());
-                if (StringUtils.isNotEmpty(pluginName)) {
-                    try {
-                        export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
-                    } catch (Exception e) {
-                        log.error("Can't load export plugin, use default export", e);
-                        Helper.setFehlerMeldung("Can't load export plugin, use default export");
-                        export = new ExportDms();
-                    }
-                }
-                if (export == null) {
-                    export = new ExportDms();
-                }
-                try {
-                    export.startExport(proz);
-                    Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Started export using 'ExportDMSSelection'.");
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                } catch (Exception e) {
-                    Helper.setFehlerMeldung("ExportError", e.getMessage());
-                    log.error(e);
-                }
+                exportSingleProcess(proz);
             }
         }
         Helper.setMeldung(null, "ExportFinished", "");
+    }
+
+    private void exportSingleProcess(Process proz) {
+        IExportPlugin export = null;
+        String pluginName = ProcessManager.getExportPluginName(proz.getId());
+        if (StringUtils.isNotEmpty(pluginName)) {
+            try {
+                export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
+            } catch (Exception e) {
+                log.error("Can't load export plugin, use default export", e);
+                Helper.setFehlerMeldung("Can't load export plugin, use default export");
+                export = new ExportDms();
+            }
+        }
+        if (export == null) {
+            export = new ExportDms();
+        }
+        try {
+            export.startExport(proz);
+            Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Started export using 'ExportDMSSelection'.");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (Exception e) {
+            Helper.setFehlerMeldung("ExportError", e.getMessage());
+            log.error(e);
+        }
     }
 
     @SuppressWarnings("unchecked")
     public void ExportDMSHits() {
 
         for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
-            IExportPlugin export = null;
-            String pluginName = ProcessManager.getExportPluginName(proz.getId());
-            if (StringUtils.isNotEmpty(pluginName)) {
-                try {
-                    export = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, pluginName);
-                } catch (Exception e) {
-                    log.error("Can't load export plugin, use default export", e);
-                    Helper.setFehlerMeldung("Can't load export plugin, use default export");
-                    export = new ExportDms();
-                }
-            }
-            if (export == null) {
-                export = new ExportDms();
-            }
-
-            try {
-                export.startExport(proz);
-                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Started export using 'ExportDMSHits'.");
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            } catch (Exception e) {
-                Helper.setFehlerMeldung("ExportError", e.getMessage());
-                log.error(e);
-            }
+            exportSingleProcess(proz);
         }
         Helper.setMeldung(null, "ExportFinished", "");
     }
