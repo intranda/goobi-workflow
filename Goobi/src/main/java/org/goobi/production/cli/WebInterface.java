@@ -121,9 +121,17 @@ public class WebInterface extends HttpServlet {
 
             if (command.equals("help")) {
                 if (!params.containsKey("for")) {
-                    generateHelp(resp, null);
+                    try {
+                        generateHelp(resp, null);
+                    } catch (IOException e) {
+                        log.error(e);
+                    }
                 } else {
-                    generateHelp(resp, params.get("for"));
+                    try {
+                        generateHelp(resp, params.get("for"));
+                    } catch (IOException e) {
+                        log.error(e);
+                    }
                 }
                 return;
             }
@@ -152,8 +160,6 @@ public class WebInterface extends HttpServlet {
             }
             cr = myCommandPlugin.execute();
             generateAnswer(resp, cr.getStatus(), cr.getTitle(), cr.getMessage());
-            return;
-
         } else {
             generateAnswer(resp, 404, "web api deactivated", "web api not configured");
         }
@@ -161,7 +167,11 @@ public class WebInterface extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
+        try {
+            doGet(req, resp);
+        } catch (ServletException | IOException e) {
+            log.error(e);
+        }
     }
 
     private void generateHelp(HttpServletResponse resp, String forCommand) throws IOException {

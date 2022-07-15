@@ -1,5 +1,6 @@
 package org.goobi.api.mq;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +41,8 @@ public class ExternalConnectionFactory {
 
     private static Connection createActiveMQConnection(String username, String password) throws JMSException {
         ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory();
+        connFactory.setTrustedPackages(Arrays.asList("org.goobi.managedbeans", "org.goobi.api.mq", "org.goobi.api.mq.ticket"));
+
         ActiveMQConnection activeMQconn = (ActiveMQConnection) connFactory.createConnection(username, password);
         ActiveMQPrefetchPolicy prefetchPolicy = new ActiveMQPrefetchPolicy();
         prefetchPolicy.setAll(0);
@@ -90,7 +93,7 @@ public class ExternalConnectionFactory {
         if (config.isUseLocalSQS()) {
             sqsClient.createQueue(queueName);
         } else {
-            Map<String, String> attributes = new HashMap<String, String>();
+            Map<String, String> attributes = new HashMap<>();
             attributes.put("FifoQueue", "true");
             attributes.put("ContentBasedDeduplication", "true");
             sqsClient.createQueue(new CreateQueueRequest().withQueueName(queueName).withAttributes(attributes));

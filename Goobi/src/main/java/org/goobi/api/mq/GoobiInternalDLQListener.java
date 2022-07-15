@@ -1,5 +1,6 @@
 package org.goobi.api.mq;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.jms.BytesMessage;
@@ -28,6 +29,7 @@ public class GoobiInternalDLQListener {
 
     public void register(String username, String password, QueueType queue) throws JMSException {
         ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory("vm://localhost");
+        connFactory.setTrustedPackages(Arrays.asList("org.goobi.managedbeans", "org.goobi.api.mq", "org.goobi.api.mq.ticket"));
         conn = (ActiveMQConnection) connFactory.createConnection(username, password);
         ActiveMQPrefetchPolicy prefetchPolicy = new ActiveMQPrefetchPolicy();
         prefetchPolicy.setAll(0);
