@@ -168,6 +168,8 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
             log.info("Metadata changed using GoobiScript for process with ID " + p.getId());
             gsr.setResultMessage("Metadata changed successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         } catch (Exception e1) {
             log.error("Problem while changing the metadata using GoobiScript for process with id: " + p.getId(), e1);
             gsr.setResultMessage("Error while changing metadata: " + e1.getMessage());

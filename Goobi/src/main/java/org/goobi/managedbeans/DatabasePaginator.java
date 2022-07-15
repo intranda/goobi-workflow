@@ -79,7 +79,7 @@ public class DatabasePaginator implements Serializable {
     }
 
     public int getLastPageNumber() {
-        int ret = Double.valueOf(Math.floor(this.totalResults / this.pageSize)).intValue();
+        int ret = this.totalResults / this.pageSize;
         if (this.totalResults % this.pageSize == 0) {
             ret--;
         }
@@ -153,11 +153,11 @@ public class DatabasePaginator implements Serializable {
     }
 
     public Long getPageNumberCurrent() {
-        return Long.valueOf(this.page + 1);
+        return Long.valueOf(this.page + 1l);
     }
 
     public Long getPageNumberLast() {
-        return Long.valueOf(getLastPageNumber() + 1);
+        return Long.valueOf(getLastPageNumber() + 1l);
     }
 
     public String cmdMoveFirst() {

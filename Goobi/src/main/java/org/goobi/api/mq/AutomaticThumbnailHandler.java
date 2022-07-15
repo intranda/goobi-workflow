@@ -113,7 +113,7 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
 
     }
 
-    private void generateThumbnailsWithSettings(Step step, Process process) throws IOException, InterruptedException, SwapException, DAOException {
+    private void generateThumbnailsWithSettings(Step step, Process process) throws IOException, SwapException, DAOException {
         JSONObject settings = step.getAutoThumbnailSettingsJSON();
         boolean master = false;
         boolean media = false;

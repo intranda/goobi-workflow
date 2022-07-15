@@ -389,7 +389,7 @@ public class StepBean extends BasicBean implements Serializable {
         try {
             mySchritt = StepManager.getStepById(mySchritt.getId());
             mySchritt.lazyLoad();
-        } catch(Exception e) {
+        } catch (Exception e) {
         }
 
         return "task_edit";
@@ -681,7 +681,11 @@ public class StepBean extends BasicBean implements Serializable {
             ErrorProperty se = new ErrorProperty();
 
             se.setTitel(Helper.getTranslation("Korrektur notwendig"));
-            se.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + this.problemMessage);
+            if (ben != null) {
+                se.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + this.problemMessage);
+            } else {
+                se.setWert("[" + this.formatter.format(new Date()) + "] " + this.problemMessage);
+            }
             se.setType(PropertyType.messageError);
             se.setCreationDate(myDate);
             se.setSchritt(temp);
@@ -822,9 +826,12 @@ public class StepBean extends BasicBean implements Serializable {
                 seg.setTitel(Helper.getTranslation("Korrektur durchgefuehrt"));
                 if (ben != null) {
                     step.setBearbeitungsbenutzer(ben);
+                    seg.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] "
+                            + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
+                } else {
+                    seg.setWert("[" + this.formatter.format(new Date()) + "] " + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel()
+                    + ": " + this.solutionMessage);
                 }
-                seg.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] "
-                        + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
                 seg.setSchritt(step);
                 seg.setType(PropertyType.messageImportant);
                 seg.setCreationDate(new Date());
@@ -912,7 +919,7 @@ public class StepBean extends BasicBean implements Serializable {
             for (Step step : stepList) {
                 if (step.getBearbeitungsstatusEnum().equals(StepStatus.INWORK)) {
                     this.mySchritt = step;
-                    if (SchrittDurchBenutzerAbschliessen() != "") {
+                    if (!SchrittDurchBenutzerAbschliessen().equals("")) {
                         geprueft.add(element);
                     }
                     this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_MULTI);
@@ -1198,6 +1205,8 @@ public class StepBean extends BasicBean implements Serializable {
         }
         try {
             dms.startExport(this.mySchritt.getProzess());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
             Helper.setFehlerMeldung("Error on export", e.getMessage() == null ? "" : e.getMessage());
             log.error(e);

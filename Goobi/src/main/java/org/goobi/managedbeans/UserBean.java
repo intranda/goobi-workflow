@@ -349,7 +349,7 @@ public class UserBean extends BasicBean implements Serializable {
      */
     public String Loeschen() {
         User currentUser = Helper.getCurrentUser();
-        if (currentUser.getId() != myClass.getId()) {
+        if (!currentUser.getId().equals(myClass.getId())) {
             try {
                 UserManager.hideUser(myClass);
                 if (myClass.getLdapGruppe().getAuthenticationTypeEnum() == AuthenticationType.LDAP && !myClass.getLdapGruppe().isReadonly()) {
@@ -580,6 +580,8 @@ public class UserBean extends BasicBean implements Serializable {
         LdapAuthentication myLdap = new LdapAuthentication();
         try {
             myLdap.createNewUser(this.myClass, this.myClass.getPasswort());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
             log.warn("Could not generate ldap entry: " + e.getMessage());
             Helper.setFehlerMeldung("Error on writing to database", e);

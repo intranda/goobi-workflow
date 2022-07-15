@@ -135,7 +135,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     private void deleteFileGroups(List<Integer> fileGroups) {
         for (Integer id : fileGroups) {
             for (ProjectFileGroup f : this.myProjekt.getFilegroups()) {
-                if (f.getId() == id) {
+                if (f.getId().equals(id)) {
                     this.myProjekt.getFilegroups().remove(f);
                     ProjectManager.deleteProjectFileGroup(f);
                     break;
@@ -800,7 +800,9 @@ public class ProjectBean extends BasicBean implements Serializable {
 
             } finally {
                 try {
-                    csvFilePrinter.close();
+                    if (csvFilePrinter != null) {
+                        csvFilePrinter.close();
+                    }
                 } catch (IOException e) {
 
                 }
@@ -847,7 +849,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     public String cloneProject() {
-        new Project( myProjekt);
+        new Project(myProjekt);
         Cancel();
         return FilterKein();
     }

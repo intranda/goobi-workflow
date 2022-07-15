@@ -161,7 +161,10 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object obj) { //NOSONAR
+        if (obj == null) {
+            return false;
+        }
         return this.getTitel().equals(((Usergroup) obj).getTitel()) && (getInstitutionId().equals(((Usergroup) obj).getInstitutionId()));
     }
 

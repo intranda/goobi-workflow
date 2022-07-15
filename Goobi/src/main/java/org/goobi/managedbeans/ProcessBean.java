@@ -444,7 +444,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         //            return "";
         //        }
         Helper.setMeldung("Process deleted");
-        if (this.modusAnzeige == "vorlagen") {
+        if (this.modusAnzeige.equals("vorlagen")) {
             return FilterVorlagen();
         } else {
             return FilterAlleStart();
@@ -1044,6 +1044,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             export.startExport(this.myProzess);
             Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started METS export using 'ExportMets'.");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
             String[] parameter = { "METS", this.myProzess.getTitel() };
 
@@ -1058,6 +1060,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             export.downloadMets(this.myProzess);
             Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started METS export using 'ExportMets'.");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
             String[] parameter = { "METS", this.myProzess.getTitel() };
 
@@ -1072,6 +1076,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             export.startExport(this.myProzess);
             Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started PDF export using 'ExportPdf'.");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
             String[] parameter = { "PDF", this.myProzess.getTitel() };
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
@@ -1111,6 +1117,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
         try {
             export.startExport(process);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
             String[] parameter = { "DMS", process.getTitel() };
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
@@ -1142,6 +1150,8 @@ public class ProcessBean extends BasicBean implements Serializable {
             try {
                 export.startExport(proz);
                 Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Started export using 'ExportDMSPage'.");
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             } catch (Exception e) {
                 // without this a new exception is thrown, if an exception
                 // caught here doesn't have an
@@ -1188,6 +1198,8 @@ public class ProcessBean extends BasicBean implements Serializable {
                 try {
                     export.startExport(proz);
                     Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Started export using 'ExportDMSSelection'.");
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 } catch (Exception e) {
                     Helper.setFehlerMeldung("ExportError", e.getMessage());
                     log.error(e);
@@ -1219,6 +1231,8 @@ public class ProcessBean extends BasicBean implements Serializable {
             try {
                 export.startExport(proz);
                 Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Started export using 'ExportDMSHits'.");
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             } catch (Exception e) {
                 Helper.setFehlerMeldung("ExportError", e.getMessage());
                 log.error(e);
@@ -1410,7 +1424,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     public String decrementOrder() {
-        int oldOrder = Integer.valueOf(this.mySchritt.getReihenfolge().intValue());
+        int oldOrder = this.mySchritt.getReihenfolge();
 
         if (oldOrder > 1) {
             this.mySchritt.setReihenfolge(oldOrder - 1);
@@ -1420,7 +1434,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     public String incrementOrder() {
-        int oldOrder = Integer.valueOf(this.mySchritt.getReihenfolge().intValue());
+        int oldOrder = this.mySchritt.getReihenfolge();
         this.mySchritt.setReihenfolge(oldOrder + 1);
 
         this.saveStepInStepManager(this.mySchritt);
@@ -2037,7 +2051,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         } catch (IOException e) {
             Helper.setFehlerMeldung("could not write logfile to home directory: ", e);
         } catch (InterruptedException e) {
-            Helper.setFehlerMeldung("could not execute command to write logfile to home directory", e);
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -2174,7 +2188,9 @@ public class ProcessBean extends BasicBean implements Serializable {
 
             } finally {
                 try {
-                    csvFilePrinter.close();
+                    if (csvFilePrinter != null) {
+                        csvFilePrinter.close();
+                    }
                 } catch (IOException e) {
 
                 }
@@ -2664,10 +2680,12 @@ public class ProcessBean extends BasicBean implements Serializable {
                 try {
                     dms.startExport(mySchritt.getProzess());
                 } catch (DocStructHasNoTypeException | PreferencesException | WriteException | MetadataTypeNotAllowedException | ReadException
-                        | TypeNotAllowedForParentException | IOException | InterruptedException | ExportFileException | UghHelperException
-                        | SwapException | DAOException e) {
+                        | TypeNotAllowedForParentException | IOException | ExportFileException | UghHelperException | SwapException
+                        | DAOException e) {
                     log.error(e);
                     Helper.setFehlerMeldung("Can't load export plugin.");
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
             } else if (mySchritt.isDelayStep()) {
                 Helper.setFehlerMeldung("cannotStartPlugin");

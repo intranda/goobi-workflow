@@ -122,10 +122,12 @@ public class WebDav implements Serializable {
 
         try {
             nach = inBenutzer.getHomeDir();
-        } catch (Exception ioe) {
+        } catch (IOException ioe) {
             log.error("Exception UploadFromHome(...)", ioe);
             Helper.setFehlerMeldung("Aborted upload from home, error", ioe.getMessage());
             return;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
 
         /* prüfen, ob Benutzer Massenupload macht */
