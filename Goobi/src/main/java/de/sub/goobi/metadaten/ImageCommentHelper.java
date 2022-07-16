@@ -103,7 +103,7 @@ public class ImageCommentHelper {
         if (!fixedFolderName.endsWith("/")) {
             fixedFolderName += ("/");
         }
-        return fixedfolderName;
+        return fixedFolderName;
     }
 
     public class ImageComments {
