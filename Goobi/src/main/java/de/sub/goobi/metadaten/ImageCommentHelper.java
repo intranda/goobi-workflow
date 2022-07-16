@@ -25,9 +25,9 @@ public class ImageCommentHelper {
 
     private static Gson gson = new Gson();
     private HashMap<String, ImageComments> commentFiles;
-    private final String PATH_ADJUSTMENT = "../";
-    private final String COMMENTS_FILE_NAME = "comments";
-    private final String JSON_EXTENSION = ".json";
+    private static final String PATH_ADJUSTMENT = "../";
+    private static final String COMMENTS_FILE_NAME = "comments";
+    private static final String JSON_EXTENSION = ".json";
 
     public ImageCommentHelper() {
         commentFiles = new HashMap<>();
@@ -73,7 +73,7 @@ public class ImageCommentHelper {
     public HashMap<String, String> getComments(String imageFolderName) {
         return getCommentFile(imageFolderName).comments;
     }
-    
+
     private final String buildCommentPath(String folderName) {
         final String type = getType(folderName);
         StringBuilder commentPath = new StringBuilder(appendSlash(folderName)); 
@@ -83,7 +83,7 @@ public class ImageCommentHelper {
         commentPath.append(JSON_EXTENSION);
         return commentPath.toString();
     }
-    
+
     // Determine whether we are dealing with media or master
     private String getType(String path) {
         if (path == null) {
@@ -99,15 +99,16 @@ public class ImageCommentHelper {
     }
 
     private String appendSlash(String folderName) {
-        if (!folderName.endsWith("/")) {
-            folderName += ("/");
+        String fixedFolderName = folderName;
+        if (!fixedFolderName.endsWith("/")) {
+            fixedFolderName += ("/");
         }
-        return folderName;
+        return fixedfolderName;
     }
 
     public class ImageComments {
         private HashMap<String, String> comments;
- 
+
         public ImageComments() {
             comments = new HashMap<>();
         }
