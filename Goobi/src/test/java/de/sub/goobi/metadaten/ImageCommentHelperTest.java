@@ -3,9 +3,15 @@ package de.sub.goobi.metadaten;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
+import org.junit.Before;
 import org.junit.Test;
+
+import de.sub.goobi.config.ConfigProjectsTest;
 
 /**
  * @author janos
@@ -15,8 +21,17 @@ import org.junit.Test;
 public class ImageCommentHelperTest {
     
     private ImageCommentHelper commentHelper = new ImageCommentHelper();
-    final File path = new File(getClass().getClassLoader().getResource("metadata/99/images/testprocess_media").getFile());
-    final String imageFolderName = path.getAbsolutePath();
+    private String imageFolderName;
+        
+    @Before
+    public void setUp() throws Exception {
+        final Path basePath = Paths.get(ConfigProjectsTest.class.getClassLoader().getResource(".").getFile());
+        Path testFolder = Paths.get(basePath.getParent().getParent().toString() + "/src/test/resources/metadata/99/images/testprocess_media");
+        if (!Files.exists(testFolder)) {
+            testFolder = Paths.get("target/test-classes/metadata/99/images/testprocess_media");
+        }
+        imageFolderName = testFolder.toString();
+    }
     
     @Test
     public void getCommentTest() {
