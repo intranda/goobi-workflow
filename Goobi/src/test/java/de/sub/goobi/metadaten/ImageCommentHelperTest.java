@@ -15,7 +15,7 @@ import org.junit.Test;
 public class ImageCommentHelperTest {
     
     private ImageCommentHelper commentHelper = new ImageCommentHelper();
-    final File path = new File("src/test/resources/metadata/99/images/testprocess_media");
+    final File path = new File(getClass().getClassLoader().getResource("metadata/99/images/testprocess_media").getFile());
     final String imageFolderName = path.getAbsolutePath();
     
     @Test
@@ -43,3 +43,4 @@ public class ImageCommentHelperTest {
     }
     
 }
+
