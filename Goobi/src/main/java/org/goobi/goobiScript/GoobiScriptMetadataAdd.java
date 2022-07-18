@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
@@ -118,11 +121,10 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                     dsList.addAll(ds.getAllChildrenAsFlatList());
                     break;
                 case "physical":
-                    if (physical!= null) {
+                    if (physical != null) {
                         dsList.add(physical);
                     }
                     break;
-
 
                     // default "work", which is the first child or the main top element if it is not an anchor
                 default:
@@ -175,9 +177,24 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
      */
     private void addMetadata(List<DocStruct> dsList, String field, String value, Prefs prefs, boolean ignoreErrors)
             throws MetadataTypeNotAllowedException {
-        for (DocStruct ds : dsList) {
+        outer: for (DocStruct ds : dsList) {
+            String tmpValue = value;
+            if (tmpValue.contains("metadata.")) {
+                for (Matcher m = Pattern.compile("\\$?(?:\\(|\\{)metadata\\.([\\w.-]*)(?:\\}|\\))").matcher(tmpValue); m.find();) {
+                    String metadataName = m.group(1);
+
+                    List<? extends Metadata> metadatalist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(metadataName));
+                    if (metadatalist != null && !metadatalist.isEmpty()) {
+                        Metadata md = metadatalist.get(0);
+                        tmpValue = tmpValue.replace(m.group(), md.getValue());
+                    } else {
+                        continue outer;
+                    }
+                }
+            }
+
             Metadata mdColl = new Metadata(prefs.getMetadataTypeByName(field));
-            mdColl.setValue(value);
+            mdColl.setValue(tmpValue);
             try {
                 ds.addMetadata(mdColl);
             } catch (MetadataTypeNotAllowedException e) {
@@ -186,6 +203,14 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                 }
             }
         }
+    }
+
+    public static Iterable<MatchResult> findRegexMatches(String pattern, CharSequence s) {
+        List<MatchResult> results = new ArrayList<>();
+        for (Matcher m = Pattern.compile(pattern).matcher(s); m.find();) {
+            results.add(m.toMatchResult());
+        }
+        return results;
     }
 
 }
