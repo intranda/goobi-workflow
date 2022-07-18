@@ -9,7 +9,7 @@
     padding-right: 2rem;
 
     // Keep burger menu + icon-nav (user menu, lang switch) next to each other in the right corner
-    @include media-breakpoint-down(lg) {
+    @media (max-width: 992px) {
       justify-content: end;
       // keep the logo in the left corner
       #brand {
@@ -108,7 +108,7 @@
   &__account-menu__name {
     color: currentColor;
     margin-right: 0.8rem;
-    @include media-breakpoint-down(sm) {
+    @media (max-width: 576px) {
       display: none;
     }
   }
@@ -116,7 +116,7 @@
     max-height: 100%;
   }
 
-  @include media-breakpoint-up(lg) {
+  @media (min-width: 992px) {
     order: 1;
   }
 
@@ -131,7 +131,7 @@
 }
 
 //Mobile nav styles
-@include media-breakpoint-down(lg) {
+@media (max-width: 991px) {
   #navigation {
     position: relative;
 

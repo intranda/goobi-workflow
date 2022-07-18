@@ -24,6 +24,7 @@ th span {
 }
 
 td {
+	word-break: break-all;
   .btn-group .btn:not(:first-of-type) {
     margin-right: 0.8rem;
   }
