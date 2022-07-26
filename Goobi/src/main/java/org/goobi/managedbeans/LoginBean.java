@@ -205,10 +205,12 @@ public class LoginBean implements Serializable {
             // registration not finished, login not allowed
             Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User could not log in because account is not activated.");
+            return "";
         } else if (user.getStatus() == User.UserStatus.DELETED || user.getStatus() == User.UserStatus.INACTIVE) {
             // disabled, login not allowed
             Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User could not log in because account is not active.");
+            return "";
         }
 
         log.trace(LoginBean.LOGIN_LOG_PREFIX + "The user is able to log in (user is visible and active).");
