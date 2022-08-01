@@ -119,7 +119,7 @@
         <metadata-extractor.version>2.18.0</metadata-extractor.version>
         <mimepull.version>1.10.0</mimepull.version>
         <omnifaces.version>3.13.3</omnifaces.version>
-        <openpdf.version>1.3.27</openpdf.version>
+        <openpdf.version>1.3.29</openpdf.version>
         <pdfbox.version>2.0.26</pdfbox.version>
         <poi.version>5.2.2</poi.version>
         <powermock.version>2.0.9</powermock.version>
