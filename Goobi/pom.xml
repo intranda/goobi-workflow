@@ -114,7 +114,7 @@
         <junit.version>4.13.2</junit.version>
         <jsonpath.version>2.7.0</jsonpath.version>
         <jwks-rsa.version>0.21.1</jwks-rsa.version>
-        <log4j.version>2.17.2</log4j.version>
+        <log4j.version>2.18.0</log4j.version>
         <lombok.version>1.18.24</lombok.version>
         <metadata-extractor.version>2.17.0</metadata-extractor.version>
         <mimepull.version>1.10.0</mimepull.version>
