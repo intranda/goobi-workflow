@@ -125,7 +125,7 @@
         <powermock.version>2.0.9</powermock.version>
         <reflections.version>0.10.2</reflections.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <spark.version>2.9.3</spark.version>
+        <spark.version>2.9.4</spark.version>
         <spring.version>5.3.22</spring.version>
         <sshj.version>0.33.0</sshj.version>
         <swagger.version>2.2.2</swagger.version>
