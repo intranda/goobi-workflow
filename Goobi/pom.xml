@@ -128,7 +128,7 @@
         <spark.version>2.9.3</spark.version>
         <spring.version>5.3.22</spring.version>
         <sshj.version>0.33.0</sshj.version>
-        <swagger.version>2.2.0</swagger.version>
+        <swagger.version>2.2.2</swagger.version>
         <weld.version>3.1.9.Final</weld.version>
         <hk2.version>2.6.1</hk2.version>
         <xmlgraphics-commons.version>2.7</xmlgraphics-commons.version>
