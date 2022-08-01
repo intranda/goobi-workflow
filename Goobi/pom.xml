@@ -88,7 +88,7 @@
         <shiro.version>1.4.2</shiro.version>
         <activemq.version>5.17.1</activemq.version>
         <aspectj.version>1.9.9.1</aspectj.version>
-        <aws.version>1.12.208</aws.version>
+        <aws.version>1.12.272</aws.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <cdi.version>2.0.SP1</cdi.version>
         <commons-csv.version>1.9.0</commons-csv.version>
