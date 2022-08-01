@@ -369,14 +369,6 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("goobiUrl");
     }
 
-    public String getGoobiContentServerUrl() {
-        return getLocalString("goobiContentServerUrl");
-    }
-
-    public String getContentServerUrl() {
-        return getLocalString("ContentServerUrl");
-    }
-
     public int getGoobiContentServerTimeOut() {
         return getLocalInt("goobiContentServerTimeOut", 60000);
     }

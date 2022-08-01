@@ -1,10 +1,13 @@
-package org.goobi.api.rest;
+package org.goobi.api.rest.process.image;
 
 import java.awt.Dimension;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,7 +15,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
-import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -32,7 +34,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.log4j.Log4j2;
 
-@Path("/image/file/{path}")
+@javax.ws.rs.Path("/image/file/{path}")
 @ContentServerBinding
 @Log4j2
 public class GeneralImageResource extends ImageResource {
@@ -47,10 +49,19 @@ public class GeneralImageResource extends ImageResource {
     public GeneralImageResource(@Context ContainerRequestContext context,
             @Context HttpServletRequest request,
             @Context HttpServletResponse response,
-            @PathParam("path") String path)
-                    throws ContentNotFoundException, IllegalRequestException {
-        super(context, request, response, "-", path);
-        createResourceURI(request, path);
+            @PathParam("path") String path) throws IllegalRequestException {
+        super(context, request, response, "-", getCleanedPath(path));
+        createResourceURI(request, getCleanedPath(path));
+    }
+
+    private static String getCleanedPath(String path) throws IllegalRequestException {
+        Path filePath = Paths.get(path).toAbsolutePath().normalize();
+        Path metadataPath = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder());
+        if(!filePath.startsWith(metadataPath)) {
+            throw new IllegalRequestException("Not allowed to access image paths outside " + metadataPath);
+        } else {
+            return filePath.toString();
+        }
     }
 
     public void createResourceURI(HttpServletRequest request, String filePath) throws IllegalRequestException {
@@ -84,11 +95,11 @@ public class GeneralImageResource extends ImageResource {
     }
 
     public static String getGoobiURIPrefix() {
-        return GeneralImageResource.class.getAnnotation(Path.class).value();
+        return GeneralImageResource.class.getAnnotation(javax.ws.rs.Path.class).value();
     }
 
     @GET
-    @Path("/info.json")
+    @javax.ws.rs.Path("/info.json")
     @Operation(summary="Returns information about an image", description="Returns information about the image in JSON or JSONLD format")
     @ApiResponse(responseCode="200", description="OK")
     @ApiResponse(responseCode="400", description="Bad Request")
