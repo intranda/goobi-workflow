@@ -1,4 +1,4 @@
-package org.goobi.api.rest;
+package org.goobi.api.rest.process.image;
 
 import java.io.IOException;
 import java.net.URI;
