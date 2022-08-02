@@ -46,7 +46,9 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.ExportFileException;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.metadaten.Image;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import lombok.extern.log4j.Log4j2;
@@ -163,11 +165,17 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
         try {
             Element representative = new Element("representative", xmlns);
             Path repImagePath = Paths.get(process.getRepresentativeImageAsString());
-            Image repimage = new Image(repImagePath, 0, 30000);
+            String folderName;
+            if (process.getImagesTifDirectory(true).equals(repImagePath.getParent().toString() + "/")) {
+                folderName = "media";
+            } else {
+                folderName = "master";
+            }
+            Image repimage = new Image(process, folderName, repImagePath.getFileName().toString(), 0, 3000);
             representative.setAttribute("path", process.getRepresentativeImageAsString());
             representative.setAttribute("url", repimage.getThumbnailUrl());
             mainElement.addContent(representative);
-        } catch (IOException e1) {
+        } catch (IOException|DAOException|SwapException e1) {
             log.error("Error added the representative to the metadata docket", e1);
         }
 
