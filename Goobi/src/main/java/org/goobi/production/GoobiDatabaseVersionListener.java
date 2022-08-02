@@ -57,7 +57,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
 
         DatabaseVersion.checkIfEmptyDatabase();
         
-        if (DatabaseVersion.checkIfColumnExists("urn_table", "urn")) {
+        if (!DatabaseVersion.checkIfColumnExists("urn_table", "urn")) {
             try {
                 DatabaseVersion.runSql("ALTER TABLE urn_table ADD COLUMN urn VARCHAR(255) DEFAULT NULL;");
             } catch (SQLException e) {
