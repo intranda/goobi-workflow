@@ -1,4 +1,4 @@
-package org.goobi.api.rest;
+package org.goobi.api.rest.process.image;
 
 import java.awt.Dimension;
 import java.io.FileNotFoundException;
@@ -47,6 +47,10 @@ import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentNotFoundException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.IllegalRequestException;
 import de.unigoettingen.sub.commons.contentlib.imagelib.ImageManager;
+import de.unigoettingen.sub.commons.contentlib.imagelib.transform.Region;
+import de.unigoettingen.sub.commons.contentlib.imagelib.transform.RegionRequest;
+import de.unigoettingen.sub.commons.contentlib.imagelib.transform.Rotation;
+import de.unigoettingen.sub.commons.contentlib.imagelib.transform.Scale;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageBinding;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerImageInfoBinding;
@@ -178,7 +182,16 @@ public class GoobiImageResource {
     }
 
     @GET
-    @javax.ws.rs.Path("/{region}/{size}/{rotation}/{pdfName}.pdf")
+    @javax.ws.rs.Path("/{process}/{folder}/{filename}/{pdfName}.pdf")
+    @Produces("application/pdf")
+    @ContentServerPdfBinding
+    public StreamingOutput getPdf(@PathParam("process") String processIdString, @PathParam("folder") String folder,
+            @PathParam("filename") String filename, @PathParam("pdfName") String pdfName) throws ContentLibException {
+        return getPdf(processIdString, folder, filename, Region.FULL_IMAGE, Scale.MAX_SIZE, Rotation.NONE.toString(), pdfName);
+    }
+    
+    @GET
+    @javax.ws.rs.Path("/{process}/{folder}/{filename}/{region}/{size}/{rotation}/{pdfName}.pdf")
     @Produces("application/pdf")
     @ContentServerPdfBinding
     public StreamingOutput getPdf(@PathParam("process") String processIdString, @PathParam("folder") String folder,
@@ -530,6 +543,10 @@ public class GoobiImageResource {
             case "thumbnails_small":
                 return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getImagesDirectory(), "layoutWizzard-temp",
                         "thumbnails_small");
+            case "intern":
+                return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getProcessDataDirectory(), "intern");
+            case "export":
+                return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getProcessDataDirectory(), "export");
             default:
                 if (!folder.contains("_")) {
                     return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getImagesDirectory(), folder);
