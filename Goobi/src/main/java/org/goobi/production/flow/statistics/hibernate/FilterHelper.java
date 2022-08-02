@@ -1157,7 +1157,7 @@ public class FilterHelper {
                     }
                     if (StringUtils.isNumeric(substring)) {
 
-                        int value = Integer.valueOf(substring);
+                        int value = Integer.parseInt(substring);
                         filter = checkStringBuilder(filter, true);
                         filter.append(" (prozesse.batchID != " + value + " OR batchID is null)");
                     } else {
@@ -1169,11 +1169,6 @@ public class FilterHelper {
                 } catch (NumberFormatException e) {
                     log.warn("input " + tok.substring(tok.indexOf(":") + 1) + " is not a number.");
                 }
-
-            } else if (tok.toLowerCase().startsWith(FilterString.PROCESS) || tok.toLowerCase().startsWith(FilterString.PROZESS)) {
-                filter = checkStringBuilder(filter, true);
-                filter.append(" prozesse.Titel not like '" + leftTruncationCharacter
-                        + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "'");
             } else if (tok.toLowerCase().startsWith("-")) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel not like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(1))

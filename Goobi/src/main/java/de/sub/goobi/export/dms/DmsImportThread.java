@@ -3,7 +3,7 @@ package de.sub.goobi.export.dms;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
  * 
@@ -25,8 +25,9 @@ package de.sub.goobi.export.dms;
  * exception statement from your version.
  */
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -70,14 +71,14 @@ public class DmsImportThread extends Thread {
             try {
                 this.timeFileError = StorageProvider.getInstance().getLastModifiedDate(fileError);
             } catch (IOException e) {
-            	log.error(e);
+                log.error(e);
             }
         }
         if (StorageProvider.getInstance().isFileExists(this.fileSuccess)) {
             try {
                 this.timeFileSuccess = StorageProvider.getInstance().getLastModifiedDate(fileSuccess);
             } catch (IOException e) {
-            	log.error(e);
+                log.error(e);
             }
         }
     }
@@ -95,14 +96,14 @@ public class DmsImportThread extends Thread {
                         /* die Logdatei mit der Fehlerbeschreibung einlesen */
                         StringBuffer myBuf = new StringBuffer();
                         myBuf.append("Beim Import ist ein Importfehler aufgetreten: ");
-                        BufferedReader r = new BufferedReader(new FileReader(this.fileError.toFile()));
-                        String aLine = r.readLine();
-                        while (aLine != null) {
-                            myBuf.append(aLine);
-                            myBuf.append(" ");
-                            aLine = r.readLine();
+                        try (BufferedReader r = Files.newBufferedReader(fileError, StandardCharsets.UTF_8)) {
+                            String aLine = r.readLine();
+                            while (aLine != null) {
+                                myBuf.append(aLine);
+                                myBuf.append(" ");
+                                aLine = r.readLine();
+                            }
                         }
-                        r.close();
                         this.rueckgabe = myBuf.toString();
 
                     }
@@ -112,7 +113,10 @@ public class DmsImportThread extends Thread {
                     }
                 }
             } catch (Throwable t) {
-            	log.error("Unexception exception", t);
+                log.error("Unexception exception", t);
+                if (t instanceof InterruptedException) {
+                    Thread.currentThread().interrupt();
+                }
             }
         }
         if (!ConfigurationHelper.getInstance().isExportWithoutTimeLimit()) {

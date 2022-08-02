@@ -1,4 +1,5 @@
 package de.sub.goobi.metadaten;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,7 @@ import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
 import de.intranda.digiverso.normdataimporter.model.TagDescription;
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.metadaten.search.EasyDBSearch;
 import de.sub.goobi.metadaten.search.KulturNavImporter;
 import de.sub.goobi.metadaten.search.ViafSearch;
@@ -87,7 +89,6 @@ public class MetaPerson implements SearchableMetadata {
 
     // viaf data
     private ViafSearch viafSearch = new ViafSearch();
-
 
     // unused fields, but needed to use the same modals as regular metadata
     private NormDataRecord selectedRecord;
@@ -273,26 +274,17 @@ public class MetaPerson implements SearchableMetadata {
 
     @Override
     public String search() {
-        if (!isSearchInViaf
-                && StringUtils.isBlank(searchOption)
-                && StringUtils.isBlank(searchValue)) {
+        if (!isSearchInViaf && StringUtils.isBlank(searchOption) && StringUtils.isBlank(searchValue)) {
             showNotHits = true;
             return "";
-        }
-        else if (isSearchInViaf) {
+        } else if (isSearchInViaf) {
             viafSearch.performSearchRequest();
-            showNotHits = viafSearch.getRecords() == null
-                    || viafSearch.getRecords().isEmpty();
-        }
-        else if (isSearchInKulturnav) {
-            String knUrl = KulturNavImporter.constructSearchUrl(
-                    getSearchValue(),
-                    KulturNavImporter.getSourceForPerson()
-                    );
+            showNotHits = viafSearch.getRecords() == null || viafSearch.getRecords().isEmpty();
+        } else if (isSearchInKulturnav) {
+            String knUrl = KulturNavImporter.constructSearchUrl(getSearchValue(), KulturNavImporter.getSourceForPerson());
             normdataList = KulturNavImporter.importNormData(knUrl);
-            showNotHits =  normdataList.isEmpty();
-        }
-        else { // default is GND
+            showNotHits = normdataList.isEmpty();
+        } else { // default is GND
             String val = "";
             if (StringUtils.isBlank(searchOption)) {
                 val = "dnb.nid=" + searchValue;
@@ -308,13 +300,17 @@ public class MetaPerson implements SearchableMetadata {
                     .replace("ö", "%C3%B6")
                     .replace("ü", "%C3%BC")
                     .replace("ß", "%C3%9F");
-            dataList = NormDataImporter.importNormDataList(string, 3);
+            if (ConfigurationHelper.getInstance().isUseProxy()) {
+                dataList = NormDataImporter.importNormDataList(string, 3, ConfigurationHelper.getInstance().getProxyUrl(),
+                        "" + ConfigurationHelper.getInstance().getProxyPort());
+            } else {
+                dataList = NormDataImporter.importNormDataList(string, 3);
+            }
             showNotHits = dataList == null || dataList.isEmpty();
         }
         searchValue = "";
         return "";
     }
-
 
     public String getData() {
         String mainValue = null;
@@ -334,22 +330,17 @@ public class MetaPerson implements SearchableMetadata {
                 // Use preferred value, otherwise use the first element in the list
                 if (StringUtils.isNotBlank(selectedRecord.getPreferredValue())) {
                     mainValue = selectedRecord.getPreferredValue();
-                }
-                else if(CollectionUtils.isNotEmpty(selectedRecord.getValueList())) {
+                } else if (CollectionUtils.isNotEmpty(selectedRecord.getValueList())) {
                     mainValue = selectedRecord.getValueList().get(0);
                 }
             }
             normdataList = new ArrayList<>();
-        }
-        else {
+        } else {
             for (NormData normdata : currentData) {
                 if (normdata.getKey().equals("NORM_IDENTIFIER")) {
-                    p.setAutorityFile("gnd", "http://d-nb.info/gnd/",
-                            normdata.getValues().get(0).getText());
+                    p.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
                 } else if (normdata.getKey().equals("NORM_NAME")) {
-                    mainValue = normdata.getValues().get(0).getText()
-                            .replaceAll("\\x152", "")
-                            .replaceAll("\\x156", "");
+                    mainValue = normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", "");
                 }
             }
         }

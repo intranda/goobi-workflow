@@ -149,7 +149,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 }
             }
 
-            ).size();
+                    ).size();
 
             /* --------------------------------
              * die Unterverzeichnisse durchlaufen
@@ -301,7 +301,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                 fileOk = true;
             } else if (name.matches(prefix + "\\.[Gg][Ll][bB]")) {
                 fileOk = true;
-            }else if (name.matches(prefix + "\\.[Xx][Mm][Ll]")) {
+            } else if (name.matches(prefix + "\\.[Xx][Mm][Ll]")) {
                 fileOk = true;
             }
             return fileOk;
@@ -350,7 +350,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                     fileOk = true;
                 } else if (name.matches(prefix + "\\.[Bb][Ii][Nn]")) {
                     fileOk = true;
-                }else if (name.matches(prefix + "\\.[xX][mM][lL]")) {
+                } else if (name.matches(prefix + "\\.[xX][mM][lL]")) {
                     fileOk = true;
                 }
             }
@@ -510,15 +510,15 @@ public class NIOFileUtils implements StorageProviderInterface {
 
     @Override
     public Long createChecksum(Path file) throws IOException {
-        InputStream in = new FileInputStream(file.toString());
         CRC32 checksum = new CRC32();
         checksum.reset();
-        byte[] buffer = new byte[bufferSize];
-        int bytesRead;
-        while ((bytesRead = in.read(buffer)) >= 0) {
-            checksum.update(buffer, 0, bytesRead);
+        try (InputStream in = new FileInputStream(file.toString())) {
+            byte[] buffer = new byte[bufferSize];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) >= 0) {
+                checksum.update(buffer, 0, bytesRead);
+            }
         }
-        in.close();
         return Long.valueOf(checksum.getValue());
     }
 
@@ -676,7 +676,7 @@ public class NIOFileUtils implements StorageProviderInterface {
 
     @Override
     public Path createTemporaryFile(String prefix, String suffix) throws IOException {
-        return Files.createTempFile(prefix, suffix);
+        return Files.createTempFile(prefix, suffix); //NOSONAR, the purpose of this function is to create temporary files
     }
 
     @Override
@@ -870,6 +870,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                     break;
                 case "mxf":
                     mimeType = "video/mxf";
+                    break;
                 case "ogg":
                     mimeType = "video/ogg";
                     break;

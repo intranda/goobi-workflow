@@ -172,9 +172,9 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
             } else {
                 return null;
             }
-        } catch (DAOException daoException) {
-            daoException.printStackTrace();
-            Helper.setFehlerMeldung("goobiScriptfield", "Error in GoobiScript addusergroup", daoException);
+        } catch (DAOException e) {
+            log.error(e);
+            Helper.setFehlerMeldung("goobiScriptfield", "Error in GoobiScript addusergroup", e);
             return null;
         }
     }

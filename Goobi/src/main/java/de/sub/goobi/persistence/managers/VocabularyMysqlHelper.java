@@ -2,7 +2,6 @@ package de.sub.goobi.persistence.managers;
 
 import java.io.Serializable;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -590,7 +589,8 @@ class VocabularyMysqlHelper implements Serializable {
         }
 
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT vocabularyRecords.* FROM vocabularyRecords LEFT JOIN " + vocabTable + " ON vocabularyRecords.vocabId=" + vocabTable + ".vocabId ");
+        sb.append("SELECT vocabularyRecords.* FROM vocabularyRecords LEFT JOIN " + vocabTable + " ON vocabularyRecords.vocabId=" + vocabTable
+                + ".vocabId ");
         sb.append("WHERE " + vocabTable + ".vocabId = ? ");
         StringBuilder subQuery = new StringBuilder();
 
@@ -825,7 +825,6 @@ class VocabularyMysqlHelper implements Serializable {
 
     }
 
-
     public static Timestamp getVocabularyLastAltered(Vocabulary vocabulary) throws SQLException {
 
         if (vocabulary == null) {
@@ -852,7 +851,7 @@ class VocabularyMysqlHelper implements Serializable {
             return;
         }
 
-        String updateSql = "UPDATE " + vocabTable + " SET lastAltered = ? WHERE id = " + vocabulary.getId();
+        String updateSql = "UPDATE vocabulary SET lastAltered = ? WHERE id = ?";
         Connection connection = null;
 
         try {
@@ -860,9 +859,7 @@ class VocabularyMysqlHelper implements Serializable {
             Timestamp timeNow = new Timestamp(calendar.getTime().getTime());
             connection = MySQLHelper.getInstance().getConnection();
 
-            PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
-            preparedStatement.setTimestamp(1, timeNow);
-            preparedStatement.executeUpdate();
+            new QueryRunner().update(connection, updateSql, timeNow, vocabulary.getId());
 
         } finally {
             if (connection != null) {
@@ -897,7 +894,7 @@ class VocabularyMysqlHelper implements Serializable {
             return;
         }
 
-        String updateSql = "UPDATE " + vocabTable + " SET lastUploaded = ? WHERE id = " + vocabulary.getId();
+        String updateSql = "UPDATE vocabulary SET lastUploaded = ? WHERE id = ?";
         Connection connection = null;
 
         try {
@@ -905,9 +902,7 @@ class VocabularyMysqlHelper implements Serializable {
             Timestamp timeNow = new Timestamp(calendar.getTime().getTime());
             connection = MySQLHelper.getInstance().getConnection();
 
-            PreparedStatement preparedStatement = connection.prepareStatement(updateSql);
-            preparedStatement.setTimestamp(1, timeNow);
-            preparedStatement.executeUpdate();
+            new QueryRunner().update(connection, updateSql, timeNow, vocabulary.getId());
 
         } finally {
             if (connection != null) {

@@ -86,12 +86,14 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.ScriptThreadWithoutHibernate;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.UghHelper;
+import de.sub.goobi.helper.XmlTools;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.Image;
+import de.sub.goobi.metadaten.TempImage;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
@@ -341,16 +343,10 @@ public class ProzesskopieForm implements Serializable {
             if (folderObjects != null) {
                 for (HierarchicalConfiguration folderObject : folderObjects) {
 
-                    String regex = folderObject.getString("@regex");
-                    if (regex == null) {
-                        regex = "";
-                    }
+                    String regex = folderObject.getString("@regex", "/^.*$/");
                     configuredFolderRegex.add(regex);
 
-                    String key = folderObject.getString("@messageKey");
-                    if (key == null) {
-                        key = "";
-                    }
+                    String key = folderObject.getString("@messageKey", "");
                     configuredFolderErrorMessageKeys.add(key);
 
                     String name = folderObject.getString(".");
@@ -1280,7 +1276,7 @@ public class ProzesskopieForm implements Serializable {
         this.digitalCollections = new ArrayList<>();
         try {
             /* Datei einlesen und Root ermitteln */
-            SAXBuilder builder = new SAXBuilder();
+            SAXBuilder builder = XmlTools.getSAXBuilder();
             Document doc = builder.build(filename);
             Element root = doc.getRootElement();
             /* alle Projekte durchlaufen */
@@ -1838,7 +1834,12 @@ public class ProzesskopieForm implements Serializable {
     private void saveFileTemporary(String fileName, InputStream in) throws IOException {
         OutputStream out = null;
         try {
-            File file = new File(getTemporaryFolder().toString(), fileName);
+            Path tmpFolder = getTemporaryFolder();
+            if (tmpFolder == null) {
+                tmpFolder = Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder());
+            }
+            String folderName = tmpFolder.toString();
+            File file = new File(folderName, fileName);
             out = new FileOutputStream(file);
             int read = 0;
             byte[] bytes = new byte[1024];
@@ -1886,13 +1887,13 @@ public class ProzesskopieForm implements Serializable {
 
     @Data
     @EqualsAndHashCode(callSuper = false)
-    public class UploadImage extends Image implements Comparable<UploadImage> {
+    public class UploadImage extends TempImage implements Comparable<UploadImage> {
         private String foldername;
         private String descriptionText;
         private boolean deleted = false;
 
         public UploadImage(Path imagePath, int order, Integer thumbnailSize, String foldername, String descriptionText) throws IOException {
-            super(imagePath, order, thumbnailSize);
+            super(imagePath.getParent().getFileName().toString(), imagePath.getFileName().toString(), thumbnailSize);
             this.foldername = foldername;
             this.descriptionText = descriptionText;
         }

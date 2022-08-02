@@ -3,7 +3,7 @@ package org.goobi.production.chart;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -55,7 +55,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class ProjectStatusDraw {
-    private static final long MILLICSECS_PER_DAY = 1000 * 60 * 60 * 24;
+    private static final long MILLICSECS_PER_DAY = 1000l * 60l * 60l * 24l;
     private static final int BORDERTOP = 50;
     private static int BORDERRIGHT = 50;
     private static int BARWIDTH = 15;
@@ -65,7 +65,7 @@ public class ProjectStatusDraw {
     private ProjectStatusDataTable dataTable;
 
     // dimensions of the whole graphic
-    // Only the width is given as an argument. The height of the image should be 
+    // Only the width is given as an argument. The height of the image should be
     // adjusted according to the number of tasks to be shown.
     private int width;
     private int height;
@@ -140,7 +140,7 @@ public class ProjectStatusDraw {
         // Print date of project begin
         drawLeftAlignedString(dateFormatter.format(projectBegin), borderLeft, BORDERTOP - 1.5 * fm.getHeight());
         // Print date of project end
-        drawRightAlignedString(dateFormatter.format(projectEnd), width - BORDERRIGHT, BORDERTOP - 1.5 * fm.getHeight());
+        drawRightAlignedString(dateFormatter.format(projectEnd), (double) width - BORDERRIGHT, BORDERTOP - 1.5 * fm.getHeight());
 
         // Read ProjectStatusDataTable and draw the chart
         for (ProjectTask t : dataTable.getTasks()) {
@@ -149,7 +149,7 @@ public class ProjectStatusDraw {
 
             g2d.setColor(Color.black);
             // Print task title
-            drawRightAlignedString(t.getTitle(), borderLeft - fm.getHeight(), y);
+            drawRightAlignedString(t.getTitle(), (double) borderLeft - fm.getHeight(), y);
 
             // Choose color of the bar depending on current date
             ChartColor chartcolor = ChartColor.red;
@@ -177,14 +177,16 @@ public class ProjectStatusDraw {
             NumberFormat formatter = DecimalFormat.getInstance(FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale());
 
             String stepsCompletedString =
-                    formatter.format(t.getStepsCompleted()) + " (" + (formatter.format(t.getStepsCompleted() - t.getConfiguredMax())) + ")";
+                    formatter.format(t.getStepsCompleted()) + " (" + (formatter.format(t.getStepsCompleted() - (double) t.getConfiguredMax())) + ")";
             if ((borderLeft + t.getStepsCompleted() * chartWidth / nonNullMaxSteps + fm.getHeight()
-                    + fm.stringWidth(stepsCompletedString)) >= borderLeft + chartWidth) {
+            + fm.stringWidth(stepsCompletedString)) >= borderLeft + chartWidth) {
                 g2d.setColor(Color.white);
-                drawRightAlignedString(stepsCompletedString, borderLeft + t.getStepsCompleted() * chartWidth / nonNullMaxSteps - fm.getHeight(), y);
+                drawRightAlignedString(stepsCompletedString,
+                        borderLeft + t.getStepsCompleted() * chartWidth / (double) nonNullMaxSteps - fm.getHeight(), y);
             } else {
                 g2d.setColor(Color.black);
-                drawLeftAlignedString(stepsCompletedString, borderLeft + t.getStepsCompleted() * chartWidth / nonNullMaxSteps + fm.getHeight(), y);
+                drawLeftAlignedString(stepsCompletedString,
+                        borderLeft + t.getStepsCompleted() * chartWidth / (double) nonNullMaxSteps + fm.getHeight(), y);
             }
         }
 
@@ -199,10 +201,10 @@ public class ProjectStatusDraw {
         BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, dash1, 0.0f);
         g2d.setStroke(dashed);
         g2d.setColor(Color.black);
-        g2d.draw(
-                new Line2D.Double(borderLeft + datePosition * chartWidth / duration, BORDERTOP + dataTable.getNumberOfTasks() * BARSPACING - BARWIDTH,
-                        borderLeft + datePosition * chartWidth / duration, BORDERTOP - 1 * fm.getHeight()));
-        drawCenteredString(dateFormatter.format(today), borderLeft + datePosition * chartWidth / duration, BORDERTOP - 2.5 * fm.getHeight());
+        g2d.draw(new Line2D.Double(borderLeft + (double) datePosition * chartWidth / duration,
+                BORDERTOP + dataTable.getNumberOfTasks() * BARSPACING - (double) BARWIDTH, borderLeft + (double) datePosition * chartWidth / duration,
+                BORDERTOP - 1d * fm.getHeight()));
+        drawCenteredString(dateFormatter.format(today), borderLeft + (double) datePosition * chartWidth / duration, BORDERTOP - 2.5 * fm.getHeight());
     }
 
     /************************************************************************************
@@ -212,11 +214,11 @@ public class ProjectStatusDraw {
         int padding = 3;
         g2d.setColor(Color.black);
         g2d.setStroke(new BasicStroke());
-        g2d.draw(new Rectangle2D.Double(xpos, ypos - width / 2 - padding, chartWidth, width + 2 * padding));
+        g2d.draw(new Rectangle2D.Double(xpos, ypos - width / 2d - padding, chartWidth, width + 2d * padding));
 
-        GradientPaint verlauf = new GradientPaint(xpos - length / 2, ypos, Color.white, xpos + length, ypos, col);
+        GradientPaint verlauf = new GradientPaint(xpos - length / 2f, ypos, Color.white, xpos + (float) length, ypos, col);
         g2d.setPaint(verlauf);
-        g2d.fill(new Rectangle2D.Double(xpos + padding, ypos - width / 2, length - 2 * padding, width + 1));
+        g2d.fill(new Rectangle2D.Double(xpos + (double)padding, ypos - width / 2d, length - 2d * padding, width + 1d));
 
     }
 

@@ -3,7 +3,8 @@
 .btn-link {
   text-decoration: none;
   background-color: transparent;
-  border-color: transparent;
+  border: 0;
+  padding: 0;
 
   &:hover {
     text-decoration: underline;
@@ -12,16 +13,18 @@
 
 button,
 .btn {
-  font-size: var(--fs-500);
   border-radius: var(--border-radius, 2px);
 
   i ~ * {
     margin-inline-start: 0.8rem;
   }
 
+  /*
   &.btn-hot {
     margin-inline-end: auto;
   }
+  */
+
 
   & ~ .btn {
     margin-inline-start: 0.8rem;

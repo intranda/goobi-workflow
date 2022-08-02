@@ -101,12 +101,12 @@ public class MetadatenImagesHelper {
     }
 
     public void checkImageNames(Process myProzess, String directoryName)
-            throws TypeNotAllowedForParentException, SwapException, DAOException, IOException, InterruptedException {
+            throws TypeNotAllowedForParentException, SwapException, DAOException, IOException {
         DocStruct physical = this.mydocument.getPhysicalDocStruct();
 
         DocStruct logical = this.mydocument.getLogicalDocStruct();
         if (logical.getType().isAnchor()) {
-            if (logical.getAllChildren() != null && logical.getAllChildren().size() > 0) {
+            if (logical.getAllChildren() != null && !logical.getAllChildren().isEmpty()) {
                 logical = logical.getAllChildren().get(0);
             }
         }
@@ -134,7 +134,7 @@ public class MetadatenImagesHelper {
         Map<String, DocStruct> imageNamesInMetsFile = new HashMap<>();
 
         List<DocStruct> pages = physical.getAllChildren();
-        if (pages != null && pages.size() > 0) {
+        if (pages != null && !pages.isEmpty()) {
             for (DocStruct page : pages) {
                 String filename = page.getImageName();
                 if (filename != null) {
@@ -233,16 +233,12 @@ public class MetadatenImagesHelper {
      * 
      * @return null
      * @throws TypeNotAllowedForParentException
-     * @throws TypeNotAllowedForParentException
-     * @throws InterruptedException
-     * @throws IOException
-     * @throws InterruptedException
      * @throws IOException
      * @throws DAOException
      * @throws SwapException
      */
     public void createPagination(Process inProzess, String directory)
-            throws TypeNotAllowedForParentException, IOException, InterruptedException, SwapException, DAOException {
+            throws TypeNotAllowedForParentException, IOException, SwapException, DAOException {
         String mediaFolder = inProzess.getImagesTifDirectory(false);
         String mediaFolderWithFallback = inProzess.getImagesTifDirectory(true);
 
@@ -589,102 +585,44 @@ public class MetadatenImagesHelper {
         }
         log.trace("Scale to " + tmpSize + "%");
 
-        if (ConfigurationHelper.getInstance().getContentServerUrl() == null) {
-            log.trace("api");
-            ImageManager im = null;
-            JpegInterpreter pi = null;
-            try {
-                im= conf.useS3() ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
-                //                im = new ImageManager(Paths.get(inFileName).toUri());
-                log.trace("im");
-                ImageInterpreter ii = im.getMyInterpreter();
-                Dimension inputResolution = new Dimension((int) ii.getXResolution(), (int) ii.getYResolution());
-                log.trace("input resolution: " + inputResolution.width + "x" + inputResolution.height + "dpi");
-                Dimension outputResolution = new Dimension(144, 144);
-                log.trace("output resolution: " + outputResolution.width + "x" + outputResolution.height + "dpi");
-                Dimension dim = new Dimension(tmpSize * outputResolution.width / inputResolution.width,
-                        tmpSize * outputResolution.height / inputResolution.height);
-                log.trace("Absolute scale: " + dim.width + "x" + dim.height + "%");
-                RenderedImage ri = im.scaleImageByPixel(dim, ImageManager.SCALE_BY_PERCENT, intRotation);
-                log.trace("ri");
-                pi = new JpegInterpreter(ri);
-                log.trace("pi");
-                pi.setXResolution(outputResolution.width);
-                log.trace("xres = " + pi.getXResolution());
-                pi.setYResolution(outputResolution.height);
-                log.trace("yres = " + pi.getYResolution());
-                FileOutputStream outputFileStream = new FileOutputStream(outFileName);
-                log.trace("output");
-                pi.writeToStream(null, outputFileStream);
-                log.trace("write stream");
-                outputFileStream.close();
-                log.trace("close stream");
-            } finally {
-                if (im != null) {
-                    im.close();
-                }
-                if (pi != null) {
-                    pi.close();
-                }
+        log.trace("api");
+        ImageManager im = null;
+        JpegInterpreter pi = null;
+        try {
+            im = conf.useS3() && s3URI != null ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
+            //                im = new ImageManager(Paths.get(inFileName).toUri());
+            log.trace("im");
+            ImageInterpreter ii = im.getMyInterpreter();
+            Dimension inputResolution = new Dimension((int) ii.getXResolution(), (int) ii.getYResolution());
+            log.trace("input resolution: " + inputResolution.width + "x" + inputResolution.height + "dpi");
+            Dimension outputResolution = new Dimension(144, 144);
+            log.trace("output resolution: " + outputResolution.width + "x" + outputResolution.height + "dpi");
+            Dimension dim = new Dimension(tmpSize * outputResolution.width / inputResolution.width,
+                    tmpSize * outputResolution.height / inputResolution.height);
+            log.trace("Absolute scale: " + dim.width + "x" + dim.height + "%");
+            RenderedImage ri = im.scaleImageByPixel(dim, ImageManager.SCALE_BY_PERCENT, intRotation);
+            log.trace("ri");
+            pi = new JpegInterpreter(ri);
+            log.trace("pi");
+            pi.setXResolution(outputResolution.width);
+            log.trace("xres = " + pi.getXResolution());
+            pi.setYResolution(outputResolution.height);
+            log.trace("yres = " + pi.getYResolution());
+            FileOutputStream outputFileStream = new FileOutputStream(outFileName);
+            log.trace("output");
+            pi.writeToStream(null, outputFileStream);
+            log.trace("write stream");
+            outputFileStream.close();
+            log.trace("close stream");
+        } finally {
+            if (im != null) {
+                im.close();
             }
-        } else {
-            String imageURIString = conf.useS3() ? s3URI.toString() : inFileName;
-            String cs = conf.getContentServerUrl() + imageURIString + "&scale=" + tmpSize + "&rotate=" + intRotation + "&format=jpg";
-            cs = cs.replace("\\", "/");
-            log.trace("url: " + cs);
-            URL csUrl = new URL(cs);
-            CloseableHttpClient httpclient = null;
-            HttpGet method = null;
-            InputStream istr = null;
-            OutputStream fos = null;
-            try {
-                httpclient = HttpClientBuilder.create().build();
-                method = new HttpGet(csUrl.toString());
-                log.trace("get");
-                Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
-                Builder builder = RequestConfig.custom();
-                builder.setSocketTimeout(contentServerTimeOut);
-                RequestConfig rc = builder.build();
-                method.setConfig(rc);
-
-                byte[] response = httpclient.execute(method, HttpClientHelper.byteArrayResponseHandler);
-                if (response == null) {
-                    log.error("Response stream is null");
-                    return;
-                }
-                istr = new ByteArrayInputStream(response);
-                fos = new FileOutputStream(outFileName);
-
-                // Transfer bytes from in to out
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = istr.read(buf)) > 0) {
-                    fos.write(buf, 0, len);
-                }
-            } catch (Exception e) {
-                log.error("Unable to connect to url " + cs, e);
-                return;
-            } finally {
-                method.releaseConnection();
-                if (httpclient != null) {
-                    httpclient.close();
-                }
-                if (istr != null) {
-                    try {
-                        istr.close();
-                    } catch (IOException e) {
-                        log.error(e);
-                    }
-                }
-                if (fos != null) {
-                    try {
-                        fos.close();
-                    } catch (IOException e) {
-                        log.error(e);
-                    }
-                }
+            if (pi != null) {
+                pi.close();
             }
         }
+
     }
 
     // Add a method to validate the image files
@@ -695,7 +633,7 @@ public class MetadatenImagesHelper {
      * @throws DAOException
      * @throws SwapException
      */
-    public boolean checkIfImagesValid(String title, String folder) throws IOException, InterruptedException, SwapException, DAOException {
+    public boolean checkIfImagesValid(String title, String folder) {
         boolean isValid = true;
         this.myLastImage = 0;
 
@@ -708,15 +646,15 @@ public class MetadatenImagesHelper {
             List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.DATA_FILTER);
             List<String> dateien2 = StorageProvider.getInstance().list(dir.toString());
             //checks for fileName errors / empty folder
-            if (dateien == null || dateien.isEmpty()) {
-                String[] parameters = {String.valueOf(dateien2.size()), dir.toString()};
+            if (dateien.isEmpty()) {
+                String[] parameters = { String.valueOf(dateien2.size()), dir.toString() };
 
                 String value = Helper.getTranslation("noObjectsFound", title);
 
                 //true if list is truly empty
-                if(dateien.size() == dateien2.size()) {
+                if (dateien.size() == dateien2.size()) {
                     value = Helper.getTranslation("imagesFolderEmpty", parameters);
-                }else {
+                } else {
                     value = Helper.getTranslation("fileNameValidationError", parameters);
                 }
                 Helper.setFehlerMeldung(value);
@@ -856,7 +794,7 @@ public class MetadatenImagesHelper {
                 if (StringUtils.isNotBlank(thumbsFolder)) {
                     dir = Paths.get(thumbsFolder);
                 }
-            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+            } catch (IOException | SwapException e) {
                 log.error("Error reading thumbs folder for " + dir, e);
             }
         }

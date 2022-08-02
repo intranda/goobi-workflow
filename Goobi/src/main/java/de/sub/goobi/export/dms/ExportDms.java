@@ -30,7 +30,6 @@ import java.nio.file.AccessDeniedException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +54,6 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
-import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
@@ -73,8 +71,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
     protected boolean exportWithImages = true;
     @Setter
     protected boolean exportFulltext = true;
-    @Getter
-    protected List<String> problems = new ArrayList<>();
+
     public final static String DIRECTORY_SUFFIX = "_tif";
 
     public ExportDms() {
@@ -127,7 +124,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             newfile.setDigitalDocument(gdzfile.getDigitalDocument());
             gdzfile = newfile;
 
-        } catch (Exception e) {
+        } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
             Helper.setFehlerMeldung(Helper.getTranslation("exportError") + myProzess.getTitel(), e);
             log.error("Export abgebrochen, xml-LeseFehler", e);
             problems.add("Export cancelled: " + e.getMessage());
@@ -223,7 +220,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 List<Path> filesInExportFolder = StorageProvider.getInstance().listFiles(ed);
 
                 for (Path exportFile : filesInExportFolder) {
-                    if (StorageProvider.getInstance().isDirectory(exportFile) && !StorageProvider.getInstance().list(exportFile.toString()).isEmpty()) {
+                    if (StorageProvider.getInstance().isDirectory(exportFile)
+                            && !StorageProvider.getInstance().list(exportFile.toString()).isEmpty()) {
                         if (!exportFile.getFileName().toString().matches(".+\\.\\d+")) {
                             String suffix = exportFile.getFileName().toString().substring(exportFile.getFileName().toString().lastIndexOf("_"));
                             Path destination = Paths.get(benutzerHome.toString(), atsPpnBand + suffix);
@@ -236,7 +234,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                                 StorageProvider.getInstance().copyFile(file, target);
                             }
                         }
-                    }else {
+                    } else {
                         // if it is a regular file, export it to source folder
                         Path destination = Paths.get(benutzerHome.toString(), atsPpnBand + "_src");
                         if (!StorageProvider.getInstance().isFileExists(destination)) {
@@ -248,11 +246,11 @@ public class ExportDms extends ExportMets implements IExportPlugin {
 
                 }
             }
-        }catch (AccessDeniedException e) {
-            Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), "Access to "+ e.getMessage()+ " was denied");
-            problems.add("Export cancelled: Access to " + e.getMessage()+ " was denied");
+        } catch (AccessDeniedException e) {
+            Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), "Access to " + e.getMessage() + " was denied");
+            problems.add("Export cancelled: Access to " + e.getMessage() + " was denied");
             return false;
-        }catch (Exception e) {
+        } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
             Helper.setFehlerMeldung("Export canceled, Process: " + myProzess.getTitel(), e);
             problems.add("Export cancelled: " + e.getMessage());
             return false;
@@ -290,6 +288,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     Helper.setFehlerMeldung(myProzess.getTitel() + ": error on export - ", e.getMessage());
                     problems.add("Export problems: " + e.getMessage());
                     log.error(myProzess.getTitel() + ": error on export", e);
+                    agoraThread.interrupt();
                 }
                 if (agoraThread.rueckgabe.length() > 0) {
                     Helper.setFehlerMeldung(myProzess.getTitel() + ": ", agoraThread.rueckgabe);
@@ -405,7 +404,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     } else {
                         FilesystemHelper.createDirectoryForUser(zielTif.toString(), myBenutzer.getLogin());
                     }
-                } catch (Exception e) {
+                } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
                     Helper.setFehlerMeldung("Export canceled, error", "could not create destination directory");
                     log.error("could not create destination directory", e);
                 }

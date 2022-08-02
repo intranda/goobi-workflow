@@ -2,7 +2,7 @@
  * This file is part of the Goobi Application - a Workflow tool for the support of
  * mass digitization.
  *
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *             - https://goobi.io
  *             - https://www.intranda.com
  *
@@ -29,25 +29,27 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.goobi.beans.Process;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
-import org.apache.commons.lang.StringUtils;
-import org.goobi.beans.Process;
+
+import de.sub.goobi.helper.XmlTools;
 
 public class DigitalCollections {
 
     public static List<String> possibleDigitalCollectionsForProcess(Process process) throws JDOMException, IOException {
 
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         String filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_digitalCollections.xml";
         if (!Files.exists(Paths.get(filename))) {
             throw new FileNotFoundException("File not found: " + filename);
         }
 
         /* Datei einlesen und Root ermitteln */
-        SAXBuilder builder = new SAXBuilder();
+        SAXBuilder builder = XmlTools.getSAXBuilder();
         Document doc = builder.build(filename);
         Element root = doc.getRootElement();
         /* alle Projekte durchlaufen */
@@ -83,7 +85,7 @@ public class DigitalCollections {
         String firstCollection = "";
 
         /* Datei einlesen und Root ermitteln */
-        SAXBuilder builder = new SAXBuilder();
+        SAXBuilder builder = XmlTools.getSAXBuilder();
         Document doc = builder.build(filename);
         Element root = doc.getRootElement();
         /* alle Projekte durchlaufen */

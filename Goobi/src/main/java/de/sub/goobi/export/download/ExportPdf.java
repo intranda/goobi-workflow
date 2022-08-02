@@ -29,6 +29,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,10 +41,12 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.UriBuilder;
 
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.forms.HelperForm;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.NIOFileUtils;
@@ -123,49 +126,39 @@ public class ExportPdf extends ExportMets {
                  * -------------------------------- define path for mets and pdfs --------------------------------
                  */
                 URL goobiContentServerUrl = null;
-                String contentServerUrl = ConfigurationHelper.getInstance().getGoobiContentServerUrl();
-
-                String imageSource = "&imageSource=" + imagesPath.toUri();
-                String pdfSource = "&pdfSource=" + pdfPath.toUri();
-                String altoSource = "&altoSource=" + altoPath.toUri();
 
                 /*
                  * -------------------------------- using mets file --------------------------------
                  */
 
                 if (StorageProvider.getInstance().isFileExists(metsTempFile)) {
-                    /* if no contentserverurl defined use internal goobiContentServerServlet */
-                    if (contentServerUrl == null || contentServerUrl.length() == 0) {
-                        contentServerUrl = myBasisUrl + "/gcs/gcs?action=pdf&metsFile=";
-                    }
-
-                    goobiContentServerUrl = new URL(contentServerUrl + metsTempFile.toUri().toURL() + imageSource + pdfSource + altoSource
-                            + "&targetFileName=" + myProzess.getTitel() + ".pdf");
+               
+                    goobiContentServerUrl = UriBuilder.fromUri(new HelperForm().getServletPathWithHostAsUrl())
+                            .path("api").path("process").path("pdf").path(Integer.toString(myProzess.getId()))
+                            .path(myProzess.getTitel()+ ".pdf")
+                            .queryParam("metsFile", metsTempFile)
+                            .queryParam("imageSource", imagesPath.toUri())
+                            .queryParam("pdfSource", pdfPath.toUri())
+                            .queryParam("altoSource", altoPath.toUri())
+                            .build().toURL();
+                    
                     /*
                      * -------------------------------- mets data does not exist or is invalid --------------------------------
                      */
 
                 } else {
-                    if (contentServerUrl == null || contentServerUrl.length() == 0) {
-                        contentServerUrl = myBasisUrl + "/cs/cs?action=pdf&images=";
-                    }
-                    String url = "";
-                    List<Path> meta = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
-                    ArrayList<String> filenames = new ArrayList<>();
-                    for (Path data : meta) {
-                        String file = "";
-                        file += data.toUri().toURL();
-                        filenames.add(file);
-                    }
-                    Collections.sort(filenames, new MetadatenHelper(null, null));
-                    for (String f : filenames) {
-                        url = url + f + "$";
-                    }
-                    String imageString = url.substring(0, url.length() - 1);
-                    String targetFileName = "&targetFileName=" + myProzess.getTitel() + ".pdf";
-
-                    goobiContentServerUrl = new URL(contentServerUrl + imageString + imageSource + pdfSource + altoSource + targetFileName);
-
+                                        
+                    goobiContentServerUrl = UriBuilder.fromUri(new HelperForm().getServletPathWithHostAsUrl())
+                            .path("api").path("process").path("image")
+                            .path(Integer.toString(myProzess.getId()))
+                            .path("media")        //dummy, replaced by images query param
+                            .path("00000001.tif") //dummy, replaced by images query param
+                            .path(myProzess.getTitel()+ ".pdf")
+                            .queryParam("imageSource", imagesPath.toUri())
+                            .queryParam("pdfSource", pdfPath.toUri())
+                            .queryParam("altoSource", altoPath.toUri())
+                            .queryParam("images", createImagesParameter(myProzess))
+                            .build().toURL();
                 }
 
                 /*
@@ -187,24 +180,40 @@ public class ExportPdf extends ExportMets {
                 //                    Path tempMets = Paths.get(metsTempFile.toUri().toURL().toString());
                 //                    Files.delete(metsTempFile);
                 //                }
-            } catch (Exception e) {
+            } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
 
                 /*
                  * -------------------------------- report Error to User as Error-Log --------------------------------
                  */
-                Writer output = null;
                 String text = "error while pdf creation: " + e.getMessage();
                 Path file = Paths.get(zielVerzeichnis, myProzess.getTitel() + ".PDF-ERROR.log");
                 try {
                     log.error(e);
-                    output = new BufferedWriter(new FileWriter(file.toFile()));
-                    output.write(text);
-                    output.close();
+                    try (Writer output = new BufferedWriter(new FileWriter(file.toFile()))) {
+                        output.write(text);
+                    }
                 } catch (IOException e1) {
                 }
                 return false;
             }
         }
         return true;
+    }
+
+    private String createImagesParameter(Process myProzess) throws IOException, SwapException, MalformedURLException {
+        StringBuilder images = new StringBuilder();
+        List<Path> meta = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
+        ArrayList<String> filenames = new ArrayList<>();
+        for (Path data : meta) {
+            String file = "";
+            file += data.toUri().toURL();
+            filenames.add(file);
+        }
+        Collections.sort(filenames, new MetadatenHelper(null, null));
+        for (String f : filenames) {
+            images.append(f).append("$");
+        }
+        images = images.deleteCharAt(images.length()-1);
+        return images.toString();
     }
 }

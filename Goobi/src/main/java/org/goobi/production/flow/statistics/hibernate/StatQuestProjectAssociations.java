@@ -3,7 +3,7 @@ package org.goobi.production.flow.statistics.hibernate;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -52,11 +52,12 @@ public class StatQuestProjectAssociations implements IStatisticalQuestion {
      * (non-Javadoc)
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
      */
+    @Override
     public List<DataTable> getDataTables(String filter, String originalFilter) {
 
-        List<DataTable> allTables = new ArrayList<DataTable>();
+        List<DataTable> allTables = new ArrayList<>();
 
-        List<Integer> idList = ProcessManager.getIDList(filter);
+        List<Integer> idList = ProcessManager.getIdsForFilter(filter);
         //        select projekte.titel, count(prozesse.projekteId) from prozesse, projekte where prozesse.ProjekteID = projekte.ProjekteID group by prozesse.projekteId;
 
         if (idList == null || idList.isEmpty()) {
@@ -111,6 +112,7 @@ public class StatQuestProjectAssociations implements IStatisticalQuestion {
      * (non-Javadoc)
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#isRendererInverted(de.intranda.commons.chart.renderer.IRenderer)
      */
+    @Override
     public Boolean isRendererInverted(IRenderer inRenderer) {
         return inRenderer instanceof HtmlTableRenderer;
     }
@@ -119,6 +121,7 @@ public class StatQuestProjectAssociations implements IStatisticalQuestion {
      * (non-Javadoc)
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#setCalculationUnit(org.goobi.production.flow.statistics.enums.CalculationUnit)
      */
+    @Override
     public void setCalculationUnit(CalculationUnit cu) {
     }
 
@@ -126,6 +129,7 @@ public class StatQuestProjectAssociations implements IStatisticalQuestion {
      * (non-Javadoc)
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#setTimeUnit(org.goobi.production.flow.statistics.enums.TimeUnit)
      */
+    @Override
     public void setTimeUnit(TimeUnit timeUnit) {
     }
 
@@ -133,6 +137,7 @@ public class StatQuestProjectAssociations implements IStatisticalQuestion {
      * (non-Javadoc)
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getNumberFormatPattern()
      */
+    @Override
     public String getNumberFormatPattern() {
         return "#";
     }

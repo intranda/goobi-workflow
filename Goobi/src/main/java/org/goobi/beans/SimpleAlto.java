@@ -18,6 +18,7 @@ import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.XmlTools;
 import lombok.Data;
 
 @Data
@@ -47,16 +48,16 @@ public class SimpleAlto {
     public SimpleAlto(String errorMessage) {
         SimpleAltoWord word = new SimpleAltoWord();
         word.setValue(errorMessage);
-        List<SimpleAltoWord> words = new ArrayList<SimpleAltoWord>();
+        List<SimpleAltoWord> words = new ArrayList<>();
         words.add(word);
         SimpleAltoLine line = new SimpleAltoLine();
         line.setWords(words);
-        lines = new ArrayList<SimpleAltoLine>();
+        lines = new ArrayList<>();
         lines.add(line);
     }
 
     public static SimpleAlto readAlto(Path altoPath) throws IOException, JDOMException {
-        SAXBuilder sax = new SAXBuilder();
+        SAXBuilder sax = XmlTools.getSAXBuilder();
         Document doc = null;
         try (InputStream in = StorageProvider.getInstance().newInputStream(altoPath)) {
             doc = sax.build(in);

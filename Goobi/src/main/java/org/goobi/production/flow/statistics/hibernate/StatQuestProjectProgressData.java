@@ -202,7 +202,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
     }
 
     public void setDataSource(String filter) {
-        this.myIDlist = ProcessManager.getIDList(filter);
+        this.myIDlist = ProcessManager.getIdsForFilter(filter);
         this.isDirty = true;
     }
 
@@ -413,10 +413,10 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
                         dataRow = new DataRow(intervall);
                     }
                     Double count = new Converter(objArr[0]).getDouble();
-                    dataRow.addValue(stepName, count);
+                    dataRow.addValue(stepName, count); // NOSONAR, its not nullable here
 
                 } catch (Exception e) {
-                    dataRow.addValue(e.getMessage(), Double.valueOf(0));
+                    dataRow.addValue(e.getMessage(), Double.valueOf(0)); // NOSONAR, its not nullable here
                 }
             }
         }

@@ -239,7 +239,7 @@ public class BatchStepHelper {
                 boolean match = false;
                 for (Processproperty processPe : process.getEigenschaftenList()) {
                     if (processPe.getTitel() != null) {
-                        if (prop.getTitel().equals(processPe.getTitel()) && prop.getContainer() == processPe.getContainer()) {
+                        if (prop.getTitel().equals(processPe.getTitel()) && prop.getContainer().intValue() == processPe.getContainer().intValue()) {
                             processPe.setWert(prop.getWert());
                             PropertyManager.saveProcessProperty(processPe);
                             match = true;
@@ -261,7 +261,6 @@ public class BatchStepHelper {
         }
         Helper.setMeldung("Properties saved");
     }
-
 
     public int getSizeOfDisplayableMetadata() {
         return displayableMetadataMap.size();
@@ -504,7 +503,11 @@ public class BatchStepHelper {
                 ErrorProperty se = new ErrorProperty();
 
                 se.setTitel(Helper.getTranslation("Korrektur notwendig"));
-                se.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + this.problemMessage);
+                if (ben == null) {
+                    se.setWert("[" + this.formatter.format(new Date()) + "] " + this.problemMessage);
+                } else {
+                    se.setWert("[" + this.formatter.format(new Date()) + ", " + ben.getNachVorname() + "] " + this.problemMessage);
+                }
                 se.setType(PropertyType.messageError);
                 se.setCreationDate(myDate);
                 se.setSchritt(temp);
@@ -514,9 +517,11 @@ public class BatchStepHelper {
                 logEntry.setCreationDate(new Date());
                 logEntry.setProcessId(currentStep.getProzess().getId());
                 logEntry.setType(LogType.ERROR);
-
-                logEntry.setUserName(ben.getNachVorname());
-
+                if (ben != null) {
+                    logEntry.setUserName(ben.getNachVorname());
+                } else {
+                    logEntry.setUserName("-");
+                }
                 ProcessManager.saveLogEntry(logEntry);
 
                 temp.getEigenschaften().add(se);
@@ -764,7 +769,7 @@ public class BatchStepHelper {
             }
             try {
                 dms.startExport(step.getProzess());
-            } catch (Exception e) {
+            } catch (Exception e) {  //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
                 Helper.setFehlerMeldung("Error on export", e.getMessage());
                 log.error(e);
             }

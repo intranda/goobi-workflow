@@ -64,6 +64,7 @@ import de.sub.goobi.helper.BeanHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.UghHelper;
+import de.sub.goobi.helper.XmlTools;
 import de.sub.goobi.helper.enums.StepEditType;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -321,7 +322,7 @@ public class CopyProcess {
 
         } catch (Exception e) {
             Helper.setFehlerMeldung("Fehler beim Einlesen des Opac-Ergebnisses ", e);
-            e.printStackTrace();
+            log.error(e);
         }
         return "";
     }
@@ -347,7 +348,7 @@ public class CopyProcess {
 
         } catch (Exception e) {
             Helper.setFehlerMeldung("Fehler beim Einlesen des Opac-Ergebnisses ", e);
-            e.printStackTrace();
+            log.error(e);
         }
         return "";
     }
@@ -664,7 +665,6 @@ public class CopyProcess {
             ProcessManager.saveProcess(this.prozessKopie);
             //			dao.refresh(this.prozessKopie);
         } catch (DAOException e) {
-            e.printStackTrace();
             log.error("error on save: ", e);
             return this.prozessKopie;
         }
@@ -822,7 +822,6 @@ public class CopyProcess {
             try {
                 ProcessManager.saveProcess(this.prozessKopie);
             } catch (DAOException e) {
-                e.printStackTrace();
                 log.error("error on save: ", e);
                 return this.prozessKopie;
             }
@@ -873,7 +872,6 @@ public class CopyProcess {
             ProcessManager.saveProcess(this.prozessKopie);
             //			dao.refresh(this.prozessKopie);
         } catch (DAOException e) {
-            e.printStackTrace();
             log.error("error on save: ", e);
             return this.prozessKopie;
         }
@@ -905,7 +903,6 @@ public class CopyProcess {
             try {
                 ProcessManager.saveProcess(this.prozessKopie);
             } catch (DAOException e) {
-                e.printStackTrace();
                 log.error("error on save: ", e);
                 return this.prozessKopie;
             }
@@ -927,15 +924,9 @@ public class CopyProcess {
                 md.setValue(s);
                 md.setParent(colStruct);
                 colStruct.addMetadata(md);
-            } catch (UghHelperException e) {
+            } catch (UghHelperException |DocStructHasNoTypeException |MetadataTypeNotAllowedException e) {
                 Helper.setFehlerMeldung(e.getMessage(), "");
-                e.printStackTrace();
-            } catch (DocStructHasNoTypeException e) {
-                Helper.setFehlerMeldung(e.getMessage(), "");
-                e.printStackTrace();
-            } catch (MetadataTypeNotAllowedException e) {
-                Helper.setFehlerMeldung(e.getMessage(), "");
-                e.printStackTrace();
+                log.error(e);
             }
         }
     }
@@ -952,12 +943,9 @@ public class CopyProcess {
                     colStruct.removeMetadata(md, true);
                 }
             }
-        } catch (UghHelperException e) {
+        } catch (UghHelperException |DocStructHasNoTypeException e) {
             Helper.setFehlerMeldung(e.getMessage(), "");
-            e.printStackTrace();
-        } catch (DocStructHasNoTypeException e) {
-            Helper.setFehlerMeldung(e.getMessage(), "");
-            e.printStackTrace();
+            log.error(e);
         }
     }
 
@@ -1108,7 +1096,7 @@ public class CopyProcess {
         this.digitalCollections = new ArrayList<>();
         try {
             /* Datei einlesen und Root ermitteln */
-            SAXBuilder builder = new SAXBuilder();
+            SAXBuilder builder = XmlTools.getSAXBuilder();
             Document doc = builder.build(filename);
             Element root = doc.getRootElement();
             /* alle Projekte durchlaufen */

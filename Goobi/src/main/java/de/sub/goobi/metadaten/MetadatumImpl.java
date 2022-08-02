@@ -654,7 +654,12 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         .replace("ö", "%C3%B6")
                         .replace("ü", "%C3%BC")
                         .replace("ß", "%C3%9F");
-                dataList = NormDataImporter.importNormDataList(string, 3);
+                if (ConfigurationHelper.getInstance().isUseProxy()) {
+                    dataList = NormDataImporter.importNormDataList(string, 3, ConfigurationHelper.getInstance().getProxyUrl(),
+                            "" + ConfigurationHelper.getInstance().getProxyPort());
+                } else {
+                    dataList = NormDataImporter.importNormDataList(string, 3);
+                }
                 if (dataList.isEmpty()) {
                     showNotHits = true;
                 } else {
@@ -775,13 +780,13 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         && StringUtils.isNotBlank(ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl())) {
                     md.setAutorityFile(vocabulary, ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl(),
                             ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl()
-                                    + ConfigurationHelper.getInstance().getGoobiAuthorityServerUser() + "/vocabularies/"
-                                    + selectedVocabularyRecord.getVocabularyId() + "/records/" + selectedVocabularyRecord.getId());
+                            + ConfigurationHelper.getInstance().getGoobiAuthorityServerUser() + "/vocabularies/"
+                            + selectedVocabularyRecord.getVocabularyId() + "/records/" + selectedVocabularyRecord.getId());
                 } else {
                     md.setAutorityFile(vocabulary, vocabularyUrl,
                             vocabularyUrl + "/vocabularies/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
                 }
-
+                break;
             default:
                 break;
         }
@@ -880,13 +885,15 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         }
         HierarchicalConfiguration use = getConfigForProject(p, xmlConf);
         Map<String, List<RestMetadata>> addMetadata = new HashMap<>();
-        List<HierarchicalConfiguration> mappings = use.configurationsAt("mapping");
-        for (HierarchicalConfiguration mapping : mappings) {
-            String from = mapping.getString("[@from]");
-            String to = mapping.getString("[@to]");
-            List<RestMetadata> fromMeta = rp.getMetadata().get(from);
-            if (fromMeta != null) {
-                addMetadata.put(to, fromMeta);
+        if (use != null) {
+            List<HierarchicalConfiguration> mappings = use.configurationsAt("mapping");
+            for (HierarchicalConfiguration mapping : mappings) {
+                String from = mapping.getString("[@from]");
+                String to = mapping.getString("[@to]");
+                List<RestMetadata> fromMeta = rp.getMetadata().get(from);
+                if (fromMeta != null) {
+                    addMetadata.put(to, fromMeta);
+                }
             }
         }
         Prefs prefs = this.getBean().getMyPrefs();

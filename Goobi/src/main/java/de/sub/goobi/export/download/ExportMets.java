@@ -182,8 +182,7 @@ public class ExportMets {
         String atsPpnBand = process.getTitel();
         Fileformat gdzfile = process.readMetadataFile();
 
-        //String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
-        Path targetDir = Files.createTempDirectory("mets_export"); //only save file in /tmp/ directory
+        Path targetDir = Files.createTempDirectory("mets_export"); //NOSONAR, using temporary file is save here
 
         String targetFileName = targetDir.resolve(atsPpnBand + "_mets.xml").toAbsolutePath().toString();
         writeMetsFile(process, targetFileName, gdzfile, false, true);
@@ -262,7 +261,7 @@ public class ExportMets {
         if (myBenutzer != null) {
             try {
                 FilesystemHelper.createDirectoryForUser(target, myBenutzer.getLogin());
-            } catch (Exception e) {
+            } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
                 Helper.setFehlerMeldung("Export canceled, could not create destination directory: " + inTargetFolder, e);
             }
         }
@@ -329,7 +328,7 @@ public class ExportMets {
             mih.createPagination(myProzess, null);
             try {
                 myProzess.writeMetadataFile(gdzfile);
-            } catch (UGHException | IOException | InterruptedException | SwapException | DAOException e) {
+            } catch (UGHException | IOException |  SwapException e) {
                 log.error(e);
             }
         } else {
@@ -631,15 +630,15 @@ public class ExportMets {
     }
 
     private void writeToZip(Path pathTarget, ZipOutputStream out) throws IOException {
-        InputStream in = StorageProvider.getInstance().newInputStream(pathTarget);
-        out.putNextEntry(new ZipEntry(pathTarget.getFileName().toString()));
-        byte[] b = new byte[1024];
-        int count;
+        try (InputStream in = StorageProvider.getInstance().newInputStream(pathTarget)) {
+            out.putNextEntry(new ZipEntry(pathTarget.getFileName().toString()));
+            byte[] b = new byte[1024];
+            int count;
 
-        while ((count = in.read(b)) > 0) {
-            out.write(b, 0, count);
+            while ((count = in.read(b)) > 0) {
+                out.write(b, 0, count);
+            }
         }
-        in.close();
     }
 
     private VirtualFileGroup createFilegroup(VariableReplacer variableRplacer, ProjectFileGroup projectFileGroup) {
@@ -1243,10 +1242,12 @@ public class ExportMets {
             } catch (CannotReadException | TagException | ReadOnlyFileException | InvalidAudioFrameException e) {
                 log.error(e);
             }
-            AudioHeader audioHeader = audioFile.getAudioHeader();
-            MP3AudioHeader mp3Header = (MP3AudioHeader) audioHeader;
-            duration = mp3Header.getPreciseTrackLength();
-            bitrate = mp3Header.getBitRate();
+            if (audioFile != null) {
+                AudioHeader audioHeader = audioFile.getAudioHeader();
+                MP3AudioHeader mp3Header = (MP3AudioHeader) audioHeader;
+                duration = mp3Header.getPreciseTrackLength();
+                bitrate = mp3Header.getBitRate();
+            }
         } else {
             try (InputStream audioSrc = Files.newInputStream(file); InputStream bufferedIn = new BufferedInputStream(audioSrc);
                     AudioInputStream ais = AudioSystem.getAudioInputStream(bufferedIn)) {

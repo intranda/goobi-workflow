@@ -78,7 +78,7 @@ public class Vocabulary implements Serializable, DatabaseObject {
     private String searchValue;
 
     public int getLastPageNumber() {
-        int ret = Double.valueOf(Math.floor(filteredRecords.size() / numberOfRecordsPerPage)).intValue();
+        int ret = filteredRecords.size() / numberOfRecordsPerPage;
         if (filteredRecords.size() % numberOfRecordsPerPage == 0) {
             ret--;
         }
@@ -102,11 +102,11 @@ public class Vocabulary implements Serializable, DatabaseObject {
     }
 
     public Long getPageNumberCurrent() {
-        return Long.valueOf(this.pageNo + 1);
+        return Long.valueOf(this.pageNo + 1l);
     }
 
     public Long getPageNumberLast() {
-        return Long.valueOf(getLastPageNumber() + 1);
+        return Long.valueOf(getLastPageNumber() + 1l);
     }
 
     public int getSizeOfList() {
@@ -233,15 +233,16 @@ public class Vocabulary implements Serializable, DatabaseObject {
                     return o2.getId().compareTo(o1.getId());
                 }
             }
-            String value1 = null, value2 = null;
+            String value1 = "";
+            String value2 = "";
 
             for (Field f : o1.getFields()) {
-                if (f.getDefinition().getId().intValue()==internalSortField.intValue()) {
+                if (f.getDefinition().getId().intValue() == internalSortField.intValue()) {
                     value1 = f.getValue().toLowerCase();
                 }
             }
             for (Field f : o2.getFields()) {
-                if (f.getDefinition().getId().intValue()==internalSortField.intValue()) {
+                if (f.getDefinition().getId().intValue() == internalSortField.intValue()) {
                     value2 = f.getValue().toLowerCase();
                 }
             }
@@ -255,10 +256,9 @@ public class Vocabulary implements Serializable, DatabaseObject {
 
     public void setSearchValue(String searchValue) {
         if (this.searchValue == null || !this.searchValue.equals(searchValue)) {
-            pageNo=0;
+            pageNo = 0;
             this.searchValue = searchValue;
         }
-
 
     }
 

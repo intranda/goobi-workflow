@@ -123,14 +123,29 @@ public class LoginBean implements Serializable {
             new MetadatenSperrung().alleBenutzerSperrungenAufheben(this.myBenutzer.getId());
         }
 
+        HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
+        Helper.getSessionBean().updateSessionUserName(mySession, this.myBenutzer);
+        this.myBenutzer = null;
+        if (mySession != null) {
+            mySession.invalidate();
+        }
+        return "index";
+    }
+
+    public String logoutExternalUser() {
+        if (this.myBenutzer != null) {
+            new MetadatenSperrung().alleBenutzerSperrungenAufheben(this.myBenutzer.getId());
+        }
+
         this.myBenutzer = null;
         HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
         Helper.getSessionBean().updateSessionUserName(mySession, this.myBenutzer);
         if (mySession != null) {
             mySession.invalidate();
         }
-        return "index";
+        return "external_index";
     }
+
 
     public void logoutOpenId() {
         this.Ausloggen();
@@ -190,10 +205,12 @@ public class LoginBean implements Serializable {
             // registration not finished, login not allowed
             Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User could not log in because account is not activated.");
+            return "";
         } else if (user.getStatus() == User.UserStatus.DELETED || user.getStatus() == User.UserStatus.INACTIVE) {
             // disabled, login not allowed
             Helper.setFehlerMeldung("login", "", Helper.getTranslation("wrongLogin"));
             log.debug(LoginBean.LOGIN_LOG_PREFIX + "Login canceled. User could not log in because account is not active.");
+            return "";
         }
 
         log.trace(LoginBean.LOGIN_LOG_PREFIX + "The user is able to log in (user is visible and active).");

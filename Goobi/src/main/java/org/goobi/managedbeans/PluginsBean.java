@@ -56,7 +56,6 @@ import net.xeoh.plugins.base.util.PluginManagerUtil;
 public class PluginsBean implements Serializable {
 
     private static final long serialVersionUID = 9152658727528258005L;
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     @Inject
     HelperForm helperForm;
@@ -173,7 +172,7 @@ public class PluginsBean implements Serializable {
                 while ((line = br.readLine()) != null) {
                     if (line.startsWith("Build-Time: ")) {
                         try {
-                            info.setBuildDate(dateFormat.parse(line.replace("Build-Time: ", "")));
+                            info.setBuildDate(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(line.replace("Build-Time: ", "")));
                         } catch (ParseException e) {
                             log.error(e);
                         }
@@ -237,7 +236,7 @@ public class PluginsBean implements Serializable {
         if (compared > 0) {
             return "badge-intranda-red";
         }
-        //compared == 0, plugin Goobi version matches running version 
+        //compared == 0, plugin Goobi version matches running version
         return "badge-intranda-green";
     }
 

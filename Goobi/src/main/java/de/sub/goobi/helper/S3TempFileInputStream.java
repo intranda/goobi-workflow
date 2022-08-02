@@ -50,7 +50,7 @@ public class S3TempFileInputStream extends InputStream {
 
     public S3TempFileInputStream(S3ObjectInputStream stream) {
         try {
-            tempFile = Files.createTempFile("s3file", "");
+            tempFile = Files.createTempFile("s3file", ""); //NOSONAR, using temporary file is save here
         } catch (IOException e) {
         }
         try (OutputStream fos = Files.newOutputStream(tempFile)) {

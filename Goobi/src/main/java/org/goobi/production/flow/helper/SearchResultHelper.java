@@ -227,22 +227,23 @@ public class SearchResultHelper {
             table = new Table(columnList.size());
         } catch (BadElementException e1) {
         }
-        table.setBorderWidth(1);
+        if (table != null) {
+            table.setBorderWidth(1);
 
-        for (SearchColumn sc : columnList) {
-            Cell cell = new Cell(Helper.getTranslation(sc.getValue()));
-            cell.setHeader(true);
-            table.addCell(cell);
-        }
-        table.endHeaders();
-
-        for (Object obj : list) {
-            Object[] objArr = (Object[]) obj;
-            for (Object entry : objArr) {
-                Cell cell = new Cell((String) entry);
+            for (SearchColumn sc : columnList) {
+                Cell cell = new Cell(Helper.getTranslation(sc.getValue()));
+                cell.setHeader(true);
                 table.addCell(cell);
             }
+            table.endHeaders();
 
+            for (Object obj : list) {
+                Object[] objArr = (Object[]) obj;
+                for (Object entry : objArr) {
+                    Cell cell = new Cell((String) entry);
+                    table.addCell(cell);
+                }
+            }
         }
         try {
             document.add(table);
@@ -250,8 +251,6 @@ public class SearchResultHelper {
         }
 
         document.close();
-
-        return;
     }
 
     public XSSFWorkbook getResult(List<SearchColumn> columnList, String filter, String order, boolean showClosedProcesses,

@@ -15,8 +15,6 @@ import org.jdom2.Document;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
-import de.sub.goobi.helper.exceptions.DAOException;
-import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import io.goobi.workflow.xslt.XsltPreparatorDocket;
 import lombok.extern.log4j.Log4j2;
@@ -61,7 +59,7 @@ public class GoobiScriptExportDatabaseInformation extends AbstractIGoobiScript i
             Path dest = null;
             try {
                 dest = Paths.get(p.getProcessDataDirectoryIgnoreSwapping(), p.getId() + "_db_export.xml");
-            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+            } catch (IOException  e) {
                 log.error(e);
                 gsr.setResultMessage("Cannot read process folder " + e.getMessage());
                 gsr.setResultType(GoobiScriptResultType.ERROR);

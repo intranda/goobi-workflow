@@ -1,9 +1,9 @@
 package org.goobi.api.mq;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -51,7 +51,9 @@ public class TicketGenerator {
     public static String submitInternalTicket(Object ticket, QueueType queueType, String ticketType, Integer processid) throws JMSException {
         ConfigurationHelper config = ConfigurationHelper.getInstance();
 
-        ConnectionFactory connFactory = new ActiveMQConnectionFactory();
+        ActiveMQConnectionFactory connFactory = new ActiveMQConnectionFactory();
+        connFactory.setTrustedPackages(Arrays.asList("org.goobi.managedbeans", "org.goobi.api.mq", "org.goobi.api.mq.ticket"));
+
         Connection conn = connFactory.createConnection(config.getMessageBrokerUsername(), config.getMessageBrokerPassword());
         String messageId = submitTicket(ticket, config.getQueueName(queueType), conn, ticketType, processid);
         conn.close();

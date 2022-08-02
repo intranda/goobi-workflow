@@ -48,7 +48,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class ShellScript {
-    
+
     public static final int ERRORLEVEL_ERROR = 1;
 
     private final String command;
@@ -160,11 +160,11 @@ public class ShellScript {
             InputStream stdOut = process.getInputStream();
             InputStream stdErr = process.getErrorStream();
 
-            FutureTask<LinkedList<String>> stdOutFuture = new FutureTask<LinkedList<String>>(() -> inputStreamToLinkedList(stdOut));
+            FutureTask<LinkedList<String>> stdOutFuture = new FutureTask<>(() -> inputStreamToLinkedList(stdOut));
             Thread stdoutThread = new Thread(stdOutFuture);
             stdoutThread.setDaemon(true);
             stdoutThread.start();
-            FutureTask<LinkedList<String>> stdErrFuture = new FutureTask<LinkedList<String>>(() -> inputStreamToLinkedList(stdErr));
+            FutureTask<LinkedList<String>> stdErrFuture = new FutureTask<>(() -> inputStreamToLinkedList(stdErr));
             Thread stderrThread = new Thread(stdErrFuture);
             stderrThread.setDaemon(true);
             stderrThread.start();

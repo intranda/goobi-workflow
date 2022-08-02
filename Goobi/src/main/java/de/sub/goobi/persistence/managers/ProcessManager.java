@@ -188,7 +188,7 @@ public class ProcessManager implements IManager, Serializable {
         }
     }
 
-    public static List<Integer> getIDList(String filter) {
+    public static List<Integer> getIdsForFilter(String filter) {
 
         try {
             return ProcessMysqlHelper.getIDList(null, filter);

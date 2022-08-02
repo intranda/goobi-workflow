@@ -261,8 +261,8 @@ class ProcessMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(ProzesseID) FROM prozesse left join batches on prozesse.batchID = batches.id ");
-        sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
-        sql.append("INNER JOIN institution on projekte.institution_id = institution.id ");
+        sql.append("left JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("left JOIN institution on projekte.institution_id = institution.id ");
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
             whereSet = true;
@@ -297,8 +297,8 @@ class ProcessMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT prozesse.* FROM prozesse left join batches on prozesse.batchID = batches.id ");
-        sql.append("INNER JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
-        sql.append("INNER JOIN institution on projekte.institution_id = institution.id ");
+        sql.append("left JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
+        sql.append("left JOIN institution on projekte.institution_id = institution.id ");
 
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
@@ -565,15 +565,16 @@ class ProcessMysqlHelper implements Serializable {
         List answer = new ArrayList();
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            ResultSet rs = stmt.executeQuery(sql);
-            int columnCount = rs.getMetaData().getColumnCount();
-            while (rs.next()) {
-                Object[] row = new Object[columnCount];
-                for (int i = 1; i <= columnCount; i++) {
-                    row[i - 1] = rs.getString(i);
+            try (Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
+                ResultSet rs = stmt.executeQuery(sql);
+                int columnCount = rs.getMetaData().getColumnCount();
+                while (rs.next()) {
+                    Object[] row = new Object[columnCount];
+                    for (int i = 1; i <= columnCount; i++) {
+                        row[i - 1] = rs.getString(i);
+                    }
+                    answer.add(row);
                 }
-                answer.add(row);
             }
             return answer;
 

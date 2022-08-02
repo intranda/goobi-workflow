@@ -49,7 +49,7 @@
       font-size: 2.8rem;
     }
 
-    @include media-breakpoint-down(md) {
+    @media (max-width: 767px) {
       display: none;
     }
   }

@@ -22,6 +22,7 @@ import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.XmlTools;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -34,7 +35,7 @@ public class MetadataUtils {
             xFactory.compile("/mets:mets/mets:dmdSec[1]/mets:mdWrap/mets:xmlData/mods:mods/mods:extension/goobi:goobi/goobi:metadata",
                     Filters.element(), null, mods, mets, goobiNamespace);
     private static final XPathExpression<Element> metadataTypeXpath = xFactory.compile("//MetadataType", Filters.element());
-    private static final SAXBuilder builder = new SAXBuilder();
+    private static final SAXBuilder builder = XmlTools.getSAXBuilder();
 
     public static void addMetadataToRestProcesses(List<RestProcess> processes, SearchRequest req) {
         String metadataFolder = ConfigurationHelper.getInstance().getMetadataFolder();

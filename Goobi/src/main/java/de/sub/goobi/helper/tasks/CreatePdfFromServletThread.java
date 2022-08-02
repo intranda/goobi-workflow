@@ -3,7 +3,7 @@ package de.sub.goobi.helper.tasks;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -33,12 +33,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.config.RequestConfig;
@@ -49,9 +52,11 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.forms.HelperForm;
 import de.sub.goobi.helper.HttpClientHelper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 import lombok.Getter;
@@ -109,7 +114,6 @@ public class CreatePdfFromServletThread extends LongRunningTask {
              * define path for mets and pdfs
              * --------------------------------*/
             URL goobiContentServerUrl = null;
-            String contentServerUrl = ConfigurationHelper.getInstance().getGoobiContentServerUrl();
             Path tempPdf = StorageProvider.getInstance().createTemporaryFile(this.getProzess().getTitel(), ".pdf");
             Path finalPdf = Paths.get(this.targetFolder.toString(), this.getProzess().getTitel() + ".pdf");
             Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
@@ -133,41 +137,35 @@ public class CreatePdfFromServletThread extends LongRunningTask {
              * --------------------------------*/
 
             if (new MetadatenVerifizierung().validate(this.getProzess()) && this.metsURL != null) {
-                /* if no contentserverurl defined use internal goobiContentServerServlet */
-                if (contentServerUrl == null || contentServerUrl.length() == 0) {
-                    contentServerUrl = this.internalServletPath + "/gcs/gcs?action=pdf&metsFile=";
-                }
-                goobiContentServerUrl = new URL(contentServerUrl + this.metsURL + imageSource + pdfSource + altoSource);
-
+                
+                goobiContentServerUrl = UriBuilder.fromUri(new HelperForm().getServletPathWithHostAsUrl())
+                        .path("api").path("process").path("pdf").path(Integer.toString(this.getProzess().getId()))
+                        .path(this.getProzess().getTitel()+ ".pdf")
+                        .queryParam("metsFile", this.metsURL)
+                        .queryParam("imageSource", getImagePath().toUri())
+                        .queryParam("pdfSource", getPdfPath().toUri())
+                        .queryParam("altoSource", getAltoPath().toUri())
+                        .build().toURL();
+                
                 /* --------------------------------
                  * mets data does not exist or is invalid
                  * --------------------------------*/
 
             } else {
-                if (contentServerUrl == null || contentServerUrl.length() == 0) {
-                    contentServerUrl = this.internalServletPath + "/cs/cs?action=pdf&images=";
-                }
-                String url = "";
-
-                List<Path> meta =
-                        StorageProvider.getInstance().listFiles(this.getProzess().getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
-                ArrayList<String> filenames = new ArrayList<String>();
-                for (Path data : meta) {
-                    String file = "";
-                    file += data.toUri().toURL();
-                    filenames.add(file);
-                }
-                Collections.sort(filenames, new MetadatenHelper(null, null));
-                for (String f : filenames) {
-                    url = url + f + "$";
-                }
-                String imageString = url.substring(0, url.length() - 1);
-                String targetFileName = "&targetFileName=" + this.getProzess().getTitel() + ".pdf";
-                goobiContentServerUrl = new URL(contentServerUrl + imageString + imageSource + pdfSource + altoSource + targetFileName);
-            }
+                goobiContentServerUrl = UriBuilder.fromUri(new HelperForm().getServletPathWithHostAsUrl())
+                        .path("api").path("process").path("image")
+                        .path(Integer.toString(getProzess().getId()))
+                        .path("media")        //dummy, replaced by images query param
+                        .path("00000001.tif") //dummy, replaced by images query param
+                        .path(getProzess().getTitel()+ ".pdf")
+                        .queryParam("imageSource", getImagePath().toUri())
+                        .queryParam("pdfSource", getPdfPath().toUri())
+                        .queryParam("altoSource", getAltoPath().toUri())
+                        .queryParam("images", createImagesParameter(getProzess()))
+                        .build().toURL();           }
 
             /* --------------------------------
-             * get pdf from servlet and forward response to file 
+             * get pdf from servlet and forward response to file
              * --------------------------------*/
 
             if (log.isDebugEnabled()) {
@@ -180,40 +178,25 @@ public class CreatePdfFromServletThread extends LongRunningTask {
             RequestConfig rc = builder.build();
             method.setConfig(rc);
 
-            InputStream istr = null;
-            OutputStream ostr = null;
+
             try {
                 byte[] response = httpclient.execute(method, HttpClientHelper.byteArrayResponseHandler);
-                istr = new ByteArrayInputStream(response);
-                ostr = new FileOutputStream(tempPdf.toFile());
+                try ( InputStream istr = new ByteArrayInputStream(response);
+                        OutputStream ostr = new FileOutputStream(tempPdf.toFile())) {
 
-                // Transfer bytes from in to out
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = istr.read(buf)) > 0) {
-                    ostr.write(buf, 0, len);
+                    // Transfer bytes from in to out
+                    byte[] buf = new byte[1024];
+                    int len;
+                    while ((len = istr.read(buf)) > 0) {
+                        ostr.write(buf, 0, len);
+                    }
                 }
-
             } catch (IOException e) {
                 log.error(e);
             } finally {
                 method.releaseConnection();
                 if (httpclient != null) {
                     httpclient.close();
-                }
-                if (istr != null) {
-                    try {
-                        istr.close();
-                    } catch (IOException e) {
-                        log.error(e);
-                    }
-                }
-                if (ostr != null) {
-                    try {
-                        ostr.close();
-                    } catch (IOException e) {
-                        log.error(e);
-                    }
                 }
             }
 
@@ -240,13 +223,12 @@ public class CreatePdfFromServletThread extends LongRunningTask {
             /* --------------------------------
              * report Error to User as Error-Log
              * --------------------------------*/
-            Writer output = null;
             String text = "error while pdf creation: " + e.getMessage();
             Path file = Paths.get(this.targetFolder.toString(), this.getProzess().getTitel() + ".PDF-ERROR.log");
             try {
-                output = new BufferedWriter(new FileWriter(file.toFile()));
-                output.write(text);
-                output.close();
+                try (Writer output = new BufferedWriter(new FileWriter(file.toFile()))) {
+                    output.write(text);
+                }
             } catch (IOException e1) {
                 log.error("Error while reporting error to user in file " + file.toString(), e);
             }
@@ -261,4 +243,21 @@ public class CreatePdfFromServletThread extends LongRunningTask {
         setStatusProgress(100);
     }
 
+    private String createImagesParameter(Process myProzess) throws IOException, SwapException, MalformedURLException {
+        StringBuilder images = new StringBuilder();
+        List<Path> meta = StorageProvider.getInstance().listFiles(myProzess.getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
+        ArrayList<String> filenames = new ArrayList<>();
+        for (Path data : meta) {
+            String file = "";
+            file += data.toUri().toURL();
+            filenames.add(file);
+        }
+        Collections.sort(filenames, new MetadatenHelper(null, null));
+        for (String f : filenames) {
+            images.append(f).append("$");
+        }
+        images = images.deleteCharAt(images.length()-1);
+        return images.toString();
+    }
+    
 }

@@ -14,7 +14,10 @@ import org.quartz.Trigger;
 import org.quartz.TriggerUtils;
 import org.quartz.impl.StdSchedulerFactory;
 
+import lombok.extern.log4j.Log4j2;
+
 @WebListener
+@Log4j2
 public class LockingListener implements ServletContextListener {
 
     @Override
@@ -37,8 +40,7 @@ public class LockingListener implements ServletContextListener {
 
 
         } catch (SchedulerException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
 
         }
     }

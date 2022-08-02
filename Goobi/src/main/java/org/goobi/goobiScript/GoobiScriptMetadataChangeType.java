@@ -113,12 +113,12 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                 case "any":
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
-                    if (physical!= null) {
+                    if (physical != null) {
                         dsList.add(physical);
                     }
                     break;
                 case "physical":
-                    if (physical!= null) {
+                    if (physical != null) {
                         dsList.add(physical);
                     }
                     break;
@@ -146,10 +146,12 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                 Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
                         "Metadata type changed using GoobiScript: from " + oldMetadataType + " to " + newMetadataType, username);
             }
-            log.info("Metadata type changed using GoobiScript for process with ID " + p.getId());
+            log.info("Metadata type changed using GoobiScript for process with ID {} from {} to {} ", p.getId(), oldMetadataType, newMetadataType);
 
             gsr.setResultMessage("Metadata changed successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         } catch (Exception e1) {
             log.error("Problem while changing the metadata using GoobiScript for process with id: " + p.getId(), e1);
             gsr.setResultMessage("Error while changing metadata: " + e1.getMessage());
@@ -173,11 +175,13 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
      */
     private boolean changeMetadataType(List<DocStruct> dsList, String oldMetadataType, String newMetadataType, Prefs prefs, boolean ignoreErrors)
             throws MetadataTypeNotAllowedException {
+        boolean metadataChanged = false;
+
         for (DocStruct ds : dsList) {
             // search for all metadata with type of oldMetadataType
             List<? extends Metadata> mdList = ds.getAllMetadataByType(prefs.getMetadataTypeByName(oldMetadataType));
             if (mdList == null || mdList.isEmpty()) {
-                return false;
+                continue;
             }
             MetadataType type = prefs.getMetadataTypeByName(newMetadataType);
 
@@ -192,6 +196,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                     ds.addMetadata(newMd);
                     // delete oldMetadata from ds
                     ds.removeMetadata(oldMd);
+                    metadataChanged = true;
                 } catch (MetadataTypeNotAllowedException e) {
                     if (!ignoreErrors) {
                         throw e;
@@ -199,7 +204,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                 }
             }
         }
-        return true;
+        return metadataChanged;
     }
 
 }

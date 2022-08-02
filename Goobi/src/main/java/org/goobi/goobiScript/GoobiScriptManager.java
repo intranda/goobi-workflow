@@ -242,38 +242,38 @@ public class GoobiScriptManager {
                 response.setHeader("Content-Disposition", "attachment;filename=\"goobiScript.xlsx\"");
                 ServletOutputStream out = response.getOutputStream();
 
-                XSSFWorkbook workbook = new XSSFWorkbook();
-                XSSFSheet sheet = workbook.createSheet("GoobiScript");
+                try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+                    XSSFSheet sheet = workbook.createSheet("GoobiScript");
 
-                XSSFRow rowhead = sheet.createRow((short) 0);
-                rowhead.createCell(0).setCellValue("Process ID");
-                rowhead.createCell(1).setCellValue("Process title");
-                rowhead.createCell(2).setCellValue("Command");
-                rowhead.createCell(3).setCellValue("Username");
-                rowhead.createCell(4).setCellValue("Timestamp");
-                rowhead.createCell(5).setCellValue("Result");
-                rowhead.createCell(6).setCellValue("Description");
-                rowhead.createCell(7).setCellValue("Error");
+                    XSSFRow rowhead = sheet.createRow((short) 0);
+                    rowhead.createCell(0).setCellValue("Process ID");
+                    rowhead.createCell(1).setCellValue("Process title");
+                    rowhead.createCell(2).setCellValue("Command");
+                    rowhead.createCell(3).setCellValue("Username");
+                    rowhead.createCell(4).setCellValue("Timestamp");
+                    rowhead.createCell(5).setCellValue("Result");
+                    rowhead.createCell(6).setCellValue("Description");
+                    rowhead.createCell(7).setCellValue("Error");
 
-                int count = 1;
-                synchronized (goobiScriptResults) {
-                    for (GoobiScriptResult gsr : goobiScriptResults) {
-                        XSSFRow row = sheet.createRow((short) count++);
-                        row.createCell(0).setCellValue(gsr.getProcessId());
-                        row.createCell(1).setCellValue(gsr.getProcessTitle());
-                        row.createCell(2).setCellValue(gsr.getCommand());
-                        row.createCell(3).setCellValue(gsr.getUsername());
-                        row.createCell(4).setCellValue(gsr.getFormattedTimestamp());
-                        row.createCell(5).setCellValue(gsr.getResultType().toString());
-                        row.createCell(6).setCellValue(gsr.getResultMessage());
-                        row.createCell(7).setCellValue(gsr.getErrorText());
+                    int count = 1;
+                    synchronized (goobiScriptResults) {
+                        for (GoobiScriptResult gsr : goobiScriptResults) {
+                            XSSFRow row = sheet.createRow((short) count++);
+                            row.createCell(0).setCellValue(gsr.getProcessId());
+                            row.createCell(1).setCellValue(gsr.getProcessTitle());
+                            row.createCell(2).setCellValue(gsr.getCommand());
+                            row.createCell(3).setCellValue(gsr.getUsername());
+                            row.createCell(4).setCellValue(gsr.getFormattedTimestamp());
+                            row.createCell(5).setCellValue(gsr.getResultType().toString());
+                            row.createCell(6).setCellValue(gsr.getResultMessage());
+                            row.createCell(7).setCellValue(gsr.getErrorText());
+                        }
                     }
-                }
 
-                workbook.write(out);
-                out.flush();
-                facesContext.responseComplete();
-                workbook.close();
+                    workbook.write(out);
+                    out.flush();
+                    facesContext.responseComplete();
+                }
             } catch (IOException e) {
 
             }

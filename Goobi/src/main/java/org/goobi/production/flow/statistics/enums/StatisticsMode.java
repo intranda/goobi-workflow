@@ -77,12 +77,8 @@ public enum StatisticsMode {
             try {
 
                 question = inQuestion.getDeclaredConstructor().newInstance();
-            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException
+                    | IllegalAccessException e) {
             }
         }
         this.renderIncludeLoops = renderIncludeLoops;
@@ -133,7 +129,7 @@ public enum StatisticsMode {
      ****************************************************************************/
     public static StatisticsMode getByClassName(Class<? extends IStatisticalQuestion> inQuestion) {
         for (StatisticsMode sm : values()) {
-            if (sm.getStatisticalQuestion() != null && sm.getStatisticalQuestion().getClass().getName().equals(inQuestion.getName())) {
+            if (sm.getStatisticalQuestion() != null && sm.getStatisticalQuestion().getClass().isAssignableFrom(inQuestion.getClass())) {
                 return sm;
             }
         }

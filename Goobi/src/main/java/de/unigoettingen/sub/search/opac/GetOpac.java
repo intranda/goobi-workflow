@@ -3,7 +3,7 @@ package de.unigoettingen.sub.search.opac;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *     		- https://goobi.io
  * 			- https://www.intranda.com
  * 			- https://github.com/intranda/goobi-workflow
@@ -66,7 +66,7 @@ import lombok.extern.log4j.Log4j2;
  * Connects to OPAC system.
  * 
  * TODO Talk with the GBV if the URLs are ok this way
- * TODO check if correct character encodings are returned 
+ * TODO check if correct character encodings are returned
  * 
  * @author Ludwig
  * @version 0.1
@@ -299,7 +299,7 @@ public class GetOpac {
         // querySummary is used to check if cached result and sessionid
         // can be used again
         String querySummary = query.getQueryUrl() + this.data_character_encoding + this.cat.getDataBase() + this.cat.getServerAddress()
-                + this.cat.getPort() + this.cat.getCbs();
+        + this.cat.getPort() + this.cat.getCbs();
 
         // if we can not use the cached result
         if (!this.lastQuery.equals(querySummary)) {
@@ -349,7 +349,7 @@ public class GetOpac {
         // querySummary is used to check if cached result and sessionid
         // can be used again
         String querySummary = query.getQueryUrl() + this.data_character_encoding + this.cat.getDataBase() + this.cat.getServerAddress()
-                + this.cat.getPort() + this.cat.getCbs();
+        + this.cat.getPort() + this.cat.getCbs();
 
         // if we can not use the cached result
         if (!this.lastQuery.equals(querySummary)) {
@@ -430,7 +430,7 @@ public class GetOpac {
         int retrieveNumber = numberOfHits + 1;
         return retrieveDataFromOPAC(
                 DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL + this.data_character_encoding + SET_ID_URL + this.lastOpacResult.getSet()
-                        + SESSIONID_URL + this.lastOpacResult.getSessionId(URL_CHARACTER_ENCODING) + SHOW_LONGTITLE_NR_URL + retrieveNumber);
+                + SESSIONID_URL + this.lastOpacResult.getSessionId(URL_CHARACTER_ENCODING) + SHOW_LONGTITLE_NR_URL + retrieveNumber);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -474,7 +474,7 @@ public class GetOpac {
         String result = null;
 
         String querySummary = query.getQueryUrl() + this.data_character_encoding + this.cat.getDataBase() + this.cat.getServerAddress()
-                + this.cat.getPort() + this.cat.getCbs();
+        + this.cat.getPort() + this.cat.getCbs();
 
         if (this.verbose) {
             log.info("Searching the opac for " + query.getQueryUrl());
@@ -490,12 +490,12 @@ public class GetOpac {
         result = retrieveDataFromOPAC(DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL_WITHOUT_LOCAL_DATA + this.data_character_encoding
                 + SEARCH_URL_BEFORE_QUERY + this.sorting + query.getQueryUrl());
 
-        try {            
+        try {
             OpacResponseHandler opacResult = parseOpacResponse(result);
             // Caching query, result and sessionID
             this.lastQuery = querySummary;
             this.lastOpacResult = opacResult;
-            
+
             return opacResult;
         } catch(SAXException e) {
             throw new SAXException("Response could not be parsed as xml: '" + result + "'", e);
@@ -531,7 +531,7 @@ public class GetOpac {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
         result.append("  </" + PICA_RECORD + ">\n");
         return result.toString();
@@ -581,10 +581,9 @@ public class GetOpac {
             InputStream bs = source.getByteStream();
 
             log.info(bs.toString());
-            e.printStackTrace();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e);
         }
         return null;
     }
@@ -613,7 +612,7 @@ public class GetOpac {
             transformer.setOutputProperty(OutputKeys.ENCODING, this.data_character_encoding);
             transformer.transform(source, output);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
     }
 

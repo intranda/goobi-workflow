@@ -2,6 +2,7 @@ package org.goobi.managedbeans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,7 @@ public class MessageQueueBean extends BasicBean implements Serializable {
         if (this.messageBrokerStart) {
 
             ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
+            connectionFactory.setTrustedPackages(Arrays.asList("org.goobi.managedbeans", "org.goobi.api.mq", "org.goobi.api.mq.ticket"));
 
             try {
                 connection = (ActiveMQConnection) connectionFactory.createConnection(ConfigurationHelper.getInstance().getMessageBrokerUsername(),
@@ -79,7 +81,6 @@ public class MessageQueueBean extends BasicBean implements Serializable {
                 queueSession = connection.createQueueSession(false, Session.CLIENT_ACKNOWLEDGE);
             } catch (JMSException e) {
                 log.error(e);
-                e.printStackTrace();
             }
             paginator = new DatabasePaginator(null, null, new MQResultManager(), "queue.xhtml");
         }

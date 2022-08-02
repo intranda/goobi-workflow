@@ -242,18 +242,18 @@ public class UghHelper {
             } else {
                 filename = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_opacLanguages.txt";
             }
-            FileInputStream fis = new FileInputStream(filename);
-            InputStreamReader isr = new InputStreamReader(fis, "UTF8");
-            BufferedReader in = new BufferedReader(isr);
-            String str;
-            while ((str = in.readLine()) != null) {
-                if (str.length() > 0 && str.split(" ")[1].equals(inLanguage)) {
-                    in.close();
-                    return str.split(" ")[0];
+            try (FileInputStream fis = new FileInputStream(filename)) {
+                InputStreamReader isr = new InputStreamReader(fis, "UTF8");
+                try (BufferedReader in = new BufferedReader(isr)) {
+                    String str;
+                    while ((str = in.readLine()) != null) {
+                        if (str.length() > 0 && str.split(" ")[1].equals(inLanguage)) {
+                            in.close();
+                            return str.split(" ")[0];
+                        }
+                    }
                 }
             }
-            in.close();
-
         } catch (IOException e) {
         }
         return inLanguage;
@@ -277,16 +277,17 @@ public class UghHelper {
 
         /* Datei zeilenweise durchlaufen und die Sprache vergleichen */
         try {
-            FileInputStream fis = new FileInputStream(filename);
-            InputStreamReader isr = new InputStreamReader(fis, "UTF8");
-            BufferedReader in = new BufferedReader(isr);
-            String str;
-            while ((str = in.readLine()) != null) {
-                if (str.length() > 0) {
-                    temp = temp.replaceAll(str.split(" ")[0], str.split(" ")[1]);
+            try (FileInputStream fis = new FileInputStream(filename)) {
+                InputStreamReader isr = new InputStreamReader(fis, "UTF8");
+                try (BufferedReader in = new BufferedReader(isr)) {
+                    String str;
+                    while ((str = in.readLine()) != null) {
+                        if (str.length() > 0) {
+                            temp = temp.replaceAll(str.split(" ")[0], str.split(" ")[1]);
+                        }
+                    }
                 }
             }
-            in.close();
         } catch (IOException e) {
             log.error("IOException bei Umlautkonvertierung", e);
         }

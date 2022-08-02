@@ -28,6 +28,8 @@ package de.sub.goobi.helper;
  */
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
@@ -51,9 +53,6 @@ import org.goobi.beans.Template;
 import org.goobi.beans.Templateproperty;
 import org.goobi.production.properties.ProcessProperty;
 import org.goobi.production.properties.PropertyParser;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -288,7 +287,7 @@ public class VariableReplacer {
             inString = piiifMediaFolder.matcher(inString).replaceAll(Matcher.quoteReplacement(getIiifImageUrls(process, "media")));
             inString = piiifMasterFolder.matcher(inString).replaceAll(Matcher.quoteReplacement(getIiifImageUrls(process, "master")));
 
-        } catch (IOException | InterruptedException | SwapException | DAOException e) {
+        } catch (IOException | SwapException | DAOException e) {
             log.error(e);
         }
         String myprefs = ConfigurationHelper.getInstance().getRulesetFolder() + this.process.getRegelsatz().getDatei();
@@ -367,7 +366,7 @@ public class VariableReplacer {
             try {
                 String value = process.getConfiguredImageFolder(folderName);
                 inString = inString.replace(r.group(), value);
-            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+            } catch (IOException |  SwapException | DAOException e) {
                 log.error(e);
             }
         }
@@ -459,14 +458,14 @@ public class VariableReplacer {
     private String getMetadataValue(DocStruct inDocstruct, MetadataType mdt) {
         List<? extends Metadata> mds = inDocstruct.getAllMetadataByType(mdt);
         if (mds.size() > 0) {
-        	Metadata m = mds.get(0);
-        	if (m.getType().getIsPerson()) {
-        		Person p = (Person) m;
-        		return p.getLastname() + ", " + p.getFirstname();
-        	} else {
-        		return m.getValue();
-        	}
-    	} else {
+            Metadata m = mds.get(0);
+            if (m.getType().getIsPerson()) {
+                Person p = (Person) m;
+                return p.getLastname() + ", " + p.getFirstname();
+            } else {
+                return m.getValue();
+            }
+        } else {
             return null;
         }
     }
@@ -508,14 +507,14 @@ public class VariableReplacer {
         if ("media".equals(folderName)) {
             try {
                 folder = Paths.get(process.getImagesTifDirectory(false));
-            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+            } catch (IOException | SwapException e) {
                 log.error(e);
                 return "";
             }
         } else {
             try {
                 folder = Paths.get(process.getImagesOrigDirectory(false));
-            } catch (IOException | InterruptedException | SwapException | DAOException e) {
+            } catch (IOException |  SwapException | DAOException e) {
                 log.error(e);
                 return "";
             }

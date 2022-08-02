@@ -224,14 +224,14 @@ public class ConfigOpacCatalogue {
              */
 
             // check main field
-            if (prooflist.size() == 0 && mainFieldToChange == null) {
+            if (prooflist.isEmpty() && mainFieldToChange == null) {
                 mainFieldToChange = new Element("field");
                 mainFieldToChange.setAttribute("tag", beautifier.getTagElementToChange().getTag());
                 elements.add(mainFieldToChange);
             }
 
             // check subfield
-            if (prooflist.size() == 0 && subfieldToChange == null) {
+            if (mainFieldToChange != null && prooflist.isEmpty() && subfieldToChange == null) {
                 //                Element field = new Element("field");
                 //                field.setAttribute("tag", beautifier.getTagElementToChange().getTag());
                 subfieldToChange = new Element("subfield");
@@ -240,7 +240,7 @@ public class ConfigOpacCatalogue {
                 //                elements.add(field);
             }
 
-            if (prooflist.size() == 0) {
+            if (subfieldToChange!= null && prooflist.isEmpty()) {
                 if (beautifier.getTagElementToChange().getValue().equals("*")) {
                     subfieldToChange.setText(matchedValue);
                 } else {

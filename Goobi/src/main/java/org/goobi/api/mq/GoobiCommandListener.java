@@ -46,7 +46,7 @@ public class GoobiCommandListener {
         Runnable run = new Runnable() {
             @Override
             public void run() {
-                while (true) {
+                while (true) { //NOSONAR, no abort condition is needed
                     try {
                         Message message = cons.receive();
                         // check command and if the token allows this.

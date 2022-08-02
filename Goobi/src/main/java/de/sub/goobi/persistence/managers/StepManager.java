@@ -160,7 +160,7 @@ public class StepManager implements IManager, Serializable {
         return getSteps(order, filter, 0, Integer.MAX_VALUE);
     }
 
-    public static List<Integer> getIDList(String filter) {
+    public static List<Integer> getIDsForFilter(String filter) {
 
         try {
             return StepMysqlHelper.getIDList(filter);
