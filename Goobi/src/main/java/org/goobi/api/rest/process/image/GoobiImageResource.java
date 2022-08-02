@@ -543,6 +543,10 @@ public class GoobiImageResource {
             case "thumbnails_small":
                 return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getImagesDirectory(), "layoutWizzard-temp",
                         "thumbnails_small");
+            case "intern":
+                return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getProcessDataDirectory(), "intern");
+            case "export":
+                return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getProcessDataDirectory(), "export");
             default:
                 if (!folder.contains("_")) {
                     return Paths.get(getGoobiProcess(processFolder.getFileName().toString()).getImagesDirectory(), folder);

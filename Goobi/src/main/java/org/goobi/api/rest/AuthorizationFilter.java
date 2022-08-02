@@ -69,6 +69,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
                 || pathInfo.startsWith("/process/image/")
                 || pathInfo.startsWith("/process/pdf/")
                 || pathInfo.startsWith("/process/thumbs/")
+                || pathInfo.startsWith("/tmp/image/")
                 || pathInfo.startsWith("/messages/")
                 || pathInfo.matches("/processes/\\d+?/images.*")
                 || pathInfo.endsWith("/openapi.json")) {

@@ -105,15 +105,15 @@ public @Data class Image {
     /**
      * Thumbnail url of the default thumbnail size (usually the size given by 'MetsEditorThumbnailsize' in Goobi config
      */
-    private String thumbnailUrl;
+    protected String thumbnailUrl;
     /**
      * Thumbnail url for an enlarged thumbnail
      */
-    private String largeThumbnailUrl;
+    protected String largeThumbnailUrl;
     /**
      * Url to object information. If this is an actual image, the base iiif url is returned
      */
-    private String objectUrl;
+    protected String objectUrl;
 
     /**
      * Url and size information for different resolutions of this image. Used to create layer urls for pyramid image display
@@ -127,7 +127,7 @@ public @Data class Image {
     /**
      * Url for bookmarking this image in the metsEditor
      */
-    private String bookmarkUrl;
+    protected String bookmarkUrl;
     /**
      * Tooltip to show when hovering over this image. The image filename per default
      */
@@ -182,29 +182,21 @@ public @Data class Image {
     }
 
     /**
-     * Creates an image object from the given filepath. All required urls are either set in the constructor or created when needed. This class can
-     * also contain other media objects link 3D obects, video and audio. In these cases a default image is used for thumbnails and image display. This
-     * constructor doesn't refer to a goobi process and this may be used to display arbitrary images. However, this means that the complete image path
-     * is encoded within the IIIF url which only works if theServer is configured to allow encoded slashes. Otherwise, the image levels need to be
-     * used to create the image Also, the 3D api will not work with images created by this constructor, since this also requires a Goobi process.
+     * Base constructor which only provides placeholder images. Inheriting classes may use this as base constructor
+     * and define 'objectUrl', 'bookmarkUrl', 'thumbnailUrl' and 'largeThumbnailUrl' themselves
      * 
      * @param imagePath The path to the image file
      * @param order The order of the image within the goobi process
      * @param thumbnailSize The size of the thumbnails to create. May be null, in which case the configured default is used
      * @throws IOException If the image file could not be read
      */
-    public Image(Path imagePath, int order, Integer thumbnailSize) throws IOException {
+    protected Image(Path imagePath, int order, Integer thumbnailSize) throws IOException {
         this.imagePath = imagePath.toAbsolutePath();
         this.imageName = this.imagePath.getFileName().toString();
         this.type = Type.getFromPath(imagePath);
         this.order = order;
         this.tooltip = imagePath.getFileName().toString();
-        if (Type.image.equals(this.type)) {
-            String baseUrl = new HelperForm().getServletPathWithHostAsUrl();
-            this.bookmarkUrl = createThumbnailUrl(this.imagePath, 1000, getThumbnailFormat(), baseUrl);
-            this.objectUrl = createIIIFUrl(imagePath);
-            this.thumbnailUrl = createThumbnailUrl(this.imagePath, thumbnailSize, getThumbnailFormat(), baseUrl);
-        } else if (Type.unknown.equals(this.type)) {
+        if (Type.image.equals(this.type) || Type.unknown.equals(this.type)) {
             this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_NOTFOUND;
             bookmarkUrl = objectUrl;
             thumbnailUrl = objectUrl;
@@ -341,20 +333,7 @@ public @Data class Image {
      */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{")
-        .append("width : ")
-        .append(getSize().width)
-        .append(",")
-        .append("height : ")
-        .append(getSize().height)
-        .append(",")
-        .append("sizes : [");
-        for (ImageLevel imageLevel : getImageLevels()) {
-            sb.append(imageLevel.toString()).append(", ");
-        }
-        sb.append("]").append("}");
-        return sb.toString();
+        return this.imagePath.toString();
     }
 
     /**
@@ -376,27 +355,6 @@ public @Data class Image {
 
         }
         return this.size;
-    }
-
-    /**
-     * Returns the image levels with urls and sizes in different resolutions for image pyramid display
-     * 
-     * @return The image levels with urls and sizes in different resolutions for image pyramid display
-     */
-    public List<ImageLevel> getImageLevels() {
-        if (this.imageLevels == null) {
-            if (Type.image.equals(getType())) {
-                try {
-                    this.imageLevels = createImageLevels(getImagePath(), getLargeImageFormat(), getLayerSizes());
-                } catch (ImageManagerException | FileNotFoundException e) {
-                    log.error("Error creating image levels for " + getImagePath(), e);
-                    this.imageLevels = new ArrayList<>();
-                }
-            } else {
-                this.imageLevels = Collections.emptyList();
-            }
-        }
-        return this.imageLevels;
     }
 
     /**
@@ -475,24 +433,6 @@ public @Data class Image {
         return sb.toString();
     }
 
-    /**
-     * Creates a rest url to the iiif image information about this image
-     * 
-     * @param process The process containing the image
-     * @param imageFolderName The name of the image folder used
-     * @param filename The filename of the image
-     * @return A goobi rest api iiif url
-     */
-    public static String createIIIFUrl(Path path) {
-        try {
-            StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
-            sb.append("/api/image/file/").append(URLEncoder.encode(toURI(path).toString(), "utf-8")).append("/info.json");
-            return sb.toString();
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("Failed to encode with 'utf-8'", e);
-        }
-    }
-
     private static Path getImagePath(org.goobi.beans.Process process, String imageFolderName, String filename)
             throws IOException, SwapException {
         Path path = Paths.get(process.getImagesDirectory(), imageFolderName, filename);
@@ -514,24 +454,6 @@ public @Data class Image {
         //        }
     }
 
-    /**
-     * Creates a ContentServer url to a thumbnail of the given image file of the given size. If a base Url is provided, it is prepended to the
-     * returned url, otherwise, the url starts with "/cs"
-     * 
-     * @param path The absolute path to the image File
-     * @param size The resulting thumbnail will fit into a square with an edge length of the given size
-     * @param baseUrl Preprended to the url which is otherwise relative to the Goobi application url
-     * @return The thumbnail url as String
-     */
-    public static String createThumbnailUrl(Path path, int size, String format, String baseUrl) {
-
-        StringBuilder url = new StringBuilder(baseUrl != null ? baseUrl : "");
-        url.append("/cs").append("?action=").append("image").append("&format=").append(format).append("&sourcepath=");
-        url.append(toURI(path));
-        url.append("&width=").append(size).append("&height=").append(size);
-        return url.toString().replaceAll("\\\\", "/");
-    }
-
     public static String createThumbnailUrl(Process process, int size, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
         sb.append("/api/process/image/")
@@ -546,39 +468,6 @@ public @Data class Image {
         .append(",")
         .append("/0/default.jpg");
         return sb.toString();
-    }
-
-    /**
-     * Creates a list of ImageLevels for pyramid views of this image
-     * 
-     * @param path The image file path
-     * @param format The imge format in which to deliver the image
-     * @param sizes A list of sizes in which to deliver the image
-     * @return A list of {@link ImageLevel}s including the size and an url to this image delivered in that size
-     * @throws ImageManagerException
-     * @throws FileNotFoundException
-     */
-    public static List<ImageLevel> createImageLevels(Path path, String format, List<String> sizes)
-            throws ImageManagerException, FileNotFoundException {
-        String baseUrl = new HelperForm().getServletPathWithHostAsUrl();
-        Dimension originalSize = getImageSize(path);
-        List<ImageLevel> levels = new ArrayList<>();
-        if (originalSize == null) {
-            return levels;
-        }
-        for (String sizeString : sizes) {
-            try {
-                int size = Integer.parseInt(sizeString);
-                String imageUrl = createThumbnailUrl(path, size, format, baseUrl);
-                double scale = size / (double) (Math.max(originalSize.height, originalSize.width));
-                Dimension dim = new Dimension((int) (originalSize.width * scale), (int) (originalSize.height * scale));
-                ImageLevel layer = new ImageLevel(imageUrl, dim);
-                levels.add(layer);
-            } catch (NullPointerException | NumberFormatException e) {
-                log.error("Cannot build image with size " + sizeString);
-            }
-        }
-        return levels;
     }
 
     public String getUrl() {
@@ -666,5 +555,10 @@ public @Data class Image {
         }
         //reset image levels to be recreated with updated sizes on getImageLevels()
         this.imageLevels = null;
+    }
+    
+
+    public static String getCleanedName(String path) {
+        return Paths.get(path).getFileName().toString();
     }
 }

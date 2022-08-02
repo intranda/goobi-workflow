@@ -24,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 import de.intranda.api.iiif.image.ImageInformation;
 import de.intranda.api.iiif.image.ImageTile;
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.metadaten.Image;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.ContentNotFoundException;
 import de.unigoettingen.sub.commons.contentlib.exceptions.IllegalRequestException;
@@ -34,37 +35,28 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.log4j.Log4j2;
 
-@javax.ws.rs.Path("/image/file/{path}")
+@javax.ws.rs.Path("/tmp/image/{foldername}/{filename}")
 @ContentServerBinding
 @Log4j2
-public class GeneralImageResource extends ImageResource {
+public class TempImageResource extends ImageResource {
 
-    public GeneralImageResource(@Context ContainerRequestContext context,
+
+    public TempImageResource(@Context ContainerRequestContext context,
             @Context HttpServletRequest request,
             @Context HttpServletResponse response,
-            String directory, String filename) {
-        super(context, request, response, directory, filename);
+            @PathParam("foldername") String foldername,
+            @PathParam("filename") String filename) throws IllegalRequestException {
+        super(context, request, response, "-", getTempFilePath(foldername, filename));
+        createResourceURI(request, Image.getCleanedName(foldername), Image.getCleanedName(filename));
     }
 
-    public GeneralImageResource(@Context ContainerRequestContext context,
-            @Context HttpServletRequest request,
-            @Context HttpServletResponse response,
-            @PathParam("path") String path) throws IllegalRequestException {
-        super(context, request, response, "-", getCleanedPath(path));
-        createResourceURI(request, getCleanedPath(path));
+    private static String getTempFilePath(String foldername, String filename) {
+        Path path = Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder(), Image.getCleanedName(foldername), Image.getCleanedName(filename));
+        return path.toString();
     }
 
-    private static String getCleanedPath(String path) throws IllegalRequestException {
-        Path filePath = Paths.get(path).toAbsolutePath().normalize();
-        Path metadataPath = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder());
-        if(!filePath.startsWith(metadataPath)) {
-            throw new IllegalRequestException("Not allowed to access image paths outside " + metadataPath);
-        } else {
-            return filePath.toString();
-        }
-    }
 
-    public void createResourceURI(HttpServletRequest request, String filePath) throws IllegalRequestException {
+    public void createResourceURI(HttpServletRequest request, String foldername, String filename) throws IllegalRequestException {
 
         if (request != null) {
             String scheme = request.getScheme();
@@ -81,10 +73,11 @@ public class GeneralImageResource extends ImageResource {
                     uriBase = new URI(scheme, server, contextPath + servletPath + getGoobiURIPrefix(), null);
                 }
 
-                resourceURI = new URI(uriBase.toString().replace(URLEncoder.encode("{path}", "utf-8"), URLEncoder.encode(filePath, "utf-8")));
+                resourceURI = new URI(uriBase.toString().replace(URLEncoder.encode("{foldername}", "utf-8"), URLEncoder.encode(foldername, "utf-8"))
+                        .replace(URLEncoder.encode("{filename}", "utf-8"), URLEncoder.encode(filename, "utf-8")));
             } catch (URISyntaxException | UnsupportedEncodingException e) {
                 log.error("Failed to create image request uri");
-                throw new IllegalRequestException("Unable to evaluate request to '" + filePath + "'");
+                throw new IllegalRequestException("Unable to evaluate request to '" + foldername + "/" + filename + "'");
             }
         } else {
             try {
@@ -95,7 +88,7 @@ public class GeneralImageResource extends ImageResource {
     }
 
     public static String getGoobiURIPrefix() {
-        return GeneralImageResource.class.getAnnotation(javax.ws.rs.Path.class).value();
+        return TempImageResource.class.getAnnotation(javax.ws.rs.Path.class).value();
     }
 
     @GET
