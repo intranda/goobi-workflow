@@ -585,88 +585,44 @@ public class MetadatenImagesHelper {
         }
         log.trace("Scale to " + tmpSize + "%");
 
-        if (ConfigurationHelper.getInstance().getContentServerUrl() == null) {
-            log.trace("api");
-            ImageManager im = null;
-            JpegInterpreter pi = null;
-            try {
-                im = conf.useS3() && s3URI != null ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
-                //                im = new ImageManager(Paths.get(inFileName).toUri());
-                log.trace("im");
-                ImageInterpreter ii = im.getMyInterpreter();
-                Dimension inputResolution = new Dimension((int) ii.getXResolution(), (int) ii.getYResolution());
-                log.trace("input resolution: " + inputResolution.width + "x" + inputResolution.height + "dpi");
-                Dimension outputResolution = new Dimension(144, 144);
-                log.trace("output resolution: " + outputResolution.width + "x" + outputResolution.height + "dpi");
-                Dimension dim = new Dimension(tmpSize * outputResolution.width / inputResolution.width,
-                        tmpSize * outputResolution.height / inputResolution.height);
-                log.trace("Absolute scale: " + dim.width + "x" + dim.height + "%");
-                RenderedImage ri = im.scaleImageByPixel(dim, ImageManager.SCALE_BY_PERCENT, intRotation);
-                log.trace("ri");
-                pi = new JpegInterpreter(ri);
-                log.trace("pi");
-                pi.setXResolution(outputResolution.width);
-                log.trace("xres = " + pi.getXResolution());
-                pi.setYResolution(outputResolution.height);
-                log.trace("yres = " + pi.getYResolution());
-                FileOutputStream outputFileStream = new FileOutputStream(outFileName);
-                log.trace("output");
-                pi.writeToStream(null, outputFileStream);
-                log.trace("write stream");
-                outputFileStream.close();
-                log.trace("close stream");
-            } finally {
-                if (im != null) {
-                    im.close();
-                }
-                if (pi != null) {
-                    pi.close();
-                }
+        log.trace("api");
+        ImageManager im = null;
+        JpegInterpreter pi = null;
+        try {
+            im = conf.useS3() && s3URI != null ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
+            //                im = new ImageManager(Paths.get(inFileName).toUri());
+            log.trace("im");
+            ImageInterpreter ii = im.getMyInterpreter();
+            Dimension inputResolution = new Dimension((int) ii.getXResolution(), (int) ii.getYResolution());
+            log.trace("input resolution: " + inputResolution.width + "x" + inputResolution.height + "dpi");
+            Dimension outputResolution = new Dimension(144, 144);
+            log.trace("output resolution: " + outputResolution.width + "x" + outputResolution.height + "dpi");
+            Dimension dim = new Dimension(tmpSize * outputResolution.width / inputResolution.width,
+                    tmpSize * outputResolution.height / inputResolution.height);
+            log.trace("Absolute scale: " + dim.width + "x" + dim.height + "%");
+            RenderedImage ri = im.scaleImageByPixel(dim, ImageManager.SCALE_BY_PERCENT, intRotation);
+            log.trace("ri");
+            pi = new JpegInterpreter(ri);
+            log.trace("pi");
+            pi.setXResolution(outputResolution.width);
+            log.trace("xres = " + pi.getXResolution());
+            pi.setYResolution(outputResolution.height);
+            log.trace("yres = " + pi.getYResolution());
+            FileOutputStream outputFileStream = new FileOutputStream(outFileName);
+            log.trace("output");
+            pi.writeToStream(null, outputFileStream);
+            log.trace("write stream");
+            outputFileStream.close();
+            log.trace("close stream");
+        } finally {
+            if (im != null) {
+                im.close();
             }
-        } else {
-            String imageURIString = conf.useS3() && s3URI != null ? s3URI.toString() : inFileName;
-            String cs = conf.getContentServerUrl() + imageURIString + "&scale=" + tmpSize + "&rotate=" + intRotation + "&format=jpg";
-            cs = cs.replace("\\", "/");
-            log.trace("url: " + cs);
-            URL csUrl = new URL(cs);
-            CloseableHttpClient httpclient = null;
-            HttpGet method = null;
-
-            try {
-                httpclient = HttpClientBuilder.create().build();
-                method = new HttpGet(csUrl.toString());
-                log.trace("get");
-                Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
-                Builder builder = RequestConfig.custom();
-                builder.setSocketTimeout(contentServerTimeOut);
-                RequestConfig rc = builder.build();
-                method.setConfig(rc);
-
-                byte[] response = httpclient.execute(method, HttpClientHelper.byteArrayResponseHandler);
-                if (response == null) {
-                    log.error("Response stream is null");
-                    return;
-                }
-                try (InputStream istr = new ByteArrayInputStream(response); OutputStream fos = new FileOutputStream(outFileName)) {
-
-                    // Transfer bytes from in to out
-                    byte[] buf = new byte[1024];
-                    int len;
-                    while ((len = istr.read(buf)) > 0) {
-                        fos.write(buf, 0, len);
-                    }
-                }
-            } catch (Exception e) {
-                log.error("Unable to connect to url " + cs, e);
-            } finally {
-                if (method != null) {
-                    method.releaseConnection();
-                }
-                if (httpclient != null) {
-                    httpclient.close();
-                }
+            if (pi != null) {
+                pi.close();
             }
         }
+
     }
 
     // Add a method to validate the image files
