@@ -52,7 +52,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 48;
+    public static final int EXPECTED_VERSION = 49;
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
 
