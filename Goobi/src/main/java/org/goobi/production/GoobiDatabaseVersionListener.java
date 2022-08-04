@@ -54,16 +54,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         }
 
         checkIndexes();
-
         DatabaseVersion.checkIfEmptyDatabase();
-        
-        if (!DatabaseVersion.checkIfColumnExists("urn_table", "urn")) {
-            try {
-                DatabaseVersion.runSql("ALTER TABLE urn_table ADD COLUMN urn VARCHAR(255) DEFAULT NULL;");
-            } catch (SQLException e) {
-                log.error(e);
-            }
-        }
     }
 
     // this method is executed on every startup and checks, if some mandatory indexes exist
