@@ -54,10 +54,8 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
         }
 
         checkIndexes();
-
         DatabaseVersion.checkIfEmptyDatabase();
     }
-
 
     // this method is executed on every startup and checks, if some mandatory indexes exist
     // if some indexes are missing, they are created
@@ -67,7 +65,7 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS institution_id ON projekte(institution_id) ");
                 DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS priority_x_status ON schritte(Prioritaet, Bearbeitungsstatus) ");
                 DatabaseVersion.runSql("CREATE INDEX IF NOT EXISTS stepstatus ON schritte(Bearbeitungsstatus) ");
-            }catch(SQLException e) {
+            } catch (SQLException e) {
                 log.error(e);
             }
         } else {

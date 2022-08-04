@@ -367,6 +367,12 @@ public class DatabaseVersion {
                     }
                     updateToVersion48();
                     tempVersion++;
+                case 48://NOSONAR, no break on purpose to run through all cases
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 49.");
+                    }
+                    updateToVersion49();
+                    tempVersion++;
                 default://NOSONAR, no break on purpose to run through all cases
                     // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
@@ -381,6 +387,16 @@ public class DatabaseVersion {
         }
     }
 
+    private static void updateToVersion49() throws SQLException {
+        if (!DatabaseVersion.checkIfColumnExists("urn_table", "urn")) {
+            try {
+                DatabaseVersion.runSql("ALTER TABLE urn_table ADD COLUMN urn VARCHAR(255) DEFAULT NULL;");
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+    }
+    
     private static void updateToVersion48() throws SQLException {
         if (!DatabaseVersion.checkIfColumnExists("benutzer", "displayrulesetcolumn")) {
             try {
