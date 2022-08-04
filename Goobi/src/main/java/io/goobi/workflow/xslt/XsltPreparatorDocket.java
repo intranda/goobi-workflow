@@ -218,7 +218,9 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         for (LogEntry entry : logEntry) {
             Element commentLine = new Element("comment", xmlns);
             commentLine.setAttribute("type", entry.getType().getTitle());
-            commentLine.setAttribute("user", entry.getUserName());
+            if (StringUtils.isNotBlank(entry.getUserName())) {
+                commentLine.setAttribute("user", entry.getUserName());
+            }
             commentLine.setText(entry.getContent());
             if (StringUtils.isNotBlank(entry.getSecondContent())) {
                 comment.setAttribute("secondField", entry.getSecondContent());
@@ -501,23 +503,30 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             if (includeImages) {
                 Element representative = new Element("representative", xmlns);
                 Path repImagePath = Paths.get(process.getRepresentativeImageAsString());
-                Image repimage = new Image(repImagePath, 0, 30000);
+                String folderName;
+                if (process.getImagesTifDirectory(true).equals(repImagePath.getParent().toString() + "/")) {
+                    folderName = "media";
+                } else {
+                    folderName = "master";
+                }
+                Image repimage = new Image(process, folderName, repImagePath.getFileName().toString(), 0, 3000);
+
                 representative.setAttribute("path", process.getRepresentativeImageAsString());
                 representative.setAttribute("url", repimage.getThumbnailUrl());
                 elements.add(representative);
 
                 // add all internal files
                 Path pIntern = Paths.get(process.getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
-                elements.add(getContentFiles("intern", pIntern.toString()));
+                elements.add(getContentFiles(process, "intern", pIntern.toString()));
 
                 // add all files from export folder
-                elements.add(getContentFiles("export", process.getExportDirectory()));
+                elements.add(getContentFiles(process, "export", process.getExportDirectory()));
 
                 // add all master files
-                elements.add(getContentFiles("master", process.getImagesOrigDirectory(false)));
+                elements.add(getContentFiles(process, "master", process.getImagesOrigDirectory(false)));
 
                 // add all master files
-                elements.add(getContentFiles("media", process.getImagesTifDirectory(false)));
+                elements.add(getContentFiles(process, "media", process.getImagesTifDirectory(false)));
             }
             // all log files together with their comments
             Element logfiles = new Element("log", xmlns);
@@ -531,7 +540,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                     cf.setAttribute("path", entry.getThirdContent());
 
                     Path imagePath = Paths.get(entry.getThirdContent());
-                    Image image = new Image(imagePath, 0, 30000);
+                    Image image =  new Image(process, "intern", imagePath.getFileName().toString(), 0, 3000);
                     cf.setAttribute("url", image.getThumbnailUrl());
 
                     logfiles.addContent(cf);
@@ -556,15 +565,22 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @return the main xml element
      * @throws IOException
      */
-    private Element getContentFiles(String label, String folder) throws IOException {
+    private Element getContentFiles(Process process, String label, String folder) throws IOException {
         Element contentfiles = new Element(label, xmlns);
         List<Path> files = StorageProvider.getInstance().listFiles(folder, NIOFileUtils.fileFilter);
         for (Path p : files) {
             Element cf = new Element("file", xmlns);
             cf.setAttribute("path", p.toString());
-            Image image = new Image(p, 0, 30000);
-            cf.setAttribute("url", image.getThumbnailUrl());
-            contentfiles.addContent(cf);
+
+            Image image;
+            try {
+                image = new Image(process, folder, p.getFileName().toString(), 0, 3000);
+                cf.setAttribute("url", image.getThumbnailUrl());
+                contentfiles.addContent(cf);
+            } catch (IOException | SwapException | DAOException e) {
+                log.error(e);
+            }
+
         }
         return contentfiles;
     }

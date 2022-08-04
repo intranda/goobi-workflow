@@ -333,15 +333,35 @@
                 <!-- SAVE -->
                 <c:if test="#{not Metadaten.nurLesenModus}">
                     <li>                   
+                    </li>
+                    <li>
+                        <!-- This button and the hidden button below have to
+                        work together to get the wanted effect here. This button
+                        is responsible for FIRST UNFOCUSING the currently
+                        focused input field and THEN SENDING the content to the
+                        belonging java bean. Because JSF has no reliable
+                        execution order between onclick() and the call of the
+                        belonging Java bean (it does not wait until Javascript
+                        terminates), the javascript of this button is used to do
+                        the unfocus-task first and then simulate the click of
+                        the other button (below, hidden) AFTER UNFOCUSING the
+                        currently focused field.-->
                         <button
-                            class="btn btn--icon"  
-                            jsf:id="saveMetsFileButton"
-                            aria-label="#{msgs.speichern}"
-                            jsf:action="#{Metadaten.Reload}" 
+                            jsf:class="btn btn--icon"  
+                            jsf:id="saveMetsFileButtonSimulation"
+                            onclick="document.activeElement.blur();document.getElementById('meMenuActionsForm:saveMetsFileButton').click();"
                             title="#{msgs.speichern}">
                             <i class="fa fa-floppy-o fa-lg" aria-hidden="true"></i>
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                             <f:passThroughAttribute name="data-placement" value="bottom" />
+                        </button>
+                        <!-- This button may not be removed or merged into the
+                        button above. It is called AFTER the javascript of the
+                        button above has terminated. -->
+                        <button
+                            style="display: none"
+                            jsf:id="saveMetsFileButton"
+                            jsf:action="#{Metadaten.Reload}">
                         </button>
 
                         <h:panelGroup

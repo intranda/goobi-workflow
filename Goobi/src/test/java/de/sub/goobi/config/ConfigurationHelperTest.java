@@ -183,16 +183,6 @@ public class ConfigurationHelperTest extends AbstractTest {
     }
 
     @Test
-    public void testGetGoobiContentServerUrl() {
-        assertEquals("", ConfigurationHelper.getInstance().getGoobiContentServerUrl());
-    }
-
-    @Test
-    public void testGetContentServerUrl() {
-        assertNull(ConfigurationHelper.getInstance().getContentServerUrl());
-    }
-
-    @Test
     public void testGetGoobiContentServerTimeOut() {
         assertEquals(60000, ConfigurationHelper.getInstance().getGoobiContentServerTimeOut());
     }

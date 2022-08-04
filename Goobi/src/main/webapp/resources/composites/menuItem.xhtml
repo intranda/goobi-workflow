@@ -22,7 +22,6 @@
 
 	<composite:implementation>
 		<li class="#{NavigationForm.aktuell == cc.attrs.id?'active':''}">
-		<script>console.log('menu item')</script>
 		<h:commandLink id="link" styleClass="#{cc.attrs.linkClass}" action="#{cc.attrs.action}">
 				<i class="#{cc.attrs.icon}"></i>
 				<span class="#{cc.attrs.fontclass}">#{cc.attrs.label}</span>

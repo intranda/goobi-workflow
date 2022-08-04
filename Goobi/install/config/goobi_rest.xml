@@ -41,4 +41,10 @@
         </method>
     </endpoint>
 -->
+    <endpoint path="/process/image/.*">
+        <method name="get">
+            <allow netmask="127.0.0.0/8"/>
+            <allow netmask="0:0:0:0:0:0:0:1/128"/>
+        </method>
+    </endpoint>
 </config>
