@@ -250,66 +250,102 @@ public class UserBean extends BasicBean implements Serializable {
 
     public String Speichern() {
 
-        String bla = this.myClass.getLogin();
-
-        if (!LoginValide(bla)) {
+        String userName = this.myClass.getLogin();
+        if (!this.isLoginNameValid(userName)) {
+            Helper.setFehlerMeldung("", "Error: Invalid login name: " + userName);
             return "";
         }
 
-        Integer userId = this.myClass.getId();
         try {
-            /* prüfen, ob schon ein anderer Benutzer mit gleichem Login existiert */
-            String query = "login='" + bla + "'AND BenutzerID !=" + userId;
-            if (userId == null) {
-                query = "login='" + bla + "'AND BenutzerID is not null";
-            }
-            int num = new UserManager().getHitSize(null, query, null);
-            if (num == 0) {
 
-                // The new password must fulfill the minimum password length (read from default configuration file)
-                int minimumLength = ConfigurationHelper.getInstance().getMinimumPasswordLength();
-                if (myClass.getPasswort() != null && myClass.getPasswort().length() < minimumLength) {
-                    this.displayMode = "";
-                    Helper.setFehlerMeldung("neuesPasswortNichtLangGenug", "" + minimumLength);
-                    return "";
-                }
+            // If the user is created now, the id will be generated later in the database and is null now.
+            // Otherwise the user object has already a valid id.
+            Integer userId = this.myClass.getId();
+            boolean createNewUser = userId == null;
 
-                if (myClass.getId() == null && !AuthenticationType.OPENID.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())
-                        && myClass.getPasswort() != null) {
-                    myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
-                }
-                //if there is only one institution, then it is not shown in ui and the value may be null:
-                if (myClass.getInstitutionId() == null) {
-                    List<SelectItem> lstInst = getInstitutionsAsSelectList();
-                    if (lstInst.size() > 0) {
-                        Integer inst = (Integer) lstInst.get(0).getValue();
-                        myClass.setInstitutionId(inst);
-                    }
-                }
-
-                UserManager.saveUser(this.myClass);
-                paginator.load();
-
-                resetChangeLists();
-
-                if (this.displayMode.equals("") && userId == null) {
-                    this.displayMode = "tab2";
-                    return "user_edit";
-                } else {
-                    this.displayMode = "";
-                    return "user_all";
-                }
-            } else {
-                Helper.setFehlerMeldung("", Helper.getTranslation("loginBereitsVergeben"));
+            if (createNewUser && this.existsUserName(userName)) {
+                // new user should be created, but user name is already in use
+                Helper.setFehlerMeldung("", "Error: User name is already in use: " + userName);
+                return "";
+            } else if (!createNewUser && !this.existsUserId(userId)) {
+                // existing user should be edited, but does not exist
+                Helper.setFehlerMeldung("", "Error: User can not be found in the database.");
                 return "";
             }
-        } catch (DAOException e) {
-            Helper.setFehlerMeldung("Error, could not save", e.getMessage());
+
+            if (createNewUser && !this.isPasswordValid()) {
+                // The 'FehlerMeldung' is already set in isPasswordValid() if the password is too short.
+                return "";
+            }
+
+            this.updateInstitutionId();
+
+            return this.saveUserAndLoadPaginator(false);
+
+        } catch (DAOException daoException) {
+            Helper.setFehlerMeldung("", "Error: Could not save user " + userName + "; exception: ", daoException.getMessage());
             return "";
         }
     }
 
-    private boolean LoginValide(String inLogin) {
+    private boolean isPasswordValid() {
+
+        // The new password must fulfill the minimum password length (read from default configuration file)
+        int minimumLength = ConfigurationHelper.getInstance().getMinimumPasswordLength();
+
+        if (myClass.getPasswort() == null || myClass.getPasswort().length() < minimumLength) {
+            this.displayMode = "";
+            Helper.setFehlerMeldung("neuesPasswortNichtLangGenug", "" + minimumLength);
+            return false;
+        }
+
+        if (!AuthenticationType.OPENID.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())) {
+            myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
+        }
+        return true;
+
+    }
+
+    private void updateInstitutionId() throws DAOException {
+        // if there is only one institution, then it is not shown in ui and the value may be null:
+        if (myClass.getInstitutionId() == null) {
+            List<SelectItem> institutionList = this.getInstitutionsAsSelectList();
+            if (institutionList.size() > 0) {
+                Integer institution = (Integer) institutionList.get(0).getValue();
+                myClass.setInstitutionId(institution);
+            }
+        }
+    }
+
+    private String saveUserAndLoadPaginator(boolean creatingUser) throws DAOException {
+
+        UserManager.saveUser(this.myClass);
+        paginator.load();
+
+        this.resetChangeLists();
+
+        if (this.displayMode.equals("") && creatingUser) {
+            this.displayMode = "tab2";
+            return "user_edit";
+        } else {
+            this.displayMode = "";
+            return "user_all";
+        }
+    }
+
+    private boolean existsUserName(String userName) throws DAOException {
+        String query = "login='" + userName + "'";
+        int numberOfUsers = new UserManager().getHitSize(null, query, null);
+        return numberOfUsers > 0;
+    }
+
+    private boolean existsUserId(Integer userId) throws DAOException {
+        String query = "BenutzerID='" + userId + "'";
+        int numberOfUsers = new UserManager().getHitSize(null, query, null);
+        return numberOfUsers > 0;
+    }
+
+    private boolean isLoginNameValid(String inLogin) {
         boolean valide = true;
         String patternStr = "[A-Za-z0-9@_\\-.]*";
         Pattern pattern = Pattern.compile(patternStr);
