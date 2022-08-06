@@ -1,131 +1,115 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration>
+<Configuration name="Goobi workflow">
 
-	<Properties>
-		<Property name="baseDir">/opt/digiverso/logs</Property>
-	</Properties>
+  <Properties>
+    <Property name="baseDir">/opt/digiverso/logs</Property>
+    <Property name="logLevel">$${env:LOGGERLEVEL:-ERROR}</Property>
+  </Properties>
 
 
-	<Appenders>
+  <ThresholdFilter level="TRACE" />
 
-		<!-- ******************************************************************* -->
-		<!-- LOG File                                                            -->
-		<!-- ******************************************************************* -->
-		<RollingFile
-			name="file"
-			fileName="${baseDir}/goobi.log"
-			filePattern="${baseDir}/goobi-%d{yyyy-MM-dd}.log"
-			append="true">
-			<PatternLayout>
-				<Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n</Pattern>
-			</PatternLayout>
-			<Policies>
-				<TimeBasedTriggeringPolicy interval="1" />
-			</Policies>
-			<!-- Due to the DSGVO, log outputs must be deleted after seven days because they may contain information about users -->
-			<DefaultRolloverStrategy>
-				<Delete basePath="${baseDir}">
-					<!-- Time format is ISO 8601 -->
-					<IfLastModified age="P7D" />
-				</Delete>
-			</DefaultRolloverStrategy>
-		</RollingFile>
-	
-		<!-- ******************************************************************* -->
-		<!-- STDOUT                                                              -->
-		<!-- ******************************************************************* -->
-		<Console name="STDOUT" target="SYSTEM_OUT">
-			<PatternLayout pattern="%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %location%n        %msg%n"/>
-		</Console>
 
-	</Appenders>
+  <Appenders>
+    <Console name="stdout">
+      <PatternLayout pattern="%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %location%n        %msg%n" />
+      <ThresholdFilter level="${logLevel}" />
+    </Console>
 
-    <!-- ******************************************************************* -->
-    <!-- APPENDER                                                            -->
-    <!-- ******************************************************************* -->
-	<Loggers>
-       <Logger name="org.goobi.production.properties" level="error" additivity="false">
-           <AppenderRef ref="file" />
-       </Logger>
-    
-        <Logger name="de.sub.goobi" level="debug" additivity="false">
-            <AppenderRef ref="file" level="debug"/>
-            <AppenderRef ref="STDOUT" level="${env:LOG_LEVEL:-error}"/>
-        </Logger>
-	    <Logger name="org.reflections" level="error" additivity="false">
-	        <AppenderRef ref="file" />
-	    </Logger>
-	    <Logger name="org.goobi" level="debug" additivity="false">
-	        <AppenderRef ref="file" level="debug"/>
-            <AppenderRef ref="STDOUT" level="${env:LOG_LEVEL:-error}"/>
-	    </Logger>
-        <Logger name="de.unigoettingen.sub.search.opac" level="debug" additivity="false">
-            <AppenderRef ref="file" level="debug"/>
-            <AppenderRef ref="STDOUT" level="${env:LOG_LEVEL:-error}"/>
-        </Logger>
+    <RollingFile name="goobi" fileName="${baseDir}/goobi.log" filePattern="${baseDir}/goobi.log.%d{yyyy-MM-dd}.gz">
+      <PatternLayout pattern="%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %location%n        %msg%n" />
+      <ThresholdFilter level="DEBUG" />
+      <CronTriggeringPolicy schedule="0 0 0 * * ?" />
+      <DefaultRolloverStrategy>
+        <Delete basePath="${baseDir}">
+          <IfFileName glob="goobi.log.*.gz" />
+          <IfLastModified age="7d" />
+        </Delete>
+      </DefaultRolloverStrategy>
+    </RollingFile>
 
-        <Logger name="ugh" level="debug" additivity="false">
-            <AppenderRef ref="file" level="error"/>
-            <AppenderRef ref="STDOUT" level="${env:LOG_LEVEL:-error}"/>
-        </Logger>
+    <!-- The trailing w from icsw is for 'workflow' and makes sure, that this configuration does not interfer 
+	     with the ics.log being specified in the Goobi viewer, just in case both applications are installed on
+	     the same server -->
+    <RollingFile name="ics" fileName="${baseDir}/icsw.log" filePattern="${baseDir}/icsw.log.%d{yyyy-MM-dd}.gz">
+      <PatternLayout pattern="%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %location%n        %msg%n" />
+      <ThresholdFilter level="DEBUG" />
+      <CronTriggeringPolicy schedule="0 0 0 * * ?" />
+      <DefaultRolloverStrategy>
+        <Delete basePath="${baseDir}">
+          <IfFileName glob="icsw.log.*.gz" />
+          <IfLastModified age="7d" />
+        </Delete>
+      </DefaultRolloverStrategy>
+    </RollingFile>
 
-	    <Logger name="de.unigoettingen.gdz.goobi.contentserver" level="error" additivity="false">
-	        <AppenderRef ref="file" />
-            <AppenderRef ref="STDOUT" />
-	    </Logger>
-	    
-	    <Logger name="de.unigoettingen.sub.commons" level="error" additivity="false">
-	        <AppenderRef ref="file" />
-            <AppenderRef ref="STDOUT" />
-	    </Logger>
-        <Logger name="de.intranda.goobi" level="debug" additivity="false">
-            <AppenderRef ref="file" level="debug"/>
-            <AppenderRef ref="STDOUT" level="${env:LOG_LEVEL:-error}"/>
-        </Logger>
-	
-	    <Logger name="org.quartz" level="error" additivity="false">
-	        <AppenderRef ref="file" />
-            <AppenderRef ref="STDOUT" />
-	    </Logger>
-	
-	    <Logger name="com.amazonaws" level="error" additivity="false">
-	        <AppenderRef ref="file" />
-            <AppenderRef ref="STDOUT" />
-	    </Logger>
-	
-		<Logger name="org.h2" level="warn" additivity="false">
-	        <AppenderRef ref="file" />
-            <AppenderRef ref="STDOUT" />
-	    </Logger>
-	    
-	    <Logger name="org.apache.myfaces" level="error" additivity="false">
-	        <AppenderRef ref="file" />
-            <AppenderRef ref="STDOUT" />
-	    </Logger>
-	    
-	    <Logger name="org.apache.http.wire" level="error" additivity="false">
-	        <AppenderRef ref="file" />
-            <AppenderRef ref="STDOUT" />
-	    </Logger>
-        <Logger name="org.apache.activemq" level="error" additivity="false">
-            <AppenderRef ref="file" />
-            <AppenderRef ref="STDOUT" />
-        </Logger>
-        
+    <RollingFile name="ugh" fileName="${baseDir}/ugh.log" filePattern="${baseDir}/ugh.log.%d{yyyy-MM-dd}.gz">
+      <PatternLayout pattern="%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %location%n        %msg%n" />
+      <ThresholdFilter level="DEBUG" />
+      <CronTriggeringPolicy schedule="0 0 0 * * ?" />
+      <DefaultRolloverStrategy>
+        <Delete basePath="${baseDir}">
+          <IfFileName glob="ugh.log.*.gz" />
+          <IfLastModified age="7d" />
+        </Delete>
+      </DefaultRolloverStrategy>
+    </RollingFile>
+  </Appenders>
 
-                
-        <Logger name="org.apache.catalina.connector.ClientAbortException" level="error" additivity="false">
-            <AppenderRef ref="file" />
-        </Logger>
-	
-	    <!-- ******************************************************************* -->
-	    <!-- ROOT LOGGER                                                         -->
-	    <!-- ******************************************************************* -->
-	
-	    <Root level="error">
-	        <AppenderRef ref="file" />
-	        <AppenderRef ref="STDOUT" />
-	    </Root>
-    </Loggers>
 
+  <Loggers>
+    <!-- Goobi workflow -->
+    <Logger name="org.goobi" level="TRACE" additivity="true">
+      <AppenderRef ref="goobi" />
+    </Logger>
+    <Logger name="de.sub.goobi" level="TRACE" additivity="true">
+      <AppenderRef ref="goobi" />
+    </Logger>
+    <Logger name="de.intranda.goobi" level="TRACE" additivity="true">
+      <AppenderRef ref="goobi" />
+    </Logger>
+    <Logger name="de.unigoettingen.sub.search.opac" level="TRACE" additivity="true">
+      <AppenderRef ref="goobi" />
+    </Logger>
+    <Logger name="de.unigoettingen.sub.commons" level="TRACE" additivity="true">
+      <AppenderRef ref="goobi" />
+    </Logger>
+
+    <!-- UGH -->
+    <Logger name="ugh" level="TRACE" additivity="false">
+        <AppenderRef ref="ugh" />
+    </Logger>
+
+    <!-- ContentServer -->
+    <Logger name="de.unigoettingen.sub.commons.contentlib" level="INFO" additivity="true">
+      <AppenderRef ref="ics" />
+    </Logger>
+
+    <!-- external libraries -->
+    <Logger name="org.quartz" level="WARN" additivity="true">
+        <AppenderRef ref="goobi" />
+    </Logger>
+    <Logger name="com.amazonaws" level="WARN" additivity="true">
+        <AppenderRef ref="goobi" />
+    </Logger>
+    <Logger name="org.h2" level="WARN" additivity="true">
+        <AppenderRef ref="goobi" />
+    </Logger>
+    <Logger name="org.apache.myfaces" level="WARN" additivity="true">
+        <AppenderRef ref="goobi" />
+    </Logger>
+    <Logger name="org.apache.http.wire" level="WARN" additivity="true">
+        <AppenderRef ref="goobi" />
+    </Logger>
+    <Logger name="org.apache.activemq" level="WARN" additivity="true">
+        <AppenderRef ref="goobi" />
+    </Logger>
+    <Logger name="org.reflections" level="WARN" additivity="true">
+        <AppenderRef ref="goobi" />
+    </Logger>
+
+    <Root level="ERROR">
+      <AppenderRef ref="stdout" />
+    </Root>
+  </Loggers>
 </Configuration>
