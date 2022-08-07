@@ -51,6 +51,7 @@
                 <ignoreVersion>2.4.0-b180725.0644</ignoreVersion>
                 <ignoreVersion>2.4.0-b180830.0438</ignoreVersion>
                 <ignoreVersion type="regex">3.*</ignoreVersion>
+                <ignoreVersion type="regex">4.*</ignoreVersion>
             </ignoreVersions>
         </rule>
     </rules>
