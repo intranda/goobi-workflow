@@ -89,50 +89,9 @@ public class ConfigurationHelper implements Serializable {
         return instance;
     }
 
-    public String getGoobiFolder() {
-        String goobiFolder = config.getString("goobiFolder", "/opt/digiverso/goobi/");
-        return goobiFolder;
-    }
-
-    private String getConfigLocalPath() {
-        return getGoobiFolder() + "config/";
-    }
-
-    private int getLocalInt(String inPath, int inDefault) {
-        try {
-            return configLocal.getInt(inPath, config.getInt(inPath, inDefault));
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return inDefault;
-        }
-    }
-
-    private int getLocalInt(String inPath) {
-        try {
-            return configLocal.getInt(inPath, config.getInt(inPath));
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return 0;
-        }
-    }
-
-    private long getLocalLong(String inPath, int inDefault) {
-        try {
-            return configLocal.getLong(inPath, config.getLong(inPath, inDefault));
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return inDefault;
-        }
-    }
-
-    private String getLocalString(String inPath, String inDefault) {
-        try {
-            return configLocal.getString(inPath, config.getString(inPath, inDefault));
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return inDefault;
-        }
-    }
+    /*
+     * methods to get raw data (like keys, lists, strings, boolean value, numbers, ...)
+     */
 
     public Iterator<String> getLocalKeys(String prefix) {
         Iterator<String> it = configLocal.getKeys(prefix);
@@ -142,25 +101,12 @@ public class ConfigurationHelper implements Serializable {
         return it;
     }
 
-    private String getLocalString(String inPath) {
-        return configLocal.getString(inPath, config.getString(inPath));
-    }
-
     private List<String> getLocalList(String inPath) {
         String[] localList = configLocal.getStringArray(inPath);
         if (localList == null || localList.length == 0) {
             return Arrays.asList(config.getStringArray(inPath));
         }
         return Arrays.asList(localList);
-    }
-
-    private boolean getLocalBoolean(String inPath, boolean inDefault) {
-        try {
-            return configLocal.getBoolean(inPath, config.getBoolean(inPath, inDefault));
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return inDefault;
-        }
     }
 
     private String[] getLocalStringArray(String inPath, String[] inDefault) {
@@ -182,19 +128,62 @@ public class ConfigurationHelper implements Serializable {
         }
     }
 
-    /*********************************** direct config results ***************************************/
-
-    /**
-     * den Pfad für die temporären Images zur Darstellung zurückgeben
-     */
-    public static String getTempImagesPath() {
-        return "/imagesTemp/";
+    private String getLocalString(String inPath) {
+        return configLocal.getString(inPath, config.getString(inPath));
     }
 
-    // needed for junit tests
+    private String getLocalString(String inPath, String inDefault) {
+        try {
+            return configLocal.getString(inPath, config.getString(inPath, inDefault));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return inDefault;
+        }
+    }
 
-    public static void setImagesPath(String path) {
-        imagesPath = path;
+    private int getLocalInt(String inPath) {
+        try {
+            return configLocal.getInt(inPath, config.getInt(inPath));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return 0;
+        }
+    }
+
+    private int getLocalInt(String inPath, int inDefault) {
+        try {
+            return configLocal.getInt(inPath, config.getInt(inPath, inDefault));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return inDefault;
+        }
+    }
+
+    private long getLocalLong(String inPath, int inDefault) {
+        try {
+            return configLocal.getLong(inPath, config.getLong(inPath, inDefault));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return inDefault;
+        }
+    }
+
+    private boolean getLocalBoolean(String inPath, boolean inDefault) {
+        try {
+            return configLocal.getBoolean(inPath, config.getBoolean(inPath, inDefault));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return inDefault;
+        }
+    }
+
+    /*
+     * category in goobi_config.properties: DIRECTORIES
+     */
+
+    public String getServletPathAsUrl() {
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        return context.getExternalContext().getRequestContextPath() + "/";
     }
 
     /**
@@ -220,12 +209,26 @@ public class ConfigurationHelper implements Serializable {
         return filename;
     }
 
-    public String getServletPathAsUrl() {
-        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        return context.getExternalContext().getRequestContextPath() + "/";
+    // needed for junit tests
+    public static void setImagesPath(String path) {
+        imagesPath = path;
     }
 
-    // folder
+    /**
+     * den Pfad für die temporären Images zur Darstellung zurückgeben
+     */
+    public static String getTempImagesPath() {
+        return "/imagesTemp/";
+    }
+
+    public String getGoobiFolder() {
+        String goobiFolder = config.getString("goobiFolder", "/opt/digiverso/goobi/");
+        return goobiFolder;
+    }
+
+    private String getConfigLocalPath() {
+        return getGoobiFolder() + "config/";
+    }
 
     public String getConfigurationFolder() {
         return getGoobiFolder() + "config/";
@@ -279,6 +282,11 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("doneDirectoryName", "fertig/");
     }
 
+    @Deprecated
+    public boolean isUseSwapping() {
+        return getLocalBoolean("useSwapping", false);
+    }
+
     public String getSwapPath() {
         return getLocalString("swapPath", "");
     }
@@ -297,6 +305,13 @@ public class ConfigurationHelper implements Serializable {
 
     public String getProcessImagesFallbackDirectoryName() {
         return getLocalString("process.folder.images.fallback", ""); // "{processtitle}_jpeg"
+    }
+
+    /**
+     * This method is used to get information about custom processes. The process name is part of the configuration key.
+     */
+    public String getAdditionalProcessFolderName(String foldername) {
+        return getLocalString("process.folder.images." + foldername, "");
     }
 
     public String getProcessOcrTxtDirectoryName() {
@@ -323,16 +338,6 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("process.folder.export", "export");
     }
 
-    /**
-     * Configure naming rule for any additional folder
-     * 
-     * @param folder
-     * @return
-     */
-    public String getAdditionalProcessFolderName(String foldername) {
-        return getLocalString("process.folder.images." + foldername, "");
-    }
-
     public boolean isCreateMasterDirectory() {
         return getLocalBoolean("createOrigFolderIfNotExists", true);
     }
@@ -340,6 +345,50 @@ public class ConfigurationHelper implements Serializable {
     public boolean isCreateSourceFolder() {
         return getLocalBoolean("createSourceFolder", false);
     }
+
+    /*
+     * category in goobi_config.properties: S3 BUCKET
+     */
+
+    public boolean useS3() {
+        return getLocalBoolean("useS3", false);
+    }
+
+    public boolean useCustomS3() {
+        return getLocalBoolean("useCustomS3", false);
+    }
+
+    public String getS3Endpoint() {
+        return getLocalString("S3Endpoint", "");
+    }
+
+    public String getS3Bucket() {
+        return getLocalString("S3bucket", null);
+    }
+
+    public String getS3AccessKeyID() {
+        return getLocalString("S3AccessKeyID", "");
+    }
+
+    public String getS3SecretAccessKey() {
+        return getLocalString("S3SecretAccessKey", "");
+    }
+
+    public int getS3ConnectionRetries() {
+        return getLocalInt("S3ConnectionRetry", 10);
+    }
+
+    public int getS3ConnectionTimeout() {
+        return getLocalInt("S3ConnectionTimeout", 10000);
+    }
+
+    public int getS3SocketTimeout() {
+        return getLocalInt("S3SocketTimeout", 10000);
+    }
+
+    /*
+     * category in goobi_config.properties: REST
+     */
 
     public int getNumberOfMetaBackups() {
         return getLocalInt("numberOfMetaBackups", 0);
@@ -415,42 +464,6 @@ public class ConfigurationHelper implements Serializable {
 
     public String getJwtSecret() {
         return getLocalString("jwtSecret", null);
-    }
-
-    public boolean useS3() {
-        return getLocalBoolean("useS3", false);
-    }
-
-    public String getS3Bucket() {
-        return getLocalString("S3bucket", null);
-    }
-
-    public boolean useCustomS3() {
-        return getLocalBoolean("useCustomS3", false);
-    }
-
-    public String getS3AccessKeyID() {
-        return getLocalString("S3AccessKeyID", "");
-    }
-
-    public String getS3SecretAccessKey() {
-        return getLocalString("S3SecretAccessKey", "");
-    }
-
-    public String getS3Endpoint() {
-        return getLocalString("S3Endpoint", "");
-    }
-
-    public int getS3ConnectionRetries() {
-        return getLocalInt("S3ConnectionRetry", 10);
-    }
-
-    public int getS3ConnectionTimeout() {
-        return getLocalInt("S3ConnectionTimeout", 10000);
-    }
-
-    public int getS3SocketTimeout() {
-        return getLocalInt("S3SocketTimeout", 10000);
     }
 
     // process creation
@@ -881,11 +894,6 @@ public class ConfigurationHelper implements Serializable {
     }
 
     // old parameter, remove them
-    @Deprecated
-    public boolean isUseSwapping() {
-        return getLocalBoolean("useSwapping", false);
-    }
-
     @Deprecated
     public int getGoobiModuleServerPort() {
         return getLocalInt("goobiModuleServerPort");
