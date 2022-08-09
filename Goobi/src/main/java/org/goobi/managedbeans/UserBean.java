@@ -250,9 +250,8 @@ public class UserBean extends BasicBean implements Serializable {
 
     public String Speichern() {
 
-        String userName = this.myClass.getLogin();
-        if (!this.isLoginNameValid(userName)) {
-            Helper.setFehlerMeldung("", "Error: Invalid login name: " + userName);
+        String userName = myClass.getLogin();
+        if (!isLoginNameValid(userName)) {
             return "";
         }
 
@@ -263,24 +262,24 @@ public class UserBean extends BasicBean implements Serializable {
             Integer userId = this.myClass.getId();
             boolean createNewUser = userId == null;
 
-            if (createNewUser && this.existsUserName(userName)) {
+            if (createNewUser && existsUserName(userName)) {
                 // new user should be created, but user name is already in use
                 Helper.setFehlerMeldung("", "Error: User name is already in use: " + userName);
                 return "";
-            } else if (!createNewUser && !this.existsUserId(userId)) {
+            } else if (!createNewUser && !existsUserId(userId)) {
                 // existing user should be edited, but does not exist
                 Helper.setFehlerMeldung("", "Error: User can not be found in the database.");
                 return "";
             }
 
-            if (createNewUser && !this.isPasswordValid()) {
+            if (createNewUser && !isPasswordValid()) {
                 // The 'FehlerMeldung' is already set in isPasswordValid() if the password is too short.
                 return "";
             }
 
-            this.updateInstitutionId();
+            updateInstitutionId();
 
-            return this.saveUserAndLoadPaginator(false);
+            return saveUserAndLoadPaginator(false);
 
         } catch (DAOException daoException) {
             Helper.setFehlerMeldung("", "Error: Could not save user " + userName + "; exception: ", daoException.getMessage());
@@ -289,17 +288,17 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     private boolean isPasswordValid() {
-
-        // The new password must fulfill the minimum password length (read from default configuration file)
-        int minimumLength = ConfigurationHelper.getInstance().getMinimumPasswordLength();
-
-        if (myClass.getPasswort() == null || myClass.getPasswort().length() < minimumLength) {
-            this.displayMode = "";
-            Helper.setFehlerMeldung("neuesPasswortNichtLangGenug", "" + minimumLength);
-            return false;
-        }
-
         if (!AuthenticationType.OPENID.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())) {
+
+            // The new password must fulfill the minimum password length (read from default configuration file)
+            int minimumLength = ConfigurationHelper.getInstance().getMinimumPasswordLength();
+
+            if (myClass.getPasswort() == null || myClass.getPasswort().length() < minimumLength) {
+                this.displayMode = "";
+                Helper.setFehlerMeldung("neuesPasswortNichtLangGenug", "" + minimumLength);
+                return false;
+            }
+
             myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
         }
         return true;
@@ -310,7 +309,7 @@ public class UserBean extends BasicBean implements Serializable {
         // if there is only one institution, then it is not shown in ui and the value may be null:
         if (myClass.getInstitutionId() == null) {
             List<SelectItem> institutionList = this.getInstitutionsAsSelectList();
-            if (institutionList.size() > 0) {
+            if (!institutionList.isEmpty()) {
                 Integer institution = (Integer) institutionList.get(0).getValue();
                 myClass.setInstitutionId(institution);
             }
