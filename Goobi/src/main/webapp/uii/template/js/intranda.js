@@ -1,3 +1,8 @@
+// HELPER: check if an element exists
+function isElement(element) {
+  return typeof element != 'undefined' && element != null;
+}
+
 function toggle( id ) {
     var element = document.getElementById( id );
     if ( element.style.display == 'block' ) {
@@ -276,6 +281,9 @@ function loadMenu() {
 	let menu = document.getElementById("main-menu-set-class");
 	let wide = document.getElementsByClassName("rendered-in-wide-window");
 	let small = document.getElementsByClassName("rendered-in-small-window");
+
+  if(!isElement(menu)) return
+    
 	for (let index = 0; index < wide.length; index++) {
 		wide[index].style.display = (width >= maximumWidth ? "block" : "none");
 	}
