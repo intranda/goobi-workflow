@@ -80,7 +80,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class NIOFileUtils implements StorageProviderInterface {
 
-    public static final CopyOption[] STANDARD_COPY_OPTIONS =
+    protected static final CopyOption[] STANDARD_COPY_OPTIONS =
             new CopyOption[] { StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES };
 
     /**
@@ -92,22 +92,8 @@ public class NIOFileUtils implements StorageProviderInterface {
      */
     @Override
     public Integer getNumberOfFiles(Path inDir) {
-        int anzahl = 0;
-        if (Files.isDirectory(inDir)) {
-            /* --------------------------------
-             * die Images zählen
-             * --------------------------------*/
-            anzahl = list(inDir.toString(), DATA_FILTER).size();
 
-            /* --------------------------------
-             * die Unterverzeichnisse durchlaufen
-             * --------------------------------*/
-            List<String> children = this.list(inDir.toString());
-            for (String child : children) {
-                anzahl += getNumberOfPaths(Paths.get(inDir.toString(), child));
-            }
-        }
-        return anzahl;
+        return getNumberOfPaths(inDir);
     }
 
     @Override
@@ -391,72 +377,79 @@ public class NIOFileUtils implements StorageProviderInterface {
 
     @Override
     public void copyDirectory(final Path source, final Path target) throws IOException {
+        copyDirectory(source, target, true);
+    }
+
+    @Override
+    public void copyDirectory(final Path source, final Path target, boolean copyPermissions) throws IOException {
         Files.walkFileTree(source, EnumSet.of(FileVisitOption.FOLLOW_LINKS), Integer.MAX_VALUE, new FileVisitor<Path>() {
 
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes sourceBasic) throws IOException {
                 Path targetDir = Files.createDirectories(target.resolve(source.relativize(dir)));
                 FileStore fileStore = Files.getFileStore(targetDir);
-                AclFileAttributeView acl = Files.getFileAttributeView(dir, AclFileAttributeView.class);
-                if (acl != null) {
-                    if (fileStore.supportsFileAttributeView(AclFileAttributeView.class)) {
-                        AclFileAttributeView aclFileAttributeView = Files.getFileAttributeView(targetDir, AclFileAttributeView.class);
-                        aclFileAttributeView.setAcl(acl.getAcl());
+                if (copyPermissions) {
+                    AclFileAttributeView acl = Files.getFileAttributeView(dir, AclFileAttributeView.class);
+                    if (acl != null) {
+                        if (fileStore.supportsFileAttributeView(AclFileAttributeView.class)) {
+                            AclFileAttributeView aclFileAttributeView = Files.getFileAttributeView(targetDir, AclFileAttributeView.class);
+                            aclFileAttributeView.setAcl(acl.getAcl());
+                        }
                     }
-                }
 
-                DosFileAttributeView dosAttrs = Files.getFileAttributeView(dir, DosFileAttributeView.class);
-                if (dosAttrs != null) {
-                    if (fileStore.supportsFileAttributeView(DosFileAttributeView.class)) {
-                        DosFileAttributes sourceDosAttrs = dosAttrs.readAttributes();
-                        DosFileAttributeView targetDosAttrs = Files.getFileAttributeView(targetDir, DosFileAttributeView.class);
-                        targetDosAttrs.setArchive(sourceDosAttrs.isArchive());
-                        targetDosAttrs.setHidden(sourceDosAttrs.isHidden());
-                        targetDosAttrs.setReadOnly(sourceDosAttrs.isReadOnly());
-                        targetDosAttrs.setSystem(sourceDosAttrs.isSystem());
-                    }
-                }
-                try {
-                    FileOwnerAttributeView ownerAttrs = Files.getFileAttributeView(dir, FileOwnerAttributeView.class);
-                    if (ownerAttrs != null) {
-                        if (fileStore.supportsFileAttributeView(FileOwnerAttributeView.class)) {
-                            FileOwnerAttributeView targetOwner = Files.getFileAttributeView(targetDir, FileOwnerAttributeView.class);
-                            targetOwner.setOwner(ownerAttrs.getOwner());
+                    DosFileAttributeView dosAttrs = Files.getFileAttributeView(dir, DosFileAttributeView.class);
+                    if (dosAttrs != null) {
+                        if (fileStore.supportsFileAttributeView(DosFileAttributeView.class)) {
+                            DosFileAttributes sourceDosAttrs = dosAttrs.readAttributes();
+                            DosFileAttributeView targetDosAttrs = Files.getFileAttributeView(targetDir, DosFileAttributeView.class);
+                            targetDosAttrs.setArchive(sourceDosAttrs.isArchive());
+                            targetDosAttrs.setHidden(sourceDosAttrs.isHidden());
+                            targetDosAttrs.setReadOnly(sourceDosAttrs.isReadOnly());
+                            targetDosAttrs.setSystem(sourceDosAttrs.isSystem());
                         }
                     }
-                } catch (AccessDeniedException | FileNotFoundException exception) {
-                    log.error(exception);
-                }
-                try {
-                    PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
-                    if (posixAttrs != null) {
-                        if (fileStore.supportsFileAttributeView(PosixFileAttributeView.class)) {
-                            PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
-                            PosixFileAttributeView targetPosix = Files.getFileAttributeView(targetDir, PosixFileAttributeView.class);
-                            targetPosix.setPermissions(sourcePosix.permissions());
-                            targetPosix.setGroup(sourcePosix.group());
+                    try {
+                        FileOwnerAttributeView ownerAttrs = Files.getFileAttributeView(dir, FileOwnerAttributeView.class);
+                        if (ownerAttrs != null) {
+                            if (fileStore.supportsFileAttributeView(FileOwnerAttributeView.class)) {
+                                FileOwnerAttributeView targetOwner = Files.getFileAttributeView(targetDir, FileOwnerAttributeView.class);
+                                targetOwner.setOwner(ownerAttrs.getOwner());
+                            }
+                        }
+                    } catch (AccessDeniedException | FileNotFoundException exception) {
+                        log.error(exception);
+                    }
+                    try {
+                        PosixFileAttributeView posixAttrs = Files.getFileAttributeView(dir, PosixFileAttributeView.class);
+                        if (posixAttrs != null) {
+                            if (fileStore.supportsFileAttributeView(PosixFileAttributeView.class)) {
+                                PosixFileAttributes sourcePosix = posixAttrs.readAttributes();
+                                PosixFileAttributeView targetPosix = Files.getFileAttributeView(targetDir, PosixFileAttributeView.class);
+                                targetPosix.setPermissions(sourcePosix.permissions());
+                                targetPosix.setGroup(sourcePosix.group());
+                            }
+                        }
+                    } catch (AccessDeniedException | FileNotFoundException exception) {
+                        log.error(exception);
+                    }
+                    UserDefinedFileAttributeView userAttrs = Files.getFileAttributeView(dir, UserDefinedFileAttributeView.class);
+                    if (userAttrs != null) {
+                        if (fileStore.supportsFileAttributeView(UserDefinedFileAttributeView.class)) {
+                            UserDefinedFileAttributeView targetUser = Files.getFileAttributeView(targetDir, UserDefinedFileAttributeView.class);
+                            for (String key : userAttrs.list()) {
+                                ByteBuffer buffer = ByteBuffer.allocate(userAttrs.size(key));
+                                userAttrs.read(key, buffer);
+                                buffer.flip();
+                                targetUser.write(key, buffer);
+                            }
                         }
                     }
-                } catch (AccessDeniedException | FileNotFoundException exception) {
-                    log.error(exception);
-                }
-                UserDefinedFileAttributeView userAttrs = Files.getFileAttributeView(dir, UserDefinedFileAttributeView.class);
-                if (userAttrs != null) {
-                    if (fileStore.supportsFileAttributeView(UserDefinedFileAttributeView.class)) {
-                        UserDefinedFileAttributeView targetUser = Files.getFileAttributeView(targetDir, UserDefinedFileAttributeView.class);
-                        for (String key : userAttrs.list()) {
-                            ByteBuffer buffer = ByteBuffer.allocate(userAttrs.size(key));
-                            userAttrs.read(key, buffer);
-                            buffer.flip();
-                            targetUser.write(key, buffer);
-                        }
+                    // Must be done last, otherwise last-modified time may be
+                    // wrong
+                    BasicFileAttributeView targetBasic = Files.getFileAttributeView(targetDir, BasicFileAttributeView.class);
+                    if (targetBasic != null) {
+                        targetBasic.setTimes(sourceBasic.lastModifiedTime(), sourceBasic.lastAccessTime(), sourceBasic.creationTime());
                     }
-                }
-                // Must be done last, otherwise last-modified time may be
-                // wrong
-                BasicFileAttributeView targetBasic = Files.getFileAttributeView(targetDir, BasicFileAttributeView.class);
-                if (targetBasic != null) {
-                    targetBasic.setTimes(sourceBasic.lastModifiedTime(), sourceBasic.lastAccessTime(), sourceBasic.creationTime());
                 }
                 return FileVisitResult.CONTINUE;
             }
@@ -550,9 +543,7 @@ public class NIOFileUtils implements StorageProviderInterface {
     @Override
     public long checksumMappedFile(String filepath) throws IOException {
 
-        FileInputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream(filepath);
+        try (FileInputStream inputStream = new FileInputStream(filepath)) {
 
             FileChannel fileChannel = inputStream.getChannel();
 
@@ -571,10 +562,6 @@ public class NIOFileUtils implements StorageProviderInterface {
             }
 
             return crc.getValue();
-        } finally {
-            if (inputStream != null) {
-                inputStream.close();
-            }
         }
     }
 
@@ -600,6 +587,7 @@ public class NIOFileUtils implements StorageProviderInterface {
         try {
             return Files.deleteIfExists(dir);
         } catch (IOException e) {
+            log.info(e);
         }
         return false;
     }
@@ -725,6 +713,7 @@ public class NIOFileUtils implements StorageProviderInterface {
                     }
                 }
             } catch (IOException ex) {
+                log.info(ex);
             }
         }
         return true;
@@ -820,6 +809,7 @@ public class NIOFileUtils implements StorageProviderInterface {
             // first try to detect mimetype from OS map
             mimeType = Files.probeContentType(path);
         } catch (IOException e) {
+            log.info(e);
         }
         // if this didn't work, try to get it from the internal FileNameMap to resolve the type from the extension
         if (StringUtils.isBlank(mimeType)) {
