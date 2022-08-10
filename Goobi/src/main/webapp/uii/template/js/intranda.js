@@ -300,12 +300,12 @@ function loadMenu() {
 			hasDropdownMenu[index].classList.add("dropdown-menu");
 		}
 		let containerFluid = document.getElementsByClassName("add-container-fluid-in-wide-window");
-		console.log("fluid", containerFluid)
+		// console.log("fluid", containerFluid)
 		for (let index = 0; index < containerFluid.length; index++) {
 			containerFluid[index].classList.add("container-fluid");
 		}
 		let hasSubmenu = document.getElementsByClassName("add-has-submenu-in-small-window");
-		console.log(hasSubmenu)
+		// console.log(hasSubmenu)
 		for (let index = 0; index < hasSubmenu.length; index++) {
 			hasSubmenu[index].classList.remove("has-submenu");
 		}
@@ -320,12 +320,12 @@ function loadMenu() {
 			hasDropdownMenu[index].classList.remove("dropdown-menu");
 		}
 		let containerFluid = document.getElementsByClassName("add-container-fluid-in-wide-window");
-		console.log(containerFluid)
+		// console.log(containerFluid)
 		for (let index = 0; index < containerFluid.length; index++) {
 			containerFluid[index].classList.remove("container-fluid");
 		}
 		let hasSubmenu = document.getElementsByClassName("add-has-submenu-in-small-window");
-		console.log("hasSubmenu", hasSubmenu)
+		// console.log("hasSubmenu", hasSubmenu)
 		for (let index = 0; index < hasSubmenu.length; index++) {
 			hasSubmenu[index].classList.add("has-submenu");
 		}
