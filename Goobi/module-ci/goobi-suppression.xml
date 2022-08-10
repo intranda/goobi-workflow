@@ -79,9 +79,16 @@
    ]]></notes>
         <packageUrl regex="true">^pkg:javascript/moment\.js@.*$</packageUrl>
         <cve>CVE-2022-24785</cve>
-        <!-- effects jquery ui checkboxradio, which is not used -->
-        <cve>CVE-2022-31160</cve>
     </suppress>
+    <!-- effects jquery ui checkboxradio, which is not used -->
+    <suppress>
+       <notes><![CDATA[
+       file name: primefaces-11.0.0.jar: jquery-plugins.js
+       ]]></notes>
+       <packageUrl regex="true">^pkg:javascript/jquery\-ui@.*$</packageUrl>
+       <cve>CVE-2022-31160</cve>
+    </suppress>    
+    
     <suppress>
        <notes><![CDATA[
        file name: weld-servlet-shaded-3.1.9.Final.jar: probe.js
