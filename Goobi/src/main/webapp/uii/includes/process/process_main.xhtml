@@ -373,7 +373,8 @@
 
                                     <h:outputText value="#{msgs.docket}:" />
                                     <h:outputText value="#{ProzessverwaltungForm.myProzess.docket.name}" />
-
+									
+<!-- 									<h:outputText value="#{msgs.exportValidation}:" /> -->
                                     <h:outputText value="#{msgs.inAuswahllisteAnzeigen}:" />
                                     <i class="fa #{ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen?'fa-check-square-o':'fa-square-o'}"></i>
 
@@ -494,6 +495,16 @@
                                 selectItems="#{ProzessverwaltungForm.docketSelectionList}"
                                 fieldStyle="form-control"
                                 required="true" />
+                                
+<!--                             <intranda:formInputDropDown
+                                id="exportValidation"
+                                label="#{msgs.exportValidation}"
+                                field="#{ProzessverwaltungForm.exportValidationSelection}"
+                                help="#{msgs.helpExportValidation}"
+                                name="docket_name"
+                                selectItems="#{ProzessverwaltungForm.exportValidationSelectionList}"
+                                fieldStyle="form-control"
+                                required="true" /> -->
 
                             <intranda:formInputCheckBox
                                 id="showSelection"
