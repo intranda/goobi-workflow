@@ -387,6 +387,308 @@ public class ConfigurationHelper implements Serializable {
     }
 
     /*
+     * category in goobi_config.properties: TRUSTSTORE
+     */
+
+    public String getTruststore() {
+        return getLocalString("truststore");
+    }
+
+    public String getTruststoreToken() {
+        return getLocalString("truststore_password");
+    }
+
+    /*
+     * category in goobi_config.properties: LDAP
+     */
+
+    public boolean isUseLdap() {
+        return getLocalBoolean("ldap_use", false);
+    }
+
+    /**
+     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
+     * @return
+     */
+    @Deprecated
+    public String getLdapUrl() {
+        return getLocalString("ldap_url");
+    }
+
+    /**
+     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
+     * @return
+     */
+    @Deprecated
+    public String getLdapAdminLogin() {
+        return getLocalString("ldap_adminLogin");
+    }
+
+    /**
+     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
+     * @return
+     */
+    @Deprecated
+    public String getLdapAdminPassword() {
+        return getLocalString("ldap_adminPassword");
+    }
+
+    /**
+     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
+     * @return
+     */
+    @Deprecated
+    public String getLdapAttribute() {
+        return getLocalString("ldap_AttributeToTest", null);
+    }
+
+    /**
+     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
+     * @return
+     */
+    @Deprecated
+    public String getLdapAttributeValue() {
+        return getLocalString("ldap_ValueOfAttribute");
+    }
+
+    /**
+     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
+     * @return
+     */
+    @Deprecated
+    public String getLdapNextId() {
+        return getLocalString("ldap_nextFreeUnixId");
+    }
+
+    /**
+     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
+     * @return
+     */
+    @Deprecated
+    public String getLdapRootCert() {
+        return getLocalString("ldap_cert_root");
+    }
+
+    /**
+     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
+     * @return
+     */
+    @Deprecated
+    public String getLdapPdcCert() {
+        return getLocalString("ldap_cert_pdc");
+    }
+
+    /**
+     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
+     * @return
+     */
+    @Deprecated
+    public String getLdapEncryption() {
+        return getLocalString("ldap_encryption", "SHA");
+    }
+
+    /**
+     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
+     * @return
+     */
+    @Deprecated
+    public boolean isUseLdapSSLConnection() {
+        return getLocalBoolean("ldap_sslconnection", false);
+    }
+
+    /**
+     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
+     * @return
+     */
+    @Deprecated
+    public boolean isLdapReadOnly() {
+        return getLocalBoolean("ldap_readonly", false);
+    }
+
+    /**
+     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
+     * @return
+     */
+    @Deprecated
+    public boolean isLdapReadDirectoryAnonymous() {
+        return getLocalBoolean("ldap_readDirectoryAnonymous", false);
+    }
+
+    /**
+     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
+     * @return
+     */
+    @Deprecated
+    public boolean isLdapUseLocalDirectory() {
+        return getLocalBoolean("useLocalDirectory", false);
+    }
+
+    /**
+     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
+     * @return
+     */
+    @Deprecated
+    public String getLdapHomeDirectory() {
+        return getLocalString("ldap_homeDirectory", "homeDirectory");
+    }
+
+    /**
+     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
+     * 
+     * @return
+     */
+    @Deprecated
+    public boolean isLdapUseTLS() {
+        return getLocalBoolean("ldap_useTLS", false);
+    }
+
+    /*
+     * category in goobi_config.properties: MESSAGE BROKER
+     */
+
+    public boolean isStartInternalMessageBroker() {
+        return getLocalBoolean("MessageBrokerStart", false);
+    }
+
+    public String getActiveMQConfigPath() {
+        return getLocalString("ActiveMQConfig", getConfigurationFolder() + "goobi_activemq.xml");
+    }
+
+    // WARNING: The method getMessageBrokerUrl() is used by the Spring framework and has an empty call hierarchy in goobi workflow.
+    public String getMessageBrokerUrl() {
+        return getLocalString("MessageBrokerServer", "localhost");
+    }
+
+    // WARNING: The method getMessageBrokerPort() is used by the Spring framework and has an empty call hierarchy in goobi workflow.
+    public int getMessageBrokerPort() {
+        return getLocalInt("MessageBrokerPort", 61616);
+    }
+
+    public String getMessageBrokerUsername() {
+        return getLocalString("MessageBrokerUsername");
+    }
+
+    public String getMessageBrokerPassword() {
+        return getLocalString("MessageBrokerPassword");
+    }
+
+    public int getNumberOfParallelMessages() {
+        return getLocalInt("MessageBrokerNumberOfParallelMessages", 1);
+    }
+
+    public boolean isAllowExternalQueue() {
+        return getLocalBoolean("allowExternalQueue", false);
+    }
+
+    public String getExternalQueueType() {
+        return getLocalString("externalQueueType", "activeMQ").toUpperCase();
+    }
+
+    public boolean isUseLocalSQS() {
+        return getLocalBoolean("useLocalSQS", false);
+    }
+
+    public String getQueueName(QueueType type) {
+        String configName = type.getConfigName();
+        String queueName = System.getenv(configName);
+        if (queueName == null) {
+            return getLocalString(configName, type.getName());
+        }
+        return queueName;
+    }
+
+    /*
+     * category in goobi_config.properties: OPEN ID CONNECT
+     */
+
+    public boolean isUseOpenIDConnect() {
+        return getLocalBoolean("useOpenIdConnect", false);
+    }
+
+    public boolean isOIDCAutoRedirect() {
+        return getLocalBoolean("OIDCAutoRedirect", false);
+    }
+
+    public String getOIDCAuthEndpoint() {
+        return getLocalString("OIDCAuthEndpoint", "");
+    }
+
+    public String getOIDCLogoutEndpoint() {
+        return getLocalString("OIDCLogoutEndpoint", "");
+    }
+
+    public String getOIDCIssuer() {
+        return getLocalString("OIDCIssuer", "");
+    }
+
+    public String getOIDCJWKSet() {
+        return getLocalString("OIDCJWKSet", "");
+    }
+
+    public String getOIDCClientID() {
+        return getLocalString("OIDCClientID", "");
+    }
+
+    public String getOIDCIdClaim() {
+        return getLocalString("OIDCIdClaim", "email");
+    }
+
+    public boolean isUseOIDCSSOLogout() {
+        return getLocalBoolean("useOIDCSSOLogout", false);
+    }
+
+    /*
+     * category in goobi_config.properties: SINGLE SIGN ON
+     */
+
+    public boolean isEnableHeaderLogin() {
+        return getLocalBoolean("EnableHeaderLogin", false);
+    }
+
+    public String getSsoHeaderName() {
+        return getLocalString("SsoHeaderName", "Casauthn");
+    }
+
+    public String getSsoParameterType() {
+        // 'header' or 'attribute'
+        return getLocalString("SsoParameterType", "header");
+    }
+
+    public boolean isShowSSOLogoutPage() {
+        return getLocalBoolean("showSSOLogoutPage", false);
+    }
+
+    /*
+     * category in goobi_config.properties: EXTERNAL USERS
+     */
+
+    public boolean isEnableExternalUserLogin() {
+        return getLocalBoolean("EnableExternalUserLogin", false);
+    }
+
+    public String getExternalUserDefaultInstitutionName() {
+        return getLocalString("ExternalUserDefaultInstitution");
+    }
+
+    public String getExternalUserDefaultAuthenticationType() {
+        return getLocalString("ExternalUserDefaultAuthentication");
+    }
+
+    /*
      * category in goobi_config.properties: REST
      */
 
@@ -529,178 +831,6 @@ public class ConfigurationHelper implements Serializable {
     public int getMinimumPasswordLength() {
         int minimum = getLocalInt("minimumPasswordLength", 8);
         return minimum >= 1 ? minimum : 1;
-    }
-
-    @Deprecated
-    /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
-     * @return
-     */
-    public String getLdapAdminLogin() {
-        return getLocalString("ldap_adminLogin");
-    }
-
-    @Deprecated
-    /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
-     * @return
-     */
-    public String getLdapAdminPassword() {
-        return getLocalString("ldap_adminPassword");
-    }
-
-    @Deprecated
-    /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
-     * @return
-     */
-    public String getLdapUrl() {
-        return getLocalString("ldap_url");
-    }
-
-    @Deprecated
-    /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
-     * @return
-     */
-    public String getLdapAttribute() {
-        return getLocalString("ldap_AttributeToTest", null);
-    }
-
-    @Deprecated
-    /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
-     * @return
-     */
-    public String getLdapAttributeValue() {
-        return getLocalString("ldap_ValueOfAttribute");
-    }
-
-    @Deprecated
-    /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
-     * @return
-     */
-    public String getLdapNextId() {
-        return getLocalString("ldap_nextFreeUnixId");
-    }
-
-    /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
-     * @return
-     */
-    public String getTruststore() {
-        return getLocalString("truststore");
-    }
-
-    /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
-     * @return
-     */
-    public String getTruststoreToken() {
-        return getLocalString("truststore_password");
-    }
-
-    @Deprecated
-    /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
-     * @return
-     */
-    public String getLdapRootCert() {
-        return getLocalString("ldap_cert_root");
-    }
-
-    @Deprecated
-    /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
-     * @return
-     */
-    public String getLdapPdcCert() {
-        return getLocalString("ldap_cert_pdc");
-    }
-
-    @Deprecated
-    /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
-     * @return
-     */
-    public String getLdapEncryption() {
-        return getLocalString("ldap_encryption", "SHA");
-    }
-
-    @Deprecated
-    /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
-     * @return
-     */
-    public boolean isUseLdapSSLConnection() {
-        return getLocalBoolean("ldap_sslconnection", false);
-    }
-
-    public boolean isUseLdap() {
-        return getLocalBoolean("ldap_use", false);
-    }
-
-    @Deprecated
-    /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
-     * @return
-     */
-    public boolean isLdapReadOnly() {
-        return getLocalBoolean("ldap_readonly", false);
-    }
-
-    @Deprecated
-    /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
-     * @return
-     */
-    public boolean isLdapReadDirectoryAnonymous() {
-        return getLocalBoolean("ldap_readDirectoryAnonymous", false);
-    }
-
-    @Deprecated
-    /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
-     * @return
-     */
-    public boolean isLdapUseLocalDirectory() {
-        return getLocalBoolean("useLocalDirectory", false);
-    }
-
-    @Deprecated
-    /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
-     * @return
-     */
-    public String getLdapHomeDirectory() {
-        return getLocalString("ldap_homeDirectory", "homeDirectory");
-    }
-
-    @Deprecated
-    /**
-     * This method is deprecated. The information was moved to the database. The method is still needed during the migration
-     * 
-     * @return
-     */
-    public boolean isLdapUseTLS() {
-        return getLocalBoolean("ldap_useTLS", false);
     }
 
     public List<String> getAdditionalUserRights() {
@@ -999,34 +1129,6 @@ public class ConfigurationHelper implements Serializable {
         return getLocalList("excludeMonitoringAgentName");
     }
 
-    public boolean isStartInternalMessageBroker() {
-        return getLocalBoolean("MessageBrokerStart", false);
-    }
-
-    public int getNumberOfParallelMessages() {
-        return getLocalInt("MessageBrokerNumberOfParallelMessages", 1);
-    }
-
-    public String getMessageBrokerUrl() {
-        return getLocalString("MessageBrokerServer", "localhost");
-    }
-
-    public int getMessageBrokerPort() {
-        return getLocalInt("MessageBrokerPort", 61616);
-    }
-
-    public String getMessageBrokerUsername() {
-        return getLocalString("MessageBrokerUsername");
-    }
-
-    public String getMessageBrokerPassword() {
-        return getLocalString("MessageBrokerPassword");
-    }
-
-    public String getActiveMQConfigPath() {
-        return getLocalString("ActiveMQConfig", getConfigurationFolder() + "goobi_activemq.xml");
-    }
-
     /**
      * Check if Mysql or H2 is used as internal database
      *
@@ -1057,106 +1159,20 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("TaskEnableFinalizeButton", true);
     }
 
-    public boolean isUseOpenIDConnect() {
-        return getLocalBoolean("useOpenIdConnect", false);
-    }
-
-    public boolean isOIDCAutoRedirect() {
-        return getLocalBoolean("OIDCAutoRedirect", false);
-    }
-
-    public String getOIDCAuthEndpoint() {
-        return getLocalString("OIDCAuthEndpoint", "");
-    }
-
-    public String getOIDCLogoutEndpoint() {
-        return getLocalString("OIDCLogoutEndpoint", "");
-    }
-
-    public boolean isUseOIDCSSOLogout() {
-        return getLocalBoolean("useOIDCSSOLogout", false);
-    }
-
-    public String getOIDCIssuer() {
-        return getLocalString("OIDCIssuer", "");
-    }
-
-    public String getOIDCJWKSet() {
-        return getLocalString("OIDCJWKSet", "");
-    }
-
-    public String getOIDCClientID() {
-        return getLocalString("OIDCClientID", "");
-    }
-
-    public String getOIDCIdClaim() {
-        return getLocalString("OIDCIdClaim", "email");
-    }
-
-    public String getSsoHeaderName() {
-        return getLocalString("SsoHeaderName", "Casauthn");
-    }
-
-    public boolean isEnableHeaderLogin() {
-        return getLocalBoolean("EnableHeaderLogin", false);
-    }
-
-    public String getSsoParameterType() {
-        // 'header' or 'attribute'
-        return getLocalString("SsoParameterType", "header");
-    }
-
-    public boolean isEnableExternalUserLogin() {
-        return getLocalBoolean("EnableExternalUserLogin", false);
-    }
-
-    public String getExternalUserDefaultInstitutionName() {
-        return getLocalString("ExternalUserDefaultInstitution");
-    }
-
-    public String getExternalUserDefaultAuthenticationType() {
-        return getLocalString("ExternalUserDefaultAuthentication");
-    }
-
     public boolean isRenderReimport() {
         return getLocalBoolean("renderReimport", false);
-    }
-
-    public boolean isAllowExternalQueue() {
-        return getLocalBoolean("allowExternalQueue", false);
     }
 
     public boolean isRenderAccessibilityCss() {
         return getLocalBoolean("renderAccessibilityCss", false);
     }
 
-    public String getExternalQueueType() {
-        return getLocalString("externalQueueType", "activeMQ").toUpperCase();
-    }
-
-    public boolean isUseLocalSQS() {
-        return getLocalBoolean("useLocalSQS", false);
-    }
-
     public String[] getHistoryImageSuffix() {
         return getLocalStringArray("historyImageSuffix", new String[] { ".tif" });
     }
 
-    public String getQueueName(QueueType type) {
-        String configName = type.getConfigName();
-        String queueName = System.getenv(configName);
-        if (queueName == null) {
-            return getLocalString(configName, type.getName());
-        }
-        return queueName;
-    }
-
     public boolean isDeveloping() {
         return getLocalBoolean("developing", false);
-    }
-
-    public boolean isShowSSOLogoutPage() {
-        return getLocalBoolean("showSSOLogoutPage", false);
     }
 
     public String getPluginServerUrl() {
