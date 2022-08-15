@@ -44,7 +44,7 @@ public class ConfigPluginsTest extends AbstractTest {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
     }
 
     @Test
@@ -67,4 +67,9 @@ public class ConfigPluginsTest extends AbstractTest {
         assertNotNull(config);
     }
 
+    @Test
+    public void testConfigPluginsWithName() {
+        XMLConfiguration config = ConfigPlugins.getPluginConfig("JunitImportPlugin");
+        assertNotNull(config);
+    }
 }
