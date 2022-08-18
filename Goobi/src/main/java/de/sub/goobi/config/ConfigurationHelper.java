@@ -659,13 +659,13 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("EnableHeaderLogin", false);
     }
 
-    public String getSsoHeaderName() {
-        return getLocalString("SsoHeaderName", "Casauthn");
-    }
-
     public String getSsoParameterType() {
         // 'header' or 'attribute'
         return getLocalString("SsoParameterType", "header");
+    }
+
+    public String getSsoHeaderName() {
+        return getLocalString("SsoHeaderName", "Casauthn");
     }
 
     public boolean isShowSSOLogoutPage() {
@@ -689,100 +689,8 @@ public class ConfigurationHelper implements Serializable {
     }
 
     /*
-     * category in goobi_config.properties: REST
+     * category in goobi_config.properties: SCRIPTS
      */
-
-    public int getNumberOfMetaBackups() {
-        return getLocalInt("numberOfMetaBackups", 0);
-    }
-
-    public String getGoobiAuthorityServerPassword() {
-
-        return getLocalString("goobiAuthorityServerPassword");
-    }
-
-    public int getGoobiAuthorityServerBackupFreq() {
-        return getLocalInt("goobiAuthorityServerUploadFrequency", 0);
-    }
-
-    public String getGoobiAuthorityServerUser() {
-
-        return getLocalString("goobiAuthorityServerUser");
-    }
-
-    // URLs
-
-    public String getGoobiAuthorityServerUrl() {
-        return getLocalString("goobiAuthorityServerUrl");
-    }
-
-    public String getGoobiUrl() {
-        return getLocalString("goobiUrl");
-    }
-
-    public int getGoobiContentServerTimeOut() {
-        return getLocalInt("goobiContentServerTimeOut", 60000);
-    }
-
-    public String getApplicationHomepageMsg() {
-        return getLocalString("ApplicationHomepageMsg", getServletPathAsUrl());
-    }
-
-    public String getApplicationHeaderTitle() {
-        return getLocalString("ApplicationHeaderTitle", "Goobi workflow");
-    }
-
-    public String getApplicationTitle() {
-        return getLocalString("ApplicationTitle", "http://goobi.io");
-    }
-
-    public String getApplicationWebsiteMsg() {
-        return getLocalString("ApplicationWebsiteMsg", getServletPathAsUrl());
-    }
-
-    public String getOcrUrl() {
-        return getLocalString("ocrUrl");
-    }
-
-    public String getDefaultLanguage() {
-        return getLocalString("defaultLanguage");
-    }
-
-    public boolean isAnonymizeData() {
-        return getLocalBoolean("anonymize", false);
-    }
-
-    public boolean isShowStatisticsOnStartPage() {
-        return getLocalBoolean("showStatisticsOnStartPage", true);
-    }
-
-    public boolean isEnableWebApi() {
-        return getLocalBoolean("useWebApi", false);
-    }
-
-    public int getBatchMaxSize() {
-        return getLocalInt("batchMaxSize", 100);
-    }
-
-    public String getJwtSecret() {
-        return getLocalString("jwtSecret", null);
-    }
-
-    // process creation
-
-    public String getTiffHeaderArtists() {
-        return getLocalString("TiffHeaderArtists");
-    }
-
-    public String getScriptCreateDirMeta() {
-        //        return getScriptsFolder() + getLocalString("script_createDirMeta", "script_createDirMeta.sh");
-        String s = getLocalString("script_createDirMeta", "");
-        if (s.isEmpty()) {
-            return "";
-        } else {
-            return getScriptsFolder() + s;
-        }
-    }
 
     public String getScriptCreateDirUserHome() {
         //        return getScriptsFolder() + getLocalString("script_createDirUserHome", "script_createDirUserHome.sh");
@@ -794,9 +702,9 @@ public class ConfigurationHelper implements Serializable {
         }
     }
 
-    public String getScriptDeleteSymLink() {
-        //  return getScriptsFolder() + getLocalString("script_deleteSymLink", "script_deleteSymLink.sh");
-        String s = getLocalString("script_deleteSymLink", "");
+    public String getScriptCreateDirMeta() {
+        //        return getScriptsFolder() + getLocalString("script_createDirMeta", "script_createDirMeta.sh");
+        String s = getLocalString("script_createDirMeta", "");
         if (s.isEmpty()) {
             return "";
         } else {
@@ -814,19 +722,103 @@ public class ConfigurationHelper implements Serializable {
         }
     }
 
-    public boolean isAllowWhitespacesInFolder() {
-        return getLocalBoolean("dir_allowWhiteSpaces", false);
+    public String getScriptDeleteSymLink() {
+        //  return getScriptsFolder() + getLocalString("script_deleteSymLink", "script_deleteSymLink.sh");
+        String s = getLocalString("script_deleteSymLink", "");
+        if (s.isEmpty()) {
+            return "";
+        } else {
+            return getScriptsFolder() + s;
+        }
     }
 
-    public boolean isMassImportAllowed() {
-        return getLocalBoolean("massImportAllowed", false);
+    // TODO: START OF UNDOCUMENTED GETTERS
+
+    /*
+     * category in goobi_config.properties: APPLICATION INFORMATION
+     */
+
+    public String getApplicationTitle() {
+        return getLocalString("ApplicationTitle", "http://goobi.io");
     }
 
-    public boolean isMassImportUniqueTitle() {
-        return getLocalBoolean("MassImportUniqueTitle", true);
+    public String getApplicationHeaderTitle() {
+        return getLocalString("ApplicationHeaderTitle", "Goobi workflow");
     }
 
-    // authentication
+    public String getApplicationHomepageMsg() {
+        return getLocalString("ApplicationHomepageMsg", getServletPathAsUrl());
+    }
+
+    public String getApplicationWebsiteMsg() {
+        return getLocalString("ApplicationWebsiteMsg", getServletPathAsUrl());
+    }
+
+    public boolean isDeveloping() {
+        return getLocalBoolean("developing", false);
+    }
+
+    /*
+     * category in goobi_config.properties: USER INTERFACE FEATURES
+     */
+
+    public boolean isUseIntrandaUi() {
+        return getLocalBoolean("ui_useIntrandaUI", true);
+    }
+
+    public boolean isRenderAccessibilityCss() {
+        return getLocalBoolean("renderAccessibilityCss", false);
+    }
+
+    /**
+     * This method is deprecated. The information was moved to the user table in the database. The method is still needed during the migration.
+     * 
+     * @return The name of the dashboard plugin or null in case of no configured plugin
+     */
+    @Deprecated
+    public String getDashboardPlugin() {
+        return getLocalString("dashboardPlugin", null);
+    }
+
+    public boolean isShowStatisticsOnStartPage() {
+        return getLocalBoolean("showStatisticsOnStartPage", true);
+    }
+
+    public List<String> getExcludeMonitoringAgentNames() {
+        return getLocalList("excludeMonitoringAgentName");
+    }
+
+    public boolean isEnableFinalizeTaskButton() {
+        return getLocalBoolean("TaskEnableFinalizeButton", true);
+    }
+
+    public boolean isAllowFolderLinkingForProcessList() {
+        return getLocalBoolean("ui_showFolderLinkingInProcessList", false);
+    }
+
+    public boolean isConfirmLinking() {
+        return getLocalBoolean("confirmLinking", false);
+    }
+
+    public boolean isRenderReimport() {
+        return getLocalBoolean("renderReimport", false);
+    }
+
+    /*
+     * category in goobi_config.properties: GLOBAL USER SETTINGS
+     */
+
+    public String getDefaultLanguage() {
+        return getLocalString("defaultLanguage");
+    }
+
+    public boolean isAnonymizeData() {
+        return getLocalBoolean("anonymize", false);
+    }
+
+    public boolean isAllowGravatar() {
+        return getLocalBoolean("enableGravatar", true);
+    }
 
     public int getMinimumPasswordLength() {
         int minimum = getLocalInt("minimumPasswordLength", 8);
@@ -841,15 +833,165 @@ public class ConfigurationHelper implements Serializable {
         return additionalUserRights;
     }
 
+    /*
+     * category in goobi_config.properties: DATABASE SEARCH
+     */
+
+    /**
+     * Check if Mysql or H2 is used as internal database
+     *
+     * @deprecated use MySQLHelper.isUsingH2() for this instead
+     */
+    @Deprecated
+    public boolean isUseH2DB() {
+        return MySQLHelper.isUsingH2();
+    }
+
+    public boolean isUseFulltextSearch() {
+        return getLocalBoolean("useFulltextSearch", false);
+    }
+
+    public String getFulltextSearchMode() {
+        return getLocalString("FulltextSearchMode", "BOOLEAN MODE");
+    }
+
+    public String getDatabaseLeftTruncationCharacter() {
+        return getLocalString("DatabaseLeftTruncationCharacter", "%");
+    }
+
+    public String getDatabaseRightTruncationCharacter() {
+        return getLocalString("DatabaseRightTruncationCharacter", "%");
+    }
+
+    public String getSqlTasksIndexname() {
+        return getLocalString("SqlTasksIndexname", null);
+    }
+
+    /*
+     * category in goobi_config.properties: PROXY SERVER
+     */
+
+    public boolean isUseProxy() {
+        return getLocalBoolean("http_useProxy", false);
+    }
+
+    public String getProxyUrl() {
+        return getLocalString("http_proxyUrl");
+    }
+
+    public int getProxyPort() {
+        return getLocalInt("http_proxyPort", 8080);
+    }
+
+    /*
+     * category in goobi_config.properties: INTERNAL SERVERS AND INTERFACES
+     */
+
+    public boolean isEnableWebApi() {
+        return getLocalBoolean("useWebApi", false);
+    }
+
+    public String getJwtSecret() {
+        return getLocalString("jwtSecret", null);
+    }
+
+    public String getGoobiUrl() {
+        return getLocalString("goobiUrl");
+    }
+
+    public String getPluginServerUrl() {
+        return getLocalString("pluginServerUrl", "");
+    }
+
+    public String getOcrUrl() {
+        return getLocalString("ocrUrl");
+    }
+
+    public int getGoobiContentServerTimeOut() {
+        return getLocalInt("goobiContentServerTimeOut", 60000);
+    }
+
+    public String getGoobiAuthorityServerUrl() {
+        return getLocalString("goobiAuthorityServerUrl");
+    }
+
+    public String getGoobiAuthorityServerUser() {
+        return getLocalString("goobiAuthorityServerUser");
+    }
+
+    public String getGoobiAuthorityServerPassword() {
+        return getLocalString("goobiAuthorityServerPassword");
+    }
+
+    public int getGoobiAuthorityServerBackupFreq() {
+        return getLocalInt("goobiAuthorityServerUploadFrequency", 0);
+    }
+
     public String getGeonamesCredentials() {
         return getLocalString("geonames_account", null);
     }
 
-    // mets editor
+    // old parameter, remove them
+    @Deprecated
+    public int getGoobiModuleServerPort() {
+        return getLocalInt("goobiModuleServerPort");
+    }
 
-    //    public String getMetsEditorDefaultSuffix() {
-    //        return getLocalString("MetsEditorDefaultSuffix", "");
-    //    }
+    /*
+     * category in goobi_config.properties: PROCESSES AND PROCESS LOG
+     */
+
+    public boolean isResetProcesslog() {
+        return getLocalBoolean("ProcessCreationResetLog", false);
+    }
+
+    public String getTiffHeaderArtists() {
+        return getLocalString("TiffHeaderArtists");
+    }
+
+    public boolean isAllowWhitespacesInFolder() {
+        return getLocalBoolean("dir_allowWhiteSpaces", false);
+    }
+
+    public boolean isMassImportAllowed() {
+        return getLocalBoolean("massImportAllowed", false);
+    }
+
+    public boolean isMassImportUniqueTitle() {
+        return getLocalBoolean("MassImportUniqueTitle", true);
+    }
+
+    public int getBatchMaxSize() {
+        return getLocalInt("batchMaxSize", 100);
+    }
+
+    public boolean isShowSecondLogField() {
+        return getLocalBoolean("ProcessLogShowSecondField", false);
+    }
+
+    public boolean isShowThirdLogField() {
+        return getLocalBoolean("ProcessLogShowThirdField", false);
+    }
+
+    public boolean isProcesslistShowEditionData() {
+        return getLocalBoolean("ProcesslistShowEditionData", false);
+    }
+
+    public long getJobStartTime(String jobname) {
+        return getLocalLong(jobname, -1);
+    }
+
+    public List<String> getDownloadColumnWhitelist() {
+        return getLocalList("downloadAvailableColumn");
+    }
+
+    // TODO: START OF METS EDITOR GETTERS
+
+    /*
+     * category in goobi_config.properties: METS EDITOR
+     */
+
+    // general
 
     public String getMetsEditorDefaultPagination() {
         return getLocalString("MetsEditorDefaultPagination", "uncounted");
@@ -859,28 +1001,32 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("MetsEditorEnableDefaultInitialisation", true);
     }
 
-    public boolean isMetsEditorEnableImageAssignment() {
-        return getLocalBoolean("MetsEditorEnableImageAssignment", true);
-    }
-
-    public boolean isMetsEditorRenameImagesOnExit() {
-        return getLocalBoolean("MetsEditorRenameImagesOnExit", false);
-    }
-
     public boolean isMetsEditorDisplayFileManipulation() {
         return getLocalBoolean("MetsEditorDisplayFileManipulation", false);
     }
 
-    public boolean isMetsEditorValidateImages() {
-        return getLocalBoolean("MetsEditorValidateImages", true);
+    public boolean isMetsEditorShowMetadataPopup() {
+        return getLocalBoolean("MetsEditorShowMetadataPopup", true);
     }
 
     public long getMetsEditorLockingTime() {
         return getLocalLong("MetsEditorLockingTime", 30 * 60 * 1000);
     }
 
-    public int getMetsEditorMaxTitleLength() {
-        return getLocalInt("MetsEditorMaxTitleLength", 0);
+    public boolean isUseMetadataValidation() {
+        return getLocalBoolean("useMetadatenvalidierung", true);
+    }
+
+    public String getPathToExiftool() {
+        return getLocalString("ExportExiftoolPath", "/usr/bin/exiftool");
+    }
+
+    public boolean getMetsEditorShowImageComments() {
+        return isShowImageComments();
+    }
+
+    public boolean isShowImageComments() {
+        return getLocalBoolean("ShowImageComments", false);
     }
 
     public boolean isMetsEditorUseExternalOCR() {
@@ -891,25 +1037,23 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("showOcrButton", false);
     }
 
-    public boolean isMetsEditorShowMetadataPopup() {
-        return getLocalBoolean("MetsEditorShowMetadataPopup", true);
+    public List<SearchIndexField> getIndexFields() {
+        List<SearchIndexField> list = new ArrayList<>();
+        Iterator<String> it = getLocalKeys("index");
+        while (it.hasNext()) {
+            String keyName = it.next();
+            List<String> values = getLocalList(keyName);
+            SearchIndexField index = new SearchIndexField(keyName, values);
+            list.add(index);
+        }
+        return list;
     }
 
-    public String getFormatOfMetsBackup() {
-        return getLocalString("formatOfMetaBackups");
-    }
+    //    public String getMetsEditorDefaultSuffix() {
+    //        return getLocalString("MetsEditorDefaultSuffix", "");
+    //    }
 
-    public String getProcessTiteValidationlRegex() {
-        return getLocalString("validateProcessTitelRegex", "[\\w-]*");
-    }
-
-    public String getProcessTitleReplacementRegex() {
-        return getLocalString("ProcessTitleGenerationRegex", "[\\W]");
-    }
-
-    public boolean isResetProcesslog() {
-        return getLocalBoolean("ProcessCreationResetLog", false);
-    }
+    // images
 
     public String getImagePrefix() {
         return getLocalString("ImagePrefix", "\\d{8}");
@@ -923,13 +1067,77 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("UserForImageReading", "root");
     }
 
-    public String getTypeOfBackup() {
-        return getLocalString("typeOfBackup", "renameFile");
+    public boolean isMetsEditorEnableImageAssignment() {
+        return getLocalBoolean("MetsEditorEnableImageAssignment", true);
     }
 
-    public boolean isUseMetadataValidation() {
-        return getLocalBoolean("useMetadatenvalidierung", true);
+    public boolean isMetsEditorRenameImagesOnExit() {
+        return getLocalBoolean("MetsEditorRenameImagesOnExit", false);
     }
+
+    public boolean isMetsEditorValidateImages() {
+        return getLocalBoolean("MetsEditorValidateImages", true);
+    }
+
+    public int getMetsEditorNumberOfImagesPerPage() {
+        return getLocalInt("MetsEditorNumberOfImagesPerPage", 96);
+    }
+
+    public int getMetsEditorThumbnailSize() {
+        return getLocalInt("MetsEditorThumbnailsize", 200);
+    }
+
+    public List<String> getMetsEditorImageSizes() {
+        return getLocalList("MetsEditorImageSize");
+
+    }
+
+    public List<String> getMetsEditorImageTileSizes() {
+        return getLocalList("MetsEditorImageTileSize");
+
+    }
+
+    public List<String> getMetsEditorImageTileScales() {
+        return getLocalList("MetsEditorImageTileScale");
+
+    }
+
+    public int getMaximalImageSize() {
+        return getLocalInt("MetsEditorMaxImageSize", 15000);
+    }
+
+    public long getMaximalImageFileSize() {
+        int size = getLocalInt("MaxImageFileSize", 4000);
+        String unit = getLocalString("MaxImageFileSizeUnit", "MB");
+        Double factor = getMemorySizeFactor(unit);
+        long byteSize = size * factor.longValue();
+        return byteSize;
+    }
+
+    public boolean getMetsEditorUseImageTiles() {
+        return getLocalBoolean("MetsEditorUseImageTiles", true);
+
+    }
+
+    public String[] getHistoryImageSuffix() {
+        return getLocalStringArray("historyImageSuffix", new String[] { ".tif" });
+    }
+
+    // title
+
+    public int getMetsEditorMaxTitleLength() {
+        return getLocalInt("MetsEditorMaxTitleLength", 0);
+    }
+
+    public String getProcessTiteValidationlRegex() {
+        return getLocalString("validateProcessTitelRegex", "[\\w-]*");
+    }
+
+    public String getProcessTitleReplacementRegex() {
+        return getLocalString("ProcessTitleGenerationRegex", "[\\W]");
+    }
+
+    // export
 
     public boolean isExportWithoutTimeLimit() {
         return getLocalBoolean("exportWithoutTimeLimit", true);
@@ -984,78 +1192,21 @@ public class ConfigurationHelper implements Serializable {
         return answer;
     }
 
-    public String getPathToExiftool() {
-        return getLocalString("ExportExiftoolPath", "/usr/bin/exiftool");
+    // backup
+
+    public String getTypeOfBackup() {
+        return getLocalString("typeOfBackup", "renameFile");
     }
 
-    public long getJobStartTime(String jobname) {
-        return getLocalLong(jobname, -1);
+    public String getFormatOfMetsBackup() {
+        return getLocalString("formatOfMetaBackups");
     }
 
-    public List<String> getDownloadColumnWhitelist() {
-        return getLocalList("downloadAvailableColumn");
+    public int getNumberOfMetaBackups() {
+        return getLocalInt("numberOfMetaBackups", 0);
     }
 
-    public boolean isUseIntrandaUi() {
-        return getLocalBoolean("ui_useIntrandaUI", true);
-    }
-
-    @Deprecated
-    /**
-     * This method is deprecated. The information was moved to the user table in the database. The method is still needed during the migration.
-     * 
-     * @return
-     */
-    public String getDashboardPlugin() {
-        return getLocalString("dashboardPlugin", null);
-    }
-
-    // proxy settings
-    public boolean isUseProxy() {
-        return getLocalBoolean("http_useProxy", false);
-    }
-
-    public String getProxyUrl() {
-        return getLocalString("http_proxyUrl");
-    }
-
-    public int getProxyPort() {
-        return getLocalInt("http_proxyPort", 8080);
-    }
-
-    // old parameter, remove them
-    @Deprecated
-    public int getGoobiModuleServerPort() {
-        return getLocalInt("goobiModuleServerPort");
-    }
-
-    public boolean isConfirmLinking() {
-        return getLocalBoolean("confirmLinking", false);
-    }
-
-    public boolean isAllowFolderLinkingForProcessList() {
-        return getLocalBoolean("ui_showFolderLinkingInProcessList", false);
-    }
-
-    public String getDatabaseLeftTruncationCharacter() {
-        return getLocalString("DatabaseLeftTruncationCharacter", "%");
-    }
-
-    public String getDatabaseRightTruncationCharacter() {
-        return getLocalString("DatabaseRightTruncationCharacter", "%");
-    }
-
-    public List<SearchIndexField> getIndexFields() {
-        List<SearchIndexField> list = new ArrayList<>();
-        Iterator<String> it = getLocalKeys("index");
-        while (it.hasNext()) {
-            String keyName = it.next();
-            List<String> values = getLocalList(keyName);
-            SearchIndexField index = new SearchIndexField(keyName, values);
-            list.add(index);
-        }
-        return list;
-    }
+    // TODO: END OF UNDOCUMENTED GETTERS
 
     // for junit tests
     public void setParameter(String inParameter, String value) {
@@ -1063,120 +1214,6 @@ public class ConfigurationHelper implements Serializable {
         if (configLocal != null) {
             configLocal.setProperty(inParameter, value);
         }
-    }
-
-    public int getMetsEditorNumberOfImagesPerPage() {
-        return getLocalInt("MetsEditorNumberOfImagesPerPage", 96);
-    }
-
-    public int getMetsEditorThumbnailSize() {
-        return getLocalInt("MetsEditorThumbnailsize", 200);
-    }
-
-    public List<String> getMetsEditorImageSizes() {
-        return getLocalList("MetsEditorImageSize");
-
-    }
-
-    public List<String> getMetsEditorImageTileSizes() {
-        return getLocalList("MetsEditorImageTileSize");
-
-    }
-
-    public List<String> getMetsEditorImageTileScales() {
-        return getLocalList("MetsEditorImageTileScale");
-
-    }
-
-    public int getMaximalImageSize() {
-        return getLocalInt("MetsEditorMaxImageSize", 15000);
-    }
-
-    public long getMaximalImageFileSize() {
-        int size = getLocalInt("MaxImageFileSize", 4000);
-        String unit = getLocalString("MaxImageFileSizeUnit", "MB");
-        Double factor = getMemorySizeFactor(unit);
-        long byteSize = size * factor.longValue();
-        return byteSize;
-    }
-
-    public boolean getMetsEditorUseImageTiles() {
-        return getLocalBoolean("MetsEditorUseImageTiles", true);
-
-    }
-
-    public boolean getMetsEditorShowImageComments() {
-        return isShowImageComments();
-    }
-
-    public boolean isShowImageComments() {
-        return getLocalBoolean("ShowImageComments", false);
-    }
-
-    public boolean isShowSecondLogField() {
-        return getLocalBoolean("ProcessLogShowSecondField", false);
-    }
-
-    public boolean isShowThirdLogField() {
-        return getLocalBoolean("ProcessLogShowThirdField", false);
-    }
-
-    public boolean isProcesslistShowEditionData() {
-        return getLocalBoolean("ProcesslistShowEditionData", false);
-    }
-
-    public List<String> getExcludeMonitoringAgentNames() {
-        return getLocalList("excludeMonitoringAgentName");
-    }
-
-    /**
-     * Check if Mysql or H2 is used as internal database
-     *
-     * @deprecated use MySQLHelper.isUsingH2() for this instead
-     */
-    @Deprecated
-    public boolean isUseH2DB() {
-        return MySQLHelper.isUsingH2();
-    }
-
-    public boolean isUseFulltextSearch() {
-        return getLocalBoolean("useFulltextSearch", false);
-    }
-
-    public String getFulltextSearchMode() {
-        return getLocalString("FulltextSearchMode", "BOOLEAN MODE");
-    }
-
-    public String getSqlTasksIndexname() {
-        return getLocalString("SqlTasksIndexname", null);
-    }
-
-    public boolean isAllowGravatar() {
-        return getLocalBoolean("enableGravatar", true);
-    }
-
-    public boolean isEnableFinalizeTaskButton() {
-        return getLocalBoolean("TaskEnableFinalizeButton", true);
-    }
-
-    public boolean isRenderReimport() {
-        return getLocalBoolean("renderReimport", false);
-    }
-
-    public boolean isRenderAccessibilityCss() {
-        return getLocalBoolean("renderAccessibilityCss", false);
-    }
-
-    public String[] getHistoryImageSuffix() {
-        return getLocalStringArray("historyImageSuffix", new String[] { ".tif" });
-    }
-
-    public boolean isDeveloping() {
-        return getLocalBoolean("developing", false);
-    }
-
-    public String getPluginServerUrl() {
-        return getLocalString("pluginServerUrl", "");
     }
 
     /**
