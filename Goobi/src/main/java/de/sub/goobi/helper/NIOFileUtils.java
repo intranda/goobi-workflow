@@ -80,7 +80,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class NIOFileUtils implements StorageProviderInterface {
 
-    protected static final CopyOption[] STANDARD_COPY_OPTIONS =
+    public static final CopyOption[] STANDARD_COPY_OPTIONS = //NOSONAR
             new CopyOption[] { StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES };
 
     /**
