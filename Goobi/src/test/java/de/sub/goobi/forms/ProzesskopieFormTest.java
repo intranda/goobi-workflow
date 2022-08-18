@@ -332,8 +332,8 @@ public class ProzesskopieFormTest extends AbstractTest {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
         String fixture = "test";
-        form.setTifHeader_documentname(fixture);
-        assertEquals(fixture, form.getTifHeader_documentname());
+        form.setTifHeaderDocumentname(fixture);
+        assertEquals(fixture, form.getTifHeaderDocumentname());
     }
 
     @Test
@@ -341,8 +341,8 @@ public class ProzesskopieFormTest extends AbstractTest {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
         String fixture = "test";
-        form.setTifHeader_imagedescription(fixture);
-        assertEquals(fixture, form.getTifHeader_imagedescription());
+        form.setTifHeaderImagedescription(fixture);
+        assertEquals(fixture, form.getTifHeaderImagedescription());
     }
 
     @Test

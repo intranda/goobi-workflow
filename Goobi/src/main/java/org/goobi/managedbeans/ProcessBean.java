@@ -581,18 +581,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         this.statisticsManager = null;
         this.myAnzahlList = null;
 
-        //        try {
-        //            this.myFilteredDataSource = new UserTemplatesFilter(true);
-        //            Criteria crit = this.myFilteredDataSource.getCriteria();
-        //            if (!this.showArchivedProjects) {
-        //                crit.add(Restrictions.not(Restrictions.eq("proj.projectIsArchived", true)));
-        //            }
-        ////            sortList(crit, false);
-        //            this.page = new Page(crit, 0);
-        //        } catch (HibernateException he) {
-        //            Helper.setFehlerMeldung("ProzessverwaltungForm.FilterVorlagen", he);
-        //            return "";
-        //        }
+        ProzesskopieForm pkf = Helper.getBeanByClass(ProzesskopieForm.class);
+        pkf.clearAvailableProjects();
 
         String sql = FilterHelper.criteriaBuilder(filter, true, null, null, null, true, false);
 
