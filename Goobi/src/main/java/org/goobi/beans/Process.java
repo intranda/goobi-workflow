@@ -2296,7 +2296,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         ImageCommentHelper helper = new ImageCommentHelper();
 
         String folderMaster = this.getImagesOrigDirectory(true);
-        HashMap<String, String> masterComments = helper.getComments(folderMaster);
+        Map<String, String> masterComments = helper.getComments(folderMaster);
 
         for (String imageName : masterComments.keySet()) {
             String comment = masterComments.get(imageName);
@@ -2307,7 +2307,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         if (StorageProvider.getInstance().isFileExists(Paths.get(this.getImagesDirectory()))) {
             String folderMedia = this.getImagesTifDirectory(true);
-            HashMap<String, String> mediaComments = helper.getComments(folderMedia);
+            Map<String, String> mediaComments = helper.getComments(folderMedia);
 
             for (String imageName : mediaComments.keySet()) {
                 String comment = mediaComments.get(imageName);

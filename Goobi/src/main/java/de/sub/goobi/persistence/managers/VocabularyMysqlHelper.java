@@ -500,7 +500,7 @@ class VocabularyMysqlHelper implements Serializable {
                 if (subQuery.length() > 0) {
                     subQuery.append(" OR ");
                 }
-                subQuery.append("r.label ='" + fieldName + "'");
+                subQuery.append("r.label ='" +StringEscapeUtils.escapeSql(fieldName) + "'");
             }
             sb.append(subQuery.toString());
             sb.append(")");
@@ -511,7 +511,7 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
-            List<Integer> idList = runner.query(connection, sb.toString(), MySQLHelper.resultSetToIntegerListHandler, vocabularyName);
+            List<Integer> idList = runner.query(connection, sb.toString(), MySQLHelper.resultSetToIntegerListHandler, StringEscapeUtils.escapeSql(vocabularyName));
 
             if (idList.isEmpty()) {
                 return Collections.emptyList();
