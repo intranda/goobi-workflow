@@ -6,6 +6,20 @@
          <mets:note>Goobi</mets:note>
       </mets:agent>
    </mets:metsHdr>
+   <mets:dmdSec ID="DMDLOG_0000">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:extension>
+                  <goobi:goobi>
+                     <goobi:metadata name="CatalogIDDigital">PPNidentifier</goobi:metadata>
+                     <goobi:metadata name="TitleDocMain">main title</goobi:metadata>                     
+                  </goobi:goobi>
+               </mods:extension>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
    <mets:dmdSec ID="DMDPHYS_0000">
       <mets:mdWrap MDTYPE="MODS">
          <mets:xmlData>
@@ -28,7 +42,7 @@
       </mets:fileGrp>
    </mets:fileSec>
    <mets:structMap TYPE="LOGICAL">
-      <mets:div ID="LOG_0000" TYPE="Monograph">
+      <mets:div DMDID="DMDLOG_0000" ID="LOG_0000" TYPE="Monograph">
          <mets:div ID="LOG_0001" TYPE="TitlePage"/>
          <mets:div ID="LOG_0002" TYPE="TitlePage"/>
          <mets:div ID="LOG_0003" TYPE="Chapter"/>
