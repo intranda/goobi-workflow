@@ -13,6 +13,7 @@
                <mods:extension>
                   <goobi:goobi>
                      <goobi:metadata name="_representative">1</goobi:metadata>
+                     <goobi:metadata name="pathimagefiles">/images</goobi:metadata>                     
                   </goobi:goobi>
                </mods:extension>
             </mods:mods>

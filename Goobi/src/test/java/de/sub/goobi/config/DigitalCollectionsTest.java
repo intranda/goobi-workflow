@@ -60,4 +60,15 @@ public class DigitalCollectionsTest extends AbstractTest {
         assertEquals("Collection", fixture.get(0));
     }
 
+
+    @Test
+    public void testDefaultDigitalCollectionForProcess() throws JDOMException, IOException {
+        Process p = new Process();
+        Project project = new Project();
+        project.setTitel("Project");
+        p.setProjekt(project);
+        String fixture = DigitalCollections.getDefaultDigitalCollectionForProcess(p);
+        assertEquals("Collection", fixture);
+    }
+
 }
