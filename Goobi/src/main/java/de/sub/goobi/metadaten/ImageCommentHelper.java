@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gson.Gson;
 
@@ -70,13 +71,13 @@ public class ImageCommentHelper {
         }
     }
 
-    public HashMap<String, String> getComments(String imageFolderName) {
+    public Map<String, String> getComments(String imageFolderName) {
         return getCommentFile(imageFolderName).comments;
     }
 
     private final String buildCommentPath(String folderName) {
         final String type = getType(folderName);
-        StringBuilder commentPath = new StringBuilder(appendSlash(folderName)); 
+        StringBuilder commentPath = new StringBuilder(appendSlash(folderName)); //NOSONAR, folderName cannot be NULL
         commentPath.append(PATH_ADJUSTMENT);
         commentPath.append(COMMENTS_FILE_NAME);
         commentPath.append(type);
