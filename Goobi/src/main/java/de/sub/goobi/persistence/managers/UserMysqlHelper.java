@@ -187,21 +187,21 @@ class UserMysqlHelper implements Serializable {
 
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, ro.getVorname(), ro.getNachname(),
                         ro.getLogin(), ro.getStandort(), ro.getMetadatenSprache(), ro.getCss(), ro.isMitMassendownload(), ro.getTabellengroesse(),
-                        ro.getSessiontimeout(), ro.getLdapGruppe()==null? null: ro.getLdapGruppe().getId(), ro.getLdaplogin(), ro.isDisplayAutomaticTasks(),
-                                ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(), ro.isDisplayIdColumn(),
-                                ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(),
-                                ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
-                                ro.isHideCorrectionTasks(),
+                        ro.getSessiontimeout(), ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), ro.getLdaplogin(),
+                                ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
+                                ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
+                                ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(),
+                                ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(),
 
                                 ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(), ro.getMetsEditorTime(),
                                         ro.isMetsDisplayHierarchy(), ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(),
                                         ro.isDisplayOtherTasks(), ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(),
                                         ro.isDisplayGridView(), ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
-                                        ro.getMailNotificationLanguage(), ro.getInstitution().getId(), ro.isSuperAdmin(),
-                                        ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(),
-                                        ro.getProcessListDefaultSortOrder(), ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(),
-                                        ro.isDisplayLastEditionDate(), ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(),
-                                        ro.getUiMode(), ro.getStatus().getName(), additionalData);
+                                        ro.getMailNotificationLanguage(), ro.getInstitution().getId(), ro.isSuperAdmin(), ro.isDisplayInstitutionColumn(),
+                                        ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(), ro.getProcessListDefaultSortOrder(),
+                                        ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(), ro.isDisplayLastEditionDate(),
+                                        ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(), ro.getUiMode(),
+                                        ro.getStatus().getName(), additionalData);
                 if (id != null) {
                     ro.setId(id);
                 }
@@ -263,20 +263,20 @@ class UserMysqlHelper implements Serializable {
                 sql.append("ui_mode = ?, userstatus = ?, additional_data = ? WHERE BenutzerID = " + ro.getId() + ";");
 
                 run.update(connection, sql.toString(), ro.getVorname(), ro.getNachname(), ro.getLogin(), ro.getStandort(), ro.getMetadatenSprache(),
-                        ro.getCss(), ro.isMitMassendownload(), ro.getTabellengroesse(), ro.getSessiontimeout(), ro.getLdapGruppe()==null? null: ro.getLdapGruppe().getId(),
-                                ro.getLdaplogin(), ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(),
-                                ro.isDisplayFinishedProcesses(), ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(),
-                                ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(),
-                                ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(), ro.getEmail(),
-                                ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(), ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(),
-                                        ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(), ro.isDisplayOtherTasks(),
-                                        ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(), ro.isDisplayGridView(),
-                                        ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
-                                        ro.getMailNotificationLanguage(), ro.getInstitution().getId(), ro.isSuperAdmin(),
-                                        ro.isDisplayInstitutionColumn(), ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(),
-                                        ro.getProcessListDefaultSortOrder(), ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(),
-                                        ro.isDisplayLastEditionDate(), ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(),
-                                        ro.getUiMode(), ro.getStatus().getName(), additionalData);
+                        ro.getCss(), ro.isMitMassendownload(), ro.getTabellengroesse(), ro.getSessiontimeout(),
+                        ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), ro.getLdaplogin(), ro.isDisplayAutomaticTasks(),
+                                ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(), ro.isDisplayIdColumn(),
+                                ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(),
+                                ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
+                                ro.isHideCorrectionTasks(), ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
+                                        ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(), ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(),
+                                        ro.isMetsLinkImage(), ro.isDisplayOtherTasks(), ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(),
+                                        ro.isDisplayGridView(), ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
+                                        ro.getMailNotificationLanguage(), ro.getInstitution().getId(), ro.isSuperAdmin(), ro.isDisplayInstitutionColumn(),
+                                        ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(), ro.getProcessListDefaultSortOrder(),
+                                        ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(), ro.isDisplayLastEditionDate(),
+                                        ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(), ro.getUiMode(),
+                                        ro.getStatus().getName(), additionalData);
 
             }
 
@@ -690,39 +690,68 @@ class UserMysqlHelper implements Serializable {
                 sql.append("    user_email_configuration uec ON sub.titel = uec.stepname ");
                 sql.append("        AND uec.projectid = ? ");
                 sql.append("        AND uec.userid = ? ");
-            } else {
-                // older sql version without INTERSECT command
-                if (showAllItems) {
-                    sql.append("SELECT id, sub.titel AS stepName, open, inWork, done, error FROM (SELECT DISTINCT titel FROM schritte s1 WHERE ");
-                    sql.append("EXISTS (SELECT NULL FROM prozesse WHERE ProjekteID = ? AND ProzesseID = s1.ProzesseID) ORDER BY titel) sub ");
-                    sql.append("LEFT JOIN user_email_configuration uec ON sub.titel = uec.stepname AND uec.projectid = ? AND uec.userid = ? ");
-                } else {
-                    sql.append("SELECT id, sub.titel AS stepName, open, inWork, done, error FROM (SELECT DISTINCT titel FROM schritte s1 WHERE ");
-                    sql.append("EXISTS (SELECT NULL FROM prozesse WHERE ProjekteID = ? AND ProzesseID = s1.ProzesseID) ");
-
-                    sql.append("AND EXISTS (SELECT NULL FROM schritteberechtigtegruppen WHERE ");
-                    sql.append("s1.SchritteID = schritteberechtigtegruppen.schritteID AND schritteberechtigtegruppen.BenutzerGruppenID in ");
-                    sql.append("(SELECT benutzergruppenmitgliedschaft.BenutzerGruppenID FROM benutzergruppenmitgliedschaft WHERE ");
-                    sql.append("benutzergruppenmitgliedschaft.BenutzerID = ?)) ORDER BY titel) sub LEFT JOIN user_email_configuration uec ON ");
-                    sql.append("sub.titel = uec.stepname AND uec.projectid = ? AND uec.userid = ?");
+                for (Project project : projects) {
+                    UserProjectConfiguration upc = new UserProjectConfiguration();
+                    upc.setProjectName(project.getTitel());
+                    upc.setProjectId(project.getId());
+                    List<StepConfiguration> stepNames = null;
+                    if (showAllItems) {
+                        stepNames = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(StepConfiguration.class),
+                                project.getId(), project.getId(), id);
+                    } else {
+                        stepNames = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(StepConfiguration.class),
+                                project.getId(), id, project.getId(), id);
+                    }
+                    upc.setStepList(stepNames);
+                    if (stepNames != null && !stepNames.isEmpty()) {
+                        answer.add(upc);
+                    }
                 }
-            }
-            for (Project project : projects) {
-                UserProjectConfiguration upc = new UserProjectConfiguration();
-                upc.setProjectName(project.getTitel());
-                upc.setProjectId(project.getId());
+            } else {
+                // mysql environment, INTERSECT command is unknown
                 List<StepConfiguration> stepNames = null;
                 if (showAllItems) {
-                    stepNames = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(StepConfiguration.class), project.getId(),
-                            project.getId(), id);
+                    sql.append("SELECT id, sub.projekteID as projectId, sub.titel AS stepName, open, inWork, done, error FROM ( ");
+                    sql.append("select p.projekteID, s.titel from schritte s left join prozesse p on s.ProzesseID = p.ProzesseID ");
+                    sql.append("group by p.projekteID, s.titel) sub LEFT JOIN");
+                    sql.append("user_email_configuration uec ON sub.titel = uec.stepname AND uec.projectid = sub.projekteID AND uec.userid = ? ");
+                    stepNames = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(StepConfiguration.class), id);
+
                 } else {
-                    stepNames = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(StepConfiguration.class), project.getId(),
-                            id, project.getId(), id);
+                    sql.append("SELECT id, sub.projekteID as projectId, sub.titel AS stepName, open, inWork, done, error FROM ( ");
+                    sql.append("select p.projekteID, s.titel from schritte s left join prozesse p on s.ProzesseID = p.ProzesseID ");
+                    sql.append("where exists (SELECT NULL FROM schritteberechtigtegruppen ");
+                    sql.append("left join benutzergruppen b on schritteberechtigtegruppen.BenutzerGruppenID = b.BenutzerGruppenID ");
+                    sql.append("left join benutzergruppenmitgliedschaft bm ON bm.BenutzerGruppenID = b.BenutzerGruppenID ");
+                    sql.append("WHERE bm.BenutzerID = ? and schritteberechtigtegruppen.SchritteID = s.SchritteID) ");
+                    sql.append("group by p.projekteID, s.titel) sub LEFT JOIN ");
+                    sql.append("user_email_configuration uec ON sub.titel = uec.stepname AND uec.projectid = sub.projekteID AND uec.userid = ? ");
+                    stepNames = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(StepConfiguration.class), id, id);
                 }
-                upc.setStepList(stepNames);
-                if (stepNames != null && !stepNames.isEmpty()) {
+                for (Project project : projects) {
+                    UserProjectConfiguration upc = new UserProjectConfiguration();
+                    upc.setProjectName(project.getTitel());
+                    upc.setProjectId(project.getId());
                     answer.add(upc);
                 }
+
+                for (StepConfiguration sc : stepNames) {
+                    UserProjectConfiguration currentConfig = null;
+                    for (UserProjectConfiguration upc : answer) {
+                        if (upc.getProjectId().equals(sc.getProjectId())) {
+                            currentConfig = upc;
+                            break;
+                        }
+                    }
+                    if (currentConfig != null) {
+                        List<StepConfiguration> existingData = currentConfig.getStepList();
+                        if (existingData == null) {
+                            existingData = new ArrayList<>();
+                        }
+                        existingData.add(sc);
+                    }
+                }
+
             }
             return answer;
         } finally {
