@@ -147,6 +147,7 @@ public class Metadaten implements Serializable {
     @Getter
     private Process filteredProcess = null;
     private String oldDocstructName = "";
+    @Setter // needed to mock it in junit test
     private transient  MetadatenImagesHelper imagehelper;
     private transient MetadatenHelper metahelper;
     @Getter
@@ -947,7 +948,7 @@ public class Metadaten implements Serializable {
                 corporate.setMainName(mc.getCorporate().getMainName());
                 corporate.setSubNames(mc.getCorporate().getSubNames());
                 corporate.setPartName(mc.getCorporate().getPartName());
-                md.addCorporate(currentCorporate);
+                md.addCorporate(corporate);
             }
             if (currentGroup != null) {
                 currentGroup.getMetadataGroup().addMetadataGroup(md);
@@ -2130,7 +2131,7 @@ public class Metadaten implements Serializable {
                 for (DocStruct area : pageAreas) {
                     if (area.getAllFromReferences() != null) {
                         List<DocStruct> referencedLogDs =
-                                area.getAllFromReferences().stream().map(Reference::getSource).filter(t -> t != null).collect(Collectors.toList());
+                                area.getAllFromReferences().stream().map(Reference::getSource).filter(Objects::nonNull).collect(Collectors.toList());
                         if (referencedLogDs.isEmpty() || (referencedLogDs.size() == 1 && referencedLogDs.get(0).equals(this.myDocStruct))) {
                             area.getParent().removeChild(area);
                         }
@@ -2550,7 +2551,7 @@ public class Metadaten implements Serializable {
     }
 
     private String getRequestParameter(String name) {
-        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        Map<String, String> params = FacesContextHelper.getCurrentFacesContext().getExternalContext().getRequestParameterMap();
         return params.get(name);
     }
 

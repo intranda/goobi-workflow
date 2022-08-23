@@ -1,10 +1,12 @@
 package de.sub.goobi.metadaten;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,9 +26,7 @@ import org.apache.commons.lang.StringUtils;
 import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -36,25 +36,32 @@ import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
+import de.sub.goobi.helper.exceptions.DAOException;
+import de.sub.goobi.helper.exceptions.InvalidImagesException;
+import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import de.unigoettingen.sub.commons.contentlib.exceptions.ContentLibException;
+import de.unigoettingen.sub.commons.contentlib.exceptions.ImageManipulatorException;
+import ugh.dl.Corporate;
 import ugh.dl.DocStruct;
 import ugh.dl.Metadata;
 import ugh.dl.MetadataGroup;
 import ugh.dl.NamePart;
 import ugh.dl.Person;
 import ugh.dl.Prefs;
+import ugh.exceptions.PreferencesException;
+import ugh.exceptions.ReadException;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ FacesContext.class, ExternalContext.class, Application.class, UIViewRoot.class, Helper.class, MetadataManager.class , ProcessManager.class})
+@PrepareForTest({ FacesContext.class, ExternalContext.class, Application.class, UIViewRoot.class, Helper.class, MetadataManager.class,
+    ProcessManager.class })
 public class MetadatenTest extends AbstractTest {
 
     private Process process;
     private Prefs prefs;
-
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
 
     @SuppressWarnings("deprecation")
     @Before
@@ -81,6 +88,13 @@ public class MetadatenTest extends AbstractTest {
         Map<String, String> requestMap = new HashMap<>();
         requestMap.put("Ansicht", "test");
         requestMap.put("BenutzerID", "1");
+        requestMap.put("addTo", "current");
+        requestMap.put("x", "10");
+        requestMap.put("y", "10");
+        requestMap.put("w", "50");
+        requestMap.put("h", "50");
+        requestMap.put("areaId", "1_1");
+
         FacesContextHelper.setFacesContext(facesContext);
         EasyMock.expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
         EasyMock.expect(externalContext.getRequestParameterMap()).andReturn(requestMap).anyTimes();
@@ -90,9 +104,8 @@ public class MetadatenTest extends AbstractTest {
         EasyMock.expect(session.getId()).andReturn("123").anyTimes();
         EasyMock.expect(externalContext.getRequest()).andReturn(servletRequest).anyTimes();
 
-
         EasyMock.expect(servletRequest.getScheme()).andReturn("https").anyTimes();
-        EasyMock.expect( servletRequest.getServerName()).andReturn("localhost").anyTimes();
+        EasyMock.expect(servletRequest.getServerName()).andReturn("localhost").anyTimes();
         EasyMock.expect(servletRequest.getServerPort()).andReturn(443).anyTimes();
         EasyMock.expect(servletRequest.getContextPath()).andReturn("goobi").anyTimes();
 
@@ -111,7 +124,7 @@ public class MetadatenTest extends AbstractTest {
         PowerMock.mockStatic(MetadataManager.class);
         MetadataManager.updateMetadata(EasyMock.anyInt(), EasyMock.anyObject());
         PowerMock.mockStatic(ProcessManager.class);
-        EasyMock.expect( ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process);
+        EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(process);
         ProcessManager.saveProcess(process);
         // Mock ui error message handling
         PowerMock.mockStatic(Helper.class);
@@ -189,12 +202,87 @@ public class MetadatenTest extends AbstractTest {
     }
 
     @Test
+    public void testAddCorporate() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+        String value = fixture.AddCorporate();
+        assertEquals("", value);
+    }
+
+    @Test
     public void testAbbrechen() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyBenutzerID("1");
         fixture.setMyProzess(process);
         fixture.XMLlesenStart();
         String value = fixture.Abbrechen();
+        assertEquals("", value);
+    }
+
+    @Test
+    public void testRepresentativeMetadata() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+        // update existing value
+        Metadata rep = null;
+        Metadata rtl = null;
+        for (Metadata md : fixture.getDocument().getLogicalDocStruct().getAllMetadata()) {
+            if (md.getType().getName().equals("_directionRTL")) {
+                rtl = md;
+            }
+        }
+        for (Metadata md : fixture.getDocument().getPhysicalDocStruct().getAllMetadata()) {
+            if (md.getType().getName().equals("_representative")) {
+                rep = md;
+            }
+        }
+        assertEquals("1", rep.getValue());
+        assertFalse(fixture.isPagesRTL());
+
+        fixture.setPagesRTL(true);
+        fixture.setCurrentRepresentativePage("2");
+        fixture.setRepresentativeMetadata();
+
+        assertEquals("2", rep.getValue());
+        assertTrue(fixture.isPagesRTL());
+
+        // set new metadata
+        fixture.getDocument().getLogicalDocStruct().removeMetadata(rtl);
+        fixture.getDocument().getPhysicalDocStruct().removeMetadata(rep);
+
+        fixture.setPagesRTL(false);
+        fixture.setCurrentRepresentativePage("1");
+        fixture.setRepresentativeMetadata();
+        for (Metadata md : fixture.getDocument().getPhysicalDocStruct().getAllMetadata()) {
+            if (md.getType().getName().equals("_representative")) {
+                rep = md;
+            }
+        }
+        assertEquals("1", rep.getValue());
+        assertFalse(fixture.isPagesRTL());
+    }
+
+    @Test
+    public void testToggleImageView() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+        String value = fixture.toggleImageView();
+        assertEquals("", value);
+    }
+
+    @Test
+    public void testAutomaticSave() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+        String value = fixture.automaticSave();
         assertEquals("", value);
     }
 
@@ -217,6 +305,20 @@ public class MetadatenTest extends AbstractTest {
 
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
         MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+
+        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        m.setAutorityFile("id", "uri", "value");
+        md.addMetadata(m);
+        Person p = new Person(prefs.getMetadataTypeByName("junitPerson"));
+        p.addNamePart(new NamePart("type", "value"));
+        p.setAutorityFile("id", "uri", "value");
+        md.addPerson(p);
+
+        Corporate c = new Corporate(prefs.getMetadataTypeByName("junitCorporate"));
+        c.setAutorityFile("id", "uri", "value");
+        c.addSubName(new NamePart("type", "value"));
+        md.addCorporate(c);
+
         fixture.getDocument().getLogicalDocStruct().addMetadataGroup(md);
         fixture.setCurrentGroup(mdg);
 
@@ -238,6 +340,22 @@ public class MetadatenTest extends AbstractTest {
         fixture.setCurrentMetadata(m);
 
         String value = fixture.Kopieren();
+        assertEquals("", value);
+    }
+
+    @Test
+    public void testCopyCorporate() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+
+        Corporate c = new Corporate(prefs.getMetadataTypeByName("junitCorporate"));
+        c.setAutorityFile("id", "uri", "value");
+        c.addSubName(new NamePart("type", "value"));
+        fixture.getDocument().getLogicalDocStruct().addCorporate(c);
+        fixture.setCurrentCorporate(c);
+        String value = fixture.copyCorporate();
         assertEquals("", value);
     }
 
@@ -276,15 +394,16 @@ public class MetadatenTest extends AbstractTest {
     }
 
     @Test
-    public void testSpeichern() throws Exception {
+    public void testAddNewMetadata() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyBenutzerID("1");
         fixture.setMyProzess(process);
         fixture.XMLlesenStart();
 
         fixture.setTempTyp("junitMetadata");
-
+        // add new metadata
         Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        m.setAutorityFile("id", "uri", "value");
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
         md.setValue("test");
         fixture.setSelectedMetadatum(md);
@@ -292,9 +411,52 @@ public class MetadatenTest extends AbstractTest {
 
         fixture.setTempTyp("junitMetadata");
         md.setValue("junitMetadata");
-
-
         assertEquals("", fixture.addNewMetadata());
+
+        // remove existing title
+        Metadata title = null;
+        for (Metadata meta : fixture.getDocument().getLogicalDocStruct().getAllMetadata()) {
+            if (meta.getType().getName().equals("TitleDocMain")) {
+                title = meta;
+                break;
+            }
+        }
+        fixture.getDocument().getLogicalDocStruct().removeMetadata(title, true);
+
+        // add new title metadata
+        title = new Metadata(prefs.getMetadataTypeByName("TitleDocMain"));
+        title.setValue("main title");
+        MetadatumImpl titleImpl = new MetadatumImpl(title, 0, prefs, process, null);
+        fixture.setTempTyp("TitleDocMain");
+        fixture.setSelectedMetadatum(titleImpl);
+        assertEquals("", fixture.addNewMetadata());
+    }
+
+    @Test
+    public void testAddNewCorporate() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+        // add new corporate
+        fixture.setTempPersonRolle("junitCorporate");
+        fixture.setTempCorporateMainName("main name");
+        fixture.setTempCorporateSubName("sub name");
+        fixture.setTempCorporatePartName("part name");
+
+        assertEquals("", fixture.addNewCorporate());
+
+        // check result
+        Corporate corp = null;
+        for (Corporate existing : fixture.getDocument().getLogicalDocStruct().getAllCorporates()) {
+            if (existing.getType().getName().equals("junitCorporate")) {
+                corp = existing;
+            }
+        }
+        assertEquals("main name", corp.getMainName());
+        assertEquals("sub name", corp.getSubNames().get(0).getValue());
+        assertEquals("part name", corp.getPartName());
+
     }
 
     @Test
@@ -307,17 +469,29 @@ public class MetadatenTest extends AbstractTest {
         fixture.setTempMetadataGroupType("junitgrp");
 
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
+
+        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        m.setAutorityFile("id", "uri", "value");
+        md.addMetadata(m);
+        Person p = new Person(prefs.getMetadataTypeByName("junitPerson"));
+        p.addNamePart(new NamePart("type", "value"));
+        p.setAutorityFile("id", "uri", "value");
+        md.addPerson(p);
+        Corporate c = new Corporate(prefs.getMetadataTypeByName("junitCorporate"));
+        c.setAutorityFile("id", "uri", "value");
+        c.addSubName(new NamePart("type", "value"));
+        md.addCorporate(c);
         MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
         fixture.setSelectedGroup(mdg);
-
-        fixture.getDocument().getLogicalDocStruct().addMetadataGroup(md);
 
         assertEquals("", fixture.saveGroup());
     }
 
-
     public void testLoadRightFrame() throws Exception {
         Metadaten fixture = new Metadaten();
+        fixture.setNeuesElementWohin("1");
+        assertEquals("metseditor", fixture.loadRightFrame());
+        fixture.setNeuesElementWohin("3");
         assertEquals("metseditor", fixture.loadRightFrame());
     }
 
@@ -372,6 +546,114 @@ public class MetadatenTest extends AbstractTest {
         fixture.setCurMetadatum(md);
         fixture.getDocument().getLogicalDocStruct().addMetadata(m);
         assertEquals("", fixture.Loeschen());
+
+        Metadata m2 = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        MetadatumImpl md2 = new MetadatumImpl(m2, 0, prefs, process, null);
+        md2.setValue("test");
+        fixture.setCurMetadatum(md2);
+        assertEquals("", fixture.Loeschen());
+        assertEquals("", md2.getValue());
+    }
+
+    @Test
+    public void testDelete() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyProzess(process);
+        fixture.setMyBenutzerID("1");
+        fixture.XMLlesenStart();
+
+        fixture.setTempTyp("junitMetadata");
+
+        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        m.setValue("test");
+        fixture.getDocument().getLogicalDocStruct().addMetadata(m);
+
+        fixture.setCurrentMetadata(m);
+
+        assertEquals("", fixture.delete());
+
+        Metadata m2 = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        m2.setValue("test");
+        fixture.setCurrentMetadata(m2);
+        assertEquals("", fixture.delete());
+        assertEquals("", m2.getValue());
+    }
+
+    @Test
+    public void testLoeschenPerson() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyProzess(process);
+        fixture.setMyBenutzerID("1");
+        fixture.XMLlesenStart();
+
+        Person p = new Person(prefs.getMetadataTypeByName("junitPerson"));
+        p.setFirstname("first");
+        p.setLastname("last");
+        p.addNamePart(new NamePart("type", "value"));
+        MetaPerson md = new MetaPerson(p, 0, prefs, null, process, null);
+        fixture.getDocument().getLogicalDocStruct().addPerson(p);
+        fixture.setCurPerson(md);
+
+        assertEquals("", fixture.LoeschenPerson());
+
+        p = new Person(prefs.getMetadataTypeByName("junitPerson"));
+        p.setFirstname("first");
+        p.setLastname("last");
+        p.addNamePart(new NamePart("type", "value"));
+        md = new MetaPerson(p, 0, prefs, null, process, null);
+        fixture.setCurPerson(md);
+        assertEquals("", fixture.LoeschenPerson());
+        assertEquals("", md.getVorname());
+        assertEquals("", md.getNachname());
+    }
+
+    //    deletePerson
+    @Test
+    public void testDeletePerson() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyProzess(process);
+        fixture.setMyBenutzerID("1");
+        fixture.XMLlesenStart();
+
+        Person p = new Person(prefs.getMetadataTypeByName("junitPerson"));
+        p.setFirstname("first");
+        p.setLastname("last");
+        p.addNamePart(new NamePart("type", "value"));
+        fixture.getDocument().getLogicalDocStruct().addPerson(p);
+
+        fixture.setCurrentPerson(p);
+
+        assertEquals("", fixture.deletePerson());
+
+        p = new Person(prefs.getMetadataTypeByName("junitPerson"));
+        p.setFirstname("first");
+        p.setLastname("last");
+        p.addNamePart(new NamePart("type", "value"));
+        fixture.setCurrentPerson(p);
+
+        assertEquals("", fixture.deletePerson());
+        assertEquals("", p.getFirstname());
+        assertEquals("", p.getLastname());
+    }
+
+    @Test
+    public void testDeleteCorporate() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyProzess(process);
+        fixture.setMyBenutzerID("1");
+        fixture.XMLlesenStart();
+
+        Corporate c = new Corporate(prefs.getMetadataTypeByName("junitCorporate"));
+        c.setMainName("main");
+        fixture.getDocument().getLogicalDocStruct().addCorporate(c);
+        fixture.setCurrentCorporate(c);
+        assertEquals("", fixture.deleteCorporate());
+
+        c = new Corporate(prefs.getMetadataTypeByName("junitCorporate"));
+        c.setMainName("main");
+        fixture.setCurrentCorporate(c);
+        assertEquals("", fixture.deleteCorporate());
+
     }
 
     @Test
@@ -384,6 +666,34 @@ public class MetadatenTest extends AbstractTest {
         List<SelectItem> list = fixture.getAddableRollen();
         assertEquals(6, list.size());
         assertEquals("Author", list.get(0).getLabel());
+
+        MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
+        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+
+        fixture.setCurrentGroup(mdg);
+        list = fixture.getAddableRollen();
+        assertEquals(1, list.size());
+        assertEquals("junitPerson", list.get(0).getLabel());
+    }
+
+    @Test
+    public void testGetAddableCorporateRoles() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyProzess(process);
+        fixture.setMyBenutzerID("1");
+        fixture.XMLlesenStart();
+
+        List<SelectItem> list = fixture.getAddableCorporateRoles();
+        assertEquals(1, list.size());
+        assertEquals("junitCorporate", list.get(0).getLabel());
+
+        MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
+        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+
+        fixture.setCurrentGroup(mdg);
+        list = fixture.getAddableCorporateRoles();
+        assertEquals(1, list.size());
+        assertEquals("junitCorporate", list.get(0).getLabel());
     }
 
     @Test
@@ -407,6 +717,16 @@ public class MetadatenTest extends AbstractTest {
     }
 
     @Test
+    public void testSizeOfCorporates() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyProzess(process);
+        fixture.setMyBenutzerID("1");
+        fixture.XMLlesenStart();
+        fixture.setSizeOfMetadata(1);
+        assertEquals(1, fixture.getSizeOfCorporates());
+    }
+
+    @Test
     public void testSizeOfMetadataGroups() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyProzess(process);
@@ -414,6 +734,36 @@ public class MetadatenTest extends AbstractTest {
         fixture.XMLlesenStart();
         fixture.setSizeOfMetadataGroups(1);
         assertEquals(1, fixture.getSizeOfMetadataGroups());
+    }
+
+    @Test
+    public void testAddableMetadataTypes() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyProzess(process);
+        fixture.setMyBenutzerID("1");
+        fixture.XMLlesenStart();
+        fixture.setSizeOfMetadataGroups(1);
+        assertEquals(15, fixture.getAddableMetadataTypes().size());
+
+        MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
+        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+        fixture.setCurrentGroup(mdg);
+        assertEquals(1, fixture.getAddableMetadataTypes().size());
+    }
+
+    @Test
+    public void testAddableMetadataGroupTypes() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyProzess(process);
+        fixture.setMyBenutzerID("1");
+        fixture.XMLlesenStart();
+        fixture.setSizeOfMetadataGroups(1);
+        assertEquals(1, fixture.getAddableMetadataGroupTypes().size());
+
+        MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
+        MetadataGroupImpl mdg = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
+        fixture.setCurrentGroup(mdg);
+        assertEquals(0, fixture.getAddableMetadataGroupTypes().size());
     }
 
     @Test
@@ -481,6 +831,15 @@ public class MetadatenTest extends AbstractTest {
     }
 
     @Test
+    public void testCheckForReadingDirection() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+        assertTrue(fixture.isCheckForReadingDirection());
+    }
+
+    @Test
     public void testKnotenUp() throws Exception {
         Metadaten fixture = new Metadaten();
         fixture.setMyBenutzerID("1");
@@ -489,7 +848,7 @@ public class MetadatenTest extends AbstractTest {
 
         DocStruct ds = fixture.getDocument().getLogicalDocStruct().getAllChildren().get(1);
         fixture.setMyStrukturelement(ds);
-        fixture.KnotenUp();
+        assertEquals("metseditor", fixture.KnotenUp());
     }
 
     @Test
@@ -501,7 +860,7 @@ public class MetadatenTest extends AbstractTest {
 
         DocStruct ds = fixture.getDocument().getLogicalDocStruct().getAllChildren().get(0);
         fixture.setMyStrukturelement(ds);
-        fixture.KnotenDown();
+        assertEquals("metseditor", fixture.KnotenDown());
     }
 
     @Test
@@ -515,7 +874,7 @@ public class MetadatenTest extends AbstractTest {
         DocStruct other = fixture.getDocument().getLogicalDocStruct().getAllChildren().get(2);
         fixture.setTempStrukturelement(other);
         fixture.setMyStrukturelement(ds);
-        fixture.KnotenVerschieben();
+        assertEquals("metseditor", fixture.KnotenVerschieben());
     }
 
     @Test
@@ -580,6 +939,8 @@ public class MetadatenTest extends AbstractTest {
         // 4
         fixture.setNeuesElementWohin("4");
         assertEquals("metseditor", fixture.KnotenAdd());
+        // TODO addablePersondata addableCorporates pageAreaManager
+
     }
 
     @Test
@@ -666,6 +1027,365 @@ public class MetadatenTest extends AbstractTest {
         fixture.setMyProzess(process);
         fixture.XMLlesenStart();
         assertEquals("Main", fixture.goZurueck());
+    }
+
+    @Test
+    public void testImageRight() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+
+        // left to right
+        fixture.setImageIndex(0);
+        fixture.imageRight();
+        assertEquals(1, fixture.getImageIndex());
+
+        // right to left
+        fixture.setPagesRTL(true);
+        assertEquals(1, fixture.getImageIndex());
+        fixture.imageRight();
+        assertEquals(0, fixture.getImageIndex());
+    }
+
+    @Test
+    public void testImageRight2() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+
+        // left to right
+        fixture.setImageIndex(0);
+        fixture.imageRight2();
+        assertEquals(2, fixture.getImageIndex());
+    }
+
+    @Test
+    public void testImageLeft() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+
+        // left to right
+        fixture.setImageIndex(5);
+        fixture.imageLeft();
+        assertEquals(4, fixture.getImageIndex());
+
+        // right to left
+        fixture.setPagesRTL(true);
+        assertEquals(4, fixture.getImageIndex());
+        fixture.imageLeft();
+        assertEquals(5, fixture.getImageIndex());
+    }
+
+    @Test
+    public void testImageLeft2() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+
+        // left to right
+        fixture.setImageIndex(5);
+        fixture.imageLeft2();
+        assertEquals(3, fixture.getImageIndex());
+    }
+
+    @Test
+    public void testImageLeftMost() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+
+        // left to right
+        fixture.setImageIndex(3);
+        fixture.imageLeftmost();
+        assertEquals(0, fixture.getImageIndex());
+
+        // right to left
+        fixture.setPagesRTL(true);
+        fixture.imageLeftmost();
+        assertEquals(5, fixture.getImageIndex());
+    }
+
+    @Test
+    public void testImageRightMost() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+
+        // left to right
+        fixture.setImageIndex(3);
+        fixture.imageRightmost();
+        assertEquals(5, fixture.getImageIndex());
+
+        // right to left
+        fixture.setPagesRTL(true);
+        fixture.imageRightmost();
+        assertEquals(0, fixture.getImageIndex());
+    }
+
+    @Test
+    public void testReloadPagination() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+
+        assertEquals("", fixture.reloadPagination());
+
+    }
+
+    @Test
+    public void testAddPageAreaCommand() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+
+        fixture.setImageIndex(0);
+        fixture.addPageAreaCommand();
+
+        DocStruct page = fixture.getDocument().getPhysicalDocStruct().getAllChildren().get(0);
+        assertEquals(1, page.getAllChildren().size());
+    }
+
+    @Test
+    public void testSetPageAreaCommand() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+
+        fixture.setImageIndex(0);
+        fixture.addPageAreaCommand();
+        fixture.setPageAreaCommand();
+
+        DocStruct page = fixture.getDocument().getPhysicalDocStruct().getAllChildren().get(0);
+        assertEquals(1, page.getAllChildren().size());
+        DocStruct area = page.getAllChildren().get(0);
+        Metadata coords = area.getAllMetadataByType(prefs.getMetadataTypeByName("_COORDS")).get(0);
+        assertEquals("10,10,50,50", coords.getValue());
+    }
+    @Test
+    public void testDeletePageAreaCommand() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+
+        fixture.setImageIndex(0);
+        fixture.addPageAreaCommand();
+
+        DocStruct page = fixture.getDocument().getPhysicalDocStruct().getAllChildren().get(0);
+        assertEquals(1, page.getAllChildren().size());
+        DocStruct area = page.getAllChildren().get(0);
+        Metadata coords = area.getAllMetadataByType(prefs.getMetadataTypeByName("_COORDS")).get(0);
+        assertEquals("10,10,50,50", coords.getValue());
+
+        fixture.deletePageAreaCommand();
+        assertNull(page.getAllChildren());
+
+    }
+
+    @Test
+    public void testDeletePageArea() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+
+        fixture.setImageIndex(0);
+        fixture.addPageAreaCommand();
+        fixture.setPageAreaCommand();
+
+        DocStruct page = fixture.getDocument().getPhysicalDocStruct().getAllChildren().get(0);
+        assertEquals(1, page.getAllChildren().size());
+        DocStruct area = page.getAllChildren().get(0);
+        fixture.deletePageArea(area);
+        assertNull(page.getAllChildren());
+    }
+
+
+    @Test
+    public void testGetPageAreas() throws Exception {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+
+        fixture.setImageIndex(0);
+        fixture.addPageAreaCommand();
+
+        DocStruct page = fixture.getDocument().getPhysicalDocStruct().getAllChildren().get(0);
+        assertEquals(1, page.getAllChildren().size());
+        assertEquals("[{\"highlight\":true,\"areaId\":\"1_1\",\"w\":\"50\",\"x\":\"10\",\"h\":\"50\",\"y\":\"10\",\"logId\":\"LOG_0000\"}]", fixture.getPageAreas());
+    }
+
+
+    @Test
+    public void testScrollPage() throws Exception {
+        MetadatenImagesHelper mih = mockImageHelper();
+        Metadaten fixture = initMetadaten();
+
+        fixture.setImagehelper(mih);
+        fixture.setImageIndex(0);
+        fixture.setNumberOfNavigation(2);
+        fixture.BildBlaettern();
+        assertEquals(3, fixture.getBildNummer());
+    }
+
+    @Test
+    public void testMoveToPage() throws Exception {
+        MetadatenImagesHelper mih = mockImageHelper();
+        Metadaten fixture = initMetadaten();
+
+        fixture.setImagehelper(mih);
+        fixture.setImageIndex(0);
+        fixture.setBildNummerGeheZu("3");
+        fixture.BildGeheZu();
+        assertEquals(2, fixture.getBildNummer());
+    }
+
+    @Test
+    public void testLoadImageInThumbnailList() throws Exception {
+        MetadatenImagesHelper mih = mockImageHelper();
+        Metadaten fixture = initMetadaten();
+
+        fixture.setImagehelper(mih);
+        fixture.setImageIndex(0);
+        fixture.setBildNummerGeheZu("3");
+        fixture.loadImageInThumbnailList();
+        assertEquals(2, fixture.getBildNummer());
+    }
+
+    //    getAllTifFolders
+    //    BildErmitteln
+    //    discard
+    //    isCheckForNewerTemporaryMetadataFiles
+    //    AddAdditionalOpacPpns
+    //    AddMetadaFromOpacPpn
+    //    Validate
+    //    CurrentStartpage
+    //    CurrentEndpage
+    //    startpage
+    //    endpage
+    //    setPages
+    //     setPageNumber
+    //    getAjaxAlleSeiten
+    //        SeitenVonChildrenUebernehmen
+    //        BildErsteSeiteAnzeigen
+    //        BildLetzteSeiteAnzeigen
+    //        SeitenHinzu
+    //        SeitenWeg
+    //        isImageHasOcr
+    //        isShowOcrButton
+    //        getOcrResult
+    //        getJsonAlto
+    //        saveAlto
+    //        getOcrAddress
+    //        getTempTyp
+    //        getSelectedCorporate
+    //        setMetadatum
+    //        setTempMetadataGroupType
+    //        getOutputType
+    //        getStructSeiten
+    //        BildAnzeigen
+    //        getBildNummerGeheZu
+    //        setBildNummerGeheZu
+    //        setBildNummerGeheZuCompleteString
+    //        getBildNummerGeheZuCompleteString
+    //        getNeuesElementWohin
+    //        setNeuesElementWohin
+    //        getStrukturBaum3
+    //        getStrukturBaum3Alle
+    //        isModusStrukturelementVerschieben
+    //        setModusStrukturelementVerschieben
+    //        getMetadata
+    //        search
+    //        resetSearchValues
+    //        getOpacKatalog
+    //        setOpacKatalog
+    //        getAllSearchFields
+    //        getAllOpacCatalogues
+    //        setCurrentTifFolder
+    //        autocomplete
+    //        autocompleteJson
+    //        getIsNotRootElement
+    //        updateRepresentativePage
+    //        moveSeltectedPagesUp
+    //        moveSelectedPages
+    //        moveSeltectedPagesDown
+    //        deleteSeltectedPages
+    //        reOrderPagination
+    //        getFileManipulation
+    //        setModusCopyDocstructFromOtherProcess
+    //        getDisplayFileManipulation
+    //        filterMyProcess
+    //        getStruktureTreeAsTableForFilteredProcess
+    //        getIsProcessLoaded
+    //        rememberFilteredProcessStruct
+    //        importFilteredProcessStruct
+    //        updateAllSubNodes
+    //        getProgress
+    //        onComplete
+    //        isShowProgressBar
+    //        changeTopstruct
+    //        isPhysicalTopstruct
+    //        getPaginatorList
+    //        checkSelectedThumbnail
+    //        getImageUrl
+    //        getImageWidth
+    //        getImageHeight
+    //        cmdMoveFirst
+    //        cmdMovePrevious
+    //        cmdMoveNext
+    //        cmdMoveLast
+    //        setTxtMoveTo
+    //        getLastPageNumber
+    //        isFirstPage
+    //        isLastPage
+    //        hasNextPage
+    //        hasPreviousPage
+    //        getPageNumberCurrent
+    //        getPageNumberLast
+    //        getThumbnailSize
+    //        setThumbnailSize
+    //        setContainerWidth
+    //        increaseContainerWidth
+    //        reduceContainerWidth
+    //        changeFolder
+    //        setNumberOfImagesPerPage
+    //        getPossibleDatabases
+    //        getPossibleNamePartTypes
+    //        reloadMetadataList
+    //        isAddableMetadata
+    //        isAddableMetadata
+    //        isAddablePerson
+    //        getAllPages
+    //        setCurrentMetadataToPerformSearch
+
+
+    private Metadaten initMetadaten() throws ReadException, IOException, PreferencesException, SwapException, DAOException {
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+        return fixture;
+    }
+
+    private MetadatenImagesHelper mockImageHelper()
+            throws IOException, SwapException, InvalidImagesException, ContentLibException, ImageManipulatorException {
+        MetadatenImagesHelper mih = EasyMock.createMock(MetadatenImagesHelper.class);
+        List<String> files = StorageProvider.getInstance().list(process.getImagesTifDirectory(true));
+        EasyMock.expect(mih.getImageFiles(EasyMock.anyObject(), EasyMock.anyString())).andReturn(files).anyTimes();
+        mih.scaleFile(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt());
+        EasyMock.replay(mih);
+        return mih;
     }
 
 }

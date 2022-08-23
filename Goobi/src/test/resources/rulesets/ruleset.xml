@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-
 <Preferences>
+  <MetadataType>
+    <Name>_COORDS</Name>
+    <language name="de">Koordinaten</language>
+    <language name="en">Coordinates</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>_SHAPE</Name>
+    <language name="de">Form</language>
+    <language name="en">Shape</language>
+  </MetadataType>
   <MetadataType>
     <Name>_directionRTL</Name>
     <language name="de">Leserichtung RTL</language>
@@ -591,6 +599,9 @@
 		<metadata num="*">Author</metadata>
 		<metadata num="*">TitleDocMainShort</metadata>
 		<metadata num="*">DocLanguage</metadata>
+        <metadata num="*">junitMetadata</metadata>
+        <metadata num="*">junitPerson</metadata>
+        <metadata num="*">junitCorporate</metadata>
 	</DocStrctType>
 	<DocStrctType anchor="true">
 		<Name>Periodical</Name>
@@ -1504,12 +1515,22 @@
 	<!-- DO NOT CHANGE!! -->
 	<DocStrctType>
 		<Name>page</Name>
+        <allowedchildtype>area</allowedchildtype>        
 		<language name="de">Seite</language>
 		<language name="en">page</language>
 		<language name="rusdml">page</language>
 		<metadata num="1m">physPageNumber</metadata>
 		<metadata num="1m">logicalPageNumber</metadata>
 	</DocStrctType>
+  <DocStrctType>
+    <Name>area</Name>
+    <language name="de">Region</language>
+    <language name="en">Area</language>
+    <metadata num="1o">_COORDS</metadata>
+    <metadata num="1o">_SHAPE</metadata>
+    <metadata num="1m">physPageNumber</metadata>
+    <metadata num="1m">logicalPageNumber</metadata>
+  </DocStrctType>    
 	<DocStrctType>
 		<Name>BoundBook</Name>
 		<language name="de">gebundenes Buch</language>
