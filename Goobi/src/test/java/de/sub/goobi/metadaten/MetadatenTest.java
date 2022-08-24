@@ -25,10 +25,12 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 import org.easymock.EasyMock;
 import org.goobi.beans.Process;
+import org.goobi.beans.Processproperty;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -58,6 +60,7 @@ import ugh.exceptions.ReadException;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class, ExternalContext.class, Application.class, UIViewRoot.class, Helper.class, MetadataManager.class,
     ProcessManager.class })
+@PowerMockIgnore({ "javax.net.ssl.*" })
 public class MetadatenTest extends AbstractTest {
 
     private Process process;
@@ -141,7 +144,7 @@ public class MetadatenTest extends AbstractTest {
         Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
         Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
         Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-
+        Helper.setMeldung(EasyMock.anyString());
         PowerMock.replay(Helper.class);
         PowerMock.replay(ProcessManager.class);
         EasyMock.replay(servletRequest);
@@ -1171,6 +1174,7 @@ public class MetadatenTest extends AbstractTest {
         Metadata coords = area.getAllMetadataByType(prefs.getMetadataTypeByName("_COORDS")).get(0);
         assertEquals("10,10,50,50", coords.getValue());
     }
+
     @Test
     public void testDeletePageAreaCommand() throws Exception {
         Metadaten fixture = new Metadaten();
@@ -1210,7 +1214,6 @@ public class MetadatenTest extends AbstractTest {
         assertNull(page.getAllChildren());
     }
 
-
     @Test
     public void testGetPageAreas() throws Exception {
         Metadaten fixture = new Metadaten();
@@ -1223,9 +1226,9 @@ public class MetadatenTest extends AbstractTest {
 
         DocStruct page = fixture.getDocument().getPhysicalDocStruct().getAllChildren().get(0);
         assertEquals(1, page.getAllChildren().size());
-        assertEquals("[{\"highlight\":true,\"areaId\":\"1_1\",\"w\":\"50\",\"x\":\"10\",\"h\":\"50\",\"y\":\"10\",\"logId\":\"LOG_0000\"}]", fixture.getPageAreas());
+        assertEquals("[{\"highlight\":true,\"areaId\":\"1_1\",\"w\":\"50\",\"x\":\"10\",\"h\":\"50\",\"y\":\"10\",\"logId\":\"LOG_0000\"}]",
+                fixture.getPageAreas());
     }
-
 
     @Test
     public void testScrollPage() throws Exception {
@@ -1263,66 +1266,481 @@ public class MetadatenTest extends AbstractTest {
         assertEquals(2, fixture.getBildNummer());
     }
 
-    //    getAllTifFolders
-    //    BildErmitteln
-    //    discard
-    //    isCheckForNewerTemporaryMetadataFiles
-    //    AddAdditionalOpacPpns
-    //    AddMetadaFromOpacPpn
-    //    Validate
-    //    CurrentStartpage
-    //    CurrentEndpage
-    //    startpage
-    //    endpage
-    //    setPages
-    //     setPageNumber
-    //    getAjaxAlleSeiten
-    //        SeitenVonChildrenUebernehmen
-    //        BildErsteSeiteAnzeigen
-    //        BildLetzteSeiteAnzeigen
-    //        SeitenHinzu
-    //        SeitenWeg
-    //        isImageHasOcr
-    //        isShowOcrButton
-    //        getOcrResult
-    //        getJsonAlto
-    //        saveAlto
-    //        getOcrAddress
-    //        getTempTyp
-    //        getSelectedCorporate
-    //        setMetadatum
-    //        setTempMetadataGroupType
-    //        getOutputType
-    //        getStructSeiten
-    //        BildAnzeigen
-    //        getBildNummerGeheZu
-    //        setBildNummerGeheZu
-    //        setBildNummerGeheZuCompleteString
-    //        getBildNummerGeheZuCompleteString
-    //        getNeuesElementWohin
-    //        setNeuesElementWohin
-    //        getStrukturBaum3
-    //        getStrukturBaum3Alle
-    //        isModusStrukturelementVerschieben
-    //        setModusStrukturelementVerschieben
-    //        getMetadata
-    //        search
-    //        resetSearchValues
-    //        getOpacKatalog
-    //        setOpacKatalog
-    //        getAllSearchFields
-    //        getAllOpacCatalogues
-    //        setCurrentTifFolder
-    //        autocomplete
-    //        autocompleteJson
-    //        getIsNotRootElement
-    //        updateRepresentativePage
-    //        moveSeltectedPagesUp
-    //        moveSelectedPages
-    //        moveSeltectedPagesDown
-    //        deleteSeltectedPages
-    //        reOrderPagination
-    //        getFileManipulation
+    @Test
+    public void testGetAllTifFolders() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertEquals(4, fixture.getAllTifFolders().size());
+    }
+
+    @Test
+    public void testSwitchImage() throws Exception {
+        MetadatenImagesHelper mih = mockImageHelper();
+        Metadaten fixture = initMetadaten();
+
+        fixture.setImagehelper(mih);
+        fixture.setBildNummer(0);
+        fixture.setImageIndex(0);
+        // disable image display
+        fixture.BildAnzeigen();
+        fixture.BildErmitteln(2);
+        // no new image was created, number is still pointing to the old value
+        assertEquals(0, fixture.getBildNummer());
+
+        // enable image display again
+        fixture.BildAnzeigen();
+        fixture.BildErmitteln(2);
+        assertEquals(3, fixture.getBildNummer());
+    }
+
+    @Test
+    public void testDiscard() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.automaticSave();
+        assertEquals("Main", fixture.discard());
+    }
+
+    @Test
+    public void testCheckForNewerTemporaryMetadataFiles() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertFalse(fixture.isCheckForNewerTemporaryMetadataFiles());
+        fixture.automaticSave();
+        assertTrue(fixture.isCheckForNewerTemporaryMetadataFiles());
+    }
+
+    @Test
+    public void testImportSubElementsFromOpac() throws Exception {
+        Metadaten fixture = initMetadaten();
+        Processproperty pp = new Processproperty();
+        pp.setTitel("Template");
+        pp.setWert("test");
+        List<Processproperty> props = new ArrayList<>();
+        props.add(pp);
+        process.setEigenschaften(props);
+        List<String> catalogues = fixture.getAllOpacCatalogues();
+        assertEquals("KXP", catalogues.get(0));
+        fixture.setAdditionalOpacPpns("1800490011");
+        fixture.setOpacKatalog("KXP");
+        assertEquals("Metadaten3links", fixture.AddAdditionalOpacPpns());
+        DocStruct logical = fixture.getDocument().getLogicalDocStruct();
+        DocStruct lastChild = logical.getAllChildren().get(logical.getAllChildren().size() - 1);
+        assertEquals("Chapter", lastChild.getType().getName());
+    }
+
+    @Test
+    public void testImportMetadataFromOpac() throws Exception {
+        Metadaten fixture = initMetadaten();
+        Processproperty pp = new Processproperty();
+        pp.setTitel("Template");
+        pp.setWert("test");
+        List<Processproperty> props = new ArrayList<>();
+        props.add(pp);
+        process.setEigenschaften(props);
+        List<String> catalogues = fixture.getAllOpacCatalogues();
+        assertEquals("KXP", catalogues.get(0));
+        fixture.setAdditionalOpacPpns("1800490011");
+        fixture.setOpacKatalog("KXP");
+        assertEquals("", fixture.AddMetadaFromOpacPpn());
+        DocStruct logical = fixture.getDocument().getLogicalDocStruct();
+
+        Metadata md1 = null;
+        Metadata md2 = null;
+        for (Metadata md : logical.getAllMetadata()) {
+            if (md.getType().getName().equals("TitleDocMainShort")) {
+                md1 = md;
+            } else if (md.getType().getName().equals("TitleDocSub1")) {
+                md2 = md;
+            }
+        }
+        assertEquals("Semi-Vektoren und Spinoren", md1.getValue());
+        assertEquals("von A. Einstein und W. Mayer", md2.getValue());
+    }
+
+    @Test
+    public void testValidate() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.Validate();
+        assertEquals(6, fixture.getStructSeiten().length);
+    }
+
+    @Test
+    public void testCurrentStartpage() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setPageNumber(1);
+        fixture.CurrentStartpage();
+        assertEquals("1: uncounted", fixture.getPagesStart());
+    }
+
+    @Test
+    public void testCurrentEndpage() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setPageNumber(4);
+        fixture.CurrentEndpage();
+        assertEquals("4: uncounted", fixture.getPagesEnd());
+    }
+
+    @Test
+    public void testStartpage() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setPageNumber(1);
+        fixture.startpage();
+        assertEquals("1: uncounted", fixture.getPagesStartCurrentElement());
+    }
+
+    @Test
+    public void testEndpage() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setPageNumber(4);
+        fixture.endpage();
+        assertEquals("4: uncounted", fixture.getPagesEndCurrentElement());
+    }
+
+    @Test
+    public void testSetPages() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setPagesStartCurrentElement("1: uncounted");
+        fixture.setPagesEndCurrentElement("3: uncounted");
+
+        // currently 1 page is assigned to cover
+        DocStruct ds = fixture.getDocument().getLogicalDocStruct().getAllChildren().get(0);
+        assertEquals(1, ds.getAllToReferences().size());
+        fixture.setMyStrukturelement(ds);
+        fixture.setPages();
+        // now 1-3 are assigned
+        assertEquals(3, ds.getAllToReferences().size());
+    }
+
+    @Test
+    public void testPageNumber() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setPageNumber(2);
+        assertEquals(1, fixture.getPageNumber());
+
+    }
+
+    @Test
+    public void testAjaxPageAssignment() throws Exception {
+        Metadaten fixture = initMetadaten();
+        List<String> results = fixture.getAjaxAlleSeiten("1");
+        assertEquals(1, results.size());
+        assertEquals("1: uncounted", results.get(0));
+    }
+
+    @Test
+    public void testGetPageAssignmentFromChildren() throws Exception {
+        Metadaten fixture = initMetadaten();
+
+        DocStruct logical = fixture.getDocument().getLogicalDocStruct();
+        DocStruct chapter = logical.getAllChildren().get(logical.getAllChildren().size() - 1);
+
+        // assign all pages to chapter
+        fixture.setMyStrukturelement(chapter);
+        fixture.setPagesStartCurrentElement("1: uncounted");
+        fixture.setPagesEndCurrentElement("6: uncounted");
+        fixture.setPages();
+        assertEquals(6, chapter.getAllToReferences().size());
+
+        // remove all pages from monograph
+        logical.getAllReferences("to").removeAll(logical.getAllReferences("to"));
+        assertEquals(0, logical.getAllToReferences().size());
+        fixture.setMyStrukturelement(logical);
+
+        // assign pages from sub elements
+        fixture.SeitenVonChildrenUebernehmen();
+        assertEquals(6, logical.getAllToReferences().size());
+    }
+
+    @Test
+    public void testShowFirstPage() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setPageSelectionFirstPage("1");
+        fixture.setBildNummer(1);
+        fixture.BildErsteSeiteAnzeigen();
+        assertEquals(1, fixture.getImageIndex());
+        assertEquals(1, fixture.getBildNummer());
+    }
+
+    @Test
+    public void testShowLastPage() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setPageSelectionLastPage("6");
+        fixture.setBildNummer(1);
+        fixture.BildLetzteSeiteAnzeigen();
+        assertEquals(5, fixture.getImageIndex());
+        assertEquals(5, fixture.getBildNummer());
+    }
+
+    @Test
+    public void testAddPagAssignment() throws Exception {
+        Metadaten fixture = initMetadaten();
+
+        DocStruct logical = fixture.getDocument().getLogicalDocStruct();
+        DocStruct chapter = logical.getAllChildren().get(logical.getAllChildren().size() - 1);
+        fixture.setMyStrukturelement(chapter);
+
+        String[] selection = { "1", "2", "3", "4", "5", "6" };
+        fixture.setAlleSeitenAuswahl(selection);
+        assertEquals(1, chapter.getAllToReferences().size());
+        fixture.SeitenHinzu();
+
+        assertEquals(6, chapter.getAllToReferences().size());
+    }
+
+    @Test
+    public void testRemovePagAssignment() throws Exception {
+        Metadaten fixture = initMetadaten();
+
+        DocStruct logical = fixture.getDocument().getLogicalDocStruct();
+        DocStruct chapter = logical.getAllChildren().get(logical.getAllChildren().size() - 1);
+        fixture.setMyStrukturelement(chapter);
+
+        String[] selection = { "1" };
+        fixture.setStructSeitenAuswahl(selection);
+        assertEquals(1, chapter.getAllToReferences().size());
+        fixture.SeitenWeg();
+
+        assertEquals(0, chapter.getAllToReferences().size());
+    }
+
+    @Test
+    public void testImageHasOcr() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertTrue(fixture.isImageHasOcr());
+    }
+
+    @Test
+    public void testShowOcrButton() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertTrue(fixture.isShowOcrButton());
+    }
+
+    @Test
+    public void testOcrResult() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertTrue(StringUtils.isNotBlank(fixture.getOcrResult()));
+    }
+
+    @Test
+    public void testJsonAlto() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.loadJsonAlto();
+        assertTrue(StringUtils.isNotBlank(fixture.getJsonAlto()));
+    }
+
+    @Test
+    public void testGetTempTyp() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertEquals("CreatorsAllOrigin", fixture.getTempTyp());
+    }
+
+    @Test
+    public void tesMetadatum() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.getTempTyp();
+        MetadatumImpl mi = fixture.getSelectedMetadatum();
+        fixture.setMetadatum(mi);
+        assertEquals(mi.getTyp(), fixture.getMetadatum().getTyp());
+    }
+
+    @Test
+    public void testTempMetadataGroupType() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.getSelectedGroup();
+        fixture.setTempMetadataGroupType("junitgrp");
+
+        assertEquals("junitgrp", fixture.getTempMetadataGroupType());
+        assertEquals("junitgrp", fixture.getSelectedGroup().getMetadataGroup().getType().getName());
+    }
+
+    @Test
+    public void testOutputType() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.getTempTyp();
+        MetadatumImpl mi = fixture.getSelectedMetadatum();
+        fixture.setMetadatum(mi);
+        assertEquals(mi.getOutputType(), fixture.getOutputType());
+    }
+
+    @Test
+    public void testStructSeiten() throws Exception {
+        Metadaten fixture = initMetadaten();
+        SelectItem[] items = fixture.getStructSeiten();
+
+        assertEquals(6, items.length);
+    }
+
+    @Test
+    public void testBildNummerGeheZuCompleteString() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setBildNummerGeheZuCompleteString("2: uncounted");
+        fixture.BildGeheZu();
+        assertEquals(1, fixture.getImageIndex());
+    }
+
+    @Test
+    public void testNeuesElementWohin() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertEquals("4", fixture.getNeuesElementWohin());
+        fixture.setNeuesElementWohin("1");
+        assertEquals("1", fixture.getNeuesElementWohin());
+    }
+
+    @Test
+    public void testStrukturBaum3() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertEquals(1, fixture.getStrukturBaum3().size());
+    }
+
+    @Test
+    public void testStrukturBaum3Alle() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertEquals(4, fixture.getStrukturBaum3Alle().size());
+    }
+
+    @Test
+    public void testModusStrukturelementVerschieben() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertFalse(fixture.isModusStrukturelementVerschieben());
+        fixture.setModusStrukturelementVerschieben(true);
+        assertTrue(fixture.isModusStrukturelementVerschieben());
+    }
+
+    @Test
+    public void testGetMetadata() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertEquals("CatalogIDDigital", fixture.getMetadata().getMd().getType().getName());
+    }
+
+    @Test
+    public void testGetOpacKatalog() throws Exception {
+        Metadaten fixture = initMetadaten();
+        Processproperty pp = new Processproperty();
+        pp.setTitel("Template");
+        pp.setWert("test");
+        List<Processproperty> props = new ArrayList<>();
+        props.add(pp);
+        process.setEigenschaften(props);
+        assertEquals("KXP", fixture.getOpacKatalog());
+    }
+
+    @Test
+    public void testGetAllSearchFields() throws Exception {
+        Metadaten fixture = initMetadaten();
+        Processproperty pp = new Processproperty();
+        pp.setTitel("Template");
+        pp.setWert("test");
+        List<Processproperty> props = new ArrayList<>();
+        props.add(pp);
+        process.setEigenschaften(props);
+
+        assertNull(fixture.getAllSearchFields());
+        List<String> catalogues = fixture.getAllOpacCatalogues();
+        fixture.setOpacKatalog(catalogues.get(0));
+        assertEquals(5, fixture.getAllSearchFields().size());
+    }
+
+    @Test
+    public void testCurrentTifFolder() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setCurrentTifFolder("test");
+        assertEquals("test", fixture.getCurrentTifFolder());
+    }
+
+    @Test
+    public void testAutocomplete() throws Exception {
+        Metadaten fixture = initMetadaten();
+        List<String> complete = fixture.autocomplete("2");
+        assertEquals(1, complete.size());
+        assertEquals("2: uncounted", complete.get(0));
+    }
+
+    @Test
+    public void testIsNotRootElement() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertFalse(fixture.getIsNotRootElement());
+        DocStruct dsToChange = fixture.getDocument().getLogicalDocStruct().getAllChildren().get(0);
+        fixture.setMyStrukturelement(dsToChange);
+        assertTrue(fixture.getIsNotRootElement());
+    }
+
+    @Test
+    public void testUpdateRepresentativePage() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setResetRepresentative(true);
+        fixture.updateRepresentativePage();
+        for (String pageObject : fixture.getPageMap().getKeyList()) {
+            PhysicalObject po = fixture.getPageMap().get(pageObject);
+            assertFalse(po.isRepresentative());
+        }
+        fixture.setResetRepresentative(false);
+
+        fixture.setCurrentRepresentativePage("5");
+        fixture.updateRepresentativePage();
+        assertTrue(fixture.getPageMap().get("5").isRepresentative());
+    }
+
+    @Test
+    public void testMoveSeltectedPagesUp() throws Exception {
+        Metadaten fixture = initMetadaten();
+
+        DocStruct page = fixture.getDocument().getPhysicalDocStruct().getAllChildren().get(1);
+        Metadata order = page.getAllMetadataByType(prefs.getMetadataTypeByName("physPageNumber")).get(0);
+        assertEquals("2", order.getValue());
+
+        fixture.getPageMap().get("2").setSelected(true);
+
+        fixture.moveSeltectedPagesUp(1);
+        assertEquals("1", order.getValue());
+    }
+
+    @Test
+    public void testMoveSeltectedPages() throws Exception {
+        Metadaten fixture = initMetadaten();
+
+        DocStruct page = fixture.getDocument().getPhysicalDocStruct().getAllChildren().get(1);
+        Metadata order = page.getAllMetadataByType(prefs.getMetadataTypeByName("physPageNumber")).get(0);
+        assertEquals("2", order.getValue());
+
+        fixture.getPageMap().get("2").setSelected(true);
+
+        fixture.moveSelectedPages("up", 1);
+        assertEquals("1", order.getValue());
+    }
+
+    @Test
+    public void testMoveSeltectedPagesDown() throws Exception {
+        Metadaten fixture = initMetadaten();
+
+        DocStruct page = fixture.getDocument().getPhysicalDocStruct().getAllChildren().get(1);
+        Metadata order = page.getAllMetadataByType(prefs.getMetadataTypeByName("physPageNumber")).get(0);
+        assertEquals("2", order.getValue());
+
+        fixture.getPageMap().get("2").setSelected(true);
+
+        fixture.moveSeltectedPagesDown(1);
+        assertEquals("3", order.getValue());
+    }
+
+    @Test
+    public void testReOrderPagination() throws Exception {
+        Metadaten fixture = initMetadaten();
+
+        DocStruct page = fixture.getDocument().getPhysicalDocStruct().getAllChildren().get(1);
+        assertEquals("00000002.tif", page.getImageName());
+
+        fixture.getPageMap().get("2").setSelected(true);
+        fixture.moveSeltectedPagesDown(1);
+        fixture.reOrderPagination();
+
+        assertEquals("00000003.tif", page.getImageName());
+
+    }
+
+    @Test
+    public void testFileManipulation() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertNotNull(fixture.getFileManipulation());
+    }
+
     //        setModusCopyDocstructFromOtherProcess
     //        getDisplayFileManipulation
     //        filterMyProcess
@@ -1368,7 +1786,6 @@ public class MetadatenTest extends AbstractTest {
     //        isAddablePerson
     //        getAllPages
     //        setCurrentMetadataToPerformSearch
-
 
     private Metadaten initMetadaten() throws ReadException, IOException, PreferencesException, SwapException, DAOException {
         Metadaten fixture = new Metadaten();

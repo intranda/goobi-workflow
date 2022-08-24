@@ -596,6 +596,7 @@
 		<allowedchildtype>TableOfLiteratureRefs</allowedchildtype>
 		<allowedchildtype>TitlePage</allowedchildtype>
 		<metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
+        <metadata num="*">TitleDocSub1</metadata>
 		<metadata num="*">Author</metadata>
 		<metadata num="*">TitleDocMainShort</metadata>
 		<metadata num="*">DocLanguage</metadata>
@@ -1954,6 +1955,14 @@
 				<picaSubTag type="identifier">9</picaSubTag>
 				<picaSubTag type="expansion">8</picaSubTag>
 			</Person>
+<Person>
+                <picaMainTag>028C</picaMainTag>
+                <Name>Author</Name>
+                <picaSubTag type="firstname">D</picaSubTag>
+                <picaSubTag type="lastname">A</picaSubTag>
+                <picaSubTag type="identifier">9</picaSubTag>
+                <picaSubTag type="expansion">8</picaSubTag>
+            </Person>            
 			<Person>
 				<picaMainTag>028B</picaMainTag>
 				<Name>Author</Name>
@@ -1985,11 +1994,11 @@
 				<picaSubTag>a</picaSubTag>
 				<Name>TitleDocMain</Name>
 			</Metadata>
-			<Metadata>
-				<picaMainTag>021A</picaMainTag>
-				<picaSubTag>d</picaSubTag>
-				<Name>TitleDocSub1</Name>
-			</Metadata>
+            <Metadata>
+                <picaMainTag>021A</picaMainTag>
+                <picaSubTag>h</picaSubTag>
+                <Name>TitleDocSub1</Name>
+            </Metadata>
 			<Metadata>
 				<!-- this is the main title for a contained work | AttachedWord-->
 				<picaMainTag>021B</picaMainTag>
@@ -2130,6 +2139,12 @@
 				<picaContent>Ab</picaContent>
 				<Name>Periodical</Name>
 			</DocStruct>
+            <DocStruct>
+                <picaMainTag>002@</picaMainTag>
+                <picaSubTag>0</picaSubTag>
+                <picaContent>Os</picaContent>
+                <Name>Chapter</Name>
+            </DocStruct>            
 		</PicaPlus>
 
 		<!-- ##########################################################################

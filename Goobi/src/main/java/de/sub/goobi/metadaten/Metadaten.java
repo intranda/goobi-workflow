@@ -148,7 +148,7 @@ public class Metadaten implements Serializable {
     private Process filteredProcess = null;
     private String oldDocstructName = "";
     @Setter // needed to mock it in junit test
-    private transient  MetadatenImagesHelper imagehelper;
+    private transient MetadatenImagesHelper imagehelper;
     private transient MetadatenHelper metahelper;
     @Getter
     @Setter
@@ -169,7 +169,7 @@ public class Metadaten implements Serializable {
     private transient List<MetaCorporate> corporates = new LinkedList<>();
 
     @Getter
-    private transient  List<MetadataGroupImpl> groups = new LinkedList<>();
+    private transient List<MetadataGroupImpl> groups = new LinkedList<>();
     @Getter
     @Setter
     private transient MetadataGroupImpl currentGroup;
@@ -475,7 +475,6 @@ public class Metadaten implements Serializable {
     //this is set whenever setImage() is called.
     @Getter
     private boolean showImageComments = false;
-
 
     public enum MetadataTypes {
         PERSON,
@@ -2879,7 +2878,7 @@ public class Metadaten implements Serializable {
             PhysicalObject po = pageMap.get(pageObject);
             if (po.isSelected() || firstMatch) {
                 firstMatch = true;
-                if ((scope == Paginator.Scope.SELECTED && po.isSelected())|| (scope == Paginator.Scope.FROMFIRST && firstMatch) ) {
+                if ((scope == Paginator.Scope.SELECTED && po.isSelected()) || (scope == Paginator.Scope.FROMFIRST && firstMatch)) {
                     if (doublePage) {
                         po.getDocStruct().setAdditionalValue("double page");
                     } else {
@@ -3212,7 +3211,7 @@ public class Metadaten implements Serializable {
                     if (metadataList != null) {
                         List<Metadata> metadataListClone = new ArrayList<>(metadataList);
                         for (Metadata md : metadataListClone) {
-                            if (md.getValue() == null || md.getValue().isEmpty()) {
+                            if (StringUtils.isBlank(md.getValue())) {
                                 this.myDocStruct.removeMetadata(md, true);
                             }
                         }
@@ -3221,7 +3220,7 @@ public class Metadaten implements Serializable {
                     if (personList != null) {
                         List<Person> personListClone = new ArrayList<>(personList);
                         for (Person p : personListClone) {
-                            if (p.getFirstname().isEmpty() && p.getLastname().isEmpty()) {
+                            if (StringUtils.isBlank(p.getFirstname()) && StringUtils.isBlank(p.getLastname())) {
                                 myDocStruct.removePerson(p);
                             }
                         }
@@ -3247,12 +3246,12 @@ public class Metadaten implements Serializable {
                             this.myDocStruct.addPerson(m);
                         }
                     }
-
-                    for (MetadataGroup m : addrdf.getDigitalDocument().getLogicalDocStruct().getAllMetadataGroups()) {
-                        if (myDocStruct.getAddableMetadataGroupTypes().contains(m.getType())) {
-                            myDocStruct.addMetadataGroup(m);
+                    if (addrdf.getDigitalDocument().getLogicalDocStruct().getAllMetadataGroups() != null) {
+                        for (MetadataGroup m : addrdf.getDigitalDocument().getLogicalDocStruct().getAllMetadataGroups()) {
+                            if (myDocStruct.getAddableMetadataGroupTypes().contains(m.getType())) {
+                                myDocStruct.addMetadataGroup(m);
+                            }
                         }
-
                     }
 
                     MetadatenalsTree3Einlesen1(this.tree3, this.currentTopstruct, false);
@@ -4892,11 +4891,11 @@ public class Metadaten implements Serializable {
     }
 
     public int getLastPageNumber() {
-        int ret =  this.allImages.size() / numberOfImagesPerPage;
+        int ret = this.allImages.size() / numberOfImagesPerPage;
         if (this.allImages.size() % numberOfImagesPerPage == 0) {
             ret--;
         }
-        return  ret;
+        return ret;
     }
 
     public boolean isFirstPage() {
@@ -5096,8 +5095,6 @@ public class Metadaten implements Serializable {
             }
         }
     }
-
-
 
     private ImageCommentHelper getCommentHelper() {
 
