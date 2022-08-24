@@ -1269,7 +1269,7 @@ public class MetadatenTest extends AbstractTest {
     @Test
     public void testGetAllTifFolders() throws Exception {
         Metadaten fixture = initMetadaten();
-        assertEquals(4, fixture.getAllTifFolders().size());
+        assertEquals(3, fixture.getAllTifFolders().size());
     }
 
     @Test
