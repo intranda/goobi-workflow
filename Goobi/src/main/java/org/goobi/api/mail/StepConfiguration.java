@@ -36,7 +36,7 @@ import lombok.Data;
 public class StepConfiguration {
 
     private Integer id;
-
+    private Integer projectId;
     private String stepName;
 
     private boolean open;

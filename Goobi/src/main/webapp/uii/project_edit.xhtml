@@ -162,7 +162,7 @@
 
 
                                     <!-- metsRightsLicense -->
-                                    <div class="form-group" style="border-bottom: 1px solid #DDDDDD;">
+                                    <div class="form-group">
                                         <h:outputLabel for="metsRightsLicense" styleClass="control-label col-sm-3" value="#{msgs.metsRightsLicense}" />
                                         <div class="col-sm-9">
                                             <h:selectOneMenu id="metsRightsLicense" styleClass="form-control" value="#{ProjekteForm.myProjekt.metsRightsLicense}">
@@ -202,7 +202,8 @@
                                         field="#{ProjekteForm.myProjekt.metsIIIFUrl}"
                                         help="#{msgs.helpMetsIIIFUrl}"
                                         fieldStyle="form-control"
-                                        required="false" />
+                                        required="false" 
+                                        style="border-bottom: 1px solid #DDDDDD;"/>
 
 
                                 </h:panelGroup>

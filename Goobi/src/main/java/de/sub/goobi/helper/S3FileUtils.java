@@ -413,11 +413,17 @@ public class S3FileUtils implements StorageProviderInterface {
         return folders;
     }
 
+
     @Override
     public void copyDirectory(final Path source, final Path target) throws IOException {
+        copyDirectory(source, target, true);
+    }
+
+    @Override
+    public void copyDirectory(final Path source, final Path target, boolean copyPermissions) throws IOException {
         StorageType storageType = getPathStorageType(source);
         if (storageType == StorageType.LOCAL) {
-            nio.copyDirectory(source, target);
+            nio.copyDirectory(source, target, copyPermissions);
             return;
         }
         String sourcePrefix = path2Prefix(source);

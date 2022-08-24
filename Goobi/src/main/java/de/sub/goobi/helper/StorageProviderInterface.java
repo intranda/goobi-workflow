@@ -43,6 +43,8 @@ public interface StorageProviderInterface {
 
     public void copyDirectory(final Path source, final Path target) throws IOException;
 
+    public void copyDirectory(final Path source, final Path target, boolean copyPermissions) throws IOException;
+
     public void uploadDirectory(final Path source, final Path target) throws IOException;
 
     public void downloadDirectory(final Path source, final Path target) throws IOException;
@@ -96,7 +98,7 @@ public interface StorageProviderInterface {
     public boolean isWritable(Path path);
 
     public boolean isReadable(Path path);
-    
+
     public boolean isDeletable(Path path);
 
     public long getFileSize(Path path) throws IOException;

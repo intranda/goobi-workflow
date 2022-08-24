@@ -20,6 +20,7 @@ package de.sub.goobi.export.dms;
  */
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -40,6 +41,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
@@ -60,9 +62,9 @@ import ugh.fileformats.mets.MetsMods;
 import ugh.fileformats.mets.MetsModsImportExport;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({MetadatenHelper.class, Helper.class})
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*", "javax.crypto.*"})
-public class ExportDmsTest {
+@PrepareForTest({ MetadatenHelper.class, Helper.class })
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*", "javax.crypto.*" })
+public class ExportDmsTest extends AbstractTest {
 
     private Process testProcess = null;
 
@@ -77,13 +79,18 @@ public class ExportDmsTest {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
+        ConfigurationHelper.getInstance().setParameter("goobiUrl", "http://127.0.0.1/goobi");
         testProcess = MockProcess.createProcess();
 
         PowerMock.mockStatic(MetadatenHelper.class);
         EasyMock.expect(MetadatenHelper.getMetaFileType(EasyMock.anyString())).andReturn("metsmods").anyTimes();
-        EasyMock.expect(MetadatenHelper.getFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class))).andReturn(new MetsMods(testProcess.getRegelsatz().getPreferences())).anyTimes();
-        EasyMock.expect(MetadatenHelper.getExportFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class))).andReturn(new MetsModsImportExport(testProcess.getRegelsatz().getPreferences())).anyTimes();
+        EasyMock.expect(MetadatenHelper.getFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class)))
+        .andReturn(new MetsMods(testProcess.getRegelsatz().getPreferences()))
+        .anyTimes();
+        EasyMock.expect(MetadatenHelper.getExportFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class)))
+        .andReturn(new MetsModsImportExport(testProcess.getRegelsatz().getPreferences()))
+        .anyTimes();
         PowerMock.replay(MetadatenHelper.class);
 
         PowerMock.mockStatic(Helper.class);
@@ -91,6 +98,7 @@ public class ExportDmsTest {
         EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
         EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
         EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
+        EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString())).andReturn("").anyTimes();
         Helper.setFehlerMeldung(EasyMock.anyString());
         Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
         Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
@@ -156,7 +164,7 @@ public class ExportDmsTest {
             UghHelperException, ReadException, SwapException, DAOException, TypeNotAllowedForParentException, IOException, InterruptedException {
         ExportDms dms = new ExportDms();
         dms.setExportFulltext(true);
-        dms.startExport(testProcess);
+        assertTrue(dms.startExport(testProcess));
     }
 
     @Test

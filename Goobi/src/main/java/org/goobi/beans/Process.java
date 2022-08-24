@@ -209,7 +209,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     //    @Inject
     //    private LoginBean loginForm;
 
-    private List<StringPair> metadataList = new ArrayList<>();
+    private transient List<StringPair> metadataList = new ArrayList<>();
     private String representativeImage = null;
 
     private List<SelectItem> folderList = new ArrayList<>();
@@ -1043,8 +1043,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return getProcessDataDirectory() + "fulltext.xml";
     }
 
-    public Fileformat readMetadataFile()
-            throws ReadException, IOException, SwapException {
+    public Fileformat readMetadataFile() throws ReadException, IOException, SwapException {
         if (!checkForMetadataFile()) {
             throw new IOException(Helper.getTranslation("metadataFileNotFound") + " " + getMetadataFilePath());
         }
@@ -1070,8 +1069,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return ff;
     }
 
-    private boolean checkForMetadataFile()
-            throws IOException, SwapException {
+    private boolean checkForMetadataFile() throws IOException, SwapException {
         boolean result = true;
         Path f = Paths.get(getMetadataFilePath());
         if (!StorageProvider.getInstance().isFileExists(f)) {
@@ -1141,8 +1139,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return backupFileName;
     }
 
-    public void saveTemporaryMetsFile(Fileformat gdzfile)
-            throws SwapException, IOException, PreferencesException, WriteException {
+    public void saveTemporaryMetsFile(Fileformat gdzfile) throws SwapException, IOException, PreferencesException, WriteException {
 
         int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
         Process.createBackup(this.getProcessDataDirectory(), "temp.xml", maximumNumberOfBackups);
@@ -1152,8 +1149,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         ff.write(getProcessDataDirectory() + "temp.xml");
     }
 
-    public void writeMetadataAsTemplateFile(Fileformat inFile)
-            throws IOException, SwapException, WriteException, PreferencesException {
+    public void writeMetadataAsTemplateFile(Fileformat inFile) throws IOException, SwapException, WriteException, PreferencesException {
         inFile.write(getTemplateFilePath());
     }
 
@@ -1574,6 +1570,15 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             metadataList = MetadataManager.getMetadata(id);
         }
         return metadataList;
+    }
+
+    public String getMetadataValue(String metadataName) {
+        for (StringPair sp : getMetadataList()) {
+            if (sp.getOne().equals(metadataName)) {
+                return sp.getTwo();
+            }
+        }
+        return "";
     }
 
     /**
@@ -2291,7 +2296,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         ImageCommentHelper helper = new ImageCommentHelper();
 
         String folderMaster = this.getImagesOrigDirectory(true);
-        HashMap<String, String> masterComments = helper.getComments(folderMaster);
+        Map<String, String> masterComments = helper.getComments(folderMaster);
 
         for (String imageName : masterComments.keySet()) {
             String comment = masterComments.get(imageName);
@@ -2302,7 +2307,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         if (StorageProvider.getInstance().isFileExists(Paths.get(this.getImagesDirectory()))) {
             String folderMedia = this.getImagesTifDirectory(true);
-            HashMap<String, String> mediaComments = helper.getComments(folderMedia);
+            Map<String, String> mediaComments = helper.getComments(folderMedia);
 
             for (String imageName : mediaComments.keySet()) {
                 String comment = mediaComments.get(imageName);
