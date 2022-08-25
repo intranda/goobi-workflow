@@ -94,7 +94,7 @@ public class MetaCorporateTest extends AbstractTest {
     @Test
     public void testSubNames() throws Exception {
         MetaCorporate fixture = new MetaCorporate(c, prefs, null, process, null);
-        assertEquals(1, fixture.getSubNameSize());
+        assertEquals(1, fixture.getSubNames().size());
         fixture.getSubNames().get(0).setValue("val");
         fixture.addSubName();
         assertEquals(2, fixture.getSubNameSize());

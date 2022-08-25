@@ -2042,7 +2042,7 @@ public class MetadatenTest extends AbstractTest {
         m.setValue("x");
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
         fixture.setCurrentMetadataToPerformSearch(md);
-        assertEquals(DisplayType.input, fixture.getCurrentMetadataToPerformSearch().getMetadataDisplaytype());
+        assertEquals(DisplayType.select, fixture.getCurrentMetadataToPerformSearch().getMetadataDisplaytype());
     }
 
     @Test
