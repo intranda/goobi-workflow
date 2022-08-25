@@ -7,6 +7,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +26,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.easymock.EasyMock;
+import org.goobi.api.display.enums.DisplayType;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.junit.Before;
@@ -136,6 +139,9 @@ public class MetadatenTest extends AbstractTest {
         EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
         EasyMock.expect(Helper.getRequestParameter(EasyMock.anyString())).andReturn("1").anyTimes();
         EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
+        Helper.setFehlerMeldung(EasyMock.anyString());
+        Helper.setFehlerMeldung(EasyMock.anyString());
+        Helper.setFehlerMeldung(EasyMock.anyString());
         Helper.setFehlerMeldung(EasyMock.anyString());
         Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
         Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
@@ -1721,6 +1727,37 @@ public class MetadatenTest extends AbstractTest {
     }
 
     @Test
+    public void testDeleteSelectedPages() throws Exception {
+        Process secondProcess = MockProcess.createProcess();
+        secondProcess.setId(2);
+
+        // copy metadata + images from first to a second process
+        StorageProvider.getInstance().copyDirectory(Paths.get(process.getProcessDataDirectory()), Paths.get(secondProcess.getProcessDataDirectory()));
+
+        String imageFolder = secondProcess.getImagesTifDirectory(true);
+        assertTrue(Files.exists(Paths.get(imageFolder)));
+
+        // use cloned process to test data
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(secondProcess);
+        fixture.XMLlesenStart();
+
+        // mark pages 2 + 4
+        fixture.getPageMap().get("2").setSelected(true);
+        fixture.getPageMap().get("4").setSelected(true);
+        // delete them
+        List<String> existingFiles = StorageProvider.getInstance().list(imageFolder);
+        assertEquals(6, existingFiles.size());
+        fixture.deleteSeltectedPages();
+        existingFiles = StorageProvider.getInstance().list(imageFolder);
+        assertEquals(4, existingFiles.size());
+        // cleanup copied data
+        StorageProvider.getInstance().deleteDir(Paths.get(secondProcess.getProcessDataDirectory()));
+
+    }
+
+    @Test
     public void testReOrderPagination() throws Exception {
         Metadaten fixture = initMetadaten();
 
@@ -1741,51 +1778,283 @@ public class MetadatenTest extends AbstractTest {
         assertNotNull(fixture.getFileManipulation());
     }
 
-    //        setModusCopyDocstructFromOtherProcess
-    //        getDisplayFileManipulation
-    //        filterMyProcess
-    //        getStruktureTreeAsTableForFilteredProcess
-    //        getIsProcessLoaded
-    //        rememberFilteredProcessStruct
-    //        importFilteredProcessStruct
-    //        updateAllSubNodes
-    //        getProgress
-    //        onComplete
-    //        isShowProgressBar
-    //        changeTopstruct
-    //        isPhysicalTopstruct
-    //        getPaginatorList
-    //        checkSelectedThumbnail
-    //        getImageUrl
-    //        getImageWidth
-    //        getImageHeight
-    //        cmdMoveFirst
-    //        cmdMovePrevious
-    //        cmdMoveNext
-    //        cmdMoveLast
-    //        setTxtMoveTo
-    //        getLastPageNumber
-    //        isFirstPage
-    //        isLastPage
-    //        hasNextPage
-    //        hasPreviousPage
-    //        getPageNumberCurrent
-    //        getPageNumberLast
-    //        getThumbnailSize
-    //        setThumbnailSize
-    //        setContainerWidth
-    //        increaseContainerWidth
-    //        reduceContainerWidth
-    //        changeFolder
-    //        setNumberOfImagesPerPage
-    //        getPossibleDatabases
-    //        getPossibleNamePartTypes
-    //        reloadMetadataList
-    //        isAddableMetadata
-    //        isAddableMetadata
-    //        isAddablePerson
-    //        getAllPages
-    //        setCurrentMetadataToPerformSearch
+    @Test
+    public void testModusCopyDocstructFromOtherProcess() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setDisplayInsertion(true);
+
+        fixture.setModusCopyDocstructFromOtherProcess(false);
+        assertTrue(fixture.isDisplayInsertion());
+
+        fixture.setModusCopyDocstructFromOtherProcess(true);
+        assertFalse(fixture.isDisplayInsertion());
+    }
+
+    @Test
+    public void testDisplayFileManipulation() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertFalse(fixture.getDisplayFileManipulation());
+    }
+
+    @Test
+    public void testIsProcessLoaded() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertFalse(fixture.getIsProcessLoaded());
+    }
+
+    @Test
+    public void testProgress() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertEquals(0, fixture.getProgress().intValue());
+        fixture.onComplete();
+        assertEquals(0, fixture.getProgress().intValue());
+
+        assertFalse(fixture.isShowProgressBar());
+    }
+
+    @Test
+    public void testToggleDocStruct() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertFalse(fixture.isPhysicalTopstruct());
+        fixture.changeTopstruct();
+        assertTrue(fixture.isPhysicalTopstruct());
+        fixture.changeTopstruct();
+        assertFalse(fixture.isPhysicalTopstruct());
+    }
+
+    @Test
+    public void testCheckSelectedThumbnail() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.getPageMap().get("2").setSelected(true);
+        fixture.setModusAnsicht("Paginierung");
+        // check another image
+        fixture.checkSelectedThumbnail(4);
+        assertFalse(fixture.getPageMap().get("2").isSelected());
+        assertTrue(fixture.getPageMap().get("4").isSelected());
+    }
+
+    @Test
+    public void testGetImageWidth() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertEquals(640, fixture.getImageWidth());
+    }
+
+    @Test
+    public void testGetImageHeight() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertEquals(480, fixture.getImageHeight());
+    }
+
+    @Test
+    public void testCmdMoveFirst() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setNumberOfImagesPerPage(2);
+        fixture.setPageNo(1);
+        fixture.cmdMoveFirst();
+        assertEquals(0, fixture.getPageNo());
+        fixture.setPagesRTL(true);
+        fixture.cmdMoveFirst();
+        assertEquals(2, fixture.getPageNo());
+    }
+
+    @Test
+    public void testCmdMovePrevious() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setNumberOfImagesPerPage(2);
+        fixture.setPageNo(1);
+        fixture.cmdMovePrevious();
+        assertEquals(0, fixture.getPageNo());
+        fixture.setPagesRTL(true);
+        fixture.cmdMovePrevious();
+        assertEquals(1, fixture.getPageNo());
+    }
+
+    @Test
+    public void testCmdMoveNext() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setNumberOfImagesPerPage(2);
+        fixture.setPageNo(1);
+        fixture.cmdMoveNext();
+        assertEquals(2, fixture.getPageNo());
+        fixture.setPagesRTL(true);
+        fixture.cmdMoveNext();
+        assertEquals(1, fixture.getPageNo());
+    }
+
+    @Test
+    public void testCmdMoveLast() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setNumberOfImagesPerPage(2);
+        fixture.setPageNo(1);
+        fixture.cmdMoveLast();
+        assertEquals(2, fixture.getPageNo());
+        fixture.setPagesRTL(true);
+        fixture.cmdMoveLast();
+        assertEquals(0, fixture.getPageNo());
+    }
+
+    @Test
+    public void testTxtMoveTo() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setNumberOfImagesPerPage(2);
+        fixture.setPageNo(1);
+        fixture.setTxtMoveTo(3);
+        assertEquals(2, fixture.getPageNo());
+    }
+
+    @Test
+    public void testLastPageNumber() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setNumberOfImagesPerPage(2);
+        assertEquals(2, fixture.getLastPageNumber());
+    }
+
+    @Test
+    public void testFirstPage() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setNumberOfImagesPerPage(2);
+        assertTrue(fixture.isFirstPage());
+        fixture.setTxtMoveTo(3);
+        assertFalse(fixture.isFirstPage());
+    }
+
+    @Test
+    public void testLastPage() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setNumberOfImagesPerPage(2);
+        assertFalse(fixture.isLastPage());
+        fixture.setTxtMoveTo(3);
+        assertTrue(fixture.isLastPage());
+    }
+
+    @Test
+    public void testHasNextPage() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setNumberOfImagesPerPage(2);
+        fixture.setTxtMoveTo(2);
+        assertTrue(fixture.hasNextPage());
+    }
+
+    @Test
+    public void testHasPreviousPage() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setNumberOfImagesPerPage(2);
+        fixture.setTxtMoveTo(2);
+        assertTrue(fixture.hasPreviousPage());
+    }
+
+    @Test
+    public void testPageNumberCurrent() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setNumberOfImagesPerPage(2);
+        fixture.setTxtMoveTo(2);
+        assertEquals(2l, fixture.getPageNumberCurrent().longValue());
+    }
+
+    @Test
+    public void testPageNumberLast() throws Exception {
+        Metadaten fixture = initMetadaten();
+        fixture.setNumberOfImagesPerPage(2);
+        fixture.setTxtMoveTo(2);
+        assertEquals(3l, fixture.getPageNumberLast().longValue());
+    }
+
+    @Test
+    public void testThumbnailSize() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertEquals(200, fixture.getThumbnailSize());
+        fixture.setThumbnailSize(150);
+        assertEquals(150, fixture.getThumbnailSize());
+    }
+
+    @Test
+    public void testContainerWidth() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertEquals(600, fixture.getContainerWidth());
+        fixture.setContainerWidth(300);
+        assertEquals(300, fixture.getContainerWidth());
+        fixture.reduceContainerWidth();
+        assertEquals(200, fixture.getContainerWidth());
+        fixture.reduceContainerWidth();
+        assertEquals(200, fixture.getContainerWidth());
+        fixture.increaseContainerWidth();
+        assertEquals(300, fixture.getContainerWidth());
+    }
+
+    @Test
+    public void testNumberOfImagesPerPage() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertEquals(96, fixture.getNumberOfImagesPerPage());
+        fixture.setNumberOfImagesPerPage(4);
+        assertEquals(4, fixture.getNumberOfImagesPerPage());
+        // still old value
+        fixture.setNumberOfImagesPerPage(0);
+        assertEquals(4, fixture.getNumberOfImagesPerPage());
+    }
+
+    @Test
+    public void testPossibleDatabases() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertEquals(1, fixture.getPossibleDatabases().size());
+    }
+
+    @Test
+    public void testPossibleNamePartTypes() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertEquals(2, fixture.getPossibleNamePartTypes().size());
+        assertEquals("date", fixture.getPossibleNamePartTypes().get(0));
+        assertEquals("termsOfAddress", fixture.getPossibleNamePartTypes().get(1));
+    }
+
+    @Test
+    public void testAddableMetadata() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertTrue(fixture.isAddableMetadata(prefs.getMetadataTypeByName("junitMetadata")));
+    }
+
+    @Test
+    public void testAddableMetadata2() throws Exception {
+        Metadaten fixture = initMetadaten();
+        Metadata md = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        md.setValue("x");
+        fixture.getDocument().getLogicalDocStruct().addMetadata(md);
+        assertTrue(fixture.isAddableMetadata(md));
+    }
+
+    @Test
+    public void testAddablePerson() throws Exception {
+        Metadaten fixture = initMetadaten();
+        assertTrue(fixture.isAddablePerson(prefs.getMetadataTypeByName("junitPerson")));
+    }
+
+    @Test
+    public void testAllPages() throws Exception {
+        Metadaten fixture = initMetadaten();
+        List<PhysicalObject> pages = fixture.getAllPages();
+        assertEquals(6, pages.size());
+        assertEquals("1: uncounted", pages.get(0).getLabel());
+    }
+
+    @Test
+    public void testCurrentMetadataToPerformSearch() throws Exception {
+        Metadaten fixture = initMetadaten();
+        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
+        m.setValue("x");
+        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+        fixture.setCurrentMetadataToPerformSearch(md);
+        assertEquals(DisplayType.input, fixture.getCurrentMetadataToPerformSearch().getMetadataDisplaytype());
+    }
+
+    @Test
+    public void testCommentForImage() throws Exception {
+        Metadaten fixture = initMetadaten();
+        String s = fixture.getCommentForImage();
+        assertNull(s);
+        fixture.setCommentForImage("comment");
+        s = fixture.getCommentForImage();
+        assertEquals("comment", s);
+        StorageProvider.getInstance().deleteFile(Paths.get(process.getImagesDirectory(), "comments_media.json"));
+    }
 
     private Metadaten initMetadaten() throws ReadException, IOException, PreferencesException, SwapException, DAOException {
         Metadaten fixture = new Metadaten();

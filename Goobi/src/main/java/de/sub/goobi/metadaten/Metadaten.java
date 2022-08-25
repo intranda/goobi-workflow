@@ -4345,7 +4345,7 @@ public class Metadaten implements Serializable {
                 }
             }
 
-            System.gc();
+            System.gc(); //NOSONAR, its needed to unlock the files on windows environments
             int counter = 1;
             for (String imagename : oldfilenames) {
                 currentImageNo++;
