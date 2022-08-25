@@ -1,163 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!-- GDZ - Allgemeiner Regelsatz - Goobi 1.5.1 - UGH 1.6.1 - Stand: 28.05.2001
-    ================================================================================
-    This file defines the ruleset for the UGH metadata library. This ruleset is
-    read by the "Prefs.class" of the UGH library.
-    
-    The file defines all metadata types, types of document structures and their
-    relationship. To read/write the data at least one format must be defined in
-    the <Formats> section. The appropriate section for the format is read by the
-    class implementing the read/write routines for the format. Not all formats need
-    to be readable and/or writeable.
-    ================================================================================ -->
-
-<!-- TODO
-	================================================================================
-		- Check the MODS mapping of the BibliographicCitation to "VD-ID"??
-	================================================================================ -->
-
-<!-- CHANGELOG
-	================================================================================
-	20.11.2013, Timo Schleier
-		- MetadataType "CatalogFieldVDseventeen hinzugefügt
-			* bei allen Typen mit "CatalogFieldVDeighteen"
-			* beim Mapping (Pica+ und METS)
-	22.07.2013, Alex Jahnke
-		- Verwendung von + und 1o ueberprueft, alle Vorkommen von + in 1o geaendert, ausser bei IdentifierRelatedWork, dort in *
-	25.01.2012, Timo Schleier
-	    - Added "CatalogFieldVDeighteen" metadata element to PeriodicalVolume
-	25.08.2011, Robert Sehr
-		- added Section
-	02.02.2011, Alex Jahnke
-	    - Added "CatalogFieldVDeighteen" metadata element
-	28.05.2010, Stefan E. Funk
-		- Added "BibliographicCitation" to DocStruct Monograph.
-	09.10.2009, Stefan E. Funk
-		- Changed authority="pnd" to "gbv" (person identifiers).
-	08.10.2009, Stefan E, Funk
-		- Deleted old <format> comments. Please have a look at the UGH Documentation.
-		- Beautyfied AGORADATABASE section.
-	17.08.2009, Stefan E. Funk
-		- Minor changes.
-	27.07.2009, Stefan E. Funk
-		- Added keyDate="yes" to <originInfo>.
-	16.07.2009, Stefan E. Funk
-		- Corrected: <IdentifierXPath>../mods:name[@authority='pnd'][@ID='']</IdentifierXPath>.
-	22.06.2009, Stefan E. Funk	
-		- Typo "pysicalLocation" fixed.
-		- Removed old comments, re-organised order of the DocStruct subelements.
-		- Metadata field _digitalOrigin added.
-		- Purl changed to _purl (now hidden).
-		- Changed mapping for sizeSourcePrint from mods:form to mods:extent.
-	15.06.2009, Stefan E. Funk
-		- Removed one PublisherName from the metadata section.
-	10.06.2009, Stefan E. Funk
-		- Corrected CurrentNoSorting in METS section.
-		- Removed all tags used for METS external reading.
-	09.06.2009, Stefan E. Funk
-		- <IdentifierXPath>../mods:nameq[@authority='pnd'][@ID='']</IdentifierXPath>
-			added to persons.
-		- Added [@type='personal'] to mods:name.
-	29.05.2009, Stefan E. Funk
-		- Purls added to TopStructs.
-	18.03.2009, Stefan E. Funk
-		- goobi namespace hinzugefügt
-		- weitere Personen zur PicaPlus-Sektion hinzugefügt
-	13.03.2009, Stefan E. Funk
-		- an METS read angepasst
-	13.02.2009, Stefan E. Funk
-		- DisplayNames für Personsn hinzugefügt
-    29.01.2009, Stefan E. Funk
-        - XML-Struktur-Fehler behoben
-    29.01.2009, Jochen Kothe
-        - AGORADATABASE Sektion ausgetauscht
-            fuer GOOBI -> AGORA-DB Import
-        - METS MODS Mapping ueberarbeitet
-            und soweit wie moeglich (leider wenig :-(  moeglich)
-            an das MODS-Profil angepasst
-    29.01.2008, Stefan E. Funk
-        - METS-Sektion aktualisiert
-        - Patch von Ben Müller vom 17.06.2008 eingepflegt in PicaPlus Sektion:
-        - Einfügen eines picaSubTags "expansion" zu <Person> Elementen.
-        - Corrected some "itle"s in "title"s.
-    14.05.2008, Stefan E. Funk
-        - METS/MODS Mapping: Hinzufügen einer Habe-kein-Attribut Abfrage für TitleDocMain.
-        BEACHTE: Wenn es mehrere Elemente gleichen Namens gibt, von denen eines kein
-        Attribut hat, andere aber doch, dann sollte das Element ohne Attribut mit
-        [not(@*)] abgefragt werden, denn sonst können Mappings durcheinander geraten.
-        Wichtig für MetsMods.read().
-    25.04.2008, Stefan E. Funk
-        - Dokumentation <METS_MODS> vervollständigt.
-        - Minorische Änderungen kosmetischer Art.
-    07.04.2008, Stefan Funk
-        - nur kosmetische Änderungen, Test der METS/MODS-Geschichten.
-    17.12.2007, Markus Enders
-        - Metadatum RezensionsZssDBID zugefügt für Strukturtypen Article,
-        Monograph, Multivolume, Volume, ContainedWork, AttachedWork
-    13.07.2007
-        - Chapter als Child des Supplements zugefügt
-    31.05.2007, Markus Enders
-        - Map als Child des Chapters zugefügt
-    29.01.07, Markus Enders
-        - sämtliche Register zu einem Anhang hinzugefügt
-        - Abbildung und Abbildungsverzeichnis im Anhang
-        - Table als Child für Appendix und OtherDocStruct
-    22.01.2007, Markus Enders
-        - vergessen, was geändert wurde :-(
-    11.01.2007, Markus Enders
-        - Inhaltsverzeichnis als Child von Einleitung Introduction
-    09.01.2007, Markus Enders
-        - Brief als Child für Anhang eingefügt
-        - CHAPTER als child von REMARKS
-    08.01.2007, Markus Enders
-        - Figure als Child für Letter zugefügt
-    12.12.2006, Markus Enders
-        - AttachedWork als spezielle Variante des ContainedWork hinzugefügt
-        - IdentifierRelatedWork als Metdatum für ContainedWork hinzugefügt
-        - CurrentNoSorting für ContainedWork hinzugefügt
-    8.12.2006, Markus Enders
-        - Überarbeitung der Metadatazugehörigkeit für Validierung
-    6.12.2006, Markus Enders
-        - MetadataType  singleDigCollection für MultiVolumeWork eingefügt
-    05.12.2006, Steffen Hankiewicz
-        - RDF-Name: SheetMusic wurde zugefügt...
-        - und nochmal korrigiert
-    4.12.2006, Markus Enders
-        - CurriculumVitae  als DocStrctType eingefügt
-    01.12.2006, Markus Enders
-        - RDF-Name: Advertising wurde zugefügt...
-    30.11.2006, Steffen Hankiewicz
-        - Abbildung als Kind von Abbildungsbeschreibung erlaubt
-    30.11.2006, Markus Enders
-        - Danksagung hinzugefügt
-    27.11.2006, Markus Enders
-        - Vorwort und Sonstiges als Kind eines Kapitels hinzugefügt
-    24.11.2006, Markus Enders
-        - Anhang als Kind eines Kapitels hinzugefügt.
-    21.11.2006, Markus Enders
-        - Epilogue und Bibliography für Monographs, Volumes, Contained Works und
-        weitere Strukturelemente zugelassen
-        - Fehlerbehebung: in <allowedchildtype> TableOfAbbrevation in
-        TableOfAbbreviations geändert
-        - PartOfWork einem Volume als erlaubtes Child hinzugefügt
-    17.11.2006, Markus Enders
-        - Titel und Untertitel (TitleDocMan und TitleDocSub1) für PicaPlus
-        Konvertierung in 021A eingefügt; dort stehen die Titel bei MultiVolumes
-    14.11.2006, Markus Enders
-        - Enthaltenes Werk als mögliches Child von Volume eingetragen (wird für
-        Olms-Online genutzt)
-    31.10.2006, Markus Enders
-        - Figure und Cover als mögliche Children eines Chapters eingefügt
--->
-
 <Preferences>
-
-	<!-- ##########################################################################
-         ##  Metadata types for the physical structure                           ##
-         ########################################################################## -->  
-    
-	<!-- !!DO NOT CHANGE!! -->
+  <MetadataType>
+    <Name>_COORDS</Name>
+    <language name="de">Koordinaten</language>
+    <language name="en">Coordinates</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>_SHAPE</Name>
+    <language name="de">Form</language>
+    <language name="en">Shape</language>
+  </MetadataType>
+  <MetadataType>
+    <Name>_directionRTL</Name>
+    <language name="de">Leserichtung RTL</language>
+    <language name="en">Reading direction RTL</language>
+  </MetadataType>
 	<MetadataType>
 		<Name>physPageNumber</Name>
 		<language name="de">Physische Seitenzahl (Imagenummer)</language>
@@ -454,9 +311,9 @@
         <Name>junitgrp</Name>
         <language name="de">junitgrp</language>
         <language name="en">junitgrp</language>
-        <metadata>junitMetadata</metadata>
-        <metadata>junitPerson</metadata>
-        <metadata>junitCorporate</metadata>
+        <metadata num="*">junitMetadata</metadata>
+        <metadata num="*">junitPerson</metadata>
+        <metadata num="*">junitCorporate</metadata>
     </Group>   
     
     
@@ -739,9 +596,13 @@
 		<allowedchildtype>TableOfLiteratureRefs</allowedchildtype>
 		<allowedchildtype>TitlePage</allowedchildtype>
 		<metadata DefaultDisplay="true" num="1o">TitleDocMain</metadata>
+        <metadata num="*">TitleDocSub1</metadata>
 		<metadata num="*">Author</metadata>
 		<metadata num="*">TitleDocMainShort</metadata>
 		<metadata num="*">DocLanguage</metadata>
+        <metadata num="*">junitMetadata</metadata>
+        <metadata num="*">junitPerson</metadata>
+        <metadata num="*">junitCorporate</metadata>
 	</DocStrctType>
 	<DocStrctType anchor="true">
 		<Name>Periodical</Name>
@@ -772,6 +633,7 @@
 		<metadata num="*">RezenssionsZssDBID</metadata>
 		<metadata num="1o">_purl</metadata>
 		<metadata num="1o">_digitalOrigin</metadata>
+        <metadata num="1o">_directionRTL</metadata>
 	</DocStrctType>
 	<DocStrctType>
 		<Name>Prepage</Name>
@@ -1065,6 +927,7 @@
 		<metadata num="1o">CatalogFieldVDseventeen</metadata>
 		<metadata num="*">CatalogFieldVDeighteen</metadata>
 		<metadata num="1o">_purl</metadata>
+        <metadata num="1o">_directionRTL</metadata>
         <metadata num="*">junitMetadata</metadata>
         <metadata num="*">junitPerson</metadata>
         <metadata num="*">junitCorporate</metadata>
@@ -1653,12 +1516,22 @@
 	<!-- DO NOT CHANGE!! -->
 	<DocStrctType>
 		<Name>page</Name>
+        <allowedchildtype>area</allowedchildtype>        
 		<language name="de">Seite</language>
 		<language name="en">page</language>
 		<language name="rusdml">page</language>
 		<metadata num="1m">physPageNumber</metadata>
 		<metadata num="1m">logicalPageNumber</metadata>
 	</DocStrctType>
+  <DocStrctType>
+    <Name>area</Name>
+    <language name="de">Region</language>
+    <language name="en">Area</language>
+    <metadata num="1o">_COORDS</metadata>
+    <metadata num="1o">_SHAPE</metadata>
+    <metadata num="1m">physPageNumber</metadata>
+    <metadata num="1m">logicalPageNumber</metadata>
+  </DocStrctType>    
 	<DocStrctType>
 		<Name>BoundBook</Name>
 		<language name="de">gebundenes Buch</language>
@@ -2082,6 +1955,14 @@
 				<picaSubTag type="identifier">9</picaSubTag>
 				<picaSubTag type="expansion">8</picaSubTag>
 			</Person>
+<Person>
+                <picaMainTag>028C</picaMainTag>
+                <Name>Author</Name>
+                <picaSubTag type="firstname">D</picaSubTag>
+                <picaSubTag type="lastname">A</picaSubTag>
+                <picaSubTag type="identifier">9</picaSubTag>
+                <picaSubTag type="expansion">8</picaSubTag>
+            </Person>            
 			<Person>
 				<picaMainTag>028B</picaMainTag>
 				<Name>Author</Name>
@@ -2113,11 +1994,11 @@
 				<picaSubTag>a</picaSubTag>
 				<Name>TitleDocMain</Name>
 			</Metadata>
-			<Metadata>
-				<picaMainTag>021A</picaMainTag>
-				<picaSubTag>d</picaSubTag>
-				<Name>TitleDocSub1</Name>
-			</Metadata>
+            <Metadata>
+                <picaMainTag>021A</picaMainTag>
+                <picaSubTag>h</picaSubTag>
+                <Name>TitleDocSub1</Name>
+            </Metadata>
 			<Metadata>
 				<!-- this is the main title for a contained work | AttachedWord-->
 				<picaMainTag>021B</picaMainTag>
@@ -2258,6 +2139,12 @@
 				<picaContent>Ab</picaContent>
 				<Name>Periodical</Name>
 			</DocStruct>
+            <DocStruct>
+                <picaMainTag>002@</picaMainTag>
+                <picaSubTag>0</picaSubTag>
+                <picaContent>Os</picaContent>
+                <Name>Chapter</Name>
+            </DocStruct>            
 		</PicaPlus>
 
 		<!-- ##########################################################################
