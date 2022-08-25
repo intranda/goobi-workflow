@@ -181,11 +181,6 @@ public class ConfigurationHelper implements Serializable {
      * category in goobi_config.properties: DIRECTORIES
      */
 
-    public String getServletPathAsUrl() {
-        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        return context.getExternalContext().getRequestContextPath() + "/";
-    }
-
     /**
      * den absoluten Pfad für die temporären Images zurückgeben
      */
@@ -732,8 +727,6 @@ public class ConfigurationHelper implements Serializable {
         }
     }
 
-    // TODO: START OF UNDOCUMENTED GETTERS
-
     /*
      * category in goobi_config.properties: APPLICATION INFORMATION
      */
@@ -752,6 +745,11 @@ public class ConfigurationHelper implements Serializable {
 
     public String getApplicationWebsiteMsg() {
         return getLocalString("ApplicationWebsiteMsg", getServletPathAsUrl());
+    }
+
+    public String getServletPathAsUrl() {
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        return context.getExternalContext().getRequestContextPath() + "/";
     }
 
     public boolean isDeveloping() {
@@ -784,10 +782,6 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("showStatisticsOnStartPage", true);
     }
 
-    public List<String> getExcludeMonitoringAgentNames() {
-        return getLocalList("excludeMonitoringAgentName");
-    }
-
     public boolean isEnableFinalizeTaskButton() {
         return getLocalBoolean("TaskEnableFinalizeButton", true);
     }
@@ -802,6 +796,10 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isRenderReimport() {
         return getLocalBoolean("renderReimport", false);
+    }
+
+    public List<String> getExcludeMonitoringAgentNames() {
+        return getLocalList("excludeMonitoringAgentName");
     }
 
     /*
@@ -883,6 +881,8 @@ public class ConfigurationHelper implements Serializable {
         return getLocalInt("http_proxyPort", 8080);
     }
 
+    // TODO: START OF UNDOCUMENTED GETTERS
+
     /*
      * category in goobi_config.properties: INTERNAL SERVERS AND INTERFACES
      */
@@ -931,7 +931,6 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("geonames_account", null);
     }
 
-    // old parameter, remove them
     @Deprecated
     public int getGoobiModuleServerPort() {
         return getLocalInt("goobiModuleServerPort");
