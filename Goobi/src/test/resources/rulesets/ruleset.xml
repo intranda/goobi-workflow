@@ -292,7 +292,7 @@
     
     
 <!-- metadata for unit tests -->
-    <MetadataType>
+    <MetadataType normdata="true">
         <Name>junitMetadata</Name>
         <language name="de">junitMetadata</language>
         <language name="en">junitMetadata</language>
@@ -302,7 +302,7 @@
         <language name="de">junitPerson</language>
         <language name="en">junitPerson</language>
     </MetadataType>
-    <MetadataType type="corporate">
+    <MetadataType type="corporate" normdata="true">
         <Name>junitCorporate</Name>
         <language name="de">junitCorporate</language>
         <language name="en">junitCorporate</language>

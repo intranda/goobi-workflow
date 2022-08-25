@@ -2,6 +2,18 @@
 <displayRules>
     <ruleSet>
         <context projectName="*">
+          <select ref="junitMetadata">
+                <item selected="false">
+                    <label>a</label>
+                    <value>a</value>
+                </item>
+        <item selected="false">
+                    <label>b</label>
+                    <value>b</value>
+                </item>
+        
+        </select>
+        
             <readonly ref="physPageNumber">
                 <label />
             </readonly>
