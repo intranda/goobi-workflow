@@ -3,10 +3,10 @@ package de.sub.goobi.metadaten;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,7 +28,6 @@ import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -42,19 +41,22 @@ import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.mock.MockUploadedFile;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import ugh.dl.Prefs;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ FacesContext.class, ExternalContext.class, HttpSession.class, Helper.class, MetadataManager.class , ProcessManager.class })
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
+@PrepareForTest({ FacesContext.class, ExternalContext.class, HttpSession.class, Helper.class, MetadataManager.class, ProcessManager.class })
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 
-public class FileManipulationTest extends AbstractTest{
+public class FileManipulationTest extends AbstractTest {
 
     private Metadaten metadataBean;
-    private Process testProcess ;
+    private Process testProcess;
+    private Prefs prefs;
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
@@ -64,13 +66,13 @@ public class FileManipulationTest extends AbstractTest{
         prepareMocking();
 
         ConfigurationHelper.setImagesPath("/tmp/");
-        metadataBean = new Metadaten();
-        metadataBean.setMyBenutzerID("1");
         testProcess = MockProcess.createProcess();
         testProcess.setId(1);
 
+        prefs = testProcess.getRegelsatz().getPreferences();
 
-
+        metadataBean = new Metadaten();
+        metadataBean.setMyBenutzerID("1");
         metadataBean.setMyProzess(testProcess);
         metadataBean.XMLlesenStart();
     }
@@ -78,8 +80,8 @@ public class FileManipulationTest extends AbstractTest{
     @After
     public void tearDown() throws Exception {
         // delete uploaded files, if exists
-        Path file1 = Paths.get( testProcess.getImagesTifDirectory(false), "fixture.tif");
-        Path file2 = Paths.get( testProcess.getImagesTifDirectory(false), "fixture2.tif");
+        Path file1 = Paths.get(testProcess.getImagesTifDirectory(false), "fixture.tif");
+        Path file2 = Paths.get(testProcess.getImagesTifDirectory(false), "fixture2.tif");
         Files.deleteIfExists(file1);
         Files.deleteIfExists(file2);
     }
@@ -127,6 +129,7 @@ public class FileManipulationTest extends AbstractTest{
     public void testUploadFileWithoutSelection() throws Exception {
         FileManipulation fixture = new FileManipulation(metadataBean);
         fixture.uploadFile();
+        assertNull(fixture.getUploadedFile());
     }
 
     @Test
@@ -137,8 +140,7 @@ public class FileManipulationTest extends AbstractTest{
             p = Paths.get("target/test-classes/file_example_TIFF_1MB.tif");
         }
 
-
-        InputStream stream =Files.newInputStream(p);
+        InputStream stream = Files.newInputStream(p);
         Part uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
 
         fixture.setUploadedFile(uploadedFile);
@@ -146,12 +148,16 @@ public class FileManipulationTest extends AbstractTest{
         fixture.setCurrentFolder("testprocess_media");
         fixture.setInsertPage("lastPage");
         fixture.uploadFile();
+        Path testfile = Paths.get(testProcess.getImagesTifDirectory(false), "fixture.tif");
+        assertTrue(Files.exists(testfile));
 
         fixture.setUploadedFile(uploadedFile);
         fixture.setUploadedFileName("fixture2");
         fixture.setCurrentFolder("testprocess_media");
         fixture.setInsertPage("1");
         fixture.uploadFile();
+        testfile = Paths.get(testProcess.getImagesTifDirectory(false), "fixture2.tif");
+        assertTrue(Files.exists(testfile));
     }
 
     @Test
@@ -177,7 +183,7 @@ public class FileManipulationTest extends AbstractTest{
         if (!Files.exists(p)) {
             p = Paths.get("target/test-classes/file_example_TIFF_1MB.tif");
         }
-        InputStream stream =Files.newInputStream(p);
+        InputStream stream = Files.newInputStream(p);
 
         Part uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
 
@@ -191,12 +197,11 @@ public class FileManipulationTest extends AbstractTest{
         fixture.downloadFile();
     }
 
-
-
     @Test
     public void testExportFilesWithoutSelection() {
         FileManipulation fixture = new FileManipulation(metadataBean);
         fixture.exportFiles();
+        assertNotNull(fixture.getSelectedFiles());
     }
 
     @Test
@@ -220,28 +225,25 @@ public class FileManipulationTest extends AbstractTest{
         assertTrue(fixture.isDeleteFilesAfterMove());
     }
 
-    // @Test
-    @Ignore
-    // TODO find solution to set theme in Metadaten
-    public void testExportFiles() throws FileNotFoundException {
+    @Test
+    public void testExportFiles() throws Exception {
         FileManipulation fixture = new FileManipulation(metadataBean);
-
-        // first upload file
-        InputStream stream = new FileInputStream("/opt/digiverso/junit/data/00000001.tif");
-        Part uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
-
-        fixture.setUploadedFile(uploadedFile);
-        fixture.setUploadedFileName("fixture.tif");
-        fixture.setCurrentFolder("testprocess_media");
-        fixture.setInsertPage("lastPage");
-        fixture.uploadFile();
 
         List<String> filesToDownload = new ArrayList<>();
         filesToDownload.add("1");
 
-        fixture.setDeleteFilesAfterMove(true);
+        fixture.setDeleteFilesAfterMove(false);
         fixture.setSelectedFiles(filesToDownload);
         fixture.exportFiles();
+
+        Path exportFolder = Paths.get("src/test/resources/tmp/fileupload/testprocess");
+        if (!Files.exists(exportFolder)) {
+            exportFolder = Paths.get("target/test-classes/tmp/fileupload/testprocess");
+        }
+        assertTrue(Files.exists(exportFolder));
+
+        // cleanup
+        StorageProvider.getInstance().deleteDir(exportFolder);
     }
 
     @Test
@@ -253,26 +255,14 @@ public class FileManipulationTest extends AbstractTest{
         assertTrue(fixture.isMoveFilesInAllFolder());
     }
 
-    // @Test
-    @Ignore
-    // TODO find solution to set theme in Metadaten
-    public void testGetAllImportFolder() throws FileNotFoundException {
+    @Test
+    public void testGetAllImportFolder() throws Exception {
         FileManipulation fixture = new FileManipulation(metadataBean);
-
-        // first upload file
-        InputStream stream = new FileInputStream("/opt/digiverso/junit/data/00000001.tif");
-        Part uploadedFile = new MockUploadedFile(stream, ".fi/xt\\ure.tif");
-
-        fixture.setUploadedFile(uploadedFile);
-        fixture.setUploadedFileName("fixture.tif");
-        fixture.setCurrentFolder("testprocess_media");
-        fixture.setInsertPage("lastPage");
-        fixture.uploadFile();
 
         List<String> filesToDownload = new ArrayList<>();
         filesToDownload.add("1");
 
-        fixture.setDeleteFilesAfterMove(true);
+        fixture.setDeleteFilesAfterMove(false);
         fixture.setSelectedFiles(filesToDownload);
         fixture.exportFiles();
 
@@ -281,6 +271,14 @@ public class FileManipulationTest extends AbstractTest{
         assertNotNull(list);
         assertFalse(list.isEmpty());
 
+        // cleanup
+        Path exportFolder = Paths.get("src/test/resources/tmp/fileupload/testprocess");
+        if (!Files.exists(exportFolder)) {
+            exportFolder = Paths.get("target/test-classes/tmp/fileupload/testprocess");
+        }
+        assertTrue(Files.exists(exportFolder));
+
+        StorageProvider.getInstance().deleteDir(exportFolder);
     }
 
     @Test
@@ -340,8 +338,8 @@ public class FileManipulationTest extends AbstractTest{
         EasyMock.expect(application.getSupportedLocales()).andReturn(locale.iterator()).anyTimes();
         EasyMock.expect(application.createValueBinding(EasyMock.anyString())).andReturn(null).anyTimes();
 
-
         EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("").anyTimes();
+        EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString())).andReturn("").anyTimes();
         EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
         EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
         EasyMock.expect(Helper.getRequestParameter(EasyMock.anyString())).andReturn("1").anyTimes();
