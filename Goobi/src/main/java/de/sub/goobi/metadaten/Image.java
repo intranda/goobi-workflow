@@ -26,14 +26,11 @@ package de.sub.goobi.metadaten;
 import java.awt.Dimension;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -119,7 +116,7 @@ public @Data class Image {
      * Url and size information for different resolutions of this image. Used to create layer urls for pyramid image display
      * 
      */
-    private List<ImageLevel> imageLevels = null;
+    private List<ImageLevel> imageLevels = new ArrayList<>();
     /**
      * A list of sizes for the image levels to be displayed
      */
@@ -303,11 +300,6 @@ public @Data class Image {
      * @param size The size of this level
      */
     public void addImageLevel(String imageUrl, int size) {
-
-        if (imageLevels == null) {
-            this.imageLevels = new ArrayList<>();
-        }
-
         Dimension dim = getSize();
         if (dim == null || dim.getHeight() * dim.getWidth() == 0) {
             dim = new Dimension(size, size);
@@ -556,7 +548,7 @@ public @Data class Image {
         //reset image levels to be recreated with updated sizes on getImageLevels()
         this.imageLevels = null;
     }
-    
+
 
     public static String getCleanedName(String path) {
         return Paths.get(path).getFileName().toString();

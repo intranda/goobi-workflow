@@ -28,9 +28,7 @@ import org.easymock.EasyMock;
 import org.goobi.beans.Process;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -46,7 +44,6 @@ import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.mock.MockUploadedFile;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
-import ugh.dl.Prefs;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class, ExternalContext.class, HttpSession.class, Helper.class, MetadataManager.class, ProcessManager.class })
@@ -56,9 +53,6 @@ public class FileManipulationTest extends AbstractTest {
 
     private Metadaten metadataBean;
     private Process testProcess;
-    private Prefs prefs;
-    @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
 
     @Before
     public void setUp() throws Exception {
@@ -68,8 +62,6 @@ public class FileManipulationTest extends AbstractTest {
         ConfigurationHelper.setImagesPath("/tmp/");
         testProcess = MockProcess.createProcess();
         testProcess.setId(1);
-
-        prefs = testProcess.getRegelsatz().getPreferences();
 
         metadataBean = new Metadaten();
         metadataBean.setMyBenutzerID("1");
