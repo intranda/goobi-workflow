@@ -73,12 +73,12 @@ public class SessionForm implements Serializable {
     /**
      * The constant string to indicate that a user is logged out
      */
-    private static final String LOGGED_OUT = " - ausgeloggt - ";
+    public static final String LOGGED_OUT = " - ausgeloggt - ";
 
     /**
      * The constant string to indicate that a user is not logged in until now
      */
-    private static final String NOT_LOGGED_IN = " - ";
+    public static final String NOT_LOGGED_IN = " - ";
 
     /**
      * The list of current sessions (represented by SessionInfo objects)
@@ -340,11 +340,12 @@ public class SessionForm implements Serializable {
             String counter = (index + 1) + "/" + this.sessions.size();
             StringBuffer message = new StringBuffer();
             message.append("Session " + counter);
-            message.append("\n- login name:       " + userName);
-            message.append("\n- browser:          " + session.getBrowserName());
-            message.append("\n- ip address:       " + session.getUserIpAddress());
-            message.append("\n- timeout:          " + userTimeout + " seconds");
-            message.append("\n- session duration: " + sessionDuration + " seconds");
+            message.append("\n- login name:  " + userName);
+            message.append("\n- browser:     " + session.getBrowserName());
+            message.append("\n- ip address:  " + session.getUserIpAddress());
+            message.append("\n- timeout:     " + userTimeout + " seconds");
+            message.append("\n- last access: " + sessionDuration + " seconds");
+            message.append("\n- session id:  " + session.getSessionId());
 
             boolean overTimeout = sessionDuration > userTimeout;
             // sessionDuration > 0 is needed to not remove the login screen while the user logs in

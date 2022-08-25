@@ -55,6 +55,7 @@ import org.goobi.production.enums.UserRole;
 import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
@@ -122,11 +123,11 @@ public class LoginBean implements Serializable {
         if (this.myBenutzer != null) {
             new MetadatenSperrung().alleBenutzerSperrungenAufheben(this.myBenutzer.getId());
         }
-
-        HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-        Helper.getSessionBean().updateSessionUserName(mySession, this.myBenutzer);
         this.myBenutzer = null;
+        HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
         if (mySession != null) {
+            SessionForm sessionBean = Helper.getSessionBean();
+            sessionBean.updateSessionUserName(mySession, null);
             mySession.invalidate();
         }
         return "index";
@@ -145,7 +146,6 @@ public class LoginBean implements Serializable {
         }
         return "external_index";
     }
-
 
     public void logoutOpenId() {
         this.Ausloggen();
