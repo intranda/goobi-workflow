@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mets:mets OBJID="" xsi:schemaLocation="http://www.loc.gov/standards/premis/ http://www.loc.gov/standards/premis/v2/premis-v2-0.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/standards/mix/ http://www.loc.gov/standards/mix/mix.xsd" xmlns:mets="http://www.loc.gov/METS/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:goobi="http://meta.goobi.org/v1.5.1/" xmlns:xlink="http://www.w3.org/1999/xlink">
-   <mets:metsHdr CREATEDATE="2022-08-25T06:48:16Z">
+   <mets:metsHdr CREATEDATE="2022-08-26T09:14:19Z">
       <mets:agent OTHERTYPE="SOFTWARE" ROLE="CREATOR" TYPE="OTHER">
          <mets:name>Goobi -  - 2022-08-23T11:15:08Z</mets:name>
          <mets:note>Goobi</mets:note>
@@ -12,7 +12,7 @@
             <mods:mods>
                <mods:extension>
                   <goobi:goobi>
-                     <goobi:metadata name="CatalogIDDigital">PPNidentifier</goobi:metadata>
+                     <goobi:metadata name="CatalogIDDigital">PPNidentifierPPN</goobi:metadata>
                      <goobi:metadata name="TitleDocMain">main title</goobi:metadata>
                      <goobi:metadata name="_directionRTL">false</goobi:metadata>
                   </goobi:goobi>

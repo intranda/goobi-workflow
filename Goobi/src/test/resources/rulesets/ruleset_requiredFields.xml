@@ -155,9 +155,6 @@
 		<Name>DocLanguage</Name>
 		<language name="de">Sprache</language>
 		<language name="en">Language</language>
-    <validationExpression>[a-z]{3}</validationExpression>
-    <validationErrorMessage name="de">Der Wert muss ein dreistelliger ISO 639 Code sein. Vorgefunden wurde jedoch der Wert '{}'.</validationErrorMessage>
-    <validationErrorMessage name="en">The value '{}' does not correspond to a three-letter ISO 639 code.</validationErrorMessage>        
 	</MetadataType>
 	<MetadataType>
 		<Name>TitleDocParallel</Name>
@@ -314,9 +311,9 @@
         <Name>junitgrp</Name>
         <language name="de">junitgrp</language>
         <language name="en">junitgrp</language>
-        <metadata num="*">junitMetadata</metadata>
-        <metadata num="*">junitPerson</metadata>
-        <metadata num="*">junitCorporate</metadata>
+        <metadata num="+">junitMetadata</metadata>
+        <metadata num="+">junitPerson</metadata>
+        <metadata num="+">junitCorporate</metadata>
     </Group>   
     
     
@@ -932,10 +929,10 @@
 		<metadata num="*">CatalogFieldVDeighteen</metadata>
 		<metadata num="1o">_purl</metadata>
         <metadata num="1o">_directionRTL</metadata>
-        <metadata num="*">junitMetadata</metadata>
-        <metadata num="*">junitPerson</metadata>
-        <metadata num="*">junitCorporate</metadata>
-        <group num="*">junitgrp</group>
+        <metadata num="+">junitMetadata</metadata>
+        <metadata num="+">junitPerson</metadata>
+        <metadata num="+">junitCorporate</metadata>
+        <group num="+">junitgrp</group>
 	</DocStrctType>
 	<DocStrctType>
 		<Name>ContainedWork</Name>

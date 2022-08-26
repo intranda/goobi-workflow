@@ -1,0 +1,185 @@
+package de.sub.goobi.metadaten;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.faces.application.Application;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.easymock.EasyMock;
+import org.goobi.beans.Process;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import de.sub.goobi.AbstractTest;
+import de.sub.goobi.helper.FacesContextHelper;
+import de.sub.goobi.helper.Helper;
+import de.sub.goobi.metadaten.Image.Type;
+import de.sub.goobi.mock.MockProcess;
+import de.sub.goobi.persistence.managers.ProcessManager;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ FacesContext.class, ExternalContext.class, Application.class, UIViewRoot.class, Helper.class, ProcessManager.class })
+@PowerMockIgnore({ "javax.net.ssl.*" })
+public class ImageTest extends AbstractTest {
+
+    private Process process;
+
+    @Before
+    public void setUp() throws Exception {
+        process = MockProcess.createProcess();
+        process.setId(1);
+
+        // mock jsf context and http session
+        PowerMock.mockStatic(ExternalContext.class);
+        PowerMock.mockStatic(FacesContext.class);
+
+        FacesContext facesContext = EasyMock.createMock(FacesContext.class);
+        ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
+        Application application = EasyMock.createMock(Application.class);
+        HttpServletRequest servletRequest = EasyMock.createMock(HttpServletRequest.class);
+
+        HttpSession session = EasyMock.createMock(HttpSession.class);
+        FacesContextHelper.setFacesContext(facesContext);
+        EasyMock.expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
+        EasyMock.expect(facesContext.getApplication()).andReturn(application).anyTimes();
+
+        EasyMock.expect(externalContext.getSession(false)).andReturn(session).anyTimes();
+        EasyMock.expect(session.getId()).andReturn("123").anyTimes();
+        EasyMock.expect(externalContext.getRequest()).andReturn(servletRequest).anyTimes();
+
+        EasyMock.expect(servletRequest.getScheme()).andReturn("https").anyTimes();
+        EasyMock.expect(servletRequest.getServerName()).andReturn("localhost").anyTimes();
+        EasyMock.expect(servletRequest.getServerPort()).andReturn(443).anyTimes();
+        EasyMock.expect(servletRequest.getContextPath()).andReturn("/goobi").anyTimes();
+
+        EasyMock.replay(servletRequest);
+        EasyMock.replay(externalContext);
+        EasyMock.replay(facesContext);
+        EasyMock.replay(application);
+    }
+
+    @Test
+    public void testImageConstructorWithProcess() throws Exception {
+        Image image = new Image(process, "testprocess_media", "00000001.tif", 1, 200);
+        assertNotNull(image);
+        assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/1000,/0/default.jpg",
+                image.getBookmarkUrl());
+        assertEquals("00000001.tif", image.getImageName());
+        assertEquals(Paths.get(process.getImagesTifDirectory(false), "00000001.tif").toString(), image.getImagePath().toString());
+        assertEquals("jpeg", image.getLargeImageFormat());
+        assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/600,/0/default.jpg",
+                image.getLargeThumbnailUrl());
+        assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/info.json", image.getObjectUrl());
+        assertEquals(1, image.getOrder());
+        assertEquals(640, image.getSize().getWidth(), 0);
+        assertEquals(480, image.getSize().getHeight(), 0);
+        assertEquals("jpeg", image.getThumbnailFormat());
+        assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/200,/0/default.jpg",
+                image.getThumbnailUrl());
+        assertEquals("00000001.tif", image.getTooltip());
+        assertEquals(Type.image, image.getType());
+        assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/info.json", image.getUrl());
+    }
+
+    @Test
+    public void testImageConstructorWithImagePath() throws Exception {
+        Path imagePath = Paths.get(process.getImagesTifDirectory(false), "00000001.tif");
+        Image image = new Image(imagePath, 1, 200);
+        assertNotNull(image);
+        assertEquals("https://localhost:443/goobi/uii/template/img/goobi_placeholder_notFound_large.png?version=1", image.getBookmarkUrl());
+    }
+
+    @Test
+    public void testCreateThumbnailUrls() throws Exception {
+        Image image = new Image(process, "testprocess_media", "00000001.tif", 1, 200);
+        assertNotNull(image);
+        assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/200,/0/default.jpg",
+                image.getThumbnailUrl());
+        assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/600,/0/default.jpg",
+                image.getLargeThumbnailUrl());
+        image.createThumbnailUrls(500);
+        assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/500,/0/default.jpg",
+                image.getThumbnailUrl());
+        assertEquals("https://localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/1500,/0/default.jpg",
+                image.getLargeThumbnailUrl());
+    }
+
+    @Test
+    public void testAddImageLevel() throws Exception {
+        Image image = new Image(process, "testprocess_media", "00000001.tif", 1, 200);
+        assertNotNull(image);
+        image.addImageLevel("localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/500,/0/default.jpg", 500);
+        ImageLevel lvl = image.getImageLevels().get(0);
+        assertEquals("localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/500,/0/default.jpg", lvl.getUrl());
+        assertEquals(500, lvl.getWidth());
+        assertEquals(375, lvl.getHeight());
+    }
+
+    @Test
+    public void testHasImageLevels() throws Exception {
+        Image image = new Image(process, "testprocess_media", "00000001.tif", 1, 200);
+        assertNotNull(image);
+        assertFalse(image.hasImageLevels());
+        image.addImageLevel("localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/500,/0/default.jpg", 500);
+        assertTrue(image.hasImageLevels());
+    }
+    @Test
+    public void testToString() throws Exception {
+        Image image = new Image(process, "testprocess_media", "00000001.tif", 1, 200);
+        assertNotNull(image);
+        assertEquals(Paths.get(process.getImagesTifDirectory(false), "00000001.tif").toString(),
+                image.toString());
+    }
+
+
+    @Test
+    public void testCreate3DObjectUrl() throws Exception {
+        assertEquals("https://localhost:443/goobi/api/view/object/1/testprocess_media/00000001.tif/info.json", Image.create3DObjectUrl(process, "testprocess_media", "00000001.tif"));
+    }
+
+    @Test
+    public void testGetFromFilenameExtension() throws Exception {
+        assertEquals(Type.image, Image.Type.getFromFilenameExtension("00000001.tif"));
+        assertEquals(Type.unknown, Image.Type.getFromFilenameExtension("00000001.mp3"));
+        assertEquals(Type.unknown, Image.Type.getFromFilenameExtension("00000001.mp4"));
+        assertEquals(Type.object, Image.Type.getFromFilenameExtension("00000001.x3d"));
+        assertEquals(Type.object, Image.Type.getFromFilenameExtension("00000001.obj"));
+        assertEquals(Type.object2vr, Image.Type.getFromFilenameExtension("00000001.xml"));
+    }
+
+    @Test
+    public void testLayerSizes() throws Exception {
+        Image image = new Image(process, "testprocess_media", "00000001.tif", 1, 200);
+        assertEquals(0,image.getLayerSizes().size());
+        List<String> layers = new ArrayList<>();
+        layers.add("200");
+        layers.add("400");
+        image.setLayerSizes(layers);
+        assertEquals(2,image.getLayerSizes().size());
+
+    }
+
+    @Test
+    public void testCleanedName() throws Exception {
+        assertEquals("00000001.tif", Image.getCleanedName(Paths.get(process.getImagesTifDirectory(false), "00000001.tif").toString()));
+    }
+
+}
+
