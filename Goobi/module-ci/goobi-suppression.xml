@@ -79,7 +79,10 @@
    ]]></notes>
         <packageUrl regex="true">^pkg:javascript/moment\.js@.*$</packageUrl>
         <cve>CVE-2022-24785</cve>
+        <cve>CVE-2022-31129</cve>
     </suppress>
+    
+    
     <!-- effects jquery ui checkboxradio, which is not used -->
     <suppress>
        <notes><![CDATA[
