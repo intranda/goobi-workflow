@@ -1,15 +1,16 @@
 package de.sub.goobi.metadaten;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
 import javax.faces.model.SelectItem;
 
 import org.easymock.EasyMock;
+import org.goobi.api.display.Item;
 import org.goobi.beans.Process;
 import org.junit.Before;
 import org.junit.Rule;
@@ -101,32 +102,40 @@ public class MetadatumImplTest extends AbstractTest {
     public void testGetOutputType() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
-        assertEquals("input", md.getOutputType());
+        assertEquals("select", md.getOutputType());
     }
 
     @Test
     public void testGetItems() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
-        List<SelectItem> items = md.getItems();
-        assertNotNull(items);
-
+        List<SelectItem> si = md.getItems();
+        assertNotNull(si);
+        md.setItems(si);
+        List<Item> items = md.getWert();
+        assertEquals(si.size(), items.size());
     }
 
     @Test
-    public void testGetSelectedItems() throws MetadataTypeNotAllowedException {
+    public void testSelectedItems() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
         List<String> items = md.getSelectedItems();
         assertNotNull(items);
+        items.add("a");
+        items.add("b");
+        md.setSelectedItems(items);
+        assertEquals(2, md.getSelectedItems().size());
     }
 
     @Test
-    public void testGetSelectedItem() throws MetadataTypeNotAllowedException {
+    public void testSelectedItem() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
         String item = md.getSelectedItem();
         assertNotNull(item);
+        md.setSelectedItem("a");
+        assertEquals("a", md.getSelectedItem());
     }
 
     @Test
@@ -179,7 +188,15 @@ public class MetadatumImplTest extends AbstractTest {
     public void testIsNormdata() throws MetadataTypeNotAllowedException {
         Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
-        assertFalse(md.isNormdata());
+        assertTrue(md.isNormdata());
+    }
+
+    @Test
+    public void testUrl() throws MetadataTypeNotAllowedException {
+        Metadata m = new Metadata(prefs.getMetadataTypeByName(METADATA_TYPE));
+        m.setAutorityFile("gnd", "https://example.com/", "1234");
+        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
+        assertEquals("https://example.com/1234", md.getUrl());
     }
 
 }

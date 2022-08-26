@@ -135,6 +135,7 @@ public class MetadatenTest extends AbstractTest {
         // Mock ui error message handling
         PowerMock.mockStatic(Helper.class);
         EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("").anyTimes();
+        EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString())).andReturn("").anyTimes();
         EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
         EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
         EasyMock.expect(Helper.getRequestParameter(EasyMock.anyString())).andReturn("1").anyTimes();
@@ -143,6 +144,7 @@ public class MetadatenTest extends AbstractTest {
         Helper.setFehlerMeldung(EasyMock.anyString());
         Helper.setFehlerMeldung(EasyMock.anyString());
         Helper.setFehlerMeldung(EasyMock.anyString());
+
         Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
         Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
         Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString());
@@ -2042,7 +2044,7 @@ public class MetadatenTest extends AbstractTest {
         m.setValue("x");
         MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, null);
         fixture.setCurrentMetadataToPerformSearch(md);
-        assertEquals(DisplayType.input, fixture.getCurrentMetadataToPerformSearch().getMetadataDisplaytype());
+        assertEquals(DisplayType.select, fixture.getCurrentMetadataToPerformSearch().getMetadataDisplaytype());
     }
 
     @Test
