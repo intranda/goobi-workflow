@@ -257,7 +257,6 @@ public class ShellScript {
 
             for (String line : s.getStdOut()) {
                 outputText += line + "\n";
-                //            Helper.setMeldung(line);
             }
             Helper.addMessageToProcessLog(processID, LogType.DEBUG, "Script '" + scriptname + "' was executed with result: " + outputText);
             if (!outputText.isEmpty()) {
@@ -291,7 +290,6 @@ public class ShellScript {
      */
     public static ShellScriptReturnValue legacyCallShell2(String nonSpacesafeScriptingCommand, Integer processID)
             throws IOException, InterruptedException {
-        //		String[] tokenisedCommand = nonSpacesafeScriptingCommand.split("\\s");
         ShellScript s;
         int returnCode = ShellScript.ERRORLEVEL_ERROR;
         String outputMessage = "";
@@ -321,16 +319,12 @@ public class ShellScript {
                     }
                 }
             } else {
-                //			for (int i = 1; i < tokenisedCommand.length; i++) {
-                //				scriptingArgs.add(tokenisedCommand[i]);
-                //			}
                 scriptingArgs.add(paramList);
             }
             returnCode = s.run(scriptingArgs);
 
             for (String line : s.getStdOut()) {
                 outputMessage += line + "\n";
-                //                Helper.setMeldung(line);
             }
             Helper.addMessageToProcessLog(processID, LogType.DEBUG,
                     "Script '" + nonSpacesafeScriptingCommand + "' was executed with result: " + outputMessage);
