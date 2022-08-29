@@ -38,7 +38,6 @@ import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
-//import de.sub.goobi.beans.Schritteigenschaft;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
@@ -72,18 +71,6 @@ public class BeanHelper {
         }
         eigenschaften.add(eig);
     }
-
-    //	public void EigenschaftHinzufuegen(Step inSchritt, String inTitel, String inWert) {
-    //		Schritteigenschaft eig = new Schritteigenschaft();
-    //		eig.setTitel(inTitel);
-    //		eig.setWert(inWert);
-    //		eig.setSchritt(inSchritt);
-    //		List<Schritteigenschaft> eigenschaften = inSchritt.getEigenschaften();
-    //		if (eigenschaften == null) {
-    //			eigenschaften = new ArrayList<Schritteigenschaft>();
-    //		}
-    //		eigenschaften.add(eig);
-    //	}
 
     public void EigenschaftHinzufuegen(Template inVorlage, String inTitel, String inWert) {
         Templateproperty eig = new Templateproperty();
