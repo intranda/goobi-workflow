@@ -178,6 +178,35 @@ public class ConfigurationHelper implements Serializable {
     }
 
     /*
+     * category in goobi_config.properties: APPLICATION INFORMATION
+     */
+
+    public String getApplicationTitle() {
+        return getLocalString("ApplicationTitle", "http://goobi.io");
+    }
+
+    public String getApplicationHeaderTitle() {
+        return getLocalString("ApplicationHeaderTitle", "Goobi workflow");
+    }
+
+    public String getApplicationHomepageMsg() {
+        return getLocalString("ApplicationHomepageMsg", getServletPathAsUrl());
+    }
+
+    public String getApplicationWebsiteMsg() {
+        return getLocalString("ApplicationWebsiteMsg", getServletPathAsUrl());
+    }
+
+    public String getServletPathAsUrl() {
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        return context.getExternalContext().getRequestContextPath() + "/";
+    }
+
+    public boolean isDeveloping() {
+        return getLocalBoolean("developing", false);
+    }
+
+    /*
      * category in goobi_config.properties: DIRECTORIES
      */
 
@@ -342,55 +371,78 @@ public class ConfigurationHelper implements Serializable {
     }
 
     /*
-     * category in goobi_config.properties: S3 BUCKET
+     * category in goobi_config.properties: GLOBAL USER SETTINGS
      */
 
-    public boolean useS3() {
-        return getLocalBoolean("useS3", false);
+    public String getDefaultLanguage() {
+        return getLocalString("defaultLanguage");
     }
 
-    public boolean useCustomS3() {
-        return getLocalBoolean("useCustomS3", false);
+    public boolean isAnonymizeData() {
+        return getLocalBoolean("anonymize", false);
     }
 
-    public String getS3Endpoint() {
-        return getLocalString("S3Endpoint", "");
+    public boolean isAllowGravatar() {
+        return getLocalBoolean("enableGravatar", true);
     }
 
-    public String getS3Bucket() {
-        return getLocalString("S3bucket", null);
+    public int getMinimumPasswordLength() {
+        int minimum = getLocalInt("minimumPasswordLength", 8);
+        return minimum >= 1 ? minimum : 1;
     }
 
-    public String getS3AccessKeyID() {
-        return getLocalString("S3AccessKeyID", "");
-    }
-
-    public String getS3SecretAccessKey() {
-        return getLocalString("S3SecretAccessKey", "");
-    }
-
-    public int getS3ConnectionRetries() {
-        return getLocalInt("S3ConnectionRetry", 10);
-    }
-
-    public int getS3ConnectionTimeout() {
-        return getLocalInt("S3ConnectionTimeout", 10000);
-    }
-
-    public int getS3SocketTimeout() {
-        return getLocalInt("S3SocketTimeout", 10000);
+    public List<String> getAdditionalUserRights() {
+        List<String> additionalUserRights = getLocalList("userRight");
+        if (additionalUserRights == null || additionalUserRights.isEmpty()) {
+            additionalUserRights = Collections.emptyList();
+        }
+        return additionalUserRights;
     }
 
     /*
-     * category in goobi_config.properties: TRUSTSTORE
+     * category in goobi_config.properties: USER INTERFACE FEATURES
      */
 
-    public String getTruststore() {
-        return getLocalString("truststore");
+    public boolean isUseIntrandaUi() {
+        return getLocalBoolean("ui_useIntrandaUI", true);
     }
 
-    public String getTruststoreToken() {
-        return getLocalString("truststore_password");
+    public boolean isRenderAccessibilityCss() {
+        return getLocalBoolean("renderAccessibilityCss", false);
+    }
+
+    /**
+     * This method is deprecated. The information was moved to the user table in the database. The method is still needed during the migration.
+     * 
+     * @return The name of the dashboard plugin or null in case of no configured plugin
+     */
+    @Deprecated
+    public String getDashboardPlugin() {
+        return getLocalString("dashboardPlugin", null);
+    }
+
+    public boolean isShowStatisticsOnStartPage() {
+        return getLocalBoolean("showStatisticsOnStartPage", true);
+    }
+
+    public boolean isEnableFinalizeTaskButton() {
+        return getLocalBoolean("TaskEnableFinalizeButton", true);
+    }
+
+    public boolean isAllowFolderLinkingForProcessList() {
+        return getLocalBoolean("ui_showFolderLinkingInProcessList", false);
+    }
+
+    public boolean isConfirmLinking() {
+        return getLocalBoolean("confirmLinking", false);
+    }
+
+    public boolean isRenderReimport() {
+        return getLocalBoolean("renderReimport", false);
+    }
+
+    public List<String> getExcludeMonitoringAgentNames() {
+        return getLocalList("excludeMonitoringAgentName");
     }
 
     /*
@@ -552,58 +604,15 @@ public class ConfigurationHelper implements Serializable {
     }
 
     /*
-     * category in goobi_config.properties: MESSAGE BROKER
+     * category in goobi_config.properties: TRUSTSTORE
      */
 
-    public boolean isStartInternalMessageBroker() {
-        return getLocalBoolean("MessageBrokerStart", false);
+    public String getTruststore() {
+        return getLocalString("truststore");
     }
 
-    public String getActiveMQConfigPath() {
-        return getLocalString("ActiveMQConfig", getConfigurationFolder() + "goobi_activemq.xml");
-    }
-
-    // WARNING: The method getMessageBrokerUrl() is used by the Spring framework and has an empty call hierarchy in goobi workflow.
-    public String getMessageBrokerUrl() {
-        return getLocalString("MessageBrokerServer", "localhost");
-    }
-
-    // WARNING: The method getMessageBrokerPort() is used by the Spring framework and has an empty call hierarchy in goobi workflow.
-    public int getMessageBrokerPort() {
-        return getLocalInt("MessageBrokerPort", 61616);
-    }
-
-    public String getMessageBrokerUsername() {
-        return getLocalString("MessageBrokerUsername");
-    }
-
-    public String getMessageBrokerPassword() {
-        return getLocalString("MessageBrokerPassword");
-    }
-
-    public int getNumberOfParallelMessages() {
-        return getLocalInt("MessageBrokerNumberOfParallelMessages", 1);
-    }
-
-    public boolean isAllowExternalQueue() {
-        return getLocalBoolean("allowExternalQueue", false);
-    }
-
-    public String getExternalQueueType() {
-        return getLocalString("externalQueueType", "activeMQ").toUpperCase();
-    }
-
-    public boolean isUseLocalSQS() {
-        return getLocalBoolean("useLocalSQS", false);
-    }
-
-    public String getQueueName(QueueType type) {
-        String configName = type.getConfigName();
-        String queueName = System.getenv(configName);
-        if (queueName == null) {
-            return getLocalString(configName, type.getName());
-        }
-        return queueName;
+    public String getTruststoreToken() {
+        return getLocalString("truststore_password");
     }
 
     /*
@@ -684,6 +693,84 @@ public class ConfigurationHelper implements Serializable {
     }
 
     /*
+     * category in goobi_config.properties: DATABASE SEARCH
+     */
+
+    /**
+     * Check if Mysql or H2 is used as internal database
+     *
+     * @deprecated use MySQLHelper.isUsingH2() for this instead
+     */
+    @Deprecated
+    public boolean isUseH2DB() {
+        return MySQLHelper.isUsingH2();
+    }
+
+    public boolean isUseFulltextSearch() {
+        return getLocalBoolean("useFulltextSearch", false);
+    }
+
+    public String getFulltextSearchMode() {
+        return getLocalString("FulltextSearchMode", "BOOLEAN MODE");
+    }
+
+    public String getDatabaseLeftTruncationCharacter() {
+        return getLocalString("DatabaseLeftTruncationCharacter", "%");
+    }
+
+    public String getDatabaseRightTruncationCharacter() {
+        return getLocalString("DatabaseRightTruncationCharacter", "%");
+    }
+
+    public String getSqlTasksIndexname() {
+        return getLocalString("SqlTasksIndexname", null);
+    }
+
+    /*
+     * category in goobi_config.properties: PROCESSES AND PROCESS LOG
+     */
+
+    public boolean isResetProcesslog() {
+        return getLocalBoolean("ProcessCreationResetLog", false);
+    }
+
+    public boolean isAllowWhitespacesInFolder() {
+        return getLocalBoolean("dir_allowWhiteSpaces", false);
+    }
+
+    public boolean isMassImportAllowed() {
+        return getLocalBoolean("massImportAllowed", false);
+    }
+
+    public boolean isMassImportUniqueTitle() {
+        return getLocalBoolean("MassImportUniqueTitle", true);
+    }
+
+    public int getBatchMaxSize() {
+        return getLocalInt("batchMaxSize", 100);
+    }
+
+    public boolean isShowSecondLogField() {
+        return getLocalBoolean("ProcessLogShowSecondField", false);
+    }
+
+    public boolean isShowThirdLogField() {
+        return getLocalBoolean("ProcessLogShowThirdField", false);
+    }
+
+    public boolean isProcesslistShowEditionData() {
+        return getLocalBoolean("ProcesslistShowEditionData", false);
+    }
+
+    public long getJobStartTime(String jobname) {
+        return getLocalLong(jobname, -1);
+    }
+
+    public List<String> getDownloadColumnWhitelist() {
+        return getLocalList("downloadAvailableColumn");
+    }
+
+    /*
      * category in goobi_config.properties: SCRIPTS
      */
 
@@ -728,141 +815,43 @@ public class ConfigurationHelper implements Serializable {
     }
 
     /*
-     * category in goobi_config.properties: APPLICATION INFORMATION
+     * category in goobi_config.properties: S3 BUCKET
      */
 
-    public String getApplicationTitle() {
-        return getLocalString("ApplicationTitle", "http://goobi.io");
+    public boolean useS3() {
+        return getLocalBoolean("useS3", false);
     }
 
-    public String getApplicationHeaderTitle() {
-        return getLocalString("ApplicationHeaderTitle", "Goobi workflow");
+    public boolean useCustomS3() {
+        return getLocalBoolean("useCustomS3", false);
     }
 
-    public String getApplicationHomepageMsg() {
-        return getLocalString("ApplicationHomepageMsg", getServletPathAsUrl());
+    public String getS3Endpoint() {
+        return getLocalString("S3Endpoint", "");
     }
 
-    public String getApplicationWebsiteMsg() {
-        return getLocalString("ApplicationWebsiteMsg", getServletPathAsUrl());
+    public String getS3Bucket() {
+        return getLocalString("S3bucket", null);
     }
 
-    public String getServletPathAsUrl() {
-        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        return context.getExternalContext().getRequestContextPath() + "/";
+    public String getS3AccessKeyID() {
+        return getLocalString("S3AccessKeyID", "");
     }
 
-    public boolean isDeveloping() {
-        return getLocalBoolean("developing", false);
+    public String getS3SecretAccessKey() {
+        return getLocalString("S3SecretAccessKey", "");
     }
 
-    /*
-     * category in goobi_config.properties: USER INTERFACE FEATURES
-     */
-
-    public boolean isUseIntrandaUi() {
-        return getLocalBoolean("ui_useIntrandaUI", true);
+    public int getS3ConnectionRetries() {
+        return getLocalInt("S3ConnectionRetry", 10);
     }
 
-    public boolean isRenderAccessibilityCss() {
-        return getLocalBoolean("renderAccessibilityCss", false);
+    public int getS3ConnectionTimeout() {
+        return getLocalInt("S3ConnectionTimeout", 10000);
     }
 
-    /**
-     * This method is deprecated. The information was moved to the user table in the database. The method is still needed during the migration.
-     * 
-     * @return The name of the dashboard plugin or null in case of no configured plugin
-     */
-    @Deprecated
-    public String getDashboardPlugin() {
-        return getLocalString("dashboardPlugin", null);
-    }
-
-    public boolean isShowStatisticsOnStartPage() {
-        return getLocalBoolean("showStatisticsOnStartPage", true);
-    }
-
-    public boolean isEnableFinalizeTaskButton() {
-        return getLocalBoolean("TaskEnableFinalizeButton", true);
-    }
-
-    public boolean isAllowFolderLinkingForProcessList() {
-        return getLocalBoolean("ui_showFolderLinkingInProcessList", false);
-    }
-
-    public boolean isConfirmLinking() {
-        return getLocalBoolean("confirmLinking", false);
-    }
-
-    public boolean isRenderReimport() {
-        return getLocalBoolean("renderReimport", false);
-    }
-
-    public List<String> getExcludeMonitoringAgentNames() {
-        return getLocalList("excludeMonitoringAgentName");
-    }
-
-    /*
-     * category in goobi_config.properties: GLOBAL USER SETTINGS
-     */
-
-    public String getDefaultLanguage() {
-        return getLocalString("defaultLanguage");
-    }
-
-    public boolean isAnonymizeData() {
-        return getLocalBoolean("anonymize", false);
-    }
-
-    public boolean isAllowGravatar() {
-        return getLocalBoolean("enableGravatar", true);
-    }
-
-    public int getMinimumPasswordLength() {
-        int minimum = getLocalInt("minimumPasswordLength", 8);
-        return minimum >= 1 ? minimum : 1;
-    }
-
-    public List<String> getAdditionalUserRights() {
-        List<String> additionalUserRights = getLocalList("userRight");
-        if (additionalUserRights == null || additionalUserRights.isEmpty()) {
-            additionalUserRights = Collections.emptyList();
-        }
-        return additionalUserRights;
-    }
-
-    /*
-     * category in goobi_config.properties: DATABASE SEARCH
-     */
-
-    /**
-     * Check if Mysql or H2 is used as internal database
-     *
-     * @deprecated use MySQLHelper.isUsingH2() for this instead
-     */
-    @Deprecated
-    public boolean isUseH2DB() {
-        return MySQLHelper.isUsingH2();
-    }
-
-    public boolean isUseFulltextSearch() {
-        return getLocalBoolean("useFulltextSearch", false);
-    }
-
-    public String getFulltextSearchMode() {
-        return getLocalString("FulltextSearchMode", "BOOLEAN MODE");
-    }
-
-    public String getDatabaseLeftTruncationCharacter() {
-        return getLocalString("DatabaseLeftTruncationCharacter", "%");
-    }
-
-    public String getDatabaseRightTruncationCharacter() {
-        return getLocalString("DatabaseRightTruncationCharacter", "%");
-    }
-
-    public String getSqlTasksIndexname() {
-        return getLocalString("SqlTasksIndexname", null);
+    public int getS3SocketTimeout() {
+        return getLocalInt("S3SocketTimeout", 10000);
     }
 
     /*
@@ -880,8 +869,6 @@ public class ConfigurationHelper implements Serializable {
     public int getProxyPort() {
         return getLocalInt("http_proxyPort", 8080);
     }
-
-    // TODO: START OF UNDOCUMENTED GETTERS
 
     /*
      * category in goobi_config.properties: INTERNAL SERVERS AND INTERFACES
@@ -937,52 +924,61 @@ public class ConfigurationHelper implements Serializable {
     }
 
     /*
-     * category in goobi_config.properties: PROCESSES AND PROCESS LOG
+     * category in goobi_config.properties: MESSAGE BROKER
      */
 
-    public boolean isResetProcesslog() {
-        return getLocalBoolean("ProcessCreationResetLog", false);
+    public boolean isStartInternalMessageBroker() {
+        return getLocalBoolean("MessageBrokerStart", false);
     }
 
-    public String getTiffHeaderArtists() {
-        return getLocalString("TiffHeaderArtists");
+    public String getActiveMQConfigPath() {
+        return getLocalString("ActiveMQConfig", getConfigurationFolder() + "goobi_activemq.xml");
     }
 
-    public boolean isAllowWhitespacesInFolder() {
-        return getLocalBoolean("dir_allowWhiteSpaces", false);
+    // WARNING: The method getMessageBrokerUrl() is used by the Spring framework and has an empty call hierarchy in goobi workflow.
+    public String getMessageBrokerUrl() {
+        return getLocalString("MessageBrokerServer", "localhost");
     }
 
-    public boolean isMassImportAllowed() {
-        return getLocalBoolean("massImportAllowed", false);
+    // WARNING: The method getMessageBrokerPort() is used by the Spring framework and has an empty call hierarchy in goobi workflow.
+    public int getMessageBrokerPort() {
+        return getLocalInt("MessageBrokerPort", 61616);
     }
 
-    public boolean isMassImportUniqueTitle() {
-        return getLocalBoolean("MassImportUniqueTitle", true);
+    public String getMessageBrokerUsername() {
+        return getLocalString("MessageBrokerUsername");
     }
 
-    public int getBatchMaxSize() {
-        return getLocalInt("batchMaxSize", 100);
+    public String getMessageBrokerPassword() {
+        return getLocalString("MessageBrokerPassword");
     }
 
-    public boolean isShowSecondLogField() {
-        return getLocalBoolean("ProcessLogShowSecondField", false);
+    public int getNumberOfParallelMessages() {
+        return getLocalInt("MessageBrokerNumberOfParallelMessages", 1);
     }
 
-    public boolean isShowThirdLogField() {
-        return getLocalBoolean("ProcessLogShowThirdField", false);
+    public boolean isAllowExternalQueue() {
+        return getLocalBoolean("allowExternalQueue", false);
     }
 
-    public boolean isProcesslistShowEditionData() {
-        return getLocalBoolean("ProcesslistShowEditionData", false);
+    public String getExternalQueueType() {
+        return getLocalString("externalQueueType", "activeMQ").toUpperCase();
     }
 
-    public long getJobStartTime(String jobname) {
-        return getLocalLong(jobname, -1);
+    public boolean isUseLocalSQS() {
+        return getLocalBoolean("useLocalSQS", false);
     }
 
-    public List<String> getDownloadColumnWhitelist() {
-        return getLocalList("downloadAvailableColumn");
+    public String getQueueName(QueueType type) {
+        String configName = type.getConfigName();
+        String queueName = System.getenv(configName);
+        if (queueName == null) {
+            return getLocalString(configName, type.getName());
+        }
+        return queueName;
     }
+
+    // TODO: START OF UNDOCUMENTED GETTERS
 
     // TODO: START OF METS EDITOR GETTERS
 
@@ -1046,6 +1042,10 @@ public class ConfigurationHelper implements Serializable {
             list.add(index);
         }
         return list;
+    }
+
+    public String getTiffHeaderArtists() {
+        return getLocalString("TiffHeaderArtists");
     }
 
     //    public String getMetsEditorDefaultSuffix() {
