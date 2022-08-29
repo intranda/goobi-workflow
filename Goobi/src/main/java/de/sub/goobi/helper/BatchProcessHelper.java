@@ -201,7 +201,6 @@ public class BatchProcessHelper {
     }
 
     private void loadProcessProperties(Process process) {
-        //		this.pdao.refresh(this.currentProcess);
         this.containers = new TreeMap<>();
         this.processPropertyList = PropertyParser.getInstance().getPropertiesForProcess(this.currentProcess);
 
