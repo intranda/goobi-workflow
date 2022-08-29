@@ -1084,9 +1084,18 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         String path = this.getProcessDataDirectory();
         int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
 
+
         // Backup meta.xml
         String metaFileName = "meta.xml";
-        Path metaFile = Paths.get(path + metaFileName);
+        Path metaFile = Paths.get(path, metaFileName);
+
+        // cancel if less than 10 mb free storage is available
+        if(Files.getFileStore(metaFile).getUsableSpace()< 10485760l) {
+            Helper.setFehlerMeldung(Helper.getTranslation("process_writeErrorNoSpace"));
+            log.error("Saving metadata for {} was cancelled because there is not enough storage available.", id);
+            return;
+        }
+
         String backupMetaFileName = Process.createBackup(path, metaFileName, maximumNumberOfBackups);
         Path backupMetaFile = Paths.get(path + backupMetaFileName);
 
