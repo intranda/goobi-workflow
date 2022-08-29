@@ -537,10 +537,6 @@ public class BatchStepHelper {
                         StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + currentStep.getProzess().getId() + " AND Reihenfolge <= "
                                 + currentStep.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
 
-                //              List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
-                //                      .add(Restrictions.le("reihenfolge", this.currentStep.getReihenfolge()))
-                //                      .add(Restrictions.gt("reihenfolge", temp.getReihenfolge())).addOrder(Order.asc("reihenfolge")).createCriteria("prozess")
-                //                      .add(Restrictions.idEq(this.currentStep.getProzess().getId())).list();
                 for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
                     Step step = iter.next();
                     if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) {
@@ -794,7 +790,6 @@ public class BatchStepHelper {
             SendMail.getInstance().sendMailToAssignedUser(currentStep, StepStatus.OPEN);
 
             try {
-                //                ProcessManager.saveProcess(s.getProzess());
                 StepManager.saveStep(s);
             } catch (DAOException e) {
             }
@@ -803,11 +798,6 @@ public class BatchStepHelper {
     }
 
     public String BatchDurchBenutzerAbschliessen() {
-
-        // for (ProcessProperty pp : this.processPropertyList) {
-        // this.processProperty = pp;
-        // saveCurrentPropertyForAll();
-        // }
         HelperSchritte helper = new HelperSchritte();
         for (Step s : this.steps) {
             boolean error = false;
