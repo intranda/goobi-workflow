@@ -404,7 +404,6 @@ public class ProcessManager implements IManager, Serializable {
         p.setRegelsatz(RulesetManager.getRulesetById(rs.getInt("MetadatenKonfigurationID")));
         p.setSortHelperDocstructs(rs.getInt("sortHelperDocstructs"));
         p.setSortHelperMetadata(rs.getInt("sortHelperMetadata"));
-        //        p.setWikifield(rs.getString("wikifield"));
         Integer batchID = rs.getInt("batchID");
         if (!rs.wasNull()) {
             Batch batch = ProcessMysqlHelper.loadBatch(batchID);
