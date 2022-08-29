@@ -244,7 +244,6 @@ public class ExportMets {
         Fileformat gdzfile = myProzess.readMetadataFile();
 
         String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
-        //    String zielVerzeichnis = Files.createTempDirectory("mets_export").toAbsolutePath().toString(); //only save file in /tmp/ directory
 
         String targetFileName = zielVerzeichnis + atsPpnBand + "_mets.xml";
         return writeMetsFile(myProzess, targetFileName, gdzfile, false);
@@ -550,7 +549,6 @@ public class ExportMets {
         mm.setIIIFUrl(vp.replace(myProzess.getProjekt().getMetsIIIFUrl()));
         mm.setSruUrl(vp.replace(myProzess.getProjekt().getMetsSruUrl()));
 
-        // if (!ConfigMain.getParameter("ImagePrefix", "\\d{8}").equals("\\d{8}")) {
         List<String> images = new ArrayList<>();
         if (config.isExportValidateImages()) {
             try {
@@ -908,7 +906,6 @@ public class ExportMets {
         if (!image.getFileName().toString().endsWith(".jp2")) {
             throw new IOException("No valid image reader found for 'jpeg2000'");
         }
-        //            if (image.getFileName().toString().matches("(?i).*\\.jp(2|x|2000)")) {
         Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("jpeg2000");
 
         while (readers.hasNext()) {
@@ -1165,18 +1162,14 @@ public class ExportMets {
      */
     private static String getShaString(MessageDigest messageDigest, String algorithmName) throws NoSuchAlgorithmException {
         BigInteger bigInt = new BigInteger(1, messageDigest.digest());
-        //        String sha256 = bigInt.toString(16).toLowerCase();
         StringBuilder sha256 = new StringBuilder(bigInt.toString(16).toLowerCase());
         if (algorithmName.equals("SHA-1")) {
             while (sha256.length() < 40) {
                 sha256.insert(0, "0");
-                //                sha256 = "0" + sha256;
             }
         } else if (algorithmName.equals("SHA-256")) {
             while (sha256.length() < 64) {
                 sha256.insert(0, "0");
-
-                //                sha256 = "0" + sha256;
             }
         } else {
             throw new NoSuchAlgorithmException("Only SHA-1 and SHA-256 supported");
@@ -1230,7 +1223,6 @@ public class ExportMets {
             throws IOException, DataFormatException, UnsupportedAudioFileException {
 
         addObjectIdentifier(doc, object, "local", file.getFileName().normalize().toString());
-        //  buildMPEGMetadata(doc, file, object);
 
         double duration = 0;
         String bitrate = null;
