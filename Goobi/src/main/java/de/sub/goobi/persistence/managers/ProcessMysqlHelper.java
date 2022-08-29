@@ -141,7 +141,6 @@ class ProcessMysqlHelper implements Serializable {
             }
 
         } catch (SQLException e) {
-            //            log.error("Error while saving process " + o.getTitel(), e);
             throw new DAOException(e);
         }
     }
@@ -281,11 +280,7 @@ class ProcessMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            //            if (filter != null && !filter.isEmpty()) {
-            //                return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
-            //            } else {
             return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
-            //            }
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -459,7 +454,6 @@ class ProcessMysqlHelper implements Serializable {
         sql.append(" MetadatenKonfigurationID = ?,");
         sql.append(" sortHelperDocstructs = ?,");
         sql.append(" sortHelperMetadata = ?,");
-        //        sql.append(" wikifield = ?,");
         sql.append(" batchID = ?,");
         sql.append(" docketID = ?,");
         sql.append(" mediaFolderExists = ?, pauseAutomaticExecution = ?");
@@ -505,9 +499,6 @@ class ProcessMysqlHelper implements Serializable {
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
         }
-        //        if (order != null && !order.isEmpty()) {
-        //            sql.append(" ORDER BY " + order);
-        //        }
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
