@@ -313,7 +313,6 @@ public class HelperSchritte {
         offen2 = (offen * 100) / (double) (offen + inBearbeitung + abgeschlossen);
         inBearbeitung2 = (inBearbeitung * 100) / (double) (offen + inBearbeitung + abgeschlossen);
         abgeschlossen2 = 100 - offen2 - inBearbeitung2;
-        // (abgeschlossen * 100) / (offen + inBearbeitung + abgeschlossen);
         java.text.DecimalFormat df = new java.text.DecimalFormat("#000");
         String value = df.format(abgeschlossen2) + df.format(inBearbeitung2) + df.format(offen2);
 
@@ -323,7 +322,6 @@ public class HelperSchritte {
     public ShellScriptReturnValue executeAllScriptsForStep(Step step, boolean automatic) {
         if (automatic && step.getProzess().isPauseAutomaticExecution()) {
             ShellScriptReturnValue returnCode = new ShellScriptReturnValue(1, "Automatic execution is disabled", "");
-            //            reOpenStep(step);
             return returnCode;
         }
         List<String> scriptpaths = step.getAllScriptPaths();
@@ -363,10 +361,7 @@ public class HelperSchritte {
 
                 }
             }
-            //            if (returnParameter != 0 && automatic && returnParameter != 99) {
-            //                errorStep(step);
-            //                break;
-            //            }
+
             count++;
         }
         return returnParameter;
@@ -581,7 +576,6 @@ public class HelperSchritte {
             Helper.addMessageToProcessLog(step.getProzess().getId(), LogType.ERROR, message);
             return new ShellScriptReturnValue(-2, null, null);
         }
-        //        script = replacer.replace(script);
         ShellScriptReturnValue rueckgabe = null;
         try {
             log.info("Calling the shell: " + script + " for process with ID " + step.getProcessId());
@@ -656,7 +650,6 @@ public class HelperSchritte {
 
     public boolean executeDmsExport(Step step, boolean automatic) {
         if (automatic && step.getProzess().isPauseAutomaticExecution()) {
-            //            reOpenStep(step);
             return false;
         }
 
@@ -667,17 +660,14 @@ public class HelperSchritte {
             } catch (Exception e) {
                 log.error("Can't load export plugin, use default export for process with ID " + step.getProcessId(), e);
                 dms = new ExportDms(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
-                //                dms = new AutomaticDmsExport(ConfigurationHelper.isAutomaticExportWithImages());
             }
         }
         if (dms == null) {
             dms = new ExportDms(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
-            //            dms = new AutomaticDmsExport(ConfigurationHelper.getInstance().isAutomaticExportWithImages());
         }
         if (!ConfigurationHelper.getInstance().isAutomaticExportWithOcr()) {
             dms.setExportFulltext(false);
         }
-        //        ProcessObject po = ProcessManager.getProcessObjectForId(step.getProcessId());
         try {
             boolean validate = dms.startExport(step.getProzess());
             if (validate) {
