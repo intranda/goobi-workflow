@@ -92,40 +92,8 @@ public class ConfigOpacCatalogue {
         this.protocol = protocol;
     }
 
-    //    public String getTitle() {
-    //        return this.title;
-    //    }
-    //
-    //    public String getDescription() {
-    //        return this.description;
-    //    }
-    //
-    //    public String getAddress() {
-    //        return this.address;
-    //    }
-    //
-    //    public String getDatabase() {
-    //        return this.database;
-    //    }
-    //
-    //    public String getIktlist() {
-    //        return this.iktlist;
-    //    }
-    //
-    //    public int getPort() {
-    //        return this.port;
-    //    }
-    //
-    //    public String getCharset() {
-    //        return this.charset;
-    //    }
-
     public Node executeBeautifier(Node myHitlist) {
         /* Ausgabe des Opac-Ergebnissen in Datei */
-
-        //        if (!ConfigurationHelper.getInstance().getDebugFolder().equals("") && Files.isWritable(Paths.get(ConfigurationHelper.getInstance().getDebugFolder()))) {
-        //            debugMyNode(myHitlist, ConfigurationHelper.getInstance().getDebugFolder() + "/opacBeautifyBefore.xml");
-        //        }
 
         /*
          * --------------------- aus dem Dom-Node ein JDom-Object machen -------------------
@@ -138,7 +106,6 @@ public class ConfigOpacCatalogue {
         /* alle Records durchlaufen */
         List<Element> elements = doc.getRootElement().getChildren();
         for (Element el : elements) {
-            // Element el = (Element) it.next();
             /* in jedem Record den Beautifier anwenden */
             executeBeautifierForElement(el);
         }
@@ -232,12 +199,10 @@ public class ConfigOpacCatalogue {
 
             // check subfield
             if (mainFieldToChange != null && prooflist.isEmpty() && subfieldToChange == null) {
-                //                Element field = new Element("field");
-                //                field.setAttribute("tag", beautifier.getTagElementToChange().getTag());
+
                 subfieldToChange = new Element("subfield");
                 subfieldToChange.setAttribute("code", beautifier.getTagElementToChange().getSubtag());
                 mainFieldToChange.addContent(subfieldToChange);
-                //                elements.add(field);
             }
 
             if (subfieldToChange!= null && prooflist.isEmpty()) {
@@ -268,35 +233,5 @@ public class ConfigOpacCatalogue {
         }
 
     }
-
-    //    /**
-    //     * @param cbs the cbs to set
-    //     */
-    //    public void setCbs(String cbs) {
-    //        this.cbs = cbs;
-    //    }
-    //
-    //    /**
-    //     * @return the cbs
-    //     */
-    //    public String getCbs() {
-    //        return this.cbs;
-    //    }
-    //
-    //    public String getOpacType() {
-    //        return opacType;
-    //    }
-    //
-    //    public void setOpacType(String opacType) {
-    //        this.opacType = opacType;
-    //    }
-    //
-    //    public String getProtocol() {
-    //        return protocol;
-    //    }
-    //
-    //    public void setProtocol(String protocol) {
-    //        this.protocol = protocol;
-    //    }
 
 }
