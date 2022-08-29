@@ -176,10 +176,7 @@ public class ExportPdf extends ExportMets {
                     response.sendRedirect(goobiContentServerUrl.toString());
                     context.responseComplete();
                 }
-                //                if (Files.exists(metsTempFile)) {
-                //                    Path tempMets = Paths.get(metsTempFile.toUri().toURL().toString());
-                //                    Files.delete(metsTempFile);
-                //                }
+
             } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
 
                 /*
