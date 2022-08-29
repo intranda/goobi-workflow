@@ -368,7 +368,6 @@ class StepMysqlHelper implements Serializable {
         s.setHttpCloseStep(rs.getBoolean("httpCloseStep"));
         s.setHttpEscapeBodyJson(rs.getBoolean("httpEscapeBodyJson"));
         s.setMessageQueue(QueueType.getByName(rs.getString("messageQueue")));
-        //        s.setMessageId(rs.getString("messageId"));
         // load error properties
         List<ErrorProperty> stepList = getErrorPropertiesForStep(s.getId());
         if (!stepList.isEmpty()) {
@@ -622,10 +621,6 @@ class StepMysqlHelper implements Serializable {
         if (o.getProcessId() == null && o.getProzess() != null) {
             o.setProcessId(o.getProzess().getId());
         }
-
-        //        if (o.getUserId() == null && o.getBearbeitungsbenutzer() != null) {
-        //            o.setUserId(o.getBearbeitungsbenutzer().getId());
-        //        }
 
         if (o.getBearbeitungsbenutzer() != null) {
             o.setUserId(o.getBearbeitungsbenutzer().getId());
