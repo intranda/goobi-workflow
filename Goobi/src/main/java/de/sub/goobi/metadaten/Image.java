@@ -76,7 +76,6 @@ public @Data class Image {
     private static final String PLACEHOLDER_URL_VIDEO = "/uii/template/img/goobi_placeholder_video_large.png?version=1";
     private static final String PLACEHOLDER_URL_AUDIO = "/uii/template/img/goobi_placeholder_audio_large.png?version=1";
     private static final String PLACEHOLDER_URL_NOTFOUND = "/uii/template/img/goobi_placeholder_notFound_large.png?version=1";
-    //    private static final String PLACEHOLDER_URL_DEFAULT = "uii/template/img/thumbnail-placeholder.png?version=1";
 
     /**
      * The image format of the thumbnail urls. 'jpeg' per default
@@ -167,8 +166,6 @@ public @Data class Image {
             this.objectUrl = createIIIFUrl(process, imageFolderName, filename);
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type) || Type.object2vr.equals(this.type)) {
             this.objectUrl = create3DObjectUrl(process, imageFolderName, filename);
-            //        } else if (Type.unknown.equals(this.type)) {
-            //            this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_NOTFOUND;
         } else if (Type.audio.equals(this.type) || Type.video.equals(this.type) || Type.unknown.equals(this.type)) {
             this.objectUrl = createMediaUrl(process, imageFolderName, filename);
         } else {
@@ -437,13 +434,6 @@ public @Data class Image {
     private static String getImageFolderShort(String folder) {
         String imageFolder = Paths.get(folder).getFileName().toString();
         return imageFolder;
-        //        if (imageFolder.startsWith("master_") || imageFolder.startsWith("orig_")) {
-        //            return "master";
-        //        } else if (imageFolder.endsWith("_media") || imageFolder.endsWith("_tif")) {
-        //            return "media";
-        //        } else {
-        //            return imageFolder;
-        //        }
     }
 
     public static String createThumbnailUrl(Process process, int size, String imageFolderName, String filename) {
