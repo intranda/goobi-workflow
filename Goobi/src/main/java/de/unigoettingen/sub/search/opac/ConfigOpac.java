@@ -171,19 +171,6 @@ public class ConfigOpac {
         return null;
     }
 
-    //    /**
-    //     * return all configured Catalogue-Titles from Configfile ================================================================
-    //     */
-    //    public List<String> getAllCatalogueTitles() {
-    //        List<String> myList = new ArrayList<>();
-    //        int countCatalogues = config.getMaxIndex("catalogue");
-    //        for (int i = 0; i <= countCatalogues; i++) {
-    //            String title = config.getString("catalogue(" + i + ")[@title]");
-    //            myList.add(title);
-    //        }
-    //        return myList;
-    //    }
-
     /**
      * return all configured Doctype-Titles from Configfile ================================================================
      */
