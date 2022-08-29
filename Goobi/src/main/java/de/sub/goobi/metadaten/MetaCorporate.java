@@ -193,6 +193,7 @@ public class MetaCorporate implements SearchableMetadata {
 
     @Override
     public void clearResults() {
+        // nothing to do
     }
 
     public String getRole() {

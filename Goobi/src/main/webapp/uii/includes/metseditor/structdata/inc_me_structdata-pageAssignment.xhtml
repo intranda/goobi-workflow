@@ -350,7 +350,7 @@
                                                 <h:selectOneMenu
                                                     pt:aria-label="#{msgs.ersteSeite}"
                                                     rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
-                                                    value="#{Metadaten.alleSeitenAuswahl_ersteSeite}"
+                                                    value="#{Metadaten.pageSelectionFirstPage}"
                                                     style="z-index: 99999">
                                                     <f:selectItems
                                                         value="#{Metadaten.allPages}"
@@ -390,7 +390,7 @@
                                                 <h:selectOneMenu
                                                     pt:aria-label="#{msgs.letzteSeite}"
                                                     rendered="#{Metadaten.treeProperties.showpagesasajax==false}"
-                                                    value="#{Metadaten.alleSeitenAuswahl_letzteSeite}">
+                                                    value="#{Metadaten.pageSelectionLastPage}">
                                                     <f:selectItems
                                                         value="#{Metadaten.allPages}"
                                                         var="page"

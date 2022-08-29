@@ -25,7 +25,9 @@
 		</tifheader>
 		<dmsImport />
 		<validate>
-			<metadata startswith="PPN" docstruct="topstruct" metadata="CatalogIDDigital">PPN muss mit PPN beginnen</metadata>
-		</validate>
+			<metadata startswith="PPN" docstruct="topstruct" metadata="CatalogIDDigital" endswith="PPN">PPN muss mit PPN beginnen</metadata>
+  <metadata createelementfrom="junitPerson" docstruct="all" metadata="CreatorsAllOrigin">
+            	Create CreatorsAllOrigin
+            </metadata>		</validate>
 	</project>
 </goobiProjects>
