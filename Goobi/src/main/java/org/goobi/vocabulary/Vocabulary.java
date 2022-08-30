@@ -215,7 +215,6 @@ public class Vocabulary implements Serializable, DatabaseObject {
 
     public Integer getTxtMoveTo() {
         return null;
-        //        return this.pageNo + 1;
     }
 
     public List<Definition> getMainFields() {
