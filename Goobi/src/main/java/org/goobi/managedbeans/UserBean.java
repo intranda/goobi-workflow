@@ -98,8 +98,6 @@ public class UserBean extends BasicBean implements Serializable {
     private DatabasePaginator usergroupPaginator;
     @Getter
     private DatabasePaginator projectPaginator;
-    //    @Getter
-    //    private DatabasePaginator institutionPaginator;
     @Getter
     private boolean unsubscribedProjectsExist;
 
@@ -217,10 +215,6 @@ public class UserBean extends BasicBean implements Serializable {
             sort = "benutzer.login";
         } else if (this.sortierung.startsWith("location")) {
             sort = "benutzer.Standort";
-            //} else if (this.sortierung.startsWith("group")) {
-            //    sort = "benutzergruppen.titel";
-            //} else if (this.sortierung.startsWith("projects")) {
-            //    sort = "projekte.Titel";
         } else if (this.sortierung.startsWith("institution")) {
             sort = "institution.shortName";
         }
@@ -548,8 +542,6 @@ public class UserBean extends BasicBean implements Serializable {
         if (!addedToGroups.containsKey(myClass.getId())) {
             resetChangeLists();
         }
-        //        updateInstitutionPaginator();
-
     }
 
     public Integer getLdapGruppeAuswahl() {
@@ -651,13 +643,6 @@ public class UserBean extends BasicBean implements Serializable {
             Helper.setFehlerMeldung("could not read database", daoe.getMessage());
             return "user_all";
         }
-
-        /*
-        // Ask a last time before resetting password
-        if ("REALLY" == "CANCEL") {
-            return "index";
-        }
-         */
 
         // Create the random password and save it
         if (userToResetPassword != null) {
