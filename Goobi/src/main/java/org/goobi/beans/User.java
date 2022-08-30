@@ -87,7 +87,6 @@ public class User implements DatabaseObject {
     private Integer tabellengroesse = Integer.valueOf(10);
     @Setter
     private Integer sessiontimeout = 14400;
-    //	private boolean confVorgangsdatumAnzeigen = false;
     @Getter
     @Setter
     private String metadatenSprache;
