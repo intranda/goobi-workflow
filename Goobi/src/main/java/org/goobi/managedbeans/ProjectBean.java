@@ -96,7 +96,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     @Setter
     private ProjectFileGroup myFilegroup;
 
-    // lists accepting the preliminary actions of adding and delting filegroups
+    // lists accepting the preliminary actions of adding and deleting fileGroups
     // it needs the execution of commit fileGroups to make these changes permanent
     private List<Integer> newFileGroups = new ArrayList<>();
     private List<Integer> deletedFileGroups = new ArrayList<>();
@@ -310,7 +310,6 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     public String filegroupCancel() {
-        //        Cancel();
         return "";
     }
 
@@ -318,8 +317,7 @@ public class ProjectBean extends BasicBean implements Serializable {
         // to be deleted fileGroups ids are listed
         // and deleted after a commit
         this.deletedFileGroups.add(this.myFilegroup.getId());
-        // original line
-        // myProjekt.getFilegroups().remove(myFilegroup);
+
         return "";
 
     }
@@ -413,18 +411,7 @@ public class ProjectBean extends BasicBean implements Serializable {
                 null, null, true, false) + " AND prozesse.istTemplate = false ";
         Long images = ProcessManager.getSumOfFieldValue("sortHelperImages", projectFilter);
         Long volumes = ProcessManager.getCountOfFieldValue("sortHelperImages", projectFilter);
-        //		ProjectionList pl = Projections.projectionList();
-        //		pl.add(Projections.sum("sortHelperImages"));
-        //		pl.add(Projections.count("sortHelperImages"));
-        //		crit.setProjection(pl);
-        //		List list = crit.list();
-        //		Long images = 0l;
-        //		Long volumes = 0l;
-        //		for (Object obj : list) {
-        //			Object[] row = (Object[]) obj;
-        //			images = (Long) row[0];
-        //			volumes = (Long) row[1];
-        //		}
+
         this.myProjekt.setNumberOfPages(images.intValue());
         this.myProjekt.setNumberOfVolumes(volumes.intValue());
     }
@@ -614,7 +601,7 @@ public class ProjectBean extends BasicBean implements Serializable {
                     this.projectProgressImage = "";
                 }
             } catch (Exception e) {
-                // this.projectProgressData = null;
+            	// TODO: what should be done here?
             }
         }
         return this.projectProgressData;
@@ -872,13 +859,8 @@ public class ProjectBean extends BasicBean implements Serializable {
     public List<SelectItem> getInstitutionsAsSelectList() throws DAOException {
         List<SelectItem> institutions = new ArrayList<>();
         List<Institution> temp = null;
-        //        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        //        if (login != null && !login.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
+
         temp = InstitutionManager.getAllInstitutionsAsList();
-        //        } else {
-        //            temp = ProjectManager.getAllProjects();
-        //
-        //        }
 
         for (Institution proj : temp) {
             institutions.add(new SelectItem(proj.getId(), proj.getShortName(), null));
