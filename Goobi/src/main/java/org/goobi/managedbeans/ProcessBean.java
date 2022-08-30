@@ -1002,7 +1002,6 @@ public class ProcessBean extends BasicBean implements Serializable {
             String[] parameter = { "METS", this.myProzess.getTitel() };
 
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
-            //            ;An error occured while trying to export METS file for: " + this.myProzess.getTitel(), e);
             log.error("ExportMETS error", e);
         }
     }
@@ -1018,7 +1017,6 @@ public class ProcessBean extends BasicBean implements Serializable {
             String[] parameter = { "METS", this.myProzess.getTitel() };
 
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
-            //            ;An error occured while trying to export METS file for: " + this.myProzess.getTitel(), e);
             log.error("ExportMETS error", e);
         }
     }
