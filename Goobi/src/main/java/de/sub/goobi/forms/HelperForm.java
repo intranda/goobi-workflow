@@ -1,8 +1,3 @@
-package de.sub.goobi.forms;
-
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -28,7 +23,12 @@ import java.lang.reflect.InvocationTargetException;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+package de.sub.goobi.forms;
 
+
+
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
