@@ -137,7 +137,7 @@ public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements 
         Usergroup myGroup;
         try {
             List<Usergroup> treffer = UsergroupManager.getUsergroups(null, "titel='" + UserGroupTitle + "'", null, null, null);
-            if (treffer != null && treffer.size() > 0) {
+            if (treffer != null && ! treffer.isEmpty()) {
                 myGroup = treffer.get(0);
                 return myGroup;
             } else {

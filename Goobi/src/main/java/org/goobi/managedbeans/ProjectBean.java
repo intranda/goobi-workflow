@@ -193,7 +193,7 @@ public class ProjectBean extends BasicBean implements Serializable {
             Integer inst;
             try {
                 List<SelectItem> lstInst = getInstitutionsAsSelectList();
-                if (lstInst.size() > 0) {
+                if (! lstInst.isEmpty()) {
                     inst = (Integer) lstInst.get(0).getValue();
                     setCurrentInstitutionID(inst);
                 }

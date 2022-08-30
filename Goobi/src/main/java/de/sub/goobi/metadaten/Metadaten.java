@@ -3949,7 +3949,7 @@ public class Metadaten implements Serializable {
 
     public String getOpacKatalog() {
         if (StringUtils.isBlank(opacKatalog)) {
-            if (getAllOpacCatalogues().size() > 0 && catalogues.size() > 0) {
+            if ( ! getAllOpacCatalogues().isEmpty() &&  ! catalogues.isEmpty()) {
                 opacKatalog = getAllOpacCatalogues().get(0);
                 currentCatalogue = catalogues.get(0);
             }
@@ -3968,7 +3968,7 @@ public class Metadaten implements Serializable {
                 }
             }
 
-            if (catalogues.size() > 0 && currentCatalogue == null) {
+            if ( ! catalogues.isEmpty() && currentCatalogue == null) {
                 // get first catalogue in case configured catalogue doesn't exist
                 currentCatalogue = catalogues.get(0);
             }
@@ -4236,7 +4236,7 @@ public class Metadaten implements Serializable {
             MetadataType mdt = this.myPrefs.getMetadataTypeByName("physPageNumber");
             for (DocStruct page : allPages) {
                 List<? extends Metadata> pageNoMetadata = page.getAllMetadataByType(mdt);
-                if (pageNoMetadata == null || pageNoMetadata.size() == 0) {
+                if (pageNoMetadata == null || pageNoMetadata.isEmpty()) {
                     currentPhysicalOrder++;
                     break;
                 }

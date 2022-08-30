@@ -202,7 +202,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
     }
 
     public boolean isDeleteAble() {
-        return (this.prozesse == null || this.prozesse.size() == 0);
+        return (this.prozesse == null || this.prozesse.isEmpty());
     }
 
     public List<ProjectFileGroup> getFilegroups() {

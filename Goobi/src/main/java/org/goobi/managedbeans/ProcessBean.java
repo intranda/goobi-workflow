@@ -2127,7 +2127,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                     PdfWriter.getInstance(document, out);
                     document.setPageSize(a4quer);
                     document.open();
-                    if (rowList.size() > 0) {
+                    if (! rowList.isEmpty()) {
                         PdfPTable table = new PdfPTable(rowList.get(0).size());
                         table.setSpacingBefore(20);
 

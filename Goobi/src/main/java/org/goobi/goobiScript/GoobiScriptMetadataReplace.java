@@ -213,7 +213,7 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
             boolean searchFieldIsRegularExpression) {
         for (DocStruct ds : dsList) {
             List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
-            if (mdlist != null && mdlist.size() > 0) {
+            if (mdlist != null && ! mdlist.isEmpty()) {
                 for (Metadata md : mdlist) {
                     if (searchFieldIsRegularExpression) {
                         for (Matcher m = Pattern.compile(search).matcher(md.getValue()); m.find();) {

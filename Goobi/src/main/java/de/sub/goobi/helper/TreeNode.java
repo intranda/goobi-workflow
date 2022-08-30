@@ -169,7 +169,7 @@ public class TreeNode {
     */
 
     public boolean getHasChildren() {
-        if (this.children == null || this.children.size() == 0) {
+        if (this.children == null || this.children.isEmpty()) {
             return false;
         } else {
             return true;

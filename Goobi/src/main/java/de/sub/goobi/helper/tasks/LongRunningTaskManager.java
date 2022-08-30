@@ -80,7 +80,7 @@ public class LongRunningTaskManager {
                 return;
             }
         }
-        if (tasks.size() > 0) {
+        if ( ! tasks.isEmpty()) {
             for (LongRunningTask lrt : tasks) {
                 if (lrt.getStatusProgress() == 0) {
                     lrt.execute();

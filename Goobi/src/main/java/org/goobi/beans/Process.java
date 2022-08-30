@@ -1189,7 +1189,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * ================================================================
      */
     public boolean getContainsUnreachableSteps() {
-        if (getSchritteList().size() == 0) {
+        if (getSchritteList().isEmpty()) {
             return true;
         }
         for (Step s : getSchritteList()) {
@@ -1585,14 +1585,14 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
             try {
                 List<Path> images = StorageProvider.getInstance().listFiles(getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
-                if (images == null || images.size() == 0) {
+                if (images == null || images.isEmpty()) {
                     images = StorageProvider.getInstance().listFiles(getImagesOrigDirectory(true), NIOFileUtils.imageNameFilter);
                 }
                 if (images != null && !images.isEmpty()) {
                     representativeImage = images.get(imageNo).toString();
                 } else {
                     images = StorageProvider.getInstance().listFiles(getImagesTifDirectory(true), NIOFileUtils.objectNameFilter);
-                    if (images == null || images.size() == 0) {
+                    if (images == null || images.isEmpty()) {
                         images = StorageProvider.getInstance().listFiles(getImagesOrigDirectory(true), NIOFileUtils.objectNameFilter);
                     }
                     if (images != null && !images.isEmpty()) {
@@ -2041,7 +2041,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 MetadataType mdt = ughhelp.getMetadataType(this, "pathimagefiles");
                 DocStruct physical = fileFormat.getDigitalDocument().getPhysicalDocStruct();
                 List<? extends ugh.dl.Metadata> alleImagepfade = physical.getAllMetadataByType(mdt);
-                if (alleImagepfade.size() > 0) {
+                if (! alleImagepfade.isEmpty()) {
                     for (Metadata md : alleImagepfade) {
                         fileFormat.getDigitalDocument().getPhysicalDocStruct().getAllMetadata().remove(md);
                     }

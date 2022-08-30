@@ -208,8 +208,8 @@ public class PropertyParser {
             }
 
             // project and workflows are configured correct?
-            boolean projectOk = pp.getProjects().contains("*") || pp.getProjects().contains(projectTitle) || pp.getProjects().size() == 0;
-            boolean workflowOk = pp.getWorkflows().contains("*") || pp.getWorkflows().contains(workflowTitle) || pp.getWorkflows().size() == 0;
+            boolean projectOk = pp.getProjects().contains("*") || pp.getProjects().contains(projectTitle) || pp.getProjects().isEmpty();
+            boolean workflowOk = pp.getWorkflows().contains("*") || pp.getWorkflows().contains(workflowTitle) || pp.getWorkflows().isEmpty();
 
             if (projectOk && workflowOk) {
 
@@ -401,7 +401,7 @@ public class PropertyParser {
             }
         }
         // create ProcessProperties to remaining 'eigenschaften'
-        if (plist.size() > 0) {
+        if (! plist.isEmpty()) {
             for (Processproperty pe : plist) {
                 ProcessProperty pp = new ProcessProperty();
                 pp.setProzesseigenschaft(pe);

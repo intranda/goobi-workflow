@@ -138,7 +138,7 @@ public class BatchStepHelper {
 
             this.processNameList.add(s.getProzess().getTitel());
         }
-        if (steps.size() > 0) {
+        if ( ! steps.isEmpty()) {
             this.currentStep = steps.get(0);
             this.processName = this.currentStep.getProzess().getTitel();
             loadProcessProperties(this.currentStep);

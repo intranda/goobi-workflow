@@ -124,7 +124,7 @@ public class Usergroup implements Serializable, Comparable<Usergroup>, DatabaseO
     }
 
     public boolean isDeletable() {
-        return this.benutzer == null || this.benutzer.size() == 0;
+        return this.benutzer == null || this.benutzer.isEmpty();
     }
 
     public List<String> getUserRoles() {

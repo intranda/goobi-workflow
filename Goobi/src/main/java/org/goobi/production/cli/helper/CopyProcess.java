@@ -415,7 +415,7 @@ public class CopyProcess {
     private void fillFieldsFromConfig() {
         for (AdditionalField field : this.additionalFields) {
             if (!field.isUghbinding() && field.getShowDependingOnDoctype(getDocType())) {
-                if (field.getSelectList() != null && field.getSelectList().size() > 0) {
+                if (field.getSelectList() != null && ! field.getSelectList().isEmpty()) {
                     field.setWert((String) field.getSelectList().get(0).getValue());
                 }
 
@@ -769,7 +769,7 @@ public class CopyProcess {
                     if (this.myRdf != null && this.myRdf.getDigitalDocument() != null
                             && this.myRdf.getDigitalDocument().getPhysicalDocStruct() != null) {
                         List<? extends Metadata> alleImagepfade = this.myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadataByType(mdt);
-                        if (alleImagepfade != null && alleImagepfade.size() > 0) {
+                        if (alleImagepfade != null && ! alleImagepfade.isEmpty()) {
                             for (Metadata md : alleImagepfade) {
                                 this.myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadata().remove(md);
                             }
@@ -921,7 +921,7 @@ public class CopyProcess {
         try {
             MetadataType mdt = this.ughHelp.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), "singleDigCollection");
             ArrayList<Metadata> myCollections = new ArrayList<>(colStruct.getAllMetadataByType(mdt));
-            if (myCollections != null && myCollections.size() > 0) {
+            if (myCollections != null && ! myCollections.isEmpty()) {
                 for (Metadata md : myCollections) {
                     colStruct.removeMetadata(md, true);
                 }
@@ -1128,7 +1128,7 @@ public class CopyProcess {
             Helper.setFehlerMeldung("Error while parsing digital collections", e1);
         }
 
-        if (this.possibleDigitalCollection.size() == 0) {
+        if (this.possibleDigitalCollection.isEmpty()) {
             this.possibleDigitalCollection = defaultCollections;
         }
 

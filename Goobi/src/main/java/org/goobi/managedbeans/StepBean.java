@@ -393,7 +393,7 @@ public class StepBean extends BasicBean implements Serializable {
         }
         // if only one step is asigned for this batch, use the single
 
-        if (currentStepsOfBatch.size() == 0) {
+        if (currentStepsOfBatch.isEmpty()) {
             return "";
         }
         if (currentStepsOfBatch.size() == 1) {
@@ -836,7 +836,7 @@ public class StepBean extends BasicBean implements Serializable {
         /*
          * -------------------------------- die hochgeladenen Prozess-IDs durchlaufen und auf abgeschlossen setzen --------------------------------
          */
-        if (fertigListe != null && fertigListe.size() > 0 && this.nurOffeneSchritte) {
+        if (fertigListe != null && ! fertigListe.isEmpty() && this.nurOffeneSchritte) {
             this.nurOffeneSchritte = false;
             FilterAlleStart();
         }

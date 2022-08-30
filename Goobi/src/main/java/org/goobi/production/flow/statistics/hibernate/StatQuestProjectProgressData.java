@@ -472,7 +472,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
             }
         } else {
             this.selectedSteps = inSteps;
-            if (inSteps.size() > 0) {
+            if (! inSteps.isEmpty()) {
                 this.terminatingStep = inSteps.get(inSteps.size() - 1);
             }
         }

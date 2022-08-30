@@ -727,7 +727,7 @@ public class FilterHelper {
                 }
             }
         }
-        if (listIds.size() > 0) {
+        if (! listIds.isEmpty()) {
             if (negation) {
                 answer = " prozesse.prozesseId not in (";
             } else {

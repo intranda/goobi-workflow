@@ -132,7 +132,7 @@ public class BatchBean extends BasicBean implements Serializable {
             }
         }
 
-        if (this.selectedBatches.size() > 0) {
+        if (! this.selectedBatches.isEmpty()) {
 
             if (ids.contains(null)) {
                 filter += " AND batchID is null ";
@@ -244,7 +244,7 @@ public class BatchBean extends BasicBean implements Serializable {
         Path xsltfile = Paths.get(rootpath, "docket_multipage.xsl");
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         List<Process> docket = new ArrayList<>();
-        if (this.selectedBatches.size() == 0) {
+        if (this.selectedBatches.isEmpty()) {
             Helper.setFehlerMeldung("noBatchSelected");
         } else if (this.selectedBatches.size() == 1) {
             docket = ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + this.selectedBatches.get(0).getBatchId(), 0,
@@ -253,7 +253,7 @@ public class BatchBean extends BasicBean implements Serializable {
         } else {
             Helper.setFehlerMeldung("tooManyBatchesSelected");
         }
-        if (docket.size() > 0) {
+        if (! docket.isEmpty()) {
             if (!facesContext.getResponseComplete()) {
                 HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
                 String fileName = "batch_docket" + ".pdf";
@@ -278,7 +278,7 @@ public class BatchBean extends BasicBean implements Serializable {
     }
 
     public void deleteBatch() {
-        if (this.selectedBatches.size() == 0) {
+        if (this.selectedBatches.isEmpty()) {
             Helper.setFehlerMeldung("noBatchSelected");
         } else if (this.selectedBatches.size() == 1) {
             if (this.selectedBatches.get(0) != null) {
@@ -294,7 +294,7 @@ public class BatchBean extends BasicBean implements Serializable {
     }
 
     public void addProcessesToBatch() {
-        if (this.selectedBatches.size() == 0) {
+        if (this.selectedBatches.isEmpty()) {
             Helper.setFehlerMeldung("noBatchSelected");
         } else if (this.selectedBatches.size() > 1) {
             Helper.setFehlerMeldung("tooḾanyBatchesSelected");
@@ -342,7 +342,7 @@ public class BatchBean extends BasicBean implements Serializable {
     }
 
     public void createNewBatch() {
-        if (this.selectedProcesses.size() > 0) {
+        if (! this.selectedProcesses.isEmpty()) {
 
             Batch batch = new Batch();
             for (Process p : this.selectedProcesses) {

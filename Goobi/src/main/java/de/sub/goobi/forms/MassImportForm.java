@@ -182,7 +182,7 @@ public class MassImportForm implements Serializable {
 
     public String Prepare() {
         if (this.template.getContainsUnreachableSteps()) {
-            if (this.template.getSchritteList().size() == 0) {
+            if (this.template.getSchritteList().isEmpty()) {
                 Helper.setFehlerMeldung("noStepsInWorkflow");
             }
             for (Step s : this.template.getSchritteList()) {
@@ -305,7 +305,7 @@ public class MassImportForm implements Serializable {
             Helper.setFehlerMeldung("Error while parsing digital collections", e1);
         }
 
-        if (this.possibleDigitalCollection.size() == 0) {
+        if (this.possibleDigitalCollection.isEmpty()) {
             this.possibleDigitalCollection = defaultCollections;
         }
     }
@@ -346,7 +346,7 @@ public class MassImportForm implements Serializable {
                         for (Record r : recordList) {
                             myIdentifiers += r.getId() + ",";
                         }
-                    } else if (this.selectedFilenames.size() > 0) {
+                    } else if (! this.selectedFilenames.isEmpty()) {
                         List<Record> recordList = this.plugin.generateRecordsFromFilenames(this.selectedFilenames);
                         for (Record r : recordList) {
                             myIdentifiers += r.getId() + ",";
@@ -424,7 +424,7 @@ public class MassImportForm implements Serializable {
                 }
                 totalProcessNo = recordList.size() * 2;
                 answer = this.plugin.generateFiles(recordList);
-            } else if (this.selectedFilenames.size() > 0) {
+            } else if ( ! this.selectedFilenames.isEmpty()) {
                 List<Record> recordList = this.plugin.generateRecordsFromFilenames(this.selectedFilenames);
                 for (Record r : recordList) {
                     r.setCollections(this.digitalCollections);
@@ -569,7 +569,7 @@ public class MassImportForm implements Serializable {
 
     private boolean testForData() {
         if (StringUtils.isEmpty(this.idList) && StringUtils.isEmpty(this.records) && (this.importFile == null)
-                && this.selectedFilenames.size() == 0) {
+                && this.selectedFilenames.isEmpty()) {
             return false;
         }
         return true;
@@ -663,7 +663,7 @@ public class MassImportForm implements Serializable {
             Object o = method.invoke(this.plugin);
             @SuppressWarnings("unchecked")
             List<ImportProperty> list = (List<ImportProperty>) o;
-            if (this.plugin != null && list.size() > 0) {
+            if (this.plugin != null && ! list.isEmpty()) {
                 return true;
             }
         } catch (Exception e) {

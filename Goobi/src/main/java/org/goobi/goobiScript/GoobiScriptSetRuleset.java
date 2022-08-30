@@ -69,7 +69,7 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
 
         try {
             List<Ruleset> rulesets = RulesetManager.getRulesets(null, "titel='" + parameters.get("ruleset") + "'", null, null, null);
-            if (rulesets == null || rulesets.size() == 0) {
+            if (rulesets == null || rulesets.isEmpty()) {
                 Helper.setFehlerMeldung("goobiScriptfield", "Could not find ruleset: ", parameters.get("ruleset"));
                 return new ArrayList<>();
             }

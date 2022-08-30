@@ -259,7 +259,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
         // Look for the next available order number
         List<Step> steps = process.getSchritte();
-        if (steps.size() == 0) {
+        if (steps.isEmpty()) {
             this.reihenfolge = 1;
             return;
         }

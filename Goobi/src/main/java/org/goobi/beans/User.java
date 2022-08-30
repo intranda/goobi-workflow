@@ -323,7 +323,7 @@ public class User implements DatabaseObject {
     }
 
     public List<Usergroup> getBenutzergruppen() {
-        if (benutzergruppen == null || benutzergruppen.size() == 0) {
+        if (benutzergruppen == null || benutzergruppen.isEmpty()) {
             try {
                 this.benutzergruppen = UsergroupManager.getUsergroupsForUser(this);
             } catch (DAOException e) {
@@ -358,7 +358,7 @@ public class User implements DatabaseObject {
     }
 
     public List<Project> getProjekte() {
-        if (projekte == null || projekte.size() == 0) {
+        if (projekte == null || projekte.isEmpty()) {
             try {
                 this.projekte = ProjectManager.getProjectsForUser(this, false);
             } catch (DAOException e) {
@@ -403,7 +403,7 @@ public class User implements DatabaseObject {
     }
 
     public String getFirstProjectTitle() {
-        if (this.projekte != null && this.projekte.size() > 0) {
+        if (this.projekte != null && ! this.projekte.isEmpty()) {
             return this.projekte.get(0).getTitel();
         } else {
             return "";
@@ -411,7 +411,7 @@ public class User implements DatabaseObject {
     }
 
     public String getFirstUserGroupTitle() {
-        if (this.benutzergruppen != null && this.benutzergruppen.size() > 0) {
+        if (this.benutzergruppen != null && ! this.benutzergruppen.isEmpty()) {
             return this.benutzergruppen.get(0).getTitel();
         } else {
             return "";

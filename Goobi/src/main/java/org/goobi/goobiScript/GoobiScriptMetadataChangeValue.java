@@ -213,7 +213,7 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
     private void changeMetadata(List<DocStruct> dsList, String field, String prefix, String suffix, String condition, Prefs prefs) {
         for (DocStruct ds : dsList) {
             List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
-            if (mdlist != null && mdlist.size() > 0) {
+            if (mdlist != null && ! mdlist.isEmpty()) {
                 for (Metadata md : mdlist) {
                     if (condition.isEmpty() || md.getValue().contains(condition)) {
                         md.setValue(prefix + md.getValue() + suffix);
