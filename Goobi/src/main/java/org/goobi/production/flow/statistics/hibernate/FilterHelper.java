@@ -71,8 +71,6 @@ public class FilterHelper {
                 sb.append("prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ");
                 sb.append(aktuellerNutzer.getId());
                 sb.append(")");
-                //                answer = "prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
-                //                        + aktuellerNutzer.getId() + ")";
 
             }
             if (!aktuellerNutzer.isSuperAdmin()) {
@@ -1371,7 +1369,6 @@ public class FilterHelper {
             case max:
                 try {
                     return FilterHelper.filterStepMax(parameters, inStatus, negate, dateFilter);
-                    //                    returnParameters.setCriticalQuery();
                 } catch (NullPointerException e) {
                     message = "stepdone is preset, don't use 'step' filters";
                 } catch (Exception e) {
@@ -1382,7 +1379,6 @@ public class FilterHelper {
             case min:
                 try {
                     return FilterHelper.filterStepMin(parameters, inStatus, negate, dateFilter);
-                    //                    returnParameters.setCriticalQuery();
                 } catch (NullPointerException e) {
                     message = "stepdone is preset, don't use 'step' filters";
                 } catch (Exception e) {
@@ -1406,7 +1402,6 @@ public class FilterHelper {
             case range:
                 try {
                     return FilterHelper.filterStepRange(parameters, inStatus, negate, dateFilter);
-                    //                    returnParameters.setCriticalQuery();
                 } catch (NullPointerException e) {
                     message = "stepdone is preset, don't use 'step' filters";
                 } catch (NumberFormatException e) {
