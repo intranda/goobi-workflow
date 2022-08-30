@@ -116,7 +116,6 @@ public class ScriptThreadWithoutHibernate extends Thread {
                 t.setStepName(this.step.getTitel());
                 try {
                     TicketGenerator.submitInternalTicket(t, this.step.getMessageQueue(), step.getTitel(), step.getProzess().getId());
-                    //                step.setMessageId(messageId);
                     step.setBearbeitungsstatusEnum(StepStatus.INFLIGHT);
                     step.setBearbeitungsbeginn(new Date());
                     StepManager.saveStep(step);
@@ -234,7 +233,6 @@ public class ScriptThreadWithoutHibernate extends Thread {
         try {
 
             TicketGenerator.submitExternalTicket(t, QueueType.EXTERNAL_QUEUE, step.getTitel(), step.getProzess().getId());
-            //            automaticStep.setMessageId(messageId);
             automaticStep.setBearbeitungsbeginn(new Date());
             automaticStep.setBearbeitungsstatusEnum(StepStatus.INFLIGHT);
             StepManager.saveStep(automaticStep);

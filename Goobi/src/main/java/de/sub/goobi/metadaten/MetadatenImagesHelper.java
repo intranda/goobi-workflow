@@ -580,7 +580,6 @@ public class MetadatenImagesHelper {
         JpegInterpreter pi = null;
         try {
             im = conf.useS3() && s3URI != null ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
-            //                im = new ImageManager(Paths.get(inFileName).toUri());
             log.trace("im");
             ImageInterpreter ii = im.getMyInterpreter();
             Dimension inputResolution = new Dimension((int) ii.getXResolution(), (int) ii.getYResolution());
@@ -673,14 +672,12 @@ public class MetadatenImagesHelper {
                     String[] parameter = { title, curFile };
                     String value = Helper.getTranslation("wrongFileName", parameter);
                     Helper.setFehlerMeldung(value);
-                    //                    Helper.setFehlerMeldung("[" + title + "] Filename of image wrong - not an 8-digit-number: " + curFile);
                 }
                 return isValid;
             }
             return true;
         }
         Helper.setFehlerMeldung(Helper.getTranslation("noImageFolderFound", title));
-        //        Helper.setFehlerMeldung("[" + title + "] No image-folder found");
         return false;
     }
 
@@ -800,7 +797,6 @@ public class MetadatenImagesHelper {
                 int datasize = dateien.size();
                 for (int i = 0; i < pagessize; i++) {
                     DocStruct page = pagesList.get(i);
-                    //                for (DocStruct page : pagesList) {
                     // try to find media object based on complete name before trying to get it from filename prefix
                     String filename = page.getImageName();
                     boolean imageFound = false;
@@ -818,7 +814,6 @@ public class MetadatenImagesHelper {
 
                         for (int j = 0; j < datasize; j++) {
                             String currentImage = dateien.get(j);
-                            //                    for (String currentImage : dataList) {
                             String currentImagePrefix = currentImage.replace(Metadaten.getFileExtension(currentImage), "");
                             if (currentImagePrefix.equals(filenamePrefix)) {
                                 orderedFilenameList.add(currentImage);
@@ -827,7 +822,6 @@ public class MetadatenImagesHelper {
                         }
                     }
                 }
-                //                    orderedFilenameList.add(page.getImageName());
             }
             if (orderedFilenameList.size() == dateien.size()) {
                 return orderedFilenameList;

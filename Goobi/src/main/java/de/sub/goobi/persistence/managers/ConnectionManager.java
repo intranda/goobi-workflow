@@ -56,7 +56,6 @@ public class ConnectionManager {
      */
     public ConnectionManager() {
         try {
-            //			connectToDB(config);
             connectToDB();
         } catch (Exception e) {
             log.error("Failed to construct ConnectionManager", e);

@@ -62,7 +62,6 @@ public class ProcessSwapInTask extends LongRunningTask {
     public void run() {
         setStatusProgress(5);
         String swapPath = null;
-        //		ProzessDAO dao = new ProzessDAO();
         String processDirectory = "";
 
         if (ConfigurationHelper.getInstance().isUseSwapping()) {

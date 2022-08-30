@@ -144,9 +144,6 @@ class MetadataMysqlHelper implements Serializable {
                 run.update(connection, sqlString, param);
             }
 
-            //            sqlString = "INSERT INTO metadata_json (processid, value) VALUES (?,?)";
-            //            param = new Object[] { processid, gson.toJson(metadata) };
-            //            run.update(connection, sqlString, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

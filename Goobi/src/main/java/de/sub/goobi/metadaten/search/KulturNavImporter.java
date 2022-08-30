@@ -253,8 +253,5 @@ public class KulturNavImporter extends JsonDataLoader {
             System.out.println("--------------------");
             NormDataUtils.printRecord(normDataRecord);
         }
-        // System.out.println(fetchJsonString(" http://api.dante.gbv.de/search?query=Adolf"));
-        // System.out.println(fetchJsonString("https://jambo.uib.no/blackbox/suggest?q=Marcus"));
-        // System.out.println(fetchJsonString("https://arbeidsplassen.nav.no/stillinger/api/search"));
     }
 }

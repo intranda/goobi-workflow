@@ -62,15 +62,7 @@ public class StatistikLaufzeitSchritte {
 
             }
         }
-        //		for (Process proz : (List<Process>) inProzesse) {
-        //			for (Step step : proz.getSchritteList()) {
-        /* wenn Anfangs- und Enddatum vorhanden sind, diese auswerten */
-        //				if (step.getBearbeitungsbeginn() != null && step.getBearbeitungsende() != null) {
-        //					String kurztitel = (step.getTitel().length() > 60 ? step.getTitel().substring(0, 60) + "..." : step.getTitel());
-        //					categoryDataSet.addValue(dateDifference(step.getBearbeitungsbeginn(), step.getBearbeitungsende()), kurztitel, proz.getTitel());
-        //				}
-        //			}
-        //		}
+
         return categoryDataSet;
     }
 

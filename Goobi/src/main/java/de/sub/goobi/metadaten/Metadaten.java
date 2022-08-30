@@ -1472,8 +1472,6 @@ public class Metadaten implements Serializable {
      */
 
     public String XMLlesen() {
-        // myBild="";
-        // this.myBildNummer = 1;
 
         String result = "";
 
@@ -1781,7 +1779,6 @@ public class Metadaten implements Serializable {
             log.error(e);
         }
         /* xml-Datei speichern */
-        // MetadatenDebuggen(gdzfile.getDigitalDocument().getLogicalDocStruct());
         /*
          * --------------------- vor dem Speichern alle ungenutzen Docstructs rauswerfen -------------------
          */

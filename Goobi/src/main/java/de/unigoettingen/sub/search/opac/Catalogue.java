@@ -49,7 +49,6 @@ public class Catalogue {
     public static final String TIB_OPAC = "TIB";
     public static final String SBB_OPAC = "SBB";
 
-    //    private String iktList;
     @Getter
     private String catalogue;
     @Getter

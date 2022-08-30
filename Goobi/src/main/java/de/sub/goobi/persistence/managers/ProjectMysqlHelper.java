@@ -397,7 +397,6 @@ class ProjectMysqlHelper implements Serializable {
                     String path = rs.getString("path");
                     String mimetype = rs.getString("mimetype");
                     String suffix = rs.getString("suffix");
-                    // int ProjekteID = rs.getInt("ProjekteID");
                     String folder = rs.getString("folder");
                     ProjectFileGroup pfg = new ProjectFileGroup();
                     pfg.setId(ProjectFileGroupID);

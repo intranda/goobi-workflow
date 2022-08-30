@@ -243,8 +243,6 @@ public class FileManipulation {
                     // new physical page no for old page
                     oldPage.getAllMetadataByType(physicalPageNoType).get(0).setValue(String.valueOf(indexToImport + 2));
 
-                    // logical page no
-                    // logicalPageNoType = prefs.getMetadataTypeByName("logicalPageNumber");
                     mdTemp = new Metadata(logicalPageNoType);
 
                     if (insertMode.equalsIgnoreCase("uncounted")) {
@@ -478,11 +476,9 @@ public class FileManipulation {
         }
         String tempDirectory = ConfigurationHelper.getInstance().getTemporaryFolder();
 
-        //        String masterPrefix = "";
         boolean useMasterFolder = false;
         if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
             useMasterFolder = true;
-            //            masterPrefix = ConfigurationHelper.getInstance().getMasterDirectoryPrefix();
         }
         Process currentProcess = metadataBean.getMyProzess();
         List<String> importedFilenames = new ArrayList<>();

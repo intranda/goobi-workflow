@@ -94,8 +94,7 @@ public class MetadatenHelper implements Comparator<Object> {
     /* =============================================================== */
     public DocStruct ChangeCurrentDocstructType(DocStruct inOldDocstruct, String inNewType)
             throws DocStructHasNoTypeException, MetadataTypeNotAllowedException, TypeNotAllowedAsChildException, TypeNotAllowedForParentException {
-        // inOldDocstruct.getType().getName()
-        // + " soll werden zu " + inNewType);
+
         DocStructType dst = this.myPrefs.getDocStrctTypeByName(inNewType);
         DocStruct newDocstruct = this.mydocument.createDocStruct(dst);
         /*
@@ -221,13 +220,6 @@ public class MetadatenHelper implements Comparator<Object> {
          * -------------------------------- neues Docstruct zum Parent hinzufügen und an die gleiche Stelle schieben, wie den Vorg?nger
          * --------------------------------
          */
-        // int index = 0;
-        // for (DocStruct ds : inOldDocstruct.getParent().getAllChildren()) {
-        // index++;
-        // if (ds.equals(inOldDocstruct)) {
-        // break;
-        // }
-        // }
         newDocstruct.setParent(inOldDocstruct.getParent());
 
         int index = inOldDocstruct.getParent().getAllChildren().indexOf(inOldDocstruct);
@@ -816,7 +808,6 @@ public class MetadatenHelper implements Comparator<Object> {
         builder.addUrls(ClasspathHelper.forPackage("ugh.fileformats"));
         Reflections reflections = new Reflections(builder);
 
-        //        Set<Class<? extends Fileformat>> formatSet = new Reflections("ugh.fileformats.*").getSubTypesOf(Fileformat.class);
         Set<Class<? extends Fileformat>> formatSet = reflections.getSubTypesOf(Fileformat.class);
         for (Class<? extends Fileformat> cl : formatSet) {
             try {

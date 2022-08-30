@@ -130,10 +130,6 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         }
         //  check against configured ip range
         if (!checkJwt(jwt, pathInfo, method) && !checkPermissions(ip, token, pathInfo, method)) {
-            //            ErrorResponse er = new ErrorResponse();
-            //            er.setErrorText("You are not allowed to access the Goobi REST API from IP " + ip + " or your password is wrong.");
-            //            er.setResult("Error");
-            //            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(er).build());
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
                     .entity("You are not allowed to access the Goobi REST API from IP " + ip + " or your password is wrong.")
                     .build());
@@ -150,7 +146,6 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         } else {
             return false;
         }
-        //        return FacesContext.getCurrentInstance() != null;
     }
 
     public static boolean checkPermissions(String ip, String token, String path, String method) {
