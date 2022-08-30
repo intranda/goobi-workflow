@@ -98,9 +98,7 @@ public abstract class BackupFileManager {
             }
             throw new IOException("A backup file could not be created. Please make sure that the required access rights are set.");
         }
-        //if (createFrontendMessage) {
-        //    Helper.setMeldung(messageSuccess);
-        //}
+        
         try {
             BackupFileManager.removeTooOldBackupFiles(backupPath, fileName, limit);
         } catch (Exception exception) {
@@ -132,7 +130,6 @@ public abstract class BackupFileManager {
         Path backupFile = Paths.get(backupPath + backupFileName);
 
         if (!StorageProvider.getInstance().isFileExists(existingFile)) {
-            // log.error("File " + path + fileName + " does not exist. No backup created.");
             return null;
         }
 
