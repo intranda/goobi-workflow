@@ -75,9 +75,7 @@ public class BatchBean extends BasicBean implements Serializable {
     private List<Batch> selectedBatches = new ArrayList<>();
     private String batchfilter;
     private String processfilter;
-    //	private IEvaluableFilter myFilteredDataSource;
 
-    //	private ProzessDAO dao = new ProzessDAO();
     private String modusBearbeiten = "";
 
     private BatchProcessHelper batchHelper;
@@ -98,7 +96,6 @@ public class BatchBean extends BasicBean implements Serializable {
     }
 
     private Batch generateBatch(Batch batch) {
-        //		Session session = Helper.getHibernateSession();
         String filter = "";
         if (batch != null) {
             filter = " batchID = " + batch.getBatchId() + " AND istTemplate = false ";
@@ -252,9 +249,6 @@ public class BatchBean extends BasicBean implements Serializable {
         if (this.selectedBatches.size() == 0) {
             Helper.setFehlerMeldung("noBatchSelected");
         } else if (this.selectedBatches.size() == 1) {
-
-            //            Session session = Helper.getHibernateSession();
-            //            Criteria crit = session.createCriteria(Process.class);
             docket = ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + this.selectedBatches.get(0).getBatchId(), 0,
                     getBatchMaxSize());
 
@@ -308,7 +302,6 @@ public class BatchBean extends BasicBean implements Serializable {
             Helper.setFehlerMeldung("tooḾanyBatchesSelected");
         } else {
             try {
-                //				Session session = Helper.getHibernateSession();
                 Batch batch = this.selectedBatches.get(0);
                 for (Process p : this.selectedProcesses) {
                     p.setBatch(batch);
@@ -332,7 +325,6 @@ public class BatchBean extends BasicBean implements Serializable {
     }
 
     public void removeProcessesFromBatch() {
-        //		Session session = Helper.getHibernateSession();
         for (Process p : this.selectedProcesses) {
             if (p.getBatch() != null) {
                 LogEntry logEntry = new LogEntry();
