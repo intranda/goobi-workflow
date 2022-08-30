@@ -164,13 +164,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
 
     @Override
     public void lazyLoad() {
-        //		try {
-        //			this.benutzer = null;
-        //			this.prozesse = null;
-        //			this.filegroups = null;
-        //		} catch (DAOException e) {
-        //			log.error("error during lazy loading of User", e);
-        //		}
+    	
     }
 
     public Project() {
