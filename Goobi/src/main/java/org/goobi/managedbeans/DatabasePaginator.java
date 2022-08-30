@@ -86,10 +86,6 @@ public class DatabasePaginator implements Serializable {
         return ret;
     }
 
-    // public List<? extends DatabaseObject> getList() {
-    // return hasNextPage() ? this.results.subList(0, this.pageSize) : this.results;
-    // }
-
     public int getFirstResultNumber() {
         return this.page * this.pageSize + 1;
     }
@@ -98,19 +94,6 @@ public class DatabasePaginator implements Serializable {
         int fullPage = getFirstResultNumber() + this.pageSize - 1;
         return getTotalResults() < fullPage ? getTotalResults() : fullPage;
     }
-
-    // public List<? extends DatabaseObject> getListReload() {
-    // try {
-    // results = manager.getList(order, filter, this.page * this.pageSize , pageSize);
-    // for (DatabaseObject d : results) {
-    // d.lazyLoad();
-    // }
-    //
-    // } catch (DAOException e) {
-    // log.error("Failed to load paginated results", e);
-    // }
-    // return results;
-    // }
 
     public List<? extends DatabaseObject> getList() {
         return this.results;
