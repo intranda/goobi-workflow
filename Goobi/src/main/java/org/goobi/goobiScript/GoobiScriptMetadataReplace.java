@@ -85,11 +85,6 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
             return new ArrayList<>();
         }
 
-        //		if (parameters.get("replace") == null || parameters.get("replace").equals("")) {
-        //            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "replace");
-        //            return new ArrayList<>();
-        //        }
-
         if (parameters.get("position") == null || parameters.get("position").equals("")) {
             Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "position");
             return new ArrayList<>();
