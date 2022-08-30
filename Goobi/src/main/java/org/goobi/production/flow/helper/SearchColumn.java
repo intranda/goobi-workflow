@@ -93,28 +93,23 @@ public class SearchColumn {
         if (value.startsWith("prozesseeigenschaften.")) {
             return " prozesseeigenschaften " + getTableName() + " ON prozesse.ProzesseID = " + getTableName() + ".prozesseID AND " + getTableName()
                     + ".Titel = \"" + value.substring(value.indexOf(".") + 1) + "\"";
-            //            return " prozesse.ProzesseID = " + getTableName() + ".prozesseID AND " + getTableName() + ".Titel = \""
-            //                    + value.substring(value.indexOf(".") + 1) + "\"";
+
         } else if (value.startsWith("metadata.")) {
             return " metadata " + getTableName() + " ON prozesse.ProzesseID = " + getTableName() + ".processid AND " + getTableName() + ".name = \""
                     + value.substring(value.indexOf(".") + 1) + "\"";
-            //            return " prozesse.ProzesseID = " + getTableName() + ".processID AND " + getTableName() + ".name = \""
-            //                    + value.substring(value.indexOf(".") + 1) + "\"";
+
         } else if (value.startsWith("projekte.")) {
             return " projekte " + getTableName() + " ON prozesse.ProjekteID = " + getTableName() + ".ProjekteID";
-            //            return " prozesse.ProjekteID = " + getTableName() + ".ProjekteID";
+            
         } else if (value.startsWith("vorlageneigenschaften.")) {
             return "vorlagen vorlagen" + order + " ON prozesse.ProzesseID = vorlagen" + order + ".ProzesseID LEFT JOIN vorlageneigenschaften "
                     + getTableName() + " ON " + getTableName() + ".vorlagenID = vorlagen" + order + ".vorlagenID AND " + getTableName() + ".Titel =\""
                     + value.substring(value.indexOf(".") + 1) + "\"";
-            //            return " prozesse.ProzesseID = vorlagen" + order + ".ProzesseID AND vorlagen" + order + ".VorlagenID = " + getTableName()
-            //                    + ".vorlagenID AND " + getTableName() + ".Titel =\"" + value.substring(value.indexOf(".") + 1) + "\"";
+
         } else if (value.startsWith("werkstueckeeigenschaften.")) {
             return "werkstuecke werkstuecke" + order + " ON prozesse.ProzesseID = werkstuecke" + order
                     + ".ProzesseID LEFT JOIN werkstueckeeigenschaften " + getTableName() + " ON " + getTableName() + ".werkstueckeID = werkstuecke"
                     + order + ".WerkstueckeID AND " + getTableName() + ".Titel =\"" + value.substring(value.indexOf(".") + 1) + "\"";
-            //            return " prozesse.ProzesseID = werkstuecke" + order + ".ProzesseID AND werkstuecke" + order + ".WerkstueckeID = " + getTableName()
-            //                    + ".werkstueckeID AND " + getTableName() + ".Titel =\"" + value.substring(value.indexOf(".") + 1) + "\"";
         }
 
         return "";
