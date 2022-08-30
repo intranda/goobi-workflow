@@ -206,16 +206,4 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
         }
         return false;
     }
-
-    //    public String getAdditionalData(String key) {
-    //        String value = "";
-    //        if (additionalData.containsKey(key)) {
-    //            Collection<String> values = additionalData.get(key);
-    //            value = values.stream().findFirst().get();
-    //        } else {
-    //            additionalData.put(key, value);
-    //        }
-    //
-    //        return value;
-    //    }
 }
