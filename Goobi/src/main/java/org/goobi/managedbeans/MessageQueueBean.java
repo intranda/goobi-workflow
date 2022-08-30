@@ -280,16 +280,7 @@ public class MessageQueueBean extends BasicBean implements Serializable {
             Queue queue = queueSession.createQueue(queueType);
             QueueReceiver receiver = queueSession.createReceiver(queue, "JMSMessageID='" + ticket.getMessageId() + "'");
             Message message = receiver.receiveNoWait();
-            //
-            //            //            MessageConsumer consumer =
-            //            //                    queueSession.createConsumer(queue, "JMSMessageID='" + ticket.getMessageId().replace("ID:", "").replace(":1:1:1:1", "")+"'");
-            //            MessageConsumer consumer = queueSession.createConsumer(queue, "JMSMessageID='" + ticket.getMessageId() + "'");
-            //            //            MessageConsumer consumer =
-            //            //                    queueSession.createConsumer(queue, "JMSType='" + messageType + "' AND processid='" + ticket.getProcessId() + "'");
-            //            connection.start();
-            //                        Message message = consumer.receiveNoWait();
-            //            //            Message message = consumer.receive(2000l);
-            //
+
             if (message != null) {
                 message.acknowledge();
             }
