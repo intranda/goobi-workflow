@@ -1388,8 +1388,6 @@ public class FilterHelper {
 
             case name:
                 /* filter for a specific done step by it's name (Titel) */
-                // myObservable.setMessage("Filter 'stepDone:" + parameters
-                // + "' is not yet implemented and will be ignored!");
                 try {
                     return FilterHelper.filterStepName(parameters, inStatus, negate, dateFilter);
                 } catch (NullPointerException e) {
