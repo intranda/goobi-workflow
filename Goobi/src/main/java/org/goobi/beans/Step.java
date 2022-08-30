@@ -241,10 +241,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     @Getter
     private QueueType messageQueue;
 
-    //    @Getter
-    //    @Setter
-    //    private String messageId;
-
     public Step() {
         this.titel = "";
         this.eigenschaften = new ArrayList<>();
@@ -500,9 +496,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
                 break;
             case LOCKED:
                 bearbeitungsstatus = 1;
-                //                if(this.typAutomaticThumbnail) {
-                //                    this.submitAutomaticThumbnailTicket();
-                //                }
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
                 break;
             case DONE:
@@ -521,9 +514,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
             case INFLIGHT:
             case INWORK:
                 bearbeitungsstatus = 1;
-                //                if(this.typAutomaticThumbnail) {
-                //                    this.submitAutomaticThumbnailTicket();
-                //                }
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
                 break;
 
