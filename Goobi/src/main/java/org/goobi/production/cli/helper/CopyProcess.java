@@ -529,12 +529,8 @@ public class CopyProcess {
         /* prüfen, ob der Prozesstitel schon verwendet wurde */
         if (this.prozessKopie.getTitel() != null) {
             long anzahl = 0;
-            //			try {
             anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel(), prozessKopie.getProjekt().getInstitution());
-            //			} catch (DAOException e) {
-            //				Helper.setFehlerMeldung("Fehler beim Einlesen der Vorgaenge", e.getMessage());
-            //				valide = false;
-            //			}
+
             if (anzahl > 0) {
                 valide = false;
                 Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten: ") + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
@@ -603,12 +599,8 @@ public class CopyProcess {
             /* prüfen, ob der Prozesstitel schon verwendet wurde */
             if (this.prozessKopie.getTitel() != null) {
                 long anzahl = 0;
-                //				try {
                 anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel(), prozessKopie.getProjekt().getInstitution());
-                //				} catch (DAOException e) {
-                //					Helper.setFehlerMeldung("Fehler beim Einlesen der Vorgaenge", e.getMessage());
-                //					valide = false;
-                //				}
+
                 if (anzahl > 0) {
                     valide = false;
                     Helper.setFehlerMeldung(
@@ -663,7 +655,6 @@ public class CopyProcess {
         try {
 
             ProcessManager.saveProcess(this.prozessKopie);
-            //			dao.refresh(this.prozessKopie);
         } catch (DAOException e) {
             log.error("error on save: ", e);
             return this.prozessKopie;
@@ -868,9 +859,7 @@ public class CopyProcess {
             this.prozessKopie.setBatch(io.getBatch());
         }
         try {
-            //			ProzessDAO dao = new ProzessDAO();
             ProcessManager.saveProcess(this.prozessKopie);
-            //			dao.refresh(this.prozessKopie);
         } catch (DAOException e) {
             log.error("error on save: ", e);
             return this.prozessKopie;
@@ -887,14 +876,8 @@ public class CopyProcess {
         if (!StorageProvider.getInstance().isFileExists(f)) {
             StorageProvider.getInstance().createDirectories(f);
         }
-        //            Helper.setFehlerMeldung("Could not create process directory");
-        //            log.error("Could not create process directory");
-        //            return this.prozessKopie;
-        //        }
 
         this.prozessKopie.writeMetadataFile(this.myRdf);
-
-        // }
 
         // Adding process to history
         if (!HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie)) {
@@ -1338,7 +1321,6 @@ public class CopyProcess {
                     }
                 }
             }
-            // }
         }
     }
 
