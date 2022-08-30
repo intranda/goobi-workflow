@@ -109,7 +109,7 @@ public abstract class BackupFileManager {
             }
             // This exception should not be thrown because the important thing is that the backup file could be created.
             // Code that calls this method should not get confused with this thrown exception in case of success...
-            //throw new IOException(messageFail);
+            //throw new IOException(messageFail);  (NOSONAR)
         }
         return backupFileName;
     }
