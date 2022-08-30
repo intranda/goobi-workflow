@@ -27,17 +27,11 @@ public class ImageComment {
     private String imageName;
     private String imageFolder;
 
-    //    private Date creationDate;
-    //    private String userName;
     public ImageComment(String imageFolder, String imageName, String comment) {
 
         this.imageFolder = imageFolder;
         this.imageName = imageName;
         this.comment = comment;
     }
-
-    //    public String getFormattedCreationDate() {
-    //        return Helper.getDateAsFormattedString(creationDate);
-    //    }
 
 }
