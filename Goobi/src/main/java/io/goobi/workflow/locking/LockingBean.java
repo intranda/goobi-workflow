@@ -42,17 +42,17 @@ public class LockingBean implements Serializable {
      * 
      * To check, if an item is locked, you can use the following EL:
      * 
-     * #{lockingBean.lockedSessions[id] != null and lockingBean.lockedSessions[id].user != LoginForm.myBenutzer.nachVorname}
+     * #{lockingBean.lockedSessions[id] != null and lockingBean.lockedSessions[id].user != LoginForm.myBenutzer.nachVorname}  (NOSONAR)
      * 
      * To lock an object, you can access the static method
      * LockingBean.lockObject(id, LoginForm.myBenutzer.nachVorname)
      * 
      * Unlock an object:
-     *  LockingBean.freeObject(id);
+     *  LockingBean.freeObject(id);  (NOSONAR)
      * 
      *  Update a lock of an object:
      * 
-     *  LockingBean.updateLocking(id);
+     *  LockingBean.updateLocking(id);  (NOSONAR)
      * 
      */
 
