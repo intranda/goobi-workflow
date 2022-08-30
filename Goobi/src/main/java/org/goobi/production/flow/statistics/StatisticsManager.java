@@ -134,7 +134,6 @@ public class StatisticsManager implements Serializable {
                     } catch (IOException e) {
                         log.error(e);
                     }
-                    //				jfreeDataset = StatistikLaufzeitSchritte.getDiagramm(inDataSource.getSourceData());
                     break;
 
                 default:
