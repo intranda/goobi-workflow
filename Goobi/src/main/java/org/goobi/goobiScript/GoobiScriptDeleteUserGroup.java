@@ -60,7 +60,7 @@ public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements 
         return sb.toString();
 
         // return "---\\naction: deleteUserGroup\\nsteptitle: TITLE_STEP\\ngroup:
-        // GROUP_NAME";
+        // GROUP_NAME";  (NOSONAR)
     }
 
     @Override
