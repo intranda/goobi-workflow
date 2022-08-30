@@ -344,8 +344,7 @@ public class LoginBean implements Serializable {
                 myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
             }
             User currentUser = UserManager.getUserById(this.myBenutzer.getId());
-            // TODO
-            // temp.setPasswortCrypt(this.passwortAendernNeu1);
+
             UserBean.saltAndSaveUserPassword(currentUser, this.passwortAendernNeu1);
 
             this.myBenutzer = currentUser;
