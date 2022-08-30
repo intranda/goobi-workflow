@@ -125,7 +125,6 @@ public class StepBean extends BasicBean implements Serializable {
     @Getter
     @Setter
     private String modusBearbeiten = "";
-    //    private Schritteigenschaft mySchrittEigenschaft;
     private WebDav myDav = new WebDav();
     private int gesamtAnzahlImages = 0;
     private int pageAnzahlImages = 0;
@@ -150,7 +149,6 @@ public class StepBean extends BasicBean implements Serializable {
     private String scriptPath;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static String DONEDIRECTORYNAME = "fertig/";
-    //	private Boolean flagWait = false;
     @Getter
     @Setter
     private BatchStepHelper batchHelper;
@@ -320,20 +318,13 @@ public class StepBean extends BasicBean implements Serializable {
      */
 
     public String SchrittDurchBenutzerUebernehmen() {
-        //		synchronized (this.flagWait) {
-        //
-        //			if (!this.flagWait) {
-        //				this.flagWait = true;
 
-        // Helper.getHibernateSession().clear();
-        //				Helper.getHibernateSession().refresh(this.mySchritt);
         // reload step
         mySchritt = StepManager.getStepById(mySchritt.getId());
         mySchritt.lazyLoad();
 
         if (!(this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.OPEN || this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.ERROR)) {
             Helper.setFehlerMeldung("stepInWorkError");
-            //					this.flagWait = false;
             return "";
         }
 
@@ -353,20 +344,14 @@ public class StepBean extends BasicBean implements Serializable {
             HistoryManager.addHistory(this.mySchritt.getBearbeitungsbeginn(), this.mySchritt.getReihenfolge().doubleValue(),
                     this.mySchritt.getTitel(), HistoryEventType.stepInWork.getValue(), this.mySchritt.getProzess().getId());
 
-            //            this.mySchritt.getProzess().getHistory().add(
-            //                    new HistoryEvent(this.mySchritt.getBearbeitungsbeginn(), this.mySchritt.getReihenfolge().doubleValue(),
-            //                            this.mySchritt.getTitel(), HistoryEventType.stepInWork, this.mySchritt.getProzess()));
             try {
                 /*
                  * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
                  */
-                //						ProcessManager.saveProcess(this.mySchritt.getProzess());
                 StepManager.saveStep(mySchritt);
             } catch (DAOException e) {
                 Helper.setFehlerMeldung(Helper.getTranslation("stepSaveError"), e);
                 log.error("step couldn't get saved", e);
-                //					} finally {
-                //						this.flagWait = false;
             }
             /*
              * wenn es ein Image-Schritt ist, dann gleich die Images ins Home
@@ -376,12 +361,6 @@ public class StepBean extends BasicBean implements Serializable {
                 DownloadToHome();
             }
         }
-        //			} else {
-        //				Helper.setFehlerMeldung("stepInWorkError");
-        //				return "";
-        //			}
-        //			this.flagWait = false;
-        //		}
         return "task_edit";
     }
 
@@ -414,7 +393,6 @@ public class StepBean extends BasicBean implements Serializable {
         }
         // if only one step is asigned for this batch, use the single
 
-        // Helper.setMeldung("found " + currentStepsOfBatch.size() + " elements in batch");
         if (currentStepsOfBatch.size() == 0) {
             return "";
         }
@@ -442,14 +420,9 @@ public class StepBean extends BasicBean implements Serializable {
                     try {
                         Paths.get(s.getProzess().getImagesOrigDirectory(false));
                     } catch (Exception e1) {
-
+                    	// TODO: what should be done?
                     }
-                    // removed, because it was already set
-                    //                    s.setBearbeitungszeitpunkt(new Date());
-                    //
-                    //                    if (ben != null) {
-                    //                        s.setBearbeitungsbenutzer(ben);
-                    //                    }
+
                     this.myDav.DownloadToHome(s.getProzess(), s.getId().intValue(), !s.isTypImagesSchreiben());
 
                 }
@@ -467,7 +440,6 @@ public class StepBean extends BasicBean implements Serializable {
                 HistoryManager.addHistory(s.getBearbeitungsbeginn(), s.getReihenfolge().doubleValue(), s.getTitel(),
                         HistoryEventType.stepInWork.getValue(), s.getProzess().getId());
                 try {
-                    //                ProcessManager.saveProcess(s.getProzess());
                     StepManager.saveStep(s);
                 } catch (DAOException e) {
                     Helper.setFehlerMeldung(Helper.getTranslation("stepSaveError"), e);
@@ -497,21 +469,10 @@ public class StepBean extends BasicBean implements Serializable {
                     + batchNumber + ")",
                     0, Integer.MAX_VALUE);
 
-            //			Session session = Helper.getHibernateSession();
-            //			Criteria crit = session.createCriteria(Step.class);
-            //			crit.add(Restrictions.eq("titel", steptitle));
-            //			// only steps with same batchid
-            //			crit.createCriteria("prozess", "proc");
-            //			crit.add(Restrictions.eq("proc.batchID", batchNumber));
-            //			crit.add(Restrictions.eq("batchStep", true));
-            //
-            //			currentStepsOfBatch = crit.list();
         } else {
             return "task_edit";
         }
         // if only one step is asigned for this batch, use the single
-
-        // Helper.setMeldung("found " + currentStepsOfBatch.size() + " elements in batch");
 
         if (currentStepsOfBatch.size() == 1) {
             return "task_edit";
@@ -527,7 +488,6 @@ public class StepBean extends BasicBean implements Serializable {
     public String SchrittDurchBenutzerZurueckgeben() {
         this.myDav.UploadFromHome(this.mySchritt.getProzess());
         this.mySchritt.setBearbeitungsstatusEnum(StepStatus.OPEN);
-        // mySchritt.setBearbeitungsbenutzer(null);
         // if we have a correction-step here then never remove startdate
         if (this.mySchritt.isCorrectionStep()) {
             this.mySchritt.setBearbeitungsbeginn(null);
@@ -543,12 +503,10 @@ public class StepBean extends BasicBean implements Serializable {
             /*
              * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
              */
-            //            ProcessManager.saveProcess(this.mySchritt.getProzess());
             StepManager.saveStep(mySchritt);
         } catch (DAOException e) {
+        	// TODO: what should be done?
         }
-        // calcHomeImages();
-        //        return "task_all";
         return FilterAlleStart();
     }
 
@@ -610,21 +568,9 @@ public class StepBean extends BasicBean implements Serializable {
          */
         this.myDav.UploadFromHome(this.mySchritt.getProzess());
         this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
-        //        Step so = StepObjectManager.getStepById(this.mySchritt.getId());
         new HelperSchritte().CloseStepObjectAutomatic(mySchritt);
-        // new HelperSchritte().SchrittAbschliessen(this.mySchritt, true);
         return FilterAlleStart();
     }
-
-    /*
-     *  Eigenschaften bearbeiten
-     */
-
-    //    public String SchrittEigenschaftNeu() {
-    //        this.mySchritt.setBearbeitungszeitpunkt(new Date());
-    //        this.mySchrittEigenschaft = new Schritteigenschaft();
-    //        return "";
-    //    }
 
     public String SperrungAufheben() {
         MetadatenSperrung.UnlockProcess(this.mySchritt.getProzess().getId());
@@ -640,9 +586,6 @@ public class StepBean extends BasicBean implements Serializable {
                 " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge < " + this.mySchritt.getReihenfolge(), 0,
                 Integer.MAX_VALUE);
 
-        //		List<Step> alleVorherigenSchritte = Helper.getHibernateSession().createCriteria(Step.class)
-        //				.add(Restrictions.lt("reihenfolge", this.mySchritt.getReihenfolge())).addOrder(Order.desc("reihenfolge")).createCriteria("prozess")
-        //				.add(Restrictions.idEq(this.mySchritt.getProzess().getId())).list();
         return alleVorherigenSchritte;
     }
 
@@ -675,7 +618,6 @@ public class StepBean extends BasicBean implements Serializable {
         try {
             Step temp = StepManager.getStepById(myProblemID);
             temp.setBearbeitungsstatusEnum(StepStatus.ERROR);
-            // if (temp.getPrioritaet().intValue() == 0)
             temp.setCorrectionStep();
             temp.setBearbeitungsende(new Date());
             ErrorProperty se = new ErrorProperty();
@@ -706,8 +648,6 @@ public class StepBean extends BasicBean implements Serializable {
             HistoryManager.addHistory(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError.getValue(),
                     temp.getProzess().getId());
 
-            //            this.mySchritt.getProzess().getHistory().add(
-            //                    new HistoryEvent(myDate, temp.getReihenfolge().doubleValue(), temp.getTitel(), HistoryEventType.stepError, temp.getProzess()));
             /*
              * alle Schritte zwischen dem aktuellen und dem Korrekturschritt wieder schliessen
              */
@@ -716,9 +656,6 @@ public class StepBean extends BasicBean implements Serializable {
                     StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge <= "
                             + this.mySchritt.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
 
-            //			List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
-            //					.add(Restrictions.le("reihenfolge", this.mySchritt.getReihenfolge())).add(Restrictions.gt("reihenfolge", temp.getReihenfolge()))
-            //					.addOrder(Order.asc("reihenfolge")).createCriteria("prozess").add(Restrictions.idEq(this.mySchritt.getProzess().getId())).list();
             for (Step step : alleSchritteDazwischen) {
 
                 if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) {
@@ -762,9 +699,6 @@ public class StepBean extends BasicBean implements Serializable {
         List<Step> alleNachfolgendenSchritte = StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId()
                 + " AND Reihenfolge > " + this.mySchritt.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE);
 
-        //		List<Step> alleNachfolgendenSchritte = Helper.getHibernateSession().createCriteria(Step.class)
-        //				.add(Restrictions.gt("reihenfolge", this.mySchritt.getReihenfolge())).add(Restrictions.eq("prioritaet", 10))
-        //				.addOrder(Order.asc("reihenfolge")).createCriteria("prozess").add(Restrictions.idEq(this.mySchritt.getProzess().getId())).list();
         return alleNachfolgendenSchritte;
     }
 
@@ -801,9 +735,6 @@ public class StepBean extends BasicBean implements Serializable {
                     StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge >= "
                             + this.mySchritt.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
 
-            //			List<Step> alleSchritteDazwischen = Helper.getHibernateSession().createCriteria(Step.class)
-            //			       .add(Restrictions.ge("reihenfolge", this.mySchritt.getReihenfolge())).add(Restrictions.le("reihenfolge", temp.getReihenfolge()))
-            //					.addOrder(Order.asc("reihenfolge")).createCriteria("prozess").add(Restrictions.idEq(this.mySchritt.getProzess().getId())).list();
             for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
 
                 Step step = iter.next();
@@ -817,7 +748,6 @@ public class StepBean extends BasicBean implements Serializable {
                     step.setBearbeitungsstatusEnum(StepStatus.OPEN);
                     step.setCorrectionStep();
                     step.setBearbeitungsende(null);
-                    // step.setBearbeitungsbeginn(null);
                     step.setBearbeitungszeitpunkt(now);
                     SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.OPEN);
 
@@ -958,7 +888,6 @@ public class StepBean extends BasicBean implements Serializable {
                 this.myDav.DownloadToHome(proz, step.getId().intValue(), false);
             }
         }
-        // calcHomeImages();
         Helper.setMeldung(null, "Created directies in user home", "");
         return FilterAlleStart();
     }
@@ -989,13 +918,11 @@ public class StepBean extends BasicBean implements Serializable {
                 this.myDav.DownloadToHome(proz, step.getId().intValue(), false);
             }
         }
-        // calcHomeImages();
         Helper.setMeldung(null, "Created directories in user home", "");
         return FilterAlleStart();
     }
 
     public void executeScript() {
-        //        StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
         new HelperSchritte().executeScriptForStepObject(mySchritt, this.scriptPath, false);
 
     }
@@ -1033,8 +960,6 @@ public class StepBean extends BasicBean implements Serializable {
                 Step step = iter.next();
                 try {
                     if (step.getBearbeitungsstatusEnum() == StepStatus.OPEN) {
-                        // gesamtAnzahlImages +=
-                        // myDav.getAnzahlImages(step.getProzess().getImagesOrigDirectory());
                         this.gesamtAnzahlImages += StorageProvider.getInstance().getNumberOfFiles(step.getProzess().getImagesOrigDirectory(false));
                     }
                 } catch (Exception e) {
@@ -1068,9 +993,7 @@ public class StepBean extends BasicBean implements Serializable {
         loadDisplayableMetadata();
         if (this.mySchritt.getStepPlugin() != null && !this.mySchritt.getStepPlugin().isEmpty()) {
             myPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, this.mySchritt.getStepPlugin());
-            //            if(mySchritt.isTypAutomaticThumbnail()) {
-            //            	mySchritt.submitAutomaticThumbnailTicket();
-            //            }
+
             if (myPlugin == null) {
                 exportPlugin = (IExportPlugin) PluginLoader.getPluginByTitle(PluginType.Export, this.mySchritt.getStepPlugin());
             }
@@ -1085,21 +1008,15 @@ public class StepBean extends BasicBean implements Serializable {
                 } else {
                     myPlugin.initialize(mySchritt, "/task_edit");
                 }
-                //                if (myPlugin.getPluginGuiType() == PluginGuiType.FULL || myPlugin.getPluginGuiType() == PluginGuiType.PART) {
-                //                    runPlugin();
-                //                }
             }
         }
     }
 
     public String runPlugin() {
-        //        Helper.setMeldung("Starte Plugin");
-        //        Helper.setMeldung(mySchritt.getStepPlugin());
         if (myPlugin.getPluginGuiType() == PluginGuiType.FULL || myPlugin.getPluginGuiType() == PluginGuiType.PART_AND_FULL) {
             String mypath = myPlugin.getPagePath();
             if (log.isDebugEnabled()) {
                 log.debug("Plugin is full GUI");
-                //            String mypath = "/ui/plugins/step/" + myPlugin.getTitle() + "/plugin.xhtml";
                 log.debug("open plugin GUI: " + mypath);
             }
             myPlugin.execute();
@@ -1126,14 +1043,6 @@ public class StepBean extends BasicBean implements Serializable {
     public Step getStep() {
         return this.mySchritt;
     }
-
-    //    public Schritteigenschaft getMySchrittEigenschaft() {
-    //        return this.mySchrittEigenschaft;
-    //    }
-    //
-    //    public void setMySchrittEigenschaft(Schritteigenschaft mySchrittEigenschaft) {
-    //        this.mySchrittEigenschaft = mySchrittEigenschaft;
-    //    }
 
     /*
      * Parameter per Get Ã¼bergeben bekommen und entsprechen den passenden Schritt laden
@@ -1315,13 +1224,8 @@ public class StepBean extends BasicBean implements Serializable {
                 }
             }
 
-            //            try {
             PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
             Helper.setMeldung("propertiesSaved");
-            //            } catch (DAOException e) {
-            //                mylog.error(e);
-            //                Helper.setFehlerMeldung("propertiesNotSaved");
-            //            }
         }
     }
 
@@ -1353,14 +1257,8 @@ public class StepBean extends BasicBean implements Serializable {
                 this.mySchritt.getProzess().getEigenschaften().add(this.processProperty.getProzesseigenschaft());
                 this.processProperty.getProzesseigenschaft().setProzess(this.mySchritt.getProzess());
             }
-            //            try {
             PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
-            //                ProcessManager.saveProcess(this.mySchritt.getProzess());
             Helper.setMeldung("propertySaved");
-            //            } catch (DAOException e) {
-            //                mylog.error(e);
-            //                Helper.setFehlerMeldung("propertyNotSaved");
-            //            }
         }
         loadProcessProperties();
     }
@@ -1423,7 +1321,6 @@ public class StepBean extends BasicBean implements Serializable {
 
     public List<ProcessProperty> getContainerProperties() {
         List<ProcessProperty> answer = new ArrayList<>();
-        // int currentContainer = this.processProperty.getContainer();
 
         if (this.container != null && this.container > 0) {
             for (ProcessProperty pp : this.processPropertyList) {
