@@ -185,17 +185,6 @@ public class PropertyParser {
             return properties;
         }
 
-        //            String path = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_processProperties.xml";
-        //            XMLConfiguration config;
-        //            try {
-        //                config = new XMLConfiguration(path);
-        //            } catch (ConfigurationException e) {
-        //                log.error(e);
-        //                config = new XMLConfiguration();
-        //            }
-        //            config.setListDelimiter('&');
-        //            config.setReloadingStrategy(new FileChangedReloadingStrategy());
-
         // run though all properties
         int countProperties = config.getMaxIndex("/property");
         for (int i = 0; i <= countProperties; i++) {
@@ -308,7 +297,6 @@ public class PropertyParser {
     }
 
     public List<ProcessProperty> getPropertiesForProcess(Process process) {
-        //      Hibernate.initialize(process.getProjekt());
         String projectTitle = process.getProjekt().getTitel();
         ArrayList<ProcessProperty> properties = new ArrayList<>();
         if (process.isIstTemplate()) {
