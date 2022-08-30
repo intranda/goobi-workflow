@@ -58,7 +58,7 @@ public class StatQuestProjectAssociations implements IStatisticalQuestion {
         List<DataTable> allTables = new ArrayList<>();
 
         List<Integer> idList = ProcessManager.getIdsForFilter(filter);
-        //        select projekte.titel, count(prozesse.projekteId) from prozesse, projekte where prozesse.ProjekteID = projekte.ProjekteID group by prozesse.projekteId;
+        //        select projekte.titel, count(prozesse.projekteId) from prozesse, projekte where prozesse.ProjekteID = projekte.ProjekteID group by prozesse.projekteId; (NOSONAR)
 
         if (idList == null || idList.isEmpty()) {
             return null;
