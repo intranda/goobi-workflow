@@ -119,7 +119,7 @@ public class VariableReplacer {
     // $(metas.abc)
     private final String namespaceMetaMultiValue = "\\$?(?:\\(|\\{)metas\\.([\\w.-]*)(?:\\}|\\))";
 
-    // $(folder.xyz) or {folder.xyz}
+    // $(folder.xyz) or {folder.xyz} are both ok
     private final static String folderExpression = "\\$?(?:\\(|\\{)folder\\.([^)]+)(?:\\}|\\))";
 
     private Process process;
