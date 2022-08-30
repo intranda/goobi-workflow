@@ -307,7 +307,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public JSONObject getAutoThumbnailSettingsJSON() {
-        //new JSONObject("{'Master':true,'Media':true, 'Sizes':[800] }");
+        //new JSONObject("{'Master':true,'Media':true, 'Sizes':[800] }")
         Yaml yaml= new Yaml();
         @SuppressWarnings("unchecked")
         Map<String,Object> map= (Map<String, Object>) yaml.load(this.automaticThumbnailSettingsYaml);
