@@ -162,7 +162,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public String editRecords() {
         // load records of selected vocabulary
         // initial first page
-        //        VocabularyManager.getPaginatedRecords(currentVocabulary);
         VocabularyManager.getAllRecords(currentVocabulary);
         currentVocabulary.runFilter();
         currentVocabulary.setTotalNumberOfRecords(currentVocabulary.getRecords().size());
@@ -448,7 +447,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
                         Cell cell = headerRow.getCell(i);
                         if (cell != null) {
                             String value = dataFormatter.formatCellValue(cell).trim();
-                            //String value = cell.getStringCellValue();
                             headerOrder.add(new MatchingField(value, i, CellReference.convertNumToColString(i), this));
                         }
                     }
@@ -681,7 +679,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
                 VocabularyManager.batchUpdateRecords(updateRecords, currentVocabulary.getId());
             }
         }
-        //  VocabularyManager.saveRecords(currentVocabulary);
         return FilterKein();
     }
 
