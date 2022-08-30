@@ -144,7 +144,6 @@ public class StatQuestStorage implements IStatisticalQuestionLimitedTimeframe {
      */
     @Override
     public Boolean isRendererInverted(IRenderer inRenderer) {
-        //		return false;
         return inRenderer instanceof ChartRenderer;
     }
 
