@@ -66,14 +66,15 @@ public class DashboardBean implements Serializable {
     public void initializePlugins() {
 
         User user = Helper.getCurrentUser();
-        String pluginName = user.getDashboardPlugin();
+        if (user != null) {
+            String pluginName = user.getDashboardPlugin();
 
-        if (StringUtils.isNotBlank(pluginName) && user != null
-                && (user.getInstitution().isAllowAllPlugins() || user.getInstitution().isDashboardPluginAllowed(pluginName))) {
-
-            IDashboardPlugin plugin = (IDashboardPlugin) PluginLoader.getPluginByTitle(PluginType.Dashboard, pluginName);
-            if (plugin != null) {
-                this.plugin = plugin;
+            if (StringUtils.isNotBlank(pluginName)
+                    && (user.getInstitution().isAllowAllPlugins() || user.getInstitution().isDashboardPluginAllowed(pluginName))) {
+                IDashboardPlugin plugin = (IDashboardPlugin) PluginLoader.getPluginByTitle(PluginType.Dashboard, pluginName);
+                if (plugin != null) {
+                    this.plugin = plugin;
+                }
             }
         }
     }
@@ -81,15 +82,14 @@ public class DashboardBean implements Serializable {
     public String getPluginUi() {
         if (plugin == null) {
             return "";
-        } else
-            if (PluginGuiType.FULL == plugin.getPluginGuiType()) {
-                ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
-                try {
-                    ec.redirect(ec.getRequestContextPath() + plugin.getGuiPath());
-                } catch (IOException e) {
-                    log.error(e);
-                }
+        } else if (PluginGuiType.FULL == plugin.getPluginGuiType()) {
+            ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
+            try {
+                ec.redirect(ec.getRequestContextPath() + plugin.getGuiPath());
+            } catch (IOException e) {
+                log.error(e);
             }
+        }
         return plugin.getGuiPath();
     }
 }
