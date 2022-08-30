@@ -58,8 +58,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.log4j.Log4j2;
 
-//import de.sub.goobi.persistence.ProzessDAO;
-
 @Named("BatchForm")
 @WindowScoped
 @Data
