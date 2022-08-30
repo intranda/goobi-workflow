@@ -107,17 +107,6 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
         } else {
             natSQL = StatisticsFactory.getProduction(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, IDlist).getSQL(stepname);
         }
-        //		Session session = Helper.getHibernateSession();
-        //
-        //		SQLQuery query = session.createSQLQuery(natSQL);
-        //
-        //		// needs to be there otherwise an exception is thrown
-        //		query.addScalar("volumes", StandardBasicTypes.INTEGER);
-        //		query.addScalar("pages", StandardBasicTypes.INTEGER);
-        //		query.addScalar("intervall", StandardBasicTypes.STRING);
-        //
-        //		@SuppressWarnings("rawtypes")
-        //		List list = query.list();
 
         @SuppressWarnings("unchecked")
         List<Object> list = ProcessManager.runSQL(natSQL);
@@ -148,14 +137,10 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
             Object[] objArr = (Object[]) obj;
             try {
 
-                // getting localized time group unit
-
-                // String identifier = timeGrouping.getTitle();
                 // setting row name with localized time group and the date/time extraction based on the group
 
                 dataRowChart.setName(new Converter(objArr[2]).getString() + "");
                 dataRow.setName(new Converter(objArr[2]).getString() + "");
-                // dataRow.setName(new Converter(objArr[2]).getString());
 
                 // building up row depending on requested output having different fields
                 switch (this.cu) {
