@@ -25,6 +25,8 @@
  */
 package org.goobi.production.plugin;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,8 +36,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class PluginVersion {
-    private String checksum;
+public class PluginVersion implements Serializable{
+    private static final long serialVersionUID = -179543227554485575L;
+	private String checksum;
     private String checksumType;
     private String goobiVersion;
     private String publicGoobiVersion;
