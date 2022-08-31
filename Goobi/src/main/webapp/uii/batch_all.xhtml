@@ -92,7 +92,7 @@
             <div class="form-group">
                 <div class="row">
                     <div class="col-sm-12">
-                        <h:panelGrid columns="1">
+                        <h:panelGrid columns="1" styleClass="no-borders">
                         <button
                             jsf:id="loadProcessData"
                             jsf:action="#{BatchForm.loadProcessData}"
@@ -134,9 +134,9 @@
 
             <intranda:box
                 boxType="primary"
-                icon="fa-spock-o"
+                icon="fa-tasks"
                 title="#{msgs.prozesse}"
-                padding="true">
+                padding="false">
 
             <div class="form-group">
                 <div class="row">
@@ -180,7 +180,7 @@
             <div class="form-group">
                 <div class="row">
                     <div class="col-sm-12">
-                        <h:panelGrid columns="1">
+                        <h:panelGrid columns="1" styleClass="no-borders">
                         <h:messages
                             globalOnly="false"
                             for="loadBatchData" />
