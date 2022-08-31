@@ -101,12 +101,6 @@ public enum PropertyType {
         return String;
     }
 
-    //	/**
-    //	 * @param id the id to set
-    //	 */
-    //	public void setId(int id) {
-    //		this.id = id;
-    //	}
 
     public static PropertyType getById(int id) {
         for (PropertyType p : PropertyType.values()) {

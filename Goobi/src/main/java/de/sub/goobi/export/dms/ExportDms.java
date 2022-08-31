@@ -115,7 +115,6 @@ public class ExportDms extends ExportMets implements IExportPlugin {
          * -------------------------------- Dokument einlesen --------------------------------
          */
         Fileformat gdzfile;
-        //      Fileformat newfile;
         ExportFileformat newfile =
                 MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
         try {

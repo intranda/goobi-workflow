@@ -296,7 +296,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getProcessImagesFallbackDirectoryName() {
-        return getLocalString("process.folder.images.fallback", ""); // "{processtitle}_jpeg"
+        return getLocalString("process.folder.images.fallback", ""); 
     }
 
     public String getProcessOcrTxtDirectoryName() {
@@ -460,7 +460,6 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getScriptCreateDirMeta() {
-        //        return getScriptsFolder() + getLocalString("script_createDirMeta", "script_createDirMeta.sh");
         String s = getLocalString("script_createDirMeta", "");
         if (s.isEmpty()) {
             return "";
@@ -470,7 +469,6 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getScriptCreateDirUserHome() {
-        //        return getScriptsFolder() + getLocalString("script_createDirUserHome", "script_createDirUserHome.sh");
         String s = getLocalString("script_createDirUserHome", "");
         if (s.isEmpty()) {
             return "";
@@ -480,7 +478,6 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getScriptDeleteSymLink() {
-        //  return getScriptsFolder() + getLocalString("script_deleteSymLink", "script_deleteSymLink.sh");
         String s = getLocalString("script_deleteSymLink", "");
         if (s.isEmpty()) {
             return "";
@@ -490,7 +487,6 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getScriptCreateSymLink() {
-        // return getScriptsFolder() + getLocalString("script_createSymLink", "script_createSymLink.sh");
         String s = getLocalString("script_createSymLink", "");
         if (s.isEmpty()) {
             return "";
@@ -701,12 +697,6 @@ public class ConfigurationHelper implements Serializable {
     public String getGeonamesCredentials() {
         return getLocalString("geonames_account", null);
     }
-
-    // mets editor
-
-    //    public String getMetsEditorDefaultSuffix() {
-    //        return getLocalString("MetsEditorDefaultSuffix", "");
-    //    }
 
     public String getMetsEditorDefaultPagination() {
         return getLocalString("MetsEditorDefaultPagination", "uncounted");

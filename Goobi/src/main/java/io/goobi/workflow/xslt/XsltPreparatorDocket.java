@@ -533,7 +533,6 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             for (LogEntry entry : process.getProcessLog()) {
                 if (entry.getType() == LogType.FILE) {
                     Element cf = new Element("file", xmlns);
-                    //cf.addContent(entry.getThirdContent());
                     if (entry.getContent() != null) {
                         cf.setAttribute("comment", entry.getContent());
                     }
@@ -811,7 +810,6 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         // prozesse.docketID
         if (process.getDocket() != null) {
             rootElement.addContent(getDocketData(process));
-            //            getDocketData(process, rootElement);
         }
 
         // ProjekteID

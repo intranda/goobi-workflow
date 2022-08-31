@@ -36,7 +36,6 @@
 						class="nav-link btn-link"
 						jsf:id="showHelp"
 						aria-label="#{msgs.showHelpMessages}"
-						jsf:action="#{NavigationForm.Reload}"
 						title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
 						jsf:rel="tooltip"
 						data-placement="bottom">
@@ -47,6 +46,8 @@
 						<f:setPropertyActionListener
 							target="#{NavigationForm.showHelp}"
 							value="#{not NavigationForm.showHelp}" />
+						<f:ajax render="@this" execute="@form"
+							onevent="toggle_help" />
 					</button>
 				</div>
 

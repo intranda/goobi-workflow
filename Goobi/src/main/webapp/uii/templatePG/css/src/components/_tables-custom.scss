@@ -15,10 +15,6 @@ thead {
   border-top: unset;
 }
 
-td,
-th {
-  border-color: var(--clr-neutral-400);
-}
 th span {
   font-weight: bold;
 }
@@ -50,4 +46,36 @@ td {
 
 .table-hover > tbody > tr:hover > * {
   --bs-table-accent-bg: var(--clr-neutral-200);
+}
+
+// Some tables come with a search bar:
+.dataTables__search__container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1.6rem;
+
+  // Contains search form + `show active users btn`
+  form {
+    display: flex;
+  }
+}
+
+.dataTables__search__filter {
+  margin-left: auto;
+}
+.dataTables__search__actions {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.dataTables__paginator {
+  display: flex;
+  align-items: center;
+
+  &__page-count {
+    margin-left: .8rem;
+  }
+
 }

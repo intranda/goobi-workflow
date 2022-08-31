@@ -288,7 +288,6 @@ public class CloseStepHelper {
         offen2 = (offen * 100) / (double) (offen + inBearbeitung + abgeschlossen);
         inBearbeitung2 = (inBearbeitung * 100) / (double) (offen + inBearbeitung + abgeschlossen);
         abgeschlossen2 = 100 - offen2 - inBearbeitung2;
-        // (abgeschlossen * 100) / (offen + inBearbeitung + abgeschlossen);
         java.text.DecimalFormat df = new java.text.DecimalFormat("#000");
         String value = df.format(abgeschlossen2) + df.format(inBearbeitung2) + df.format(offen2);
 

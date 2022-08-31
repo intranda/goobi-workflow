@@ -390,7 +390,6 @@ public class Helper implements Serializable, ServletContextListener {
                         if (!wk.reset()) {
                             break;
                         }
-                        // Thread.sleep(100);
                     }
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);

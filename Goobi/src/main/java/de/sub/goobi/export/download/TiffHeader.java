@@ -47,17 +47,6 @@ import de.sub.goobi.helper.FacesContextHelper;
  * @version 1.00 - 12.04.2005
  */
 public class TiffHeader {
-    // private String Haupttitel="";
-    // private String Autor="";
-    // private String DocType="";
-    // private String PPNdigital="";
-    // private String Band="";
-    // private String TSL="";
-    // private String ATS="";
-    // private String ISSN="";
-    // private String Jahr="";
-    // private String Ort="";
-    // private String Verlag="";
     private String Artist = "";
 
     private String tifHeader_imagedescription = "";
@@ -71,7 +60,6 @@ public class TiffHeader {
             Masterpiece myWerkstueck = inProzess.getWerkstueckeList().get(0);
             if (myWerkstueck.getEigenschaftenSize() > 0) {
                 for (Masterpieceproperty eig : myWerkstueck.getEigenschaftenList()) {
-                    // Werkstueckeigenschaft eig = (Werkstueckeigenschaft) iter.next();
 
                     if (eig.getTitel().equals("TifHeaderDocumentname")) {
                         this.tifHeader_documentname = eig.getWert();

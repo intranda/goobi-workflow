@@ -113,7 +113,6 @@ public class MetaPerson implements SearchableMetadata {
         this.bean = bean;
         this.mdh = new MetadatenHelper(inPrefs, null);
         myValues = new DisplayCase(inProcess, p.getType());
-        //                    initializeValues();
 
         List<TagDescription> mainTagList = new ArrayList<>();
         mainTagList.add(new TagDescription("200", "_", "|", "a", null));

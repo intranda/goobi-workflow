@@ -45,7 +45,13 @@
     align-items: center;
     padding: 1rem 1.5rem !important; // BS override
 
+    // align border of .dropdown-menu with active (white) nav-link togglers
+    border: 1px solid var(--clr-primary-400);
+    border-top: 0;
+    border-bottom: 0;
+
     &:hover {
+      border-color: var(--clr-primary-600);
       background-color: var(--clr-primary-600);
       color: var(--clr-white);
     }
@@ -173,6 +179,11 @@
         &:not(:last-child) {
           border-bottom: 1px solid var(--clr-white);
         }
+
+        .nav-link {
+          border-color: var(--clr-primary-600);
+        }
+
         // Do not show active states when using the mobile menu
         &.dropdown.active {
           background-color: var(--clr-primary-600);
@@ -189,6 +200,7 @@
       // Prevent layout shifts when clicking on a .nav-item (.open has a different margin)
       .dropdown-menu[data-bs-popper] {
         margin-top: 0;
+        left: -1px; /* align dropdown + menu icon */
       }
     }
   }

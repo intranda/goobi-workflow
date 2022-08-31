@@ -97,9 +97,7 @@ public class MassImportForm implements Serializable {
 
     @Inject
     private GoobiScriptManager goobiScriptManager;
-    // private List<String> recordList = new ArrayList<String>();
     private ImportFormat format = null;
-    // private List<String> usablePlugins = new ArrayList<String>();
     private final ImportPluginLoader ipl = new ImportPluginLoader();
 
     @Getter
@@ -107,7 +105,6 @@ public class MassImportForm implements Serializable {
 
     private Path importFile = null;
     private final Helper help = new Helper();
-    // private ImportConfiguration ic = null;
 
     // progress bar
     @Setter
@@ -171,9 +168,7 @@ public class MassImportForm implements Serializable {
     private NavigationForm bean;
 
     public MassImportForm() {
-
-        // usablePlugins = ipl.getTitles();
-
+    	
     }
 
     @PostConstruct
@@ -401,9 +396,6 @@ public class MassImportForm implements Serializable {
             this.plugin.setPrefs(prefs);
 
             if (StringUtils.isNotEmpty(this.idList)) {
-                // IImportPlugin plugin = (IImportPlugin)
-                // PluginLoader.getPlugin(PluginType.Import,
-                // this.currentPlugin);
                 List<String> ids = this.plugin.splitIds(this.idList);
                 List<Record> recordList = new ArrayList<>();
                 for (String id : ids) {
@@ -417,9 +409,6 @@ public class MassImportForm implements Serializable {
                 answer = this.plugin.generateFiles(recordList);
             } else if (this.importFile != null) {
                 // uploaded file
-                // IImportPlugin plugin = (IImportPlugin)
-                // PluginLoader.getPlugin(PluginType.Import,
-                // this.currentPlugin);
                 this.plugin.setFile(this.importFile.toFile());
                 List<Record> recordList = this.plugin.generateRecordsFromFile();
                 for (Record r : recordList) {
@@ -429,9 +418,6 @@ public class MassImportForm implements Serializable {
                 answer = this.plugin.generateFiles(recordList);
             } else if (StringUtils.isNotEmpty(this.records)) {
                 // found list with records
-                // IImportPlugin plugin = (IImportPlugin)
-                // PluginLoader.getPlugin(PluginType.Import,
-                // this.currentPlugin);
                 List<Record> recordList = this.plugin.splitRecords(this.records);
                 for (Record r : recordList) {
                     r.setCollections(this.digitalCollections);
@@ -459,9 +445,6 @@ public class MassImportForm implements Serializable {
                 }
                 if (io.getImportReturnValue().equals(ImportReturnValue.ExportFinished)) {
                     Process p = JobCreation.generateProcess(io, this.template);
-                    // int returnValue =
-                    // HotfolderJob.generateProcess(io.getProcessTitle(),
-                    // this.template, new File(tempfolder), null, "error", b);
                     if (p == null) {
                         if (io.getImportFileName() != null && !io.getImportFileName().isEmpty() && selectedFilenames != null
                                 && !selectedFilenames.isEmpty()) {
@@ -478,7 +461,6 @@ public class MassImportForm implements Serializable {
                 } else {
                     String[] parameter = { io.getProcessTitle(), io.getErrorMessage() };
                     Helper.setFehlerMeldung(Helper.getTranslation("importFailedError", parameter));
-                    // Helper.setFehlerMeldung("import failed for: " + io.getProcessTitle() + " Error message is: " + io.getErrorMessage());
                     if (io.getImportFileName() != null && !io.getImportFileName().isEmpty() && selectedFilenames != null
                             && !selectedFilenames.isEmpty()) {
                         if (selectedFilenames.contains(io.getImportFileName())) {
@@ -586,9 +568,6 @@ public class MassImportForm implements Serializable {
      */
 
     private boolean testForData() {
-        // if (format == null) {
-        // return false;
-        // }
         if (StringUtils.isEmpty(this.idList) && StringUtils.isEmpty(this.records) && (this.importFile == null)
                 && this.selectedFilenames.size() == 0) {
             return false;

@@ -58,7 +58,6 @@ public class SessionCounterFilter implements Filter {
 
         HttpServletRequest httpReq = (HttpServletRequest) request;
         try {
-            //            SessionForm sf = Helper.getSessionBean();
             sf.updateSessionLastAccess(httpReq.getSession());
         } catch (Exception e) {
 

@@ -210,15 +210,6 @@ public class SessionForm implements Serializable {
         sessionInfo.setUserId(0);
         sessionInfo.setUserTimeout(newSession.getMaxInactiveInterval());
 
-        /*
-        if (this.request == null) {
-             FacesContext context = FacesContextHelper.getCurrentFacesContext();
-             if (context != null) {
-                 this.request = (HttpServletRequest) context.getExternalContext().getRequest();
-            }
-        }
-         */
-
         if (this.request == null) {
             this.sessions.add(sessionInfo);
             return;
