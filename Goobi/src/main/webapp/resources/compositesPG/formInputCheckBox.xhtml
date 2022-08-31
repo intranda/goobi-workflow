@@ -26,7 +26,7 @@
 			<div class="#{cc.attrs.classLeft}" tabindex="-1">
 				<h:outputLabel for="#{cc.attrs.name}" value="#{cc.attrs.label}" styleClass="form-check-label"/>
 				<h:panelGroup rendered="#{cc.attrs.required or cc.attrs.displayAsRequired}">
-					<i class="fa fa-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip"/>
+					<i class="fa fa-asterisk form__required" title="#{msgs.requiredField}" data-toggle="tooltip"/>
 				</h:panelGroup>
 			</div>
 			<div class="#{cc.attrs.classRight}" style="#{cc.attrs.styleRight}">

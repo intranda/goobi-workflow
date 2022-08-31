@@ -8,7 +8,7 @@
 		<composite:attribute name="label" />
 		<composite:attribute name="field" />
 		<composite:attribute name="help" />
-		<composite:attribute name="fieldStyle" />
+		<composite:attribute name="fieldStyle" default="form-control"/>
 		<composite:attribute name="required" default="true" />
 		<composite:attribute name="displayAsRequired" default="false" />
 		<composite:attribute name="style" />
@@ -30,7 +30,7 @@
 				<label for="#{cc.attrs.name}" class="form__label">
 					#{cc.attrs.label}
 					<h:panelGroup rendered="#{cc.attrs.required or cc.attrs.displayAsRequired}" >
-						<i class="fa fa-asterisk ps-2 text-neutral-400 fs-200 form__required" data-bs-original-title="#{msgs.requiredField}" data-toggle="tooltip"/>
+						<i class="fa fa-asterisk form__required" data-bs-original-title="#{msgs.requiredField}" data-toggle="tooltip"/>
 					</h:panelGroup>
 				</label>
 			</div> <!-- end col -->
