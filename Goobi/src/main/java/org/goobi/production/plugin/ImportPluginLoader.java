@@ -36,7 +36,9 @@ import org.goobi.production.plugin.interfaces.IPlugin;
 
 public class ImportPluginLoader extends PluginLoader {
 
-    public List<String> getPluginsForType(ImportType type) {
+    private static final long serialVersionUID = -4436163757899502817L;
+
+	public List<String> getPluginsForType(ImportType type) {
         List<String> pluginList = new ArrayList<String>();
 
         for (IPlugin p : PluginLoader.getPluginList(PluginType.Import)) {

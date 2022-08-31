@@ -103,7 +103,7 @@ public class MassImportForm implements Serializable {
     @Getter
     private String currentPlugin = "";
 
-    private Path importFile = null;
+    private transient Path importFile = null;
     private final Helper help = new Helper();
 
     // progress bar
@@ -153,7 +153,7 @@ public class MassImportForm implements Serializable {
     private String idList = "";
     @Getter
     @Setter
-    private Part uploadedFile = null;
+    private transient Part uploadedFile = null;
     @Getter
     @Setter
     private List<String> allFilenames = new ArrayList<>();

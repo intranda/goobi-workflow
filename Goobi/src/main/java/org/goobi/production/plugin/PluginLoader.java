@@ -1,5 +1,6 @@
 package org.goobi.production.plugin;
 
+import java.io.Serializable;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -38,9 +39,11 @@ import net.xeoh.plugins.base.PluginManager;
 import net.xeoh.plugins.base.impl.PluginManagerFactory;
 import net.xeoh.plugins.base.util.PluginManagerUtil;
 
-public class PluginLoader {
+public class PluginLoader implements Serializable{
 
-    public static List<IPlugin> getPluginList(PluginType inType) {
+    private static final long serialVersionUID = -5922522891886118875L;
+
+	public static List<IPlugin> getPluginList(PluginType inType) {
         PluginManagerUtil pmu = initialize(inType);
         Collection<IPlugin> plugins = pmu.getPlugins(IPlugin.class);
         return new ArrayList<>(plugins);
