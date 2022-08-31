@@ -25,6 +25,8 @@ package org.goobi.api.mail;
  * exception statement from your version.
  */
 
+import java.io.Serializable;
+
 import lombok.Data;
 
 /**
@@ -33,9 +35,11 @@ import lombok.Data;
  */
 
 @Data
-public class StepConfiguration {
+public class StepConfiguration implements Serializable{
 
-    private Integer id;
+    private static final long serialVersionUID = 1969795778921420658L;
+    
+	private Integer id;
     private Integer projectId;
     private String stepName;
 
