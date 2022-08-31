@@ -20,7 +20,7 @@ th span {
 }
 
 td {
-	word-break: break-all;
+  word-break: break-all;
   .btn-group .btn:not(:first-of-type) {
     margin-right: 0.8rem;
   }
@@ -64,7 +64,7 @@ td {
 .dataTables__search__filter {
   margin-left: auto;
 }
-.dataTables__search__actions {
+.dataTables__actions {
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
@@ -75,7 +75,6 @@ td {
   align-items: center;
 
   &__page-count {
-    margin-left: .8rem;
+    margin-left: 0.8rem;
   }
-
 }

@@ -46,9 +46,7 @@
     padding: 1rem 1.5rem !important; // BS override
 
     // align border of .dropdown-menu with active (white) nav-link togglers
-    border: 1px solid var(--clr-primary-400);
-    border-top: 0;
-    border-bottom: 0;
+    border-left: 1px solid var(--clr-primary-400);
 
     &:hover {
       border-color: var(--clr-primary-600);
