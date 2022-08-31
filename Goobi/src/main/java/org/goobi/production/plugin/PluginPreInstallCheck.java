@@ -40,7 +40,7 @@ public class PluginPreInstallCheck implements Serializable{
 
     private static final long serialVersionUID = -1734158555354493829L;
     
-	private Path pluginExtractedPath;
+	private transient Path pluginExtractedPath;
     private PluginInstallInfo info;
     private Map<String, PluginInstallConflict> conflicts;
     private String error;
