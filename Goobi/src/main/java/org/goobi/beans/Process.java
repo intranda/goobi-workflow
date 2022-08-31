@@ -214,12 +214,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     @Getter
     @Setter
-    private Part uploadedFile = null;
+    private transient Part uploadedFile = null;
     @Getter
     @Setter
     private String uploadFolder = "intern";
 
-    private Path tempFileToImport;
+    private transient Path tempFileToImport;
     private String basename;
 
     @Getter
