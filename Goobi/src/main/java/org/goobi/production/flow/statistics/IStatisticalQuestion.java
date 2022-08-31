@@ -1,5 +1,7 @@
 package org.goobi.production.flow.statistics;
 
+import java.io.Serializable;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -41,7 +43,7 @@ import de.intranda.commons.chart.results.DataTable;
  * @author Wulf Riebensahm
  * @author Steffen Hankiewicz
  ****************************************************************************/
-public interface IStatisticalQuestion {
+public interface IStatisticalQuestion extends Serializable{
 
     /**
      * This method returns a list of DataTable Objects, which can be used to display the results of the data request
