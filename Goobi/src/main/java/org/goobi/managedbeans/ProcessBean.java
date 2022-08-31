@@ -1880,8 +1880,9 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     @Getter
-    public static class ProcessCounterObject {
-        private String title;
+    public static class ProcessCounterObject implements Serializable{
+        private static final long serialVersionUID = -4287461260229760734L;
+		private String title;
         private int metadata;
         private int docstructs;
         private int images;

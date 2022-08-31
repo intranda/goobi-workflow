@@ -1,5 +1,7 @@
 package org.goobi.production.flow.helper;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,7 +20,9 @@ import lombok.Setter;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-public class SearchColumn {
+public class SearchColumn implements Serializable{
+
+	private static final long serialVersionUID = -3474943392910282588L;
 
 	@Getter
 	@Setter
