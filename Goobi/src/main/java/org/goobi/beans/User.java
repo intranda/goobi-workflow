@@ -27,6 +27,7 @@ package org.goobi.beans;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,9 +61,11 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class User implements DatabaseObject {
+public class User implements DatabaseObject, Serializable {
 
-    @Getter
+    private static final long serialVersionUID = -1540863402168133130L;
+    
+	@Getter
     @Setter
     private Integer id;
     @Getter
