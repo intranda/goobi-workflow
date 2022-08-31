@@ -1,5 +1,10 @@
 /* Base box */
 
+/* VARIABLES */
+.box {
+  --box-padding: 2rem;
+}
+
 .box {
   border: 2px solid var(--clr-neutral, #ddd);
   border-radius: var(--border-radius);
@@ -13,7 +18,7 @@
   //  margin: auto;
 }
 
-.box-title {
+.box__title {
   color: var(--clr-white, #fff);
   display: flex;
   justify-content: space-between;
@@ -41,8 +46,8 @@
   }
 }
 
-.box-content {
-  padding: 2rem;
+.box__content {
+  padding: var(--box-padding);
 
   // Apply a border-bottom to first level rows only
   // => nested rows will not have a border
@@ -55,17 +60,24 @@
   }
 }
 
-.box-content:not(.p-0) {
+.box__content--padded {
+  .box__title {
+    margin: calc(var(--box-padding) * -1);
+    margin-bottom: unset;
+  }
+
   tr {
-    /*
     border-left: 1px solid var(--clr-neutral-300);
     border-right: 1px solid var(--clr-neutral-300);
-    */
+  }
+
+  .no-borders tr {
+    border: 0;
   }
 }
 
 /* Box content without padding */
-.box-content.p-0 {
+.box__content.p-0 {
   /* prevent rows from overlapping boxes */
   .row,
   [class^="col-"] {
