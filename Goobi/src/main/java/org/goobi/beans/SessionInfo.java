@@ -53,7 +53,7 @@ public class SessionInfo implements Serializable {
     @Getter
     @JsonIgnore
     @Setter
-    private HttpSession session;
+    private transient HttpSession session;
 
     /**
      * The id of the HTTP session object
