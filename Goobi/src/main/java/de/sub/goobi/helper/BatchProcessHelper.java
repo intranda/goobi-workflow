@@ -1,5 +1,6 @@
 package de.sub.goobi.helper;
 
+import java.io.Serializable;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -49,9 +50,11 @@ import lombok.extern.log4j.Log4j2;
 
 @Data
 @Log4j2
-public class BatchProcessHelper {
+public class BatchProcessHelper implements Serializable{
 
-    private List<Process> processes;
+    private static final long serialVersionUID = 8313940977308996834L;
+    
+	private List<Process> processes;
     private Process currentProcess;
     private List<ProcessProperty> processPropertyList;
     private ProcessProperty processProperty;
