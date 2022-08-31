@@ -89,7 +89,7 @@ public class PluginInstallBean implements Serializable {
 
     @Getter
     @Setter
-    private Part uploadedPluginFile;
+    private transient Part uploadedPluginFile;
     @Getter
     @Setter
     private PluginInstaller pluginInstaller;
@@ -97,8 +97,8 @@ public class PluginInstallBean implements Serializable {
     @Getter
     private Map<String, List<PluginInstallInfo>> availablePlugins;
 
-    private Path currentExtractedPluginPath;
-    private Path tempDir;
+    private transient Path currentExtractedPluginPath;
+    private transient Path tempDir;
 
     @PostConstruct
     private void init() throws ClientProtocolException, IOException, JDOMException {
