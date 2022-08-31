@@ -26,12 +26,12 @@
 			<div class="row" role="main">
 				<div class="col-sm-12">
 
-
 					<intranda:box
 						boxType="primary-400"
 						icon="fa-user"
 						title="#{myPageTitle}"
-						padding="false">
+						padding="false"
+						>
 
 							<div class="dataTables flow">
 
@@ -183,9 +183,9 @@
 												</td>
 												<!-- ### Action Buttons ### -->
 												<td>
-													<div class="dataTables__search__actions">
+													<div class="dataTables__actions">
 														<!-- Bearbeiten-Schaltknopf -->
-														<button jsf:id="edit" class="btn btn-primary-400"
+														<button jsf:id="edit" class="btn btn-blank"
 															jsf:rel="tooltip" jsf:action="user_edit"
 															title="#{msgs.benutzerBearbeiten}">
 															<i class="fa fa-pencil"></i>
@@ -203,7 +203,7 @@
 														<!-- Benutzerprofil laden-Schaltknopf -->
 														<button jsf:id="switch"
 															jsf:rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch')}"
-															class="btn btn-primary-400 hidden-xs"
+															class="btn btn-blank"
 															jsf:action="#{LoginForm.EinloggenAls}"
 															title="#{msgs.benutzerprofilLaden}">
 															<i class="fa fa-user-secret"></i>
@@ -217,7 +217,7 @@
 
 														<!-- Create new random password for user -->
 														<button jsf:id="createNewRandomPassword"
-															class="btn btn-primary-400" jsf:rel="tooltip"
+															class="btn btn-blank" jsf:rel="tooltip"
 															title="#{msgs.createNewRandomPassword}"
 															jsf:rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords') and (item.ldapGruppe.authenticationType != 'ldap' or not item.ldapGruppe.readonly)}"
 															jsf:onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
