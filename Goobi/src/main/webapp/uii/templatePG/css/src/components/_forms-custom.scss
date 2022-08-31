@@ -1,7 +1,25 @@
-.form-actions {
+.form-actions,
+.box__actions {
   display: flex;
+  gap: 8px;
   justify-content: flex-end;
   padding: 1.2rem;
+
+  // Delete btn goes left
+  .btn-hot {
+    order: 1;
+    margin-right: auto;
+  }
+
+  // Cancel btn goes left of save btn
+  .btn-blank {
+    order: 2;
+  }
+
+  // Save btn goes right
+  .btn-success {
+    order: 3;
+  }
 }
 
 .form-group {
