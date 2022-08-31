@@ -89,11 +89,11 @@ public class PluginInstaller implements Serializable{
     private static Pattern typeExtractor = Pattern.compile("plugin_intranda_(.+?)_.*");
     private static String pluginPackagePath = ".plugin-packages";
 
-    private Path extractedArchivePath;
-    private Path goobiDirectory;
+    private transient Path extractedArchivePath;
+    private transient Path goobiDirectory;
     private PluginInstallInfo pluginInfo;
     private PluginPreInstallCheck check;
-    private Path uploadedArchiveFile;
+    private transient Path uploadedArchiveFile;
     private String archiveFileName;
 
     public void install() {

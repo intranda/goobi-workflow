@@ -25,6 +25,7 @@
  */
 package org.goobi.production.plugin;
 
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.Map;
 
@@ -35,9 +36,11 @@ import lombok.ToString;
 @Data
 @AllArgsConstructor
 @ToString
-public class PluginPreInstallCheck {
+public class PluginPreInstallCheck implements Serializable{
 
-    private Path pluginExtractedPath;
+    private static final long serialVersionUID = -1734158555354493829L;
+    
+	private Path pluginExtractedPath;
     private PluginInstallInfo info;
     private Map<String, PluginInstallConflict> conflicts;
     private String error;
