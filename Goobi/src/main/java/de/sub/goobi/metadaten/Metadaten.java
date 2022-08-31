@@ -1787,9 +1787,9 @@ public class Metadaten implements Serializable {
 
         //reading direction
         setRepresentativeMetadata();
-
+        boolean writeMetadata = false;
         try {
-            this.myProzess.writeMetadataFile(this.gdzfile);
+            writeMetadata = this.myProzess.writeMetadataFile(this.gdzfile);
         } catch (Exception e) {
             Helper.setFehlerMeldung("Metafile is not writable.", e);
             log.error(e);
@@ -1798,7 +1798,7 @@ public class Metadaten implements Serializable {
         myProzess.removeTemporaryMetadataFiles();
 
         SperrungAufheben();
-        return this.zurueck;
+        return writeMetadata ? this.zurueck : "";
     }
 
     /**

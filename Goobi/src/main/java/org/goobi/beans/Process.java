@@ -26,7 +26,6 @@
  */
 package org.goobi.beans;
 
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -1017,21 +1016,20 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return result;
     }
 
-    public synchronized void writeMetadataFile(Fileformat gdzfile) throws IOException, SwapException, WriteException, PreferencesException {
+    public synchronized boolean writeMetadataFile(Fileformat gdzfile) throws IOException, SwapException, WriteException, PreferencesException {
 
         String path = this.getProcessDataDirectory();
         int maximumNumberOfBackups = ConfigurationHelper.getInstance().getNumberOfMetaBackups();
-
 
         // Backup meta.xml
         String metaFileName = "meta.xml";
         Path metaFile = Paths.get(path, metaFileName);
 
         // cancel if less than 10 mb free storage is available
-        if(Files.getFileStore(metaFile).getUsableSpace()< 10485760l) {
+        if (Files.getFileStore(Paths.get(path)).getUsableSpace() < 10485760l) {
             Helper.setFehlerMeldung(Helper.getTranslation("process_writeErrorNoSpace"));
             log.error("Saving metadata for {} was cancelled because there is not enough storage available.", id);
-            return;
+            return false;
         }
 
         String backupMetaFileName = Process.createBackup(path, metaFileName, maximumNumberOfBackups);
@@ -1072,6 +1070,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         Map<String, List<String>> jsonMetadata = MetadatenHelper.getMetadataOfFileformat(gdzfile, true);
 
         MetadataManager.updateJSONMetadata(id, jsonMetadata);
+        return true;
     }
 
     private static String createBackup(String path, String fileName, int maximumNumberOfBackups) {

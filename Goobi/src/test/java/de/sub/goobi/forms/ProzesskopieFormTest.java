@@ -88,7 +88,7 @@ public class ProzesskopieFormTest extends AbstractTest {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
         ConfigurationHelper.getInstance().setParameter("script_createDirMeta", "");
 
         this.template = MockProcess.createProcess();
@@ -177,7 +177,7 @@ public class ProzesskopieFormTest extends AbstractTest {
 
     }
 
-    //    @Test
+    @Test
     public void testNeuenProzessAnlegen() throws Exception {
         Path meta = folder.newFolder("metadata").toPath();
         Files.createDirectories(meta);
@@ -418,7 +418,6 @@ public class ProzesskopieFormTest extends AbstractTest {
         //        FilesystemHelper.createDirectory(EasyMock.anyString());
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(null);
         //        EasyMock.expectLastCall().anyTimes();
-
 
         PowerMock.mockStatic(Helper.class);
         EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
