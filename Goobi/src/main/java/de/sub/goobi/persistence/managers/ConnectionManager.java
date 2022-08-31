@@ -51,7 +51,7 @@ public class ConnectionManager implements Serializable{
 
     private static final long serialVersionUID = 5383856824401199510L;
     
-	private DataSource ds = null;
+	private transient DataSource ds = null;
     @SuppressWarnings("rawtypes")
     private static GenericObjectPool _pool = null;
 
