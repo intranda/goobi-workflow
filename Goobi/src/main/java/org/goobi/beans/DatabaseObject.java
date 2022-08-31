@@ -1,5 +1,7 @@
 package org.goobi.beans;
 
+import java.io.Serializable;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -16,6 +18,6 @@ package org.goobi.beans;
  * 
  */
 
-public interface DatabaseObject {
+public interface DatabaseObject extends Serializable{
     public void lazyLoad();
 }

@@ -41,7 +41,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class DatabasePaginator implements Serializable {
     private static final long serialVersionUID = 1571881092118205104L;
-    protected List<? extends DatabaseObject> results;
+    protected transient List<? extends DatabaseObject> results;
     protected int pageSize = 10;
     protected int page = 0;
     @Getter
@@ -51,7 +51,7 @@ public class DatabasePaginator implements Serializable {
     protected IManager manager;
     private String returnPage;
 
-    protected List<Integer> idList = new ArrayList<>();
+    protected transient List<Integer> idList = new ArrayList<>();
     protected Institution institution;
 
     public DatabasePaginator(String order, String filter, IManager manager, String returnPage) {
