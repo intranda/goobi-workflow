@@ -1,0 +1,25 @@
+/* ========================================
+ * Styles for
+ *
+ * user_all.xhtml
+ * user_config.xhtml
+ * user_edit.xhtml
+ * user_password.xhtml
+ * ====================================== */
+
+.users {
+  &__project-box-1 {
+    td:first-child {
+      display: flex;
+      align-items: center;
+      gap: var(--gap, 8px);
+    }
+    td {
+      vertical-align: middle;
+    }
+  }
+
+  &__project-box-2 {
+    display: none;
+  }
+}

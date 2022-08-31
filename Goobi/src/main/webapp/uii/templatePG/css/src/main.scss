@@ -3,6 +3,8 @@
 @use "typography";
 @use "layout";
 @use "utilities-custom";
+
+// COMPONENTS
 @use "components/nav-custom";
 @use "components/header";
 @use "components/alerts-custom";
@@ -12,4 +14,7 @@
 @use "components/forms-custom";
 @use "components/progress-custom";
 @use "components/buttons";
+
+// PAGES
 @use "pages/design-system";
+@use "pages/users";
