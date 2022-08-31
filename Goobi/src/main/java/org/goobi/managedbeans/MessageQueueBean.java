@@ -73,10 +73,10 @@ public class MessageQueueBean extends BasicBean implements Serializable {
 
     private static final long serialVersionUID = 9201515793444130154L;
 
-    private Gson gson = new Gson();
+    private transient Gson gson = new Gson();
 
-    private ActiveMQConnection connection;
-    private QueueSession queueSession;
+    private transient ActiveMQConnection connection;
+    private transient QueueSession queueSession;
 
     @Getter
     @Setter
