@@ -25,6 +25,8 @@
  */
 package org.goobi.production.plugin;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -34,8 +36,10 @@ import lombok.Getter;
  * @author Maurice Mueller
  */
 @AllArgsConstructor
-public class SpanTag {
-    public static final String TEXT_NORMAL = "TEXT_NORMAL";
+public class SpanTag implements Serializable{
+    private static final long serialVersionUID = 364813288401591536L;
+    
+	public static final String TEXT_NORMAL = "TEXT_NORMAL";
     public static final String TEXT_INSERTED_PASSIVE = "TEXT_INSERTED_PASSIVE";
     public static final String TEXT_INSERTED_ACTIVE = "TEXT_INSERTED_ACTIVE";
     public static final String TEXT_DELETED_PASSIVE = "TEXT_DELETED_PASSIVE";
