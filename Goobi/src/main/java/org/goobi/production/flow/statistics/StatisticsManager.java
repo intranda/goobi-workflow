@@ -68,7 +68,7 @@ import lombok.extern.log4j.Log4j2;
 public class StatisticsManager implements Serializable {
     private static final long serialVersionUID = -1070332559779545423L;
     /* simple JFreeChart Dataset for the old simple statistics */
-    private Dataset jfreeDataset;
+    private transient Dataset jfreeDataset;
     @Getter
     private String jfreeImage;
     /* internal StatisticsMode */
