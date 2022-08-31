@@ -1,5 +1,7 @@
 package org.goobi.production.chart;
 
+import java.io.Serializable;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -23,8 +25,9 @@ package org.goobi.production.chart;
  * exception statement from your version.
  */
 
-public class ProjectTask implements IProjectTask {
-    private String taskTitle;
+public class ProjectTask implements IProjectTask, Serializable {
+    private static final long serialVersionUID = 6638946547609335780L;
+	private String taskTitle;
     private Integer taskStepsCompleted;
     private Integer taskStepsMax;
     private Integer taskConfiguredSteps;
