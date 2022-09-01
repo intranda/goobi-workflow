@@ -178,7 +178,6 @@ public class GoobiImageResource {
     @Produces({ MediaType.APPLICATION_JSON, ImageResource.MEDIA_TYPE_APPLICATION_JSONLD })
     public Response redirectToCanonicalImageInfo() throws ContentLibException {
         try {
-            //            addResponseContentType(request, response);
             Response resp = Response.seeOther(PathConverter.toURI(request.getRequestURI() + "/info.json"))
                     .header("Content-Type", response.getContentType())
                     .build();

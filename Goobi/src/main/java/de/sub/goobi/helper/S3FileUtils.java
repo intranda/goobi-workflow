@@ -644,7 +644,7 @@ public class S3FileUtils implements StorageProviderInterface {
             return nio.isFileExists(path);
         }
         // handle prefix, too
-        return s3.doesObjectExist(getBucket(), path2Key(path)) || s3.listObjects(getBucket(), path2Prefix(path)).getObjectSummaries().size() > 0;
+        return s3.doesObjectExist(getBucket(), path2Key(path)) || ! s3.listObjects(getBucket(), path2Prefix(path)).getObjectSummaries().isEmpty();
     }
 
     @Override

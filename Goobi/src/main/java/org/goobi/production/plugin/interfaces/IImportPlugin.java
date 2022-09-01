@@ -26,6 +26,7 @@ package org.goobi.production.plugin.interfaces;
  * exception statement from your version.
  */
 import java.io.File;
+import java.io.Serializable;
 import java.util.List;
 
 import org.goobi.production.enums.ImportType;
@@ -39,7 +40,7 @@ import de.sub.goobi.helper.exceptions.ImportPluginException;
 import ugh.dl.Fileformat;
 import ugh.dl.Prefs;
 
-public interface IImportPlugin extends IPlugin {
+public interface IImportPlugin extends IPlugin, Serializable {
 
     public void setPrefs(Prefs prefs);
 

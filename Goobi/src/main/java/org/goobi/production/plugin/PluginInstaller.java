@@ -27,6 +27,7 @@ package org.goobi.production.plugin;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -70,8 +71,10 @@ import lombok.extern.log4j.Log4j2;
 
 @Data
 @Log4j2
-public class PluginInstaller {
-    private static final String LINEBREAK = System.getProperty("line.separator");
+public class PluginInstaller implements Serializable{
+    private static final long serialVersionUID = -5968198401348089489L;
+    
+	private static final String LINEBREAK = System.getProperty("line.separator");
     public final static Set<String> endingWhitelist = Sets.newHashSet(".js", ".css", ".jar");
     public final static Set<String> pathBlacklist = Sets.newHashSet("pom.xml");
     private static Namespace pomNs = Namespace.getNamespace("pom", "http://maven.apache.org/POM/4.0.0");
@@ -86,11 +89,11 @@ public class PluginInstaller {
     private static Pattern typeExtractor = Pattern.compile("plugin_intranda_(.+?)_.*");
     private static String pluginPackagePath = ".plugin-packages";
 
-    private Path extractedArchivePath;
-    private Path goobiDirectory;
+    private transient Path extractedArchivePath;
+    private transient Path goobiDirectory;
     private PluginInstallInfo pluginInfo;
     private PluginPreInstallCheck check;
-    private Path uploadedArchiveFile;
+    private transient Path uploadedArchiveFile;
     private String archiveFileName;
 
     public void install() {

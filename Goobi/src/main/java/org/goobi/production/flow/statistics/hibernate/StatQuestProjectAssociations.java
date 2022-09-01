@@ -58,7 +58,7 @@ public class StatQuestProjectAssociations implements IStatisticalQuestion {
         List<DataTable> allTables = new ArrayList<>();
 
         List<Integer> idList = ProcessManager.getIdsForFilter(filter);
-        //        select projekte.titel, count(prozesse.projekteId) from prozesse, projekte where prozesse.ProjekteID = projekte.ProjekteID group by prozesse.projekteId;
+        //        select projekte.titel, count(prozesse.projekteId) from prozesse, projekte where prozesse.ProjekteID = projekte.ProjekteID group by prozesse.projekteId; (NOSONAR)
 
         if (idList == null || idList.isEmpty()) {
             return null;
@@ -73,22 +73,6 @@ public class StatQuestProjectAssociations implements IStatisticalQuestion {
         String sql = " select projekte.titel, count(prozesse.projekteId) from prozesse, projekte where prozesse.ProjekteID = projekte.ProjekteID AND "
                 + condition + " group by prozesse.projekteId";
 
-        //		ProjectionList proj = Projections.projectionList();
-        //		proj.add(Projections.count("id"));
-        //		proj.add(Projections.groupProperty("proj.titel"));
-        //
-        //		Criteria crit;
-
-        //		if (originalFilter instanceof UserDefinedFilter) {
-        //			crit = new UserDefinedFilter(originalFilter.getIDList())
-        //					.getCriteria();
-        //			crit.createCriteria("projekt", "proj");
-        //		} else {
-        //			crit = originalFilter.clone().getCriteria();
-        //		}
-
-        // use a clone on the filter and apply the projection on the clone
-        //		crit.setProjection(proj);
         @SuppressWarnings("rawtypes")
         List rawData = ProcessManager.runSQL(sql);
         StringBuilder title = new StringBuilder(StatisticsMode.getByClassName(this.getClass()).getTitle());

@@ -236,7 +236,7 @@ public class MetadatenImagesHelper {
 
         DocStruct logical = this.mydocument.getLogicalDocStruct();
         if (logical.getType().isAnchor()) {
-            if (logical.getAllChildren() != null && logical.getAllChildren().size() > 0) {
+            if (logical.getAllChildren() != null && ! logical.getAllChildren().isEmpty()) {
                 logical = logical.getAllChildren().get(0);
             }
         }
@@ -537,7 +537,7 @@ public class MetadatenImagesHelper {
         if (physicaldocstruct.getAllChildren() != null) {
             for (DocStruct page : physicaldocstruct.getAllChildren()) {
                 List<? extends Metadata> pageNoMetadata = page.getAllMetadataByType(mdt);
-                if (pageNoMetadata == null || pageNoMetadata.size() == 0) {
+                if (pageNoMetadata == null || pageNoMetadata.isEmpty()) {
                     currentPhysicalOrder++;
                     break;
                 }
@@ -838,7 +838,7 @@ public class MetadatenImagesHelper {
     public List<String> getImageFiles(DocStruct physical) {
         List<String> orderedFileList = new ArrayList<>();
         List<DocStruct> pages = physical.getAllChildren();
-        if (pages != null && pages.size() > 0) {
+        if (pages != null && ! pages.isEmpty()) {
             for (DocStruct page : pages) {
                 String filename = page.getImageName();
                 if (filename != null) {

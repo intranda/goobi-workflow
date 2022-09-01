@@ -25,6 +25,7 @@
  */
 package org.goobi.vocabulary;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,9 +44,11 @@ import lombok.NonNull;
 @Data
 @XmlRootElement
 @NoArgsConstructor
-public class Definition {
+public class Definition implements Serializable{
 
-    private Integer id;
+    private static final long serialVersionUID = 4869232901046909915L;
+
+	private Integer id;
 
     // e.g. 'title'
     @NonNull

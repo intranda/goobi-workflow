@@ -26,6 +26,7 @@ package org.goobi.api.mail;
  */
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,10 +39,11 @@ import lombok.Data;
  */
 
 @Data
-public class UserProjectConfiguration {
+public class UserProjectConfiguration implements Serializable{
 
+    private static final long serialVersionUID = 6445115428016017804L;
 
-    private String projectName;
+	private String projectName;
 
     private Integer projectId;
 

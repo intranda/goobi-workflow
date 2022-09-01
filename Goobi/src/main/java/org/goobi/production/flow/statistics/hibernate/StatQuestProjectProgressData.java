@@ -344,7 +344,6 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
      * @return DataTable
      */
     private DataTable buildDataTableFromSQL(String natSQL) {
-        //		Session session = Helper.getHibernateSession();
 
         if (this.commonWorkFlow == null) {
             return null;
@@ -358,16 +357,6 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
             headerRow.addValue(stepName, Double.parseDouble("0"));
         }
 
-        //		SQLQuery query = session.createSQLQuery(natSQL);
-        //
-        //		// needs to be there otherwise an exception is thrown
-        //		query.addScalar("stepCount", StandardBasicTypes.DOUBLE);
-        //		query.addScalar("stepName", StandardBasicTypes.STRING);
-        //		query.addScalar("intervall", StandardBasicTypes.STRING);
-        //
-        //		@SuppressWarnings("rawtypes")
-        //		List list = query.list();
-        //
         @SuppressWarnings("rawtypes")
         List list = ProcessManager.runSQL(natSQL);
         DataTable dtbl = new DataTable("");
@@ -483,7 +472,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
             }
         } else {
             this.selectedSteps = inSteps;
-            if (inSteps.size() > 0) {
+            if (! inSteps.isEmpty()) {
                 this.terminatingStep = inSteps.get(inSteps.size() - 1);
             }
         }

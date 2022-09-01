@@ -79,7 +79,6 @@ public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGo
         }
 
         String c = parameters.get("content");
-        // if (!c.equals(CONTENT_ALL) && !c.equals(CONTENT_EMPTY) && !c.equals(CONTENT_PART) && !c.equals(CONTENT_MORE)) {
         if (!c.equals(CONTENT_ALL) && !c.equals(CONTENT_EMPTY)) {
             Helper.setFehlerMeldung("goobiScriptfield", "Wrong content parameter", "(only limited values are allowed)");
             return new ArrayList<>();

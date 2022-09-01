@@ -35,9 +35,11 @@ import lombok.NoArgsConstructor;
 @Data
 @XmlRootElement
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StringPair {
+public class StringPair implements Serializable{
 
-    @XmlElement(name = "key")
+    private static final long serialVersionUID = -3660239476769496440L;
+    
+	@XmlElement(name = "key")
     private String one;
     @XmlElement(name = "value")
     private String two;

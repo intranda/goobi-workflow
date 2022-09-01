@@ -104,23 +104,9 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 
         List<DataTable> allTables = new ArrayList<>();
 
-        //		IEvaluableFilter originalFilter;
-        //
-        //		if (dataSource instanceof IEvaluableFilter) {
-        //			originalFilter = (IEvaluableFilter) dataSource;
-        //		} else {
-        //			throw new UnsupportedOperationException("This implementation of IStatisticalQuestion needs an IDataSource for method getDataSets()");
-        //		}
-
         // gathering IDs from the filter passed by dataSource
-        //		try {
         this.myIDlist = ProcessManager.getIdsForFilter(filter);
-        //		} catch (UnsupportedOperationException e) {
-        //		}
-        //
-        //		if (myIDlist == null || myIDlist.size() == 0) {
-        //			return null;
-        //		}
+
         /*
          * ======================================================================
          * ==============
@@ -346,16 +332,9 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
         DataRow headerRow = null;
         if (headerFromSQL != null) {
             headerRow = new DataRow(null);
-            //			SQLQuery headerQuery = session.createSQLQuery(headerFromSQL);
-            //
-            //			// needs to be there otherwise an exception is thrown
-            //			headerQuery.addScalar("stepCount", StandardBasicTypes.DOUBLE);
-            //			headerQuery.addScalar("stepName", StandardBasicTypes.STRING);
-            //			headerQuery.addScalar("stepOrder", StandardBasicTypes.DOUBLE);
-            //			headerQuery.addScalar("intervall", StandardBasicTypes.STRING);
+
             @SuppressWarnings("rawtypes")
             List headerList = ProcessManager.runSQL(headerFromSQL);
-            //			List headerList = headerQuery.list();
             for (Object obj : headerList) {
                 Object[] objArr = (Object[]) obj;
                 try {
@@ -370,16 +349,7 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
 
         }
 
-        //		SQLQuery query = session.createSQLQuery(natSQL);
-        //
-        //		// needs to be there otherwise an exception is thrown
-        //		query.addScalar("stepCount", StandardBasicTypes.DOUBLE);
-        //		query.addScalar("stepName", StandardBasicTypes.STRING);
-        //		query.addScalar("stepOrder", StandardBasicTypes.DOUBLE);
-        //		query.addScalar("intervall", StandardBasicTypes.STRING);
-
         @SuppressWarnings("rawtypes")
-        //		List list = query.list();
         List list = ProcessManager.runSQL(natSQL);
         DataTable dtbl = new DataTable("");
 
@@ -423,8 +393,6 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
                 }
                 dataRow.addValue(new Converter(objArr[2]).getString() + " (" + new Converter(objArr[3]).getString() + ")", // NOSONAR, its not nullable here
                         new Converter(objArr[0]).getDouble());
-                //						new Converter(new Converter(objArr[2]).getInteger()).getString() + " (" + new Converter(objArr[1]).getString() + ")",
-                //						(new Converter(objArr[0]).getDouble()));
 
             } catch (Exception e) {
                 dataRow.addValue(e.getMessage(), Double.valueOf(0)); // NOSONAR, its not nullable here
@@ -450,26 +418,7 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
      * @param requestedType
      */
     private Integer getMaxStepCount(HistoryEventType requestedType) {
-
-        // adding time restrictions
-        //		String natSQL = new SQLStepRequestsImprovedDiscrimination(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, this.myIDlist)
-        //				.SQLMaxStepOrder(requestedType);
-        //
-        //		Session session = Helper.getHibernateSession();
-        //		SQLQuery query = session.createSQLQuery(natSQL);
-        //
-        //		// needs to be there otherwise an exception is thrown
-        //		query.addScalar("maxStep", StandardBasicTypes.DOUBLE);
-        //
-        //		@SuppressWarnings("rawtypes")
-        //		List list = query.list();
-        //
-        //		if (list != null && list.size() > 0 && list.get(0) != null) {
-        //			return new Converter(list.get(0)).getInteger();
-        //		} else {
         return 0;
-        //		}
-
     }
 
     /**
@@ -478,25 +427,7 @@ public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe
      * @param requestedType
      */
     private Integer getMinStepCount(HistoryEventType requestedType) {
-        // adding time restrictions
-        //		String natSQL = new SQLStepRequestsImprovedDiscrimination(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, this.myIDlist)
-        //				.SQLMinStepOrder(requestedType);
-        //
-        //		Session session = Helper.getHibernateSession();
-        //		SQLQuery query = session.createSQLQuery(natSQL);
-        //
-        //		// needs to be there otherwise an exception is thrown
-        //		query.addScalar("minStep", StandardBasicTypes.DOUBLE);
-        //
-        //		@SuppressWarnings("rawtypes")
-        //		List list = query.list();
-        //
-        //		if (list != null && list.size() > 0 && list.get(0) != null) {
-        //			return new Converter(list.get(0)).getInteger();
-        //		} else {
         return 0;
-        //		}
-
     }
 
 }

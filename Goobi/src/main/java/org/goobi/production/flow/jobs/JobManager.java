@@ -83,7 +83,6 @@ public class JobManager implements ServletContextListener {
         sched.start();
 
         initializeJob(new HistoryAnalyserJob(), "dailyHistoryAnalyser", sched);
-        // initializeJobNonConfigured(new DelayJob(), 1, sched);
         initializeJob(new DelayJob(), "dailyDelayJob", sched);
         
         initializeJob(new UploadVocabJob(), "dailyVocabJob", sched);

@@ -27,9 +27,11 @@ package org.goobi.production.plugin.interfaces;
  */
 import net.xeoh.plugins.base.Plugin;
 
+import java.io.Serializable;
+
 import org.goobi.production.enums.PluginType;
 
-public interface IPlugin extends Plugin {
+public interface IPlugin extends Plugin, Serializable {
 
     public PluginType getType();
 

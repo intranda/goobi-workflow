@@ -97,7 +97,7 @@ public class SearchRequest {
 
     public String createSql() {
         //example sql: select * from metadata left join prozesse on metadata.processid = prozesse.ProzesseID where prozesse.ProzesseID IN
-        //(select processid from metadata where metadata.name="_dateDigitization" and metadata.value="2018");
+        //(select processid from metadata where metadata.name="_dateDigitization" and metadata.value="2018"); (NOSONAR)
         StringBuilder b = new StringBuilder();
         createSelect(b);
         createFrom(b);
@@ -256,14 +256,14 @@ public class SearchRequest {
 
     public String createLegacySql() {
         //example sql: select * from metadata left join prozesse on metadata.processid = prozesse.ProzesseID where prozesse.ProzesseID IN
-        //(select processid from metadata where metadata.name="_dateDigitization" and metadata.value="2018");
+        //(select processid from metadata where metadata.name="_dateDigitization" and metadata.value="2018");  (NOSONAR)
         StringBuilder builder = new StringBuilder();
         createLegacySelect(builder);
         createLegacyFrom(builder);
         createLegacyWhere(builder);
         return builder.toString();
 
-        //        return "SELECT * FROM ( SELECT processid FROM metadata WHERE (name=? and value LIKE ?)) as t";
+        //        return "SELECT * FROM ( SELECT processid FROM metadata WHERE (name=? and value LIKE ?)) as t"; (NOSONAR)
     }
 
     private void createLegacySelect(StringBuilder b) {

@@ -1,6 +1,7 @@
 package de.sub.goobi.helper;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 /**
@@ -58,9 +59,11 @@ import ugh.dl.Fileformat;
 import ugh.exceptions.UGHException;
 
 @Log4j2
-public class BeanHelper {
+public class BeanHelper implements Serializable{
 
-    public void EigenschaftHinzufuegen(Process inProzess, String inTitel, String inWert) {
+    private static final long serialVersionUID = 8661143513583015230L;
+
+	public void EigenschaftHinzufuegen(Process inProzess, String inTitel, String inWert) {
         Processproperty eig = new Processproperty();
         eig.setTitel(inTitel);
         eig.setWert(inWert);

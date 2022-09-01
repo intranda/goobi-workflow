@@ -200,7 +200,7 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
     private void deleteMetadata(List<DocStruct> dsList, String field, String value, boolean ignoreValue, Prefs prefs) {
         for (DocStruct ds : dsList) {
             List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
-            if (mdlist != null && mdlist.size() > 0) {
+            if (mdlist != null && ! mdlist.isEmpty()) {
                 for (Metadata md : mdlist) {
                     if (ignoreValue || md.getValue().equals(value)) {
                         ds.getAllMetadata().remove(md);

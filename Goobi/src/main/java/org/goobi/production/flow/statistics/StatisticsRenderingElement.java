@@ -53,11 +53,11 @@ public class StatisticsRenderingElement implements Serializable {
     @Getter
     private DataTable dataTable;
     @Getter
-    private HtmlTableRenderer htmlTableRenderer;
+    private transient HtmlTableRenderer htmlTableRenderer;
     @Getter
-    private CSVRenderer csvRenderer;
+    private transient CSVRenderer csvRenderer;
     @Getter
-    private ExcelRenderer excelRenderer;
+    private transient ExcelRenderer excelRenderer;
     private String localImagePath;
     @Getter
     private String imageUrl;

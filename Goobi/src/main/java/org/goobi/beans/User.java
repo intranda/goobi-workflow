@@ -27,6 +27,7 @@ package org.goobi.beans;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,9 +61,11 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class User implements DatabaseObject {
+public class User implements DatabaseObject, Serializable {
 
-    @Getter
+    private static final long serialVersionUID = -1540863402168133130L;
+    
+	@Getter
     @Setter
     private Integer id;
     @Getter
@@ -87,7 +90,6 @@ public class User implements DatabaseObject {
     private Integer tabellengroesse = Integer.valueOf(10);
     @Setter
     private Integer sessiontimeout = 14400;
-    //	private boolean confVorgangsdatumAnzeigen = false;
     @Getter
     @Setter
     private String metadatenSprache;
@@ -324,7 +326,7 @@ public class User implements DatabaseObject {
     }
 
     public List<Usergroup> getBenutzergruppen() {
-        if (benutzergruppen == null || benutzergruppen.size() == 0) {
+        if (benutzergruppen == null || benutzergruppen.isEmpty()) {
             try {
                 this.benutzergruppen = UsergroupManager.getUsergroupsForUser(this);
             } catch (DAOException e) {
@@ -359,7 +361,7 @@ public class User implements DatabaseObject {
     }
 
     public List<Project> getProjekte() {
-        if (projekte == null || projekte.size() == 0) {
+        if (projekte == null || projekte.isEmpty()) {
             try {
                 this.projekte = ProjectManager.getProjectsForUser(this, false);
             } catch (DAOException e) {
@@ -404,7 +406,7 @@ public class User implements DatabaseObject {
     }
 
     public String getFirstProjectTitle() {
-        if (this.projekte != null && this.projekte.size() > 0) {
+        if (this.projekte != null && ! this.projekte.isEmpty()) {
             return this.projekte.get(0).getTitel();
         } else {
             return "";
@@ -412,7 +414,7 @@ public class User implements DatabaseObject {
     }
 
     public String getFirstUserGroupTitle() {
-        if (this.benutzergruppen != null && this.benutzergruppen.size() > 0) {
+        if (this.benutzergruppen != null && ! this.benutzergruppen.isEmpty()) {
             return this.benutzergruppen.get(0).getTitel();
         } else {
             return "";

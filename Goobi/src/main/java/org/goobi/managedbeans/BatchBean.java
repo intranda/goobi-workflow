@@ -58,8 +58,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.log4j.Log4j2;
 
-//import de.sub.goobi.persistence.ProzessDAO;
-
 @Named("BatchForm")
 @WindowScoped
 @Data
@@ -75,9 +73,7 @@ public class BatchBean extends BasicBean implements Serializable {
     private List<Batch> selectedBatches = new ArrayList<>();
     private String batchfilter;
     private String processfilter;
-    //	private IEvaluableFilter myFilteredDataSource;
 
-    //	private ProzessDAO dao = new ProzessDAO();
     private String modusBearbeiten = "";
 
     private BatchProcessHelper batchHelper;
@@ -98,7 +94,6 @@ public class BatchBean extends BasicBean implements Serializable {
     }
 
     private Batch generateBatch(Batch batch) {
-        //		Session session = Helper.getHibernateSession();
         String filter = "";
         if (batch != null) {
             filter = " batchID = " + batch.getBatchId() + " AND istTemplate = false ";
@@ -137,7 +132,7 @@ public class BatchBean extends BasicBean implements Serializable {
             }
         }
 
-        if (this.selectedBatches.size() > 0) {
+        if (! this.selectedBatches.isEmpty()) {
 
             if (ids.contains(null)) {
                 filter += " AND batchID is null ";
@@ -249,19 +244,16 @@ public class BatchBean extends BasicBean implements Serializable {
         Path xsltfile = Paths.get(rootpath, "docket_multipage.xsl");
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         List<Process> docket = new ArrayList<>();
-        if (this.selectedBatches.size() == 0) {
+        if (this.selectedBatches.isEmpty()) {
             Helper.setFehlerMeldung("noBatchSelected");
         } else if (this.selectedBatches.size() == 1) {
-
-            //            Session session = Helper.getHibernateSession();
-            //            Criteria crit = session.createCriteria(Process.class);
             docket = ProcessManager.getProcesses(null, " istTemplate = false AND batchID = " + this.selectedBatches.get(0).getBatchId(), 0,
                     getBatchMaxSize());
 
         } else {
             Helper.setFehlerMeldung("tooManyBatchesSelected");
         }
-        if (docket.size() > 0) {
+        if (! docket.isEmpty()) {
             if (!facesContext.getResponseComplete()) {
                 HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
                 String fileName = "batch_docket" + ".pdf";
@@ -286,7 +278,7 @@ public class BatchBean extends BasicBean implements Serializable {
     }
 
     public void deleteBatch() {
-        if (this.selectedBatches.size() == 0) {
+        if (this.selectedBatches.isEmpty()) {
             Helper.setFehlerMeldung("noBatchSelected");
         } else if (this.selectedBatches.size() == 1) {
             if (this.selectedBatches.get(0) != null) {
@@ -302,13 +294,12 @@ public class BatchBean extends BasicBean implements Serializable {
     }
 
     public void addProcessesToBatch() {
-        if (this.selectedBatches.size() == 0) {
+        if (this.selectedBatches.isEmpty()) {
             Helper.setFehlerMeldung("noBatchSelected");
         } else if (this.selectedBatches.size() > 1) {
             Helper.setFehlerMeldung("tooḾanyBatchesSelected");
         } else {
             try {
-                //				Session session = Helper.getHibernateSession();
                 Batch batch = this.selectedBatches.get(0);
                 for (Process p : this.selectedProcesses) {
                     p.setBatch(batch);
@@ -332,7 +323,6 @@ public class BatchBean extends BasicBean implements Serializable {
     }
 
     public void removeProcessesFromBatch() {
-        //		Session session = Helper.getHibernateSession();
         for (Process p : this.selectedProcesses) {
             if (p.getBatch() != null) {
                 LogEntry logEntry = new LogEntry();
@@ -352,7 +342,7 @@ public class BatchBean extends BasicBean implements Serializable {
     }
 
     public void createNewBatch() {
-        if (this.selectedProcesses.size() > 0) {
+        if (! this.selectedProcesses.isEmpty()) {
 
             Batch batch = new Batch();
             for (Process p : this.selectedProcesses) {

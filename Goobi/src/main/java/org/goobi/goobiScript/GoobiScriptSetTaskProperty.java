@@ -110,12 +110,6 @@ public class GoobiScriptSetTaskProperty extends AbstractIGoobiScript implements 
                                 + "acceptandclose, acceptmoduleandclose, script, delay, updatemetadataindex, generatedocket");
                 return new ArrayList<>();
         }
-        //        if (!property.equals("metadata") && !property.equals("readimages") && !property.equals("writeimages") && !property.equals("validate")
-        //                && !property.equals("exportdms") && !property.equals("batch") && !property.equals("automatic")) {
-        //            Helper.setFehlerMeldung("goobiScriptfield", "",
-        //                    "wrong parameter 'property'; possible values: metadata, readimages, writeimages, validate, exportdms");
-        //            return new ArrayList<>();
-        //        }
 
         if (!value.equals("true") && !value.equals("false")) {
             Helper.setFehlerMeldung("goobiScriptfield", "", "wrong parameter 'value'; possible values: true, false");

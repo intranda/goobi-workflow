@@ -415,7 +415,7 @@ public class CopyProcess {
     private void fillFieldsFromConfig() {
         for (AdditionalField field : this.additionalFields) {
             if (!field.isUghbinding() && field.getShowDependingOnDoctype(getDocType())) {
-                if (field.getSelectList() != null && field.getSelectList().size() > 0) {
+                if (field.getSelectList() != null && ! field.getSelectList().isEmpty()) {
                     field.setWert((String) field.getSelectList().get(0).getValue());
                 }
 
@@ -529,12 +529,8 @@ public class CopyProcess {
         /* prüfen, ob der Prozesstitel schon verwendet wurde */
         if (this.prozessKopie.getTitel() != null) {
             long anzahl = 0;
-            //			try {
             anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel(), prozessKopie.getProjekt().getInstitution());
-            //			} catch (DAOException e) {
-            //				Helper.setFehlerMeldung("Fehler beim Einlesen der Vorgaenge", e.getMessage());
-            //				valide = false;
-            //			}
+
             if (anzahl > 0) {
                 valide = false;
                 Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten: ") + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
@@ -603,12 +599,8 @@ public class CopyProcess {
             /* prüfen, ob der Prozesstitel schon verwendet wurde */
             if (this.prozessKopie.getTitel() != null) {
                 long anzahl = 0;
-                //				try {
                 anzahl = ProcessManager.countProcessTitle(this.prozessKopie.getTitel(), prozessKopie.getProjekt().getInstitution());
-                //				} catch (DAOException e) {
-                //					Helper.setFehlerMeldung("Fehler beim Einlesen der Vorgaenge", e.getMessage());
-                //					valide = false;
-                //				}
+
                 if (anzahl > 0) {
                     valide = false;
                     Helper.setFehlerMeldung(
@@ -663,7 +655,6 @@ public class CopyProcess {
         try {
 
             ProcessManager.saveProcess(this.prozessKopie);
-            //			dao.refresh(this.prozessKopie);
         } catch (DAOException e) {
             log.error("error on save: ", e);
             return this.prozessKopie;
@@ -778,7 +769,7 @@ public class CopyProcess {
                     if (this.myRdf != null && this.myRdf.getDigitalDocument() != null
                             && this.myRdf.getDigitalDocument().getPhysicalDocStruct() != null) {
                         List<? extends Metadata> alleImagepfade = this.myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadataByType(mdt);
-                        if (alleImagepfade != null && alleImagepfade.size() > 0) {
+                        if (alleImagepfade != null && ! alleImagepfade.isEmpty()) {
                             for (Metadata md : alleImagepfade) {
                                 this.myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadata().remove(md);
                             }
@@ -868,9 +859,7 @@ public class CopyProcess {
             this.prozessKopie.setBatch(io.getBatch());
         }
         try {
-            //			ProzessDAO dao = new ProzessDAO();
             ProcessManager.saveProcess(this.prozessKopie);
-            //			dao.refresh(this.prozessKopie);
         } catch (DAOException e) {
             log.error("error on save: ", e);
             return this.prozessKopie;
@@ -887,14 +876,8 @@ public class CopyProcess {
         if (!StorageProvider.getInstance().isFileExists(f)) {
             StorageProvider.getInstance().createDirectories(f);
         }
-        //            Helper.setFehlerMeldung("Could not create process directory");
-        //            log.error("Could not create process directory");
-        //            return this.prozessKopie;
-        //        }
 
         this.prozessKopie.writeMetadataFile(this.myRdf);
-
-        // }
 
         // Adding process to history
         if (!HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie)) {
@@ -938,7 +921,7 @@ public class CopyProcess {
         try {
             MetadataType mdt = this.ughHelp.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), "singleDigCollection");
             ArrayList<Metadata> myCollections = new ArrayList<>(colStruct.getAllMetadataByType(mdt));
-            if (myCollections != null && myCollections.size() > 0) {
+            if (myCollections != null && ! myCollections.isEmpty()) {
                 for (Metadata md : myCollections) {
                     colStruct.removeMetadata(md, true);
                 }
@@ -1145,7 +1128,7 @@ public class CopyProcess {
             Helper.setFehlerMeldung("Error while parsing digital collections", e1);
         }
 
-        if (this.possibleDigitalCollection.size() == 0) {
+        if (this.possibleDigitalCollection.isEmpty()) {
             this.possibleDigitalCollection = defaultCollections;
         }
 
@@ -1338,7 +1321,6 @@ public class CopyProcess {
                     }
                 }
             }
-            // }
         }
     }
 

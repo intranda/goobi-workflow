@@ -179,13 +179,8 @@ public class JobCreation {
                 for (Path directory : folderList) {
                     Path destination = Paths.get(p.getProcessDataDirectory(), directory.getFileName().toString());
                     if (StorageProvider.getInstance().isDirectory(directory)) {
-                        //                    if (!StorageProvider.getInstance().isFileExists(destination)) {
-                        //                        Files.move(directory, destination);
-                        //                    } else {
                         FileUtils.copyDirectory(directory.toFile(), destination.toFile());
-                        //                        StorageProvider.getInstance().copyDirectory(directory, destination);
                         deleteDirectory(directory);
-                        //                    }
 
                     } else {
                         StorageProvider.getInstance().move(directory, Paths.get(p.getProcessDataDirectory(), directory.getFileName().toString()));

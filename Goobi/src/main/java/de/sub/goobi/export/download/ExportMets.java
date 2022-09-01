@@ -340,7 +340,7 @@ public class ExportMets {
          */
         DocStruct topElement = dd.getLogicalDocStruct();
         if (topElement.getType().isAnchor()) {
-            if (topElement.getAllChildren() == null || topElement.getAllChildren().size() == 0) {
+            if (topElement.getAllChildren() == null || topElement.getAllChildren().isEmpty()) {
                 throw new PreferencesException(
                         myProzess.getTitel() + ": the topstruct element is marked as anchor, but does not have any children for physical docstrucs");
             } else {
@@ -354,7 +354,7 @@ public class ExportMets {
 
         if (config.isExportValidateImages()) {
 
-            if (topElement.getAllToReferences("logical_physical") == null || topElement.getAllToReferences("logical_physical").size() == 0) {
+            if (topElement.getAllToReferences("logical_physical") == null || topElement.getAllToReferences("logical_physical").isEmpty()) {
                 if (dd.getPhysicalDocStruct() != null && dd.getPhysicalDocStruct().getAllChildren() != null) {
                     Helper.setMeldung(myProzess.getTitel()
                             + ": topstruct element does not have any referenced images yet; temporarily adding them for mets file creation");
@@ -463,7 +463,7 @@ public class ExportMets {
         List<ProjectFileGroup> myFilegroups = myProzess.getProjekt().getFilegroups();
 
         boolean useOriginalFiles = false;
-        if (myFilegroups != null && myFilegroups.size() > 0) {
+        if (myFilegroups != null &&  ! myFilegroups.isEmpty()) {
             for (ProjectFileGroup pfg : myFilegroups) {
                 if (pfg.isUseOriginalFiles()) {
                     useOriginalFiles = true;
@@ -492,7 +492,7 @@ public class ExportMets {
             if (!filesInFolder.isEmpty()) {
                 // compare image names with files in mets file
                 List<DocStruct> pages = dd.getPhysicalDocStruct().getAllChildren();
-                if (pages != null && pages.size() > 0) {
+                if (pages != null &&  ! pages.isEmpty()) {
                     for (DocStruct page : pages) {
                         Path completeNameInMets = Paths.get(page.getImageName());
                         String filenameInMets = completeNameInMets.getFileName().toString();

@@ -241,10 +241,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     @Getter
     private QueueType messageQueue;
 
-    //    @Getter
-    //    @Setter
-    //    private String messageId;
-
     public Step() {
         this.titel = "";
         this.eigenschaften = new ArrayList<>();
@@ -263,7 +259,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
         // Look for the next available order number
         List<Step> steps = process.getSchritte();
-        if (steps.size() == 0) {
+        if (steps.isEmpty()) {
             this.reihenfolge = 1;
             return;
         }
@@ -311,7 +307,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public JSONObject getAutoThumbnailSettingsJSON() {
-        //new JSONObject("{'Master':true,'Media':true, 'Sizes':[800] }");
+        //new JSONObject("{'Master':true,'Media':true, 'Sizes':[800] }")
         Yaml yaml= new Yaml();
         @SuppressWarnings("unchecked")
         Map<String,Object> map= (Map<String, Object>) yaml.load(this.automaticThumbnailSettingsYaml);
@@ -500,9 +496,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
                 break;
             case LOCKED:
                 bearbeitungsstatus = 1;
-                //                if(this.typAutomaticThumbnail) {
-                //                    this.submitAutomaticThumbnailTicket();
-                //                }
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
                 break;
             case DONE:
@@ -521,9 +514,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
             case INFLIGHT:
             case INWORK:
                 bearbeitungsstatus = 1;
-                //                if(this.typAutomaticThumbnail) {
-                //                    this.submitAutomaticThumbnailTicket();
-                //                }
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
                 break;
 

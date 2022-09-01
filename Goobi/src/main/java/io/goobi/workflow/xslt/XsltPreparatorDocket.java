@@ -267,7 +267,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             property.addContent(label);
             processProperties.add(property);
         }
-        if (processProperties.size() != 0) {
+        if (! processProperties.isEmpty()) {
             Element properties = new Element("properties", xmlns);
             properties.addContent(processProperties);
             elements.add(properties);
@@ -349,7 +349,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                     }
                 }
             }
-            if (templateProperties.size() != 0) {
+            if (! templateProperties.isEmpty()) {
                 Element properties = new Element("properties", xmlns);
                 properties.addContent(templateProperties);
                 template.addContent(properties);
@@ -384,7 +384,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 property.addContent(label);
                 docProperties.add(property);
             }
-            if (docProperties.size() != 0) {
+            if (! docProperties.isEmpty()) {
                 Element properties = new Element("properties", xmlns);
                 properties.addContent(docProperties);
                 dd.addContent(properties);

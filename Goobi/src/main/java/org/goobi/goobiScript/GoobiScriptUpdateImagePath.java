@@ -82,7 +82,7 @@ public class GoobiScriptUpdateImagePath extends AbstractIGoobiScript implements 
             UghHelper ughhelp = new UghHelper();
             MetadataType mdt = ughhelp.getMetadataType(p, "pathimagefiles");
             List<? extends ugh.dl.Metadata> alleImagepfade = myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadataByType(mdt);
-            if (alleImagepfade.size() > 0) {
+            if (! alleImagepfade.isEmpty()) {
                 for (Metadata md : alleImagepfade) {
                     myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadata().remove(md);
                 }

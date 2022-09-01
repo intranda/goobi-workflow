@@ -137,7 +137,7 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
     private User getUser(String userTitle) {
         try {
             List<User> treffer = UserManager.getUsers(null, "login='" + parameters.get("username") + "'", null, null, null);
-            if (treffer != null && treffer.size() > 0) {
+            if (treffer != null && ! treffer.isEmpty()) {
                 return treffer.get(0);
             } else {
                 Helper.setFehlerMeldung("goobiScriptfield", "Unknown user: ", parameters.get("username"));

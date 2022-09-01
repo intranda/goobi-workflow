@@ -437,12 +437,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public String Loeschen() {
         deleteMetadataDirectory();
-        //        try {
         ProcessManager.deleteProcess(this.myProzess);
-        //        } catch (DAOException e) {
-        //            Helper.setFehlerMeldung("could not delete ", e);
-        //            return "";
-        //        }
         Helper.setMeldung("Process deleted");
         if (this.modusAnzeige.equals("vorlagen")) {
             return FilterVorlagen();
@@ -494,7 +489,6 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     public String ContentLoeschen() {
-        // deleteMetadataDirectory();
         try {
             Path ocr = Paths.get(this.myProzess.getOcrDirectory());
             if (StorageProvider.getInstance().isFileExists(ocr)) {
@@ -699,33 +693,19 @@ public class ProcessBean extends BasicBean implements Serializable {
     public String ProzessEigenschaftLoeschen() {
         myProzess.getEigenschaften().remove(myProzessEigenschaft);
         PropertyManager.deleteProcessProperty(myProzessEigenschaft);
-        //            ProcessManager.saveProcess(myProzess);
         return "";
     }
-
-    //    public String SchrittEigenschaftLoeschen() {
-    //        try {
-    //            mySchritt.getEigenschaften().remove(mySchrittEigenschaft);
-    //            ProcessManager.saveProcess(myProzess);
-    //        } catch (DAOException e) {
-    //            Helper.setFehlerMeldung("fehlerNichtLoeschbar", e.getMessage());
-    //        }
-    //        return "";
-    //    }
 
     public String VorlageEigenschaftLoeschen() {
 
         myVorlage.getEigenschaften().remove(myVorlageEigenschaft);
         PropertyManager.deleteTemplateProperty(myVorlageEigenschaft);
-        //            ProcessManager.saveProcess(myProzess);
-
         return "";
     }
 
     public String WerkstueckEigenschaftLoeschen() {
         myWerkstueck.getEigenschaften().remove(myWerkstueckEigenschaft);
         PropertyManager.deleteMasterpieceProperty(myWerkstueckEigenschaft);
-        //            ProcessManager.saveProcess(myProzess);
         return "";
     }
 
@@ -733,11 +713,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         myProzessEigenschaft = new Processproperty();
         return "";
     }
-
-    //    public String SchrittEigenschaftNeu() {
-    //        mySchrittEigenschaft = new Schritteigenschaft();
-    //        return "";
-    //    }
 
     public String VorlageEigenschaftNeu() {
         myVorlageEigenschaft = new Templateproperty();
@@ -754,17 +729,9 @@ public class ProcessBean extends BasicBean implements Serializable {
             myProzess.getEigenschaften().add(myProzessEigenschaft);
             myProzessEigenschaft.setProzess(myProzess);
         }
-        //        Speichern();
         PropertyManager.saveProcessProperty(myProzessEigenschaft);
         return "";
     }
-
-    //    public String SchrittEigenschaftUebernehmen() {
-    //        mySchritt.getEigenschaften().add(mySchrittEigenschaft);
-    //        mySchrittEigenschaft.setSchritt(mySchritt);
-    //        Speichern();
-    //        return "";
-    //    }
 
     public String VorlageEigenschaftUebernehmen() {
         if (!myVorlage.getEigenschaften().contains(myVorlageEigenschaft)) {
@@ -772,7 +739,6 @@ public class ProcessBean extends BasicBean implements Serializable {
             myVorlageEigenschaft.setVorlage(myVorlage);
         }
         PropertyManager.saveTemplateProperty(myVorlageEigenschaft);
-        //        Speichern();
         return "";
     }
 
@@ -781,7 +747,6 @@ public class ProcessBean extends BasicBean implements Serializable {
             myWerkstueck.getEigenschaften().add(myWerkstueckEigenschaft);
             myWerkstueckEigenschaft.setWerkstueck(myWerkstueck);
         }
-        //        Speichern();
         PropertyManager.saveMasterpieceProperty(myWerkstueckEigenschaft);
         return "";
     }
@@ -803,7 +768,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         // Still on page when order is out of range (order < 1)
         if (this.mySchritt.getReihenfolge() != null && this.mySchritt.getReihenfolge() < 1) {
             this.modusBearbeiten = "schritt";
-            //this.createNewStepAllowParallelTask = false;
             Helper.setFehlerMeldung("Order may not be less than 1. (Is currently " + this.mySchritt.getReihenfolge() + ")");
             return "process_edit_step";
         }
@@ -985,13 +949,11 @@ public class ProcessBean extends BasicBean implements Serializable {
         this.myProzess.getVorlagen().add(this.myVorlage);
         this.myVorlage.setProzess(this.myProzess);
         TemplateManager.saveTemplate(myVorlage);
-        //        Speichern();
         return "process_edit_template";
     }
 
     public String VorlageUebernehmen() {
         TemplateManager.saveTemplate(myVorlage);
-        //        Speichern();
         return "";
     }
 
@@ -1040,7 +1002,6 @@ public class ProcessBean extends BasicBean implements Serializable {
             String[] parameter = { "METS", this.myProzess.getTitel() };
 
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
-            //            ;An error occured while trying to export METS file for: " + this.myProzess.getTitel(), e);
             log.error("ExportMETS error", e);
         }
     }
@@ -1056,7 +1017,6 @@ public class ProcessBean extends BasicBean implements Serializable {
             String[] parameter = { "METS", this.myProzess.getTitel() };
 
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
-            //            ;An error occured while trying to export METS file for: " + this.myProzess.getTitel(), e);
             log.error("ExportMETS error", e);
         }
     }
@@ -1112,7 +1072,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         } catch (Exception e) {
             String[] parameter = { "DMS", process.getTitel() };
             Helper.setFehlerMeldung(Helper.getTranslation("BatchExportError", parameter), e);
-            // Helper.setFehlerMeldung("An error occured while trying to export to DMS for: " + this.myProzess.getTitel(), e);
             log.error("ExportDMS error", e);
         }
     }
@@ -1251,17 +1210,12 @@ public class ProcessBean extends BasicBean implements Serializable {
         if (this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.DONE && this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.DEACTIVATED) {
             this.mySchritt.setBearbeitungsstatusUp();
             this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
-            //            StepObject so = StepObjectManager.getStepById(this.mySchritt.getId());
             Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed status for step '" + mySchritt.getTitel() + "' to "
                     + mySchritt.getBearbeitungsstatusAsString() + " in process details.");
             if (this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 new HelperSchritte().CloseStepObjectAutomatic(mySchritt);
             } else {
                 mySchritt.setBearbeitungszeitpunkt(new Date());
-                //                User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-                //                if (ben != null) {
-                //                    mySchritt.setBearbeitungsbenutzer(ben);
-                //                }
             }
         }
         try {
@@ -1276,10 +1230,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     public String SchrittStatusDown() {
         this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
         mySchritt.setBearbeitungszeitpunkt(new Date());
-        //        User ben = (User) Helper.getManagedBeanValue("#{LoginForm.myBenutzer}");
-        //        if (ben != null) {
-        //            mySchritt.setBearbeitungsbenutzer(ben);
-        //        }
+
         this.mySchritt.setBearbeitungsstatusDown();
         Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG,
                 "Changed status for step '" + mySchritt.getTitel() + "' to " + mySchritt.getBearbeitungsstatusAsString() + " in process details.");
@@ -1338,14 +1289,6 @@ public class ProcessBean extends BasicBean implements Serializable {
         updateUsergroupPaginator();
         updateUserPaginator();
     }
-
-    //    public Schritteigenschaft getMySchrittEigenschaft() {
-    //        return this.mySchrittEigenschaft;
-    //    }
-    //
-    //    public void setMySchrittEigenschaft(Schritteigenschaft mySchrittEigenschaft) {
-    //        this.mySchrittEigenschaft = mySchrittEigenschaft;
-    //    }
 
     public void setMyVorlageReload(Template myVorlage) {
         this.myVorlage = myVorlage;
@@ -1589,7 +1532,6 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     private void CalcMetadataAndImages(List<Process> inListe) throws IOException, InterruptedException, SwapException, DAOException {
-        //      XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
         this.myAnzahlList = new ArrayList<>();
         int allMetadata = 0;
         int allDocstructs = 0;
@@ -1656,11 +1598,6 @@ public class ProcessBean extends BasicBean implements Serializable {
             pco.setRelDocstructs(pco.getDocstructs() * 100 / maxDocstructs);
         }
 
-        /* die Durchschnittsberechnung durchführen */
-        //      int faktor = 1;
-        //      if (this.myAnzahlList != null && this.myAnzahlList.size() > 0) {
-        //          faktor = this.myAnzahlList.size();
-        //      }
         this.myAnzahlSummary = new HashMap<>();
         this.myAnzahlSummary.put("sumProcesses", this.myAnzahlList.size());
         this.myAnzahlSummary.put("sumMetadata", allMetadata);
@@ -1943,8 +1880,9 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     @Getter
-    public static class ProcessCounterObject {
-        private String title;
+    public static class ProcessCounterObject implements Serializable{
+        private static final long serialVersionUID = -4287461260229760734L;
+		private String title;
         private int metadata;
         private int docstructs;
         private int images;
@@ -2030,8 +1968,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             int myid = Integer.valueOf(id).intValue();
             this.myProzess = ProcessManager.getProcessById(myid);
-            //        } catch (DAOException e) {
-            //            log.error(e);
+            
         } catch (NumberFormatException e) {
             log.warn(e);
         }
@@ -2191,9 +2128,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                     PdfWriter.getInstance(document, out);
                     document.setPageSize(a4quer);
                     document.open();
-                    if (rowList.size() > 0) {
-                        //                    Paragraph p = new Paragraph(rowList.get(0).get(0).toString());
-                        //                    document.add(p);
+                    if (! rowList.isEmpty()) {
                         PdfPTable table = new PdfPTable(rowList.get(0).size());
                         table.setSpacingBefore(20);
 
@@ -2322,9 +2257,6 @@ public class ProcessBean extends BasicBean implements Serializable {
                 displayableMetadataMap.put(metadataName, values);
             }
         }
-        //            if (StringUtils.isNotBlank(value)) {
-        //                displayableMetadataMap.put(metadataName, value);
-        //            }
     }
 
     private void loadProcessProperties() {
@@ -2418,7 +2350,6 @@ public class ProcessBean extends BasicBean implements Serializable {
             }
 
             PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
-            //                ProcessManager.saveProcess(this.myProzess);
             Helper.setMeldung("propertiesSaved");
 
         }
@@ -2524,13 +2455,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             this.processProperty.transfer();
             PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
         }
-        //        try {
-        //            ProcessManager.saveProcess(this.myProzess);
         Helper.setMeldung("propertySaved");
-        //        } catch (DAOException e) {
-        //            log.error(e);
-        //            Helper.setFehlerMeldung("propertiesNotSaved");
-        //        }
         loadProcessProperties();
 
         return "";
@@ -2634,13 +2559,6 @@ public class ProcessBean extends BasicBean implements Serializable {
                         currentPlugin.execute();
                         return mypath;
                     } else if (currentPlugin.getPluginGuiType() == PluginGuiType.PART) {
-                        //                        FacesContext context = FacesContextHelper.getCurrentFacesContext();
-                        //                        Map<String, Object> requestMap = context.getExternalContext().getSessionMap();
-                        //                        StepBean bean = (StepBean) requestMap.get("AktuelleSchritteForm");
-                        //                        if (bean == null) {
-                        //                            bean = new StepBean();
-                        //                            requestMap.put("AktuelleSchritteForm", bean);
-                        //                        }
 
                         bean.setMyPlugin(currentPlugin);
                         String mypath = "/uii/task_edit_simulator";
@@ -2809,16 +2727,6 @@ public class ProcessBean extends BasicBean implements Serializable {
             }
         }
 
-        //        Iterator<Integer> it =idList.iterator();
-        //        while (it.hasNext()) {
-        //            Integer currentId = it.next();
-        //            if (currentId.equals(myProzess.getId())) {
-        //                System.out.println("current " +currentId);
-        //                newProcessId = it.previous();
-        //                System.out.println("prev " +newProcessId);
-        //                break;
-        //            }
-        //        }
         if (newProcessId != null) {
             myProzess = ProcessManager.getProcessById(newProcessId);
         }

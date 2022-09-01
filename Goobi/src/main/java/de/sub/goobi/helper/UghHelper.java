@@ -93,7 +93,7 @@ public class UghHelper {
         lastErrorMessage = null;
         if (inStruct != null && inMetadataType != null) {
             List<? extends Metadata> all = inStruct.getAllMetadataByType(inMetadataType);
-            if (all.size() == 0) {
+            if (all.isEmpty()) {
                 try {
                     Metadata md = new Metadata(inMetadataType);
                     md.setParent(inStruct);
@@ -108,7 +108,7 @@ public class UghHelper {
                     return null;
                 }
             }
-            if (all.size() != 0) {
+            if ( ! all.isEmpty()) {
                 return all.get(0);
             } else {
                 return null;
@@ -129,7 +129,7 @@ public class UghHelper {
         lastErrorMessage = null;
         MetadataType mdt = getMetadataType(inPrefs, inMetadataType);
         List<? extends Metadata> all = inStruct.getAllMetadataByType(mdt);
-        if (all.size() == 0) {
+        if (all.isEmpty()) {
             try {
                 Metadata md = new Metadata(mdt);
                 md.setParent(inStruct);
@@ -144,7 +144,7 @@ public class UghHelper {
             }
         }
 
-        if (all.size() != 0) {
+        if ( ! all.isEmpty()) {
             return all.get(0);
         } else {
             return null;
@@ -163,7 +163,7 @@ public class UghHelper {
         lastErrorMessage = null;
         MetadataType mdt = getMetadataType(inProzess, inMetadataType);
         List<? extends Metadata> all = inStruct.getAllMetadataByType(mdt);
-        if (all.size() == 0) {
+        if (all.isEmpty()) {
             try {
                 Metadata md = new Metadata(mdt);
                 md.setParent(inStruct);
@@ -177,7 +177,7 @@ public class UghHelper {
                 lastErrorMessage = e.getMessage();
             }
         }
-        if (all.size() != 0) {
+        if ( ! all.isEmpty()) {
             return all.get(0);
         } else {
             return null;
@@ -216,7 +216,7 @@ public class UghHelper {
         if (mdt == null) {
             return;
         }
-        if (inStruct != null && inStruct.getAllMetadataByType(mdt).size() > 0) {
+        if (inStruct != null &&  ! inStruct.getAllMetadataByType(mdt).isEmpty()) {
             for (Metadata md : inStruct.getAllMetadataByType(mdt)) {
                 inStruct.removeMetadata(md, true);
             }

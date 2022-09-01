@@ -192,7 +192,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
     private static Usergroup getUsergroupFromDatabase(Map<String, String> parameters) {
         try {
             List<Usergroup> groups = UsergroupManager.getUsergroups(null, "titel='" + parameters.get("group") + "'", null, null, null);
-            if (groups != null && groups.size() > 0) {
+            if (groups != null && ! groups.isEmpty()) {
                 return groups.get(0);
             } else {
                 return null;

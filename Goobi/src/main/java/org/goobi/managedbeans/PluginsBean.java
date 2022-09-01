@@ -124,7 +124,7 @@ public class PluginsBean implements Serializable {
      */
     private static void moveGUIPluginsToBottom(Map<String, List<PluginInfo>> categories) {
         List<PluginInfo> guiPlugins = categories.get("GUI");
-        if (guiPlugins != null && guiPlugins.size() > 0) {
+        if (guiPlugins != null && ! guiPlugins.isEmpty()) {
             categories.remove("GUI");
             categories.put("GUI", guiPlugins);
         }

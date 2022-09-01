@@ -136,7 +136,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private Date erstellungsdatum;
     @Setter
     private List<Step> schritte;
-    //    private List<HistoryEvent> history;
     @Setter
     private List<Masterpiece> werkstuecke;
     @Setter
@@ -157,7 +156,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Getter
     @Setter
     private Ruleset regelsatz;
-    //    private Integer batchID;
     @Getter
     @Setter
     private Batch batch;
@@ -206,9 +204,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Setter
     private boolean mediaFolderExists = false;
 
-    //    @Inject
-    //    private LoginBean loginForm;
-
     private transient List<StringPair> metadataList = new ArrayList<>();
     private String representativeImage = null;
 
@@ -219,12 +214,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     @Getter
     @Setter
-    private Part uploadedFile = null;
+    private transient Part uploadedFile = null;
     @Getter
     @Setter
     private String uploadFolder = "intern";
 
-    private Path tempFileToImport;
+    private transient Path tempFileToImport;
     private String basename;
 
     @Getter
@@ -282,23 +277,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         return false;
     }
-
-    //    public List<HistoryEvent> getHistory() {
-
-    //        if (this.history == null && id != null) {
-    //            List<HistoryEvent> events = ProcessManager.getHistoryEvents(id);
-    //            for (HistoryEvent he : events) {
-    //                he.setProcess(this);
-    //            }
-    //            this.history = events;
-    //        }
-    //        return this.history;
-    //    }
-
-    //    public void setHistory(List<HistoryEvent> history) {
-    //
-    //        this.history = history;
-    //    }
 
     public List<Template> getVorlagen() {
         if ((vorlagen == null || vorlagen.isEmpty()) && id != null) {
@@ -468,23 +446,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 }
             }
 
-            //            if (!origOrdner.equals("") && useFallBack) {
-            //                String suffix = ConfigurationHelper.getInstance().getMetsEditorDefaultSuffix();
-            //                if (!suffix.equals("")) {
-            //                    Path tif = Paths.get(getImagesDirectory()).resolve(origOrdner);
-            //                    List<String> files = StorageProvider.getInstance().list(tif.toString());
-            //                    if (files == null || files.isEmpty()) {
-            //                        List<String> folderList = StorageProvider.getInstance().list(dir.toString());
-            //                        for (String folder : folderList) {
-            //                            if (folder.endsWith(suffix)) {
-            //                                origOrdner = folder;
-            //                                break;
-            //                            }
-            //                        }
-            //                    }
-            //                }
-            //            }
-
             String rueckgabe;
             if (!masterFolder.contains(FileSystems.getDefault().getSeparator())) {
                 rueckgabe = getImagesDirectory() + masterFolder + FileSystems.getDefault().getSeparator();
@@ -555,7 +516,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 } else {
                     setSwappedOutGui(false);
                 }
-                //				new ProzessDAO().save(this);
             }
         }
         return pfad;
@@ -777,24 +737,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         return getSchritte();
     }
 
-    //    public int getHistorySize() {
-    //
-    //        if (this.history == null) {
-    //            return 0;
-    //        } else {
-    //            return this.history.size();
-    //        }
-    //    }
-    //
-    //    public List<HistoryEvent> getHistoryList() {
-    //
-    //        List<HistoryEvent> temp = new ArrayList<HistoryEvent>();
-    //        if (this.history != null) {
-    //            temp.addAll(this.history);
-    //        }
-    //        return temp;
-    //    }
-
     public int getEigenschaftenSize() {
         return getEigenschaften().size();
     }
@@ -814,10 +756,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public int getVorlagenSize() {
-
-        //        if (this.getVorlagen == null) {
-        //            this.vorlagen = new ArrayList<Vorlage>();
-        //        }
         return this.getVorlagen().size();
     }
 
@@ -919,7 +857,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         offen2 = (offen * 100) / (double) (offen + inBearbeitung + abgeschlossen);
         inBearbeitung2 = (inBearbeitung * 100) / (double) (offen + inBearbeitung + abgeschlossen);
         abgeschlossen2 = 100 - offen2 - inBearbeitung2;
-        // (abgeschlossen * 100) / (offen + inBearbeitung + abgeschlossen);
         java.text.DecimalFormat df = new java.text.DecimalFormat("#000");
         return df.format(abgeschlossen2) + df.format(inBearbeitung2) + df.format(offen2);
 
@@ -1235,10 +1172,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             if (StorageProvider.getInstance().isFileExists(temporaryFile)) {
                 Path metadataFile = Paths.get(getMetadataFilePath());
                 long tempTime = StorageProvider.getInstance().getLastModifiedDate(temporaryFile);
-                //              (FileTime) Files.getAttribute(temporaryFile, "unix:lastModifiedTime");
                 long metaTime = StorageProvider.getInstance().getLastModifiedDate(metadataFile);
-                //                        (FileTime) Files.getAttribute(metadataFile, "unix:lastModifiedTime");
-                //                return tempTime.toMillis() > metaTime.toMillis();
                 return tempTime > metaTime;
 
             }
@@ -1254,7 +1188,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * ================================================================
      */
     public boolean getContainsUnreachableSteps() {
-        if (getSchritteList().size() == 0) {
+        if (getSchritteList().isEmpty()) {
             return true;
         }
         for (Step s : getSchritteList()) {
@@ -1411,15 +1345,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
             // write simplified metadata to servlet output stream
             try {
-                //            	XsltPreparatorSimplifiedMetadata xslt = new XsltPreparatorSimplifiedMetadata();
-                //                try {
-                //                	LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-                //                    String ziel = login.getMyBenutzer().getHomeDir() + this.getTitel() + "_log.xml";
-                //                    xslt.startExport(this, ziel);
-                //                } catch (Exception e) {
-                //                    Helper.setFehlerMeldung("Could not write logfile to home directory", e);
-                //                }
-
                 ServletOutputStream out = response.getOutputStream();
                 XsltToPdf ern = new XsltToPdf();
                 ern.startExport(this, out, xsltfile.toString(), new XsltPreparatorMetadata());
@@ -1611,7 +1536,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             String thumbnail = getRepresentativeImageAsString();
             Path imagePath = Paths.get(thumbnail);
             if (StorageProvider.getInstance().isFileExists(imagePath)) {
-                //            Image image = new Image(Paths.get(representativeImage), 0, thumbnailWidth);
                 Image image = new Image(this, imagePath.getParent().getFileName().toString(), imagePath.getFileName().toString(), 0, thumbnailWidth);
                 return image.getThumbnailUrl();
             } else {
@@ -1660,14 +1584,14 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
             try {
                 List<Path> images = StorageProvider.getInstance().listFiles(getImagesTifDirectory(true), NIOFileUtils.imageNameFilter);
-                if (images == null || images.size() == 0) {
+                if (images == null || images.isEmpty()) {
                     images = StorageProvider.getInstance().listFiles(getImagesOrigDirectory(true), NIOFileUtils.imageNameFilter);
                 }
                 if (images != null && !images.isEmpty()) {
                     representativeImage = images.get(imageNo).toString();
                 } else {
                     images = StorageProvider.getInstance().listFiles(getImagesTifDirectory(true), NIOFileUtils.objectNameFilter);
-                    if (images == null || images.size() == 0) {
+                    if (images == null || images.isEmpty()) {
                         images = StorageProvider.getInstance().listFiles(getImagesOrigDirectory(true), NIOFileUtils.objectNameFilter);
                     }
                     if (images != null && !images.isEmpty()) {
@@ -1786,7 +1710,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             try {
                 folderList.add(new SelectItem(getExportDirectory(), Helper.getTranslation("process_log_file_exportFolder")));
                 folderList.add(new SelectItem(getImportDirectory(), Helper.getTranslation("process_log_file_importFolder")));
-                //                folderList.add(new SelectItem(getSourceDirectory(), Helper.getTranslation("process_log_file_sourceFolder")));
                 folderList.add(new SelectItem(getImagesTifDirectory(false), Helper.getTranslation("process_log_file_mediaFolder")));
                 if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
                     folderList.add(new SelectItem(getImagesOrigDirectory(false), Helper.getTranslation("process_log_file_masterFolder")));
@@ -1801,10 +1724,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                         if (StringUtils.isNotBlank(folder) && StorageProvider.getInstance().isFileExists(Paths.get(folder))) {
                             folderList.add(new SelectItem(folder, Helper.getTranslation(folderName)));
                         }
-
-                        //                        folderList.add(new SelectItem(getImagesTifDirectory(false), Helper.getTranslation("process_log_file_mediaFolder")));
-                        //                    } else {
-                        //                        folderList.add(new SelectItem(getConfiguredImageFolder(folderName), Helper.getTranslation(folderName)));
                     }
                 }
 
@@ -2121,7 +2040,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 MetadataType mdt = ughhelp.getMetadataType(this, "pathimagefiles");
                 DocStruct physical = fileFormat.getDigitalDocument().getPhysicalDocStruct();
                 List<? extends ugh.dl.Metadata> alleImagepfade = physical.getAllMetadataByType(mdt);
-                if (alleImagepfade.size() > 0) {
+                if (! alleImagepfade.isEmpty()) {
                     for (Metadata md : alleImagepfade) {
                         fileFormat.getDigitalDocument().getPhysicalDocStruct().getAllMetadata().remove(md);
                     }
