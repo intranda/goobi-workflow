@@ -449,11 +449,13 @@
                           </x:column>
                         </x:dataTable>
 
-                        <div class="box__actions">
+                        <div
+                          class="box__actions"
+                          jsf:rendered="#{BenutzerverwaltungForm.unsubscribedGroupsExist}"
+                        >
                           <!-- Neu-Schaltknopf -->
                           <button
                             jsf:id="addGroup"
-                            jsf:rendered="#{BenutzerverwaltungForm.unsubscribedGroupsExist}"
                             class="btn btn-primary-400 me-auto"
                             jsf:action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
                             jsf:immediate="true">
@@ -614,11 +616,13 @@
                     </x:column>
                     </x:dataTable>
 
-                    <div class="box__actions">
+                    <div
+                      class="box__actions"
+                      jsf:rendered="#{BenutzerverwaltungForm.unsubscribedProjectsExist}"
+                    >
                       <!-- Neu-Schaltknopf -->
                       <button
                         jsf:id="addToProject"
-                        jsf:rendered="#{BenutzerverwaltungForm.unsubscribedProjectsExist}"
                         class="btn btn-primary me-auto"
                         jsf:action="#{ProjekteForm.FilterKeinMitZurueck}"
                         jsf:immediate="true">
