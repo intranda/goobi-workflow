@@ -202,10 +202,11 @@ public class ProcessProperty implements IProperty, Serializable {
     }
 
     public void setValueList(List<String> valueList) {
-        this.value = "";
+    	StringBuilder bld = new StringBuilder();
         for (String val : valueList) {
-            this.value = this.value + val + "; ";
+        	bld.append(val).append("; ");
         }
+        this.value = bld.toString();
         this.readValue = value;
     }
 
