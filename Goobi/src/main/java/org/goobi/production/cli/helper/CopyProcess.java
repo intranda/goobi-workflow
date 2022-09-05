@@ -382,20 +382,20 @@ public class CopyProcess {
                     try {
                         if (field.getMetadata().equals("ListOfCreators")) {
                             /* bei Autoren die Namen zusammenstellen */
-                            String myautoren = "";
+                        	StringBuilder authorBuilder = new StringBuilder();
                             if (myTempStruct.getAllPersons() != null) {
                                 for (Person p : myTempStruct.getAllPersons()) {
-                                    myautoren += p.getLastname();
+                                	authorBuilder.append(p.getLastname());
                                     if (StringUtils.isNotBlank(p.getFirstname())) {
-                                        myautoren += ", " + p.getFirstname();
+                                    	authorBuilder.append(", ").append(p.getFirstname());
                                     }
-                                    myautoren += "; ";
+                                    authorBuilder.append("; ");
                                 }
-                                if (myautoren.endsWith("; ")) {
-                                    myautoren = myautoren.substring(0, myautoren.length() - 2);
+                                if (authorBuilder.toString().endsWith("; ")) {
+                                	authorBuilder.delete(authorBuilder.length() - 2, authorBuilder.length());
                                 }
                             }
-                            field.setWert(myautoren);
+                            field.setWert(authorBuilder.toString());
                         } else {
                             /* bei normalen Feldern die Inhalte auswerten */
                             MetadataType mdt = ughHelp.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), field.getMetadata());
@@ -1150,7 +1150,7 @@ public class CopyProcess {
 
     @SuppressWarnings("rawtypes")
     public void CalcProzesstitel() {
-        String newTitle = "";
+    	StringBuilder newTitleBuilder = new StringBuilder();
         String titeldefinition = "";
         ConfigProjects cp = null;
         try {
@@ -1209,7 +1209,7 @@ public class CopyProcess {
              * wenn der String mit ' anfängt und mit ' endet, dann den Inhalt so übernehmen
              */
             if (myString.startsWith("'") && myString.endsWith("'")) {
-                newTitle += myString.substring(1, myString.length() - 1);
+            	newTitleBuilder.append(myString.substring(1, myString.length() - 1));
             } else {
                 /* andernfalls den string als Feldnamen auswerten */
                 for (Iterator it2 = this.additionalFields.iterator(); it2.hasNext();) {
@@ -1225,12 +1225,12 @@ public class CopyProcess {
 
                     /* den Inhalt zum Titel hinzufügen */
                     if (myField.getTitel().equals(myString) && myField.getShowDependingOnDoctype(getDocType()) && myField.getWert() != null) {
-                        newTitle += CalcProzesstitelCheck(myField.getTitel(), myField.getWert());
+                    	newTitleBuilder.append(CalcProzesstitelCheck(myField.getTitel(), myField.getWert()));
                     }
                 }
             }
         }
-
+        String newTitle = newTitleBuilder.toString();
         if (newTitle.endsWith("_")) {
             newTitle = newTitle.substring(0, newTitle.length() - 1);
         }
@@ -1286,7 +1286,7 @@ public class CopyProcess {
          * -------------------------------- Documentname ist im allgemeinen = Prozesstitel --------------------------------
          */
         this.tifHeader_documentname = this.prozessKopie.getTitel();
-        this.tifHeader_imagedescription = "";
+        StringBuilder imageDescriptionBuilder = new StringBuilder(); // will be used to build this.tifHeader_imagedescription
         /*
          * -------------------------------- Imagedescription --------------------------------
          */
@@ -1298,10 +1298,10 @@ public class CopyProcess {
              * wenn der String mit ' anfaengt und mit ' endet, dann den Inhalt so übernehmen
              */
             if (myString.startsWith("'") && myString.endsWith("'") && myString.length() > 2) {
-                this.tifHeader_imagedescription += myString.substring(1, myString.length() - 1);
+            	imageDescriptionBuilder.append(myString.substring(1, myString.length() - 1));
             } else if (myString.equals("$Doctype")) {
 
-                this.tifHeader_imagedescription += this.docType;
+            	imageDescriptionBuilder.append(this.docType);
             } else {
                 /* andernfalls den string als Feldnamen auswerten */
                 for (Iterator<AdditionalField> it2 = this.additionalFields.iterator(); it2.hasNext();) {
@@ -1317,11 +1317,12 @@ public class CopyProcess {
 
                     /* den Inhalt zum Titel hinzufügen */
                     if (myField.getTitel().equals(myString) && myField.getShowDependingOnDoctype(getDocType()) && myField.getWert() != null) {
-                        this.tifHeader_imagedescription += CalcProzesstitelCheck(myField.getTitel(), myField.getWert());
+                    	imageDescriptionBuilder.append(CalcProzesstitelCheck(myField.getTitel(), myField.getWert()));
                     }
                 }
             }
         }
+        this.tifHeader_imagedescription = imageDescriptionBuilder.toString();
     }
 
     private void addProperty(Template inVorlage, Templateproperty property) {
