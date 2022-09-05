@@ -414,16 +414,16 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         for (Item i : this.myValues.getItemList()) {
             i.setSelected(false);
         }
-        String val = "";
+        StringBuilder bld = new StringBuilder();
         for (SelectItem sel : items) {
             for (Item i : this.myValues.getItemList()) {
                 if (i.getLabel().equals(sel.getValue())) {
                     i.setSelected(true);
-                    val += i.getValue();
+                    bld.append(i.getValue());
                 }
             }
         }
-        setWert(val);
+        setWert(bld.toString());
     }
 
     @Override
@@ -451,13 +451,16 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     values = "";
                 }
             }
-        } else {
+        } else { // if values == null || values.length() == 0
+        	StringBuilder bld = new StringBuilder(); 
             for (Item i : this.myValues.getItemList()) {
                 if (i.isSelected()) {
-                    values = values + ";" + i.getValue();
+                	bld.append(";");
+                	bld.append(i.getValue());
                     this.selectedItems.add(i.getLabel());
                 }
             }
+            values = bld.toString();
             if (values != null) {
                 setWert(values);
             }
@@ -468,16 +471,17 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     @Override
     public void setSelectedItems(List<String> selectedItems) {
 
-        String val = "";
+        StringBuilder bld = new StringBuilder();
         for (String sel : selectedItems) {
             for (Item i : this.myValues.getItemList()) {
                 if (i.getLabel().equals(sel)) {
-                    val += i.getValue() + ";";
+                	bld.append(i.getValue());
+                	bld.append(";");
                 }
             }
         }
 
-        setWert(val);
+        setWert(bld.toString());
     }
 
     @Override
