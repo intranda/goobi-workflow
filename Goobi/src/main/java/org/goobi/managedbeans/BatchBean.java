@@ -123,7 +123,7 @@ public class BatchBean extends BasicBean implements Serializable {
 
     public void loadProcessData() {
 
-        String filter = " istTemplate = false ";
+        StringBuilder filterBuilder = new StringBuilder(" istTemplate = false ");
 
         List<Integer> ids = new ArrayList<>();
         for (Batch b : this.selectedBatches) {
@@ -135,16 +135,18 @@ public class BatchBean extends BasicBean implements Serializable {
         if (! this.selectedBatches.isEmpty()) {
 
             if (ids.contains(null)) {
-                filter += " AND batchID is null ";
+            	filterBuilder.append(" AND batchID is null ");
             } else {
-                filter += " AND (";
+            	filterBuilder.append(" AND (");
                 for (Integer id : ids) {
-                    filter += " batchID = " + id + " OR";
+                	filterBuilder.append(" batchID = ").append(id).append(" OR");
                 }
-                filter = filter.substring(0, filter.length() - 3) + ")";
+                // delete the last " OR"
+                filterBuilder.delete(filterBuilder.length() - 3, filterBuilder.length());
+                filterBuilder.append(")");
             }
         }
-        this.currentProcesses = ProcessManager.getProcesses(null, filter, 0, getBatchMaxSize());
+        this.currentProcesses = ProcessManager.getProcesses(null, filterBuilder.toString(), 0, getBatchMaxSize());
     }
 
     public void filterProcesses() {
