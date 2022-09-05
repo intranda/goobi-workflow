@@ -120,7 +120,7 @@ public class VariableReplacer {
     private final String namespaceMetaMultiValue = "\\$?(?:\\(|\\{)metas\\.([\\w.-]*)(?:\\}|\\))";
 
     // $(folder.xyz) or {folder.xyz} are both ok
-    private final static String folderExpression = "\\$?(?:\\(|\\{)folder\\.([^)]+)(?:\\}|\\))";
+    private static final String folderExpression = "\\$?(?:\\(|\\{)folder\\.([^)]+)(?:\\}|\\))";
 
     private Process process;
     private Step step;
@@ -531,7 +531,7 @@ public class VariableReplacer {
         String suffix = "/full/max/0/default.jpg";
 
         for (String imageName : images) {
-            String path = restPath + URLEncoder.encode(imageName, StandardCharsets.UTF_8.toString()).replaceAll("\\+", "%20") + suffix;
+            String path = restPath + URLEncoder.encode(imageName, StandardCharsets.UTF_8.toString()).replace("\\+", "%20") + suffix;
             try {
                 String jwtToken = JwtHelper.createApiToken(path, new String[] { "GET" });
                 URI iiifUri = new URI(api + path + "?jwt=" + jwtToken);
