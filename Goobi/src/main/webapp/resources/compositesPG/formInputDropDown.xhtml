@@ -43,8 +43,13 @@
 					<f:selectItem itemValue="null" itemLabel="#{msgs.bitteAuswaehlen}" />
 					<f:selectItems value="#{cc.attrs.selectItems}" />
 				</h:selectOneMenu>
-				<h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger"/>
-				<intranda:formHelp content="#{cc.attrs.help}" />
+
+				<!-- Help messages, inline + warning -->
+				<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
+					<ui:param name="msgFor" value="#{cc.attrs.name}" />
+					<ui:param name="helpContent" value="#{cc.attrs.help}" />
+				</ui:include>
+
 			</div>
 
 		</div>

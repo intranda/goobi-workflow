@@ -49,11 +49,13 @@
 					tabindex="#{cc.attrs.tabindex}"
 				/>
 
-				<!-- Help message -->
-				<span class="form__help">
-					<h:message for="#{cc.attrs.name}" showDetail="true" />
-					<intranda:formHelp content="#{cc.attrs.help}" />
-				</span>
+
+				<!-- Help messages, inline + warning -->
+				<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
+					<ui:param name="msgFor" value="#{cc.attrs.name}" />
+					<ui:param name="helpContent" value="#{cc.attrs.help}" />
+				</ui:include>
+
 
 			</div> <!-- end col -->
 		</div> <!-- end row -->
