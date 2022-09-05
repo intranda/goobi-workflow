@@ -652,14 +652,6 @@
 
             <h:panelGroup
               rendered="#{BenutzerverwaltungForm.myClass.id == null}">
-            <button
-              class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
-              jsf:id="absenden2"
-              type="submit"
-              jsf:action="#{BenutzerverwaltungForm.createUser}">
-              <i class="fa fa-save margin-right-5"></i>
-              <span><h:outputText value="#{msgs.createUser}" /></span>
-            </button>
 
             <!-- Cancel -->
             <h:link
@@ -668,6 +660,14 @@
               outcome="user_all"
               value="#{msgs.abbrechen}" />
 
+            <button
+              class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+              jsf:id="absenden2"
+              type="submit"
+              jsf:action="#{BenutzerverwaltungForm.createUser}">
+              <i class="fa fa-save margin-right-5"></i>
+              <span><h:outputText value="#{msgs.createUser}" /></span>
+            </button>
 
           </h:panelGroup>
 
