@@ -1125,6 +1125,10 @@ td .btn ~ .btn {
   gap: var(--gap, 8px);
 }
 
+th {
+  font-weight: inherit;
+}
+
 .form-actions,
 .form__actions,
 .box__actions {
