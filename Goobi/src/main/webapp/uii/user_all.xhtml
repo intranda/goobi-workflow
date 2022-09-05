@@ -27,6 +27,7 @@
 				<div class="col-sm-12">
 
 					<intranda:box
+						id="allUsers"
 						boxType="primary-400"
 						icon="fa-user"
 						title="#{myPageTitle}"
@@ -103,33 +104,33 @@
 														name="name"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.benutzer}"
-														ajaxRender=":myform" />
+														ajaxRender="allUsers:myform" />
 												<intranda:columnheader
 														name="login"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.login}"
-														ajaxRender=":myform" />
+														ajaxRender="allUsers:myform" />
 												<intranda:columnheader
 														name="location"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.standort}"
-														ajaxRender=":myform" />
+														ajaxRender="allUsers:myform" />
 												<intranda:columnheader
 														name="group"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.benutzergruppen}"
-														ajaxRender=":myform" />
+														ajaxRender="allUsers:myform" />
 												<intranda:columnheader
 														name="projects"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.projekte}"
-														ajaxRender=":myform" />
+														ajaxRender="allUsers:myform" />
 												<intranda:columnheader
 														name="institution"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.institution}"
 														rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}"
-														ajaxRender=":myform" />
+														ajaxRender="allUsers:myform" />
 												<intranda:columnheader
 														value="#{msgs.auswahl}"
 														sortable="false" />
