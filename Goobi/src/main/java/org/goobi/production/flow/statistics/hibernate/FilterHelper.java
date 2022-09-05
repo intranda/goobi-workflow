@@ -714,7 +714,7 @@ public class FilterHelper {
      ****************************************************************************/
     protected static String filterIds(String tok, boolean negation) {
         /* filtering by ids */
-        String answer = "";
+    	StringBuilder bld = new StringBuilder();
         List<Integer> listIds = new ArrayList<>();
         if (tok.substring(tok.indexOf(":") + 1).length() > 0) {
             String[] tempids = tok.substring(tok.indexOf(":") + 1).split(" ");
@@ -729,17 +729,18 @@ public class FilterHelper {
         }
         if (! listIds.isEmpty()) {
             if (negation) {
-                answer = " prozesse.prozesseId not in (";
+            	bld.append(" prozesse.prozesseId not in (");
             } else {
-                answer = " prozesse.prozesseId in (";
+            	bld.append(" prozesse.prozesseId in (");
             }
             for (int id : listIds) {
-                answer += id + ", ";
+            	bld.append(id).append(", ");
             }
-            answer = answer.substring(0, answer.length() - 2);
-            answer += ")";
+            // delete the last ", "
+            bld.delete(bld.length() - 2, bld.length());
+            bld.append(")");
         }
-        return answer;
+        return bld.toString();
     }
 
     /**
