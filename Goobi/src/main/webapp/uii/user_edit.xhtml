@@ -157,11 +157,12 @@
                   class="col-12 col-md-3 form__label">
                   <h:outputLabel
                     for="loginAs"
-                    value="#{msgs.login}">
-                  <i
-                    class="fa fa-asterisk"
-                    title="#{msgs.requiredField}"
-                    data-toggle="tooltip" />
+                    value="#{msgs.login}"
+                    title="#{msgs.requiredField}">
+
+                    <f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
+                    <f:passThroughAttribute name="data-bs-placement" value="right" />
+                  <i class="fa fa-asterisk" />
                   </h:outputLabel>
                 </div>
                 <div class="col-12 col-md-9">
@@ -191,11 +192,14 @@
                   <h:outputLabel
                     styleClass="form__label"
                     for="ldapGruppe"
-                    value="#{msgs.user_edit_loginType}">
-                  <i
-                    class="fa fa-asterisk form__required"
-                    title="#{msgs.requiredField}"
-                    data-toggle="tooltip" />
+                    value="#{msgs.user_edit_loginType}"
+                    title="#{msgs.requiredField}">
+
+                    <f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
+                    <f:passThroughAttribute name="data-bs-placement" value="right" />
+
+
+                  <i class="fa fa-asterisk form__required" />
                   </h:outputLabel>
                 </div>
                 <div class="col-12 col-md-9">

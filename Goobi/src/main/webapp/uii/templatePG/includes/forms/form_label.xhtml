@@ -15,12 +15,24 @@
 
 	<composite:implementation>
 
-    <label for="#{labelFor}" class="form__label">
-      #{labelLabel}
-      <h:panelGroup rendered="#{labelRequired}" >
-        <i class="fa fa-asterisk form__required" data-bs-original-title="#{msgs.requiredField}" data-toggle="tooltip"/>
-      </h:panelGroup>
-    </label>
+		<ui:fragment rendered="#{!labelRequired}">
+			<label for="#{labelFor}" class="form__label">
+				#{labelLabel}
+			</label>
+		</ui:fragment>
+
+		<ui:fragment rendered="#{labelRequired}">
+			<label
+				for="#{labelFor}"
+				jsf:styleClass="form__label"
+			>
+				#{labelLabel}
+					<f:passThroughAttribute name="title" value="#{msgs.requiredField}" />
+					<f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
+					<f:passThroughAttribute name="data-bs-placement" value="right" />
+					<i class="fa fa-asterisk form__required" />
+			</label>
+		</ui:fragment>
 
   </composite:implementation>
 
