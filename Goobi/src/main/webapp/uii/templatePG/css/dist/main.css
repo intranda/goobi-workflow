@@ -1051,6 +1051,12 @@ body {
   color: var(--clr-neutral-400);
 }
 
+.box__help {
+  display: block;
+  flex: 1 1 100%;
+  margin-left: 1px;
+}
+
 .table {
   margin-bottom: 0;
 }

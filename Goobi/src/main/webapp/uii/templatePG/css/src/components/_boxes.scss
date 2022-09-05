@@ -161,3 +161,10 @@
     color: var(--clr-neutral-400);
   }
 }
+
+// Standalone help block under boxes, often these are nested boxes
+.box__help {
+  display: block;
+  flex: 1 1 100%;
+  margin-left: 1px;
+}
