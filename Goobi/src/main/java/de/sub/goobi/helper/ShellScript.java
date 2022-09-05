@@ -235,8 +235,10 @@ public class ShellScript {
      */
     public static ShellScriptReturnValue callShell(List<String> parameter, Integer processID) throws IOException, InterruptedException {
         int returnCode = ShellScript.ERRORLEVEL_ERROR;
-        String outputText = "";
-        String errorText = "";
+        String outputText = "" ;
+        String errorText = "" ;
+        StringBuilder outputBuilder = new StringBuilder();
+        StringBuilder errorBuilder = new StringBuilder();
         if (parameter.isEmpty()) {
             return new ShellScriptReturnValue(0, null, null);
         }
@@ -256,8 +258,10 @@ public class ShellScript {
             returnCode = s.run(parameterWithoutCommand);
 
             for (String line : s.getStdOut()) {
-                outputText += line + "\n";
+            	outputBuilder.append(line);
+            	outputBuilder.append("\n");
             }
+            outputText = outputBuilder.toString();
             Helper.addMessageToProcessLog(processID, LogType.DEBUG, "Script '" + scriptname + "' was executed with result: " + outputText);
             if (!outputText.isEmpty()) {
                 Helper.setMeldung(outputText);
@@ -265,8 +269,10 @@ public class ShellScript {
             if ( ! s.getStdErr().isEmpty()) {
                 returnCode = ShellScript.ERRORLEVEL_ERROR;
                 for (String line : s.getStdErr()) {
-                    errorText += line + "\n";
+                	errorBuilder.append(line);
+                	errorBuilder.append("\n");
                 }
+                errorText = errorBuilder.toString();
                 Helper.addMessageToProcessLog(processID, LogType.ERROR, "Error occured while executing script '" + scriptname + "': " + errorText);
                 Helper.setFehlerMeldung(errorText);
             }
@@ -294,6 +300,8 @@ public class ShellScript {
         int returnCode = ShellScript.ERRORLEVEL_ERROR;
         String outputMessage = "";
         String errorMessage = "";
+        StringBuilder outputBuilder = new StringBuilder();
+        StringBuilder errorBuilder = new StringBuilder();
         try {
             String scriptname = "";
             String paramList = "";
@@ -324,8 +332,10 @@ public class ShellScript {
             returnCode = s.run(scriptingArgs);
 
             for (String line : s.getStdOut()) {
-                outputMessage += line + "\n";
+                outputBuilder.append(line);
+                outputBuilder.append("\n");
             }
+            outputMessage = outputBuilder.toString();
             Helper.addMessageToProcessLog(processID, LogType.DEBUG,
                     "Script '" + nonSpacesafeScriptingCommand + "' was executed with result: " + outputMessage);
             if (StringUtils.isNotBlank(outputMessage)) {
@@ -335,8 +345,10 @@ public class ShellScript {
                 returnCode = ShellScript.ERRORLEVEL_ERROR;
 
                 for (String line : s.getStdErr()) {
-                    errorMessage += line + "\n";
+                	errorBuilder.append(line);
+                	errorBuilder.append("\n");
                 }
+                errorMessage = errorBuilder.toString();
                 Helper.addMessageToProcessLog(processID, LogType.ERROR,
                         "Error occured while executing script '" + nonSpacesafeScriptingCommand + "': " + errorMessage);
                 if (StringUtils.isNotBlank(errorMessage)) {
