@@ -73,8 +73,5 @@ td {
 .dataTables__paginator {
   display: flex;
   align-items: center;
-
-  &__page-count {
-    margin-left: 0.8rem;
-  }
+  gap: var(--gap, 8px);
 }

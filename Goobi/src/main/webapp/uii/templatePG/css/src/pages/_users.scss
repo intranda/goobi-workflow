@@ -7,19 +7,23 @@
  * user_password.xhtml
  * ====================================== */
 
-.users {
-  &__project-box-1 {
-    td:first-child {
+/* ========================================
+ * user_all.xhtml
+ * ===================================== */
+
+.view-users {
+  &__box--usergroup-1,
+  &__box--usergroup-2,
+  &__box--project-1,
+  &__box--project-2 {
+    .table__actions {
       display: flex;
       align-items: center;
       gap: var(--gap, 8px);
     }
+
     td {
       vertical-align: middle;
     }
-  }
-
-  &__project-box-2 {
-    display: none;
   }
 }

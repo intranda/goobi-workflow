@@ -134,28 +134,25 @@
 }
 
 /* Layout for boxes with forms */
-.box {
-  .col-sm-3,
-  .col-md-3 {
-    background: var(--clr-neutral-200);
-    border-right: 1px solid var(--clr-neutral-300);
-    display: flex;
-    align-items: center;
+.box.form-box {
+  .row {
+    border-bottom: 1px solid var(--clr-neutral-300);
   }
 
   .col-md-3,
   .col-md-9 {
     display: flex;
     align-items: center;
-
+    flex-wrap: wrap;
     // stretch nested boxes to full width
     .box {
       flex: 1;
     }
   }
 
-  .row {
-    border-bottom: 1px solid var(--clr-neutral-300);
+  .col-md-3 {
+    background: var(--clr-neutral-200);
+    border-right: 1px solid var(--clr-neutral-300);
   }
 
   .form__label i {
