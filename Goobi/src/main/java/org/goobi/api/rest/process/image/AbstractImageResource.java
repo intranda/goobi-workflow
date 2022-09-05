@@ -49,8 +49,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.log4j.Log4j2;
 
+@javax.ws.rs.Path("/dummy/path/to/avoid/resource/configuration/errors")
 @Log4j2
-public abstract class AbstractImageResource extends ImageResource{
+public abstract class AbstractImageResource extends ImageResource {
 
     protected AbstractImageResource(ContainerRequestContext context,
             HttpServletRequest request,

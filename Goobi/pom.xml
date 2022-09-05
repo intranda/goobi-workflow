@@ -4,7 +4,7 @@
     <groupId>de.intranda.goobi.workflow</groupId>
     <artifactId>goobi-core</artifactId>
     <!-- When updating the version, make sure to also update the version in the submodules -->
-    <version>22.08</version>
+    <version>22.08.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
 
@@ -56,7 +56,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <publicVersion>22.08</publicVersion>
+        <publicVersion>22.08.1-SNAPSHOT</publicVersion>
         <!-- Use Java 11 for compiling -->
         <maven.compiler.release>11</maven.compiler.release>
 
@@ -78,7 +78,7 @@
         <normdataimporter.version>1.9.2</normdataimporter.version>
         <ugh-core.version>5.0.11</ugh-core.version>
         <ugh-marc.version>1.3.2</ugh-marc.version>
-        <ugh-lido.version>0.0.13</ugh-lido.version>
+        <ugh-lido.version>0.0.14</ugh-lido.version>
 
         <!-- Be careful with updates here -->
         <antlr4.version>4.10.1</antlr4.version>
@@ -86,9 +86,9 @@
         <h2.version>1.4.200</h2.version>
         <oscache.version>2.3</oscache.version>
         <shiro.version>1.4.2</shiro.version>
-        <activemq.version>5.17.1</activemq.version>
+        <activemq.version>5.17.2</activemq.version>
         <aspectj.version>1.9.9.1</aspectj.version>
-        <aws.version>1.12.290</aws.version>
+        <aws.version>1.12.296</aws.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <cdi.version>2.0.SP1</cdi.version>
         <commons-csv.version>1.9.0</commons-csv.version>
@@ -106,7 +106,7 @@
         <javassist.version>3.29.1-GA</javassist.version>
         <java-jwt.version>3.19.1</java-jwt.version>
         <jaxb-impl.version>2.3.6</jaxb-impl.version>
-        <jackson.version>2.13.3</jackson.version>
+        <jackson.version>2.13.4</jackson.version>
         <jersey.version>2.36</jersey.version>
         <jhove.version>1.20.1</jhove.version>
         <jna.version>5.11.0</jna.version>
