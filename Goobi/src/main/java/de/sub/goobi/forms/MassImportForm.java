@@ -328,30 +328,35 @@ public class MassImportForm implements Serializable {
                 if (plugin2.isRunnableAsGoobiScript()) {
                     GoobiScriptImport igs = new GoobiScriptImport();
                     igs.setMi(this);
-                    String myIdentifiers = "";
+                    StringBuilder bld = new StringBuilder();
                     if (StringUtils.isNotEmpty(this.idList)) {
                         List<String> ids = this.plugin.splitIds(this.idList);
                         for (String id : ids) {
-                            myIdentifiers += id + ",";
+                        	bld.append(id);
+                        	bld.append(",");
                         }
                     } else if (this.importFile != null) {
                         this.plugin.setFile(this.importFile.toFile());
                         List<Record> recordList = this.plugin.generateRecordsFromFile();
                         for (Record r : recordList) {
-                            myIdentifiers += r.getId() + ",";
+                        	bld.append(r.getId());
+                        	bld.append(",");
                         }
                         igs.setRecords(recordList);
                     } else if (StringUtils.isNotEmpty(this.records)) {
                         List<Record> recordList = this.plugin.splitRecords(this.records);
                         for (Record r : recordList) {
-                            myIdentifiers += r.getId() + ",";
+                        	bld.append(r.getId());
+                        	bld.append(",");
                         }
                     } else if (! this.selectedFilenames.isEmpty()) {
                         List<Record> recordList = this.plugin.generateRecordsFromFilenames(this.selectedFilenames);
                         for (Record r : recordList) {
-                            myIdentifiers += r.getId() + ",";
+                        	bld.append(r.getId());
+                        	bld.append(",");
                         }
                     }
+                    String myIdentifiers = bld.toString();
                     if (myIdentifiers.endsWith(",")) {
                         myIdentifiers = myIdentifiers.substring(0, myIdentifiers.lastIndexOf(","));
                     }
