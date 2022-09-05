@@ -137,7 +137,7 @@ public class WebDav implements Serializable {
             if (ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
                 projectDirectory = Paths.get(nach);
             } else {
-                projectDirectory = Paths.get(nach = nach.replaceAll(" ", "__"));
+                projectDirectory = Paths.get(nach = nach.replace(" ", "__"));
             }
 
             if (!StorageProvider.getInstance().isFileExists(projectDirectory)) {
@@ -155,7 +155,7 @@ public class WebDav implements Serializable {
 
         /* Leerzeichen maskieren */
         if (!ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
-            nach = nach.replaceAll(" ", "__");
+            nach = nach.replace(" ", "__");
         }
         Path benutzerHome = Paths.get(nach);
 
@@ -180,7 +180,7 @@ public class WebDav implements Serializable {
             if (aktuellerBenutzer.isMitMassendownload()) {
                 String projekt = Paths.get(userHome + myProzess.getProjekt().getTitel()).toString();
                 if (!ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
-                    projekt = projekt.replaceAll(" ", "__");
+                    projekt = projekt.replace(" ", "__");
                 }
                 FilesystemHelper.createDirectoryForUser(projekt, aktuellerBenutzer.getLogin());
 
@@ -212,7 +212,7 @@ public class WebDav implements Serializable {
         nach += processLinkName;
 
         if (!ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
-            nach = nach.replaceAll(" ", "__");
+            nach = nach.replace(" ", "__");
         }
         log.info("von: " + von);
         log.info("nach: " + nach);

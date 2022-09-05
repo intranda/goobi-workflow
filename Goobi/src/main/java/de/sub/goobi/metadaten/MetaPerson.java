@@ -339,7 +339,7 @@ public class MetaPerson implements SearchableMetadata {
                 if (normdata.getKey().equals("NORM_IDENTIFIER")) {
                     p.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
                 } else if (normdata.getKey().equals("NORM_NAME")) {
-                    mainValue = normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", "");
+                    mainValue = normdata.getValues().get(0).getText().replace("\\x152", "").replace("\\x156", "");
                 }
             }
         }

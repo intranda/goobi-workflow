@@ -1649,7 +1649,7 @@ public class Metadaten implements Serializable {
             List<String> imageNames = imagehelper.getImageFiles(myProzess, currentTifFolder);
             if (imageNames != null && !imageNames.isEmpty()) {
                 imageFolderName = myProzess.getImagesDirectory() + currentTifFolder + File.separator;
-                imageFolderName = imageFolderName.replaceAll("\\\\", "/");
+                imageFolderName = imageFolderName.replace("\\\\", "/");
                 int order = 1;
                 for (String imagename : imageNames) {
                     Image image = new Image(myProzess, imageFolderName, imagename, order++, thumbnailSizeInPixel);

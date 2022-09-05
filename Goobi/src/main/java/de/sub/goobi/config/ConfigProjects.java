@@ -135,10 +135,10 @@ public class ConfigProjects {
 
     private String cleanXmlFormatedString(String inString) {
         if (inString != null) {
-            inString = inString.replaceAll("\t", " ");
-            inString = inString.replaceAll("\n", " ");
+            inString = inString.replace("\t", " ");
+            inString = inString.replace("\n", " ");
             while (inString.contains("  ")) {
-                inString = inString.replaceAll("  ", " ");
+                inString = inString.replace("  ", " ");
             }
         }
         return inString;

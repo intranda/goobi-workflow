@@ -252,10 +252,10 @@ public class Helper implements Serializable, ServletContextListener {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
 
         // Never forget: Strings are immutable
-        meldung = meldung.replaceAll("<", "&lt;");
-        meldung = meldung.replaceAll(">", "&gt;");
-        beschreibung = beschreibung.replaceAll("<", "&lt;");
-        beschreibung = beschreibung.replaceAll(">", "&gt;");
+        meldung = meldung.replace("<", "&lt;");
+        meldung = meldung.replace(">", "&gt;");
+        beschreibung = beschreibung.replace("<", "&lt;");
+        beschreibung = beschreibung.replace(">", "&gt;");
 
         String msg = meldung;
         String beschr = beschreibung;

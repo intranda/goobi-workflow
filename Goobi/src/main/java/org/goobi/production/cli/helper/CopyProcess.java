@@ -1279,8 +1279,8 @@ public class CopyProcess {
         /*
          * -------------------------------- evtuelle Ersetzungen --------------------------------
          */
-        tif_definition = tif_definition.replaceAll("\\[\\[", "<");
-        tif_definition = tif_definition.replaceAll("\\]\\]", ">");
+        tif_definition = tif_definition.replace("\\[\\[", "<");
+        tif_definition = tif_definition.replace("\\]\\]", ">");
 
         /*
          * -------------------------------- Documentname ist im allgemeinen = Prozesstitel --------------------------------

@@ -563,7 +563,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException {
         String pfad = this.help.getGoobiDataDirectory() + this.id.intValue() + FileSystems.getDefault().getSeparator();
         if (!ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
-            pfad = pfad.replaceAll(" ", "__");
+            pfad = pfad.replace(" ", "__");
         }
 
         try {
@@ -1563,7 +1563,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         } catch (IOException | SwapException | DAOException e) {
             log.error("Error creating representative image url for process " + this.getId());
             String rootpath = "cs?action=image&format=jpg&sourcepath=file:///";
-            return rootpath + representativeImage.replaceAll("\\\\", "/");
+            return rootpath + representativeImage.replace("\\\\", "/");
         }
     }
 

@@ -207,7 +207,7 @@ public class FilesystemHelper {
                     ocrfile = altoFolder.resolve(ocrFile + ".xml");
                 }
                 AltoDocument alto = AltoDocument.getDocumentFromFile(ocrfile.toFile());
-                String result = alto.getContent().replaceAll("\n", "<br/>");
+                String result = alto.getContent().replace("\n", "<br/>");
                 return result;
             } else if (sp.isFileExists(xmlFolder)) {
                 // try to return content from xml folder
@@ -215,7 +215,7 @@ public class FilesystemHelper {
                 ConvertAbbyyToAltoStaX converter = new ConvertAbbyyToAltoStaX();
                 try (InputStream input = sp.newInputStream(ocrfile)) {
                     AltoDocument alto = converter.convertToASM(input, new Date(), ocrfile.getFileName().toString());
-                    String result = alto.getContent().replaceAll("\n", "<br/>");
+                    String result = alto.getContent().replace("\n", "<br/>");
                     return result;
                 }
             }
@@ -236,7 +236,7 @@ public class FilesystemHelper {
     public static void main(String[] args) throws IOException, XMLStreamException {
         ConvertAbbyyToAltoStaX converter = new ConvertAbbyyToAltoStaX();
         AltoDocument alto = converter.convertToASM(new File("/opt/digiverso/goobi/metadata/365/ocr/mybook_xml/00000121.xml"), new Date());
-        String result = alto.getContent().replaceAll("\n", "<br/>");
+        String result = alto.getContent().replace("\n", "<br/>");
         System.out.println(result);
     }
 
