@@ -241,13 +241,13 @@ public class SearchBean implements Serializable {
     }
 
     public String createFilter() {
-        String search = "";
+        StringBuilder searchBuilder = new StringBuilder();
 
         for (ExtendedSearchRow row : rowList) {
-            search += row.createSearchString();
+        	searchBuilder.append(row.createSearchString());
         }
 
-        processBean.setFilter( search);
+        processBean.setFilter(searchBuilder.toString());
         processBean.setModusAnzeige("aktuell");
         return processBean.FilterAlleStart();
 
