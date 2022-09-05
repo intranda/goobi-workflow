@@ -168,10 +168,12 @@ public class AdditionalField {
     }
 
     public void setValues(List<String> values) {
-        wert = "";
+        StringBuilder bld = new StringBuilder();
         for (String part : values) {
-            wert += part + ";";
+            bld.append(part);
+            bld.append(";");
         }
+        wert = bld.toString();
         if (wert.endsWith(";")) {
             wert = wert.substring(0, wert.length() - 1);
         }
