@@ -26,12 +26,17 @@
 	<composite:implementation>
 
 		<div class="row" style="#{cc.attrs.style}">
-			<div class="#{cc.attrs.classLeft} form__label" tabindex="-1">
-				<h:outputLabel for="#{cc.attrs.name}" value="#{cc.attrs.label}" />
-				<h:panelGroup rendered="#{cc.attrs.required or cc.attrs.displayAsRequired}">
-					<i class="fa fa-asterisk form__required" title="#{msgs.requiredField}" data-toggle="tooltip"/>
-				</h:panelGroup>
+			<div class="#{cc.attrs.classLeft} control-label" tabindex="-1">
+
+				<!-- LABEL -->
+				<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
+					<ui:param name="labelFor" value="#{cc.attrs.name}" />
+					<ui:param name="labelRequired" value="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
+					<ui:param name="labelLabel" value="#{cc.attrs.label}" />
+				</ui:include>
+
 			</div>
+
 			<div class="#{cc.attrs.classRight}">
 				<h:selectOneMenu id="#{cc.attrs.name}" styleClass="#{cc.attrs.fieldStyle}"
 					value="#{cc.attrs.field}" tabindex="#{cc.attrs.tabindex}" readonly="#{cc.attrs.readonly}">
@@ -41,6 +46,7 @@
 				<h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger"/>
 				<intranda:formHelp content="#{cc.attrs.help}" />
 			</div>
+
 		</div>
 
 	</composite:implementation>

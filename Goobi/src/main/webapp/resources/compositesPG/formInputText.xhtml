@@ -27,12 +27,13 @@
 
 			<!-- col -->
 			<div class="#{cc.attrs.classLeft}">
-				<label for="#{cc.attrs.name}" class="form__label">
-					#{cc.attrs.label}
-					<h:panelGroup rendered="#{cc.attrs.required or cc.attrs.displayAsRequired}" >
-						<i class="fa fa-asterisk form__required" data-bs-original-title="#{msgs.requiredField}" data-toggle="tooltip"/>
-					</h:panelGroup>
-				</label>
+
+				<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
+					<ui:param name="labelFor" value="#{cc.attrs.name}" />
+					<ui:param name="labelRequired" value="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
+					<ui:param name="labelLabel" value="#{cc.attrs.label}" />
+				</ui:include>
+
 			</div> <!-- end col -->
 
 			<!-- col -->
