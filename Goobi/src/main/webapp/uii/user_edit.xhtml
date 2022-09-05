@@ -475,7 +475,12 @@
                       </div> <!-- dataTables wrapper end -->
                     </intranda:box>
 
-                    <intranda:formHelp content="#{msgs.helpBenutzergruppen}" />
+
+                  <h:outputText
+                    styleClass="box__help help-block font-light text-neutral-600"
+                    value="#{msgs.helpBenutzergruppen}"
+                    style="display:#{NavigationForm.showHelp ? 'block' : 'none'}"/>
+
                   </h:panelGroup>
 
               </div> <!-- row user groups end -->
@@ -641,7 +646,12 @@
 
                   </div>
                   </intranda:box>
-                  <intranda:formHelp content="#{msgs.helpProjekte}" />
+
+                  <h:outputText
+                    styleClass="box__help help-block font-light text-neutral-600"
+                    value="#{msgs.helpProjekte}"
+                    style="display:#{NavigationForm.showHelp ? 'block' : 'none'}"/>
+
                 </h:panelGroup>
 
               </div> <!-- col-12 col-md-9 end -->
