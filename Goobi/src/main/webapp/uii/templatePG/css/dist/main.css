@@ -1154,9 +1154,12 @@ label,
   font-size: var(--fs-500);
 }
 
-.help-block {
+.form__help {
+  flex: 1 1 100%;
+}
+.form__help .text-danger,
+.form__help .help-block {
   margin-left: 1px;
-  flex: 1 100%;
 }
 
 .form-text {

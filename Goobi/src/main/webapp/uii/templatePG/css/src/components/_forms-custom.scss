@@ -26,9 +26,14 @@ label,
   font-size: var(--fs-500);
 }
 
-.help-block {
-  margin-left: 1px;
-  flex: 1 100%;
+.form__help {
+  flex: 1 1 100%;
+
+  .text-danger, // error msg
+  .help-block // help text
+  {
+    margin-left: 1px;
+  }
 }
 
 // BS helper
