@@ -561,13 +561,14 @@ public class ProcessBean extends BasicBean implements Serializable {
     public String FilterAktuelleProzesseOfGoobiScript(String status) {
 
         List<GoobiScriptResult> resultList = Helper.getSessionBean().getGsm().getGoobiScriptResults();
-        filter = "\"id:";
+        StringBuilder bld = new StringBuilder("\"id:");
         for (GoobiScriptResult gsr : resultList) {
             if (gsr.getResultType().toString().equals(status)) {
-                filter += gsr.getProcessId() + " ";
+            	bld.append(gsr.getProcessId()).append(" ");
             }
         }
-        filter += "\"";
+        bld.append("\"");
+        filter = bld.toString();
         return FilterAktuelleProzesse();
     }
 
@@ -1198,12 +1199,12 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     @SuppressWarnings("unchecked")
     public void generateFilterWithIdentfiers() {
-        String f = "\"id:";
+    	StringBuilder bld = new StringBuilder("\"id:");
         for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
-            f += proz.getId() + " ";
+        	bld.append(proz.getId()).append(" ");
         }
-        f += "\"";
-        filter = f;
+        bld.append("\"");
+        filter = bld.toString();
     }
 
     public void SchrittStatusUp() {
