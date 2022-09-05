@@ -64,10 +64,7 @@
               title="#{myPageTitle}"
               icon="fa-edit"
               >
-              <ul
-                class="tabs"
-                jsf:rendered="#{BenutzerverwaltungForm.displayMode eq ''?'tab-pane active':'tab-pane'}"
-                >
+              <ul class="tabs #{BenutzerverwaltungForm.myClass.id == null ? 'd-none': ''}">
                 <li class="tab #{BenutzerverwaltungForm.displayMode eq ''?'active':''}">
                   <h:commandLink
                     id="tab1"
