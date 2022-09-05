@@ -157,13 +157,12 @@
                   class="col-12 col-md-3 form__label">
                   <h:outputLabel
                     for="loginAs"
-                    value="#{msgs.login}" />
-                  <h:panelGroup>
+                    value="#{msgs.login}">
                   <i
-                    class="fa fa-asterisk pull-right font-asterisk"
+                    class="fa fa-asterisk"
                     title="#{msgs.requiredField}"
                     data-toggle="tooltip" />
-                  </h:panelGroup>
+                  </h:outputLabel>
                 </div>
                 <div class="col-12 col-md-9">
                   <x:inputText
@@ -187,16 +186,17 @@
 
               <div class="row">
                 <div
-                  class="col-12 col-md-3 form__label">
+                  class="col-12 col-md-3 ">
+
                   <h:outputLabel
+                    styleClass="form__label"
                     for="ldapGruppe"
-                    value="#{msgs.user_edit_loginType}" />
-                  <h:panelGroup>
+                    value="#{msgs.user_edit_loginType}">
                   <i
                     class="fa fa-asterisk form__required"
                     title="#{msgs.requiredField}"
                     data-toggle="tooltip" />
-                  </h:panelGroup>
+                  </h:outputLabel>
                 </div>
                 <div class="col-12 col-md-9">
                   <h:panelGroup
@@ -352,7 +352,8 @@
                         var="item"
                         value="#{BenutzerverwaltungForm.usergroupPaginator.list}">
 
-                      <x:column>
+                      <x:column styleClass="table__actions">
+
                       <!-- Hinzufügen-Schaltknopf -->
                       <button
                         jsf:id="add"
@@ -374,18 +375,18 @@
                       <h:outputText
                         value="#{item.titel}" />
                       </x:column>
-                      <x:column styleClass="table__actions">
+                      <x:column>
                       <h:outputText
                         value="#{item.institution.shortName}" />
                       </x:column>
                       </x:dataTable>
 
                       <div
-                        class="dataTables__info">
+                        class="form__actions">
                         <!-- Cancel-Schaltknopf -->
                         <button
                           jsf:id="cancel"
-                          class="btn font-size-s"
+                          class="btn btn-blank"
                           jsf:action="#{NavigationForm.Reload}">
                           <h:outputText
                             value="#{msgs.abbrechen}" />
@@ -453,7 +454,7 @@
                           <button
                             jsf:id="addGroup"
                             jsf:rendered="#{BenutzerverwaltungForm.unsubscribedGroupsExist}"
-                            class="btn btn-primary-400"
+                            class="btn btn-primary-400 me-auto"
                             jsf:action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
                             jsf:immediate="true">
                             <i class="fa fa-plus"></i>
