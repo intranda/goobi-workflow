@@ -471,21 +471,20 @@ public class VariableReplacer {
     }
 
     private String getAllMetadataValues(DocStruct ds, MetadataType mdt) {
-        String answer = "";
+    	StringBuilder bld = new StringBuilder();
         List<? extends Metadata> metadataList = ds.getAllMetadataByType(mdt);
         if (metadataList != null) {
             for (Metadata md : metadataList) {
                 String value = md.getValue();
                 if (value != null && !value.isEmpty()) {
-                    if (answer.isEmpty()) {
-                        answer = value;
-                    } else {
-                        answer += "," + value;
-                    }
+                    if (bld.length() != 0) {
+                    	bld.append(",");
+                    } 
+                    bld.append(value);
                 }
             }
         }
-        return answer;
+        return bld.toString();
     }
 
     /**
