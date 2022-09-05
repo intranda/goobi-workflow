@@ -44,8 +44,9 @@
 									</div>
 
 
+									<div class="dataTables__filter-container d-flex">
 									<!-- SEARCH IN TABLE-->
-									<h:form id="searchform">
+									<h:form id="isActiveUsers">
 
 										<!-- Show only active users -->
 										<div class="dataTables__filter">
@@ -62,6 +63,9 @@
 													value="#{not BenutzerverwaltungForm.hideInactiveUsers}" />
 											</button>
 										</div>
+									</h:form>
+
+									<h:form id="searchform">
 
 										<!-- Filter by search term -->
 										<div class="dataTables__filter">
@@ -91,6 +95,7 @@
 										</div>
 
 									</h:form>
+									</div> <!-- dataTables__filters-container end -->
 								</div> <!-- SEARCH END -->
 
 								<!-- ### Table ### -->
