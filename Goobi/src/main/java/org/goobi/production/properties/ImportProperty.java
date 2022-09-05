@@ -124,10 +124,11 @@ public class ImportProperty implements IProperty {
     }
 
     public void setValueList(List<String> valueList) {
-        this.value = "";
+    	StringBuilder bld = new StringBuilder();
         for (String val : valueList) {
-            this.value = this.value + val + "; ";
+        	bld.append(val).append("; ");
         }
+        this.value = bld.toString();
     }
 
     public boolean getBooleanValue() {
