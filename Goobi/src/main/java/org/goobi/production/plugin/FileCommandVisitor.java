@@ -153,9 +153,6 @@ public class FileCommandVisitor implements CommandVisitor<Character> {
         if (character == null) {
             return "";
         }
-        //if (character == '\t') {
-        //return "    ";
-        //}
         return String.valueOf(character);
     }
 

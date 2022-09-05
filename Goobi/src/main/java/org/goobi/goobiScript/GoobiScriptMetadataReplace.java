@@ -85,11 +85,6 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
             return new ArrayList<>();
         }
 
-        //		if (parameters.get("replace") == null || parameters.get("replace").equals("")) {
-        //            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "replace");
-        //            return new ArrayList<>();
-        //        }
-
         if (parameters.get("position") == null || parameters.get("position").equals("")) {
             Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "position");
             return new ArrayList<>();
@@ -218,7 +213,7 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
             boolean searchFieldIsRegularExpression) {
         for (DocStruct ds : dsList) {
             List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
-            if (mdlist != null && mdlist.size() > 0) {
+            if (mdlist != null && ! mdlist.isEmpty()) {
                 for (Metadata md : mdlist) {
                     if (searchFieldIsRegularExpression) {
                         for (Matcher m = Pattern.compile(search).matcher(md.getValue()); m.find();) {

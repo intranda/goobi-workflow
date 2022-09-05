@@ -25,9 +25,11 @@
  */
 package org.goobi.production.plugin.interfaces;
 
+import java.io.Serializable;
+
 import org.goobi.production.enums.PluginGuiType;
 
-public interface IAdministrationPlugin extends IPlugin {
+public interface IAdministrationPlugin extends IPlugin, Serializable {
 
     public String getGui();
 

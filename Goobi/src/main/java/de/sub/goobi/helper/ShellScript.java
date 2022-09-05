@@ -262,7 +262,7 @@ public class ShellScript {
             if (!outputText.isEmpty()) {
                 Helper.setMeldung(outputText);
             }
-            if (s.getStdErr().size() > 0) {
+            if ( ! s.getStdErr().isEmpty()) {
                 returnCode = ShellScript.ERRORLEVEL_ERROR;
                 for (String line : s.getStdErr()) {
                     errorText += line + "\n";
@@ -331,7 +331,7 @@ public class ShellScript {
             if (StringUtils.isNotBlank(outputMessage)) {
                 Helper.setMeldung(outputMessage);
             }
-            if (s.getStdErr().size() > 0) {
+            if ( ! s.getStdErr().isEmpty()) {
                 returnCode = ShellScript.ERRORLEVEL_ERROR;
 
                 for (String line : s.getStdErr()) {

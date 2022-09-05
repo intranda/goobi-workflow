@@ -68,11 +68,6 @@ public class BasicBean implements Serializable {
             return;
         }
         this.user.addFilter(this.filter);
-        //		try {
-        //			new BenutzerDAO().save(this.user);
-        //		} catch (DAOException e) {
-        //			log.error(e);
-        //		}
     }
 
     public void removeFilterFromUser() {
@@ -80,10 +75,5 @@ public class BasicBean implements Serializable {
             return;
         }
         this.user.removeFilter(this.filter);
-        //		try {
-        //			new BenutzerDAO().save(this.user);
-        //		} catch (DAOException e) {
-        //			log.error(e);
-        //		}
     }
 }

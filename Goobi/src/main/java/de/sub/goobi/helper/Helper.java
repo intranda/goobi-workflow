@@ -469,7 +469,7 @@ public class Helper implements Serializable, ServletContextListener {
                 }
                 Path file = Paths.get(ConfigurationHelper.getInstance().getPathForLocalMessages());
                 if (StorageProvider.getInstance().isFileExists(file)) {
-                    // Load local message bundle from file system only if file exists;
+                    // Load local message bundle from file system only if file exists
                     // if value not exists in bundle, use default bundle from classpath
 
                     try {

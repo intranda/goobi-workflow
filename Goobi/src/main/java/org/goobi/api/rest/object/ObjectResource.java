@@ -141,7 +141,6 @@ public class ObjectResource {
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
                     throws IOException, InterruptedException, SwapException, DAOException {
 
-        //        response.addHeader("Access-Control-Allow-Origin", "*");
         String filename = filenameBase + ".js";
         Process process = ProcessManager.getProcessById(processId);
 
@@ -176,7 +175,6 @@ public class ObjectResource {
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
                     throws IOException, InterruptedException, SwapException, DAOException {
 
-        //        response.addHeader("Access-Control-Allow-Origin", "*");
         String filename = filenameBase + ".xml";
 
         foldername = Paths.get(foldername).getFileName().toString();
@@ -211,7 +209,6 @@ public class ObjectResource {
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
                     throws IOException, InterruptedException, SwapException, DAOException {
 
-        //        response.addHeader("Access-Control-Allow-Origin", "*");
         String filename = filenameBase + ".jpg";
 
         foldername = Paths.get(foldername).getFileName().toString();
@@ -248,7 +245,6 @@ public class ObjectResource {
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filename)
                     throws IOException, InterruptedException, SwapException, DAOException {
 
-        //        response.addHeader("Access-Control-Allow-Origin", "*");
         foldername = Paths.get(foldername).getFileName().toString();
         Process process = ProcessManager.getProcessById(processId);
         java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, filename);
@@ -286,8 +282,6 @@ public class ObjectResource {
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("subfolder") String subfolder,
             @PathParam("filename") final String filename) throws IOException, InterruptedException, SwapException, DAOException {
 
-        //        response.addHeader("Access-Control-Allow-Origin", "*");
-
         Process process = ProcessManager.getProcessById(processId);
         java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, subfolder, filename);
         if (!objectPath.toFile().isFile()) {
@@ -313,8 +307,6 @@ public class ObjectResource {
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("subfolder1") String subfolder1,
             @PathParam("subfolder2") String subfolder2, @PathParam("filename") String filename)
                     throws IOException, InterruptedException, SwapException, DAOException {
-
-        //        response.addHeader("Access-Control-Allow-Origin", "*");
 
         Process process = ProcessManager.getProcessById(processId);
         java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, subfolder1, subfolder2, filename);
@@ -350,8 +342,6 @@ public class ObjectResource {
                     IOUtils.copy(inputStream, output);
                     return;
                 }
-                //            } catch (LostConnectionException e) {
-                //                logger.trace("aborted writing 3d object from  " + this.filePath);
             } catch (Throwable e) {
                 throw new WebApplicationException(e);
             }

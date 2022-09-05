@@ -58,8 +58,8 @@ public class ConfigurationHelper implements Serializable {
     private static String imagesPath = null;
     private static ConfigurationHelper instance;
     public static String CONFIG_FILE_NAME = "goobi_config.properties";
-    private PropertiesConfiguration config;
-    private PropertiesConfiguration configLocal;
+    private transient PropertiesConfiguration config;
+    private transient PropertiesConfiguration configLocal;
 
     private ConfigurationHelper() {
         try {

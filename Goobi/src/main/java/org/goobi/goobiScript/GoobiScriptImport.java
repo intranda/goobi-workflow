@@ -90,12 +90,6 @@ public class GoobiScriptImport extends AbstractIGoobiScript implements IGoobiScr
 
         batch = mi.getBatch();
 
-        //		batchId = 1;
-        //        try {
-        //            batchId += ProcessManager.getMaxBatchNumber();
-        //        } catch (Exception e1) {
-        //        }
-
         String[] identifiers = parameters.get("identifiers").split(",");
         List<GoobiScriptResult> newList = new ArrayList<>();
         for (String id : identifiers) {

@@ -821,7 +821,7 @@ class VocabularyMysqlHelper implements Serializable {
     }
 
     public static void batchUpdateRecords(List<VocabRecord> records, Integer vocabularyID) throws SQLException {
-        //        1.) delete old fields;
+        //        1.) delete old fields
         StringBuilder sql = new StringBuilder();
         sql.append("DELETE from vocabulary_record_data WHERE record_id IN (");
 
@@ -841,7 +841,7 @@ class VocabularyMysqlHelper implements Serializable {
             QueryRunner runner = new QueryRunner();
             connection = MySQLHelper.getInstance().getConnection();
             runner.execute(connection, sql.toString());
-            //        2.) insert new fields;
+            //        2.) insert new fields
             fieldsBatchInsertion(records, vocabularyID, connection, runner);
         } finally {
             if (connection != null) {

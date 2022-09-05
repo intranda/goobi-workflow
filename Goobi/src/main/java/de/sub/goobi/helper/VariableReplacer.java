@@ -119,7 +119,7 @@ public class VariableReplacer {
     // $(metas.abc)
     private final String namespaceMetaMultiValue = "\\$?(?:\\(|\\{)metas\\.([\\w.-]*)(?:\\}|\\))";
 
-    // $(folder.xyz) or {folder.xyz}
+    // $(folder.xyz) or {folder.xyz} are both ok
     private final static String folderExpression = "\\$?(?:\\(|\\{)folder\\.([^)]+)(?:\\}|\\))";
 
     private Process process;
@@ -384,7 +384,7 @@ public class VariableReplacer {
             /* TopStruct und FirstChild ermitteln */
             DocStruct topstruct = this.dd.getLogicalDocStruct();
             DocStruct firstchildstruct = null;
-            if (topstruct.getAllChildren() != null && topstruct.getAllChildren().size() > 0) {
+            if (topstruct.getAllChildren() != null && ! topstruct.getAllChildren().isEmpty()) {
                 firstchildstruct = topstruct.getAllChildren().get(0);
             }
 
@@ -457,7 +457,7 @@ public class VariableReplacer {
      */
     private String getMetadataValue(DocStruct inDocstruct, MetadataType mdt) {
         List<? extends Metadata> mds = inDocstruct.getAllMetadataByType(mdt);
-        if (mds.size() > 0) {
+        if ( ! mds.isEmpty()) {
             Metadata m = mds.get(0);
             if (m.getType().getIsPerson()) {
                 Person p = (Person) m;

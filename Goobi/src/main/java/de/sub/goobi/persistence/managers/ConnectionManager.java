@@ -1,5 +1,7 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -45,9 +47,11 @@ import lombok.extern.log4j.Log4j2;
  * 
  */
 @Log4j2
-public class ConnectionManager {
+public class ConnectionManager implements Serializable{
 
-    private DataSource ds = null;
+    private static final long serialVersionUID = 5383856824401199510L;
+    
+	private transient DataSource ds = null;
     @SuppressWarnings("rawtypes")
     private static GenericObjectPool _pool = null;
 

@@ -185,17 +185,6 @@ public class PropertyParser {
             return properties;
         }
 
-        //            String path = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_processProperties.xml";
-        //            XMLConfiguration config;
-        //            try {
-        //                config = new XMLConfiguration(path);
-        //            } catch (ConfigurationException e) {
-        //                log.error(e);
-        //                config = new XMLConfiguration();
-        //            }
-        //            config.setListDelimiter('&');
-        //            config.setReloadingStrategy(new FileChangedReloadingStrategy());
-
         // run though all properties
         int countProperties = config.getMaxIndex("/property");
         for (int i = 0; i <= countProperties; i++) {
@@ -219,8 +208,8 @@ public class PropertyParser {
             }
 
             // project and workflows are configured correct?
-            boolean projectOk = pp.getProjects().contains("*") || pp.getProjects().contains(projectTitle) || pp.getProjects().size() == 0;
-            boolean workflowOk = pp.getWorkflows().contains("*") || pp.getWorkflows().contains(workflowTitle) || pp.getWorkflows().size() == 0;
+            boolean projectOk = pp.getProjects().contains("*") || pp.getProjects().contains(projectTitle) || pp.getProjects().isEmpty();
+            boolean workflowOk = pp.getWorkflows().contains("*") || pp.getWorkflows().contains(workflowTitle) || pp.getWorkflows().isEmpty();
 
             if (projectOk && workflowOk) {
 
@@ -308,7 +297,6 @@ public class PropertyParser {
     }
 
     public List<ProcessProperty> getPropertiesForProcess(Process process) {
-        //      Hibernate.initialize(process.getProjekt());
         String projectTitle = process.getProjekt().getTitel();
         ArrayList<ProcessProperty> properties = new ArrayList<>();
         if (process.isIstTemplate()) {
@@ -413,7 +401,7 @@ public class PropertyParser {
             }
         }
         // create ProcessProperties to remaining 'eigenschaften'
-        if (plist.size() > 0) {
+        if (! plist.isEmpty()) {
             for (Processproperty pe : plist) {
                 ProcessProperty pp = new ProcessProperty();
                 pp.setProzesseigenschaft(pe);

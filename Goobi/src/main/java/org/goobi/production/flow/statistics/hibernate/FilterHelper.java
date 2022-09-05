@@ -71,8 +71,6 @@ public class FilterHelper {
                 sb.append("prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ");
                 sb.append(aktuellerNutzer.getId());
                 sb.append(")");
-                //                answer = "prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
-                //                        + aktuellerNutzer.getId() + ")";
 
             }
             if (!aktuellerNutzer.isSuperAdmin()) {
@@ -729,7 +727,7 @@ public class FilterHelper {
                 }
             }
         }
-        if (listIds.size() > 0) {
+        if (! listIds.isEmpty()) {
             if (negation) {
                 answer = " prozesse.prozesseId not in (";
             } else {
@@ -1371,7 +1369,6 @@ public class FilterHelper {
             case max:
                 try {
                     return FilterHelper.filterStepMax(parameters, inStatus, negate, dateFilter);
-                    //                    returnParameters.setCriticalQuery();
                 } catch (NullPointerException e) {
                     message = "stepdone is preset, don't use 'step' filters";
                 } catch (Exception e) {
@@ -1382,7 +1379,6 @@ public class FilterHelper {
             case min:
                 try {
                     return FilterHelper.filterStepMin(parameters, inStatus, negate, dateFilter);
-                    //                    returnParameters.setCriticalQuery();
                 } catch (NullPointerException e) {
                     message = "stepdone is preset, don't use 'step' filters";
                 } catch (Exception e) {
@@ -1392,8 +1388,6 @@ public class FilterHelper {
 
             case name:
                 /* filter for a specific done step by it's name (Titel) */
-                // myObservable.setMessage("Filter 'stepDone:" + parameters
-                // + "' is not yet implemented and will be ignored!");
                 try {
                     return FilterHelper.filterStepName(parameters, inStatus, negate, dateFilter);
                 } catch (NullPointerException e) {
@@ -1406,7 +1400,6 @@ public class FilterHelper {
             case range:
                 try {
                     return FilterHelper.filterStepRange(parameters, inStatus, negate, dateFilter);
-                    //                    returnParameters.setCriticalQuery();
                 } catch (NullPointerException e) {
                     message = "stepdone is preset, don't use 'step' filters";
                 } catch (NumberFormatException e) {

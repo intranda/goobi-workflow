@@ -80,36 +80,14 @@ public class StatQuestCorrections implements IStatisticalQuestionLimitedTimefram
 
         List<DataTable> allTables = new ArrayList<>();
 
-        //		IEvaluableFilter originalFilter;
-        //
-        //		if (dataSource instanceof IEvaluableFilter) {
-        //			originalFilter = (IEvaluableFilter) dataSource;
-        //		} else {
-        //			throw new UnsupportedOperationException(
-        //					"This implementation of IStatisticalQuestion needs an IDataSource for method getDataSets()");
-        //		}
-
         //gathering IDs from the filter passed by dataSource
         List<Integer> IDlist = null;
-        //		try {
         IDlist = ProcessManager.getIdsForFilter(filter);
-        //		} catch (UnsupportedOperationException e) {
-        //		}
-        //		if (IDlist == null || IDlist.size() == 0) {
-        //			return null;
-        //		}
 
         IStepRequests sqlGenerator = StatisticsFactory.getStepRequests(timeFilterFrom, timeFilterTo, timeGrouping, IDlist);
 
         // adding time restrictions
         String natSQL = sqlGenerator.getSQL(HistoryEventType.stepError, null, false, false);
-        //		Session session = Helper.getHibernateSession();
-
-        //		SQLQuery query = session.createSQLQuery(natSQL);
-
-        //needs to be there otherwise an exception is thrown
-        //		query.addScalar("stepCount", StandardBasicTypes.DOUBLE);
-        //		query.addScalar("intervall", StandardBasicTypes.STRING);
 
         @SuppressWarnings("rawtypes")
         List list = ProcessManager.runSQL(natSQL);

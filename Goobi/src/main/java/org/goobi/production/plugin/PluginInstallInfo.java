@@ -25,6 +25,7 @@
  */
 package org.goobi.production.plugin;
 
+import java.io.Serializable;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -36,8 +37,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class PluginInstallInfo {
-    private int id;
+public class PluginInstallInfo implements Serializable{
+    private static final long serialVersionUID = -8995664133637304408L;
+	private int id;
     private String name;
     private String type;
     private String sourcecodeUri;

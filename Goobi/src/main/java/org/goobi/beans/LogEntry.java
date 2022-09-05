@@ -1,5 +1,7 @@
 package org.goobi.beans;
 
+import java.io.Serializable;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -29,9 +31,11 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.Data;
 
 @Data
-public class LogEntry {
+public class LogEntry implements Serializable{
 
-    private Integer id;
+    private static final long serialVersionUID = -5624248615174083906L;
+    
+	private Integer id;
     private Integer processId;
     private Date creationDate;
     private String userName;

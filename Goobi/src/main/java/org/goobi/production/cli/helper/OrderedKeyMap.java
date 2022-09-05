@@ -66,7 +66,7 @@ public class OrderedKeyMap<K, V> extends HashMap<K, V> {
     private static final long serialVersionUID = -4826644528952614394L;
 
     @Getter
-    private List<K> keyList = new ArrayList<>();
+    private transient List<K> keyList = new ArrayList<>();
 
     @Override
     public V put(K key, V value) {

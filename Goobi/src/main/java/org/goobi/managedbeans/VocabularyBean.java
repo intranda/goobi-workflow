@@ -102,7 +102,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     @Getter
     @Setter
-    private Path importFile;
+    private transient Path importFile;
     @Getter
     private String filename;
 
@@ -116,14 +116,14 @@ public class VocabularyBean extends BasicBean implements Serializable {
     @Getter
     private List<SelectItem> allDefinitionNames;
 
-    private List<Row> rowsToImport;
+    private transient List<Row> rowsToImport;
 
     @Getter
     @Setter
     private String importType = "merge";
 
     private List<Definition> removedDefinitions = null;
-    private DataFormatter dataFormatter = new DataFormatter();
+    private transient DataFormatter dataFormatter = new DataFormatter();
 
     /**
      * Constructor for class
@@ -162,7 +162,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public String editRecords() {
         // load records of selected vocabulary
         // initial first page
-        //        VocabularyManager.getPaginatedRecords(currentVocabulary);
         VocabularyManager.getAllRecords(currentVocabulary);
         currentVocabulary.runFilter();
         currentVocabulary.setTotalNumberOfRecords(currentVocabulary.getRecords().size());
@@ -448,7 +447,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
                         Cell cell = headerRow.getCell(i);
                         if (cell != null) {
                             String value = dataFormatter.formatCellValue(cell).trim();
-                            //String value = cell.getStringCellValue();
                             headerOrder.add(new MatchingField(value, i, CellReference.convertNumToColString(i), this));
                         }
                     }
@@ -681,7 +679,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
                 VocabularyManager.batchUpdateRecords(updateRecords, currentVocabulary.getId());
             }
         }
-        //  VocabularyManager.saveRecords(currentVocabulary);
         return FilterKein();
     }
 
@@ -734,9 +731,11 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     @Data
     @RequiredArgsConstructor
-    public class MatchingField {
+    public class MatchingField implements Serializable{
 
-        /**
+        private static final long serialVersionUID = 7037009721345445066L;
+
+		/**
          * Name of the header of the current column within the excel file
          */
         @NonNull

@@ -200,7 +200,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         Entity<List<StringPair>> entitiy = Entity.json(vocabularySearchFields);
         records = voc.request().post(entitiy, new GenericType<List<VocabRecord>>() {
         });
-        if (records == null || records.size() == 0) {
+        if (records == null || records.isEmpty()) {
             showNotHits = true;
         } else {
             showNotHits = false;
@@ -317,7 +317,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 List<VocabRecord> records = VocabularyManager.findRecords(vocabularyName, vocabularySearchFields);
                 Collections.sort(records);
 
-                if (records != null && records.size() > 0) {
+                if (records != null && ! records.isEmpty()) {
                     ArrayList<Item> itemList = new ArrayList<>(records.size());
                     List<SelectItem> selectItems = new ArrayList<>(records.size());
                     for (VocabRecord vr : records) {

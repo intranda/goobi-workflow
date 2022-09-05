@@ -59,7 +59,7 @@ public class Vocabulary implements Serializable, DatabaseObject {
     private String description;
     private List<VocabRecord> records = new ArrayList<>();
     private List<Definition> struct = new ArrayList<>();
-    List<VocabRecord> subList = null;
+    transient List<VocabRecord> subList = null;
 
     @JsonIgnore
     private List<VocabRecord> filteredRecords = new ArrayList<>();
@@ -215,7 +215,6 @@ public class Vocabulary implements Serializable, DatabaseObject {
 
     public Integer getTxtMoveTo() {
         return null;
-        //        return this.pageNo + 1;
     }
 
     public List<Definition> getMainFields() {
@@ -247,7 +246,7 @@ public class Vocabulary implements Serializable, DatabaseObject {
         runFilter();
     }
 
-    private Comparator<VocabRecord> recordComparator = new Comparator<VocabRecord>() {
+    private transient Comparator<VocabRecord> recordComparator = new Comparator<VocabRecord>() {
 
         @Override
         public int compare(VocabRecord o1, VocabRecord o2) {

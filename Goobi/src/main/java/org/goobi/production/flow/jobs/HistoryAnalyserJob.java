@@ -259,19 +259,6 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 
                 case OPEN:
 
-                    //do not change Bearbeitungszeitpunkt for open steps.
-                    //                    // fix missing editing date
-                    //                    if (step.getBearbeitungszeitpunkt() == null) {
-                    //                        isDirty = true;
-                    //                        if (step.getBearbeitungsende() != null) {
-                    //                            step.setBearbeitungszeitpunkt(step.getBearbeitungsende());
-                    //                        } else {
-                    //                            // step.setBearbeitungsbeginn(getTimestampFromPreviousStep(inProcess,
-                    //                            // step));
-                    //                            step.setBearbeitungszeitpunkt(getTimestampFromPreviousStep(inProcess, step));
-                    //                        }
-                    //                    }
-
                     // fix set end date
                     if (step.getBearbeitungsende() != null) {
                         step.setBearbeitungsende(null);

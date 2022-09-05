@@ -25,6 +25,7 @@
 package org.goobi.beans;
 
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -41,8 +42,9 @@ import lombok.Data;
  *
  */
 @Data
-public class JobType {
-    private String id;
+public class JobType implements Serializable{
+    private static final long serialVersionUID = -2935520407441114892L;
+	private String id;
     private String name;
     private Set<String> stepNames = new TreeSet<>();
     private boolean paused;
