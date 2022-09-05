@@ -2023,16 +2023,17 @@ public class Metadaten implements Serializable {
      * @param inStrukturelement ============================================================== ==
      */
     private String MetadatenErmitteln(DocStruct inStrukturelement, String inTyp) {
-        String rueckgabe = "";
+        StringBuilder bld = new StringBuilder();
         List<Metadata> allMDs = inStrukturelement.getAllMetadata();
         if (allMDs != null) {
             for (Metadata md : allMDs) {
-                if (md.getType().getName().equals(inTyp)) {
-                    rueckgabe += (md.getValue() == null ? "" : md.getValue()) + " ";
+                if (md.getType().getName().equals(inTyp) && md.getValue() != null) {
+                	bld.append(md.getValue());
+                	bld.append(" ");
                 }
             }
         }
-        return rueckgabe.trim();
+        return bld.toString().trim();
     }
 
     @SuppressWarnings("rawtypes")
