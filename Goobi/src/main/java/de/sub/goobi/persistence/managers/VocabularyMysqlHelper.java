@@ -169,7 +169,7 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             int numberOfProcessesWithTitle =
-                    new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, vocabulary.getTitle());
+                    new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler, vocabulary.getTitle());
             return (numberOfProcessesWithTitle == 0);
         } finally {
             if (connection != null) {
@@ -319,7 +319,7 @@ class VocabularyMysqlHelper implements Serializable {
             try {
                 connection = MySQLHelper.getInstance().getConnection();
                 List<VocabRecord> records =
-                        new QueryRunner().query(connection, sql.toString(), VocabularyManager.vocabularyRecordListHandler, vocabulary.getId());
+                        new QueryRunner().query(connection, sql, VocabularyManager.vocabularyRecordListHandler, vocabulary.getId());
                 for (VocabRecord rec : records) {
                     setDefinitionsToRecord(rec, vocabulary);
                 }
@@ -339,7 +339,7 @@ class VocabularyMysqlHelper implements Serializable {
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
-                List<VocabRecord> records = new QueryRunner().query(connection, sql.toString(),
+                List<VocabRecord> records = new QueryRunner().query(connection, sql,
                         VocabularyManager.resultSetToVocabularyRecordListHandler, vocabulary.getId());
                 for (VocabRecord rec : records) {
                     // merge expected definitions with existing definitions

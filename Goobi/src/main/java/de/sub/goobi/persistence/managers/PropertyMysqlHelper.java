@@ -47,7 +47,7 @@ class PropertyMysqlHelper implements Serializable {
         Object[] param = { processId };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<Processproperty> ret = new QueryRunner().query(connection, sql.toString(), resultSetToPropertyListHandler, param);
+            List<Processproperty> ret = new QueryRunner().query(connection, sql, resultSetToPropertyListHandler, param);
             return ret;
         } finally {
             if (connection != null) {
@@ -315,9 +315,9 @@ class PropertyMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString() + ", " + Arrays.toString(param));
+                log.trace(sql + ", " + Arrays.toString(param));
             }
-            Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
+            Integer id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
             if (id != null) {
                 pe.setId(id);
             }
@@ -369,9 +369,9 @@ class PropertyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString());
+                log.trace(sql);
             }
-            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -385,9 +385,9 @@ class PropertyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString());
+                log.trace(sql);
             }
-            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -401,9 +401,9 @@ class PropertyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString());
+                log.trace(sql);
             }
-            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -417,7 +417,7 @@ class PropertyMysqlHelper implements Serializable {
         Object[] param = { templateId };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<Templateproperty> ret = new QueryRunner().query(connection, sql.toString(), resultSetToTemplatePropertyListHandler, param);
+            List<Templateproperty> ret = new QueryRunner().query(connection, sql, resultSetToTemplatePropertyListHandler, param);
             return ret;
         } finally {
             if (connection != null) {
@@ -500,7 +500,7 @@ class PropertyMysqlHelper implements Serializable {
         Object[] param = { templateId };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<Masterpieceproperty> ret = new QueryRunner().query(connection, sql.toString(), resultSetToMasterpiecePropertyListHandler, param);
+            List<Masterpieceproperty> ret = new QueryRunner().query(connection, sql, resultSetToMasterpiecePropertyListHandler, param);
             return ret;
         } finally {
             if (connection != null) {

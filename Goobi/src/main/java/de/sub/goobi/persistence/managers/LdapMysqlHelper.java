@@ -292,9 +292,9 @@ class LdapMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString());
+                log.trace(sql);
             }
-            List<Ldap> ret = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(Ldap.class));
+            List<Ldap> ret = new QueryRunner().query(connection, sql, new BeanListHandler<>(Ldap.class));
             return ret;
         } finally {
             if (connection != null) {

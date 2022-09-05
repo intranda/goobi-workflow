@@ -180,7 +180,7 @@ class UserMysqlHelper implements Serializable {
                         "?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,?,?,?,?,?,   ?,?,?,?,?,   ?,?,?";
 
                 sql.append("INSERT INTO benutzer (");
-                sql.append(propNames.toString());
+                sql.append(propNames);
                 sql.append(") VALUES (");
                 sql.append(prop);
                 sql.append(")");
@@ -397,7 +397,7 @@ class UserMysqlHelper implements Serializable {
             Object[] param = { "_filter", filter, false, 5, null, datetime, userId };
             String sql = "INSERT INTO " + "benutzereigenschaften" + " (" + propNames + ") VALUES ( ?, ?,? ,? ,? ,?,? )";
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString() + ", " + Arrays.toString(param));
+                log.trace(sql + ", " + Arrays.toString(param));
             }
             run.update(connection, sql, param);
         } finally {
@@ -415,7 +415,7 @@ class UserMysqlHelper implements Serializable {
             Object[] param = { userId, filter };
             String sql = "DELETE FROM benutzereigenschaften WHERE Titel = '_filter' AND BenutzerID = ? AND Wert = ?";
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString() + ", " + Arrays.toString(param));
+                log.trace(sql + ", " + Arrays.toString(param));
             }
             run.update(connection, sql, param);
         } finally {
@@ -440,7 +440,7 @@ class UserMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             Object[] param = { stepId };
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString() + ", " + Arrays.toString(param));
+                log.trace(sql + ", " + Arrays.toString(param));
             }
             return run.query(connection, sql, UserManager.resultSetToUserListHandler, param);
         } finally {
@@ -458,7 +458,7 @@ class UserMysqlHelper implements Serializable {
                 // check if assignment exists
                 String sql =
                         " SELECT * FROM benutzergruppenmitgliedschaft WHERE BenutzerID =" + user.getId() + " AND BenutzerGruppenID = " + gruppenID;
-                boolean exists = new QueryRunner().query(connection, sql.toString(), checkForResultHandler);
+                boolean exists = new QueryRunner().query(connection, sql, checkForResultHandler);
                 if (!exists) {
                     String insert = " INSERT INTO benutzergruppenmitgliedschaft (BenutzerID , BenutzerGruppenID) VALUES (" + user.getId() + ","
                             + gruppenID + ")";
@@ -479,7 +479,7 @@ class UserMysqlHelper implements Serializable {
                 connection = MySQLHelper.getInstance().getConnection();
                 // check if assignment exists
                 String sql = " SELECT * FROM projektbenutzer WHERE BenutzerID =" + user.getId() + " AND ProjekteID = " + projektID;
-                boolean exists = new QueryRunner().query(connection, sql.toString(), checkForResultHandler);
+                boolean exists = new QueryRunner().query(connection, sql, checkForResultHandler);
                 if (!exists) {
                     String insert = " INSERT INTO projektbenutzer (BenutzerID , ProjekteID) VALUES (" + user.getId() + "," + projektID + ")";
                     new QueryRunner().update(connection, insert);

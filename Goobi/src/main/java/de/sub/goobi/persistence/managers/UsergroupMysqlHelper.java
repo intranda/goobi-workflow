@@ -208,7 +208,7 @@ class UsergroupMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             Object[] param = { stepId };
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString() + ", " + Arrays.toString(param));
+                log.trace(sql + ", " + Arrays.toString(param));
             }
             return run.query(connection, sql, UsergroupManager.resultSetToUsergroupListHandler, param);
         } finally {

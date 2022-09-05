@@ -536,9 +536,9 @@ class StepMysqlHelper implements Serializable {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
                 if (log.isTraceEnabled()) {
-                    log.trace(sql.toString() + ", " + Arrays.toString(param));
+                    log.trace(sql + ", " + Arrays.toString(param));
                 }
-                Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
+                Integer id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
                 if (id != null) {
                     property.setId(id);
                 }
@@ -604,9 +604,9 @@ class StepMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString() + ", " + Arrays.toString(param));
+                log.trace(sql + ", " + Arrays.toString(param));
             }
-            Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
+            Integer id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
             if (id != null) {
                 o.setId(id);
             }
@@ -1037,15 +1037,15 @@ class StepMysqlHelper implements Serializable {
     }
 
     public static Set<String> getDistinctStepPluginTitles() throws SQLException {
-        StringBuilder sql = new StringBuilder();
-        sql.append("select distinct stepPlugin from schritte");
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder.append("select distinct stepPlugin from schritte");
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString());
+                log.trace(sqlBuilder.toString());
             }
-            return new HashSet<>(new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler));
+            return new HashSet<>(new QueryRunner().query(connection, sqlBuilder.toString(), MySQLHelper.resultSetToStringListHandler));
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -1061,7 +1061,7 @@ class StepMysqlHelper implements Serializable {
                 for (User user : step.getBenutzer()) {
                     // check if assignment exists
                     String sql = " SELECT * from schritteberechtigtebenutzer WHERE BenutzerID =" + user.getId() + " AND schritteID = " + step.getId();
-                    boolean exists = new QueryRunner().query(connection, sql.toString(), checkForResultHandler);
+                    boolean exists = new QueryRunner().query(connection, sql, checkForResultHandler);
                     if (!exists) {
                         String insert = " INSERT INTO schritteberechtigtebenutzer (BenutzerID , schritteID) VALUES (" + user.getId() + ","
                                 + step.getId() + ")";
@@ -1085,7 +1085,7 @@ class StepMysqlHelper implements Serializable {
                     // check if assignment exists
                     String sql = " SELECT * from schritteberechtigtegruppen WHERE BenutzerGruppenID =" + userGroup.getId() + " AND schritteID = "
                             + step.getId();
-                    boolean exists = new QueryRunner().query(connection, sql.toString(), checkForResultHandler);
+                    boolean exists = new QueryRunner().query(connection, sql, checkForResultHandler);
                     if (!exists) {
                         String insert = " INSERT INTO schritteberechtigtegruppen (BenutzerGruppenID , schritteID) VALUES (" + userGroup.getId() + ","
                                 + step.getId() + ")";

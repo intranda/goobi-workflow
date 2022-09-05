@@ -55,9 +55,9 @@ public class Object {
      * @param objectURI
      * @throws URISyntaxException
      */
-    public Object(String uri) throws URISyntaxException {
-        this.uri = new URI(uri);
-        this.type = ObjectFormat.getByFileExtension(uri.toString().substring(uri.toString().lastIndexOf("/")));
+    public Object(String uriString) throws URISyntaxException {
+        this.uri = new URI(uriString);
+        this.type = ObjectFormat.getByFileExtension(uriString.substring(uriString.lastIndexOf("/")));
 
     }
 }

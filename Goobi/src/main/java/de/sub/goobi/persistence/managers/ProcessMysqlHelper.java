@@ -375,7 +375,7 @@ class ProcessMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString() + ", " + Arrays.toString(param));
+                log.trace(sql + ", " + Arrays.toString(param));
             }
             Integer id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
             if (id != null) {
@@ -480,9 +480,9 @@ class ProcessMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString());
+                log.trace(sql);
             }
-            return new QueryRunner().query(connection, sql.toString(), resultSetToBatchHandler, batchID);
+            return new QueryRunner().query(connection, sql, resultSetToBatchHandler, batchID);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -789,7 +789,7 @@ class ProcessMysqlHelper implements Serializable {
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<LogEntry> ret = new QueryRunner().query(connection, sql.toString(), resultSetToLogEntryListHandler);
+            List<LogEntry> ret = new QueryRunner().query(connection, sql, resultSetToLogEntryListHandler);
             return ret;
         } finally {
             if (connection != null) {
