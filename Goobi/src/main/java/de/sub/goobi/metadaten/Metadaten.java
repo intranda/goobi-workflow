@@ -4643,65 +4643,52 @@ public class Metadaten implements Serializable {
         if (StringUtils.isNotBlank(docstructName) && (oldDocstructName.isEmpty() || !oldDocstructName.equals(docstructName))) {
             oldDocstructName = docstructName;
 
-            addableMetadata = new LinkedList<>();
-            if (docstructName != null) {
+            DocStructType dst = this.myPrefs.getDocStrctTypeByName(docstructName);
+            
+            addableMetadata = new LinkedList<>();      
+            try {
+            	DocStruct ds = this.document.createDocStruct(dst);
 
-                DocStructType dst = this.myPrefs.getDocStrctTypeByName(docstructName);
-                try {
-                    DocStruct ds = this.document.createDocStruct(dst);
-
-                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, Helper.getMetadataLanguage(),
-                            MetadataTypes.METATDATA, this.myProzess, displayHiddenMetadata);
-                    if (myTempMetadata != null) {
-                        for (Metadata metadata : myTempMetadata) {
-                            MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this);
-                            addableMetadata.add(meta);
-                        }
+                List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, Helper.getMetadataLanguage(),
+                        MetadataTypes.METATDATA, this.myProzess, displayHiddenMetadata);
+                if (myTempMetadata != null) {
+                    for (Metadata metadata : myTempMetadata) {
+                        addableMetadata.add(new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this));
                     }
-                } catch (TypeNotAllowedForParentException e) {
-                    log.error(e);
                 }
+            } catch (TypeNotAllowedForParentException e) {
+                log.error(e);
             }
+            
             addablePersondata = new LinkedList<>();
-            if (docstructName != null) {
+            try {
+                DocStruct ds = this.document.createDocStruct(dst);
 
-                DocStructType dst = this.myPrefs.getDocStrctTypeByName(docstructName);
-                try {
-                    DocStruct ds = this.document.createDocStruct(dst);
-
-                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, Helper.getMetadataLanguage(),
-                            MetadataTypes.PERSON, this.myProzess, displayHiddenMetadata);
-                    if (myTempMetadata != null) {
-                        for (Metadata metadata : myTempMetadata) {
-                            MetaPerson meta = new MetaPerson((Person) metadata, 0, this.myPrefs, ds, myProzess, this);
-
-                            addablePersondata.add(meta);
-                        }
+                List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, Helper.getMetadataLanguage(),
+                        MetadataTypes.PERSON, this.myProzess, displayHiddenMetadata);
+                if (myTempMetadata != null) {
+                    for (Metadata metadata : myTempMetadata) {
+                        addablePersondata.add(new MetaPerson((Person) metadata, 0, this.myPrefs, ds, myProzess, this));
                     }
-                } catch (TypeNotAllowedForParentException e) {
-                    log.error(e);
                 }
+            } catch (TypeNotAllowedForParentException e) {
+                log.error(e);
             }
-
+            
             addableCorporates = new LinkedList<>();
-            if (docstructName != null) {
+            try {
+                DocStruct ds = this.document.createDocStruct(dst);
 
-                DocStructType dst = this.myPrefs.getDocStrctTypeByName(docstructName);
-                try {
-                    DocStruct ds = this.document.createDocStruct(dst);
-
-                    List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, Helper.getMetadataLanguage(),
-                            MetadataTypes.CORPORATE, this.myProzess, displayHiddenMetadata);
-                    if (myTempMetadata != null) {
-                        for (Metadata metadata : myTempMetadata) {
-                            addableCorporates.add(new MetaCorporate((Corporate) metadata, myPrefs, ds, myProzess, this));
-
-                        }
+                List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, Helper.getMetadataLanguage(),
+                        MetadataTypes.CORPORATE, this.myProzess, displayHiddenMetadata);
+                if (myTempMetadata != null) {
+                    for (Metadata metadata : myTempMetadata) {
+                        addableCorporates.add(new MetaCorporate((Corporate) metadata, myPrefs, ds, myProzess, this));
                     }
-                } catch (TypeNotAllowedForParentException e) {
-                    log.error(e);
                 }
-            }
+            } catch (TypeNotAllowedForParentException e) {
+                log.error(e);
+            }           
         }
     }
 
