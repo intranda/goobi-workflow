@@ -163,9 +163,7 @@ class StepMysqlHelper implements Serializable {
                     answer.add(convert(rs));
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -183,9 +181,7 @@ class StepMysqlHelper implements Serializable {
                     answer.add(getStepById(id));
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -268,9 +264,7 @@ class StepMysqlHelper implements Serializable {
                     }
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
@@ -382,7 +376,7 @@ class StepMysqlHelper implements Serializable {
         public List<ErrorProperty> handle(ResultSet rs) throws SQLException {
             List<ErrorProperty> properties = new ArrayList<>();
             try {
-                while (rs.next()) {
+                while (rs.next()) { // implies that rs != null, while the case rs == null will be thrown as an Exception
                     int id = rs.getInt("schritteeigenschaftenID");
                     String title = rs.getString("Titel");
                     String value = rs.getString("Wert");
@@ -407,9 +401,7 @@ class StepMysqlHelper implements Serializable {
                     properties.add(ve);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return properties;
         }
@@ -424,9 +416,7 @@ class StepMysqlHelper implements Serializable {
                     return true;
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return false;
         }
