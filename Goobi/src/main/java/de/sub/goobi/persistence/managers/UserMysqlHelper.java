@@ -557,14 +557,12 @@ class UserMysqlHelper implements Serializable {
         @Override
         public Boolean handle(ResultSet rs) throws SQLException {
             try {
-                if (rs.next()) {
+                if (rs.next()) { // implies that rs != null
                     return true;
                 }
                 return false;
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
         }
     };
@@ -579,9 +577,7 @@ class UserMysqlHelper implements Serializable {
                     answer.add(filter);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
