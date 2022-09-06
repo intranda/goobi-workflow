@@ -53,7 +53,7 @@ td {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 1.6rem;
+  margin: 1.6rem 0;
 
   // Contains search form + `show active users btn`
   form {
@@ -61,9 +61,19 @@ td {
   }
 }
 
-.dataTables__search__filter {
-  margin-left: auto;
+.dataTables__filter-container {
+  gap: var(--gap, 8px);
 }
+
+.dataTables__filter {
+  background-color: var(--clr-neutral-200);
+
+  input,
+  button:not(.btn--active-users) {
+    border: 1px solid var(--clr-neutral-300);
+  }
+}
+
 .dataTables__actions {
   display: flex;
   gap: 4px;
