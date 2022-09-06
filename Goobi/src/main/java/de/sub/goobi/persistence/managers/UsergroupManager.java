@@ -131,13 +131,11 @@ public class UsergroupManager implements IManager, Serializable {
         @Override
         public Usergroup handle(ResultSet rs) throws SQLException {
             try {
-                if (rs.next()) {
+                if (rs.next()) { // implies that rs != null
                     return convert(rs);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
@@ -149,15 +147,11 @@ public class UsergroupManager implements IManager, Serializable {
             List<Usergroup> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
-                    Usergroup o = convert(rs);
-                    if (o != null) {
-                        answer.add(o);
-                    }
+                    Usergroup o = convert(rs); // implies that o != null
+                    answer.add(o);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
