@@ -232,13 +232,11 @@ public class ProjectManager implements IManager, Serializable {
         @Override
         public Project handle(ResultSet rs) throws SQLException {
             try {
-                if (rs.next()) {
+                if (rs.next()) { // implies that rs != null
                     return convert(rs);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
@@ -250,15 +248,11 @@ public class ProjectManager implements IManager, Serializable {
             List<Project> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
-                    Project o = convert(rs);
-                    if (o != null) {
-                        answer.add(o);
-                    }
+                    Project o = convert(rs); // implies that o != null
+                    answer.add(o);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
