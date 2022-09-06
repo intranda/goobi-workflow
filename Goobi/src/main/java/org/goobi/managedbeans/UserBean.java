@@ -482,11 +482,10 @@ public class UserBean extends BasicBean implements Serializable {
 
     public String AusProjektLoeschen() {
         int projektID = Integer.parseInt(Helper.getRequestParameter("ID"));
-        String strResult = AusProjektLoeschen(projektID);
-
-        if (strResult != null) {
-            removedFromProjects.get(myClass.getId()).add(projektID);
-        }
+        String strResult = AusProjektLoeschen(projektID); // strResult == ""
+        
+        removedFromProjects.get(myClass.getId()).add(projektID);
+        
         return strResult;
     }
 
