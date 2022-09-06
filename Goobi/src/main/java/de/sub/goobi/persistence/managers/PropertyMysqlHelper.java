@@ -86,9 +86,7 @@ class PropertyMysqlHelper implements Serializable {
                     return pe;
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
@@ -99,7 +97,7 @@ class PropertyMysqlHelper implements Serializable {
         public List<Processproperty> handle(ResultSet rs) throws SQLException {
             List<Processproperty> properties = new ArrayList<Processproperty>();
             try {
-                while (rs.next()) {
+                while (rs.next()) { // implies that rs != null, while the case rs == null will be thrown as an Exception
                     int id = rs.getInt("prozesseeigenschaftenID");
                     String title = rs.getString("Titel");
                     String value = rs.getString("Wert");
@@ -126,9 +124,7 @@ class PropertyMysqlHelper implements Serializable {
                     properties.add(pe);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return properties;
         }
@@ -166,9 +162,7 @@ class PropertyMysqlHelper implements Serializable {
                     properties.add(ve);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return properties;
         }
@@ -205,9 +199,7 @@ class PropertyMysqlHelper implements Serializable {
                     return ve;
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
@@ -246,9 +238,7 @@ class PropertyMysqlHelper implements Serializable {
                             properties.add(ve);
                         }
                     } finally {
-                        if (rs != null) {
-                            rs.close();
-                        }
+                        rs.close();
                     }
                     return properties;
                 }
@@ -285,9 +275,7 @@ class PropertyMysqlHelper implements Serializable {
                     return ve;
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
