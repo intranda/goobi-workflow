@@ -658,20 +658,24 @@ public class MassImportForm implements Serializable {
             Object o = method.invoke(this.plugin);
             @SuppressWarnings("unchecked")
             List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
-            if (this.plugin != null && list != null) {
+            if (list != null) {
                 return true;
             }
         } catch (Exception e) {
+        	// the case this.plugin == null will end up here
+        	// no need to do anything
         }
         try {
             method = this.plugin.getClass().getMethod("getProperties");
             Object o = method.invoke(this.plugin);
             @SuppressWarnings("unchecked")
             List<ImportProperty> list = (List<ImportProperty>) o;
-            if (this.plugin != null && ! list.isEmpty()) {
+            if (! list.isEmpty()) {
                 return true;
             }
         } catch (Exception e) {
+        	// the case this.plugin == null will end up here
+        	// no need to do anything
         }
         return false;
     }
@@ -687,10 +691,12 @@ public class MassImportForm implements Serializable {
             Object o = method.invoke(this.plugin);
             @SuppressWarnings("unchecked")
             List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
-            if (this.plugin != null && list != null) {
+            if (list != null) {
                 return "process_import_2_mass";
             }
         } catch (Exception e) {
+        	// the case this.plugin == null will end up here
+        	// no need to do anything
         }
         return "process_import_2";
     }
@@ -740,10 +746,12 @@ public class MassImportForm implements Serializable {
             Object o = method.invoke(this.plugin);
             @SuppressWarnings("unchecked")
             List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
-            if (this.plugin != null && list != null) {
+            if (list != null) {
                 return list;
             }
         } catch (Exception e) {
+        	// the case this.plugin == null will end up here
+        	// no need to do anything
         }
         return new ArrayList<>();
     }
