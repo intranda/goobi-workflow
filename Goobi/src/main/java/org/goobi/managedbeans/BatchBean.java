@@ -79,8 +79,7 @@ public class BatchBean extends BasicBean implements Serializable {
     private BatchProcessHelper batchHelper;
 
     private int getBatchMaxSize() {
-        int batchsize = ConfigurationHelper.getInstance().getBatchMaxSize();
-        return batchsize;
+        return ConfigurationHelper.getInstance().getBatchMaxSize();
     }
 
     public void loadBatchData() {

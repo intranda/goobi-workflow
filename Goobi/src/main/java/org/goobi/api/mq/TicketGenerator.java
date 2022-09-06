@@ -47,9 +47,7 @@ public class TicketGenerator {
     private static Gson gson = new Gson();
 
     public static TaskTicket generateSimpleTicket(String ticketType) {
-        TaskTicket tt = new TaskTicket(ticketType);
-        return tt;
-
+        return new TaskTicket(ticketType);
     }
 
     /**

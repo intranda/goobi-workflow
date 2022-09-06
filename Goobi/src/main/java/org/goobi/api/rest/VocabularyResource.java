@@ -81,8 +81,7 @@ public class VocabularyResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findRecords(@PathParam("vocabulary") String vocabulary, @PathParam("searchvalue") String searchvalue) {
         List<VocabRecord> records = VocabularyManager.findRecords(vocabulary, searchvalue);
-        Response response = Response.ok(records).build();
-        return response;
+        return Response.ok(records).build();
     }
 
     /**
@@ -104,8 +103,7 @@ public class VocabularyResource {
     public Response findRecords(@PathParam("vocabulary") String vocabulary, @PathParam("fieldname") String fieldname,
             @PathParam("searchvalue") String searchvalue) {
         List<VocabRecord> records = VocabularyManager.findRecords(vocabulary, searchvalue, fieldname);
-        Response response = Response.ok(records).build();
-        return response;
+        return Response.ok(records).build();
     }
 
     @POST
@@ -114,8 +112,7 @@ public class VocabularyResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findRecords(@PathParam("vocabulary") String vocabulary, List<StringPair> data) {
         List<VocabRecord> records = VocabularyManager.findRecords(vocabulary, data);
-        Response response = Response.ok(records).build();
-        return response;
+        return Response.ok(records).build();
     }
 
     /**
@@ -133,8 +130,7 @@ public class VocabularyResource {
     public Response getVocabularyByName(@PathParam("vocabulary") String vocabularyName) {
         Vocabulary vocabulary = VocabularyManager.getVocabularyByTitle(vocabularyName);
         VocabularyManager.getAllRecords(vocabulary);
-        Response response = Response.ok(vocabulary).build();
-        return response;
+        return Response.ok(vocabulary).build();
     }
 
     /**
@@ -151,8 +147,7 @@ public class VocabularyResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRecord(@PathParam("vocabulary") Integer vocabularyId, @PathParam("record") Integer recordId) {
         VocabRecord record = VocabularyManager.getRecord(vocabularyId, recordId);
-        Response response = Response.ok(record).build();
-        return response;
+        return Response.ok(record).build();
     }
 
     @GET
@@ -243,8 +238,7 @@ public class VocabularyResource {
         }
         jskosRecord.setFields(otherFieldValues);
 
-        Response response = Response.ok(jskosRecord).build();
-        return response;
+        return Response.ok(jskosRecord).build();
     }
 
 }

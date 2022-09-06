@@ -74,8 +74,7 @@ public class GoobiPdfResource extends MetsPdfResource {
     private static URI extractURI(Map<String, String> parameters, String parameterName) throws ContentLibException {
         String parameterValue = parameters.get(parameterName);
         try {
-            URI uri = getUriFromPath(parameterValue);
-            return uri;
+            return getUriFromPath(parameterValue);
         } catch (URISyntaxException e) {
             throw new ContentLibException("Failed to create absolute uri from " + parameterValue);
         } catch(NullPointerException e) {

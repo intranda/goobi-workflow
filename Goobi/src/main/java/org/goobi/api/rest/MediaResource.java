@@ -116,8 +116,7 @@ public class MediaResource {
      */
     private synchronized org.goobi.beans.Process getGoobiProcess(String processIdString) {
         int processId = Integer.parseInt(processIdString);
-        org.goobi.beans.Process process = ProcessManager.getProcessById(processId);
-        return process;
+        return ProcessManager.getProcessById(processId);
     }
 
 }

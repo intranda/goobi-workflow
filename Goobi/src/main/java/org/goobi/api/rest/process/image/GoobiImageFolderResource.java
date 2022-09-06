@@ -79,8 +79,7 @@ public class GoobiImageFolderResource {
 
     private Process getProcess(String processIdString) {
         int processId = Integer.parseInt(processIdString);
-        org.goobi.beans.Process process = ProcessManager.getProcessById(processId);
-        return process;
+        return ProcessManager.getProcessById(processId);
     }
 
     private java.nio.file.Path getImagesFolder(Process process, String folder)
@@ -117,10 +116,9 @@ public class GoobiImageFolderResource {
         }
         String imageURL = requestURL.replace("/list/", "/");
         try (Stream<java.nio.file.Path> imagePaths = Files.list(folderPath)) {
-            List<URI> images = imagePaths.map(path -> URI.create(imageURL.replace("list.json", "") + path.getFileName().toString()))
-                    .sorted()
-                    .collect(Collectors.toList());
-            return images;
+            return imagePaths.map(path -> URI.create(imageURL.replace("list.json", "") + path.getFileName().toString()))
+                    				   .sorted()
+                    				   .collect(Collectors.toList());
         }
     }
 

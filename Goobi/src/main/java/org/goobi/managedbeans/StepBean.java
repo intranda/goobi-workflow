@@ -582,11 +582,9 @@ public class StepBean extends BasicBean implements Serializable {
      */
 
     public List<Step> getPreviousStepsForProblemReporting() {
-        List<Step> alleVorherigenSchritte = StepManager.getSteps("Reihenfolge desc",
+        return StepManager.getSteps("Reihenfolge desc",
                 " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge < " + this.mySchritt.getReihenfolge(), 0,
                 Integer.MAX_VALUE);
-
-        return alleVorherigenSchritte;
     }
 
     public int getSizeOfPreviousStepsForProblemReporting() {
@@ -696,10 +694,8 @@ public class StepBean extends BasicBean implements Serializable {
 
     public List<Step> getNextStepsForProblemSolution() {
 
-        List<Step> alleNachfolgendenSchritte = StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId()
+        return StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId()
                 + " AND Reihenfolge > " + this.mySchritt.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE);
-
-        return alleNachfolgendenSchritte;
     }
 
     public int getSizeOfNextStepsForProblemSolution() {

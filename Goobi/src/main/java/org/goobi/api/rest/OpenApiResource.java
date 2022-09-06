@@ -71,8 +71,7 @@ public class OpenApiResource {
     @Produces(MediaType.APPLICATION_JSON)
     public OpenAPI getOpenApi() {
         String contextPath = servletConfig.getServletContext().getContextPath();
-        OpenAPI openApi = initSwagger(servletConfig, application, contextPath);
-        return openApi;
+        return initSwagger(servletConfig, application, contextPath);
     }
 
     private OpenAPI initSwagger(ServletConfig servletConfig, Application application, String apiUrl) {
@@ -115,7 +114,7 @@ public class OpenApiResource {
      * @return
      */
     public Info getInfo() {
-        Info info = new Info()
+        return new Info()
                 .title("Goobi workflow REST API.")
                 .description("This documentation describes the Goobi workflow REST API.")
                 .contact(new Contact()
@@ -123,7 +122,6 @@ public class OpenApiResource {
                 .license(new License()
                         .name("GPL2 or later")
                         .url("https://github.com/intranda/goobi-workflow/blob/master/LICENSE"));
-        return info;
     }
 
 }

@@ -300,8 +300,7 @@ public class User implements DatabaseObject, Serializable {
 
     public String getPasswortCrypt() {
         DesEncrypter encrypter = new DesEncrypter();
-        String decrypted = encrypter.decrypt(this.passwort);
-        return decrypted;
+        return encrypter.decrypt(this.passwort);
     }
 
     public void setPasswortCrypt(String inpasswort) {
@@ -396,9 +395,7 @@ public class User implements DatabaseObject, Serializable {
     }
 
     public String getPasswordHash(String plainTextPassword) {
-        String hashedPasswordBase64 = new Sha256Hash(plainTextPassword, passwordSalt, 10000).toBase64();
-        return hashedPasswordBase64;
-
+        return new Sha256Hash(plainTextPassword, passwordSalt, 10000).toBase64();
     }
 
     public String getNachVorname() {

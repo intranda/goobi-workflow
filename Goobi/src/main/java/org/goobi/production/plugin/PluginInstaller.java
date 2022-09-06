@@ -218,15 +218,13 @@ public class PluginInstaller implements Serializable{
     private static String extractPluginTypeFromName(String name) {
         Matcher matcher = typeExtractor.matcher(name);
         matcher.find();
-        String type = matcher.group(1);
-        return type;
+        return matcher.group(1);
     }
 
     private static Document parsePomXml(Path pluginFolder, String pomFilePath) throws JDOMException, IOException {
         SAXBuilder saxBuilder = XmlTools.getSAXBuilder();
         Path pomPath = pluginFolder.resolve(pomFilePath);
-        Document pluginPomDocument = saxBuilder.build(pomPath.toFile());
-        return pluginPomDocument;
+        return saxBuilder.build(pomPath.toFile());
     }
 
     private static PluginPreInstallCheck checkPluginInstall(Path extractedPluginPath, PluginInstallInfo info, Path goobiDirectory,

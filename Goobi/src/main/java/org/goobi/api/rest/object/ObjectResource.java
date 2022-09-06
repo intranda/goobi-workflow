@@ -155,16 +155,14 @@ public class ObjectResource {
                 for (java.nio.file.Path folder : folders) {
                     java.nio.file.Path filePath = folder.resolve(filename);
                     if (Files.isRegularFile(filePath)) {
-                        String xml = Files.readAllLines(filePath).stream().collect(Collectors.joining("\n"));
-                        return xml;
+                        return Files.readAllLines(filePath).stream().collect(Collectors.joining("\n"));
                     }
                 }
             }
 
             throw new FileNotFoundException("File " + objectPath + " not found in file system");
         } else {
-            String xml = Files.readAllLines(objectPath).stream().collect(Collectors.joining("\n"));
-            return xml;
+            return Files.readAllLines(objectPath).stream().collect(Collectors.joining("\n"));
         }
     }
 
@@ -189,16 +187,14 @@ public class ObjectResource {
                 for (java.nio.file.Path folder : folders) {
                     java.nio.file.Path filePath = folder.resolve(filename);
                     if (Files.isRegularFile(filePath)) {
-                        String xml = Files.readAllLines(filePath).stream().collect(Collectors.joining("\n"));
-                        return xml;
+                        return Files.readAllLines(filePath).stream().collect(Collectors.joining("\n"));
                     }
                 }
             }
 
             throw new FileNotFoundException("File " + objectPath + " not found in file system");
         } else {
-            String xml = Files.readAllLines(objectPath).stream().collect(Collectors.joining("\n"));
-            return xml;
+            return Files.readAllLines(objectPath).stream().collect(Collectors.joining("\n"));
         }
     }
 

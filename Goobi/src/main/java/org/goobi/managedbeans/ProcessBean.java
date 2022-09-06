@@ -1859,8 +1859,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     public int getMyDatasetHoeheInt() {
-        int bla = this.paginator.getTotalResults() * 20;
-        return bla;
+        return this.paginator.getTotalResults() * 20;
     }
 
     public NumberFormat getMyFormatter() {

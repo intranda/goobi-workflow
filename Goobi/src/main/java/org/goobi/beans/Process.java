@@ -2098,8 +2098,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         String imagefolder = this.getImagesDirectory();
         String foldername = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(folderName), this);
         if (StringUtils.isNotBlank(foldername)) {
-            String folder = imagefolder + foldername;
-            return folder;
+            return imagefolder + foldername;
         }
         return null;
     }

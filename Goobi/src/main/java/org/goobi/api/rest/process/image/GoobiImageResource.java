@@ -178,10 +178,9 @@ public class GoobiImageResource {
     @Produces({ MediaType.APPLICATION_JSON, ImageResource.MEDIA_TYPE_APPLICATION_JSONLD })
     public Response redirectToCanonicalImageInfo() throws ContentLibException {
         try {
-            Response resp = Response.seeOther(PathConverter.toURI(request.getRequestURI() + "/info.json"))
+            return Response.seeOther(PathConverter.toURI(request.getRequestURI() + "/info.json"))
                     .header("Content-Type", response.getContentType())
                     .build();
-            return resp;
         } catch (URISyntaxException e) {
             throw new ContentLibException("Cannot create redirect url from " + request.getRequestURI());
         }
@@ -437,8 +436,7 @@ public class GoobiImageResource {
      */
     private synchronized org.goobi.beans.Process getGoobiProcess(String processIdString) {
         int processId = Integer.parseInt(processIdString);
-        org.goobi.beans.Process process = ProcessManager.getProcessById(processId);
-        return process;
+        return ProcessManager.getProcessById(processId);
     }
 
     /**
@@ -479,9 +477,7 @@ public class GoobiImageResource {
 
     private List<Integer> getThumbnailSizes(Path imageFolder, Path thumbnailFolder) {
         List<String> thumbFolderPaths = getThumbnailFolders(imageFolder, thumbnailFolder);
-        List<Integer> sizes =
-                thumbFolderPaths.stream().map(name -> name.substring(name.lastIndexOf("_") + 1)).map(Integer::parseInt).collect(Collectors.toList());
-        return sizes;
+        return thumbFolderPaths.stream().map(name -> name.substring(name.lastIndexOf("_") + 1)).map(Integer::parseInt).collect(Collectors.toList());
     }
 
     private boolean isYounger(Path path, Path referencePath) {
@@ -655,10 +651,9 @@ public class GoobiImageResource {
     }
 
     private List<Path> getMatchingThumbnailFolders(Path imageFolder, Path thumbsFolder) {
-        List<Path> thumbFolderPaths = StorageProvider.getInstance()
-                .listFiles(thumbsFolder.toString(),
-                        (dirname) -> dirname.getFileName().toString().matches(imageFolder.getFileName().toString() + "_\\d+"));
-        return thumbFolderPaths;
+        return StorageProvider.getInstance()
+                							 .listFiles(thumbsFolder.toString(),
+                									 (dirname) -> dirname.getFileName().toString().matches(imageFolder.getFileName().toString() + "_\\d+"));
     }
 
     private List<String> getThumbnailFolders(Path imageFolder, Path thumbnailFolder) {
