@@ -208,13 +208,11 @@ public class InstitutionManager implements IManager, Serializable {
         @Override
         public Institution handle(ResultSet rs) throws SQLException {
             try {
-                if (rs.next()) {
+                if (rs.next()) { // implies that rs != null
                     return convert(rs);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();    
             }
             return null;
         }
@@ -226,15 +224,11 @@ public class InstitutionManager implements IManager, Serializable {
             List<Institution> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
-                    Institution o = convert(rs);
-                    if (o != null) {
-                        answer.add(o);
-                    }
+                    Institution o = convert(rs); // implies that o != null
+                    answer.add(o);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
