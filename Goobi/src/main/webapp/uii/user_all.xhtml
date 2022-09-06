@@ -31,7 +31,7 @@
 						boxType="primary-400"
 						icon="fa-user"
 						title="#{myPageTitle}"
-						padding="false"
+						padding="true"
 						>
 
 							<div class="dataTables flow">
@@ -51,7 +51,7 @@
 										<!-- Show only active users -->
 										<div class="dataTables__filter">
 											<button jsf:id="tableUserAllShowActiveUsers"
-												class="btn searchfieldbuttongroup hidden-xs"
+												class="btn btn--active-users"
 												jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
 												jsf:immediate="true">
 												<i
@@ -81,7 +81,7 @@
 													<f:passThroughAttribute name="aria-label"
 														value="#{msgs.benutzer}" />
 												</h:inputText>
-												<button jsf:id="FilterAlle2" jsf:forceId="true" class="btn btn-action"
+												<button jsf:id="FilterAlle2" jsf:forceId="true" class="btn btn-blank"
 													style="text-align: center; line-height: 100%; padding: 0px 10px"
 													jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}">
 													#{msgs.search}
