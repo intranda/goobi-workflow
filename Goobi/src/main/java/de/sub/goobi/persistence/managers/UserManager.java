@@ -254,13 +254,11 @@ public class UserManager implements IManager, Serializable {
         @Override
         public User handle(ResultSet rs) throws SQLException {
             try {
-                if (rs.next()) {
+                if (rs.next()) { // implies that rs != null
                     return convert(rs);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
@@ -272,15 +270,11 @@ public class UserManager implements IManager, Serializable {
             List<User> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
-                    User o = convert(rs);
-                    if (o != null) {
-                        answer.add(o);
-                    }
+                    User o = convert(rs); // implies that o != null
+                    answer.add(o);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
