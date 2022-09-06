@@ -557,13 +557,13 @@ public class Helper implements Serializable, ServletContextListener {
         if (desiredLanguage != null) {
             value = getString(new Locale(desiredLanguage.getLanguage()), dbTitel);
         } else {
-            value = getString(Locale.ENGLISH, dbTitel);
+            value = getString(Locale.ENGLISH, dbTitel); // value will never be null, since the method getString(...) always returns something
         }
-        if (value != null && parameterList != null && parameterList.length > 0) {
+        if (parameterList != null && parameterList.length > 0) {
             int parameterCount = 0;
             for (String parameter : parameterList) {
-                if (value != null && parameter != null) {
-                    value = value.replace("{" + parameterCount + "}", parameter);
+                if (parameter != null) {
+                    value = value.replace("{" + parameterCount + "}", parameter); // value will never be null given that parameter != null
                 }
                 parameterCount++;
             }
