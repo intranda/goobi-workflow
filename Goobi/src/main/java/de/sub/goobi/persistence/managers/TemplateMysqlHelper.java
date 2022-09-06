@@ -58,7 +58,7 @@ class TemplateMysqlHelper implements Serializable {
         public List<Template> handle(ResultSet rs) throws SQLException {
             List<Template> answer = new ArrayList<Template>();
             try {
-                while (rs.next()) {
+                while (rs.next()) { // implies that rs != null
                     int templateId = rs.getInt("VorlagenID");
                     String herkunft = rs.getString("Herkunft");
                     int processId = rs.getInt("ProzesseID");
@@ -71,9 +71,7 @@ class TemplateMysqlHelper implements Serializable {
                     answer.add(template);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -96,9 +94,7 @@ class TemplateMysqlHelper implements Serializable {
                     return template;
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
