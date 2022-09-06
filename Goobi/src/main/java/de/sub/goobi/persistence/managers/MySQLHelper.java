@@ -222,9 +222,7 @@ public class MySQLHelper implements Serializable {
                     }
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -239,9 +237,7 @@ public class MySQLHelper implements Serializable {
                     answer.add(rs.getString(1));
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -256,9 +252,7 @@ public class MySQLHelper implements Serializable {
                     answer = rs.getString(1);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -277,9 +271,7 @@ public class MySQLHelper implements Serializable {
                     return id;
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -298,9 +290,7 @@ public class MySQLHelper implements Serializable {
                     return id;
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -318,9 +308,7 @@ public class MySQLHelper implements Serializable {
                     }
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -338,9 +326,7 @@ public class MySQLHelper implements Serializable {
                     }
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -363,14 +349,12 @@ public class MySQLHelper implements Serializable {
         public List<Map<String, String>> handle(ResultSet rs) throws SQLException {
             List<Map<String, String>> answer = new ArrayList<>();
             try {
-                while (rs.next()) {
+                while (rs.next()) { // implies that rs != null
                     answer.add(generateMapResult(rs));
                 }
                 return answer;
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
         }
     };
@@ -381,12 +365,9 @@ public class MySQLHelper implements Serializable {
             try {
                 if (rs.next()) {
                     return generateMapResult(rs);
-
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
@@ -409,9 +390,7 @@ public class MySQLHelper implements Serializable {
                 }
                 return answer;
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
         }
     };
