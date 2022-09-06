@@ -70,8 +70,7 @@ public class JwtHelper {
     private static Algorithm createSigningAlgorithm(String secret) {
         long currentTime = System.currentTimeMillis();
         long rotationTime = (currentTime / rotationDuration) * rotationDuration;
-        Algorithm algorithm = Algorithm.HMAC256(secret + rotationTime);
-        return algorithm;
+        return Algorithm.HMAC256(secret + rotationTime);
     }
 
     /**
@@ -87,8 +86,7 @@ public class JwtHelper {
         for (int currentRotation = 0; currentRotation < maxRotations; currentRotation++) {
             long rotationTime = ((currentTime - (rotationDuration * currentRotation)) / rotationDuration) * rotationDuration;
             try {
-                DecodedJWT jwt = verifyTokenWithRotationTime(token, secret, rotationTime);
-                return jwt;
+               return verifyTokenWithRotationTime(token, secret, rotationTime);
             } catch (JWTVerificationException e) {
                 if (currentRotation == maxRotations - 1) {
                     throw e;
@@ -101,8 +99,7 @@ public class JwtHelper {
     private static DecodedJWT verifyTokenWithRotationTime(String token, String secret, long lastRotationTime) {
         Algorithm algorithm = Algorithm.HMAC256(secret + lastRotationTime);
         JWTVerifier verifier = JWT.require(algorithm).withIssuer("Goobi").build();
-        DecodedJWT jwt = verifier.verify(token);
-        return jwt;
+        return verifier.verify(token);
     }
 
     public static String createToken(Map<String, String> map, Date expiryDate) throws ConfigurationException {
@@ -190,13 +187,12 @@ public class JwtHelper {
         }
         Algorithm algorithm = createSigningAlgorithm(secret);
         Date expiryDate = new DateTime().plusHours(37).toDate();
-        String token = JWT.create()
+        return JWT.create()
                 .withIssuer("Goobi")
                 .withClaim("stepId", step.getId())
                 .withClaim("changeStepAllowed", true)
                 .withExpiresAt(expiryDate)
                 .sign(algorithm);
-        return token;
     }
 
     /**
@@ -216,13 +212,12 @@ public class JwtHelper {
         }
         Algorithm algorithm = createSigningAlgorithm(secret);
         Date expiryDate = new DateTime().plusHours(37).toDate();
-        String token = JWT.create()
+        return JWT.create()
                 .withIssuer("Goobi")
                 .withClaim("api_path", pathRegex)
                 .withArrayClaim("api_methods", methods)
                 .withExpiresAt(expiryDate)
                 .sign(algorithm);
-        return token;
     }
 
     public static boolean verifyChangeStepToken(String token, Integer stepId) throws ConfigurationException {

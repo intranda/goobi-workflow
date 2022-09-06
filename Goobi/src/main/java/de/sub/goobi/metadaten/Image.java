@@ -375,9 +375,8 @@ public @Data class Image {
      */
     public static String create3DObjectUrl(Process process, String imageFolderName, String imageName) {
         String contextPath = new HelperForm().getServletPathWithHostAsUrl();
-        String url = contextPath + "/api/view/object/" + process.getId() + "/" + Paths.get(imageFolderName).getFileName().toString() + "/" + imageName
-                + "/info.json";
-        return url;
+        return contextPath + "/api/view/object/" + process.getId() + "/" + Paths.get(imageFolderName).getFileName().toString() + "/" + imageName
+                + "/info.json"; // url
     }
 
     /**
@@ -432,8 +431,7 @@ public @Data class Image {
     }
 
     private static String getImageFolderShort(String folder) {
-        String imageFolder = Paths.get(folder).getFileName().toString();
-        return imageFolder;
+        return Paths.get(folder).getFileName().toString();
     }
 
     public static String createThumbnailUrl(Process process, int size, String imageFolderName, String filename) {

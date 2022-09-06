@@ -41,8 +41,7 @@ public class HistoryMysqlHelper {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<HistoryEvent> list = new QueryRunner().query(connection, sql, resultSetToHistoryListHandler);
-            return list;
+            return new QueryRunner().query(connection, sql, resultSetToHistoryListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

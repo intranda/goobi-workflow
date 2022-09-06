@@ -207,16 +207,14 @@ public class FilesystemHelper {
                     ocrfile = altoFolder.resolve(ocrFile + ".xml");
                 }
                 AltoDocument alto = AltoDocument.getDocumentFromFile(ocrfile.toFile());
-                String result = alto.getContent().replace("\n", "<br/>");
-                return result;
+                return alto.getContent().replace("\n", "<br/>");
             } else if (sp.isFileExists(xmlFolder)) {
                 // try to return content from xml folder
                 ocrfile = xmlFolder.resolve(ocrFile + ".xml");
                 ConvertAbbyyToAltoStaX converter = new ConvertAbbyyToAltoStaX();
                 try (InputStream input = sp.newInputStream(ocrfile)) {
                     AltoDocument alto = converter.convertToASM(input, new Date(), ocrfile.getFileName().toString());
-                    String result = alto.getContent().replace("\n", "<br/>");
-                    return result;
+                    return alto.getContent().replace("\n", "<br/>");
                 }
             }
 

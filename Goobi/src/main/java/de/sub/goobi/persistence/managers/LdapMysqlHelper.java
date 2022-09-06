@@ -68,8 +68,7 @@ class LdapMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Ldap> ret = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(Ldap.class));
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(Ldap.class));
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -120,8 +119,7 @@ class LdapMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            Ldap ret = new QueryRunner().query(connection, sql.toString(), new BeanHandler<>(Ldap.class));
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), new BeanHandler<>(Ldap.class));
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -138,8 +136,7 @@ class LdapMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            Ldap ret = new QueryRunner().query(connection, sql.toString(), new BeanHandler<>(Ldap.class), name);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), new BeanHandler<>(Ldap.class), name);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -294,8 +291,7 @@ class LdapMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql);
             }
-            List<Ldap> ret = new QueryRunner().query(connection, sql, new BeanListHandler<>(Ldap.class));
-            return ret;
+            return new QueryRunner().query(connection, sql, new BeanListHandler<>(Ldap.class));
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

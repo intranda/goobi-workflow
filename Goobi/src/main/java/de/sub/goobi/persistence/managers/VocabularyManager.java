@@ -158,8 +158,7 @@ public class VocabularyManager implements IManager, Serializable {
         @Override
         public Vocabulary handle(ResultSet rs) throws SQLException {
             if (rs.next()) {
-                Vocabulary vocabulary = convert(rs);
-                return vocabulary;
+                return convert(rs);
             }
             return null;
         }
@@ -308,8 +307,7 @@ public class VocabularyManager implements IManager, Serializable {
                         lstFields.add(gson.fromJson(jsonField, Field.class));
                     }
                 }
-                VocabRecord rec = new VocabRecord(iRecordId, iVocabId, lstFields);
-                return rec;
+                return new VocabRecord(iRecordId, iVocabId, lstFields);
             } catch (Exception e) {
                 log.error(e);
             }

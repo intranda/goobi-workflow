@@ -85,8 +85,7 @@ class VocabularyMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<Definition> ret = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(Definition.class), vocabularyId);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(Definition.class), vocabularyId);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -861,9 +860,8 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
 
-            Timestamp timeAltered = new QueryRunner().query(connection, sql, VocabularyManager.resultSetGetLastAlteredHandler, vocabulary.getId());
-
-            return timeAltered;
+            return new QueryRunner().query(connection, sql, VocabularyManager.resultSetGetLastAlteredHandler, vocabulary.getId());
+        
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -904,9 +902,8 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
 
-            Timestamp timeUploaded = new QueryRunner().query(connection, sql, VocabularyManager.resultSetGetLastUploadedHandler, vocabulary.getId());
+            return new QueryRunner().query(connection, sql, VocabularyManager.resultSetGetLastUploadedHandler, vocabulary.getId());
 
-            return timeUploaded;
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

@@ -754,8 +754,7 @@ public class MassImportForm implements Serializable {
             method = this.plugin.getClass().getMethod("getPagePath");
             Object o = method.invoke(this.plugin);
             if (o != null) {
-                String path = (String) o;
-                return path;
+                return (String) o; // path
             }
 
         } catch (Exception e) {

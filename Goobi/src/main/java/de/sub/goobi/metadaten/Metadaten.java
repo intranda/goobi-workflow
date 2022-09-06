@@ -2364,16 +2364,14 @@ public class Metadaten implements Serializable {
      * mögliche Docstructs als Kind zurückgeben ================================================================
      */
     public SelectItem[] getAddableDocStructTypenAlsKind() {
-        SelectItem[] itemList = this.metahelper.getAddableDocStructTypen(this.myDocStruct, false);
-        return itemList;
+        return this.metahelper.getAddableDocStructTypen(this.myDocStruct, false); // list of items
     }
 
     /**
      * mögliche Docstructs als Nachbar zurückgeben ================================================================
      */
     public SelectItem[] getAddableDocStructTypenAlsNachbar() {
-        SelectItem[] itemList = this.metahelper.getAddableDocStructTypen(this.myDocStruct, true);
-        return itemList;
+        return this.metahelper.getAddableDocStructTypen(this.myDocStruct, true); // list of items
     }
 
     private String getSelectedStructType(SelectItem[] itemList, String docTypeName) {
@@ -2653,8 +2651,7 @@ public class Metadaten implements Serializable {
         if (pages == null || pages.isEmpty() || pages.size() <= imageIndex) {
             return null;
         }
-        DocStruct page = pages.get(imageIndex);
-        return page;
+        return pages.get(imageIndex); // page
     }
 
     /**

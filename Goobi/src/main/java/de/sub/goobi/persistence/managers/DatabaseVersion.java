@@ -66,8 +66,7 @@ public class DatabaseVersion {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            int currentValue = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
-            return currentValue;
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } catch (SQLException e) {
             log.error(e);
         } finally {

@@ -70,8 +70,7 @@ class ProjectMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Project> ret = new QueryRunner().query(connection, sql.toString(), ProjectManager.resultSetToProjectListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), ProjectManager.resultSetToProjectListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -130,8 +129,7 @@ class ProjectMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            Project ret = new QueryRunner().query(connection, sql.toString(), ProjectManager.resultSetToProjectHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), ProjectManager.resultSetToProjectHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -148,8 +146,7 @@ class ProjectMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Project> ret = new QueryRunner().query(connection, sql.toString(), ProjectManager.resultSetToProjectListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), ProjectManager.resultSetToProjectListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -279,8 +276,7 @@ class ProjectMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString() + ", " + Arrays.toString(param));
             }
-            List<ProjectFileGroup> answer = new QueryRunner().query(connection, sql.toString(), resultSetToProjectFilegroupListHandler, param);
-            return answer;
+            return new QueryRunner().query(connection, sql.toString(), resultSetToProjectFilegroupListHandler, param);
 
         } finally {
             if (connection != null) {
@@ -375,8 +371,7 @@ class ProjectMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString() + ", " + Arrays.toString(param));
             }
-            Integer answer = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, projectId);
-            return answer;
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, projectId);
 
         } finally {
             if (connection != null) {
@@ -464,8 +459,7 @@ class ProjectMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            Project ret = new QueryRunner().query(connection, sql.toString(), ProjectManager.resultSetToProjectHandler, name);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), ProjectManager.resultSetToProjectHandler, name);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

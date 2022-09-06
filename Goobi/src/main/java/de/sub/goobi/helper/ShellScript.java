@@ -361,8 +361,6 @@ public class ShellScript {
                     "Exception occured while executing script '" + nonSpacesafeScriptingCommand + "': " + e.getMessage());
             Helper.setFehlerMeldung("Couldn't find script file in callShell2(), error", e.getMessage());
         }
-        ShellScriptReturnValue returnValue = new ShellScriptReturnValue(returnCode, outputMessage, errorMessage);
-
-        return returnValue;
+        return new ShellScriptReturnValue(returnCode, outputMessage, errorMessage);
     }
 }

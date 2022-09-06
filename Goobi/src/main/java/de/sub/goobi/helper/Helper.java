@@ -720,8 +720,7 @@ public class Helper implements Serializable, ServletContextListener {
             if (beanIterator.hasNext()) {
                 Bean<T> bean = (Bean<T>) beanIterator.next();
                 CreationalContext<T> ctx = bm.createCreationalContext(bean);
-                T instance = (T) bm.getReference(bean, clazz, ctx);
-                return instance;
+                return (T) bm.getReference(bean, clazz, ctx);
             }
         }
         return null;

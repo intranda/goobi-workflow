@@ -80,11 +80,7 @@ public class WebDav implements Serializable {
             return rueckgabe;
         }
 
-
-        List<String> dateien = StorageProvider.getInstance().list(folder, new WebDavFilter());
-
-        return dateien;
-
+        return StorageProvider.getInstance().list(folder, new WebDavFilter()); 
     }
 
     /**

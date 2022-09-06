@@ -219,13 +219,12 @@ public class PageAreaManager {
     private String createLogicalPageNumberForArea(DocStruct pageAreaStruct) {
         if (pageAreaStruct.getDocstructType().equalsIgnoreCase("area") && pageAreaStruct.getParent() != null) {
             DocStruct page = pageAreaStruct.getParent();
-            String logicalPageNumber = page.getAllMetadata()
+            return page.getAllMetadata()
                     .stream()
                     .filter(md -> md.getType().getName().equalsIgnoreCase("logicalPageNumber"))
                     .findAny()
                     .map(Metadata::getValue)
-                    .orElse("uncounted");
-            return logicalPageNumber;
+                    .orElse("uncounted");	
         } else {
             throw new IllegalArgumentException("given docStruct is not page area or has no parent");
         }

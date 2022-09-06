@@ -64,8 +64,7 @@ class UsergroupMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Usergroup> ret = new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -120,8 +119,7 @@ class UsergroupMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            Usergroup ret = new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -241,8 +239,7 @@ class UsergroupMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            Usergroup ret = new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupHandler, name);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupHandler, name);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -260,8 +257,7 @@ class UsergroupMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Usergroup> ret = new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

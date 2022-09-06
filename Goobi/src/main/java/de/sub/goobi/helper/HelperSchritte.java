@@ -321,8 +321,7 @@ public class HelperSchritte {
 
     public ShellScriptReturnValue executeAllScriptsForStep(Step step, boolean automatic) {
         if (automatic && step.getProzess().isPauseAutomaticExecution()) {
-            ShellScriptReturnValue returnCode = new ShellScriptReturnValue(1, "Automatic execution is disabled", "");
-            return returnCode;
+            return new ShellScriptReturnValue(1, "Automatic execution is disabled", ""); // return code
         }
         List<String> scriptpaths = step.getAllScriptPaths();
         int count = 1;
@@ -644,8 +643,7 @@ public class HelperSchritte {
             log.info(e);
         }
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
-        List<String> parameterList = replacer.replaceBashScript(script);
-        return parameterList;
+        return replacer.replaceBashScript(script); // list of parameters
     }
 
     public boolean executeDmsExport(Step step, boolean automatic) {

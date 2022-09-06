@@ -65,8 +65,7 @@ class RulesetMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Ruleset> ret = new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -83,8 +82,7 @@ class RulesetMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Ruleset> ret = new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -134,8 +132,7 @@ class RulesetMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString() + ", " + rulesetId);
             }
-            Ruleset ret = new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetHandler, params);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetHandler, params);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -212,8 +209,7 @@ class RulesetMysqlHelper implements Serializable {
         sql.append("SELECT * FROM metadatenkonfigurationen WHERE Titel = ? ");
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            Ruleset ret = new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetHandler, rulesetName);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetHandler, rulesetName);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

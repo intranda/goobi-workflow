@@ -60,8 +60,7 @@ class StepMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql + ", " + Arrays.toString(param));
             }
-            List<Step> list = new QueryRunner().query(connection, sql, resultSetToStepListHandler, param);
-            return list;
+            return new QueryRunner().query(connection, sql, resultSetToStepListHandler, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -107,8 +106,7 @@ class StepMysqlHelper implements Serializable {
                 log.trace(sql.toString());
             }
 
-            int val = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
-            return val;
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
 
         } finally {
             if (connection != null) {
@@ -264,8 +262,7 @@ class StepMysqlHelper implements Serializable {
             try {
                 if (rs.next()) {
                     try {
-                        Step o = convert(rs);
-                        return o;
+                        return convert(rs);
                     } catch (SQLException e) {
                         log.error(e);
                     }
@@ -441,8 +438,7 @@ class StepMysqlHelper implements Serializable {
         Object[] param = { id };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            Step s = new QueryRunner().query(connection, sql, resultSetToStepHandler, param);
-            return s;
+            return new QueryRunner().query(connection, sql, resultSetToStepHandler, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -486,8 +482,7 @@ class StepMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Step> ret = new QueryRunner().query(connection, sql.toString(), resultSetToStepListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), resultSetToStepListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -627,7 +622,7 @@ class StepMysqlHelper implements Serializable {
         }
 
         if (includeID) {
-            Object[] param = { o.getId(), //SchritteID
+            return new Object[] { o.getId(), //SchritteID
                     o.getTitel(), //Titel
                     o.getPrioritaet(), //Prioritaet
                     o.getReihenfolge(), //Reihenfolge
@@ -673,9 +668,8 @@ class StepMysqlHelper implements Serializable {
                                                                                                                                                             (o.getValidationPlugin() == null || o.getValidationPlugin().equals("")) ? null : o.getValidationPlugin(), //validationPlugin
                                                                                                                                                                     (o.isDelayStep()), (o.isUpdateMetadataIndex()), o.isGenerateDocket(), o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(),
                                                                                                                                                                     o.getHttpJsonBody(), o.isHttpCloseStep(), o.isHttpEscapeBodyJson(), o.getMessageQueue().toString() }; //httpStep
-            return param;
         } else {
-            Object[] param = { o.getTitel(), //Titel
+            return new Object[] { o.getTitel(), //Titel
                     o.getPrioritaet(), //Prioritaet
                     o.getReihenfolge(), //Reihenfolge
                     o.getBearbeitungsstatusAsString(), //Bearbeitungsstatus
@@ -721,7 +715,6 @@ class StepMysqlHelper implements Serializable {
                                                                                                                                                                     (o.isDelayStep()), (o.isUpdateMetadataIndex()), o.isGenerateDocket(), o.isHttpStep(), o.getHttpMethod(), o.getHttpUrl(),
                                                                                                                                                                     o.getHttpJsonBody(), o.isHttpCloseStep(), o.isHttpEscapeBodyJson(),
                                                                                                                                                                     o.getMessageQueue() == null ? QueueType.NONE.toString() : o.getMessageQueue().toString() }; //httpStep
-            return param;
         }
     }
 
@@ -1160,8 +1153,7 @@ class StepMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString() + ", " + stepId);
             }
-            List<String> ret = new QueryRunner().query(connection, sql.toString(), resultSetToScriptsHandler, params);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), resultSetToScriptsHandler, params);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

@@ -47,8 +47,7 @@ class PropertyMysqlHelper implements Serializable {
         Object[] param = { processId };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<Processproperty> ret = new QueryRunner().query(connection, sql, resultSetToPropertyListHandler, param);
-            return ret;
+            return new QueryRunner().query(connection, sql, resultSetToPropertyListHandler, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -417,8 +416,7 @@ class PropertyMysqlHelper implements Serializable {
         Object[] param = { templateId };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<Templateproperty> ret = new QueryRunner().query(connection, sql, resultSetToTemplatePropertyListHandler, param);
-            return ret;
+            return new QueryRunner().query(connection, sql, resultSetToTemplatePropertyListHandler, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -500,8 +498,7 @@ class PropertyMysqlHelper implements Serializable {
         Object[] param = { templateId };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<Masterpieceproperty> ret = new QueryRunner().query(connection, sql, resultSetToMasterpiecePropertyListHandler, param);
-            return ret;
+            return new QueryRunner().query(connection, sql, resultSetToMasterpiecePropertyListHandler, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

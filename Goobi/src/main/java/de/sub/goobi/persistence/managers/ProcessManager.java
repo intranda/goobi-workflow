@@ -345,8 +345,7 @@ public class ProcessManager implements IManager, Serializable {
             try {
                 if (rs.next()) {
                     try {
-                        Process o = convert(rs);
-                        return o;
+                        return convert(rs); 
                     } catch (DAOException e) {
                         log.error(e);
                     }

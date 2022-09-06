@@ -76,8 +76,7 @@ class UserMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<User> ret = new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -125,8 +124,7 @@ class UserMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            User ret = new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -143,8 +141,7 @@ class UserMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            User ret = new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserHandler, id);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserHandler, id);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -378,8 +375,7 @@ class UserMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString() + ", " + Arrays.toString(param));
             }
-            List<String> answer = new QueryRunner().query(connection, sql.toString(), resultSetToFilterListtHandler, param);
-            return answer;
+            return new QueryRunner().query(connection, sql.toString(), resultSetToFilterListtHandler, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -600,8 +596,7 @@ class UserMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            User ret = new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserHandler, loginName);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserHandler, loginName);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -619,8 +614,7 @@ class UserMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<User> ret = new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -780,8 +774,7 @@ class UserMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<User> ret = new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserListHandler, projectId, stepName);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), UserManager.resultSetToUserListHandler, projectId, stepName);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
