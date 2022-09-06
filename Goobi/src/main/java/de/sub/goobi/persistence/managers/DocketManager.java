@@ -111,9 +111,7 @@ public class DocketManager implements IManager, Serializable {
                     return convert(rs);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+            	rs.close();
             }
             return null;
         }
@@ -126,14 +124,10 @@ public class DocketManager implements IManager, Serializable {
             try {
                 while (rs.next()) {
                     Docket o = convert(rs);
-                    if (o != null) {
-                        answer.add(o);
-                    }
+                    answer.add(o);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+            	rs.close();
             }
             return answer;
         }
