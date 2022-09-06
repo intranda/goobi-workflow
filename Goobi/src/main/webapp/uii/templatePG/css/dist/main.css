@@ -1,9 +1,9 @@
 :root {
   --clr-primary-400: #368ee0;
   --clr-primary-600: #1b67af;
-  --clr-neutral-200: #f4f4f4;
+  --clr-neutral-200: #eee;
   --clr-neutral-210: #dddddd;
-  --clr-neutral-300: #ced4da;
+  --clr-neutral-300: #ccc;
   --clr-neutral-400: #aaaaaa;
   --clr-neutral-600: #666666;
   --clr-white: #ffffff;
@@ -240,8 +240,8 @@
 }
 
 .btn-neutral-200:hover {
-  background-color: #e7e7e7;
-  border-color: #e7e7e7;
+  background-color: #e1e1e1;
+  border-color: #e1e1e1;
   color: #fff;
 }
 
@@ -264,8 +264,8 @@
 }
 
 .btn-neutral-300:hover {
-  background-color: #bfc7cf;
-  border-color: #bfc7cf;
+  background-color: #bfbfbf;
+  border-color: #bfbfbf;
   color: #fff;
 }
 
@@ -1109,14 +1109,22 @@ td .btn ~ .btn {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 1.6rem;
+  margin: 1.6rem 0;
 }
 .dataTables__search__container form {
   display: flex;
 }
 
-.dataTables__search__filter {
-  margin-left: auto;
+.dataTables__filter-container {
+  gap: var(--gap, 8px);
+}
+
+.dataTables__filter {
+  background-color: var(--clr-neutral-200);
+}
+.dataTables__filter input,
+.dataTables__filter button:not(.btn--active-users) {
+  border: 1px solid var(--clr-neutral-300);
 }
 
 .dataTables__actions {
@@ -1141,7 +1149,7 @@ th {
   display: flex;
   gap: 8px;
   justify-content: flex-end;
-  padding: 1.2rem;
+  margin: 1.2rem 0;
 }
 .form-actions .trigger-delete,
 .form__actions .trigger-delete,
@@ -1208,6 +1216,10 @@ option:checked {
   color: #fff;
 }
 
+.input-group-text {
+  background-color: var(--clr-neutral-200);
+}
+
 #processTable tr td:nth-of-type(2) span {
   display: inline-block;
   transform: translateY(50%);
@@ -1238,6 +1250,10 @@ option:checked {
 }
 .btn-link:hover {
   text-decoration: underline;
+}
+
+.nav-item .btn-link:hover {
+  text-decoration: none;
 }
 
 button,
@@ -1289,6 +1305,17 @@ span.badge:not(:last-child) {
 .skip-main:focus {
   position: relative;
   top: 0px;
+}
+
+.btn-blank {
+  background-color: var(--clr-neutral-200);
+  border-color: var(--clr-neutral-200);
+}
+
+.btn-blank:hover {
+  background-color: var(--clr-neutral-300);
+  border-color: var(--clr-neutral-300);
+  color: var(--clr-text-400);
 }
 
 #designSystem {
