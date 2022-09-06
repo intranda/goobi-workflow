@@ -58,7 +58,7 @@ class MasterpieceMysqlHelper implements Serializable {
         public List<Masterpiece> handle(ResultSet rs) throws SQLException {
             List<Masterpiece> answer = new ArrayList<Masterpiece>();
             try {
-                while (rs.next()) {
+                while (rs.next()) { // implies that rs != null, while the case rs == null will be thrown as an Exception
                     int id = rs.getInt("WerkstueckeID");
                     int processId = rs.getInt("ProzesseID");
                     Masterpiece object = new Masterpiece();
@@ -69,9 +69,7 @@ class MasterpieceMysqlHelper implements Serializable {
                     answer.add(object);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -81,7 +79,7 @@ class MasterpieceMysqlHelper implements Serializable {
         @Override
         public Masterpiece handle(ResultSet rs) throws SQLException {
             try {
-                if (rs.next()) {
+                if (rs.next()) { // implies that rs != null, while the case rs == null will be thrown as an Exception
                     int id = rs.getInt("WerkstueckeID");
                     int processId = rs.getInt("ProzesseID");
                     Masterpiece object = new Masterpiece();
@@ -92,9 +90,7 @@ class MasterpieceMysqlHelper implements Serializable {
                     return object;
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
