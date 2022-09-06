@@ -386,7 +386,7 @@ class ProjectMysqlHelper implements Serializable {
         public List<ProjectFileGroup> handle(ResultSet rs) throws SQLException {
             List<ProjectFileGroup> answer = new ArrayList<>();
             try {
-                while (rs.next()) {
+                while (rs.next()) { // implies that rs != null
                     int ProjectFileGroupID = rs.getInt("ProjectFileGroupID");
                     String name = rs.getString("name");
                     String path = rs.getString("path");
@@ -406,9 +406,7 @@ class ProjectMysqlHelper implements Serializable {
                     answer.add(pfg);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
