@@ -800,9 +800,7 @@ class ProcessMysqlHelper implements Serializable {
                     return convertBatch(rs);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
@@ -817,9 +815,7 @@ class ProcessMysqlHelper implements Serializable {
                     answer.add(convertBatch(rs));
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -848,7 +844,7 @@ class ProcessMysqlHelper implements Serializable {
         public List<LogEntry> handle(ResultSet rs) throws SQLException {
             List<LogEntry> answer = new ArrayList<>();
             try {
-                while (rs.next()) {
+                while (rs.next()) { // implies that rs != null, while the case rs == null will be thrown as an Exception
 
                     int id = rs.getInt("id");
                     int processId = rs.getInt("processID");
@@ -875,9 +871,7 @@ class ProcessMysqlHelper implements Serializable {
                     answer.add(entry);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
