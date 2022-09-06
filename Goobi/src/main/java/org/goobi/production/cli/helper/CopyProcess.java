@@ -920,8 +920,8 @@ public class CopyProcess {
     private void removeCollections(DocStruct colStruct) {
         try {
             MetadataType mdt = this.ughHelp.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), "singleDigCollection");
-            ArrayList<Metadata> myCollections = new ArrayList<>(colStruct.getAllMetadataByType(mdt));
-            if (myCollections != null && ! myCollections.isEmpty()) {
+            ArrayList<Metadata> myCollections = new ArrayList<>(colStruct.getAllMetadataByType(mdt)); // implies that myCollections != null
+            if (! myCollections.isEmpty()) {
                 for (Metadata md : myCollections) {
                     colStruct.removeMetadata(md, true);
                 }
