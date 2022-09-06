@@ -192,16 +192,10 @@ public class ShellScript {
      */
     public static LinkedList<String> inputStreamToLinkedList(InputStream myInputStream) {
         LinkedList<String> result = new LinkedList<>();
-        Scanner inputLines = null;
-        try {
-            inputLines = new Scanner(myInputStream);
+        try (Scanner inputLines = new Scanner(myInputStream)){
             while (inputLines.hasNextLine()) {
                 String myLine = inputLines.nextLine();
                 result.add(myLine);
-            }
-        } finally {
-            if (inputLines != null) {
-                inputLines.close();
             }
         }
         return result;
