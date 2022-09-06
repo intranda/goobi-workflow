@@ -117,7 +117,7 @@ public class WebDav implements Serializable {
         String nach = "";
 
         try {
-            nach = inBenutzer.getHomeDir();
+            nach = inBenutzer.getHomeDir(); // implies that inBenutzer != null
         } catch (IOException ioe) {
             log.error("Exception UploadFromHome(...)", ioe);
             Helper.setFehlerMeldung("Aborted upload from home, error", ioe.getMessage());
@@ -127,7 +127,7 @@ public class WebDav implements Serializable {
         }
 
         /* prüfen, ob Benutzer Massenupload macht */
-        if (inBenutzer != null && inBenutzer.isMitMassendownload()) {
+        if (inBenutzer.isMitMassendownload()) {
             nach += myProzess.getProjekt().getTitel() + "/";
             Path projectDirectory;
             if (ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
