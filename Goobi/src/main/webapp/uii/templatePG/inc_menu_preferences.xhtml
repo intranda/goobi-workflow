@@ -32,15 +32,17 @@
 		<div class="user">
 			<div class="nav icon-nav">
 				<!-- Icon to enable help texts -->
-				<div class="nav-item">
+				<div class="nav-item"
+						aria-label="#{msgs.showHelpMessages}"
+					>
 					<button
+						type="button"
 						class="nav-link btn-link"
 						jsf:id="showHelp"
-						aria-label="#{msgs.showHelpMessages}"
 						title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
-						data-bs-toggle="tooltip"
-						data-bs-placement="right">
-						<i class="fa #{not right.showHelp?'fa-question':'fa-question-circle'}"></i>
+						>
+
+						<i class="fa #{not NavigationForm.showHelp ? 'fa-question' : 'fa-question-circle'}"></i>
 						<f:setPropertyActionListener
 							target="#{NavigationForm.showHelp}"
 							value="#{not NavigationForm.showHelp}" />
@@ -53,9 +55,6 @@
 				<div
 						class="nav-item dropdown language-select"
 						title="#{msgs.spracheAendern}"
-						data-bs-trigger="hover"
-						data-bs-toggle="tooltip"
-						data-bs-placement="top"
 						>
 
 					<a
