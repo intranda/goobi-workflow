@@ -341,7 +341,7 @@
                   rendered="#{BenutzerverwaltungForm.displayMode eq 'usergroup'}">
 
                     <intranda:box
-                      boxType="blank"
+                      boxType="action"
                       scope="view-users__box--usergroup-1"
                       title="#{msgs.benutzergruppen}"
                       icon="fa-table"
@@ -361,7 +361,7 @@
                       <!-- Hinzufügen-Schaltknopf -->
                       <button
                         jsf:id="add"
-                        class="btn btn-primary margin-right-10"
+                        class="btn btn-action"
                         title="#{msgs.uebernehmen}"
                         jsf:rel="tooltip"
                         jsf:action="#{BenutzerverwaltungForm.ZuGruppeHinzufuegen}">
@@ -390,7 +390,7 @@
                         <!-- Cancel-Schaltknopf -->
                         <button
                           jsf:id="cancel"
-                          class="btn btn-blank"
+                          class="btn btn-blank me-auto"
                           jsf:action="#{NavigationForm.Reload}">
                           <h:outputText
                             value="#{msgs.abbrechen}" />
@@ -460,7 +460,7 @@
                           <!-- Neu-Schaltknopf -->
                           <button
                             jsf:id="addGroup"
-                            class="btn btn-primary-400 me-auto"
+                            class="btn btn-blank me-auto"
                             jsf:action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
                             jsf:immediate="true">
                             <i class="fa fa-plus"></i>
@@ -508,7 +508,7 @@
 
                 <!-- Nested Box -->
                 <intranda:box
-                  boxType="blank"
+                  boxType="action"
                   scope="view-users__box--project-1"
                   title="#{msgs.projekte}"
                   icon="fa-table"
@@ -528,7 +528,7 @@
                       <!-- Hinzufügen-Schaltknopf -->
                       <button
                         jsf:id="addProject"
-                        class="btn btn-primary-400"
+                        class="btn btn-action"
                         title="#{msgs.uebernehmen}"
                         jsf:rel="tooltip"
                         jsf:action="#{BenutzerverwaltungForm.ZuProjektHinzufuegen}">
@@ -556,7 +556,7 @@
                         <!-- Cancel-Schaltknopf -->
                         <a
                           jsf:id="cancelProject"
-                          class="btn btn-blank"
+                          class="btn btn-blank me-auto"
                           jsf:action="#{NavigationForm.Reload}">
                           <span><h:outputText value="#{msgs.abbrechen}" /></span>
                           <f:setPropertyActionListener
@@ -632,7 +632,7 @@
                       <!-- Neu-Schaltknopf -->
                       <button
                         jsf:id="addToProject"
-                        class="btn btn-primary me-auto"
+                        class="btn btn-blank me-auto"
                         jsf:action="#{ProjekteForm.FilterKeinMitZurueck}"
                         jsf:immediate="true">
                         <i class="fa fa-plus me-auto"></i>
