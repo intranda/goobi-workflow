@@ -27,6 +27,7 @@
 				}
 				document.getElementById(id).setAttribute("aria-expanded", x);
         	}
+
         </script>
 		<div class="user">
 			<div class="nav icon-nav">
@@ -37,12 +38,9 @@
 						jsf:id="showHelp"
 						aria-label="#{msgs.showHelpMessages}"
 						title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
-						jsf:rel="tooltip"
-						data-placement="bottom">
-						<i class="fa #{not NavigationForm.showHelp?'fa-question':'fa-question-circle'}"></i>
-						<f:passThroughAttribute
-							name="data-toggle"
-							value="tooltip" />
+						data-bs-toggle="tooltip"
+						data-bs-placement="right">
+						<i class="fa #{not right.showHelp?'fa-question':'fa-question-circle'}"></i>
 						<f:setPropertyActionListener
 							target="#{NavigationForm.showHelp}"
 							value="#{not NavigationForm.showHelp}" />
@@ -54,17 +52,19 @@
 				<!-- Language dropdown -->
 				<div
 						class="nav-item dropdown language-select"
-						data-toggle="tooltip"
 						title="#{msgs.spracheAendern}"
+						data-bs-trigger="hover"
 						data-bs-toggle="tooltip"
-						data-bs-placement="bottom">
+						data-bs-placement="top"
+						>
 
 					<a
 						class="nav-link dropdown-toggle"
 						href="#"
 						role="button"
 						data-bs-toggle="dropdown"
-						aria-expanded="false">
+						aria-expanded="false"
+						>
 
 						<!-- Language icon -->
 						<ui:include src="/uii/includes/svg/icon_language.xhtml" >

@@ -700,7 +700,7 @@ body {
   display: flex;
   align-items: center;
   padding: 1rem 1.5rem !important;
-  border-left: 1px solid var(--clr-primary-400);
+  border-left: 2px solid var(--clr-primary-400);
 }
 .navbar .nav-link:hover {
   border-color: var(--clr-primary-600);
