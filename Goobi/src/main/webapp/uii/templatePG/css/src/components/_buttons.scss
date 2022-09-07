@@ -11,6 +11,10 @@
   }
 }
 
+.nav-item .btn-link:hover {
+  text-decoration: none;
+}
+
 button,
 .btn {
   border-radius: var(--border-radius, 2px);
