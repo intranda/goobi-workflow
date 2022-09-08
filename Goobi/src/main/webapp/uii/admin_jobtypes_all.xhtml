@@ -9,7 +9,7 @@
 	xmlns:of="http://omnifaces.org/functions"
 	template="/uii/templatePG/templatePG.html"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
     <ui:param name="myPageTitle" value="#{msgs.manageAutomaticTasks}" />
 
@@ -22,7 +22,9 @@
     </ui:define>
 
     <ui:define name="content">
+
         <h:form rendered="#{LoginForm.hasRole('Admin_Jobtypes')}">
+
         <intranda:box
           boxType="primary"
           icon="fa-gears"
@@ -51,13 +53,14 @@
                     </h:column>
                   <h:column>
                     <f:facet name="header">#{msgs.auswahl}</f:facet>
-                        <button class="btn btn-primary me-2"
+										    <div class="dataTables__actions">
+                        <button class="btn btn-blank"
                             aria-label="#{msgs.editJobType}"
                             title="#{msgs.editJobType}"
                             jsf:action="#{JobTypesBean.editJobType(jobType)}">
                             <i class="fa fa-pencil"></i>
                         </button>
-                        <button class="btn btn-primary"
+                        <button class="btn btn-blank"
                             title="#{msgs.unPauseJobType}"
                             aria-label="#{msgs.unPauseJobType}"
                             jsf:rendered="#{jobType.paused}"
@@ -65,7 +68,7 @@
                             <f:ajax render="@form" />
                             <i class="fa fa-play"></i>
                         </button>
-                        <button class="btn btn-primary"
+                        <button class="btn btn-blank"
                             title="#{msgs.pauseJobType}"
                             aria-label="#{msgs.pauseJobType}"
                             jsf:rendered="#{not jobType.paused}"
@@ -73,6 +76,7 @@
                             <f:ajax render="@form" />
                             <i class="fa fa-pause"></i>
                         </button>
+                        </div>
 	                  </h:column>
 	              </h:dataTable>
 

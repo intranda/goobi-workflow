@@ -3,6 +3,18 @@
   margin-bottom: 0;
 }
 
+// Border color: all borders, one color
+tbody,
+td,
+tfoot,
+th,
+thead,
+tr,
+.table,
+.box__content--padded tr {
+  border-color: var(--clr-neutral-300);
+}
+
 thead {
   background-color: var(--clr-neutral-200);
   button {
@@ -20,7 +32,7 @@ th span {
 }
 
 td {
-	word-break: break-all;
+  word-break: break-all;
   .btn-group .btn:not(:first-of-type) {
     margin-right: 0.8rem;
   }
@@ -53,7 +65,7 @@ td {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 1.6rem;
+  margin: 1.6rem 0;
 
   // Contains search form + `show active users btn`
   form {
@@ -61,10 +73,20 @@ td {
   }
 }
 
-.dataTables__search__filter {
-  margin-left: auto;
+.dataTables__filter-container {
+  gap: var(--gap, 8px);
 }
-.dataTables__search__actions {
+
+.dataTables__filter {
+  background-color: var(--clr-neutral-200);
+
+  input,
+  button:not(.btn--active-users) {
+    border: 1px solid var(--clr-neutral-300);
+  }
+}
+
+.dataTables__actions {
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
@@ -73,9 +95,5 @@ td {
 .dataTables__paginator {
   display: flex;
   align-items: center;
-
-  &__page-count {
-    margin-left: .8rem;
-  }
-
+  gap: var(--gap, 8px);
 }

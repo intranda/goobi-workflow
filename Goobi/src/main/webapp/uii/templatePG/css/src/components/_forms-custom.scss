@@ -1,16 +1,39 @@
-.form-actions {
+th {
+  font-weight: inherit;
+}
+.form-actions,
+.form__actions,
+.box__actions {
   display: flex;
+  gap: 8px;
   justify-content: flex-end;
-  padding: 1.2rem;
+  margin: 1.2rem 0;
+
+  // Push delete button to the left side
+  .trigger-delete {
+    order: -1;
+    margin-right: auto;
+  }
 }
 
 .form-group {
   padding: 20px;
   margin-bottom: 0;
 }
+
 label,
 .form__label {
   font-size: var(--fs-500);
+}
+
+.form__help {
+  flex: 1 1 100%;
+
+  .text-danger, // error msg
+  .help-block // help text
+  {
+    margin-left: 1px;
+  }
 }
 
 // BS helper
@@ -57,4 +80,9 @@ label,
 option:checked {
   background-color: var(--clr-primary-400);
   color: #fff;
+}
+
+// BS 5 Override
+.input-group-text {
+  background-color: var(--clr-neutral-200);
 }

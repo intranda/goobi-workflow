@@ -26,12 +26,13 @@
 			<div class="row" role="main">
 				<div class="col-sm-12">
 
-
 					<intranda:box
+						id="allUsers"
 						boxType="primary-400"
 						icon="fa-user"
 						title="#{myPageTitle}"
-						padding="false">
+						padding="true"
+						>
 
 							<div class="dataTables flow">
 
@@ -43,13 +44,14 @@
 									</div>
 
 
+									<div class="dataTables__filter-container d-flex">
 									<!-- SEARCH IN TABLE-->
-									<h:form id="searchform">
+									<h:form id="isActiveUsers">
 
 										<!-- Show only active users -->
 										<div class="dataTables__filter">
 											<button jsf:id="tableUserAllShowActiveUsers"
-												class="btn searchfieldbuttongroup hidden-xs"
+												class="btn btn--active-users"
 												jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
 												jsf:immediate="true">
 												<i
@@ -61,6 +63,9 @@
 													value="#{not BenutzerverwaltungForm.hideInactiveUsers}" />
 											</button>
 										</div>
+									</h:form>
+
+									<h:form id="searchform">
 
 										<!-- Filter by search term -->
 										<div class="dataTables__filter">
@@ -76,7 +81,7 @@
 													<f:passThroughAttribute name="aria-label"
 														value="#{msgs.benutzer}" />
 												</h:inputText>
-												<button jsf:id="FilterAlle2" jsf:forceId="true" class="btn btn-action"
+												<button jsf:id="FilterAlle2" jsf:forceId="true" class="btn btn-blank"
 													style="text-align: center; line-height: 100%; padding: 0px 10px"
 													jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}">
 													#{msgs.search}
@@ -90,6 +95,7 @@
 										</div>
 
 									</h:form>
+									</div> <!-- dataTables__filters-container end -->
 								</div> <!-- SEARCH END -->
 
 								<!-- ### Table ### -->
@@ -103,33 +109,33 @@
 														name="name"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.benutzer}"
-														ajaxRender=":myform" />
+														ajaxRender="allUsers:myform" />
 												<intranda:columnheader
 														name="login"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.login}"
-														ajaxRender=":myform" />
+														ajaxRender="allUsers:myform" />
 												<intranda:columnheader
 														name="location"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.standort}"
-														ajaxRender=":myform" />
+														ajaxRender="allUsers:myform" />
 												<intranda:columnheader
 														name="group"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.benutzergruppen}"
-														ajaxRender=":myform" />
+														ajaxRender="allUsers:myform" />
 												<intranda:columnheader
 														name="projects"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.projekte}"
-														ajaxRender=":myform" />
+														ajaxRender="allUsers:myform" />
 												<intranda:columnheader
 														name="institution"
 														form="#{BenutzerverwaltungForm}"
 														value="#{msgs.institution}"
 														rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}"
-														ajaxRender=":myform" />
+														ajaxRender="allUsers:myform" />
 												<intranda:columnheader
 														value="#{msgs.auswahl}"
 														sortable="false" />
@@ -183,9 +189,9 @@
 												</td>
 												<!-- ### Action Buttons ### -->
 												<td>
-													<div class="dataTables__search__actions">
+													<div class="dataTables__actions">
 														<!-- Bearbeiten-Schaltknopf -->
-														<button jsf:id="edit" class="btn btn-primary-400"
+														<button jsf:id="edit" class="btn btn-blank"
 															jsf:rel="tooltip" jsf:action="user_edit"
 															title="#{msgs.benutzerBearbeiten}">
 															<i class="fa fa-pencil"></i>
@@ -203,7 +209,7 @@
 														<!-- Benutzerprofil laden-Schaltknopf -->
 														<button jsf:id="switch"
 															jsf:rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch')}"
-															class="btn btn-primary-400 hidden-xs"
+															class="btn btn-blank"
 															jsf:action="#{LoginForm.EinloggenAls}"
 															title="#{msgs.benutzerprofilLaden}">
 															<i class="fa fa-user-secret"></i>
@@ -217,7 +223,7 @@
 
 														<!-- Create new random password for user -->
 														<button jsf:id="createNewRandomPassword"
-															class="btn btn-primary-400" jsf:rel="tooltip"
+															class="btn btn-blank" jsf:rel="tooltip"
 															title="#{msgs.createNewRandomPassword}"
 															jsf:rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords') and (item.ldapGruppe.authenticationType != 'ldap' or not item.ldapGruppe.readonly)}"
 															jsf:onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
