@@ -232,7 +232,7 @@ public class ProcessProperty implements IProperty, Serializable {
 
         @Override
         public int compare(ProcessProperty o1, ProcessProperty o2) {
-            return  Integer.valueOf(o1.getContainer()).compareTo(Integer.valueOf(o2.getContainer()));
+        	return Integer.compare(o1.getContainer(), o2.getContainer());
         }
 
     }
