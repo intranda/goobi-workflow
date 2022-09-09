@@ -125,7 +125,7 @@ public class ProjectBean extends BasicBean implements Serializable {
 
     // making sure its cleaned up
     @Override
-    public void finalize() {
+    protected void finalize() {
         this.Cancel();
     }
 
