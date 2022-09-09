@@ -6,9 +6,11 @@
 $colors: (
   primary-400: #368ee0,
   primary-600: #1b67af,
-  neutral-200: #f4f4f4,
-  // neutral-400: #dddddd,
-  neutral-300: #ced4da,
+  // neutral-200: #f4f4f4,
+  neutral-200: #eee,
+  neutral-210: #dddddd,
+  // used for neutral boxes (box blank)
+  neutral-300: #ccc,
   // Form elements border color
   neutral-400: #aaaaaa,
   neutral-600: #666666,
@@ -86,14 +88,23 @@ $colors: (
 /* A base box can be colored using these utility classes
  * Essentially the box header and the box border will change colors
  * The class list should look like so: class="box box--action"
- * $legacy-box-colors contains legacy classes
+ * $legacy-box-colors contains legacy classes, ignore them when building new boxes
  */
 
 @each $name, $color in $colors {
-  @if $name != blank {
+  @if $name == blank {
+    .box.box--#{$name} {
+      border-color: var(--clr-neutral-210);
+      & .box__title {
+        background-color: var(--clr-neutral-210);
+        border-color: var(--clr-neutral-210);
+        color: var(--clr-text-400);
+      }
+    }
+  } @else {
     .box.box--#{$name} {
       border-color: var(--clr-#{$name});
-      & .box-title {
+      & .box__title {
         background-color: var(--clr-#{$name});
         border-color: var(--clr-#{$name});
       }

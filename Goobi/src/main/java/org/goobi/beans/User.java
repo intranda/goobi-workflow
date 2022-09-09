@@ -64,8 +64,8 @@ import lombok.extern.log4j.Log4j2;
 public class User implements DatabaseObject, Serializable {
 
     private static final long serialVersionUID = -1540863402168133130L;
-    
-	@Getter
+
+    @Getter
     @Setter
     private Integer id;
     @Getter
@@ -711,6 +711,7 @@ public class User implements DatabaseObject, Serializable {
         REGISTERED("registered"),
         ACTIVE("active"),
         INACTIVE("inactive"),
+        REJECTED("rejected"),
         DELETED("deleted");
 
         @Getter

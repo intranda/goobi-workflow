@@ -1,0 +1,27 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<composite:interface />
+
+	<composite:implementation>
+
+				<!-- Help message -->
+				<div class="form__help">
+					<h:message for="#{msgFor}" showDetail="true" styleClass="text-danger"/>
+					<intranda:formHelp content="#{helpContent}" />
+				</div>
+
+  </composite:implementation>
+
+</ui:composition>
+

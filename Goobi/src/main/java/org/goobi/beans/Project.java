@@ -384,7 +384,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         try {
             List<User> allUsers = UserManager.getUsers(null, "", null, null, null);
             for (User user : allUsers) {
-                if (user.getProjekte().contains(this)) {
+                if (user.getProjekte().contains(source)) {
                     user.getProjekte().add(this);
                     UserManager.addProjectAssignment(user, getId());
                 }
