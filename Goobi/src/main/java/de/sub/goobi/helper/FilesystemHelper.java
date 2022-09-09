@@ -75,7 +75,7 @@ public class FilesystemHelper {
                 StorageProvider.getInstance().createDirectories(Paths.get(dirName));
             } else {
                 ShellScript createDirScript = new ShellScript(Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirMeta()));
-                createDirScript.run(Arrays.asList(new String[] { dirName }));
+                createDirScript.run(Arrays.asList(dirName ));
             }
         }
     }
@@ -96,7 +96,7 @@ public class FilesystemHelper {
                 StorageProvider.getInstance().createDirectories(Paths.get(dirName));
             } else {
                 ShellScript createDirScript = new ShellScript(Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirUserHome()));
-                createDirScript.run(Arrays.asList(new String[] { userName, dirName }));
+                createDirScript.run(Arrays.asList(userName, dirName));
             }
         }
         return StorageProvider.getInstance().isFileExists(Paths.get(dirName));
@@ -108,7 +108,7 @@ public class FilesystemHelper {
             ShellScript deleteSymLinkScript;
             try {
                 deleteSymLinkScript = new ShellScript(Paths.get(command));
-                deleteSymLinkScript.run(Arrays.asList(new String[] { symLink }));
+                deleteSymLinkScript.run(Arrays.asList(symLink ));
             } catch (FileNotFoundException e) {
                 log.error("FileNotFoundException in deleteSymLink()", e);
                 Helper.setFehlerMeldung("Couldn't find script file, error", e.getMessage());
