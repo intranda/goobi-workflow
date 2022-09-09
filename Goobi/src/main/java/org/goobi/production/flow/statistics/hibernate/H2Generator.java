@@ -122,17 +122,17 @@ public abstract class H2Generator implements IGenerator {
         if (timeFrom == null && timeTo == null) {
             return "";
         }
-        // FROM NOW ON: timeFrom != null || timeTo != null
+        // FROM NOW ON: timeFrom != null || timeTo != null //NOSONAR
 
         if (timeFrom != null && timeTo != null) {
             return " timeLimiter between '" + dateToSqlTimestamp(timeFrom) + "' and '" + dateToSqlTimestamp(timeTo) + "'";
         }
-        // FROM NOW ON: ( timeFrom != null && timeTo == null ) OR ( timeFrom == null && timeTo != null )
+        // FROM NOW ON: ( timeFrom != null && timeTo == null ) OR ( timeFrom == null && timeTo != null ) //NOSONAR
 
         if (timeFrom != null) {
             return " timeLimiter between '" + dateToSqlTimestamp(timeFrom) + "' and '9999-12-31 23:59:59.999'";
         }
-        // FROM NOW ON: timeFrom == null && timeTo != null
+        // FROM NOW ON: timeFrom == null && timeTo != null //NOSONAR
 
         return " timeLimiter between '0000-01-01 00:00:00.000' and '" + dateToSqlTimestamp(timeTo) + "'";
     }
