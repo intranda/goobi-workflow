@@ -4634,7 +4634,7 @@ public class Metadaten implements Serializable {
 
     private void createAddableData() {
         String docstructName = "";
-        int selection = Integer.valueOf(neuesElementWohin).intValue();
+        int selection = Integer.parseInt(neuesElementWohin);
         if (selection < 3) {
             docstructName = getAddDocStructType1();
         } else {

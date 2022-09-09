@@ -1966,7 +1966,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public void setMyProcessId(String id) {
         try {
-            int myid = Integer.valueOf(id).intValue();
+            int myid = Integer.parseInt(id);
             this.myProzess = ProcessManager.getProcessById(myid);
             
         } catch (NumberFormatException e) {

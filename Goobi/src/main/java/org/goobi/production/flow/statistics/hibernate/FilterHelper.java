@@ -1059,7 +1059,7 @@ public class FilterHelper {
                     }
                     if (StringUtils.isNumeric(substring)) {
 
-                        int value = Integer.valueOf(substring);
+                        int value = Integer.parseInt(substring);
                         filter = checkStringBuilder(filter, true);
                         filter.append(" prozesse.batchID = " + value);
                     } else {
@@ -1255,7 +1255,7 @@ public class FilterHelper {
                         substring = substring.substring(0, substring.indexOf(" "));
                     }
                     if (StringUtils.isNumeric(substring)) {
-                        int value = Integer.valueOf(substring);
+                        int value = Integer.parseInt(substring);
                         filter = checkStringBuilder(filter, false);
                         filter.append(" prozesse.batchID = " + value);
                     } else {
