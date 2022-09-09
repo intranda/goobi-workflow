@@ -139,9 +139,9 @@ public class JobTypesBean implements Serializable {
     }
 
     public boolean isCurrentJobTypeNew() {
-        return !jobTypesCache.getJobTypes()
+        return jobTypesCache.getJobTypes()
                 .stream()
-                .anyMatch(jt -> jt.getId().equals(this.currentJobType.getId()));
+                .noneMatch(jt -> jt.getId().equals(this.currentJobType.getId()));
     }
 
     public String deleteCurrentJobType() {
