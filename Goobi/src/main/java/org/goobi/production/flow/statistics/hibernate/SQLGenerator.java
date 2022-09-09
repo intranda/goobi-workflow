@@ -58,7 +58,7 @@ public abstract class SQLGenerator implements IGenerator {
         super();
     }
 
-    public SQLGenerator(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids, String idFieldName) {
+    protected SQLGenerator(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids, String idFieldName) {
         this();
         myTimeFrom = timeFrom;
         myTimeTo = timeTo;

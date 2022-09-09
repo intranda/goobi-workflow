@@ -57,11 +57,11 @@ public abstract class H2Generator implements IGenerator {
     @Setter
     List<Integer> ids;
 
-    public H2Generator() {
+    protected H2Generator() {
         super();
     }
 
-    public H2Generator(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids, String idFieldName) {
+    protected H2Generator(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids, String idFieldName) {
         this();
         myTimeFrom = timeFrom;
         myTimeTo = timeTo;

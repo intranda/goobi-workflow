@@ -99,7 +99,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
         sb.append(parameter + ": " + value);
     }
 
-    public AbstractIGoobiScript() {
+    protected AbstractIGoobiScript() {
         super();
     }
 
