@@ -593,8 +593,9 @@ public class MetadatenHelper implements Comparator<Object> {
         types.put("XStream", "<ugh.dl.DigitalDocument>".toLowerCase());
         types.put("Lido", "lido:lido");
 
-        FileReader input = new FileReader(file);
-        try (BufferedReader bufRead = new BufferedReader(input)){
+        
+        try (FileReader input = new FileReader(file);
+        	  BufferedReader bufRead = new BufferedReader(input)){
             char[] buffer = new char[200];
             while ((bufRead.read(buffer)) >= 0) {
 
@@ -603,8 +604,6 @@ public class MetadatenHelper implements Comparator<Object> {
                 while (i.hasNext()) {
                     Entry<String, String> entry = i.next();
                     if (temp.contains(entry.getValue())) {
-                        bufRead.close();
-                        input.close();
                         return entry.getKey();
                     }
                 }

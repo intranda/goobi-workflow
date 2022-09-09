@@ -248,7 +248,6 @@ public class UghHelper {
                     String str;
                     while ((str = in.readLine()) != null) {
                         if (str.length() > 0 && str.split(" ")[1].equals(inLanguage)) {
-                            in.close();
                             return str.split(" ")[0];
                         }
                     }
