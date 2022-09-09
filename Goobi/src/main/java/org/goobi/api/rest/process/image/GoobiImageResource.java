@@ -653,7 +653,7 @@ public class GoobiImageResource {
     private List<Path> getMatchingThumbnailFolders(Path imageFolder, Path thumbsFolder) {
         return StorageProvider.getInstance()
                 							 .listFiles(thumbsFolder.toString(),
-                									 (dirname) -> dirname.getFileName().toString().matches(imageFolder.getFileName().toString() + "_\\d+"));
+                									 dirname -> dirname.getFileName().toString().matches(imageFolder.getFileName().toString() + "_\\d+"));
     }
 
     private List<String> getThumbnailFolders(Path imageFolder, Path thumbnailFolder) {
