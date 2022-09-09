@@ -507,7 +507,7 @@ public class ExportMets {
                                 imageName = imageName.substring(0, dotIndex);
                             }
 
-                            if (filenameInMets.toLowerCase().equals(imageName.toLowerCase())) {
+                            if (filenameInMets.equalsIgnoreCase(imageName)) {
                                 // found matching filename
                                 page.setImageName(imageNameInFolder.toString());
                                 break;
