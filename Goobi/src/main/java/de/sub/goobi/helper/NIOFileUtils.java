@@ -342,7 +342,7 @@ public class NIOFileUtils implements StorageProviderInterface {
             }
             return fileOk;
         }
-    };
+    }
 
     public static final DirectoryStream.Filter<Path> imageOrObjectNameFilter = new DirectoryStream.Filter<Path>() {
         @Override

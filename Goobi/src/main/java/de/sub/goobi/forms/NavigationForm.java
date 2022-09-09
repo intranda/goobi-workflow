@@ -120,7 +120,7 @@ public class NavigationForm implements Serializable{
             return id;
         }
 
-    };
+    }
 
     public NavigationForm() {
         possibleWorkflowPluginNames = PluginLoader.getListOfPlugins(PluginType.Workflow);

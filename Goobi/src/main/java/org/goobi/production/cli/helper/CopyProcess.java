@@ -168,7 +168,7 @@ public class CopyProcess {
         } catch (IOException e) {
             log.error(e);
         }
-        ;
+        
         this.prozessKopie = new Process();
         this.prozessKopie.setTitel("");
         this.prozessKopie.setIstTemplate(false);
@@ -210,7 +210,7 @@ public class CopyProcess {
         } catch (IOException e) {
             log.error(e);
         }
-        ;
+        
         this.prozessKopie = new Process();
         this.prozessKopie.setTitel("");
         this.prozessKopie.setIstTemplate(false);

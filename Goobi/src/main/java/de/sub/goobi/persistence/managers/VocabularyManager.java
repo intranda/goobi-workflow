@@ -64,7 +64,7 @@ public class VocabularyManager implements IManager, Serializable {
     private static final long serialVersionUID = 3577063138324090483L;
 
     @SuppressWarnings("deprecation")
-    private static JsonParser jsonParser = new JsonParser();;
+    private static JsonParser jsonParser = new JsonParser();
 
     private static Gson gson = new GsonBuilder().create();
 
