@@ -387,14 +387,14 @@ class ProjectMysqlHelper implements Serializable {
             List<ProjectFileGroup> answer = new ArrayList<>();
             try {
                 while (rs.next()) { // implies that rs != null
-                    int ProjectFileGroupID = rs.getInt("ProjectFileGroupID");
+                    int projectFileGroupID = rs.getInt("ProjectFileGroupID");
                     String name = rs.getString("name");
                     String path = rs.getString("path");
                     String mimetype = rs.getString("mimetype");
                     String suffix = rs.getString("suffix");
                     String folder = rs.getString("folder");
                     ProjectFileGroup pfg = new ProjectFileGroup();
-                    pfg.setId(ProjectFileGroupID);
+                    pfg.setId(projectFileGroupID);
                     pfg.setName(name);
                     pfg.setPath(path);
                     pfg.setMimetype(mimetype);

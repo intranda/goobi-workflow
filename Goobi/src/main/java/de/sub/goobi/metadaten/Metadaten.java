@@ -1939,14 +1939,14 @@ public class Metadaten implements Serializable {
      *
      * @param inStrukturelement ============================================================== ==
      */
-    private void MetadatenalsTree3Einlesen2(DocStruct inStrukturelement, TreeNodeStruct3 OberKnoten) {
+    private void MetadatenalsTree3Einlesen2(DocStruct inStrukturelement, TreeNodeStruct3 oberKnoten) {
 
         if (currentTopstruct != null && currentTopstruct.getType().getName().equals("BoundBook")) {
             if (inStrukturelement.getAllMetadata() != null) {
                 String phys = "";
                 String log = "";
                 for (Metadata md : inStrukturelement.getAllMetadata()) {
-                    OberKnoten.addMetadata(md.getType().getLanguage(Helper.getMetadataLanguage()), md.getValue());
+                    oberKnoten.addMetadata(md.getType().getLanguage(Helper.getMetadataLanguage()), md.getValue());
                     if (md.getType().getName().equals("logicalPageNumber")) { //NOSONAR
                         log = md.getValue();
                     }
@@ -1955,37 +1955,37 @@ public class Metadaten implements Serializable {
                     }
                 }
                 if (phys != null && phys.length() > 0) {
-                    OberKnoten.setFirstImage(new MutablePair<>(phys, log));
+                    oberKnoten.setFirstImage(new MutablePair<>(phys, log));
                 }
             }
         } else {
             String mainTitle = MetadatenErmitteln(inStrukturelement, "TitleDocMain");
-            OberKnoten.setMainTitle(mainTitle);
-            OberKnoten.addMetadata(Helper.getTranslation("haupttitel"), mainTitle);
-            OberKnoten.addMetadata(Helper.getTranslation("identifier"), MetadatenErmitteln(inStrukturelement, "IdentifierDigital"));
+            oberKnoten.setMainTitle(mainTitle);
+            oberKnoten.addMetadata(Helper.getTranslation("haupttitel"), mainTitle);
+            oberKnoten.addMetadata(Helper.getTranslation("identifier"), MetadatenErmitteln(inStrukturelement, "IdentifierDigital"));
             MutablePair<String, String> first = this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_FIRST);
             if (first != null) {
-                OberKnoten.setFirstImage(first);
-                OberKnoten.addMetadata(Helper.getTranslation("firstImage"),
-                        OberKnoten.getFirstImage().getLeft() + ":" + OberKnoten.getFirstImage().getRight());
+                oberKnoten.setFirstImage(first);
+                oberKnoten.addMetadata(Helper.getTranslation("firstImage"),
+                        oberKnoten.getFirstImage().getLeft() + ":" + oberKnoten.getFirstImage().getRight());
             }
             MutablePair<String, String> last = this.metahelper.getImageNumber(inStrukturelement, MetadatenHelper.PAGENUMBER_LAST);
             if (last != null) {
-                OberKnoten.setLastImage(last);
-                OberKnoten.addMetadata(Helper.getTranslation("lastImage"),
-                        OberKnoten.getLastImage().getLeft() + ":" + OberKnoten.getLastImage().getRight());
+                oberKnoten.setLastImage(last);
+                oberKnoten.addMetadata(Helper.getTranslation("lastImage"),
+                        oberKnoten.getLastImage().getLeft() + ":" + oberKnoten.getLastImage().getRight());
             }
-            OberKnoten.addMetadata(Helper.getTranslation("partNumber"), MetadatenErmitteln(inStrukturelement, "PartNumber"));
-            OberKnoten.addMetadata(Helper.getTranslation("dateIssued"), MetadatenErmitteln(inStrukturelement, "DateIssued"));
+            oberKnoten.addMetadata(Helper.getTranslation("partNumber"), MetadatenErmitteln(inStrukturelement, "PartNumber"));
+            oberKnoten.addMetadata(Helper.getTranslation("dateIssued"), MetadatenErmitteln(inStrukturelement, "DateIssued"));
         }
         // wenn es ein Periodical oder PeriodicalVolume ist, dann ausklappen
         if (inStrukturelement.getType().getName().equals("Periodical") || inStrukturelement.getType().getName().equals("PeriodicalVolume")) {
-            OberKnoten.setExpanded(true);
+            oberKnoten.setExpanded(true);
         }
         if (inStrukturelement != null) {
-            if (OberKnoten != null) {
-                OberKnoten.setValidationErrorPresent(inStrukturelement.isValidationErrorPresent());
-                OberKnoten.setValidationMessage(inStrukturelement.getValidationMessage());
+            if (oberKnoten != null) {
+                oberKnoten.setValidationErrorPresent(inStrukturelement.isValidationErrorPresent());
+                oberKnoten.setValidationMessage(inStrukturelement.getValidationMessage());
             }
             //we moved the validation information to the UI class (TreeNodeStruct3), so we don't need it on the docStruct anymore
             //because of that, we reset the validation error on the docStruct, so the next validation run won't have false positives
@@ -2005,7 +2005,7 @@ public class Metadaten implements Serializable {
                     label = kind.getType().getName();
                 }
                 TreeNodeStruct3 tns = new TreeNodeStruct3(label, kind);
-                OberKnoten.addChild(tns);
+                oberKnoten.addChild(tns);
                 MetadatenalsTree3Einlesen2(kind, tns);
             }
         }

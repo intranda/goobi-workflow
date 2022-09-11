@@ -264,9 +264,9 @@ public class WebDav implements Serializable {
     public int getAnzahlBaende(String inVerzeichnis) {
         try {
             User aktuellerBenutzer = Helper.getCurrentUser();
-            String VerzeichnisAlle = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
+            String verzeichnisAlle = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
 
-            return StorageProvider.getInstance().list(VerzeichnisAlle, new WebDavFilter()).size();
+            return StorageProvider.getInstance().list(verzeichnisAlle, new WebDavFilter()).size();
         } catch (IOException e) {
             log.error(e);
             return 0;

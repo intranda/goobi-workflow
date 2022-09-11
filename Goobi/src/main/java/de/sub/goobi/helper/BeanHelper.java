@@ -261,27 +261,27 @@ public class BeanHelper implements Serializable{
     }
 
     public String WerkstueckEigenschaftErmitteln(Process myProzess, String inEigenschaft) {
-        String Eigenschaft = "";
+        String werkstueckEigenschaft = "";
         for (Masterpiece myWerkstueck : myProzess.getWerkstueckeList()) {
             for (Masterpieceproperty eigenschaft : myWerkstueck.getEigenschaftenList()) {
                 if (eigenschaft.getTitel().equals(inEigenschaft)) {
-                    Eigenschaft = eigenschaft.getWert();
+                	werkstueckEigenschaft = eigenschaft.getWert();
                 }
             }
         }
-        return Eigenschaft;
+        return werkstueckEigenschaft;
     }
 
     public String ScanvorlagenEigenschaftErmitteln(Process myProzess, String inEigenschaft) {
-        String Eigenschaft = "";
+        String scanvorlagenEigenschaft = "";
         for (Template myVorlage : myProzess.getVorlagenList()) {
             for (Templateproperty eigenschaft : myVorlage.getEigenschaftenList()) {
                 if (eigenschaft.getTitel().equals(inEigenschaft)) {
-                    Eigenschaft = eigenschaft.getWert();
+                	scanvorlagenEigenschaft = eigenschaft.getWert();
                 }
             }
         }
-        return Eigenschaft;
+        return scanvorlagenEigenschaft;
     }
 
     /**

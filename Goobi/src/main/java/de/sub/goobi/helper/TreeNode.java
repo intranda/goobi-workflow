@@ -93,7 +93,7 @@ public class TreeNode {
     }
 
     @SuppressWarnings({ "unused", "unchecked", "rawtypes" })
-    private List getChildrenAsList(List inList, int niveau, List inStriche, boolean VaterIstLetzter) {
+    private List getChildrenAsList(List inList, int niveau, List inStriche, boolean vaterIstLetzter) {
         for (Iterator<TreeNode> it = this.children.iterator(); it.hasNext();) {
             TreeNode kind = it.next();
             HashMap map = new HashMap();
@@ -103,7 +103,7 @@ public class TreeNode {
 
             //       die Striche vorbereiten
             List striche = new ArrayList(inStriche);
-            striche.add(Boolean.valueOf(VaterIstLetzter));
+            striche.add(Boolean.valueOf(vaterIstLetzter));
             map.put("striche", striche);
 
             inList.add(map);
@@ -115,7 +115,7 @@ public class TreeNode {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private List getChildrenAsListMitStrichen(List inList, int niveau, TreeNode inNode, boolean istLetzter, boolean VaterIstLetzter, List inStriche) {
+    private List getChildrenAsListMitStrichen(List inList, int niveau, TreeNode inNode, boolean istLetzter, boolean vaterIstLetzter, List inStriche) {
 
         HashMap map = new HashMap();
         map.put("node", inNode);
@@ -124,7 +124,7 @@ public class TreeNode {
 
         // die Striche vorbereiten
         List striche = new ArrayList(inStriche);
-        striche.add(Boolean.valueOf(VaterIstLetzter));
+        striche.add(Boolean.valueOf(vaterIstLetzter));
         map.put("striche", striche);
 
         inList.add(map);
@@ -140,7 +140,7 @@ public class TreeNode {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private List getChildrenAsListAlle(List inList, int niveau, TreeNode inNode, boolean istLetzter, boolean VaterIstLetzter, List inStriche) {
+    private List getChildrenAsListAlle(List inList, int niveau, TreeNode inNode, boolean istLetzter, boolean vaterIstLetzter, List inStriche) {
 
         HashMap map = new HashMap();
         map.put("node", inNode);
@@ -149,7 +149,7 @@ public class TreeNode {
 
         // die Striche vorbereiten
         List striche = new ArrayList(inStriche);
-        striche.add(Boolean.valueOf(VaterIstLetzter));
+        striche.add(Boolean.valueOf(vaterIstLetzter));
         map.put("striche", striche);
 
         inList.add(map);

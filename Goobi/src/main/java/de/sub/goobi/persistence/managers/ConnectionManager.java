@@ -53,7 +53,7 @@ public class ConnectionManager implements Serializable{
     
 	private transient DataSource ds = null;
     @SuppressWarnings("rawtypes")
-    private static GenericObjectPool _pool = null;
+    private static GenericObjectPool _pool = null; // NOSONAR
 
     /**
      * @param config configuration from an XML file.
@@ -96,17 +96,17 @@ public class ConnectionManager implements Serializable{
      * @return Number of locked processes
      */
     public int getNumLockedProcesses() {
-        int num_locked_connections = 0;
+        int numLockedConnections = 0;
         Connection con = null;
-        PreparedStatement p_stmt = null;
+        PreparedStatement preparedStatement = null;
         ResultSet rs = null;
         try {
             con = this.ds.getConnection(); //NOSONAR as it is closed in the finally statement
-            p_stmt = con.prepareStatement("SHOW PROCESSLIST"); //NOSONAR as it is closed in the finally statement
-            rs = p_stmt.executeQuery(); //NOSONAR as it is closed in the finally statement
+            preparedStatement = con.prepareStatement("SHOW PROCESSLIST"); //NOSONAR as it is closed in the finally statement
+            rs = preparedStatement.executeQuery(); //NOSONAR as it is closed in the finally statement
             while (rs.next()) {
                 if (rs.getString("State") != null && rs.getString("State").equals("Locked")) {
-                    num_locked_connections++;
+                    numLockedConnections++;
                 }
             }
         } catch (Exception e) {
@@ -116,13 +116,13 @@ public class ConnectionManager implements Serializable{
         } finally {
             try {
                 rs.close();
-                p_stmt.close();
+                preparedStatement.close();
                 con.close();
             } catch (java.sql.SQLException ex) {
                 log.error(ex.toString());
             }
         }
-        return num_locked_connections;
+        return numLockedConnections;
     }
 
     public DataSource getDataSource() {

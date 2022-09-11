@@ -129,7 +129,7 @@ public class GetOpac {
     // STATE (Instance variables) *****************************************
     // This is now configured inside the Catalogue class.
     // TODO: Check if this should really be query specific
-    private String data_character_encoding = "iso-8859-1";
+    private String dataCharacterEncoding = "iso-8859-1";
 
     @Getter
     @Setter
@@ -282,7 +282,7 @@ public class GetOpac {
 
         // querySummary is used to check if cached result and sessionid
         // can be used again
-        String querySummary = query.getQueryUrl() + this.data_character_encoding + this.cat.getDataBase() + this.cat.getServerAddress()
+        String querySummary = query.getQueryUrl() + this.dataCharacterEncoding + this.cat.getDataBase() + this.cat.getServerAddress()
         + this.cat.getPort() + this.cat.getCbs();
 
         // if we can not use the cached result
@@ -332,7 +332,7 @@ public class GetOpac {
 
         // querySummary is used to check if cached result and sessionid
         // can be used again
-        String querySummary = query.getQueryUrl() + this.data_character_encoding + this.cat.getDataBase() + this.cat.getServerAddress()
+        String querySummary = query.getQueryUrl() + this.dataCharacterEncoding + this.cat.getDataBase() + this.cat.getServerAddress()
         + this.cat.getPort() + this.cat.getCbs();
 
         // if we can not use the cached result
@@ -413,7 +413,7 @@ public class GetOpac {
         // get pica longtitle
         int retrieveNumber = numberOfHits + 1;
         return retrieveDataFromOPAC(
-                DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL + this.data_character_encoding + SET_ID_URL + this.lastOpacResult.getSet()
+                DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL + this.dataCharacterEncoding + SET_ID_URL + this.lastOpacResult.getSet()
                 + SESSIONID_URL + this.lastOpacResult.getSessionId(URL_CHARACTER_ENCODING) + SHOW_LONGTITLE_NR_URL + retrieveNumber);
     }
 
@@ -457,7 +457,7 @@ public class GetOpac {
     public OpacResponseHandler getResult(Query query) throws IOException, SAXException, ParserConfigurationException {
         String result = null;
 
-        String querySummary = query.getQueryUrl() + this.data_character_encoding + this.cat.getDataBase() + this.cat.getServerAddress()
+        String querySummary = query.getQueryUrl() + this.dataCharacterEncoding + this.cat.getDataBase() + this.cat.getServerAddress()
         + this.cat.getPort() + this.cat.getCbs();
 
         if (this.verbose) {
@@ -471,7 +471,7 @@ public class GetOpac {
             return this.lastOpacResult;
         }
 
-        result = retrieveDataFromOPAC(DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL_WITHOUT_LOCAL_DATA + this.data_character_encoding
+        result = retrieveDataFromOPAC(DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL_WITHOUT_LOCAL_DATA + this.dataCharacterEncoding
                 + SEARCH_URL_BEFORE_QUERY + this.sorting + query.getQueryUrl());
 
         try {
@@ -593,7 +593,7 @@ public class GetOpac {
             Transformer transformer = tFac.newTransformer();
             StreamResult output = new StreamResult();
 
-            transformer.setOutputProperty(OutputKeys.ENCODING, this.data_character_encoding);
+            transformer.setOutputProperty(OutputKeys.ENCODING, this.dataCharacterEncoding);
             transformer.transform(source, output);
         } catch (Exception e) {
             log.error(e);
@@ -672,8 +672,8 @@ public class GetOpac {
      **********************************************************************/
 
     // TODO: rename this Method to camelCase convention
-    public void setData_character_encoding(String data_character_encoding) {
-        this.data_character_encoding = data_character_encoding;
+    public void setData_character_encoding(String dataCharacterEncoding) {
+        this.dataCharacterEncoding = dataCharacterEncoding;
     }
 
     public void sortByRelevance() {
