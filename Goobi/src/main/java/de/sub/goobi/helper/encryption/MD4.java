@@ -23,7 +23,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 public class MD4 {
 
     private static int A, B, C, D; // NOSONAR
-    private static int X[] = new int[16];
+    private static int[] X = new int[16];
 
     private static int F(int X, int Y, int Z) {
         return (X & Y) | ((~X) & Z);
@@ -57,7 +57,7 @@ public class MD4 {
     }
 
     /* this applies md4 to 64 byte chunks */
-    public static void mdfour64(int M[]) {
+    public static void mdfour64(int[] M) {
         int j;
         int AA, BB, CC, DD; // NOSONAR
 
@@ -127,7 +127,7 @@ public class MD4 {
         D += DD;
     }
 
-    public static void copy64(int M[], byte in[], int offset) {
+    public static void copy64(int[] M, byte[] in, int offset) {
         int i;
 
         for (i = 0; i < 16; i++) {
@@ -136,11 +136,11 @@ public class MD4 {
         }
     }
 
-    public static void copy64(int M[], byte in[]) {
+    public static void copy64(int[] M, byte[] in) {
         copy64(M, in, 0);
     }
 
-    public static void copy4(byte out[], int offset, int x) {
+    public static void copy4(byte[] out, int offset, int x) {
         out[offset] = (byte) (x & 0xFF);
         out[1 + offset] = (byte) ((x >> 8) & 0xFF);
         out[2 + offset] = (byte) ((x >> 16) & 0xFF);
@@ -148,11 +148,11 @@ public class MD4 {
     }
 
     /* produce a md4 message digest from data of length n bytes */
-    public static byte[] mdfour(byte in[]) {
-        byte out[] = new byte[16];
-        byte buf[] = new byte[128];
+    public static byte[] mdfour(byte[] in) {
+        byte[] out = new byte[16];
+        byte[] buf = new byte[128];
         int n = in.length;
-        int M[] = new int[16];
+        int[] M = new int[16];
         int b = n * 8;
         int i;
         int offset;

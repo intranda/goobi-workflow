@@ -279,7 +279,7 @@ public class MetadatenHelper implements Comparator<Object> {
          * -------------------------------- zuerst mal die addierbaren Metadatentypen ermitteln --------------------------------
          */
         List<String> types;
-        SelectItem myTypes[] = new SelectItem[0];
+        SelectItem[] myTypes = new SelectItem[0];
 
         try {
             if (!checkTypesFromParent) {

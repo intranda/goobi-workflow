@@ -590,7 +590,7 @@ public class LdapAuthentication {
                  */
                 BasicAttribute ntlmpassword = null;
                 try {
-                    byte hmm[] = MD4.mdfour(inNewPassword.getBytes("UnicodeLittleUnmarked"));
+                    byte[] hmm = MD4.mdfour(inNewPassword.getBytes("UnicodeLittleUnmarked"));
                     ntlmpassword = new BasicAttribute("sambaNTPassword", LdapUser.toHexString(hmm));
                 } catch (UnsupportedEncodingException e) {
                     // TODO: Make sure that the password isn't logged here

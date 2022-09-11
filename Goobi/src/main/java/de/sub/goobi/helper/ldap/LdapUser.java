@@ -137,7 +137,7 @@ public class LdapUser implements DirContext {
             }
             /* NTLM */
             try {
-                byte hmm[] = MD4.mdfour(inPassword.getBytes("UnicodeLittleUnmarked"));
+                byte[] hmm = MD4.mdfour(inPassword.getBytes("UnicodeLittleUnmarked"));
                 this.myAttrs.put("sambaNTPassword", toHexString(hmm));
             } catch (UnsupportedEncodingException e) {
                 log.error(e);
@@ -243,7 +243,7 @@ public class LdapUser implements DirContext {
         }
     }
 
-    public static String toHexString(byte bytes[]) {
+    public static String toHexString(byte[] bytes) {
         StringBuffer retString = new StringBuffer();
         for (int i = 0; i < bytes.length; ++i) {
             retString.append(Integer.toHexString(0x0100 + (bytes[i] & 0x00FF)).substring(1));
