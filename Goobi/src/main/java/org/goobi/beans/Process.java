@@ -819,7 +819,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public boolean isSelected() {
-        return (this.selected == null ? false : this.selected);
+        return Boolean.TRUE.equals(this.selected); // returns true if and only if this.selected != null and this.selected == true
     }
 
     public void setSelected(boolean selected) {

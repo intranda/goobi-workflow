@@ -338,11 +338,11 @@ public class ProcessBean extends BasicBean implements Serializable {
             showArchivedProjects = login.getMyBenutzer().isDisplayDeactivatedProjects();
             anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
             anzeigeAnpassen.put("editionDate",
-                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() ? login.getMyBenutzer().isDisplayLastEditionDate() : false);
+                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() && login.getMyBenutzer().isDisplayLastEditionDate());
             anzeigeAnpassen.put("editionUser",
-                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() ? login.getMyBenutzer().isDisplayLastEditionUser() : false);
+                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() && login.getMyBenutzer().isDisplayLastEditionUser());
             anzeigeAnpassen.put("editionTask",
-                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() ? login.getMyBenutzer().isDisplayLastEditionTask() : false);
+                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() && login.getMyBenutzer().isDisplayLastEditionTask());
             if (StringUtils.isNotBlank(login.getMyBenutzer().getProcessListDefaultSortField())) {
                 sortierung = login.getMyBenutzer().getProcessListDefaultSortField() + login.getMyBenutzer().getProcessListDefaultSortOrder();
             }
