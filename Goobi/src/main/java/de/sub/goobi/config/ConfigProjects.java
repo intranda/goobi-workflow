@@ -57,20 +57,20 @@ public class ConfigProjects {
         if (!Files.exists(Paths.get(configPfad))) {
             throw new IOException("File not found: " + configPfad);
         }
-        XMLConfiguration config = new XMLConfiguration();
-        config.setExpressionEngine(new XPathExpressionEngine());
-        config.setDelimiterParsingDisabled(true);
-        config.setReloadingStrategy(new FileChangedReloadingStrategy());
+        XMLConfiguration xmlConfig = new XMLConfiguration();
+        xmlConfig.setExpressionEngine(new XPathExpressionEngine());
+        xmlConfig.setDelimiterParsingDisabled(true);
+        xmlConfig.setReloadingStrategy(new FileChangedReloadingStrategy());
 
         try {
-            config.load(configPfad);
+            xmlConfig.load(configPfad);
         } catch (ConfigurationException e) {
             log.error(e);
         }
         String projectNameInFile = null;
         // get all project names from file
         String getAllProjectNames ="//project/@name | //project/name";
-        String[] projectNames = config.getStringArray(getAllProjectNames);
+        String[] projectNames = xmlConfig.getStringArray(getAllProjectNames);
         // check if current project matches an entry
 
         for (String name : projectNames) {
@@ -108,7 +108,7 @@ public class ConfigProjects {
 
         String projektTitel = "/project[@name='"+ projectNameInFile + "'] | /project[name='"+ projectNameInFile + "']";
 
-        this.config = config.configurationAt(projektTitel);
+        this.config = xmlConfig.configurationAt(projektTitel);
 
         try {
             this.config.getBoolean("/createNewProcess/opac/@use");

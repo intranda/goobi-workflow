@@ -329,8 +329,8 @@ public class MassImportForm implements Serializable {
                     igs.setMi(this);
                     StringBuilder bld = new StringBuilder();
                     if (StringUtils.isNotEmpty(this.idList)) {
-                        List<String> ids = this.plugin.splitIds(this.idList);
-                        for (String id : ids) {
+                        List<String> idsList = this.plugin.splitIds(this.idList);
+                        for (String id : idsList) {
                         	bld.append(id);
                         	bld.append(",");
                         }
@@ -386,13 +386,13 @@ public class MassImportForm implements Serializable {
                         goobiScriptManager.startWork();
                     }
                     return "";
-                }
-            }
+                } // END if (plugin2.isRunnableAsGoobiScript()) AT LINE 327
+            } // END if (this.plugin instanceof IImportPluginVersion2) AT LINE 325
 
             // if not runnable as GoobiScript run it in the regular MassImport GUI
             List<ImportObject> answer = new ArrayList<>();
-            Batch batch = null;
-
+            Batch localBatch = null; // I modified this variable's name so that it won't hide the field declared at line 164 anymore.
+            									 // But I've no idea WTH we would need this, given that the field itself was also used at line 364. - Zehong
             // found list with ids
             Prefs prefs = this.template.getRegelsatz().getPreferences();
             String tempfolder = ConfigurationHelper.getInstance().getTemporaryFolder();
@@ -400,9 +400,9 @@ public class MassImportForm implements Serializable {
             this.plugin.setPrefs(prefs);
 
             if (StringUtils.isNotEmpty(this.idList)) {
-                List<String> ids = this.plugin.splitIds(this.idList);
+                List<String> idsList = this.plugin.splitIds(this.idList);
                 List<Record> recordList = new ArrayList<>();
-                for (String id : ids) {
+                for (String id : idsList) {
                     Record r = new Record();
                     r.setData(id);
                     r.setId(id);
@@ -439,13 +439,13 @@ public class MassImportForm implements Serializable {
             }
 
             if (answer.size() > 1) {
-                batch = new Batch();
-                ProcessManager.saveBatch(batch);
+                localBatch = new Batch();
+                ProcessManager.saveBatch(localBatch);
             }
             for (ImportObject io : answer) {
 
-                if (batch != null && batch.getBatchId() != null) {
-                    io.setBatch(batch);
+                if (localBatch != null && localBatch.getBatchId() != null) {
+                    io.setBatch(localBatch);
                 }
                 if (io.getImportReturnValue().equals(ImportReturnValue.ExportFinished)) {
                     Process p = JobCreation.generateProcess(io, this.template);
@@ -473,12 +473,12 @@ public class MassImportForm implements Serializable {
                     }
                 }
                 currentProcessNo = currentProcessNo + 1;
-            }
+            } // END for (ImportObject io : answer) AT LINE 445
             if (answer.size() != this.processList.size()) {
                 // some error on process generation, don't go to next page
                 return "";
             }
-        }
+        } // END if (testForData()) AT LINE 319
         // missing data
         else {
             Helper.setFehlerMeldung("missingData");
@@ -806,21 +806,21 @@ public class MassImportForm implements Serializable {
     }
 
     public Process cloneTemplate() {
-        Process process = new Process();
+        Process p = new Process();
 
-        process.setIstTemplate(false);
-        process.setInAuswahllisteAnzeigen(false);
-        process.setProjekt(template.getProjekt());
-        process.setRegelsatz(template.getRegelsatz());
-        process.setDocket(template.getDocket());
+        p.setIstTemplate(false);
+        p.setInAuswahllisteAnzeigen(false);
+        p.setProjekt(template.getProjekt());
+        p.setRegelsatz(template.getRegelsatz());
+        p.setDocket(template.getDocket());
 
         BeanHelper bHelper = new BeanHelper();
-        bHelper.SchritteKopieren(template, process);
-        bHelper.ScanvorlagenKopieren(template, process);
-        bHelper.WerkstueckeKopieren(template, process);
-        bHelper.EigenschaftenKopieren(template, process);
+        bHelper.SchritteKopieren(template, p);
+        bHelper.ScanvorlagenKopieren(template, p);
+        bHelper.WerkstueckeKopieren(template, p);
+        bHelper.EigenschaftenKopieren(template, p);
 
-        return process;
+        return p;
     }
 
     public boolean isHasUsablePluginsForRecords() {
