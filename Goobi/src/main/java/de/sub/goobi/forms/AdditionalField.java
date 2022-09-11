@@ -142,11 +142,7 @@ public class AdditionalField {
         }
 
         /* wenn nur "darf nicht" angegeben wurde */
-        if (!this.isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isnotdoctype, docType)) {
-            return false;
-        }
-
-        return true;
+        return this.isnotdoctype.equals("") || !StringUtils.containsIgnoreCase(isnotdoctype, docType);
     }
 
     /**

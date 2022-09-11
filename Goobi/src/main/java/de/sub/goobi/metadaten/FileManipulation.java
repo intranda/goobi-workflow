@@ -435,11 +435,7 @@ public class FileManipulation {
             OrderedKeyMap<String, PhysicalObject> pageMap = metadataBean.getPageMap();
             for (String pageName : pageMap.keySet()) {
                 PhysicalObject po = pageMap.get(pageName);
-                if (selectedFiles.contains(pageName)) {
-                    po.setSelected(true);
-                } else {
-                    po.setSelected(false);
-                }
+                po.setSelected(selectedFiles.contains(pageName));
             }
 
             metadataBean.deleteSeltectedPages();
@@ -594,11 +590,8 @@ public class FileManipulation {
         String afterLastBackslash = afterLastSlash.substring(afterLastSlash.lastIndexOf('\\') + 1);
 
         String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-        if (!afterLastBackslash.matches(prefix + "\\..+")) {
-            return false;
-        }
-
-        return true;
+        
+        return afterLastBackslash.matches(prefix + "\\..+");
     }
 
 }

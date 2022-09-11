@@ -156,10 +156,8 @@ public class MySQLHelper implements Serializable {
         if (nums[1] > 2) {
             return true;
         }
-        if (nums[2] < 3) {
-            return false;
-        }
-        return true;
+
+        return nums[2] >= 3;
     }
 
     public Connection getConnection() throws SQLException {

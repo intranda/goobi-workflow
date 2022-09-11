@@ -1737,18 +1737,12 @@ public class Metadaten implements Serializable {
 
     public boolean isCheckForRepresentative() {
         MetadataType mdt = myPrefs.getMetadataTypeByName("_representative");
-        if (mdt != null) {
-            return true;
-        }
-        return false;
+        return mdt != null;
     }
 
     public boolean isCheckForReadingDirection() {
         MetadataType mdt = myPrefs.getMetadataTypeByName("_directionRTL");
-        if (mdt != null) {
-            return true;
-        }
-        return false;
+        return mdt != null;
     }
 
     /**
@@ -2050,11 +2044,7 @@ public class Metadaten implements Serializable {
             HashMap map = (HashMap) element;
             TreeNodeStruct3 knoten = (TreeNodeStruct3) map.get("node");
             // Selection wiederherstellen
-            if (this.myDocStruct == knoten.getStruct()) {
-                knoten.setSelected(true);
-            } else {
-                knoten.setSelected(false);
-            }
+            knoten.setSelected(this.myDocStruct == knoten.getStruct());
         }
 
         SperrungAktualisieren();
@@ -3897,11 +3887,8 @@ public class Metadaten implements Serializable {
         for (DocStruct docStruct : inDocStructList) {
 
             DocStruct temp = inTreeStruct.getStruct();
-            if (inTreeStruct.getStruct() == docStruct) {
-                inTreeStruct.setSelected(true);
-            } else {
-                inTreeStruct.setSelected(false);
-            }
+
+            inTreeStruct.setSelected(inTreeStruct.getStruct() == docStruct);
 
             if (!temp.getType().getAllAllowedDocStructTypes().contains(docStruct.getType().getName())) {
                 inTreeStruct.setEinfuegenErlaubt(false);
@@ -4062,11 +4049,7 @@ public class Metadaten implements Serializable {
         if (StringUtils.isNotBlank(currentRepresentativePage) && pageMap != null) {
             for (String pageObject : pageMap.getKeyList()) {
                 PhysicalObject po = pageMap.get(pageObject);
-                if (po.getPhysicalPageNo().equals(currentRepresentativePage) && po.getType().equals("div")) {
-                    po.setRepresentative(true);
-                } else {
-                    po.setRepresentative(false);
-                }
+                po.setRepresentative(po.getPhysicalPageNo().equals(currentRepresentativePage) && po.getType().equals("div"));
             }
         }
     }
@@ -4626,10 +4609,7 @@ public class Metadaten implements Serializable {
     }
 
     public boolean isShowProgressBar() {
-        if (progress == null || progress == 100 || progress == 0) {
-            return false;
-        }
-        return true;
+        return progress != null && progress != 100 && progress != 0;
     }
 
     private void createAddableData() {

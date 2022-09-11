@@ -79,17 +79,11 @@ public class MetadatenSperrung implements Serializable {
         } else {
             /* wenn er in der Hashmap ist, muss die Zeit geprüft werden */
             long lebenszeichen = Long.parseLong(temp.get("Lebenszeichen"));
-            if (lebenszeichen < System.currentTimeMillis() - sperrzeit) {
-                /*
-                 * wenn die Zeit Größer ist als erlaubt, ist Metadatum nicht
-                 * gesperrt
-                 */
-                return false;
-            }
-            /* wenn Zeit nicht Größer ist, ist er noch gesperrt */
-            else {
-                return true;
-            }
+	        /*
+	         * wenn die Zeit (auf der rechten Seite) Größer ist als erlaubt (lebenszeichen), ist Metadatum nicht gesperrt, also "false"
+             * wenn Zeit (auf der rechten Seite) nicht Größer ist, ist er noch gesperrt, also "true"
+             */
+            return lebenszeichen >= System.currentTimeMillis() - sperrzeit;
         }
     }
 

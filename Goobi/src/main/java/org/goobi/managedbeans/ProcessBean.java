@@ -2655,10 +2655,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
 
         Integer lastId = idList.get(idList.size() - 1);
-        if (myProzess.getId().equals(lastId)) {
-            return false;
-        }
-        return true;
+        return !myProzess.getId().equals(lastId);
     }
 
     /**
@@ -2677,10 +2674,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
 
         Integer lastId = idList.get(0);
-        if (myProzess.getId().equals(lastId)) {
-            return false;
-        }
-        return true;
+        return !myProzess.getId().equals(lastId);
     }
 
     /**

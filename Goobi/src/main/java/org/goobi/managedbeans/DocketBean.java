@@ -102,10 +102,7 @@ public class DocketBean extends BasicBean implements Serializable {
     
     private boolean hasAssignedProcesses(Docket d) {
         Integer number = ProcessManager.getNumberOfProcessesWithDocket(d.getId());
-        if (number != null && number > 0) {
-            return true;
-        }
-        return false;
+        return number != null && number > 0;
     }
 
     public String FilterKein() {

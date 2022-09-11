@@ -346,11 +346,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         String value = this.md.getValue();
         if (value != null) {
             for (Item i : myValues.getItemList()) {
-                if (i.getValue().equals(value)) {
-                    i.setSelected(true);
-                } else {
-                    i.setSelected(false);
-                }
+                i.setSelected(i.getValue().equals(value));
             }
         }
         return this.myValues.getItemList();
@@ -838,10 +834,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
      */
 
     public boolean isDisableMetadataField() {
-        if (metadataDisplaytype == DisplayType.dante || metadataDisplaytype == DisplayType.easydb) {
-            return true;
-        }
-        return false;
+        return metadataDisplaytype == DisplayType.dante || metadataDisplaytype == DisplayType.easydb;
     }
 
     @Override

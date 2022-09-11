@@ -204,12 +204,9 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             if (methodsClaim == null) {
                 return false;
             }
-            boolean methodMatch = Arrays.stream(methodsClaim.asArray(String.class))
-                    .anyMatch(claimMethod -> method.equalsIgnoreCase(claimMethod));
-            if (!methodMatch) {
-                return false;
-            }
-            return true;
+            return Arrays.stream(methodsClaim.asArray(String.class))
+                    			 .anyMatch(claimMethod -> method.equalsIgnoreCase(claimMethod));
+            
         } catch (javax.naming.ConfigurationException | JWTVerificationException e) {
             log.error(e);
             return false;

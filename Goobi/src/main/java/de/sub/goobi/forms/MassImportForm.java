@@ -573,11 +573,7 @@ public class MassImportForm implements Serializable {
      */
 
     private boolean testForData() {
-        if (StringUtils.isEmpty(this.idList) && StringUtils.isEmpty(this.records) && (this.importFile == null)
-                && this.selectedFilenames.isEmpty()) {
-            return false;
-        }
-        return true;
+        return !StringUtils.isEmpty(this.idList) || !StringUtils.isEmpty(this.records) || this.importFile != null || !this.selectedFilenames.isEmpty();
     }
 
     /**
@@ -803,10 +799,7 @@ public class MassImportForm implements Serializable {
     }
 
     public boolean isShowProgressBar() {
-        if (progress == null || progress == 100 || progress == 0) {
-            return false;
-        }
-        return true;
+        return progress != null && progress != 100 && progress != 0;
     }
 
     public void addProcessToProgressBar() {

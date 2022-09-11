@@ -53,11 +53,7 @@ public class EDTFValidator implements Validator<String> {
 
     public boolean isValid(String string) {
         ExtendedDateTimeFormatParser parser = getParserFromString(string);
-        if (hasErrors(parser)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !hasErrors(parser);
     }
 
     private ExtendedDateTimeFormatParser getParserFromString(String string) {
@@ -72,10 +68,6 @@ public class EDTFValidator implements Validator<String> {
 
     private boolean hasErrors(ExtendedDateTimeFormatParser parser) {
         parser.edtf();
-        if (parser.getNumberOfSyntaxErrors() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return parser.getNumberOfSyntaxErrors() > 0;
     }
 }
