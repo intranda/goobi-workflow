@@ -1652,8 +1652,8 @@ public class Metadaten implements Serializable {
                 imageFolderName = imageFolderName.replace("\\\\", "/");
                 int order = 1;
                 for (String imagename : imageNames) {
-                    Image image = new Image(myProzess, imageFolderName, imagename, order++, thumbnailSizeInPixel);
-                    allImages.add(image);
+                    Image currentImage = new Image(myProzess, imageFolderName, imagename, order++, thumbnailSizeInPixel);
+                    allImages.add(currentImage);
                 }
                 if (jumpToFirstPage) {
                     setImageIndex(0);
@@ -1846,11 +1846,11 @@ public class Metadaten implements Serializable {
             }
         }
 
-        List<MetadataGroup> groups =
+        List<MetadataGroup> metadataGroups =
                 this.metahelper.getMetadataGroupsInclDefaultDisplay(inStrukturelement, Helper.getMetadataLanguage(), this.myProzess);
-        if (groups != null) {
+        if (metadataGroups != null) {
             int counter = 1;
-            for (MetadataGroup mg : groups) {
+            for (MetadataGroup mg : metadataGroups) {
                 metaGroups.add(new MetadataGroupImpl(myPrefs, myProzess, mg, this, "" + counter++, null, 0));
             }
         }
@@ -2469,21 +2469,21 @@ public class Metadaten implements Serializable {
      * alle Seiten ermitteln ================================================================
      */
     public void retrieveAllImages() {
-        DigitalDocument document = null;
+        DigitalDocument digitalDocument = null;
         try {
-            document = this.gdzfile.getDigitalDocument();
+            digitalDocument = this.gdzfile.getDigitalDocument();
         } catch (PreferencesException e) {
             Helper.setMeldung(null, "Can not get DigitalDocument: ", e.getMessage());
         }
 
-        List<DocStruct> meineListe = document.getPhysicalDocStruct().getAllChildrenAsFlatList();
+        List<DocStruct> meineListe = digitalDocument.getPhysicalDocStruct().getAllChildrenAsFlatList();
         if (meineListe == null) {
             pageMap = null;
             return;
         }
         int numberOfPages = 0;
-        if (document.getPhysicalDocStruct() != null && document.getPhysicalDocStruct().getAllChildren() != null) {
-            numberOfPages = document.getPhysicalDocStruct().getAllChildren().size();
+        if (digitalDocument.getPhysicalDocStruct() != null && digitalDocument.getPhysicalDocStruct().getAllChildren() != null) {
+            numberOfPages = digitalDocument.getPhysicalDocStruct().getAllChildren().size();
         }
         logicalPageNumForPages = new MetadatumImpl[numberOfPages];
         pageMap = new OrderedKeyMap<>();
@@ -2512,8 +2512,8 @@ public class Metadaten implements Serializable {
                 lastPhysPageNo = physPageNo;
                 logicalPageNumForPages[counter] = new MetadatumImpl(logPageNoMd, counter, myPrefs, myProzess, this);
                 pi.setPhysicalPageNo(lastPhysPageNo);
-                String doublePage = pageStruct.getAdditionalValue();
-                pi.setDoublePage(StringUtils.isNotBlank(doublePage) && doublePage.equals("double page"));
+                String strDoublePage = pageStruct.getAdditionalValue(); // a boolean field named doublePage is already declared at line 465
+                pi.setDoublePage(StringUtils.isNotBlank(strDoublePage) && strDoublePage.equals("double page"));
                 pi.setLogicalPageNo(lastLogPageNo);
                 counter++;
                 pageMap.put(lastPhysPageNo, pi);
@@ -3445,8 +3445,8 @@ public class Metadaten implements Serializable {
             }
         }
         try {
-            int pageNumber = Integer.parseInt(this.pageSelectionFirstPage) - this.bildNummer + 1;
-            setImageIndex(pageNumber - 1);
+            int localPageNumber = Integer.parseInt(this.pageSelectionFirstPage) - this.bildNummer + 1; // a field named "pageNumber" is already declared at line 403
+            setImageIndex(localPageNumber - 1);
 
         } catch (Exception e) {
             log.error(e);
@@ -3469,8 +3469,8 @@ public class Metadaten implements Serializable {
             }
         }
         try {
-            int pageNumber = Integer.parseInt(this.pageSelectionLastPage) - this.bildNummer + 1;
-            setImageIndex(pageNumber - 1);
+            int localPageNumber = Integer.parseInt(this.pageSelectionLastPage) - this.bildNummer + 1; // a field named "pageNumber" is already declared at line 403
+            setImageIndex(localPageNumber - 1);
         } catch (Exception e) {
 
         }
@@ -4081,9 +4081,9 @@ public class Metadaten implements Serializable {
             if (pageIndex - positions < 0) {
                 positions = pageIndex;
             }
-            DocStruct image = allPages.get(pageIndex);
-            allPages.remove(image);
-            allPages.add(pageIndex - positions, image);
+            DocStruct imageDocStruct = allPages.get(pageIndex);
+            allPages.remove(imageDocStruct);
+            allPages.add(pageIndex - positions, imageDocStruct);
             newSelectionList.add(String.valueOf(pageIndex - positions + 1));
         }
         setPhysicalOrder(allPages);
@@ -4101,8 +4101,8 @@ public class Metadaten implements Serializable {
 
     private void setPhysicalOrder(List<DocStruct> pages) {
         int physicalCounter = 1;
-        for (DocStruct image : pages) {
-            Metadata physicalImageNo = image.getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0);
+        for (DocStruct imageDocStruct : pages) {
+            Metadata physicalImageNo = imageDocStruct.getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0);
             physicalImageNo.setValue("" + physicalCounter++);
         }
     }
@@ -4146,9 +4146,9 @@ public class Metadaten implements Serializable {
             if (pageIndex + positions > allPages.size()) {
                 positions = allPages.size() - pageIndex - 1;
             }
-            DocStruct image = allPages.get(pageIndex);
-            allPages.remove(image);
-            allPages.add(pageIndex + positions, image);
+            DocStruct imageDocStruct = allPages.get(pageIndex);
+            allPages.remove(imageDocStruct);
+            allPages.add(pageIndex + positions, imageDocStruct);
             newSelectionList.add(String.valueOf(pageIndex + positions + 1));
         }
         setPhysicalOrder(allPages);
@@ -4221,8 +4221,8 @@ public class Metadaten implements Serializable {
                     currentPhysicalOrder++;
                     break;
                 }
-                for (Metadata pageNo : pageNoMetadata) {
-                    pageNo.setValue(String.valueOf(currentPhysicalOrder));
+                for (Metadata pageNoMD : pageNoMetadata) {
+                    pageNoMD.setValue(String.valueOf(currentPhysicalOrder));
                 }
                 currentPhysicalOrder++;
             }
