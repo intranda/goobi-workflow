@@ -23,17 +23,17 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 public class MD4 {
 
     private static int A, B, C, D; // NOSONAR
-    private static int[] X = new int[16];
+    private static int[] X = new int[16]; // NOSONAR
 
-    private static int F(int X, int Y, int Z) {
+    private static int F(int X, int Y, int Z) { // NOSONAR
         return (X & Y) | ((~X) & Z);
     }
 
-    private static int G(int X, int Y, int Z) {
+    private static int G(int X, int Y, int Z) { // NOSONAR
         return (X & Y) | (X & Z) | (Y & Z);
     }
 
-    private static int H(int X, int Y, int Z) {
+    private static int H(int X, int Y, int Z) { // NOSONAR
         return X ^ Y ^ Z;
     }
 
@@ -57,7 +57,7 @@ public class MD4 {
     }
 
     /* this applies md4 to 64 byte chunks */
-    public static void mdfour64(int[] M) {
+    public static void mdfour64(int[] M) { // NOSONAR
         int j;
         int AA, BB, CC, DD; // NOSONAR
 
@@ -127,7 +127,7 @@ public class MD4 {
         D += DD;
     }
 
-    public static void copy64(int[] M, byte[] in, int offset) {
+    public static void copy64(int[] M, byte[] in, int offset) { // NOSONAR
         int i;
 
         for (i = 0; i < 16; i++) {
@@ -136,7 +136,7 @@ public class MD4 {
         }
     }
 
-    public static void copy64(int[] M, byte[] in) {
+    public static void copy64(int[] M, byte[] in) { // NOSONAR
         copy64(M, in, 0);
     }
 
@@ -152,7 +152,7 @@ public class MD4 {
         byte[] out = new byte[16];
         byte[] buf = new byte[128];
         int n = in.length;
-        int[] M = new int[16];
+        int[] M = new int[16]; // NOSONAR
         int b = n * 8;
         int i;
         int offset;
