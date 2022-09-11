@@ -133,10 +133,10 @@ public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements 
         gsr.updateTimestamp();
     }
 
-    private Usergroup getUserGroup(String UserGroupTitle) {
+    private Usergroup getUserGroup(String userGroupTitle) {
         Usergroup myGroup;
         try {
-            List<Usergroup> treffer = UsergroupManager.getUsergroups(null, "titel='" + UserGroupTitle + "'", null, null, null);
+            List<Usergroup> treffer = UsergroupManager.getUsergroups(null, "titel='" + userGroupTitle + "'", null, null, null);
             if (treffer != null && ! treffer.isEmpty()) {
                 myGroup = treffer.get(0);
                 return myGroup;

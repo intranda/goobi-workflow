@@ -636,10 +636,10 @@ public class UserBean extends BasicBean implements Serializable {
         }
 
         // Get and create user
-        Integer LoginID = Integer.valueOf(Helper.getRequestParameter("ID"));
+        Integer loginID = Integer.valueOf(Helper.getRequestParameter("ID"));
         User userToResetPassword;
         try {
-            userToResetPassword = UserManager.getUserById(LoginID);
+            userToResetPassword = UserManager.getUserById(loginID);
         } catch (DAOException daoe) {
             Helper.setFehlerMeldung("could not read database", daoe.getMessage());
             return "user_all";

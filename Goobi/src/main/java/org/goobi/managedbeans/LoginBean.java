@@ -295,9 +295,9 @@ public class LoginBean implements Serializable {
             return "index";
         }
         this.myBenutzer = null;
-        Integer LoginID = Integer.valueOf(Helper.getRequestParameter("ID"));
+        Integer loginID = Integer.valueOf(Helper.getRequestParameter("ID"));
         try {
-            this.myBenutzer = UserManager.getUserById(LoginID);
+            this.myBenutzer = UserManager.getUserById(loginID);
             /* in der Session den Login speichern */
             HttpSession session = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
             Helper.getSessionBean().updateSessionUserName(session, this.myBenutzer);

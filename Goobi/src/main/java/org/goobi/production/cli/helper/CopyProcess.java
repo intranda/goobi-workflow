@@ -1265,7 +1265,7 @@ public class CopyProcess {
     /* =============================================================== */
 
     public void CalcTiffheader() {
-        String tif_definition = "";
+        String tifDefinition = "";
         ConfigProjects cp = null;
         try {
             cp = new ConfigProjects(this.prozessVorlage.getProjekt().getTitel());
@@ -1274,13 +1274,13 @@ public class CopyProcess {
             return;
         }
 
-        tif_definition = cp.getParamString("tifheader/" + this.docType.toLowerCase(), "blabla");
+        tifDefinition = cp.getParamString("tifheader/" + this.docType.toLowerCase(), "blabla");
 
         /*
          * -------------------------------- evtuelle Ersetzungen --------------------------------
          */
-        tif_definition = tif_definition.replace("\\[\\[", "<");
-        tif_definition = tif_definition.replace("\\]\\]", ">");
+        tifDefinition = tifDefinition.replace("\\[\\[", "<");
+        tifDefinition = tifDefinition.replace("\\]\\]", ">");
 
         /*
          * -------------------------------- Documentname ist im allgemeinen = Prozesstitel --------------------------------
@@ -1290,7 +1290,7 @@ public class CopyProcess {
         /*
          * -------------------------------- Imagedescription --------------------------------
          */
-        StringTokenizer tokenizer = new StringTokenizer(tif_definition, "+");
+        StringTokenizer tokenizer = new StringTokenizer(tifDefinition, "+");
         /* jetzt den Tiffheader parsen */
         while (tokenizer.hasMoreTokens()) {
             String myString = tokenizer.nextToken();

@@ -81,10 +81,10 @@ public class StatQuestCorrections implements IStatisticalQuestionLimitedTimefram
         List<DataTable> allTables = new ArrayList<>();
 
         //gathering IDs from the filter passed by dataSource
-        List<Integer> IDlist = null;
-        IDlist = ProcessManager.getIdsForFilter(filter);
+        List<Integer> idList = null;
+        idList = ProcessManager.getIdsForFilter(filter);
 
-        IStepRequests sqlGenerator = StatisticsFactory.getStepRequests(timeFilterFrom, timeFilterTo, timeGrouping, IDlist);
+        IStepRequests sqlGenerator = StatisticsFactory.getStepRequests(timeFilterFrom, timeFilterTo, timeGrouping, idList);
 
         // adding time restrictions
         String natSQL = sqlGenerator.getSQL(HistoryEventType.stepError, null, false, false);

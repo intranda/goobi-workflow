@@ -1931,16 +1931,16 @@ public class ProcessBean extends BasicBean implements Serializable {
     public void TransformXml() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
-            String OutputFileName = "export.xml";
+            String outputFileName = "export.xml";
             /*
              * Vorbereiten der Header-Informationen
              */
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
 
             ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-            String contentType = servletContext.getMimeType(OutputFileName);
+            String contentType = servletContext.getMimeType(outputFileName);
             response.setContentType(contentType);
-            response.setHeader("Content-Disposition", "attachment;filename=\"" + OutputFileName + "\"");
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + outputFileName + "\"");
 
             response.setContentType("text/xml");
 
