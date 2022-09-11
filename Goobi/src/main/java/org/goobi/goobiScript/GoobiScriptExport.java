@@ -112,7 +112,7 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
                     export = new ExportDms();
                 }
                 export.setExportFulltext(exportFulltext);
-                if (exportImages == false) {
+                if (!exportImages) {
                     logextension = "without images and " + logextension;
                     export.setExportImages(false);
                 } else {

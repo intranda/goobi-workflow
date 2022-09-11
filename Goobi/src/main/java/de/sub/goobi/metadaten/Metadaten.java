@@ -1500,7 +1500,7 @@ public class Metadaten implements Serializable {
         this.pageSelectionFirstPage = "";
         this.pageSelectionLastPage = "";
         this.zurueck = Helper.getRequestParameter("zurueck");
-        this.nurLesenModus = Helper.getRequestParameter("nurLesen").equals("true") ? true : false;
+        this.nurLesenModus = Helper.getRequestParameter("nurLesen").equals("true");
         this.neuesElementWohin = "4";
         this.tree3 = null;
         image = null;

@@ -52,9 +52,9 @@ public abstract class AbstractGoobiJob implements Job, IGoobiJob {
      */
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        if (getIsRunning() == false) {
+        if (!getIsRunning()) {
             log.trace("Start scheduled Job: " + getJobName());
-            if (isRunning == false) {
+            if (!isRunning) {
                 log.trace("start history updating for all processes");
                 setIsRunning(true);
                 execute();
