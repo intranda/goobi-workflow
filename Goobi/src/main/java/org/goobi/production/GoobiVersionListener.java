@@ -45,6 +45,7 @@ public class GoobiVersionListener implements ServletContextListener, HttpSession
     public GoobiVersionListener() {
     }
 
+    @Override
     public void contextInitialized(ServletContextEvent sce) {
 
         // Retrieve Manifest file as Stream
@@ -61,21 +62,27 @@ public class GoobiVersionListener implements ServletContextListener, HttpSession
         }
     }
 
+    @Override
     public void contextDestroyed(ServletContextEvent sce) {
     }
 
+    @Override
     public void sessionCreated(HttpSessionEvent se) {
     }
 
+    @Override
     public void sessionDestroyed(HttpSessionEvent se) {
     }
 
+    @Override
     public void attributeAdded(HttpSessionBindingEvent sbe) {
     }
 
+    @Override
     public void attributeRemoved(HttpSessionBindingEvent sbe) {
     }
 
+    @Override
     public void attributeReplaced(HttpSessionBindingEvent sbe) {
     }
 

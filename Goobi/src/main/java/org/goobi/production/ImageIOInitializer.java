@@ -47,9 +47,11 @@ public class ImageIOInitializer implements ServletContextListener {
         ImageIO.scanForPlugins();
     }
 
+    @Override
     public void contextInitialized(ServletContextEvent sce) {
     }
 
+    @Override
     public void contextDestroyed(ServletContextEvent sce) {
     }
 
