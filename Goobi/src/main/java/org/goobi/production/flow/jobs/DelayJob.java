@@ -60,7 +60,7 @@ public class DelayJob extends AbstractGoobiJob {
         for (Step step : stepsWithDelay) {
             IStepPlugin plugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
 
-            if (plugin != null && plugin instanceof IDelayPlugin) {
+            if (plugin instanceof IDelayPlugin) {
                 IDelayPlugin delay = (IDelayPlugin) plugin;
                 delay.initialize(step, "");
                 if (delay.delayIsExhausted()) {

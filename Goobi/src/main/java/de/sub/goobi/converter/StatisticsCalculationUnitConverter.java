@@ -60,7 +60,7 @@ public class StatisticsCalculationUnitConverter implements Converter<Calculation
      **************************************************************************************/
     @Override
     public String getAsString(FacesContext context, UIComponent component, CalculationUnit value) throws ConverterException {
-        if (value == null || !(value instanceof CalculationUnit)) {
+        if (!(value instanceof CalculationUnit)) {
             return CalculationUnit.volumes.getId();
         } else {
             return value.getId();
