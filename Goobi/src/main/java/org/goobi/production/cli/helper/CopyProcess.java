@@ -146,7 +146,7 @@ public class CopyProcess {
     private List<String> possibleDigitalCollection;
     private boolean updateData = false;
 
-    public final static String DIRECTORY_SUFFIX = "_tif";
+    public static final String DIRECTORY_SUFFIX = "_tif";
 
     /* =============================================================== */
 

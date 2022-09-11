@@ -59,7 +59,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class JwtHelper {
 
-    private final static long rotationDuration = 1000l * 60l * 60l * 24l; //24 hours
+    private static final long rotationDuration = 1000l * 60l * 60l * 24l; //24 hours
 
     /**
      * creates a rotated token. Rotation is done by appending a timestamp

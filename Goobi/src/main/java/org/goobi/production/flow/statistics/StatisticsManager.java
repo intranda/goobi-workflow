@@ -100,7 +100,7 @@ public class StatisticsManager implements Serializable {
     private Date calculatedEndDate = new Date();
     @Getter
     private List<StatisticsRenderingElement> renderingElements;
-    static private Locale myLocale = null;
+    private static Locale myLocale = null;
     private Boolean includeLoops = null;
     private String filter = "";
 

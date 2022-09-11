@@ -105,7 +105,7 @@ import ugh.exceptions.WriteException;
 
 @Log4j2
 public class HelperSchritte {
-    public final static String DIRECTORY_PREFIX = "orig_";
+    public static final String DIRECTORY_PREFIX = "orig_";
     private static final Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
     private static final Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
     private static final Namespace mods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");

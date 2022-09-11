@@ -58,7 +58,7 @@ public class ProjectHelper {
      *                  construction in separate classes or to create a new class with these properties
      */
 
-    synchronized public static List<StepInformation> getProjectWorkFlowOverview(Project project) {
+	public static synchronized List<StepInformation> getProjectWorkFlowOverview(Project project) {
         Long totalNumberOfProc = 0l;
         Long totalNumberOfImages = 0l;
 

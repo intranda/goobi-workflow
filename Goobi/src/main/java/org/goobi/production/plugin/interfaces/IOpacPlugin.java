@@ -49,7 +49,7 @@ public interface IOpacPlugin extends IPlugin {
      * The default implementation does nothing with it, but it can be overwritten in the individual plugin implementation
      */
 
-    default public void setTemplateName(String template) {
+    public default void setTemplateName(String template) {
     }
 
     /**
@@ -58,7 +58,7 @@ public interface IOpacPlugin extends IPlugin {
      * The default implementation does nothing with it, but it can be overwritten in the individual plugin implementation
      */
 
-    default public void setProjectName(String projectName) {
+    public default void setProjectName(String projectName) {
     }
 
     /**
@@ -67,7 +67,7 @@ public interface IOpacPlugin extends IPlugin {
      * @return
      */
 
-    default public String getGui() {
+    public default String getGui() {
         return "/uii/includes/process/process_new_opac.xhtml";
     }
 

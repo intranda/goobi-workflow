@@ -44,7 +44,7 @@ import ugh.dl.MetadataType;
 
 @Log4j2
 public class GoobiScriptUpdateImagePath extends AbstractIGoobiScript implements IGoobiScript {
-    public final static String DIRECTORY_SUFFIX = "_tif";
+    public static final String DIRECTORY_SUFFIX = "_tif";
 
     @Override
     public String getAction() {

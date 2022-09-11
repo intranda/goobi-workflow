@@ -75,8 +75,8 @@ public class PluginInstaller implements Serializable{
     private static final long serialVersionUID = -5968198401348089489L;
     
 	private static final String LINEBREAK = System.getProperty("line.separator");
-    public final static Set<String> endingWhitelist = Sets.newHashSet(".js", ".css", ".jar");
-    public final static Set<String> pathBlacklist = Sets.newHashSet("pom.xml");
+    public static final Set<String> endingWhitelist = Sets.newHashSet(".js", ".css", ".jar");
+    public static final Set<String> pathBlacklist = Sets.newHashSet("pom.xml");
     private static Namespace pomNs = Namespace.getNamespace("pom", "http://maven.apache.org/POM/4.0.0");
     private static XPathFactory xFactory = XPathFactory.instance();
     private static XPathExpression<Element> pluginNameXpath = xFactory.compile("//pom:properties/pom:jar.name", Filters.element(), null, pomNs);
