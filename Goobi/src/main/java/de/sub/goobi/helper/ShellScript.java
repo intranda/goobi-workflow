@@ -52,7 +52,8 @@ public class ShellScript {
     public static final int ERRORLEVEL_ERROR = 1;
 
     private final String command;
-    private LinkedList<String> outputChannel, errorChannel;
+    private LinkedList<String> outputChannel;
+    private LinkedList<String> errorChannel;
     @Getter
     private Integer errorLevel;
 

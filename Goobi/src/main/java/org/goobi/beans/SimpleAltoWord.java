@@ -33,5 +33,5 @@ public class SimpleAltoWord {
     private String value;
     private String lineId;
 
-    private int x, y, height, width;
+    private int x, y, height, width; // NOSONAR
 }

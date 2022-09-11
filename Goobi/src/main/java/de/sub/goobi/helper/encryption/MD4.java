@@ -22,7 +22,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 public class MD4 {
 
-    private static int A, B, C, D;
+    private static int A, B, C, D; // NOSONAR
     private static int X[] = new int[16];
 
     private static int F(int X, int Y, int Z) {
@@ -59,7 +59,7 @@ public class MD4 {
     /* this applies md4 to 64 byte chunks */
     public static void mdfour64(int M[]) {
         int j;
-        int AA, BB, CC, DD;
+        int AA, BB, CC, DD; // NOSONAR
 
         for (j = 0; j < 16; j++) {
             X[j] = M[j];

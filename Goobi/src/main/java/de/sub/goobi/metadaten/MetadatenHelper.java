@@ -658,7 +658,8 @@ public class MetadatenHelper implements Comparator<Object> {
             if (s2 == null) {
                 return 1;
             }
-            String name1 = "", name2 = "";
+            String name1 = "";
+            String name2 = "";
             try {
                 MetadataType mdt1 = s1.getType();
                 MetadataType mdt2 = s2.getType();

@@ -34,5 +34,5 @@ public class SimpleAltoLine {
     private String id;
     private List<SimpleAltoWord> words;
 
-    private int x, y, height, width;
+    private int x, y, height, width; // NOSONAR
 }
