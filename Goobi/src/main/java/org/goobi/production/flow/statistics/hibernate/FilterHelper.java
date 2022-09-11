@@ -181,7 +181,7 @@ public class FilterHelper {
 
         if (parameters.contains("-")) {
             String[] strArray = parameters.split("-");
-            if (!(strArray.length < 2)) {
+            if (strArray.length >= 2) {
                 if (strArray[0].length() == 0) {
                     return StepFilter.max;
                 } else {

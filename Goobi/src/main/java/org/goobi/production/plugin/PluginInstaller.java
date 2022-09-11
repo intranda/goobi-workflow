@@ -279,7 +279,7 @@ public class PluginInstaller implements Serializable{
             TarArchiveEntry tarEntry;
             do {
                 tarEntry = (TarArchiveEntry) (tarInputStream.getNextEntry());
-                if (!(tarEntry == null) && !tarEntry.isDirectory() && tarEntry.getName().endsWith(fileName)) {
+                if (tarEntry != null && !tarEntry.isDirectory() && tarEntry.getName().endsWith(fileName)) {
                     content = IOUtils.toString(tarInputStream, StandardCharsets.UTF_8.name());
                     break;
                 }
