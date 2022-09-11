@@ -74,7 +74,7 @@ public class AdministrationForm implements Serializable {
 
     public void startStorageCalculationForAllProcessesNow() {
         HistoryAnalyserJob job = new HistoryAnalyserJob();
-        if (!job.getIsRunning()) {
+        if (Boolean.FALSE.equals(job.getIsRunning())) { // job.getIsRunning() returns a boxed Boolean object
             job.execute();
             Helper.setMeldung("scheduler calculation executed");
         } else {

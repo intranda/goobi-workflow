@@ -123,7 +123,7 @@ public class StatisticsManager implements Serializable {
         sourceTimeUnit = TimeUnit.months;
         myLocale = locale;
         /* for backward compatibility create old jfreechart datasets */
-        if (inMode.getIsSimple()) {
+        if (Boolean.TRUE.equals(inMode.getIsSimple())) {
             switch (inMode) {
 
                 case SIMPLE_RUNTIME_STEPS:
@@ -154,7 +154,7 @@ public class StatisticsManager implements Serializable {
      * @return {@link Dataset} for charting
      ****************************************************************************/
     public Dataset getJfreeDataset() {
-        if (statisticMode.getIsSimple()) {
+        if (Boolean.TRUE.equals(statisticMode.getIsSimple())) {
             return jfreeDataset;
         } else {
             return new DefaultValueDataset();

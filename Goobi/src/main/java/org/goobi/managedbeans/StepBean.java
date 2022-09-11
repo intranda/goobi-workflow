@@ -489,7 +489,7 @@ public class StepBean extends BasicBean implements Serializable {
         this.myDav.UploadFromHome(this.mySchritt.getProzess());
         this.mySchritt.setBearbeitungsstatusEnum(StepStatus.OPEN);
         // if we have a correction-step here then never remove startdate
-        if (this.mySchritt.isCorrectionStep()) {
+        if (Boolean.TRUE.equals(this.mySchritt.isCorrectionStep())) {
             this.mySchritt.setBearbeitungsbeginn(null);
         }
         this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
@@ -999,7 +999,7 @@ public class StepBean extends BasicBean implements Serializable {
                 if (myPlugin instanceof IPushPlugin) {
                     ((IPushPlugin) myPlugin).setPushContext(stepPluginPush);
                 }
-                if (mySchritt.isBatchStep() && mySchritt.isBatchSize()) {
+                if (Boolean.TRUE.equals(mySchritt.isBatchStep()) && mySchritt.isBatchSize()) {
                     myPlugin.initialize(mySchritt, "/task_edit_batch");
                 } else {
                     myPlugin.initialize(mySchritt, "/task_edit");

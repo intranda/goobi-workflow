@@ -96,17 +96,17 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
     public static Boolean updateHistory(Process inProcess) throws IOException, SwapException, DAOException {
         boolean updated = false;
         /* storage */
-        if (updateHistoryEvent(inProcess, HistoryEventType.storageDifference,
-                getCurrentStorageSize(Paths.get(inProcess.getProcessDataDirectory())))) {
+        if (Boolean.TRUE.equals(updateHistoryEvent(inProcess, HistoryEventType.storageDifference,
+                getCurrentStorageSize(Paths.get(inProcess.getProcessDataDirectory()))))) {
             updated = true;
         }
 
-        if (updateHistoryEvent(inProcess, HistoryEventType.storageWorkDifference,
-                getCurrentStorageSize(Paths.get(inProcess.getImagesTifDirectory(true))))) {
+        if (Boolean.TRUE.equals(updateHistoryEvent(inProcess, HistoryEventType.storageWorkDifference,
+                getCurrentStorageSize(Paths.get(inProcess.getImagesTifDirectory(true)))))) {
             updated = true;
         }
-        if (updateHistoryEvent(inProcess, HistoryEventType.storageMasterDifference,
-                getCurrentStorageSize(Paths.get(inProcess.getImagesOrigDirectory(true))))) {
+        if (Boolean.TRUE.equals(updateHistoryEvent(inProcess, HistoryEventType.storageMasterDifference,
+                getCurrentStorageSize(Paths.get(inProcess.getImagesOrigDirectory(true)))))) {
             updated = true;
         }
 
@@ -115,23 +115,23 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 
         /* imagesWork */
         Integer numberWork = StorageProvider.getInstance().getNumberOfFiles(Paths.get(inProcess.getImagesTifDirectory(true)), imageSuffixes);
-        if (updateHistoryEvent(inProcess, HistoryEventType.imagesWorkDiff, numberWork.longValue())) {
+        if (Boolean.TRUE.equals(updateHistoryEvent(inProcess, HistoryEventType.imagesWorkDiff, numberWork.longValue()))) {
             updated = true;
         }
 
         /* imagesMaster */
         Integer numberMaster = StorageProvider.getInstance().getNumberOfFiles(Paths.get(inProcess.getImagesOrigDirectory(true)), imageSuffixes);
-        if (updateHistoryEvent(inProcess, HistoryEventType.imagesMasterDiff, numberMaster.longValue())) {
+        if (Boolean.TRUE.equals(updateHistoryEvent(inProcess, HistoryEventType.imagesMasterDiff, numberMaster.longValue()))) {
             updated = true;
         }
 
         /* metadata */
-        if (updateHistoryEvent(inProcess, HistoryEventType.metadataDiff, inProcess.getSortHelperMetadata().longValue())) {
+        if (Boolean.TRUE.equals(updateHistoryEvent(inProcess, HistoryEventType.metadataDiff, inProcess.getSortHelperMetadata().longValue()))) {
             updated = true;
         }
 
         /* docstruct */
-        if (updateHistoryEvent(inProcess, HistoryEventType.docstructDiff, inProcess.getSortHelperDocstructs().longValue())) {
+        if (Boolean.TRUE.equals(updateHistoryEvent(inProcess, HistoryEventType.docstructDiff, inProcess.getSortHelperDocstructs().longValue()))) {
             updated = true;
         }
 
@@ -296,7 +296,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
 
         // this method removes duplicate items from the history list, which
         // already happened to be there, isDirty will be automatically be set
-        if (getHistoryEventDuplicated(inProcess)) {
+        if (Boolean.TRUE.equals(getHistoryEventDuplicated(inProcess))) {
             isDirty = true;
         }
 
@@ -315,7 +315,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
     private static HistoryEvent addHistoryEvent(Date timeStamp, Integer stepOrder, String stepName, HistoryEventType type, Process inProcess) {
         HistoryEvent he = new HistoryEvent(timeStamp, stepOrder, stepName, type, inProcess);
 
-        if (!getHistoryContainsEventAlready(he, inProcess)) {
+        if (Boolean.FALSE.equals(getHistoryContainsEventAlready(he, inProcess))) {
             HistoryManager.addHistoryEvent(he);
             return he;
         } else {
@@ -485,7 +485,7 @@ public class HistoryAnalyserJob extends AbstractGoobiJob {
         Boolean duplicateEventRemoved = false;
         List<HistoryEvent> list = HistoryManager.getHistoryEvents(inProcess.getId());
         for (HistoryEvent he : list) {
-            if (getHistoryContainsEventAlready(he, inProcess)) {
+            if (Boolean.TRUE.equals(getHistoryContainsEventAlready(he, inProcess))) {
                 HistoryManager.deleteHistoryEvent(he);
 
                 duplicateEventRemoved = true;

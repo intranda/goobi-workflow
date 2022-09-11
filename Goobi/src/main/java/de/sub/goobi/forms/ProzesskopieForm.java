@@ -250,8 +250,7 @@ public class ProzesskopieForm implements Serializable {
 
             return "";
         }
-        if (prozessVorlage.getProjekt().getProjectIsArchived()) {
-
+        if (Boolean.TRUE.equals(prozessVorlage.getProjekt().getProjectIsArchived())) {
             Helper.setFehlerMeldung("projectIsArchived");
             return "";
         }
@@ -954,7 +953,7 @@ public class ProzesskopieForm implements Serializable {
         }
 
         // Adding process to history
-        if (!HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie)) {
+        if (Boolean.FALSE.equals(HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie))) {
             Helper.setFehlerMeldung("historyNotUpdated");
             return "";
         } else {

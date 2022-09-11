@@ -3435,7 +3435,7 @@ public class Metadaten implements Serializable {
 
     public String BildErsteSeiteAnzeigen() {
         this.bildAnzeigen = true;
-        if (this.treeProperties.get("showpagesasajax")) {
+        if (Boolean.TRUE.equals(this.treeProperties.get("showpagesasajax"))) {
             for (String pageObject : pageMap.getKeyList()) {
                 PhysicalObject po = pageMap.get(pageObject);
                 if (po.getLabel().equals(this.ajaxSeiteStart)) {
@@ -3459,7 +3459,7 @@ public class Metadaten implements Serializable {
      */
     public String BildLetzteSeiteAnzeigen() {
         this.bildAnzeigen = true;
-        if (this.treeProperties.get("showpagesasajax")) {
+        if (Boolean.TRUE.equals(this.treeProperties.get("showpagesasajax"))) {
             for (String pageObject : pageMap.getKeyList()) {
                 PhysicalObject po = pageMap.get(pageObject);
                 if (po.getLabel().equals(this.ajaxSeiteEnde)) {

@@ -133,7 +133,7 @@ public class SQLStepRequestByName extends SQLGenerator implements IStepRequestBy
      */
 
     private String addedSorting(Boolean include) {
-        if (include) {
+        if (Boolean.TRUE.equals(include)) {
             return ", table_1.stepOrder";
         } else {
             return "";
@@ -146,7 +146,7 @@ public class SQLStepRequestByName extends SQLGenerator implements IStepRequestBy
      * @return SQL snippet for Select clause
      */
     private String addedListing(Boolean include) {
-        if (include) {
+        if (Boolean.TRUE.equals(include)) {
             return ",table_1.stepName ";
         } else {
             return "";
@@ -159,7 +159,7 @@ public class SQLStepRequestByName extends SQLGenerator implements IStepRequestBy
      * @return SQL snippet for Group by clause
      */
     private String addedGrouping(Boolean include) {
-        if (include) {
+        if (Boolean.TRUE.equals(include)) {
             return ", table_1.stepName ";
         } else {
             return "";

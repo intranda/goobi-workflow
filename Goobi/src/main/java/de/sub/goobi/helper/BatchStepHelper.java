@@ -781,7 +781,7 @@ public class BatchStepHelper implements Serializable{
 
             this.myDav.UploadFromHome(s.getProzess());
             s.setBearbeitungsstatusEnum(StepStatus.OPEN);
-            if (s.isCorrectionStep()) {
+            if (Boolean.TRUE.equals(s.isCorrectionStep())) {
                 s.setBearbeitungsbeginn(null);
             }
             s.setEditTypeEnum(StepEditType.MANUAL_MULTI);

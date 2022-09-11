@@ -192,8 +192,7 @@ public class MassImportForm implements Serializable {
             }
             return "";
         }
-        if (this.template.getProjekt().getProjectIsArchived()) {
-
+        if (Boolean.TRUE.equals(this.template.getProjekt().getProjectIsArchived())) {
             Helper.setFehlerMeldung("projectIsArchived");
             return "";
         }

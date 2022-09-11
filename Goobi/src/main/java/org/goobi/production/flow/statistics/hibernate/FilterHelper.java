@@ -99,11 +99,11 @@ public class FilterHelper {
         /*
          * -------------------------------- hits by user groups --------------------------------
          */
-        if (stepOpenOnly) {
+        if (Boolean.TRUE.equals(stepOpenOnly)) {
             answer.append(" (Bearbeitungsstatus = 1 OR Bearbeitungsstatus = 4) ");
-        } else if (userAssignedStepsOnly) {
+        } else if (Boolean.TRUE.equals(userAssignedStepsOnly)) {
             answer.append(" BearbeitungsBenutzerID = " + userId + " AND  Bearbeitungsstatus = 2 ");
-        } else if (hideStepsFromOtherUsers) {
+        } else if (Boolean.TRUE.equals(hideStepsFromOtherUsers)) {
             answer.append(" ((BearbeitungsBenutzerID = " + userId
                     + " AND  Bearbeitungsstatus = 2) OR (Bearbeitungsstatus = 1 OR  Bearbeitungsstatus = 4)) ");
         } else {

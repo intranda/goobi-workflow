@@ -410,7 +410,7 @@ public class BeanHelper implements Serializable{
         }
 
         // Create history events
-        if (!HistoryAnalyserJob.updateHistoryForProzess(newProcess)) {
+        if (Boolean.FALSE.equals(HistoryAnalyserJob.updateHistoryForProzess(newProcess))) {
             Helper.setFehlerMeldung("historyNotUpdated");
         } else {
             try {

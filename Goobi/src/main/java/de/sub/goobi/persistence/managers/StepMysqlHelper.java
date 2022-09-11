@@ -191,7 +191,7 @@ class StepMysqlHelper implements Serializable {
     private static void checkBatchStatus(List<Step> stepList) {
         List<StringPair> batchChecks = new ArrayList<>();
         for (Step step : stepList) {
-            if (step.isBatchStep() && step.getProzess().getBatch() != null) {
+            if (Boolean.TRUE.equals(step.isBatchStep()) && step.getProzess().getBatch() != null) {
                 String stepTitle = step.getTitel();
                 String batchNumber = "" + step.getProzess().getBatch().getBatchId();
                 boolean found = false;

@@ -807,7 +807,7 @@ public class CopyProcess {
         }
 
         // Adding process to history
-        if (!HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie)) {
+        if (Boolean.FALSE.equals(HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie))) {
             Helper.setFehlerMeldung("historyNotUpdated");
         } else {
             try {
@@ -880,7 +880,7 @@ public class CopyProcess {
         this.prozessKopie.writeMetadataFile(this.myRdf);
 
         // Adding process to history
-        if (!HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie)) {
+        if (Boolean.FALSE.equals(HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie))) {
             Helper.setFehlerMeldung("historyNotUpdated");
         } else {
             try {
