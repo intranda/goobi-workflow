@@ -306,8 +306,10 @@
                                                         <h:outputText value="#{msgs.aktualisierungstyp}:" />
                                                         <h:outputText value="#{item.editTypeEnum.title}" />
 
-                                                        <h:outputText value="#{msgs.typ}:" />
-                                                        <h:panelGroup>
+                                                        <h:outputText 
+                                                        	value="#{msgs.typ}:"
+                                                        	rendered="#{item.typeSpecified}" />
+                                                        <h:panelGroup rendered="#{item.typeSpecified}" >
                                                             <h:outputText
                                                                 styleClass="block"
                                                                 value="#{msgs.metadaten}"
@@ -367,7 +369,7 @@
                                                             <h:outputText
                                                                 styleClass="block"
                                                                 value="#{msgs.timeDelayPlugin}"
-                                                                rendered="#{item.delayStep!=null and item.delayStep!='' and item.delayStep}" />
+                                                                rendered="#{item.delayStep}" />
                                                             <h:outputText
                                                                 styleClass="block"
                                                                 value="#{msgs.batchStep}"
@@ -396,8 +398,8 @@
 
                                                         <h:outputText
                                                             value="#{msgs.typScriptStep}:"
-                                                            rendered="#{item.typScriptStep}" />
-                                                        <h:panelGroup rendered="#{item.typScriptStep}">
+                                                            rendered="#{item.typScriptStep and not empty item.allScriptPaths}" />
+                                                        <h:panelGroup rendered="#{item.typScriptStep and not empty item.allScriptPaths}">
 
                                                             <h:panelGroup
                                                                 styleClass="block"
@@ -453,8 +455,9 @@
                                                             value="#{item.typModulName}"
                                                             rendered="#{item.typModulName != null and item.typModulName != ''}" />
 
-                                                        <h:outputText value="#{msgs.usergroup_assignedRoles}" />
-                                                        <h:panelGroup>
+                                                        <h:outputText value="#{msgs.usergroup_assignedRoles}"
+                                                       		rendered="#{not empty item.benutzergruppen}" />
+                                                        <h:panelGroup rendered="#{not empty item.benutzergruppen}" >
                                                             <x:dataList
                                                                 value="#{item.benutzergruppen}"
                                                                 var="group"
