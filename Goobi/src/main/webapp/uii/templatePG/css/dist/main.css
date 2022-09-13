@@ -851,6 +851,7 @@ body {
 }
 .page-header .stats {
   display: flex;
+  align-items: flex-start;
   list-style: none;
   gap: 1.5rem;
 }
@@ -865,8 +866,7 @@ body {
   padding: 0;
   margin-right: 0.8rem;
 }
-.page-header .stats button,
-.page-header .stats li:nth-child(3) {
+.page-header .stats button, .page-header .stats__date {
   color: var(--clr-white, #fff);
   display: flex;
   gap: 1.5rem;

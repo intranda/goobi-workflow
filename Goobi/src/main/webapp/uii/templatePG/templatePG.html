@@ -157,6 +157,19 @@
                     <div class="flow container-fluid">
 
                         <h:form id="header">
+
+											                  <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResults.size() gt 0}">
+
+                                            <div class="d-none">
+
+                                                <o:socket channel="goobiscriptUpdateChannel">
+                                                    <f:ajax render="goobiScriptResults2" event="update"/>
+                                                </o:socket>
+                                                <o:commandScript name="updateGoobiScriptIndicator"  render="goobiScriptResults2" />
+
+                                            </div>
+	                                        </ui:fragment>
+
                             <o:socket channel="developerMessageChannel" connected="#{DevModeBean.developerMode}" onmessage="() => window.location.reload()" />
                             <header>
                                 <div class="flow page-header">
@@ -184,12 +197,10 @@
 	                                            <img src="template/img/goobi/ajaxloader2.gif" />
 	                                        </li>
 
-											<ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResults.size() gt 0}">
-                                                <o:socket channel="goobiscriptUpdateChannel" >
-                                                    <f:ajax render="goobiScriptResults2" event="update"/>
-                                                </o:socket>
-                                                <o:commandScript name="updateGoobiScriptIndicator" render="goobiScriptResults2" />
-	                                        	<li class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'}">
+											                  <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResults.size() gt 0}">
+
+
+	                                        	<li class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'} stats__goobi-script">
 		                                            <button jsf:action="process_goobiScript" jsf:id="goobiScriptResults2" class="button-transparent">
 		                                                    <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}"></i>
 		                                                    <div class="details">
@@ -202,7 +213,7 @@
 
 
 	                                        <h:panelGroup rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
-	                                            <li class='bg-neutral-400'>
+	                                            <li class='bg-neutral-400 stats__current-users'>
 	                                                <button jsf:action="currentUsers" jsf:id="currentUsers" class="button-no-style">
 	                                                    <i class="fa fa-users" style="margin-top:3px;"></i>
 	                                                    <div class="details">
@@ -213,14 +224,14 @@
 	                                                </button>
 	                                            </li>
 	                                        </h:panelGroup>
-	                                        <li class='bg-neutral-400'>
+	                                        <li class="bg-neutral-400 stats__date">
 	                                            <i class="fa fa-calendar" style="margin-top:3px;"></i>
 	                                            <div class="details">
 	                                                <span class="big">
 	                                                    <h:outputText value="#{SessionForm.currentTime}" />
 	                                                    <a tabindex="-1" href="#{HelperForm.itmPathAsUrl}" target="self" aria-label="itm">
-														<div style="height: 12px;width: 20px;display: inline-block;"></div>
-														</a>
+                                                        <div style="height: 12px;width: 20px;display: inline-block;"></div>
+                                                    </a>
 	                                                </span>
 	                                                <span>
 	                                                    <h:outputText value="#{SessionForm.date}">
@@ -262,7 +273,10 @@
                     </div>
                 </div>
             </div>
+
+
         </c:if>
+
 
         <!-- JAVASCRIPT -->
         <script src="template/js/dist/goobiWorkflowJS.min.js?v=#{HelperForm.buildVersion}"></script>
@@ -362,6 +376,8 @@
 
          // ]]>
         </script>
+
+
     </f:view>
 </h:body>
 </html>
