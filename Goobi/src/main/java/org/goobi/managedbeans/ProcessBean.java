@@ -562,9 +562,11 @@ public class ProcessBean extends BasicBean implements Serializable {
 
         List<GoobiScriptResult> resultList = Helper.getSessionBean().getGsm().getGoobiScriptResults();
         filter = "\"id:";
-        for (GoobiScriptResult gsr : resultList) {
-            if (gsr.getResultType().toString().equals(status)) {
-                filter += gsr.getProcessId() + " ";
+        synchronized (resultList) {
+            for (GoobiScriptResult gsr : resultList) {
+                if (gsr.getResultType().toString().equals(status)) {
+                    filter += gsr.getProcessId() + " ";
+                }
             }
         }
         filter += "\"";
@@ -1882,7 +1884,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     @Getter
     public static class ProcessCounterObject implements Serializable{
         private static final long serialVersionUID = -4287461260229760734L;
-		private String title;
+        private String title;
         private int metadata;
         private int docstructs;
         private int images;
@@ -1968,7 +1970,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             int myid = Integer.valueOf(id).intValue();
             this.myProzess = ProcessManager.getProcessById(myid);
-            
+
         } catch (NumberFormatException e) {
             log.warn(e);
         }
