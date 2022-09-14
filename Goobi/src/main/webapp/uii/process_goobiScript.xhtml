@@ -46,8 +46,8 @@
 	                    <div class="box-content nopadding">
 	                    	<div class="dataTables_wrapper">
 								<div class="dataTables_length" style="margin-bottom: 10px;">
-									<h:outputText value="#{msgs.treffer}: #{SessionForm.gsm.goobiScriptResults.size()}" />
-									<h:outputText value=" - #{msgs.goobiScript_showMax}: #{SessionForm.gsm.showMax}" styleClass="font-light margin-left-10" rendered="#{SessionForm.gsm.goobiScriptResults.size() gt SessionForm.gsm.showMax}" />
+									<h:outputText value="#{msgs.treffer}: #{SessionForm.gsm.goobiScriptResultSize}" />
+									<h:outputText value=" - #{msgs.goobiScript_showMax}: #{SessionForm.gsm.showMax}" styleClass="font-light margin-left-10" rendered="#{SessionForm.gsm.goobiScriptResultSize gt SessionForm.gsm.showMax}" />
 								</div>
 								
 								<h:form id="searchform">
@@ -98,7 +98,8 @@
 								<!-- Datentabelle -->
 		                    	<h:form id="allGoobiScripts">
 		                    		<p:poll interval="120" update="gsr" />
-									<x:dataTable id="gsr"
+                                    
+									<h:dataTable id="gsr"
 										styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
 										var="item" value="#{SessionForm.gsm.shortGoobiScriptResults}">
 	
@@ -205,7 +206,7 @@
 											<h:outputText value="#{item.resultMessage} #{item.errorText}" />
 										</x:column>
 										
-									</x:dataTable>
+									</h:dataTable>
 								</h:form>
 								
 								<div class="dataTables_info">
