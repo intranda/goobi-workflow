@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
@@ -211,10 +210,12 @@ public class GoobiScriptManager {
      * get just a limited number of results
      */
     public List<GoobiScriptResult> getShortGoobiScriptResults() {
-        if (showMax > goobiScriptResults.size()) {
-            return goobiScriptResults;
-        } else {
-            return goobiScriptResults.subList(0, showMax);
+        synchronized (goobiScriptResults) {
+            if (showMax > goobiScriptResults.size()) {
+                return goobiScriptResults;
+            } else {
+                return goobiScriptResults.subList(0, showMax);
+            }
         }
     }
 
@@ -474,6 +475,13 @@ public class GoobiScriptManager {
             } else {
                 return g2.getResultMessage().compareTo(g1.getResultMessage());
             }
+        }
+    }
+
+
+    public int getGoobiScriptResultSize() {
+        synchronized (goobiScriptResults) {
+            return    goobiScriptResults.size();
         }
     }
 
