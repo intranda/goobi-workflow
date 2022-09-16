@@ -99,7 +99,7 @@ public class JournalEntry implements Serializable {
     }
 
     public boolean isExternalFile() {
-        return StringUtils.isNotBlank(filename) && !filename.contains(ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
+        return StringUtils.isNotBlank(filename) && !filename.contains(ConfigurationHelper.getInstance().getFolderForInternalJournalFiles());
     }
 
     public String getFormattedContent() {

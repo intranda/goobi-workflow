@@ -1847,7 +1847,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         Path folder = null;
         try {
             if (uploadFolder.equals("intern")) {
-                folder = Paths.get(getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
+                folder = Paths.get(getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalJournalFiles());
             } else {
                 folder = Paths.get(getExportDirectory());
             }

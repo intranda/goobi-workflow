@@ -234,7 +234,7 @@ public class ProzesskopieForm implements Serializable {
         atstsl = "";
         opacSuchbegriff = "";
         this.guessedImages = 0;
-        if (ConfigurationHelper.getInstance().isResetProcesslog()) {
+        if (ConfigurationHelper.getInstance().isResetJournal()) {
             addToWikiField = "";
         }
 
@@ -969,7 +969,7 @@ public class ProzesskopieForm implements Serializable {
 
                     if ("intern".equals(image.getFoldername())) {
                         folder = Paths.get(prozessKopie.getProcessDataDirectory(),
-                                ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
+                                ConfigurationHelper.getInstance().getFolderForInternalJournalFiles());
                     } else if ("export".equals(image.getFoldername())) {
                         folder = Paths.get(prozessKopie.getExportDirectory());
                     } else {

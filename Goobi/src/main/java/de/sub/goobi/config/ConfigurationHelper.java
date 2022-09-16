@@ -271,8 +271,8 @@ public class ConfigurationHelper implements Serializable {
         return getGoobiFolder() + "config/";
     }
 
-    public String getFolderForInternalProcesslogFiles() {
-        return getLocalString("folder_processlog_internal", "intern");
+    public String getFolderForInternalJournalFiles() {
+        return getLocalString("folder_journal_internal", getLocalString("folder_processlog_internal", "intern"));
     }
 
     public String getDoneDirectoryName() {
@@ -754,8 +754,8 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("ProcessTitleGenerationRegex", "[\\W]");
     }
 
-    public boolean isResetProcesslog() {
-        return getLocalBoolean("ProcessCreationResetLog", false);
+    public boolean isResetJournal() {
+        return getLocalBoolean("ProcessCreationResetJournal", getLocalBoolean("ProcessCreationResetLog", false));
     }
 
     public String getImagePrefix() {

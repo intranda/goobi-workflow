@@ -514,7 +514,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 elements.add(representative);
 
                 // add all internal files
-                Path pIntern = Paths.get(process.getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
+                Path pIntern = Paths.get(process.getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalJournalFiles());
                 elements.add(getContentFiles(process, "intern", pIntern.toString()));
 
                 // add all files from export folder
