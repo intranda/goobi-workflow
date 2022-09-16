@@ -55,7 +55,7 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -791,7 +791,7 @@ public class ProzesskopieForm implements Serializable {
 
         if (addToWikiField != null && !addToWikiField.equals("")) {
             User user = loginForm.getMyBenutzer();
-            LogEntry logEntry = new LogEntry();
+            JournalEntry logEntry = new JournalEntry();
             logEntry.setContent(addToWikiField);
             logEntry.setCreationDate(new Date());
             logEntry.setProcessId(prozessKopie.getId());
@@ -985,7 +985,7 @@ public class ProzesskopieForm implements Serializable {
 
                     if ("intern".equals(image.getFoldername()) || "export".equals(image.getFoldername())) {
 
-                        LogEntry entry = LogEntry.build(prozessKopie.getId())
+                        JournalEntry entry = JournalEntry.build(prozessKopie.getId())
                                 .withCreationDate(new Date())
                                 .withContent(image.getDescriptionText())
                                 .withType(LogType.FILE)

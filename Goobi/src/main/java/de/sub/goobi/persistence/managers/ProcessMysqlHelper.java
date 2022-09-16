@@ -34,7 +34,7 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Institution;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
@@ -136,7 +136,7 @@ class ProcessMysqlHelper implements Serializable {
                 TemplateManager.saveTemplate(template);
             }
 
-            for (LogEntry logEntry : o.getProcessLog()) {
+            for (JournalEntry logEntry : o.getProcessLog()) {
                 saveLogEntry(logEntry);
             }
 
@@ -717,7 +717,7 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
-    public static LogEntry saveLogEntry(LogEntry logEntry) throws SQLException {
+    public static JournalEntry saveLogEntry(JournalEntry logEntry) throws SQLException {
 
         if (logEntry.getId() == null) {
             return inserLogEntry(logEntry);
@@ -727,7 +727,7 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
-    private static void updateLogEntry(LogEntry logEntry) throws SQLException {
+    private static void updateLogEntry(JournalEntry logEntry) throws SQLException {
         String sql = "UPDATE journal set processID =?, creationDate = ?, userName = ?, type = ? , content = ?, filename = ? WHERE id = ?";
 
         Connection connection = null;
@@ -744,7 +744,7 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
-    private static LogEntry inserLogEntry(LogEntry logEntry) throws SQLException {
+    private static JournalEntry inserLogEntry(JournalEntry logEntry) throws SQLException {
         String sql = "INSERT INTO journal (processID, creationDate, userName, type , content, filename ) VALUES (?, ?,  ?, ?, ?, ?);";
         Connection connection = null;
         try {
@@ -764,7 +764,7 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
-    public static void deleteLogEntry(LogEntry logEntry) throws SQLException {
+    public static void deleteLogEntry(JournalEntry logEntry) throws SQLException {
         if (logEntry.getId() != null) {
             Connection connection = null;
             try {
@@ -780,14 +780,14 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
-    public static List<LogEntry> getLogEntriesForProcess(int processId) throws SQLException {
+    public static List<JournalEntry> getLogEntriesForProcess(int processId) throws SQLException {
         Connection connection = null;
 
         String sql = " SELECT * from journal WHERE processId = " + processId + " ORDER BY creationDate";
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<LogEntry> ret = new QueryRunner().query(connection, sql.toString(), resultSetToLogEntryListHandler);
+            List<JournalEntry> ret = new QueryRunner().query(connection, sql.toString(), resultSetToLogEntryListHandler);
             return ret;
         } finally {
             if (connection != null) {
@@ -849,10 +849,10 @@ class ProcessMysqlHelper implements Serializable {
         return batch;
     }
 
-    public static ResultSetHandler<List<LogEntry>> resultSetToLogEntryListHandler = new ResultSetHandler<List<LogEntry>>() {
+    public static ResultSetHandler<List<JournalEntry>> resultSetToLogEntryListHandler = new ResultSetHandler<List<JournalEntry>>() {
         @Override
-        public List<LogEntry> handle(ResultSet rs) throws SQLException {
-            List<LogEntry> answer = new ArrayList<>();
+        public List<JournalEntry> handle(ResultSet rs) throws SQLException {
+            List<JournalEntry> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
 
@@ -868,7 +868,7 @@ class ProcessMysqlHelper implements Serializable {
                     String content = rs.getString("content");
                     String filename = rs.getString("filename");
 
-                    LogEntry entry = new LogEntry();
+                    JournalEntry entry = new JournalEntry();
                     entry.setId(id);
                     entry.setProcessId(processId);
                     entry.setCreationDate(creationDate);

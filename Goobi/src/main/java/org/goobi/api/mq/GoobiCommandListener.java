@@ -38,7 +38,7 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.naming.ConfigurationException;
 
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.LogType;
 
@@ -149,7 +149,7 @@ public class GoobiCommandListener {
                 try {
                     if (JwtHelper.verifyChangeStepToken(token, stepId)) {
                         // add to process log
-                        LogEntry entry = LogEntry.build(processId)
+                        JournalEntry entry = JournalEntry.build(processId)
                                 .withCreationDate(new Date())
                                 .withType(LogType.getByTitle(t.getLogType()))
                                 .withUsername(t.getIssuer())

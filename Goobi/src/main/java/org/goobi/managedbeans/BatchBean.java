@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Batch;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
@@ -304,7 +304,7 @@ public class BatchBean extends BasicBean implements Serializable {
                 for (Process p : this.selectedProcesses) {
                     p.setBatch(batch);
 
-                    LogEntry logEntry = new LogEntry();
+                    JournalEntry logEntry = new JournalEntry();
                     logEntry.setContent("added process to batch " + batch.getBatchId());
                     logEntry.setCreationDate(new Date());
                     logEntry.setProcessId(p.getId());
@@ -325,7 +325,7 @@ public class BatchBean extends BasicBean implements Serializable {
     public void removeProcessesFromBatch() {
         for (Process p : this.selectedProcesses) {
             if (p.getBatch() != null) {
-                LogEntry logEntry = new LogEntry();
+                JournalEntry logEntry = new JournalEntry();
                 logEntry.setContent("removed process from batch " + p.getBatch().getBatchId());
                 logEntry.setCreationDate(new Date());
                 logEntry.setProcessId(p.getId());
@@ -348,7 +348,7 @@ public class BatchBean extends BasicBean implements Serializable {
             for (Process p : this.selectedProcesses) {
                 p.setBatch(batch);
                 ProcessManager.saveProcessInformation(p);
-                LogEntry logEntry = new LogEntry();
+                JournalEntry logEntry = new JournalEntry();
                 logEntry.setContent("added process to batch " + batch.getBatchId());
                 logEntry.setCreationDate(new Date());
                 logEntry.setProcessId(p.getId());

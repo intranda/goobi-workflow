@@ -35,7 +35,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -332,7 +332,7 @@ public class BeanHelper implements Serializable{
 
         // add text to process log
 
-        LogEntry logEntry = new LogEntry();
+        JournalEntry logEntry = new JournalEntry();
         logEntry.setContent("Changed process template to " + template.getTitel());
         logEntry.setCreationDate(new Date());
         logEntry.setProcessId(processToChange.getId());

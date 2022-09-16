@@ -21,7 +21,7 @@ import java.util.Date;
  */
 import java.util.List;
 
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
@@ -64,7 +64,7 @@ public class DelayJob extends AbstractGoobiJob {
                 IDelayPlugin delay = (IDelayPlugin) plugin;
                 delay.initialize(step, "");
                 if (delay.delayIsExhausted()) {
-                    LogEntry logEntry = new LogEntry();
+                    JournalEntry logEntry = new JournalEntry();
                     logEntry.setContent(Helper.getTranslation("blockingDelayIsExhausted"));
                     logEntry.setCreationDate(new Date());
                     logEntry.setProcessId(step.getProzess().getId());

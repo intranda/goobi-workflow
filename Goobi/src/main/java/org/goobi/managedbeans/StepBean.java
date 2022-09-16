@@ -48,7 +48,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
@@ -626,7 +626,7 @@ public class StepBean extends BasicBean implements Serializable {
             se.setCreationDate(myDate);
             se.setSchritt(temp);
             String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage;
-            LogEntry logEntry = new LogEntry();
+            JournalEntry logEntry = new JournalEntry();
             logEntry.setContent(message);
             logEntry.setCreationDate(new Date());
             logEntry.setProcessId(mySchritt.getProzess().getId());
@@ -768,7 +768,7 @@ public class StepBean extends BasicBean implements Serializable {
              */
             String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage;
 
-            LogEntry logEntry = new LogEntry();
+            JournalEntry logEntry = new JournalEntry();
             logEntry.setContent(message);
             logEntry.setCreationDate(new Date());
             logEntry.setProcessId(mySchritt.getProzess().getId());
@@ -1119,7 +1119,7 @@ public class StepBean extends BasicBean implements Serializable {
     public void addLogEntry() {
         if (StringUtils.isNotBlank(content)) {
             User user = Helper.getCurrentUser();
-            LogEntry logEntry = new LogEntry();
+            JournalEntry logEntry = new JournalEntry();
             logEntry.setContent(content);
             logEntry.setCreationDate(new Date());
             logEntry.setProcessId(mySchritt.getProzess().getId());

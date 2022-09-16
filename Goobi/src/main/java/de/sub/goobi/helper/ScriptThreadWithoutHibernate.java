@@ -40,7 +40,7 @@ import org.goobi.api.mq.GenericAutomaticStepHandler;
 import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Step;
 import org.goobi.managedbeans.JobTypesCache;
 import org.goobi.production.enums.LogType;
@@ -127,7 +127,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
                         log.error(e1);
                     }
                     log.error("Error adding TaskTicket to queue: ", e);
-                    LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
+                    JournalEntry errorEntry = JournalEntry.build(this.step.getProcessId())
                             .withType(LogType.ERROR)
                             .withContent("Error reading metadata for step" + this.step.getTitel())
                             .withCreationDate(new Date())
@@ -244,7 +244,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
                 log.error(e1);
             }
             log.error("Error adding TaskTicket to queue: ", e);
-            LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
+            JournalEntry errorEntry = JournalEntry.build(this.step.getProcessId())
                     .withType(LogType.ERROR)
                     .withContent("Error trying to put script-step to external queue: " + this.step.getTitel())
                     .withCreationDate(new Date())

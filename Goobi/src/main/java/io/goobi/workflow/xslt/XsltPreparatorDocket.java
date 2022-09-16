@@ -47,7 +47,7 @@ import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -214,8 +214,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         // add user comments from the process log
         Element comment = new Element("comments", xmlns);
-        List<LogEntry> logEntry = process.getProcessLog();
-        for (LogEntry entry : logEntry) {
+        List<JournalEntry> logEntry = process.getProcessLog();
+        for (JournalEntry entry : logEntry) {
             Element commentLine = new Element("comment", xmlns);
             commentLine.setAttribute("type", entry.getType().getTitle());
             if (StringUtils.isNotBlank(entry.getUserName())) {
@@ -528,7 +528,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             }
             // all log files together with their comments
             Element logfiles = new Element("log", xmlns);
-            for (LogEntry entry : process.getProcessLog()) {
+            for (JournalEntry entry : process.getProcessLog()) {
                 if (entry.getType() == LogType.FILE) {
                     Element cf = new Element("file", xmlns);
                     if (entry.getContent() != null) {
@@ -1143,7 +1143,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
     private Element getProcessLogData(Process process) {
         Element processLog = new Element("log", xmlns);
 
-        for (LogEntry entry : process.getProcessLog()) {
+        for (JournalEntry entry : process.getProcessLog()) {
             Element entryElement = new Element("entry", xmlns);
             // processlog.id
             entryElement.setAttribute("id", String.valueOf(entry.getId()));

@@ -55,7 +55,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.goobi.api.mail.SendMail;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -379,7 +379,7 @@ public class HelperSchritte {
             Fileformat ff = po.readMetadataFile();
             if (ff == null) {
                 log.info("Metadata file is not readable for process with ID " + step.getProcessId());
-                LogEntry le = new LogEntry();
+                JournalEntry le = new JournalEntry();
                 le.setProcessId(step.getProzess().getId());
                 le.setContent("Metadata file is not readable");
                 le.setType(LogType.ERROR);
@@ -390,7 +390,7 @@ public class HelperSchritte {
             }
         } catch (Exception e2) {
             log.info("An exception occurred while reading the metadata file for process with ID " + step.getProcessId(), e2);
-            LogEntry le = new LogEntry();
+            JournalEntry le = new JournalEntry();
             le.setProcessId(step.getProzess().getId());
             le.setContent("error reading metadata file");
             le.setType(LogType.ERROR);
@@ -415,7 +415,7 @@ public class HelperSchritte {
             scsf = new SSLConnectionSocketFactory(SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build(),
                     NoopHostnameVerifier.INSTANCE);
         } catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e1) {
-            LogEntry le = new LogEntry();
+            JournalEntry le = new JournalEntry();
             le.setCreationDate(new Date());
             le.setProcessId(step.getProzess().getId());
             le.setContent("error executing http request: " + e1.getMessage());
@@ -466,7 +466,7 @@ public class HelperSchritte {
                 }
                 int statusCode = resp.getStatusLine().getStatusCode();
                 if (statusCode >= 400) {
-                    LogEntry le = new LogEntry();
+                    JournalEntry le = new JournalEntry();
                     le.setCreationDate(new Date());
                     le.setProcessId(step.getProzess().getId());
                     le.setContent(String.format("Server returned status code %d, response body was: '%s'", statusCode, respStr));
@@ -477,7 +477,7 @@ public class HelperSchritte {
                     log.error(respStr);
                     return;
                 }
-                LogEntry le = new LogEntry();
+                JournalEntry le = new JournalEntry();
                 le.setCreationDate(new Date());
                 le.setProcessId(step.getProzess().getId());
                 le.setContent(respStr);
@@ -489,7 +489,7 @@ public class HelperSchritte {
                 }
                 log.info(respStr);
             } else {
-                LogEntry le = new LogEntry();
+                JournalEntry le = new JournalEntry();
                 le.setCreationDate(new Date());
                 le.setProcessId(step.getProzess().getId());
                 le.setContent("error executing http request");
@@ -498,7 +498,7 @@ public class HelperSchritte {
                 ProcessManager.saveLogEntry(le);
             }
         } catch (IOException e) {
-            LogEntry le = new LogEntry();
+            JournalEntry le = new JournalEntry();
             le.setCreationDate(new Date());
             le.setProcessId(step.getProzess().getId());
             le.setContent("error executing http request: " + e.getMessage());
@@ -567,7 +567,7 @@ public class HelperSchritte {
         } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
             String message = "Error while reading metadata for step " + step.getTitel();
             log.error(message, e);
-            LogEntry errorEntry = LogEntry.build(step.getProcessId())
+            JournalEntry errorEntry = JournalEntry.build(step.getProcessId())
                     .withType(LogType.ERROR)
                     .withContent(message)
                     .withCreationDate(new Date())

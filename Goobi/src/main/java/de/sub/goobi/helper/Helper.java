@@ -75,7 +75,7 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.commons.lang.StringUtils;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
@@ -237,7 +237,7 @@ public class Helper implements Serializable, ServletContextListener {
     }
 
     public static void addMessageToProcessLog(Integer processId, LogType type, String message, String username) {
-        LogEntry logEntry = new LogEntry();
+        JournalEntry logEntry = new JournalEntry();
         logEntry.setContent(message);
         logEntry.setCreationDate(new Date());
         logEntry.setProcessId(processId);

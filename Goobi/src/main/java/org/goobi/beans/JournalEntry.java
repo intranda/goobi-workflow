@@ -31,7 +31,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.Data;
 
 @Data
-public class LogEntry implements Serializable{
+public class JournalEntry implements Serializable {
 
     private static final long serialVersionUID = -5624248615174083906L;
 
@@ -43,34 +43,34 @@ public class LogEntry implements Serializable{
     private String content;
     private String filename;
     // used only for LogType.File
-    transient Path file;
+    private transient Path file;
 
     public String getFormattedCreationDate() {
         return Helper.getDateAsFormattedString(creationDate);
     }
 
-    public static LogEntry build(Integer processId) {
-        LogEntry le = new LogEntry();
+    public static JournalEntry build(Integer processId) {
+        JournalEntry le = new JournalEntry();
         le.setProcessId(processId);
         return le;
     }
 
-    public LogEntry withCreationDate(Date date) {
+    public JournalEntry withCreationDate(Date date) {
         this.creationDate = date;
         return this;
     }
 
-    public LogEntry withUsername(String userName) {
+    public JournalEntry withUsername(String userName) {
         this.userName = userName;
         return this;
     }
 
-    public LogEntry withType(LogType type) {
+    public JournalEntry withType(LogType type) {
         this.type = type;
         return this;
     }
 
-    public LogEntry withContent(String content) {
+    public JournalEntry withContent(String content) {
         this.content = content;
         return this;
     }
@@ -99,8 +99,7 @@ public class LogEntry implements Serializable{
     }
 
     public boolean isExternalFile() {
-        return StringUtils.isNotBlank(filename)
-                && !filename.contains(ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
+        return StringUtils.isNotBlank(filename) && !filename.contains(ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
     }
 
     public String getFormattedContent() {

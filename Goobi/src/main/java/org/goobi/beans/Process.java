@@ -170,7 +170,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     @Getter
     @Setter
-    private List<LogEntry> processLog = new ArrayList<>();
+    private List<JournalEntry> processLog = new ArrayList<>();
 
     private BeanHelper bhelp = new BeanHelper();
 
@@ -1473,7 +1473,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             saveUploadedFile();
         } else {
 
-            LogEntry entry = new LogEntry();
+            JournalEntry entry = new JournalEntry();
             entry.setCreationDate(new Date());
             entry.setType(LogType.USER);
             entry.setProcessId(id);
@@ -1730,7 +1730,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @return
      */
 
-    public List<LogEntry> getFilesInSelectedFolder() {
+    public List<JournalEntry> getFilesInSelectedFolder() {
         if (StringUtils.isBlank(currentFolder)) {
             return Collections.emptyList();
         }
@@ -1742,11 +1742,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
 
         List<Path> files = StorageProvider.getInstance().listFiles(currentFolder);
-        List<LogEntry> answer = new ArrayList<>();
+        List<JournalEntry> answer = new ArrayList<>();
         // check if LogEntry exist
         for (Path file : files) {
             boolean matchFound = false;
-            for (LogEntry entry : processLog) {
+            for (JournalEntry entry : processLog) {
                 if (entry.getType() == LogType.FILE && StringUtils.isNotBlank(entry.getFilename())
                         && entry.getFilename().equals(file.toString())) {
                     entry.setFile(file);
@@ -1757,7 +1757,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
             // otherwise create one
             if (!matchFound) {
-                LogEntry entry = new LogEntry();
+                JournalEntry entry = new JournalEntry();
                 entry.setContent(""); // comment
                 entry.setFilename(file.toString()); // absolute path
                 entry.setFile(file);
@@ -1774,7 +1774,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @param entry
      */
 
-    public void downloadFile(LogEntry entry) {
+    public void downloadFile(JournalEntry entry) {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
 
@@ -1806,7 +1806,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @param entry
      */
 
-    public void deleteFile(LogEntry entry) {
+    public void deleteFile(JournalEntry entry) {
         Path path = entry.getFile();
         if (path == null) {
             path = Paths.get(entry.getFilename());
@@ -1820,7 +1820,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             ProcessManager.deleteLogEntry(entry);
 
             // create a new entry to document the deletion
-            LogEntry deletionInfo = LogEntry.build(id)
+            JournalEntry deletionInfo = JournalEntry.build(id)
                     .withContent(Helper.getTranslation("processlogFileDeleted", filename))
                     .withCreationDate(new Date())
                     .withType(LogType.INFO)
@@ -1856,7 +1856,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
             Path destination = Paths.get(folder.toString(), basename);
             StorageProvider.getInstance().move(tempFileToImport, destination);
-            LogEntry entry = LogEntry.build(id)
+            JournalEntry entry = JournalEntry.build(id)
                     .withCreationDate(new Date())
                     .withContent(content)
                     .withType(LogType.FILE)

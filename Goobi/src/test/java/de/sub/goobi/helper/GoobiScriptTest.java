@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.easymock.EasyMock;
 import org.goobi.beans.Institution;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Process;
 import org.goobi.beans.Ruleset;
 import org.goobi.beans.Step;
@@ -217,7 +217,7 @@ public class GoobiScriptTest extends AbstractTest {
         PowerMock.expectLastCall().times(0, 9);
         ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
         PowerMock.expectLastCall().times(0, 9);
-        ProcessManager.saveLogEntry(EasyMock.anyObject(LogEntry.class));
+        ProcessManager.saveLogEntry(EasyMock.anyObject(JournalEntry.class));
         PowerMock.replay(ProcessManager.class);
 
         PowerMock.mockStatic(Helper.class);
@@ -246,7 +246,7 @@ public class GoobiScriptTest extends AbstractTest {
         PowerMock.expectLastCall().times(0, 9);
         ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
         PowerMock.expectLastCall().times(0, 9);
-        ProcessManager.saveLogEntry(EasyMock.anyObject(LogEntry.class));
+        ProcessManager.saveLogEntry(EasyMock.anyObject(JournalEntry.class));
         PowerMock.replay(ProcessManager.class);
 
         GoobiScript script = new GoobiScript();
@@ -261,7 +261,7 @@ public class GoobiScriptTest extends AbstractTest {
         PowerMock.expectLastCall().times(0, 9);
         ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
         PowerMock.expectLastCall().times(0, 9);
-        ProcessManager.saveLogEntry(EasyMock.anyObject(LogEntry.class));
+        ProcessManager.saveLogEntry(EasyMock.anyObject(JournalEntry.class));
         PowerMock.replay(ProcessManager.class);
 
         PowerMock.mockStatic(Helper.class);
@@ -288,7 +288,7 @@ public class GoobiScriptTest extends AbstractTest {
         PowerMock.expectLastCall().anyTimes();
         ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
         PowerMock.expectLastCall().anyTimes();
-        ProcessManager.saveLogEntry(EasyMock.anyObject(LogEntry.class));
+        ProcessManager.saveLogEntry(EasyMock.anyObject(JournalEntry.class));
         PowerMock.replay(ProcessManager.class);
 
         PowerMock.mockStatic(Helper.class);

@@ -32,7 +32,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.goobi.beans.Batch;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -315,7 +315,7 @@ public class ProcessManager implements IManager, Serializable {
         return idList;
     }
 
-    public static void saveLogEntry(LogEntry entry) {
+    public static void saveLogEntry(JournalEntry entry) {
         try {
             ProcessMysqlHelper.saveLogEntry(entry);
         } catch (SQLException e) {
@@ -330,7 +330,7 @@ public class ProcessManager implements IManager, Serializable {
      * @param entry to delete
      */
 
-    public static void deleteLogEntry(LogEntry entry) {
+    public static void deleteLogEntry(JournalEntry entry) {
         try {
             ProcessMysqlHelper.deleteLogEntry(entry);
         } catch (SQLException e) {

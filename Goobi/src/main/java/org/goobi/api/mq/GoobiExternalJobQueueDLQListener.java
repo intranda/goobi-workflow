@@ -37,7 +37,7 @@ import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.LogType;
 
@@ -95,7 +95,7 @@ public class GoobiExternalJobQueueDLQListener {
                         step.setBearbeitungsende(new Date());
                         StepManager.saveStep(step);
 
-                        LogEntry logEntry = LogEntry.build(step.getProcessId())
+                        JournalEntry logEntry = JournalEntry.build(step.getProcessId())
                                 .withContent("Script ticket failed after retries")
                                 .withCreationDate(new Date())
                                 .withType(LogType.ERROR)

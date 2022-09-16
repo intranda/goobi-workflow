@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
@@ -94,7 +94,7 @@ public class GoobiScriptAddToProcessLog extends AbstractIGoobiScript implements 
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
 
-        LogEntry logEntry = new LogEntry();
+        JournalEntry logEntry = new JournalEntry();
         logEntry.setContent(parameters.get("message"));
         logEntry.setCreationDate(new Date());
         logEntry.setProcessId(p.getId());
