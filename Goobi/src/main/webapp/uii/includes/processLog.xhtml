@@ -241,22 +241,6 @@
                                                     </button>
                                                 </h:panelGroup>
                                             </td>
-                                            <h:panelGroup rendered="#{NavigationForm.showSecondLogField}">
-                                                <td>
-                                                    <h:outputText
-                                                        value="#{entry.formattedSecondContent}"
-                                                        styleClass="log_color_#{entry.type.title}"
-                                                        escape="false" />
-                                                </td>
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{NavigationForm.showThirdLogField}">
-                                                <td>
-                                                    <h:outputText
-                                                        value="#{entry.formattedThirdContent}"
-                                                        styleClass="log_color_#{entry.type.title}"
-                                                        escape="false" />
-                                                </td>
-                                            </h:panelGroup>
                                         </tr>
                                     </h:panelGroup>
                                 </ui:repeat>
@@ -280,26 +264,7 @@
 	                                value="#{process.content}" />
                             </div>
                          </div>
-                         <h:panelGroup layout="block" styleClass="row flex-row" rendered="#{NavigationForm.showThirdLogField}">
-	                         <h:outputText
-	                             styleClass="flex-label "
-	                             value="#{msgs.process_log_secondContent}:"
-	                             rendered="#{NavigationForm.showSecondLogField}" />
-	                          <h:inputText
-	                              id="addToTextArea2"
-	                              styleClass="form-control"
-	                              value="#{process.secondContent}"
-	                              rendered="#{NavigationForm.showSecondLogField}" />
-                         </h:panelGroup>
-                         <h:panelGroup layout="block" styleClass="row flex-row" rendered="#{NavigationForm.showThirdLogField}">
-                            <h:outputText
-                                styleClass="flex-label "
-                                value="#{msgs.process_log_thirdContent}:" />
-                            <h:inputText
-                                id="addToTextArea3"
-                                styleClass="form-control"
-                                value="#{process.thirdContent}"/>
-                         </h:panelGroup>
+                         
                          <div class="row flex-row">
 	                         <h:outputText
 	                             styleClass="flex-label "

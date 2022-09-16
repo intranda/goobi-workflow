@@ -47,7 +47,6 @@ import org.goobi.production.plugin.interfaces.IWorkflowPlugin;
 import org.omnifaces.cdi.Push;
 import org.omnifaces.cdi.PushContext;
 
-import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import lombok.Getter;
 import lombok.Setter;
@@ -171,14 +170,6 @@ public class NavigationForm implements Serializable{
             }
         }
         return Theme.ui;
-    }
-
-    public boolean isShowSecondLogField() {
-        return ConfigurationHelper.getInstance().isShowSecondLogField();
-    }
-
-    public boolean isShowThirdLogField() {
-        return ConfigurationHelper.getInstance().isShowThirdLogField();
     }
 
     public String setPlugin(String pluginName) {

@@ -296,7 +296,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getProcessImagesFallbackDirectoryName() {
-        return getLocalString("process.folder.images.fallback", ""); 
+        return getLocalString("process.folder.images.fallback", "");
     }
 
     public String getProcessOcrTxtDirectoryName() {
@@ -963,14 +963,6 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isShowImageComments() {
         return getLocalBoolean("ShowImageComments", false);
-    }
-
-    public boolean isShowSecondLogField() {
-        return getLocalBoolean("ProcessLogShowSecondField", false);
-    }
-
-    public boolean isShowThirdLogField() {
-        return getLocalBoolean("ProcessLogShowThirdField", false);
     }
 
     public boolean isProcesslistShowEditionData() {

@@ -665,16 +665,6 @@ public class ConfigurationHelperTest extends AbstractTest {
     }
 
     @Test
-    public void testShowSecondLogField() {
-        assertFalse(ConfigurationHelper.getInstance().isShowSecondLogField());
-    }
-
-    @Test
-    public void testShowThirdLogField() {
-        assertFalse(ConfigurationHelper.getInstance().isShowThirdLogField());
-    }
-
-    @Test
     public void testProcesslistShowEditionData() {
         assertFalse(ConfigurationHelper.getInstance().isProcesslistShowEditionData());
     }
