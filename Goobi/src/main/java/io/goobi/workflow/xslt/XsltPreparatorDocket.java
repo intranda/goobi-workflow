@@ -1141,7 +1141,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @return
      */
     private Element getJournalData(Process process) {
-        Element processLog = new Element("log", xmlns);
+        Element journal = new Element("log", xmlns);
 
         for (JournalEntry entry : process.getJournal()) {
             Element entryElement = new Element("entry", xmlns);
@@ -1174,9 +1174,9 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 entryElement.addContent(thirdContent);
                 thirdContent.setText(entry.getFilename());
             }
-            processLog.addContent(entryElement);
+            journal.addContent(entryElement);
         }
-        return processLog;
+        return journal;
     }
 
     /**

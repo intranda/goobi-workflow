@@ -672,7 +672,7 @@ public class FilterHelper {
         }
     }
 
-    protected static String filterProcessLog(String tok, boolean negate) {
+    protected static String filterProcessJournal(String tok, boolean negate) {
         String query = "";
         if (!negate) {
             query = "prozesse.ProzesseID in (select distinct processId from journal where journal.content like '" + leftTruncationCharacter
@@ -1049,7 +1049,7 @@ public class FilterHelper {
 
             } else if (tok.toLowerCase().startsWith(FilterString.PROCESSLOG)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(filterProcessLog(tok, false));
+                filter.append(filterProcessJournal(tok, false));
             } else if (tok.toLowerCase().startsWith(FilterString.BATCH) || tok.toLowerCase().startsWith(FilterString.GRUPPE)) {
                 try {
                     String substring = tok.substring(tok.indexOf(":") + 1);
@@ -1140,7 +1140,7 @@ public class FilterHelper {
                 filter.append(FilterHelper.filterWorkpiece(tok, true));
             } else if (tok.toLowerCase().startsWith("-" + FilterString.PROCESSLOG)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(filterProcessLog(tok, true));
+                filter.append(filterProcessJournal(tok, true));
             } else if (tok.toLowerCase().startsWith("-" + FilterString.INSTITUTION)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(filterInstitution(tok, true));
@@ -1238,7 +1238,7 @@ public class FilterHelper {
 
             } else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESSLOG)) {
                 filter = checkStringBuilder(filter, false);
-                filter.append(filterProcessLog(tok, false));
+                filter.append(filterProcessJournal(tok, false));
             } else if (tok.toLowerCase().startsWith("|" + FilterString.INSTITUTION)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(filterInstitution(tok, false));

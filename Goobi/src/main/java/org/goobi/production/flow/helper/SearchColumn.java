@@ -22,13 +22,13 @@ import lombok.Setter;
  */
 public class SearchColumn implements Serializable{
 
-	private static final long serialVersionUID = -3474943392910282588L;
+    private static final long serialVersionUID = -3474943392910282588L;
 
-	@Getter
-	@Setter
+    @Getter
+    @Setter
     private String value = "";
 
-	@Getter
+    @Getter
     private int order;
 
     public SearchColumn(int order) {
@@ -70,7 +70,7 @@ public class SearchColumn implements Serializable{
         } else if (value.startsWith("metadata.")) {
             return "metadata ";
         } else if (value.startsWith("log.")) {
-            return "processlog ";
+            return "journal ";
         }
         return "";
     }
@@ -96,7 +96,7 @@ public class SearchColumn implements Serializable{
         }
         if (value.startsWith("prozesseeigenschaften.")) {
             return " prozesseeigenschaften " + getTableName() + " ON prozesse.ProzesseID = " + getTableName() + ".prozesseID AND " + getTableName()
-                    + ".Titel = \"" + value.substring(value.indexOf(".") + 1) + "\"";
+            + ".Titel = \"" + value.substring(value.indexOf(".") + 1) + "\"";
 
         } else if (value.startsWith("metadata.")) {
             return " metadata " + getTableName() + " ON prozesse.ProzesseID = " + getTableName() + ".processid AND " + getTableName() + ".name = \""
@@ -104,7 +104,7 @@ public class SearchColumn implements Serializable{
 
         } else if (value.startsWith("projekte.")) {
             return " projekte " + getTableName() + " ON prozesse.ProjekteID = " + getTableName() + ".ProjekteID";
-            
+
         } else if (value.startsWith("vorlageneigenschaften.")) {
             return "vorlagen vorlagen" + order + " ON prozesse.ProzesseID = vorlagen" + order + ".ProzesseID LEFT JOIN vorlageneigenschaften "
                     + getTableName() + " ON " + getTableName() + ".vorlagenID = vorlagen" + order + ".vorlagenID AND " + getTableName() + ".Titel =\""

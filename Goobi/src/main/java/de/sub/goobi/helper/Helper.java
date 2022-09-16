@@ -232,7 +232,7 @@ public class Helper implements Serializable, ServletContextListener {
                 user = userObject.getNachVorname();
             }
         }
-        addMessageToProcessLog(processId, type, message, user);
+        addMessageToProcessJournal(processId, type, message, user);
     }
 
     public static void addMessageToProcessJournal(Integer processId, LogType type, String message, String username) {
@@ -255,12 +255,13 @@ public class Helper implements Serializable, ServletContextListener {
     public static void addMessageToProcessLog(Integer processId, LogType type, String message) {
         addMessageToProcessJournal(processId, type, message);
     }
-    
+
     /**
      * 
      * 
      * @deprecated use addMessageToProcessJournal instead
      */
+    @Deprecated
     public static void addMessageToProcessLog(Integer processId, LogType type, String message, String username) {
         addMessageToProcessJournal(processId, type, message, username);
     }

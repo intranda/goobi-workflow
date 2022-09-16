@@ -59,6 +59,8 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
                 DatabaseVersion.runSql("RENAME TABLE processlog TO journal;");
                 DatabaseVersion.runSql("ALTER TABLE journal DROP COLUMN secondContent;");
                 DatabaseVersion.runSql("ALTER TABLE journal CHANGE COLUMN thirdContent filename MEDIUMTEXT;");
+                DatabaseVersion.runSql(
+                        "update benutzergruppen set roles = REPLACE (roles, 'Workflow_Processes_Show_Processlog_File_Deletion','Workflow_Processes_Show_Journal_File_Deletion');");
             } catch (SQLException e) {
                 log.error(e);
             }

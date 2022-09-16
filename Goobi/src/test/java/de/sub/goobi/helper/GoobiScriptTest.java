@@ -177,7 +177,7 @@ public class GoobiScriptTest extends AbstractTest {
         //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
         //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
         //        Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
-        //        Helper.addMessageToProcessLog(EasyMock.anyInt(), EasyMock.anyObject(LogType.class), EasyMock.anyString());
+        //        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(LogType.class), EasyMock.anyString());
         //
         //        PowerMock.replay(Helper.class);
 
@@ -270,7 +270,7 @@ public class GoobiScriptTest extends AbstractTest {
 
         Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
 
-        Helper.addMessageToProcessLog(EasyMock.anyInt(), EasyMock.anyObject(LogType.class), EasyMock.anyString());
+        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(LogType.class), EasyMock.anyString());
 
         PowerMock.expectLastCall().anyTimes();
 
@@ -298,7 +298,7 @@ public class GoobiScriptTest extends AbstractTest {
         Helper.setFehlerMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
         Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
 
-        Helper.addMessageToProcessLog(EasyMock.anyInt(), EasyMock.anyObject(LogType.class), EasyMock.anyString());
+        Helper.addMessageToProcessJournal(EasyMock.anyInt(), EasyMock.anyObject(LogType.class), EasyMock.anyString());
 
         PowerMock.expectLastCall().anyTimes();
 
