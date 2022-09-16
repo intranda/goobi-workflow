@@ -53,6 +53,17 @@ public class GoobiDatabaseVersionListener implements ServletContextListener {
             DatabaseVersion.updateDatabase(currentVersion);
         }
 
+        // TODO after merge move this to DatabaseVersion
+        if (DatabaseVersion.checkIfTableExists("processlog")) {
+            try {
+                DatabaseVersion.runSql("RENAME TABLE processlog TO journal;");
+                DatabaseVersion.runSql("ALTER TABLE journal DROP COLUMN secondContent;");
+                DatabaseVersion.runSql("ALTER TABLE journal CHANGE COLUMN thirdContent filename MEDIUMTEXT;");
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+
         checkIndexes();
         DatabaseVersion.checkIfEmptyDatabase();
     }

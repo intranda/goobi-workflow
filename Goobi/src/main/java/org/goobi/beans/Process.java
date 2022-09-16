@@ -193,12 +193,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Getter
     @Setter
     private String content = "";
-    @Getter
-    @Setter
-    private String secondContent = "";
-    @Getter
-    @Setter
-    private String thirdContent = "";
 
     @Getter
     @Setter
@@ -1488,11 +1482,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             entry.setContent(content);
             content = "";
 
-            entry.setSecondContent(secondContent);
-            secondContent = "";
-
-            entry.setThirdContent(thirdContent);
-            thirdContent = "";
             processLog.add(entry);
 
             ProcessManager.saveLogEntry(entry);
@@ -1758,8 +1747,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         for (Path file : files) {
             boolean matchFound = false;
             for (LogEntry entry : processLog) {
-                if (entry.getType() == LogType.FILE && StringUtils.isNotBlank(entry.getThirdContent())
-                        && entry.getThirdContent().equals(file.toString())) {
+                if (entry.getType() == LogType.FILE && StringUtils.isNotBlank(entry.getFilename())
+                        && entry.getFilename().equals(file.toString())) {
                     entry.setFile(file);
                     answer.add(entry);
                     matchFound = true;
@@ -1770,8 +1759,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             if (!matchFound) {
                 LogEntry entry = new LogEntry();
                 entry.setContent(""); // comment
-                entry.setSecondContent(currentFolder); // folder
-                entry.setThirdContent(file.toString()); // absolute path
+                entry.setFilename(file.toString()); // absolute path
                 entry.setFile(file);
                 answer.add(entry);
             }
@@ -1792,7 +1780,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         Path path = entry.getFile();
         if (path == null) {
-            path = Paths.get(entry.getThirdContent());
+            path = Paths.get(entry.getFilename());
         }
         String fileName = path.getFileName().toString();
         String contentType = facesContext.getExternalContext().getMimeType(fileName);
@@ -1821,7 +1809,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public void deleteFile(LogEntry entry) {
         Path path = entry.getFile();
         if (path == null) {
-            path = Paths.get(entry.getThirdContent());
+            path = Paths.get(entry.getFilename());
         }
         // check if log entry has an id
         if (entry.getId() != null) {
@@ -1873,8 +1861,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                     .withContent(content)
                     .withType(LogType.FILE)
                     .withUsername(Helper.getCurrentUser().getNachVorname());
-            entry.setSecondContent(folder.toString());
-            entry.setThirdContent(destination.toString());
+            entry.setFilename(destination.toString());
             ProcessManager.saveLogEntry(entry);
             processLog.add(entry);
 

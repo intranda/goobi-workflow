@@ -34,21 +34,17 @@ import lombok.Data;
 public class LogEntry implements Serializable{
 
     private static final long serialVersionUID = -5624248615174083906L;
-    
-	private Integer id;
+
+    private Integer id;
     private Integer processId;
     private Date creationDate;
     private String userName;
     private LogType type;
     private String content;
-    private String secondContent;
-    private String thirdContent;
+    private String filename;
     // used only for LogType.File
     transient Path file;
 
-    public LogEntry() {
-    }
-    
     public String getFormattedCreationDate() {
         return Helper.getDateAsFormattedString(creationDate);
     }
@@ -90,8 +86,8 @@ public class LogEntry implements Serializable{
      */
 
     public String getBasename() {
-        String basename = thirdContent;
-        if (type == LogType.FILE && StringUtils.isNotBlank(thirdContent)) {
+        String basename = filename;
+        if (type == LogType.FILE && StringUtils.isNotBlank(filename)) {
             if (basename.contains("/")) {
                 basename = basename.substring(basename.lastIndexOf("/") + 1);
             }
@@ -103,19 +99,11 @@ public class LogEntry implements Serializable{
     }
 
     public boolean isExternalFile() {
-        return StringUtils.isNotBlank(thirdContent)
-                && !thirdContent.contains(ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
+        return StringUtils.isNotBlank(filename)
+                && !filename.contains(ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
     }
 
     public String getFormattedContent() {
         return content != null ? content.replace("\n", "<br/>") : null;
-    }
-
-    public String getFormattedSecondContent() {
-        return secondContent != null ? secondContent.replace("\n", "<br/>") : null;
-    }
-
-    public String getFormattedThirdContent() {
-        return thirdContent != null ? thirdContent.replace("\n", "<br/>") : null;
     }
 }

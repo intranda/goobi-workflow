@@ -222,11 +222,9 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 commentLine.setAttribute("user", entry.getUserName());
             }
             commentLine.setText(entry.getContent());
-            if (StringUtils.isNotBlank(entry.getSecondContent())) {
-                comment.setAttribute("secondField", entry.getSecondContent());
-            }
-            if (StringUtils.isNotBlank(entry.getThirdContent())) {
-                comment.setAttribute("thirdField", entry.getThirdContent());
+
+            if (StringUtils.isNotBlank(entry.getFilename())) {
+                comment.setAttribute("filename", entry.getFilename());
             }
             comment.addContent(commentLine);
         }
@@ -267,7 +265,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             property.addContent(label);
             processProperties.add(property);
         }
-        if (! processProperties.isEmpty()) {
+        if (!processProperties.isEmpty()) {
             Element properties = new Element("properties", xmlns);
             properties.addContent(processProperties);
             elements.add(properties);
@@ -349,7 +347,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                     }
                 }
             }
-            if (! templateProperties.isEmpty()) {
+            if (!templateProperties.isEmpty()) {
                 Element properties = new Element("properties", xmlns);
                 properties.addContent(templateProperties);
                 template.addContent(properties);
@@ -384,7 +382,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 property.addContent(label);
                 docProperties.add(property);
             }
-            if (! docProperties.isEmpty()) {
+            if (!docProperties.isEmpty()) {
                 Element properties = new Element("properties", xmlns);
                 properties.addContent(docProperties);
                 dd.addContent(properties);
@@ -536,10 +534,10 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                     if (entry.getContent() != null) {
                         cf.setAttribute("comment", entry.getContent());
                     }
-                    cf.setAttribute("path", entry.getThirdContent());
+                    cf.setAttribute("path", entry.getFilename());
 
-                    Path imagePath = Paths.get(entry.getThirdContent());
-                    Image image =  new Image(process, "intern", imagePath.getFileName().toString(), 0, 3000);
+                    Path imagePath = Paths.get(entry.getFilename());
+                    Image image = new Image(process, "intern", imagePath.getFileName().toString(), 0, 3000);
                     cf.setAttribute("url", image.getThumbnailUrl());
 
                     logfiles.addContent(cf);
@@ -1169,17 +1167,12 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 entryUserName.setText(entry.getUserName());
                 entryElement.addContent(entryUserName);
             }
-            // processlog.secondContent
-            if (StringUtils.isNotBlank(entry.getSecondContent())) {
-                Element secondContent = new Element("secondContent", xmlns);
-                entryElement.addContent(secondContent);
-                secondContent.setText(entry.getSecondContent());
-            }
-            // processlog.thirdContent
-            if (StringUtils.isNotBlank(entry.getThirdContent())) {
-                Element thirdContent = new Element("thirdContent", xmlns);
+
+            // processlog.filename
+            if (StringUtils.isNotBlank(entry.getFilename())) {
+                Element thirdContent = new Element("filename", xmlns);
                 entryElement.addContent(thirdContent);
-                thirdContent.setText(entry.getThirdContent());
+                thirdContent.setText(entry.getFilename());
             }
             processLog.addContent(entryElement);
         }

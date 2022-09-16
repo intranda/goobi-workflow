@@ -990,8 +990,7 @@ public class ProzesskopieForm implements Serializable {
                                 .withContent(image.getDescriptionText())
                                 .withType(LogType.FILE)
                                 .withUsername(Helper.getCurrentUser().getNachVorname());
-                        entry.setSecondContent(folder.toString());
-                        entry.setThirdContent(destination.toString());
+                        entry.setFilename(destination.toString());
                         ProcessManager.saveLogEntry(entry);
                     }
                 }

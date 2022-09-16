@@ -223,6 +223,7 @@ public class Helper implements Serializable, ServletContextListener {
         setMeldung(control, meldung, beschreibung, true, true);
     }
 
+
     public static void addMessageToProcessLog(Integer processId, LogType type, String message) {
         LoginBean login = getLoginBean();
         String user = "- automatic -";

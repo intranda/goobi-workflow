@@ -80,8 +80,8 @@ import lombok.extern.log4j.Log4j2;
 public class BatchStepHelper implements Serializable{
 
     private static final long serialVersionUID = -4104323465193019618L;
-    
-	@Getter
+
+    @Getter
     @Setter
     private List<Step> steps;
     @Getter
@@ -114,12 +114,7 @@ public class BatchStepHelper implements Serializable{
     @Getter
     @Setter
     private String content = "";
-    @Getter
-    @Setter
-    private String secondContent = "";
-    @Getter
-    @Setter
-    private String thirdContent = "";
+
     @Getter
     private HashMap<Integer, Boolean> containerAccess;
 
@@ -699,8 +694,6 @@ public class BatchStepHelper implements Serializable{
             User user = Helper.getCurrentUser();
             LogEntry logEntry = new LogEntry();
             logEntry.setContent(content);
-            logEntry.setSecondContent(secondContent);
-            logEntry.setThirdContent(thirdContent);
             logEntry.setCreationDate(new Date());
             logEntry.setProcessId(currentStep.getProzess().getId());
             logEntry.setType(LogType.USER);
@@ -708,8 +701,6 @@ public class BatchStepHelper implements Serializable{
             ProcessManager.saveLogEntry(logEntry);
             currentStep.getProzess().getProcessLog().add(logEntry);
             this.content = "";
-            secondContent = "";
-            thirdContent = "";
         }
     }
 
@@ -719,8 +710,6 @@ public class BatchStepHelper implements Serializable{
             for (Step s : this.steps) {
                 LogEntry logEntry = new LogEntry();
                 logEntry.setContent(content);
-                logEntry.setSecondContent(secondContent);
-                logEntry.setThirdContent(thirdContent);
                 logEntry.setCreationDate(new Date());
                 logEntry.setProcessId(s.getProzess().getId());
                 logEntry.setType(LogType.USER);
@@ -729,8 +718,6 @@ public class BatchStepHelper implements Serializable{
                 ProcessManager.saveLogEntry(logEntry);
             }
             this.content = "";
-            secondContent = "";
-            thirdContent = "";
         }
     }
 

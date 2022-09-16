@@ -166,12 +166,6 @@ public class StepBean extends BasicBean implements Serializable {
     @Getter
     @Setter
     private String content = "";
-    @Getter
-    @Setter
-    private String secondContent = "";
-    @Getter
-    @Setter
-    private String thirdContent = "";
 
     private IExportPlugin exportPlugin = null;
 
@@ -420,7 +414,7 @@ public class StepBean extends BasicBean implements Serializable {
                     try {
                         Paths.get(s.getProzess().getImagesOrigDirectory(false));
                     } catch (Exception e1) {
-                    	// TODO: what should be done?
+                        // TODO: what should be done?
                     }
 
                     this.myDav.DownloadToHome(s.getProzess(), s.getId().intValue(), !s.isTypImagesSchreiben());
@@ -505,7 +499,7 @@ public class StepBean extends BasicBean implements Serializable {
              */
             StepManager.saveStep(mySchritt);
         } catch (DAOException e) {
-        	// TODO: what should be done?
+            // TODO: what should be done?
         }
         return FilterAlleStart();
     }
@@ -1127,8 +1121,6 @@ public class StepBean extends BasicBean implements Serializable {
             User user = Helper.getCurrentUser();
             LogEntry logEntry = new LogEntry();
             logEntry.setContent(content);
-            logEntry.setSecondContent(secondContent);
-            logEntry.setThirdContent(thirdContent);
             logEntry.setCreationDate(new Date());
             logEntry.setProcessId(mySchritt.getProzess().getId());
             logEntry.setType(LogType.USER);
@@ -1136,8 +1128,6 @@ public class StepBean extends BasicBean implements Serializable {
             ProcessManager.saveLogEntry(logEntry);
             mySchritt.getProzess().getProcessLog().add(logEntry);
             this.content = "";
-            secondContent = "";
-            thirdContent = "";
         }
     }
 
