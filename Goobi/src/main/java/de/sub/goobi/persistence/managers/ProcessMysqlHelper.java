@@ -136,7 +136,7 @@ class ProcessMysqlHelper implements Serializable {
                 TemplateManager.saveTemplate(template);
             }
 
-            for (JournalEntry logEntry : o.getProcessLog()) {
+            for (JournalEntry logEntry : o.getJournal()) {
                 saveLogEntry(logEntry);
             }
 

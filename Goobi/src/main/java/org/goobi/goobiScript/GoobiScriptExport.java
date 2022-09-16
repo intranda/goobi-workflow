@@ -121,7 +121,7 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
                 }
 
                 boolean success = export.startExport(p);
-                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Export " + logextension + " using GoobiScript.", username);
+                Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Export " + logextension + " using GoobiScript.", username);
                 log.info("Export " + logextension + " using GoobiScript for process with ID " + p.getId());
 
                 // set status to result of command

@@ -699,7 +699,7 @@ public class BatchStepHelper implements Serializable{
             logEntry.setType(LogType.USER);
             logEntry.setUserName(user.getNachVorname());
             ProcessManager.saveLogEntry(logEntry);
-            currentStep.getProzess().getProcessLog().add(logEntry);
+            currentStep.getProzess().getJournal().add(logEntry);
             this.content = "";
         }
     }
@@ -714,7 +714,7 @@ public class BatchStepHelper implements Serializable{
                 logEntry.setProcessId(s.getProzess().getId());
                 logEntry.setType(LogType.USER);
                 logEntry.setUserName(user.getNachVorname());
-                s.getProzess().getProcessLog().add(logEntry);
+                s.getProzess().getJournal().add(logEntry);
                 ProcessManager.saveLogEntry(logEntry);
             }
             this.content = "";

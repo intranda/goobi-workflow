@@ -798,7 +798,7 @@ public class ProzesskopieForm implements Serializable {
             logEntry.setType(LogType.INFO);
             logEntry.setUserName(user.getNachVorname());
             ProcessManager.saveLogEntry(logEntry);
-            prozessKopie.getProcessLog().add(logEntry);
+            prozessKopie.getJournal().add(logEntry);
         }
 
         /*

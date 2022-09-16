@@ -223,8 +223,7 @@ public class Helper implements Serializable, ServletContextListener {
         setMeldung(control, meldung, beschreibung, true, true);
     }
 
-
-    public static void addMessageToProcessLog(Integer processId, LogType type, String message) {
+    public static void addMessageToProcessJournal(Integer processId, LogType type, String message) {
         LoginBean login = getLoginBean();
         String user = "- automatic -";
         if (login != null) {
@@ -236,7 +235,7 @@ public class Helper implements Serializable, ServletContextListener {
         addMessageToProcessLog(processId, type, message, user);
     }
 
-    public static void addMessageToProcessLog(Integer processId, LogType type, String message, String username) {
+    public static void addMessageToProcessJournal(Integer processId, LogType type, String message, String username) {
         JournalEntry logEntry = new JournalEntry();
         logEntry.setContent(message);
         logEntry.setCreationDate(new Date());
@@ -244,6 +243,26 @@ public class Helper implements Serializable, ServletContextListener {
         logEntry.setType(type);
         logEntry.setUserName(username);
         ProcessManager.saveLogEntry(logEntry);
+    }
+
+    /**
+     * 
+     * 
+     * @deprecated use addMessageToProcessJournal instead
+     */
+
+    @Deprecated
+    public static void addMessageToProcessLog(Integer processId, LogType type, String message) {
+        addMessageToProcessJournal(processId, type, message);
+    }
+    
+    /**
+     * 
+     * 
+     * @deprecated use addMessageToProcessJournal instead
+     */
+    public static void addMessageToProcessLog(Integer processId, LogType type, String message, String username) {
+        addMessageToProcessJournal(processId, type, message, username);
     }
 
     /**

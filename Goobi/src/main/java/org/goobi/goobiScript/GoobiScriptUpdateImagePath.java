@@ -95,7 +95,7 @@ public class GoobiScriptUpdateImagePath extends AbstractIGoobiScript implements 
             }
             myRdf.getDigitalDocument().getPhysicalDocStruct().addMetadata(newmd);
             p.writeMetadataFile(myRdf);
-            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "ImagePath updated using GoobiScript.", username);
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "ImagePath updated using GoobiScript.", username);
             log.info("ImagePath updated using GoobiScript for process with ID " + p.getId());
             gsr.setResultMessage("ImagePath updated successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);

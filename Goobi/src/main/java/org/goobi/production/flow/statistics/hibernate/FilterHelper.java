@@ -675,10 +675,10 @@ public class FilterHelper {
     protected static String filterProcessLog(String tok, boolean negate) {
         String query = "";
         if (!negate) {
-            query = "prozesse.ProzesseID in (select distinct processId from processlog where processlog.content like '" + leftTruncationCharacter
+            query = "prozesse.ProzesseID in (select distinct processId from journal where journal.content like '" + leftTruncationCharacter
                     + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
         } else {
-            query = "prozesse.ProzesseID not in (select distinct processId from processlog where processlog.content like '" + leftTruncationCharacter
+            query = "prozesse.ProzesseID not in (select distinct processId from journal where journal.content like '" + leftTruncationCharacter
                     + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
         }
 

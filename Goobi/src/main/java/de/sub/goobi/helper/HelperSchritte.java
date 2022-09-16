@@ -134,7 +134,7 @@ public class HelperSchritte {
         currentStep.setBearbeitungsende(myDate);
         try {
             StepManager.saveStep(currentStep);
-            Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + currentStep.getTitel() + "' closed.");
+            Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG, "Step '" + currentStep.getTitel() + "' closed.");
         } catch (DAOException e) {
             log.error("An exception occurred while closing the step '" + currentStep.getTitel() + "' of process with ID " + processId, e);
         }
@@ -228,7 +228,7 @@ public class HelperSchritte {
                             }
                             try {
                                 StepManager.saveStep(myStep);
-                                Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + myStep.getTitel() + "' opened.");
+                                Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG, "Step '" + myStep.getTitel() + "' opened.");
                             } catch (DAOException e) {
                                 log.error("An exception occurred while saving a step for process with ID " + myStep.getProcessId(), e);
                             }
@@ -269,7 +269,7 @@ public class HelperSchritte {
                     HistoryEventType.stepInWork.getValue(), automaticStep.getProzess().getId());
             try {
                 StepManager.saveStep(automaticStep);
-                Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG,
+                Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG,
                         "Step '" + automaticStep.getTitel() + "' started to work automatically.");
             } catch (DAOException e) {
                 log.error("An exception occurred while saving an automatic step for process with ID " + automaticStep.getProcessId(), e);
@@ -573,7 +573,7 @@ public class HelperSchritte {
                     .withCreationDate(new Date())
                     .withUsername("automatic");
             ProcessManager.saveLogEntry(errorEntry);
-            Helper.addMessageToProcessLog(step.getProzess().getId(), LogType.ERROR, message);
+            Helper.addMessageToProcessJournal(step.getProzess().getId(), LogType.ERROR, message);
             return new ShellScriptReturnValue(-2, null, null);
         }
         ShellScriptReturnValue rueckgabe = null;
@@ -584,7 +584,7 @@ public class HelperSchritte {
             message.append("Calling the shell: ");
             message.append(script);
 
-            Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, message.toString());
+            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, message.toString());
 
             rueckgabe = ShellScript.callShell(parameterList, step.getProcessId());
             if (automatic) {
@@ -597,7 +597,7 @@ public class HelperSchritte {
                         if (!ivp.validate()) {
                             step.setBearbeitungsstatusEnum(StepStatus.OPEN);
                             StepManager.saveStep(step);
-                            Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, "Step '" + step.getTitel() + "' opened.");
+                            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, "Step '" + step.getTitel() + "' opened.");
                         } else {
                             CloseStepObjectAutomatic(step);
                         }
@@ -612,7 +612,7 @@ public class HelperSchritte {
                         step.setBearbeitungsende(new Date());
                         SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.ERROR);
                         StepManager.saveStep(step);
-                        Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
+                        Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR,
                                 "Script for '" + step.getTitel() + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode()
                                 + ". The script returned: " + rueckgabe.getErrorText());
                         log.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
@@ -622,7 +622,7 @@ public class HelperSchritte {
             }
         } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
             Helper.setFehlerMeldung("An exception occured while running a script", e.getMessage());
-            Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
+            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR,
                     "Exception while executing a script for '" + step.getTitel() + "': " + e.getMessage());
             log.error("Exception occurred while running a script for process with ID " + step.getProcessId(), e);
         }
@@ -671,18 +671,18 @@ public class HelperSchritte {
         try {
             boolean validate = dms.startExport(step.getProzess());
             if (validate) {
-                Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG,
+                Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG,
                         "The export for process with ID '" + step.getProcessId() + "' was done successfully.");
                 CloseStepObjectAutomatic(step);
             } else {
-                Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
+                Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
                 + "' was cancelled because of validation errors: " + dms.getProblems().toString());
                 errorStep(step);
             }
             return validate;
         } catch (DAOException | UGHException | SwapException | IOException | ExportFileException | DocStructHasNoTypeException | UghHelperException | InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is handled in the export task
             log.error("Exception occurred while trying to export process with ID " + step.getProcessId(), e);
-            Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
+            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR,
                     "An exception occurred during the export for process with ID " + step.getProcessId() + ": " + e.getMessage());
             errorStep(step);
             return false;

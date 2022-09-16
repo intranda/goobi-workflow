@@ -122,7 +122,7 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
                 s.setPrioritaet(prio);
                 try {
                     StepManager.saveStep(s);
-                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                    Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                             "Changed priority of step '" + s.getTitel() + "' to '" + s.getPrioritaet() + "' using GoobiScript.",
                             username);
                     log.info("Changed priority of step '" + s.getTitel() + "' to '" + s.getPrioritaet()

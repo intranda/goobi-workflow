@@ -173,7 +173,7 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
             addMetadata(dsList, parameters.get("field"), newvalue, p.getRegelsatz().getPreferences(), ignoreErrors);
             p.writeMetadataFile(ff);
             Thread.sleep(2000);
-            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                     "Metadata added using GoobiScript: " + parameters.get("field") + " - " + parameters.get("value"), username);
             log.info("Metadata added using GoobiScript for process with ID " + p.getId());
             gsr.setResultMessage("Metadata added successfully.");
@@ -181,7 +181,7 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e1) {
-            Helper.addMessageToProcessLog(p.getId(), LogType.ERROR,
+            Helper.addMessageToProcessJournal(p.getId(), LogType.ERROR,
                     "Problem while adding the metadata using GoobiScript for process with id: " + p.getId(), username);
             log.error("Problem while adding the metadata using GoobiScript for process with id: " + p.getId(), e1);
             gsr.setResultMessage("Error while adding metadata: " + e1.getMessage());

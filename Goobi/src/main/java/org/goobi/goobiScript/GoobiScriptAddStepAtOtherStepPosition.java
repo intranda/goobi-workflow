@@ -195,7 +195,7 @@ public class GoobiScriptAddStepAtOtherStepPosition extends AbstractIGoobiScript 
         p.getSchritte().add(s);
         try {
             ProcessManager.saveProcess(p);
-            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                     "Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge() + "' to process using GoobiScript.",
                     username);
             log.info("Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge()

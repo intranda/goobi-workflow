@@ -1126,7 +1126,7 @@ public class StepBean extends BasicBean implements Serializable {
             logEntry.setType(LogType.USER);
             logEntry.setUserName(user.getNachVorname());
             ProcessManager.saveLogEntry(logEntry);
-            mySchritt.getProzess().getProcessLog().add(logEntry);
+            mySchritt.getProzess().getJournal().add(logEntry);
             this.content = "";
         }
     }

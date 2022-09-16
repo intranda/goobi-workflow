@@ -104,7 +104,7 @@ public class GoobiScriptMoveWorkflowForward extends AbstractIGoobiScript impleme
                     } else {
                         ProcessManager.saveProcess(p);
                     }
-                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                    Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                             "Status changed using GoobiScript mass manipulation for step " + so.getTitel());
                     break;
                 }

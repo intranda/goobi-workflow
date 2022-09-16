@@ -109,7 +109,7 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
                         myBenutzer.add(myUser);
                         try {
                             StepManager.saveStep(s);
-                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                                     "Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' using GoobiScript.", username);
                             log.info("Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel()
                             + "' using GoobiScript for process with ID " + p.getId());

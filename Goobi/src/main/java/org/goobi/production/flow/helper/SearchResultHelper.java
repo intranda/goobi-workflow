@@ -344,7 +344,7 @@ public class SearchResultHelper {
 
         if (includeLog) {
             sb.append(
-                    " left join processlog log on log.processid = prozesse.ProzesseID  and log.id = (select max(id) from processlog where processid = prozesse.ProzesseID and type  = 'error') ");
+                    " left join journal log on log.processid = prozesse.ProzesseID  and log.id = (select max(id) from processlog where processid = prozesse.ProzesseID and type  = 'error') ");
         }
 
         boolean leftJoin = false;

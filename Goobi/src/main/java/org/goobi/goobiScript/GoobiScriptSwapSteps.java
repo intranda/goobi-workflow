@@ -129,7 +129,7 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
             try {
                 StepManager.saveStep(s1);
                 StepManager.saveStep(s2);
-                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                         "Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "' using GoobiScript.", username);
                 log.info("Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel()
                 + "' using GoobiScript for process with ID " + p.getId());

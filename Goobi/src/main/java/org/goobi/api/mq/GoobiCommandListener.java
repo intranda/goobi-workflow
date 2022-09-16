@@ -146,6 +146,7 @@ public class GoobiCommandListener {
                 }
                 break;
             case "addToProcessLog":
+            case "addToProcessJournal":
                 try {
                     if (JwtHelper.verifyChangeStepToken(token, stepId)) {
                         // add to process log

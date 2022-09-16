@@ -63,7 +63,7 @@ public class BeanHelper implements Serializable{
 
     private static final long serialVersionUID = 8661143513583015230L;
 
-	public void EigenschaftHinzufuegen(Process inProzess, String inTitel, String inWert) {
+    public void EigenschaftHinzufuegen(Process inProzess, String inTitel, String inWert) {
         Processproperty eig = new Processproperty();
         eig.setTitel(inTitel);
         eig.setWert(inWert);
@@ -339,7 +339,7 @@ public class BeanHelper implements Serializable{
         logEntry.setType(LogType.DEBUG);
         User user = Helper.getCurrentUser();
         logEntry.setUserName(user != null ? user.getNachVorname() : "");
-        processToChange.getProcessLog().add(logEntry);
+        processToChange.getJournal().add(logEntry);
 
         try {
             // if no open task was found, open first locked  task

@@ -183,7 +183,7 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
                     searchFieldIsRegularExpression);
             p.writeMetadataFile(ff);
             Thread.sleep(2000);
-            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                     "Metadata changed using GoobiScript: " + parameters.get("field") + " - " + parameters.get("search") + " - " + parameters.get("replace"), username);
             log.info("Metadata changed using GoobiScript for process with ID " + p.getId());
             gsr.setResultMessage("Metadata changed successfully.");

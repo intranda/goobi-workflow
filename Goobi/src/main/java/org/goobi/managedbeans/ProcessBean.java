@@ -501,7 +501,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         } catch (Exception e) {
             Helper.setFehlerMeldung("Can not delete metadata directory", e);
         }
-        Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG, "Deleted content for this process in process details.");
+        Helper.addMessageToProcessJournal(myProzess.getId(), LogType.DEBUG, "Deleted content for this process in process details.");
 
         Helper.setMeldung("Content deleted");
         return "";
@@ -861,7 +861,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     private void deleteSymlinksFromUserHomes() {
-        Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG, "Removed links in home directories for all users in process details.");
+        Helper.addMessageToProcessJournal(myProzess.getId(), LogType.DEBUG, "Removed links in home directories for all users in process details.");
 
         WebDav myDav = new WebDav();
         /* alle Benutzer */
@@ -997,7 +997,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         ExportMets export = new ExportMets();
         try {
             export.startExport(this.myProzess);
-            Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started METS export using 'ExportMets'.");
+            Helper.addMessageToProcessJournal(this.myProzess.getId(), LogType.DEBUG, "Started METS export using 'ExportMets'.");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e) {
@@ -1012,7 +1012,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         ExportMets export = new ExportMets();
         try {
             export.downloadMets(this.myProzess);
-            Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started METS export using 'ExportMets'.");
+            Helper.addMessageToProcessJournal(this.myProzess.getId(), LogType.DEBUG, "Started METS export using 'ExportMets'.");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e) {
@@ -1027,7 +1027,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         ExportPdf export = new ExportPdf();
         try {
             export.startExport(this.myProzess);
-            Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Started PDF export using 'ExportPdf'.");
+            Helper.addMessageToProcessJournal(this.myProzess.getId(), LogType.DEBUG, "Started PDF export using 'ExportPdf'.");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e) {
@@ -1065,7 +1065,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
         if (export == null) {
             export = new ExportDms();
-            Helper.addMessageToProcessLog(process.getId(), LogType.DEBUG, "Started export using 'ExportDMS'.");
+            Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, "Started export using 'ExportDMS'.");
         }
         try {
             export.startExport(process);
@@ -1116,7 +1116,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
         try {
             export.startExport(proz);
-            Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "Started export using 'ExportDMSSelection'.");
+            Helper.addMessageToProcessJournal(proz.getId(), LogType.DEBUG, "Started export using 'ExportDMSSelection'.");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e) {
@@ -1146,7 +1146,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         WebDav myDav = new WebDav();
         myDav.UploadFromHome(this.myProzess);
         Helper.setMeldung(null, "directoryRemoved", this.myProzess.getTitel());
-        Helper.addMessageToProcessLog(this.myProzess.getId(), LogType.DEBUG, "Process uploaded from home directory via process list.");
+        Helper.addMessageToProcessJournal(this.myProzess.getId(), LogType.DEBUG, "Process uploaded from home directory via process list.");
         return "";
     }
 
@@ -1162,13 +1162,13 @@ public class ProcessBean extends BasicBean implements Serializable {
         if (!p.isImageFolderInUse()) {
             WebDav myDav = new WebDav();
             myDav.DownloadToHome(p, 0, false);
-            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Process downloaded into home directory incl. writing access from process list.");
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Process downloaded into home directory incl. writing access from process list.");
         } else {
             Helper.setMeldung(null, Helper.getTranslation("directory ") + " " + p.getTitel() + " " + Helper.getTranslation("isInUse"),
                     p.getImageFolderInUseUser().getNachVorname());
             WebDav myDav = new WebDav();
             myDav.DownloadToHome(p, 0, true);
-            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Process downloaded into home directory with reading access from process list.");
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Process downloaded into home directory with reading access from process list.");
         }
     }
 
@@ -1212,7 +1212,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         if (this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.DONE && this.mySchritt.getBearbeitungsstatusEnum() != StepStatus.DEACTIVATED) {
             this.mySchritt.setBearbeitungsstatusUp();
             this.mySchritt.setEditTypeEnum(StepEditType.ADMIN);
-            Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG, "Changed status for step '" + mySchritt.getTitel() + "' to "
+            Helper.addMessageToProcessJournal(mySchritt.getProcessId(), LogType.DEBUG, "Changed status for step '" + mySchritt.getTitel() + "' to "
                     + mySchritt.getBearbeitungsstatusAsString() + " in process details.");
             if (this.mySchritt.getBearbeitungsstatusEnum() == StepStatus.DONE) {
                 new HelperSchritte().CloseStepObjectAutomatic(mySchritt);
@@ -1234,7 +1234,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         mySchritt.setBearbeitungszeitpunkt(new Date());
 
         this.mySchritt.setBearbeitungsstatusDown();
-        Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG,
+        Helper.addMessageToProcessJournal(mySchritt.getProcessId(), LogType.DEBUG,
                 "Changed status for step '" + mySchritt.getTitel() + "' to " + mySchritt.getBearbeitungsstatusAsString() + " in process details.");
         try {
             StepManager.saveStep(mySchritt);
@@ -1391,7 +1391,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         try {
             StepManager.saveStep(step);
             String message = "Changed step order for step '" + step.getTitel() + "' to position " + step.getReihenfolge() + " in process details.";
-            Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, message);
+            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, message);
             // set list to null to reload list of steps in new order
             this.myProzess.setSchritte(null);
         } catch (DAOException e) {
@@ -2549,7 +2549,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             } else if (mySchritt.isDelayStep()) {
                 Helper.setFehlerMeldung("cannotStartPlugin");
             } else {
-                Helper.addMessageToProcessLog(mySchritt.getProcessId(), LogType.DEBUG,
+                Helper.addMessageToProcessJournal(mySchritt.getProcessId(), LogType.DEBUG,
                         "Plugin " + mySchritt.getStepPlugin() + " was executed from process details");
                 currentPlugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, mySchritt.getStepPlugin());
                 if (currentPlugin != null) {

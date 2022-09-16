@@ -258,7 +258,7 @@ public class ShellScript {
             for (String line : s.getStdOut()) {
                 outputText += line + "\n";
             }
-            Helper.addMessageToProcessLog(processID, LogType.DEBUG, "Script '" + scriptname + "' was executed with result: " + outputText);
+            Helper.addMessageToProcessJournal(processID, LogType.DEBUG, "Script '" + scriptname + "' was executed with result: " + outputText);
             if (!outputText.isEmpty()) {
                 Helper.setMeldung(outputText);
             }
@@ -267,12 +267,12 @@ public class ShellScript {
                 for (String line : s.getStdErr()) {
                     errorText += line + "\n";
                 }
-                Helper.addMessageToProcessLog(processID, LogType.ERROR, "Error occured while executing script '" + scriptname + "': " + errorText);
+                Helper.addMessageToProcessJournal(processID, LogType.ERROR, "Error occured while executing script '" + scriptname + "': " + errorText);
                 Helper.setFehlerMeldung(errorText);
             }
         } catch (FileNotFoundException e) {
             log.error("FileNotFoundException in callShell2()", e);
-            Helper.addMessageToProcessLog(processID, LogType.ERROR,
+            Helper.addMessageToProcessJournal(processID, LogType.ERROR,
                     "Exception occured while executing script '" + scriptname + "': " + e.getMessage());
             Helper.setFehlerMeldung("Couldn't find script file in callShell2(), error", e.getMessage());
         }
@@ -326,7 +326,7 @@ public class ShellScript {
             for (String line : s.getStdOut()) {
                 outputMessage += line + "\n";
             }
-            Helper.addMessageToProcessLog(processID, LogType.DEBUG,
+            Helper.addMessageToProcessJournal(processID, LogType.DEBUG,
                     "Script '" + nonSpacesafeScriptingCommand + "' was executed with result: " + outputMessage);
             if (StringUtils.isNotBlank(outputMessage)) {
                 Helper.setMeldung(outputMessage);
@@ -337,7 +337,7 @@ public class ShellScript {
                 for (String line : s.getStdErr()) {
                     errorMessage += line + "\n";
                 }
-                Helper.addMessageToProcessLog(processID, LogType.ERROR,
+                Helper.addMessageToProcessJournal(processID, LogType.ERROR,
                         "Error occured while executing script '" + nonSpacesafeScriptingCommand + "': " + errorMessage);
                 if (StringUtils.isNotBlank(errorMessage)) {
                     Helper.setFehlerMeldung(errorMessage);
@@ -345,7 +345,7 @@ public class ShellScript {
             }
         } catch (FileNotFoundException e) {
             log.error("FileNotFoundException in callShell2()", e);
-            Helper.addMessageToProcessLog(processID, LogType.ERROR,
+            Helper.addMessageToProcessJournal(processID, LogType.ERROR,
                     "Exception occured while executing script '" + nonSpacesafeScriptingCommand + "': " + e.getMessage());
             Helper.setFehlerMeldung("Couldn't find script file in callShell2(), error", e.getMessage());
         }

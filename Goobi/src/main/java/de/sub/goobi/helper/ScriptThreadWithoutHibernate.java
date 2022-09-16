@@ -100,7 +100,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
                 if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
                     this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                     String message = "Step '" + this.step.getTitel() + "' should be executed in a message queue but message queues are switched off.";
-                    Helper.addMessageToProcessLog(this.step.getProzess().getId(), LogType.ERROR, message);
+                    Helper.addMessageToProcessJournal(this.step.getProzess().getId(), LogType.ERROR, message);
                     log.error(message);
                     try {
                         StepManager.saveStep(this.step);

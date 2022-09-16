@@ -214,7 +214,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         // add user comments from the process log
         Element comment = new Element("comments", xmlns);
-        List<JournalEntry> logEntry = process.getProcessLog();
+        List<JournalEntry> logEntry = process.getJournal();
         for (JournalEntry entry : logEntry) {
             Element commentLine = new Element("comment", xmlns);
             commentLine.setAttribute("type", entry.getType().getTitle());
@@ -528,7 +528,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             }
             // all log files together with their comments
             Element logfiles = new Element("log", xmlns);
-            for (JournalEntry entry : process.getProcessLog()) {
+            for (JournalEntry entry : process.getJournal()) {
                 if (entry.getType() == LogType.FILE) {
                     Element cf = new Element("file", xmlns);
                     if (entry.getContent() != null) {
@@ -814,8 +814,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         rootElement.addContent(getProjectData(process));
 
         // process log
-        if (process.getProcessLog() != null && !process.getProcessLog().isEmpty()) {
-            rootElement.addContent(getProcessLogData(process));
+        if (process.getJournal() != null && !process.getJournal().isEmpty()) {
+            rootElement.addContent(getJournalData(process));
         }
 
         // process properties
@@ -1140,10 +1140,10 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @param process
      * @return
      */
-    private Element getProcessLogData(Process process) {
+    private Element getJournalData(Process process) {
         Element processLog = new Element("log", xmlns);
 
-        for (JournalEntry entry : process.getProcessLog()) {
+        for (JournalEntry entry : process.getJournal()) {
             Element entryElement = new Element("entry", xmlns);
             // processlog.id
             entryElement.setAttribute("id", String.valueOf(entry.getId()));

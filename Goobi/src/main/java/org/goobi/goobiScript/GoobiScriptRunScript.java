@@ -96,7 +96,7 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
                     if (step.getAllScripts().containsKey(scriptname)) {
                         String path = step.getAllScripts().get(scriptname);
                         ShellScriptReturnValue returncode = hs.executeScriptForStepObject(so, path, false);
-                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                                 "Script '" + scriptname + "' for step '" + steptitle + "' executed using GoobiScript.", username);
                         log.info("Script '" + scriptname + "' for step '" + steptitle
                                 + "' executed using GoobiScript for process with ID " + p.getId());
@@ -115,7 +115,7 @@ public class GoobiScriptRunScript extends AbstractIGoobiScript implements IGoobi
                     }
                 } else {
                     ShellScriptReturnValue returncode = hs.executeAllScriptsForStep(so, false);
-                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                    Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                             "All scripts for step '" + steptitle + "' executed using GoobiScript.", username);
                     log.info("All scripts for step '" + steptitle + "' executed using GoobiScript for process with ID " + p.getId());
                     if (returncode.getReturnCode() == 0 || returncode.getReturnCode() == 98 || returncode.getReturnCode() == 99) {

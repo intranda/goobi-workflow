@@ -338,8 +338,8 @@ class UserMysqlHelper implements Serializable {
                 }
                 run.update(connection, deactivateUserQuery.toString());
 
-                String processlogQuery = "UPDATE journal SET userName = 'deleted user' WHERE userName = ?";
-                run.update(connection, processlogQuery, currentUserName);
+                String journalQuery = "UPDATE journal SET userName = 'deleted user' WHERE userName = ?";
+                run.update(connection, journalQuery, currentUserName);
 
             } finally {
                 if (connection != null) {

@@ -170,7 +170,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     @Getter
     @Setter
-    private List<JournalEntry> processLog = new ArrayList<>();
+    private List<JournalEntry> journal = new ArrayList<>();
 
     private BeanHelper bhelp = new BeanHelper();
 
@@ -1482,7 +1482,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             entry.setContent(content);
             content = "";
 
-            processLog.add(entry);
+            journal.add(entry);
 
             ProcessManager.saveLogEntry(entry);
         }
@@ -1746,9 +1746,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         // check if LogEntry exist
         for (Path file : files) {
             boolean matchFound = false;
-            for (JournalEntry entry : processLog) {
-                if (entry.getType() == LogType.FILE && StringUtils.isNotBlank(entry.getFilename())
-                        && entry.getFilename().equals(file.toString())) {
+            for (JournalEntry entry : journal) {
+                if (entry.getType() == LogType.FILE && StringUtils.isNotBlank(entry.getFilename()) && entry.getFilename().equals(file.toString())) {
                     entry.setFile(file);
                     answer.add(entry);
                     matchFound = true;
@@ -1816,7 +1815,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             // if yes, delete entry
             String filename = entry.getBasename();
 
-            processLog.remove(entry);
+            journal.remove(entry);
             ProcessManager.deleteLogEntry(entry);
 
             // create a new entry to document the deletion
@@ -1825,7 +1824,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                     .withCreationDate(new Date())
                     .withType(LogType.INFO)
                     .withUsername(Helper.getCurrentUser().getNachVorname());
-            processLog.add(deletionInfo);
+            journal.add(deletionInfo);
             ProcessManager.saveLogEntry(deletionInfo);
         }
         // delete file
@@ -1863,7 +1862,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                     .withUsername(Helper.getCurrentUser().getNachVorname());
             entry.setFilename(destination.toString());
             ProcessManager.saveLogEntry(entry);
-            processLog.add(entry);
+            journal.add(entry);
 
         } catch (SwapException | IOException e) {
             log.error(e);
@@ -2027,7 +2026,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 MetadataType mdt = ughhelp.getMetadataType(this, "pathimagefiles");
                 DocStruct physical = fileFormat.getDigitalDocument().getPhysicalDocStruct();
                 List<? extends ugh.dl.Metadata> alleImagepfade = physical.getAllMetadataByType(mdt);
-                if (! alleImagepfade.isEmpty()) {
+                if (!alleImagepfade.isEmpty()) {
                     for (Metadata md : alleImagepfade) {
                         fileFormat.getDigitalDocument().getPhysicalDocStruct().getAllMetadata().remove(md);
                     }
@@ -2245,4 +2244,25 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 .map(p -> Paths.get(p).getFileName().toString().replace(".xml", ""))
                 .collect(Collectors.toList());
     }
+
+    /**
+     * 
+     * @deprecated use getJournal() instead
+     */
+
+    @Deprecated
+    public List<JournalEntry> getProcessLog() {
+        return journal;
+    }
+
+    /**
+     * 
+     * @deprecated use setJournal() instead
+     */
+
+    @Deprecated
+    public void setProcessLog(List<JournalEntry> journal) {
+        this.journal = journal;
+    }
+
 }

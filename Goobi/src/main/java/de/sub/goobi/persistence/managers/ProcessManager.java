@@ -323,7 +323,6 @@ public class ProcessManager implements IManager, Serializable {
         }
     }
 
-
     /**
      * Delete a single log entry from process log
      * 
@@ -337,7 +336,6 @@ public class ProcessManager implements IManager, Serializable {
             log.error("Cannot not update process log for process with id " + entry.getProcessId(), e);
         }
     }
-
 
     public static ResultSetHandler<Process> resultSetToProcessHandler = new ResultSetHandler<Process>() {
         @Override
@@ -359,7 +357,6 @@ public class ProcessManager implements IManager, Serializable {
             return null;
         }
     };
-
 
     public static ResultSetHandler<List<Process>> resultSetToProcessListHandler = new ResultSetHandler<List<Process>>() {
         @Override
@@ -413,7 +410,7 @@ public class ProcessManager implements IManager, Serializable {
         }
         p.setDocket(DocketManager.getDocketById(rs.getInt("docketID")));
 
-        p.setProcessLog(ProcessMysqlHelper.getLogEntriesForProcess(p.getId()));
+        p.setJournal(ProcessMysqlHelper.getLogEntriesForProcess(p.getId()));
 
         p.setMediaFolderExists(rs.getBoolean("mediaFolderExists"));
 

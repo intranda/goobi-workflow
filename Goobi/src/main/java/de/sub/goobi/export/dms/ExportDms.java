@@ -68,11 +68,12 @@ import ugh.exceptions.WriteException;
 
 @Log4j2
 public class ExportDms extends ExportMets implements IExportPlugin {
+    private static final long serialVersionUID = -8965539133582826845L;
     protected boolean exportWithImages = true;
     @Setter
     protected boolean exportFulltext = true;
 
-    public final static String DIRECTORY_SUFFIX = "_tif";
+    public static final String DIRECTORY_SUFFIX = "_tif";
 
     public ExportDms() {
     }
@@ -425,7 +426,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         if (ConfigurationHelper.getInstance().isExportFilesFromOptionalMetsFileGroups()) {
 
             List<ProjectFileGroup> myFilegroups = myProzess.getProjekt().getFilegroups();
-            if (myFilegroups != null && ! myFilegroups.isEmpty()) {
+            if (myFilegroups != null && !myFilegroups.isEmpty()) {
                 for (ProjectFileGroup pfg : myFilegroups) {
                     // check if source files exists
                     if (pfg.getFolder() != null && pfg.getFolder().length() > 0) {
