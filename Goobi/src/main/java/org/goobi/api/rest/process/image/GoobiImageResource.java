@@ -260,8 +260,10 @@ public class GoobiImageResource {
             Path imagePath = imageFolder.resolve(filename);
             this.thumbnailFolder = processFolder.resolve("thumbs");
 
+            boolean hasThumbnailDirectories = hasThumbnailDirectories(imageFolder, thumbnailFolder);
+
             //replace image Path with thumbnail path if image file does not exist
-            if (!Files.exists(imagePath) && hasThumbnailDirectories(imageFolder, thumbnailFolder)) {
+            if (!Files.exists(imagePath) && hasThumbnailDirectories) {
                 imagePath = getThumbnailPath(imagePath, thumbnailFolder, Optional.empty(), true).orElse(imagePath);
             }
             URI originalImageURI = Image.toURI(imagePath);
@@ -280,7 +282,7 @@ public class GoobiImageResource {
                     Optional<Dimension> requestedRegionSize = getRequestedRegionSize(request);
                     requestedImageSize = completeRequestedSize(requestedImageSize, requestedRegionSize, imageSize);
 
-                    if (hasThumbnailDirectories(imageFolder, thumbnailFolder)) {
+                    if (hasThumbnailDirectories) {
                         // For requests covering only part of the image, calculate the size of the
                         // requested image if the entire image were requested
                         if (requestedImageSize.isPresent() && requestedRegionSize.isPresent()) {

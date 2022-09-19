@@ -2249,7 +2249,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public List<String> getArchivedImageFolders() throws IOException, InterruptedException, SwapException, DAOException {
-        if (this.id == null) {
+        if (this.id == null || !ConfigurationHelper.getInstance().isMetsEditorShowArchivedFolder()) {
             return new ArrayList<>();
         }
         List<String> filesInImages = StorageProvider.getInstance().list(this.getImagesDirectory());

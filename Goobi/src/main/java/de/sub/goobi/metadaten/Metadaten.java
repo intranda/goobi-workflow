@@ -1588,7 +1588,7 @@ public class Metadaten implements Serializable {
         //initialize page area editor
         this.pageAreaManager = new PageAreaManager(this.myPrefs, this.document);
 
-        List<String>  images=  checkImageNames();
+        checkImageNames();
         retrieveAllImages();
         // check filenames, correct them
 
@@ -1649,17 +1649,19 @@ public class Metadaten implements Serializable {
     private void loadCurrentImages(boolean jumpToFirstPage) {
         allImages = new ArrayList<>();
         try {
-            dataList = imagehelper.getImageFiles(myProzess, currentTifFolder, useThumbsDir);
-            if (dataList != null && !dataList.isEmpty()) {
-                imageFolderName = myProzess.getImagesDirectory() + currentTifFolder + File.separator;
-                imageFolderName = imageFolderName.replaceAll("\\\\", "/");
-                int order = 1;
-                for (String imagename : dataList) {
-                    Image image = new Image(myProzess, imageFolderName, imagename, order++, thumbnailSizeInPixel);
-                    allImages.add(image);
-                }
-                if (jumpToFirstPage) {
-                    setImageIndex(0);
+            if (dataList == null || dataList.isEmpty()) {
+                dataList = imagehelper.getImageFiles(myProzess, currentTifFolder, useThumbsDir);
+                if (dataList != null && !dataList.isEmpty()) {
+                    imageFolderName = myProzess.getImagesDirectory() + currentTifFolder + File.separator;
+                    imageFolderName = imageFolderName.replaceAll("\\\\", "/");
+                    int order = 1;
+                    for (String imagename : dataList) {
+                        Image image = new Image(myProzess, imageFolderName, imagename, order++, thumbnailSizeInPixel);
+                        allImages.add(image);
+                    }
+                    if (jumpToFirstPage) {
+                        setImageIndex(0);
+                    }
                 }
             }
         } catch (InvalidImagesException | SwapException | DAOException | IOException e1) {
@@ -2398,13 +2400,12 @@ public class Metadaten implements Serializable {
      * ##################################################### ####################################################
      */
 
-    private List<String> checkImageNames() {
+    private void checkImageNames() {
         try {
-            return   imagehelper.checkImageNames(this.myProzess, currentTifFolder);
+            dataList = imagehelper.checkImageNames(this.myProzess, currentTifFolder);
         } catch (TypeNotAllowedForParentException | SwapException | DAOException | IOException e) {
             log.error(e);
         }
-        return Collections.emptyList();
     }
 
     /**
@@ -2964,7 +2965,7 @@ public class Metadaten implements Serializable {
         if (StorageProvider.getInstance().isDirectory(thumbsDir)) {
             List<String> thumbDirs = StorageProvider.getInstance().listDirNames(thumbsDir.toString());
             for (String thumbDirName : thumbDirs) {
-                useThumbsDir=true;
+                useThumbsDir = true;
                 String matchingImageDir = myProzess.getMatchingImageDir(thumbDirName);
                 if (!allTifFolders.contains(matchingImageDir)) {
                     allTifFolders.add(matchingImageDir);
@@ -3952,7 +3953,7 @@ public class Metadaten implements Serializable {
 
     public String getOpacKatalog() {
         if (StringUtils.isBlank(opacKatalog)) {
-            if ( ! getAllOpacCatalogues().isEmpty() &&  ! catalogues.isEmpty()) {
+            if (!getAllOpacCatalogues().isEmpty() && !catalogues.isEmpty()) {
                 opacKatalog = getAllOpacCatalogues().get(0);
                 currentCatalogue = catalogues.get(0);
             }
@@ -3971,7 +3972,7 @@ public class Metadaten implements Serializable {
                 }
             }
 
-            if ( ! catalogues.isEmpty() && currentCatalogue == null) {
+            if (!catalogues.isEmpty() && currentCatalogue == null) {
                 // get first catalogue in case configured catalogue doesn't exist
                 currentCatalogue = catalogues.get(0);
             }
