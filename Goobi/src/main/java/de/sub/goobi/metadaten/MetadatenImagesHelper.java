@@ -320,7 +320,6 @@ public class MetadatenImagesHelper {
 
         if (physicaldocstruct.getAllChildren() != null && !physicaldocstruct.getAllChildren().isEmpty()) {
             List<String> imageFileList = null;
-            //TODO
             imageFileList = StorageProvider.getInstance().list(folderToCheck.toString());
             Set<String> imageFileSet = new HashSet<>(imageFileList);
             for (DocStruct page : physicaldocstruct.getAllChildren()) {
@@ -566,7 +565,6 @@ public class MetadatenImagesHelper {
         try {
             s3URI = new URI("s3://" + conf.getS3Bucket() + "/" + S3FileUtils.path2Key(inPath));
         } catch (URISyntaxException e) {
-            // TODO Auto-generated catch block
             log.error(e);
         }
         log.trace("start scaleFile");
@@ -633,7 +631,7 @@ public class MetadatenImagesHelper {
          * die Seiten anlegen
          * --------------------------------*/
         Path dir = Paths.get(folder);
-        //TODO
+
         if (StorageProvider.getInstance().isFileExists(dir)) {
             List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.DATA_FILTER);
             List<String> dateien2 = StorageProvider.getInstance().list(dir.toString());
@@ -724,7 +722,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
-        //TODO
+
         List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.imageNameFilter);
 
         /* alle Dateien durchlaufen */
@@ -752,7 +750,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
-        //TODO
+
         List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.DATA_FILTER);
 
         /* alle Dateien durchlaufen */
@@ -771,15 +769,15 @@ public class MetadatenImagesHelper {
      * @throws InvalidImagesException
      */
 
-    public List<String> getImageFiles(Process myProzess, String directory) throws InvalidImagesException {
+    public List<String> getImageFiles(Process myProzess, String directory, boolean useThumsbDir) throws InvalidImagesException {
         Path dir;
         try {
             dir = Paths.get(myProzess.getImagesDirectory() + directory);
         } catch (Exception e) {
             throw new InvalidImagesException(e);
         }
-        //TODO
-        if (!StorageProvider.getInstance().isDirectory(dir) && StringUtils.isNotBlank(directory)) {
+
+        if (useThumsbDir && !StorageProvider.getInstance().isDirectory(dir) && StringUtils.isNotBlank(directory)) {
             String thumbsFolder;
             try {
                 thumbsFolder = myProzess.getLargestThumbsDirectory(directory);

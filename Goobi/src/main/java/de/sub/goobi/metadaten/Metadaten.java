@@ -228,6 +228,7 @@ public class Metadaten implements Serializable {
 
     @Getter
     private String currentTifFolder;
+
     private List<String> allTifFolders;
     /* Variablen für die Zuweisung der Seiten zu Strukturelementen */
     @Getter
@@ -475,6 +476,8 @@ public class Metadaten implements Serializable {
     //this is set whenever setImage() is called.
     @Getter
     private boolean showImageComments = false;
+
+    private boolean useThumbsDir = false;
 
     public enum MetadataTypes {
         PERSON,
@@ -1646,12 +1649,12 @@ public class Metadaten implements Serializable {
     private void loadCurrentImages(boolean jumpToFirstPage) {
         allImages = new ArrayList<>();
         try {
-            List<String> imageNames = imagehelper.getImageFiles(myProzess, currentTifFolder);
-            if (imageNames != null && !imageNames.isEmpty()) {
+            dataList = imagehelper.getImageFiles(myProzess, currentTifFolder, useThumbsDir);
+            if (dataList != null && !dataList.isEmpty()) {
                 imageFolderName = myProzess.getImagesDirectory() + currentTifFolder + File.separator;
                 imageFolderName = imageFolderName.replaceAll("\\\\", "/");
                 int order = 1;
-                for (String imagename : imageNames) {
+                for (String imagename : dataList) {
                     Image image = new Image(myProzess, imageFolderName, imagename, order++, thumbnailSizeInPixel);
                     allImages.add(image);
                 }
@@ -2957,9 +2960,11 @@ public class Metadaten implements Serializable {
         }
 
         Path thumbsDir = Paths.get(myProzess.getThumbsDirectory());
+        useThumbsDir = false;
         if (StorageProvider.getInstance().isDirectory(thumbsDir)) {
             List<String> thumbDirs = StorageProvider.getInstance().listDirNames(thumbsDir.toString());
             for (String thumbDirName : thumbDirs) {
+                useThumbsDir=true;
                 String matchingImageDir = myProzess.getMatchingImageDir(thumbDirName);
                 if (!allTifFolders.contains(matchingImageDir)) {
                     allTifFolders.add(matchingImageDir);
@@ -2998,7 +3003,7 @@ public class Metadaten implements Serializable {
 
             if (this.currentTifFolder != null) {
                 try {
-                    dataList = this.imagehelper.getImageFiles(this.myProzess, this.currentTifFolder);
+                    dataList = this.imagehelper.getImageFiles(this.myProzess, this.currentTifFolder, useThumbsDir);
                     if (dataList == null) {
                         myBild = null;
                         bildNummer = -1;
@@ -4967,11 +4972,11 @@ public class Metadaten implements Serializable {
     public void changeFolder() {
         allImages = new ArrayList<>();
         try {
-            List<String> imageNames = imagehelper.getImageFiles(myProzess, currentTifFolder);
-            if (imageNames != null && !imageNames.isEmpty()) {
+            dataList = imagehelper.getImageFiles(myProzess, currentTifFolder, useThumbsDir);
+            if (dataList != null && !dataList.isEmpty()) {
                 imageFolderName = myProzess.getImagesDirectory() + currentTifFolder + File.separator;
                 int order = 1;
-                for (String imagename : imageNames) {
+                for (String imagename : dataList) {
                     Image currentImage = new Image(myProzess, imageFolderName, imagename, order++, thumbnailSizeInPixel);
                     allImages.add(currentImage);
                 }
