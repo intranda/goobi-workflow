@@ -40,18 +40,17 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class GoobiScriptAddToProcessLog extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptAddToJournal extends AbstractIGoobiScript implements IGoobiScript {
 
-    // TODO rename it
     @Override
     public String getAction() {
-        return "addToProcessLog";
+        return "addToJournal";
     }
 
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewActionToSampleCall(sb, "This GoobiScript allows to add messages to the Goobi process log.");
+        addNewActionToSampleCall(sb, "This GoobiScript allows to add messages to the Goobi process journal.");
         addParameterToSampleCall(sb, "type", "info",
                 "Define the type for the message here. Possible values are: `debug` `info` `warn` `error` `user`");
         addParameterToSampleCall(sb, "message", "\"This is my message\"",

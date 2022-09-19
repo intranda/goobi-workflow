@@ -259,7 +259,7 @@
         <!-- Box for process log -->
         <h:form
             styleClass="form-vertical form-bordered"
-            id="processLog"
+            id="processJournal"
             enctype="multipart/form-data"
             prependId="false">
             <x:aliasBeansScope>
@@ -270,7 +270,7 @@
                     alias="#{process}"
                     value="#{AktuelleSchritteForm.batchHelper.currentStep.prozess}" />
                 <f:subview id="sublog">
-                    <ui:include src="../processLog.xhtml" />
+                    <ui:include src="../journal.xhtml" />
                 </f:subview>
             </x:aliasBeansScope>
         </h:form>

@@ -349,9 +349,9 @@
                         <!-- Box for process log -->
                        
                             <h:form
-                                rendered="#{!NavigationForm.uiStatus['processLogBig']}"
+                                rendered="#{!NavigationForm.uiStatus['journalBig']}"
                                 styleClass="form-vertical form-bordered"
-                                id="processLog"
+                                id="journal"
                                 enctype="multipart/form-data"
                                 prependId="false">
                                 <x:aliasBeansScope>
@@ -362,7 +362,7 @@
                                         value="#{AktuelleSchritteForm.mySchritt.prozess}" />
                                     <f:subview id="sublog">
                                         <ui:include
-                                            src="includes/processLog.xhtml" />
+                                            src="includes/journal.xhtml" />
                                     </f:subview>
                                 </x:aliasBeansScope>
                             </h:form>
@@ -426,12 +426,12 @@
                     </div>
                 </div>
                                 
-                <ui:fragment rendered="#{NavigationForm.uiStatus['processLogBig']}" >
+                <ui:fragment rendered="#{NavigationForm.uiStatus['journalBig']}" >
                     <div class="row">
                         <div class="col-sm-12">
                             <h:form
                                 styleClass="form-vertical form-bordered"
-                                id="processLog2"
+                                id="journal2"
                                 enctype="multipart/form-data"
                                 prependId="false">
                                 <x:aliasBeansScope>
@@ -442,7 +442,7 @@
                                         value="#{AktuelleSchritteForm.mySchritt.prozess}" />
                                     <f:subview id="sublog2">
                                         <ui:include
-                                            src="includes/processLog.xhtml" />
+                                            src="includes/journal.xhtml" />
                                     </f:subview>
                                 </x:aliasBeansScope>
                             </h:form>

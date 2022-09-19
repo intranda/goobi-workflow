@@ -15,7 +15,7 @@
     <composite:implementation>
         <div class="row">
             <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='prozess'}">
-                <div class="#{NavigationForm.uiStatus['processLogBig']?'col-sm-12':'col-sm-6'}">
+                <div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-12':'col-sm-6'}">
                     <!-- Box für die Darstellung der Details -->
                     <h:form id="processdetails">
                         <div class="box box-color box-bordered">
@@ -410,12 +410,12 @@
                     </h:form>
                 </div>
 
-                <div class="#{NavigationForm.uiStatus['processLogBig']?'col-sm-12':'col-sm-6'}">
+                <div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-12':'col-sm-6'}">
                     <!-- Box for process log -->
 
                     <h:form
                         styleClass="form-vertical form-bordered"
-                        id="processLog"
+                        id="processJournal"
                         enctype="multipart/form-data"
                         prependId="false">
                         <x:aliasBeansScope>
@@ -426,7 +426,7 @@
                                 alias="#{process}"
                                 value="#{ProzessverwaltungForm.myProzess}" />
                             <f:subview id="sublog">
-                                <ui:include src="../processLog.xhtml" />
+                                <ui:include src="../journal.xhtml" />
                             </f:subview>
                         </x:aliasBeansScope>
                     </h:form>
