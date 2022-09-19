@@ -1649,21 +1649,20 @@ public class Metadaten implements Serializable {
     private void loadCurrentImages(boolean jumpToFirstPage) {
         allImages = new ArrayList<>();
         try {
-            if (dataList == null || dataList.isEmpty()) {
-                dataList = imagehelper.getImageFiles(myProzess, currentTifFolder, useThumbsDir);
-                if (dataList != null && !dataList.isEmpty()) {
-                    imageFolderName = myProzess.getImagesDirectory() + currentTifFolder + File.separator;
-                    imageFolderName = imageFolderName.replaceAll("\\\\", "/");
-                    int order = 1;
-                    for (String imagename : dataList) {
-                        Image image = new Image(myProzess, imageFolderName, imagename, order++, thumbnailSizeInPixel);
-                        allImages.add(image);
-                    }
-                    if (jumpToFirstPage) {
-                        setImageIndex(0);
-                    }
+            dataList = imagehelper.getImageFiles(myProzess, currentTifFolder, useThumbsDir);
+            if (dataList != null && !dataList.isEmpty()) {
+                imageFolderName = myProzess.getImagesDirectory() + currentTifFolder + File.separator;
+                imageFolderName = imageFolderName.replaceAll("\\\\", "/");
+                int order = 1;
+                for (String imagename : dataList) {
+                    Image image = new Image(myProzess, imageFolderName, imagename, order++, thumbnailSizeInPixel);
+                    allImages.add(image);
+                }
+                if (jumpToFirstPage) {
+                    setImageIndex(0);
                 }
             }
+
         } catch (InvalidImagesException | SwapException | DAOException | IOException e1) {
             log.error(e1);
         }
