@@ -169,7 +169,7 @@ public class SearchBean implements Serializable {
         fieldnameList.add(new SelectItem("BATCH", Helper.getTranslation("batch")));
         fieldnameList.add(new SelectItem("METADATA", Helper.getTranslation("metadata")));
 
-        fieldnameList.add(new SelectItem("PROCESSLOG", Helper.getTranslation("processlog")));
+        fieldnameList.add(new SelectItem("JOURNAL", Helper.getTranslation("journal")));
 
         fieldnameList.add(new SelectItem("PROCESSDATE", Helper.getTranslation("search_PROCESSDATE")));
         fieldnameList.add(new SelectItem("STEPSTARTDATE", Helper.getTranslation("search_STEPSTARTDATE")));

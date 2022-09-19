@@ -1047,7 +1047,7 @@ public class FilterHelper {
                 filter = checkStringBuilder(filter, true);
                 filter.append(filterInstitution(tok, false));
 
-            } else if (tok.toLowerCase().startsWith(FilterString.PROCESSLOG)) {
+            } else if (tok.toLowerCase().startsWith(FilterString.JOURNAL)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(filterProcessJournal(tok, false));
             } else if (tok.toLowerCase().startsWith(FilterString.BATCH) || tok.toLowerCase().startsWith(FilterString.GRUPPE)) {
@@ -1138,7 +1138,7 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("-" + FilterString.WORKPIECE) || tok.toLowerCase().startsWith("-" + FilterString.WERKSTUECK)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterWorkpiece(tok, true));
-            } else if (tok.toLowerCase().startsWith("-" + FilterString.PROCESSLOG)) {
+            } else if (tok.toLowerCase().startsWith("-" + FilterString.JOURNAL)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(filterProcessJournal(tok, true));
             } else if (tok.toLowerCase().startsWith("-" + FilterString.INSTITUTION)) {
@@ -1236,7 +1236,7 @@ public class FilterHelper {
                 filter = checkStringBuilder(filter, false);
                 filter.append(FilterHelper.filterWorkpiece(tok, false));
 
-            } else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESSLOG)) {
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.JOURNAL)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(filterProcessJournal(tok, false));
             } else if (tok.toLowerCase().startsWith("|" + FilterString.INSTITUTION)) {

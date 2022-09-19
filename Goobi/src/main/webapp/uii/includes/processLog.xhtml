@@ -233,7 +233,7 @@
                                                     <button
                                                     	jsf:id="deleteFile"
                                                         onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false" 
-                                                        jsf:rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Processlog_File_Deletion')}"
+                                                        jsf:rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Journal_File_Deletion')}"
                                                         class="log_file_delete btn-mini pull-right margin-right-10"
                                                         jsf:action="#{process.deleteFile(entry)}"
                                                         title="#{msgs.deleteFile}">

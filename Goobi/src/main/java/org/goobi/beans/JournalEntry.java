@@ -28,9 +28,13 @@ import org.goobi.production.enums.LogType;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class JournalEntry implements Serializable {
 
     private static final long serialVersionUID = -5624248615174083906L;
