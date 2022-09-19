@@ -90,7 +90,7 @@ public class MetadatenImagesHelper {
         this.mydocument = inDocument;
     }
 
-    public void checkImageNames(Process myProzess, String directoryName)
+    public List<String> checkImageNames(Process myProzess, String directoryName)
             throws TypeNotAllowedForParentException, SwapException, DAOException, IOException {
         DocStruct physical = this.mydocument.getPhysicalDocStruct();
 
@@ -102,7 +102,7 @@ public class MetadatenImagesHelper {
         }
         if (physical == null) {
             createPagination(myProzess, directoryName);
-            return;
+            return Collections.emptyList();
         }
         // get image names in directory
 
@@ -116,7 +116,7 @@ public class MetadatenImagesHelper {
         List<String> imagenames = StorageProvider.getInstance().list(folder.toString(), NIOFileUtils.imageNameFilter);
         if (imagenames == null || imagenames.isEmpty()) {
             // no images found, return
-            return;
+            return Collections.emptyList();
         }
 
         // get image names in nets file
@@ -141,7 +141,7 @@ public class MetadatenImagesHelper {
         // if size differs, create new pagination
         if (imagenames.size() != imageNamesInMetsFile.size()) {
             createPagination(myProzess, directoryName);
-            return;
+            return Collections.emptyList();
         }
 
         List<String> imagesWithoutDocstruct = new LinkedList<>();
@@ -201,7 +201,7 @@ public class MetadatenImagesHelper {
 
         // both lists should have the same size
         if (pagesWithoutFiles.size() != imagesWithoutDocstruct.size()) {
-            return;
+            return Collections.emptyList();
         }
 
         int counter = pagesWithoutFiles.size();
@@ -214,6 +214,7 @@ public class MetadatenImagesHelper {
                         + currentPage.getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0).getValue());
             }
         }
+        return imagenames;
     }
 
     /**
@@ -319,6 +320,7 @@ public class MetadatenImagesHelper {
 
         if (physicaldocstruct.getAllChildren() != null && !physicaldocstruct.getAllChildren().isEmpty()) {
             List<String> imageFileList = null;
+            //TODO
             imageFileList = StorageProvider.getInstance().list(folderToCheck.toString());
             Set<String> imageFileSet = new HashSet<>(imageFileList);
             for (DocStruct page : physicaldocstruct.getAllChildren()) {
@@ -631,6 +633,7 @@ public class MetadatenImagesHelper {
          * die Seiten anlegen
          * --------------------------------*/
         Path dir = Paths.get(folder);
+        //TODO
         if (StorageProvider.getInstance().isFileExists(dir)) {
             List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.DATA_FILTER);
             List<String> dateien2 = StorageProvider.getInstance().list(dir.toString());
@@ -721,6 +724,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
+        //TODO
         List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.imageNameFilter);
 
         /* alle Dateien durchlaufen */
@@ -748,6 +752,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
+        //TODO
         List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.DATA_FILTER);
 
         /* alle Dateien durchlaufen */
@@ -773,7 +778,7 @@ public class MetadatenImagesHelper {
         } catch (Exception e) {
             throw new InvalidImagesException(e);
         }
-
+        //TODO
         if (!StorageProvider.getInstance().isDirectory(dir) && StringUtils.isNotBlank(directory)) {
             String thumbsFolder;
             try {

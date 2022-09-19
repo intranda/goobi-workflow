@@ -316,6 +316,8 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public List<Path> listFiles(String folder) {
+        long start = System.currentTimeMillis();
+
         StorageType storageType = getPathStorageType(folder);
         if (storageType == StorageType.LOCAL) {
             return nio.listFiles(folder);
@@ -355,6 +357,9 @@ public class S3FileUtils implements StorageProviderInterface {
         }
 
         Collections.sort(paths);
+
+        long end = System.currentTimeMillis();
+        log.error("listing: " + folder + " duration: " + (end-start) + " size: " + paths.size());
         return paths;
     }
 
@@ -372,7 +377,6 @@ public class S3FileUtils implements StorageProviderInterface {
                     filteredObjs.add(p);
                 }
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 log.error(e);
             }
         }

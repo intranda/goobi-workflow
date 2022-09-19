@@ -1585,7 +1585,7 @@ public class Metadaten implements Serializable {
         //initialize page area editor
         this.pageAreaManager = new PageAreaManager(this.myPrefs, this.document);
 
-        checkImageNames();
+        List<String>  images=  checkImageNames();
         retrieveAllImages();
         // check filenames, correct them
 
@@ -1768,6 +1768,8 @@ public class Metadaten implements Serializable {
         this.myProzess.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.DOCSTRUCT));
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
+            //TODO check if this number can be re-used
+
             this.myProzess
             .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
@@ -2393,12 +2395,13 @@ public class Metadaten implements Serializable {
      * ##################################################### ####################################################
      */
 
-    private void checkImageNames() {
+    private List<String> checkImageNames() {
         try {
-            imagehelper.checkImageNames(this.myProzess, currentTifFolder);
+            return   imagehelper.checkImageNames(this.myProzess, currentTifFolder);
         } catch (TypeNotAllowedForParentException | SwapException | DAOException | IOException e) {
             log.error(e);
         }
+        return Collections.emptyList();
     }
 
     /**
@@ -2480,12 +2483,6 @@ public class Metadaten implements Serializable {
      * alle Seiten ermitteln ================================================================
      */
     public void retrieveAllImages() {
-        DigitalDocument document = null;
-        try {
-            document = this.gdzfile.getDigitalDocument();
-        } catch (PreferencesException e) {
-            Helper.setMeldung(null, "Can not get DigitalDocument: ", e.getMessage());
-        }
 
         List<DocStruct> meineListe = document.getPhysicalDocStruct().getAllChildrenAsFlatList();
         if (meineListe == null) {
@@ -3092,6 +3089,7 @@ public class Metadaten implements Serializable {
         boolean exists = false;
         try {
             if (this.currentTifFolder != null && this.myBild != null) {
+                //TODO
                 exists = StorageProvider.getInstance()
                         .isFileExists(Paths.get(
                                 this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault().getSeparator() + this.myBild));
