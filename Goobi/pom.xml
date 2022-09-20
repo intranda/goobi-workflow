@@ -162,10 +162,6 @@
                     <artifactId>log4j</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>bouncycastle</groupId>
                     <artifactId>bcprov-jdk14</artifactId>
                 </exclusion>
