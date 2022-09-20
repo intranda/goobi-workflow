@@ -130,6 +130,7 @@
         <swagger.version>2.2.2</swagger.version>
         <weld.version>3.1.9.Final</weld.version>
         <hk2.version>2.6.1</hk2.version>
+        <xmlbeans.version>5.1.1</xmlbeans.version>
         <xmlgraphics-commons.version>2.7</xmlgraphics-commons.version>
         <xmpcore.version>6.1.11</xmpcore.version>
         <!-- used in goobi-plugin-step-barcode-scanner -->
@@ -166,6 +167,11 @@
                     <artifactId>bcprov-jdk14</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlbeans</groupId>
+            <artifactId>xmlbeans</artifactId>
+            <version>${xmlbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.weld.servlet</groupId>
@@ -1369,6 +1375,8 @@
                         <configuration>
                             <failOnWarning>false</failOnWarning>
                             <ignoredUnusedDeclaredDependencies>
+                                <!-- poi is used for excel file generation, xmlbeans is a dependency and used during runtime  -->
+                                <ignoredUnusedDeclaredDependency>org.apache.xmlbeans:xmlbeans</ignoredUnusedDeclaredDependency>
                                 <!-- goobi-plugin-step-barcode-scanner -->
                                 <ignoredUnusedDeclaredDependency>com.google.zxing:core</ignoredUnusedDeclaredDependency>
                                 <ignoredUnusedDeclaredDependency>com.google.zxing:javase</ignoredUnusedDeclaredDependency>
