@@ -317,7 +317,9 @@ public class S3FileUtils implements StorageProviderInterface {
     @Override
     public List<Path> listFiles(String folder) {
         long start = System.currentTimeMillis();
-
+        if (!folder.contains(".") && !folder.endsWith("/")) {
+            folder = folder + "/";
+        }
         StorageType storageType = getPathStorageType(folder);
         if (storageType == StorageType.LOCAL) {
             return nio.listFiles(folder);
