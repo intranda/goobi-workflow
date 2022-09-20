@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.helper;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -65,6 +64,7 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.iterable.S3Objects;
 import com.amazonaws.services.s3.model.CopyObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
@@ -314,8 +314,7 @@ public class S3FileUtils implements StorageProviderInterface {
         return count;
     }
 
-    @Override
-    public List<Path> listFiles(String folder) {
+    public List<Path> listFilesOld(String folder) {
         long start = System.currentTimeMillis();
         if (!folder.contains(".") && !folder.endsWith("/")) {
             folder = folder + "/";
@@ -361,8 +360,42 @@ public class S3FileUtils implements StorageProviderInterface {
         Collections.sort(paths);
 
         long end = System.currentTimeMillis();
-        log.error("listing: " + folder + " duration: " + (end-start) + " size: " + paths.size());
+        log.error("listing: " + folder + " duration: " + (end - start) + " size: " + paths.size());
         return paths;
+    }
+
+    @Override
+    public List<Path> listFiles(String folder) {
+        long start = System.currentTimeMillis();
+        if (!folder.contains(".") && !folder.endsWith("/")) {
+            folder = folder + "/";
+        }
+        StorageType storageType = getPathStorageType(folder);
+        if (storageType == StorageType.LOCAL) {
+            return nio.listFiles(folder);
+        }
+        String folderPrefix = string2Prefix(folder);
+
+        List<Path> paths = new ArrayList<>();
+        S3Objects.withPrefix(s3, getBucket(), folderPrefix).forEach((S3ObjectSummary objectSummary) -> {
+            String key = objectSummary.getKey().replace(folderPrefix, "");
+            int idx = key.indexOf('/');
+            if (idx > 0) {
+                paths.add(key2Path(folderPrefix + key.substring(0, idx)));
+            } else {
+                paths.add(key2Path(folderPrefix + key));
+            }
+        });
+
+        if (storageType == StorageType.BOTH) {
+            paths.addAll(nio.listFiles(folder));
+            Collections.sort(paths);
+        }
+
+        long end = System.currentTimeMillis();
+        log.error("listing: " + folder + " duration: " + (end - start) + " size: " + paths.size());
+        return paths;
+
     }
 
     @Override
@@ -424,6 +457,31 @@ public class S3FileUtils implements StorageProviderInterface {
             return nio.list(folder, NIOFileUtils.folderFilter);
         }
         String folderPrefix = string2Prefix(folder);
+        Set<String> objs = new HashSet<>();
+        S3Objects.withPrefix(s3, getBucket(), folderPrefix).forEach((S3ObjectSummary objectSummary) -> {
+            String key = objectSummary.getKey().replace(folderPrefix, "");
+            int idx = key.indexOf('/');
+            if (idx >= 0) {
+                objs.add(key.substring(0, key.indexOf('/')));
+            }
+        });
+
+        List<String> folders = new ArrayList<>(objs);
+        long end = System.currentTimeMillis();
+        log.error("listDirNames: " + folder + " duration: " + (end - start) + " folders: " + folders.size());
+        return folders;
+    }
+
+    public List<String> listDirNamesOld(String folder) {
+        long start = System.currentTimeMillis();
+        if (!folder.endsWith("/")) {
+            folder = folder + "/";
+        }
+        StorageType storageType = getPathStorageType(folder);
+        if (storageType == StorageType.LOCAL) {
+            return nio.list(folder, NIOFileUtils.folderFilter);
+        }
+        String folderPrefix = string2Prefix(folder);
         ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(folderPrefix);
         ObjectListing listing = s3.listObjects(req);
         Set<String> objs = new HashSet<>();
@@ -447,10 +505,9 @@ public class S3FileUtils implements StorageProviderInterface {
         List<String> folders = new ArrayList<>(objs);
         Collections.sort(folders);
         long end = System.currentTimeMillis();
-        log.error("listDirNames: " + folder + " duration: " + (end-start) + " folders: " + folders.size());
+        log.error("listDirNames: " + folder + " duration: " + (end - start) + " folders: " + folders.size());
         return folders;
     }
-
 
     @Override
     public void copyDirectory(final Path source, final Path target) throws IOException {
@@ -497,7 +554,7 @@ public class S3FileUtils implements StorageProviderInterface {
                     try {
                         Upload upload = transferManager.upload(getBucket(), key, is, om);
                         upload.waitForCompletion();
-                    } catch (AmazonClientException  e) {
+                    } catch (AmazonClientException e) {
                         log.error(e);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
@@ -552,7 +609,7 @@ public class S3FileUtils implements StorageProviderInterface {
         try {
             copy.waitForCompletion();
             s3.deleteObject(getBucket(), oldKey);
-        } catch (AmazonClientException  e) {
+        } catch (AmazonClientException e) {
             throw new IOException(e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -656,7 +713,7 @@ public class S3FileUtils implements StorageProviderInterface {
             return nio.isFileExists(path);
         }
         // handle prefix, too
-        return s3.doesObjectExist(getBucket(), path2Key(path)) || ! s3.listObjects(getBucket(), path2Prefix(path)).getObjectSummaries().isEmpty();
+        return s3.doesObjectExist(getBucket(), path2Key(path)) || !s3.listObjects(getBucket(), path2Prefix(path)).getObjectSummaries().isEmpty();
     }
 
     @Override
@@ -759,7 +816,7 @@ public class S3FileUtils implements StorageProviderInterface {
             Download dl = transferManager.download(getBucket(), path2Key(oldPath), newPath.toFile());
             try (S3Object obj = s3.getObject(getBucket(), path2Key(oldPath)); InputStream in = obj.getObjectContent()) {
                 dl.waitForCompletion();
-            } catch (AmazonClientException  e) {
+            } catch (AmazonClientException e) {
                 throw new IOException(e);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -966,4 +1023,5 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         return uri;
     }
+
 }
