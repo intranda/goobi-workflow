@@ -392,6 +392,7 @@ public class Metadaten implements Serializable {
     private Integer progress;
 
     private boolean tiffFolderHasChanged = true;
+
     private List<String> dataList = new ArrayList<>();
     @Getter
     private transient List<MetadatumImpl> addableMetadata = new LinkedList<>();
@@ -985,6 +986,7 @@ public class Metadaten implements Serializable {
     }
 
     public String loadRightFrame() {
+        long start = System.currentTimeMillis();
         this.modusHinzufuegen = false;
         this.modusHinzufuegenPerson = false;
         if (neuesElementWohin.equals("3") || neuesElementWohin.equals("4")) {
@@ -1002,7 +1004,8 @@ public class Metadaten implements Serializable {
             tempTyp = tempMetadatumList.get(0).getMd().getType().getName();
             selectedMetadatum = tempMetadatumList.get(0);
         }
-
+        long end = System.currentTimeMillis();
+        log.error("loadRightFrame: " + (end - start));
         return "metseditor";
     }
 
@@ -1220,6 +1223,8 @@ public class Metadaten implements Serializable {
     }
 
     private List<SelectItem> createAddableMetadataTypes() {
+        long start = System.currentTimeMillis();
+
         ArrayList<SelectItem> myList = new ArrayList<>();
         /*
          * -------------------------------- zuerst mal alle addierbaren Metadatentypen ermitteln --------------------------------
@@ -1264,6 +1269,8 @@ public class Metadaten implements Serializable {
             tempTyp = tempMetadatumList.get(0).getMd().getType().getName();
             selectedMetadatum = tempMetadatumList.get(0);
         }
+        long end = System.currentTimeMillis();
+        log.error("createAddableMetadataTypes: " + (end - start));
         return myList;
     }
 
@@ -1377,6 +1384,8 @@ public class Metadaten implements Serializable {
      * die MetadatenTypen zurückgeben ================================================================
      */
     public SelectItem[] getMetadatenTypen() {
+        long start = System.currentTimeMillis();
+
         /*
          * -------------------------------- zuerst mal die addierbaren Metadatentypen ermitteln --------------------------------
          */
@@ -1417,6 +1426,8 @@ public class Metadaten implements Serializable {
         for (int i = 0; i < zaehler; i++) {
             myTypenOhneUnterstrich[i] = myTypen[i];
         }
+        long end = System.currentTimeMillis();
+        log.error("getMetadatenTypen: " + (end - start));
         return myTypenOhneUnterstrich;
     }
 
@@ -1484,6 +1495,7 @@ public class Metadaten implements Serializable {
     }
 
     private String readXmlAndBuildTree() {
+        long start = System.currentTimeMillis();
 
         /*
          * re-reading the config for display rules
@@ -1535,6 +1547,8 @@ public class Metadaten implements Serializable {
 
         TreeExpand();
         this.sperrung.setLocked(this.myProzess.getId().intValue(), this.myBenutzerID);
+        long end = System.currentTimeMillis();
+        log.error("readXmlAndBuildTree: " + (end - start));
         return "metseditor";
     }
 
@@ -1551,6 +1565,9 @@ public class Metadaten implements Serializable {
      */
 
     public String XMLlesenStart() throws ReadException, IOException, PreferencesException, SwapException, DAOException {
+
+        long start = System.currentTimeMillis();
+
         currentRepresentativePage = "";
         this.myPrefs = this.myProzess.getRegelsatz().getPreferences();
         enablePageArea = myPrefs.getDocStrctTypeByName("area") != null;
@@ -1642,11 +1659,14 @@ public class Metadaten implements Serializable {
             // inserted to make Paginierung the starting view
             this.modusAnsicht = "Metadaten";
         }
-
+        long end = System.currentTimeMillis();
+        log.error("XMLlesenStart: " + (end - start));
         return "metseditor";
     }
 
     private void loadCurrentImages(boolean jumpToFirstPage) {
+        long start = System.currentTimeMillis();
+
         allImages = new ArrayList<>();
         try {
             dataList = imagehelper.getImageFiles(myProzess, currentTifFolder, useThumbsDir);
@@ -1662,10 +1682,11 @@ public class Metadaten implements Serializable {
                     setImageIndex(0);
                 }
             }
-
         } catch (InvalidImagesException | SwapException | DAOException | IOException e1) {
             log.error(e1);
         }
+        long end = System.currentTimeMillis();
+        log.error("loadCurrentImages: " + (end - start));
     }
 
     /**
@@ -1766,6 +1787,7 @@ public class Metadaten implements Serializable {
      * @throws PreferencesException
      */
     public String XMLschreiben() {
+        long start = System.currentTimeMillis();
 
         XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
 
@@ -1804,6 +1826,8 @@ public class Metadaten implements Serializable {
         myProzess.removeTemporaryMetadataFiles();
 
         SperrungAufheben();
+        long end = System.currentTimeMillis();
+        log.error("XMLschreiben: " + (end - start));
         return writeMetadata ? this.zurueck : "";
     }
 
@@ -1814,6 +1838,8 @@ public class Metadaten implements Serializable {
      */
 
     private void MetadatenalsBeanSpeichern(DocStruct inStrukturelement) {
+        long start = System.currentTimeMillis();
+
         this.myDocStruct = inStrukturelement;
         addableMetadataTypes.clear();
         groups.clear();
@@ -1879,6 +1905,8 @@ public class Metadaten implements Serializable {
          * -------------------------------- die zugehörigen Seiten ermitteln --------------------------------
          */
         StructSeitenErmitteln(this.myDocStruct);
+        long end = System.currentTimeMillis();
+        log.error("MetadatenalsBeanSpeichern: " + (end - start));
     }
 
     /*
@@ -1897,6 +1925,8 @@ public class Metadaten implements Serializable {
 
     @SuppressWarnings("rawtypes")
     private TreeNodeStruct3 buildTree(TreeNodeStruct3 inTree, DocStruct inLogicalTopStruct, boolean expandAll) {
+        long start = System.currentTimeMillis();
+
         HashMap map;
         TreeNodeStruct3 knoten;
         List<DocStruct> status = new ArrayList<>();
@@ -1943,6 +1973,8 @@ public class Metadaten implements Serializable {
                 knoten.setSelected(true);
             }
         }
+        long end = System.currentTimeMillis();
+        log.error("buildTree: " + (end - start));
         return inTree;
     }
 
@@ -1952,6 +1984,7 @@ public class Metadaten implements Serializable {
      * @param inStrukturelement ============================================================== ==
      */
     private void MetadatenalsTree3Einlesen2(DocStruct inStrukturelement, TreeNodeStruct3 OberKnoten) {
+        long start = System.currentTimeMillis();
 
         if (currentTopstruct != null && currentTopstruct.getType().getName().equals("BoundBook")) {
             if (inStrukturelement.getAllMetadata() != null) {
@@ -2021,6 +2054,8 @@ public class Metadaten implements Serializable {
                 MetadatenalsTree3Einlesen2(kind, tns);
             }
         }
+        long end = System.currentTimeMillis();
+        log.error("MetadatenalsTree3Einlesen2: " + (end - start));
     }
 
     /**
@@ -2400,11 +2435,14 @@ public class Metadaten implements Serializable {
      */
 
     private void checkImageNames() {
+        long start = System.currentTimeMillis();
         try {
             dataList = imagehelper.checkImageNames(this.myProzess, currentTifFolder);
         } catch (TypeNotAllowedForParentException | SwapException | DAOException | IOException e) {
             log.error(e);
         }
+        long end = System.currentTimeMillis();
+        log.error("checkImageNames: " + (end - start));
     }
 
     /**
@@ -2414,6 +2452,8 @@ public class Metadaten implements Serializable {
      * @throws SwapException
      */
     public String createPagination() throws TypeNotAllowedForParentException, IOException, SwapException, DAOException {
+        long start = System.currentTimeMillis();
+
         this.imagehelper.createPagination(this.myProzess, this.currentTifFolder);
         retrieveAllImages();
 
@@ -2446,6 +2486,8 @@ public class Metadaten implements Serializable {
                 }
             }
         }
+        long end = System.currentTimeMillis();
+        log.error("createPagination: " + (end - start));
         return "";
     }
 
@@ -2486,6 +2528,7 @@ public class Metadaten implements Serializable {
      * alle Seiten ermitteln ================================================================
      */
     public void retrieveAllImages() {
+        long start = System.currentTimeMillis();
 
         List<DocStruct> meineListe = document.getPhysicalDocStruct().getAllChildrenAsFlatList();
         if (meineListe == null) {
@@ -2543,7 +2586,8 @@ public class Metadaten implements Serializable {
             po.setRepresentative(true);
 
         }
-
+        long end = System.currentTimeMillis();
+        log.error("retrieveAllImages: " + (end - start));
     }
 
     private String getRequestParameter(String name) {
@@ -2951,6 +2995,8 @@ public class Metadaten implements Serializable {
     }
 
     public void readAllTifFolders() throws IOException, SwapException {
+        long start = System.currentTimeMillis();
+
         this.allTifFolders = new ArrayList<>();
         Path dir = Paths.get(this.myProzess.getImagesDirectory());
 
@@ -2988,9 +3034,13 @@ public class Metadaten implements Serializable {
                 this.currentTifFolder = allTifFolders.get(0);
             }
         }
+        long end = System.currentTimeMillis();
+        log.error("readAllTifFolders: " + (end - start));
     }
 
     public void BildErmitteln(int welches) {
+        long start = System.currentTimeMillis();
+
         /*
          * wenn die Bilder nicht angezeigt werden, brauchen wir auch das Bild nicht neu umrechnen
          */
@@ -3087,9 +3137,13 @@ public class Metadaten implements Serializable {
             }
         }
         BildPruefen();
+        long end = System.currentTimeMillis();
+        log.error("BildErmitteln: " + (end - start));
     }
 
     private void BildPruefen() {
+        long start = System.currentTimeMillis();
+
         /* wenn bisher noch kein Bild da ist, das erste nehmen */
         boolean exists = false;
         try {
@@ -3107,6 +3161,8 @@ public class Metadaten implements Serializable {
         if (!exists) {
             this.bildNummer = -1;
         }
+        long end = System.currentTimeMillis();
+        log.error("BildPruefen: " + (end - start));
     }
 
     private boolean SperrungAktualisieren() {
@@ -4726,6 +4782,8 @@ public class Metadaten implements Serializable {
     }
 
     public List<Image> getPaginatorList() {
+        long start = System.currentTimeMillis();
+
         List<Image> subList = new ArrayList<>();
         for (Image currentImage : allImages) {
             if (sizeChanged) {
@@ -4744,11 +4802,14 @@ public class Metadaten implements Serializable {
             }
             subList = allImages.subList(startIdx, allImages.size());
         }
-
+        long end = System.currentTimeMillis();
+        log.error("getPaginatorList: " + (end - start));
         return subList;
     }
 
     public void setImageIndex(int imageIndex) {
+        long start = System.currentTimeMillis();
+
         this.imageIndex = imageIndex;
         if (this.imageIndex < 0) {
             this.imageIndex = 0;
@@ -4769,6 +4830,8 @@ public class Metadaten implements Serializable {
             }
         }
         cancelPageAreaEdition();
+        long end = System.currentTimeMillis();
+        log.error("setImageIndex: " + (end - start));
     }
 
     public void checkSelectedThumbnail(int imageIndex) {
