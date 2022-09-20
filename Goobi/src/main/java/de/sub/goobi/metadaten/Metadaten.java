@@ -3007,7 +3007,7 @@ public class Metadaten implements Serializable {
 
         Path thumbsDir = Paths.get(myProzess.getThumbsDirectory());
         useThumbsDir = false;
-        if (StorageProvider.getInstance().isDirectory(thumbsDir)) {
+        if (ConfigurationHelper.getInstance().useS3() || StorageProvider.getInstance().isDirectory(thumbsDir)) {
             List<String> thumbDirs = StorageProvider.getInstance().listDirNames(thumbsDir.toString());
             for (String thumbDirName : thumbDirs) {
                 useThumbsDir = true;

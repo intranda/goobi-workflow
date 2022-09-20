@@ -643,7 +643,12 @@ public class S3FileUtils implements StorageProviderInterface {
             return nio.isFileExists(path);
         }
         // handle prefix, too
-        return s3.doesObjectExist(getBucket(), path2Key(path)) || !s3.listObjects(getBucket(), path2Prefix(path)).getObjectSummaries().isEmpty();
+        if (s3.doesObjectExist(getBucket(), path2Key(path))) {
+            return true;
+        }
+        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix( path2Key(path)).withDelimiter("/");
+        ObjectListing listing = s3.listObjects(req);
+        return !listing.getObjectSummaries().isEmpty();
     }
 
     @Override
@@ -652,8 +657,9 @@ public class S3FileUtils implements StorageProviderInterface {
         if (storageType == StorageType.LOCAL || storageType == StorageType.BOTH) {
             return nio.isDirectory(path);
         }
-        String prefix = path2Prefix(path);
-        return !s3.listObjects(getBucket(), prefix).getObjectSummaries().isEmpty();
+        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix( path2Key(path)).withDelimiter("/");
+        ObjectListing listing = s3.listObjects(req);
+        return !listing.getCommonPrefixes().isEmpty();
     }
 
     @Override
@@ -679,7 +685,8 @@ public class S3FileUtils implements StorageProviderInterface {
         if (om == null) {
             // check everything inside prefix.
             long lastModified = 0;
-            ObjectListing listing = s3.listObjects(getBucket(), path2Key(path));
+            ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix( path2Key(path)).withDelimiter("/");
+            ObjectListing listing = s3.listObjects(req);
             for (S3ObjectSummary os : listing.getObjectSummaries()) {
                 if (os.getLastModified().getTime() > lastModified) {
                     lastModified = os.getLastModified().getTime();
