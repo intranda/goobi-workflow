@@ -456,7 +456,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                     && ConfigurationHelper.getInstance().isCreateMasterDirectory()) {
                 try {
                     FilesystemHelper.createDirectory(rueckgabe);
-                } catch (InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+                } catch (IOException | InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
                     log.error(e);
                 }
             }

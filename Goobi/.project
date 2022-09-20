@@ -60,6 +60,11 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>net.sf.eclipsecs.core.CheckstyleBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
@@ -70,6 +75,7 @@
 		<nature>net.sf.eclipse.tomcat.tomcatnature</nature>
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>net.sf.eclipsecs.core.CheckstyleNature</nature>
 	</natures>
 	<filteredResources>
 		<filter>

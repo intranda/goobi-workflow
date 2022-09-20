@@ -151,7 +151,7 @@
 	                                            <img src="template/img/goobi/ajaxloader2.gif" />
 	                                        </li>
 	
-											<ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResults.size() gt 0}">
+											<ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
                                                 <o:socket channel="goobiscriptUpdateChannel" >
                                                     <f:ajax render="goobiScriptResults2" event="update"/>
                                                 </o:socket>
@@ -161,7 +161,7 @@
 		                                                    <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}"></i>
 		                                                    <div class="details">
 		                                                        <span class="big">#{msgs.goobiScript_isActive}</span>
-		                                                        <span>#{SessionForm.gsm.numberOfFinishedScripts} / #{SessionForm.gsm.goobiScriptResults.size()}</span>
+		                                                        <span>#{SessionForm.gsm.numberOfFinishedScripts} / #{SessionForm.gsm.goobiScriptResultSize}</span>
 		                                                    </div>
 		                                                </button>
 		                                        </li>
