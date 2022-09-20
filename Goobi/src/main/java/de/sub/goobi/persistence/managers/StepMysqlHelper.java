@@ -90,7 +90,7 @@ class StepMysqlHelper implements Serializable {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(SchritteID) FROM schritte ");
-        if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getSqlTasksIndexname())) {
+        if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getSqlTasksIndexname()) && filter.contains("Bearbeitungsstatus")) {
             sql.append("use index ("+ ConfigurationHelper.getInstance().getSqlTasksIndexname() + ") ");
         }
         sql.append("LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
@@ -122,7 +122,7 @@ class StepMysqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT schritte.* ");
         sql.append(" FROM schritte ");
-        if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getSqlTasksIndexname())) {
+        if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getSqlTasksIndexname()) && filter.contains("Bearbeitungsstatus")) {
             sql.append("use index ("+ ConfigurationHelper.getInstance().getSqlTasksIndexname() + ") ");
         }
         sql.append("LEFT JOIN prozesse ON schritte.prozesseId = prozesse.ProzesseID ");
