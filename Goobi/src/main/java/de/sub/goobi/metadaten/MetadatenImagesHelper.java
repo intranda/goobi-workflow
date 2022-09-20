@@ -92,8 +92,6 @@ public class MetadatenImagesHelper {
 
     public List<String> checkImageNames(Process myProzess, String directoryName)
             throws TypeNotAllowedForParentException, SwapException, DAOException, IOException {
-        long start = System.currentTimeMillis();
-
         DocStruct physical = this.mydocument.getPhysicalDocStruct();
 
         DocStruct logical = this.mydocument.getLogicalDocStruct();
@@ -216,8 +214,6 @@ public class MetadatenImagesHelper {
                         + currentPage.getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0).getValue());
             }
         }
-        long end = System.currentTimeMillis();
-        log.error("checkImageNames: " + (end - start));
         return imagenames;
     }
 
@@ -234,9 +230,6 @@ public class MetadatenImagesHelper {
      */
     public void createPagination(Process inProzess, String directory)
             throws TypeNotAllowedForParentException, IOException, SwapException, DAOException {
-
-        long start = System.currentTimeMillis();
-
         String mediaFolder = inProzess.getImagesTifDirectory(false);
         String mediaFolderWithFallback = inProzess.getImagesTifDirectory(true);
 
@@ -555,8 +548,6 @@ public class MetadatenImagesHelper {
                 currentPhysicalOrder++;
             }
         }
-        long end = System.currentTimeMillis();
-        log.error("createPagination: " + (end - start));
     }
 
     /**
@@ -568,8 +559,6 @@ public class MetadatenImagesHelper {
      */
     public void scaleFile(String inFileName, String outFileName, int inSize, int intRotation)
             throws ContentLibException, IOException, ImageManipulatorException {
-        long start = System.currentTimeMillis();
-
         ConfigurationHelper conf = ConfigurationHelper.getInstance();
         Path inPath = Paths.get(inFileName);
         URI s3URI = null;
@@ -622,8 +611,6 @@ public class MetadatenImagesHelper {
                 pi.close();
             }
         }
-        long end = System.currentTimeMillis();
-        log.error("scaleFile: " + (end - start));
     }
 
     // Add a method to validate the image files
@@ -635,8 +622,6 @@ public class MetadatenImagesHelper {
      * @throws SwapException
      */
     public boolean checkIfImagesValid(String title, String folder) {
-        long start = System.currentTimeMillis();
-
         boolean isValid = true;
         this.myLastImage = 0;
 
@@ -690,8 +675,6 @@ public class MetadatenImagesHelper {
                 }
                 return isValid;
             }
-            long end = System.currentTimeMillis();
-            log.error("checkIfImagesValid: " + (end - start));
             return true;
         }
         Helper.setFehlerMeldung(Helper.getTranslation("noImageFolderFound", title));
@@ -731,8 +714,6 @@ public class MetadatenImagesHelper {
      */
 
     public List<String> getImageFiles(Process myProzess) throws InvalidImagesException {
-        long start = System.currentTimeMillis();
-
         Path dir;
         try {
             dir = Paths.get(myProzess.getImagesTifDirectory(true));
@@ -747,15 +728,11 @@ public class MetadatenImagesHelper {
         if (dateien != null && !dateien.isEmpty()) {
             Collections.sort(dateien, new GoobiImageFileComparator());
         }
-        long end = System.currentTimeMillis();
-        log.error("getImageFiles: " + (end - start));
         return dateien;
 
     }
 
     public List<String> getDataFiles(Process myProzess, String directory) throws InvalidImagesException {
-        long start = System.currentTimeMillis();
-
         Path dir;
         try {
             if (directory == null) {
@@ -778,8 +755,6 @@ public class MetadatenImagesHelper {
         if (dateien != null && !dateien.isEmpty()) {
             Collections.sort(dateien, new GoobiImageFileComparator());
         }
-        long end = System.currentTimeMillis();
-        log.error("getDataFiles: " + (end - start));
         return dateien;
 
     }
@@ -793,8 +768,6 @@ public class MetadatenImagesHelper {
      */
 
     public List<String> getImageFiles(Process myProzess, String directory, boolean useThumsbDir) throws InvalidImagesException {
-        long start = System.currentTimeMillis();
-
         Path dir;
         try {
             dir = Paths.get(myProzess.getImagesDirectory() + directory);
@@ -853,14 +826,9 @@ public class MetadatenImagesHelper {
             }
 
             if (orderedFilenameList.size() == dateien.size()) {
-                long end = System.currentTimeMillis();
-                log.error("getImageFiles: " + (end - start));
                 return orderedFilenameList;
-
             } else {
                 Collections.sort(dateien, new GoobiImageFileComparator());
-                long end = System.currentTimeMillis();
-                log.error("getImageFiles: " + (end - start));
                 return dateien;
             }
         } else {
@@ -869,8 +837,6 @@ public class MetadatenImagesHelper {
     }
 
     public List<String> getImageFiles(DocStruct physical) {
-        long start = System.currentTimeMillis();
-
         List<String> orderedFileList = new ArrayList<>();
         List<DocStruct> pages = physical.getAllChildren();
         if (pages != null && !pages.isEmpty()) {
@@ -883,8 +849,6 @@ public class MetadatenImagesHelper {
                 }
             }
         }
-        long end = System.currentTimeMillis();
-        log.error("getImageFiles: " + (end - start));
         return orderedFileList;
     }
 }
