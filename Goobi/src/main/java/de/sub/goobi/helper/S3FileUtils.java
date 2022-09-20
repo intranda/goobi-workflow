@@ -64,7 +64,6 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.iterable.S3Objects;
 import com.amazonaws.services.s3.model.CopyObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
@@ -314,7 +313,8 @@ public class S3FileUtils implements StorageProviderInterface {
         return count;
     }
 
-    public List<Path> listFilesOld(String folder) {
+    @Override
+    public List<Path> listFiles(String folder) {
         long start = System.currentTimeMillis();
         if (!folder.contains(".") && !folder.endsWith("/")) {
             folder = folder + "/";
@@ -324,7 +324,7 @@ public class S3FileUtils implements StorageProviderInterface {
             return nio.listFiles(folder);
         }
         String folderPrefix = string2Prefix(folder);
-        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(folderPrefix);
+        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(folderPrefix).withDelimiter("/");
         ObjectListing listing = s3.listObjects(req);
         Set<String> objs = new HashSet<>();
         for (S3ObjectSummary os : listing.getObjectSummaries()) {
@@ -362,40 +362,6 @@ public class S3FileUtils implements StorageProviderInterface {
         long end = System.currentTimeMillis();
         log.error("listing: " + folder + " duration: " + (end - start) + " size: " + paths.size());
         return paths;
-    }
-
-    @Override
-    public List<Path> listFiles(String folder) {
-        long start = System.currentTimeMillis();
-        if (!folder.contains(".") && !folder.endsWith("/")) {
-            folder = folder + "/";
-        }
-        StorageType storageType = getPathStorageType(folder);
-        if (storageType == StorageType.LOCAL) {
-            return nio.listFiles(folder);
-        }
-        String folderPrefix = string2Prefix(folder);
-
-        List<Path> paths = new ArrayList<>();
-        S3Objects.withPrefix(s3, getBucket(), folderPrefix).forEach((S3ObjectSummary objectSummary) -> {
-            String key = objectSummary.getKey().replace(folderPrefix, "");
-            int idx = key.indexOf('/');
-            if (idx > 0) {
-                paths.add(key2Path(folderPrefix + key.substring(0, idx)));
-            } else {
-                paths.add(key2Path(folderPrefix + key));
-            }
-        });
-
-        if (storageType == StorageType.BOTH) {
-            paths.addAll(nio.listFiles(folder));
-            Collections.sort(paths);
-        }
-
-        long end = System.currentTimeMillis();
-        log.error("listing: " + folder + " duration: " + (end - start) + " size: " + paths.size());
-        return paths;
-
     }
 
     @Override
@@ -449,59 +415,23 @@ public class S3FileUtils implements StorageProviderInterface {
     @Override
     public List<String> listDirNames(String folder) {
         long start = System.currentTimeMillis();
-        if (!folder.endsWith("/")) {
-            folder = folder + "/";
-        }
+
         StorageType storageType = getPathStorageType(folder);
         if (storageType == StorageType.LOCAL) {
             return nio.list(folder, NIOFileUtils.folderFilter);
         }
         String folderPrefix = string2Prefix(folder);
-        Set<String> objs = new HashSet<>();
-        S3Objects.withPrefix(s3, getBucket(), folderPrefix).forEach((S3ObjectSummary objectSummary) -> {
-            String key = objectSummary.getKey().replace(folderPrefix, "");
-            int idx = key.indexOf('/');
-            if (idx >= 0) {
-                objs.add(key.substring(0, key.indexOf('/')));
-            }
-        });
-
-        List<String> folders = new ArrayList<>(objs);
-        long end = System.currentTimeMillis();
-        log.error("listDirNames: " + folder + " duration: " + (end - start) + " folders: " + folders.size());
-        return folders;
-    }
-
-    public List<String> listDirNamesOld(String folder) {
-        long start = System.currentTimeMillis();
-        if (!folder.endsWith("/")) {
-            folder = folder + "/";
-        }
-        StorageType storageType = getPathStorageType(folder);
-        if (storageType == StorageType.LOCAL) {
-            return nio.list(folder, NIOFileUtils.folderFilter);
-        }
-        String folderPrefix = string2Prefix(folder);
-        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(folderPrefix);
+        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(folderPrefix).withDelimiter("/");
         ObjectListing listing = s3.listObjects(req);
         Set<String> objs = new HashSet<>();
-        for (S3ObjectSummary os : listing.getObjectSummaries()) {
-            String key = os.getKey().replace(folderPrefix, "");
+        for (String os: listing.getCommonPrefixes()) {
+            String key = os.replace(folderPrefix, "");
             int idx = key.indexOf('/');
             if (idx >= 0) {
                 objs.add(key.substring(0, key.indexOf('/')));
             }
         }
-        while (listing.isTruncated()) {
-            listing = s3.listNextBatchOfObjects(listing);
-            for (S3ObjectSummary os : listing.getObjectSummaries()) {
-                String key = os.getKey().replace(folderPrefix, "");
-                int idx = key.indexOf('/');
-                if (idx >= 0) {
-                    objs.add(key.substring(0, key.indexOf('/')));
-                }
-            }
-        }
+
         List<String> folders = new ArrayList<>(objs);
         Collections.sort(folders);
         long end = System.currentTimeMillis();
