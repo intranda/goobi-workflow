@@ -413,6 +413,10 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public List<String> listDirNames(String folder) {
+        long start = System.currentTimeMillis();
+        if (!folder.endsWith("/")) {
+            folder = folder + "/";
+        }
         StorageType storageType = getPathStorageType(folder);
         if (storageType == StorageType.LOCAL) {
             return nio.list(folder, NIOFileUtils.folderFilter);
@@ -440,6 +444,8 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         List<String> folders = new ArrayList<>(objs);
         Collections.sort(folders);
+        long end = System.currentTimeMillis();
+        log.error("listDirNames: " + folder + " duration: " + (end-start) + " folders: " + folders.size());
         return folders;
     }
 
