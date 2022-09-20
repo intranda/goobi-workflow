@@ -24,7 +24,6 @@
  */
 package org.goobi.api.rest.process.image;
 
-
 import java.awt.Dimension;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -33,7 +32,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -62,8 +60,6 @@ import org.apache.commons.io.FilenameUtils;
 
 import de.intranda.api.iiif.image.ImageInformation;
 import de.intranda.api.iiif.image.ImageTile;
-import de.intranda.monitoring.timer.Time;
-import de.intranda.monitoring.timer.TimeAnalysis;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -118,7 +114,7 @@ public class GoobiImageResource {
 
     private Path imageFolder = null;
     private Path thumbnailFolder = null;
-    
+
     @Context
     private ContainerRequestContext context;
     @Context
@@ -266,7 +262,7 @@ public class GoobiImageResource {
             boolean hasThumbnailDirectories = hasThumbnailDirectories(imageFolder, thumbnailFolder);
 
             //replace image Path with thumbnail path if image file does not exist
-            if (!Files.exists(imagePath) && hasThumbnailDirectories) {
+            if (!fileExists(imagePath) && hasThumbnailDirectories) {
                 imagePath = getThumbnailPath(imagePath, thumbnailFolder, Optional.empty(), true).orElse(imagePath);
             }
             URI originalImageURI = Image.toURI(imagePath);
@@ -495,10 +491,10 @@ public class GoobiImageResource {
     }
 
     private boolean isYounger(Path path, Path referencePath) {
-        
+
         Long date = getLastEdited(path);
         Long referenceDate = getLastEdited(referencePath);
-        if(referenceDate == 0) {
+        if (referenceDate == 0) {
             return true;
         } else {
             return date > referenceDate;
@@ -508,25 +504,25 @@ public class GoobiImageResource {
 
     private Long getLastEdited(Path path) {
         Long[] times = FILE_LAST_EDITED_TIMES.get(path.toString());
-        if(times == null || times[1] < System.currentTimeMillis() - AVAILABLE_THUMBNAIL_FOLDERS_TTL) {
+        if (times == null || times[1] < System.currentTimeMillis() - AVAILABLE_THUMBNAIL_FOLDERS_TTL) {
             long date;
-            try{
+            try {
                 date = StorageProvider.getInstance().getLastModifiedDate(path);
-                if(date > 0) {                    
-                    FILE_LAST_EDITED_TIMES.put(path.toString(), new Long[] {date, System.currentTimeMillis()});
+                if (date > 0) {
+                    FILE_LAST_EDITED_TIMES.put(path.toString(), new Long[] { date, System.currentTimeMillis() });
                     return date;
                 } else {
                     throw new IOException("No file time available");
                 }
             } catch (IOException e) {
-                FILE_LAST_EDITED_TIMES.put(path.toString(), new Long[] {0l, System.currentTimeMillis()});
+                FILE_LAST_EDITED_TIMES.put(path.toString(), new Long[] { 0l, System.currentTimeMillis() });
                 return 0l;
             }
         } else {
             return times[0];
         }
     }
-    
+
     private String replaceSuffix(String filename, String suffix) {
         return FilenameUtils.getBaseName(filename) + suffix;
     }
@@ -684,10 +680,10 @@ public class GoobiImageResource {
     }
 
     private List<Path> getMatchingThumbnailFolders(Path imageFolder, Path thumbsFolder) {
-            List<Path> thumbFolderPaths = StorageProvider.getInstance()
-                    .listFiles(thumbsFolder.toString(),
-                            (dirname) -> dirname.getFileName().toString().matches(imageFolder.getFileName().toString() + "_\\d+"));
-            return thumbFolderPaths;
+        List<Path> thumbFolderPaths = StorageProvider.getInstance()
+                .listFiles(thumbsFolder.toString(),
+                        (dirname) -> dirname.getFileName().toString().matches(imageFolder.getFileName().toString() + "_\\d+"));
+        return thumbFolderPaths;
     }
 
     private List<String> getThumbnailFolders(Path imageFolder, Path thumbnailFolder) {
