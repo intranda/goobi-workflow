@@ -722,6 +722,11 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("MetsEditorValidateImages", true);
     }
 
+    public boolean isMetsEditorShowArchivedFolder() {
+        return getLocalBoolean("MetsEditorShowArchivedFolder", false);
+    }
+
+
     public long getMetsEditorLockingTime() {
         return getLocalLong("MetsEditorLockingTime", 30 * 60 * 1000);
     }
