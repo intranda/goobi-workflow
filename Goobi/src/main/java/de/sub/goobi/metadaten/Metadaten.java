@@ -228,6 +228,7 @@ public class Metadaten implements Serializable {
 
     @Getter
     private String currentTifFolder;
+
     private List<String> allTifFolders;
     /* Variablen für die Zuweisung der Seiten zu Strukturelementen */
     @Getter
@@ -391,6 +392,7 @@ public class Metadaten implements Serializable {
     private Integer progress;
 
     private boolean tiffFolderHasChanged = true;
+
     private List<String> dataList = new ArrayList<>();
     @Getter
     private transient List<MetadatumImpl> addableMetadata = new LinkedList<>();
@@ -475,6 +477,8 @@ public class Metadaten implements Serializable {
     //this is set whenever setImage() is called.
     @Getter
     private boolean showImageComments = false;
+
+    private boolean useThumbsDir = false;
 
     public enum MetadataTypes {
         PERSON,
@@ -999,7 +1003,6 @@ public class Metadaten implements Serializable {
             tempTyp = tempMetadatumList.get(0).getMd().getType().getName();
             selectedMetadatum = tempMetadatumList.get(0);
         }
-
         return "metseditor";
     }
 
@@ -1481,7 +1484,6 @@ public class Metadaten implements Serializable {
     }
 
     private String readXmlAndBuildTree() {
-
         /*
          * re-reading the config for display rules
          */
@@ -1639,19 +1641,18 @@ public class Metadaten implements Serializable {
             // inserted to make Paginierung the starting view
             this.modusAnsicht = "Metadaten";
         }
-
         return "metseditor";
     }
 
     private void loadCurrentImages(boolean jumpToFirstPage) {
         allImages = new ArrayList<>();
         try {
-            List<String> imageNames = imagehelper.getImageFiles(myProzess, currentTifFolder);
-            if (imageNames != null && !imageNames.isEmpty()) {
+            dataList = imagehelper.getImageFiles(myProzess, currentTifFolder, useThumbsDir);
+            if (dataList != null && !dataList.isEmpty()) {
                 imageFolderName = myProzess.getImagesDirectory() + currentTifFolder + File.separator;
                 imageFolderName = imageFolderName.replaceAll("\\\\", "/");
                 int order = 1;
-                for (String imagename : imageNames) {
+                for (String imagename : dataList) {
                     Image image = new Image(myProzess, imageFolderName, imagename, order++, thumbnailSizeInPixel);
                     allImages.add(image);
                 }
@@ -1762,7 +1763,6 @@ public class Metadaten implements Serializable {
      * @throws PreferencesException
      */
     public String XMLschreiben() {
-
         XmlArtikelZaehlen zaehlen = new XmlArtikelZaehlen();
 
         this.myProzess.setSortHelperDocstructs(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.DOCSTRUCT));
@@ -1946,7 +1946,6 @@ public class Metadaten implements Serializable {
      * @param inStrukturelement ============================================================== ==
      */
     private void MetadatenalsTree3Einlesen2(DocStruct inStrukturelement, TreeNodeStruct3 OberKnoten) {
-
         if (currentTopstruct != null && currentTopstruct.getType().getName().equals("BoundBook")) {
             if (inStrukturelement.getAllMetadata() != null) {
                 String phys = "";
@@ -2395,7 +2394,7 @@ public class Metadaten implements Serializable {
 
     private void checkImageNames() {
         try {
-            imagehelper.checkImageNames(this.myProzess, currentTifFolder);
+            dataList = imagehelper.checkImageNames(this.myProzess, currentTifFolder);
         } catch (TypeNotAllowedForParentException | SwapException | DAOException | IOException e) {
             log.error(e);
         }
@@ -2480,13 +2479,6 @@ public class Metadaten implements Serializable {
      * alle Seiten ermitteln ================================================================
      */
     public void retrieveAllImages() {
-        DigitalDocument document = null;
-        try {
-            document = this.gdzfile.getDigitalDocument();
-        } catch (PreferencesException e) {
-            Helper.setMeldung(null, "Can not get DigitalDocument: ", e.getMessage());
-        }
-
         List<DocStruct> meineListe = document.getPhysicalDocStruct().getAllChildrenAsFlatList();
         if (meineListe == null) {
             pageMap = null;
@@ -2541,9 +2533,7 @@ public class Metadaten implements Serializable {
         if (StringUtils.isNotBlank(currentRepresentativePage)) {
             PhysicalObject po = pageMap.get(currentRepresentativePage);
             po.setRepresentative(true);
-
         }
-
     }
 
     private String getRequestParameter(String name) {
@@ -2960,9 +2950,11 @@ public class Metadaten implements Serializable {
         }
 
         Path thumbsDir = Paths.get(myProzess.getThumbsDirectory());
-        if (StorageProvider.getInstance().isDirectory(thumbsDir)) {
+        useThumbsDir = false;
+        if (ConfigurationHelper.getInstance().useS3() || StorageProvider.getInstance().isDirectory(thumbsDir)) {
             List<String> thumbDirs = StorageProvider.getInstance().listDirNames(thumbsDir.toString());
             for (String thumbDirName : thumbDirs) {
+                useThumbsDir = true;
                 String matchingImageDir = myProzess.getMatchingImageDir(thumbDirName);
                 if (!allTifFolders.contains(matchingImageDir)) {
                     allTifFolders.add(matchingImageDir);
@@ -3001,7 +2993,7 @@ public class Metadaten implements Serializable {
 
             if (this.currentTifFolder != null) {
                 try {
-                    dataList = this.imagehelper.getImageFiles(this.myProzess, this.currentTifFolder);
+                    dataList = this.imagehelper.getImageFiles(this.myProzess, this.currentTifFolder, useThumbsDir);
                     if (dataList == null) {
                         myBild = null;
                         bildNummer = -1;
@@ -3092,6 +3084,7 @@ public class Metadaten implements Serializable {
         boolean exists = false;
         try {
             if (this.currentTifFolder != null && this.myBild != null) {
+                //TODO
                 exists = StorageProvider.getInstance()
                         .isFileExists(Paths.get(
                                 this.myProzess.getImagesDirectory() + this.currentTifFolder + FileSystems.getDefault().getSeparator() + this.myBild));
@@ -3949,7 +3942,7 @@ public class Metadaten implements Serializable {
 
     public String getOpacKatalog() {
         if (StringUtils.isBlank(opacKatalog)) {
-            if ( ! getAllOpacCatalogues().isEmpty() &&  ! catalogues.isEmpty()) {
+            if (!getAllOpacCatalogues().isEmpty() && !catalogues.isEmpty()) {
                 opacKatalog = getAllOpacCatalogues().get(0);
                 currentCatalogue = catalogues.get(0);
             }
@@ -3968,7 +3961,7 @@ public class Metadaten implements Serializable {
                 }
             }
 
-            if ( ! catalogues.isEmpty() && currentCatalogue == null) {
+            if (!catalogues.isEmpty() && currentCatalogue == null) {
                 // get first catalogue in case configured catalogue doesn't exist
                 currentCatalogue = catalogues.get(0);
             }
@@ -4741,7 +4734,6 @@ public class Metadaten implements Serializable {
             }
             subList = allImages.subList(startIdx, allImages.size());
         }
-
         return subList;
     }
 
@@ -4969,11 +4961,11 @@ public class Metadaten implements Serializable {
     public void changeFolder() {
         allImages = new ArrayList<>();
         try {
-            List<String> imageNames = imagehelper.getImageFiles(myProzess, currentTifFolder);
-            if (imageNames != null && !imageNames.isEmpty()) {
+            dataList = imagehelper.getImageFiles(myProzess, currentTifFolder, useThumbsDir);
+            if (dataList != null && !dataList.isEmpty()) {
                 imageFolderName = myProzess.getImagesDirectory() + currentTifFolder + File.separator;
                 int order = 1;
-                for (String imagename : imageNames) {
+                for (String imagename : dataList) {
                     Image currentImage = new Image(myProzess, imageFolderName, imagename, order++, thumbnailSizeInPixel);
                     allImages.add(currentImage);
                 }
