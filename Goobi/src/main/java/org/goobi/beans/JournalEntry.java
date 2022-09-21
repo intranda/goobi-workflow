@@ -1,7 +1,3 @@
-package org.goobi.beans;
-
-import java.io.Serializable;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -19,6 +15,9 @@ import java.io.Serializable;
  * 
  */
 
+package org.goobi.beans;
+
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.Date;
 
@@ -31,52 +30,95 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Data
+@RequiredArgsConstructor
 @AllArgsConstructor
-@NoArgsConstructor
 public class JournalEntry implements Serializable {
 
     private static final long serialVersionUID = -5624248615174083906L;
 
     private Integer id;
-    private Integer processId;
+    @NonNull
+    private Integer objectId;
+    @NonNull
     private Date creationDate;
+    @NonNull
     private String userName;
+    @NonNull
     private LogType type;
+    @NonNull
     private String content;
+
     private String filename;
-    private EntryType entryType = EntryType.PROCESS;
+
+    @NonNull
+    private EntryType entryType;
 
     // used only for LogType.File
     private transient Path file;
+
+    /**
+     * 
+     * Deprecated, use the constructor with arguments instead
+     */
+    @Deprecated
+    public JournalEntry() {
+
+    }
 
     public String getFormattedCreationDate() {
         return Helper.getDateAsFormattedString(creationDate);
     }
 
-    public static JournalEntry build(Integer processId) {
+    /**
+     * 
+     * Deprecated, use the constructor with arguments instead
+     */
+    @Deprecated
+    public static JournalEntry build(Integer objectId) {
         JournalEntry le = new JournalEntry();
-        le.setProcessId(processId);
+        le.setObjectId(objectId);
         return le;
     }
 
+    /**
+     * 
+     * Deprecated, use the constructor with arguments instead
+     */
+    @Deprecated
     public JournalEntry withCreationDate(Date date) {
         this.creationDate = date;
         return this;
     }
 
+    /**
+     * 
+     * Deprecated, use the constructor with arguments instead
+     */
+    @Deprecated
     public JournalEntry withUsername(String userName) {
         this.userName = userName;
         return this;
     }
 
+    /**
+     * 
+     * Deprecated, use the constructor with arguments instead
+     */
+    @Deprecated
     public JournalEntry withType(LogType type) {
         this.type = type;
         return this;
     }
 
+    /**
+     * 
+     * Deprecated, use the constructor with arguments instead
+     */
+    @Deprecated
     public JournalEntry withContent(String content) {
         this.content = content;
         return this;

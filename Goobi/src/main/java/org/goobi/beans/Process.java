@@ -1473,13 +1473,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (uploadedFile != null) {
             saveUploadedFile();
         } else {
-            JournalEntry entry = new JournalEntry();
-            entry.setCreationDate(new Date());
-            entry.setType(LogType.USER);
-            entry.setProcessId(id);
             LoginBean loginForm = Helper.getLoginBean();
-            entry.setUserName(loginForm.getMyBenutzer().getNachVorname());
-            entry.setContent(content);
+
+            JournalEntry entry =
+                    new JournalEntry(id, new Date(), loginForm.getMyBenutzer().getNachVorname(), LogType.USER, content, EntryType.PROCESS);
+
             entry.setEntryType(EntryType.PROCESS);
             content = "";
 
@@ -1757,11 +1755,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
             // otherwise create one
             if (!matchFound) {
-                JournalEntry entry = new JournalEntry();
-                entry.setContent(""); // comment
+                JournalEntry entry = new JournalEntry(id, new Date(), "", LogType.USER, "", EntryType.PROCESS);
                 entry.setFilename(file.toString()); // absolute path
                 entry.setFile(file);
-                entry.setEntryType(EntryType.PROCESS);
                 answer.add(entry);
             }
         }
@@ -1821,11 +1817,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             ProcessManager.deleteLogEntry(entry);
 
             // create a new entry to document the deletion
-            JournalEntry deletionInfo = JournalEntry.build(id)
-                    .withContent(Helper.getTranslation("processlogFileDeleted", filename))
-                    .withCreationDate(new Date())
-                    .withType(LogType.INFO)
-                    .withUsername(Helper.getCurrentUser().getNachVorname());
+
+            JournalEntry deletionInfo = new JournalEntry(id, new Date(), Helper.getCurrentUser().getNachVorname(), LogType.INFO, Helper.getTranslation("processlogFileDeleted", filename), EntryType.PROCESS);
+
             journal.add(deletionInfo);
             ProcessManager.saveLogEntry(deletionInfo);
         }
@@ -1857,11 +1851,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
             Path destination = Paths.get(folder.toString(), basename);
             StorageProvider.getInstance().move(tempFileToImport, destination);
-            JournalEntry entry = JournalEntry.build(id)
-                    .withCreationDate(new Date())
-                    .withContent(content)
-                    .withType(LogType.FILE)
-                    .withUsername(Helper.getCurrentUser().getNachVorname());
+
+            JournalEntry entry = new JournalEntry(id, new Date(), Helper.getCurrentUser().getNachVorname(), LogType.FILE, content, EntryType.PROCESS);
             entry.setFilename(destination.toString());
             ProcessManager.saveLogEntry(entry);
             journal.add(entry);

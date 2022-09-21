@@ -319,7 +319,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             ProcessMysqlHelper.saveLogEntry(entry);
         } catch (SQLException e) {
-            log.error("Cannot not update process log for process with id " + entry.getProcessId(), e);
+            log.error("Cannot not update process log for process with id " + entry.getObjectId(), e);
         }
     }
 
@@ -333,7 +333,7 @@ public class ProcessManager implements IManager, Serializable {
         try {
             ProcessMysqlHelper.deleteLogEntry(entry);
         } catch (SQLException e) {
-            log.error("Cannot not update process log for process with id " + entry.getProcessId(), e);
+            log.error("Cannot not update process log for process with id " + entry.getObjectId(), e);
         }
     }
 

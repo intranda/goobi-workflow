@@ -80,6 +80,7 @@ import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.Docket;
 import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -479,11 +480,8 @@ public class ProcessBean extends BasicBean implements Serializable {
             TicketGenerator.submitInternalTicket(importTicket, QueueType.FAST_QUEUE, "DatabaseInformationTicket", 0);
         } catch (JMSException e) {
             log.error("Error adding TaskTicket to queue", e);
-            JournalEntry errorEntry = JournalEntry.build(this.myProzess.getId())
-                    .withType(LogType.ERROR)
-                    .withContent("Error reading metadata for process" + this.myProzess.getTitel())
-                    .withCreationDate(new Date())
-                    .withUsername("automatic");
+
+            JournalEntry errorEntry = new JournalEntry(myProzess.getId(), new Date(), "automatic", LogType.ERROR, "Error reading metadata for process" + this.myProzess.getTitel(), EntryType.PROCESS);
             ProcessManager.saveLogEntry(errorEntry);
         }
     }

@@ -65,13 +65,9 @@ public class DelayJob extends AbstractGoobiJob {
                 IDelayPlugin delay = (IDelayPlugin) plugin;
                 delay.initialize(step, "");
                 if (delay.delayIsExhausted()) {
-                    JournalEntry logEntry = new JournalEntry();
-                    logEntry.setContent(Helper.getTranslation("blockingDelayIsExhausted"));
-                    logEntry.setCreationDate(new Date());
-                    logEntry.setProcessId(step.getProzess().getId());
-                    logEntry.setType(LogType.DEBUG);
-                    logEntry.setUserName("-delay-");
-                    logEntry.setEntryType(EntryType.PROCESS);
+
+                    JournalEntry logEntry = new JournalEntry(step.getProzess().getId(), new Date(), "-delay-", LogType.DEBUG,
+                            Helper.getTranslation("blockingDelayIsExhausted"), EntryType.PROCESS);
                     ProcessManager.saveLogEntry(logEntry);
                     new HelperSchritte().CloseStepObjectAutomatic(step);
                 } else {

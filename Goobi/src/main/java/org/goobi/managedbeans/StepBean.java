@@ -627,15 +627,9 @@ public class StepBean extends BasicBean implements Serializable {
             se.setCreationDate(myDate);
             se.setSchritt(temp);
             String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage;
-            JournalEntry logEntry = new JournalEntry();
-            logEntry.setContent(message);
-            logEntry.setCreationDate(new Date());
-            logEntry.setProcessId(mySchritt.getProzess().getId());
-            logEntry.setType(LogType.ERROR);
-            logEntry.setEntryType(EntryType.PROCESS);
-            if (ben != null) {
-                logEntry.setUserName(ben.getNachVorname());
-            }
+
+            JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), ben != null?ben.getNachVorname(): "", LogType.ERROR, message, EntryType.PROCESS);
+
             ProcessManager.saveLogEntry(logEntry);
 
             temp.getEigenschaften().add(se);
@@ -770,15 +764,7 @@ public class StepBean extends BasicBean implements Serializable {
              */
             String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage;
 
-            JournalEntry logEntry = new JournalEntry();
-            logEntry.setContent(message);
-            logEntry.setCreationDate(new Date());
-            logEntry.setProcessId(mySchritt.getProzess().getId());
-            logEntry.setType(LogType.INFO);
-            logEntry.setEntryType(EntryType.PROCESS);
-            if (ben != null) {
-                logEntry.setUserName(ben.getNachVorname());
-            }
+            JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), ben != null?ben.getNachVorname(): "", LogType.INFO, message, EntryType.PROCESS);
             ProcessManager.saveLogEntry(logEntry);
 
             ProcessManager.saveProcessInformation(this.mySchritt.getProzess());
@@ -1122,13 +1108,8 @@ public class StepBean extends BasicBean implements Serializable {
     public void addLogEntry() {
         if (StringUtils.isNotBlank(content)) {
             User user = Helper.getCurrentUser();
-            JournalEntry logEntry = new JournalEntry();
-            logEntry.setContent(content);
-            logEntry.setCreationDate(new Date());
-            logEntry.setProcessId(mySchritt.getProzess().getId());
-            logEntry.setType(LogType.USER);
-            logEntry.setUserName(user.getNachVorname());
-            logEntry.setEntryType(EntryType.PROCESS);
+            JournalEntry logEntry =
+                    new JournalEntry(mySchritt.getProzess().getId(), new Date(), user.getNachVorname(), LogType.USER, content, EntryType.PROCESS);
             ProcessManager.saveLogEntry(logEntry);
             mySchritt.getProzess().getJournal().add(logEntry);
             this.content = "";

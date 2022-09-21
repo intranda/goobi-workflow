@@ -332,15 +332,9 @@ public class BeanHelper implements Serializable{
         }
 
         // add text to process log
-
-        JournalEntry logEntry = new JournalEntry();
-        logEntry.setContent("Changed process template to " + template.getTitel());
-        logEntry.setCreationDate(new Date());
-        logEntry.setProcessId(processToChange.getId());
-        logEntry.setType(LogType.DEBUG);
-        logEntry.setEntryType(EntryType.PROCESS);
         User user = Helper.getCurrentUser();
-        logEntry.setUserName(user != null ? user.getNachVorname() : "");
+        JournalEntry logEntry =
+                new JournalEntry(processToChange.getId(), new Date(), user != null ? user.getNachVorname() : "", LogType.DEBUG, "Changed process template to " + template.getTitel(), EntryType.PROCESS);
         processToChange.getJournal().add(logEntry);
 
         try {

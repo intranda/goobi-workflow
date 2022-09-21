@@ -733,7 +733,7 @@ class ProcessMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            run.update(connection, sql, logEntry.getProcessId(),
+            run.update(connection, sql, logEntry.getObjectId(),
                     logEntry.getCreationDate() == null ? null : new Timestamp(logEntry.getCreationDate().getTime()), logEntry.getUserName(),
                             logEntry.getType().getTitle(), logEntry.getContent(), logEntry.getFilename(), logEntry.getEntryType().getTitle(),
                             logEntry.getId());
@@ -750,7 +750,7 @@ class ProcessMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
-            int id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, logEntry.getProcessId(),
+            int id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, logEntry.getObjectId(),
                     logEntry.getCreationDate() == null ? null : new Timestamp(logEntry.getCreationDate().getTime()), logEntry.getUserName(),
                             logEntry.getType().getTitle(), logEntry.getContent(), logEntry.getFilename(), logEntry.getEntryType().getTitle());
             logEntry.setId(id);
@@ -860,21 +860,18 @@ class ProcessMysqlHelper implements Serializable {
                     Date creationDate = null;
                     if (time != null) {
                         creationDate = new Date(time.getTime());
+                    } else {
+                        creationDate = new Date();
                     }
                     String userName = rs.getString("userName");
                     LogType type = LogType.getByTitle(rs.getString("type"));
                     String content = rs.getString("content");
                     String filename = rs.getString("filename");
                     String entryType = rs.getString("entrytype");
-                    JournalEntry entry = new JournalEntry();
+
+                    JournalEntry entry = new JournalEntry(processId, creationDate, userName, type, content, EntryType.getByTitle(entryType));
                     entry.setId(id);
-                    entry.setProcessId(processId);
-                    entry.setCreationDate(creationDate);
-                    entry.setUserName(userName);
-                    entry.setType(type);
-                    entry.setContent(content);
                     entry.setFilename(filename);
-                    entry.setEntryType(EntryType.getByTitle(entryType));
                     answer.add(entry);
                 }
             } finally {

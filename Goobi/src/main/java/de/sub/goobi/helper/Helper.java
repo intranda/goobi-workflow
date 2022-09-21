@@ -233,17 +233,24 @@ public class Helper implements Serializable, ServletContextListener {
                 user = userObject.getNachVorname();
             }
         }
-        addMessageToProcessJournal(processId, type, message, user);
+        addMessageToJournal(processId, type, message, user, EntryType.PROCESS);
     }
 
     public static void addMessageToProcessJournal(Integer processId, LogType type, String message, String username) {
-        JournalEntry logEntry = new JournalEntry();
-        logEntry.setContent(message);
-        logEntry.setCreationDate(new Date());
-        logEntry.setProcessId(processId);
-        logEntry.setType(type);
-        logEntry.setUserName(username);
-        logEntry.setEntryType(EntryType.PROCESS);
+        addMessageToJournal(processId, type, message, username, EntryType.PROCESS);
+    }
+
+    public static void addMessageToJournal(Integer id, LogType logType, String content, String username, EntryType entryType) {
+        JournalEntry logEntry = new JournalEntry(id, new Date(), username, logType, content, entryType);
+
+
+
+        //        logEntry.setContent(message);
+        //        logEntry.setCreationDate(new Date());
+        //        logEntry.setProcessId(id);
+        //        logEntry.setType(logType);
+        //        logEntry.setUserName(username);
+        //        logEntry.setEntryType(entryType);
         ProcessManager.saveLogEntry(logEntry);
     }
 

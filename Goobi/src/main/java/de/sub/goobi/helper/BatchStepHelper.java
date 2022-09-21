@@ -78,7 +78,7 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class BatchStepHelper implements Serializable{
+public class BatchStepHelper implements Serializable {
 
     private static final long serialVersionUID = -4104323465193019618L;
 
@@ -137,7 +137,7 @@ public class BatchStepHelper implements Serializable{
 
             this.processNameList.add(s.getProzess().getTitel());
         }
-        if ( ! steps.isEmpty()) {
+        if (!steps.isEmpty()) {
             this.currentStep = steps.get(0);
             this.processName = this.currentStep.getProzess().getTitel();
             loadProcessProperties(this.currentStep);
@@ -511,17 +511,14 @@ public class BatchStepHelper implements Serializable{
                 se.setCreationDate(myDate);
                 se.setSchritt(temp);
                 String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage;
-                JournalEntry logEntry = new JournalEntry();
-                logEntry.setContent(message);
-                logEntry.setCreationDate(new Date());
-                logEntry.setProcessId(currentStep.getProzess().getId());
-                logEntry.setType(LogType.ERROR);
-                logEntry.setEntryType(EntryType.PROCESS);
+                String username;
                 if (ben != null) {
-                    logEntry.setUserName(ben.getNachVorname());
+                    username = ben.getNachVorname();
                 } else {
-                    logEntry.setUserName("-");
+                    username = "-";
                 }
+                JournalEntry logEntry =
+                        new JournalEntry(currentStep.getProzess().getId(), new Date(), username, LogType.ERROR, message, EntryType.PROCESS);
                 ProcessManager.saveLogEntry(logEntry);
 
                 temp.getEigenschaften().add(se);
@@ -667,14 +664,14 @@ public class BatchStepHelper implements Serializable{
             }
             String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage;
 
-            JournalEntry logEntry = new JournalEntry();
-            logEntry.setContent(message);
-            logEntry.setCreationDate(new Date());
-            logEntry.setProcessId(currentStep.getProzess().getId());
-            logEntry.setType(LogType.INFO);
-
-            logEntry.setUserName(ben.getNachVorname());
-            logEntry.setEntryType(EntryType.PROCESS);
+            String username;
+            if (ben != null) {
+                username = ben.getNachVorname();
+            } else {
+                username = "-";
+            }
+            JournalEntry logEntry =
+                    new JournalEntry(currentStep.getProzess().getId(), new Date(), username, LogType.INFO, message, EntryType.PROCESS);
             ProcessManager.saveLogEntry(logEntry);
 
             /*
@@ -694,13 +691,8 @@ public class BatchStepHelper implements Serializable{
     public void addLogEntry() {
         if (StringUtils.isNotBlank(content)) {
             User user = Helper.getCurrentUser();
-            JournalEntry logEntry = new JournalEntry();
-            logEntry.setContent(content);
-            logEntry.setCreationDate(new Date());
-            logEntry.setProcessId(currentStep.getProzess().getId());
-            logEntry.setType(LogType.USER);
-            logEntry.setUserName(user.getNachVorname());
-            logEntry.setEntryType(EntryType.PROCESS);
+            JournalEntry logEntry =
+                    new JournalEntry(currentStep.getProzess().getId(), new Date(), user.getNachVorname(), LogType.USER, content, EntryType.PROCESS);
             ProcessManager.saveLogEntry(logEntry);
             currentStep.getProzess().getJournal().add(logEntry);
             this.content = "";
@@ -711,13 +703,8 @@ public class BatchStepHelper implements Serializable{
         if (StringUtils.isNotBlank(content)) {
             User user = Helper.getCurrentUser();
             for (Step s : this.steps) {
-                JournalEntry logEntry = new JournalEntry();
-                logEntry.setContent(content);
-                logEntry.setCreationDate(new Date());
-                logEntry.setProcessId(s.getProzess().getId());
-                logEntry.setType(LogType.USER);
-                logEntry.setUserName(user.getNachVorname());
-                logEntry.setEntryType(EntryType.PROCESS);
+                JournalEntry logEntry =
+                        new JournalEntry(s.getProzess().getId(), new Date(), user.getNachVorname(), LogType.USER, content, EntryType.PROCESS);
                 s.getProzess().getJournal().add(logEntry);
                 ProcessManager.saveLogEntry(logEntry);
             }
@@ -759,7 +746,7 @@ public class BatchStepHelper implements Serializable{
             }
             try {
                 dms.startExport(step.getProzess());
-            } catch (Exception e) {  //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+            } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
                 Helper.setFehlerMeldung("Error on export", e.getMessage());
                 log.error(e);
             }

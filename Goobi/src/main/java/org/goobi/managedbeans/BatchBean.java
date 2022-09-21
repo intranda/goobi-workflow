@@ -304,14 +304,7 @@ public class BatchBean extends BasicBean implements Serializable {
                 Batch batch = this.selectedBatches.get(0);
                 for (Process p : this.selectedProcesses) {
                     p.setBatch(batch);
-
-                    JournalEntry logEntry = new JournalEntry();
-                    logEntry.setContent("added process to batch " + batch.getBatchId());
-                    logEntry.setCreationDate(new Date());
-                    logEntry.setProcessId(p.getId());
-                    logEntry.setType(LogType.DEBUG);
-                    logEntry.setUserName("-batch-");
-                    logEntry.setEntryType(EntryType.PROCESS);
+                    JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), "-batch-", LogType.DEBUG, "added process to batch " + batch.getBatchId(), EntryType.PROCESS);
                     ProcessManager.saveLogEntry(logEntry);
 
                     ProcessManager.saveProcessInformation(p);
@@ -327,13 +320,8 @@ public class BatchBean extends BasicBean implements Serializable {
     public void removeProcessesFromBatch() {
         for (Process p : this.selectedProcesses) {
             if (p.getBatch() != null) {
-                JournalEntry logEntry = new JournalEntry();
-                logEntry.setContent("removed process from batch " + p.getBatch().getBatchId());
-                logEntry.setCreationDate(new Date());
-                logEntry.setProcessId(p.getId());
-                logEntry.setType(LogType.DEBUG);
-                logEntry.setUserName("-batch-");
-                logEntry.setEntryType(EntryType.PROCESS);
+
+                JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), "-batch-", LogType.DEBUG, "removed process from batch " + p.getBatch().getBatchId(), EntryType.PROCESS);
                 ProcessManager.saveLogEntry(logEntry);
 
                 p.setBatch(null);
@@ -351,13 +339,8 @@ public class BatchBean extends BasicBean implements Serializable {
             for (Process p : this.selectedProcesses) {
                 p.setBatch(batch);
                 ProcessManager.saveProcessInformation(p);
-                JournalEntry logEntry = new JournalEntry();
-                logEntry.setContent("added process to batch " + batch.getBatchId());
-                logEntry.setCreationDate(new Date());
-                logEntry.setProcessId(p.getId());
-                logEntry.setType(LogType.DEBUG);
-                logEntry.setUserName("-batch-");
-                logEntry.setEntryType(EntryType.PROCESS);
+
+                JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), "-batch-", LogType.DEBUG, "added process to batch " + batch.getBatchId(), EntryType.PROCESS);
                 ProcessManager.saveLogEntry(logEntry);
             }
 

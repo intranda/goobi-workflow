@@ -95,14 +95,7 @@ public class GoobiScriptAddToJournal extends AbstractIGoobiScript implements IGo
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
 
-        JournalEntry logEntry = new JournalEntry();
-        logEntry.setContent(parameters.get("message"));
-        logEntry.setCreationDate(new Date());
-        logEntry.setProcessId(p.getId());
-        logEntry.setType(LogType.getByTitle(parameters.get("type")));
-        logEntry.setUserName(username);
-        logEntry.setEntryType(EntryType.PROCESS);
-
+        JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), username, LogType.getByTitle(parameters.get("type")), parameters.get("message"), EntryType.PROCESS);
         ProcessManager.saveLogEntry(logEntry);
         log.info("Process log updated for process with ID " + p.getId());
 

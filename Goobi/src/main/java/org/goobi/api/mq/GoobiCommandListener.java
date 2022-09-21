@@ -39,6 +39,7 @@ import javax.jms.TextMessage;
 import javax.naming.ConfigurationException;
 
 import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.LogType;
 
@@ -150,11 +151,10 @@ public class GoobiCommandListener {
                 try {
                     if (JwtHelper.verifyChangeStepToken(token, stepId)) {
                         // add to process log
-                        JournalEntry entry = JournalEntry.build(processId)
-                                .withCreationDate(new Date())
-                                .withType(LogType.getByTitle(t.getLogType()))
-                                .withUsername(t.getIssuer())
-                                .withContent(t.getContent());
+
+                        JournalEntry entry =
+                                new JournalEntry(processId, new Date(), t.getIssuer(), LogType.getByTitle(t.getLogType()), t.getContent(), EntryType.PROCESS);
+
                         ProcessManager.saveLogEntry(entry);
                     }
                 } catch (ConfigurationException e) {

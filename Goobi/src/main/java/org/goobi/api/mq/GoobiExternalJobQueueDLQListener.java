@@ -25,7 +25,6 @@
  */
 package org.goobi.api.mq;
 
-
 import java.util.Date;
 
 import javax.jms.BytesMessage;
@@ -38,6 +37,7 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.LogType;
 
@@ -95,11 +95,8 @@ public class GoobiExternalJobQueueDLQListener {
                         step.setBearbeitungsende(new Date());
                         StepManager.saveStep(step);
 
-                        JournalEntry logEntry = JournalEntry.build(step.getProcessId())
-                                .withContent("Script ticket failed after retries")
-                                .withCreationDate(new Date())
-                                .withType(LogType.ERROR)
-                                .withUsername("Goobi DLQ listener");
+                        JournalEntry logEntry = new JournalEntry(step.getProcessId(), new Date(), "Goobi DLQ listener", LogType.ERROR,
+                                "Script ticket failed after retries", EntryType.PROCESS);
                         ProcessManager.saveLogEntry(logEntry);
 
                         message.acknowledge();
