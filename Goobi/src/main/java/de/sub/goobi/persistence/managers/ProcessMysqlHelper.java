@@ -727,7 +727,7 @@ class ProcessMysqlHelper implements Serializable {
 
     private static void updateLogEntry(JournalEntry logEntry) throws SQLException {
         String sql =
-                "UPDATE journal set processID =?, creationDate = ?, userName = ?, type = ? , content = ?, filename = ?, entrytype = ? WHERE id = ?";
+                "UPDATE journal set objectID =?, creationDate = ?, userName = ?, type = ? , content = ?, filename = ?, entrytype = ? WHERE id = ?";
 
         Connection connection = null;
         try {
@@ -745,7 +745,7 @@ class ProcessMysqlHelper implements Serializable {
     }
 
     private static JournalEntry inserLogEntry(JournalEntry logEntry) throws SQLException {
-        String sql = "INSERT INTO journal (processID, creationDate, userName, type , content, filename, entrytype ) VALUES (?, ?,  ?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO journal (objectID, creationDate, userName, type , content, filename, entrytype ) VALUES (?, ?,  ?, ?, ?, ?, ?);";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -781,7 +781,7 @@ class ProcessMysqlHelper implements Serializable {
     public static List<JournalEntry> getLogEntriesForProcess(int processId) throws SQLException {
         Connection connection = null;
 
-        String sql = " SELECT * from journal WHERE processId = " + processId + " ORDER BY creationDate";
+        String sql = " SELECT * from journal WHERE objectID = " + processId + " AND entrytype = 'process' ORDER BY creationDate";
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
@@ -855,7 +855,7 @@ class ProcessMysqlHelper implements Serializable {
                 while (rs.next()) {
 
                     int id = rs.getInt("id");
-                    int processId = rs.getInt("processID");
+                    int objectID = rs.getInt("objectID");
                     Timestamp time = rs.getTimestamp("creationDate");
                     Date creationDate = null;
                     if (time != null) {
@@ -869,7 +869,7 @@ class ProcessMysqlHelper implements Serializable {
                     String filename = rs.getString("filename");
                     String entryType = rs.getString("entrytype");
 
-                    JournalEntry entry = new JournalEntry(processId, creationDate, userName, type, content, EntryType.getByTitle(entryType));
+                    JournalEntry entry = new JournalEntry(objectID, creationDate, userName, type, content, EntryType.getByTitle(entryType));
                     entry.setId(id);
                     entry.setFilename(filename);
                     answer.add(entry);
