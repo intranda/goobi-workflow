@@ -44,6 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Batch;
 import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
@@ -310,6 +311,7 @@ public class BatchBean extends BasicBean implements Serializable {
                     logEntry.setProcessId(p.getId());
                     logEntry.setType(LogType.DEBUG);
                     logEntry.setUserName("-batch-");
+                    logEntry.setEntryType(EntryType.PROCESS);
                     ProcessManager.saveLogEntry(logEntry);
 
                     ProcessManager.saveProcessInformation(p);
@@ -331,6 +333,7 @@ public class BatchBean extends BasicBean implements Serializable {
                 logEntry.setProcessId(p.getId());
                 logEntry.setType(LogType.DEBUG);
                 logEntry.setUserName("-batch-");
+                logEntry.setEntryType(EntryType.PROCESS);
                 ProcessManager.saveLogEntry(logEntry);
 
                 p.setBatch(null);
@@ -354,6 +357,7 @@ public class BatchBean extends BasicBean implements Serializable {
                 logEntry.setProcessId(p.getId());
                 logEntry.setType(LogType.DEBUG);
                 logEntry.setUserName("-batch-");
+                logEntry.setEntryType(EntryType.PROCESS);
                 ProcessManager.saveLogEntry(logEntry);
             }
 

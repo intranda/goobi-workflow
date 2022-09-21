@@ -30,6 +30,7 @@ import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -46,6 +47,8 @@ public class JournalEntry implements Serializable {
     private LogType type;
     private String content;
     private String filename;
+    private EntryType entryType = EntryType.PROCESS;
+
     // used only for LogType.File
     private transient Path file;
 
@@ -109,4 +112,25 @@ public class JournalEntry implements Serializable {
     public String getFormattedContent() {
         return content != null ? content.replace("\n", "<br/>") : null;
     }
+
+    @AllArgsConstructor
+    public enum EntryType {
+
+        PROCESS("process"),
+        INSTITUTION("institution"),
+        USER("user");
+
+        @Getter
+        private String title;
+
+        public static EntryType getByTitle(String title) {
+            for (EntryType type : values()) {
+                if (type.getTitle().equals(title)) {
+                    return type;
+                }
+            }
+            return EntryType.PROCESS;
+        }
+    }
+
 }

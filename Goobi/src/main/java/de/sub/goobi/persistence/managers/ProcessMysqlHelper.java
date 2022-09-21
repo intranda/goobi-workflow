@@ -35,6 +35,7 @@ import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
@@ -479,10 +480,7 @@ class ProcessMysqlHelper implements Serializable {
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            if (log.isTraceEnabled()) {
-                log.trace(sql.toString());
-            }
-            return new QueryRunner().query(connection, sql.toString(), resultSetToBatchHandler, batchID);
+            return new QueryRunner().query(connection, sql, resultSetToBatchHandler, batchID);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -728,7 +726,8 @@ class ProcessMysqlHelper implements Serializable {
     }
 
     private static void updateLogEntry(JournalEntry logEntry) throws SQLException {
-        String sql = "UPDATE journal set processID =?, creationDate = ?, userName = ?, type = ? , content = ?, filename = ? WHERE id = ?";
+        String sql =
+                "UPDATE journal set processID =?, creationDate = ?, userName = ?, type = ? , content = ?, filename = ?, entrytype = ? WHERE id = ?";
 
         Connection connection = null;
         try {
@@ -736,7 +735,8 @@ class ProcessMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             run.update(connection, sql, logEntry.getProcessId(),
                     logEntry.getCreationDate() == null ? null : new Timestamp(logEntry.getCreationDate().getTime()), logEntry.getUserName(),
-                            logEntry.getType().getTitle(), logEntry.getContent(), logEntry.getFilename(), logEntry.getId());
+                            logEntry.getType().getTitle(), logEntry.getContent(), logEntry.getFilename(), logEntry.getEntryType().getTitle(),
+                            logEntry.getId());
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -745,16 +745,14 @@ class ProcessMysqlHelper implements Serializable {
     }
 
     private static JournalEntry inserLogEntry(JournalEntry logEntry) throws SQLException {
-        String sql = "INSERT INTO journal (processID, creationDate, userName, type , content, filename ) VALUES (?, ?,  ?, ?, ?, ?);";
+        String sql = "INSERT INTO journal (processID, creationDate, userName, type , content, filename, entrytype ) VALUES (?, ?,  ?, ?, ?, ?, ?);";
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             int id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, logEntry.getProcessId(),
                     logEntry.getCreationDate() == null ? null : new Timestamp(logEntry.getCreationDate().getTime()), logEntry.getUserName(),
-                            logEntry.getType().getTitle(), logEntry.getContent(), logEntry.getFilename()
-
-                    );
+                            logEntry.getType().getTitle(), logEntry.getContent(), logEntry.getFilename(), logEntry.getEntryType().getTitle());
             logEntry.setId(id);
             return logEntry;
         } finally {
@@ -797,7 +795,7 @@ class ProcessMysqlHelper implements Serializable {
 
     }
 
-    public static ResultSetHandler<Batch> resultSetToBatchHandler = new ResultSetHandler<Batch>() {
+    public static final ResultSetHandler<Batch> resultSetToBatchHandler = new ResultSetHandler<Batch>() {
         @Override
         public Batch handle(ResultSet rs) throws SQLException {
 
@@ -814,7 +812,7 @@ class ProcessMysqlHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<List<Batch>> resultSetToBatchListHandler = new ResultSetHandler<List<Batch>>() {
+    public static final ResultSetHandler<List<Batch>> resultSetToBatchListHandler = new ResultSetHandler<List<Batch>>() {
         @Override
         public List<Batch> handle(ResultSet rs) throws SQLException {
             List<Batch> answer = new ArrayList<>();
@@ -849,7 +847,7 @@ class ProcessMysqlHelper implements Serializable {
         return batch;
     }
 
-    public static ResultSetHandler<List<JournalEntry>> resultSetToLogEntryListHandler = new ResultSetHandler<List<JournalEntry>>() {
+    public static final ResultSetHandler<List<JournalEntry>> resultSetToLogEntryListHandler = new ResultSetHandler<List<JournalEntry>>() {
         @Override
         public List<JournalEntry> handle(ResultSet rs) throws SQLException {
             List<JournalEntry> answer = new ArrayList<>();
@@ -867,7 +865,7 @@ class ProcessMysqlHelper implements Serializable {
                     LogType type = LogType.getByTitle(rs.getString("type"));
                     String content = rs.getString("content");
                     String filename = rs.getString("filename");
-
+                    String entryType = rs.getString("entrytype");
                     JournalEntry entry = new JournalEntry();
                     entry.setId(id);
                     entry.setProcessId(processId);
@@ -876,6 +874,7 @@ class ProcessMysqlHelper implements Serializable {
                     entry.setType(type);
                     entry.setContent(content);
                     entry.setFilename(filename);
+                    entry.setEntryType(EntryType.getByTitle(entryType));
                     answer.add(entry);
                 }
             } finally {

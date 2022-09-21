@@ -36,6 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -337,6 +338,7 @@ public class BeanHelper implements Serializable{
         logEntry.setCreationDate(new Date());
         logEntry.setProcessId(processToChange.getId());
         logEntry.setType(LogType.DEBUG);
+        logEntry.setEntryType(EntryType.PROCESS);
         User user = Helper.getCurrentUser();
         logEntry.setUserName(user != null ? user.getNachVorname() : "");
         processToChange.getJournal().add(logEntry);

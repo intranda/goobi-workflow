@@ -49,6 +49,7 @@ import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
@@ -631,6 +632,7 @@ public class StepBean extends BasicBean implements Serializable {
             logEntry.setCreationDate(new Date());
             logEntry.setProcessId(mySchritt.getProzess().getId());
             logEntry.setType(LogType.ERROR);
+            logEntry.setEntryType(EntryType.PROCESS);
             if (ben != null) {
                 logEntry.setUserName(ben.getNachVorname());
             }
@@ -773,6 +775,7 @@ public class StepBean extends BasicBean implements Serializable {
             logEntry.setCreationDate(new Date());
             logEntry.setProcessId(mySchritt.getProzess().getId());
             logEntry.setType(LogType.INFO);
+            logEntry.setEntryType(EntryType.PROCESS);
             if (ben != null) {
                 logEntry.setUserName(ben.getNachVorname());
             }
@@ -1125,6 +1128,7 @@ public class StepBean extends BasicBean implements Serializable {
             logEntry.setProcessId(mySchritt.getProzess().getId());
             logEntry.setType(LogType.USER);
             logEntry.setUserName(user.getNachVorname());
+            logEntry.setEntryType(EntryType.PROCESS);
             ProcessManager.saveLogEntry(logEntry);
             mySchritt.getProzess().getJournal().add(logEntry);
             this.content = "";

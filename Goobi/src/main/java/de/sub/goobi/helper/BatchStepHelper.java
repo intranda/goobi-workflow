@@ -43,6 +43,7 @@ import org.apache.commons.lang.StringUtils;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
 import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
@@ -515,6 +516,7 @@ public class BatchStepHelper implements Serializable{
                 logEntry.setCreationDate(new Date());
                 logEntry.setProcessId(currentStep.getProzess().getId());
                 logEntry.setType(LogType.ERROR);
+                logEntry.setEntryType(EntryType.PROCESS);
                 if (ben != null) {
                     logEntry.setUserName(ben.getNachVorname());
                 } else {
@@ -672,7 +674,7 @@ public class BatchStepHelper implements Serializable{
             logEntry.setType(LogType.INFO);
 
             logEntry.setUserName(ben.getNachVorname());
-
+            logEntry.setEntryType(EntryType.PROCESS);
             ProcessManager.saveLogEntry(logEntry);
 
             /*
@@ -698,6 +700,7 @@ public class BatchStepHelper implements Serializable{
             logEntry.setProcessId(currentStep.getProzess().getId());
             logEntry.setType(LogType.USER);
             logEntry.setUserName(user.getNachVorname());
+            logEntry.setEntryType(EntryType.PROCESS);
             ProcessManager.saveLogEntry(logEntry);
             currentStep.getProzess().getJournal().add(logEntry);
             this.content = "";
@@ -714,6 +717,7 @@ public class BatchStepHelper implements Serializable{
                 logEntry.setProcessId(s.getProzess().getId());
                 logEntry.setType(LogType.USER);
                 logEntry.setUserName(user.getNachVorname());
+                logEntry.setEntryType(EntryType.PROCESS);
                 s.getProzess().getJournal().add(logEntry);
                 ProcessManager.saveLogEntry(logEntry);
             }

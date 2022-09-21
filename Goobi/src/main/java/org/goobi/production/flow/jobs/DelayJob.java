@@ -4,9 +4,9 @@ import java.util.Date;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
@@ -70,7 +71,7 @@ public class DelayJob extends AbstractGoobiJob {
                     logEntry.setProcessId(step.getProzess().getId());
                     logEntry.setType(LogType.DEBUG);
                     logEntry.setUserName("-delay-");
-
+                    logEntry.setEntryType(EntryType.PROCESS);
                     ProcessManager.saveLogEntry(logEntry);
                     new HelperSchritte().CloseStepObjectAutomatic(step);
                 } else {

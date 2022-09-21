@@ -56,6 +56,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -384,6 +385,7 @@ public class HelperSchritte {
                 le.setContent("Metadata file is not readable");
                 le.setType(LogType.ERROR);
                 le.setUserName("http step");
+                le.setEntryType(EntryType.PROCESS);
                 ProcessManager.saveLogEntry(le);
             } else {
                 dd = ff.getDigitalDocument();
@@ -395,6 +397,7 @@ public class HelperSchritte {
             le.setContent("error reading metadata file");
             le.setType(LogType.ERROR);
             le.setUserName("http step");
+            le.setEntryType(EntryType.PROCESS);
             ProcessManager.saveLogEntry(le);
         }
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
@@ -421,6 +424,7 @@ public class HelperSchritte {
             le.setContent("error executing http request: " + e1.getMessage());
             le.setType(LogType.ERROR);
             le.setUserName("http step");
+            le.setEntryType(EntryType.PROCESS);
             ProcessManager.saveLogEntry(le);
             errorStep(step);
             log.error(e1);
@@ -472,6 +476,7 @@ public class HelperSchritte {
                     le.setContent(String.format("Server returned status code %d, response body was: '%s'", statusCode, respStr));
                     le.setType(LogType.ERROR);
                     le.setUserName("http step");
+                    le.setEntryType(EntryType.PROCESS);
                     ProcessManager.saveLogEntry(le);
                     errorStep(step);
                     log.error(respStr);
@@ -483,6 +488,7 @@ public class HelperSchritte {
                 le.setContent(respStr);
                 le.setType(LogType.INFO);
                 le.setUserName("http step");
+                le.setEntryType(EntryType.PROCESS);
                 ProcessManager.saveLogEntry(le);
                 if (step.isHttpCloseStep()) {
                     CloseStepObjectAutomatic(step);
@@ -495,6 +501,7 @@ public class HelperSchritte {
                 le.setContent("error executing http request");
                 le.setType(LogType.ERROR);
                 le.setUserName("http step");
+                le.setEntryType(EntryType.PROCESS);
                 ProcessManager.saveLogEntry(le);
             }
         } catch (IOException e) {
@@ -504,6 +511,7 @@ public class HelperSchritte {
             le.setContent("error executing http request: " + e.getMessage());
             le.setType(LogType.ERROR);
             le.setUserName("http step");
+            le.setEntryType(EntryType.PROCESS);
             ProcessManager.saveLogEntry(le);
             errorStep(step);
             log.error(e);

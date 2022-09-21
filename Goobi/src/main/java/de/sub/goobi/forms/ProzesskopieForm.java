@@ -56,6 +56,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -797,6 +798,7 @@ public class ProzesskopieForm implements Serializable {
             logEntry.setProcessId(prozessKopie.getId());
             logEntry.setType(LogType.INFO);
             logEntry.setUserName(user.getNachVorname());
+            logEntry.setEntryType(EntryType.PROCESS);
             ProcessManager.saveLogEntry(logEntry);
             prozessKopie.getJournal().add(logEntry);
         }

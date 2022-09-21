@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
@@ -100,6 +101,7 @@ public class GoobiScriptAddToJournal extends AbstractIGoobiScript implements IGo
         logEntry.setProcessId(p.getId());
         logEntry.setType(LogType.getByTitle(parameters.get("type")));
         logEntry.setUserName(username);
+        logEntry.setEntryType(EntryType.PROCESS);
 
         ProcessManager.saveLogEntry(logEntry);
         log.info("Process log updated for process with ID " + p.getId());

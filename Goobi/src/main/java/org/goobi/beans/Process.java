@@ -61,6 +61,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.io.BackupFileManager;
 import org.goobi.io.FileListFilter;
 import org.goobi.managedbeans.LoginBean;
@@ -1472,7 +1473,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (uploadedFile != null) {
             saveUploadedFile();
         } else {
-
             JournalEntry entry = new JournalEntry();
             entry.setCreationDate(new Date());
             entry.setType(LogType.USER);
@@ -1480,6 +1480,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             LoginBean loginForm = Helper.getLoginBean();
             entry.setUserName(loginForm.getMyBenutzer().getNachVorname());
             entry.setContent(content);
+            entry.setEntryType(EntryType.PROCESS);
             content = "";
 
             journal.add(entry);
@@ -1760,6 +1761,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 entry.setContent(""); // comment
                 entry.setFilename(file.toString()); // absolute path
                 entry.setFile(file);
+                entry.setEntryType(EntryType.PROCESS);
                 answer.add(entry);
             }
         }

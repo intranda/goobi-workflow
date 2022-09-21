@@ -76,6 +76,7 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
@@ -242,6 +243,7 @@ public class Helper implements Serializable, ServletContextListener {
         logEntry.setProcessId(processId);
         logEntry.setType(type);
         logEntry.setUserName(username);
+        logEntry.setEntryType(EntryType.PROCESS);
         ProcessManager.saveLogEntry(logEntry);
     }
 
