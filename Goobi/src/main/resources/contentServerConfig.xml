@@ -135,7 +135,9 @@
 	<pdfTitlePage use="false"
 		configFile="file:///opt/digiverso/goobi/config/config_pdfTitlePage.xml" />
 
-    <restapi use="true" useWatermark="false"></restapi>
+    <restapi use="true" useWatermark="false">
+         <discloseContentLocation>false</discloseContentLocation>
+    </restapi>
 
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * path to 

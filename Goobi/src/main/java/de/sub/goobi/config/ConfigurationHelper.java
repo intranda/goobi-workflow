@@ -295,7 +295,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getProcessImagesFallbackDirectoryName() {
-        return getLocalString("process.folder.images.fallback", ""); 
+        return getLocalString("process.folder.images.fallback", "");
     }
 
     public String getProcessOcrTxtDirectoryName() {
@@ -720,6 +720,11 @@ public class ConfigurationHelper implements Serializable {
     public boolean isMetsEditorValidateImages() {
         return getLocalBoolean("MetsEditorValidateImages", true);
     }
+
+    public boolean isMetsEditorShowArchivedFolder() {
+        return getLocalBoolean("MetsEditorShowArchivedFolder", false);
+    }
+
 
     public long getMetsEditorLockingTime() {
         return getLocalLong("MetsEditorLockingTime", 30 * 60 * 1000);
