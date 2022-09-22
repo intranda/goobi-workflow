@@ -58,7 +58,7 @@ public class ProjectHelper {
      *                  construction in separate classes or to create a new class with these properties
      */
 
-    synchronized public static List<StepInformation> getProjectWorkFlowOverview(Project project) {
+    public static synchronized List<StepInformation> getProjectWorkFlowOverview(Project project) {
         Long totalNumberOfProc = 0l;
         Long totalNumberOfImages = 0l;
 
@@ -105,12 +105,12 @@ public class ProjectHelper {
                 }
             }
         }
-        Comparator<StepInformation> comp = new compareWorkflowSteps();
+        Comparator<StepInformation> comp = new CompareWorkflowSteps();
         Collections.sort(workFlow, comp);
         return workFlow;
     }
 
-    private static class compareWorkflowSteps implements Comparator<StepInformation>, Serializable {
+    private static class CompareWorkflowSteps implements Comparator<StepInformation>, Serializable {
         private static final long serialVersionUID = 1L;
 
         /**
@@ -176,7 +176,7 @@ public class ProjectHelper {
                 }
             }
         }
-        Comparator<StepInformation> comp = new compareWorkflowSteps();
+        Comparator<StepInformation> comp = new CompareWorkflowSteps();
         Collections.sort(workFlow, comp);
         return workFlow;
     }

@@ -35,7 +35,7 @@ public enum ChartColor {
     yellow(250, 220, 50),
     red(200, 0, 0);
 
-	@Getter
+    @Getter
     private Color color;
 
     private ChartColor(int red, int green, int blue) {

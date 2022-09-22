@@ -66,7 +66,7 @@ public class SecurityCheckFilter implements Filter {
         String destination = "index.xhtml";
         if (url.contains("external_index.xhtml") && ConfigurationHelper.getInstance().isEnableExternalUserLogin()) {
             chain.doFilter(request, response);
-        } else if (((userBean == null || userBean.getMyBenutzer() == null)) && !url.contains("javax.faces.resource") && !url.contains("wi?")
+        } else if ((userBean == null || userBean.getMyBenutzer() == null) && !url.contains("javax.faces.resource") && !url.contains("wi?")
                 && !url.contains("currentUsers.xhtml") && !url.contains("logout.xhtml") && !url.contains("technicalBackground.xhtml")
                 && !url.contains("mailNotificationDisabled.xhtml") && !url.contains(destination)) {
             ((HttpServletResponse) response).sendRedirect(destination);

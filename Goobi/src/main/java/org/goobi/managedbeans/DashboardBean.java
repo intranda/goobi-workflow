@@ -25,7 +25,6 @@
  */
 package org.goobi.managedbeans;
 
-
 import java.io.IOException;
 import java.io.Serializable;
 

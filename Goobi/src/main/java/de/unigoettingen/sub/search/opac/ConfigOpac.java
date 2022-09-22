@@ -163,9 +163,8 @@ public class ConfigOpac {
                 if (searchFields.isEmpty()) {
                     searchFields = searchFieldMap;
                 }
-                ConfigOpacCatalogue coc = new ConfigOpacCatalogue(title, description, address, database, iktlist, port, charset, cbs, beautyList,
+                return new ConfigOpacCatalogue(title, description, address, database, iktlist, port, charset, cbs, beautyList,
                         opacType, protocol, searchFields);
-                return coc;
             }
         }
         return null;
@@ -255,9 +254,8 @@ public class ConfigOpac {
                 boolean containedWork = config.getBoolean("doctypes.type(" + i + ")[@isContainedWork]");
                 List<String> mappings = Arrays.asList(config.getStringArray("doctypes.type(" + i + ").mapping"));
                 String rulesetChildType = config.getString("doctypes.type(" + i + ")[@rulesetChildType]");
-                ConfigOpacDoctype cod = new ConfigOpacDoctype(inTitle, inRulesetType, inTifHeaderType, periodical, multiVolume, containedWork, labels,
+                return new ConfigOpacDoctype(inTitle, inRulesetType, inTifHeaderType, periodical, multiVolume, containedWork, labels,
                         mappings, rulesetChildType);
-                return cod;
             }
         }
         return null;

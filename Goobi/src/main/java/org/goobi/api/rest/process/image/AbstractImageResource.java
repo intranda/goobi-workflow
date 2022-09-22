@@ -24,7 +24,6 @@
  */
 package org.goobi.api.rest.process.image;
 
-
 import java.awt.Dimension;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -61,16 +60,14 @@ public abstract class AbstractImageResource extends ImageResource {
         super(context, request, response, foldername, filename);
     }
 
-
-
     @GET
     @javax.ws.rs.Path("/info.json")
-    @Operation(summary="Returns information about an image", description="Returns information about the image in JSON or JSONLD format")
-    @ApiResponse(responseCode="200", description="OK")
-    @ApiResponse(responseCode="400", description="Bad Request")
-    @ApiResponse(responseCode="404", description="Not Found")
-    @ApiResponse(responseCode="500", description="Internal error")
-    @Produces({ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON})
+    @Operation(summary = "Returns information about an image", description = "Returns information about the image in JSON or JSONLD format")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "404", description = "Not Found")
+    @ApiResponse(responseCode = "500", description = "Internal error")
+    @Produces({ ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
     @ContentServerImageInfoBinding
     @Override
     public ImageInformation getInfoAsJson() throws ContentLibException {
@@ -133,8 +130,7 @@ public abstract class AbstractImageResource extends ImageResource {
         return sizes;
     }
 
-
-    public  URI getUriBase(HttpServletRequest request) {
+    public URI getUriBase(HttpServletRequest request) {
         String scheme = request.getScheme();
         String server = request.getServerName();
         String servletPath = request.getServletPath();
@@ -148,11 +144,12 @@ public abstract class AbstractImageResource extends ImageResource {
             } else {
                 uriBase = new URI(scheme, server, contextPath + servletPath + getGoobiURIPrefix(), null);
             }
-        }catch (URISyntaxException e) {
+        } catch (URISyntaxException e) {
             log.error(e);
         }
         return uriBase;
 
     }
-    public abstract  String getGoobiURIPrefix();
+
+    public abstract String getGoobiURIPrefix();
 }

@@ -34,9 +34,9 @@ import lombok.Getter;
  * Wertes gesetzt werden, wenn bestimmte Werte in dem opac-Ergebnis auftreten. ================================================================
  */
 public class ConfigOpacCatalogueBeautifier {
-	@Getter
+    @Getter
     private ConfigOpacCatalogueBeautifierElement tagElementToChange;
-	@Getter
+    @Getter
     private List<ConfigOpacCatalogueBeautifierElement> tagElementsToProof;
 
     public ConfigOpacCatalogueBeautifier(ConfigOpacCatalogueBeautifierElement inChangeElement,

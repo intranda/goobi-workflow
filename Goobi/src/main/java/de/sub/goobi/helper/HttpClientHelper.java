@@ -102,18 +102,21 @@ public class HttpClientHelper {
     // * fifth: port 
     public static String getStringFromUrl(String... parameter) {
         String response = "";
+        if (parameter == null) {
+            return response;
+        }
         CloseableHttpClient client = null;
         String url = parameter[0];
         HttpGet method = new HttpGet(url);
 
-        if (parameter != null && parameter.length > 4) {
+        if (parameter.length > 4) {
             CredentialsProvider credsProvider = new BasicCredentialsProvider();
-            credsProvider.setCredentials(new AuthScope(parameter[3], Integer.valueOf(parameter[4]).intValue()),
+            credsProvider.setCredentials(new AuthScope(parameter[3], Integer.parseInt(parameter[4])),
                     new UsernamePasswordCredentials(parameter[1], parameter[2]));
             client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
 
         } else {
-            client = HttpClientBuilder.create().build();
+            client = HttpClientBuilder.create().build(); // client will never be null
         }
 
         if (ConfigurationHelper.getInstance().isUseProxy()) {
@@ -131,18 +134,16 @@ public class HttpClientHelper {
         }
 
         try {
-            response = client.execute(method, HttpClientHelper.stringResponseHandler);
+            response = client.execute(method, HttpClientHelper.stringResponseHandler); // also implies that client != null
         } catch (IOException e) {
             log.error("Cannot execute URL " + url, e);
         } finally {
             method.releaseConnection();
 
-            if (client != null) {
-                try {
-                    client.close();
-                } catch (IOException e) {
-                    log.error(e);
-                }
+            try {
+                client.close();
+            } catch (IOException e) {
+                log.error(e);
             }
         }
         return response;
@@ -156,11 +157,11 @@ public class HttpClientHelper {
 
         if ((parameter != null) && (parameter.length > 3)) {
             CredentialsProvider credsProvider = new BasicCredentialsProvider();
-            credsProvider.setCredentials(new AuthScope(parameter[2], Integer.valueOf(parameter[3]).intValue()),
+            credsProvider.setCredentials(new AuthScope(parameter[2], Integer.parseInt(parameter[3])),
                     new UsernamePasswordCredentials(parameter[0], parameter[1]));
             client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
-        } else {
-            client = HttpClientBuilder.create().build();
+        } else { // if parameter == null || parameter.length <= 3
+            client = HttpClientBuilder.create().build(); // client will never be null
         }
 
         if (ConfigurationHelper.getInstance().isUseProxy()) {
@@ -178,18 +179,16 @@ public class HttpClientHelper {
         }
 
         try {
-            response = client.execute(method, stringResponseHandler);
+            response = client.execute(method, stringResponseHandler); // also implies that client != null
         } catch (IOException e) {
             log.error("Cannot execute URL " + url, e);
         } finally {
             method.releaseConnection();
 
-            if (client != null) {
-                try {
-                    client.close();
-                } catch (IOException e) {
-                    log.error(e);
-                }
+            try {
+                client.close();
+            } catch (IOException e) {
+                log.error(e);
             }
         }
         return response;
@@ -212,7 +211,7 @@ public class HttpClientHelper {
             method = new HttpGet(url);
             if (parameter != null && parameter.length > 4) {
                 CredentialsProvider credsProvider = new BasicCredentialsProvider();
-                credsProvider.setCredentials(new AuthScope(parameter[3], Integer.valueOf(parameter[4]).intValue()),
+                credsProvider.setCredentials(new AuthScope(parameter[3], Integer.parseInt(parameter[4])),
                         new UsernamePasswordCredentials(parameter[1], parameter[2]));
                 httpclient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
 

@@ -124,7 +124,7 @@ public class JobCreation {
                     }
                     StorageProvider.getInstance().deleteDir(metsfile);
                 }
-            } catch (ReadException | PreferencesException | SwapException | WriteException | IOException  | DAOException e) {
+            } catch (ReadException | PreferencesException | SwapException | WriteException | IOException | DAOException e) {
                 Helper.setFehlerMeldung("Cannot read file " + processTitle, e);
                 log.error(e);
             } catch (InterruptedException e) {
@@ -166,7 +166,7 @@ public class JobCreation {
                 String rootFolderName = p.getProcessDataDirectory();
                 List<Path> filesToUpload = new ArrayList<>();
 
-                try (Stream<Path> input = Files.find(importFolder, 3, (path, file) -> file.isRegularFile()))  {
+                try (Stream<Path> input = Files.find(importFolder, 3, (path, file) -> file.isRegularFile())) {
                     input.forEach(path -> filesToUpload.add(path));
                 }
 

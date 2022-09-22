@@ -24,7 +24,6 @@
  */
 package org.goobi.beans;
 
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,10 +35,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class PluginInfo implements Serializable{
+public class PluginInfo implements Serializable {
     private static final long serialVersionUID = -3543432425684406494L;
-    
-	private String filename;
+
+    private String filename;
     private Date buildDate;
     private String gitHash;
     private String goobiVersion = "N/A";

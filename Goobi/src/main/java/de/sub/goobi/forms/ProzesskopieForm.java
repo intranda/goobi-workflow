@@ -252,8 +252,7 @@ public class ProzesskopieForm implements Serializable {
 
             return "";
         }
-        if (prozessVorlage.getProjekt().getProjectIsArchived()) {
-
+        if (Boolean.TRUE.equals(prozessVorlage.getProjekt().getProjectIsArchived())) {
             Helper.setFehlerMeldung("projectIsArchived");
             return "";
         }
@@ -395,7 +394,7 @@ public class ProzesskopieForm implements Serializable {
                             break;
                         case "export": //NOSONAR
                             configuredFolderNames
-                            .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
+                                    .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
                             break;
                         case "master":
                             if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
@@ -952,7 +951,7 @@ public class ProzesskopieForm implements Serializable {
         }
 
         // Adding process to history
-        if (!HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie)) {
+        if (Boolean.FALSE.equals(HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie))) {
             Helper.setFehlerMeldung("historyNotUpdated");
             return "";
         } else {

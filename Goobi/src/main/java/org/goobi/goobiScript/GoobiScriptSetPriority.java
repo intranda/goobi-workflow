@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -126,7 +125,7 @@ public class GoobiScriptSetPriority extends AbstractIGoobiScript implements IGoo
                             "Changed priority of step '" + s.getTitel() + "' to '" + s.getPrioritaet() + "' using GoobiScript.",
                             username);
                     log.info("Changed priority of step '" + s.getTitel() + "' to '" + s.getPrioritaet()
-                    + "' using GoobiScript for process with ID " + p.getId());
+                            + "' using GoobiScript for process with ID " + p.getId());
                     gsr.setResultMessage("Changed priority of step '" + s.getTitel() + "' to '" + s.getReihenfolge() + "' successfully.");
                     gsr.setResultType(GoobiScriptResultType.OK);
                 } catch (DAOException e) {

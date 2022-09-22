@@ -317,7 +317,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 List<VocabRecord> records = VocabularyManager.findRecords(vocabularyName, vocabularySearchFields);
                 Collections.sort(records);
 
-                if (records != null && ! records.isEmpty()) {
+                if (records != null && !records.isEmpty()) {
                     ArrayList<Item> itemList = new ArrayList<>(records.size());
                     List<SelectItem> selectItems = new ArrayList<>(records.size());
                     for (VocabRecord vr : records) {
@@ -346,11 +346,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         String value = this.md.getValue();
         if (value != null) {
             for (Item i : myValues.getItemList()) {
-                if (i.getValue().equals(value)) {
-                    i.setSelected(true);
-                } else {
-                    i.setSelected(false);
-                }
+                i.setSelected(i.getValue().equals(value));
             }
         }
         return this.myValues.getItemList();
@@ -414,16 +410,16 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         for (Item i : this.myValues.getItemList()) {
             i.setSelected(false);
         }
-        String val = "";
+        StringBuilder bld = new StringBuilder();
         for (SelectItem sel : items) {
             for (Item i : this.myValues.getItemList()) {
                 if (i.getLabel().equals(sel.getValue())) {
                     i.setSelected(true);
-                    val += i.getValue();
+                    bld.append(i.getValue());
                 }
             }
         }
-        setWert(val);
+        setWert(bld.toString());
     }
 
     @Override
@@ -451,13 +447,16 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     values = "";
                 }
             }
-        } else {
+        } else { // if values == null || values.length() == 0
+            StringBuilder bld = new StringBuilder();
             for (Item i : this.myValues.getItemList()) {
                 if (i.isSelected()) {
-                    values = values + ";" + i.getValue();
+                    bld.append(";");
+                    bld.append(i.getValue());
                     this.selectedItems.add(i.getLabel());
                 }
             }
+            values = bld.toString();
             if (values != null) {
                 setWert(values);
             }
@@ -468,16 +467,17 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     @Override
     public void setSelectedItems(List<String> selectedItems) {
 
-        String val = "";
+        StringBuilder bld = new StringBuilder();
         for (String sel : selectedItems) {
             for (Item i : this.myValues.getItemList()) {
                 if (i.getLabel().equals(sel)) {
-                    val += i.getValue() + ";";
+                    bld.append(i.getValue());
+                    bld.append(";");
                 }
             }
         }
 
-        setWert(val);
+        setWert(bld.toString());
     }
 
     @Override
@@ -760,8 +760,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         && StringUtils.isNotBlank(ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl())) {
                     md.setAutorityFile(vocabulary, ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl(),
                             ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl()
-                            + ConfigurationHelper.getInstance().getGoobiAuthorityServerUser() + "/vocabularies/"
-                            + selectedVocabularyRecord.getVocabularyId() + "/records/" + selectedVocabularyRecord.getId());
+                                    + ConfigurationHelper.getInstance().getGoobiAuthorityServerUser() + "/vocabularies/"
+                                    + selectedVocabularyRecord.getVocabularyId() + "/records/" + selectedVocabularyRecord.getId());
                 } else {
                     md.setAutorityFile(vocabulary, vocabularyUrl,
                             vocabularyUrl + "/vocabularies/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
@@ -834,10 +834,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
      */
 
     public boolean isDisableMetadataField() {
-        if (metadataDisplaytype == DisplayType.dante || metadataDisplaytype == DisplayType.easydb) {
-            return true;
-        }
-        return false;
+        return metadataDisplaytype == DisplayType.dante || metadataDisplaytype == DisplayType.easydb;
     }
 
     @Override
@@ -849,7 +846,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     }
 
     private void initSearch() {
-    	
+
     }
 
     public void linkProcess(RestProcess rp) {

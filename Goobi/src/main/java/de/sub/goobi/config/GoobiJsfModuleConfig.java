@@ -24,9 +24,6 @@
  */
 package de.sub.goobi.config;
 
-
-
-
 import javax.enterprise.inject.Specializes;
 
 import org.apache.deltaspike.jsf.api.config.JsfModuleConfig;

@@ -39,9 +39,7 @@ import lombok.Setter;
 
 @Named
 @WindowScoped
-public class InstitutionBean  extends BasicBean implements Serializable {
-
-
+public class InstitutionBean extends BasicBean implements Serializable {
 
     /**
      * 
@@ -58,6 +56,7 @@ public class InstitutionBean  extends BasicBean implements Serializable {
 
     /**
      * Create a new institution instance
+     * 
      * @return
      */
 
@@ -78,6 +77,7 @@ public class InstitutionBean  extends BasicBean implements Serializable {
         return FilterKein();
 
     }
+
     /**
      * Delete the current institution, return to institution overview
      * 
@@ -94,7 +94,7 @@ public class InstitutionBean  extends BasicBean implements Serializable {
     public String FilterKein() {
         InstitutionManager manager = new InstitutionManager();
         paginator = new DatabasePaginator(sortierung, filter, manager, "institution_all");
-        displayMode="";
+        displayMode = "";
         return "institution_all";
     }
 
@@ -103,9 +103,9 @@ public class InstitutionBean  extends BasicBean implements Serializable {
         return this.zurueck;
     }
 
-
     /**
      * Needed from the UI, don't use it in java code, use saveInstitution instead
+     * 
      * @return
      */
     @Deprecated
@@ -115,6 +115,7 @@ public class InstitutionBean  extends BasicBean implements Serializable {
 
     /**
      * Needed from the UI, don't use it in java code, use deleteInstitution instead
+     * 
      * @return
      */
     @Deprecated

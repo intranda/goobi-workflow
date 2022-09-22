@@ -24,8 +24,6 @@
  */
 package org.goobi.api.rest.model;
 
-
-
 import lombok.Data;
 
 @Data

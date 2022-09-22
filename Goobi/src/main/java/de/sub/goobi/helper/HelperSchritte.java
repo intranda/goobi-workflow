@@ -107,7 +107,7 @@ import ugh.exceptions.WriteException;
 
 @Log4j2
 public class HelperSchritte {
-    public final static String DIRECTORY_PREFIX = "orig_";
+    public static final String DIRECTORY_PREFIX = "orig_";
     private static final Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
     private static final Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
     private static final Namespace mods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
@@ -324,8 +324,7 @@ public class HelperSchritte {
 
     public ShellScriptReturnValue executeAllScriptsForStep(Step step, boolean automatic) {
         if (automatic && step.getProzess().isPauseAutomaticExecution()) {
-            ShellScriptReturnValue returnCode = new ShellScriptReturnValue(1, "Automatic execution is disabled", "");
-            return returnCode;
+            return new ShellScriptReturnValue(1, "Automatic execution is disabled", ""); // return code
         }
         List<String> scriptpaths = step.getAllScriptPaths();
         int count = 1;
@@ -614,8 +613,7 @@ public class HelperSchritte {
             log.info(e);
         }
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
-        List<String> parameterList = replacer.replaceBashScript(script);
-        return parameterList;
+        return replacer.replaceBashScript(script); // list of parameters
     }
 
     public boolean executeDmsExport(Step step, boolean automatic) {

@@ -60,7 +60,7 @@ import ugh.dl.Fileformat;
 import ugh.exceptions.UGHException;
 
 @Log4j2
-public class BeanHelper implements Serializable{
+public class BeanHelper implements Serializable {
 
     private static final long serialVersionUID = 8661143513583015230L;
 
@@ -262,27 +262,27 @@ public class BeanHelper implements Serializable{
     }
 
     public String WerkstueckEigenschaftErmitteln(Process myProzess, String inEigenschaft) {
-        String Eigenschaft = "";
+        String werkstueckEigenschaft = "";
         for (Masterpiece myWerkstueck : myProzess.getWerkstueckeList()) {
             for (Masterpieceproperty eigenschaft : myWerkstueck.getEigenschaftenList()) {
                 if (eigenschaft.getTitel().equals(inEigenschaft)) {
-                    Eigenschaft = eigenschaft.getWert();
+                    werkstueckEigenschaft = eigenschaft.getWert();
                 }
             }
         }
-        return Eigenschaft;
+        return werkstueckEigenschaft;
     }
 
     public String ScanvorlagenEigenschaftErmitteln(Process myProzess, String inEigenschaft) {
-        String Eigenschaft = "";
+        String scanvorlagenEigenschaft = "";
         for (Template myVorlage : myProzess.getVorlagenList()) {
             for (Templateproperty eigenschaft : myVorlage.getEigenschaftenList()) {
                 if (eigenschaft.getTitel().equals(inEigenschaft)) {
-                    Eigenschaft = eigenschaft.getWert();
+                    scanvorlagenEigenschaft = eigenschaft.getWert();
                 }
             }
         }
-        return Eigenschaft;
+        return scanvorlagenEigenschaft;
     }
 
     /**
@@ -406,7 +406,7 @@ public class BeanHelper implements Serializable{
         }
 
         // Create history events
-        if (!HistoryAnalyserJob.updateHistoryForProzess(newProcess)) {
+        if (Boolean.FALSE.equals(HistoryAnalyserJob.updateHistoryForProzess(newProcess))) {
             Helper.setFehlerMeldung("historyNotUpdated");
         } else {
             try {

@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -141,12 +140,12 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
                 case "any":
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
-                    if (physical!= null) {
+                    if (physical != null) {
                         dsList.add(physical);
                     }
                     break;
                 case "physical":
-                    if (physical!= null) {
+                    if (physical != null) {
                         dsList.add(physical);
                     }
                     break;
@@ -168,7 +167,6 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
             if (replace == null) {
                 replace = "";
             }
-
 
             // get the content to be set and pipe it through the variable replacer
             VariableReplacer replacer = new VariableReplacer(ff.getDigitalDocument(), p.getRegelsatz().getPreferences(), p, null);
@@ -213,7 +211,7 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
             boolean searchFieldIsRegularExpression) {
         for (DocStruct ds : dsList) {
             List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
-            if (mdlist != null && ! mdlist.isEmpty()) {
+            if (mdlist != null && !mdlist.isEmpty()) {
                 for (Metadata md : mdlist) {
                     if (searchFieldIsRegularExpression) {
                         for (Matcher m = Pattern.compile(search).matcher(md.getValue()); m.find();) {

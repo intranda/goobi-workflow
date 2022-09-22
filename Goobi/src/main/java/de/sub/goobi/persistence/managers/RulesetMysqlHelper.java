@@ -33,7 +33,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 class RulesetMysqlHelper implements Serializable {
     private static final long serialVersionUID = -4768263760579941811L;
-    
+
     public static List<Ruleset> getRulesets(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         boolean whereSet = false;
         Connection connection = null;
@@ -49,7 +49,8 @@ class RulesetMysqlHelper implements Serializable {
             } else {
                 sql.append(" WHERE ");
             }
-            sql.append("MetadatenKonfigurationID in (SELECT object_id FROM institution_configuration where object_type = 'ruleset' and selected = true and institution_id = ");
+            sql.append(
+                    "MetadatenKonfigurationID in (SELECT object_id FROM institution_configuration where object_type = 'ruleset' and selected = true and institution_id = ");
             sql.append(institution.getId());
             sql.append(") ");
         }
@@ -65,8 +66,7 @@ class RulesetMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Ruleset> ret = new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -83,8 +83,7 @@ class RulesetMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Ruleset> ret = new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -107,7 +106,8 @@ class RulesetMysqlHelper implements Serializable {
             } else {
                 sql.append(" WHERE ");
             }
-            sql.append("MetadatenKonfigurationID in (SELECT object_id FROM institution_configuration where object_type = 'ruleset' and selected = true and institution_id = ");
+            sql.append(
+                    "MetadatenKonfigurationID in (SELECT object_id FROM institution_configuration where object_type = 'ruleset' and selected = true and institution_id = ");
             sql.append(institution.getId());
             sql.append(") ");
         }
@@ -134,8 +134,7 @@ class RulesetMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString() + ", " + rulesetId);
             }
-            Ruleset ret = new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetHandler, params);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetHandler, params);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -212,8 +211,7 @@ class RulesetMysqlHelper implements Serializable {
         sql.append("SELECT * FROM metadatenkonfigurationen WHERE Titel = ? ");
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            Ruleset ret = new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetHandler, rulesetName);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), RulesetManager.resultSetToRulesetHandler, rulesetName);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

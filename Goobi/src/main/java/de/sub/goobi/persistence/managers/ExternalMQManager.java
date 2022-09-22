@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.persistence.managers;
 
-
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -54,7 +53,8 @@ public class ExternalMQManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institutiom) throws DAOException {
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institutiom)
+            throws DAOException {
         try {
             return ExternalMQMysqlHelper.getMessageList(order, filter, start, count);
         } catch (SQLException e) {

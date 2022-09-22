@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.metadaten.search;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -230,8 +229,8 @@ public class ViafSearch {
                     for (String subName : subNames) {
                         corporate.addSubName(new NamePart("subname", subName));
                     }
-                }else {
-                    corporate.addSubName(new NamePart("subname",""));
+                } else {
+                    corporate.addSubName(new NamePart("subname", ""));
                 }
                 //get partName subfield $c$d$n
                 List<String> partNames = recordToImport.getSubFieldValues(mainTag, null, null, "c", "g", "d", "n");

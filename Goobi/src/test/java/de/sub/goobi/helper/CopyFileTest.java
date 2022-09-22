@@ -55,7 +55,7 @@ public class CopyFileTest extends AbstractTest {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
     }
 
     @Test
@@ -88,7 +88,7 @@ public class CopyFileTest extends AbstractTest {
 
     @Test
     public void testCopyDirectory() throws IOException {
-        Path srcDir =  Paths.get(ConfigurationHelper.getInstance().getConfigurationFolder());
+        Path srcDir = Paths.get(ConfigurationHelper.getInstance().getConfigurationFolder());
         Path dstDir = folder.newFolder("dest").toPath();
 
         StorageProvider.getInstance().copyDirectory(srcDir, dstDir);

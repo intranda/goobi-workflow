@@ -40,27 +40,27 @@ import lombok.Setter;
 
 public class ImportProperty implements IProperty {
 
-	@Getter
-	@Setter
+    @Getter
+    @Setter
     private String name = "";
     private Integer container = 0;
     @Getter
-	@Setter
+    @Setter
     private String validation = "";
     @Getter
-	@Setter
+    @Setter
     private Type type = Type.TEXT;
     @Getter
-	@Setter
+    @Setter
     private String value = "";
     @Getter
-	@Setter
+    @Setter
     private List<String> possibleValues = new ArrayList<String>();
     @Getter
-	@Setter
+    @Setter
     private List<String> projects = new ArrayList<String>();
     @Getter
-	@Setter
+    @Setter
     private boolean required = false;
 
     public ImportProperty() {
@@ -105,8 +105,7 @@ public class ImportProperty implements IProperty {
 
     @Override
     public ImportProperty getClone(int containerNumber) {
-        ImportProperty p = new ImportProperty();
-        return p;
+        return new ImportProperty();
     }
 
     @Override
@@ -124,18 +123,15 @@ public class ImportProperty implements IProperty {
     }
 
     public void setValueList(List<String> valueList) {
-        this.value = "";
+        StringBuilder bld = new StringBuilder();
         for (String val : valueList) {
-            this.value = this.value + val + "; ";
+            bld.append(val).append("; ");
         }
+        this.value = bld.toString();
     }
 
     public boolean getBooleanValue() {
-        if (this.value.equalsIgnoreCase("true")) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.value.equalsIgnoreCase("true");
     }
 
     public void setBooleanValue(boolean val) {

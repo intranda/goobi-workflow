@@ -66,8 +66,7 @@ public class DatabaseVersion {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            int currentValue = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
-            return currentValue;
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } catch (SQLException e) {
             log.error(e);
         } finally {
@@ -396,7 +395,7 @@ public class DatabaseVersion {
             }
         }
     }
-    
+
     private static void updateToVersion48() throws SQLException {
         if (!DatabaseVersion.checkIfColumnExists("benutzer", "displayrulesetcolumn")) {
             try {
@@ -853,7 +852,7 @@ public class DatabaseVersion {
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapAttribute())) {
                     DatabaseVersion.runSql("update ldapgruppen set attributeToTest = '" + ConfigurationHelper.getInstance().getLdapAttribute() + "'");
                     DatabaseVersion
-                    .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
+                            .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
                 }
 
                 DatabaseVersion.runSql("update ldapgruppen set nextFreeUnixId = '" + ConfigurationHelper.getInstance().getLdapNextId() + "'");
@@ -862,15 +861,15 @@ public class DatabaseVersion {
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getTruststoreToken())) {
                     DatabaseVersion
-                    .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
+                            .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapRootCert())) {
                     DatabaseVersion
-                    .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
+                            .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapPdcCert())) {
                     DatabaseVersion
-                    .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
+                            .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
                 }
                 DatabaseVersion.runSql("update ldapgruppen set encryptionType = '" + ConfigurationHelper.getInstance().getLdapEncryption() + "'");
 
@@ -1499,7 +1498,7 @@ public class DatabaseVersion {
                             else {
                                 type = LogType.INFO;
                             }
-                            entry = entry.replaceAll("<font color.*?>", "").replaceAll("</font>", "");
+                            entry = entry.replaceAll("<font color.*?>", "").replace("</font>", "");
                             String dateString = "";
                             String username = "automatic";
                             Date date = null;

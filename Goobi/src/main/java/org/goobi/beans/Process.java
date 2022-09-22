@@ -523,7 +523,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrTxtDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     @Deprecated
@@ -533,33 +533,33 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrPdfDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrAltoDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrXmlDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getImportDirectory() throws SwapException, IOException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getExportDirectory() throws SwapException, IOException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
-        + FileSystems.getDefault().getSeparator();
+                + FileSystems.getDefault().getSeparator();
     }
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException {
         String pfad = this.help.getGoobiDataDirectory() + this.id.intValue() + FileSystems.getDefault().getSeparator();
         if (!ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
-            pfad = pfad.replaceAll(" ", "__");
+            pfad = pfad.replace(" ", "__");
         }
 
         try {
@@ -815,7 +815,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public boolean isSelected() {
-        return (this.selected == null ? false : this.selected);
+        return Boolean.TRUE.equals(this.selected); // returns true if and only if this.selected != null and this.selected == true
     }
 
     public void setSelected(boolean selected) {
@@ -1553,7 +1553,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         } catch (IOException | SwapException | DAOException e) {
             log.error("Error creating representative image url for process " + this.getId());
             String rootpath = "cs?action=image&format=jpg&sourcepath=file:///";
-            return rootpath + representativeImage.replaceAll("\\\\", "/");
+            return rootpath + representativeImage.replace("\\\\", "/");
         }
     }
 
@@ -2085,8 +2085,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         String imagefolder = this.getImagesDirectory();
         String foldername = VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getAdditionalProcessFolderName(folderName), this);
         if (StringUtils.isNotBlank(foldername)) {
-            String folder = imagefolder + foldername;
-            return folder;
+            return imagefolder + foldername;
         }
         return null;
     }

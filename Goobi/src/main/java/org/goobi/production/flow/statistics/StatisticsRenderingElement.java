@@ -61,7 +61,7 @@ public class StatisticsRenderingElement implements Serializable {
     private String localImagePath;
     @Getter
     private String imageUrl;
-    
+
     public StatisticsRenderingElement(DataTable inDataTable, IStatisticalQuestion inQuestion) {
         dataTable = inDataTable;
         myQuestion = inQuestion;
@@ -88,7 +88,7 @@ public class StatisticsRenderingElement implements Serializable {
         htmlTableRenderer = new HtmlTableRenderer();
         csvRenderer = new CSVRenderer();
         excelRenderer = new ExcelRenderer();
-        if (myQuestion.isRendererInverted(htmlTableRenderer)) {
+        if (Boolean.TRUE.equals(myQuestion.isRendererInverted(htmlTableRenderer))) {
             htmlTableRenderer.setDataTable(dataTable.getDataTableInverted());
             csvRenderer.setDataTable(dataTable.getDataTableInverted());
             excelRenderer.setDataTable(dataTable.getDataTableInverted());
@@ -116,7 +116,7 @@ public class StatisticsRenderingElement implements Serializable {
             crenderer.setShowMeanValues(inShowAverage);
             renderer = crenderer;
         }
-        if (myQuestion.isRendererInverted(renderer)) {
+        if (Boolean.TRUE.equals(myQuestion.isRendererInverted(renderer))) {
             renderer.setDataTable(dataTable.getDataTableInverted());
         } else {
             renderer.setDataTable(dataTable);

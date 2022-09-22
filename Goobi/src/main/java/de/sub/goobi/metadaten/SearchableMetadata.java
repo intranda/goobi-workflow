@@ -26,7 +26,6 @@
 
 package de.sub.goobi.metadaten;
 
-
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -76,7 +75,6 @@ public interface SearchableMetadata {
      * defines if the search should be performed in gnd or viaf
      */
     public void setSearchInViaf(boolean serachInViaf);
-
 
     /**
      * Create a new URL, escape problematic characters

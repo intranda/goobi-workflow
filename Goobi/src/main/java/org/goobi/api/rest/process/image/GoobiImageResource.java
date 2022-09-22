@@ -177,10 +177,9 @@ public class GoobiImageResource {
     @Produces({ MediaType.APPLICATION_JSON, ImageResource.MEDIA_TYPE_APPLICATION_JSONLD })
     public Response redirectToCanonicalImageInfo() throws ContentLibException {
         try {
-            Response resp = Response.seeOther(PathConverter.toURI(request.getRequestURI() + "/info.json"))
+            return Response.seeOther(PathConverter.toURI(request.getRequestURI() + "/info.json"))
                     .header("Content-Type", response.getContentType())
                     .build();
-            return resp;
         } catch (URISyntaxException e) {
             throw new ContentLibException("Cannot create redirect url from " + request.getRequestURI());
         }
@@ -193,7 +192,7 @@ public class GoobiImageResource {
     public Boolean isInCache(@PathParam("process") String processIdString, @PathParam("folder") String folder, @PathParam("filename") String filename,
             @PathParam("region") String region, @PathParam("size") String size, @PathParam("rotation") String rotation,
             @PathParam("quality") String quality, @PathParam("format") String format, @PathParam("cacheCommand") String command)
-                    throws ContentLibException {
+            throws ContentLibException {
         try {
             filename = URLDecoder.decode(filename, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -296,8 +295,8 @@ public class GoobiImageResource {
                         // size on the original image
                         Dimension size = requestedImageSize.orElse(null);
                         getThumbnailSize(imagePath.getParent().getFileName().toString())
-                        .map(sizeString -> calcThumbnailScale(imageSize, sizeString, size, requestedRegionSize.isPresent()))
-                        .ifPresent(scale -> setThumbnailScale(scale, request));
+                                .map(sizeString -> calcThumbnailScale(imageSize, sizeString, size, requestedRegionSize.isPresent()))
+                                .ifPresent(scale -> setThumbnailScale(scale, request));
                         log.debug("Using thumbnail {} for image width {} and region width {}", imagePath,
                                 requestedImageSize.map(Object::toString).orElse("max"),
                                 requestedRegionSize.map(Dimension::getWidth).map(Object::toString).orElse("full"));
@@ -439,8 +438,7 @@ public class GoobiImageResource {
      */
     private synchronized org.goobi.beans.Process getGoobiProcess(String processIdString) {
         int processId = Integer.parseInt(processIdString);
-        org.goobi.beans.Process process = ProcessManager.getProcessById(processId);
-        return process;
+        return ProcessManager.getProcessById(processId);
     }
 
     /**
@@ -485,9 +483,7 @@ public class GoobiImageResource {
 
     private List<Integer> getThumbnailSizes(Path imageFolder, Path thumbnailFolder) {
         List<String> thumbFolderPaths = getThumbnailFolders(imageFolder, thumbnailFolder);
-        List<Integer> sizes =
-                thumbFolderPaths.stream().map(name -> name.substring(name.lastIndexOf("_") + 1)).map(Integer::parseInt).collect(Collectors.toList());
-        return sizes;
+        return thumbFolderPaths.stream().map(name -> name.substring(name.lastIndexOf("_") + 1)).map(Integer::parseInt).collect(Collectors.toList());
     }
 
     private boolean isYounger(Path path, Path referencePath) {
@@ -680,10 +676,9 @@ public class GoobiImageResource {
     }
 
     private List<Path> getMatchingThumbnailFolders(Path imageFolder, Path thumbsFolder) {
-        List<Path> thumbFolderPaths = StorageProvider.getInstance()
+        return StorageProvider.getInstance()
                 .listFiles(thumbsFolder.toString(),
-                        (dirname) -> dirname.getFileName().toString().matches(imageFolder.getFileName().toString() + "_\\d+"));
-        return thumbFolderPaths;
+                        dirname -> dirname.getFileName().toString().matches(imageFolder.getFileName().toString() + "_\\d+"));
     }
 
     private List<String> getThumbnailFolders(Path imageFolder, Path thumbnailFolder) {
@@ -704,10 +699,10 @@ public class GoobiImageResource {
         List<Path> thumbFolderPaths = getMatchingThumbnailFolders(imageFolder, thumbsFolder);
         availableThumbnailFolders.put(imageFolder.toString(),
                 thumbFolderPaths.stream()
-                .map(Path::getFileName)
-                .map(Path::toString)
-                .sorted((name1, name2) -> getSize(name1).compareTo(getSize(name2)))
-                .collect(Collectors.toList()));
+                        .map(Path::getFileName)
+                        .map(Path::toString)
+                        .sorted((name1, name2) -> getSize(name1).compareTo(getSize(name2)))
+                        .collect(Collectors.toList()));
     }
 
     private List<ImageTile> getImageTiles(List<String> tileSizes, List<String> tileScales) {

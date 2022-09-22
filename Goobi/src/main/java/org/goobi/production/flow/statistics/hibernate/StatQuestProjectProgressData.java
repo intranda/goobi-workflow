@@ -215,7 +215,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
     }
 
     public DataRow getRefRow() {
-        if (this.flagReferenceCurve) {
+        if (Boolean.TRUE.equals(this.flagReferenceCurve)) {
             return referenceCurve(getDataRow(this.terminatingStep));
         } else {
             return requiredOutput();
@@ -223,7 +223,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
     }
 
     public DataRow getDataRow(String stepName) {
-        Boolean flagNoContent = true;
+        boolean flagNoContent = true;
         for (int i = 0; i < getDataTable().getDataRows().size(); i++) {
             flagNoContent = false;
             DataRow dr = getDataTable().getDataRows().get(i);
@@ -472,7 +472,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
             }
         } else {
             this.selectedSteps = inSteps;
-            if (! inSteps.isEmpty()) {
+            if (!inSteps.isEmpty()) {
                 this.terminatingStep = inSteps.get(inSteps.size() - 1);
             }
         }
@@ -489,7 +489,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
     /*
      * checks if testString is contained in workflow
      */
-    private Boolean isInWorkFlow(String testString) {
+    private boolean isInWorkFlow(String testString) {
         for (StepInformation step : this.commonWorkFlow) {
             if (step.getTitle().equals(testString)) {
                 return true;

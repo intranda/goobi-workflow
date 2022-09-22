@@ -37,10 +37,10 @@ import lombok.Setter;
 import ugh.dl.MetadataType;
 
 public class DisplayCase {
-	@Getter
+    @Getter
     private DisplayType displayType = null;
-	@Getter
-	@Setter
+    @Getter
+    @Setter
     private List<Item> itemList = new ArrayList<>();
     private ConfigDisplayRules configDisplay;
     private Process myProcess;

@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.persistence.managers;
 
-
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -64,7 +63,7 @@ public class VocabularyManager implements IManager, Serializable {
     private static final long serialVersionUID = 3577063138324090483L;
 
     @SuppressWarnings("deprecation")
-    private static JsonParser jsonParser = new JsonParser();;
+    private static JsonParser jsonParser = new JsonParser();
 
     private static Gson gson = new GsonBuilder().create();
 
@@ -158,8 +157,7 @@ public class VocabularyManager implements IManager, Serializable {
         @Override
         public Vocabulary handle(ResultSet rs) throws SQLException {
             if (rs.next()) {
-                Vocabulary vocabulary = convert(rs);
-                return vocabulary;
+                return convert(rs);
             }
             return null;
         }
@@ -308,8 +306,7 @@ public class VocabularyManager implements IManager, Serializable {
                         lstFields.add(gson.fromJson(jsonField, Field.class));
                     }
                 }
-                VocabRecord rec = new VocabRecord(iRecordId, iVocabId, lstFields);
-                return rec;
+                return new VocabRecord(iRecordId, iVocabId, lstFields);
             } catch (Exception e) {
                 log.error(e);
             }

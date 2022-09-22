@@ -91,21 +91,21 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
         }
 
         // we have to build a query from scratch by reading the ID's
-        List<Integer> IDlist = null;
+        List<Integer> idList = null;
         try {
-            IDlist = ProcessManager.getIdsForFilter(sqlFilter);
+            idList = ProcessManager.getIdsForFilter(sqlFilter);
         } catch (UnsupportedOperationException e) {
         }
-        if (IDlist == null || IDlist.isEmpty()) {
+        if (idList == null || idList.isEmpty()) {
             return null;
         }
         String natSQL = "";
         // adding time restrictions
         if (stepname == null) {
 
-            natSQL = StatisticsFactory.getProduction(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, IDlist).getSQL(exactStepDone);
+            natSQL = StatisticsFactory.getProduction(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, idList).getSQL(exactStepDone);
         } else {
-            natSQL = StatisticsFactory.getProduction(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, IDlist).getSQL(stepname);
+            natSQL = StatisticsFactory.getProduction(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, idList).getSQL(stepname);
         }
 
         @SuppressWarnings("unchecked")
@@ -153,14 +153,14 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
                         dataRow.addValue(CalculationUnit.pages.getTitle(), (new Converter(objArr[1]).getDouble()));
 
                     }
-                    break;
+                        break;
 
                     case volumes: {
                         dataRowChart.addValue(CalculationUnit.volumes.getTitle(), (new Converter(objArr[0]).getDouble()));
                         dataRow.addValue(CalculationUnit.volumes.getTitle(), (new Converter(objArr[0]).getDouble()));
 
                     }
-                    break;
+                        break;
 
                     case pages: {
 
@@ -168,7 +168,7 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
                         dataRow.addValue(CalculationUnit.pages.getTitle(), (new Converter(objArr[1]).getDouble()));
 
                     }
-                    break;
+                        break;
 
                 }
 

@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.helper;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

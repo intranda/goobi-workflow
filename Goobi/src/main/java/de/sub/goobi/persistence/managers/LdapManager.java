@@ -87,7 +87,8 @@ public class LdapManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution)
+            throws DAOException {
         return getLdaps(order, filter, start, count, institution);
     }
 

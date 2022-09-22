@@ -60,7 +60,7 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ StepManager.class, UserManager.class, UsergroupManager.class, ProcessManager.class, RulesetManager.class, Helper.class })
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 
 @SuppressWarnings("deprecation")
 public class GoobiScriptTest extends AbstractTest {
@@ -77,7 +77,7 @@ public class GoobiScriptTest extends AbstractTest {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
 
         processList = new ArrayList<>();
         // process

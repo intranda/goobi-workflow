@@ -241,7 +241,7 @@ public class MetadatenImagesHelper {
                 logical = logical.getAllChildren().get(0);
             }
         }
-        MetadataType MDTypeForPath = this.myPrefs.getMetadataTypeByName("pathimagefiles");
+        MetadataType metadataTypeForPath = this.myPrefs.getMetadataTypeByName("pathimagefiles");
 
         /*--------------------------------
          * der physische Baum wird nur
@@ -255,9 +255,9 @@ public class MetadatenImagesHelper {
 
         // check for valid filepath
         try {
-            List<? extends Metadata> filepath = physicaldocstruct.getAllMetadataByType(MDTypeForPath);
+            List<? extends Metadata> filepath = physicaldocstruct.getAllMetadataByType(metadataTypeForPath);
             if (filepath == null || filepath.isEmpty()) {
-                Metadata mdForPath = new Metadata(MDTypeForPath);
+                Metadata mdForPath = new Metadata(metadataTypeForPath);
                 if (SystemUtils.IS_OS_WINDOWS) {
                     mdForPath.setValue("file:/" + mediaFolder);
                 } else {

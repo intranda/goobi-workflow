@@ -340,11 +340,11 @@ public class ProcessBean extends BasicBean implements Serializable {
             showArchivedProjects = login.getMyBenutzer().isDisplayDeactivatedProjects();
             anzeigeAnpassen.put("institution", login.getMyBenutzer().isDisplayInstitutionColumn());
             anzeigeAnpassen.put("editionDate",
-                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() ? login.getMyBenutzer().isDisplayLastEditionDate() : false);
+                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() && login.getMyBenutzer().isDisplayLastEditionDate());
             anzeigeAnpassen.put("editionUser",
-                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() ? login.getMyBenutzer().isDisplayLastEditionUser() : false);
+                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() && login.getMyBenutzer().isDisplayLastEditionUser());
             anzeigeAnpassen.put("editionTask",
-                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() ? login.getMyBenutzer().isDisplayLastEditionTask() : false);
+                    ConfigurationHelper.getInstance().isProcesslistShowEditionData() && login.getMyBenutzer().isDisplayLastEditionTask());
             if (StringUtils.isNotBlank(login.getMyBenutzer().getProcessListDefaultSortField())) {
                 sortierung = login.getMyBenutzer().getProcessListDefaultSortField() + login.getMyBenutzer().getProcessListDefaultSortOrder();
             }
@@ -560,15 +560,16 @@ public class ProcessBean extends BasicBean implements Serializable {
     public String FilterAktuelleProzesseOfGoobiScript(String status) {
 
         List<GoobiScriptResult> resultList = Helper.getSessionBean().getGsm().getGoobiScriptResults();
-        filter = "\"id:";
+        StringBuilder bld = new StringBuilder("\"id:");
         synchronized (resultList) {
             for (GoobiScriptResult gsr : resultList) {
                 if (gsr.getResultType().toString().equals(status)) {
-                    filter += gsr.getProcessId() + " ";
+                    bld.append(gsr.getProcessId()).append(" ");
                 }
             }
         }
-        filter += "\"";
+        bld.append("\"");
+        filter = bld.toString();
         return FilterAktuelleProzesse();
     }
 
@@ -1199,12 +1200,12 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     @SuppressWarnings("unchecked")
     public void generateFilterWithIdentfiers() {
-        String f = "\"id:";
+        StringBuilder bld = new StringBuilder("\"id:");
         for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
-            f += proz.getId() + " ";
+            bld.append(proz.getId()).append(" ");
         }
-        f += "\"";
-        filter = f;
+        bld.append("\"");
+        filter = bld.toString();
     }
 
     public void SchrittStatusUp() {
@@ -1859,8 +1860,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     public int getMyDatasetHoeheInt() {
-        int bla = this.paginator.getTotalResults() * 20;
-        return bla;
+        return this.paginator.getTotalResults() * 20;
     }
 
     public NumberFormat getMyFormatter() {
@@ -1881,7 +1881,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     @Getter
-    public static class ProcessCounterObject implements Serializable{
+    public static class ProcessCounterObject implements Serializable {
         private static final long serialVersionUID = -4287461260229760734L;
         private String title;
         private int metadata;
@@ -1932,16 +1932,16 @@ public class ProcessBean extends BasicBean implements Serializable {
     public void TransformXml() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         if (!facesContext.getResponseComplete()) {
-            String OutputFileName = "export.xml";
+            String outputFileName = "export.xml";
             /*
              * Vorbereiten der Header-Informationen
              */
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
 
             ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-            String contentType = servletContext.getMimeType(OutputFileName);
+            String contentType = servletContext.getMimeType(outputFileName);
             response.setContentType(contentType);
-            response.setHeader("Content-Disposition", "attachment;filename=\"" + OutputFileName + "\"");
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + outputFileName + "\"");
 
             response.setContentType("text/xml");
 
@@ -1967,7 +1967,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public void setMyProcessId(String id) {
         try {
-            int myid = Integer.valueOf(id).intValue();
+            int myid = Integer.parseInt(id);
             this.myProzess = ProcessManager.getProcessById(myid);
 
         } catch (NumberFormatException e) {
@@ -2129,7 +2129,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                     PdfWriter.getInstance(document, out);
                     document.setPageSize(a4quer);
                     document.open();
-                    if (! rowList.isEmpty()) {
+                    if (!rowList.isEmpty()) {
                         PdfPTable table = new PdfPTable(rowList.get(0).size());
                         table.setSpacingBefore(20);
 
@@ -2656,10 +2656,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
 
         Integer lastId = idList.get(idList.size() - 1);
-        if (myProzess.getId().equals(lastId)) {
-            return false;
-        }
-        return true;
+        return !myProzess.getId().equals(lastId);
     }
 
     /**
@@ -2678,10 +2675,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         }
 
         Integer lastId = idList.get(0);
-        if (myProzess.getId().equals(lastId)) {
-            return false;
-        }
-        return true;
+        return !myProzess.getId().equals(lastId);
     }
 
     /**

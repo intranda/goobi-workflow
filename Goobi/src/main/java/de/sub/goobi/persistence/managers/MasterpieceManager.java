@@ -30,7 +30,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class MasterpieceManager implements Serializable {
     private static final long serialVersionUID = -8123847555204812322L;
-    
+
     public static List<Masterpiece> getMasterpiecesForProcess(int processId) {
         List<Masterpiece> list = new ArrayList<Masterpiece>();
         try {

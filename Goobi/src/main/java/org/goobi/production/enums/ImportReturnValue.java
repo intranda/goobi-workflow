@@ -33,10 +33,10 @@ public enum ImportReturnValue {
     DataAllreadyExists(3, "Data already exists"),
     WriteError(4, "Data could not be written");
 
-	@Getter
+    @Getter
     @Setter
     private int id;
-	@Getter
+    @Getter
     @Setter
     private String value;
 

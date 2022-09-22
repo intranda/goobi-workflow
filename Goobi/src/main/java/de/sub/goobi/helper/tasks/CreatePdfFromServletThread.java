@@ -137,32 +137,40 @@ public class CreatePdfFromServletThread extends LongRunningTask {
              * --------------------------------*/
 
             if (new MetadatenVerifizierung().validate(this.getProzess()) && this.metsURL != null) {
-                
+
                 goobiContentServerUrl = UriBuilder.fromUri(new HelperForm().getServletPathWithHostAsUrl())
-                        .path("api").path("process").path("pdf").path(Integer.toString(this.getProzess().getId()))
-                        .path(this.getProzess().getTitel()+ ".pdf")
+                        .path("api")
+                        .path("process")
+                        .path("pdf")
+                        .path(Integer.toString(this.getProzess().getId()))
+                        .path(this.getProzess().getTitel() + ".pdf")
                         .queryParam("metsFile", this.metsURL)
                         .queryParam("imageSource", getImagePath().toUri())
                         .queryParam("pdfSource", getPdfPath().toUri())
                         .queryParam("altoSource", getAltoPath().toUri())
-                        .build().toURL();
-                
+                        .build()
+                        .toURL();
+
                 /* --------------------------------
                  * mets data does not exist or is invalid
                  * --------------------------------*/
 
             } else {
                 goobiContentServerUrl = UriBuilder.fromUri(new HelperForm().getServletPathWithHostAsUrl())
-                        .path("api").path("process").path("image")
+                        .path("api")
+                        .path("process")
+                        .path("image")
                         .path(Integer.toString(getProzess().getId()))
-                        .path("media")        //dummy, replaced by images query param
+                        .path("media") //dummy, replaced by images query param
                         .path("00000001.tif") //dummy, replaced by images query param
-                        .path(getProzess().getTitel()+ ".pdf")
+                        .path(getProzess().getTitel() + ".pdf")
                         .queryParam("imageSource", getImagePath().toUri())
                         .queryParam("pdfSource", getPdfPath().toUri())
                         .queryParam("altoSource", getAltoPath().toUri())
                         .queryParam("images", createImagesParameter(getProzess()))
-                        .build().toURL();           }
+                        .build()
+                        .toURL();
+            }
 
             /* --------------------------------
              * get pdf from servlet and forward response to file
@@ -178,10 +186,9 @@ public class CreatePdfFromServletThread extends LongRunningTask {
             RequestConfig rc = builder.build();
             method.setConfig(rc);
 
-
             try {
                 byte[] response = httpclient.execute(method, HttpClientHelper.byteArrayResponseHandler);
-                try ( InputStream istr = new ByteArrayInputStream(response);
+                try (InputStream istr = new ByteArrayInputStream(response);
                         OutputStream ostr = new FileOutputStream(tempPdf.toFile())) {
 
                     // Transfer bytes from in to out
@@ -256,8 +263,8 @@ public class CreatePdfFromServletThread extends LongRunningTask {
         for (String f : filenames) {
             images.append(f).append("$");
         }
-        images = images.deleteCharAt(images.length()-1);
+        images = images.deleteCharAt(images.length() - 1);
         return images.toString();
     }
-    
+
 }

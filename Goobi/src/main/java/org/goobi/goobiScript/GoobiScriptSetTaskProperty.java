@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -42,7 +41,6 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class GoobiScriptSetTaskProperty extends AbstractIGoobiScript implements IGoobiScript {
-
 
     @Override
     public String getAction() {
@@ -194,7 +192,7 @@ public class GoobiScriptSetTaskProperty extends AbstractIGoobiScript implements 
                         Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Changed property '" + property + "' to '" + value
                                 + "' for step '" + s.getTitel() + "' using GoobiScript.", username);
                         log.info("Changed property '" + property + "' to '" + value + "' for step '" + s.getTitel()
-                        + "' using GoobiScript for process with ID " + p.getId());
+                                + "' using GoobiScript for process with ID " + p.getId());
                         gsr.setResultMessage(
                                 "Changed property '" + property + "' to '" + value + "' for step '" + s.getTitel() + "' successfully.");
                         gsr.setResultType(GoobiScriptResultType.OK);

@@ -60,7 +60,7 @@ import de.sub.goobi.persistence.managers.RulesetManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class, ExternalContext.class, RulesetManager.class, DocketManager.class, Helper.class })
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class HelperFormTest extends AbstractTest {
 
     @Before
@@ -72,7 +72,7 @@ public class HelperFormTest extends AbstractTest {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
 
         PowerMock.mockStatic(ExternalContext.class);
         PowerMock.mockStatic(FacesContext.class);

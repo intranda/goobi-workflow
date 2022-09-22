@@ -71,7 +71,7 @@ public class WebDav implements Serializable {
 
         try {
             folder = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
-        } catch (IOException  e) {
+        } catch (IOException e) {
             log.error("Exception UploadFromHomeAlle()", e);
             Helper.setFehlerMeldung("UploadFromHomeAlle abgebrochen, Fehler", e.getMessage());
             return rueckgabe;
@@ -80,11 +80,7 @@ public class WebDav implements Serializable {
             return rueckgabe;
         }
 
-
-        List<String> dateien = StorageProvider.getInstance().list(folder, new WebDavFilter());
-
-        return dateien;
-
+        return StorageProvider.getInstance().list(folder, new WebDavFilter());
     }
 
     /**
@@ -121,7 +117,7 @@ public class WebDav implements Serializable {
         String nach = "";
 
         try {
-            nach = inBenutzer.getHomeDir();
+            nach = inBenutzer.getHomeDir(); // implies that inBenutzer != null
         } catch (IOException ioe) {
             log.error("Exception UploadFromHome(...)", ioe);
             Helper.setFehlerMeldung("Aborted upload from home, error", ioe.getMessage());
@@ -131,13 +127,13 @@ public class WebDav implements Serializable {
         }
 
         /* prüfen, ob Benutzer Massenupload macht */
-        if (inBenutzer != null && inBenutzer.isMitMassendownload()) {
+        if (inBenutzer.isMitMassendownload()) {
             nach += myProzess.getProjekt().getTitel() + "/";
             Path projectDirectory;
             if (ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
                 projectDirectory = Paths.get(nach);
             } else {
-                projectDirectory = Paths.get(nach = nach.replaceAll(" ", "__"));
+                projectDirectory = Paths.get(nach = nach.replace(" ", "__"));
             }
 
             if (!StorageProvider.getInstance().isFileExists(projectDirectory)) {
@@ -155,7 +151,7 @@ public class WebDav implements Serializable {
 
         /* Leerzeichen maskieren */
         if (!ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
-            nach = nach.replaceAll(" ", "__");
+            nach = nach.replace(" ", "__");
         }
         Path benutzerHome = Paths.get(nach);
 
@@ -180,7 +176,7 @@ public class WebDav implements Serializable {
             if (aktuellerBenutzer.isMitMassendownload()) {
                 String projekt = Paths.get(userHome + myProzess.getProjekt().getTitel()).toString();
                 if (!ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
-                    projekt = projekt.replaceAll(" ", "__");
+                    projekt = projekt.replace(" ", "__");
                 }
                 FilesystemHelper.createDirectoryForUser(projekt, aktuellerBenutzer.getLogin());
 
@@ -212,7 +208,7 @@ public class WebDav implements Serializable {
         nach += processLinkName;
 
         if (!ConfigurationHelper.getInstance().isAllowWhitespacesInFolder()) {
-            nach = nach.replaceAll(" ", "__");
+            nach = nach.replace(" ", "__");
         }
         log.info("von: " + von);
         log.info("nach: " + nach);
@@ -268,9 +264,9 @@ public class WebDav implements Serializable {
     public int getAnzahlBaende(String inVerzeichnis) {
         try {
             User aktuellerBenutzer = Helper.getCurrentUser();
-            String VerzeichnisAlle = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
+            String verzeichnisAlle = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
 
-            return StorageProvider.getInstance().list(VerzeichnisAlle, new WebDavFilter()).size();
+            return StorageProvider.getInstance().list(verzeichnisAlle, new WebDavFilter()).size();
         } catch (IOException e) {
             log.error(e);
             return 0;

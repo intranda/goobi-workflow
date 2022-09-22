@@ -192,7 +192,7 @@ public class PluginInstallBean implements Serializable {
         if (currentExtractedPluginPath != null && Files.exists(currentExtractedPluginPath)) {
             FileUtils.deleteQuietly(currentExtractedPluginPath.toFile());
         }
-        try (InputStream input = Files.newInputStream(inputPath);TarInputStream tarIn = new TarInputStream(input)) {
+        try (InputStream input = Files.newInputStream(inputPath); TarInputStream tarIn = new TarInputStream(input)) {
 
             currentExtractedPluginPath = Files.createTempDirectory("plugin_extracted_"); //NOSONAR, using temporary file is save here
             TarEntry tarEntry = tarIn.getNextEntry();

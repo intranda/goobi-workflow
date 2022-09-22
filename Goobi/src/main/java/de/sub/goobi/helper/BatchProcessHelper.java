@@ -50,11 +50,11 @@ import lombok.extern.log4j.Log4j2;
 
 @Data
 @Log4j2
-public class BatchProcessHelper implements Serializable{
+public class BatchProcessHelper implements Serializable {
 
     private static final long serialVersionUID = 8313940977308996834L;
-    
-	private List<Process> processes;
+
+    private List<Process> processes;
     private Process currentProcess;
     private List<ProcessProperty> processPropertyList;
     private ProcessProperty processProperty;

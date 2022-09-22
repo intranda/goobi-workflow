@@ -39,7 +39,6 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class ConfigPlugins {
 
-
     private ConfigPlugins() {
 
     }
@@ -49,7 +48,7 @@ public class ConfigPlugins {
      *
      * @deprecated use getPluginConfig(String pluginname) for this instead
      */
-    @Deprecated (since ="3.0", forRemoval = false)
+    @Deprecated(since = "3.0", forRemoval = false)
     public static XMLConfiguration getPluginConfig(IPlugin inPlugin) {
         return getPluginConfig(inPlugin.getClass().getSimpleName());
     }
@@ -57,8 +56,7 @@ public class ConfigPlugins {
     /**
      * pass back the right configuration by giving the internal plugin name
      * 
-     * @param pluginname Name of the plugin to use for finding the right
-     *                   configuration file in the config folder
+     * @param pluginname Name of the plugin to use for finding the right configuration file in the config folder
      */
     public static XMLConfiguration getPluginConfig(String pluginname) {
         String file = "plugin_" + pluginname + ".xml";
@@ -74,20 +72,14 @@ public class ConfigPlugins {
     }
 
     /**
-     * pass back the right sub-configuration by giving the internal plugin name and
-     * the workflow step. this allows to automatically detect the right
-     * sub-configuration for a specific project or step. If no sub-configuration can
-     * be found use the defaults
+     * pass back the right sub-configuration by giving the internal plugin name and the workflow step. this allows to automatically detect the right
+     * sub-configuration for a specific project or step. If no sub-configuration can be found use the defaults
      * 
-     * The order of configuration is:
-     *      1.) project name and step name matches
-     *      2.) step name matches and project is
-     *      3.) project name matches and step name is
-     *      4.) project name and step name are
+     * The order of configuration is: 1.) project name and step name matches 2.) step name matches and project is 3.) project name matches and step
+     * name is 4.) project name and step name are
      * 
-     * @param pluginname Name of the plugin to use for finding the right
-     *                   configuration file in the config folder
-     * @param step       Step to be used to detect the right sub-configuration
+     * @param pluginname Name of the plugin to use for finding the right configuration file in the config folder
+     * @param step Step to be used to detect the right sub-configuration
      */
     public static SubnodeConfiguration getProjectAndStepConfig(String pluginname, Step step) {
 

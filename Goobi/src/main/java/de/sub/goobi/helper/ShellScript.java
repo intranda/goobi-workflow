@@ -52,7 +52,8 @@ public class ShellScript {
     public static final int ERRORLEVEL_ERROR = 1;
 
     private final String command;
-    private LinkedList<String> outputChannel, errorChannel;
+    private LinkedList<String> outputChannel;
+    private LinkedList<String> errorChannel;
     @Getter
     private Integer errorLevel;
 
@@ -192,16 +193,10 @@ public class ShellScript {
      */
     public static LinkedList<String> inputStreamToLinkedList(InputStream myInputStream) {
         LinkedList<String> result = new LinkedList<>();
-        Scanner inputLines = null;
-        try {
-            inputLines = new Scanner(myInputStream);
+        try (Scanner inputLines = new Scanner(myInputStream)) {
             while (inputLines.hasNextLine()) {
                 String myLine = inputLines.nextLine();
                 result.add(myLine);
-            }
-        } finally {
-            if (inputLines != null) {
-                inputLines.close();
             }
         }
         return result;
@@ -237,6 +232,8 @@ public class ShellScript {
         int returnCode = ShellScript.ERRORLEVEL_ERROR;
         String outputText = "";
         String errorText = "";
+        StringBuilder outputBuilder = new StringBuilder();
+        StringBuilder errorBuilder = new StringBuilder();
         if (parameter.isEmpty()) {
             return new ShellScriptReturnValue(0, null, null);
         }
@@ -256,18 +253,23 @@ public class ShellScript {
             returnCode = s.run(parameterWithoutCommand);
 
             for (String line : s.getStdOut()) {
-                outputText += line + "\n";
+                outputBuilder.append(line);
+                outputBuilder.append("\n");
             }
+            outputText = outputBuilder.toString();
             Helper.addMessageToProcessJournal(processID, LogType.DEBUG, "Script '" + scriptname + "' was executed with result: " + outputText);
             if (!outputText.isEmpty()) {
                 Helper.setMeldung(outputText);
             }
-            if ( ! s.getStdErr().isEmpty()) {
+            if (!s.getStdErr().isEmpty()) {
                 returnCode = ShellScript.ERRORLEVEL_ERROR;
                 for (String line : s.getStdErr()) {
-                    errorText += line + "\n";
+                    errorBuilder.append(line);
+                    errorBuilder.append("\n");
                 }
-                Helper.addMessageToProcessJournal(processID, LogType.ERROR, "Error occured while executing script '" + scriptname + "': " + errorText);
+                errorText = errorBuilder.toString();
+                Helper.addMessageToProcessJournal(processID, LogType.ERROR,
+                        "Error occured while executing script '" + scriptname + "': " + errorText);
                 Helper.setFehlerMeldung(errorText);
             }
         } catch (FileNotFoundException e) {
@@ -294,6 +296,8 @@ public class ShellScript {
         int returnCode = ShellScript.ERRORLEVEL_ERROR;
         String outputMessage = "";
         String errorMessage = "";
+        StringBuilder outputBuilder = new StringBuilder();
+        StringBuilder errorBuilder = new StringBuilder();
         try {
             String scriptname = "";
             String paramList = "";
@@ -324,19 +328,23 @@ public class ShellScript {
             returnCode = s.run(scriptingArgs);
 
             for (String line : s.getStdOut()) {
-                outputMessage += line + "\n";
+                outputBuilder.append(line);
+                outputBuilder.append("\n");
             }
+            outputMessage = outputBuilder.toString();
             Helper.addMessageToProcessJournal(processID, LogType.DEBUG,
                     "Script '" + nonSpacesafeScriptingCommand + "' was executed with result: " + outputMessage);
             if (StringUtils.isNotBlank(outputMessage)) {
                 Helper.setMeldung(outputMessage);
             }
-            if ( ! s.getStdErr().isEmpty()) {
+            if (!s.getStdErr().isEmpty()) {
                 returnCode = ShellScript.ERRORLEVEL_ERROR;
 
                 for (String line : s.getStdErr()) {
-                    errorMessage += line + "\n";
+                    errorBuilder.append(line);
+                    errorBuilder.append("\n");
                 }
+                errorMessage = errorBuilder.toString();
                 Helper.addMessageToProcessJournal(processID, LogType.ERROR,
                         "Error occured while executing script '" + nonSpacesafeScriptingCommand + "': " + errorMessage);
                 if (StringUtils.isNotBlank(errorMessage)) {
@@ -349,8 +357,6 @@ public class ShellScript {
                     "Exception occured while executing script '" + nonSpacesafeScriptingCommand + "': " + e.getMessage());
             Helper.setFehlerMeldung("Couldn't find script file in callShell2(), error", e.getMessage());
         }
-        ShellScriptReturnValue returnValue = new ShellScriptReturnValue(returnCode, outputMessage, errorMessage);
-
-        return returnValue;
+        return new ShellScriptReturnValue(returnCode, outputMessage, errorMessage);
     }
 }

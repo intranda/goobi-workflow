@@ -47,7 +47,7 @@ public class DatabasePaginator implements Serializable {
     @Getter
     protected int totalResults = 0;
     protected String order = "";
-    protected String filter = new String();
+    protected String filter = "";
     protected IManager manager;
     private String returnPage;
 

@@ -168,7 +168,7 @@ public class MassImportForm implements Serializable {
     private NavigationForm bean;
 
     public MassImportForm() {
-    	
+
     }
 
     @PostConstruct
@@ -192,8 +192,7 @@ public class MassImportForm implements Serializable {
             }
             return "";
         }
-        if (this.template.getProjekt().getProjectIsArchived()) {
-
+        if (Boolean.TRUE.equals(this.template.getProjekt().getProjectIsArchived())) {
             Helper.setFehlerMeldung("projectIsArchived");
             return "";
         }
@@ -328,30 +327,35 @@ public class MassImportForm implements Serializable {
                 if (plugin2.isRunnableAsGoobiScript()) {
                     GoobiScriptImport igs = new GoobiScriptImport();
                     igs.setMi(this);
-                    String myIdentifiers = "";
+                    StringBuilder bld = new StringBuilder();
                     if (StringUtils.isNotEmpty(this.idList)) {
-                        List<String> ids = this.plugin.splitIds(this.idList);
-                        for (String id : ids) {
-                            myIdentifiers += id + ",";
+                        List<String> idsList = this.plugin.splitIds(this.idList);
+                        for (String id : idsList) {
+                            bld.append(id);
+                            bld.append(",");
                         }
                     } else if (this.importFile != null) {
                         this.plugin.setFile(this.importFile.toFile());
                         List<Record> recordList = this.plugin.generateRecordsFromFile();
                         for (Record r : recordList) {
-                            myIdentifiers += r.getId() + ",";
+                            bld.append(r.getId());
+                            bld.append(",");
                         }
                         igs.setRecords(recordList);
                     } else if (StringUtils.isNotEmpty(this.records)) {
                         List<Record> recordList = this.plugin.splitRecords(this.records);
                         for (Record r : recordList) {
-                            myIdentifiers += r.getId() + ",";
+                            bld.append(r.getId());
+                            bld.append(",");
                         }
-                    } else if (! this.selectedFilenames.isEmpty()) {
+                    } else if (!this.selectedFilenames.isEmpty()) {
                         List<Record> recordList = this.plugin.generateRecordsFromFilenames(this.selectedFilenames);
                         for (Record r : recordList) {
-                            myIdentifiers += r.getId() + ",";
+                            bld.append(r.getId());
+                            bld.append(",");
                         }
                     }
+                    String myIdentifiers = bld.toString();
                     if (myIdentifiers.endsWith(",")) {
                         myIdentifiers = myIdentifiers.substring(0, myIdentifiers.lastIndexOf(","));
                     }
@@ -382,23 +386,23 @@ public class MassImportForm implements Serializable {
                         goobiScriptManager.startWork();
                     }
                     return "";
-                }
-            }
+                } // END if (plugin2.isRunnableAsGoobiScript()) AT LINE 327
+            } // END if (this.plugin instanceof IImportPluginVersion2) AT LINE 325
 
             // if not runnable as GoobiScript run it in the regular MassImport GUI
             List<ImportObject> answer = new ArrayList<>();
-            Batch batch = null;
-
-            // found list with ids
+            Batch localBatch = null; // I modified this variable's name so that it won't hide the field declared at line 164 anymore.
+                                     // But I've no idea WTH we would need this, given that the field itself was also used at line 364. - Zehong
+                                     // found list with ids
             Prefs prefs = this.template.getRegelsatz().getPreferences();
             String tempfolder = ConfigurationHelper.getInstance().getTemporaryFolder();
             this.plugin.setImportFolder(tempfolder);
             this.plugin.setPrefs(prefs);
 
             if (StringUtils.isNotEmpty(this.idList)) {
-                List<String> ids = this.plugin.splitIds(this.idList);
+                List<String> idsList = this.plugin.splitIds(this.idList);
                 List<Record> recordList = new ArrayList<>();
-                for (String id : ids) {
+                for (String id : idsList) {
                     Record r = new Record();
                     r.setData(id);
                     r.setId(id);
@@ -424,7 +428,7 @@ public class MassImportForm implements Serializable {
                 }
                 totalProcessNo = recordList.size() * 2;
                 answer = this.plugin.generateFiles(recordList);
-            } else if ( ! this.selectedFilenames.isEmpty()) {
+            } else if (!this.selectedFilenames.isEmpty()) {
                 List<Record> recordList = this.plugin.generateRecordsFromFilenames(this.selectedFilenames);
                 for (Record r : recordList) {
                     r.setCollections(this.digitalCollections);
@@ -435,13 +439,13 @@ public class MassImportForm implements Serializable {
             }
 
             if (answer.size() > 1) {
-                batch = new Batch();
-                ProcessManager.saveBatch(batch);
+                localBatch = new Batch();
+                ProcessManager.saveBatch(localBatch);
             }
             for (ImportObject io : answer) {
 
-                if (batch != null && batch.getBatchId() != null) {
-                    io.setBatch(batch);
+                if (localBatch != null && localBatch.getBatchId() != null) {
+                    io.setBatch(localBatch);
                 }
                 if (io.getImportReturnValue().equals(ImportReturnValue.ExportFinished)) {
                     Process p = JobCreation.generateProcess(io, this.template);
@@ -469,13 +473,13 @@ public class MassImportForm implements Serializable {
                     }
                 }
                 currentProcessNo = currentProcessNo + 1;
-            }
+            } // END for (ImportObject io : answer) AT LINE 445
             if (answer.size() != this.processList.size()) {
                 // some error on process generation, don't go to next page
                 return "";
             }
-        }
-        // missing data
+        } // END if (testForData()) AT LINE 319
+          // missing data
         else {
             Helper.setFehlerMeldung("missingData");
             return "";
@@ -568,11 +572,8 @@ public class MassImportForm implements Serializable {
      */
 
     private boolean testForData() {
-        if (StringUtils.isEmpty(this.idList) && StringUtils.isEmpty(this.records) && (this.importFile == null)
-                && this.selectedFilenames.isEmpty()) {
-            return false;
-        }
-        return true;
+        return StringUtils.isNotBlank(this.idList) || StringUtils.isNotBlank(this.records) || this.importFile != null
+                || !this.selectedFilenames.isEmpty();
     }
 
     /**
@@ -653,20 +654,24 @@ public class MassImportForm implements Serializable {
             Object o = method.invoke(this.plugin);
             @SuppressWarnings("unchecked")
             List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
-            if (this.plugin != null && list != null) {
+            if (list != null) {
                 return true;
             }
         } catch (Exception e) {
+            // the case this.plugin == null will end up here
+            // no need to do anything
         }
         try {
             method = this.plugin.getClass().getMethod("getProperties");
             Object o = method.invoke(this.plugin);
             @SuppressWarnings("unchecked")
             List<ImportProperty> list = (List<ImportProperty>) o;
-            if (this.plugin != null && ! list.isEmpty()) {
+            if (!list.isEmpty()) {
                 return true;
             }
         } catch (Exception e) {
+            // the case this.plugin == null will end up here
+            // no need to do anything
         }
         return false;
     }
@@ -682,10 +687,12 @@ public class MassImportForm implements Serializable {
             Object o = method.invoke(this.plugin);
             @SuppressWarnings("unchecked")
             List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
-            if (this.plugin != null && list != null) {
+            if (list != null) {
                 return "process_import_2_mass";
             }
         } catch (Exception e) {
+            // the case this.plugin == null will end up here
+            // no need to do anything
         }
         return "process_import_2";
     }
@@ -735,10 +742,12 @@ public class MassImportForm implements Serializable {
             Object o = method.invoke(this.plugin);
             @SuppressWarnings("unchecked")
             List<? extends DocstructElement> list = (List<? extends DocstructElement>) o;
-            if (this.plugin != null && list != null) {
+            if (list != null) {
                 return list;
             }
         } catch (Exception e) {
+            // the case this.plugin == null will end up here
+            // no need to do anything
         }
         return new ArrayList<>();
     }
@@ -749,8 +758,7 @@ public class MassImportForm implements Serializable {
             method = this.plugin.getClass().getMethod("getPagePath");
             Object o = method.invoke(this.plugin);
             if (o != null) {
-                String path = (String) o;
-                return path;
+                return (String) o; // path
             }
 
         } catch (Exception e) {
@@ -791,10 +799,7 @@ public class MassImportForm implements Serializable {
     }
 
     public boolean isShowProgressBar() {
-        if (progress == null || progress == 100 || progress == 0) {
-            return false;
-        }
-        return true;
+        return progress != null && progress != 100 && progress != 0;
     }
 
     public void addProcessToProgressBar() {
@@ -802,21 +807,21 @@ public class MassImportForm implements Serializable {
     }
 
     public Process cloneTemplate() {
-        Process process = new Process();
+        Process p = new Process();
 
-        process.setIstTemplate(false);
-        process.setInAuswahllisteAnzeigen(false);
-        process.setProjekt(template.getProjekt());
-        process.setRegelsatz(template.getRegelsatz());
-        process.setDocket(template.getDocket());
+        p.setIstTemplate(false);
+        p.setInAuswahllisteAnzeigen(false);
+        p.setProjekt(template.getProjekt());
+        p.setRegelsatz(template.getRegelsatz());
+        p.setDocket(template.getDocket());
 
         BeanHelper bHelper = new BeanHelper();
-        bHelper.SchritteKopieren(template, process);
-        bHelper.ScanvorlagenKopieren(template, process);
-        bHelper.WerkstueckeKopieren(template, process);
-        bHelper.EigenschaftenKopieren(template, process);
+        bHelper.SchritteKopieren(template, p);
+        bHelper.ScanvorlagenKopieren(template, p);
+        bHelper.WerkstueckeKopieren(template, p);
+        bHelper.EigenschaftenKopieren(template, p);
 
-        return process;
+        return p;
     }
 
     public boolean isHasUsablePluginsForRecords() {

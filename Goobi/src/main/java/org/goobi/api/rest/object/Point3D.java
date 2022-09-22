@@ -24,7 +24,6 @@
  */
 package org.goobi.api.rest.object;
 
-
 import lombok.Getter;
 import lombok.Setter;
 

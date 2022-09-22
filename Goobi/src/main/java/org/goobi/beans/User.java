@@ -305,8 +305,7 @@ public class User implements DatabaseObject, Serializable {
 
     public String getPasswortCrypt() {
         DesEncrypter encrypter = new DesEncrypter();
-        String decrypted = encrypter.decrypt(this.passwort);
-        return decrypted;
+        return encrypter.decrypt(this.passwort);
     }
 
     public void setPasswortCrypt(String inpasswort) {
@@ -401,9 +400,7 @@ public class User implements DatabaseObject, Serializable {
     }
 
     public String getPasswordHash(String plainTextPassword) {
-        String hashedPasswordBase64 = new Sha256Hash(plainTextPassword, passwordSalt, 10000).toBase64();
-        return hashedPasswordBase64;
-
+        return new Sha256Hash(plainTextPassword, passwordSalt, 10000).toBase64();
     }
 
     public String getNachVorname() {
@@ -411,7 +408,7 @@ public class User implements DatabaseObject, Serializable {
     }
 
     public String getFirstProjectTitle() {
-        if (this.projekte != null && ! this.projekte.isEmpty()) {
+        if (this.projekte != null && !this.projekte.isEmpty()) {
             return this.projekte.get(0).getTitel();
         } else {
             return "";
@@ -419,7 +416,7 @@ public class User implements DatabaseObject, Serializable {
     }
 
     public String getFirstUserGroupTitle() {
-        if (this.benutzergruppen != null && ! this.benutzergruppen.isEmpty()) {
+        if (this.benutzergruppen != null && !this.benutzergruppen.isEmpty()) {
             return this.benutzergruppen.get(0).getTitel();
         } else {
             return "";
@@ -607,7 +604,7 @@ public class User implements DatabaseObject, Serializable {
             Gravatar gravatar = new Gravatar();
             gravatar.setSize(IMAGE_SIZE);
             gravatar.setRating(GravatarRating.GENERAL_AUDIENCES);
-            String url = gravatar.getUrl(email).replaceAll("http://", "https://");
+            String url = gravatar.getUrl(email).replace("http://", "https://");
             url = url.replace("d=404", "d=https://www.gravatar.com/avatar/92bb3cacd091cbee44637e73f2ea1f7c.jpg?s=27");
             return url;
         }

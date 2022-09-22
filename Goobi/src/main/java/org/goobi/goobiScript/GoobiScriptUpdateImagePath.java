@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +43,7 @@ import ugh.dl.MetadataType;
 
 @Log4j2
 public class GoobiScriptUpdateImagePath extends AbstractIGoobiScript implements IGoobiScript {
-    public final static String DIRECTORY_SUFFIX = "_tif";
+    public static final String DIRECTORY_SUFFIX = "_tif";
 
     @Override
     public String getAction() {
@@ -82,7 +81,7 @@ public class GoobiScriptUpdateImagePath extends AbstractIGoobiScript implements 
             UghHelper ughhelp = new UghHelper();
             MetadataType mdt = ughhelp.getMetadataType(p, "pathimagefiles");
             List<? extends ugh.dl.Metadata> alleImagepfade = myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadataByType(mdt);
-            if (! alleImagepfade.isEmpty()) {
+            if (!alleImagepfade.isEmpty()) {
                 for (Metadata md : alleImagepfade) {
                     myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadata().remove(md);
                 }

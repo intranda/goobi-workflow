@@ -1,4 +1,5 @@
 package de.sub.goobi.metadaten.search;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -55,11 +56,8 @@ public class EasydbSearchResponse {
     private int took;
     private List<EasydbResponseObject> convertedObjects = new ArrayList<>();
 
-    private List<Map<String,Object>> objects;
+    private List<Map<String, Object>> objects;
 
     private Map<String, Integer> request_time;
-
-
-
 
 }

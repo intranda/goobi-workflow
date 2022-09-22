@@ -535,7 +535,6 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                         cf.setAttribute("comment", entry.getContent());
                     }
                     cf.setAttribute("path", entry.getFilename());
-
                     Path imagePath = Paths.get(entry.getFilename());
                     Image image = new Image(process, "intern", imagePath.getFileName().toString(), 0, 3000);
                     cf.setAttribute("url", image.getThumbnailUrl());

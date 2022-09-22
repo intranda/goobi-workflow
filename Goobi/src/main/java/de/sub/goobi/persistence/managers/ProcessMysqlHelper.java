@@ -55,8 +55,7 @@ class ProcessMysqlHelper implements Serializable {
         Object[] param = { id };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            Process p = new QueryRunner().query(connection, sql, ProcessManager.resultSetToProcessHandler, param);
-            return p;
+            return new QueryRunner().query(connection, sql, ProcessManager.resultSetToProcessHandler, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -70,8 +69,7 @@ class ProcessMysqlHelper implements Serializable {
         Object[] param = { inTitle };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            Process p = new QueryRunner().query(connection, sql, ProcessManager.resultSetToProcessHandler, param);
-            return p;
+            return new QueryRunner().query(connection, sql, ProcessManager.resultSetToProcessHandler, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -85,8 +83,7 @@ class ProcessMysqlHelper implements Serializable {
         Object[] param = { inTitle };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            Process p = new QueryRunner().query(connection, sql, ProcessManager.resultSetToProcessHandler, param);
-            return p;
+            return new QueryRunner().query(connection, sql, ProcessManager.resultSetToProcessHandler, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -357,8 +354,7 @@ class ProcessMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Process> ret = new QueryRunner().query(connection, sql.toString(), ProcessManager.resultSetToProcessListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), ProcessManager.resultSetToProcessListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -374,7 +370,7 @@ class ProcessMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString() + ", " + Arrays.toString(param));
+                log.trace(sql + ", " + Arrays.toString(param));
             }
             Integer id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
             if (id != null) {
@@ -420,20 +416,17 @@ class ProcessMysqlHelper implements Serializable {
 
         Timestamp datetime = new Timestamp(d.getTime());
         if (!includeProcessID) {
-            Object[] param = { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
+            return new Object[] { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
                     o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(), o.getRegelsatz().getId(),
                     o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatch() == null ? null : o.getBatch().getBatchId(),
                             o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution() };
 
-            return param;
         } else {
-            Object[] param = { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(),
+            return new Object[] { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(),
                     o.isInAuswahllisteAnzeigen(), o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime,
                     o.getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
                     o.getBatch() == null ? null : o.getBatch().getBatchId(), o.getDocket() == null ? null : o.getDocket().getId(),
                             o.isMediaFolderExists(), o.isPauseAutomaticExecution() };
-
-            return param;
         }
     }
 
@@ -713,8 +706,6 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
-
-
     public static final ResultSetHandler<Batch> resultSetToBatchHandler = new ResultSetHandler<Batch>() {
         @Override
         public Batch handle(ResultSet rs) throws SQLException {
@@ -724,9 +715,7 @@ class ProcessMysqlHelper implements Serializable {
                     return convertBatch(rs);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
@@ -741,9 +730,7 @@ class ProcessMysqlHelper implements Serializable {
                     answer.add(convertBatch(rs));
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -766,6 +753,4 @@ class ProcessMysqlHelper implements Serializable {
         }
         return batch;
     }
-
-
 }

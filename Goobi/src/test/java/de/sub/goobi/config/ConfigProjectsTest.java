@@ -34,7 +34,7 @@ import org.junit.Test;
 
 import de.sub.goobi.AbstractTest;
 
-public class ConfigProjectsTest extends AbstractTest{
+public class ConfigProjectsTest extends AbstractTest {
 
     @BeforeClass
     public static void setUp() throws URISyntaxException {
@@ -44,7 +44,7 @@ public class ConfigProjectsTest extends AbstractTest{
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
     }
 
     @Test

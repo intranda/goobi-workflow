@@ -73,8 +73,7 @@ public class StatistikLaufzeitSchritte {
             Calendar differenz = Calendar.getInstance();
             differenz.setTime(datoDifference);
 
-            int summe = differenz.get(Calendar.DAY_OF_YEAR);
-            return summe;
+            return differenz.get(Calendar.DAY_OF_YEAR);
         } else {
             return 1;
         }

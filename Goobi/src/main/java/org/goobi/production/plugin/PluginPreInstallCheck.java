@@ -36,11 +36,11 @@ import lombok.ToString;
 @Data
 @AllArgsConstructor
 @ToString
-public class PluginPreInstallCheck implements Serializable{
+public class PluginPreInstallCheck implements Serializable {
 
     private static final long serialVersionUID = -1734158555354493829L;
-    
-	private transient Path pluginExtractedPath;
+
+    private transient Path pluginExtractedPath;
     private PluginInstallInfo info;
     private Map<String, PluginInstallConflict> conflicts;
     private String error;

@@ -25,8 +25,6 @@
  */
 package de.sub.goobi.metadaten;
 
-
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,14 +49,16 @@ public class TempImage extends Image {
         return UriBuilder.fromUri(new HelperForm().getServletPathWithHostAsUrl())
                 .path("/api/tmp/image/{foldername}/{filename}")
                 .path("{region}/{size}/{rotation}/{quality}.{format}")
-                .build(tempFolderName, filename, "full", size, "0", "default", "jpg").toString();
+                .build(tempFolderName, filename, "full", size, "0", "default", "jpg")
+                .toString();
     }
 
     private String createIIIFUrl(String tempFolderName, String filename) {
         return UriBuilder.fromUri(new HelperForm().getServletPathWithHostAsUrl())
                 .path("api/tmp/image/{foldername}/{filename}")
                 .path("info.json")
-                .build(tempFolderName, filename).toString();
+                .build(tempFolderName, filename)
+                .toString();
     }
 
     private static Path getTempFolderPath(String tempFolderName, String filename) {

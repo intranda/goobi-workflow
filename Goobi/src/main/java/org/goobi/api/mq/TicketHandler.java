@@ -25,7 +25,6 @@
  */
 package org.goobi.api.mq;
 
-
 public interface TicketHandler<V> {
 
     /**

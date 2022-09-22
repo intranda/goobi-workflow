@@ -25,8 +25,6 @@
  */
 package de.sub.goobi.metadaten;
 
-
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -114,20 +112,24 @@ public class PageAreaManager {
             return "";
         }
         List<DocStruct> pageAreas = new ArrayList<>(page.getAllChildren());
-        if(this.newPageArea != null) {
+        if (this.newPageArea != null) {
             pageAreas.add(newPageArea);
         }
         for (DocStruct area : pageAreas) {
             String coordinates = MetadatenHelper.getSingleMetadataValue(area, "_COORDS").orElse(null);
 
-            List<DocStruct> referencedLogStructs = Optional.ofNullable(area.getAllFromReferences()).orElse(Collections.emptyList()).stream().map(Reference::getSource).collect(Collectors.toList());
-            DocStruct logDocStruct = referencedLogStructs.isEmpty() ? null : referencedLogStructs.get(referencedLogStructs.size()-1);
+            List<DocStruct> referencedLogStructs = Optional.ofNullable(area.getAllFromReferences())
+                    .orElse(Collections.emptyList())
+                    .stream()
+                    .map(Reference::getSource)
+                    .collect(Collectors.toList());
+            DocStruct logDocStruct = referencedLogStructs.isEmpty() ? null : referencedLogStructs.get(referencedLogStructs.size() - 1);
 
             JSONObject json = new JSONObject();
             String id = createPhysicalPageNumberForArea(area, page);
             area.setIdentifier(id);
             json.put("areaId", id);
-            if(logDocStruct != null) {
+            if (logDocStruct != null) {
                 json.put("logId", logDocStruct.getIdentifier());
                 if (logDocStruct != null && Objects.equals(logDocStruct, currentLogicalDocStruct)) {
                     json.put("highlight", true);
@@ -210,7 +212,7 @@ public class PageAreaManager {
                 .orElse("uncounted");
         List<DocStruct> pageAreas = new ArrayList<>(Optional.ofNullable(page.getAllChildren()).orElse(Collections.emptyList()));
         int indexOfArea = pageAreas.size();
-        if(pageAreaStruct != null && pageAreas.contains(pageAreaStruct)) {
+        if (pageAreaStruct != null && pageAreas.contains(pageAreaStruct)) {
             indexOfArea = pageAreas.indexOf(pageAreaStruct);
         }
         return physicalPageNumber + "_" + Integer.toString(indexOfArea + 1);
@@ -219,13 +221,12 @@ public class PageAreaManager {
     private String createLogicalPageNumberForArea(DocStruct pageAreaStruct) {
         if (pageAreaStruct.getDocstructType().equalsIgnoreCase("area") && pageAreaStruct.getParent() != null) {
             DocStruct page = pageAreaStruct.getParent();
-            String logicalPageNumber = page.getAllMetadata()
+            return page.getAllMetadata()
                     .stream()
                     .filter(md -> md.getType().getName().equalsIgnoreCase("logicalPageNumber"))
                     .findAny()
                     .map(Metadata::getValue)
                     .orElse("uncounted");
-            return logicalPageNumber;
         } else {
             throw new IllegalArgumentException("given docStruct is not page area or has no parent");
         }

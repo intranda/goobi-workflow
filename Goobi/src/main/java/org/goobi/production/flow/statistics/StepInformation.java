@@ -29,11 +29,11 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class StepInformation implements Serializable{
+public class StepInformation implements Serializable {
 
     private static final long serialVersionUID = -3522448652228806186L;
-    
-	// step identifier in workflow
+
+    // step identifier in workflow
     private String title = "";
     private Double averageStepOrder = Double.valueOf(0);
 

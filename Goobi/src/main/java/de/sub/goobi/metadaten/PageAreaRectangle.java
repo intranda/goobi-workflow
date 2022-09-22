@@ -25,8 +25,6 @@
  */
 package de.sub.goobi.metadaten;
 
-
-
 import lombok.Data;
 
 @Data

@@ -196,19 +196,15 @@ public class VocabularyUploader {
         }
     }
 
-    //todo
+    //TODO
     private static List<VocabRecord> getRecords(JSONArray jsonArray) {
 
-        List<VocabRecord> lstRecords = new ArrayList<>();
-
-        return lstRecords;
+        return new ArrayList<>();
     }
 
-    //todo
+    //TODO
     private static List<Definition> getStruct(JSONArray jsonArray) {
 
-        List<Definition> lstDef = new ArrayList<>();
-
-        return lstDef;
+        return new ArrayList<>();
     }
 }

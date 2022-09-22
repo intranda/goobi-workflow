@@ -57,11 +57,11 @@ public abstract class H2Generator implements IGenerator {
     @Setter
     List<Integer> ids;
 
-    public H2Generator() {
+    protected H2Generator() {
         super();
     }
 
-    public H2Generator(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids, String idFieldName) {
+    protected H2Generator(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids, String idFieldName) {
         this();
         myTimeFrom = timeFrom;
         myTimeTo = timeTo;
@@ -122,20 +122,19 @@ public abstract class H2Generator implements IGenerator {
         if (timeFrom == null && timeTo == null) {
             return "";
         }
+        // FROM NOW ON: timeFrom != null || timeTo != null //NOSONAR
 
         if (timeFrom != null && timeTo != null) {
             return " timeLimiter between '" + dateToSqlTimestamp(timeFrom) + "' and '" + dateToSqlTimestamp(timeTo) + "'";
         }
+        // FROM NOW ON: ( timeFrom != null && timeTo == null ) OR ( timeFrom == null && timeTo != null ) //NOSONAR
 
         if (timeFrom != null) {
             return " timeLimiter between '" + dateToSqlTimestamp(timeFrom) + "' and '9999-12-31 23:59:59.999'";
         }
+        // FROM NOW ON: timeFrom == null && timeTo != null //NOSONAR
 
-        if (timeTo != null) {
-            return " timeLimiter between '0000-01-01 00:00:00.000' and '" + dateToSqlTimestamp(timeTo) + "'";
-        }
-        return "";
-
+        return " timeLimiter between '0000-01-01 00:00:00.000' and '" + dateToSqlTimestamp(timeTo) + "'";
     }
 
     /*****************************************************************
@@ -181,8 +180,7 @@ public abstract class H2Generator implements IGenerator {
      * @return
      */
     private static Timestamp dateToSqlTimestamp(Date date) {
-        Timestamp timestamp = new Timestamp(date.getTime());
-        return timestamp;
+        return new Timestamp(date.getTime());
     }
 
     public void setMyIdFieldName(String name) {

@@ -58,7 +58,7 @@ public abstract class SQLGenerator implements IGenerator {
         super();
     }
 
-    public SQLGenerator(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids, String idFieldName) {
+    protected SQLGenerator(Date timeFrom, Date timeTo, TimeUnit timeUnit, List<Integer> ids, String idFieldName) {
         this();
         myTimeFrom = timeFrom;
         myTimeTo = timeTo;
@@ -103,20 +103,20 @@ public abstract class SQLGenerator implements IGenerator {
         if (timeFrom == null && timeTo == null) {
             return "";
         }
+        // FROM NOW ON: timeFrom != null || timeTo != null // NOSONAR
 
         if (timeFrom != null && timeTo != null) {
             return " date_format(" + timeLimiter + ",'%Y%m%d%H%i%s')+0>=date_format('" + dateToSqlTimestamp(timeFrom) + "','%Y%m%d%H%i%s')+0 AND "
                     + " date_format(" + timeLimiter + ",'%Y%m%d%H%i%s')+0<=date_format('" + dateToSqlTimestamp(timeTo) + "','%Y%m%d%H%i%s')+0 ";
         }
+        // FROM NOW ON: ( timeFrom != null && timeTo == null ) OR ( timeFrom == null && timeTo != null ) // NOSONAR
 
         if (timeFrom != null) {
             return " date_format(" + timeLimiter + ",'%Y%m%d%H%i%s')+0>=date_format('" + dateToSqlTimestamp(timeFrom) + "','%Y%m%d%H%i%s')+0";
         }
+        // FROM NOW ON: timeFrom == null && timeTo != null // NOSONAR
 
-        if (timeTo != null) {
-            return " date_format(" + timeLimiter + ",'%Y%m%d%H%i%s')+0<=date_format('" + dateToSqlTimestamp(timeTo) + "','%Y%m%d%H%i%s')+0";
-        }
-        return "";
+        return " date_format(" + timeLimiter + ",'%Y%m%d%H%i%s')+0<=date_format('" + dateToSqlTimestamp(timeTo) + "','%Y%m%d%H%i%s')+0";
 
     }
 
@@ -164,8 +164,7 @@ public abstract class SQLGenerator implements IGenerator {
      * @return
      */
     private static Timestamp dateToSqlTimestamp(Date date) {
-        Timestamp timestamp = new Timestamp(date.getTime());
-        return timestamp;
+        return new Timestamp(date.getTime());
     }
 
     public void setMyIdFieldName(String name) {

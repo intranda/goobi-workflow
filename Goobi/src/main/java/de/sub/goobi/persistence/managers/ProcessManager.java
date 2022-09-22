@@ -337,18 +337,15 @@ public class ProcessManager implements IManager, Serializable {
         @Override
         public Process handle(ResultSet rs) throws SQLException {
             try {
-                if (rs.next()) {
+                if (rs.next()) { // implies that rs != null
                     try {
-                        Process o = convert(rs);
-                        return o;
+                        return convert(rs);
                     } catch (DAOException e) {
                         log.error(e);
                     }
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
@@ -361,18 +358,14 @@ public class ProcessManager implements IManager, Serializable {
             try {
                 while (rs.next()) {
                     try {
-                        Process o = convert(rs);
-                        if (o != null) {
-                            answer.add(o);
-                        }
+                        Process o = convert(rs); // implies that o != null
+                        answer.add(o);
                     } catch (DAOException e) {
                         log.error(e);
                     }
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }

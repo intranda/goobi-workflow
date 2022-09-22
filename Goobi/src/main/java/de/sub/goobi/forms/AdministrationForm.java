@@ -49,7 +49,7 @@ import lombok.Setter;
 @WindowScoped
 public class AdministrationForm implements Serializable {
     private static final long serialVersionUID = 5648439270064158243L;
-    public final static String DIRECTORY_SUFFIX = "_tif";
+    public static final String DIRECTORY_SUFFIX = "_tif";
 
     @Getter
     @Setter
@@ -74,7 +74,7 @@ public class AdministrationForm implements Serializable {
 
     public void startStorageCalculationForAllProcessesNow() {
         HistoryAnalyserJob job = new HistoryAnalyserJob();
-        if (job.getIsRunning() == false) {
+        if (Boolean.FALSE.equals(job.getIsRunning())) { // job.getIsRunning() returns a boxed Boolean object
             job.execute();
             Helper.setMeldung("scheduler calculation executed");
         } else {

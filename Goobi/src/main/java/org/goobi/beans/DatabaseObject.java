@@ -18,6 +18,6 @@ import java.io.Serializable;
  * 
  */
 
-public interface DatabaseObject extends Serializable{
+public interface DatabaseObject extends Serializable {
     public void lazyLoad();
 }

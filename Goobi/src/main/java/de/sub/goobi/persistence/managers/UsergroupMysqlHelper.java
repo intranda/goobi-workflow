@@ -35,7 +35,8 @@ import lombok.extern.log4j.Log4j2;
 class UsergroupMysqlHelper implements Serializable {
     private static final long serialVersionUID = -6209215029673643876L;
 
-    public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
+    public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count, Institution institution)
+            throws SQLException {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -64,8 +65,7 @@ class UsergroupMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Usergroup> ret = new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -120,8 +120,7 @@ class UsergroupMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            Usergroup ret = new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -145,7 +144,8 @@ class UsergroupMysqlHelper implements Serializable {
             StringBuilder sql = new StringBuilder();
 
             if (ro.getId() == null) {
-                Object[] param = { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
+                Object[] param =
+                        { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
                 String propNames = "titel, berechtigung, roles, institution_id";
                 String propValues = "? ,?, ?, ?";
                 sql.append("INSERT INTO benutzergruppen (");
@@ -161,7 +161,8 @@ class UsergroupMysqlHelper implements Serializable {
                     ro.setId(id);
                 }
             } else {
-                Object[] param = { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
+                Object[] param =
+                        { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
                 sql.append("UPDATE benutzergruppen SET ");
                 sql.append("titel = ?, ");
                 sql.append("berechtigung = ?, ");
@@ -208,7 +209,7 @@ class UsergroupMysqlHelper implements Serializable {
             QueryRunner run = new QueryRunner();
             Object[] param = { stepId };
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString() + ", " + Arrays.toString(param));
+                log.trace(sql + ", " + Arrays.toString(param));
             }
             return run.query(connection, sql, UsergroupManager.resultSetToUsergroupListHandler, param);
         } finally {
@@ -241,8 +242,7 @@ class UsergroupMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            Usergroup ret = new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupHandler, name);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupHandler, name);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -260,8 +260,7 @@ class UsergroupMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Usergroup> ret = new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), UsergroupManager.resultSetToUsergroupListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

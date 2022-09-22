@@ -24,7 +24,6 @@
  */
 package de.sub.goobi.converter;
 
-
 import java.awt.geom.Rectangle2D;
 
 import javax.faces.component.UIComponent;
@@ -47,8 +46,7 @@ public class RectangleCoordinateConverter implements Converter<Rectangle2D> {
             float y = parseToFloat(parts[1]);
             float width = parseToFloat(parts[2]) - parseToFloat(parts[0]);
             float height = parseToFloat(parts[3]) - parseToFloat(parts[1]);
-            Rectangle2D rect = new Rectangle2D.Float(x, y, width, height);
-            return rect;
+            return new Rectangle2D.Float(x, y, width, height);
         } catch (NullPointerException | NumberFormatException | ArrayIndexOutOfBoundsException e) {
             throw new ConversionException(string + " cannot be parsed as Rectangle");
         }
@@ -61,19 +59,18 @@ public class RectangleCoordinateConverter implements Converter<Rectangle2D> {
             Rectangle2D rect = object;
             StringBuilder sb = new StringBuilder();
             sb.append(rect.getMinX())
-            .append(COORD_SEPARATOR)
-            .append(rect.getMinY())
-            .append(COORD_SEPARATOR)
-            .append(rect.getMaxX())
-            .append(COORD_SEPARATOR)
-            .append(rect.getMaxY());
+                    .append(COORD_SEPARATOR)
+                    .append(rect.getMinY())
+                    .append(COORD_SEPARATOR)
+                    .append(rect.getMaxX())
+                    .append(COORD_SEPARATOR)
+                    .append(rect.getMaxY());
             return sb.toString();
         }
         throw new ConversionException(object + " is not of type Rectangle2D");
     }
 
     private float parseToFloat(String string) throws NumberFormatException, NullPointerException {
-        float d = Float.parseFloat(string);
-        return d;
+        return Float.parseFloat(string);
     }
 }

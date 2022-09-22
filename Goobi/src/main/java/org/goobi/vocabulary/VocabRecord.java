@@ -69,8 +69,7 @@ public class VocabRecord implements DatabaseObject, Comparable<VocabRecord> {
     public void lazyLoad() {
     }
 
-
-    public  List<Field> getMainFields() {
+    public List<Field> getMainFields() {
         List<Field> answer = new ArrayList<>();
         for (Field field : fields) {
             if (field.getDefinition() != null && field.getDefinition().isTitleField()) {
@@ -93,6 +92,5 @@ public class VocabRecord implements DatabaseObject, Comparable<VocabRecord> {
     public int compareTo(VocabRecord o) {
         return getTitle().compareTo(o.getTitle());
     }
-
 
 }

@@ -26,10 +26,10 @@ import lombok.Getter;
 
 public class NormDatabase {
 
-	@Getter
+    @Getter
     private String path;
 
-	@Getter
+    @Getter
     private String abbreviation;
 
     private static List<NormDatabase> allNormdatabases = new ArrayList<NormDatabase>();

@@ -50,8 +50,8 @@ public class HistoryEvent implements Serializable {
     /**
      * Getter and Setter for type as private methods for Hibernate only
      */
-    @Getter (AccessLevel.PRIVATE)
-    @Setter (AccessLevel.PRIVATE)
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private Integer type;
     private Process process;
 
