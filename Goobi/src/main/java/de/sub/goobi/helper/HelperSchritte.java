@@ -105,7 +105,7 @@ import ugh.exceptions.WriteException;
 
 @Log4j2
 public class HelperSchritte {
-    public final static String DIRECTORY_PREFIX = "orig_";
+    public static final String DIRECTORY_PREFIX = "orig_";
     private static final Namespace goobiNamespace = Namespace.getNamespace("goobi", "http://meta.goobi.org/v1.5.1/");
     private static final Namespace mets = Namespace.getNamespace("mets", "http://www.loc.gov/METS/");
     private static final Namespace mods = Namespace.getNamespace("mods", "http://www.loc.gov/mods/v3");
@@ -321,8 +321,7 @@ public class HelperSchritte {
 
     public ShellScriptReturnValue executeAllScriptsForStep(Step step, boolean automatic) {
         if (automatic && step.getProzess().isPauseAutomaticExecution()) {
-            ShellScriptReturnValue returnCode = new ShellScriptReturnValue(1, "Automatic execution is disabled", "");
-            return returnCode;
+            return new ShellScriptReturnValue(1, "Automatic execution is disabled", ""); // return code
         }
         List<String> scriptpaths = step.getAllScriptPaths();
         int count = 1;
@@ -347,14 +346,14 @@ public class HelperSchritte {
                     case 99:
 
                         break;
-                        // return code 98: re-open task
+                    // return code 98: re-open task
                     case 98:
                         reOpenStep(step);
                         break;
-                        // return code 0: script returned without error
+                    // return code 0: script returned without error
                     case 0:
                         break;
-                        // everything else: error
+                    // everything else: error
                     default:
                         errorStep(step);
                         break outerloop;
@@ -614,9 +613,9 @@ public class HelperSchritte {
                         StepManager.saveStep(step);
                         Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
                                 "Script for '" + step.getTitel() + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode()
-                                + ". The script returned: " + rueckgabe.getErrorText());
+                                        + ". The script returned: " + rueckgabe.getErrorText());
                         log.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
-                        + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
+                                + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
                     }
                 }
             }
@@ -644,8 +643,7 @@ public class HelperSchritte {
             log.info(e);
         }
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
-        List<String> parameterList = replacer.replaceBashScript(script);
-        return parameterList;
+        return replacer.replaceBashScript(script); // list of parameters
     }
 
     public boolean executeDmsExport(Step step, boolean automatic) {
@@ -676,11 +674,12 @@ public class HelperSchritte {
                 CloseStepObjectAutomatic(step);
             } else {
                 Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
-                + "' was cancelled because of validation errors: " + dms.getProblems().toString());
+                        + "' was cancelled because of validation errors: " + dms.getProblems().toString());
                 errorStep(step);
             }
             return validate;
-        } catch (DAOException | UGHException | SwapException | IOException | ExportFileException | DocStructHasNoTypeException | UghHelperException | InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is handled in the export task
+        } catch (DAOException | UGHException | SwapException | IOException | ExportFileException | DocStructHasNoTypeException | UghHelperException
+                | InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is handled in the export task
             log.error("Exception occurred while trying to export process with ID " + step.getProcessId(), e);
             Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
                     "An exception occurred during the export for process with ID " + step.getProcessId() + ": " + e.getMessage());

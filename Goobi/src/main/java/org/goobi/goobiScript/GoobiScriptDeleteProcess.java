@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -95,7 +94,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
 
         boolean contentOnly = Boolean.parseBoolean(parameters.get("contentOnly"));
         boolean removeUnknownFiles =
-                StringUtils.isBlank(parameters.get("removeUnknownFiles")) ? false : Boolean.parseBoolean(parameters.get("removeUnknownFiles"));
+                StringUtils.isNotBlank(parameters.get("removeUnknownFiles")) && Boolean.parseBoolean(parameters.get("removeUnknownFiles"));
 
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
         gsr.setProcessTitle(p.getTitel());

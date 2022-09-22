@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -98,7 +97,7 @@ public class GoobiScriptAddPluginToStep extends AbstractIGoobiScript implements 
                         Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
                                 "Added plugin '" + s.getStepPlugin() + " to step '" + s.getTitel() + "' using GoobiScript.", username);
                         log.info("Added plugin '" + s.getStepPlugin() + " to step '" + s.getTitel()
-                        + "' using GoobiScript for process with ID " + p.getId());
+                                + "' using GoobiScript for process with ID " + p.getId());
                         gsr.setResultMessage("Added plugin '" + s.getStepPlugin() + " to step '" + s.getTitel() + "'.");
                         gsr.setResultType(GoobiScriptResultType.OK);
                     } catch (DAOException e) {

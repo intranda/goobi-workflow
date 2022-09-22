@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.forms;
 
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 

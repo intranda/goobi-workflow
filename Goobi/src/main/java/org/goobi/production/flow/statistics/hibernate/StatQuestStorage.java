@@ -73,12 +73,12 @@ public class StatQuestStorage implements IStatisticalQuestionLimitedTimeframe {
         List<DataTable> allTables = new ArrayList<>();
 
         //gathering IDs from the filter passed by dataSource
-        List<Integer> IDlist = null;
-        IDlist = ProcessManager.getIdsForFilter(filter);
+        List<Integer> idList = null;
+        idList = ProcessManager.getIdsForFilter(filter);
 
         // adding time restrictions
 
-        IStorage sqlGenerator = StatisticsFactory.getStorage(timeFilterFrom, timeFilterTo, timeGrouping, IDlist);
+        IStorage sqlGenerator = StatisticsFactory.getStorage(timeFilterFrom, timeFilterTo, timeGrouping, idList);
 
         String natSQL = sqlGenerator.getSQL();
 

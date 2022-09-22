@@ -24,8 +24,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ DocketConverterTest.class, ProcessConverterTest.class, StatisticsCalculationUnitConverterTest.class,
-    StatisticsResultOutputConverterTest.class, StatisticsTimeUnitConverterTest.class, RectangleConverterTest.class,
-    RectangleCoordinateConverterTest.class })
+        StatisticsResultOutputConverterTest.class, StatisticsTimeUnitConverterTest.class, RectangleConverterTest.class,
+        RectangleCoordinateConverterTest.class })
 public class TestAll {
 
 }

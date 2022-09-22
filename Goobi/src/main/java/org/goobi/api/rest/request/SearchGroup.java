@@ -24,7 +24,6 @@
  */
 package org.goobi.api.rest.request;
 
-
 import java.util.ArrayList;
 import java.util.List;
 

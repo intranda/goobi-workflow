@@ -51,7 +51,7 @@ public enum TimeUnit {
     years("5", "years", "year", "year", true, 256.0),
     simpleSum("6", "alltime", "alltime", "alltime", false, -1.0);
 
-	@Getter
+    @Getter
     private String id;
     private String title;
     @Getter

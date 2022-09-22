@@ -25,7 +25,6 @@
  */
 package org.goobi.managedbeans;
 
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;

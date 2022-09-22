@@ -41,7 +41,7 @@ public enum CalculationUnit {
     pages("2", "pages"),
     volumesAndPages("3", "volumesAndPages");
 
-	@Getter
+    @Getter
     private String id;
     private String title;
 

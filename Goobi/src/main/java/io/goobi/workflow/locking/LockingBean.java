@@ -25,7 +25,6 @@
  */
 package io.goobi.workflow.locking;
 
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;

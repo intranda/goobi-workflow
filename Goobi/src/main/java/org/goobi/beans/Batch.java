@@ -30,11 +30,11 @@ import lombok.Data;
  */
 
 @Data
-public class Batch implements Serializable{
-	
-	private static final long serialVersionUID = -1142562887294508206L;
+public class Batch implements Serializable {
 
-	/**
+    private static final long serialVersionUID = -1142562887294508206L;
+
+    /**
      * internal id of the batch
      */
     private Integer batchId;

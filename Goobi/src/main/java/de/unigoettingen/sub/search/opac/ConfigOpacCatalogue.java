@@ -68,7 +68,6 @@ public class ConfigOpacCatalogue {
     @Setter
     private IOpacPlugin opacPlugin;
 
-
     public ConfigOpacCatalogue(String title, String desciption, String address, String database, String iktlist, int port,
             List<ConfigOpacCatalogueBeautifier> inBeautifySetList, String opacType, Map<String, String> searchFields) {
         this.title = title;
@@ -205,7 +204,7 @@ public class ConfigOpacCatalogue {
                 mainFieldToChange.addContent(subfieldToChange);
             }
 
-            if (subfieldToChange!= null && prooflist.isEmpty()) {
+            if (subfieldToChange != null && prooflist.isEmpty()) {
                 if (beautifier.getTagElementToChange().getValue().equals("*")) {
                     subfieldToChange.setText(matchedValue);
                 } else {

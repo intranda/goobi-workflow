@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +104,7 @@ public class GoobiScriptAddStep extends AbstractIGoobiScript implements IGoobiSc
                     "Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge() + "' to process using GoobiScript.",
                     username);
             log.info("Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge()
-            + "' to process using GoobiScript for process with ID " + p.getId());
+                    + "' to process using GoobiScript for process with ID " + p.getId());
             gsr.setResultMessage("Added workflow step '" + s.getTitel() + "' at position '" + s.getReihenfolge() + "'.");
             gsr.setResultType(GoobiScriptResultType.OK);
         } catch (DAOException e) {

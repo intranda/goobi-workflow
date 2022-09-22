@@ -25,7 +25,6 @@
  */
 package org.goobi.api.mq;
 
-
 import org.goobi.beans.DatabaseObject;
 
 import lombok.AllArgsConstructor;
@@ -37,7 +36,6 @@ public class ExternalCommandResult implements DatabaseObject {
     private int processId;
     private int stepId;
     private String scriptName;
-
 
     @Override
     public void lazyLoad() {

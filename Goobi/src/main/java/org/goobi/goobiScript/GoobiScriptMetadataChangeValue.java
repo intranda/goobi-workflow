@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -126,7 +125,7 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
                     }
                     break;
 
-                    // fist the first child element
+                // fist the first child element
                 case "child":
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -137,20 +136,20 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
                     }
                     break;
 
-                    // any element in the hierarchy
+                // any element in the hierarchy
                 case "any":
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
-                    if (physical!= null) {
+                    if (physical != null) {
                         dsList.add(physical);
                     }
                     break;
                 case "physical":
-                    if (physical!= null) {
+                    if (physical != null) {
                         dsList.add(physical);
                     }
                     break;
-                    // default "work", which is the first child or the main top element if it is not an anchor
+                // default "work", which is the first child or the main top element if it is not an anchor
                 default:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -213,7 +212,7 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
     private void changeMetadata(List<DocStruct> dsList, String field, String prefix, String suffix, String condition, Prefs prefs) {
         for (DocStruct ds : dsList) {
             List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
-            if (mdlist != null && ! mdlist.isEmpty()) {
+            if (mdlist != null && !mdlist.isEmpty()) {
                 for (Metadata md : mdlist) {
                     if (condition.isEmpty() || md.getValue().contains(condition)) {
                         md.setValue(prefix + md.getValue() + suffix);

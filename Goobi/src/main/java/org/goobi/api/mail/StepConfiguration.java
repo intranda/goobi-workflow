@@ -1,4 +1,5 @@
 package org.goobi.api.mail;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -35,11 +36,11 @@ import lombok.Data;
  */
 
 @Data
-public class StepConfiguration implements Serializable{
+public class StepConfiguration implements Serializable {
 
     private static final long serialVersionUID = 1969795778921420658L;
-    
-	private Integer id;
+
+    private Integer id;
     private Integer projectId;
     private String stepName;
 

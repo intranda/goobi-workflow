@@ -25,8 +25,6 @@
  */
 package de.sub.goobi.forms;
 
-
-
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -92,13 +90,11 @@ public class HelperForm implements Serializable {
     // TODO: Change the defaults
     public String getApplicationHeaderTitle() {
 
-        String rueck = ConfigurationHelper.getInstance().getApplicationHeaderTitle();
-        return rueck;
+        return ConfigurationHelper.getInstance().getApplicationHeaderTitle();
     }
 
     public String getApplicationTitle() {
-        String rueck = ConfigurationHelper.getInstance().getApplicationTitle();
-        return rueck;
+        return ConfigurationHelper.getInstance().getApplicationTitle();
     }
 
     public String getApplicationWebsiteUrl() {
@@ -235,8 +231,7 @@ public class HelperForm implements Serializable {
         String scheme = request.getScheme(); // http
         String serverName = request.getServerName(); // hostname.com
         int serverPort = request.getServerPort(); // 80
-        String reqUrl = scheme + "://" + serverName + ":" + serverPort + "/itm/";
-        return reqUrl;
+        return scheme + "://" + serverName + ":" + serverPort + "/itm/";
     }
 
     public String getServletPathWithHostAsUrl() {
@@ -246,15 +241,13 @@ public class HelperForm implements Serializable {
         String serverName = request.getServerName(); // hostname.com
         int serverPort = request.getServerPort(); // 80
         String contextPath = request.getContextPath(); // /mywebapp
-        String reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
-        return reqUrl;
+        return scheme + "://" + serverName + ":" + serverPort + contextPath;
     }
 
     public String getContextPath() {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        String contextPath = request.getContextPath();
-        return contextPath;
+        return request.getContextPath();
     }
 
     public boolean getMessagesExist() {
@@ -280,11 +273,7 @@ public class HelperForm implements Serializable {
     public boolean getIsIE() {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        if (request.getHeader("User-Agent").contains("MSIE")) {
-            return true;
-        } else {
-            return false;
-        }
+        return request.getHeader("User-Agent").contains("MSIE");
     }
 
     public String getUserAgent() {

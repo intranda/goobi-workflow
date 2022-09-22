@@ -25,7 +25,6 @@
  */
 package org.goobi.managedbeans;
 
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Calendar;

@@ -420,7 +420,7 @@ public class StepBean extends BasicBean implements Serializable {
                     try {
                         Paths.get(s.getProzess().getImagesOrigDirectory(false));
                     } catch (Exception e1) {
-                    	// TODO: what should be done?
+                        // TODO: what should be done?
                     }
 
                     this.myDav.DownloadToHome(s.getProzess(), s.getId().intValue(), !s.isTypImagesSchreiben());
@@ -465,8 +465,8 @@ public class StepBean extends BasicBean implements Serializable {
             // only steps with same title
             currentStepsOfBatch = StepManager.getSteps(null,
                     "schritte.titel = '" + steptitle
-                    + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
-                    + batchNumber + ")",
+                            + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
+                            + batchNumber + ")",
                     0, Integer.MAX_VALUE);
 
         } else {
@@ -489,7 +489,7 @@ public class StepBean extends BasicBean implements Serializable {
         this.myDav.UploadFromHome(this.mySchritt.getProzess());
         this.mySchritt.setBearbeitungsstatusEnum(StepStatus.OPEN);
         // if we have a correction-step here then never remove startdate
-        if (this.mySchritt.isCorrectionStep()) {
+        if (Boolean.TRUE.equals(this.mySchritt.isCorrectionStep())) {
             this.mySchritt.setBearbeitungsbeginn(null);
         }
         this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
@@ -505,7 +505,7 @@ public class StepBean extends BasicBean implements Serializable {
              */
             StepManager.saveStep(mySchritt);
         } catch (DAOException e) {
-        	// TODO: what should be done?
+            // TODO: what should be done?
         }
         return FilterAlleStart();
     }
@@ -582,11 +582,9 @@ public class StepBean extends BasicBean implements Serializable {
      */
 
     public List<Step> getPreviousStepsForProblemReporting() {
-        List<Step> alleVorherigenSchritte = StepManager.getSteps("Reihenfolge desc",
+        return StepManager.getSteps("Reihenfolge desc",
                 " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge < " + this.mySchritt.getReihenfolge(), 0,
                 Integer.MAX_VALUE);
-
-        return alleVorherigenSchritte;
     }
 
     public int getSizeOfPreviousStepsForProblemReporting() {
@@ -696,10 +694,8 @@ public class StepBean extends BasicBean implements Serializable {
 
     public List<Step> getNextStepsForProblemSolution() {
 
-        List<Step> alleNachfolgendenSchritte = StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId()
+        return StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId()
                 + " AND Reihenfolge > " + this.mySchritt.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE);
-
-        return alleNachfolgendenSchritte;
     }
 
     public int getSizeOfNextStepsForProblemSolution() {
@@ -760,7 +756,7 @@ public class StepBean extends BasicBean implements Serializable {
                             + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
                 } else {
                     seg.setWert("[" + this.formatter.format(new Date()) + "] " + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel()
-                    + ": " + this.solutionMessage);
+                            + ": " + this.solutionMessage);
                 }
                 seg.setSchritt(step);
                 seg.setType(PropertyType.messageImportant);
@@ -836,7 +832,7 @@ public class StepBean extends BasicBean implements Serializable {
         /*
          * -------------------------------- die hochgeladenen Prozess-IDs durchlaufen und auf abgeschlossen setzen --------------------------------
          */
-        if (fertigListe != null && ! fertigListe.isEmpty() && this.nurOffeneSchritte) {
+        if (fertigListe != null && !fertigListe.isEmpty() && this.nurOffeneSchritte) {
             this.nurOffeneSchritte = false;
             FilterAlleStart();
         }
@@ -1003,7 +999,7 @@ public class StepBean extends BasicBean implements Serializable {
                 if (myPlugin instanceof IPushPlugin) {
                     ((IPushPlugin) myPlugin).setPushContext(stepPluginPush);
                 }
-                if (mySchritt.isBatchStep() && mySchritt.isBatchSize()) {
+                if (Boolean.TRUE.equals(mySchritt.isBatchStep()) && mySchritt.isBatchSize()) {
                     myPlugin.initialize(mySchritt, "/task_edit_batch");
                 } else {
                     myPlugin.initialize(mySchritt, "/task_edit");

@@ -56,7 +56,7 @@ import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ViafSearch.class, Helper.class})
+@PrepareForTest({ ViafSearch.class, Helper.class })
 public class MetadataGroupImplTest extends AbstractTest {
 
     private Prefs prefs;
@@ -122,7 +122,7 @@ public class MetadataGroupImplTest extends AbstractTest {
     @Test
     public void testGetMetadataList() throws MetadataTypeNotAllowedException {
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-        Metadata metadata = new Metadata (prefs.getMetadataTypeByName("junitMetadata"));
+        Metadata metadata = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
         md.addMetadata(metadata);
         MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);
         List<MetadatumImpl> metadataList = fixture.getMetadataList();
@@ -134,7 +134,7 @@ public class MetadataGroupImplTest extends AbstractTest {
     @Test
     public void testSetMetadataList() throws MetadataTypeNotAllowedException {
         MetadataGroup md = new MetadataGroup(prefs.getMetadataGroupTypeByName("junitgrp"));
-        Metadata metadata = new Metadata (prefs.getMetadataTypeByName("junitMetadata"));
+        Metadata metadata = new Metadata(prefs.getMetadataTypeByName("junitMetadata"));
         md.addMetadata(metadata);
 
         MetadataGroupImpl fixture = new MetadataGroupImpl(prefs, process, md, null, "", "", 0);

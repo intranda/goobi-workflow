@@ -45,13 +45,12 @@ public class SessionCounterFilter implements Filter {
     ServletContext servletContext;
 
     @Inject
-    private  SessionForm sf ;
+    private SessionForm sf;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         servletContext = filterConfig.getServletContext();
     }
-
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -64,7 +63,6 @@ public class SessionCounterFilter implements Filter {
         }
         chain.doFilter(request, response);
     }
-
 
     /**
      */

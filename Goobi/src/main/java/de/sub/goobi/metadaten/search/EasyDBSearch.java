@@ -321,8 +321,7 @@ public class EasyDBSearch {
         if (enableDebugging) {
             client.register(new EntityLoggingFilter());
         }
-        WebTarget easyDbBaseTarget = client.target(url);
-        return easyDbBaseTarget;
+        return client.target(url);
     }
 
     public void clearResults() {

@@ -24,7 +24,6 @@
  */
 package org.goobi.beans;
 
-
 import lombok.Getter;
 
 /**

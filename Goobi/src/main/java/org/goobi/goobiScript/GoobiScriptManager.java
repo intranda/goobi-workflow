@@ -478,10 +478,9 @@ public class GoobiScriptManager {
         }
     }
 
-
     public int getGoobiScriptResultSize() {
         synchronized (goobiScriptResults) {
-            return    goobiScriptResults.size();
+            return goobiScriptResults.size();
         }
     }
 

@@ -1,4 +1,5 @@
 package org.goobi.api.mail;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -25,7 +26,6 @@ package org.goobi.api.mail;
  * exception statement from your version.
  */
 
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,16 +39,15 @@ import lombok.Data;
  */
 
 @Data
-public class UserProjectConfiguration implements Serializable{
+public class UserProjectConfiguration implements Serializable {
 
     private static final long serialVersionUID = 6445115428016017804L;
 
-	private String projectName;
+    private String projectName;
 
     private Integer projectId;
 
     private List<StepConfiguration> stepList = new ArrayList<>();
-
 
     public void activateAllOpenSteps() {
         for (StepConfiguration sc : stepList) {

@@ -175,20 +175,22 @@ public class WebInterface extends HttpServlet {
     }
 
     private void generateHelp(HttpServletResponse resp, String forCommand) throws IOException {
-        String allHelp = "";
+        StringBuilder allHelpBuilder = new StringBuilder();
         List<IPlugin> mycommands = PluginLoader.getPluginList(PluginType.Command);
         Collections.sort(mycommands, pluginComparator);
         for (IPlugin iPlugin : mycommands) {
             ICommandPlugin icp = (ICommandPlugin) iPlugin;
             if (forCommand == null || forCommand.equals(icp.help().getTitle()) || ("Command " + forCommand).equals(icp.help().getTitle())) {
-                allHelp += "<h4>" + icp.help().getTitle() + "</h4>" + icp.help().getMessage() + "<br/><br/>";
+                allHelpBuilder.append("<h4>").append(icp.help().getTitle()).append("</h4>");
+                allHelpBuilder.append(icp.help().getMessage());
+                allHelpBuilder.append("<br/><br/>");
             }
         }
         if (forCommand == null) {
-            allHelp +=
-                    "<h4>You are searching for a description of one command only?</h4>Use the parameter 'for' to get the help only for one specific command.<br/><br/>Sample: 'for=AddToProcessLog'<br/><br/>";
+            allHelpBuilder.append(
+                    "<h4>You are searching for a description of one command only?</h4>Use the parameter 'for' to get the help only for one specific command.<br/><br/>Sample: 'for=AddToProcessLog'<br/><br/>");
         }
-        generateAnswer(resp, 200, "Goobi Web API Help", allHelp);
+        generateAnswer(resp, 200, "Goobi Web API Help", allHelpBuilder.toString());
     }
 
     private void generateAnswer(HttpServletResponse resp, int status, String title, String message) {

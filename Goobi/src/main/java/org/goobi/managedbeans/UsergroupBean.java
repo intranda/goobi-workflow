@@ -52,14 +52,14 @@ import lombok.Setter;
 public class UsergroupBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 8051160917458068675L;
     private Usergroup myBenutzergruppe = new Usergroup();
-    private String tempTitle = "";	//title before editing
+    private String tempTitle = ""; //title before editing
     private String tempRole;
 
     public void setMyBenutzergruppe(Usergroup group) {
-    	this.myBenutzergruppe = group;
-    	this.tempTitle = group.getTitel();
+        this.myBenutzergruppe = group;
+        this.tempTitle = group.getTitel();
     }
-    
+
     public UsergroupBean() {
         sortierung = "titel";
     }
@@ -74,7 +74,7 @@ public class UsergroupBean extends BasicBean implements Serializable {
             //if there is only one institution, then it is not shown in ui and the value may be null:
             if (getCurrentInstitutionID() == 0) {
                 List<SelectItem> lstInst = getInstitutionsAsSelectList();
-                if (! lstInst.isEmpty()) {
+                if (!lstInst.isEmpty()) {
                     Integer inst = (Integer) lstInst.get(0).getValue();
                     setCurrentInstitutionID(inst);
                 }
@@ -107,16 +107,16 @@ public class UsergroupBean extends BasicBean implements Serializable {
         }
         return FilterKein();
     }
-    
+
     public String Cancel() {
-    	this.myBenutzergruppe.setTitel(tempTitle);
+        this.myBenutzergruppe.setTitel(tempTitle);
         return "usergroup_all";
     }
 
     public String addRole() {
-    	if(! tempRole.isEmpty()) {
-        	myBenutzergruppe.addUserRole(tempRole);
-    	}
+        if (!tempRole.isEmpty()) {
+            myBenutzergruppe.addUserRole(tempRole);
+        }
         tempRole = "";
         return "";
     }

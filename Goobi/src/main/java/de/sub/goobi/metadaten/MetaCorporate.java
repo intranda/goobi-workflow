@@ -25,8 +25,6 @@
  */
 package de.sub.goobi.metadaten;
 
-
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -184,14 +182,14 @@ public class MetaCorporate implements SearchableMetadata {
                 if (normdata.getKey().equals("NORM_IDENTIFIER")) {
                     corporate.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
                 } else if (normdata.getKey().equals("NORM_ORGANIZATION")) {
-                    mainValue = normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", "");
+                    mainValue = normdata.getValues().get(0).getText().replace("\\x152", "").replace("\\x156", "");
                 } else if (normdata.getKey().equals("NORM_SUB_ORGANIZATION")) {
-                    subNames.add(new NamePart("subname", normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", "")));
+                    subNames.add(new NamePart("subname", normdata.getValues().get(0).getText().replace("\\x152", "").replace("\\x156", "")));
                 } else if (normdata.getKey().equals("NORM_PART_ORGANIZATION")) {
                     if (partName.length() > 0) {
                         partName.append("; ");
                     }
-                    partName.append(normdata.getValues().get(0).getText().replaceAll("\\x152", "").replaceAll("\\x156", ""));
+                    partName.append(normdata.getValues().get(0).getText().replace("\\x152", "").replace("\\x156", ""));
                 }
             }
         }

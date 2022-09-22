@@ -83,8 +83,8 @@ import de.sub.goobi.persistence.managers.TemplateManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PropertyManager.class, StepManager.class, TemplateManager.class, MasterpieceManager.class, HistoryManager.class,
-    MetadataManager.class, FacesContext.class, ExternalContext.class, Helper.class })
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
+        MetadataManager.class, FacesContext.class, ExternalContext.class, Helper.class })
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class GeneratePdfFromXsltTest extends AbstractTest {
 
     private static final Namespace xmlns = Namespace.getNamespace("http://www.goobi.io/logfile");
@@ -104,7 +104,7 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
         }
         ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder.toString();
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
         xsltfile = goobiFolder.getParent().getParent() + "/xslt/docket.xsl";
 
         process = MockProcess.createProcess();
@@ -180,7 +180,6 @@ public class GeneratePdfFromXsltTest extends AbstractTest {
 
         EasyMock.expect(Helper.getDateAsFormattedString(EasyMock.anyObject())).andReturn("date").anyTimes();
         EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
-
 
         EasyMock.expectLastCall();
         PowerMock.replayAll();

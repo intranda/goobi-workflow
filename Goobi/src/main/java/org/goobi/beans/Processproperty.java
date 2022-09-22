@@ -54,8 +54,8 @@ public class Processproperty implements Serializable, IGoobiProperty, Comparable
     @Getter
     @Setter
     private Boolean istObligatorisch;
-    @Getter (AccessLevel.PRIVATE)
-    @Setter (AccessLevel.PRIVATE)
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private Integer datentyp;
     @Getter
     @Setter
@@ -78,12 +78,12 @@ public class Processproperty implements Serializable, IGoobiProperty, Comparable
 
     @Override
     public Boolean isIstObligatorisch() {
-    	if (this.istObligatorisch == null) {
+        if (this.istObligatorisch == null) {
             this.istObligatorisch = false;
         }
         return this.istObligatorisch;
     }
-    
+
     /**
      * set datentyp to specific value from {@link PropertyType}
      * 
@@ -211,6 +211,5 @@ public class Processproperty implements Serializable, IGoobiProperty, Comparable
             return false;
         return true;
     }
-
 
 }

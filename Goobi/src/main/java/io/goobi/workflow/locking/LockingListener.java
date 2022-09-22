@@ -25,7 +25,6 @@
  */
 package io.goobi.workflow.locking;
 
-
 import java.util.Date;
 
 import javax.servlet.ServletContextEvent;
@@ -63,7 +62,6 @@ public class LockingListener implements ServletContextListener {
             trigger.setStartTime(new Date());
             trigger.setName("MinuteTrigger");
             sched.scheduleJob(jobDetail, trigger);
-
 
         } catch (SchedulerException e) {
             log.error(e);

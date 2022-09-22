@@ -48,7 +48,8 @@ class DocketMysqlHelper implements Serializable {
             } else {
                 sql.append(" WHERE ");
             }
-            sql.append("docketId in (SELECT object_id FROM institution_configuration where object_type = 'docket' and selected = true and institution_id = ");
+            sql.append(
+                    "docketId in (SELECT object_id FROM institution_configuration where object_type = 'docket' and selected = true and institution_id = ");
             sql.append(institution.getId());
             sql.append(") ");
         }
@@ -64,8 +65,7 @@ class DocketMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Docket> ret = new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -88,7 +88,8 @@ class DocketMysqlHelper implements Serializable {
             } else {
                 sql.append(" WHERE ");
             }
-            sql.append("docketId in (SELECT object_id FROM institution_configuration where object_type = 'docket' and selected = true and institution_id = ");
+            sql.append(
+                    "docketId in (SELECT object_id FROM institution_configuration where object_type = 'docket' and selected = true and institution_id = ");
             sql.append(institution.getId());
             sql.append(") ");
         }
@@ -116,8 +117,7 @@ class DocketMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            Docket ret = new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -195,8 +195,7 @@ class DocketMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<Docket> ret = new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -214,8 +213,7 @@ class DocketMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            Docket ret = new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketHandler, name);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), DocketManager.resultSetToDocketHandler, name);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

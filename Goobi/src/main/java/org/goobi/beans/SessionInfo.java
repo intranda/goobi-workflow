@@ -24,7 +24,6 @@
  */
 package org.goobi.beans;
 
-
 import java.io.Serializable;
 
 import javax.servlet.http.HttpSession;
@@ -33,9 +32,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
+
 /**
- * This class represents a HTTPSession object and some more information about
- * a current session of a user. It is mainly used in the SessionForm class.
+ * This class represents a HTTPSession object and some more information about a current session of a user. It is mainly used in the SessionForm class.
  *
  * @author Maurice Mueller
  *
@@ -139,8 +138,7 @@ public class SessionInfo implements Serializable {
     private String browserIconFileName;
 
     /**
-     * A constructor to get a SessionInfo object.
-     * All object variables can be set separately.
+     * A constructor to get a SessionInfo object. All object variables can be set separately.
      */
     public SessionInfo() {
     }

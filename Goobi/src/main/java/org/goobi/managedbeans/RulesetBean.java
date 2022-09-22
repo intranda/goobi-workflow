@@ -114,10 +114,7 @@ public class RulesetBean extends BasicBean implements Serializable {
 
     private boolean hasAssignedProcesses(Ruleset r) {
         Integer number = ProcessManager.getNumberOfProcessesWithRuleset(r.getId());
-        if (number != null && number > 0) {
-            return true;
-        }
-        return false;
+        return number != null && number > 0;
     }
 
     public String FilterKein() {

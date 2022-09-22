@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.forms;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -142,11 +141,7 @@ public class AdditionalField {
         }
 
         /* wenn nur "darf nicht" angegeben wurde */
-        if (!this.isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isnotdoctype, docType)) {
-            return false;
-        }
-
-        return true;
+        return this.isnotdoctype.equals("") || !StringUtils.containsIgnoreCase(isnotdoctype, docType);
     }
 
     /**
@@ -168,10 +163,12 @@ public class AdditionalField {
     }
 
     public void setValues(List<String> values) {
-        wert = "";
+        StringBuilder bld = new StringBuilder();
         for (String part : values) {
-            wert += part + ";";
+            bld.append(part);
+            bld.append(";");
         }
+        wert = bld.toString();
         if (wert.endsWith(";")) {
             wert = wert.substring(0, wert.length() - 1);
         }

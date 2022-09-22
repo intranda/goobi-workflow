@@ -27,11 +27,11 @@ import de.sub.goobi.helper.Helper;
 import lombok.Data;
 
 @Data
-public class ExtendedSearchRow implements Serializable{
+public class ExtendedSearchRow implements Serializable {
 
     private static final long serialVersionUID = 4020492017029891060L;
 
-	private String fieldName;
+    private String fieldName;
 
     private String fieldOperand;
 

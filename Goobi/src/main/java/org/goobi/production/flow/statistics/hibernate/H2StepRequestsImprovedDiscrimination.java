@@ -1,4 +1,5 @@
 package org.goobi.production.flow.statistics.hibernate;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -136,7 +137,7 @@ public class H2StepRequestsImprovedDiscrimination extends H2Generator implements
      */
 
     private String addedSorting(Boolean include) {
-        if (include) {
+        if (Boolean.TRUE.equals(include)) {
             return ", table_1.stepOrder";
         } else {
             return "";
@@ -149,7 +150,7 @@ public class H2StepRequestsImprovedDiscrimination extends H2Generator implements
      * @return SQL snippet for Select clause
      */
     private String addedListing(Boolean include) {
-        if (include) {
+        if (Boolean.TRUE.equals(include)) {
             return ", table_1.stepOrder, table_1.stepName ";
         } else {
             return "";
@@ -162,7 +163,7 @@ public class H2StepRequestsImprovedDiscrimination extends H2Generator implements
      * @return SQL snippet for Group by clause
      */
     private String addedGrouping(Boolean include) {
-        if (include) {
+        if (Boolean.TRUE.equals(include)) {
             return ", table_1.stepOrder, table_1.stepName ";
         } else {
             return "";

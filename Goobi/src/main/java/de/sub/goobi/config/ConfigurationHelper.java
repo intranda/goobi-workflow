@@ -90,8 +90,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getGoobiFolder() {
-        String goobiFolder = config.getString("goobiFolder", "/opt/digiverso/goobi/");
-        return goobiFolder;
+        return config.getString("goobiFolder", "/opt/digiverso/goobi/");
     }
 
     private String getConfigLocalPath() {
@@ -726,7 +725,6 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("MetsEditorShowArchivedFolder", false);
     }
 
-
     public long getMetsEditorLockingTime() {
         return getLocalLong("MetsEditorLockingTime", 30 * 60 * 1000);
     }
@@ -953,8 +951,7 @@ public class ConfigurationHelper implements Serializable {
         int size = getLocalInt("MaxImageFileSize", 4000);
         String unit = getLocalString("MaxImageFileSizeUnit", "MB");
         Double factor = getMemorySizeFactor(unit);
-        long byteSize = size * factor.longValue();
-        return byteSize;
+        return size * factor.longValue();
     }
 
     public boolean getMetsEditorUseImageTiles() {

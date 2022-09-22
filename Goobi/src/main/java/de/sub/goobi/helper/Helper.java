@@ -122,11 +122,11 @@ public class Helper implements Serializable, ServletContextListener {
      * @return Paramter als String
      */
     @SuppressWarnings("rawtypes")
-    public static String getRequestParameter(String Parameter) {
+    public static String getRequestParameter(String parameter) {
         /* einen bestimmten übergebenen Parameter ermitteln */
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
         Map requestParams = context.getExternalContext().getRequestParameterMap();
-        String myParameter = (String) requestParams.get(Parameter);
+        String myParameter = (String) requestParams.get(parameter);
         if (myParameter == null) {
             myParameter = "";
         }
@@ -252,10 +252,10 @@ public class Helper implements Serializable, ServletContextListener {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
 
         // Never forget: Strings are immutable
-        meldung = meldung.replaceAll("<", "&lt;");
-        meldung = meldung.replaceAll(">", "&gt;");
-        beschreibung = beschreibung.replaceAll("<", "&lt;");
-        beschreibung = beschreibung.replaceAll(">", "&gt;");
+        meldung = meldung.replace("<", "&lt;");
+        meldung = meldung.replace(">", "&gt;");
+        beschreibung = beschreibung.replace("<", "&lt;");
+        beschreibung = beschreibung.replace(">", "&gt;");
 
         String msg = meldung;
         String beschr = beschreibung;
@@ -557,13 +557,13 @@ public class Helper implements Serializable, ServletContextListener {
         if (desiredLanguage != null) {
             value = getString(new Locale(desiredLanguage.getLanguage()), dbTitel);
         } else {
-            value = getString(Locale.ENGLISH, dbTitel);
+            value = getString(Locale.ENGLISH, dbTitel); // value will never be null, since the method getString(...) always returns something
         }
-        if (value != null && parameterList != null && parameterList.length > 0) {
+        if (parameterList != null && parameterList.length > 0) {
             int parameterCount = 0;
             for (String parameter : parameterList) {
-                if (value != null && parameter != null) {
-                    value = value.replace("{" + parameterCount + "}", parameter);
+                if (parameter != null) {
+                    value = value.replace("{" + parameterCount + "}", parameter); // value will never be null given that parameter != null
                 }
                 parameterCount++;
             }
@@ -720,8 +720,7 @@ public class Helper implements Serializable, ServletContextListener {
             if (beanIterator.hasNext()) {
                 Bean<T> bean = (Bean<T>) beanIterator.next();
                 CreationalContext<T> ctx = bm.createCreationalContext(bean);
-                T instance = (T) bm.getReference(bean, clazz, ctx);
-                return instance;
+                return (T) bm.getReference(bean, clazz, ctx);
             }
         }
         return null;

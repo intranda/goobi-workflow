@@ -73,7 +73,7 @@ public class WorkflowProjectTaskList implements IProvideProjectTaskList {
                 imagesCompleted = "0";
             }
 
-            if (countImages) {
+            if (Boolean.TRUE.equals(countImages)) {
                 usedMax = step.getNumberOfTotalImages();
                 if (usedMax > inMax) {
                     //TODO notify calling object, that the inMax is not set right

@@ -25,7 +25,6 @@
  */
 package org.goobi.api.db;
 
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -49,8 +48,8 @@ public class RestDbHelper {
             }
         } else {
 
-            String sql =  req.createLegacySql();
-            Object[] params =   req.createLegacySqlParams();
+            String sql = req.createLegacySql();
+            Object[] params = req.createLegacySqlParams();
             try (Connection conn = MySQLHelper.getInstance().getConnection()) {
                 QueryRunner run = new QueryRunner();
                 results = run.query(conn, sql, new ResultSetToRestProcessList(), params);

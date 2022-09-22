@@ -60,11 +60,11 @@ public class Masterpieceproperty implements Serializable, IGoobiProperty {
      * 
      * for use in programm use getType instead
      */
-    @Getter (AccessLevel.PRIVATE)
+    @Getter(AccessLevel.PRIVATE)
     /**
      * set datentyp to defined integer. only for internal use through hibernate, for changing datentyp use setType instead
      */
-    @Setter (AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private Integer datentyp;
     @Getter
     @Setter

@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.helper;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 

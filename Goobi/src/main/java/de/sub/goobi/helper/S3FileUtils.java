@@ -418,7 +418,7 @@ public class S3FileUtils implements StorageProviderInterface {
         ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(folderPrefix).withDelimiter("/");
         ObjectListing listing = s3.listObjects(req);
         Set<String> objs = new HashSet<>();
-        for (String os: listing.getCommonPrefixes()) {
+        for (String os : listing.getCommonPrefixes()) {
             String key = os.replace(folderPrefix, "");
             int idx = key.indexOf('/');
             if (idx >= 0) {
@@ -638,7 +638,7 @@ public class S3FileUtils implements StorageProviderInterface {
         if (s3.doesObjectExist(getBucket(), path2Key(path))) {
             return true;
         }
-        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix( path2Key(path)).withDelimiter("/");
+        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(path2Key(path)).withDelimiter("/");
         ObjectListing listing = s3.listObjects(req);
         return !listing.getObjectSummaries().isEmpty();
     }
@@ -649,7 +649,7 @@ public class S3FileUtils implements StorageProviderInterface {
         if (storageType == StorageType.LOCAL || storageType == StorageType.BOTH) {
             return nio.isDirectory(path);
         }
-        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix( path2Key(path)).withDelimiter("/");
+        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(path2Key(path)).withDelimiter("/");
         ObjectListing listing = s3.listObjects(req);
         return !listing.getCommonPrefixes().isEmpty();
     }
@@ -677,7 +677,7 @@ public class S3FileUtils implements StorageProviderInterface {
         if (om == null) {
             // check everything inside prefix.
             long lastModified = 0;
-            ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix( path2Key(path)).withDelimiter("/");
+            ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(path2Key(path)).withDelimiter("/");
             ObjectListing listing = s3.listObjects(req);
             for (S3ObjectSummary os : listing.getObjectSummaries()) {
                 if (os.getLastModified().getTime() > lastModified) {

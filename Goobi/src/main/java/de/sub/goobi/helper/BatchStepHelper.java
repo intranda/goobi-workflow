@@ -77,11 +77,11 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class BatchStepHelper implements Serializable{
+public class BatchStepHelper implements Serializable {
 
     private static final long serialVersionUID = -4104323465193019618L;
-    
-	@Getter
+
+    @Getter
     @Setter
     private List<Step> steps;
     @Getter
@@ -141,7 +141,7 @@ public class BatchStepHelper implements Serializable{
 
             this.processNameList.add(s.getProzess().getTitel());
         }
-        if ( ! steps.isEmpty()) {
+        if (!steps.isEmpty()) {
             this.currentStep = steps.get(0);
             this.processName = this.currentStep.getProzess().getTitel();
             loadProcessProperties(this.currentStep);
@@ -768,7 +768,7 @@ public class BatchStepHelper implements Serializable{
             }
             try {
                 dms.startExport(step.getProzess());
-            } catch (Exception e) {  //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
+            } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
                 Helper.setFehlerMeldung("Error on export", e.getMessage());
                 log.error(e);
             }
@@ -781,7 +781,7 @@ public class BatchStepHelper implements Serializable{
 
             this.myDav.UploadFromHome(s.getProzess());
             s.setBearbeitungsstatusEnum(StepStatus.OPEN);
-            if (s.isCorrectionStep()) {
+            if (Boolean.TRUE.equals(s.isCorrectionStep())) {
                 s.setBearbeitungsbeginn(null);
             }
             s.setEditTypeEnum(StepEditType.MANUAL_MULTI);

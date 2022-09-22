@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -99,7 +98,7 @@ public abstract class AbstractIGoobiScript implements IGoobiScript {
         sb.append(parameter + ": " + value);
     }
 
-    public AbstractIGoobiScript() {
+    protected AbstractIGoobiScript() {
         super();
     }
 

@@ -116,7 +116,4 @@ public class MockProcess {
         testProcess.setRegelsatz(ruleset);
     }
 
-
-
-
 }

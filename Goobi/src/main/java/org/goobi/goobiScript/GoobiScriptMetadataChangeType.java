@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -123,7 +122,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                     }
                     break;
 
-                    // fist the first child element
+                // fist the first child element
                 case "child":
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -134,7 +133,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                     }
                     break;
 
-                    // any element in the hierarchy
+                // any element in the hierarchy
                 case "any":
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
@@ -148,7 +147,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                     }
                     break;
 
-                    // default "work", which is the first child or the main top element if it is not an anchor
+                // default "work", which is the first child or the main top element if it is not an anchor
                 default:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));

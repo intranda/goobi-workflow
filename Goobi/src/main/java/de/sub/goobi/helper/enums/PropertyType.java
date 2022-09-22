@@ -68,11 +68,11 @@ public enum PropertyType {
     CommandLink(18, "CommandLink", true, false),
     NoEdit(19, "NoEdit", true, false),
     Filter(20, "Filter", false, false);
-	
-	@Getter
+
+    @Getter
     private int id;
     private String name;
-    
+
     @Getter
     private Boolean showInDisplay;
 
@@ -100,7 +100,6 @@ public enum PropertyType {
         }
         return String;
     }
-
 
     public static PropertyType getById(int id) {
         for (PropertyType p : PropertyType.values()) {

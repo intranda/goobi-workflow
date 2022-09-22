@@ -56,8 +56,7 @@ class InstitutionMysqlHelper implements Serializable {
                 log.trace(sql.toString());
             }
 
-            List<Institution> ret = new QueryRunner().query(connection, sql.toString(), InstitutionManager.resultSetToInstitutionListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), InstitutionManager.resultSetToInstitutionListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -94,8 +93,7 @@ class InstitutionMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            Institution ret = new QueryRunner().query(connection, sql.toString(), InstitutionManager.resultSetToInstitutionHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), InstitutionManager.resultSetToInstitutionHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -112,8 +110,7 @@ class InstitutionMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            Institution ret = new QueryRunner().query(connection, sql.toString(),InstitutionManager.resultSetToInstitutionHandler, longName);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), InstitutionManager.resultSetToInstitutionHandler, longName);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -252,10 +249,9 @@ class InstitutionMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString());
+                log.trace(sql);
             }
-            List<Institution> ret = new QueryRunner().query(connection, sql.toString(),InstitutionManager.resultSetToInstitutionListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql, InstitutionManager.resultSetToInstitutionListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -284,9 +280,7 @@ class InstitutionMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<InstitutionConfigurationObject> ret =
-                    new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(InstitutionConfigurationObject.class), institutionId);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(InstitutionConfigurationObject.class), institutionId);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -317,9 +311,7 @@ class InstitutionMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<InstitutionConfigurationObject> ret =
-                    new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(InstitutionConfigurationObject.class), institutionId);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(InstitutionConfigurationObject.class), institutionId);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -350,9 +342,7 @@ class InstitutionMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<InstitutionConfigurationObject> ret =
-                    new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(InstitutionConfigurationObject.class), institutionId);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(InstitutionConfigurationObject.class), institutionId);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -366,7 +356,7 @@ class InstitutionMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString());
+                log.trace(sql);
             }
             return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringListHandler);
         } finally {
@@ -385,9 +375,7 @@ class InstitutionMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<InstitutionConfigurationObject> ret =
-                    new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(InstitutionConfigurationObject.class), institutionId);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(InstitutionConfigurationObject.class), institutionId);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -403,9 +391,7 @@ class InstitutionMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<InstitutionConfigurationObject> ret =
-                    new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(InstitutionConfigurationObject.class), institutionId);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(InstitutionConfigurationObject.class), institutionId);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -421,9 +407,7 @@ class InstitutionMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<InstitutionConfigurationObject> ret =
-                    new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(InstitutionConfigurationObject.class), institutionId);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(InstitutionConfigurationObject.class), institutionId);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -439,9 +423,7 @@ class InstitutionMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            List<InstitutionConfigurationObject> ret =
-                    new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(InstitutionConfigurationObject.class), institutionId);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(InstitutionConfigurationObject.class), institutionId);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

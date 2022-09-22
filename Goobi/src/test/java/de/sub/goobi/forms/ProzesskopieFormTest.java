@@ -70,7 +70,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 @RunWith(PowerMockRunner.class)
 
 @PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class,
-    HistoryAnalyserJob.class, StepManager.class, Helper.class })
+        HistoryAnalyserJob.class, StepManager.class, Helper.class })
 public class ProzesskopieFormTest extends AbstractTest {
 
     private Process template;

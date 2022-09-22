@@ -30,7 +30,6 @@ import java.util.List;
 
 import lombok.Data;
 
-
 @Data
 public class StepDateFilterGroup {
     private int groupId;
@@ -40,6 +39,5 @@ public class StepDateFilterGroup {
     public void addFilter(String filter) {
         dateFilter.add(filter);
     }
-
 
 }

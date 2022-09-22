@@ -162,9 +162,10 @@ public class UserBean extends BasicBean implements Serializable {
     public String FilterAlleStart() {
         UserManager m = new UserManager();
         String sqlQuery = getBasicFilter();
+        StringBuilder sqlQueryBuilder = new StringBuilder(sqlQuery);
         if (this.filter != null && this.filter.length() != 0) {
             String[] searchParts = this.filter.trim().split("\\s+");
-            sqlQuery += " AND (";
+            sqlQueryBuilder.append(" AND (");
             for (int index = 0; index < searchParts.length; index++) {
                 String like = MySQLHelper.escapeString(searchParts[index]);
                 like = "\'%" + StringEscapeUtils.escapeSql(like) + "%\'";
@@ -178,12 +179,13 @@ public class UserBean extends BasicBean implements Serializable {
                         "BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzer, institution WHERE benutzer.institution_id = institution.id AND (institution.shortName LIKE "
                                 + like + " OR institution.longName LIKE " + like + "))";
                 String inName = "Vorname LIKE " + like + " OR Nachname LIKE " + like + " OR login LIKE " + like + " OR Standort LIKE " + like;
-                sqlQuery += inName + " OR " + inGroup + " OR " + inProject + " OR " + inInstitution;
+                sqlQueryBuilder.append(inName).append(" OR ").append(inGroup).append(" OR ").append(inProject).append(" OR ").append(inInstitution);
                 if (index < searchParts.length - 1) {
-                    sqlQuery += " OR ";
+                    sqlQueryBuilder.append(" OR ");
                 }
             }
-            sqlQuery += ")";
+            sqlQueryBuilder.append(")");
+            sqlQuery = sqlQueryBuilder.toString();
         }
 
         this.paginator = new DatabasePaginator(this.getSortTitle(), sqlQuery, m, "user_all");
@@ -480,11 +482,10 @@ public class UserBean extends BasicBean implements Serializable {
 
     public String AusProjektLoeschen() {
         int projektID = Integer.parseInt(Helper.getRequestParameter("ID"));
-        String strResult = AusProjektLoeschen(projektID);
+        String strResult = AusProjektLoeschen(projektID); // strResult == ""
 
-        if (strResult != null) {
-            removedFromProjects.get(myClass.getId()).add(projektID);
-        }
+        removedFromProjects.get(myClass.getId()).add(projektID);
+
         return strResult;
     }
 
@@ -635,10 +636,10 @@ public class UserBean extends BasicBean implements Serializable {
         }
 
         // Get and create user
-        Integer LoginID = Integer.valueOf(Helper.getRequestParameter("ID"));
+        Integer loginID = Integer.valueOf(Helper.getRequestParameter("ID"));
         User userToResetPassword;
         try {
-            userToResetPassword = UserManager.getUserById(LoginID);
+            userToResetPassword = UserManager.getUserById(loginID);
         } catch (DAOException daoe) {
             Helper.setFehlerMeldung("could not read database", daoe.getMessage());
             return "user_all";

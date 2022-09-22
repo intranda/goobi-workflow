@@ -175,7 +175,7 @@ public class XsltPreparatorMetadata implements IXsltPreparator {
             representative.setAttribute("path", process.getRepresentativeImageAsString());
             representative.setAttribute("url", repimage.getThumbnailUrl());
             mainElement.addContent(representative);
-        } catch (IOException|DAOException|SwapException e1) {
+        } catch (IOException | DAOException | SwapException e1) {
             log.error("Error added the representative to the metadata docket", e1);
         }
 

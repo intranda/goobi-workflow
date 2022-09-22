@@ -37,8 +37,8 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
 
 /**
- * This class stores the the {@link S3ObjectInputStream} into a temporary file and provides a {@link FileInputStream} to it.
- * It is used to avoid FileDescriptor leaks in the S3Object.
+ * This class stores the the {@link S3ObjectInputStream} into a temporary file and provides a {@link FileInputStream} to it. It is used to avoid
+ * FileDescriptor leaks in the S3Object.
  * 
  * When the Stream is closed, the temporary file gets removed.
  */

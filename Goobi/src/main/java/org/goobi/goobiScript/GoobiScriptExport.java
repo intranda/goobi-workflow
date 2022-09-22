@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -88,12 +87,12 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
             gsr.setResultType(GoobiScriptResultType.RUNNING);
             gsr.updateTimestamp();
 
-            if(!p.getContainsExportStep()) {
+            if (!p.getContainsExportStep()) {
                 log.error("No task with type Export found in process " + p.getId());
                 gsr.setResultMessage(Helper.getString(Helper.getSessionLocale(), "noExportTaskError"));
                 gsr.setResultType(GoobiScriptResultType.ERROR);
                 return;
-            }else {
+            } else {
                 IExportPlugin export = null;
                 String pluginName = ProcessManager.getExportPluginName(p.getId());
                 if (StringUtils.isNotEmpty(pluginName)) {
@@ -112,7 +111,7 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
                     export = new ExportDms();
                 }
                 export.setExportFulltext(exportFulltext);
-                if (exportImages == false) {
+                if (!exportImages) {
                     logextension = "without images and " + logextension;
                     export.setExportImages(false);
                 } else {
@@ -135,7 +134,7 @@ public class GoobiScriptExport extends AbstractIGoobiScript implements IGoobiScr
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (NoSuchMethodError | Exception  e) {
+        } catch (NoSuchMethodError | Exception e) {
             gsr.setResultMessage(e.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);
             gsr.setErrorText(e.getMessage());

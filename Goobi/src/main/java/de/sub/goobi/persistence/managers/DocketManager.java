@@ -77,7 +77,8 @@ public class DocketManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution)
+            throws DAOException {
         return getDockets(order, filter, start, count, institution);
     }
 
@@ -111,9 +112,7 @@ public class DocketManager implements IManager, Serializable {
                     return convert(rs);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
@@ -126,14 +125,10 @@ public class DocketManager implements IManager, Serializable {
             try {
                 while (rs.next()) {
                     Docket o = convert(rs);
-                    if (o != null) {
-                        answer.add(o);
-                    }
+                    answer.add(o);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }

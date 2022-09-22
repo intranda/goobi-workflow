@@ -53,8 +53,8 @@ public class UserProperty implements Serializable, IGoobiProperty {
     private String wert;
     @Setter
     private Boolean istObligatorisch;
-    @Getter (AccessLevel.PRIVATE)
-    @Setter (AccessLevel.PRIVATE)
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private Integer datentyp;
     @Getter
     @Setter
