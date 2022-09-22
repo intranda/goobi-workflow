@@ -60,7 +60,7 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class Institution implements Serializable, DatabaseObject, Comparable<Institution> {
+public class Institution implements Serializable, DatabaseObject, Comparable<Institution>, IJournal {
 
     /**
      * 
@@ -244,6 +244,7 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
         return false;
     }
 
+    @Override
     public void addLogEntry() {
         if (uploadedFile != null) {
             saveUploadedFile();
@@ -268,6 +269,7 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
      * @return
      */
 
+    @Override
     public List<JournalEntry> getFilesInSelectedFolder() {
 
         String currentFolder = importFolder + shortName;
@@ -303,6 +305,7 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
      * @param entry
      */
 
+    @Override
     public void downloadFile(JournalEntry entry) {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
@@ -335,6 +338,7 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
      * @param entry
      */
 
+    @Override
     public void deleteFile(JournalEntry entry) {
         Path path = entry.getFile();
         if (path == null) {
@@ -366,10 +370,11 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
     }
 
     /**
-     * Save the previous uploaded file in the selected process directory and create a new LogEntry.
+     * Save the previous uploaded file in the selected directory and create a new JournalEntry.
      * 
      */
 
+    @Override
     public void saveUploadedFile() {
 
         Path folder = Paths.get(importFolder + shortName);
@@ -398,6 +403,7 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
      * Upload a file and save it as a temporary file
      * 
      */
+    @Override
     public void uploadFile() {
         if (this.uploadedFile == null) {
             Helper.setFehlerMeldung("noFileSelected");
@@ -448,5 +454,10 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
             }
         }
         return "";
+    }
+
+    @Override
+    public void addLogEntryForAll() {
+        throw new UnsupportedOperationException();
     }
 }

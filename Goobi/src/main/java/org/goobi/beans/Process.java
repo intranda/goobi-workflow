@@ -118,7 +118,7 @@ import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
 @Log4j2
-public class Process implements Serializable, DatabaseObject, Comparable<Process> {
+public class Process implements Serializable, DatabaseObject, Comparable<Process>, IJournal {
     private static final long serialVersionUID = -6503348094655786275L;
     @Getter
     @Setter
@@ -1470,6 +1470,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
     }
 
+    @Override
     public void addLogEntry() {
         if (uploadedFile != null) {
             saveUploadedFile();
@@ -1730,6 +1731,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @return
      */
 
+    @Override
     public List<JournalEntry> getFilesInSelectedFolder() {
         if (StringUtils.isBlank(currentFolder)) {
             return Collections.emptyList();
@@ -1772,6 +1774,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @param entry
      */
 
+    @Override
     public void downloadFile(JournalEntry entry) {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
         HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
@@ -1804,6 +1807,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @param entry
      */
 
+    @Override
     public void deleteFile(JournalEntry entry) {
         Path path = entry.getFile();
         if (path == null) {
@@ -1819,7 +1823,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
             // create a new entry to document the deletion
 
-            JournalEntry deletionInfo = new JournalEntry(id, new Date(), Helper.getCurrentUser().getNachVorname(), LogType.INFO, Helper.getTranslation("processlogFileDeleted", filename), EntryType.PROCESS);
+            JournalEntry deletionInfo = new JournalEntry(id, new Date(), Helper.getCurrentUser().getNachVorname(), LogType.INFO,
+                    Helper.getTranslation("processlogFileDeleted", filename), EntryType.PROCESS);
 
             journal.add(deletionInfo);
             JournalManager.saveJournalEntry(deletionInfo);
@@ -1838,6 +1843,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * 
      */
 
+    @Override
     public void saveUploadedFile() {
 
         Path folder = null;
@@ -1869,6 +1875,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * Upload a file and save it as a temporary file
      * 
      */
+    @Override
     public void uploadFile() {
         InputStream inputStream = null;
         OutputStream outputStream = null;
@@ -2257,6 +2264,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Deprecated
     public void setProcessLog(List<JournalEntry> journal) {
         this.journal = journal;
+    }
+
+    @Override
+    public void addLogEntryForAll() {
+        throw new UnsupportedOperationException();
     }
 
 }
