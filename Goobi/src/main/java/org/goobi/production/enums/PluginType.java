@@ -56,11 +56,11 @@ public enum PluginType {
     Administration(11, "administration", IAdministrationPlugin.class),
     Workflow(13, "workflow", IWorkflowPlugin.class);
 
-	@Getter
+    @Getter
     private int id;
-	@Getter
+    @Getter
     private String name;
-	@Getter
+    @Getter
     private Class<IPlugin> interfaz;
 
     @SuppressWarnings("unchecked")

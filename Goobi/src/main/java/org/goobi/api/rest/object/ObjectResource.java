@@ -24,7 +24,6 @@
  */
 package org.goobi.api.rest.object;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -70,14 +69,13 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 @Path("/view/object")
 public class ObjectResource {
 
-
     @GET
     @Path("/{processId}/{foldername}/{filename}/info.json")
     @Produces({ MediaType.APPLICATION_JSON })
     public ObjectInfo getInfo(@Context HttpServletRequest request, @Context HttpServletResponse response, @PathParam("processId") int processId,
             @PathParam("foldername") String foldername, @PathParam("filename") String filename) {
 
-        response.addHeader("Access-Control-Allow-Origin", "*");  //NOSONAR, CORS is needed
+        response.addHeader("Access-Control-Allow-Origin", "*"); //NOSONAR, CORS is needed
         filename = Paths.get(filename).getFileName().toString();
         String objectURI = request.getRequestURL().toString().replace("/info.json", "");
         String baseURI = objectURI.replace(filename, "");
@@ -92,7 +90,7 @@ public class ObjectResource {
             ObjectInfo info = new ObjectInfo(objectURI);
             info.setResources(resourceURIs);
             return info;
-        } catch (IOException |  SwapException | URISyntaxException e) {
+        } catch (IOException | SwapException | URISyntaxException e) {
             throw new WebServiceException(e);
         }
 
@@ -139,7 +137,7 @@ public class ObjectResource {
     @Produces({ "application/javascript" })
     public String getJS(@Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
-                    throws IOException, InterruptedException, SwapException, DAOException {
+            throws IOException, InterruptedException, SwapException, DAOException {
 
         String filename = filenameBase + ".js";
         Process process = ProcessManager.getProcessById(processId);
@@ -171,7 +169,7 @@ public class ObjectResource {
     @Produces({ MediaType.TEXT_XML })
     public String getXml(@Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
-                    throws IOException, InterruptedException, SwapException, DAOException {
+            throws IOException, InterruptedException, SwapException, DAOException {
 
         String filename = filenameBase + ".xml";
 
@@ -203,7 +201,7 @@ public class ObjectResource {
     @Produces({ "image/jpeg" })
     public void getJpeg(@Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filenameBase)
-                    throws IOException, InterruptedException, SwapException, DAOException {
+            throws IOException, InterruptedException, SwapException, DAOException {
 
         String filename = filenameBase + ".jpg";
 
@@ -219,7 +217,7 @@ public class ObjectResource {
                 for (java.nio.file.Path folder : folders) {
                     java.nio.file.Path filePath = folder.resolve(filename);
                     if (Files.isRegularFile(filePath)) {
-                        try(FileInputStream fis = new FileInputStream(filePath.toFile())) {
+                        try (FileInputStream fis = new FileInputStream(filePath.toFile())) {
                             IOUtils.copy(fis, response.getOutputStream());
                         }
                     }
@@ -228,7 +226,7 @@ public class ObjectResource {
 
             throw new FileNotFoundException("File " + objectPath + " not found in file system");
         } else {
-            try(FileInputStream fis = new FileInputStream(objectPath.toFile())) {
+            try (FileInputStream fis = new FileInputStream(objectPath.toFile())) {
                 IOUtils.copy(fis, response.getOutputStream());
             }
         }
@@ -239,7 +237,7 @@ public class ObjectResource {
     @Produces({ MediaType.APPLICATION_OCTET_STREAM })
     public StreamingOutput getObject(@Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("filename") final String filename)
-                    throws IOException, InterruptedException, SwapException, DAOException {
+            throws IOException, InterruptedException, SwapException, DAOException {
 
         foldername = Paths.get(foldername).getFileName().toString();
         Process process = ProcessManager.getProcessById(processId);
@@ -302,7 +300,7 @@ public class ObjectResource {
     public StreamingOutput getObjectResource(@Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("subfolder1") String subfolder1,
             @PathParam("subfolder2") String subfolder2, @PathParam("filename") String filename)
-                    throws IOException, InterruptedException, SwapException, DAOException {
+            throws IOException, InterruptedException, SwapException, DAOException {
 
         Process process = ProcessManager.getProcessById(processId);
         java.nio.file.Path objectPath = Paths.get(process.getImagesDirectory(), foldername, subfolder1, subfolder2, filename);
@@ -319,7 +317,7 @@ public class ObjectResource {
     public StreamingOutput getObjectResource2(@Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") int processId, @PathParam("foldername") String foldername, @PathParam("subfolder1") String subfolder1,
             @PathParam("subfolder2") String subfolder2, @PathParam("filename") String filename)
-                    throws IOException, InterruptedException, SwapException, DAOException {
+            throws IOException, InterruptedException, SwapException, DAOException {
         return getObjectResource(request, response, processId, foldername, subfolder1, subfolder2, filename);
     }
 

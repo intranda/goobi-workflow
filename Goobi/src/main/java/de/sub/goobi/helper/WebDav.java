@@ -71,7 +71,7 @@ public class WebDav implements Serializable {
 
         try {
             folder = aktuellerBenutzer.getHomeDir() + inVerzeichnis;
-        } catch (IOException  e) {
+        } catch (IOException e) {
             log.error("Exception UploadFromHomeAlle()", e);
             Helper.setFehlerMeldung("UploadFromHomeAlle abgebrochen, Fehler", e.getMessage());
             return rueckgabe;
@@ -80,7 +80,7 @@ public class WebDav implements Serializable {
             return rueckgabe;
         }
 
-        return StorageProvider.getInstance().list(folder, new WebDavFilter()); 
+        return StorageProvider.getInstance().list(folder, new WebDavFilter());
     }
 
     /**

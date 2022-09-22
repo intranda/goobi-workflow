@@ -24,7 +24,6 @@
  */
 package org.goobi.api.rest;
 
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map.Entry;
@@ -74,7 +73,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
         String jwt = requestContext.getHeaderString("jwt");
         if (StringUtils.isBlank(jwt)) {
-            jwt =  req.getParameter("jwt");
+            jwt = req.getParameter("jwt");
         }
         String pathInfo = req.getPathInfo();
         if (pathInfo == null) {
@@ -205,8 +204,8 @@ public class AuthorizationFilter implements ContainerRequestFilter {
                 return false;
             }
             return Arrays.stream(methodsClaim.asArray(String.class))
-                    			 .anyMatch(claimMethod -> method.equalsIgnoreCase(claimMethod));
-            
+                    .anyMatch(claimMethod -> method.equalsIgnoreCase(claimMethod));
+
         } catch (javax.naming.ConfigurationException | JWTVerificationException e) {
             log.error(e);
             return false;

@@ -25,8 +25,6 @@
  */
 package de.sub.goobi.forms;
 
-
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,7 +52,7 @@ import lombok.Setter;
 
 @Named("NavigationForm")
 @WindowScoped
-public class NavigationForm implements Serializable{
+public class NavigationForm implements Serializable {
 
     /**
      * 
@@ -74,8 +72,7 @@ public class NavigationForm implements Serializable{
     private IWorkflowPlugin workflowPlugin;
 
     /**
-     * Replaced by NavigationForm.parentMenu.
-     * Is still needed by some test classes, may not be removed until now.
+     * Replaced by NavigationForm.parentMenu. Is still needed by some test classes, may not be removed until now.
      */
     @Getter
     @Setter
@@ -110,6 +107,7 @@ public class NavigationForm implements Serializable{
     public enum Theme {
         ui("ui"),
         uii("uii");
+
         private String id;
 
         private Theme(String id) {

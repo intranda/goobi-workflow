@@ -25,7 +25,6 @@
  */
 package org.goobi.api.mq;
 
-
 import java.util.Date;
 
 import org.goobi.beans.DatabaseObject;

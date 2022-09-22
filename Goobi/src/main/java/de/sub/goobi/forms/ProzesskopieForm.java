@@ -392,7 +392,7 @@ public class ProzesskopieForm implements Serializable {
                             break;
                         case "export": //NOSONAR
                             configuredFolderNames
-                            .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
+                                    .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
                             break;
                         case "master":
                             if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
@@ -1497,7 +1497,7 @@ public class ProzesskopieForm implements Serializable {
                 }
             }
         }
-        String  newTitle =titleBuilder.toString();
+        String newTitle = titleBuilder.toString();
         if (newTitle.endsWith("_")) {
             newTitle = newTitle.substring(0, newTitle.length() - 1);
         }
@@ -1584,10 +1584,10 @@ public class ProzesskopieForm implements Serializable {
              * wenn der String mit ' anfaengt und mit ' endet, dann den Inhalt so uebernehmen
              */
             if (myString.startsWith("'") && myString.endsWith("'") && myString.length() > 2) {
-                sb.append( myString.substring(1, myString.length() - 1));
+                sb.append(myString.substring(1, myString.length() - 1));
             } else if (myString.equals("$Doctype")) {
                 /* wenn der Doctype angegeben werden soll */
-                sb.append( this.co.getDoctypeByName(this.docType).getTifHeaderType());
+                sb.append(this.co.getDoctypeByName(this.docType).getTifHeaderType());
             } else {
                 /* andernfalls den string als Feldnamen auswerten */
                 for (Iterator<AdditionalField> it2 = this.additionalFields.iterator(); it2.hasNext();) {
@@ -1606,14 +1606,14 @@ public class ProzesskopieForm implements Serializable {
 
                     /* den Inhalt zum Titel hinzufügen */
                     if (myField.getTitel().equals(myString) && myField.getShowDependingOnDoctype(getDocType()) && myField.getWert() != null) {
-                        sb.append(  CalcProcesstitelCheck(myField.getTitel(), myField.getWert()));
+                        sb.append(CalcProcesstitelCheck(myField.getTitel(), myField.getWert()));
                     }
 
                 }
             }
             // reduce to 255 character
         }
-        tifHeaderImagedescription=sb.toString();
+        tifHeaderImagedescription = sb.toString();
         int length = this.tifHeaderImagedescription.length();
         if (length > 255) {
             try {

@@ -176,8 +176,8 @@ public @Data class Image {
     }
 
     /**
-     * Base constructor which only provides placeholder images. Inheriting classes may use this as base constructor
-     * and define 'objectUrl', 'bookmarkUrl', 'thumbnailUrl' and 'largeThumbnailUrl' themselves
+     * Base constructor which only provides placeholder images. Inheriting classes may use this as base constructor and define 'objectUrl',
+     * 'bookmarkUrl', 'thumbnailUrl' and 'largeThumbnailUrl' themselves
      * 
      * @param imagePath The path to the image file
      * @param order The order of the image within the goobi process
@@ -412,12 +412,12 @@ public @Data class Image {
     public static String createIIIFUrl(Process process, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
         sb.append("/api/process/image/")
-        .append(process.getId())
-        .append("/")
-        .append(getImageFolderShort(imageFolderName))
-        .append("/")
-        .append(filename)
-        .append("/info.json");
+                .append(process.getId())
+                .append("/")
+                .append(getImageFolderShort(imageFolderName))
+                .append("/")
+                .append(filename)
+                .append("/info.json");
         return sb.toString();
     }
 
@@ -437,16 +437,16 @@ public @Data class Image {
     public static String createThumbnailUrl(Process process, int size, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
         sb.append("/api/process/image/")
-        .append(process.getId())
-        .append("/")
-        .append(getImageFolderShort(imageFolderName))
-        .append("/")
-        .append(filename)
-        .append("/")
-        .append("full/")
-        .append(size)
-        .append(",")
-        .append("/0/default.jpg");
+                .append(process.getId())
+                .append("/")
+                .append(getImageFolderShort(imageFolderName))
+                .append("/")
+                .append(filename)
+                .append("/")
+                .append("full/")
+                .append(size)
+                .append(",")
+                .append("/0/default.jpg");
         return sb.toString();
     }
 
@@ -536,7 +536,6 @@ public @Data class Image {
         //reset image levels to be recreated with updated sizes on getImageLevels()
         this.imageLevels = null;
     }
-
 
     public static String getCleanedName(String path) {
         return Paths.get(path).getFileName().toString();

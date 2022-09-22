@@ -51,8 +51,6 @@ public class ConfigProjects {
         this(projectTitle, new Helper().getGoobiConfigDirectory() + "goobi_projects.xml");
     }
 
-
-
     public ConfigProjects(String projectTitle, String configPfad) throws IOException {
         if (!Files.exists(Paths.get(configPfad))) {
             throw new IOException("File not found: " + configPfad);
@@ -69,7 +67,7 @@ public class ConfigProjects {
         }
         String projectNameInFile = null;
         // get all project names from file
-        String getAllProjectNames ="//project/@name | //project/name";
+        String getAllProjectNames = "//project/@name | //project/name";
         String[] projectNames = xmlConfig.getStringArray(getAllProjectNames);
         // check if current project matches an entry
 
@@ -90,7 +88,6 @@ public class ConfigProjects {
             }
         }
 
-
         // if not, try to load 'default' project
         if (projectNameInFile == null) {
             for (String name : projectNames) {
@@ -105,8 +102,7 @@ public class ConfigProjects {
             projectNameInFile = projectNames[0];
         }
 
-
-        String projektTitel = "/project[@name='"+ projectNameInFile + "'] | /project[name='"+ projectNameInFile + "']";
+        String projektTitel = "/project[@name='" + projectNameInFile + "'] | /project[name='" + projectNameInFile + "']";
 
         this.config = xmlConfig.configurationAt(projektTitel);
 
@@ -128,7 +124,7 @@ public class ConfigProjects {
             String rueckgabe = this.config.getString(inParameter);
             return cleanXmlFormatedString(rueckgabe);
         } catch (RuntimeException e) {
-        	log.error(e);
+            log.error(e);
             return null;
         }
     }
@@ -182,7 +178,7 @@ public class ConfigProjects {
         try {
             return this.config.getLong(inParameter);
         } catch (RuntimeException e) {
-        	log.error(e);
+            log.error(e);
             return 0;
         }
     }
@@ -196,7 +192,7 @@ public class ConfigProjects {
         try {
             return Arrays.asList(this.config.getStringArray(inParameter));
         } catch (RuntimeException e) {
-        	log.error(e);
+            log.error(e);
             return new ArrayList<>();
         }
     }
@@ -205,7 +201,7 @@ public class ConfigProjects {
         try {
             return config.configurationsAt(inParameter);
         } catch (RuntimeException e) {
-        	log.error(e);
+            log.error(e);
             return new ArrayList<>();
         }
     }

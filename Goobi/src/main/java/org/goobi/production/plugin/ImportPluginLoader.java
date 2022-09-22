@@ -38,7 +38,7 @@ public class ImportPluginLoader extends PluginLoader {
 
     private static final long serialVersionUID = -4436163757899502817L;
 
-	public List<String> getPluginsForType(ImportType type) {
+    public List<String> getPluginsForType(ImportType type) {
         List<String> pluginList = new ArrayList<String>();
 
         for (IPlugin p : PluginLoader.getPluginList(PluginType.Import)) {

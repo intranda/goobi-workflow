@@ -447,7 +447,7 @@ public class FilterHelper {
         String login = tok.substring(tok.indexOf(":") + 1).replace("\\_", "_");
 
         return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.BearbeitungsBenutzerID = (select BenutzerID from benutzer where benutzer.login = '"
-        + login + "'))";
+                + login + "'))";
     }
 
     /**
@@ -652,7 +652,8 @@ public class FilterHelper {
                 sb.append(ConfigurationHelper.getInstance().getFulltextSearchMode());
                 sb.append("))");
                 return sb.toString();
-            } if (StringUtils.isNotBlank(title)) {
+            }
+            if (StringUtils.isNotBlank(title)) {
                 return "prozesse.ProzesseID in (select distinct processid from metadata where metadata.name like  '" + leftTruncationCharacter
                         + StringEscapeUtils.escapeSql(title) + rightTruncationCharacter + "' AND metadata.value like '" + leftTruncationCharacter
                         + StringEscapeUtils.escapeSql(value) + rightTruncationCharacter + "' )";
@@ -714,7 +715,7 @@ public class FilterHelper {
      ****************************************************************************/
     protected static String filterIds(String tok, boolean negation) {
         /* filtering by ids */
-    	StringBuilder bld = new StringBuilder();
+        StringBuilder bld = new StringBuilder();
         List<Integer> listIds = new ArrayList<>();
         if (tok.substring(tok.indexOf(":") + 1).length() > 0) {
             String[] tempids = tok.substring(tok.indexOf(":") + 1).split(" ");
@@ -727,14 +728,14 @@ public class FilterHelper {
                 }
             }
         }
-        if (! listIds.isEmpty()) {
+        if (!listIds.isEmpty()) {
             if (negation) {
-            	bld.append(" prozesse.prozesseId not in (");
+                bld.append(" prozesse.prozesseId not in (");
             } else {
-            	bld.append(" prozesse.prozesseId in (");
+                bld.append(" prozesse.prozesseId in (");
             }
             for (int id : listIds) {
-            	bld.append(id).append(", ");
+                bld.append(id).append(", ");
             }
             // delete the last ", "
             bld.delete(bld.length() - 2, bld.length());
@@ -1043,7 +1044,7 @@ public class FilterHelper {
 
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
-                + rightTruncationCharacter + "'");
+                        + rightTruncationCharacter + "'");
             } else if (tok.toLowerCase().startsWith(FilterString.INSTITUTION)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(filterInstitution(tok, false));
@@ -1065,7 +1066,7 @@ public class FilterHelper {
                     } else {
                         filter = checkStringBuilder(filter, true);
                         filter.append(" batches.batchName like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(substring)
-                        + rightTruncationCharacter + "'");
+                                + rightTruncationCharacter + "'");
                     }
 
                 } catch (NumberFormatException e) {
@@ -1162,7 +1163,7 @@ public class FilterHelper {
                     } else {
                         filter = checkStringBuilder(filter, true);
                         filter.append(" batches.batchName not like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(substring)
-                        + rightTruncationCharacter + "' OR batches.batchName IS NULL OR prozesse.batchID IS NULL ");
+                                + rightTruncationCharacter + "' OR batches.batchName IS NULL OR prozesse.batchID IS NULL ");
                     }
 
                 } catch (NumberFormatException e) {
@@ -1171,7 +1172,7 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("-")) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel not like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(1))
-                + rightTruncationCharacter + "'");
+                        + rightTruncationCharacter + "'");
             }
 
             // USE OR
@@ -1247,7 +1248,7 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESS) || tok.toLowerCase().startsWith("|" + FilterString.PROZESS)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
-                + rightTruncationCharacter + "'");
+                        + rightTruncationCharacter + "'");
             } else if (tok.toLowerCase().startsWith("|" + FilterString.BATCH) || tok.toLowerCase().startsWith("|" + FilterString.GRUPPE)) {
                 try {
                     String substring = tok.substring(tok.indexOf(":") + 1);
@@ -1261,7 +1262,7 @@ public class FilterHelper {
                     } else {
                         filter = checkStringBuilder(filter, false);
                         filter.append(" batches.batchName like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(substring)
-                        + rightTruncationCharacter + "'");
+                                + rightTruncationCharacter + "'");
                     }
 
                 } catch (NumberFormatException e) {
@@ -1270,11 +1271,11 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("|")) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(1))
-                + rightTruncationCharacter + "'");
+                        + rightTruncationCharacter + "'");
             } else {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
-                + rightTruncationCharacter + "'");
+                        + rightTruncationCharacter + "'");
             }
             if (newFilterGroup && !currentDateFilter.isStepFilterPresent() && !currentDateFilter.getDateFilter().isEmpty()) {
                 newFilterGroup = false;

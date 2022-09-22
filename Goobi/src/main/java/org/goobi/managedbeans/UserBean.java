@@ -181,7 +181,7 @@ public class UserBean extends BasicBean implements Serializable {
                 String inName = "Vorname LIKE " + like + " OR Nachname LIKE " + like + " OR login LIKE " + like + " OR Standort LIKE " + like;
                 sqlQueryBuilder.append(inName).append(" OR ").append(inGroup).append(" OR ").append(inProject).append(" OR ").append(inInstitution);
                 if (index < searchParts.length - 1) {
-                	sqlQueryBuilder.append(" OR ");
+                    sqlQueryBuilder.append(" OR ");
                 }
             }
             sqlQueryBuilder.append(")");
@@ -483,9 +483,9 @@ public class UserBean extends BasicBean implements Serializable {
     public String AusProjektLoeschen() {
         int projektID = Integer.parseInt(Helper.getRequestParameter("ID"));
         String strResult = AusProjektLoeschen(projektID); // strResult == ""
-        
+
         removedFromProjects.get(myClass.getId()).add(projektID);
-        
+
         return strResult;
     }
 

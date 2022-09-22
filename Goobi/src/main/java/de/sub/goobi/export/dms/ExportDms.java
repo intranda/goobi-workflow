@@ -425,7 +425,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         if (ConfigurationHelper.getInstance().isExportFilesFromOptionalMetsFileGroups()) {
 
             List<ProjectFileGroup> myFilegroups = myProzess.getProjekt().getFilegroups();
-            if (myFilegroups != null && ! myFilegroups.isEmpty()) {
+            if (myFilegroups != null && !myFilegroups.isEmpty()) {
                 for (ProjectFileGroup pfg : myFilegroups) {
                     // check if source files exists
                     if (pfg.getFolder() != null && pfg.getFolder().length() > 0) {

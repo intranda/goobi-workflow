@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.helper;
 
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -261,7 +260,7 @@ public class GoobiScript {
                 UghHelper ughhelp = new UghHelper();
                 MetadataType mdt = ughhelp.getMetadataType(proz, "pathimagefiles");
                 List<? extends ugh.dl.Metadata> alleImagepfade = myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadataByType(mdt);
-                if ( ! alleImagepfade.isEmpty()) {
+                if (!alleImagepfade.isEmpty()) {
                     for (Metadata md : alleImagepfade) {
                         myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadata().remove(md);
                     }

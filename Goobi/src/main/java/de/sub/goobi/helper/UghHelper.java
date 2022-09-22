@@ -108,7 +108,7 @@ public class UghHelper {
                     return null;
                 }
             }
-            if ( ! all.isEmpty()) {
+            if (!all.isEmpty()) {
                 return all.get(0);
             } else {
                 return null;
@@ -144,7 +144,7 @@ public class UghHelper {
             }
         }
 
-        if ( ! all.isEmpty()) {
+        if (!all.isEmpty()) {
             return all.get(0);
         } else {
             return null;
@@ -177,7 +177,7 @@ public class UghHelper {
                 lastErrorMessage = e.getMessage();
             }
         }
-        if ( ! all.isEmpty()) {
+        if (!all.isEmpty()) {
             return all.get(0);
         } else {
             return null;
@@ -216,7 +216,7 @@ public class UghHelper {
         if (mdt == null) {
             return;
         }
-        if (inStruct != null &&  ! inStruct.getAllMetadataByType(mdt).isEmpty()) {
+        if (inStruct != null && !inStruct.getAllMetadataByType(mdt).isEmpty()) {
             for (Metadata md : inStruct.getAllMetadataByType(mdt)) {
                 inStruct.removeMetadata(md, true);
             }

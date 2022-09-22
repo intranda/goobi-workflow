@@ -115,7 +115,7 @@ public class MetadatenVerifizierung {
             Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
                     + Helper.getTranslation("MetadataDigitalDocumentError") + inProzess.getTitel(), e.getMessage());
             problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataDigitalDocumentError")
-            + ": " + e.getMessage());
+                    + ": " + e.getMessage());
             ergebnis = false;
         }
 
@@ -140,7 +140,7 @@ public class MetadatenVerifizierung {
             if (logical.getAllIdentifierMetadata() != null && !logical.getAllIdentifierMetadata().isEmpty()) {
                 Metadata identifierTopStruct = logical.getAllIdentifierMetadata().get(0);
                 try {
-                    if(!checkIdentifier(metadataLanguage, logical, identifierTopStruct)) {
+                    if (!checkIdentifier(metadataLanguage, logical, identifierTopStruct)) {
                         ergebnis = false;
                     }
                 } catch (Exception e) {
@@ -198,7 +198,7 @@ public class MetadatenVerifizierung {
                             this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationPages"),
                             seite);
                     problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationPages")
-                    + ": " + seite);
+                            + ": " + seite);
                 }
                 ergebnis = false;
             }
@@ -231,7 +231,7 @@ public class MetadatenVerifizierung {
                 Helper.setFehlerMeldung(
                         this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataMandatoryElement"), temp);
                 problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataMandatoryElement")
-                + ": " + temp);
+                        + ": " + temp);
             }
             ergebnis = false;
         }
@@ -307,7 +307,7 @@ public class MetadatenVerifizierung {
         return ergebnis;
     }
 
-    private boolean checkIdentifier(String metadataLanguage,  DocStruct logical, Metadata identifierTopStruct) {
+    private boolean checkIdentifier(String metadataLanguage, DocStruct logical, Metadata identifierTopStruct) {
         boolean ergebnis = true;
         if (!identifierTopStruct.getValue().replaceAll(IDENTIFIER_VALIDATION_REGEX, "").equals("")) {
             String[] parameter = { identifierTopStruct.getType().getNameByLanguage(metadataLanguage),
@@ -573,11 +573,11 @@ public class MetadatenVerifizierung {
             }
             if (allowedNumber.equals("1m") && realNumber != 1) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_MISSING_ERROR)
-                + " " + realNumber + Helper.getTranslation(METADATA_TIMES_ERROR));
+                        + " " + realNumber + Helper.getTranslation(METADATA_TIMES_ERROR));
             }
             if (allowedNumber.equals("1o") && realNumber > 1) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_TO_MANY_ERROR)
-                + " " + realNumber + " " + Helper.getTranslation(METADATA_TIMES_ERROR));
+                        + " " + realNumber + " " + Helper.getTranslation(METADATA_TIMES_ERROR));
             }
             if (allowedNumber.equals("+") && realNumber == 0) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " "

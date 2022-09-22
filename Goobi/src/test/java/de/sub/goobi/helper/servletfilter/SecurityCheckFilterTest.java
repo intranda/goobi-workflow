@@ -50,10 +50,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import de.sub.goobi.AbstractTest;
 import de.sub.goobi.helper.FacesContextHelper;
 
-
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class, ExternalContext.class })
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class SecurityCheckFilterTest extends AbstractTest {
 
     @Test
@@ -93,7 +92,6 @@ public class SecurityCheckFilterTest extends AbstractTest {
         externalContext.redirect("index.xhtml");
         FacesContextHelper.setFacesContext(facesContext);
         EasyMock.expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
-
 
         EasyMock.expectLastCall();
         EasyMock.replay(servletRequest);

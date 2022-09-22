@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -192,7 +191,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
     private static Usergroup getUsergroupFromDatabase(Map<String, String> parameters) {
         try {
             List<Usergroup> groups = UsergroupManager.getUsergroups(null, "titel='" + parameters.get("group") + "'", null, null, null);
-            if (groups != null && ! groups.isEmpty()) {
+            if (groups != null && !groups.isEmpty()) {
                 return groups.get(0);
             } else {
                 return null;

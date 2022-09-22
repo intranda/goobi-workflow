@@ -26,10 +26,11 @@ import org.goobi.beans.Institution;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
-public interface IManager extends Serializable{
+public interface IManager extends Serializable {
     public int getHitSize(String order, String filter, Institution institution) throws DAOException;
 
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException;
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution)
+            throws DAOException;
 
     public List<Integer> getIdList(String order, String filter, Institution institution);
 }

@@ -202,9 +202,9 @@ public class ProcessProperty implements IProperty, Serializable {
     }
 
     public void setValueList(List<String> valueList) {
-    	StringBuilder bld = new StringBuilder();
+        StringBuilder bld = new StringBuilder();
         for (String val : valueList) {
-        	bld.append(val).append("; ");
+            bld.append(val).append("; ");
         }
         this.value = bld.toString();
         this.readValue = value;
@@ -228,7 +228,7 @@ public class ProcessProperty implements IProperty, Serializable {
 
         @Override
         public int compare(ProcessProperty o1, ProcessProperty o2) {
-        	return Integer.compare(o1.getContainer(), o2.getContainer());
+            return Integer.compare(o1.getContainer(), o2.getContainer());
         }
 
     }

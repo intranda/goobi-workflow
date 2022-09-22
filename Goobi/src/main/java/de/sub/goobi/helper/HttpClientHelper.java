@@ -103,7 +103,7 @@ public class HttpClientHelper {
     public static String getStringFromUrl(String... parameter) {
         String response = "";
         if (parameter == null) {
-        	return response;
+            return response;
         }
         CloseableHttpClient client = null;
         String url = parameter[0];

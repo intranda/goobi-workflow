@@ -41,7 +41,7 @@ public enum ResultOutput {
     table("2", "table"),
     chartAndTable("3", "chartAndTable");
 
-	@Getter
+    @Getter
     private String id;
     private String title;
 

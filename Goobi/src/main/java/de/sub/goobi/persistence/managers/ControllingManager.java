@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.persistence.managers;
 
-
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
@@ -49,7 +48,8 @@ public class ControllingManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution)
+            throws DAOException {
         throw new NotImplementedException();
     }
 

@@ -244,7 +244,7 @@ public class SearchBean implements Serializable {
         StringBuilder searchBuilder = new StringBuilder();
 
         for (ExtendedSearchRow row : rowList) {
-        	searchBuilder.append(row.createSearchString());
+            searchBuilder.append(row.createSearchString());
         }
 
         processBean.setFilter(searchBuilder.toString());
@@ -261,6 +261,5 @@ public class SearchBean implements Serializable {
         answer.add(new SelectItem("<", Helper.getTranslation("SMALLER")));
         return answer;
     }
-
 
 }

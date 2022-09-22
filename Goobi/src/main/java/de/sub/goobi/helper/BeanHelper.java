@@ -59,11 +59,11 @@ import ugh.dl.Fileformat;
 import ugh.exceptions.UGHException;
 
 @Log4j2
-public class BeanHelper implements Serializable{
+public class BeanHelper implements Serializable {
 
     private static final long serialVersionUID = 8661143513583015230L;
 
-	public void EigenschaftHinzufuegen(Process inProzess, String inTitel, String inWert) {
+    public void EigenschaftHinzufuegen(Process inProzess, String inTitel, String inWert) {
         Processproperty eig = new Processproperty();
         eig.setTitel(inTitel);
         eig.setWert(inWert);
@@ -265,7 +265,7 @@ public class BeanHelper implements Serializable{
         for (Masterpiece myWerkstueck : myProzess.getWerkstueckeList()) {
             for (Masterpieceproperty eigenschaft : myWerkstueck.getEigenschaftenList()) {
                 if (eigenschaft.getTitel().equals(inEigenschaft)) {
-                	werkstueckEigenschaft = eigenschaft.getWert();
+                    werkstueckEigenschaft = eigenschaft.getWert();
                 }
             }
         }
@@ -277,7 +277,7 @@ public class BeanHelper implements Serializable{
         for (Template myVorlage : myProzess.getVorlagenList()) {
             for (Templateproperty eigenschaft : myVorlage.getEigenschaftenList()) {
                 if (eigenschaft.getTitel().equals(inEigenschaft)) {
-                	scanvorlagenEigenschaft = eigenschaft.getWert();
+                    scanvorlagenEigenschaft = eigenschaft.getWert();
                 }
             }
         }

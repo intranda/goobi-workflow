@@ -179,7 +179,7 @@ public class ProjectStatusDraw {
             String stepsCompletedString =
                     formatter.format(t.getStepsCompleted()) + " (" + (formatter.format(t.getStepsCompleted() - (double) t.getConfiguredMax())) + ")";
             if ((borderLeft + t.getStepsCompleted() * chartWidth / nonNullMaxSteps + fm.getHeight()
-            + fm.stringWidth(stepsCompletedString)) >= borderLeft + chartWidth) {
+                    + fm.stringWidth(stepsCompletedString)) >= borderLeft + chartWidth) {
                 g2d.setColor(Color.white);
                 drawRightAlignedString(stepsCompletedString,
                         borderLeft + t.getStepsCompleted() * chartWidth / (double) nonNullMaxSteps - fm.getHeight(), y);
@@ -218,7 +218,7 @@ public class ProjectStatusDraw {
 
         GradientPaint verlauf = new GradientPaint(xpos - length / 2f, ypos, Color.white, xpos + (float) length, ypos, col);
         g2d.setPaint(verlauf);
-        g2d.fill(new Rectangle2D.Double(xpos + (double)padding, ypos - width / 2d, length - 2d * padding, width + 1d));
+        g2d.fill(new Rectangle2D.Double(xpos + (double) padding, ypos - width / 2d, length - 2d * padding, width + 1d));
 
     }
 

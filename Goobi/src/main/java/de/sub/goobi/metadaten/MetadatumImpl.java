@@ -317,7 +317,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 List<VocabRecord> records = VocabularyManager.findRecords(vocabularyName, vocabularySearchFields);
                 Collections.sort(records);
 
-                if (records != null && ! records.isEmpty()) {
+                if (records != null && !records.isEmpty()) {
                     ArrayList<Item> itemList = new ArrayList<>(records.size());
                     List<SelectItem> selectItems = new ArrayList<>(records.size());
                     for (VocabRecord vr : records) {
@@ -448,11 +448,11 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 }
             }
         } else { // if values == null || values.length() == 0
-        	StringBuilder bld = new StringBuilder(); 
+            StringBuilder bld = new StringBuilder();
             for (Item i : this.myValues.getItemList()) {
                 if (i.isSelected()) {
-                	bld.append(";");
-                	bld.append(i.getValue());
+                    bld.append(";");
+                    bld.append(i.getValue());
                     this.selectedItems.add(i.getLabel());
                 }
             }
@@ -471,8 +471,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         for (String sel : selectedItems) {
             for (Item i : this.myValues.getItemList()) {
                 if (i.getLabel().equals(sel)) {
-                	bld.append(i.getValue());
-                	bld.append(";");
+                    bld.append(i.getValue());
+                    bld.append(";");
                 }
             }
         }
@@ -760,8 +760,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         && StringUtils.isNotBlank(ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl())) {
                     md.setAutorityFile(vocabulary, ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl(),
                             ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl()
-                            + ConfigurationHelper.getInstance().getGoobiAuthorityServerUser() + "/vocabularies/"
-                            + selectedVocabularyRecord.getVocabularyId() + "/records/" + selectedVocabularyRecord.getId());
+                                    + ConfigurationHelper.getInstance().getGoobiAuthorityServerUser() + "/vocabularies/"
+                                    + selectedVocabularyRecord.getVocabularyId() + "/records/" + selectedVocabularyRecord.getId());
                 } else {
                     md.setAutorityFile(vocabulary, vocabularyUrl,
                             vocabularyUrl + "/vocabularies/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
@@ -846,7 +846,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     }
 
     private void initSearch() {
-    	
+
     }
 
     public void linkProcess(RestProcess rp) {

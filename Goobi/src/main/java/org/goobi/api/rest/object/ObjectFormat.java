@@ -24,7 +24,6 @@
  */
 package org.goobi.api.rest.object;
 
-
 import org.apache.commons.io.FilenameUtils;
 
 /**

@@ -168,7 +168,7 @@ public class MassImportForm implements Serializable {
     private NavigationForm bean;
 
     public MassImportForm() {
-    	
+
     }
 
     @PostConstruct
@@ -331,28 +331,28 @@ public class MassImportForm implements Serializable {
                     if (StringUtils.isNotEmpty(this.idList)) {
                         List<String> idsList = this.plugin.splitIds(this.idList);
                         for (String id : idsList) {
-                        	bld.append(id);
-                        	bld.append(",");
+                            bld.append(id);
+                            bld.append(",");
                         }
                     } else if (this.importFile != null) {
                         this.plugin.setFile(this.importFile.toFile());
                         List<Record> recordList = this.plugin.generateRecordsFromFile();
                         for (Record r : recordList) {
-                        	bld.append(r.getId());
-                        	bld.append(",");
+                            bld.append(r.getId());
+                            bld.append(",");
                         }
                         igs.setRecords(recordList);
                     } else if (StringUtils.isNotEmpty(this.records)) {
                         List<Record> recordList = this.plugin.splitRecords(this.records);
                         for (Record r : recordList) {
-                        	bld.append(r.getId());
-                        	bld.append(",");
+                            bld.append(r.getId());
+                            bld.append(",");
                         }
-                    } else if (! this.selectedFilenames.isEmpty()) {
+                    } else if (!this.selectedFilenames.isEmpty()) {
                         List<Record> recordList = this.plugin.generateRecordsFromFilenames(this.selectedFilenames);
                         for (Record r : recordList) {
-                        	bld.append(r.getId());
-                        	bld.append(",");
+                            bld.append(r.getId());
+                            bld.append(",");
                         }
                     }
                     String myIdentifiers = bld.toString();
@@ -392,8 +392,8 @@ public class MassImportForm implements Serializable {
             // if not runnable as GoobiScript run it in the regular MassImport GUI
             List<ImportObject> answer = new ArrayList<>();
             Batch localBatch = null; // I modified this variable's name so that it won't hide the field declared at line 164 anymore.
-            									 // But I've no idea WTH we would need this, given that the field itself was also used at line 364. - Zehong
-            // found list with ids
+                                     // But I've no idea WTH we would need this, given that the field itself was also used at line 364. - Zehong
+                                     // found list with ids
             Prefs prefs = this.template.getRegelsatz().getPreferences();
             String tempfolder = ConfigurationHelper.getInstance().getTemporaryFolder();
             this.plugin.setImportFolder(tempfolder);
@@ -428,7 +428,7 @@ public class MassImportForm implements Serializable {
                 }
                 totalProcessNo = recordList.size() * 2;
                 answer = this.plugin.generateFiles(recordList);
-            } else if ( ! this.selectedFilenames.isEmpty()) {
+            } else if (!this.selectedFilenames.isEmpty()) {
                 List<Record> recordList = this.plugin.generateRecordsFromFilenames(this.selectedFilenames);
                 for (Record r : recordList) {
                     r.setCollections(this.digitalCollections);
@@ -479,7 +479,7 @@ public class MassImportForm implements Serializable {
                 return "";
             }
         } // END if (testForData()) AT LINE 319
-        // missing data
+          // missing data
         else {
             Helper.setFehlerMeldung("missingData");
             return "";
@@ -572,7 +572,8 @@ public class MassImportForm implements Serializable {
      */
 
     private boolean testForData() {
-        return StringUtils.isNotBlank(this.idList) || StringUtils.isNotBlank(this.records) || this.importFile != null || !this.selectedFilenames.isEmpty();
+        return StringUtils.isNotBlank(this.idList) || StringUtils.isNotBlank(this.records) || this.importFile != null
+                || !this.selectedFilenames.isEmpty();
     }
 
     /**
@@ -657,20 +658,20 @@ public class MassImportForm implements Serializable {
                 return true;
             }
         } catch (Exception e) {
-        	// the case this.plugin == null will end up here
-        	// no need to do anything
+            // the case this.plugin == null will end up here
+            // no need to do anything
         }
         try {
             method = this.plugin.getClass().getMethod("getProperties");
             Object o = method.invoke(this.plugin);
             @SuppressWarnings("unchecked")
             List<ImportProperty> list = (List<ImportProperty>) o;
-            if (! list.isEmpty()) {
+            if (!list.isEmpty()) {
                 return true;
             }
         } catch (Exception e) {
-        	// the case this.plugin == null will end up here
-        	// no need to do anything
+            // the case this.plugin == null will end up here
+            // no need to do anything
         }
         return false;
     }
@@ -690,8 +691,8 @@ public class MassImportForm implements Serializable {
                 return "process_import_2_mass";
             }
         } catch (Exception e) {
-        	// the case this.plugin == null will end up here
-        	// no need to do anything
+            // the case this.plugin == null will end up here
+            // no need to do anything
         }
         return "process_import_2";
     }
@@ -745,8 +746,8 @@ public class MassImportForm implements Serializable {
                 return list;
             }
         } catch (Exception e) {
-        	// the case this.plugin == null will end up here
-        	// no need to do anything
+            // the case this.plugin == null will end up here
+            // no need to do anything
         }
         return new ArrayList<>();
     }

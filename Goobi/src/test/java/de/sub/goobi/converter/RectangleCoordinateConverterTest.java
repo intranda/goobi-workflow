@@ -37,7 +37,6 @@ import com.thoughtworks.xstream.converters.ConversionException;
 
 public class RectangleCoordinateConverterTest {
 
-
     @Test
     public void testConstructor() {
         RectangleCoordinateConverter conv = new RectangleCoordinateConverter();

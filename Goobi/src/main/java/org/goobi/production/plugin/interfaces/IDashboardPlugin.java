@@ -43,5 +43,4 @@ public interface IDashboardPlugin extends IPlugin, Serializable {
         return PluginGuiType.PART;
     }
 
-
 }

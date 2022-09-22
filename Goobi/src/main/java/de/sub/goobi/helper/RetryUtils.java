@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.helper;
 
-
 import java.time.Duration;
 import java.util.concurrent.Callable;
 

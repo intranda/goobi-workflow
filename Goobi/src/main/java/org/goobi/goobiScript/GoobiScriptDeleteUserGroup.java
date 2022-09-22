@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -117,7 +116,7 @@ public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements 
                         Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
                                 "Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel() + "' using GoobiScript.", username);
                         log.info("Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel()
-                        + "' using GoobiScript for process with ID " + p.getId());
+                                + "' using GoobiScript for process with ID " + p.getId());
                         gsr.setResultMessage("Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel() + "' successfully.");
 
                     }
@@ -137,7 +136,7 @@ public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements 
         Usergroup myGroup;
         try {
             List<Usergroup> treffer = UsergroupManager.getUsergroups(null, "titel='" + userGroupTitle + "'", null, null, null);
-            if (treffer != null && ! treffer.isEmpty()) {
+            if (treffer != null && !treffer.isEmpty()) {
                 myGroup = treffer.get(0);
                 return myGroup;
             } else {

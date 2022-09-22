@@ -5,10 +5,7 @@ import de.sub.goobi.forms.MassImportForm;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi
+ * Visit the websites for more information. - https://goobi.io - https://www.intranda.com - https://github.com/intranda/goobi
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -32,6 +29,7 @@ public interface IImportPluginVersion3 extends IImportPluginVersion2 {
 
     /**
      * This method is used to set the workflow name in the plugin
+     * 
      * @param workflowName
      */
     public void setWorkflowName(String workflowName);
@@ -44,6 +42,5 @@ public interface IImportPluginVersion3 extends IImportPluginVersion2 {
     default void setForm(MassImportForm arg0) {
 
     }
-
 
 }

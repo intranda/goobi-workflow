@@ -75,6 +75,7 @@ public class VariableReplacer {
         FIRSTCHILD,
         TOPSTRUCT;
     }
+
     private static Pattern pTifUrl = Pattern.compile("\\$?(?:\\(|\\{)tifurl(?:\\}|\\))");
     private static Pattern pOrigurl = Pattern.compile("\\$?(?:\\(|\\{)origurl(?:\\}|\\))");
     private static Pattern pImageUrl = Pattern.compile("\\$?(?:\\(|\\{)imageurl(?:\\}|\\))");
@@ -366,7 +367,7 @@ public class VariableReplacer {
             try {
                 String value = process.getConfiguredImageFolder(folderName);
                 inString = inString.replace(r.group(), value);
-            } catch (IOException |  SwapException | DAOException e) {
+            } catch (IOException | SwapException | DAOException e) {
                 log.error(e);
             }
         }
@@ -384,7 +385,7 @@ public class VariableReplacer {
             /* TopStruct und FirstChild ermitteln */
             DocStruct topstruct = this.dd.getLogicalDocStruct();
             DocStruct firstchildstruct = null;
-            if (topstruct.getAllChildren() != null && ! topstruct.getAllChildren().isEmpty()) {
+            if (topstruct.getAllChildren() != null && !topstruct.getAllChildren().isEmpty()) {
                 firstchildstruct = topstruct.getAllChildren().get(0);
             }
 
@@ -457,7 +458,7 @@ public class VariableReplacer {
      */
     private String getMetadataValue(DocStruct inDocstruct, MetadataType mdt) {
         List<? extends Metadata> mds = inDocstruct.getAllMetadataByType(mdt);
-        if ( ! mds.isEmpty()) {
+        if (!mds.isEmpty()) {
             Metadata m = mds.get(0);
             if (m.getType().getIsPerson()) {
                 Person p = (Person) m;
@@ -471,15 +472,15 @@ public class VariableReplacer {
     }
 
     private String getAllMetadataValues(DocStruct ds, MetadataType mdt) {
-    	StringBuilder bld = new StringBuilder();
+        StringBuilder bld = new StringBuilder();
         List<? extends Metadata> metadataList = ds.getAllMetadataByType(mdt);
         if (metadataList != null) {
             for (Metadata md : metadataList) {
                 String value = md.getValue();
                 if (value != null && !value.isEmpty()) {
                     if (bld.length() != 0) {
-                    	bld.append(",");
-                    } 
+                        bld.append(",");
+                    }
                     bld.append(value);
                 }
             }
@@ -513,7 +514,7 @@ public class VariableReplacer {
         } else {
             try {
                 folder = Paths.get(process.getImagesOrigDirectory(false));
-            } catch (IOException |  SwapException | DAOException e) {
+            } catch (IOException | SwapException | DAOException e) {
                 log.error(e);
                 return "";
             }

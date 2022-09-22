@@ -35,7 +35,8 @@ import lombok.extern.log4j.Log4j2;
 class UsergroupMysqlHelper implements Serializable {
     private static final long serialVersionUID = -6209215029673643876L;
 
-    public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
+    public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count, Institution institution)
+            throws SQLException {
         boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
@@ -143,7 +144,8 @@ class UsergroupMysqlHelper implements Serializable {
             StringBuilder sql = new StringBuilder();
 
             if (ro.getId() == null) {
-                Object[] param = { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
+                Object[] param =
+                        { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
                 String propNames = "titel, berechtigung, roles, institution_id";
                 String propValues = "? ,?, ?, ?";
                 sql.append("INSERT INTO benutzergruppen (");
@@ -159,7 +161,8 @@ class UsergroupMysqlHelper implements Serializable {
                     ro.setId(id);
                 }
             } else {
-                Object[] param = { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
+                Object[] param =
+                        { ro.getTitel(), ro.getBerechtigung(), userRoles.length() == 0 ? null : userRoles.toString(), ro.getInstitution().getId() };
                 sql.append("UPDATE benutzergruppen SET ");
                 sql.append("titel = ?, ");
                 sql.append("berechtigung = ?, ");

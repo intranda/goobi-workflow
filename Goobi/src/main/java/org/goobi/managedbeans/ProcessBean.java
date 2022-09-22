@@ -562,10 +562,10 @@ public class ProcessBean extends BasicBean implements Serializable {
 
         List<GoobiScriptResult> resultList = Helper.getSessionBean().getGsm().getGoobiScriptResults();
         StringBuilder bld = new StringBuilder("\"id:");
-        synchronized(resultList) {
+        synchronized (resultList) {
             for (GoobiScriptResult gsr : resultList) {
                 if (gsr.getResultType().toString().equals(status)) {
-                	bld.append(gsr.getProcessId()).append(" ");
+                    bld.append(gsr.getProcessId()).append(" ");
                 }
             }
         }
@@ -1201,9 +1201,9 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     @SuppressWarnings("unchecked")
     public void generateFilterWithIdentfiers() {
-    	StringBuilder bld = new StringBuilder("\"id:");
+        StringBuilder bld = new StringBuilder("\"id:");
         for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
-        	bld.append(proz.getId()).append(" ");
+            bld.append(proz.getId()).append(" ");
         }
         bld.append("\"");
         filter = bld.toString();
@@ -1882,7 +1882,7 @@ public class ProcessBean extends BasicBean implements Serializable {
     }
 
     @Getter
-    public static class ProcessCounterObject implements Serializable{
+    public static class ProcessCounterObject implements Serializable {
         private static final long serialVersionUID = -4287461260229760734L;
         private String title;
         private int metadata;
@@ -2130,7 +2130,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                     PdfWriter.getInstance(document, out);
                     document.setPageSize(a4quer);
                     document.open();
-                    if (! rowList.isEmpty()) {
+                    if (!rowList.isEmpty()) {
                         PdfPTable table = new PdfPTable(rowList.get(0).size());
                         table.setSpacingBefore(20);
 

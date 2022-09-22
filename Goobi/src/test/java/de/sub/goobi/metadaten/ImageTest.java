@@ -165,6 +165,7 @@ public class ImageTest extends AbstractTest {
         image.addImageLevel("localhost:443/goobi/api/process/image/1/testprocess_media/00000001.tif/full/500,/0/default.jpg", 500);
         assertTrue(image.hasImageLevels());
     }
+
     @Test
     public void testToString() throws Exception {
         Image image = new Image(process, "testprocess_media", "00000001.tif", 1, 200);
@@ -173,10 +174,10 @@ public class ImageTest extends AbstractTest {
                 image.toString());
     }
 
-
     @Test
     public void testCreate3DObjectUrl() throws Exception {
-        assertEquals("https://localhost:443/goobi/api/view/object/1/testprocess_media/00000001.tif/info.json", Image.create3DObjectUrl(process, "testprocess_media", "00000001.tif"));
+        assertEquals("https://localhost:443/goobi/api/view/object/1/testprocess_media/00000001.tif/info.json",
+                Image.create3DObjectUrl(process, "testprocess_media", "00000001.tif"));
     }
 
     @Test
@@ -192,12 +193,12 @@ public class ImageTest extends AbstractTest {
     @Test
     public void testLayerSizes() throws Exception {
         Image image = new Image(process, "testprocess_media", "00000001.tif", 1, 200);
-        assertEquals(0,image.getLayerSizes().size());
+        assertEquals(0, image.getLayerSizes().size());
         List<String> layers = new ArrayList<>();
         layers.add("200");
         layers.add("400");
         image.setLayerSizes(layers);
-        assertEquals(2,image.getLayerSizes().size());
+        assertEquals(2, image.getLayerSizes().size());
 
     }
 
@@ -207,4 +208,3 @@ public class ImageTest extends AbstractTest {
     }
 
 }
-

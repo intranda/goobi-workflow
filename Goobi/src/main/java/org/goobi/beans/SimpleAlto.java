@@ -24,7 +24,6 @@
  */
 package org.goobi.beans;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;

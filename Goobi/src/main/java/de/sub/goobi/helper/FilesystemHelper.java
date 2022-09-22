@@ -75,7 +75,7 @@ public class FilesystemHelper {
                 StorageProvider.getInstance().createDirectories(Paths.get(dirName));
             } else {
                 ShellScript createDirScript = new ShellScript(Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirMeta()));
-                createDirScript.run(Arrays.asList(dirName ));
+                createDirScript.run(Arrays.asList(dirName));
             }
         }
     }
@@ -108,7 +108,7 @@ public class FilesystemHelper {
             ShellScript deleteSymLinkScript;
             try {
                 deleteSymLinkScript = new ShellScript(Paths.get(command));
-                deleteSymLinkScript.run(Arrays.asList(symLink ));
+                deleteSymLinkScript.run(Arrays.asList(symLink));
             } catch (FileNotFoundException e) {
                 log.error("FileNotFoundException in deleteSymLink()", e);
                 Helper.setFehlerMeldung("Couldn't find script file, error", e.getMessage());
@@ -221,7 +221,7 @@ public class FilesystemHelper {
         } catch (FileNotFoundException e) {
             try {
                 log.debug("no OCR file found for image " + inProcess.getImagesDirectory() + ocrFile);
-            } catch (IOException | SwapException  e1) {
+            } catch (IOException | SwapException e1) {
                 log.error(e1);
             }
         } catch (IOException | SwapException | XMLStreamException | JDOMException e) {

@@ -55,10 +55,8 @@ public class LockingBeanTest extends AbstractTest {
         assertFalse(bean.lockObject("object", "other"));
     }
 
-
-
     @Test
-    public void  testFreeObject() {
+    public void testFreeObject() {
         LockingBean bean = new LockingBean();
         assertNotNull(bean);
         // lock object
@@ -70,9 +68,8 @@ public class LockingBeanTest extends AbstractTest {
         assertFalse(bean.isLocked("object"));
     }
 
-
     @Test
-    public void  testResetAllLocks() {
+    public void testResetAllLocks() {
         LockingBean bean = new LockingBean();
         assertNotNull(bean);
         // lock object
@@ -83,6 +80,5 @@ public class LockingBeanTest extends AbstractTest {
         bean.resetAllLocks();
         assertFalse(bean.isLocked("object"));
     }
-
 
 }

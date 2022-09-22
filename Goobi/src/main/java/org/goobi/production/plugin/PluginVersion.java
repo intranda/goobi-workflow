@@ -36,9 +36,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class PluginVersion implements Serializable{
+public class PluginVersion implements Serializable {
     private static final long serialVersionUID = -179543227554485575L;
-	private String checksum;
+    private String checksum;
     private String checksumType;
     private String goobiVersion;
     private String publicGoobiVersion;

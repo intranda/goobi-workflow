@@ -39,11 +39,11 @@ import net.xeoh.plugins.base.PluginManager;
 import net.xeoh.plugins.base.impl.PluginManagerFactory;
 import net.xeoh.plugins.base.util.PluginManagerUtil;
 
-public class PluginLoader implements Serializable{
+public class PluginLoader implements Serializable {
 
     private static final long serialVersionUID = -5922522891886118875L;
 
-	public static List<IPlugin> getPluginList(PluginType inType) {
+    public static List<IPlugin> getPluginList(PluginType inType) {
         PluginManagerUtil pmu = initialize(inType);
         Collection<IPlugin> plugins = pmu.getPlugins(IPlugin.class);
         return new ArrayList<>(plugins);

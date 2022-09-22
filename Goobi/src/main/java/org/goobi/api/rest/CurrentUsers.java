@@ -24,7 +24,6 @@
  */
 package org.goobi.api.rest;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +55,7 @@ public class CurrentUsers {
      */
     @GET
     @Operation(summary = "Returns a list of the current users",
-    description = "Returns a list with all users that are currently connected to this server")
+            description = "Returns a list with all users that are currently connected to this server")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Produces(MediaType.APPLICATION_JSON)

@@ -323,7 +323,6 @@ public class ProcessManager implements IManager, Serializable {
         }
     }
 
-
     /**
      * Delete a single log entry from process log
      * 
@@ -338,14 +337,13 @@ public class ProcessManager implements IManager, Serializable {
         }
     }
 
-
     public static ResultSetHandler<Process> resultSetToProcessHandler = new ResultSetHandler<Process>() {
         @Override
         public Process handle(ResultSet rs) throws SQLException {
             try {
                 if (rs.next()) { // implies that rs != null
                     try {
-                        return convert(rs); 
+                        return convert(rs);
                     } catch (DAOException e) {
                         log.error(e);
                     }
@@ -356,7 +354,6 @@ public class ProcessManager implements IManager, Serializable {
             return null;
         }
     };
-
 
     public static ResultSetHandler<List<Process>> resultSetToProcessListHandler = new ResultSetHandler<List<Process>>() {
         @Override

@@ -25,8 +25,6 @@
  */
 package de.sub.goobi.helper;
 
-
-
 import javax.inject.Singleton;
 
 import de.sub.goobi.config.ConfigurationHelper;

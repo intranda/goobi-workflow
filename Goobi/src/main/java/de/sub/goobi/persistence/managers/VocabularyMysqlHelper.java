@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.persistence.managers;
 
-
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -525,7 +524,7 @@ class VocabularyMysqlHelper implements Serializable {
                 if (subQuery.length() > 0) {
                     subQuery.append(" OR ");
                 }
-                subQuery.append("r.label ='" +StringEscapeUtils.escapeSql(fieldName) + "'");
+                subQuery.append("r.label ='" + StringEscapeUtils.escapeSql(fieldName) + "'");
             }
             sb.append(subQuery.toString());
             sb.append(")");
@@ -536,7 +535,8 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
-            List<Integer> idList = runner.query(connection, sb.toString(), MySQLHelper.resultSetToIntegerListHandler, StringEscapeUtils.escapeSql(vocabularyName));
+            List<Integer> idList =
+                    runner.query(connection, sb.toString(), MySQLHelper.resultSetToIntegerListHandler, StringEscapeUtils.escapeSql(vocabularyName));
 
             if (idList.isEmpty()) {
                 return Collections.emptyList();
@@ -652,7 +652,7 @@ class VocabularyMysqlHelper implements Serializable {
             // order
             if (MySQLHelper.isJsonCapable()) {
                 String sqlPathToField = "SELECT REPLACE(JSON_SEARCH(attr, 'one', '" + vocabulary.getMainFieldName()
-                + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
+                        + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
                 String field = runner.query(connection, sqlPathToField, MySQLHelper.resultSetToStringHandler, vocabulary.getId());
                 sb.append(" ORDER BY " + "JSON_EXTRACT(attr, " + field + ") ");
                 if (StringUtils.isNotBlank(vocabulary.getOrder())) {
@@ -861,7 +861,7 @@ class VocabularyMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
 
             return new QueryRunner().query(connection, sql, VocabularyManager.resultSetGetLastAlteredHandler, vocabulary.getId());
-        
+
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

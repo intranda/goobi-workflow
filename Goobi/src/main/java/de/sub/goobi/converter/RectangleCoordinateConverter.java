@@ -24,7 +24,6 @@
  */
 package de.sub.goobi.converter;
 
-
 import java.awt.geom.Rectangle2D;
 
 import javax.faces.component.UIComponent;
@@ -60,12 +59,12 @@ public class RectangleCoordinateConverter implements Converter<Rectangle2D> {
             Rectangle2D rect = object;
             StringBuilder sb = new StringBuilder();
             sb.append(rect.getMinX())
-            .append(COORD_SEPARATOR)
-            .append(rect.getMinY())
-            .append(COORD_SEPARATOR)
-            .append(rect.getMaxX())
-            .append(COORD_SEPARATOR)
-            .append(rect.getMaxY());
+                    .append(COORD_SEPARATOR)
+                    .append(rect.getMinY())
+                    .append(COORD_SEPARATOR)
+                    .append(rect.getMaxX())
+                    .append(COORD_SEPARATOR)
+                    .append(rect.getMaxY());
             return sb.toString();
         }
         throw new ConversionException(object + " is not of type Rectangle2D");

@@ -1,4 +1,5 @@
 package de.sub.goobi.metadaten.search;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -78,7 +79,6 @@ public class EntityLoggingFilter implements ClientRequestFilter, ClientResponseF
             requestContext.setProperty(ENTITY_STREAM_PROPERTY, stream);
         }
     }
-
 
     @Override
     public void filter(ClientRequestContext requestContext,

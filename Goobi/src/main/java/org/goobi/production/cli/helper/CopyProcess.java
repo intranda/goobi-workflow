@@ -168,7 +168,7 @@ public class CopyProcess {
         } catch (IOException e) {
             log.error(e);
         }
-        
+
         this.prozessKopie = new Process();
         this.prozessKopie.setTitel("");
         this.prozessKopie.setIstTemplate(false);
@@ -210,7 +210,7 @@ public class CopyProcess {
         } catch (IOException e) {
             log.error(e);
         }
-        
+
         this.prozessKopie = new Process();
         this.prozessKopie.setTitel("");
         this.prozessKopie.setIstTemplate(false);
@@ -382,17 +382,17 @@ public class CopyProcess {
                     try {
                         if (field.getMetadata().equals("ListOfCreators")) {
                             /* bei Autoren die Namen zusammenstellen */
-                        	StringBuilder authorBuilder = new StringBuilder();
+                            StringBuilder authorBuilder = new StringBuilder();
                             if (myTempStruct.getAllPersons() != null) {
                                 for (Person p : myTempStruct.getAllPersons()) {
-                                	authorBuilder.append(p.getLastname());
+                                    authorBuilder.append(p.getLastname());
                                     if (StringUtils.isNotBlank(p.getFirstname())) {
-                                    	authorBuilder.append(", ").append(p.getFirstname());
+                                        authorBuilder.append(", ").append(p.getFirstname());
                                     }
                                     authorBuilder.append("; ");
                                 }
                                 if (authorBuilder.toString().endsWith("; ")) {
-                                	authorBuilder.delete(authorBuilder.length() - 2, authorBuilder.length());
+                                    authorBuilder.delete(authorBuilder.length() - 2, authorBuilder.length());
                                 }
                             }
                             field.setWert(authorBuilder.toString());
@@ -415,7 +415,7 @@ public class CopyProcess {
     private void fillFieldsFromConfig() {
         for (AdditionalField field : this.additionalFields) {
             if (!field.isUghbinding() && field.getShowDependingOnDoctype(getDocType())) {
-                if (field.getSelectList() != null && ! field.getSelectList().isEmpty()) {
+                if (field.getSelectList() != null && !field.getSelectList().isEmpty()) {
                     field.setWert((String) field.getSelectList().get(0).getValue());
                 }
 
@@ -769,7 +769,7 @@ public class CopyProcess {
                     if (this.myRdf != null && this.myRdf.getDigitalDocument() != null
                             && this.myRdf.getDigitalDocument().getPhysicalDocStruct() != null) {
                         List<? extends Metadata> alleImagepfade = this.myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadataByType(mdt);
-                        if (alleImagepfade != null && ! alleImagepfade.isEmpty()) {
+                        if (alleImagepfade != null && !alleImagepfade.isEmpty()) {
                             for (Metadata md : alleImagepfade) {
                                 this.myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadata().remove(md);
                             }
@@ -907,7 +907,7 @@ public class CopyProcess {
                 md.setValue(s);
                 md.setParent(colStruct);
                 colStruct.addMetadata(md);
-            } catch (UghHelperException |DocStructHasNoTypeException |MetadataTypeNotAllowedException e) {
+            } catch (UghHelperException | DocStructHasNoTypeException | MetadataTypeNotAllowedException e) {
                 Helper.setFehlerMeldung(e.getMessage(), "");
                 log.error(e);
             }
@@ -921,12 +921,12 @@ public class CopyProcess {
         try {
             MetadataType mdt = this.ughHelp.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), "singleDigCollection");
             ArrayList<Metadata> myCollections = new ArrayList<>(colStruct.getAllMetadataByType(mdt)); // implies that myCollections != null
-            if (! myCollections.isEmpty()) {
+            if (!myCollections.isEmpty()) {
                 for (Metadata md : myCollections) {
                     colStruct.removeMetadata(md, true);
                 }
             }
-        } catch (UghHelperException |DocStructHasNoTypeException e) {
+        } catch (UghHelperException | DocStructHasNoTypeException e) {
             Helper.setFehlerMeldung(e.getMessage(), "");
             log.error(e);
         }
@@ -1150,7 +1150,7 @@ public class CopyProcess {
 
     @SuppressWarnings("rawtypes")
     public void CalcProzesstitel() {
-    	StringBuilder newTitleBuilder = new StringBuilder();
+        StringBuilder newTitleBuilder = new StringBuilder();
         String titeldefinition = "";
         ConfigProjects cp = null;
         try {
@@ -1209,7 +1209,7 @@ public class CopyProcess {
              * wenn der String mit ' anfängt und mit ' endet, dann den Inhalt so übernehmen
              */
             if (myString.startsWith("'") && myString.endsWith("'")) {
-            	newTitleBuilder.append(myString.substring(1, myString.length() - 1));
+                newTitleBuilder.append(myString.substring(1, myString.length() - 1));
             } else {
                 /* andernfalls den string als Feldnamen auswerten */
                 for (Iterator it2 = this.additionalFields.iterator(); it2.hasNext();) {
@@ -1225,7 +1225,7 @@ public class CopyProcess {
 
                     /* den Inhalt zum Titel hinzufügen */
                     if (myField.getTitel().equals(myString) && myField.getShowDependingOnDoctype(getDocType()) && myField.getWert() != null) {
-                    	newTitleBuilder.append(CalcProzesstitelCheck(myField.getTitel(), myField.getWert()));
+                        newTitleBuilder.append(CalcProzesstitelCheck(myField.getTitel(), myField.getWert()));
                     }
                 }
             }
@@ -1298,10 +1298,10 @@ public class CopyProcess {
              * wenn der String mit ' anfaengt und mit ' endet, dann den Inhalt so übernehmen
              */
             if (myString.startsWith("'") && myString.endsWith("'") && myString.length() > 2) {
-            	imageDescriptionBuilder.append(myString.substring(1, myString.length() - 1));
+                imageDescriptionBuilder.append(myString.substring(1, myString.length() - 1));
             } else if (myString.equals("$Doctype")) {
 
-            	imageDescriptionBuilder.append(this.docType);
+                imageDescriptionBuilder.append(this.docType);
             } else {
                 /* andernfalls den string als Feldnamen auswerten */
                 for (Iterator<AdditionalField> it2 = this.additionalFields.iterator(); it2.hasNext();) {
@@ -1317,7 +1317,7 @@ public class CopyProcess {
 
                     /* den Inhalt zum Titel hinzufügen */
                     if (myField.getTitel().equals(myString) && myField.getShowDependingOnDoctype(getDocType()) && myField.getWert() != null) {
-                    	imageDescriptionBuilder.append(CalcProzesstitelCheck(myField.getTitel(), myField.getWert()));
+                        imageDescriptionBuilder.append(CalcProzesstitelCheck(myField.getTitel(), myField.getWert()));
                     }
                 }
             }

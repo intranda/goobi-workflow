@@ -34,12 +34,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class TreeNode {
-	@Getter
-	@Setter
+    @Getter
+    @Setter
     protected boolean expanded = false;
     @Getter
-	@Setter
-	protected boolean selected = false;
+    @Setter
+    protected boolean selected = false;
     @Getter
     @Setter
     protected String label;

@@ -131,14 +131,14 @@ public class BatchBean extends BasicBean implements Serializable {
             }
         }
 
-        if (! this.selectedBatches.isEmpty()) {
+        if (!this.selectedBatches.isEmpty()) {
 
             if (ids.contains(null)) {
-            	filterBuilder.append(" AND batchID is null ");
+                filterBuilder.append(" AND batchID is null ");
             } else {
-            	filterBuilder.append(" AND (");
+                filterBuilder.append(" AND (");
                 for (Integer id : ids) {
-                	filterBuilder.append(" batchID = ").append(id).append(" OR");
+                    filterBuilder.append(" batchID = ").append(id).append(" OR");
                 }
                 // delete the last " OR"
                 filterBuilder.delete(filterBuilder.length() - 3, filterBuilder.length());
@@ -254,7 +254,7 @@ public class BatchBean extends BasicBean implements Serializable {
         } else {
             Helper.setFehlerMeldung("tooManyBatchesSelected");
         }
-        if (! docket.isEmpty()) {
+        if (!docket.isEmpty()) {
             if (!facesContext.getResponseComplete()) {
                 HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
                 String fileName = "batch_docket" + ".pdf";
@@ -343,7 +343,7 @@ public class BatchBean extends BasicBean implements Serializable {
     }
 
     public void createNewBatch() {
-        if (! this.selectedProcesses.isEmpty()) {
+        if (!this.selectedProcesses.isEmpty()) {
 
             Batch batch = new Batch();
             for (Process p : this.selectedProcesses) {

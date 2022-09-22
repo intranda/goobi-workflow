@@ -403,7 +403,7 @@ public class User implements DatabaseObject, Serializable {
     }
 
     public String getFirstProjectTitle() {
-        if (this.projekte != null && ! this.projekte.isEmpty()) {
+        if (this.projekte != null && !this.projekte.isEmpty()) {
             return this.projekte.get(0).getTitel();
         } else {
             return "";
@@ -411,7 +411,7 @@ public class User implements DatabaseObject, Serializable {
     }
 
     public String getFirstUserGroupTitle() {
-        if (this.benutzergruppen != null && ! this.benutzergruppen.isEmpty()) {
+        if (this.benutzergruppen != null && !this.benutzergruppen.isEmpty()) {
             return this.benutzergruppen.get(0).getTitel();
         } else {
             return "";

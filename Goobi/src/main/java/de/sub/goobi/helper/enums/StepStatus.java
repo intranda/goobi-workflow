@@ -64,6 +64,7 @@ public enum StepStatus {
      * deactivated = step is deactivated and gets activated maybe
      */
     INFLIGHT(6, "statusInFlight", "yellow_10.gif", "yellow_15a.gif", "stepinflight", "status-inflight");
+
     private int value;
     private String title;
     private String imageSmall;

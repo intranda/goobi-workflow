@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -116,7 +115,9 @@ public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGo
                 // just the metadata files
                 StorageProvider.getInstance().copyFile(Paths.get(p.getMetadataFilePath()), Paths.get(newprocess.getMetadataFilePath()));
                 if (StorageProvider.getInstance().isFileExists(Paths.get(p.getProcessDataDirectory(), "meta_anchor.xml"))) {
-                    StorageProvider.getInstance().copyFile(Paths.get(p.getProcessDataDirectory(), "meta_anchor.xml"), Paths.get(newprocess.getProcessDataDirectory(), "meta_anchor.xml"));
+                    StorageProvider.getInstance()
+                            .copyFile(Paths.get(p.getProcessDataDirectory(), "meta_anchor.xml"),
+                                    Paths.get(newprocess.getProcessDataDirectory(), "meta_anchor.xml"));
                 }
             }
 
@@ -131,7 +132,8 @@ public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGo
             ProcessManager.saveProcess(newprocess);
 
             // all successfull, yeah
-            gsr.setResultMessage("Process '" + p.getTitel() + "' successfully cloned under the new name '" + parameters.get("title") + "' with id: " + newprocess.getId());
+            gsr.setResultMessage("Process '" + p.getTitel() + "' successfully cloned under the new name '" + parameters.get("title") + "' with id: "
+                    + newprocess.getId());
             gsr.setResultType(GoobiScriptResultType.OK);
 
         } catch (Exception e) {

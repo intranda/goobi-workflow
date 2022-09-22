@@ -25,8 +25,6 @@
  */
 package de.sub.goobi.metadaten;
 
-
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -278,8 +276,8 @@ public class FileManipulation {
                         } else {
                             DocStruct followingPage = pageList.get(index + 1);
                             currentPage.getAllMetadataByType(logicalPageNoType)
-                            .get(0)
-                            .setValue(followingPage.getAllMetadataByType(logicalPageNoType).get(0).getValue());
+                                    .get(0)
+                                    .setValue(followingPage.getAllMetadataByType(logicalPageNoType).get(0).getValue());
                         }
                     }
                 }
@@ -590,7 +588,7 @@ public class FileManipulation {
         String afterLastBackslash = afterLastSlash.substring(afterLastSlash.lastIndexOf('\\') + 1);
 
         String prefix = ConfigurationHelper.getInstance().getImagePrefix();
-        
+
         return afterLastBackslash.matches(prefix + "\\..+");
     }
 

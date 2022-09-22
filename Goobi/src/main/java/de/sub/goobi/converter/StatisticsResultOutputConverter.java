@@ -37,7 +37,7 @@ import org.goobi.production.flow.statistics.enums.ResultOutput;
  * StatisticOutputConverter for statistics ResultOutput as select-items in jsf-guis
  * 
  * @author Steffen Hankiewicz
- * @version 21.05.2009 
+ * @version 21.05.2009
  **************************************************************************************/
 @FacesConverter("StatisticsResultOutputConverter")
 public class StatisticsResultOutputConverter implements Converter<ResultOutput> {

@@ -130,7 +130,6 @@ public class InstitutionManager implements IManager, Serializable {
         return answer;
     }
 
-
     public static List<InstitutionConfigurationObject> getConfiguredDockets(Integer institutionId) {
         List<InstitutionConfigurationObject> answer = new ArrayList<>();
         try {
@@ -151,7 +150,7 @@ public class InstitutionManager implements IManager, Serializable {
         return answer;
     }
 
-    public static List<String> getInstitutionNames () {
+    public static List<String> getInstitutionNames() {
         List<String> answer = new ArrayList<>();
 
         try {
@@ -171,7 +170,6 @@ public class InstitutionManager implements IManager, Serializable {
         }
         return answer;
     }
-
 
     public static List<InstitutionConfigurationObject> getConfiguredWorkflowPlugins(Integer id, List<String> pluginNames) {
         List<InstitutionConfigurationObject> answer = new ArrayList<>();
@@ -203,7 +201,6 @@ public class InstitutionManager implements IManager, Serializable {
         return answer;
     }
 
-
     public static ResultSetHandler<Institution> resultSetToInstitutionHandler = new ResultSetHandler<Institution>() {
         @Override
         public Institution handle(ResultSet rs) throws SQLException {
@@ -212,7 +209,7 @@ public class InstitutionManager implements IManager, Serializable {
                     return convert(rs);
                 }
             } finally {
-                rs.close();    
+                rs.close();
             }
             return null;
         }
@@ -234,8 +231,6 @@ public class InstitutionManager implements IManager, Serializable {
         }
     };
 
-
-
     private static Institution convert(ResultSet rs) throws SQLException {
         Institution r = new Institution();
         r.setId(rs.getInt("id"));
@@ -245,7 +240,7 @@ public class InstitutionManager implements IManager, Serializable {
         r.setAllowAllDockets(rs.getBoolean("allowAllDockets"));
         r.setAllowAllAuthentications(rs.getBoolean("allowAllAuthentications"));
         r.setAllowAllPlugins(rs.getBoolean("allowAllPlugins"));
-        r.setAdditionalData (MySQLHelper.convertStringToMap(rs.getString("additional_data")));
+        r.setAdditionalData(MySQLHelper.convertStringToMap(rs.getString("additional_data")));
         return r;
     }
 

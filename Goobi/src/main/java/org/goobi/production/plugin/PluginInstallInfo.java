@@ -37,9 +37,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class PluginInstallInfo implements Serializable{
+public class PluginInstallInfo implements Serializable {
     private static final long serialVersionUID = -8995664133637304408L;
-	private int id;
+    private int id;
     private String name;
     private String type;
     private String sourcecodeUri;

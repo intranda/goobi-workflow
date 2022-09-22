@@ -1764,7 +1764,7 @@ public class Metadaten implements Serializable {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -2023,8 +2023,8 @@ public class Metadaten implements Serializable {
         if (allMDs != null) {
             for (Metadata md : allMDs) {
                 if (md.getType().getName().equals(inTyp) && md.getValue() != null) {
-                	bld.append(md.getValue());
-                	bld.append(" ");
+                    bld.append(md.getValue());
+                    bld.append(" ");
                 }
             }
         }
@@ -4410,7 +4410,7 @@ public class Metadaten implements Serializable {
                 }
             } else {
                 Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString()
-                + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
+                        + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
             }
         }
 
@@ -4627,10 +4627,10 @@ public class Metadaten implements Serializable {
             oldDocstructName = docstructName;
 
             DocStructType dst = this.myPrefs.getDocStrctTypeByName(docstructName);
-            
-            addableMetadata = new LinkedList<>();      
+
+            addableMetadata = new LinkedList<>();
             try {
-            	DocStruct ds = this.document.createDocStruct(dst);
+                DocStruct ds = this.document.createDocStruct(dst);
 
                 List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, Helper.getMetadataLanguage(),
                         MetadataTypes.METATDATA, this.myProzess, displayHiddenMetadata);
@@ -4642,7 +4642,7 @@ public class Metadaten implements Serializable {
             } catch (TypeNotAllowedForParentException e) {
                 log.error(e);
             }
-            
+
             addablePersondata = new LinkedList<>();
             try {
                 DocStruct ds = this.document.createDocStruct(dst);
@@ -4657,7 +4657,7 @@ public class Metadaten implements Serializable {
             } catch (TypeNotAllowedForParentException e) {
                 log.error(e);
             }
-            
+
             addableCorporates = new LinkedList<>();
             try {
                 DocStruct ds = this.document.createDocStruct(dst);
@@ -4671,7 +4671,7 @@ public class Metadaten implements Serializable {
                 }
             } catch (TypeNotAllowedForParentException e) {
                 log.error(e);
-            }           
+            }
         }
     }
 

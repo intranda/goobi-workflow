@@ -59,11 +59,11 @@ public class Ldap implements Serializable, DatabaseObject, IAuthenticationProvid
     private String sambaKickoffTime = "0";
 
     private String adminLogin = "CHANGE_ME_cn=administrator,ou=users,o=example,c=net";
-    private String adminPassword ="CHANGE_ME_password";
-    private String ldapUrl ="CHANGE_ME_http://localhost:389/";
+    private String adminPassword = "CHANGE_ME_password";
+    private String ldapUrl = "CHANGE_ME_http://localhost:389/";
     private String attributeToTest;
     private String valueOfAttribute;
-    private String nextFreeUnixId ="CHANGE_ME_cn=NextFreeUnixId,o=example,c=net";
+    private String nextFreeUnixId = "CHANGE_ME_cn=NextFreeUnixId,o=example,c=net";
     private String pathToRootCertificate;
     private String pathToPdcCertificate;
     private String encryptionType = "SHA";

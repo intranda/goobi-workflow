@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.metadaten.search;
 
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,8 +41,8 @@ import de.intranda.digiverso.normdataimporter.model.NormDataValue;
  * A class providing some utility methods for dealing with Norm data
  *
  * @author Hemed Al Ruwehy
- * <p>
- * 2021-03-12
+ *         <p>
+ *         2021-03-12
  */
 public class NormDataUtils {
 
@@ -57,7 +56,7 @@ public class NormDataUtils {
      *
      * @param label a label
      * @param object a Java object of type List, Map or Primitive type
-     * @param useAsId  whether the text is ID
+     * @param useAsId whether the text is ID
      * @param useAsUrl whether the text is Url
      * @return a list of norm data
      */
@@ -73,8 +72,7 @@ public class NormDataUtils {
                     normDataValues.add(new NormDataValue(
                             item.toString(),
                             useAsId ? item.toString() : null,
-                                    useAsUrl ? item.toString() : null
-                            ));
+                            useAsUrl ? item.toString() : null));
                 }
             }
             // do the same for other types e.g primitive types
@@ -83,8 +81,7 @@ public class NormDataUtils {
                 normDataValues.add(
                         new NormDataValue(stringValue,
                                 useAsId ? stringValue : null,
-                                        useAsUrl ? stringValue : null
-                                ));
+                                useAsUrl ? stringValue : null));
             }
             normData.setKey(label);
             normData.setValues(normDataValues);
@@ -92,12 +89,10 @@ public class NormDataUtils {
         return normData;
     }
 
-
     /**
-     * A shortcut for creating norm data for texts where we are
-     * not interested with Id or Url.
+     * A shortcut for creating norm data for texts where we are not interested with Id or Url.
      *
-     * @param label       a label
+     * @param label a label
      * @param jsonContent a JSON string
      * @return a list of norm data
      */
@@ -105,15 +100,13 @@ public class NormDataUtils {
         return createNormData(label, jsonContent, false, false);
     }
 
-
     /***
-     *  Creates a norm data list. The values of JSON objects are retrieved
-     *  based on three criteria, whether they are arrays, or primitive types
-     *  or maps (i.e nested objects).
+     * Creates a norm data list. The values of JSON objects are retrieved based on three criteria, whether they are arrays, or primitive types or maps
+     * (i.e nested objects).
      *
      * @param label a label
      * @param javaObject a Java Object of type List, Map or Primitive types
-     * @param useAsId  whether the text is ID
+     * @param useAsId whether the text is ID
      * @param useAsUrl whether the text is Url
      * @return a list of norm data
      */
@@ -143,12 +136,11 @@ public class NormDataUtils {
         return normDataList;
     }
 
-
     /**
      * Gets a list of values for a specific label in the norm data
      *
      * @param normDataList a norm data list to get vakues from
-     * @param labels       one or more labels
+     * @param labels one or more labels
      * @return list of values for a specific label.
      */
     public static Set<String> getValuesForLabel(List<NormData> normDataList, String... labels) {

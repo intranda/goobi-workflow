@@ -24,6 +24,6 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ ConfigPluginsTest.class, ConfigProjectsTest.class, DigitalCollectionsTest.class, ConfigurationHelperTest.class,
-    ConfigPluginsTest.class, GoobiJsfModuleConfigTest.class })
+        ConfigPluginsTest.class, GoobiJsfModuleConfigTest.class })
 public class TestAll {
 }

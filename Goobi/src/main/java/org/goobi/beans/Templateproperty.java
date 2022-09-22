@@ -54,8 +54,8 @@ public class Templateproperty implements Serializable, IGoobiProperty {
     @Setter
     private String wert;
     private Boolean istObligatorisch;
-    @Getter (AccessLevel.PRIVATE)
-    @Setter (AccessLevel.PRIVATE)
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private Integer datentyp;
     @Getter
     @Setter

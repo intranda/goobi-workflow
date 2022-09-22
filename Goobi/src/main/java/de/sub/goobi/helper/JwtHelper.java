@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.helper;
 
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.PublicKey;
@@ -86,7 +85,7 @@ public class JwtHelper {
         for (int currentRotation = 0; currentRotation < maxRotations; currentRotation++) {
             long rotationTime = ((currentTime - (rotationDuration * currentRotation)) / rotationDuration) * rotationDuration;
             try {
-               return verifyTokenWithRotationTime(token, secret, rotationTime);
+                return verifyTokenWithRotationTime(token, secret, rotationTime);
             } catch (JWTVerificationException e) {
                 if (currentRotation == maxRotations - 1) {
                     throw e;

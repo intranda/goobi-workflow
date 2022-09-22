@@ -61,7 +61,7 @@ public class StatisticsRenderingElement implements Serializable {
     private String localImagePath;
     @Getter
     private String imageUrl;
-    
+
     public StatisticsRenderingElement(DataTable inDataTable, IStatisticalQuestion inQuestion) {
         dataTable = inDataTable;
         myQuestion = inQuestion;

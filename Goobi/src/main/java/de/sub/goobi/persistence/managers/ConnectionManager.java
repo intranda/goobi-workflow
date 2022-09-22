@@ -47,11 +47,11 @@ import lombok.extern.log4j.Log4j2;
  * 
  */
 @Log4j2
-public class ConnectionManager implements Serializable{
+public class ConnectionManager implements Serializable {
 
     private static final long serialVersionUID = 5383856824401199510L;
-    
-	private transient DataSource ds = null;
+
+    private transient DataSource ds = null;
     @SuppressWarnings("rawtypes")
     private static GenericObjectPool _pool = null; // NOSONAR
 

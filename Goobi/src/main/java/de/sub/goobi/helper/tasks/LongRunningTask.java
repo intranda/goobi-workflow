@@ -25,8 +25,6 @@
  */
 package de.sub.goobi.helper.tasks;
 
-
-
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.Helper;

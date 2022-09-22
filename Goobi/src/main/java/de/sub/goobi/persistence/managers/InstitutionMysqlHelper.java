@@ -110,7 +110,7 @@ class InstitutionMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            return new QueryRunner().query(connection, sql.toString(),InstitutionManager.resultSetToInstitutionHandler, longName);
+            return new QueryRunner().query(connection, sql.toString(), InstitutionManager.resultSetToInstitutionHandler, longName);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -251,7 +251,7 @@ class InstitutionMysqlHelper implements Serializable {
             if (log.isTraceEnabled()) {
                 log.trace(sql);
             }
-            return new QueryRunner().query(connection, sql,InstitutionManager.resultSetToInstitutionListHandler);
+            return new QueryRunner().query(connection, sql, InstitutionManager.resultSetToInstitutionListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

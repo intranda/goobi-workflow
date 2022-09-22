@@ -193,7 +193,7 @@ public class ShellScript {
      */
     public static LinkedList<String> inputStreamToLinkedList(InputStream myInputStream) {
         LinkedList<String> result = new LinkedList<>();
-        try (Scanner inputLines = new Scanner(myInputStream)){
+        try (Scanner inputLines = new Scanner(myInputStream)) {
             while (inputLines.hasNextLine()) {
                 String myLine = inputLines.nextLine();
                 result.add(myLine);
@@ -230,8 +230,8 @@ public class ShellScript {
      */
     public static ShellScriptReturnValue callShell(List<String> parameter, Integer processID) throws IOException, InterruptedException {
         int returnCode = ShellScript.ERRORLEVEL_ERROR;
-        String outputText = "" ;
-        String errorText = "" ;
+        String outputText = "";
+        String errorText = "";
         StringBuilder outputBuilder = new StringBuilder();
         StringBuilder errorBuilder = new StringBuilder();
         if (parameter.isEmpty()) {
@@ -253,19 +253,19 @@ public class ShellScript {
             returnCode = s.run(parameterWithoutCommand);
 
             for (String line : s.getStdOut()) {
-            	outputBuilder.append(line);
-            	outputBuilder.append("\n");
+                outputBuilder.append(line);
+                outputBuilder.append("\n");
             }
             outputText = outputBuilder.toString();
             Helper.addMessageToProcessLog(processID, LogType.DEBUG, "Script '" + scriptname + "' was executed with result: " + outputText);
             if (!outputText.isEmpty()) {
                 Helper.setMeldung(outputText);
             }
-            if ( ! s.getStdErr().isEmpty()) {
+            if (!s.getStdErr().isEmpty()) {
                 returnCode = ShellScript.ERRORLEVEL_ERROR;
                 for (String line : s.getStdErr()) {
-                	errorBuilder.append(line);
-                	errorBuilder.append("\n");
+                    errorBuilder.append(line);
+                    errorBuilder.append("\n");
                 }
                 errorText = errorBuilder.toString();
                 Helper.addMessageToProcessLog(processID, LogType.ERROR, "Error occured while executing script '" + scriptname + "': " + errorText);
@@ -336,12 +336,12 @@ public class ShellScript {
             if (StringUtils.isNotBlank(outputMessage)) {
                 Helper.setMeldung(outputMessage);
             }
-            if ( ! s.getStdErr().isEmpty()) {
+            if (!s.getStdErr().isEmpty()) {
                 returnCode = ShellScript.ERRORLEVEL_ERROR;
 
                 for (String line : s.getStdErr()) {
-                	errorBuilder.append(line);
-                	errorBuilder.append("\n");
+                    errorBuilder.append(line);
+                    errorBuilder.append("\n");
                 }
                 errorMessage = errorBuilder.toString();
                 Helper.addMessageToProcessLog(processID, LogType.ERROR,

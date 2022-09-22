@@ -357,14 +357,14 @@ public class MetaPerson implements SearchableMetadata {
                 String first = "";
                 String last = "";
                 if (nameParts.length == 0) {
-                	// do nothing
+                    // do nothing
                 } else if (nameParts.length == 1) {
                     last = nameParts[0];
                 } else if (nameParts.length == 2) {
                     first = nameParts[0];
                     last = nameParts[1];
                 } else { // if nameParts.length > 2
-                	StringBuilder firstBuilder = new StringBuilder(nameParts[0]);
+                    StringBuilder firstBuilder = new StringBuilder(nameParts[0]);
                     int counter = nameParts.length;
                     for (int i = 1; i < counter - 1; i++) {
                         firstBuilder.append(" ").append(nameParts[i]);

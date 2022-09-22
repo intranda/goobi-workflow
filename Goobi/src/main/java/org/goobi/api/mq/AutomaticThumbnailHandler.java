@@ -25,7 +25,6 @@
  */
 package org.goobi.api.mq;
 
-
 import java.awt.Dimension;
 import java.io.File;
 import java.io.FileOutputStream;

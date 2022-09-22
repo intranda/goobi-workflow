@@ -50,8 +50,8 @@ import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ PropertyManager.class, MetadataManager.class, Helper.class})
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
+@PrepareForTest({ PropertyManager.class, MetadataManager.class, Helper.class })
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class BatchStepHelperTest extends AbstractTest {
 
     private List<Step> stepList;
@@ -65,9 +65,7 @@ public class BatchStepHelperTest extends AbstractTest {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
-
-
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
 
         Process process = MockProcess.createProcess();
         process.setTitel("process");
@@ -84,7 +82,7 @@ public class BatchStepHelperTest extends AbstractTest {
 
         stepList.add(step);
 
-        Process process2 =  MockProcess.createProcess();
+        Process process2 = MockProcess.createProcess();
         process2.setTitel("process2");
         process2.setId(2);
 
@@ -270,7 +268,7 @@ public class BatchStepHelperTest extends AbstractTest {
 
         PowerMock.mockStatic(Helper.class);
         EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();
-        EasyMock.expect( Helper.getBeanByClass(EasyMock.anyObject())).andReturn(null).anyTimes();
+        EasyMock.expect(Helper.getBeanByClass(EasyMock.anyObject())).andReturn(null).anyTimes();
         Helper.setMeldung(EasyMock.anyString());
         Helper.setMeldung(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString());
         PowerMock.replay(Helper.class);

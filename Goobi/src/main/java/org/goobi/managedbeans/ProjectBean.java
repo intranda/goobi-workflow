@@ -311,7 +311,7 @@ public class ProjectBean extends BasicBean implements Serializable {
         // and deleted after a commit
 
         // only add file groups with ids to the deletion list
-        if (myFilegroup.getId()!=null) {
+        if (myFilegroup.getId() != null) {
             this.deletedFileGroups.add(myFilegroup);
         } else {
             // otherwise only remove filegroup from list
@@ -591,8 +591,8 @@ public class ProjectBean extends BasicBean implements Serializable {
                 this.projectProgressData.setRequiredDailyOutput(this.getThroughputPerDay());
                 this.projectProgressData.setTimeFrame(this.getMyProjekt().getStartDate(), this.getMyProjekt().getEndDate());
                 this.projectProgressData
-                .setDataSource(FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"", false,
-                        null, null, null, true, false) + " AND prozesse.istTemplate = false ");
+                        .setDataSource(FilterHelper.criteriaBuilder("\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"", false,
+                                null, null, null, true, false) + " AND prozesse.istTemplate = false ");
 
                 if (this.projectProgressImage == null) {
                     this.projectProgressImage = "";
@@ -756,7 +756,7 @@ public class ProjectBean extends BasicBean implements Serializable {
             response.setHeader("Content-Disposition", "attachment;filename=\"export.csv\"");
             CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator("\n");
             try {
-                try (CSVPrinter csvFilePrinter = new CSVPrinter(response.getWriter(), csvFileFormat)){
+                try (CSVPrinter csvFilePrinter = new CSVPrinter(response.getWriter(), csvFileFormat)) {
                     CSVRenderer csvr = this.myCurrentTable.getCsvRenderer();
 
                     // add all headers

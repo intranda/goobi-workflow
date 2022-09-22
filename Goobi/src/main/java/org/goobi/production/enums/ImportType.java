@@ -32,10 +32,10 @@ public enum ImportType {
     FILE("3", "file"),
     FOLDER("4", "folder");
 
-	@Getter
+    @Getter
     @Setter
     private String id;
-	@Getter
+    @Getter
     @Setter
     private String title;
 

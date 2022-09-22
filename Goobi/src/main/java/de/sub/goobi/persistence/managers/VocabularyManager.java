@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.persistence.managers;
 
-
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;

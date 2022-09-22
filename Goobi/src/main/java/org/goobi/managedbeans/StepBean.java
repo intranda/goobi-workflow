@@ -420,7 +420,7 @@ public class StepBean extends BasicBean implements Serializable {
                     try {
                         Paths.get(s.getProzess().getImagesOrigDirectory(false));
                     } catch (Exception e1) {
-                    	// TODO: what should be done?
+                        // TODO: what should be done?
                     }
 
                     this.myDav.DownloadToHome(s.getProzess(), s.getId().intValue(), !s.isTypImagesSchreiben());
@@ -465,8 +465,8 @@ public class StepBean extends BasicBean implements Serializable {
             // only steps with same title
             currentStepsOfBatch = StepManager.getSteps(null,
                     "schritte.titel = '" + steptitle
-                    + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
-                    + batchNumber + ")",
+                            + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
+                            + batchNumber + ")",
                     0, Integer.MAX_VALUE);
 
         } else {
@@ -505,7 +505,7 @@ public class StepBean extends BasicBean implements Serializable {
              */
             StepManager.saveStep(mySchritt);
         } catch (DAOException e) {
-        	// TODO: what should be done?
+            // TODO: what should be done?
         }
         return FilterAlleStart();
     }
@@ -756,7 +756,7 @@ public class StepBean extends BasicBean implements Serializable {
                             + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
                 } else {
                     seg.setWert("[" + this.formatter.format(new Date()) + "] " + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel()
-                    + ": " + this.solutionMessage);
+                            + ": " + this.solutionMessage);
                 }
                 seg.setSchritt(step);
                 seg.setType(PropertyType.messageImportant);
@@ -832,7 +832,7 @@ public class StepBean extends BasicBean implements Serializable {
         /*
          * -------------------------------- die hochgeladenen Prozess-IDs durchlaufen und auf abgeschlossen setzen --------------------------------
          */
-        if (fertigListe != null && ! fertigListe.isEmpty() && this.nurOffeneSchritte) {
+        if (fertigListe != null && !fertigListe.isEmpty() && this.nurOffeneSchritte) {
             this.nurOffeneSchritte = false;
             FilterAlleStart();
         }

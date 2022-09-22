@@ -37,7 +37,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class UsergroupManager implements IManager, Serializable {
-        private static final long serialVersionUID = -6021826136861140126L;
+    private static final long serialVersionUID = -6021826136861140126L;
 
     public static Usergroup getUsergroupById(int id) throws DAOException {
         Usergroup o = null;
@@ -68,7 +68,8 @@ public class UsergroupManager implements IManager, Serializable {
         }
     }
 
-    public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
+    public static List<Usergroup> getUsergroups(String order, String filter, Integer start, Integer count, Institution institution)
+            throws DAOException {
         List<Usergroup> answer = new ArrayList<>();
         try {
             answer = UsergroupMysqlHelper.getUsergroups(order, filter, start, count, institution);
@@ -91,7 +92,8 @@ public class UsergroupManager implements IManager, Serializable {
     }
 
     @Override
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException {
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution)
+            throws DAOException {
         return getUsergroups(order, filter, start, count, institution);
     }
 

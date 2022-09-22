@@ -24,7 +24,6 @@
  */
 package org.goobi.api.rest.object;
 
-
 import java.net.URI;
 import java.net.URISyntaxException;
 

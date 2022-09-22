@@ -24,7 +24,6 @@
  */
 package org.goobi.beans;
 
-
 import java.util.List;
 
 import lombok.Data;

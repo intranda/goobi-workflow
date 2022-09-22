@@ -1,4 +1,5 @@
 package de.sub.goobi.metadaten.search;
+
 import java.util.ArrayList;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -121,6 +122,5 @@ public class EasydbSearchField {
     public void setFieldType(String fieldType) {
         this.fieldType = fieldType;
     }
-
 
 }

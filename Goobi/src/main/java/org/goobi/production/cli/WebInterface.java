@@ -181,13 +181,14 @@ public class WebInterface extends HttpServlet {
         for (IPlugin iPlugin : mycommands) {
             ICommandPlugin icp = (ICommandPlugin) iPlugin;
             if (forCommand == null || forCommand.equals(icp.help().getTitle()) || ("Command " + forCommand).equals(icp.help().getTitle())) {
-            	allHelpBuilder.append("<h4>").append(icp.help().getTitle()).append("</h4>");
-            	allHelpBuilder.append(icp.help().getMessage());
-            	allHelpBuilder.append("<br/><br/>");
+                allHelpBuilder.append("<h4>").append(icp.help().getTitle()).append("</h4>");
+                allHelpBuilder.append(icp.help().getMessage());
+                allHelpBuilder.append("<br/><br/>");
             }
         }
         if (forCommand == null) {
-        	allHelpBuilder.append("<h4>You are searching for a description of one command only?</h4>Use the parameter 'for' to get the help only for one specific command.<br/><br/>Sample: 'for=AddToProcessLog'<br/><br/>");
+            allHelpBuilder.append(
+                    "<h4>You are searching for a description of one command only?</h4>Use the parameter 'for' to get the help only for one specific command.<br/><br/>Sample: 'for=AddToProcessLog'<br/><br/>");
         }
         generateAnswer(resp, 200, "Goobi Web API Help", allHelpBuilder.toString());
     }

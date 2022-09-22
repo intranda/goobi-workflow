@@ -20,15 +20,15 @@ import lombok.Setter;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-public class SearchColumn implements Serializable{
+public class SearchColumn implements Serializable {
 
-	private static final long serialVersionUID = -3474943392910282588L;
+    private static final long serialVersionUID = -3474943392910282588L;
 
-	@Getter
-	@Setter
+    @Getter
+    @Setter
     private String value = "";
 
-	@Getter
+    @Getter
     private int order;
 
     public SearchColumn(int order) {
@@ -104,7 +104,7 @@ public class SearchColumn implements Serializable{
 
         } else if (value.startsWith("projekte.")) {
             return " projekte " + getTableName() + " ON prozesse.ProjekteID = " + getTableName() + ".ProjekteID";
-            
+
         } else if (value.startsWith("vorlageneigenschaften.")) {
             return "vorlagen vorlagen" + order + " ON prozesse.ProzesseID = vorlagen" + order + ".ProzesseID LEFT JOIN vorlageneigenschaften "
                     + getTableName() + " ON " + getTableName() + ".vorlagenID = vorlagen" + order + ".vorlagenID AND " + getTableName() + ".Titel =\""

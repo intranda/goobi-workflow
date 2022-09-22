@@ -31,11 +31,11 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.Data;
 
 @Data
-public class LogEntry implements Serializable{
+public class LogEntry implements Serializable {
 
     private static final long serialVersionUID = -5624248615174083906L;
-    
-	private Integer id;
+
+    private Integer id;
     private Integer processId;
     private Date creationDate;
     private String userName;
@@ -48,7 +48,7 @@ public class LogEntry implements Serializable{
 
     public LogEntry() {
     }
-    
+
     public String getFormattedCreationDate() {
         return Helper.getDateAsFormattedString(creationDate);
     }

@@ -24,7 +24,6 @@
  */
 package org.goobi.api.rest.process.image;
 
-
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -103,7 +102,7 @@ public class GoobiImageFolderResource {
     @GET
     @Path("/list")
     @Operation(summary = "Returns information about image directories",
-    description = "Returns information about image directories in JSON or JSONLD format")
+            description = "Returns information about image directories in JSON or JSONLD format")
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "500", description = "Internal error")
     @Produces({ ImageResource.MEDIA_TYPE_APPLICATION_JSONLD, MediaType.APPLICATION_JSON })
@@ -117,8 +116,8 @@ public class GoobiImageFolderResource {
         String imageURL = requestURL.replace("/list/", "/");
         try (Stream<java.nio.file.Path> imagePaths = Files.list(folderPath)) {
             return imagePaths.map(path -> URI.create(imageURL.replace("list.json", "") + path.getFileName().toString()))
-                    				   .sorted()
-                    				   .collect(Collectors.toList());
+                    .sorted()
+                    .collect(Collectors.toList());
         }
     }
 

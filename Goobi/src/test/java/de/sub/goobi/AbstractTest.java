@@ -35,7 +35,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 
 public class AbstractTest {
 
@@ -56,7 +56,7 @@ public class AbstractTest {
         if (!Files.exists(goobiFolder)) {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
-        String goobiMainFolder =goobiFolder.getParent().getParent().toString();
+        String goobiMainFolder = goobiFolder.getParent().getParent().toString();
         ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder.toString();
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiMainFolder + "/");
