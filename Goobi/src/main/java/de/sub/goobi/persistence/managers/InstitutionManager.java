@@ -252,6 +252,9 @@ public class InstitutionManager implements IManager, Serializable {
         r.setAllowAllAuthentications(rs.getBoolean("allowAllAuthentications"));
         r.setAllowAllPlugins(rs.getBoolean("allowAllPlugins"));
         r.setAdditionalData (MySQLHelper.convertStringToMap(rs.getString("additional_data")));
+        r.setJournal(JournalManager.getLogEntriesForInstitution(r.getId()));
+
+
         return r;
     }
 

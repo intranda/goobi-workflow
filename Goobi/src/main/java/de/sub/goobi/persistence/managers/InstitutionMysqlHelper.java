@@ -27,6 +27,7 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;
+import org.goobi.beans.JournalEntry;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -167,6 +168,11 @@ class InstitutionMysqlHelper implements Serializable {
                 saveConfiguration(ro.getAllowedDashboardPlugins(), ro.getId());
                 saveConfiguration(ro.getAllowedStatisticsPlugins(), ro.getId());
             }
+
+            for (JournalEntry logEntry : ro.getJournal()) {
+                JournalManager.saveJournalEntry(logEntry);
+            }
+
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

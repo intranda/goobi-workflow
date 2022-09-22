@@ -288,6 +288,11 @@ public class User implements DatabaseObject, Serializable {
     // individual values can be extracted: 'select ExtractValue(additional_data, '/root/key') from benutzer'
     private Map<String, String> additionalData = new HashMap<>();
 
+    @Getter
+    @Setter
+    private List<JournalEntry> journal = new ArrayList<>();
+
+
     @Override
     public void lazyLoad() {
         try {
