@@ -224,6 +224,30 @@ public class Helper implements Serializable, ServletContextListener {
         setMeldung(control, meldung, beschreibung, true, true);
     }
 
+    public static void addMessageToUserJournal(Integer userId, LogType type, String message) {
+        LoginBean login = getLoginBean();
+        String user = "- automatic -";
+        if (login != null) {
+            User userObject = login.getMyBenutzer();
+            if (userObject != null) {
+                user = userObject.getNachVorname();
+            }
+        }
+        addMessageToJournal(userId, type, message, user, EntryType.USER);
+    }
+
+    public static void addMessageToInstitutionJournal(Integer institutionId, LogType type, String message) {
+        LoginBean login = getLoginBean();
+        String user = "- automatic -";
+        if (login != null) {
+            User userObject = login.getMyBenutzer();
+            if (userObject != null) {
+                user = userObject.getNachVorname();
+            }
+        }
+        addMessageToJournal(institutionId, type, message, user, EntryType.INSTITUTION);
+    }
+
     public static void addMessageToProcessJournal(Integer processId, LogType type, String message) {
         LoginBean login = getLoginBean();
         String user = "- automatic -";
@@ -240,17 +264,18 @@ public class Helper implements Serializable, ServletContextListener {
         addMessageToJournal(processId, type, message, username, EntryType.PROCESS);
     }
 
-    public static void addMessageToJournal(Integer id, LogType logType, String content, String username, EntryType entryType) {
-        JournalEntry logEntry = new JournalEntry(id, new Date(), username, logType, content, entryType);
+    /**
+     * Adds a message to the journal. The journal type is defined by the entryType variable.
+     * 
+     * @param objectId id of the process, user or institution object
+     * @param logType type of the message e.g. error or debug
+     * @param content message content
+     * @param sender name of the sender, either a user name or an application name e.g. 'Jon Doe' or 'http step' or '-automatic-'
+     * @param entryType object type, process, user or institution. Is used in combination with the objectId
+     */
 
-
-
-        //        logEntry.setContent(message);
-        //        logEntry.setCreationDate(new Date());
-        //        logEntry.setProcessId(id);
-        //        logEntry.setType(logType);
-        //        logEntry.setUserName(username);
-        //        logEntry.setEntryType(entryType);
+    public static void addMessageToJournal(Integer objectId, LogType logType, String content, String sender, EntryType entryType) {
+        JournalEntry logEntry = new JournalEntry(objectId, new Date(), sender, logType, content, entryType);
         ProcessManager.saveLogEntry(logEntry);
     }
 
