@@ -53,6 +53,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BatchProcessHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import io.goobi.workflow.xslt.XsltToPdf;
 import lombok.Data;
@@ -305,7 +306,7 @@ public class BatchBean extends BasicBean implements Serializable {
                 for (Process p : this.selectedProcesses) {
                     p.setBatch(batch);
                     JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), "-batch-", LogType.DEBUG, "added process to batch " + batch.getBatchId(), EntryType.PROCESS);
-                    ProcessManager.saveLogEntry(logEntry);
+                    JournalManager.saveJournalEntry(logEntry);
 
                     ProcessManager.saveProcessInformation(p);
                 }
@@ -322,7 +323,7 @@ public class BatchBean extends BasicBean implements Serializable {
             if (p.getBatch() != null) {
 
                 JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), "-batch-", LogType.DEBUG, "removed process from batch " + p.getBatch().getBatchId(), EntryType.PROCESS);
-                ProcessManager.saveLogEntry(logEntry);
+                JournalManager.saveJournalEntry(logEntry);
 
                 p.setBatch(null);
                 ProcessManager.saveProcessInformation(p);
@@ -341,7 +342,7 @@ public class BatchBean extends BasicBean implements Serializable {
                 ProcessManager.saveProcessInformation(p);
 
                 JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), "-batch-", LogType.DEBUG, "added process to batch " + batch.getBatchId(), EntryType.PROCESS);
-                ProcessManager.saveLogEntry(logEntry);
+                JournalManager.saveJournalEntry(logEntry);
             }
 
         }

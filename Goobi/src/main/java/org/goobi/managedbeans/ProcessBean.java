@@ -148,6 +148,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.DocketManager;
 import de.sub.goobi.persistence.managers.HistoryManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -482,7 +483,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             log.error("Error adding TaskTicket to queue", e);
 
             JournalEntry errorEntry = new JournalEntry(myProzess.getId(), new Date(), "automatic", LogType.ERROR, "Error reading metadata for process" + this.myProzess.getTitel(), EntryType.PROCESS);
-            ProcessManager.saveLogEntry(errorEntry);
+            JournalManager.saveJournalEntry(errorEntry);
         }
     }
 

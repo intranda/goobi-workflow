@@ -45,7 +45,7 @@ import com.google.gson.Gson;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.enums.StepStatus;
-import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.extern.log4j.Log4j2;
 
@@ -97,7 +97,7 @@ public class GoobiExternalJobQueueDLQListener {
 
                         JournalEntry logEntry = new JournalEntry(step.getProcessId(), new Date(), "Goobi DLQ listener", LogType.ERROR,
                                 "Script ticket failed after retries", EntryType.PROCESS);
-                        ProcessManager.saveLogEntry(logEntry);
+                        JournalManager.saveJournalEntry(logEntry);
 
                         message.acknowledge();
                     } catch (Exception e) {

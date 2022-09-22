@@ -315,29 +315,25 @@ public class ProcessManager implements IManager, Serializable {
         return idList;
     }
 
+    /**
+     *
+     * @deprecated use {@link JournalManager#saveJournalEntry(JournalEntry entry} instead
+     */
+    @Deprecated(since = "2022-09", forRemoval = true)
     public static void saveLogEntry(JournalEntry entry) {
-        try {
-            ProcessMysqlHelper.saveLogEntry(entry);
-        } catch (SQLException e) {
-            log.error("Cannot not update process log for process with id " + entry.getObjectId(), e);
-        }
+        JournalManager.saveJournalEntry(entry);
     }
 
     /**
-     * Delete a single log entry from process log
-     * 
-     * @param entry to delete
+     *
+     * @deprecated use {@link JournalManager#deleteJournalEntry(JournalEntry entry)} instead
      */
-
+    @Deprecated(since = "2022-09", forRemoval = true)
     public static void deleteLogEntry(JournalEntry entry) {
-        try {
-            ProcessMysqlHelper.deleteLogEntry(entry);
-        } catch (SQLException e) {
-            log.error("Cannot not update process log for process with id " + entry.getObjectId(), e);
-        }
+        JournalManager.deleteJournalEntry(entry);
     }
 
-    public static ResultSetHandler<Process> resultSetToProcessHandler = new ResultSetHandler<Process>() {
+    public static final ResultSetHandler<Process> resultSetToProcessHandler = new ResultSetHandler<Process>() {
         @Override
         public Process handle(ResultSet rs) throws SQLException {
             try {
@@ -410,7 +406,7 @@ public class ProcessManager implements IManager, Serializable {
         }
         p.setDocket(DocketManager.getDocketById(rs.getInt("docketID")));
 
-        p.setJournal(ProcessMysqlHelper.getLogEntriesForProcess(p.getId()));
+        p.setJournal(JournalManager.getLogEntriesForProcess(p.getId()));
 
         p.setMediaFolderExists(rs.getBoolean("mediaFolderExists"));
 

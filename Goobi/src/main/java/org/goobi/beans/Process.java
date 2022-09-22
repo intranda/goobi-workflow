@@ -90,6 +90,7 @@ import de.sub.goobi.metadaten.ImageCommentHelper;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.DocketManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -1483,7 +1484,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
             journal.add(entry);
 
-            ProcessManager.saveLogEntry(entry);
+            JournalManager.saveJournalEntry(entry);
         }
     }
 
@@ -1814,14 +1815,14 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             String filename = entry.getBasename();
 
             journal.remove(entry);
-            ProcessManager.deleteLogEntry(entry);
+            JournalManager.deleteJournalEntry(entry);
 
             // create a new entry to document the deletion
 
             JournalEntry deletionInfo = new JournalEntry(id, new Date(), Helper.getCurrentUser().getNachVorname(), LogType.INFO, Helper.getTranslation("processlogFileDeleted", filename), EntryType.PROCESS);
 
             journal.add(deletionInfo);
-            ProcessManager.saveLogEntry(deletionInfo);
+            JournalManager.saveJournalEntry(deletionInfo);
         }
         // delete file
         try {
@@ -1854,7 +1855,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
             JournalEntry entry = new JournalEntry(id, new Date(), Helper.getCurrentUser().getNachVorname(), LogType.FILE, content, EntryType.PROCESS);
             entry.setFilename(destination.toString());
-            ProcessManager.saveLogEntry(entry);
+            JournalManager.saveJournalEntry(entry);
             journal.add(entry);
 
         } catch (SwapException | IOException e) {

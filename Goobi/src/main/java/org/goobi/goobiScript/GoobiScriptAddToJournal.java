@@ -37,6 +37,7 @@ import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 
@@ -96,7 +97,7 @@ public class GoobiScriptAddToJournal extends AbstractIGoobiScript implements IGo
         gsr.updateTimestamp();
 
         JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), username, LogType.getByTitle(parameters.get("type")), parameters.get("message"), EntryType.PROCESS);
-        ProcessManager.saveLogEntry(logEntry);
+        JournalManager.saveJournalEntry(logEntry);
         log.info("Process log updated for process with ID " + p.getId());
 
         gsr.setResultMessage("Process log updated.");

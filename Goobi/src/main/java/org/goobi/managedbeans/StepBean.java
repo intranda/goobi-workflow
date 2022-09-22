@@ -91,6 +91,7 @@ import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 import de.sub.goobi.persistence.managers.HistoryManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
@@ -630,7 +631,7 @@ public class StepBean extends BasicBean implements Serializable {
 
             JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), ben != null?ben.getNachVorname(): "", LogType.ERROR, message, EntryType.PROCESS);
 
-            ProcessManager.saveLogEntry(logEntry);
+            JournalManager.saveJournalEntry(logEntry);
 
             temp.getEigenschaften().add(se);
             StepManager.saveStep(temp);
@@ -765,7 +766,7 @@ public class StepBean extends BasicBean implements Serializable {
             String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage;
 
             JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), ben != null?ben.getNachVorname(): "", LogType.INFO, message, EntryType.PROCESS);
-            ProcessManager.saveLogEntry(logEntry);
+            JournalManager.saveJournalEntry(logEntry);
 
             ProcessManager.saveProcessInformation(this.mySchritt.getProzess());
 
@@ -1110,7 +1111,7 @@ public class StepBean extends BasicBean implements Serializable {
             User user = Helper.getCurrentUser();
             JournalEntry logEntry =
                     new JournalEntry(mySchritt.getProzess().getId(), new Date(), user.getNachVorname(), LogType.USER, content, EntryType.PROCESS);
-            ProcessManager.saveLogEntry(logEntry);
+            JournalManager.saveJournalEntry(logEntry);
             mySchritt.getProzess().getJournal().add(logEntry);
             this.content = "";
         }

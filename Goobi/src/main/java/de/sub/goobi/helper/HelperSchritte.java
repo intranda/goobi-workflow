@@ -91,6 +91,7 @@ import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.HistoryManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
@@ -383,7 +384,7 @@ public class HelperSchritte {
                 log.info("Metadata file is not readable for process with ID " + step.getProcessId());
                 JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR, "Metadata file is not readable",
                         EntryType.PROCESS);
-                ProcessManager.saveLogEntry(le);
+                JournalManager.saveJournalEntry(le);
             } else {
                 dd = ff.getDigitalDocument();
             }
@@ -391,7 +392,7 @@ public class HelperSchritte {
             log.info("An exception occurred while reading the metadata file for process with ID " + step.getProcessId(), e2);
             JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR, "error reading metadata file",
                     EntryType.PROCESS);
-            ProcessManager.saveLogEntry(le);
+            JournalManager.saveJournalEntry(le);
         }
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
         String bodyStr = null;
@@ -413,7 +414,7 @@ public class HelperSchritte {
         } catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e1) {
             JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR,
                     "error executing http request: " + e1.getMessage(), EntryType.PROCESS);
-            ProcessManager.saveLogEntry(le);
+            JournalManager.saveJournalEntry(le);
             errorStep(step);
             log.error(e1);
             return;
@@ -460,24 +461,24 @@ public class HelperSchritte {
                 if (statusCode >= 400) {
                     JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR,
                             String.format("Server returned status code %d, response body was: '%s'", statusCode, respStr), EntryType.PROCESS);
-                    ProcessManager.saveLogEntry(le);
+                    JournalManager.saveJournalEntry(le);
                     errorStep(step);
                     log.error(respStr);
                     return;
                 }
                 JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.INFO, respStr, EntryType.PROCESS);
-                ProcessManager.saveLogEntry(le);
+                JournalManager.saveJournalEntry(le);
                 if (step.isHttpCloseStep()) {
                     CloseStepObjectAutomatic(step);
                 }
                 log.info(respStr);
             } else {
                 JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR, "error executing http request", EntryType.PROCESS);
-                ProcessManager.saveLogEntry(le);
+                JournalManager.saveJournalEntry(le);
             }
         } catch (IOException e) {
             JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR, "error executing http request: " + e.getMessage(), EntryType.PROCESS);
-            ProcessManager.saveLogEntry(le);
+            JournalManager.saveJournalEntry(le);
             errorStep(step);
             log.error(e);
         }
@@ -541,7 +542,7 @@ public class HelperSchritte {
             String message = "Error while reading metadata for step " + step.getTitel();
             log.error(message, e);
             JournalEntry errorEntry = new JournalEntry(step.getProzess().getId(), new Date(), "automatic", LogType.ERROR, message, EntryType.PROCESS);
-            ProcessManager.saveLogEntry(errorEntry);
+            JournalManager.saveJournalEntry(errorEntry);
             Helper.addMessageToProcessJournal(step.getProzess().getId(), LogType.ERROR, message);
             return new ShellScriptReturnValue(-2, null, null);
         }

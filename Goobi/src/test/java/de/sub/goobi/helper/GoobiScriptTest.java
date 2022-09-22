@@ -51,6 +51,7 @@ import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.mock.MockProcess;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
 import de.sub.goobi.persistence.managers.StepManager;
@@ -217,7 +218,7 @@ public class GoobiScriptTest extends AbstractTest {
         PowerMock.expectLastCall().times(0, 9);
         ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
         PowerMock.expectLastCall().times(0, 9);
-        ProcessManager.saveLogEntry(EasyMock.anyObject(JournalEntry.class));
+        JournalManager.saveJournalEntry(EasyMock.anyObject(JournalEntry.class));
         PowerMock.replay(ProcessManager.class);
 
         PowerMock.mockStatic(Helper.class);
@@ -246,7 +247,7 @@ public class GoobiScriptTest extends AbstractTest {
         PowerMock.expectLastCall().times(0, 9);
         ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
         PowerMock.expectLastCall().times(0, 9);
-        ProcessManager.saveLogEntry(EasyMock.anyObject(JournalEntry.class));
+        JournalManager.saveJournalEntry(EasyMock.anyObject(JournalEntry.class));
         PowerMock.replay(ProcessManager.class);
 
         GoobiScript script = new GoobiScript();
@@ -261,7 +262,7 @@ public class GoobiScriptTest extends AbstractTest {
         PowerMock.expectLastCall().times(0, 9);
         ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
         PowerMock.expectLastCall().times(0, 9);
-        ProcessManager.saveLogEntry(EasyMock.anyObject(JournalEntry.class));
+        JournalManager.saveJournalEntry(EasyMock.anyObject(JournalEntry.class));
         PowerMock.replay(ProcessManager.class);
 
         PowerMock.mockStatic(Helper.class);
@@ -288,7 +289,7 @@ public class GoobiScriptTest extends AbstractTest {
         PowerMock.expectLastCall().anyTimes();
         ProcessManager.deleteProcess(EasyMock.anyObject(Process.class));
         PowerMock.expectLastCall().anyTimes();
-        ProcessManager.saveLogEntry(EasyMock.anyObject(JournalEntry.class));
+        JournalManager.saveJournalEntry(EasyMock.anyObject(JournalEntry.class));
         PowerMock.replay(ProcessManager.class);
 
         PowerMock.mockStatic(Helper.class);

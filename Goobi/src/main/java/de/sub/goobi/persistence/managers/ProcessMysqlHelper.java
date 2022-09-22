@@ -35,13 +35,11 @@ import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
-import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
-import org.goobi.production.enums.LogType;
 import org.joda.time.LocalDate;
 
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -138,7 +136,7 @@ class ProcessMysqlHelper implements Serializable {
             }
 
             for (JournalEntry logEntry : o.getJournal()) {
-                saveLogEntry(logEntry);
+                JournalManager.saveJournalEntry(logEntry);
             }
 
         } catch (SQLException e) {
@@ -715,85 +713,7 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
-    public static JournalEntry saveLogEntry(JournalEntry logEntry) throws SQLException {
 
-        if (logEntry.getId() == null) {
-            return inserLogEntry(logEntry);
-        } else {
-            updateLogEntry(logEntry);
-            return logEntry;
-        }
-    }
-
-    private static void updateLogEntry(JournalEntry logEntry) throws SQLException {
-        String sql =
-                "UPDATE journal set objectID =?, creationDate = ?, userName = ?, type = ? , content = ?, filename = ?, entrytype = ? WHERE id = ?";
-
-        Connection connection = null;
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            QueryRunner run = new QueryRunner();
-            run.update(connection, sql, logEntry.getObjectId(),
-                    logEntry.getCreationDate() == null ? null : new Timestamp(logEntry.getCreationDate().getTime()), logEntry.getUserName(),
-                            logEntry.getType().getTitle(), logEntry.getContent(), logEntry.getFilename(), logEntry.getEntryType().getTitle(),
-                            logEntry.getId());
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
-            }
-        }
-    }
-
-    private static JournalEntry inserLogEntry(JournalEntry logEntry) throws SQLException {
-        String sql = "INSERT INTO journal (objectID, creationDate, userName, type , content, filename, entrytype ) VALUES (?, ?,  ?, ?, ?, ?, ?);";
-        Connection connection = null;
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            QueryRunner run = new QueryRunner();
-            int id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, logEntry.getObjectId(),
-                    logEntry.getCreationDate() == null ? null : new Timestamp(logEntry.getCreationDate().getTime()), logEntry.getUserName(),
-                            logEntry.getType().getTitle(), logEntry.getContent(), logEntry.getFilename(), logEntry.getEntryType().getTitle());
-            logEntry.setId(id);
-            return logEntry;
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
-            }
-        }
-    }
-
-    public static void deleteLogEntry(JournalEntry logEntry) throws SQLException {
-        if (logEntry.getId() != null) {
-            Connection connection = null;
-            try {
-                connection = MySQLHelper.getInstance().getConnection();
-                QueryRunner run = new QueryRunner();
-                String sql = "DELETE FROM journal WHERE id = " + logEntry.getId();
-                run.update(connection, sql);
-            } finally {
-                if (connection != null) {
-                    MySQLHelper.closeConnection(connection);
-                }
-            }
-        }
-    }
-
-    public static List<JournalEntry> getLogEntriesForProcess(int processId) throws SQLException {
-        Connection connection = null;
-
-        String sql = " SELECT * from journal WHERE objectID = " + processId + " AND entrytype = 'process' ORDER BY creationDate";
-
-        try {
-            connection = MySQLHelper.getInstance().getConnection();
-            List<JournalEntry> ret = new QueryRunner().query(connection, sql.toString(), resultSetToLogEntryListHandler);
-            return ret;
-        } finally {
-            if (connection != null) {
-                MySQLHelper.closeConnection(connection);
-            }
-        }
-
-    }
 
     public static final ResultSetHandler<Batch> resultSetToBatchHandler = new ResultSetHandler<Batch>() {
         @Override
@@ -847,38 +767,5 @@ class ProcessMysqlHelper implements Serializable {
         return batch;
     }
 
-    public static final ResultSetHandler<List<JournalEntry>> resultSetToLogEntryListHandler = new ResultSetHandler<List<JournalEntry>>() {
-        @Override
-        public List<JournalEntry> handle(ResultSet rs) throws SQLException {
-            List<JournalEntry> answer = new ArrayList<>();
-            try {
-                while (rs.next()) {
-
-                    int id = rs.getInt("id");
-                    int objectID = rs.getInt("objectID");
-                    Timestamp time = rs.getTimestamp("creationDate");
-                    Date creationDate = null;
-                    if (time != null) {
-                        creationDate = new Date(time.getTime());
-                    } else {
-                        creationDate = new Date();
-                    }
-                    String userName = rs.getString("userName");
-                    LogType type = LogType.getByTitle(rs.getString("type"));
-                    String content = rs.getString("content");
-                    String filename = rs.getString("filename");
-                    String entryType = rs.getString("entrytype");
-
-                    JournalEntry entry = new JournalEntry(objectID, creationDate, userName, type, content, EntryType.getByTitle(entryType));
-                    entry.setId(id);
-                    entry.setFilename(filename);
-                    answer.add(entry);
-                }
-            } finally {
-                rs.close();
-            }
-            return answer;
-        }
-    };
 
 }

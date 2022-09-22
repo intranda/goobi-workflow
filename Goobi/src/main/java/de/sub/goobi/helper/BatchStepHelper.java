@@ -69,6 +69,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 import de.sub.goobi.persistence.managers.HistoryManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
@@ -519,7 +520,7 @@ public class BatchStepHelper implements Serializable {
                 }
                 JournalEntry logEntry =
                         new JournalEntry(currentStep.getProzess().getId(), new Date(), username, LogType.ERROR, message, EntryType.PROCESS);
-                ProcessManager.saveLogEntry(logEntry);
+                JournalManager.saveJournalEntry(logEntry);
 
                 temp.getEigenschaften().add(se);
                 StepManager.saveStep(temp);
@@ -672,7 +673,7 @@ public class BatchStepHelper implements Serializable {
             }
             JournalEntry logEntry =
                     new JournalEntry(currentStep.getProzess().getId(), new Date(), username, LogType.INFO, message, EntryType.PROCESS);
-            ProcessManager.saveLogEntry(logEntry);
+            JournalManager.saveJournalEntry(logEntry);
 
             /*
              * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
@@ -693,7 +694,7 @@ public class BatchStepHelper implements Serializable {
             User user = Helper.getCurrentUser();
             JournalEntry logEntry =
                     new JournalEntry(currentStep.getProzess().getId(), new Date(), user.getNachVorname(), LogType.USER, content, EntryType.PROCESS);
-            ProcessManager.saveLogEntry(logEntry);
+            JournalManager.saveJournalEntry(logEntry);
             currentStep.getProzess().getJournal().add(logEntry);
             this.content = "";
         }
@@ -706,7 +707,7 @@ public class BatchStepHelper implements Serializable {
                 JournalEntry logEntry =
                         new JournalEntry(s.getProzess().getId(), new Date(), user.getNachVorname(), LogType.USER, content, EntryType.PROCESS);
                 s.getProzess().getJournal().add(logEntry);
-                ProcessManager.saveLogEntry(logEntry);
+                JournalManager.saveJournalEntry(logEntry);
             }
             this.content = "";
         }

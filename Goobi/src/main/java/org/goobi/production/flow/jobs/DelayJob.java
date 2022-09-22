@@ -32,7 +32,7 @@ import org.goobi.production.plugin.interfaces.IStepPlugin;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
-import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.extern.log4j.Log4j2;
 
@@ -61,14 +61,14 @@ public class DelayJob extends AbstractGoobiJob {
         for (Step step : stepsWithDelay) {
             IStepPlugin plugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
 
-            if (plugin != null && plugin instanceof IDelayPlugin) {
+            if (plugin instanceof IDelayPlugin) {
                 IDelayPlugin delay = (IDelayPlugin) plugin;
                 delay.initialize(step, "");
                 if (delay.delayIsExhausted()) {
 
                     JournalEntry logEntry = new JournalEntry(step.getProzess().getId(), new Date(), "-delay-", LogType.DEBUG,
                             Helper.getTranslation("blockingDelayIsExhausted"), EntryType.PROCESS);
-                    ProcessManager.saveLogEntry(logEntry);
+                    JournalManager.saveJournalEntry(logEntry);
                     new HelperSchritte().CloseStepObjectAutomatic(step);
                 } else {
                     if (log.isTraceEnabled()) {

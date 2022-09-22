@@ -86,7 +86,7 @@ import org.jdom2.Element;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.forms.SpracheForm;
-import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import lombok.extern.log4j.Log4j2;
 
 @WebListener
@@ -276,7 +276,7 @@ public class Helper implements Serializable, ServletContextListener {
 
     public static void addMessageToJournal(Integer objectId, LogType logType, String content, String sender, EntryType entryType) {
         JournalEntry logEntry = new JournalEntry(objectId, new Date(), sender, logType, content, entryType);
-        ProcessManager.saveLogEntry(logEntry);
+        JournalManager.saveJournalEntry(logEntry);
     }
 
     /**

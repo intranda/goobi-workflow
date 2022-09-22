@@ -56,7 +56,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.extern.log4j.Log4j2;
 import ugh.exceptions.PreferencesException;
@@ -131,7 +131,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
 
                     JournalEntry errorEntry = new JournalEntry(step.getProcessId(), new Date(), "automatic", LogType.ERROR, "Error reading metadata for step" + this.step.getTitel(), EntryType.PROCESS);
 
-                    ProcessManager.saveLogEntry(errorEntry);
+                    JournalManager.saveJournalEntry(errorEntry);
                 }
             } else {
                 this.start();
@@ -244,7 +244,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
             }
             log.error("Error adding TaskTicket to queue: ", e);
             JournalEntry errorEntry = new JournalEntry(step.getProcessId(), new Date(), "automatic", LogType.ERROR, "Error trying to put script-step to external queue: " + this.step.getTitel(), EntryType.PROCESS);
-            ProcessManager.saveLogEntry(errorEntry);
+            JournalManager.saveJournalEntry(errorEntry);
         }
     }
 

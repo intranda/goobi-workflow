@@ -95,6 +95,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.TempImage;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
@@ -794,7 +795,7 @@ public class ProzesskopieForm implements Serializable {
             User user = loginForm.getMyBenutzer();
             JournalEntry logEntry =
                     new JournalEntry(prozessKopie.getId(), new Date(), user.getNachVorname(), LogType.INFO, addToWikiField, EntryType.PROCESS);
-            ProcessManager.saveLogEntry(logEntry);
+            JournalManager.saveJournalEntry(logEntry);
             prozessKopie.getJournal().add(logEntry);
         }
 
@@ -984,7 +985,7 @@ public class ProzesskopieForm implements Serializable {
                         JournalEntry entry = new JournalEntry(prozessKopie.getId(), new Date(), Helper.getCurrentUser().getNachVorname(),
                                 LogType.FILE, image.getDescriptionText(), EntryType.PROCESS);
                         entry.setFilename(destination.toString());
-                        ProcessManager.saveLogEntry(entry);
+                        JournalManager.saveJournalEntry(entry);
                     }
                 }
 

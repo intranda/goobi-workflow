@@ -26,7 +26,7 @@ import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -131,7 +131,7 @@ public class JournalEntry implements Serializable {
     }
 
     public void persist() {
-        ProcessManager.saveLogEntry(this);
+        JournalManager.saveJournalEntry(this);
     }
 
     /**
