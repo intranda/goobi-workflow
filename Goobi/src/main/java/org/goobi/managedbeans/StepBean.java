@@ -461,8 +461,8 @@ public class StepBean extends BasicBean implements Serializable {
             // only steps with same title
             currentStepsOfBatch = StepManager.getSteps(null,
                     "schritte.titel = '" + steptitle
-                            + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
-                            + batchNumber + ")",
+                    + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
+                    + batchNumber + ")",
                     0, Integer.MAX_VALUE);
 
         } else {
@@ -747,7 +747,7 @@ public class StepBean extends BasicBean implements Serializable {
                             + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
                 } else {
                     seg.setWert("[" + this.formatter.format(new Date()) + "] " + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel()
-                            + ": " + this.solutionMessage);
+                    + ": " + this.solutionMessage);
                 }
                 seg.setSchritt(step);
                 seg.setType(PropertyType.messageImportant);
@@ -1102,7 +1102,7 @@ public class StepBean extends BasicBean implements Serializable {
         }
     }
 
-    public void addLogEntry() {
+    public void addJournalEntry() {
         if (StringUtils.isNotBlank(content)) {
             User user = Helper.getCurrentUser();
             JournalEntry logEntry =

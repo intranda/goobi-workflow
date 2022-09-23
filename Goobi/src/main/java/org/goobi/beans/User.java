@@ -765,7 +765,7 @@ public class User implements DatabaseObject, Serializable, IJournal {
 
 
     @Override
-    public void addLogEntry() {
+    public void addJournalEntry() {
         if (uploadedFile != null) {
             saveUploadedFile();
         } else {
@@ -977,7 +977,7 @@ public class User implements DatabaseObject, Serializable, IJournal {
     }
 
     @Override
-    public void addLogEntryForAll() {
+    public void addJournalEntryForAll() {
         throw new UnsupportedOperationException();
     }
 

@@ -446,10 +446,11 @@ public class MySQLHelper implements Serializable {
     public static class MapToStringConverter implements Converter {
 
         @Override
-        public boolean canConvert(Class clazz) {
+        public boolean canConvert(@SuppressWarnings("rawtypes") Class clazz) {
             return AbstractMap.class.isAssignableFrom(clazz);
         }
 
+        @SuppressWarnings("rawtypes")
         @Override
         public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
 

@@ -244,7 +244,7 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
     }
 
     @Override
-    public void addLogEntry() {
+    public void addJournalEntry() {
         if (uploadedFile != null) {
             saveUploadedFile();
         } else {
@@ -456,7 +456,7 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
     }
 
     @Override
-    public void addLogEntryForAll() {
+    public void addJournalEntryForAll() {
         throw new UnsupportedOperationException();
     }
 

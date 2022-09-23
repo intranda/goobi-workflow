@@ -77,8 +77,7 @@ public interface IJournal {
      * Create a new JournalEntry and add it to the journal
      * 
      */
-    // TODO rename it after everything is setup
-    public void addLogEntry();
+    public void addJournalEntry();
 
     /**
      * Create a new JournalEntry and add it to the journal for all items
@@ -86,8 +85,7 @@ public interface IJournal {
      * Only used in batches
      * 
      */
-    // TODO rename it after everything is setup
-    public void addLogEntryForAll();
+    public void addJournalEntryForAll();
 
     /**
      * set the entries of the journal

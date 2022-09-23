@@ -523,7 +523,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrTxtDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     @Deprecated
@@ -533,27 +533,27 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrPdfDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrAltoDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrXmlDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getImportDirectory() throws SwapException, IOException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getExportDirectory() throws SwapException, IOException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException {
@@ -1471,7 +1471,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     @Override
-    public void addLogEntry() {
+    public void addJournalEntry() {
         if (uploadedFile != null) {
             saveUploadedFile();
         } else {
@@ -2266,7 +2266,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     @Override
-    public void addLogEntryForAll() {
+    public void addJournalEntryForAll() {
         throw new UnsupportedOperationException();
     }
 
