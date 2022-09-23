@@ -35,6 +35,7 @@ import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Batch;
 import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
@@ -235,14 +236,16 @@ class ProcessMysqlHelper implements Serializable {
                 StepManager.deleteStep(object);
             }
 
+            JournalManager.deleteAllJournalEntries(o.getId(), EntryType.PROCESS);
+
             // delete process
             String sql = "DELETE FROM prozesse WHERE ProzesseID = ?";
-            Object[] param = { o.getId() };
+
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
-                run.update(connection, sql, param);
+                run.update(connection, sql,  o.getId());
             } finally {
                 if (connection != null) {
                     MySQLHelper.closeConnection(connection);

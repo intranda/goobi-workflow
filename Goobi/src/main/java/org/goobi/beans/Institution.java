@@ -50,6 +50,7 @@ import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 
+import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
@@ -114,8 +115,6 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
     private transient Part uploadedFile = null;
     private transient Path tempFileToImport;
     private String basename;
-
-    private String importFolder = "/tmp/"; // TODO
 
     @Getter
     @Setter
@@ -272,9 +271,9 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
     @Override
     public List<JournalEntry> getFilesInSelectedFolder() {
 
-        String currentFolder = importFolder + shortName;
+        Path folder = Paths.get(ConfigurationHelper.getInstance().getGoobiFolder(), "uploads", "institution", shortName);
 
-        List<Path> files = StorageProvider.getInstance().listFiles(currentFolder);
+        List<Path> files = StorageProvider.getInstance().listFiles(folder.toString());
         List<JournalEntry> answer = new ArrayList<>();
         // check if LogEntry exist
         for (Path file : files) {
@@ -377,7 +376,7 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
     @Override
     public void saveUploadedFile() {
 
-        Path folder = Paths.get(importFolder + shortName);
+        Path folder = Paths.get(ConfigurationHelper.getInstance().getGoobiFolder(), "uploads", "institution", shortName);
         try {
 
             if (!StorageProvider.getInstance().isFileExists(folder)) {
@@ -460,4 +459,15 @@ public class Institution implements Serializable, DatabaseObject, Comparable<Ins
     public void addLogEntryForAll() {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public void setUploadFolder(String uploadFolder) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getUploadFolder() {
+        throw new UnsupportedOperationException();
+    }
+
 }

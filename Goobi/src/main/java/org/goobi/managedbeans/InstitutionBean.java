@@ -1,6 +1,8 @@
 package org.goobi.managedbeans;
 
 import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -33,6 +35,8 @@ import javax.inject.Named;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Institution;
 
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.persistence.managers.InstitutionManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -86,6 +90,11 @@ public class InstitutionBean extends BasicBean implements Serializable {
     public String deleteInstitution() {
         // TODO check if a project is assigned to the institution. If this is the case, stay on this page
         // otherwise delete institution and return to overview
+
+        Path folder = Paths.get(ConfigurationHelper.getInstance().getGoobiFolder(), "uploads", "institution", institution.getShortName());
+        if (StorageProvider.getInstance().isFileExists(folder)) {
+            StorageProvider.getInstance().deleteDir(folder);
+        }
         InstitutionManager.deleteInstitution(institution);
         paginator.load();
         return FilterKein();

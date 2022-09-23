@@ -87,9 +87,9 @@
                         pt:aria-label="#{msgs.process_log_file_FolderSelection}"
                         styleClass="form-control input pull-right margin-right-10"
                         style="width: auto;"
-                        value="#{process.currentFolder}"
+                        value="#{bean.currentFolder}"
                         rendered="#{NavigationForm.uiStatus['toggleJournal']=='fileUpload'}">
-                        <f:selectItems value="#{process.visibleFolder}" />
+                        <f:selectItems value="#{bean.visibleFolder}" />
                         <f:ajax render="@form" />
                     </x:selectOneMenu>
 
@@ -201,13 +201,13 @@
                         tabindex="0"
                         data-scrolldown="true"
                         style="overflow: auto; width: auto; #{NavigationForm.uiStatus['journalBig']?'':'height: 180px;'}">
-                        <h:panelGroup rendered="#{process.journal.size()>0}">
+                        <h:panelGroup rendered="#{bean.journal.size()>0}">
                             <table
                                 style="width: 100%"
                                 class="table table-hover table-bordered">
                                 <ui:repeat
                                     var="entry"
-                                    value="#{process.journal}"
+                                    value="#{bean.journal}"
                                     varStatus="row">
                                     <h:panelGroup rendered="#{!NavigationForm.uiStatus[('process_log_level_').concat(entry.type.title)]}">
                                         <tr>
@@ -231,7 +231,7 @@
                                                     <button
                                                         jsf:id="downloadFile"
                                                         class="log_file"
-                                                        jsf:action="#{process.downloadFile(entry)}"
+                                                        jsf:action="#{bean.downloadFile(entry)}"
                                                         title="#{msgs.downloadFile}">
                                                         <i class="fa #{entry.externalFile ? 'fa-globe' : 'fa-paperclip'} margin-right-less" />
                                                         <h:outputText value="#{entry.basename}" />
@@ -242,7 +242,7 @@
                                                         onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
                                                         jsf:rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Journal_File_Deletion')}"
                                                         class="log_file_delete btn-mini pull-right margin-right-10"
-                                                        jsf:action="#{process.deleteFile(entry)}"
+                                                        jsf:action="#{bean.deleteFile(entry)}"
                                                         title="#{msgs.deleteFile}">
                                                         <i class="fa fa-trash-o" />
                                                     </button>
@@ -268,7 +268,7 @@
                                     styleClass="form-control"
                                     pt:aria-label="#{msgs.process_log_firstContent}"
                                     onkeypress="return submitEnter('addToLog',event)"
-                                    value="#{process.content}" />
+                                    value="#{bean.content}" />
                             </div>
                         </div>
 
@@ -282,19 +282,19 @@
                                         <h:inputFile
                                             id="thirdtab_fileupload3"
                                             pt:aria-label="#{msgs.fileUpload}"
-                                            value="#{process.uploadedFile}"
+                                            value="#{bean.uploadedFile}"
                                             storage="file"
                                             style="border: 0;padding-left: 0px; margin-right: 5px; display: inline;"
                                             required="false">
-                                            <f:ajax listener="#{process.uploadFile}" />
+                                            <f:ajax listener="#{bean.uploadFile}" />
                                         </h:inputFile>
                                         <intranda:formHelp content="#{msgs.help_import_FileUpload}" />
                                         <h:selectOneRadio
                                             id="folderSelection"
-                                            value="#{process.uploadFolder}"
+                                            value="#{bean.uploadFolder}"
                                             styleClass="inline-table focusableChild"
                                             disabledClass="margin-sides-10"
-                                            enabledClass="margin-sides-10">
+                                            enabledClass="margin-sides-10" rendered="#{showFolderSelection}">
                                             <f:selectItem
                                                 pt:styleClass="focusable"
                                                 itemLabel="#{msgs.process_log_file_FolderSelectionInternal}"
@@ -310,7 +310,7 @@
                                         type="submit"
                                         class="btn btn-primary font-size-s "
                                         style="display: inline;"
-                                        jsf:action="#{process.addLogEntry}">
+                                        jsf:action="#{bean.addLogEntry}">
                                         <h:outputText value="#{msgs.nachrichtHinzufuegen}" />
                                     </button>
                                 </div>
@@ -328,7 +328,7 @@
                                 class="table table-hover table-bordered">
                                 <ui:repeat
                                     var="entry"
-                                    value="#{process.filesInSelectedFolder}"
+                                    value="#{bean.filesInSelectedFolder}"
                                     varStatus="row">
                                     <tr>
                                         <td>
@@ -342,10 +342,10 @@
                                             <!-- delete button, removed for some folder -->
                                             <button
                                                 jsf:id="deleteFile2"
-                                                jsf:rendered="#{process.showFileDeletionButton and LoginForm.hasRole('Workflow_Processes_Show_Journal_File_Deletion')}"
+                                                jsf:rendered="#{bean.showFileDeletionButton and LoginForm.hasRole('Workflow_Processes_Show_Journal_File_Deletion')}"
                                                 class="button-no-style btn-mini pull-right margin-right-10"
                                                 style="color: #333;"
-                                                jsf:action="#{process.deleteFile(entry)}"
+                                                jsf:action="#{bean.deleteFile(entry)}"
                                                 title="#{msgs.deleteFile}">
                                                 <i class="fa fa-trash-o" />
                                             </button>
@@ -354,7 +354,7 @@
                                                 jsf:id="downloadFile"
                                                 class="button-no-style btn-mini pull-right margin-right-10"
                                                 style="color: #333;"
-                                                jsf:action="#{process.downloadFile(entry)}"
+                                                jsf:action="#{bean.downloadFile(entry)}"
                                                 title="#{msgs.downloadFile}">
                                                 <i class="fa fa-download" />
                                             </button>

@@ -103,4 +103,20 @@ public interface IJournal {
      * @return list of JournalEntry
      */
     public List<JournalEntry> getJournal();
+
+    /**
+     * Set the folder where the file is to be uploaded.
+     * 
+     * @param uploadFolder folder name
+     */
+
+    public void setUploadFolder(String uploadFolder);
+
+    /**
+     * Get the folder selection
+     * 
+     * @return uploadFolder folder name
+     */
+    public String getUploadFolder();
+
 }

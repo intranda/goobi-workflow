@@ -28,6 +28,7 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;
 import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -211,6 +212,9 @@ class InstitutionMysqlHelper implements Serializable {
 
     static void deleteInstitution(Institution ro) throws SQLException {
         if (ro.getId() != null) {
+
+            JournalManager.deleteAllJournalEntries(ro.getId(), EntryType.INSTITUTION);
+
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();

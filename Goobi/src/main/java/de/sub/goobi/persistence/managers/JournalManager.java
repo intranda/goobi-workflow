@@ -42,7 +42,15 @@ public class JournalManager implements IManager, Serializable {
         try {
             JournalMysqlHelper.deleteLogEntry(entry);
         } catch (SQLException e) {
-            log.error("Cannot not journal for object with id " + entry.getObjectId(), e);
+            log.error("Cannot not delete journal for object with id " + entry.getObjectId(), e);
+        }
+    }
+
+    public static void deleteAllJournalEntries(Integer objectId, EntryType type) {
+        try {
+            JournalMysqlHelper.deleteAllJournalEntries(objectId, type);
+        } catch (SQLException e) {
+            log.error("Cannot not delete journal entries");
         }
     }
 

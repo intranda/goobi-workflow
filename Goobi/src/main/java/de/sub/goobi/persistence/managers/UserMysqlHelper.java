@@ -185,20 +185,20 @@ class UserMysqlHelper implements Serializable {
                 Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, ro.getVorname(), ro.getNachname(),
                         ro.getLogin(), ro.getStandort(), ro.getMetadatenSprache(), ro.getCss(), ro.isMitMassendownload(), ro.getTabellengroesse(),
                         ro.getSessiontimeout(), ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), ro.getLdaplogin(),
-                        ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
-                        ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
-                        ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(),
-                        ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(),
+                                ro.isDisplayAutomaticTasks(), ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(),
+                                ro.isDisplayIdColumn(), ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(),
+                                ro.isDisplayOnlySelectedTasks(), ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(),
+                                ro.isDisplaySwappingColumn(), ro.isHideCorrectionTasks(),
 
-                        ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(), ro.getMetsEditorTime(),
-                        ro.isMetsDisplayHierarchy(), ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(),
-                        ro.isDisplayOtherTasks(), ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(),
-                        ro.isDisplayGridView(), ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
-                        ro.getMailNotificationLanguage(), ro.getInstitution().getId(), ro.isSuperAdmin(), ro.isDisplayInstitutionColumn(),
-                        ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(), ro.getProcessListDefaultSortOrder(),
-                        ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(), ro.isDisplayLastEditionDate(),
-                        ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(), ro.getUiMode(),
-                        ro.getStatus().getName(), additionalData);
+                                ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(), ro.getMetsEditorTime(),
+                                        ro.isMetsDisplayHierarchy(), ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(), ro.isMetsLinkImage(),
+                                        ro.isDisplayOtherTasks(), ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(),
+                                        ro.isDisplayGridView(), ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
+                                        ro.getMailNotificationLanguage(), ro.getInstitution().getId(), ro.isSuperAdmin(), ro.isDisplayInstitutionColumn(),
+                                        ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(), ro.getProcessListDefaultSortOrder(),
+                                        ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(), ro.isDisplayLastEditionDate(),
+                                        ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(), ro.getUiMode(),
+                                        ro.getStatus().getName(), additionalData);
                 if (id != null) {
                     ro.setId(id);
                 }
@@ -262,18 +262,18 @@ class UserMysqlHelper implements Serializable {
                 run.update(connection, sql.toString(), ro.getVorname(), ro.getNachname(), ro.getLogin(), ro.getStandort(), ro.getMetadatenSprache(),
                         ro.getCss(), ro.isMitMassendownload(), ro.getTabellengroesse(), ro.getSessiontimeout(),
                         ro.getLdapGruppe() == null ? null : ro.getLdapGruppe().getId(), ro.getLdaplogin(), ro.isDisplayAutomaticTasks(),
-                        ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(), ro.isDisplayIdColumn(),
-                        ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(),
-                        ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
-                        ro.isHideCorrectionTasks(), ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
-                        ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(), ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(),
-                        ro.isMetsLinkImage(), ro.isDisplayOtherTasks(), ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(),
-                        ro.isDisplayGridView(), ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
-                        ro.getMailNotificationLanguage(), ro.getInstitution().getId(), ro.isSuperAdmin(), ro.isDisplayInstitutionColumn(),
-                        ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(), ro.getProcessListDefaultSortOrder(),
-                        ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(), ro.isDisplayLastEditionDate(),
-                        ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(), ro.getUiMode(),
-                        ro.getStatus().getName(), additionalData);
+                                ro.isDisplayBatchColumn(), ro.isDisplayDeactivatedProjects(), ro.isDisplayFinishedProcesses(), ro.isDisplayIdColumn(),
+                                ro.isDisplayLocksColumn(), ro.isDisplayModulesColumn(), ro.isDisplayOnlyOpenTasks(), ro.isDisplayOnlySelectedTasks(),
+                                ro.isDisplayProcessDateColumn(), ro.isDisplayRulesetColumn(), ro.isDisplaySelectBoxes(), ro.isDisplaySwappingColumn(),
+                                ro.isHideCorrectionTasks(), ro.getEmail(), ro.getShortcutPrefix() == null ? "ctrl+shift" : ro.getShortcutPrefix(),
+                                        ro.getMetsEditorTime(), ro.isMetsDisplayHierarchy(), ro.isMetsDisplayPageAssignments(), ro.isMetsDisplayTitle(),
+                                        ro.isMetsLinkImage(), ro.isDisplayOtherTasks(), ro.getEncryptedPassword(), ro.getPasswordSalt(), ro.isMetsDisplayProcessID(),
+                                        ro.isDisplayGridView(), ro.isDisplayMetadataColumn(), ro.isDisplayThumbColumn(), ro.getCustomColumns(), ro.getCustomCss(),
+                                        ro.getMailNotificationLanguage(), ro.getInstitution().getId(), ro.isSuperAdmin(), ro.isDisplayInstitutionColumn(),
+                                        ro.getDashboardPlugin(), ro.getSsoId(), ro.getProcessListDefaultSortField(), ro.getProcessListDefaultSortOrder(),
+                                        ro.getTaskListDefaultSortingField(), ro.getTaskListDefaultSortOrder(), ro.isDisplayLastEditionDate(),
+                                        ro.isDisplayLastEditionUser(), ro.isDisplayLastEditionTask(), ro.getDashboardConfiguration(), ro.getUiMode(),
+                                        ro.getStatus().getName(), additionalData);
 
             }
 
@@ -552,7 +552,7 @@ class UserMysqlHelper implements Serializable {
         }
     }
 
-    public static ResultSetHandler<Boolean> checkForResultHandler = new ResultSetHandler<Boolean>() {
+    public static final ResultSetHandler<Boolean> checkForResultHandler = new ResultSetHandler<Boolean>() {
 
         @Override
         public Boolean handle(ResultSet rs) throws SQLException {
@@ -564,7 +564,7 @@ class UserMysqlHelper implements Serializable {
         }
     };
 
-    public static ResultSetHandler<List<String>> resultSetToFilterListtHandler = new ResultSetHandler<List<String>>() {
+    public static final ResultSetHandler<List<String>> resultSetToFilterListtHandler = new ResultSetHandler<List<String>>() {
         @Override
         public List<String> handle(ResultSet rs) throws SQLException {
             List<String> answer = new ArrayList<>();

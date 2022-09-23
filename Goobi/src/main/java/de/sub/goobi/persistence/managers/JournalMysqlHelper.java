@@ -76,6 +76,20 @@ class JournalMysqlHelper implements Serializable {
         }
     }
 
+    public static void deleteAllJournalEntries(Integer objectId, EntryType type) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = MySQLHelper.getInstance().getConnection();
+            QueryRunner run = new QueryRunner();
+            String sql = "DELETE FROM journal WHERE objectId = ? and entrytype = ?";
+            run.update(connection, sql, objectId, type);
+        } finally {
+            if (connection != null) {
+                MySQLHelper.closeConnection(connection);
+            }
+        }
+    }
+
     public static List<JournalEntry> getLogEntries(int processId, EntryType entryType) throws SQLException {
         Connection connection = null;
         String sql = " SELECT * from journal WHERE objectID = ? AND entrytype = ? ORDER BY creationDate";
