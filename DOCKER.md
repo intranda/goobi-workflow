@@ -54,9 +54,10 @@ To uninstall Goobi workflow from your system and your Docker environment again p
 docker-compose down
 
 # cleanup the created volumes that Goobi created
-docker volume prune
+docker-compose down -v
 
 # cleanup the Goobi Docker image
+docker image rm intranda/goobi-workflow:default-plugins
 docker image rm intranda/goobi-workflow
 
 # cleanup the database Docker image
