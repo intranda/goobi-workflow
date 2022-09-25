@@ -1,6 +1,6 @@
-# Goobi Docker Image
+# Goobi workflow Docker Image
 
-## Install Goobi based on Docker
+## Install Goobi workflow based on Docker
 
 Please make sure than you have [Git](https://git-scm.com/) and [Docker](https://www.docker.com/) installed on your machine to execute the following commands to install Goobi in your Docker environment.
 
@@ -9,7 +9,7 @@ Please make sure than you have [Git](https://git-scm.com/) and [Docker](https://
 git clone https://github.com/intranda/goobi-workflow.git
 
 # go into the checked out goobi directory
-cd goobi
+cd goobi-workflow
 
 # startup the database to have it running for Goobi
 docker-compose up -d goobi-db
@@ -18,35 +18,35 @@ docker-compose up -d goobi-db
 docker-compose up -d
 ```
 
-Goobi is now running and can get accessed through a web browser using the following data:
+Goobi workflow is now running and can get accessed through a web browser using the following data:
 
 Information | Description
 ------------|----------------------------
-URL:        | http://localhost:8080/goobi
+URL:        | <http://localhost:8080/goobi>
 Login:      | testadmin
 Password:   | test
 
 Alternative login names are `testscanning`, `testqc`, `testmetadata`,`testprojectmanagement` and `testimaging`. The password for all those accounts is `test`.
 
-## Stop Goobi and restart it later again
+## Stop Goobi workflow and restart it later again
 
-To stop a running Goobi please make sure that you are inside of the directory `goobi` to execute this command:
+To stop a running Goobi workflow instance please make sure that you are inside of the directory `goobi-workflow` to execute this command:
 
 ```bash
-# stop the Goobi server
+# stop Goobi workflow
 docker-compose stop
 ```
 
-To start a stopped Goobi later again please make sure that you are in the directory `goobi` again as shown above. Then execute this command:
+To start a stopped Goobi workflow instance later again please make sure that you are in the directory `goobi-workflow` again as shown above. Then execute this command:
 
 ```bash
-# restart the Goobi server again later
+# restart Goobi workflow
 docker-compose start
 ```
 
-## Uninstall Goobi from Docker
+## Uninstall Goobi workflow from Docker
 
-To uninstall Goobi from your system and your Docker environment again please make sure you have stopped the Goobi container first as shown above. Afterwards please execute the following commands from inside of the directory `goobi`:
+To uninstall Goobi workflow from your system and your Docker environment again please make sure you have stopped the Goobi workflow containers first as shown above. Afterwards please execute the following commands from inside of the directory `goobi-workflow`:
 
 ```bash
 
@@ -66,7 +66,7 @@ docker image rm mariadb:10.1
 cd ..
 
 # delete the source code of Goobi workflow from your hard disk entirely
-rm -rf goobi
+rm -rf goobi-workflow
 ```
 
 ## More information
