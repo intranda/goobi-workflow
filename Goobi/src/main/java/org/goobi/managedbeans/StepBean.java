@@ -4,10 +4,9 @@ package org.goobi.managedbeans;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
- * 			- http://digiverso.com
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -465,8 +464,8 @@ public class StepBean extends BasicBean implements Serializable {
             // only steps with same title
             currentStepsOfBatch = StepManager.getSteps(null,
                     "schritte.titel = '" + steptitle
-                            + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
-                            + batchNumber + ")",
+                    + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
+                    + batchNumber + ")",
                     0, Integer.MAX_VALUE);
 
         } else {
@@ -756,7 +755,7 @@ public class StepBean extends BasicBean implements Serializable {
                             + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
                 } else {
                     seg.setWert("[" + this.formatter.format(new Date()) + "] " + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel()
-                            + ": " + this.solutionMessage);
+                    + ": " + this.solutionMessage);
                 }
                 seg.setSchritt(step);
                 seg.setType(PropertyType.messageImportant);

@@ -3,10 +3,10 @@ package org.goobi.beans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -117,33 +117,44 @@ public class HistoryEvent implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         HistoryEvent other = (HistoryEvent) obj;
         if (date == null) {
-            if (other.date != null)
+            if (other.date != null) {
                 return false;
-        } else if (!date.equals(other.date))
+            }
+        } else if (!date.equals(other.date)) {
             return false;
+        }
         if (numericValue == null) {
-            if (other.numericValue != null)
+            if (other.numericValue != null) {
                 return false;
-        } else if (!numericValue.equals(other.numericValue))
+            }
+        } else if (!numericValue.equals(other.numericValue)) {
             return false;
+        }
         if (stringValue == null) {
-            if (other.stringValue != null)
+            if (other.stringValue != null) {
                 return false;
-        } else if (!stringValue.equals(other.stringValue))
+            }
+        } else if (!stringValue.equals(other.stringValue)) {
             return false;
+        }
         if (type == null) {
-            if (other.type != null)
+            if (other.type != null) {
                 return false;
-        } else if (!type.equals(other.type))
+            }
+        } else if (!type.equals(other.type)) {
             return false;
+        }
         return true;
     }
 

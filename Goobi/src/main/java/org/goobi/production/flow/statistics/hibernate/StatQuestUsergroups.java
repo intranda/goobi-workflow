@@ -3,10 +3,10 @@ package org.goobi.production.flow.statistics.hibernate;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -54,6 +54,7 @@ public class StatQuestUsergroups implements IStatisticalQuestion {
      * (non-Javadoc)
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
      */
+    @Override
     public List<DataTable> getDataTables(String filter, String originalFilter) {
         List<Step> stepList = null;
         if (filter == null || filter.length() == 0) {
@@ -61,7 +62,7 @@ public class StatQuestUsergroups implements IStatisticalQuestion {
         } else {
             stepList = StepManager.getSteps(null,
                     " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND schritte.ProzesseID in (select ProzesseID from prozesse where " + filter
-                            + ")");
+                    + ")");
         }
 
         StringBuilder title = new StringBuilder(StatisticsMode.getByClassName(this.getClass()).getTitle());
@@ -77,7 +78,7 @@ public class StatQuestUsergroups implements IStatisticalQuestion {
         }
 
         dtbl.addDataRow(dRow);
-        List<DataTable> allTables = new ArrayList<DataTable>();
+        List<DataTable> allTables = new ArrayList<>();
 
         dtbl.setUnitLabel(Helper.getTranslation("benutzergruppe"));
         allTables.add(dtbl);
@@ -88,6 +89,7 @@ public class StatQuestUsergroups implements IStatisticalQuestion {
      * (non-Javadoc)
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#isRendererInverted(de.intranda.commons.chart.renderer.IRenderer)
      */
+    @Override
     public Boolean isRendererInverted(IRenderer inRenderer) {
         return inRenderer instanceof HtmlTableRenderer;
     }
@@ -96,6 +98,7 @@ public class StatQuestUsergroups implements IStatisticalQuestion {
      * (non-Javadoc)
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#setCalculationUnit(org.goobi.production.flow.statistics.enums.CalculationUnit)
      */
+    @Override
     public void setCalculationUnit(CalculationUnit cu) {
     }
 
@@ -103,6 +106,7 @@ public class StatQuestUsergroups implements IStatisticalQuestion {
      * (non-Javadoc)
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#setTimeUnit(org.goobi.production.flow.statistics.enums.TimeUnit)
      */
+    @Override
     public void setTimeUnit(TimeUnit timeUnit) {
     }
 
@@ -110,6 +114,7 @@ public class StatQuestUsergroups implements IStatisticalQuestion {
      * (non-Javadoc)
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getNumberFormatPattern()
      */
+    @Override
     public String getNumberFormatPattern() {
         return "#";
     }

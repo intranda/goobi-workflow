@@ -4,9 +4,9 @@ package de.sub.goobi.export.dms;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
-//import lombok.extern.log4j.Log4j2;		//doesnt work?
 import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
@@ -68,6 +67,7 @@ import ugh.exceptions.WriteException;
 
 @Log4j2
 public class ExportDms extends ExportMets implements IExportPlugin {
+    private static final long serialVersionUID = -8965539133582826845L;
     protected boolean exportWithImages = true;
     @Setter
     protected boolean exportFulltext = true;

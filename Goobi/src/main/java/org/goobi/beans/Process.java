@@ -2,10 +2,9 @@
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
- * 			- http://digiverso.com
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -527,7 +526,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrTxtDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrTxtDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     @Deprecated
@@ -537,27 +536,27 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public String getOcrPdfDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrPdfDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrAltoDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrAltoDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getOcrXmlDirectory() throws SwapException, IOException {
         return getOcrDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessOcrXmlDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getImportDirectory() throws SwapException, IOException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessImportDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getExportDirectory() throws SwapException, IOException {
         return getProcessDataDirectory() + VariableReplacer.simpleReplace(ConfigurationHelper.getInstance().getProcessExportDirectoryName(), this)
-                + FileSystems.getDefault().getSeparator();
+        + FileSystems.getDefault().getSeparator();
     }
 
     public String getProcessDataDirectoryIgnoreSwapping() throws IOException {

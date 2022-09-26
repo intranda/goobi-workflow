@@ -3,10 +3,10 @@ package org.goobi.production.flow.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -41,7 +41,7 @@ public class BatchDisplayItem implements Comparable<BatchDisplayItem> {
     private String stepTitle = "";
     private Integer stepOrder = null;
     private StepStatus stepStatus = StepStatus.DONE;
-    private HashMap<String, String> scripts = new HashMap<String, String>();
+    private HashMap<String, String> scripts = new HashMap<>();
     private boolean exportDMS = false;
 
     public BatchDisplayItem(Step s) {
@@ -63,7 +63,7 @@ public class BatchDisplayItem implements Comparable<BatchDisplayItem> {
     }
 
     public List<String> getScriptnames() {
-        List<String> answer = new ArrayList<String>();
+        List<String> answer = new ArrayList<>();
         answer.addAll(this.scripts.keySet());
         return answer;
     }

@@ -48,8 +48,8 @@ class DocketMysqlHelper implements Serializable {
             } else {
                 sql.append(" WHERE ");
             }
-            sql.append(
-                    "docketId in (SELECT object_id FROM institution_configuration where object_type = 'docket' and selected = true and institution_id = ");
+            sql.append("docketId in (SELECT object_id FROM institution_configuration where object_type = 'docket' ");
+            sql.append("and selected = true and institution_id = ");
             sql.append(institution.getId());
             sql.append(") ");
         }

@@ -4,9 +4,9 @@ package org.goobi.production.flow.statistics.hibernate;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -447,7 +447,7 @@ public class FilterHelper {
         String login = tok.substring(tok.indexOf(":") + 1).replace("\\_", "_");
 
         return " prozesse.ProzesseID in (select ProzesseID from schritte where schritte.BearbeitungsBenutzerID = (select BenutzerID from benutzer where benutzer.login = '"
-                + login + "'))";
+        + login + "'))";
     }
 
     /**
@@ -1044,7 +1044,7 @@ public class FilterHelper {
 
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
-                        + rightTruncationCharacter + "'");
+                + rightTruncationCharacter + "'");
             } else if (tok.toLowerCase().startsWith(FilterString.INSTITUTION)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(filterInstitution(tok, false));
@@ -1066,7 +1066,7 @@ public class FilterHelper {
                     } else {
                         filter = checkStringBuilder(filter, true);
                         filter.append(" batches.batchName like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(substring)
-                                + rightTruncationCharacter + "'");
+                        + rightTruncationCharacter + "'");
                     }
 
                 } catch (NumberFormatException e) {
@@ -1163,7 +1163,7 @@ public class FilterHelper {
                     } else {
                         filter = checkStringBuilder(filter, true);
                         filter.append(" batches.batchName not like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(substring)
-                                + rightTruncationCharacter + "' OR batches.batchName IS NULL OR prozesse.batchID IS NULL ");
+                        + rightTruncationCharacter + "' OR batches.batchName IS NULL OR prozesse.batchID IS NULL ");
                     }
 
                 } catch (NumberFormatException e) {
@@ -1172,7 +1172,7 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("-")) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel not like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(1))
-                        + rightTruncationCharacter + "'");
+                + rightTruncationCharacter + "'");
             }
 
             // USE OR
@@ -1248,7 +1248,7 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESS) || tok.toLowerCase().startsWith("|" + FilterString.PROZESS)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
-                        + rightTruncationCharacter + "'");
+                + rightTruncationCharacter + "'");
             } else if (tok.toLowerCase().startsWith("|" + FilterString.BATCH) || tok.toLowerCase().startsWith("|" + FilterString.GRUPPE)) {
                 try {
                     String substring = tok.substring(tok.indexOf(":") + 1);
@@ -1262,7 +1262,7 @@ public class FilterHelper {
                     } else {
                         filter = checkStringBuilder(filter, false);
                         filter.append(" batches.batchName like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(substring)
-                                + rightTruncationCharacter + "'");
+                        + rightTruncationCharacter + "'");
                     }
 
                 } catch (NumberFormatException e) {
@@ -1271,11 +1271,11 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("|")) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(1))
-                        + rightTruncationCharacter + "'");
+                + rightTruncationCharacter + "'");
             } else {
                 filter = checkStringBuilder(filter, true);
                 filter.append(" prozesse.Titel like '" + leftTruncationCharacter + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1))
-                        + rightTruncationCharacter + "'");
+                + rightTruncationCharacter + "'");
             }
             if (newFilterGroup && !currentDateFilter.isStepFilterPresent() && !currentDateFilter.getDateFilter().isEmpty()) {
                 newFilterGroup = false;
