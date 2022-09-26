@@ -7,15 +7,35 @@
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composite">
 
     <composite:interface>
     </composite:interface>
 
     <composite:implementation>
+
+        <!-- Custom plugin styles -->
+        <!--
+        <link
+            type="text/css"
+            rel="stylesheet"
+            href="#{HelperForm.applicationWebsiteUrl}uii/css/index.css" />
+        -->
+
+    <link rel="stylesheet" href="template/css/bootstrap.min.css?v=#{HelperForm.buildVersion}" />
+    <link rel="stylesheet" href="template/css/bootstrap-slider.css?v=#{HelperForm.buildVersion}" />
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="template/css/style.css?v=#{HelperForm.buildVersion}" />
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="template/css/font-awesome.css?v=#{HelperForm.buildVersion}" />
+    <!-- Color CSS -->
+    <link rel="stylesheet" href="template/css/themes.css?v=#{HelperForm.buildVersion}" />
+    <!-- intranda -->
+    <link rel="stylesheet" href="template/css/intranda.css?v=#{HelperForm.buildVersion}" />
+
         <script type="text/javascript">
                                     function switchExpanded( id ) {
-                                    	console.log(2)
+                                        console.log(1)
                                         console.log( "called by: " + id );
                                         var x = document.getElementById( id ).getAttribute( "aria-expanded" );
                                         console.log( x )
@@ -289,7 +309,9 @@
                                             required="false">
                                             <f:ajax listener="#{bean.uploadFile}" />
                                         </h:inputFile>
+                                        <!--
                                         <intranda:formHelp content="#{msgs.help_import_FileUpload}" />
+                                        -->
                                         <h:selectOneRadio
                                             id="folderSelection"
                                             value="#{bean.uploadFolder}"
