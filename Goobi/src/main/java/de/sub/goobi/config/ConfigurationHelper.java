@@ -1,6 +1,7 @@
 package de.sub.goobi.config;
 
 import java.io.IOException;
+
 import java.io.OutputStream;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -862,7 +863,7 @@ public class ConfigurationHelper implements Serializable {
 
     // proxy settings
     public boolean isUseProxy() {
-        return getLocalBoolean("http_useProxy", false);
+        return getLocalBoolean("http_proxyEnabled", false);
     }
 
     public String getProxyUrl() {
@@ -872,7 +873,15 @@ public class ConfigurationHelper implements Serializable {
     public int getProxyPort() {
         return getLocalInt("http_proxyPort", 8080);
     }
-
+    
+    public List<String> getProxyWhitelist() {
+    	return getLocalList("http_proxyIgnoreIp");
+    }
+    
+    public Boolean isProxyWhitelisted(String url) {
+    	return getProxyWhitelist().contains(url);
+    }
+    
     // old parameter, remove them
     @Deprecated
     public boolean isUseSwapping() {

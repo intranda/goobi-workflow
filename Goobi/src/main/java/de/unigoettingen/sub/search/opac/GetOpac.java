@@ -626,15 +626,19 @@ public class GetOpac {
                 log.debug("use proxy configuration: " + ConfigurationHelper.getInstance().isUseProxy());
             }
             if (ConfigurationHelper.getInstance().isUseProxy()) {
-                HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
-                if (log.isDebugEnabled()) {
-                    log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
-                }
-
-                Builder builder = RequestConfig.custom();
-                builder.setProxy(proxy);
-                RequestConfig rc = builder.build();
-                opacRequest.setConfig(rc);
+            	if (!ConfigurationHelper.getInstance().isProxyWhitelisted(url)) {
+	                HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
+	                if (log.isDebugEnabled()) {
+	                    log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
+	                }
+	
+	                Builder builder = RequestConfig.custom();
+	                builder.setProxy(proxy);
+	                RequestConfig rc = builder.build();
+	                opacRequest.setConfig(rc);
+            	} else if (log.isDebugEnabled()) {
+            		log.debug("url was on proxy whitelist, no proxy used: " + url);
+            	}
             }
 
             String result = this.opacClient.execute(opacRequest, HttpClientHelper.stringResponseHandler);
