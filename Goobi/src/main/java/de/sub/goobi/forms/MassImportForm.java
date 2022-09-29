@@ -4,9 +4,9 @@ package de.sub.goobi.forms;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -392,8 +392,8 @@ public class MassImportForm implements Serializable {
             // if not runnable as GoobiScript run it in the regular MassImport GUI
             List<ImportObject> answer = new ArrayList<>();
             Batch localBatch = null; // I modified this variable's name so that it won't hide the field declared at line 164 anymore.
-                                     // But I've no idea WTH we would need this, given that the field itself was also used at line 364. - Zehong
-                                     // found list with ids
+            // But I've no idea WTH we would need this, given that the field itself was also used at line 364. - Zehong
+            // found list with ids
             Prefs prefs = this.template.getRegelsatz().getPreferences();
             String tempfolder = ConfigurationHelper.getInstance().getTemporaryFolder();
             this.plugin.setImportFolder(tempfolder);
@@ -479,7 +479,7 @@ public class MassImportForm implements Serializable {
                 return "";
             }
         } // END if (testForData()) AT LINE 319
-          // missing data
+        // missing data
         else {
             Helper.setFehlerMeldung("missingData");
             return "";

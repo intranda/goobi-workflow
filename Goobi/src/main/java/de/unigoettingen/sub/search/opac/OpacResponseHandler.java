@@ -3,10 +3,10 @@ package de.unigoettingen.sub.search.opac;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -49,9 +49,9 @@ public class OpacResponseHandler extends DefaultHandler {
     int numberOfHits = 0;
 
     @Getter
-    ArrayList<String> opacResponseItemPpns = new ArrayList<String>();
+    ArrayList<String> opacResponseItemPpns = new ArrayList<>();
     @Getter
-    ArrayList<String> opacResponseItemTitles = new ArrayList<String>();
+    ArrayList<String> opacResponseItemTitles = new ArrayList<>();
 
     public OpacResponseHandler() {
         super();

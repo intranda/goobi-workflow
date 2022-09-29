@@ -3,10 +3,10 @@ package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -51,14 +51,14 @@ public class TreeNode {
     protected List<TreeNode> children;
 
     public TreeNode() {
-        this.children = new ArrayList<TreeNode>();
+        this.children = new ArrayList<>();
     }
 
     public TreeNode(boolean expanded, String label, String id) {
         this.expanded = expanded;
         this.label = label;
         this.id = id;
-        this.children = new ArrayList<TreeNode>();
+        this.children = new ArrayList<>();
     }
 
     public void addChild(TreeNode inNode) {
@@ -66,13 +66,13 @@ public class TreeNode {
     }
 
     public List<TreeNode> getChildrenAsList() {
-        List<TreeNode> myList = new ArrayList<TreeNode>();
+        List<TreeNode> myList = new ArrayList<>();
         getChildrenAsListMitStrichen(myList, 0, this, true, true, new ArrayList<TreeNode>());
         return myList;
     }
 
     public List<TreeNode> getChildrenAsListAlle() {
-        List<TreeNode> myList = new ArrayList<TreeNode>();
+        List<TreeNode> myList = new ArrayList<>();
         getChildrenAsListAlle(myList, 0, this, true, true, new ArrayList<TreeNode>());
         return myList;
     }
@@ -164,9 +164,9 @@ public class TreeNode {
         return inList;
     }
 
-    /*                                       
-    * Getter und Setter                         
-    */
+    /*
+     * Getter und Setter
+     */
 
     public boolean getHasChildren() {
         return this.children != null && !this.children.isEmpty();

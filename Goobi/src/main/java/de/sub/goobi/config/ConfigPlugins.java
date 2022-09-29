@@ -4,9 +4,9 @@ package de.sub.goobi.config;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -92,8 +92,7 @@ public class ConfigPlugins {
         // find out the sub-configuration node for the right project and step
         SubnodeConfiguration myconfig = null;
         try {
-            myconfig = xmlConfig
-                    .configurationAt("//config[./project = '" + projectName + "'][./step = '" + step.getTitel() + "']");
+            myconfig = xmlConfig.configurationAt("//config[./project = '" + projectName + "'][./step = '" + step.getTitel() + "']");
         } catch (IllegalArgumentException e) {
             try {
                 myconfig = xmlConfig.configurationAt("//config[./project = '*'][./step = '" + step.getTitel() + "']");

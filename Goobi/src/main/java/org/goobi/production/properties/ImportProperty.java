@@ -3,10 +3,10 @@ package org.goobi.production.properties;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -55,17 +55,17 @@ public class ImportProperty implements IProperty {
     private String value = "";
     @Getter
     @Setter
-    private List<String> possibleValues = new ArrayList<String>();
+    private List<String> possibleValues = new ArrayList<>();
     @Getter
     @Setter
-    private List<String> projects = new ArrayList<String>();
+    private List<String> projects = new ArrayList<>();
     @Getter
     @Setter
     private boolean required = false;
 
     public ImportProperty() {
-        this.possibleValues = new ArrayList<String>();
-        this.projects = new ArrayList<String>();
+        this.possibleValues = new ArrayList<>();
+        this.projects = new ArrayList<>();
     }
 
     @Override
@@ -115,7 +115,7 @@ public class ImportProperty implements IProperty {
 
     public List<String> getValueList() {
         String[] values = this.value.split("; ");
-        List<String> answer = new ArrayList<String>();
+        List<String> answer = new ArrayList<>();
         for (String val : values) {
             answer.add(val);
         }
@@ -142,11 +142,13 @@ public class ImportProperty implements IProperty {
         }
     }
 
+    @Override
     public void setDateValue(Date inDate) {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         value = format.format(inDate);
     }
 
+    @Override
     public Date getDateValue() {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         try {

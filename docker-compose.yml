@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   goobi:
-    image: intranda/goobi-workflow
+    image: intranda/goobi-workflow:default-plugins
     # build:
     #   context: .
     #   dockerfile: Goobi/Dockerfile

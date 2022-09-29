@@ -4,9 +4,9 @@ package de.sub.goobi.metadaten;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -115,7 +115,7 @@ public class MetadatenVerifizierung {
             Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
                     + Helper.getTranslation("MetadataDigitalDocumentError") + inProzess.getTitel(), e.getMessage());
             problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataDigitalDocumentError")
-                    + ": " + e.getMessage());
+            + ": " + e.getMessage());
             ergebnis = false;
         }
 
@@ -198,7 +198,7 @@ public class MetadatenVerifizierung {
                             this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationPages"),
                             seite);
                     problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationPages")
-                            + ": " + seite);
+                    + ": " + seite);
                 }
                 ergebnis = false;
             }
@@ -231,7 +231,7 @@ public class MetadatenVerifizierung {
                 Helper.setFehlerMeldung(
                         this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataMandatoryElement"), temp);
                 problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataMandatoryElement")
-                        + ": " + temp);
+                + ": " + temp);
             }
             ergebnis = false;
         }
@@ -573,11 +573,11 @@ public class MetadatenVerifizierung {
             }
             if (allowedNumber.equals("1m") && realNumber != 1) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_MISSING_ERROR)
-                        + " " + realNumber + Helper.getTranslation(METADATA_TIMES_ERROR));
+                + " " + realNumber + Helper.getTranslation(METADATA_TIMES_ERROR));
             }
             if (allowedNumber.equals("1o") && realNumber > 1) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_TO_MANY_ERROR)
-                        + " " + realNumber + " " + Helper.getTranslation(METADATA_TIMES_ERROR));
+                + " " + realNumber + " " + Helper.getTranslation(METADATA_TIMES_ERROR));
             }
             if (allowedNumber.equals("+") && realNumber == 0) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " "

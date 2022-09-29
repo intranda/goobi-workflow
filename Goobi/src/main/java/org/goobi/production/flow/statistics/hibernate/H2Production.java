@@ -3,10 +3,10 @@ package org.goobi.production.flow.statistics.hibernate;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -76,14 +76,14 @@ class H2Production extends H2Generator implements IProduction {
         this.mySql = "SELECT count(table_1.singleProcess) AS volumes, " + "sum(table_1.pages) AS pages, table_1.intervall " + "FROM " + subQuery + " "
                 + outerWhereClause + " GROUP BY intervall " + "ORDER BY intervall";
 
-        //		SELECT count(table_1.singleProcess) AS volumes, 
-        //		sum(table_1.pages) AS pages, 
+        //		SELECT count(table_1.singleProcess) AS volumes,
+        //		sum(table_1.pages) AS pages,
         //		table_1.intervall
         //		FROM
         //		(SELECT prozesse.prozesseid AS singleProcess, prozesse.sortHelperImages AS pages, concat(year(BearbeitungsEnde) , '/' , month(BearbeitungsEnde)) AS intervall,
-        //		 BearbeitungsEnde AS timeLimiter 
-        //		FROM  schritte inner join prozesse on schritte.prozesseid=prozesse.prozesseid WHERE (bearbeitungsende IS NOT NULL AND (prozesse.prozesseid in (3,4,5)))) AS table_1 
-        //		 WHERE ( timeLimiter between '0000-01-01 00:00:00.000' and '2018-02-28 23:59:59.999')  
+        //		 BearbeitungsEnde AS timeLimiter
+        //		FROM  schritte inner join prozesse on schritte.prozesseid=prozesse.prozesseid WHERE (bearbeitungsende IS NOT NULL AND (prozesse.prozesseid in (3,4,5)))) AS table_1
+        //		 WHERE ( timeLimiter between '0000-01-01 00:00:00.000' and '2018-02-28 23:59:59.999')
         //		group by table_1.intervall
 
         return this.mySql;
@@ -92,6 +92,7 @@ class H2Production extends H2Generator implements IProduction {
     /* (non-Javadoc)
      * @see org.goobi.production.flow.statistics.hibernate.SQLGenerator#getSQL(java.lang.Integer)
      */
+    @Override
     public String getSQL(Integer stepDone) {
 
         if (stepDone == null) {
@@ -128,6 +129,7 @@ class H2Production extends H2Generator implements IProduction {
         return this.mySql;
     }
 
+    @Override
     public String getSQL(String stepname) {
         String subQuery = "";
         String outerWhereClause = "";
