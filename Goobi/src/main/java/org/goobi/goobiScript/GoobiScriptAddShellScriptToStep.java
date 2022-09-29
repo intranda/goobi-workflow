@@ -104,7 +104,7 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implem
                     s.setTypScriptStep(true);
                     try {
                         ProcessManager.saveProcess(p);
-                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Added script to step '" + s.getTitel() + "' with label '"
+                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Added script to step '" + s.getTitel() + "' with label '"
                                 + s.getScriptname1() + "' and value '" + s.getTypAutomatischScriptpfad() + "' using GoobiScript.",
                                 username);
                         log.info("Added script to step '" + s.getTitel() + "' with label '" + s.getScriptname1() + "' and value '"

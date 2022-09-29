@@ -45,9 +45,10 @@
             id="myform"
             styleClass="form-horizontal form-bordered"
             onkeypress="submitOnEnter(event);"
-            rendered="#{LoginForm.myBenutzer.superAdmin}">
+            rendered="#{LoginForm.myBenutzer.superAdmin}"
+            enctype="multipart/form-data">
             <div class="row">
-                <div class="col-sm-12">
+                <div class="col-sm-6">
                     <div class="box box-color orange box-bordered">
                         <div class="box-title">
                             <h3>
@@ -152,7 +153,7 @@
                             <div class="tab-content">
 
                                 <div class="#{institutionBean.displayMode eq ''?'tab-pane active':'tab-pane'}">
-                                
+
                                     <intranda:formInputTextAjax
                                         id="ldaptitle"
                                         label="#{msgs.institution_shortName}"
@@ -169,7 +170,7 @@
                                         help="#{msgs.institution_help_longName}"
                                         fieldStyle="form-control"
                                         render="@form" />
-                                        
+
                                     <intranda:formInputCheckBoxAjax
                                         id="checkAllRulesets"
                                         label="#{msgs.institution_allowAllRulesets}"
@@ -248,7 +249,8 @@
                                     styleClass="#{institutionBean.displayMode eq 'tab4'?'tab-pane active':'tab-pane'}">
                                     <x:dataList
                                         value="#{institutionBean.institution.allowedAuthentications}"
-                                        var="item" varStatus="varStatus">
+                                        var="item"
+                                        varStatus="varStatus">
                                         <intranda:formInputCheckBox
                                             id="a#{item.object_name}"
                                             name="a#{item.object_name}"
@@ -262,7 +264,7 @@
                                 <h:panelGroup
                                     layout="block"
                                     styleClass="#{institutionBean.displayMode eq 'tab5'?'tab-pane active':'tab-pane'}">
-                                    
+
                                     <ui:fragment rendered="#{not institutionBean.institution.allowedAdministrationPlugins.isEmpty()}">
                                         <h3 class="margin-left-10">
                                             <h:outputText
@@ -271,7 +273,8 @@
                                         </h3>
                                         <ui:repeat
                                             value="#{institutionBean.institution.allowedAdministrationPlugins}"
-                                            var="item" varStatus="varStatus">
+                                            var="item"
+                                            varStatus="varStatus">
                                             <intranda:formInputCheckBox
                                                 id="a#{item.object_name}"
                                                 name="a#{item.object_name}"
@@ -291,7 +294,8 @@
                                         </h3>
                                         <ui:repeat
                                             value="#{institutionBean.institution.allowedWorkflowPlugins}"
-                                            var="item" varStatus="varStatus">
+                                            var="item"
+                                            varStatus="varStatus">
                                             <intranda:formInputCheckBox
                                                 id="a#{item.object_name}"
                                                 name="a#{item.object_name}"
@@ -308,7 +312,10 @@
                                                 value="#{msgs.instituiton_statisticsPlugin}"
                                                 styleClass="text" />
                                         </h3>
-                                        <ui:repeat var="item" value="#{institutionBean.institution.allowedStatisticsPlugins}" varStatus="varStatus">
+                                        <ui:repeat
+                                            var="item"
+                                            value="#{institutionBean.institution.allowedStatisticsPlugins}"
+                                            varStatus="varStatus">
                                             <intranda:formInputCheckBox
                                                 id="a#{item.object_name}"
                                                 name="a#{item.object_name}"
@@ -316,7 +323,7 @@
                                                 field="#{item.selected}"
                                                 help="#{msgs.helpSelectPlugin}"
                                                 style="border-bottom:1px solid #ddd; #{varStatus.index eq 0?'border-top:1px solid #ddd':''};" />
-                                         </ui:repeat>
+                                        </ui:repeat>
                                     </ui:fragment>
 
                                     <ui:fragment rendered="#{not institutionBean.institution.allowedDashboardPlugins.isEmpty()}">
@@ -327,7 +334,8 @@
                                         </h3>
                                         <ui:repeat
                                             value="#{institutionBean.institution.allowedDashboardPlugins}"
-                                            var="item" varStatus="varStatus">
+                                            var="item"
+                                            varStatus="varStatus">
                                             <intranda:formInputCheckBox
                                                 id="a#{item.object_name}"
                                                 name="a#{item.object_name}"
@@ -416,6 +424,25 @@
                     </div>
                 </div>
 
+
+                <div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-12':'col-sm-6'}">
+                    <!-- Box for process log -->
+                    <x:aliasBeansScope>
+                        <x:aliasBean
+                            alias="#{showBigButton}"
+                            value="true" />
+                        <x:aliasBean
+                            alias="#{showFolderSelection}"
+                            value="false" />
+                        <x:aliasBean
+                            alias="#{bean}"
+                            value="#{institutionBean.institution}" />
+                        <f:subview id="sublog">
+                            <ui:include src="includes/journal.xhtml" />
+                        </f:subview>
+                    </x:aliasBeansScope>
+                    <!-- // Box for process log -->
+                </div>
             </div>
         </h:form>
 

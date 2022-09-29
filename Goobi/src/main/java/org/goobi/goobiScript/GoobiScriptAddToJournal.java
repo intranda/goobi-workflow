@@ -29,27 +29,29 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
 
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class GoobiScriptAddToProcessLog extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptAddToJournal extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
     public String getAction() {
-        return "addToProcessLog";
+        return "addToJournal";
     }
 
     @Override
     public String getSampleCall() {
         StringBuilder sb = new StringBuilder();
-        addNewActionToSampleCall(sb, "This GoobiScript allows to add messages to the Goobi process log.");
+        addNewActionToSampleCall(sb, "This GoobiScript allows to add messages to the Goobi process journal.");
         addParameterToSampleCall(sb, "type", "info",
                 "Define the type for the message here. Possible values are: `debug` `info` `warn` `error` `user`");
         addParameterToSampleCall(sb, "message", "\"This is my message\"",
@@ -93,14 +95,8 @@ public class GoobiScriptAddToProcessLog extends AbstractIGoobiScript implements 
         gsr.setResultType(GoobiScriptResultType.RUNNING);
         gsr.updateTimestamp();
 
-        LogEntry logEntry = new LogEntry();
-        logEntry.setContent(parameters.get("message"));
-        logEntry.setCreationDate(new Date());
-        logEntry.setProcessId(p.getId());
-        logEntry.setType(LogType.getByTitle(parameters.get("type")));
-        logEntry.setUserName(username);
-
-        ProcessManager.saveLogEntry(logEntry);
+        JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), username, LogType.getByTitle(parameters.get("type")), parameters.get("message"), EntryType.PROCESS);
+        JournalManager.saveJournalEntry(logEntry);
         log.info("Process log updated for process with ID " + p.getId());
 
         gsr.setResultMessage("Process log updated.");

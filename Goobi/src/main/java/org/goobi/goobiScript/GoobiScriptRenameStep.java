@@ -101,7 +101,7 @@ public class GoobiScriptRenameStep extends AbstractIGoobiScript implements IGoob
                 }
 
                 log.info("Step title changed using GoobiScript for process with ID " + p.getId());
-                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                         "Step title changed '" + oldStepName + " to  '" + newStepName + "' using GoobiScript.", username);
                 gsr.setResultMessage("Step title changed successfully.");
             }

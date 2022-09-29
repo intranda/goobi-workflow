@@ -55,7 +55,8 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -94,6 +95,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.TempImage;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
@@ -234,7 +236,7 @@ public class ProzesskopieForm implements Serializable {
         atstsl = "";
         opacSuchbegriff = "";
         this.guessedImages = 0;
-        if (ConfigurationHelper.getInstance().isResetProcesslog()) {
+        if (ConfigurationHelper.getInstance().isResetJournal()) {
             addToWikiField = "";
         }
 
@@ -790,14 +792,10 @@ public class ProzesskopieForm implements Serializable {
 
         if (addToWikiField != null && !addToWikiField.equals("")) {
             User user = loginForm.getMyBenutzer();
-            LogEntry logEntry = new LogEntry();
-            logEntry.setContent(addToWikiField);
-            logEntry.setCreationDate(new Date());
-            logEntry.setProcessId(prozessKopie.getId());
-            logEntry.setType(LogType.INFO);
-            logEntry.setUserName(user.getNachVorname());
-            ProcessManager.saveLogEntry(logEntry);
-            prozessKopie.getProcessLog().add(logEntry);
+            JournalEntry logEntry =
+                    new JournalEntry(prozessKopie.getId(), new Date(), user.getNachVorname(), LogType.INFO, addToWikiField, EntryType.PROCESS);
+            JournalManager.saveJournalEntry(logEntry);
+            prozessKopie.getJournal().add(logEntry);
         }
 
         /*
@@ -968,7 +966,7 @@ public class ProzesskopieForm implements Serializable {
 
                     if ("intern".equals(image.getFoldername())) {
                         folder = Paths.get(prozessKopie.getProcessDataDirectory(),
-                                ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
+                                ConfigurationHelper.getInstance().getFolderForInternalJournalFiles());
                     } else if ("export".equals(image.getFoldername())) {
                         folder = Paths.get(prozessKopie.getExportDirectory());
                     } else {
@@ -983,15 +981,10 @@ public class ProzesskopieForm implements Serializable {
                     StorageProvider.getInstance().copyFile(source, destination);
 
                     if ("intern".equals(image.getFoldername()) || "export".equals(image.getFoldername())) {
-
-                        LogEntry entry = LogEntry.build(prozessKopie.getId())
-                                .withCreationDate(new Date())
-                                .withContent(image.getDescriptionText())
-                                .withType(LogType.FILE)
-                                .withUsername(Helper.getCurrentUser().getNachVorname());
-                        entry.setSecondContent(folder.toString());
-                        entry.setThirdContent(destination.toString());
-                        ProcessManager.saveLogEntry(entry);
+                        JournalEntry entry = new JournalEntry(prozessKopie.getId(), new Date(), Helper.getCurrentUser().getNachVorname(),
+                                LogType.FILE, image.getDescriptionText(), EntryType.PROCESS);
+                        entry.setFilename(destination.toString());
+                        JournalManager.saveJournalEntry(entry);
                     }
                 }
 

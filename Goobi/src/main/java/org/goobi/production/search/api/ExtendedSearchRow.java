@@ -105,8 +105,8 @@ public class ExtendedSearchRow implements Serializable {
             value = "\"" + this.fieldOperand + this.stepStatus + ":" + this.stepName + "\" ";
         }
 
-        else if (fieldName.equals("PROCESSLOG") && !fieldValue.isEmpty()) {
-            value = "\"" + this.fieldOperand + FilterString.PROCESSLOG + fieldValue + "\" ";
+        else if (fieldName.equals("JOURNAL") && !fieldValue.isEmpty()) {
+            value = "\"" + this.fieldOperand + FilterString.JOURNAL + fieldValue + "\" ";
         }
 
         else if (fieldName.equals("INSTITUTION") && StringUtils.isNotBlank(institutionName)) {

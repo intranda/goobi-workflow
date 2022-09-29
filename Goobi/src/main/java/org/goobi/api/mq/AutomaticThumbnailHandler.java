@@ -196,7 +196,7 @@ public class AutomaticThumbnailHandler implements TicketHandler<PluginReturnValu
             } catch (DAOException e) {
                 log.error(e);
             }
-            Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, "Step '" + step.getTitel() + "' opened.");
+            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, "Step '" + step.getTitel() + "' opened.");
         }
 
         return PluginReturnValue.FINISH;

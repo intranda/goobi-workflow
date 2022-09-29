@@ -34,7 +34,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -330,15 +331,10 @@ public class BeanHelper implements Serializable {
         }
 
         // add text to process log
-
-        LogEntry logEntry = new LogEntry();
-        logEntry.setContent("Changed process template to " + template.getTitel());
-        logEntry.setCreationDate(new Date());
-        logEntry.setProcessId(processToChange.getId());
-        logEntry.setType(LogType.DEBUG);
         User user = Helper.getCurrentUser();
-        logEntry.setUserName(user != null ? user.getNachVorname() : "");
-        processToChange.getProcessLog().add(logEntry);
+        JournalEntry logEntry =
+                new JournalEntry(processToChange.getId(), new Date(), user != null ? user.getNachVorname() : "", LogType.DEBUG, "Changed process template to " + template.getTitel(), EntryType.PROCESS);
+        processToChange.getJournal().add(logEntry);
 
         try {
             // if no open task was found, open first locked  task
