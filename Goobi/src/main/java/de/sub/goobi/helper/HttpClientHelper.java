@@ -3,9 +3,9 @@ package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://www.intranda.com
- *          - http://digiverso.com 
+ *          - http://digiverso.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -99,7 +99,7 @@ public class HttpClientHelper {
     // * second: username
     // * third: password
     // * forth: scope (e.g. "localhost")
-    // * fifth: port 
+    // * fifth: port
     public static String getStringFromUrl(String... parameter) {
         String response = "";
         if (parameter == null) {
@@ -120,21 +120,21 @@ public class HttpClientHelper {
         }
 
         if (ConfigurationHelper.getInstance().isUseProxy()) {
-        	if (!ConfigurationHelper.getInstance().isProxyWhitelisted(url)) {
-	            HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
-	            if (log.isDebugEnabled()) {
-	                log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
-	            }
-	
-	            Builder builder = RequestConfig.custom();
-	            builder.setProxy(proxy);
-	
-	            RequestConfig rc = builder.build();
-	
-	            method.setConfig(rc);
-        	} else if (log.isDebugEnabled()) {
-        		log.debug("url was on proxy whitelist, no proxy used: " + url);
-        	}
+            if (!ConfigurationHelper.getInstance().isProxyWhitelisted(url)) {
+                HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
+                if (log.isDebugEnabled()) {
+                    log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
+                }
+
+                Builder builder = RequestConfig.custom();
+                builder.setProxy(proxy);
+
+                RequestConfig rc = builder.build();
+
+                method.setConfig(rc);
+            } else if (log.isDebugEnabled()) {
+                log.debug("url was on proxy whitelist, no proxy used: " + url);
+            }
         }
 
         try {
@@ -169,21 +169,21 @@ public class HttpClientHelper {
         }
 
         if (ConfigurationHelper.getInstance().isUseProxy()) {
-        	if (!ConfigurationHelper.getInstance().isProxyWhitelisted(url)) {
-	            HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
-	            if (log.isDebugEnabled()) {
-	                log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
-	            }
-	
-	            RequestConfig.Builder builder = RequestConfig.custom();
-	            builder.setProxy(proxy);
-	
-	            RequestConfig rc = builder.build();
-	
-	            method.setConfig(rc);
-        	} else if (log.isDebugEnabled()) {
-        		log.debug("url was on proxy whitelist, no proxy used: " + url);
-        	}
+            if (!ConfigurationHelper.getInstance().isProxyWhitelisted(url)) {
+                HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
+                if (log.isDebugEnabled()) {
+                    log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
+                }
+
+                RequestConfig.Builder builder = RequestConfig.custom();
+                builder.setProxy(proxy);
+
+                RequestConfig rc = builder.build();
+
+                method.setConfig(rc);
+            } else if (log.isDebugEnabled()) {
+                log.debug("url was on proxy whitelist, no proxy used: " + url);
+            }
         }
 
         try {
@@ -207,7 +207,7 @@ public class HttpClientHelper {
     // * second: username
     // * third: password
     // * forth: scope (e.g. "localhost")
-    // * fifth: port 
+    // * fifth: port
 
     public static OutputStream getStreamFromUrl(OutputStream out, String... parameter) {
         CloseableHttpClient httpclient = null;
@@ -229,21 +229,21 @@ public class HttpClientHelper {
             }
 
             if (ConfigurationHelper.getInstance().isUseProxy()) {
-            	if (!ConfigurationHelper.getInstance().isProxyWhitelisted(url)) {
-	                HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
-	                if (log.isDebugEnabled()) {
-	                    log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
-	                }
-	
-	                Builder builder = RequestConfig.custom();
-	                builder.setProxy(proxy);
-	
-	                RequestConfig rc = builder.build();
-	
-	                method.setConfig(rc);
-            	} else if (log.isDebugEnabled()) {
-            		log.debug("url was on proxy whitelist, no proxy used: " + url);
-            	}
+                if (!ConfigurationHelper.getInstance().isProxyWhitelisted(url)) {
+                    HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
+                    if (log.isDebugEnabled()) {
+                        log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
+                    }
+
+                    Builder builder = RequestConfig.custom();
+                    builder.setProxy(proxy);
+
+                    RequestConfig rc = builder.build();
+
+                    method.setConfig(rc);
+                } else if (log.isDebugEnabled()) {
+                    log.debug("url was on proxy whitelist, no proxy used: " + url);
+                }
             }
 
             Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
