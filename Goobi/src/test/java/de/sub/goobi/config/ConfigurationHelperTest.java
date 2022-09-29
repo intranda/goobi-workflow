@@ -872,15 +872,15 @@ public class ConfigurationHelperTest extends AbstractTest {
     public void testGetPluginServerUrl() {
         assertEquals("", ConfigurationHelper.getInstance().getPluginServerUrl());
     }
-    
+
     @Test
     public void testIsOnProxyWhitelist() {
-    	assertTrue(ConfigurationHelper.getInstance().isProxyWhitelisted("127.0.0.2"));
+        assertTrue(ConfigurationHelper.getInstance().isProxyWhitelisted("127.0.0.2"));
     }
-    
+
     @Test
     public void testIsNotOnProxyWhitelist() {
-    	assertFalse(ConfigurationHelper.getInstance().isProxyWhitelisted("999.0.0.1"));
+        assertFalse(ConfigurationHelper.getInstance().isProxyWhitelisted("999.0.0.1"));
     }
 
 }
