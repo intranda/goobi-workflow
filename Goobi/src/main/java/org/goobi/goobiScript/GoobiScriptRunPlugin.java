@@ -100,7 +100,7 @@ public class GoobiScriptRunPlugin extends AbstractIGoobiScript implements IGoobi
                             myPlugin.execute();
                             myPlugin.finish();
 
-                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                                     "Plugin for step '" + steptitle + "' executed using GoobiScript.", username);
                             log.info("Plugin for step '" + steptitle + "' executed using GoobiScript for process with ID " + p.getId());
                             gsr.setResultMessage("Plugin for step '" + steptitle + "' executed successfully.");

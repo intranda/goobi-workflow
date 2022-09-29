@@ -98,7 +98,7 @@ public class GoobiScriptSetProject extends AbstractIGoobiScript implements IGoob
         p.setProjectId(project.getId());
         try {
             ProcessManager.saveProcess(p);
-            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Project '" + project.getTitel() + "' assigned using GoobiScript.", username);
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Project '" + project.getTitel() + "' assigned using GoobiScript.", username);
             log.info("Project '" + project.getTitel() + "' assigned using GoobiScript for process with ID " + p.getId());
             gsr.setResultMessage("Project  '" + project.getTitel() + "' assigned successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);

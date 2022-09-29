@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -69,6 +71,7 @@ import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationT
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.persistence.managers.InstitutionManager;
@@ -373,8 +376,8 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     /**
-     * The function Loeschen() deletes a user account. Please note that deleting a user in goobi.production will not delete the user from a connected
-     * LDAP service.
+     * The function Loeschen() deletes a user account. Please note that deleting a user in goobi will not delete the user from a connected LDAP
+     * service.
      * 
      * @return a string indicating the screen showing up after the command has been performed.
      */
@@ -382,6 +385,11 @@ public class UserBean extends BasicBean implements Serializable {
         User currentUser = Helper.getCurrentUser();
         if (!currentUser.getId().equals(myClass.getId())) {
             try {
+                Path folder = Paths.get(ConfigurationHelper.getInstance().getGoobiFolder(), "uploads", "user", myClass.getLogin());
+                if (StorageProvider.getInstance().isFileExists(folder)) {
+                    StorageProvider.getInstance().deleteDir(folder);
+                }
+
                 UserManager.hideUser(myClass);
                 if (myClass.getLdapGruppe().getAuthenticationTypeEnum() == AuthenticationType.LDAP && !myClass.getLdapGruppe().isReadonly()) {
                     new LdapAuthentication().deleteUser(myClass);

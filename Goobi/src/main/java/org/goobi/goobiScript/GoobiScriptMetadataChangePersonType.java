@@ -164,7 +164,7 @@ public class GoobiScriptMetadataChangePersonType extends AbstractIGoobiScript im
             if (changed) {
                 p.writeMetadataFile(ff);
                 Thread.sleep(2000);
-                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                         "Metadata type changed using GoobiScript: from " + oldMetadataType + " to " + newMetadataType, username);
             }
             log.info("Metadata type changed using GoobiScript for process with ID " + p.getId());
