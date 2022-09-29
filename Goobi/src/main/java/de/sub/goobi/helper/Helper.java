@@ -75,7 +75,8 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.commons.lang.StringUtils;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
@@ -85,7 +86,7 @@ import org.jdom2.Element;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.forms.SpracheForm;
-import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import lombok.extern.log4j.Log4j2;
 
 @WebListener
@@ -223,7 +224,7 @@ public class Helper implements Serializable, ServletContextListener {
         setMeldung(control, meldung, beschreibung, true, true);
     }
 
-    public static void addMessageToProcessLog(Integer processId, LogType type, String message) {
+    public static void addMessageToUserJournal(Integer userId, LogType type, String message) {
         LoginBean login = getLoginBean();
         String user = "- automatic -";
         if (login != null) {
@@ -232,17 +233,71 @@ public class Helper implements Serializable, ServletContextListener {
                 user = userObject.getNachVorname();
             }
         }
-        addMessageToProcessLog(processId, type, message, user);
+        addMessageToJournal(userId, type, message, user, EntryType.USER);
     }
 
+    public static void addMessageToInstitutionJournal(Integer institutionId, LogType type, String message) {
+        LoginBean login = getLoginBean();
+        String user = "- automatic -";
+        if (login != null) {
+            User userObject = login.getMyBenutzer();
+            if (userObject != null) {
+                user = userObject.getNachVorname();
+            }
+        }
+        addMessageToJournal(institutionId, type, message, user, EntryType.INSTITUTION);
+    }
+
+    public static void addMessageToProcessJournal(Integer processId, LogType type, String message) {
+        LoginBean login = getLoginBean();
+        String user = "- automatic -";
+        if (login != null) {
+            User userObject = login.getMyBenutzer();
+            if (userObject != null) {
+                user = userObject.getNachVorname();
+            }
+        }
+        addMessageToJournal(processId, type, message, user, EntryType.PROCESS);
+    }
+
+    public static void addMessageToProcessJournal(Integer processId, LogType type, String message, String username) {
+        addMessageToJournal(processId, type, message, username, EntryType.PROCESS);
+    }
+
+    /**
+     * Adds a message to the journal. The journal type is defined by the entryType variable.
+     * 
+     * @param objectId id of the process, user or institution object
+     * @param logType type of the message e.g. error or debug
+     * @param content message content
+     * @param sender name of the sender, either a user name or an application name e.g. 'Jon Doe' or 'http step' or '-automatic-'
+     * @param entryType object type, process, user or institution. Is used in combination with the objectId
+     */
+
+    public static void addMessageToJournal(Integer objectId, LogType logType, String content, String sender, EntryType entryType) {
+        JournalEntry logEntry = new JournalEntry(objectId, new Date(), sender, logType, content, entryType);
+        JournalManager.saveJournalEntry(logEntry);
+    }
+
+    /**
+     * 
+     * 
+     * @deprecated use addMessageToProcessJournal instead
+     */
+
+    @Deprecated
+    public static void addMessageToProcessLog(Integer processId, LogType type, String message) {
+        addMessageToProcessJournal(processId, type, message);
+    }
+
+    /**
+     * 
+     * 
+     * @deprecated use addMessageToProcessJournal instead
+     */
+    @Deprecated
     public static void addMessageToProcessLog(Integer processId, LogType type, String message, String username) {
-        LogEntry logEntry = new LogEntry();
-        logEntry.setContent(message);
-        logEntry.setCreationDate(new Date());
-        logEntry.setProcessId(processId);
-        logEntry.setType(type);
-        logEntry.setUserName(username);
-        ProcessManager.saveLogEntry(logEntry);
+        addMessageToProcessJournal(processId, type, message, username);
     }
 
     /**

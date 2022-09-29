@@ -97,7 +97,7 @@ public class GoobiScriptSetRuleset extends AbstractIGoobiScript implements IGoob
         p.setRegelsatz(ruleset);
         try {
             ProcessManager.saveProcess(p);
-            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Ruleset '" + ruleset.getTitel() + "' assigned using GoobiScript.", username);
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Ruleset '" + ruleset.getTitel() + "' assigned using GoobiScript.", username);
             log.info("Ruleset '" + ruleset.getTitel() + "' assigned using GoobiScript for process with ID " + p.getId());
             gsr.setResultMessage("Ruleset  '" + ruleset.getTitel() + "' assigned successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);

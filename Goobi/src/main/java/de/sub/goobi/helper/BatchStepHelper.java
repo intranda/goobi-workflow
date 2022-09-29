@@ -42,7 +42,8 @@ import javax.faces.model.SelectItem;
 import org.apache.commons.lang.StringUtils;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
@@ -68,6 +69,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 import de.sub.goobi.persistence.managers.HistoryManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
@@ -114,12 +116,7 @@ public class BatchStepHelper implements Serializable {
     @Getter
     @Setter
     private String content = "";
-    @Getter
-    @Setter
-    private String secondContent = "";
-    @Getter
-    @Setter
-    private String thirdContent = "";
+
     @Getter
     private HashMap<Integer, Boolean> containerAccess;
 
@@ -515,17 +512,15 @@ public class BatchStepHelper implements Serializable {
                 se.setCreationDate(myDate);
                 se.setSchritt(temp);
                 String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage;
-                LogEntry logEntry = new LogEntry();
-                logEntry.setContent(message);
-                logEntry.setCreationDate(new Date());
-                logEntry.setProcessId(currentStep.getProzess().getId());
-                logEntry.setType(LogType.ERROR);
+                String username;
                 if (ben != null) {
-                    logEntry.setUserName(ben.getNachVorname());
+                    username = ben.getNachVorname();
                 } else {
-                    logEntry.setUserName("-");
+                    username = "-";
                 }
-                ProcessManager.saveLogEntry(logEntry);
+                JournalEntry logEntry =
+                        new JournalEntry(currentStep.getProzess().getId(), new Date(), username, LogType.ERROR, message, EntryType.PROCESS);
+                JournalManager.saveJournalEntry(logEntry);
 
                 temp.getEigenschaften().add(se);
                 StepManager.saveStep(temp);
@@ -670,15 +665,15 @@ public class BatchStepHelper implements Serializable {
             }
             String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage;
 
-            LogEntry logEntry = new LogEntry();
-            logEntry.setContent(message);
-            logEntry.setCreationDate(new Date());
-            logEntry.setProcessId(currentStep.getProzess().getId());
-            logEntry.setType(LogType.INFO);
-
-            logEntry.setUserName(ben.getNachVorname());
-
-            ProcessManager.saveLogEntry(logEntry);
+            String username;
+            if (ben != null) {
+                username = ben.getNachVorname();
+            } else {
+                username = "-";
+            }
+            JournalEntry logEntry =
+                    new JournalEntry(currentStep.getProzess().getId(), new Date(), username, LogType.INFO, message, EntryType.PROCESS);
+            JournalManager.saveJournalEntry(logEntry);
 
             /*
              * den Prozess aktualisieren, so dass der Sortierungshelper gespeichert wird
@@ -697,19 +692,11 @@ public class BatchStepHelper implements Serializable {
     public void addLogEntry() {
         if (StringUtils.isNotBlank(content)) {
             User user = Helper.getCurrentUser();
-            LogEntry logEntry = new LogEntry();
-            logEntry.setContent(content);
-            logEntry.setSecondContent(secondContent);
-            logEntry.setThirdContent(thirdContent);
-            logEntry.setCreationDate(new Date());
-            logEntry.setProcessId(currentStep.getProzess().getId());
-            logEntry.setType(LogType.USER);
-            logEntry.setUserName(user.getNachVorname());
-            ProcessManager.saveLogEntry(logEntry);
-            currentStep.getProzess().getProcessLog().add(logEntry);
+            JournalEntry logEntry =
+                    new JournalEntry(currentStep.getProzess().getId(), new Date(), user.getNachVorname(), LogType.USER, content, EntryType.PROCESS);
+            JournalManager.saveJournalEntry(logEntry);
+            currentStep.getProzess().getJournal().add(logEntry);
             this.content = "";
-            secondContent = "";
-            thirdContent = "";
         }
     }
 
@@ -717,20 +704,12 @@ public class BatchStepHelper implements Serializable {
         if (StringUtils.isNotBlank(content)) {
             User user = Helper.getCurrentUser();
             for (Step s : this.steps) {
-                LogEntry logEntry = new LogEntry();
-                logEntry.setContent(content);
-                logEntry.setSecondContent(secondContent);
-                logEntry.setThirdContent(thirdContent);
-                logEntry.setCreationDate(new Date());
-                logEntry.setProcessId(s.getProzess().getId());
-                logEntry.setType(LogType.USER);
-                logEntry.setUserName(user.getNachVorname());
-                s.getProzess().getProcessLog().add(logEntry);
-                ProcessManager.saveLogEntry(logEntry);
+                JournalEntry logEntry =
+                        new JournalEntry(s.getProzess().getId(), new Date(), user.getNachVorname(), LogType.USER, content, EntryType.PROCESS);
+                s.getProzess().getJournal().add(logEntry);
+                JournalManager.saveJournalEntry(logEntry);
             }
             this.content = "";
-            secondContent = "";
-            thirdContent = "";
         }
     }
 

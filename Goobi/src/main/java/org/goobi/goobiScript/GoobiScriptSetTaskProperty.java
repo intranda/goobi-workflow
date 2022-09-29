@@ -189,7 +189,7 @@ public class GoobiScriptSetTaskProperty extends AbstractIGoobiScript implements 
 
                     try {
                         ProcessManager.saveProcess(p);
-                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Changed property '" + property + "' to '" + value
+                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Changed property '" + property + "' to '" + value
                                 + "' for step '" + s.getTitel() + "' using GoobiScript.", username);
                         log.info("Changed property '" + property + "' to '" + value + "' for step '" + s.getTitel()
                                 + "' using GoobiScript for process with ID " + p.getId());

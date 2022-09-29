@@ -46,7 +46,7 @@ import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -213,19 +213,17 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         // add user comments from the process log
         Element comment = new Element("comments", xmlns);
-        List<LogEntry> logEntry = process.getProcessLog();
-        for (LogEntry entry : logEntry) {
+        List<JournalEntry> logEntry = process.getJournal();
+        for (JournalEntry entry : logEntry) {
             Element commentLine = new Element("comment", xmlns);
             commentLine.setAttribute("type", entry.getType().getTitle());
             if (StringUtils.isNotBlank(entry.getUserName())) {
                 commentLine.setAttribute("user", entry.getUserName());
             }
             commentLine.setText(entry.getContent());
-            if (StringUtils.isNotBlank(entry.getSecondContent())) {
-                comment.setAttribute("secondField", entry.getSecondContent());
-            }
-            if (StringUtils.isNotBlank(entry.getThirdContent())) {
-                comment.setAttribute("thirdField", entry.getThirdContent());
+
+            if (StringUtils.isNotBlank(entry.getFilename())) {
+                comment.setAttribute("filename", entry.getFilename());
             }
             comment.addContent(commentLine);
         }
@@ -515,7 +513,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 elements.add(representative);
 
                 // add all internal files
-                Path pIntern = Paths.get(process.getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
+                Path pIntern = Paths.get(process.getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalJournalFiles());
                 elements.add(getContentFiles(process, "intern", pIntern.toString()));
 
                 // add all files from export folder
@@ -529,15 +527,14 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             }
             // all log files together with their comments
             Element logfiles = new Element("log", xmlns);
-            for (LogEntry entry : process.getProcessLog()) {
+            for (JournalEntry entry : process.getJournal()) {
                 if (entry.getType() == LogType.FILE) {
                     Element cf = new Element("file", xmlns);
                     if (entry.getContent() != null) {
                         cf.setAttribute("comment", entry.getContent());
                     }
-                    cf.setAttribute("path", entry.getThirdContent());
-
-                    Path imagePath = Paths.get(entry.getThirdContent());
+                    cf.setAttribute("path", entry.getFilename());
+                    Path imagePath = Paths.get(entry.getFilename());
                     Image image = new Image(process, "intern", imagePath.getFileName().toString(), 0, 3000);
                     cf.setAttribute("url", image.getThumbnailUrl());
 
@@ -815,8 +812,8 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         rootElement.addContent(getProjectData(process));
 
         // process log
-        if (process.getProcessLog() != null && !process.getProcessLog().isEmpty()) {
-            rootElement.addContent(getProcessLogData(process));
+        if (process.getJournal() != null && !process.getJournal().isEmpty()) {
+            rootElement.addContent(getJournalData(process));
         }
 
         // process properties
@@ -1141,10 +1138,10 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @param process
      * @return
      */
-    private Element getProcessLogData(Process process) {
-        Element processLog = new Element("log", xmlns);
+    private Element getJournalData(Process process) {
+        Element journal = new Element("log", xmlns);
 
-        for (LogEntry entry : process.getProcessLog()) {
+        for (JournalEntry entry : process.getJournal()) {
             Element entryElement = new Element("entry", xmlns);
             // processlog.id
             entryElement.setAttribute("id", String.valueOf(entry.getId()));
@@ -1168,21 +1165,16 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 entryUserName.setText(entry.getUserName());
                 entryElement.addContent(entryUserName);
             }
-            // processlog.secondContent
-            if (StringUtils.isNotBlank(entry.getSecondContent())) {
-                Element secondContent = new Element("secondContent", xmlns);
-                entryElement.addContent(secondContent);
-                secondContent.setText(entry.getSecondContent());
-            }
-            // processlog.thirdContent
-            if (StringUtils.isNotBlank(entry.getThirdContent())) {
-                Element thirdContent = new Element("thirdContent", xmlns);
+
+            // processlog.filename
+            if (StringUtils.isNotBlank(entry.getFilename())) {
+                Element thirdContent = new Element("filename", xmlns);
                 entryElement.addContent(thirdContent);
-                thirdContent.setText(entry.getThirdContent());
+                thirdContent.setText(entry.getFilename());
             }
-            processLog.addContent(entryElement);
+            journal.addContent(entryElement);
         }
-        return processLog;
+        return journal;
     }
 
     /**
