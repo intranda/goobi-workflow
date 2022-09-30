@@ -7,8 +7,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.goobi.api.mail.UserProjectConfiguration;
+import org.goobi.beans.JournalEntry.EntryType;
+import org.goobi.beans.User.UserStatus;
 import org.junit.Test;
 
 import de.sub.goobi.AbstractTest;
@@ -442,9 +447,9 @@ public class UserTest extends AbstractTest {
     @Test
     public void testCustomCss() throws Exception {
         User user = new User();
-        assertNull(user.getCustomColumns());
-        user.setCustomColumns("fixture");
-        assertEquals("fixture", user.getCustomColumns());
+        assertNull(user.getCustomCss());
+        user.setCustomCss("fixture");
+        assertEquals("fixture", user.getCustomCss());
     }
 
     @Test
@@ -457,96 +462,298 @@ public class UserTest extends AbstractTest {
 
     @Test
     public void testEmailConfiguration() throws Exception {
-
+        User user = new User();
+        List<UserProjectConfiguration> list = new ArrayList<>();
+        UserProjectConfiguration p = new UserProjectConfiguration();
+        list.add(p);
+        user.setEmailConfiguration(list);
+        assertEquals(1, user.getEmailConfiguration().size());
     }
 
     @Test
     public void testInstitution() throws Exception {
-
+        User user = new User();
+        Institution in = new Institution();
+        user.setInstitution(in);
+        assertEquals(in, user.getInstitution());
     }
 
     @Test
     public void testInstitutionId() throws Exception {
-
+        User user = new User();
+        user.setInstitutionId(1);
+        assertEquals(1, user.getInstitutionId().intValue());
     }
 
     @Test
     public void testSuperAdmin() throws Exception {
-
+        User user = new User();
+        assertFalse(user.isSuperAdmin());
+        user.setSuperAdmin(true);
+        assertTrue(user.isSuperAdmin());
     }
 
     @Test
     public void testDisplayInstitutionColumn() throws Exception {
-
+        User user = new User();
+        assertFalse(user.isDisplayInstitutionColumn());
+        user.setDisplayInstitutionColumn(true);
+        assertTrue(user.isDisplayInstitutionColumn());
     }
 
     @Test
     public void testDashboardPlugin() throws Exception {
-
+        User user = new User();
+        assertNull(user.getDashboardPlugin());
+        user.setDashboardPlugin("fixture");
+        assertEquals("fixture", user.getDashboardPlugin());
     }
 
     @Test
     public void testSsoId() throws Exception {
-
+        User user = new User();
+        assertNull(user.getSsoId());
+        user.setSsoId("fixture");
+        assertEquals("fixture", user.getSsoId());
     }
 
     @Test
     public void testProcessListDefaultSortField() throws Exception {
-
+        User user = new User();
+        assertEquals("titel", user.getProcessListDefaultSortField());
+        user.setProcessListDefaultSortField("fixture");
+        assertEquals("fixture", user.getProcessListDefaultSortField());
     }
 
     @Test
     public void testProcessListDefaultSortOrder() throws Exception {
-
+        User user = new User();
+        assertEquals("Asc", user.getProcessListDefaultSortOrder());
+        user.setProcessListDefaultSortOrder("Desc");
+        assertEquals("Desc", user.getProcessListDefaultSortOrder());
     }
 
     @Test
     public void testTaskListDefaultSortingField() throws Exception {
-
+        User user = new User();
+        assertEquals("prioritaet", user.getTaskListDefaultSortingField());
+        user.setTaskListDefaultSortingField("fixture");
+        assertEquals("fixture", user.getTaskListDefaultSortingField());
     }
 
+    @Test
     public void testTaskListDefaultSortOrder() throws Exception {
-
+        User user = new User();
+        assertEquals("Desc", user.getTaskListDefaultSortOrder());
+        user.setTaskListDefaultSortOrder("Asc");
+        assertEquals("Asc", user.getTaskListDefaultSortOrder());
     }
 
     @Test
     public void testDisplayLastEditionDate() throws Exception {
-
+        User user = new User();
+        assertFalse(user.isDisplayLastEditionDate());
+        user.setDisplayLastEditionDate(true);
+        assertTrue(user.isDisplayLastEditionDate());
     }
 
     @Test
     public void testDisplayLastEditionUser() throws Exception {
-
+        User user = new User();
+        assertFalse(user.isDisplayLastEditionUser());
+        user.setDisplayLastEditionUser(true);
+        assertTrue(user.isDisplayLastEditionUser());
     }
 
     @Test
     public void testDisplayLastEditionTask() throws Exception {
-
+        User user = new User();
+        assertFalse(user.isDisplayLastEditionTask());
+        user.setDisplayLastEditionTask(true);
+        assertTrue(user.isDisplayLastEditionTask());
     }
 
     @Test
     public void testDashboardConfiguration() throws Exception {
-
+        User user = new User();
+        assertNull(user.getDashboardConfiguration());
+        user.setDashboardConfiguration("fixture");
+        assertEquals("fixture", user.getDashboardConfiguration());
     }
 
     @Test
     public void testUiMode() throws Exception {
-
+        User user = new User();
+        assertNull(user.getUiMode());
+        user.setUiMode("fixture");
+        assertEquals("fixture", user.getUiMode());
     }
 
     @Test
     public void testStatus() throws Exception {
-
-    }
-
-    @Test
-    public void testAvailableUiModes() throws Exception {
-
+        User user = new User();
+        assertEquals(UserStatus.ACTIVE, user.getStatus());
+        user.setStatus(UserStatus.DELETED);
+        assertEquals(UserStatus.DELETED, user.getStatus());
     }
 
     @Test
     public void testAdditionalData() throws Exception {
+        User user = new User();
+        assertTrue(user.getAdditionalData().isEmpty());
+        Map<String, String> additionalData = new HashMap<>();
+        additionalData.put("fixture", "fixture");
+        user.setAdditionalData(additionalData);
+        assertFalse(user.getAdditionalData().isEmpty());
 
     }
 
+    @Test
+    public void testPasswortCrypt() throws Exception {
+        String password = "fixture";
+        User user = new User();
+        user.setPasswortCrypt(password);
+        String crypt = user.getPasswort();
+        assertEquals("z4DxcITxhsc=", crypt);
+        assertEquals(password, user.getPasswortCrypt());
+    }
+
+    @Test
+    public void testPasswortKorrekt() throws Exception {
+        User user = new User();
+        Ldap ldap = new Ldap();
+        ldap.setAuthenticationType("database");
+        user.setLdapGruppe(ldap);
+        user.setPasswordSalt("salt");
+        user.setEncryptedPassword("MymTz74KfogfA3Uymyp+l+MRZvF4nJgeM/4qPZWMwsc=");
+        assertFalse(user.istPasswortKorrekt(null));
+        assertFalse(user.istPasswortKorrekt(""));
+        assertFalse(user.istPasswortKorrekt("wrong"));
+        assertTrue(user.istPasswortKorrekt("fixture"));
+    }
+
+    @Test
+    public void testPasswordHash() throws Exception {
+        User user = new User();
+        user.setPasswordSalt("salt");
+        assertEquals("MymTz74KfogfA3Uymyp+l+MRZvF4nJgeM/4qPZWMwsc=", user.getPasswordHash("fixture"));
+    }
+
+    @Test
+    public void testFirstProjectTitle() throws Exception {
+        User user = new User();
+        assertEquals("", user.getFirstProjectTitle());
+        List<Project> list = new ArrayList<>();
+        user.setProjekte(list);
+        assertEquals("", user.getFirstProjectTitle());
+        Project p = new Project();
+        p.setTitel("fixture");
+        list.add(p);
+        assertEquals("fixture", user.getFirstProjectTitle());
+    }
+
+    @Test
+    public void testFirstUserGroupTitle() throws Exception {
+        User user = new User();
+        assertEquals("", user.getFirstUserGroupTitle());
+        List<Usergroup> list = new ArrayList<>();
+        user.setBenutzergruppen(list);
+        assertEquals("", user.getFirstUserGroupTitle());
+        Usergroup p = new Usergroup();
+        p.setTitel("fixture");
+        list.add(p);
+        assertEquals("fixture", user.getFirstUserGroupTitle());
+    }
+
+    @Test
+    public void testInstitutionName() throws Exception {
+        User user = new User();
+        Institution in = new Institution();
+        user.setInstitution(in);
+        in.setShortName("fixture");
+        assertEquals("fixture", user.getInstitutionName());
+    }
+
+    @Test
+    public void testSessiontimeoutInMinutes() throws Exception {
+        User user = new User();
+        assertEquals(240, user.getSessiontimeoutInMinutes().intValue());
+        // 1 is not allowed, 5 is the lowest value
+        user.setSessiontimeoutInMinutes(1);
+        assertEquals(5, user.getSessiontimeoutInMinutes().intValue());
+
+        user.setSessiontimeoutInMinutes(10);
+        assertEquals(10, user.getSessiontimeoutInMinutes().intValue());
+    }
+
+    @Test
+    public void testDestruct() throws Exception {
+        User user = new User();
+        assertEquals(UserStatus.ACTIVE, user.getStatus());
+        user.selfDestruct();
+        assertEquals(UserStatus.DELETED, user.getStatus());
+    }
+
+    @Test
+    public void testImageUrl() throws Exception {
+        User user = new User();
+        assertNull(user.getImageUrl());
+        user.setEmail("user@example.com");
+
+        assertEquals(
+                "https://www.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af.jpg?s=27&d=https://www.gravatar.com/avatar/92bb3cacd091cbee44637e73f2ea1f7c.jpg?s=27",
+                user.getImageUrl());
+
+    }
+
+    @Test
+    public void testAllUserRoles() throws Exception {
+        User user = new User();
+        List<Usergroup> ugList = new ArrayList<>();
+        user.setBenutzergruppen(ugList);
+        Usergroup grp = new Usergroup();
+        grp.addUserRole("role");
+        ugList.add(grp);
+        assertEquals(1, user.getAllUserRoles().size());
+        assertEquals("role", user.getAllUserRoles().get(0));
+    }
+
+
+
+    @Test
+    public void testActive() throws Exception {
+        User user = new User();
+        assertTrue(user.isActive());
+        assertEquals(UserStatus.ACTIVE, user.getStatus());
+        user.setActive(false);
+        assertEquals(UserStatus.INACTIVE, user.getStatus());
+
+        user.setActive(true);
+        assertEquals(UserStatus.ACTIVE, user.getStatus());
+    }
+
+    @Test
+    public void testUserStatus() throws Exception {
+        assertEquals(UserStatus.REGISTERED, UserStatus.getStatusByName("registered"));
+        assertEquals(UserStatus.ACTIVE, UserStatus.getStatusByName("active"));
+        assertEquals(UserStatus.INACTIVE, UserStatus.getStatusByName("inactive"));
+        assertEquals(UserStatus.REJECTED, UserStatus.getStatusByName("rejected"));
+        assertEquals(UserStatus.DELETED, UserStatus.getStatusByName("deleted"));
+        assertEquals(UserStatus.ACTIVE, UserStatus.getStatusByName("wrong"));
+    }
+
+    @Test
+    public void testDownloadFolder() throws Exception {
+        User user = new User();
+        user.setLogin("fixture");
+        assertTrue(user.getDownloadFolder().toString().endsWith("/fixture"));
+    }
+
+    @Test
+    public void testEntryType() throws Exception {
+        User user = new User();
+        assertEquals(EntryType.USER, user.getEntryType());
+    }
+
+    // TODO Journal related tests
 }
