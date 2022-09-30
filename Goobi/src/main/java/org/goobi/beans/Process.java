@@ -25,10 +25,7 @@
  */
 package org.goobi.beans;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.DirectoryStream;
@@ -54,9 +51,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -89,7 +84,6 @@ import de.sub.goobi.metadaten.ImageCommentHelper;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.DocketManager;
-import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -117,7 +111,7 @@ import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
 @Log4j2
-public class Process implements Serializable, DatabaseObject, Comparable<Process>, IJournal {
+public class Process extends AbstractJournal implements Serializable, DatabaseObject, Comparable<Process> {
     private static final long serialVersionUID = -6503348094655786275L;
     @Getter
     @Setter
@@ -169,10 +163,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private String imagesTiffDirectory = null;
     private String imagesOrigDirectory = null;
 
-    @Getter
-    @Setter
-    private List<JournalEntry> journal = new ArrayList<>();
-
     private BeanHelper bhelp = new BeanHelper();
 
     // temporär
@@ -193,29 +183,20 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     @Getter
     @Setter
-    private String content = "";
-
-    @Getter
-    @Setter
     private boolean mediaFolderExists = false;
 
     private transient List<StringPair> metadataList = new ArrayList<>();
     private String representativeImage = null;
 
     private List<SelectItem> folderList = new ArrayList<>();
+
     @Getter
     @Setter
     private String currentFolder;
 
     @Getter
     @Setter
-    private transient Part uploadedFile = null;
-    @Getter
-    @Setter
     private String uploadFolder = "intern";
-
-    private transient Path tempFileToImport;
-    private String basename;
 
     @Getter
     private boolean showFileDeletionButton;
@@ -1469,25 +1450,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
     }
 
-    @Override
-    public void addJournalEntry() {
-        if (uploadedFile != null) {
-            saveUploadedFile();
-        } else {
-            LoginBean loginForm = Helper.getLoginBean();
-
-            JournalEntry entry =
-                    new JournalEntry(id, new Date(), loginForm.getMyBenutzer().getNachVorname(), LogType.USER, content, EntryType.PROCESS);
-
-            entry.setEntryType(EntryType.PROCESS);
-            content = "";
-
-            journal.add(entry);
-
-            JournalManager.saveJournalEntry(entry);
-        }
-    }
-
     public List<StringPair> getMetadataList() {
         if (metadataList.isEmpty()) {
             metadataList = MetadataManager.getMetadata(id);
@@ -1765,183 +1727,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
 
         return answer;
-    }
-
-    /**
-     * Download a selected file
-     * 
-     * @param entry
-     */
-
-    @Override
-    public void downloadFile(JournalEntry entry) {
-        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
-        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-
-        Path path = entry.getFile();
-        if (path == null) {
-            path = Paths.get(entry.getFilename());
-        }
-        String fileName = path.getFileName().toString();
-        String contentType = facesContext.getExternalContext().getMimeType(fileName);
-        try {
-            int contentLength = (int) StorageProvider.getInstance().getFileSize(path);
-            response.reset();
-            response.setContentType(contentType);
-            response.setContentLength(contentLength);
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-            OutputStream output = response.getOutputStream();
-            try (InputStream inp = StorageProvider.getInstance().newInputStream(path)) {
-                IOUtils.copy(inp, output);
-            }
-            facesContext.responseComplete();
-        } catch (IOException e) {
-            log.error(e);
-        }
-    }
-
-    /**
-     * Delete a LogEntry and the file belonging to it
-     * 
-     * @param entry
-     */
-
-    @Override
-    public void deleteFile(JournalEntry entry) {
-        Path path = entry.getFile();
-        if (path == null) {
-            path = Paths.get(entry.getFilename());
-        }
-        // check if log entry has an id
-        if (entry.getId() != null) {
-            // if yes, delete entry
-            String filename = entry.getBasename();
-
-            journal.remove(entry);
-            JournalManager.deleteJournalEntry(entry);
-
-            // create a new entry to document the deletion
-
-            JournalEntry deletionInfo = new JournalEntry(id, new Date(), Helper.getCurrentUser().getNachVorname(), LogType.INFO,
-                    Helper.getTranslation("processlogFileDeleted", filename), EntryType.PROCESS);
-
-            journal.add(deletionInfo);
-            JournalManager.saveJournalEntry(deletionInfo);
-        }
-        // delete file
-        try {
-            StorageProvider.getInstance().deleteFile(path);
-        } catch (IOException e) {
-            log.error(e);
-        }
-
-    }
-
-    /**
-     * Save the previous uploaded file in the selected process directory and create a new LogEntry.
-     * 
-     */
-
-    @Override
-    public void saveUploadedFile() {
-
-        Path folder = null;
-        try {
-            if (uploadFolder.equals("intern")) {
-                folder = Paths.get(getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalJournalFiles());
-            } else {
-                folder = Paths.get(getExportDirectory());
-            }
-            if (!StorageProvider.getInstance().isFileExists(folder)) {
-                StorageProvider.getInstance().createDirectories(folder);
-            }
-            Path destination = Paths.get(folder.toString(), basename);
-            StorageProvider.getInstance().move(tempFileToImport, destination);
-
-            JournalEntry entry = new JournalEntry(id, new Date(), Helper.getCurrentUser().getNachVorname(), LogType.FILE, content, EntryType.PROCESS);
-            entry.setFilename(destination.toString());
-            JournalManager.saveJournalEntry(entry);
-            journal.add(entry);
-
-        } catch (SwapException | IOException e) {
-            log.error(e);
-        }
-        uploadedFile = null;
-        content = "";
-    }
-
-    /**
-     * Upload a file and save it as a temporary file
-     * 
-     */
-    @Override
-    public void uploadFile() {
-        InputStream inputStream = null;
-        OutputStream outputStream = null;
-        try {
-            if (this.uploadedFile == null) {
-                Helper.setFehlerMeldung("noFileSelected");
-                return;
-            }
-
-            basename = getFileName(this.uploadedFile);
-            if (basename.startsWith(".")) {
-                basename = basename.substring(1);
-            }
-            if (basename.contains("/")) {
-                basename = basename.substring(basename.lastIndexOf("/") + 1);
-            }
-            if (basename.contains("\\")) {
-                basename = basename.substring(basename.lastIndexOf("\\") + 1);
-            }
-            basename = Paths.get(basename).getFileName().toString();
-
-            tempFileToImport = Files.createTempFile(basename, ""); //NOSONAR, using temporary file is save here
-            inputStream = this.uploadedFile.getInputStream();
-            outputStream = new FileOutputStream(tempFileToImport.toString());
-
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = inputStream.read(buf)) > 0) {
-                outputStream.write(buf, 0, len);
-            }
-
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-            Helper.setFehlerMeldung("uploadFailed");
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-            if (outputStream != null) {
-                try {
-                    outputStream.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-
-        }
-    }
-
-    /**
-     * extract the filename for the uploaded file
-     * 
-     * @param part
-     * @return
-     */
-
-    private String getFileName(final Part part) {
-        for (String content : part.getHeader("content-disposition").split(";")) {
-            if (content.trim().startsWith("filename")) {
-                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
-            }
-        }
-        return "";
     }
 
     /**
@@ -2265,8 +2050,23 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     @Override
-    public void addJournalEntryForAll() {
-        throw new UnsupportedOperationException();
+    public Path getDownloadFolder() {
+        Path folder = null;
+        try {
+            if (uploadFolder.equals("intern")) {
+                folder = Paths.get(getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalJournalFiles());
+            } else {
+                folder = Paths.get(getExportDirectory());
+            }
+        } catch (IOException | SwapException e) {
+            log.error(e);
+        }
+        return folder;
+    }
+
+    @Override
+    public EntryType getEntryType() {
+        return EntryType.PROCESS;
     }
 
 }
