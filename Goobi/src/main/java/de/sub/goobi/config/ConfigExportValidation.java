@@ -31,7 +31,7 @@ public class ConfigExportValidation {
     private ConfigExportValidation() {
     }
 
-    public class ExportValidator {
+    static public class ExportValidator {
         String label;
         String command;
 
@@ -44,10 +44,13 @@ public class ConfigExportValidation {
     public static List<ExportValidator> getConfiguredExportValidators() {
         List<ExportValidator> configuredExportValidators = new ArrayList<>();
         XMLConfiguration config = getExportValidatorConfiguration();
-        /*
-        TODO: Extract Configstrings
-        */
-        // configuredExportValidators.add(validator);
+        int number_of_validators = config.getMaxIndex("validation");
+        for (int i = 0; i <= number_of_validators; i++) {
+            String label = config.getString("validation(" + i + ")[@label]");
+            String command = config.getString("validation(" + i + ")[@command]");
+            ExportValidator new_validator = new ExportValidator(label, command);
+            configuredExportValidators.add(new_validator);
+        }
         return configuredExportValidators;
     }
 
