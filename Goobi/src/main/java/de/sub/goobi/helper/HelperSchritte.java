@@ -472,11 +472,13 @@ public class HelperSchritte {
                 }
                 log.info(respStr);
             } else {
-                JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR, "error executing http request", EntryType.PROCESS);
+                JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR, "error executing http request",
+                        EntryType.PROCESS);
                 JournalManager.saveJournalEntry(le);
             }
         } catch (IOException e) {
-            JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR, "error executing http request: " + e.getMessage(), EntryType.PROCESS);
+            JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR,
+                    "error executing http request: " + e.getMessage(), EntryType.PROCESS);
             JournalManager.saveJournalEntry(le);
             errorStep(step);
             log.error(e);
@@ -648,12 +650,15 @@ public class HelperSchritte {
                 errorStep(step);
             }
             return validate;
-        } catch (DAOException | UGHException | SwapException | IOException | ExportFileException | DocStructHasNoTypeException | UghHelperException
-                | InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is handled in the export task
+        } catch (DAOException | UGHException | SwapException | IOException | ExportFileException | DocStructHasNoTypeException
+                | UghHelperException e) {
             log.error("Exception occurred while trying to export process with ID " + step.getProcessId(), e);
             Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR,
                     "An exception occurred during the export for process with ID " + step.getProcessId() + ": " + e.getMessage());
             errorStep(step);
+            return false;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             return false;
         }
     }
