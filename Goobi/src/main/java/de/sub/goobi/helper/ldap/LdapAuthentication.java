@@ -75,12 +75,12 @@ public class LdapAuthentication {
 
     private String getUserDN(User inBenutzer) {
         String userDN = inBenutzer.getLdapGruppe().getUserDN();
-        userDN = userDN.replace("\\{login\\}", inBenutzer.getLogin());
+        userDN = userDN.replace("{login}", inBenutzer.getLogin());
         if (inBenutzer.getLdaplogin() != null) {
-            userDN = userDN.replace("\\{ldaplogin\\}", inBenutzer.getLdaplogin());
+            userDN = userDN.replace("{ldaplogin}", inBenutzer.getLdaplogin());
         }
-        userDN = userDN.replace("\\{firstname\\}", inBenutzer.getVorname());
-        userDN = userDN.replace("\\{lastname\\}", inBenutzer.getNachname());
+        userDN = userDN.replace("{firstname}", inBenutzer.getVorname());
+        userDN = userDN.replace("{lastname}", inBenutzer.getNachname());
         return userDN;
     }
 
