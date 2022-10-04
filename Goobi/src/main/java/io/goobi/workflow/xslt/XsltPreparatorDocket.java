@@ -337,7 +337,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 property.addContent(label);
 
                 templateProperties.add(property);
-                if (prop.getTitel().equals("Signatur")) {
+                if ("Signatur".equals(prop.getTitel())) {
                     Element secondProperty = new Element("property", xmlns);
                     secondProperty.setAttribute("propertyIdentifier", prop.getTitel() + "Encoded");
                     if (prop.getWert() != null) {
@@ -488,13 +488,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 elements.add(metsElement);
             }
 
-        } catch (SwapException e) {
-            log.error(e);
-        } catch (IOException e) {
-            log.error(e);
-        } catch (JDOMException e) {
-            log.error(e);
-        } catch (JaxenException e) {
+        } catch (SwapException | IOException | JDOMException | JaxenException e) {
             log.error(e);
         }
 
@@ -504,7 +498,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 Element representative = new Element("representative", xmlns);
                 Path repImagePath = Paths.get(process.getRepresentativeImageAsString());
                 String folderName;
-                if (process.getImagesTifDirectory(true).equals(repImagePath.getParent().toString() + "/")) {
+                if ((repImagePath.getParent().toString() + "/").equals(process.getImagesTifDirectory(true))) {
                     folderName = "media";
                 } else {
                     folderName = "master";
@@ -540,7 +534,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                     cf.setAttribute("path", entry.getThirdContent());
 
                     Path imagePath = Paths.get(entry.getThirdContent());
-                    Image image =  new Image(process, "intern", imagePath.getFileName().toString(), 0, 3000);
+                    Image image = new Image(process, "intern", imagePath.getFileName().toString(), 0, 3000);
                     cf.setAttribute("url", image.getThumbnailUrl());
 
                     logfiles.addContent(cf);
@@ -601,7 +595,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      */
     public void XmlTransformation(OutputStream out, Document doc, String filename) throws XSLTransformException, IOException {
         Document docTrans = new Document();
-        if (filename != null && filename.equals("")) {
+        if (filename != null && "".equals(filename)) {
             XSLTransformer transformer;
             transformer = new XSLTransformer(filename);
             docTrans = transformer.transform(doc);
@@ -930,6 +924,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         configuration.setAttribute("updateMetadataIndex", String.valueOf(step.isUpdateMetadataIndex()));
         // generateDocket
         configuration.setAttribute("generateDocket", String.valueOf(step.isGenerateDocket()));
+        // TODO: ExportValidation??
         // batchStep
         configuration.setAttribute("batchStep", String.valueOf(step.getBatchStep()));
 
@@ -1254,25 +1249,25 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         // projekte.dmsImportRootPath
         Element dmsImportRootPath = new Element("dmsImportRootPath", xmlns);
         dmsImportRootPath
-        .setText(StringUtils.isBlank(process.getProjekt().getDmsImportRootPath()) ? "" : process.getProjekt().getDmsImportRootPath());
+                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportRootPath()) ? "" : process.getProjekt().getDmsImportRootPath());
         exportConfiguration.addContent(dmsImportRootPath);
 
         // projekte.dmsImportImagesPath
         Element dmsImportImagesPath = new Element("dmsImportImagesPath", xmlns);
         dmsImportImagesPath
-        .setText(StringUtils.isBlank(process.getProjekt().getDmsImportImagesPath()) ? "" : process.getProjekt().getDmsImportImagesPath());
+                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportImagesPath()) ? "" : process.getProjekt().getDmsImportImagesPath());
         exportConfiguration.addContent(dmsImportImagesPath);
 
         // projekte.dmsImportSuccessPath
         Element dmsImportSuccessPath = new Element("dmsImportSuccessPath", xmlns);
         dmsImportSuccessPath
-        .setText(StringUtils.isBlank(process.getProjekt().getDmsImportSuccessPath()) ? "" : process.getProjekt().getDmsImportSuccessPath());
+                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportSuccessPath()) ? "" : process.getProjekt().getDmsImportSuccessPath());
         exportConfiguration.addContent(dmsImportSuccessPath);
 
         // projekte.dmsImportErrorPath
         Element dmsImportErrorPath = new Element("dmsImportErrorPath", xmlns);
         dmsImportErrorPath
-        .setText(StringUtils.isBlank(process.getProjekt().getDmsImportErrorPath()) ? "" : process.getProjekt().getDmsImportErrorPath());
+                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportErrorPath()) ? "" : process.getProjekt().getDmsImportErrorPath());
         exportConfiguration.addContent(dmsImportErrorPath);
 
         // projekte.dmsImportCreateProcessFolder
@@ -1291,25 +1286,25 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         // projekte.metsRightsOwnerLogo
         Element metsRightsOwnerLogo = new Element("metsRightsOwnerLogo", xmlns);
         metsRightsOwnerLogo
-        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerLogo()) ? "" : process.getProjekt().getMetsRightsOwnerLogo());
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerLogo()) ? "" : process.getProjekt().getMetsRightsOwnerLogo());
         metsConfiguration.addContent(metsRightsOwnerLogo);
 
         // projekte.metsRightsOwnerSite
         Element metsRightsOwnerSite = new Element("metsRightsOwnerSite", xmlns);
         metsRightsOwnerSite
-        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerSite()) ? "" : process.getProjekt().getMetsRightsOwnerSite());
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerSite()) ? "" : process.getProjekt().getMetsRightsOwnerSite());
         metsConfiguration.addContent(metsRightsOwnerSite);
 
         // projekte.metsRightsOwnerMail
         Element metsRightsOwnerMail = new Element("metsRightsOwnerMail", xmlns);
         metsRightsOwnerMail
-        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerMail()) ? "" : process.getProjekt().getMetsRightsOwnerMail());
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerMail()) ? "" : process.getProjekt().getMetsRightsOwnerMail());
         metsConfiguration.addContent(metsRightsOwnerMail);
 
         // projekte.metsDigiprovReference
         Element metsDigiprovReference = new Element("metsDigiprovReference", xmlns);
         metsDigiprovReference
-        .setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovReference()) ? "" : process.getProjekt().getMetsDigiprovReference());
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovReference()) ? "" : process.getProjekt().getMetsDigiprovReference());
         metsConfiguration.addContent(metsDigiprovReference);
 
         // projekte.metsDigiprovPresentation
@@ -1338,7 +1333,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         // projekte.metsPointerPathAnchor
         Element metsPointerPathAnchor = new Element("metsPointerPathAnchor", xmlns);
         metsPointerPathAnchor
-        .setText(StringUtils.isBlank(process.getProjekt().getMetsPointerPathAnchor()) ? "" : process.getProjekt().getMetsPointerPathAnchor());
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsPointerPathAnchor()) ? "" : process.getProjekt().getMetsPointerPathAnchor());
         metsConfiguration.addContent(metsPointerPathAnchor);
 
         // projekte.metsPurl
@@ -1354,13 +1349,13 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         // projekte.metsRightsSponsor
         Element metsRightsSponsor = new Element("metsRightsSponsor", xmlns);
         metsRightsSponsor
-        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsor()) ? "" : process.getProjekt().getMetsRightsSponsor());
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsor()) ? "" : process.getProjekt().getMetsRightsSponsor());
         metsConfiguration.addContent(metsRightsSponsor);
 
         // projekte.metsRightsSponsorLogo
         Element metsRightsSponsorLogo = new Element("metsRightsSponsorLogo", xmlns);
         metsRightsSponsorLogo
-        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsorLogo()) ? "" : process.getProjekt().getMetsRightsSponsorLogo());
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsorLogo()) ? "" : process.getProjekt().getMetsRightsSponsorLogo());
         metsConfiguration.addContent(metsRightsSponsorLogo);
 
         // projekte.metsRightsSponsorSiteURL
@@ -1372,7 +1367,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         // projekte.metsRightsLicense
         Element metsRightsLicense = new Element("metsRightsLicense", xmlns);
         metsRightsLicense
-        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsLicense()) ? "" : process.getProjekt().getMetsRightsLicense());
+                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsLicense()) ? "" : process.getProjekt().getMetsRightsLicense());
         metsConfiguration.addContent(metsRightsLicense);
         project.addContent(metsConfiguration);
 

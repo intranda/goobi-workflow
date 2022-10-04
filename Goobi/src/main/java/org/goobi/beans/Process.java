@@ -1506,6 +1506,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         erstellungsdatum = new Date();
 
         setDocket(source.getDocket());
+        //TODO:
+        //setExportValidation
         setInAuswahllisteAnzeigen(false);
         setIstTemplate(source.isIstTemplate());
         setProjectId(source.getProjectId());

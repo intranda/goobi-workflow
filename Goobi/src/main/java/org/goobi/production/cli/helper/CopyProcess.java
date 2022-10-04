@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -163,9 +162,7 @@ public class CopyProcess {
             String type = MetadatenHelper.getMetaFileType(metadataFile);
             this.myRdf = MetadatenHelper.getFileformatByName(type, prozessVorlage.getRegelsatz());
             this.myRdf.read(this.metadataFile);
-        } catch (ReadException e) {
-            log.error(e);
-        } catch (IOException e) {
+        } catch (ReadException | IOException e) {
             log.error(e);
         }
         ;
@@ -176,6 +173,7 @@ public class CopyProcess {
         this.prozessKopie.setProjekt(this.prozessVorlage.getProjekt());
         this.prozessKopie.setRegelsatz(this.prozessVorlage.getRegelsatz());
         this.prozessKopie.setDocket(this.prozessVorlage.getDocket());
+        // TODO: ExportValidator
         this.digitalCollections = new ArrayList<>();
 
         /*
@@ -205,9 +203,7 @@ public class CopyProcess {
             String type = MetadatenHelper.getMetaFileType(metadataFile);
             this.myRdf = MetadatenHelper.getFileformatByName(type, prozessVorlage.getRegelsatz());
             this.myRdf.read(this.metadataFile);
-        } catch (ReadException e) {
-            log.error(e);
-        } catch (IOException e) {
+        } catch (ReadException | IOException e) {
             log.error(e);
         }
         ;
@@ -250,7 +246,7 @@ public class CopyProcess {
         this.useOpac = cp.getParamBoolean("createNewProcess/opac/@use");
         this.useTemplates = cp.getParamBoolean("createNewProcess/templates/@use");
         this.naviFirstPage = "ProzessverwaltungKopie1";
-        if (this.opacKatalog.equals("")) {
+        if ("".equals(this.opacKatalog)) {
             this.opacKatalog = cp.getParamString("createNewProcess/opac/catalogue");
         }
 
@@ -369,18 +365,18 @@ public class CopyProcess {
                     /* welches Docstruct */
 
                     DocStruct myTempStruct = myRdf.getDigitalDocument().getLogicalDocStruct();
-                    if (field.getDocstruct().equals("firstchild")) {
+                    if ("firstchild".equals(field.getDocstruct())) {
                         try {
                             myTempStruct = myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
                         } catch (RuntimeException e) {
                         }
                     }
-                    if (field.getDocstruct().equals("boundbook")) {
+                    if ("boundbook".equals(field.getDocstruct())) {
                         myTempStruct = myRdf.getDigitalDocument().getPhysicalDocStruct();
                     }
                     /* welches Metadatum */
                     try {
-                        if (field.getMetadata().equals("ListOfCreators")) {
+                        if ("ListOfCreators".equals(field.getMetadata())) {
                             /* bei Autoren die Namen zusammenstellen */
                             String myautoren = "";
                             if (myTempStruct.getAllPersons() != null) {
@@ -515,7 +511,7 @@ public class CopyProcess {
          * -------------------------------- grundsätzlich den Vorgangstitel prüfen --------------------------------
          */
         /* kein Titel */
-        if (this.prozessKopie.getTitel() == null || this.prozessKopie.getTitel().equals("")) {
+        if (this.prozessKopie.getTitel() == null || "".equals(this.prozessKopie.getTitel())) {
             valide = false;
             Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation("ProcessCreationErrorTitleEmpty"));
         }
@@ -588,7 +584,7 @@ public class CopyProcess {
              * -------------------------------- grundsätzlich den Vorgangstitel prüfen --------------------------------
              */
             /* kein Titel */
-            if (this.prozessKopie.getTitel() == null || this.prozessKopie.getTitel().equals("")) {
+            if (this.prozessKopie.getTitel() == null || "".equals(this.prozessKopie.getTitel())) {
                 valide = false;
                 Helper.setFehlerMeldung(
                         Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation("ProcessCreationErrorTitleEmpty"));
@@ -689,7 +685,7 @@ public class CopyProcess {
                         /* welches Docstruct */
                         DocStruct myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
                         DocStruct myTempChild = null;
-                        if (field.getDocstruct().equals("firstchild")) {
+                        if ("firstchild".equals(field.getDocstruct())) {
                             try {
                                 myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
                             } catch (RuntimeException e) {
@@ -701,13 +697,13 @@ public class CopyProcess {
                         /*
                          * falls topstruct und firstchild das Metadatum bekommen sollen
                          */
-                        if (!field.getDocstruct().equals("firstchild") && field.getDocstruct().contains("firstchild")) {
+                        if (!"firstchild".equals(field.getDocstruct()) && field.getDocstruct().contains("firstchild")) {
                             try {
                                 myTempChild = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
                             } catch (RuntimeException e) {
                             }
                         }
-                        if (field.getDocstruct().equals("boundbook")) {
+                        if ("boundbook".equals(field.getDocstruct())) {
                             myTempStruct = this.myRdf.getDigitalDocument().getPhysicalDocStruct();
                         }
                         /* welches Metadatum */
@@ -715,7 +711,7 @@ public class CopyProcess {
                             /*
                              * bis auf die Autoren alle additionals in die Metadaten übernehmen
                              */
-                            if (!field.getMetadata().equals("ListOfCreators")) {
+                            if (!"ListOfCreators".equals(field.getMetadata())) {
                                 MetadataType mdt =
                                         this.ughHelp.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), field.getMetadata());
                                 Metadata md = this.ughHelp.getMetadata(myTempStruct, mdt);
@@ -737,10 +733,7 @@ public class CopyProcess {
                                     md.setValue(field.getWert());
                                 }
                             }
-                        } catch (NullPointerException e) {
-                        } catch (UghHelperException e) {
-
-                        } catch (MetadataTypeNotAllowedException e) {
+                        } catch (NullPointerException | UghHelperException | MetadataTypeNotAllowedException e) {
 
                         }
                     } // end if ughbinding
@@ -924,7 +917,7 @@ public class CopyProcess {
                 md.setValue(s);
                 md.setParent(colStruct);
                 colStruct.addMetadata(md);
-            } catch (UghHelperException |DocStructHasNoTypeException |MetadataTypeNotAllowedException e) {
+            } catch (UghHelperException | DocStructHasNoTypeException | MetadataTypeNotAllowedException e) {
                 Helper.setFehlerMeldung(e.getMessage(), "");
                 log.error(e);
             }
@@ -943,7 +936,7 @@ public class CopyProcess {
                     colStruct.removeMetadata(md, true);
                 }
             }
-        } catch (UghHelperException |DocStructHasNoTypeException e) {
+        } catch (UghHelperException | DocStructHasNoTypeException e) {
             Helper.setFehlerMeldung(e.getMessage(), "");
             log.error(e);
         }
@@ -958,9 +951,7 @@ public class CopyProcess {
             String type = MetadatenHelper.getMetaFileType(metadataFile);
             ff = MetadatenHelper.getFileformatByName(type, prozessVorlage.getRegelsatz());
             ff.read(this.metadataFile);
-        } catch (ReadException e) {
-            log.error(e);
-        } catch (IOException e) {
+        } catch (ReadException | IOException e) {
             log.error(e);
         }
 
@@ -1004,13 +995,13 @@ public class CopyProcess {
 
             for (AdditionalField field : this.additionalFields) {
                 if (field.getShowDependingOnDoctype(getDocType())) {
-                    if (field.getFrom().equals("werk")) {
+                    if ("werk".equals(field.getFrom())) {
                         bh.EigenschaftHinzufuegen(werk, field.getTitel(), field.getWert());
                     }
-                    if (field.getFrom().equals("vorlage")) {
+                    if ("vorlage".equals(field.getFrom())) {
                         bh.EigenschaftHinzufuegen(vor, field.getTitel(), field.getWert());
                     }
-                    if (field.getFrom().equals("prozess")) {
+                    if ("prozess".equals(field.getFrom())) {
                         bh.EigenschaftHinzufuegen(this.prozessKopie, field.getTitel(), field.getWert());
                     }
                 }
@@ -1101,16 +1092,12 @@ public class CopyProcess {
             Element root = doc.getRootElement();
             /* alle Projekte durchlaufen */
             List<Element> projekte = root.getChildren();
-            for (Iterator<Element> iter = projekte.iterator(); iter.hasNext();) {
-                Element projekt = iter.next();
-
+            for (Element projekt : projekte) {
                 // collect default collections
-                if (projekt.getName().equals("default")) {
+                if ("default".equals(projekt.getName())) {
                     List<Element> myCols = projekt.getChildren("DigitalCollection");
-                    for (Iterator<Element> it2 = myCols.iterator(); it2.hasNext();) {
-                        Element col = it2.next();
-
-                        if (col.getAttribute("default") != null && col.getAttributeValue("default").equalsIgnoreCase("true")) {
+                    for (Element col : myCols) {
+                        if (col.getAttribute("default") != null && "true".equalsIgnoreCase(col.getAttributeValue("default"))) {
                             digitalCollections.add(col.getText());
                         }
 
@@ -1119,15 +1106,12 @@ public class CopyProcess {
                 } else {
                     // run through the projects
                     List<Element> projektnamen = projekt.getChildren("name");
-                    for (Iterator<Element> iterator = projektnamen.iterator(); iterator.hasNext();) {
-                        Element projektname = iterator.next();
+                    for (Element projektname : projektnamen) {
                         // all all collections to list
                         if (projektname.getText().equalsIgnoreCase(this.prozessKopie.getProjekt().getTitel())) {
                             List<Element> myCols = projekt.getChildren("DigitalCollection");
-                            for (Iterator<Element> it2 = myCols.iterator(); it2.hasNext();) {
-                                Element col = it2.next();
-
-                                if (col.getAttribute("default") != null && col.getAttributeValue("default").equalsIgnoreCase("true")) {
+                            for (Element col : myCols) {
+                                if (col.getAttribute("default") != null && "true".equalsIgnoreCase(col.getAttributeValue("default"))) {
                                     digitalCollections.add(col.getText());
                                 }
 
@@ -1137,10 +1121,7 @@ public class CopyProcess {
                     }
                 }
             }
-        } catch (JDOMException e1) {
-            log.error("error while parsing digital collections", e1);
-            Helper.setFehlerMeldung("Error while parsing digital collections", e1);
-        } catch (IOException e1) {
+        } catch (JDOMException | IOException e1) {
             log.error("error while parsing digital collections", e1);
             Helper.setFehlerMeldung("Error while parsing digital collections", e1);
         }
@@ -1194,25 +1175,25 @@ public class CopyProcess {
             }
 
             /* wenn nix angegeben wurde, dann anzeigen */
-            if (isdoctype.equals("") && isnotdoctype.equals("")) {
+            if ("".equals(isdoctype) && "".equals(isnotdoctype)) {
                 titeldefinition = titel;
                 break;
             }
 
             /* wenn beides angegeben wurde */
-            if (!isdoctype.equals("") && !isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isdoctype, this.docType)
+            if (!"".equals(isdoctype) && !"".equals(isnotdoctype) && StringUtils.containsIgnoreCase(isdoctype, this.docType)
                     && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
                 titeldefinition = titel;
                 break;
             }
 
             /* wenn nur pflicht angegeben wurde */
-            if (isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isdoctype, this.docType)) {
+            if ("".equals(isnotdoctype) && StringUtils.containsIgnoreCase(isdoctype, this.docType)) {
                 titeldefinition = titel;
                 break;
             }
             /* wenn nur "darf nicht" angegeben wurde */
-            if (isdoctype.equals("") && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
+            if ("".equals(isdoctype) && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
                 titeldefinition = titel;
                 break;
             }
@@ -1229,14 +1210,14 @@ public class CopyProcess {
                 newTitle += myString.substring(1, myString.length() - 1);
             } else {
                 /* andernfalls den string als Feldnamen auswerten */
-                for (Iterator it2 = this.additionalFields.iterator(); it2.hasNext();) {
-                    AdditionalField myField = (AdditionalField) it2.next();
+                for (Object element : this.additionalFields) {
+                    AdditionalField myField = (AdditionalField) element;
 
                     /*
                      * wenn es das ATS oder TSL-Feld ist, dann den berechneten atstsl einsetzen, sofern noch nicht vorhanden
                      */
-                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype(getDocType())
-                            && (myField.getWert() == null || myField.getWert().equals(""))) {
+                    if (("ATS".equals(myField.getTitel()) || "TSL".equals(myField.getTitel())) && myField.getShowDependingOnDoctype(getDocType())
+                            && (myField.getWert() == null || "".equals(myField.getWert()))) {
                         myField.setWert(this.atstsl);
                     }
 
@@ -1263,7 +1244,7 @@ public class CopyProcess {
         /*
          * -------------------------------- Bandnummer --------------------------------
          */
-        if (inFeldName.equals("Bandnummer")) {
+        if ("Bandnummer".equals(inFeldName)) {
             try {
                 int bandint = Integer.parseInt(inFeldWert);
                 java.text.DecimalFormat df = new java.text.DecimalFormat("#0000");
@@ -1296,8 +1277,8 @@ public class CopyProcess {
         /*
          * -------------------------------- evtuelle Ersetzungen --------------------------------
          */
-        tif_definition = tif_definition.replaceAll("\\[\\[", "<");
-        tif_definition = tif_definition.replaceAll("\\]\\]", ">");
+        tif_definition = tif_definition.replace("[[", "<");
+        tif_definition = tif_definition.replace("]]", ">");
 
         /*
          * -------------------------------- Documentname ist im allgemeinen = Prozesstitel --------------------------------
@@ -1316,19 +1297,17 @@ public class CopyProcess {
              */
             if (myString.startsWith("'") && myString.endsWith("'") && myString.length() > 2) {
                 this.tifHeader_imagedescription += myString.substring(1, myString.length() - 1);
-            } else if (myString.equals("$Doctype")) {
+            } else if ("$Doctype".equals(myString)) {
 
                 this.tifHeader_imagedescription += this.docType;
             } else {
                 /* andernfalls den string als Feldnamen auswerten */
-                for (Iterator<AdditionalField> it2 = this.additionalFields.iterator(); it2.hasNext();) {
-                    AdditionalField myField = it2.next();
-
+                for (AdditionalField myField : this.additionalFields) {
                     /*
                      * wenn es das ATS oder TSL-Feld ist, dann den berechneten atstsl einsetzen, sofern noch nicht vorhanden
                      */
-                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype(getDocType())
-                            && (myField.getWert() == null || myField.getWert().equals(""))) {
+                    if (("ATS".equals(myField.getTitel()) || "TSL".equals(myField.getTitel())) && myField.getShowDependingOnDoctype(getDocType())
+                            && (myField.getWert() == null || "".equals(myField.getWert()))) {
                         myField.setWert(this.atstsl);
                     }
 

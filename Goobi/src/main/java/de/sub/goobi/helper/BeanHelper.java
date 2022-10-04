@@ -31,7 +31,6 @@ import java.nio.file.Paths;
  */
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.goobi.beans.LogEntry;
@@ -205,8 +204,7 @@ public class BeanHelper {
              * Eigenschaften des Schritts
              * --------------------------------*/
             List<Masterpieceproperty> myEigenschaften = new ArrayList<>();
-            for (Iterator<Masterpieceproperty> iterator = werk.getEigenschaften().iterator(); iterator.hasNext();) {
-                Masterpieceproperty eig = iterator.next();
+            for (Masterpieceproperty eig : werk.getEigenschaften()) {
                 Masterpieceproperty eigneu = new Masterpieceproperty();
                 eigneu.setIstObligatorisch(eig.isIstObligatorisch());
                 eigneu.setType(eig.getType());
@@ -225,8 +223,7 @@ public class BeanHelper {
 
     public void EigenschaftenKopieren(Process prozessVorlage, Process prozessKopie) {
         List<Processproperty> myEigenschaften = new ArrayList<>();
-        for (Iterator<Processproperty> iterator = prozessVorlage.getEigenschaftenList().iterator(); iterator.hasNext();) {
-            Processproperty eig = iterator.next();
+        for (Processproperty eig : prozessVorlage.getEigenschaftenList()) {
             Processproperty eigneu = new Processproperty();
             eigneu.setIstObligatorisch(eig.isIstObligatorisch());
             eigneu.setType(eig.getType());
@@ -252,8 +249,7 @@ public class BeanHelper {
              * Eigenschaften des Schritts
              * --------------------------------*/
             List<Templateproperty> myEigenschaften = new ArrayList<>();
-            for (Iterator<Templateproperty> iterator = vor.getEigenschaften().iterator(); iterator.hasNext();) {
-                Templateproperty eig = iterator.next();
+            for (Templateproperty eig : vor.getEigenschaften()) {
                 Templateproperty eigneu = new Templateproperty();
                 eigneu.setIstObligatorisch(eig.isIstObligatorisch());
                 eigneu.setType(eig.getType());
@@ -316,7 +312,7 @@ public class BeanHelper {
         // set task progress
         for (Step newTask : processToChange.getSchritte()) {
             for (Step oldTask : oldTaskList) {
-                if (oldTask.getTitel().equals(newTask.getTitel()) && oldTask.getBearbeitungsstatusEnum().equals(StepStatus.DONE)) {
+                if (oldTask.getTitel().equals(newTask.getTitel()) && StepStatus.DONE.equals(oldTask.getBearbeitungsstatusEnum())) {
                     // if oldTask is finished, keep status, date, user in new task
                     newTask.setBearbeitungsbeginn(oldTask.getBearbeitungsbeginn());
                     newTask.setBearbeitungsende(oldTask.getBearbeitungsende());
@@ -333,9 +329,9 @@ public class BeanHelper {
         }
         // update properties for template name + id
         for (Processproperty property : processToChange.getEigenschaften()) {
-            if (property.getTitel().equals("Template")) {
+            if ("Template".equals(property.getTitel())) {
                 property.setWert(template.getTitel());
-            } else if (property.getTitel().equals("TemplateID")) {
+            } else if ("TemplateID".equals(property.getTitel())) {
                 property.setWert(String.valueOf(template.getId()));
             }
         }
@@ -354,9 +350,9 @@ public class BeanHelper {
         try {
             // if no open task was found, open first locked  task
             for (Step newTask : processToChange.getSchritte()) {
-                if (newTask.getBearbeitungsstatusEnum().equals(StepStatus.OPEN)) {
+                if (StepStatus.OPEN.equals(newTask.getBearbeitungsstatusEnum())) {
                     break;
-                } else if (newTask.getBearbeitungsstatusEnum().equals(StepStatus.LOCKED)) {
+                } else if (StepStatus.LOCKED.equals(newTask.getBearbeitungsstatusEnum())) {
                     newTask.setBearbeitungsstatusEnum(StepStatus.OPEN);
                     break;
                 }
@@ -381,6 +377,7 @@ public class BeanHelper {
         newProcess.setProjekt(template.getProjekt());
         newProcess.setRegelsatz(template.getRegelsatz());
         newProcess.setDocket(template.getDocket());
+        // TODO: newProcess.setExportValidation(template.getExportValidation());
         SchritteKopieren(template, newProcess);
         ScanvorlagenKopieren(template, newProcess);
         WerkstueckeKopieren(template, newProcess);
