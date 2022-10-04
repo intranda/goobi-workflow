@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -92,7 +91,6 @@ import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
-import de.sub.goobi.metadaten.Image;
 import de.sub.goobi.metadaten.TempImage;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
@@ -237,6 +235,7 @@ public class ProzesskopieForm implements Serializable {
         this.prozessKopie.setProjekt(this.prozessVorlage.getProjekt());
         this.prozessKopie.setRegelsatz(this.prozessVorlage.getRegelsatz());
         this.prozessKopie.setDocket(this.prozessVorlage.getDocket());
+        // TODO: ExportValidation
         this.digitalCollections = new ArrayList<>();
 
         /*
@@ -356,7 +355,7 @@ public class ProzesskopieForm implements Serializable {
                             break;
                         case "export":
                             configuredFolderNames
-                            .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
+                                    .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
                             break;
                         case "master":
                             if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
@@ -387,7 +386,7 @@ public class ProzesskopieForm implements Serializable {
 
     public List<SelectItem> getProzessTemplates() throws DAOException {
         List<SelectItem> myProcessTemplates = new ArrayList<>();
-        String filter = " istTemplate = false AND inAuswahllisteAnzeigen = true ";
+        StringBuilder filter = new StringBuilder(" istTemplate = false AND inAuswahllisteAnzeigen = true ");
 
         /* Einschränkung auf bestimmte Projekte, wenn kein Admin */
         User aktuellerNutzer = Helper.getCurrentUser();
@@ -398,8 +397,9 @@ public class ProzesskopieForm implements Serializable {
              */
             if (!Helper.getLoginBean().hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
 
-                filter += " AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = "
-                        + aktuellerNutzer.getId() + ")";
+                filter.append(" AND prozesse.ProjekteID in (select ProjekteID from projektbenutzer where projektbenutzer.BenutzerID = ")
+                        .append(aktuellerNutzer.getId())
+                        .append(")");
 
                 //              Hibernate.initialize(aktuellerNutzer);
                 //              Disjunction dis = Restrictions.disjunction();
@@ -409,7 +409,7 @@ public class ProzesskopieForm implements Serializable {
                 //              crit.add(dis);
             }
         }
-        List<Process> selectList = ProcessManager.getProcesses("prozesse.titel", filter);
+        List<Process> selectList = ProcessManager.getProcesses("prozesse.titel", filter.toString());
         //      for (Object proz : crit.list()) {
         for (Process proz : selectList) {
             myProcessTemplates.add(new SelectItem(proz.getId(), proz.getTitel(), null));
@@ -468,18 +468,18 @@ public class ProzesskopieForm implements Serializable {
                 if (field.isUghbinding() && field.getShowDependingOnDoctype(getDocType())) {
                     /* welches Docstruct */
                     DocStruct myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
-                    if (field.getDocstruct().equals("firstchild")) {
+                    if ("firstchild".equals(field.getDocstruct())) {
                         try {
                             myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
                         } catch (RuntimeException e) {
                         }
                     }
-                    if (field.getDocstruct().equals("boundbook")) {
+                    if ("boundbook".equals(field.getDocstruct())) {
                         myTempStruct = this.myRdf.getDigitalDocument().getPhysicalDocStruct();
                     }
                     /* welches Metadatum */
                     try {
-                        if (field.getMetadata().equals("ListOfCreators")) {
+                        if ("ListOfCreators".equals(field.getMetadata())) {
                             /* bei Autoren die Namen zusammenstellen */
                             String myautoren = "";
                             if (myTempStruct.getAllPersons() != null) {
@@ -512,7 +512,7 @@ public class ProzesskopieForm implements Serializable {
                         log.error(e);
                         Helper.setFehlerMeldung(e.getMessage(), "");
                     }
-                    if (field.getWert() != null && !field.getWert().equals("")) {
+                    if (field.getWert() != null && !"".equals(field.getWert())) {
                         field.setWert(field.getWert().replace("&amp;", "&"));
                     }
                 } // end if ughbinding
@@ -562,7 +562,7 @@ public class ProzesskopieForm implements Serializable {
                     if (field.getTitel().equals(eig.getTitel())) {
                         field.setWert(eig.getWert());
                     }
-                    if (eig.getTitel().equals("DocType")) {
+                    if ("DocType".equals(eig.getTitel())) {
                         docType = eig.getWert();
                     }
                 }
@@ -583,7 +583,7 @@ public class ProzesskopieForm implements Serializable {
 
         if (tempProcess.getEigenschaftenSize() > 0) {
             for (Processproperty pe : tempProcess.getEigenschaften()) {
-                if (pe.getTitel().equals("digitalCollection")) {
+                if ("digitalCollection".equals(pe.getTitel())) {
                     digitalCollections.add(pe.getWert());
                 }
             }
@@ -627,7 +627,7 @@ public class ProzesskopieForm implements Serializable {
          * -------------------------------- grundsätzlich den Vorgangstitel prüfen --------------------------------
          */
         /* kein Titel */
-        if (this.prozessKopie.getTitel() == null || this.prozessKopie.getTitel().equals("")) {
+        if (this.prozessKopie.getTitel() == null || "".equals(this.prozessKopie.getTitel())) {
             valide = false;
             Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation("ProcessCreationErrorTitleEmpty"));
         }
@@ -649,7 +649,8 @@ public class ProzesskopieForm implements Serializable {
             //          }
             if (anzahl > 0) {
                 valide = false;
-                Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten:") + " " + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
+                Helper.setFehlerMeldung(
+                        Helper.getTranslation("UngueltigeDaten:") + " " + Helper.getTranslation("ProcessCreationErrorTitleAllreadyInUse"));
             }
         }
 
@@ -666,7 +667,7 @@ public class ProzesskopieForm implements Serializable {
          * -------------------------------- Prüfung der additional-Eingaben, die angegeben werden müssen --------------------------------
          */
         for (AdditionalField field : this.additionalFields) {
-            if ((field.getWert() == null || field.getWert().equals("")) && field.isRequired() && field.getShowDependingOnDoctype(getDocType())
+            if ((field.getWert() == null || "".equals(field.getWert())) && field.isRequired() && field.getShowDependingOnDoctype(getDocType())
                     && (StringUtils.isBlank(field.getWert()))) {
                 valide = false;
                 Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + field.getTitel() + " "
@@ -686,7 +687,7 @@ public class ProzesskopieForm implements Serializable {
     /* =============================================================== */
 
     public String GoToSeite2() {
-        if (this.prozessKopie.getTitel() == null || this.prozessKopie.getTitel().equals("")) {
+        if (this.prozessKopie.getTitel() == null || "".equals(this.prozessKopie.getTitel())) {
             CalcProzesstitel();
         }
         if (!isContentValid()) {
@@ -709,7 +710,7 @@ public class ProzesskopieForm implements Serializable {
 
         //        this.prozessKopie.setId(null);
 
-        if (this.prozessKopie.getTitel() == null || this.prozessKopie.getTitel().equals("")) {
+        if (this.prozessKopie.getTitel() == null || "".equals(this.prozessKopie.getTitel())) {
             CalcProzesstitel();
         }
         if (!isContentValid()) {
@@ -776,7 +777,7 @@ public class ProzesskopieForm implements Serializable {
             }
         }
 
-        if (addToWikiField != null && !addToWikiField.equals("")) {
+        if (addToWikiField != null && !"".equals(addToWikiField)) {
             User user = loginForm.getMyBenutzer();
             LogEntry logEntry = new LogEntry();
             logEntry.setContent(addToWikiField);
@@ -817,7 +818,7 @@ public class ProzesskopieForm implements Serializable {
                     /* welches Docstruct */
                     DocStruct myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct();
                     DocStruct myTempChild = null;
-                    if (field.getDocstruct().equals("firstchild")) {
+                    if ("firstchild".equals(field.getDocstruct())) {
                         try {
                             myTempStruct = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
                         } catch (RuntimeException e) {
@@ -829,13 +830,13 @@ public class ProzesskopieForm implements Serializable {
                     /*
                      * falls topstruct und firstchild das Metadatum bekommen sollen
                      */
-                    if (!field.getDocstruct().equals("firstchild") && field.getDocstruct().contains("firstchild")) {
+                    if (!"firstchild".equals(field.getDocstruct()) && field.getDocstruct().contains("firstchild")) {
                         try {
                             myTempChild = this.myRdf.getDigitalDocument().getLogicalDocStruct().getAllChildren().get(0);
                         } catch (RuntimeException e) {
                         }
                     }
-                    if (field.getDocstruct().equals("boundbook")) {
+                    if ("boundbook".equals(field.getDocstruct())) {
                         myTempStruct = this.myRdf.getDigitalDocument().getPhysicalDocStruct();
                     }
                     /* welches Metadatum */
@@ -843,7 +844,7 @@ public class ProzesskopieForm implements Serializable {
                         /*
                          * bis auf die Autoren alle additionals in die Metadaten übernehmen
                          */
-                        if (!field.getMetadata().equals("ListOfCreators")) {
+                        if (!"ListOfCreators".equals(field.getMetadata())) {
                             MetadataType mdt = this.ughHelper.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), field.getMetadata());
                             Metadata md = this.ughHelper.getMetadata(myTempStruct, mdt);
                             if (md != null) {
@@ -994,7 +995,7 @@ public class ProzesskopieForm implements Serializable {
         }
         List<Step> steps = StepManager.getStepsForProcess(prozessKopie.getId());
         for (Step s : steps) {
-            if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) && s.isTypAutomatisch()) {
+            if (StepStatus.OPEN.equals(s.getBearbeitungsstatusEnum()) && s.isTypAutomatisch()) {
                 ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(s);
                 myThread.startOrPutToQueue();
             }
@@ -1012,13 +1013,7 @@ public class ProzesskopieForm implements Serializable {
                 md.setValue(s);
                 md.setParent(colStruct);
                 colStruct.addMetadata(md);
-            } catch (UghHelperException e) {
-                Helper.setFehlerMeldung(e.getMessage(), "");
-
-            } catch (DocStructHasNoTypeException e) {
-                Helper.setFehlerMeldung(e.getMessage(), "");
-
-            } catch (MetadataTypeNotAllowedException e) {
+            } catch (UghHelperException | DocStructHasNoTypeException | MetadataTypeNotAllowedException e) {
                 Helper.setFehlerMeldung(e.getMessage(), "");
 
             }
@@ -1037,10 +1032,7 @@ public class ProzesskopieForm implements Serializable {
                     colStruct.removeMetadata(md, true);
                 }
             }
-        } catch (UghHelperException e) {
-            Helper.setFehlerMeldung(e.getMessage(), "");
-            log.error(e);
-        } catch (DocStructHasNoTypeException e) {
+        } catch (UghHelperException | DocStructHasNoTypeException e) {
             Helper.setFehlerMeldung(e.getMessage(), "");
             log.error(e);
         }
@@ -1126,13 +1118,13 @@ public class ProzesskopieForm implements Serializable {
         BeanHelper bh = new BeanHelper();
         for (AdditionalField field : this.additionalFields) {
             if (field.getShowDependingOnDoctype(getDocType())) {
-                if (field.getFrom().equals("werk")) {
+                if ("werk".equals(field.getFrom())) {
                     bh.EigenschaftHinzufuegen(werk, field.getTitel(), field.getWert());
                 }
-                if (field.getFrom().equals("vorlage")) {
+                if ("vorlage".equals(field.getFrom())) {
                     bh.EigenschaftHinzufuegen(vor, field.getTitel(), field.getWert());
                 }
-                if (field.getFrom().equals("prozess")) {
+                if ("prozess".equals(field.getFrom())) {
                     bh.EigenschaftHinzufuegen(this.prozessKopie, field.getTitel(), field.getWert());
                 }
             }
@@ -1206,8 +1198,7 @@ public class ProzesskopieForm implements Serializable {
             for (Metadata md : oldDocStruct.getAllMetadata()) {
                 try {
                     newDocStruct.addMetadata(md);
-                } catch (MetadataTypeNotAllowedException e) {
-                } catch (DocStructHasNoTypeException e) {
+                } catch (MetadataTypeNotAllowedException | DocStructHasNoTypeException e) {
                 }
             }
         }
@@ -1215,8 +1206,7 @@ public class ProzesskopieForm implements Serializable {
             for (Person p : oldDocStruct.getAllPersons()) {
                 try {
                     newDocStruct.addPerson(p);
-                } catch (MetadataTypeNotAllowedException e) {
-                } catch (DocStructHasNoTypeException e) {
+                } catch (MetadataTypeNotAllowedException | DocStructHasNoTypeException e) {
                 }
             }
         }
@@ -1281,16 +1271,12 @@ public class ProzesskopieForm implements Serializable {
             Element root = doc.getRootElement();
             /* alle Projekte durchlaufen */
             List<Element> projekte = root.getChildren();
-            for (Iterator<Element> iter = projekte.iterator(); iter.hasNext();) {
-                Element projekt = iter.next();
-
+            for (Element projekt : projekte) {
                 // collect default collections
-                if (projekt.getName().equals("default")) {
+                if ("default".equals(projekt.getName())) {
                     List<Element> myCols = projekt.getChildren("DigitalCollection");
-                    for (Iterator<Element> it2 = myCols.iterator(); it2.hasNext();) {
-                        Element col = it2.next();
-
-                        if (col.getAttribute("default") != null && col.getAttributeValue("default").equalsIgnoreCase("true")) {
+                    for (Element col : myCols) {
+                        if (col.getAttribute("default") != null && "true".equalsIgnoreCase(col.getAttributeValue("default"))) {
                             digitalCollections.add(col.getText());
                         }
 
@@ -1299,15 +1285,12 @@ public class ProzesskopieForm implements Serializable {
                 } else {
                     // run through the projects
                     List<Element> projektnamen = projekt.getChildren("name");
-                    for (Iterator<Element> iterator = projektnamen.iterator(); iterator.hasNext();) {
-                        Element projektname = iterator.next();
+                    for (Element projektname : projektnamen) {
                         // all all collections to list
                         if (projektname.getText().equalsIgnoreCase(this.prozessKopie.getProjekt().getTitel())) {
                             List<Element> myCols = projekt.getChildren("DigitalCollection");
-                            for (Iterator<Element> it2 = myCols.iterator(); it2.hasNext();) {
-                                Element col = it2.next();
-
-                                if (col.getAttribute("default") != null && col.getAttributeValue("default").equalsIgnoreCase("true")) {
+                            for (Element col : myCols) {
+                                if (col.getAttribute("default") != null && "true".equalsIgnoreCase(col.getAttributeValue("default"))) {
                                     digitalCollections.add(col.getText());
                                 }
 
@@ -1317,10 +1300,7 @@ public class ProzesskopieForm implements Serializable {
                     }
                 }
             }
-        } catch (JDOMException e1) {
-            log.error("error while parsing digital collections", e1);
-            Helper.setFehlerMeldung("Error while parsing digital collections", e1);
-        } catch (IOException e1) {
+        } catch (JDOMException | IOException e1) {
             log.error("error while parsing digital collections", e1);
             Helper.setFehlerMeldung("Error while parsing digital collections", e1);
         }
@@ -1400,9 +1380,9 @@ public class ProzesskopieForm implements Serializable {
                 field.setWert(String.valueOf(System.currentTimeMillis() + counter));
                 counter++;
             }
-            if (field.getMetadata() != null && field.getMetadata().equals("TitleDocMain") && currentTitle.length() == 0) {
+            if (field.getMetadata() != null && "TitleDocMain".equals(field.getMetadata()) && currentTitle.length() == 0) {
                 currentTitle = field.getWert();
-            } else if (field.getMetadata() != null && field.getMetadata().equals("ListOfCreators") && currentAuthors.length() == 0) {
+            } else if (field.getMetadata() != null && "ListOfCreators".equals(field.getMetadata()) && currentAuthors.length() == 0) {
                 currentAuthors = field.getWert();
             }
 
@@ -1437,14 +1417,14 @@ public class ProzesskopieForm implements Serializable {
             }
 
             /* wenn nix angegeben wurde, dann anzeigen */
-            if (isdoctype.equals("") && isnotdoctype.equals("")) {
+            if ("".equals(isdoctype) && "".equals(isnotdoctype)) {
                 titeldefinition = titel;
                 replacement = replacementText;
                 break;
             }
 
             /* wenn beides angegeben wurde */
-            if (!isdoctype.equals("") && !isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isdoctype, this.docType)
+            if (!"".equals(isdoctype) && !"".equals(isnotdoctype) && StringUtils.containsIgnoreCase(isdoctype, this.docType)
                     && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
                 titeldefinition = titel;
                 replacement = replacementText;
@@ -1452,13 +1432,13 @@ public class ProzesskopieForm implements Serializable {
             }
 
             /* wenn nur pflicht angegeben wurde */
-            if (isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isdoctype, this.docType)) {
+            if ("".equals(isnotdoctype) && StringUtils.containsIgnoreCase(isdoctype, this.docType)) {
                 titeldefinition = titel;
                 replacement = replacementText;
                 break;
             }
             /* wenn nur "darf nicht" angegeben wurde */
-            if (isdoctype.equals("") && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
+            if ("".equals(isdoctype) && !StringUtils.containsIgnoreCase(isnotdoctype, this.docType)) {
                 titeldefinition = titel;
                 replacement = replacementText;
                 break;
@@ -1476,14 +1456,12 @@ public class ProzesskopieForm implements Serializable {
                 newTitle += myString.substring(1, myString.length() - 1);
             } else {
                 /* andernfalls den string als Feldnamen auswerten */
-                for (Iterator<AdditionalField> it2 = this.additionalFields.iterator(); it2.hasNext();) {
-                    AdditionalField myField = it2.next();
-
+                for (AdditionalField myField : this.additionalFields) {
                     /*
                      * wenn es das ATS oder TSL-Feld ist, dann den berechneten atstsl einsetzen, sofern noch nicht vorhanden
                      */
-                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype(getDocType())
-                            && (myField.getWert() == null || myField.getWert().equals(""))) {
+                    if (("ATS".equals(myField.getTitel()) || "TSL".equals(myField.getTitel())) && myField.getShowDependingOnDoctype(getDocType())
+                            && (myField.getWert() == null || "".equals(myField.getWert()))) {
                         if (atstsl == null || atstsl.length() == 0) {
                             atstsl = createAtstsl(currentTitle, currentAuthors);
                         }
@@ -1517,13 +1495,13 @@ public class ProzesskopieForm implements Serializable {
         /*
          * -------------------------------- Bandnummer --------------------------------
          */
-        if (inFeldName.equals("Bandnummer") || inFeldName.equals("Volume number")) {
+        if ("Bandnummer".equals(inFeldName) || "Volume number".equals(inFeldName)) {
             try {
                 int bandint = Integer.parseInt(inFeldWert);
                 java.text.DecimalFormat df = new java.text.DecimalFormat("#0000");
                 rueckgabe = df.format(bandint);
             } catch (NumberFormatException e) {
-                if (inFeldName.equals("Bandnummer")) {
+                if ("Bandnummer".equals(inFeldName)) {
                     Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten: ") + "Bandnummer ist keine gültige Zahl");
                 } else {
                     Helper.setFehlerMeldung(Helper.getTranslation("UngueltigeDaten: ") + "Volume number is not a valid number");
@@ -1535,7 +1513,7 @@ public class ProzesskopieForm implements Serializable {
         }
 
         // TODO: temporary solution for shelfmark, replace it with configurable solution
-        if (inFeldName.equalsIgnoreCase("Signatur") || inFeldName.equalsIgnoreCase("Shelfmark")) {
+        if ("Signatur".equalsIgnoreCase(inFeldName) || "Shelfmark".equalsIgnoreCase(inFeldName)) {
             if (StringUtils.isNotBlank(rueckgabe)) {
                 // replace white spaces with dash, remove other special characters
                 rueckgabe = rueckgabe.replace(" ", "-").replace("/", "-").replaceAll("[^\\w-]", "");
@@ -1562,8 +1540,8 @@ public class ProzesskopieForm implements Serializable {
         /*
          * -------------------------------- evtuelle Ersetzungen --------------------------------
          */
-        tif_definition = tif_definition.replaceAll("\\[\\[", "<");
-        tif_definition = tif_definition.replaceAll("\\]\\]", ">");
+        tif_definition = tif_definition.replace("[[", "<");
+        tif_definition = tif_definition.replace("]]", ">");
 
         /*
          * -------------------------------- Documentname ist im allgemeinen = Processtitel --------------------------------
@@ -1583,22 +1561,21 @@ public class ProzesskopieForm implements Serializable {
              */
             if (myString.startsWith("'") && myString.endsWith("'") && myString.length() > 2) {
                 this.tifHeader_imagedescription += myString.substring(1, myString.length() - 1);
-            } else if (myString.equals("$Doctype")) {
+            } else if ("$Doctype".equals(myString)) {
                 /* wenn der Doctype angegeben werden soll */
                 this.tifHeader_imagedescription += this.co.getDoctypeByName(this.docType).getTifHeaderType();
             } else {
                 /* andernfalls den string als Feldnamen auswerten */
-                for (Iterator<AdditionalField> it2 = this.additionalFields.iterator(); it2.hasNext();) {
-                    AdditionalField myField = it2.next();
-                    if ((myField.getTitel().equals("Titel") || myField.getTitel().equals("Title")) && myField.getWert() != null
-                            && !myField.getWert().equals("")) {
+                for (AdditionalField myField : this.additionalFields) {
+                    if (("Titel".equals(myField.getTitel()) || "Title".equals(myField.getTitel())) && myField.getWert() != null
+                            && !"".equals(myField.getWert())) {
                         title = myField.getWert();
                     }
                     /*
                      * wenn es das ATS oder TSL-Feld ist, dann den berechneten atstsl einsetzen, sofern noch nicht vorhanden
                      */
-                    if ((myField.getTitel().equals("ATS") || myField.getTitel().equals("TSL")) && myField.getShowDependingOnDoctype(getDocType())
-                            && (myField.getWert() == null || myField.getWert().equals(""))) {
+                    if (("ATS".equals(myField.getTitel()) || "TSL".equals(myField.getTitel())) && myField.getShowDependingOnDoctype(getDocType())
+                            && (myField.getWert() == null || "".equals(myField.getWert()))) {
                         myField.setWert(this.atstsl);
                     }
 
