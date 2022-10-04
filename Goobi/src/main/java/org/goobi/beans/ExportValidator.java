@@ -29,8 +29,11 @@ import lombok.Setter;
 public class ExportValidator {
     @Getter
     @Setter
-    String label;
+    private Integer id;
     @Getter
     @Setter
-    String command;
+    private String label;
+    @Getter
+    @Setter
+    private String command;
 }

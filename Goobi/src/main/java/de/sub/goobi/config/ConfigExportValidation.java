@@ -40,6 +40,7 @@ public class ConfigExportValidation {
             String label = config.getString("validation(" + i + ")[@label]");
             String command = config.getString("validation(" + i + ")[@command]");
             ExportValidator new_validator = new ExportValidator();
+            new_validator.setId(Integer.valueOf(i + 1));
             new_validator.setLabel(label);
             new_validator.setCommand(command);
             configuredExportValidators.add(new_validator);

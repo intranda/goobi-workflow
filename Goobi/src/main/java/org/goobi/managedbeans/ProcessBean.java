@@ -1575,29 +1575,28 @@ public class ProcessBean extends BasicBean implements Serializable {
         return myProjekte;
     }
 
-    public String getExportValidationSelection() {
+    public Integer getExportValidationSelection() {
         if (this.myProzess.getExportValidator() != null) {
-            return this.myProzess.getExportValidator().getLabel();
+            return this.myProzess.getExportValidator().getId();
         } else {
-            //TODO: make String portable
-            return "Keine Validierung";
+            return Integer.valueOf(0);
         }
     }
 
     public void setExportValidationSelection(Integer selected) {
         if (selected != null && selected.intValue() != 0) {
-            // TODO: fix exception
-            List<ExportValidator> configuredValidators = ConfigExportValidation.getConfiguredExportValidators();
-            myProzess.setExportValidator(configuredValidators.get(selected));
+            for (ExportValidator exportValidator : ConfigExportValidation.getConfiguredExportValidators()) {
+                if (exportValidator.getId().equals(selected)) {
+                    this.myProzess.setExportValidator(exportValidator);
+                }
+            }
         }
     }
 
     public List<SelectItem> getExportValidationSelectionList() {
         List<SelectItem> options = new ArrayList<>();
-        Integer i = 0;
         for (ExportValidator exportValidator : ConfigExportValidation.getConfiguredExportValidators()) {
-            options.add(new SelectItem(i, exportValidator.getLabel(), null));
-            i++;
+            options.add(new SelectItem(exportValidator.getId(), exportValidator.getLabel(), null));
         }
         return options;
     }
