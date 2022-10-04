@@ -79,6 +79,7 @@ import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
 import org.goobi.beans.Docket;
+import org.goobi.beans.ExportValidator;
 import org.goobi.beans.LogEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
@@ -125,6 +126,7 @@ import com.lowagie.text.pdf.PdfWriter;
 
 import de.intranda.commons.chart.renderer.CSVRenderer;
 import de.intranda.commons.chart.results.DataRow;
+import de.sub.goobi.config.ConfigExportValidation;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.export.dms.ExportDms;
 import de.sub.goobi.export.download.ExportMets;
@@ -444,7 +446,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         //            return "";
         //        }
         Helper.setMeldung("Process deleted");
-        if (this.modusAnzeige.equals("vorlagen")) {
+        if ("vorlagen".equals(this.modusAnzeige)) {
             return FilterVorlagen();
         } else {
             return FilterAlleStart();
@@ -534,7 +536,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         this.myAnzahlList = null;
         ProcessManager m = new ProcessManager();
         String sql = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
-        if (this.modusAnzeige.equals("vorlagen")) {
+        if ("vorlagen".equals(this.modusAnzeige)) {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
             }
@@ -545,7 +547,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             }
             sql = sql + " prozesse.istTemplate = false ";
         }
-        if (!this.showClosedProcesses && !this.modusAnzeige.equals("vorlagen")) {
+        if (!this.showClosedProcesses && !"vorlagen".equals(this.modusAnzeige)) {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
             }
@@ -596,7 +598,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
         String sql = FilterHelper.criteriaBuilder(filter, true, null, null, null, true, false);
 
-        if (!this.showClosedProcesses && !this.modusAnzeige.equals("vorlagen")) {
+        if (!this.showClosedProcesses && !"vorlagen".equals(this.modusAnzeige)) {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
             }
@@ -634,7 +636,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         this.myAnzahlList = null;
 
         String sql = FilterHelper.criteriaBuilder(filter, null, null, null, null, true, false);
-        if (this.modusAnzeige.equals("vorlagen")) {
+        if ("vorlagen".equals(this.modusAnzeige)) {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
             }
@@ -645,7 +647,7 @@ public class ProcessBean extends BasicBean implements Serializable {
             }
             sql = sql + " prozesse.istTemplate = false ";
         }
-        if (!this.showClosedProcesses && !this.modusAnzeige.equals("vorlagen")) {
+        if (!this.showClosedProcesses && !"vorlagen".equals(this.modusAnzeige)) {
             if (!sql.isEmpty()) {
                 sql = sql + " AND ";
             }
@@ -666,37 +668,37 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     private String sortList() {
         String answer = "prozesse.titel";
-        if (this.sortierung.equals("titelAsc")) {
+        if ("titelAsc".equals(this.sortierung)) {
             answer = "prozesse.titel";
-        } else if (this.sortierung.equals("titelDesc")) {
+        } else if ("titelDesc".equals(this.sortierung)) {
             answer = "prozesse.titel desc";
-        } else if (this.sortierung.equals("batchAsc")) {
+        } else if ("batchAsc".equals(this.sortierung)) {
             answer = "batchID";
-        } else if (this.sortierung.equals("batchDesc")) {
+        } else if ("batchDesc".equals(this.sortierung)) {
             answer = "batchID desc";
-        } else if (this.sortierung.equals("projektAsc")) {
+        } else if ("projektAsc".equals(this.sortierung)) {
             answer = "projekte.Titel";
-        } else if (this.sortierung.equals("projektDesc")) {
+        } else if ("projektDesc".equals(this.sortierung)) {
             answer = "projekte.Titel desc";
-        } else if (this.sortierung.equals("vorgangsdatumAsc")) {
+        } else if ("vorgangsdatumAsc".equals(this.sortierung)) {
             answer = "erstellungsdatum";
-        } else if (this.sortierung.equals("vorgangsdatumDesc")) {
+        } else if ("vorgangsdatumDesc".equals(this.sortierung)) {
             answer = "erstellungsdatum desc";
-        } else if (this.sortierung.equals("fortschrittAsc")) {
+        } else if ("fortschrittAsc".equals(this.sortierung)) {
             answer = "sortHelperStatus";
-        } else if (this.sortierung.equals("fortschrittDesc")) {
+        } else if ("fortschrittDesc".equals(this.sortierung)) {
             answer = "sortHelperStatus desc";
-        } else if (this.sortierung.equals("idAsc")) {
+        } else if ("idAsc".equals(this.sortierung)) {
             answer = "prozesse.ProzesseID";
-        } else if (this.sortierung.equals("idDesc")) {
+        } else if ("idDesc".equals(this.sortierung)) {
             answer = "prozesse.ProzesseID desc";
-        } else if (sortierung.equals("institutionAsc")) {
+        } else if ("institutionAsc".equals(sortierung)) {
             answer = "institution.shortName";
-        } else if (sortierung.equals("institutionDesc")) {
+        } else if ("institutionDesc".equals(sortierung)) {
             answer = "institution.shortName desc";
-        } else if (sortierung.equals("numberOfImagesAsc")) {
+        } else if ("numberOfImagesAsc".equals(sortierung)) {
             answer = "prozesse.sortHelperImages";
-        } else if (sortierung.equals("numberOfImagesDesc")) {
+        } else if ("numberOfImagesDesc".equals(sortierung)) {
             answer = "prozesse.sortHelperImages desc";
         }
 
@@ -887,8 +889,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         List<Step> steps = this.myProzess.getSchritte();
         Step step;
         int order;
-        for (int i = 0; i < steps.size(); i++) {
-            step = steps.get(i);
+        for (Step step2 : steps) {
+            step = step2;
             order = step.getReihenfolge();
             if (order >= this.mySchritt.getReihenfolge() && step != this.mySchritt) {
                 step.setReihenfolge(order + 1);
@@ -1249,12 +1251,12 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     @SuppressWarnings("unchecked")
     public void generateFilterWithIdentfiers() {
-        String f = "\"id:";
+        StringBuilder f = new StringBuilder("\"id:");
         for (Process proz : (List<Process>) this.paginator.getCompleteList()) {
-            f += proz.getId() + " ";
+            f.append(proz.getId()).append(" ");
         }
-        f += "\"";
-        filter = f;
+        f.append("\"");
+        filter = f.toString();
     }
 
     public void SchrittStatusUp() {
@@ -1404,12 +1406,12 @@ public class ProcessBean extends BasicBean implements Serializable {
             int currentOrder;
 
             // Set all steps with targetOrder to baseOrder
-            for (int i = 0; i < steps.size(); i++) {
-                currentOrder = steps.get(i).getReihenfolge().intValue();
+            for (Step step : steps) {
+                currentOrder = step.getReihenfolge().intValue();
 
                 if (currentOrder == targetOrder) {
-                    steps.get(i).setReihenfolge(baseOrder);
-                    this.saveStepInStepManager(steps.get(i));
+                    step.setReihenfolge(baseOrder);
+                    this.saveStepInStepManager(step);
                 }
             }
             // Set the step (with baseOrder) to targetOrder
@@ -1428,8 +1430,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         int targetOrder = -1;
         int currentOrder;
 
-        for (int i = 0; i < steps.size(); i++) {
-            currentOrder = steps.get(i).getReihenfolge().intValue();
+        for (Step step : steps) {
+            currentOrder = step.getReihenfolge().intValue();
             // Is baseOrder < currentOrder < targetOrder or targetOrder undefined (-1)?
             if (direction == -1) {//downwards
 
@@ -1571,6 +1573,33 @@ public class ProcessBean extends BasicBean implements Serializable {
             myProjekte.add(new SelectItem(docket.getId(), docket.getName(), null));
         }
         return myProjekte;
+    }
+
+    public String getExportValidationSelection() {
+        if (this.myProzess.getExportValidator() != null) {
+            return this.myProzess.getExportValidator().getLabel();
+        } else {
+            //TODO: make String portable
+            return "Keine Validierung";
+        }
+    }
+
+    public void setExportValidationSelection(Integer selected) {
+        if (selected != null && selected.intValue() != 0) {
+            // TODO: fix exception
+            List<ExportValidator> configuredValidators = ConfigExportValidation.getConfiguredExportValidators();
+            myProzess.setExportValidator(configuredValidators.get(selected));
+        }
+    }
+
+    public List<SelectItem> getExportValidationSelectionList() {
+        List<SelectItem> options = new ArrayList<>();
+        Integer i = 0;
+        for (ExportValidator exportValidator : ConfigExportValidation.getConfiguredExportValidators()) {
+            options.add(new SelectItem(i, exportValidator.getLabel(), null));
+            i++;
+        }
+        return options;
     }
 
     /*
@@ -2023,9 +2052,7 @@ public class ProcessBean extends BasicBean implements Serializable {
                 out.flush();
             } catch (ConfigurationException e) {
                 Helper.setFehlerMeldung("could not create logfile: ", e);
-            } catch (XSLTransformException e) {
-                Helper.setFehlerMeldung("could not create transformation: ", e);
-            } catch (IOException e) {
+            } catch (XSLTransformException | IOException e) {
                 Helper.setFehlerMeldung("could not create transformation: ", e);
             }
             facesContext.responseComplete();
@@ -2038,7 +2065,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public void setMyProcessId(String id) {
         try {
-            int myid = Integer.valueOf(id).intValue();
+            int myid = Integer.parseInt(id);
             this.myProzess = ProcessManager.getProcessById(myid);
             //        } catch (DAOException e) {
             //            log.error(e);
@@ -2144,7 +2171,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         List<SearchColumn> columnList = new ArrayList<>();
         boolean addAllColumns = false;
         for (SearchColumn sc : searchField) {
-            if (sc.getValue().equals("all")) {
+            if ("all".equals(sc.getValue())) {
                 addAllColumns = true;
                 break;
             }
@@ -2152,7 +2179,7 @@ public class ProcessBean extends BasicBean implements Serializable {
         if (addAllColumns) {
             int currentOrder = 0;
             for (SelectItem si : possibleItems) {
-                if (!si.getValue().equals("all") && !si.isDisabled() && !((String) si.getValue()).startsWith("index.")) {
+                if (!"all".equals(si.getValue()) && !si.isDisabled() && !((String) si.getValue()).startsWith("index.")) {
                     SearchColumn sc = new SearchColumn(currentOrder++);
                     sc.setValue((String) si.getValue());
                     columnList.add(sc);
@@ -2207,12 +2234,10 @@ public class ProcessBean extends BasicBean implements Serializable {
                         PdfPTable table = new PdfPTable(rowList.get(0).size());
                         table.setSpacingBefore(20);
 
-                        for (int i = 0; i < rowList.size(); i++) {
+                        for (List<XSSFCell> row : rowList) {
 
-                            List<XSSFCell> row = rowList.get(i);
                             table.completeRow();
-                            for (int j = 0; j < row.size(); j++) {
-                                XSSFCell myCell = row.get(j);
+                            for (XSSFCell myCell : row) {
                                 String stringCellValue = myCell.toString();
                                 table.addCell(stringCellValue);
                             }

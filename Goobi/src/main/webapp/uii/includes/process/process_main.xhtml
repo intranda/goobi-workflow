@@ -375,8 +375,7 @@
                                     <h:outputText value="#{ProzessverwaltungForm.myProzess.docket.name}" />
 									
  									<h:outputText value="#{msgs.exportValidation}:" />
- 									<!-- Hier den Status aus dem Prozess anzeigen und Bean Platzhalter ersetzen -->
- 									<h:outputText value="Bean" />
+ 									<h:outputText value="#{ProzessverwaltungForm.myProzess.exportValidator.label}" />
  									
                                     <h:outputText value="#{msgs.inAuswahllisteAnzeigen}:" />
                                     <i class="fa #{ProzessverwaltungForm.myProzess.inAuswahllisteAnzeigen?'fa-check-square-o':'fa-square-o'}"></i>
@@ -498,21 +497,17 @@
                                 selectItems="#{ProzessverwaltungForm.docketSelectionList}"
                                 fieldStyle="form-control"
                                 required="true" />
-                                
-                            <!--
-                            	Hier sind noch Platzhalter drin, bis das Form angepasst ist!
-                            	field, name und selectItems müssen noch angepasst werden!
-                             -->    
+
                             <intranda:formInputDropDown
                                 id="exportValidation"
                                 label="#{msgs.exportValidation}"
-                                field="#{ProzessverwaltungForm.docketSelection}"
+                                field="#{ProzessverwaltungForm.exportValidationSelection}"
                                 help="#{msgs.helpProcessExportValidation}"
-                                name="docket_name"
-                                selectItems="#{ProzessverwaltungForm.docketSelectionList}"
+                                name="exportValidation_label"
+                                selectItems="#{ProzessverwaltungForm.exportValidationSelectionList}"
                                 fieldStyle="form-control"
-                                required="true" />
-                                
+                                required="false" />
+
                             <intranda:formInputCheckBox
                                 id="showSelection"
                                 label="#{msgs.inAuswahllisteAnzeigen}"
