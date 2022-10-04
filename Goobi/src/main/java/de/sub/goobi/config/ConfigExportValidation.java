@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.goobi.beans.ExportValidator;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -31,16 +32,6 @@ public class ConfigExportValidation {
     private ConfigExportValidation() {
     }
 
-    static public class ExportValidator {
-        String label;
-        String command;
-
-        public ExportValidator(String label, String command) {
-            this.label = label;
-            this.command = command;
-        }
-    }
-
     public static List<ExportValidator> getConfiguredExportValidators() {
         List<ExportValidator> configuredExportValidators = new ArrayList<>();
         XMLConfiguration config = getExportValidatorConfiguration();
@@ -48,7 +39,9 @@ public class ConfigExportValidation {
         for (int i = 0; i <= number_of_validators; i++) {
             String label = config.getString("validation(" + i + ")[@label]");
             String command = config.getString("validation(" + i + ")[@command]");
-            ExportValidator new_validator = new ExportValidator(label, command);
+            ExportValidator new_validator = new ExportValidator();
+            new_validator.setLabel(label);
+            new_validator.setCommand(command);
             configuredExportValidators.add(new_validator);
         }
         return configuredExportValidators;
