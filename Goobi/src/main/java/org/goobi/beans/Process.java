@@ -167,7 +167,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Setter
     private Docket docket;
     @Setter
-    private ExportValidator exportValidator;
+    private ExportValidator exportValidator = null;
 
     private String imagesTiffDirectory = null;
     private String imagesOrigDirectory = null;
@@ -1479,10 +1479,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public ExportValidator getExportValidator() {
         if (exportValidator == null) {
-            // TODO: get saved validator from Database & return label
-            // if no result, return nothing
             exportValidator = new ExportValidator();
-            exportValidator.setLabel("");
+            exportValidator.setId(Integer.valueOf(0));
+            exportValidator.setLabel(Helper.getTranslation("noValidation"));
             exportValidator.setCommand("");
         }
         return exportValidator;

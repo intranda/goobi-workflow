@@ -1595,6 +1595,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public List<SelectItem> getExportValidationSelectionList() {
         List<SelectItem> options = new ArrayList<>();
+        options.add(new SelectItem(Integer.valueOf(0), Helper.getTranslation("noValidation")));
         for (ExportValidator exportValidator : ConfigExportValidation.getConfiguredExportValidators()) {
             options.add(new SelectItem(exportValidator.getId(), exportValidator.getLabel(), null));
         }
