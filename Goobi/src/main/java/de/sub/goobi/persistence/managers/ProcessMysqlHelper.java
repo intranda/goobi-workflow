@@ -464,8 +464,9 @@ class ProcessMysqlHelper implements Serializable {
         //        sql.append(" wikifield = ?,");
         sql.append(" batchID = ?,");
         sql.append(" docketID = ?,");
-        sql.append(" exportValidator = ?, ");
-        sql.append(" mediaFolderExists = ?, pauseAutomaticExecution = ?");
+        sql.append(" mediaFolderExists = ?,");
+        sql.append(" pauseAutomaticExecution = ?,");
+        sql.append(" exportValidator = ?");
         sql.append(" WHERE ProzesseID = " + o.getId());
 
         Object[] param = generateParameter(o, false, false);
