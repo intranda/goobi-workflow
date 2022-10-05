@@ -394,24 +394,22 @@ class ProcessMysqlHelper implements Serializable {
     }
 
     private static String generateInsertQuery(boolean includeProcessId) {
-        // TODO: exportValidation
         if (!includeProcessId) {
             return "(Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen, sortHelperStatus,"
                     + "sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, MetadatenKonfigurationID, sortHelperDocstructs,"
-                    + "sortHelperMetadata, batchID, docketID, mediaFolderExists, pauseAutomaticExecution)" + " VALUES ";
+                    + "sortHelperMetadata, batchID, docketID, mediaFolderExists, pauseAutomaticExecution, exportValidator)" + " VALUES ";
         } else {
             return "(ProzesseID, Titel, ausgabename, IstTemplate, swappedOut, inAuswahllisteAnzeigen, sortHelperStatus,"
                     + "sortHelperImages, sortHelperArticles, erstellungsdatum, ProjekteID, MetadatenKonfigurationID, sortHelperDocstructs,"
-                    + "sortHelperMetadata, batchID, docketID, mediaFolderExists, pauseAutomaticExecution)" + " VALUES ";
+                    + "sortHelperMetadata, batchID, docketID, mediaFolderExists, pauseAutomaticExecution, exportValidator)" + " VALUES ";
         }
     }
 
     private static String generateValueQuery(boolean includeProcessId) {
-        // TODO: exportValidation
         if (!includeProcessId) {
-            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        } else {
             return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        } else {
+            return "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         }
     }
 
@@ -427,12 +425,12 @@ class ProcessMysqlHelper implements Serializable {
         }
 
         Timestamp datetime = new Timestamp(d.getTime());
-        // TODO: exportValidation
         if (!includeProcessID) {
             Object[] param = { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
                     o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(), o.getRegelsatz().getId(),
                     o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatch() == null ? null : o.getBatch().getBatchId(),
-                    o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution() };
+                    o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
+                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
 
             return param;
         } else {
@@ -440,7 +438,8 @@ class ProcessMysqlHelper implements Serializable {
                     o.isInAuswahllisteAnzeigen(), o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime,
                     o.getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
                     o.getBatch() == null ? null : o.getBatch().getBatchId(), o.getDocket() == null ? null : o.getDocket().getId(),
-                    o.isMediaFolderExists(), o.isPauseAutomaticExecution() };
+                    o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
+                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
 
             return param;
         }
@@ -465,7 +464,7 @@ class ProcessMysqlHelper implements Serializable {
         //        sql.append(" wikifield = ?,");
         sql.append(" batchID = ?,");
         sql.append(" docketID = ?,");
-        // TODO: sql.append(" exportValidation = ?, ");
+        sql.append(" exportValidator = ?, ");
         sql.append(" mediaFolderExists = ?, pauseAutomaticExecution = ?");
         sql.append(" WHERE ProzesseID = " + o.getId());
 

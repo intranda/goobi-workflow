@@ -173,7 +173,7 @@ public class CopyProcess {
         this.prozessKopie.setProjekt(this.prozessVorlage.getProjekt());
         this.prozessKopie.setRegelsatz(this.prozessVorlage.getRegelsatz());
         this.prozessKopie.setDocket(this.prozessVorlage.getDocket());
-        // TODO: ExportValidator
+        this.prozessKopie.setExportValidator(this.prozessVorlage.getExportValidator());
         this.digitalCollections = new ArrayList<>();
 
         /*

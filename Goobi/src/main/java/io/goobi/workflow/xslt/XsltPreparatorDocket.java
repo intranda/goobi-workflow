@@ -924,7 +924,6 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         configuration.setAttribute("updateMetadataIndex", String.valueOf(step.isUpdateMetadataIndex()));
         // generateDocket
         configuration.setAttribute("generateDocket", String.valueOf(step.isGenerateDocket()));
-        // TODO: ExportValidation??
         // batchStep
         configuration.setAttribute("batchStep", String.valueOf(step.getBatchStep()));
 

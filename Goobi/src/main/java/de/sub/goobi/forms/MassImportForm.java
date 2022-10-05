@@ -819,7 +819,7 @@ public class MassImportForm implements Serializable {
         process.setProjekt(template.getProjekt());
         process.setRegelsatz(template.getRegelsatz());
         process.setDocket(template.getDocket());
-        // TODO: ExportValidation
+        process.setExportValidator(template.getExportValidator());
 
         BeanHelper bHelper = new BeanHelper();
         bHelper.SchritteKopieren(template, process);

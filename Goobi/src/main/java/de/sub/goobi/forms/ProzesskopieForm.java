@@ -235,7 +235,7 @@ public class ProzesskopieForm implements Serializable {
         this.prozessKopie.setProjekt(this.prozessVorlage.getProjekt());
         this.prozessKopie.setRegelsatz(this.prozessVorlage.getRegelsatz());
         this.prozessKopie.setDocket(this.prozessVorlage.getDocket());
-        // TODO: ExportValidation
+        this.prozessKopie.setExportValidator(this.prozessVorlage.getExportValidator());
         this.digitalCollections = new ArrayList<>();
 
         /*
