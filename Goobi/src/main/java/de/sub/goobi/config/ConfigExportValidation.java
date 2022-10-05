@@ -48,6 +48,15 @@ public class ConfigExportValidation {
         return configuredExportValidators;
     }
 
+    public static Integer getExportValidatorIdFromLabel(String label) {
+        for (ExportValidator exportValidator : getConfiguredExportValidators()) {
+            if (exportValidator.getLabel().equals(label)) {
+                return exportValidator.getId();
+            }
+        }
+        return 0;
+    }
+
     private static XMLConfiguration getExportValidatorConfiguration() {
         String configurationFile = ConfigurationHelper.getInstance().getConfigurationFolder() + "goobi_exportValidation.xml";
         XMLConfiguration config = new XMLConfiguration();

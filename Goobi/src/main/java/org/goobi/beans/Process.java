@@ -1480,9 +1480,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public ExportValidator getExportValidator() {
         if (exportValidator == null) {
             exportValidator = new ExportValidator();
-            exportValidator.setId(Integer.valueOf(0));
-            exportValidator.setLabel(Helper.getTranslation("noValidation"));
-            exportValidator.setCommand("");
         }
         return exportValidator;
     }
@@ -1506,8 +1503,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         erstellungsdatum = new Date();
 
         setDocket(source.getDocket());
-        //TODO:
-        //setExportValidation
+        setExportValidator(source.getExportValidator());
         setInAuswahllisteAnzeigen(false);
         setIstTemplate(source.isIstTemplate());
         setProjectId(source.getProjectId());

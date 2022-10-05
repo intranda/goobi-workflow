@@ -1,5 +1,8 @@
 package org.goobi.beans;
 
+import java.util.List;
+
+import de.sub.goobi.config.ConfigExportValidation;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,4 +39,34 @@ public class ExportValidator {
     @Getter
     @Setter
     private String command;
+
+    public ExportValidator() {
+    }
+
+    public ExportValidator(String label) {
+        if (label == null) {
+            this.id = Integer.valueOf(0);
+        } else {
+            this.label = label;
+        }
+        this.command = findCommandByLabel(label);
+    }
+
+    private String findCommandByLabel(String label) {
+        String command = "";
+        if (label == null) {
+            return null;
+        }
+        List<ExportValidator> configuredValidators = ConfigExportValidation.getConfiguredExportValidators();
+        if (configuredValidators != null) {
+            for (ExportValidator exportValidator : configuredValidators) {
+                if (label.equals(exportValidator.label)) {
+                    command = exportValidator.command;
+                    break;
+                }
+            }
+        }
+        return command;
+    }
+
 }

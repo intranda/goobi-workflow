@@ -1577,7 +1577,7 @@ public class ProcessBean extends BasicBean implements Serializable {
 
     public Integer getExportValidationSelection() {
         if (this.myProzess.getExportValidator() != null) {
-            return this.myProzess.getExportValidator().getId();
+            return ConfigExportValidation.getExportValidatorIdFromLabel(this.myProzess.getExportValidator().getLabel());
         } else {
             return Integer.valueOf(0);
         }
@@ -1587,9 +1587,11 @@ public class ProcessBean extends BasicBean implements Serializable {
         if (selected != null && selected.intValue() != 0) {
             for (ExportValidator exportValidator : ConfigExportValidation.getConfiguredExportValidators()) {
                 if (exportValidator.getId().equals(selected)) {
-                    this.myProzess.setExportValidator(exportValidator);
+                    myProzess.setExportValidator(exportValidator);
                 }
             }
+        } else {
+            this.myProzess.setExportValidator(null);
         }
     }
 
