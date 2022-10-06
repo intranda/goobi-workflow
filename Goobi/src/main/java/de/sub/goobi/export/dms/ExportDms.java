@@ -1,5 +1,6 @@
 package de.sub.goobi.export.dms;
 
+import java.io.BufferedReader;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -26,6 +27,8 @@ package de.sub.goobi.export.dms;
  * exception statement from your version.
  */
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -34,6 +37,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FilenameUtils;
 //import lombok.extern.log4j.Log4j2;		//doesnt work?
@@ -149,8 +153,15 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 java.lang.Process exportValidationProcess = Runtime.getRuntime().exec(command);
                 Integer exitVal = exportValidationProcess.waitFor();
 
+                InputStream errorInputStream = exportValidationProcess.getErrorStream();
+                InputStreamReader errorStreamReader = new InputStreamReader(errorInputStream);
+                Stream<String> errorStream = new BufferedReader(errorStreamReader).lines();
+                String errorStreamAsString = errorStream.collect(Collectors.joining());
+
                 // exitVal 0 indicates success, 1 indicates errors in the XML
-                if (exitVal == 0) {
+                // errorStreamAsString represents STDERR. It should be completely empty, or else the command failed
+
+                if (exitVal == 0 && errorStreamAsString.isBlank()) {
                     Helper.setMeldung(null, myProzess.getTitel() + ": ", "XML validation completed successfully");
                     // delete the now no longer required generated .xml
                     if (!StorageProvider.getInstance().deleteDir(temporaryFile)) {
