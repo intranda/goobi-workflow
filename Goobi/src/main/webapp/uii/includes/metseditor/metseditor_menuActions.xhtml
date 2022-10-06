@@ -346,14 +346,18 @@
                         the unfocus-task first and then simulate the click of
                         the other button (below, hidden) AFTER UNFOCUSING the
                         currently focused field.-->
-                        <button
-                            jsf:class="btn btn--icon"  
-                            jsf:id="saveMetsFileButtonSimulation"
+                        <!-- This button should not submit the form. Otherwise there will be two submits,
+                        from this button and from #saveMetsFileButton. In Firefox only the second submit is sent, resulting
+                        in the desired behaviour. In Chromium-browsers, the first submit is sent, resulting in Metadaten.Reload
+                        not being called (Florian 06-10-2022) -->
+                        <button 
+                            class="btn btn--icon"  
+                            id="saveMetsFileButtonSimulation"
                             onclick="document.activeElement.blur();document.getElementById('meMenuActionsForm:saveMetsFileButton').click();"
-                            title="#{msgs.speichern}">
+                            title="#{msgs.speichern}"
+                            data-toggle="tooltip"
+                            data-placement="bottom">
                             <i class="fa fa-floppy-o fa-lg" aria-hidden="true"></i>
-                            <f:passThroughAttribute name="data-toggle" value="tooltip" />
-                            <f:passThroughAttribute name="data-placement" value="bottom" />
                         </button>
                         <!-- This button may not be removed or merged into the
                         button above. It is called AFTER the javascript of the
