@@ -28,6 +28,8 @@ package de.unigoettingen.sub.search.opac;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -622,22 +624,26 @@ public class GetOpac {
 
         }
         try {
-            if (log.isDebugEnabled()) {
-                log.debug("use proxy configuration: " + ConfigurationHelper.getInstance().isUseProxy());
-            }
-            if (ConfigurationHelper.getInstance().isUseProxy()) {
-                if (!ConfigurationHelper.getInstance().isProxyWhitelisted(url)) {
-                    HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
-                    if (log.isDebugEnabled()) {
-                        log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
-                    }
 
-                    Builder builder = RequestConfig.custom();
-                    builder.setProxy(proxy);
-                    RequestConfig rc = builder.build();
-                    opacRequest.setConfig(rc);
-                } else if (log.isDebugEnabled()) {
-                    log.debug("url was on proxy whitelist, no proxy used: " + url);
+            log.debug("use proxy configuration: " + ConfigurationHelper.getInstance().isUseProxy());
+
+            if (ConfigurationHelper.getInstance().isUseProxy()) {
+                try {
+                    URL ipAsURL = new URL(url);
+                    if (!ConfigurationHelper.getInstance().isProxyWhitelisted(ipAsURL)) {
+                        HttpHost proxy =
+                                new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
+                        log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
+
+                        Builder builder = RequestConfig.custom();
+                        builder.setProxy(proxy);
+                        RequestConfig rc = builder.build();
+                        opacRequest.setConfig(rc);
+                    } else {
+                        log.debug("url was on proxy whitelist, no proxy used: " + url);
+                    }
+                } catch (MalformedURLException e) {
+                    log.debug("could not convert into URL: ", url);
                 }
             }
 

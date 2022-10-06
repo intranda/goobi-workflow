@@ -21,6 +21,7 @@ import java.io.OutputStream;
  * 
  */
 import java.io.Serializable;
+import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -877,8 +878,12 @@ public class ConfigurationHelper implements Serializable {
         return getLocalList("http_proxyIgnoreIp");
     }
 
-    public Boolean isProxyWhitelisted(String url) {
+    public boolean isProxyWhitelisted(String url) {
         return getProxyWhitelist().contains(url);
+    }
+
+    public boolean isProxyWhitelisted(URL ipAsURL) {
+        return isProxyWhitelisted(ipAsURL.getHost());
     }
 
     // old parameter, remove them
@@ -1204,5 +1209,4 @@ public class ConfigurationHelper implements Serializable {
             }
         }
     }
-
 }
