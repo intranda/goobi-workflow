@@ -152,8 +152,9 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 // exitVal 0 indicates success, 1 indicates errors in the XML
                 if (exitVal == 0) {
                     Helper.setMeldung(null, myProzess.getTitel() + ": ", "XML validation completed successfully");
+                    // delete the now no longer required generated .xml
                     if (!StorageProvider.getInstance().deleteDir(temporaryFile)) {
-                        Helper.setFehlerMeldung("Export cancelled, prrocess: " + myProzess.getTitel(),
+                        Helper.setFehlerMeldung("Export cancelled, process: " + myProzess.getTitel(),
                                 "Temporarily exported file could not be cleared.");
                         problems.add("Export cancelled: Success folder could not be cleared.");
                         return false;
