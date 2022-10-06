@@ -192,7 +192,12 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         String scheme = request.getScheme(); // http
         String serverName = request.getServerName(); // hostname.com
         int serverPort = request.getServerPort(); // 80
-        String reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
+        String reqUrl = scheme + "://" + serverName + contextPath;
+        // if there is a port lower than the typical ones (443) don't show it in the url (http://mygoobi.io/xyz instead of http://mygoobi.io:80/xyz)
+        if (serverPort > 443) {
+        	reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
+        }
+       
         Client client = ClientBuilder.newClient();
         WebTarget base = client.target(reqUrl);
         WebTarget vocabularyBase = base.path("api").path("vocabulary");
@@ -764,7 +769,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                                     + selectedVocabularyRecord.getVocabularyId() + "/records/" + selectedVocabularyRecord.getId());
                 } else {
                     md.setAutorityFile(vocabulary, vocabularyUrl,
-                            vocabularyUrl + "/vocabularies/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
+                            vocabularyUrl + "/jskos/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
                 }
                 break;
             default:
