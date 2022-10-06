@@ -130,10 +130,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             gdzfile = myProzess.readMetadataFile();
 
             // Check for existing Export Validator, and if it exists, run the associated command
-            if (myProzess.getExportValidator().getLabel() != null) {
+            if (myProzess.isConfiguredWithExportValidator()) {
                 Helper.setMeldung(null, myProzess.getTitel() + ": ", "XML validation found");
-                String command = myProzess.getExportValidator().getCommand();
-                final Pattern pExportFile = Pattern.compile("\\$?(?:\\(|\\{)EXPORTFILE(?:\\}|\\))");
 
                 exportValidationNewfile.setDigitalDocument(gdzfile.getDigitalDocument());
                 exportValidationFile = exportValidationNewfile;
@@ -141,11 +139,17 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 Path temporaryFile = Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder() + atsPpnBand + ".xml");
                 writeMetsFile(myProzess, temporaryFile.toString(), exportValidationFile, false);
 
-                String PATH = ConfigurationHelper.getInstance().getTemporaryFolder() + atsPpnBand + ".xml";
-                command = pExportFile.matcher(command).replaceAll(Matcher.quoteReplacement(PATH));
+                String pathToGeneratedFile = ConfigurationHelper.getInstance().getTemporaryFolder() + atsPpnBand + ".xml";
+                String command = myProzess.getExportValidator().getCommand();
+
+                // replace {EXPORTFILE} keyword from configuration file
+                final Pattern pExportFile = Pattern.compile("\\$?(?:\\(|\\{)EXPORTFILE(?:\\}|\\))");
+                command = pExportFile.matcher(command).replaceAll(Matcher.quoteReplacement(pathToGeneratedFile));
 
                 java.lang.Process exportValidationProcess = Runtime.getRuntime().exec(command);
                 Integer exitVal = exportValidationProcess.waitFor();
+
+                // exitVal 0 indicates success, 1 indicates errors in the XML
                 if (exitVal == 0) {
                     Helper.setMeldung(null, myProzess.getTitel() + ": ", "XML validation completed successfully");
                     if (!StorageProvider.getInstance().deleteDir(temporaryFile)) {

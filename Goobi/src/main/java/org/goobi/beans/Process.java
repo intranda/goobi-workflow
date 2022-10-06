@@ -2327,4 +2327,13 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 .map(p -> Paths.get(p).getFileName().toString().replace(".xml", ""))
                 .collect(Collectors.toList());
     }
+
+    public boolean isConfiguredWithExportValidator() {
+        if (getExportValidator().getLabel() != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
