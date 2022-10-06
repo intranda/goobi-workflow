@@ -117,27 +117,46 @@ public class ExportDms extends ExportMets implements IExportPlugin {
          * -------------------------------- Dokument einlesen --------------------------------
          */
         Fileformat gdzfile;
+        Fileformat exportValidationFile;
+
         //      Fileformat newfile;
         ExportFileformat newfile =
                 MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
+
+        ExportFileformat exportValidationNewfile =
+                MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
+
         try {
             gdzfile = myProzess.readMetadataFile();
 
             // Check for existing Export Validator, and if it exists, run the associated command
-            if (myProzess.getExportValidator() != null) {
+            if (myProzess.getExportValidator().getLabel() != null) {
                 Helper.setMeldung(null, myProzess.getTitel() + ": ", "XML validation found");
                 String command = myProzess.getExportValidator().getCommand();
                 final Pattern pExportFile = Pattern.compile("\\$?(?:\\(|\\{)EXPORTFILE(?:\\}|\\))");
-                String PATH = "";
+
+                exportValidationNewfile.setDigitalDocument(gdzfile.getDigitalDocument());
+                exportValidationFile = exportValidationNewfile;
+                trimAllMetadata(exportValidationFile.getDigitalDocument().getLogicalDocStruct());
+                Path temporaryFile = Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder() + atsPpnBand + ".xml");
+                writeMetsFile(myProzess, temporaryFile.toString(), exportValidationFile, false);
+
+                String PATH = ConfigurationHelper.getInstance().getTemporaryFolder() + atsPpnBand + ".xml";
                 command = pExportFile.matcher(command).replaceAll(Matcher.quoteReplacement(PATH));
 
                 java.lang.Process exportValidationProcess = Runtime.getRuntime().exec(command);
                 Integer exitVal = exportValidationProcess.waitFor();
-                if (exitVal == 0) {
+                if (exitVal != 0) {
                     Helper.setMeldung(null, myProzess.getTitel() + ": ", "XML validation completed successfully");
+                    if (!StorageProvider.getInstance().deleteDir(temporaryFile)) {
+                        Helper.setFehlerMeldung("Export cancelled, prrocess: " + myProzess.getTitel(),
+                                "Temporarily exported file could not be cleared.");
+                        problems.add("Export cancelled: Success folder could not be cleared.");
+                        return false;
+                    }
                 } else {
-                    Helper.setFehlerMeldung(Helper.getTranslation("exportError") + myProzess.getTitel(), exitVal.toString());
-                    log.error("Export cancelled, XML Validation error for command: ", command);
+                    Helper.setFehlerMeldung("Export cancelled, XML Validation error for process: " + myProzess.getTitel(), exitVal.toString());
+                    log.error("Export cancelled, XML Validation error for command: " + command);
                     problems.add("Export cancelled XML Validation tool reports errorcode: " + exitVal.toString());
                     return false;
                 }
