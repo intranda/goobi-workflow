@@ -377,7 +377,7 @@ public class BeanHelper {
         newProcess.setProjekt(template.getProjekt());
         newProcess.setRegelsatz(template.getRegelsatz());
         newProcess.setDocket(template.getDocket());
-        // TODO: newProcess.setExportValidation(template.getExportValidation());
+        newProcess.setExportValidator(template.getExportValidator());
         SchritteKopieren(template, newProcess);
         ScanvorlagenKopieren(template, newProcess);
         WerkstueckeKopieren(template, newProcess);
