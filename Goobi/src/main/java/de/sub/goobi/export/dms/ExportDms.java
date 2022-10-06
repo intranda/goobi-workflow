@@ -31,6 +31,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
@@ -120,6 +122,26 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
         try {
             gdzfile = myProzess.readMetadataFile();
+
+            // Check for existing Export Validator, and if it exists, run the associated command
+            if (myProzess.getExportValidator() != null) {
+                Helper.setMeldung(null, myProzess.getTitel() + ": ", "XML validation found");
+                String command = myProzess.getExportValidator().getCommand();
+                final Pattern pExportFile = Pattern.compile("\\$?(?:\\(|\\{)EXPORTFILE(?:\\}|\\))");
+                String PATH = "";
+                command = pExportFile.matcher(command).replaceAll(Matcher.quoteReplacement(PATH));
+
+                java.lang.Process exportValidationProcess = Runtime.getRuntime().exec(command);
+                Integer exitVal = exportValidationProcess.waitFor();
+                if (exitVal == 0) {
+                    Helper.setMeldung(null, myProzess.getTitel() + ": ", "XML validation completed successfully");
+                } else {
+                    Helper.setFehlerMeldung(Helper.getTranslation("exportError") + myProzess.getTitel(), exitVal.toString());
+                    log.error("Export cancelled, XML Validation error for command: ", command);
+                    problems.add("Export cancelled XML Validation tool reports errorcode: " + exitVal.toString());
+                    return false;
+                }
+            }
 
             newfile.setDigitalDocument(gdzfile.getDigitalDocument());
             gdzfile = newfile;
