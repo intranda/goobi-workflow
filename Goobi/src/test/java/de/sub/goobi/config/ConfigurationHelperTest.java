@@ -24,8 +24,11 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -864,13 +867,72 @@ public class ConfigurationHelperTest extends AbstractTest {
     }
 
     @Test
-    public void testIsOnProxyWhitelist() {
+    public void testPlainIPIsOnProxyWhitelist() {
         assertTrue(ConfigurationHelper.getInstance().isProxyWhitelisted("127.0.0.2"));
     }
 
     @Test
-    public void testIsNotOnProxyWhitelist() {
+    public void testPlainIPIsNotOnProxyWhitelist() {
         assertFalse(ConfigurationHelper.getInstance().isProxyWhitelisted("999.0.0.1"));
     }
 
+    @Test
+    public void testLocalhostIsOnProxyWhitelist() {
+        assertTrue(ConfigurationHelper.getInstance().isProxyWhitelisted("localhost"));
+    }
+
+    @Test
+    public void testLocalhostComplexURLIsOnProxyWhitelist() {
+        String ipToTest = "http://localhost:8080/itm/api?action=getPlugins";
+        try {
+            URL url = new URL(ipToTest);
+            assertTrue(ConfigurationHelper.getInstance().isProxyWhitelisted(url));
+        } catch (MalformedURLException e) {
+            fail("URL could not be converted.");
+        }
+    }
+
+    @Test
+    public void testLocalhostHTTPSURLIsProxyWhitelist() {
+        String ipToTest = "https://localhost:8984/databases";
+        try {
+            URL url = new URL(ipToTest);
+            assertTrue(ConfigurationHelper.getInstance().isProxyWhitelisted(url));
+        } catch (MalformedURLException e) {
+            fail("URL could not be converted.");
+        }
+    }
+
+    @Test
+    public void testComplexURLIsOnProxyWhitelist() {
+        String ipToTest = "http://127.0.0.2:8080/itm/api?action=getPlugins";
+        try {
+            URL url = new URL(ipToTest);
+            assertTrue(ConfigurationHelper.getInstance().isProxyWhitelisted(url));
+        } catch (MalformedURLException e) {
+            fail("URL could not be converted.");
+        }
+    }
+
+    @Test
+    public void testHTTPSURLIsProxyWhitelist() {
+        String ipToTest = "https://127.0.0.2:8984/databases";
+        try {
+            URL url = new URL(ipToTest);
+            assertTrue(ConfigurationHelper.getInstance().isProxyWhitelisted(url));
+        } catch (MalformedURLException e) {
+            fail("URL could not be converted.");
+        }
+    }
+
+    @Test
+    public void testComplexHTTPURLIsNotProxyWhitelist() {
+        String ipToTest = "http://127.0.0.3:8984/databases";
+        try {
+            URL url = new URL(ipToTest);
+            assertFalse(ConfigurationHelper.getInstance().isProxyWhitelisted(url));
+        } catch (MalformedURLException e) {
+            fail("URL could not be converted.");
+        }
+    }
 }

@@ -21,6 +21,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -120,21 +122,25 @@ public class HttpClientHelper {
         }
 
         if (ConfigurationHelper.getInstance().isUseProxy()) {
-            if (!ConfigurationHelper.getInstance().isProxyWhitelisted(url)) {
-                HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
-                if (log.isDebugEnabled()) {
+            try {
+                URL ipAsURL = new URL(url);
+                if (!ConfigurationHelper.getInstance().isProxyWhitelisted(ipAsURL)) {
+                    HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
                     log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
+
+                    Builder builder = RequestConfig.custom();
+                    builder.setProxy(proxy);
+
+                    RequestConfig rc = builder.build();
+
+                    method.setConfig(rc);
+                } else {
+                    log.debug("url was on proxy whitelist, no proxy used: " + url);
                 }
-
-                Builder builder = RequestConfig.custom();
-                builder.setProxy(proxy);
-
-                RequestConfig rc = builder.build();
-
-                method.setConfig(rc);
-            } else if (log.isDebugEnabled()) {
-                log.debug("url was on proxy whitelist, no proxy used: " + url);
+            } catch (MalformedURLException e) {
+                log.debug("could not convert into URL: ", url);
             }
+
         }
 
         try {
@@ -169,20 +175,23 @@ public class HttpClientHelper {
         }
 
         if (ConfigurationHelper.getInstance().isUseProxy()) {
-            if (!ConfigurationHelper.getInstance().isProxyWhitelisted(url)) {
-                HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
-                if (log.isDebugEnabled()) {
+            try {
+                URL ipAsURL = new URL(url);
+                if (!ConfigurationHelper.getInstance().isProxyWhitelisted(ipAsURL)) {
+                    HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
                     log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
+
+                    RequestConfig.Builder builder = RequestConfig.custom();
+                    builder.setProxy(proxy);
+
+                    RequestConfig rc = builder.build();
+
+                    method.setConfig(rc);
+                } else {
+                    log.debug("url was on proxy whitelist, no proxy used: " + url);
                 }
-
-                RequestConfig.Builder builder = RequestConfig.custom();
-                builder.setProxy(proxy);
-
-                RequestConfig rc = builder.build();
-
-                method.setConfig(rc);
-            } else if (log.isDebugEnabled()) {
-                log.debug("url was on proxy whitelist, no proxy used: " + url);
+            } catch (MalformedURLException e) {
+                log.debug("could not convert into URL: ", url);
             }
         }
 
@@ -229,20 +238,24 @@ public class HttpClientHelper {
             }
 
             if (ConfigurationHelper.getInstance().isUseProxy()) {
-                if (!ConfigurationHelper.getInstance().isProxyWhitelisted(url)) {
-                    HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
-                    if (log.isDebugEnabled()) {
+                try {
+                    URL ipAsURL = new URL(url);
+                    if (!ConfigurationHelper.getInstance().isProxyWhitelisted(ipAsURL)) {
+                        HttpHost proxy =
+                                new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
                         log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
+
+                        Builder builder = RequestConfig.custom();
+                        builder.setProxy(proxy);
+
+                        RequestConfig rc = builder.build();
+
+                        method.setConfig(rc);
+                    } else {
+                        log.debug("url was on proxy whitelist, no proxy used: " + url);
                     }
-
-                    Builder builder = RequestConfig.custom();
-                    builder.setProxy(proxy);
-
-                    RequestConfig rc = builder.build();
-
-                    method.setConfig(rc);
-                } else if (log.isDebugEnabled()) {
-                    log.debug("url was on proxy whitelist, no proxy used: " + url);
+                } catch (MalformedURLException e) {
+                    log.debug("could not convert into URL: ", url);
                 }
             }
 
