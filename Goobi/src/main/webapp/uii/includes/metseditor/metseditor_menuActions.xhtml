@@ -41,7 +41,7 @@
                 <ui:fragment rendered="#{Metadaten.showOcrButton}">
                     <li>
                             <!-- JS function is defined in uii/includes/metseditor/modals/inc_me_modal_altoeditor.xhtml -->
-                        <button 
+                        <button
                             onclick="openAltoEditor()"
                             type="button"
                             aria-label="#{msgs.mets_editOcrForCurrentImage}"
@@ -350,7 +350,7 @@
                         from this button and from #saveMetsFileButton. In Firefox only the second submit is sent, resulting
                         in the desired behaviour. In Chromium-browsers, the first submit is sent, resulting in Metadaten.Reload
                         not being called (Florian 06-10-2022) -->
-                        <button 
+                        <button type="button"
                             class="btn btn--icon"  
                             id="saveMetsFileButtonSimulation"
                             onclick="document.activeElement.blur();document.getElementById('meMenuActionsForm:saveMetsFileButton').click();"
