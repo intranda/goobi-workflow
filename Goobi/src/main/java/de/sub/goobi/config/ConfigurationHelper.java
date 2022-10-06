@@ -875,7 +875,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public List<String> getProxyWhitelist() {
-        return getLocalList("http_proxyIgnoreIp");
+        return getLocalList("http_proxyIgnoreHost");
     }
 
     public boolean isProxyWhitelisted(String url) {
