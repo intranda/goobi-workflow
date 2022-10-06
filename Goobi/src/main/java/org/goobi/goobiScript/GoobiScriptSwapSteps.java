@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -129,10 +128,10 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
             try {
                 StepManager.saveStep(s1);
                 StepManager.saveStep(s2);
-                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                         "Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "' using GoobiScript.", username);
                 log.info("Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel()
-                + "' using GoobiScript for process with ID " + p.getId());
+                        + "' using GoobiScript for process with ID " + p.getId());
                 gsr.setResultMessage("Switched order of steps '" + s1.getTitel() + "' and '" + s2.getTitel() + "'.");
                 gsr.setResultType(GoobiScriptResultType.OK);
             } catch (DAOException e) {

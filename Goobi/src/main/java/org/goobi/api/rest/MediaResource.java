@@ -24,7 +24,6 @@
  */
 package org.goobi.api.rest;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -59,9 +58,10 @@ public class MediaResource {
     @GET
     @javax.ws.rs.Path("{process}/{folder}/{filename}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    @Operation(summary="Serves a media resource", description="Serves a media resource consisting of a process name, a directory name and a resource name")
-    @ApiResponse(responseCode="200", description="OK")
-    @ApiResponse(responseCode="500", description="Internal error")
+    @Operation(summary = "Serves a media resource",
+            description = "Serves a media resource consisting of a process name, a directory name and a resource name")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "500", description = "Internal error")
 
     public Response serveMediaContent(@PathParam("process") String processIdString, @PathParam("folder") String folder,
             @PathParam("filename") String filename) {
@@ -116,8 +116,7 @@ public class MediaResource {
      */
     private synchronized org.goobi.beans.Process getGoobiProcess(String processIdString) {
         int processId = Integer.parseInt(processIdString);
-        org.goobi.beans.Process process = ProcessManager.getProcessById(processId);
-        return process;
+        return ProcessManager.getProcessById(processId);
     }
 
 }

@@ -156,10 +156,8 @@ public class MySQLHelper implements Serializable {
         if (nums[1] > 2) {
             return true;
         }
-        if (nums[2] < 3) {
-            return false;
-        }
-        return true;
+
+        return nums[2] >= 3;
     }
 
     public Connection getConnection() throws SQLException {
@@ -222,9 +220,7 @@ public class MySQLHelper implements Serializable {
                     }
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -239,9 +235,7 @@ public class MySQLHelper implements Serializable {
                     answer.add(rs.getString(1));
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -256,9 +250,7 @@ public class MySQLHelper implements Serializable {
                     answer = rs.getString(1);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -277,9 +269,7 @@ public class MySQLHelper implements Serializable {
                     return id;
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -298,9 +288,7 @@ public class MySQLHelper implements Serializable {
                     return id;
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -318,9 +306,7 @@ public class MySQLHelper implements Serializable {
                     }
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -338,9 +324,7 @@ public class MySQLHelper implements Serializable {
                     }
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -363,14 +347,12 @@ public class MySQLHelper implements Serializable {
         public List<Map<String, String>> handle(ResultSet rs) throws SQLException {
             List<Map<String, String>> answer = new ArrayList<>();
             try {
-                while (rs.next()) {
+                while (rs.next()) { // implies that rs != null
                     answer.add(generateMapResult(rs));
                 }
                 return answer;
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
         }
     };
@@ -381,12 +363,9 @@ public class MySQLHelper implements Serializable {
             try {
                 if (rs.next()) {
                     return generateMapResult(rs);
-
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
@@ -409,9 +388,7 @@ public class MySQLHelper implements Serializable {
                 }
                 return answer;
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
         }
     };
@@ -469,10 +446,11 @@ public class MySQLHelper implements Serializable {
     public static class MapToStringConverter implements Converter {
 
         @Override
-        public boolean canConvert(Class clazz) {
+        public boolean canConvert(@SuppressWarnings("rawtypes") Class clazz) {
             return AbstractMap.class.isAssignableFrom(clazz);
         }
 
+        @SuppressWarnings("rawtypes")
         @Override
         public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
 

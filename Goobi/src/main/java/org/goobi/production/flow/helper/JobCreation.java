@@ -4,9 +4,9 @@ package org.goobi.production.flow.helper;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -124,7 +124,7 @@ public class JobCreation {
                     }
                     StorageProvider.getInstance().deleteDir(metsfile);
                 }
-            } catch (ReadException | PreferencesException | SwapException | WriteException | IOException  | DAOException e) {
+            } catch (ReadException | PreferencesException | SwapException | WriteException | IOException | DAOException e) {
                 Helper.setFehlerMeldung("Cannot read file " + processTitle, e);
                 log.error(e);
             } catch (InterruptedException e) {
@@ -166,7 +166,7 @@ public class JobCreation {
                 String rootFolderName = p.getProcessDataDirectory();
                 List<Path> filesToUpload = new ArrayList<>();
 
-                try (Stream<Path> input = Files.find(importFolder, 3, (path, file) -> file.isRegularFile()))  {
+                try (Stream<Path> input = Files.find(importFolder, 3, (path, file) -> file.isRegularFile())) {
                     input.forEach(path -> filesToUpload.add(path));
                 }
 

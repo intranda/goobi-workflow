@@ -35,9 +35,9 @@ import lombok.extern.log4j.Log4j2;
 @AllArgsConstructor
 @Data
 @Log4j2
-public class PluginInstallConflict implements Serializable{
+public class PluginInstallConflict implements Serializable {
     private static final long serialVersionUID = -7844460933499082596L;
-	private String path;
+    private String path;
     private ResolveTactic resolveTactic;
     private String archivedVersion;
     private String existingVersion;

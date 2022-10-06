@@ -44,8 +44,7 @@ class TemplateMysqlHelper implements Serializable {
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<Template> ret = new QueryRunner().query(connection, sql.toString(), resultSetToTemplateListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql, resultSetToTemplateListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -59,7 +58,7 @@ class TemplateMysqlHelper implements Serializable {
         public List<Template> handle(ResultSet rs) throws SQLException {
             List<Template> answer = new ArrayList<Template>();
             try {
-                while (rs.next()) {
+                while (rs.next()) { // implies that rs != null
                     int templateId = rs.getInt("VorlagenID");
                     String herkunft = rs.getString("Herkunft");
                     int processId = rs.getInt("ProzesseID");
@@ -72,9 +71,7 @@ class TemplateMysqlHelper implements Serializable {
                     answer.add(template);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -97,9 +94,7 @@ class TemplateMysqlHelper implements Serializable {
                     return template;
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
@@ -110,8 +105,7 @@ class TemplateMysqlHelper implements Serializable {
         String sql = " SELECT * from vorlagen WHERE VorlagenID = " + templateId;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            Template ret = new QueryRunner().query(connection, sql.toString(), resultSetToTemplateHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql, resultSetToTemplateHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -124,7 +118,7 @@ class TemplateMysqlHelper implements Serializable {
         String sql = " SELECT count(VorlagenID) from vorlagen";
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

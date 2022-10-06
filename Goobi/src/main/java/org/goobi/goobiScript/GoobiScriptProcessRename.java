@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -109,7 +108,7 @@ public class GoobiScriptProcessRename extends AbstractIGoobiScript implements IG
 
         if (replacedTitle) {
             log.info("Proces title changed using GoobiScript for process with ID " + p.getId());
-            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                     "Process title changed from '" + p.getTitel() + " to  '" + processTitle + "' using GoobiScript.", username);
             p.changeProcessTitle(processTitle);
             gsr.setProcessTitle(processTitle);

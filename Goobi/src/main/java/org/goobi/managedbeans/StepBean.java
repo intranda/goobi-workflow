@@ -4,10 +4,9 @@ package org.goobi.managedbeans;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
- * 			- http://digiverso.com
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -48,7 +47,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
@@ -90,6 +90,7 @@ import de.sub.goobi.metadaten.MetadatenImagesHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.metadaten.MetadatenVerifizierung;
 import de.sub.goobi.persistence.managers.HistoryManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.PropertyManager;
@@ -166,12 +167,6 @@ public class StepBean extends BasicBean implements Serializable {
     @Getter
     @Setter
     private String content = "";
-    @Getter
-    @Setter
-    private String secondContent = "";
-    @Getter
-    @Setter
-    private String thirdContent = "";
 
     private IExportPlugin exportPlugin = null;
 
@@ -420,7 +415,7 @@ public class StepBean extends BasicBean implements Serializable {
                     try {
                         Paths.get(s.getProzess().getImagesOrigDirectory(false));
                     } catch (Exception e1) {
-                    	// TODO: what should be done?
+                        // TODO: what should be done?
                     }
 
                     this.myDav.DownloadToHome(s.getProzess(), s.getId().intValue(), !s.isTypImagesSchreiben());
@@ -489,7 +484,7 @@ public class StepBean extends BasicBean implements Serializable {
         this.myDav.UploadFromHome(this.mySchritt.getProzess());
         this.mySchritt.setBearbeitungsstatusEnum(StepStatus.OPEN);
         // if we have a correction-step here then never remove startdate
-        if (this.mySchritt.isCorrectionStep()) {
+        if (Boolean.TRUE.equals(this.mySchritt.isCorrectionStep())) {
             this.mySchritt.setBearbeitungsbeginn(null);
         }
         this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_SINGLE);
@@ -505,7 +500,7 @@ public class StepBean extends BasicBean implements Serializable {
              */
             StepManager.saveStep(mySchritt);
         } catch (DAOException e) {
-        	// TODO: what should be done?
+            // TODO: what should be done?
         }
         return FilterAlleStart();
     }
@@ -582,11 +577,9 @@ public class StepBean extends BasicBean implements Serializable {
      */
 
     public List<Step> getPreviousStepsForProblemReporting() {
-        List<Step> alleVorherigenSchritte = StepManager.getSteps("Reihenfolge desc",
+        return StepManager.getSteps("Reihenfolge desc",
                 " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge < " + this.mySchritt.getReihenfolge(), 0,
                 Integer.MAX_VALUE);
-
-        return alleVorherigenSchritte;
     }
 
     public int getSizeOfPreviousStepsForProblemReporting() {
@@ -632,15 +625,10 @@ public class StepBean extends BasicBean implements Serializable {
             se.setCreationDate(myDate);
             se.setSchritt(temp);
             String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage;
-            LogEntry logEntry = new LogEntry();
-            logEntry.setContent(message);
-            logEntry.setCreationDate(new Date());
-            logEntry.setProcessId(mySchritt.getProzess().getId());
-            logEntry.setType(LogType.ERROR);
-            if (ben != null) {
-                logEntry.setUserName(ben.getNachVorname());
-            }
-            ProcessManager.saveLogEntry(logEntry);
+
+            JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), ben != null?ben.getNachVorname(): "", LogType.ERROR, message, EntryType.PROCESS);
+
+            JournalManager.saveJournalEntry(logEntry);
 
             temp.getEigenschaften().add(se);
             StepManager.saveStep(temp);
@@ -696,10 +684,8 @@ public class StepBean extends BasicBean implements Serializable {
 
     public List<Step> getNextStepsForProblemSolution() {
 
-        List<Step> alleNachfolgendenSchritte = StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId()
+        return StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId()
                 + " AND Reihenfolge > " + this.mySchritt.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE);
-
-        return alleNachfolgendenSchritte;
     }
 
     public int getSizeOfNextStepsForProblemSolution() {
@@ -774,15 +760,8 @@ public class StepBean extends BasicBean implements Serializable {
              */
             String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage;
 
-            LogEntry logEntry = new LogEntry();
-            logEntry.setContent(message);
-            logEntry.setCreationDate(new Date());
-            logEntry.setProcessId(mySchritt.getProzess().getId());
-            logEntry.setType(LogType.INFO);
-            if (ben != null) {
-                logEntry.setUserName(ben.getNachVorname());
-            }
-            ProcessManager.saveLogEntry(logEntry);
+            JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), ben != null?ben.getNachVorname(): "", LogType.INFO, message, EntryType.PROCESS);
+            JournalManager.saveJournalEntry(logEntry);
 
             ProcessManager.saveProcessInformation(this.mySchritt.getProzess());
 
@@ -836,7 +815,7 @@ public class StepBean extends BasicBean implements Serializable {
         /*
          * -------------------------------- die hochgeladenen Prozess-IDs durchlaufen und auf abgeschlossen setzen --------------------------------
          */
-        if (fertigListe != null && ! fertigListe.isEmpty() && this.nurOffeneSchritte) {
+        if (fertigListe != null && !fertigListe.isEmpty() && this.nurOffeneSchritte) {
             this.nurOffeneSchritte = false;
             FilterAlleStart();
         }
@@ -1003,7 +982,7 @@ public class StepBean extends BasicBean implements Serializable {
                 if (myPlugin instanceof IPushPlugin) {
                     ((IPushPlugin) myPlugin).setPushContext(stepPluginPush);
                 }
-                if (mySchritt.isBatchStep() && mySchritt.isBatchSize()) {
+                if (Boolean.TRUE.equals(mySchritt.isBatchStep()) && mySchritt.isBatchSize()) {
                     myPlugin.initialize(mySchritt, "/task_edit_batch");
                 } else {
                     myPlugin.initialize(mySchritt, "/task_edit");
@@ -1122,22 +1101,14 @@ public class StepBean extends BasicBean implements Serializable {
         }
     }
 
-    public void addLogEntry() {
+    public void addJournalEntry() {
         if (StringUtils.isNotBlank(content)) {
             User user = Helper.getCurrentUser();
-            LogEntry logEntry = new LogEntry();
-            logEntry.setContent(content);
-            logEntry.setSecondContent(secondContent);
-            logEntry.setThirdContent(thirdContent);
-            logEntry.setCreationDate(new Date());
-            logEntry.setProcessId(mySchritt.getProzess().getId());
-            logEntry.setType(LogType.USER);
-            logEntry.setUserName(user.getNachVorname());
-            ProcessManager.saveLogEntry(logEntry);
-            mySchritt.getProzess().getProcessLog().add(logEntry);
+            JournalEntry logEntry =
+                    new JournalEntry(mySchritt.getProzess().getId(), new Date(), user.getNachVorname(), LogType.USER, content, EntryType.PROCESS);
+            JournalManager.saveJournalEntry(logEntry);
+            mySchritt.getProzess().getJournal().add(logEntry);
             this.content = "";
-            secondContent = "";
-            thirdContent = "";
         }
     }
 

@@ -41,8 +41,7 @@ public class HistoryMysqlHelper {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<HistoryEvent> list = new QueryRunner().query(connection, sql, resultSetToHistoryListHandler);
-            return list;
+            return new QueryRunner().query(connection, sql, resultSetToHistoryListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -154,7 +153,7 @@ public class HistoryMysqlHelper {
         public List<HistoryEvent> handle(ResultSet rs) throws SQLException {
             List<HistoryEvent> answer = new ArrayList<HistoryEvent>();
             try {
-                while (rs.next()) {
+                while (rs.next()) { // implies that rs != null, while the case rs == null will be thrown as an Exception
                     int historyId = rs.getInt("historyid");
                     double numeric = rs.getDouble("numericvalue");
                     String stringvalue = rs.getString("stringvalue");
@@ -168,13 +167,9 @@ public class HistoryMysqlHelper {
                     he.setStringValue(stringvalue);
 
                     answer.add(he);
-
                 }
-
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }

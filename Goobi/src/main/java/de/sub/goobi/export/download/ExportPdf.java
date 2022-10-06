@@ -4,9 +4,9 @@ package de.sub.goobi.export.download;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -132,33 +132,40 @@ public class ExportPdf extends ExportMets {
                  */
 
                 if (StorageProvider.getInstance().isFileExists(metsTempFile)) {
-               
+
                     goobiContentServerUrl = UriBuilder.fromUri(new HelperForm().getServletPathWithHostAsUrl())
-                            .path("api").path("process").path("pdf").path(Integer.toString(myProzess.getId()))
-                            .path(myProzess.getTitel()+ ".pdf")
+                            .path("api")
+                            .path("process")
+                            .path("pdf")
+                            .path(Integer.toString(myProzess.getId()))
+                            .path(myProzess.getTitel() + ".pdf")
                             .queryParam("metsFile", metsTempFile)
                             .queryParam("imageSource", imagesPath.toUri())
                             .queryParam("pdfSource", pdfPath.toUri())
                             .queryParam("altoSource", altoPath.toUri())
-                            .build().toURL();
-                    
+                            .build()
+                            .toURL();
+
                     /*
                      * -------------------------------- mets data does not exist or is invalid --------------------------------
                      */
 
                 } else {
-                                        
+
                     goobiContentServerUrl = UriBuilder.fromUri(new HelperForm().getServletPathWithHostAsUrl())
-                            .path("api").path("process").path("image")
+                            .path("api")
+                            .path("process")
+                            .path("image")
                             .path(Integer.toString(myProzess.getId()))
-                            .path("media")        //dummy, replaced by images query param
+                            .path("media") //dummy, replaced by images query param
                             .path("00000001.tif") //dummy, replaced by images query param
-                            .path(myProzess.getTitel()+ ".pdf")
+                            .path(myProzess.getTitel() + ".pdf")
                             .queryParam("imageSource", imagesPath.toUri())
                             .queryParam("pdfSource", pdfPath.toUri())
                             .queryParam("altoSource", altoPath.toUri())
                             .queryParam("images", createImagesParameter(myProzess))
-                            .build().toURL();
+                            .build()
+                            .toURL();
                 }
 
                 /*
@@ -210,7 +217,7 @@ public class ExportPdf extends ExportMets {
         for (String f : filenames) {
             images.append(f).append("$");
         }
-        images = images.deleteCharAt(images.length()-1);
+        images = images.deleteCharAt(images.length() - 1);
         return images.toString();
     }
 }

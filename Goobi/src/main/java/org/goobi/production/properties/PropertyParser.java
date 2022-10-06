@@ -362,7 +362,7 @@ public class PropertyParser {
 
             }
         } // add existing 'eigenschaften' to properties from config, so we have all properties from config and some of them with already existing
-        // 'eigenschaften'
+          // 'eigenschaften'
         List<ProcessProperty> listClone = new ArrayList<>(properties);
         process.setEigenschaften(null);
         List<Processproperty> plist = new ArrayList<>(process.getEigenschaftenList());
@@ -401,7 +401,7 @@ public class PropertyParser {
             }
         }
         // create ProcessProperties to remaining 'eigenschaften'
-        if (! plist.isEmpty()) {
+        if (!plist.isEmpty()) {
             for (Processproperty pe : plist) {
                 ProcessProperty pp = new ProcessProperty();
                 pp.setProzesseigenschaft(pe);

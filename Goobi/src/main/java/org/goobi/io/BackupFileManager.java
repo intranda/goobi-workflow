@@ -98,7 +98,7 @@ public abstract class BackupFileManager {
             }
             throw new IOException("A backup file could not be created. Please make sure that the required access rights are set.");
         }
-        
+
         try {
             BackupFileManager.removeTooOldBackupFiles(backupPath, fileName, limit);
         } catch (Exception exception) {

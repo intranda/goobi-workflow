@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -176,7 +175,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
         try {
             StepManager.saveStep(step);
             String message = "Added usergroup '" + group.getTitel() + "' to step '" + step.getTitel() + "' using GoobiScript.";
-            Helper.addMessageToProcessLog(process.getId(), LogType.DEBUG, message, username);
+            Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, message, username);
             log.info(message + " The process id is " + process.getId());
             gsr.setResultMessage(message);
 
@@ -192,7 +191,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
     private static Usergroup getUsergroupFromDatabase(Map<String, String> parameters) {
         try {
             List<Usergroup> groups = UsergroupManager.getUsergroups(null, "titel='" + parameters.get("group") + "'", null, null, null);
-            if (groups != null && ! groups.isEmpty()) {
+            if (groups != null && !groups.isEmpty()) {
                 return groups.get(0);
             } else {
                 return null;

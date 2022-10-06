@@ -4,10 +4,9 @@ package de.sub.goobi.helper;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
- * 			- http://digiverso.com
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -75,6 +74,7 @@ public class VariableReplacer {
         FIRSTCHILD,
         TOPSTRUCT;
     }
+
     private static Pattern pTifUrl = Pattern.compile("\\$?(?:\\(|\\{)tifurl(?:\\}|\\))");
     private static Pattern pOrigurl = Pattern.compile("\\$?(?:\\(|\\{)origurl(?:\\}|\\))");
     private static Pattern pImageUrl = Pattern.compile("\\$?(?:\\(|\\{)imageurl(?:\\}|\\))");
@@ -120,7 +120,7 @@ public class VariableReplacer {
     private final String namespaceMetaMultiValue = "\\$?(?:\\(|\\{)metas\\.([\\w.-]*)(?:\\}|\\))";
 
     // $(folder.xyz) or {folder.xyz} are both ok
-    private final static String folderExpression = "\\$?(?:\\(|\\{)folder\\.([^)]+)(?:\\}|\\))";
+    private static final String folderExpression = "\\$?(?:\\(|\\{)folder\\.([^)]+)(?:\\}|\\))";
 
     private Process process;
     private Step step;
@@ -366,7 +366,7 @@ public class VariableReplacer {
             try {
                 String value = process.getConfiguredImageFolder(folderName);
                 inString = inString.replace(r.group(), value);
-            } catch (IOException |  SwapException | DAOException e) {
+            } catch (IOException | SwapException | DAOException e) {
                 log.error(e);
             }
         }
@@ -384,7 +384,7 @@ public class VariableReplacer {
             /* TopStruct und FirstChild ermitteln */
             DocStruct topstruct = this.dd.getLogicalDocStruct();
             DocStruct firstchildstruct = null;
-            if (topstruct.getAllChildren() != null && ! topstruct.getAllChildren().isEmpty()) {
+            if (topstruct.getAllChildren() != null && !topstruct.getAllChildren().isEmpty()) {
                 firstchildstruct = topstruct.getAllChildren().get(0);
             }
 
@@ -457,7 +457,7 @@ public class VariableReplacer {
      */
     private String getMetadataValue(DocStruct inDocstruct, MetadataType mdt) {
         List<? extends Metadata> mds = inDocstruct.getAllMetadataByType(mdt);
-        if ( ! mds.isEmpty()) {
+        if (!mds.isEmpty()) {
             Metadata m = mds.get(0);
             if (m.getType().getIsPerson()) {
                 Person p = (Person) m;
@@ -471,21 +471,20 @@ public class VariableReplacer {
     }
 
     private String getAllMetadataValues(DocStruct ds, MetadataType mdt) {
-        String answer = "";
+        StringBuilder bld = new StringBuilder();
         List<? extends Metadata> metadataList = ds.getAllMetadataByType(mdt);
         if (metadataList != null) {
             for (Metadata md : metadataList) {
                 String value = md.getValue();
                 if (value != null && !value.isEmpty()) {
-                    if (answer.isEmpty()) {
-                        answer = value;
-                    } else {
-                        answer += "," + value;
+                    if (bld.length() != 0) {
+                        bld.append(",");
                     }
+                    bld.append(value);
                 }
             }
         }
-        return answer;
+        return bld.toString();
     }
 
     /**
@@ -514,7 +513,7 @@ public class VariableReplacer {
         } else {
             try {
                 folder = Paths.get(process.getImagesOrigDirectory(false));
-            } catch (IOException |  SwapException | DAOException e) {
+            } catch (IOException | SwapException | DAOException e) {
                 log.error(e);
                 return "";
             }
@@ -532,7 +531,7 @@ public class VariableReplacer {
         String suffix = "/full/max/0/default.jpg";
 
         for (String imageName : images) {
-            String path = restPath + URLEncoder.encode(imageName, StandardCharsets.UTF_8.toString()).replaceAll("\\+", "%20") + suffix;
+            String path = restPath + URLEncoder.encode(imageName, StandardCharsets.UTF_8.toString()).replace("\\+", "%20") + suffix;
             try {
                 String jwtToken = JwtHelper.createApiToken(path, new String[] { "GET" });
                 URI iiifUri = new URI(api + path + "?jwt=" + jwtToken);

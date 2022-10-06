@@ -4,9 +4,9 @@ import java.util.Date;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -21,7 +21,8 @@ import java.util.Date;
  */
 import java.util.List;
 
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
@@ -31,7 +32,7 @@ import org.goobi.production.plugin.interfaces.IStepPlugin;
 
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.HelperSchritte;
-import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.extern.log4j.Log4j2;
 
@@ -60,18 +61,14 @@ public class DelayJob extends AbstractGoobiJob {
         for (Step step : stepsWithDelay) {
             IStepPlugin plugin = (IStepPlugin) PluginLoader.getPluginByTitle(PluginType.Step, step.getStepPlugin());
 
-            if (plugin != null && plugin instanceof IDelayPlugin) {
+            if (plugin instanceof IDelayPlugin) {
                 IDelayPlugin delay = (IDelayPlugin) plugin;
                 delay.initialize(step, "");
                 if (delay.delayIsExhausted()) {
-                    LogEntry logEntry = new LogEntry();
-                    logEntry.setContent(Helper.getTranslation("blockingDelayIsExhausted"));
-                    logEntry.setCreationDate(new Date());
-                    logEntry.setProcessId(step.getProzess().getId());
-                    logEntry.setType(LogType.DEBUG);
-                    logEntry.setUserName("-delay-");
 
-                    ProcessManager.saveLogEntry(logEntry);
+                    JournalEntry logEntry = new JournalEntry(step.getProzess().getId(), new Date(), "-delay-", LogType.DEBUG,
+                            Helper.getTranslation("blockingDelayIsExhausted"), EntryType.PROCESS);
+                    JournalManager.saveJournalEntry(logEntry);
                     new HelperSchritte().CloseStepObjectAutomatic(step);
                 } else {
                     if (log.isTraceEnabled()) {

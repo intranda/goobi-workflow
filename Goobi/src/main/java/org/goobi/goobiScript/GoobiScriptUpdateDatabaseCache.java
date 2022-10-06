@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -112,7 +111,7 @@ public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript impleme
             // calculate history entries
             boolean result = HistoryAnalyserJob.updateHistoryForProzess(p);
             if (!result) {
-                Helper.addMessageToProcessLog(p.getId(), LogType.ERROR, "History not successfully updated using GoobiScript.", username);
+                Helper.addMessageToProcessJournal(p.getId(), LogType.ERROR, "History not successfully updated using GoobiScript.", username);
                 log.info("History could not be updated using GoobiScript for process with ID " + p.getId());
                 gsr.setResultMessage("History update was not successful.");
                 gsr.setResultType(GoobiScriptResultType.ERROR);
@@ -150,7 +149,7 @@ public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript impleme
 
             ProcessManager.saveProcess(p);
 
-            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Database updated using GoobiScript.", username);
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Database updated using GoobiScript.", username);
             log.info("Database updated using GoobiScript for process with ID " + p.getId());
             gsr.setResultMessage("Updated database cache successfully.");
 

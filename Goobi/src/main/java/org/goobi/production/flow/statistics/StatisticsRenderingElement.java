@@ -3,10 +3,10 @@ package org.goobi.production.flow.statistics;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -61,7 +61,7 @@ public class StatisticsRenderingElement implements Serializable {
     private String localImagePath;
     @Getter
     private String imageUrl;
-    
+
     public StatisticsRenderingElement(DataTable inDataTable, IStatisticalQuestion inQuestion) {
         dataTable = inDataTable;
         myQuestion = inQuestion;
@@ -88,7 +88,7 @@ public class StatisticsRenderingElement implements Serializable {
         htmlTableRenderer = new HtmlTableRenderer();
         csvRenderer = new CSVRenderer();
         excelRenderer = new ExcelRenderer();
-        if (myQuestion.isRendererInverted(htmlTableRenderer)) {
+        if (Boolean.TRUE.equals(myQuestion.isRendererInverted(htmlTableRenderer))) {
             htmlTableRenderer.setDataTable(dataTable.getDataTableInverted());
             csvRenderer.setDataTable(dataTable.getDataTableInverted());
             excelRenderer.setDataTable(dataTable.getDataTableInverted());
@@ -116,7 +116,7 @@ public class StatisticsRenderingElement implements Serializable {
             crenderer.setShowMeanValues(inShowAverage);
             renderer = crenderer;
         }
-        if (myQuestion.isRendererInverted(renderer)) {
+        if (Boolean.TRUE.equals(myQuestion.isRendererInverted(renderer))) {
             renderer.setDataTable(dataTable.getDataTableInverted());
         } else {
             renderer.setDataTable(dataTable);

@@ -2,9 +2,9 @@
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -24,7 +24,6 @@
  * exception statement from your version.
  */
 package de.sub.goobi.forms;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -142,11 +141,7 @@ public class AdditionalField {
         }
 
         /* wenn nur "darf nicht" angegeben wurde */
-        if (!this.isnotdoctype.equals("") && StringUtils.containsIgnoreCase(isnotdoctype, docType)) {
-            return false;
-        }
-
-        return true;
+        return this.isnotdoctype.equals("") || !StringUtils.containsIgnoreCase(isnotdoctype, docType);
     }
 
     /**
@@ -168,10 +163,12 @@ public class AdditionalField {
     }
 
     public void setValues(List<String> values) {
-        wert = "";
+        StringBuilder bld = new StringBuilder();
         for (String part : values) {
-            wert += part + ";";
+            bld.append(part);
+            bld.append(";");
         }
+        wert = bld.toString();
         if (wert.endsWith(";")) {
             wert = wert.substring(0, wert.length() - 1);
         }

@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -123,7 +122,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                     }
                     break;
 
-                    // fist the first child element
+                // fist the first child element
                 case "child":
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -134,7 +133,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                     }
                     break;
 
-                    // any element in the hierarchy
+                // any element in the hierarchy
                 case "any":
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
@@ -148,7 +147,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                     }
                     break;
 
-                    // default "work", which is the first child or the main top element if it is not an anchor
+                // default "work", which is the first child or the main top element if it is not an anchor
                 default:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -168,7 +167,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
             if (changed) {
                 p.writeMetadataFile(ff);
                 Thread.sleep(2000);
-                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                         "Metadata type changed using GoobiScript: from " + oldMetadataType + " to " + newMetadataType, username);
             }
             log.info("Metadata type changed using GoobiScript for process with ID {} from {} to {} ", p.getId(), oldMetadataType, newMetadataType);

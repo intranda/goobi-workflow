@@ -3,10 +3,10 @@ package org.goobi.production.flow.statistics.enums;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -41,7 +41,7 @@ public enum ResultOutput {
     table("2", "table"),
     chartAndTable("3", "chartAndTable");
 
-	@Getter
+    @Getter
     private String id;
     private String title;
 

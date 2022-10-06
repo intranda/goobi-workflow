@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.Optional;
 
 import org.goobi.production.enums.GoobiScriptResultType;

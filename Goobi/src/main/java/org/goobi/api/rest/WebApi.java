@@ -24,7 +24,6 @@
  */
 package org.goobi.api.rest;
 
-
 import java.util.HashMap;
 import java.util.Map;
 

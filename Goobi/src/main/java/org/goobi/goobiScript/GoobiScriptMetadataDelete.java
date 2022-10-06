@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -123,7 +122,7 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
                     }
                     break;
 
-                    // fist the first child element
+                // fist the first child element
                 case "child":
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -134,21 +133,21 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
                     }
                     break;
 
-                    // any element in the hierarchy
+                // any element in the hierarchy
                 case "any":
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
-                    if (physical!= null) {
+                    if (physical != null) {
                         dsList.add(physical);
                     }
                     break;
                 case "physical":
-                    if (physical!= null) {
+                    if (physical != null) {
                         dsList.add(physical);
                     }
                     break;
 
-                    // default "work", which is the first child or the main top element if it is not an anchor
+                // default "work", which is the first child or the main top element if it is not an anchor
                 default:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -172,7 +171,7 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
             deleteMetadata(dsList, field, value, ignoreValue, p.getRegelsatz().getPreferences());
             p.writeMetadataFile(ff);
             Thread.sleep(2000);
-            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                     "Metadata deleted using GoobiScript: " + parameters.get("field") + " - " + parameters.get("value"), username);
             log.info("Metadata deleted using GoobiScript for process with ID " + p.getId());
             gsr.setResultMessage("Metadata deleted successfully.");
@@ -200,7 +199,7 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
     private void deleteMetadata(List<DocStruct> dsList, String field, String value, boolean ignoreValue, Prefs prefs) {
         for (DocStruct ds : dsList) {
             List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
-            if (mdlist != null && ! mdlist.isEmpty()) {
+            if (mdlist != null && !mdlist.isEmpty()) {
                 for (Metadata md : mdlist) {
                     if (ignoreValue || md.getValue().equals(value)) {
                         ds.getAllMetadata().remove(md);

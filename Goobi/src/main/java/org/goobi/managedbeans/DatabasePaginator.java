@@ -4,9 +4,9 @@ package org.goobi.managedbeans;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -47,7 +47,7 @@ public class DatabasePaginator implements Serializable {
     @Getter
     protected int totalResults = 0;
     protected String order = "";
-    protected String filter = new String();
+    protected String filter = "";
     protected IManager manager;
     private String returnPage;
 

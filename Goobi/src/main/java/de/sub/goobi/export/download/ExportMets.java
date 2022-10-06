@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.export.download;
 
-
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
@@ -164,8 +163,8 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
-    WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
-    TypeNotAllowedForParentException {
+            WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
+            TypeNotAllowedForParentException {
 
         String benutzerHome = "";
         LoginBean login = Helper.getLoginBean();
@@ -178,7 +177,7 @@ public class ExportMets {
     }
 
     public void downloadMets(Process process) throws ReadException, PreferencesException, WriteException, IOException, InterruptedException,
-    SwapException, DAOException, TypeNotAllowedForParentException {
+            SwapException, DAOException, TypeNotAllowedForParentException {
         this.myPrefs = process.getRegelsatz().getPreferences();
         String atsPpnBand = process.getTitel();
         Fileformat gdzfile = process.readMetadataFile();
@@ -234,8 +233,8 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
-    WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
-    SwapException, DAOException, TypeNotAllowedForParentException {
+            WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
+            SwapException, DAOException, TypeNotAllowedForParentException {
 
         /*
          * -------------------------------- Read Document --------------------------------
@@ -328,7 +327,7 @@ public class ExportMets {
             mih.createPagination(myProzess, null);
             try {
                 myProzess.writeMetadataFile(gdzfile);
-            } catch (UGHException | IOException |  SwapException e) {
+            } catch (UGHException | IOException | SwapException e) {
                 log.error(e);
             }
         } else {
@@ -463,7 +462,7 @@ public class ExportMets {
         List<ProjectFileGroup> myFilegroups = myProzess.getProjekt().getFilegroups();
 
         boolean useOriginalFiles = false;
-        if (myFilegroups != null &&  ! myFilegroups.isEmpty()) {
+        if (myFilegroups != null && !myFilegroups.isEmpty()) {
             for (ProjectFileGroup pfg : myFilegroups) {
                 if (pfg.isUseOriginalFiles()) {
                     useOriginalFiles = true;
@@ -492,7 +491,7 @@ public class ExportMets {
             if (!filesInFolder.isEmpty()) {
                 // compare image names with files in mets file
                 List<DocStruct> pages = dd.getPhysicalDocStruct().getAllChildren();
-                if (pages != null &&  ! pages.isEmpty()) {
+                if (pages != null && !pages.isEmpty()) {
                     for (DocStruct page : pages) {
                         Path completeNameInMets = Paths.get(page.getImageName());
                         String filenameInMets = completeNameInMets.getFileName().toString();
@@ -507,7 +506,7 @@ public class ExportMets {
                                 imageName = imageName.substring(0, dotIndex);
                             }
 
-                            if (filenameInMets.toLowerCase().equals(imageName.toLowerCase())) {
+                            if (filenameInMets.equalsIgnoreCase(imageName)) {
                                 // found matching filename
                                 page.setImageName(imageNameInFolder.toString());
                                 break;
@@ -647,9 +646,9 @@ public class ExportMets {
         v.setMimetype(projectFileGroup.getMimetype());
         //check for null to stop NullPointerException
         String projectFileSuffix = projectFileGroup.getSuffix();
-        if(projectFileSuffix != null) {
+        if (projectFileSuffix != null) {
             v.setFileSuffix(projectFileSuffix.trim());
-        }else {
+        } else {
             v.setFileSuffix(projectFileSuffix);
         }
         v.setFileExtensionsToIgnore(projectFileGroup.getIgnoreMimetypes());

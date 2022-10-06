@@ -24,7 +24,6 @@
  */
 package org.goobi.api.rest.process.pdf;
 
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -53,7 +52,7 @@ public class GoobiPdfResource extends MetsPdfResource {
     public GoobiPdfResource(
             @Context ContainerRequestContext context, @Context HttpServletRequest request, @Context HttpServletResponse response,
             @PathParam("processId") String processId)
-                    throws ContentLibException {
+            throws ContentLibException {
         super(context, request, response, "pdf", getMetsFilepath(processId, GetAction.parseParameters(request, context)));
     }
 
@@ -74,18 +73,17 @@ public class GoobiPdfResource extends MetsPdfResource {
     private static URI extractURI(Map<String, String> parameters, String parameterName) throws ContentLibException {
         String parameterValue = parameters.get(parameterName);
         try {
-            URI uri = getUriFromPath(parameterValue);
-            return uri;
+            return getUriFromPath(parameterValue);
         } catch (URISyntaxException e) {
             throw new ContentLibException("Failed to create absolute uri from " + parameterValue);
-        } catch(NullPointerException e) {
+        } catch (NullPointerException e) {
             throw new ContentLibException("Could not find parameter falue for " + parameterName);
         }
     }
 
     private static URI getUriFromPath(String path) throws URISyntaxException {
         URI uri = PathConverter.toURI(path);
-        if(!uri.isAbsolute() && path.startsWith("/")) {
+        if (!uri.isAbsolute() && path.startsWith("/")) {
             String uriString = "file://" + path;
             try {
                 uri = PathConverter.toURI(uriString);

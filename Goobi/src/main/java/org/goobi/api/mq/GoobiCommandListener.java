@@ -25,7 +25,6 @@
  */
 package org.goobi.api.mq;
 
-
 import java.util.Date;
 
 import javax.jms.BytesMessage;
@@ -38,7 +37,8 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.naming.ConfigurationException;
 
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.LogType;
 
@@ -50,7 +50,7 @@ import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.persistence.managers.ExternalMQManager;
-import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.extern.log4j.Log4j2;
 
@@ -146,15 +146,15 @@ public class GoobiCommandListener {
                 }
                 break;
             case "addToProcessLog":
+            case "addToProcessJournal":
                 try {
                     if (JwtHelper.verifyChangeStepToken(token, stepId)) {
                         // add to process log
-                        LogEntry entry = LogEntry.build(processId)
-                                .withCreationDate(new Date())
-                                .withType(LogType.getByTitle(t.getLogType()))
-                                .withUsername(t.getIssuer())
-                                .withContent(t.getContent());
-                        ProcessManager.saveLogEntry(entry);
+
+                        JournalEntry entry =
+                                new JournalEntry(processId, new Date(), t.getIssuer(), LogType.getByTitle(t.getLogType()), t.getContent(), EntryType.PROCESS);
+
+                        JournalManager.saveJournalEntry(entry);
                     }
                 } catch (ConfigurationException e) {
                     log.error(e);

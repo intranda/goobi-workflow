@@ -25,7 +25,6 @@
  */
 package org.goobi.api.mq;
 
-
 import java.util.Date;
 
 import javax.jms.BytesMessage;
@@ -37,7 +36,8 @@ import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Step;
 import org.goobi.production.enums.LogType;
 
@@ -45,7 +45,7 @@ import com.google.gson.Gson;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.enums.StepStatus;
-import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.extern.log4j.Log4j2;
 
@@ -95,12 +95,9 @@ public class GoobiExternalJobQueueDLQListener {
                         step.setBearbeitungsende(new Date());
                         StepManager.saveStep(step);
 
-                        LogEntry logEntry = LogEntry.build(step.getProcessId())
-                                .withContent("Script ticket failed after retries")
-                                .withCreationDate(new Date())
-                                .withType(LogType.ERROR)
-                                .withUsername("Goobi DLQ listener");
-                        ProcessManager.saveLogEntry(logEntry);
+                        JournalEntry logEntry = new JournalEntry(step.getProcessId(), new Date(), "Goobi DLQ listener", LogType.ERROR,
+                                "Script ticket failed after retries", EntryType.PROCESS);
+                        JournalManager.saveJournalEntry(logEntry);
 
                         message.acknowledge();
                     } catch (Exception e) {

@@ -44,8 +44,7 @@ class MasterpieceMysqlHelper implements Serializable {
 
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<Masterpiece> ret = new QueryRunner().query(connection, sql.toString(), resultSetToMasterpieceListHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql, resultSetToMasterpieceListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -59,7 +58,7 @@ class MasterpieceMysqlHelper implements Serializable {
         public List<Masterpiece> handle(ResultSet rs) throws SQLException {
             List<Masterpiece> answer = new ArrayList<Masterpiece>();
             try {
-                while (rs.next()) {
+                while (rs.next()) { // implies that rs != null, while the case rs == null will be thrown as an Exception
                     int id = rs.getInt("WerkstueckeID");
                     int processId = rs.getInt("ProzesseID");
                     Masterpiece object = new Masterpiece();
@@ -70,9 +69,7 @@ class MasterpieceMysqlHelper implements Serializable {
                     answer.add(object);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -82,7 +79,7 @@ class MasterpieceMysqlHelper implements Serializable {
         @Override
         public Masterpiece handle(ResultSet rs) throws SQLException {
             try {
-                if (rs.next()) {
+                if (rs.next()) { // implies that rs != null, while the case rs == null will be thrown as an Exception
                     int id = rs.getInt("WerkstueckeID");
                     int processId = rs.getInt("ProzesseID");
                     Masterpiece object = new Masterpiece();
@@ -93,9 +90,7 @@ class MasterpieceMysqlHelper implements Serializable {
                     return object;
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
@@ -106,8 +101,7 @@ class MasterpieceMysqlHelper implements Serializable {
         String sql = " SELECT * from werkstuecke WHERE WerkstueckeID = " + templateId;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            Masterpiece ret = new QueryRunner().query(connection, sql.toString(), resultSetToMasterpieceHandler);
-            return ret;
+            return new QueryRunner().query(connection, sql, resultSetToMasterpieceHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -120,7 +114,7 @@ class MasterpieceMysqlHelper implements Serializable {
         String sql = " SELECT count(WerkstueckeID) from werkstuecke";
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

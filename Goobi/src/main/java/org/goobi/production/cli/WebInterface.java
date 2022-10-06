@@ -4,9 +4,9 @@ package org.goobi.production.cli;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -175,20 +175,22 @@ public class WebInterface extends HttpServlet {
     }
 
     private void generateHelp(HttpServletResponse resp, String forCommand) throws IOException {
-        String allHelp = "";
+        StringBuilder allHelpBuilder = new StringBuilder();
         List<IPlugin> mycommands = PluginLoader.getPluginList(PluginType.Command);
         Collections.sort(mycommands, pluginComparator);
         for (IPlugin iPlugin : mycommands) {
             ICommandPlugin icp = (ICommandPlugin) iPlugin;
             if (forCommand == null || forCommand.equals(icp.help().getTitle()) || ("Command " + forCommand).equals(icp.help().getTitle())) {
-                allHelp += "<h4>" + icp.help().getTitle() + "</h4>" + icp.help().getMessage() + "<br/><br/>";
+                allHelpBuilder.append("<h4>").append(icp.help().getTitle()).append("</h4>");
+                allHelpBuilder.append(icp.help().getMessage());
+                allHelpBuilder.append("<br/><br/>");
             }
         }
         if (forCommand == null) {
-            allHelp +=
-                    "<h4>You are searching for a description of one command only?</h4>Use the parameter 'for' to get the help only for one specific command.<br/><br/>Sample: 'for=AddToProcessLog'<br/><br/>";
+            allHelpBuilder.append(
+                    "<h4>You are searching for a description of one command only?</h4>Use the parameter 'for' to get the help only for one specific command.<br/><br/>Sample: 'for=AddToProcessLog'<br/><br/>");
         }
-        generateAnswer(resp, 200, "Goobi Web API Help", allHelp);
+        generateAnswer(resp, 200, "Goobi Web API Help", allHelpBuilder.toString());
     }
 
     private void generateAnswer(HttpServletResponse resp, int status, String title, String message) {

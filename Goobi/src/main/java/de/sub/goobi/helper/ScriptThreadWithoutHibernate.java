@@ -1,15 +1,10 @@
-package de.sub.goobi.helper;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -28,6 +23,11 @@ import java.util.Date;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+package de.sub.goobi.helper;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -40,7 +40,8 @@ import org.goobi.api.mq.GenericAutomaticStepHandler;
 import org.goobi.api.mq.QueueType;
 import org.goobi.api.mq.TaskTicket;
 import org.goobi.api.mq.TicketGenerator;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Step;
 import org.goobi.managedbeans.JobTypesCache;
 import org.goobi.production.enums.LogType;
@@ -55,7 +56,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
-import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.StepManager;
 import lombok.extern.log4j.Log4j2;
 import ugh.exceptions.PreferencesException;
@@ -100,7 +101,7 @@ public class ScriptThreadWithoutHibernate extends Thread {
                 if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
                     this.step.setBearbeitungsstatusEnum(StepStatus.ERROR);
                     String message = "Step '" + this.step.getTitel() + "' should be executed in a message queue but message queues are switched off.";
-                    Helper.addMessageToProcessLog(this.step.getProzess().getId(), LogType.ERROR, message);
+                    Helper.addMessageToProcessJournal(this.step.getProzess().getId(), LogType.ERROR, message);
                     log.error(message);
                     try {
                         StepManager.saveStep(this.step);
@@ -127,12 +128,10 @@ public class ScriptThreadWithoutHibernate extends Thread {
                         log.error(e1);
                     }
                     log.error("Error adding TaskTicket to queue: ", e);
-                    LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
-                            .withType(LogType.ERROR)
-                            .withContent("Error reading metadata for step" + this.step.getTitel())
-                            .withCreationDate(new Date())
-                            .withUsername("automatic");
-                    ProcessManager.saveLogEntry(errorEntry);
+
+                    JournalEntry errorEntry = new JournalEntry(step.getProcessId(), new Date(), "automatic", LogType.ERROR, "Error reading metadata for step" + this.step.getTitel(), EntryType.PROCESS);
+
+                    JournalManager.saveJournalEntry(errorEntry);
                 }
             } else {
                 this.start();
@@ -244,12 +243,8 @@ public class ScriptThreadWithoutHibernate extends Thread {
                 log.error(e1);
             }
             log.error("Error adding TaskTicket to queue: ", e);
-            LogEntry errorEntry = LogEntry.build(this.step.getProcessId())
-                    .withType(LogType.ERROR)
-                    .withContent("Error trying to put script-step to external queue: " + this.step.getTitel())
-                    .withCreationDate(new Date())
-                    .withUsername("automatic");
-            ProcessManager.saveLogEntry(errorEntry);
+            JournalEntry errorEntry = new JournalEntry(step.getProcessId(), new Date(), "automatic", LogType.ERROR, "Error trying to put script-step to external queue: " + this.step.getTitel(), EntryType.PROCESS);
+            JournalManager.saveJournalEntry(errorEntry);
         }
     }
 

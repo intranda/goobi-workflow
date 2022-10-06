@@ -39,11 +39,11 @@ import lombok.NoArgsConstructor;
 @Data
 @XmlRootElement
 @NoArgsConstructor
-public class Field implements Serializable{
+public class Field implements Serializable {
 
     private static final long serialVersionUID = 4731164844446907463L;
 
-	private Integer id;
+    private Integer id;
 
     private String label;
 

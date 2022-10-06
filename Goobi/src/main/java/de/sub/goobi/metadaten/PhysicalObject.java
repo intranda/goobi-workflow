@@ -25,8 +25,6 @@
  */
 package de.sub.goobi.metadaten;
 
-
-
 import de.sub.goobi.helper.Helper;
 import lombok.Data;
 import ugh.dl.DocStruct;

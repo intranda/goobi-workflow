@@ -1,16 +1,10 @@
-package org.goobi.managedbeans;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -29,6 +23,11 @@ import java.util.List;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+package org.goobi.managedbeans;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
@@ -52,14 +51,14 @@ import lombok.Setter;
 public class UsergroupBean extends BasicBean implements Serializable {
     private static final long serialVersionUID = 8051160917458068675L;
     private Usergroup myBenutzergruppe = new Usergroup();
-    private String tempTitle = "";	//title before editing
+    private String tempTitle = ""; //title before editing
     private String tempRole;
 
     public void setMyBenutzergruppe(Usergroup group) {
-    	this.myBenutzergruppe = group;
-    	this.tempTitle = group.getTitel();
+        this.myBenutzergruppe = group;
+        this.tempTitle = group.getTitel();
     }
-    
+
     public UsergroupBean() {
         sortierung = "titel";
     }
@@ -74,7 +73,7 @@ public class UsergroupBean extends BasicBean implements Serializable {
             //if there is only one institution, then it is not shown in ui and the value may be null:
             if (getCurrentInstitutionID() == 0) {
                 List<SelectItem> lstInst = getInstitutionsAsSelectList();
-                if (! lstInst.isEmpty()) {
+                if (!lstInst.isEmpty()) {
                     Integer inst = (Integer) lstInst.get(0).getValue();
                     setCurrentInstitutionID(inst);
                 }
@@ -107,16 +106,16 @@ public class UsergroupBean extends BasicBean implements Serializable {
         }
         return FilterKein();
     }
-    
+
     public String Cancel() {
-    	this.myBenutzergruppe.setTitel(tempTitle);
+        this.myBenutzergruppe.setTitel(tempTitle);
         return "usergroup_all";
     }
 
     public String addRole() {
-    	if(! tempRole.isEmpty()) {
-        	myBenutzergruppe.addUserRole(tempRole);
-    	}
+        if (!tempRole.isEmpty()) {
+            myBenutzergruppe.addUserRole(tempRole);
+        }
         tempRole = "";
         return "";
     }

@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -99,9 +98,9 @@ public class GoobiScriptSetProject extends AbstractIGoobiScript implements IGoob
         p.setProjectId(project.getId());
         try {
             ProcessManager.saveProcess(p);
-            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Project '" + project.getTitel() + "' assigned using GoobiScript.", username);
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Project '" + project.getTitel() + "' assigned using GoobiScript.", username);
             log.info("Project '" + project.getTitel() + "' assigned using GoobiScript for process with ID " + p.getId());
-            gsr.setResultMessage("Project  '" + project.getTitel()+ "' assigned successfully.");
+            gsr.setResultMessage("Project  '" + project.getTitel() + "' assigned successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);
         } catch (DAOException e) {
             gsr.setResultMessage("Problem assigning new project: " + e.getMessage());

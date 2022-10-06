@@ -4,9 +4,9 @@ package de.sub.goobi.helper.ldap;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -103,28 +103,28 @@ public class LdapUser implements DirContext {
             }
             this.myAttrs.put(oc);
 
-            this.myAttrs.put("uid", ReplaceVariables(lp.getUid(), inUser, inUidNumber));
-            this.myAttrs.put("cn", ReplaceVariables(lp.getUid(), inUser, inUidNumber));
-            this.myAttrs.put("displayName", ReplaceVariables(lp.getDisplayName(), inUser, inUidNumber));
-            this.myAttrs.put("description", ReplaceVariables(lp.getDescription(), inUser, inUidNumber));
-            this.myAttrs.put("gecos", ReplaceVariables(lp.getGecos(), inUser, inUidNumber));
-            this.myAttrs.put("loginShell", ReplaceVariables(lp.getLoginShell(), inUser, inUidNumber));
-            this.myAttrs.put("sn", ReplaceVariables(lp.getSn(), inUser, inUidNumber));
-            this.myAttrs.put(lp.getLdapHomeDirectoryAttributeName(), ReplaceVariables(lp.getHomeDirectory(), inUser, inUidNumber));
+            this.myAttrs.put("uid", replaceVariables(lp.getUid(), inUser, inUidNumber));
+            this.myAttrs.put("cn", replaceVariables(lp.getUid(), inUser, inUidNumber));
+            this.myAttrs.put("displayName", replaceVariables(lp.getDisplayName(), inUser, inUidNumber));
+            this.myAttrs.put("description", replaceVariables(lp.getDescription(), inUser, inUidNumber));
+            this.myAttrs.put("gecos", replaceVariables(lp.getGecos(), inUser, inUidNumber));
+            this.myAttrs.put("loginShell", replaceVariables(lp.getLoginShell(), inUser, inUidNumber));
+            this.myAttrs.put("sn", replaceVariables(lp.getSn(), inUser, inUidNumber));
+            this.myAttrs.put(lp.getLdapHomeDirectoryAttributeName(), replaceVariables(lp.getHomeDirectory(), inUser, inUidNumber));
 
-            this.myAttrs.put("sambaAcctFlags", ReplaceVariables(lp.getSambaAcctFlags(), inUser, inUidNumber));
-            this.myAttrs.put("sambaLogonScript", ReplaceVariables(lp.getSambaLogonScript(), inUser, inUidNumber));
-            this.myAttrs.put("sambaPrimaryGroupSID", ReplaceVariables(lp.getSambaPrimaryGroupSID(), inUser, inUidNumber));
-            this.myAttrs.put("sambaSID", ReplaceVariables(lp.getSambaSID(), inUser, inUidNumber));
+            this.myAttrs.put("sambaAcctFlags", replaceVariables(lp.getSambaAcctFlags(), inUser, inUidNumber));
+            this.myAttrs.put("sambaLogonScript", replaceVariables(lp.getSambaLogonScript(), inUser, inUidNumber));
+            this.myAttrs.put("sambaPrimaryGroupSID", replaceVariables(lp.getSambaPrimaryGroupSID(), inUser, inUidNumber));
+            this.myAttrs.put("sambaSID", replaceVariables(lp.getSambaSID(), inUser, inUidNumber));
 
-            this.myAttrs.put("sambaPwdMustChange", ReplaceVariables(lp.getSambaPwdMustChange(), inUser, inUidNumber));
-            this.myAttrs.put("sambaPasswordHistory", ReplaceVariables(lp.getSambaPasswordHistory(), inUser, inUidNumber));
-            this.myAttrs.put("sambaLogonHours", ReplaceVariables(lp.getSambaLogonHours(), inUser, inUidNumber));
-            this.myAttrs.put("sambaKickoffTime", ReplaceVariables(lp.getSambaKickoffTime(), inUser, inUidNumber));
+            this.myAttrs.put("sambaPwdMustChange", replaceVariables(lp.getSambaPwdMustChange(), inUser, inUidNumber));
+            this.myAttrs.put("sambaPasswordHistory", replaceVariables(lp.getSambaPasswordHistory(), inUser, inUidNumber));
+            this.myAttrs.put("sambaLogonHours", replaceVariables(lp.getSambaLogonHours(), inUser, inUidNumber));
+            this.myAttrs.put("sambaKickoffTime", replaceVariables(lp.getSambaKickoffTime(), inUser, inUidNumber));
             this.myAttrs.put("sambaPwdLastSet", String.valueOf(System.currentTimeMillis() / 1000l));
 
             this.myAttrs.put("uidNumber", inUidNumber);
-            this.myAttrs.put("gidNumber", ReplaceVariables(lp.getGidNumber(), inUser, inUidNumber));
+            this.myAttrs.put("gidNumber", replaceVariables(lp.getGidNumber(), inUser, inUidNumber));
 
             /*
              * -------------------------------- Samba passwords --------------------------------
@@ -137,7 +137,7 @@ public class LdapUser implements DirContext {
             }
             /* NTLM */
             try {
-                byte hmm[] = MD4.mdfour(inPassword.getBytes("UnicodeLittleUnmarked"));
+                byte[] hmm = MD4.mdfour(inPassword.getBytes("UnicodeLittleUnmarked"));
                 this.myAttrs.put("sambaNTPassword", toHexString(hmm));
             } catch (UnsupportedEncodingException e) {
                 log.error(e);
@@ -161,14 +161,14 @@ public class LdapUser implements DirContext {
      * @param inUser
      * @return String with replaced variables
      */
-    private String ReplaceVariables(String inString, User inUser, String inUidNumber) {
+    private String replaceVariables(String inString, User inUser, String inUidNumber) {
         if (inString == null) {
             return "";
         }
-        String rueckgabe = inString.replaceAll("\\{login\\}", inUser.getLogin());
-        rueckgabe = rueckgabe.replaceAll("\\{user full name\\}", inUser.getVorname() + " " + inUser.getNachname());
-        rueckgabe = rueckgabe.replaceAll("\\{uidnumber\\*2\\+1000\\}", String.valueOf(Integer.parseInt(inUidNumber) * 2 + 1000));
-        rueckgabe = rueckgabe.replaceAll("\\{uidnumber\\*2\\+1001\\}", String.valueOf(Integer.parseInt(inUidNumber) * 2 + 1001));
+        String rueckgabe = inString.replace("{login}", inUser.getLogin());
+        rueckgabe = rueckgabe.replace("{user full name}", inUser.getVorname() + " " + inUser.getNachname());
+        rueckgabe = rueckgabe.replace("{uidnumber*2+1000}", String.valueOf(Integer.parseInt(inUidNumber) * 2 + 1000));
+        rueckgabe = rueckgabe.replace("{uidnumber*2+1001}", String.valueOf(Integer.parseInt(inUidNumber) * 2 + 1001));
         if (log.isDebugEnabled()) {
             log.debug("Replace instring: " + inString + " - " + inUser + " - " + inUidNumber);
             log.debug("Replace outstring: " + rueckgabe);
@@ -243,7 +243,7 @@ public class LdapUser implements DirContext {
         }
     }
 
-    public static String toHexString(byte bytes[]) {
+    public static String toHexString(byte[] bytes) {
         StringBuffer retString = new StringBuffer();
         for (int i = 0; i < bytes.length; ++i) {
             retString.append(Integer.toHexString(0x0100 + (bytes[i] & 0x00FF)).substring(1));
@@ -435,12 +435,12 @@ public class LdapUser implements DirContext {
 
     // -- DirContext
     @Override
-    public void modifyAttributes(Name name, int mod_op, Attributes attrs) throws NamingException {
+    public void modifyAttributes(Name name, int modOp, Attributes attrs) throws NamingException {
         throw new OperationNotSupportedException();
     }
 
     @Override
-    public void modifyAttributes(String name, int mod_op, Attributes attrs) throws NamingException {
+    public void modifyAttributes(String name, int modOp, Attributes attrs) throws NamingException {
         throw new OperationNotSupportedException();
     }
 

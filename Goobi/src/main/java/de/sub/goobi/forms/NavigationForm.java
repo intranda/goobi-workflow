@@ -2,9 +2,9 @@
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -24,8 +24,6 @@
  * exception statement from your version.
  */
 package de.sub.goobi.forms;
-
-
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -47,14 +45,13 @@ import org.goobi.production.plugin.interfaces.IWorkflowPlugin;
 import org.omnifaces.cdi.Push;
 import org.omnifaces.cdi.PushContext;
 
-import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import lombok.Getter;
 import lombok.Setter;
 
 @Named("NavigationForm")
 @WindowScoped
-public class NavigationForm implements Serializable{
+public class NavigationForm implements Serializable {
 
     /**
      * 
@@ -74,8 +71,7 @@ public class NavigationForm implements Serializable{
     private IWorkflowPlugin workflowPlugin;
 
     /**
-     * Replaced by NavigationForm.parentMenu.
-     * Is still needed by some test classes, may not be removed until now.
+     * Replaced by NavigationForm.parentMenu. Is still needed by some test classes, may not be removed until now.
      */
     @Getter
     @Setter
@@ -110,6 +106,7 @@ public class NavigationForm implements Serializable{
     public enum Theme {
         ui("ui"),
         uii("uii");
+
         private String id;
 
         private Theme(String id) {
@@ -120,7 +117,7 @@ public class NavigationForm implements Serializable{
             return id;
         }
 
-    };
+    }
 
     public NavigationForm() {
         possibleWorkflowPluginNames = PluginLoader.getListOfPlugins(PluginType.Workflow);
@@ -171,14 +168,6 @@ public class NavigationForm implements Serializable{
             }
         }
         return Theme.ui;
-    }
-
-    public boolean isShowSecondLogField() {
-        return ConfigurationHelper.getInstance().isShowSecondLogField();
-    }
-
-    public boolean isShowThirdLogField() {
-        return ConfigurationHelper.getInstance().isShowThirdLogField();
     }
 
     public String setPlugin(String pluginName) {

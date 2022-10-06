@@ -21,6 +21,7 @@ import java.io.OutputStream;
  * 
  */
 import java.io.Serializable;
+import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -90,8 +91,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getGoobiFolder() {
-        String goobiFolder = config.getString("goobiFolder", "/opt/digiverso/goobi/");
-        return goobiFolder;
+        return config.getString("goobiFolder", "/opt/digiverso/goobi/");
     }
 
     private String getConfigLocalPath() {
@@ -271,8 +271,8 @@ public class ConfigurationHelper implements Serializable {
         return getGoobiFolder() + "config/";
     }
 
-    public String getFolderForInternalProcesslogFiles() {
-        return getLocalString("folder_processlog_internal", "intern");
+    public String getFolderForInternalJournalFiles() {
+        return getLocalString("folder_journal_internal", getLocalString("folder_processlog_internal", "intern"));
     }
 
     public String getDoneDirectoryName() {
@@ -296,7 +296,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getProcessImagesFallbackDirectoryName() {
-        return getLocalString("process.folder.images.fallback", ""); 
+        return getLocalString("process.folder.images.fallback", "");
     }
 
     public String getProcessOcrTxtDirectoryName() {
@@ -722,6 +722,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("MetsEditorValidateImages", true);
     }
 
+    public boolean isMetsEditorShowArchivedFolder() {
+        return getLocalBoolean("MetsEditorShowArchivedFolder", false);
+    }
+
     public long getMetsEditorLockingTime() {
         return getLocalLong("MetsEditorLockingTime", 30 * 60 * 1000);
     }
@@ -754,8 +758,8 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("ProcessTitleGenerationRegex", "[\\W]");
     }
 
-    public boolean isResetProcesslog() {
-        return getLocalBoolean("ProcessCreationResetLog", false);
+    public boolean isResetJournal() {
+        return getLocalBoolean("ProcessCreationResetJournal", getLocalBoolean("ProcessCreationResetLog", false));
     }
 
     public String getImagePrefix() {
@@ -859,7 +863,7 @@ public class ConfigurationHelper implements Serializable {
 
     // proxy settings
     public boolean isUseProxy() {
-        return getLocalBoolean("http_useProxy", false);
+        return getLocalBoolean("http_proxyEnabled", false);
     }
 
     public String getProxyUrl() {
@@ -868,6 +872,18 @@ public class ConfigurationHelper implements Serializable {
 
     public int getProxyPort() {
         return getLocalInt("http_proxyPort", 8080);
+    }
+
+    public List<String> getProxyWhitelist() {
+        return getLocalList("http_proxyIgnoreIp");
+    }
+
+    public boolean isProxyWhitelisted(String url) {
+        return getProxyWhitelist().contains(url);
+    }
+
+    public boolean isProxyWhitelisted(URL ipAsURL) {
+        return isProxyWhitelisted(ipAsURL.getHost());
     }
 
     // old parameter, remove them
@@ -948,8 +964,7 @@ public class ConfigurationHelper implements Serializable {
         int size = getLocalInt("MaxImageFileSize", 4000);
         String unit = getLocalString("MaxImageFileSizeUnit", "MB");
         Double factor = getMemorySizeFactor(unit);
-        long byteSize = size * factor.longValue();
-        return byteSize;
+        return size * factor.longValue();
     }
 
     public boolean getMetsEditorUseImageTiles() {
@@ -963,14 +978,6 @@ public class ConfigurationHelper implements Serializable {
 
     public boolean isShowImageComments() {
         return getLocalBoolean("ShowImageComments", false);
-    }
-
-    public boolean isShowSecondLogField() {
-        return getLocalBoolean("ProcessLogShowSecondField", false);
-    }
-
-    public boolean isShowThirdLogField() {
-        return getLocalBoolean("ProcessLogShowThirdField", false);
     }
 
     public boolean isProcesslistShowEditionData() {
@@ -1202,5 +1209,4 @@ public class ConfigurationHelper implements Serializable {
             }
         }
     }
-
 }

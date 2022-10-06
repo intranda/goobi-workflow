@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -116,7 +115,9 @@ public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGo
                 // just the metadata files
                 StorageProvider.getInstance().copyFile(Paths.get(p.getMetadataFilePath()), Paths.get(newprocess.getMetadataFilePath()));
                 if (StorageProvider.getInstance().isFileExists(Paths.get(p.getProcessDataDirectory(), "meta_anchor.xml"))) {
-                    StorageProvider.getInstance().copyFile(Paths.get(p.getProcessDataDirectory(), "meta_anchor.xml"), Paths.get(newprocess.getProcessDataDirectory(), "meta_anchor.xml"));
+                    StorageProvider.getInstance()
+                            .copyFile(Paths.get(p.getProcessDataDirectory(), "meta_anchor.xml"),
+                                    Paths.get(newprocess.getProcessDataDirectory(), "meta_anchor.xml"));
                 }
             }
 
@@ -131,11 +132,12 @@ public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGo
             ProcessManager.saveProcess(newprocess);
 
             // all successfull, yeah
-            gsr.setResultMessage("Process '" + p.getTitel() + "' successfully cloned under the new name '" + parameters.get("title") + "' with id: " + newprocess.getId());
+            gsr.setResultMessage("Process '" + p.getTitel() + "' successfully cloned under the new name '" + parameters.get("title") + "' with id: "
+                    + newprocess.getId());
             gsr.setResultType(GoobiScriptResultType.OK);
 
         } catch (Exception e) {
-            Helper.addMessageToProcessLog(p.getId(), LogType.ERROR,
+            Helper.addMessageToProcessJournal(p.getId(), LogType.ERROR,
                     "Problem while cloning the process '" + p.getTitel() + "' under the new name '" + title + "'", username);
             log.error("Problem while cloning the process '" + p.getTitel() + "' under the new name '" + title + "'", e);
             gsr.setResultMessage("Error while cloning a process: " + e.getMessage());

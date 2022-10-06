@@ -4,9 +4,9 @@ package org.goobi.managedbeans;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -43,7 +43,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Batch;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.LogType;
 import org.goobi.production.flow.statistics.hibernate.FilterHelper;
@@ -52,6 +53,7 @@ import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.BatchProcessHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import io.goobi.workflow.xslt.XsltToPdf;
 import lombok.Data;
@@ -79,8 +81,7 @@ public class BatchBean extends BasicBean implements Serializable {
     private BatchProcessHelper batchHelper;
 
     private int getBatchMaxSize() {
-        int batchsize = ConfigurationHelper.getInstance().getBatchMaxSize();
-        return batchsize;
+        return ConfigurationHelper.getInstance().getBatchMaxSize();
     }
 
     public void loadBatchData() {
@@ -123,7 +124,7 @@ public class BatchBean extends BasicBean implements Serializable {
 
     public void loadProcessData() {
 
-        String filter = " istTemplate = false ";
+        StringBuilder filterBuilder = new StringBuilder(" istTemplate = false ");
 
         List<Integer> ids = new ArrayList<>();
         for (Batch b : this.selectedBatches) {
@@ -132,19 +133,21 @@ public class BatchBean extends BasicBean implements Serializable {
             }
         }
 
-        if (! this.selectedBatches.isEmpty()) {
+        if (!this.selectedBatches.isEmpty()) {
 
             if (ids.contains(null)) {
-                filter += " AND batchID is null ";
+                filterBuilder.append(" AND batchID is null ");
             } else {
-                filter += " AND (";
+                filterBuilder.append(" AND (");
                 for (Integer id : ids) {
-                    filter += " batchID = " + id + " OR";
+                    filterBuilder.append(" batchID = ").append(id).append(" OR");
                 }
-                filter = filter.substring(0, filter.length() - 3) + ")";
+                // delete the last " OR"
+                filterBuilder.delete(filterBuilder.length() - 3, filterBuilder.length());
+                filterBuilder.append(")");
             }
         }
-        this.currentProcesses = ProcessManager.getProcesses(null, filter, 0, getBatchMaxSize());
+        this.currentProcesses = ProcessManager.getProcesses(null, filterBuilder.toString(), 0, getBatchMaxSize());
     }
 
     public void filterProcesses() {
@@ -253,7 +256,7 @@ public class BatchBean extends BasicBean implements Serializable {
         } else {
             Helper.setFehlerMeldung("tooManyBatchesSelected");
         }
-        if (! docket.isEmpty()) {
+        if (!docket.isEmpty()) {
             if (!facesContext.getResponseComplete()) {
                 HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
                 String fileName = "batch_docket" + ".pdf";
@@ -303,14 +306,8 @@ public class BatchBean extends BasicBean implements Serializable {
                 Batch batch = this.selectedBatches.get(0);
                 for (Process p : this.selectedProcesses) {
                     p.setBatch(batch);
-
-                    LogEntry logEntry = new LogEntry();
-                    logEntry.setContent("added process to batch " + batch.getBatchId());
-                    logEntry.setCreationDate(new Date());
-                    logEntry.setProcessId(p.getId());
-                    logEntry.setType(LogType.DEBUG);
-                    logEntry.setUserName("-batch-");
-                    ProcessManager.saveLogEntry(logEntry);
+                    JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), "-batch-", LogType.DEBUG, "added process to batch " + batch.getBatchId(), EntryType.PROCESS);
+                    JournalManager.saveJournalEntry(logEntry);
 
                     ProcessManager.saveProcessInformation(p);
                 }
@@ -325,13 +322,9 @@ public class BatchBean extends BasicBean implements Serializable {
     public void removeProcessesFromBatch() {
         for (Process p : this.selectedProcesses) {
             if (p.getBatch() != null) {
-                LogEntry logEntry = new LogEntry();
-                logEntry.setContent("removed process from batch " + p.getBatch().getBatchId());
-                logEntry.setCreationDate(new Date());
-                logEntry.setProcessId(p.getId());
-                logEntry.setType(LogType.DEBUG);
-                logEntry.setUserName("-batch-");
-                ProcessManager.saveLogEntry(logEntry);
+
+                JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), "-batch-", LogType.DEBUG, "removed process from batch " + p.getBatch().getBatchId(), EntryType.PROCESS);
+                JournalManager.saveJournalEntry(logEntry);
 
                 p.setBatch(null);
                 ProcessManager.saveProcessInformation(p);
@@ -342,19 +335,15 @@ public class BatchBean extends BasicBean implements Serializable {
     }
 
     public void createNewBatch() {
-        if (! this.selectedProcesses.isEmpty()) {
+        if (!this.selectedProcesses.isEmpty()) {
 
             Batch batch = new Batch();
             for (Process p : this.selectedProcesses) {
                 p.setBatch(batch);
                 ProcessManager.saveProcessInformation(p);
-                LogEntry logEntry = new LogEntry();
-                logEntry.setContent("added process to batch " + batch.getBatchId());
-                logEntry.setCreationDate(new Date());
-                logEntry.setProcessId(p.getId());
-                logEntry.setType(LogType.DEBUG);
-                logEntry.setUserName("-batch-");
-                ProcessManager.saveLogEntry(logEntry);
+
+                JournalEntry logEntry = new JournalEntry(p.getId(), new Date(), "-batch-", LogType.DEBUG, "added process to batch " + batch.getBatchId(), EntryType.PROCESS);
+                JournalManager.saveJournalEntry(logEntry);
             }
 
         }

@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -199,7 +198,7 @@ public class GoobiScriptExecuteTask extends AbstractIGoobiScript implements IGoo
      */
     private static void printSuccessMessages(String title, int id, String name) {
         String messagePrefix = "Plugin for step '" + title + "' executed using GoobiScript";
-        Helper.addMessageToProcessLog(id, LogType.DEBUG, messagePrefix + ".", name);
+        Helper.addMessageToProcessJournal(id, LogType.DEBUG, messagePrefix + ".", name);
         log.info(messagePrefix + " for process with ID " + id);
     }
 }

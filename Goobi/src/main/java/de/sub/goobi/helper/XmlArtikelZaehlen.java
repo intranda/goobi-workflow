@@ -25,8 +25,6 @@
  */
 package de.sub.goobi.helper;
 
-
-
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.exceptions.DAOException;

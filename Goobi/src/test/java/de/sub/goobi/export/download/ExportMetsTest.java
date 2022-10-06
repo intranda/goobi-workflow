@@ -47,10 +47,9 @@ import de.sub.goobi.mock.MockProcess;
 import ugh.fileformats.mets.MetsMods;
 import ugh.fileformats.mets.MetsModsImportExport;
 
-
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({MetadatenHelper.class, JwtHelper.class, Helper.class})
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
+@PrepareForTest({ MetadatenHelper.class, JwtHelper.class, Helper.class })
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class ExportMetsTest extends AbstractTest {
 
     private Process testProcess = null;
@@ -67,13 +66,17 @@ public class ExportMetsTest extends AbstractTest {
         }
         ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder.toString();
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
         testProcess = MockProcess.createProcess();
 
         PowerMock.mockStatic(MetadatenHelper.class);
         EasyMock.expect(MetadatenHelper.getMetaFileType(EasyMock.anyString())).andReturn("metsmods").anyTimes();
-        EasyMock.expect(MetadatenHelper.getFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class))).andReturn(new MetsMods(testProcess.getRegelsatz().getPreferences())).anyTimes();
-        EasyMock.expect(MetadatenHelper.getExportFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class))).andReturn(new MetsModsImportExport(testProcess.getRegelsatz().getPreferences())).anyTimes();
+        EasyMock.expect(MetadatenHelper.getFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class)))
+                .andReturn(new MetsMods(testProcess.getRegelsatz().getPreferences()))
+                .anyTimes();
+        EasyMock.expect(MetadatenHelper.getExportFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class)))
+                .andReturn(new MetsModsImportExport(testProcess.getRegelsatz().getPreferences()))
+                .anyTimes();
         PowerMock.replay(MetadatenHelper.class);
 
         PowerMock.mockStatic(JwtHelper.class);

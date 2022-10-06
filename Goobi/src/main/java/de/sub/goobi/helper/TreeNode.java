@@ -3,10 +3,10 @@ package de.sub.goobi.helper;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -34,12 +34,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class TreeNode {
-	@Getter
-	@Setter
+    @Getter
+    @Setter
     protected boolean expanded = false;
     @Getter
-	@Setter
-	protected boolean selected = false;
+    @Setter
+    protected boolean selected = false;
     @Getter
     @Setter
     protected String label;
@@ -51,14 +51,14 @@ public class TreeNode {
     protected List<TreeNode> children;
 
     public TreeNode() {
-        this.children = new ArrayList<TreeNode>();
+        this.children = new ArrayList<>();
     }
 
     public TreeNode(boolean expanded, String label, String id) {
         this.expanded = expanded;
         this.label = label;
         this.id = id;
-        this.children = new ArrayList<TreeNode>();
+        this.children = new ArrayList<>();
     }
 
     public void addChild(TreeNode inNode) {
@@ -66,13 +66,13 @@ public class TreeNode {
     }
 
     public List<TreeNode> getChildrenAsList() {
-        List<TreeNode> myList = new ArrayList<TreeNode>();
+        List<TreeNode> myList = new ArrayList<>();
         getChildrenAsListMitStrichen(myList, 0, this, true, true, new ArrayList<TreeNode>());
         return myList;
     }
 
     public List<TreeNode> getChildrenAsListAlle() {
-        List<TreeNode> myList = new ArrayList<TreeNode>();
+        List<TreeNode> myList = new ArrayList<>();
         getChildrenAsListAlle(myList, 0, this, true, true, new ArrayList<TreeNode>());
         return myList;
     }
@@ -93,7 +93,7 @@ public class TreeNode {
     }
 
     @SuppressWarnings({ "unused", "unchecked", "rawtypes" })
-    private List getChildrenAsList(List inList, int niveau, List inStriche, boolean VaterIstLetzter) {
+    private List getChildrenAsList(List inList, int niveau, List inStriche, boolean vaterIstLetzter) {
         for (Iterator<TreeNode> it = this.children.iterator(); it.hasNext();) {
             TreeNode kind = it.next();
             HashMap map = new HashMap();
@@ -103,7 +103,7 @@ public class TreeNode {
 
             //       die Striche vorbereiten
             List striche = new ArrayList(inStriche);
-            striche.add(Boolean.valueOf(VaterIstLetzter));
+            striche.add(Boolean.valueOf(vaterIstLetzter));
             map.put("striche", striche);
 
             inList.add(map);
@@ -115,7 +115,7 @@ public class TreeNode {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private List getChildrenAsListMitStrichen(List inList, int niveau, TreeNode inNode, boolean istLetzter, boolean VaterIstLetzter, List inStriche) {
+    private List getChildrenAsListMitStrichen(List inList, int niveau, TreeNode inNode, boolean istLetzter, boolean vaterIstLetzter, List inStriche) {
 
         HashMap map = new HashMap();
         map.put("node", inNode);
@@ -124,7 +124,7 @@ public class TreeNode {
 
         // die Striche vorbereiten
         List striche = new ArrayList(inStriche);
-        striche.add(Boolean.valueOf(VaterIstLetzter));
+        striche.add(Boolean.valueOf(vaterIstLetzter));
         map.put("striche", striche);
 
         inList.add(map);
@@ -140,7 +140,7 @@ public class TreeNode {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private List getChildrenAsListAlle(List inList, int niveau, TreeNode inNode, boolean istLetzter, boolean VaterIstLetzter, List inStriche) {
+    private List getChildrenAsListAlle(List inList, int niveau, TreeNode inNode, boolean istLetzter, boolean vaterIstLetzter, List inStriche) {
 
         HashMap map = new HashMap();
         map.put("node", inNode);
@@ -149,7 +149,7 @@ public class TreeNode {
 
         // die Striche vorbereiten
         List striche = new ArrayList(inStriche);
-        striche.add(Boolean.valueOf(VaterIstLetzter));
+        striche.add(Boolean.valueOf(vaterIstLetzter));
         map.put("striche", striche);
 
         inList.add(map);
@@ -164,16 +164,12 @@ public class TreeNode {
         return inList;
     }
 
-    /*                                       
-    * Getter und Setter                         
-    */
+    /*
+     * Getter und Setter
+     */
 
     public boolean getHasChildren() {
-        if (this.children == null || this.children.isEmpty()) {
-            return false;
-        } else {
-            return true;
-        }
+        return this.children != null && !this.children.isEmpty();
     }
 
 }

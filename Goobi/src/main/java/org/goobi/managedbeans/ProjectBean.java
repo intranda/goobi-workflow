@@ -4,10 +4,9 @@ package org.goobi.managedbeans;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
- * 			- http://digiverso.com
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -125,7 +124,7 @@ public class ProjectBean extends BasicBean implements Serializable {
 
     // making sure its cleaned up
     @Override
-    public void finalize() {
+    protected void finalize() {
         this.Cancel();
     }
 
@@ -311,7 +310,7 @@ public class ProjectBean extends BasicBean implements Serializable {
         // and deleted after a commit
 
         // only add file groups with ids to the deletion list
-        if (myFilegroup.getId()!=null) {
+        if (myFilegroup.getId() != null) {
             this.deletedFileGroups.add(myFilegroup);
         } else {
             // otherwise only remove filegroup from list
@@ -756,7 +755,7 @@ public class ProjectBean extends BasicBean implements Serializable {
             response.setHeader("Content-Disposition", "attachment;filename=\"export.csv\"");
             CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator("\n");
             try {
-                try (CSVPrinter csvFilePrinter = new CSVPrinter(response.getWriter(), csvFileFormat)){
+                try (CSVPrinter csvFilePrinter = new CSVPrinter(response.getWriter(), csvFileFormat)) {
                     CSVRenderer csvr = this.myCurrentTable.getCsvRenderer();
 
                     // add all headers

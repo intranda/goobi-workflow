@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -109,10 +108,10 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
                         myBenutzer.add(myUser);
                         try {
                             StepManager.saveStep(s);
-                            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                                     "Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' using GoobiScript.", username);
                             log.info("Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel()
-                            + "' using GoobiScript for process with ID " + p.getId());
+                                    + "' using GoobiScript for process with ID " + p.getId());
                             gsr.setResultMessage("Added user '" + myUser.getNachVorname() + "' to step '" + s.getTitel() + "' successfully.");
                             gsr.setResultType(GoobiScriptResultType.OK);
                         } catch (DAOException e) {
@@ -137,7 +136,7 @@ public class GoobiScriptAddUser extends AbstractIGoobiScript implements IGoobiSc
     private User getUser(String userTitle) {
         try {
             List<User> treffer = UserManager.getUsers(null, "login='" + parameters.get("username") + "'", null, null, null);
-            if (treffer != null && ! treffer.isEmpty()) {
+            if (treffer != null && !treffer.isEmpty()) {
                 return treffer.get(0);
             } else {
                 Helper.setFehlerMeldung("goobiScriptfield", "Unknown user: ", parameters.get("username"));

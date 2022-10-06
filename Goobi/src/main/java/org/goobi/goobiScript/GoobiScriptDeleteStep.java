@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -107,7 +106,7 @@ public class GoobiScriptDeleteStep extends AbstractIGoobiScript implements IGoob
                 howOften = " (" + removedSteps + "x)";
             }
             String message = "Deleted step '" + stepTitle + "'" + howOften + " from process using GoobiScript";
-            Helper.addMessageToProcessLog(process.getId(), LogType.DEBUG, message + ".", username);
+            Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, message + ".", username);
             log.info(message + " for process with ID " + process.getId());
             gsr.setResultMessage("Deleted step '" + stepTitle + "'" + howOften + " from process.");
         } else {

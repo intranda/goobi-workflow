@@ -59,7 +59,7 @@ import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ ViafSearch.class, Helper.class})
+@PrepareForTest({ ViafSearch.class, Helper.class })
 public class MetaPersonTest extends AbstractTest {
 
     private Prefs prefs;

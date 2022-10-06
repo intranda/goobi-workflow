@@ -24,7 +24,6 @@
  */
 package org.goobi.api.rest.process.image;
 
-
 import java.awt.Dimension;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -33,7 +32,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -106,10 +104,11 @@ public class GoobiImageResource {
     private static final int IMAGE_SIZES_MAX_SIZE = 100;
     private static final int IMAGE_SIZES_NUM_ENTRIES_TO_DELETE_ON_OVERFLOW = 10;
     private static long availableThumbnailFoldersLastUpdate = 0;
-    private static final long AVAILABLE_THUMBNAIL_FOLDERS_TTL = 30000;// 30s
+    private static final long AVAILABLE_THUMBNAIL_FOLDERS_TTL = 30000; // 30s
 
     private static final Map<String, Dimension> IMAGE_SIZES = new ConcurrentHashMap<>();
     private static Map<String, List<String>> availableThumbnailFolders = new ConcurrentHashMap<>();
+    private static Map<String, Long[]> FILE_LAST_EDITED_TIMES = new ConcurrentHashMap<>();
 
     private static final Path metadataFolderPath = Paths.get(ConfigurationHelper.getInstance().getMetadataFolder());
 
@@ -178,10 +177,9 @@ public class GoobiImageResource {
     @Produces({ MediaType.APPLICATION_JSON, ImageResource.MEDIA_TYPE_APPLICATION_JSONLD })
     public Response redirectToCanonicalImageInfo() throws ContentLibException {
         try {
-            Response resp = Response.seeOther(PathConverter.toURI(request.getRequestURI() + "/info.json"))
+            return Response.seeOther(PathConverter.toURI(request.getRequestURI() + "/info.json"))
                     .header("Content-Type", response.getContentType())
                     .build();
-            return resp;
         } catch (URISyntaxException e) {
             throw new ContentLibException("Cannot create redirect url from " + request.getRequestURI());
         }
@@ -260,8 +258,10 @@ public class GoobiImageResource {
             Path imagePath = imageFolder.resolve(filename);
             this.thumbnailFolder = processFolder.resolve("thumbs");
 
+            boolean hasThumbnailDirectories = hasThumbnailDirectories(imageFolder, thumbnailFolder);
+
             //replace image Path with thumbnail path if image file does not exist
-            if (!Files.exists(imagePath) && hasThumbnailDirectories(imageFolder, thumbnailFolder)) {
+            if (!fileExists(imagePath) && hasThumbnailDirectories) {
                 imagePath = getThumbnailPath(imagePath, thumbnailFolder, Optional.empty(), true).orElse(imagePath);
             }
             URI originalImageURI = Image.toURI(imagePath);
@@ -280,7 +280,7 @@ public class GoobiImageResource {
                     Optional<Dimension> requestedRegionSize = getRequestedRegionSize(request);
                     requestedImageSize = completeRequestedSize(requestedImageSize, requestedRegionSize, imageSize);
 
-                    if (hasThumbnailDirectories(imageFolder, thumbnailFolder)) {
+                    if (hasThumbnailDirectories) {
                         // For requests covering only part of the image, calculate the size of the
                         // requested image if the entire image were requested
                         if (requestedImageSize.isPresent() && requestedRegionSize.isPresent()) {
@@ -343,6 +343,7 @@ public class GoobiImageResource {
             }
         }
         return imageTooLarge;
+
     }
 
     /**
@@ -437,8 +438,7 @@ public class GoobiImageResource {
      */
     private synchronized org.goobi.beans.Process getGoobiProcess(String processIdString) {
         int processId = Integer.parseInt(processIdString);
-        org.goobi.beans.Process process = ProcessManager.getProcessById(processId);
-        return process;
+        return ProcessManager.getProcessById(processId);
     }
 
     /**
@@ -461,7 +461,7 @@ public class GoobiImageResource {
                 Integer folderSize = getSize(folderName);
                 if (folderSize >= maxSize) {
                     Path thumbPath = thumbnailFolder.resolve(folderName).resolve(replaceSuffix(imagePath.getFileName().toString(), THUMBNAIL_SUFFIX));
-                    if (StorageProvider.getInstance().isFileExists(thumbPath) && isYounger(thumbPath, imagePath)) {
+                    if (fileExists(thumbPath) && isYounger(thumbPath, imagePath)) {
                         return Optional.of(thumbPath);
                     }
                 }
@@ -470,31 +470,52 @@ public class GoobiImageResource {
         if (useFallback && !validThumbnailFolders.isEmpty()) {
             String folderName = validThumbnailFolders.get(validThumbnailFolders.size() - 1);
             Path thumbPath = thumbnailFolder.resolve(folderName).resolve(replaceSuffix(imagePath.getFileName().toString(), THUMBNAIL_SUFFIX));
-            if (StorageProvider.getInstance().isFileExists(thumbPath) && isYounger(thumbPath, imagePath)) {
+            if (fileExists(thumbPath) && isYounger(thumbPath, imagePath)) {
                 return Optional.of(thumbPath);
             }
         }
         return Optional.empty();
     }
 
+    private boolean fileExists(Path thumbPath) {
+        return getLastEdited(thumbPath) > 0;
+    }
+
     private List<Integer> getThumbnailSizes(Path imageFolder, Path thumbnailFolder) {
         List<String> thumbFolderPaths = getThumbnailFolders(imageFolder, thumbnailFolder);
-        List<Integer> sizes =
-                thumbFolderPaths.stream().map(name -> name.substring(name.lastIndexOf("_") + 1)).map(Integer::parseInt).collect(Collectors.toList());
-        return sizes;
+        return thumbFolderPaths.stream().map(name -> name.substring(name.lastIndexOf("_") + 1)).map(Integer::parseInt).collect(Collectors.toList());
     }
 
     private boolean isYounger(Path path, Path referencePath) {
-        if (!StorageProvider.getInstance().isFileExists(referencePath)) {
+
+        Long date = getLastEdited(path);
+        Long referenceDate = getLastEdited(referencePath);
+        if (referenceDate == 0) {
             return true;
-        }
-        try {
-            long date = StorageProvider.getInstance().getLastModifiedDate(path);
-            long referenceDate = StorageProvider.getInstance().getLastModifiedDate(referencePath);
+        } else {
             return date > referenceDate;
-        } catch (IOException e) {
-            log.error("Unable to compare file ages of " + path + " and " + referencePath + ": " + e.toString());
-            return false;
+        }
+
+    }
+
+    private Long getLastEdited(Path path) {
+        Long[] times = FILE_LAST_EDITED_TIMES.get(path.toString());
+        if (times == null || times[1] < System.currentTimeMillis() - AVAILABLE_THUMBNAIL_FOLDERS_TTL) {
+            long date;
+            try {
+                date = StorageProvider.getInstance().getLastModifiedDate(path);
+                if (date > 0) {
+                    FILE_LAST_EDITED_TIMES.put(path.toString(), new Long[] { date, System.currentTimeMillis() });
+                    return date;
+                } else {
+                    throw new IOException("No file time available");
+                }
+            } catch (IOException e) {
+                FILE_LAST_EDITED_TIMES.put(path.toString(), new Long[] { 0l, System.currentTimeMillis() });
+                return 0l;
+            }
+        } else {
+            return times[0];
         }
     }
 
@@ -655,16 +676,16 @@ public class GoobiImageResource {
     }
 
     private List<Path> getMatchingThumbnailFolders(Path imageFolder, Path thumbsFolder) {
-        List<Path> thumbFolderPaths = StorageProvider.getInstance()
+        return StorageProvider.getInstance()
                 .listFiles(thumbsFolder.toString(),
-                        (dirname) -> dirname.getFileName().toString().matches(imageFolder.getFileName().toString() + "_\\d+"));
-        return thumbFolderPaths;
+                        dirname -> dirname.getFileName().toString().matches(imageFolder.getFileName().toString() + "_\\d+"));
     }
 
     private List<String> getThumbnailFolders(Path imageFolder, Path thumbnailFolder) {
         List<String> sizes = availableThumbnailFolders.get(imageFolder.toString());
         if (sizes == null) {
             setThumbnailFolders(imageFolder, thumbnailFolder);
+            availableThumbnailFoldersLastUpdate = System.currentTimeMillis();
         } else if (availableThumbnailFoldersLastUpdate < System.currentTimeMillis() - AVAILABLE_THUMBNAIL_FOLDERS_TTL) {
             availableThumbnailFolders = new HashMap<>();
             setThumbnailFolders(imageFolder, thumbnailFolder);

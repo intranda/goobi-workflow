@@ -25,7 +25,6 @@
  */
 package org.goobi.managedbeans;
 
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -176,7 +175,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public String uploadToServerRecords() {
         VocabularyManager.getAllRecords(currentVocabulary);
         Boolean boOK = VocabularyUploader.upload(currentVocabulary);
-        if (boOK) {
+        if (Boolean.TRUE.equals(boOK)) {
             Helper.setMeldung(Helper.getTranslation("ExportFinished"));
             return "vocabulary_all";
         } else {
@@ -359,8 +358,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
         int columnCounter = 0;
         for (Definition definition : definitionList) {
             headerRow.createCell(columnCounter)
-            .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
-                    : definition.getLabel());
+                    .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
+                            : definition.getLabel());
             columnCounter = columnCounter + 1;
         }
 
@@ -731,11 +730,11 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     @Data
     @RequiredArgsConstructor
-    public class MatchingField implements Serializable{
+    public class MatchingField implements Serializable {
 
         private static final long serialVersionUID = 7037009721345445066L;
 
-		/**
+        /**
          * Name of the header of the current column within the excel file
          */
         @NonNull

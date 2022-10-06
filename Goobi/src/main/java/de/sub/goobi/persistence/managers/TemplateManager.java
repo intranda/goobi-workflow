@@ -30,7 +30,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class TemplateManager implements Serializable {
     private static final long serialVersionUID = -7969538039899200231L;
-    
+
     public static List<Template> getTemplatesForProcess(int processId) {
         List<Template> templates = new ArrayList<Template>();
         try {

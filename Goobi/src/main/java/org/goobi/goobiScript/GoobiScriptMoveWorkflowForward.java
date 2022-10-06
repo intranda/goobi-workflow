@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +103,7 @@ public class GoobiScriptMoveWorkflowForward extends AbstractIGoobiScript impleme
                     } else {
                         ProcessManager.saveProcess(p);
                     }
-                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                    Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                             "Status changed using GoobiScript mass manipulation for step " + so.getTitel());
                     break;
                 }

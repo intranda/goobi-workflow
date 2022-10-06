@@ -4,9 +4,9 @@ package de.sub.goobi.metadaten;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -140,7 +140,7 @@ public class MetadatenVerifizierung {
             if (logical.getAllIdentifierMetadata() != null && !logical.getAllIdentifierMetadata().isEmpty()) {
                 Metadata identifierTopStruct = logical.getAllIdentifierMetadata().get(0);
                 try {
-                    if(!checkIdentifier(metadataLanguage, logical, identifierTopStruct)) {
+                    if (!checkIdentifier(metadataLanguage, logical, identifierTopStruct)) {
                         ergebnis = false;
                     }
                 } catch (Exception e) {
@@ -307,7 +307,7 @@ public class MetadatenVerifizierung {
         return ergebnis;
     }
 
-    private boolean checkIdentifier(String metadataLanguage,  DocStruct logical, Metadata identifierTopStruct) {
+    private boolean checkIdentifier(String metadataLanguage, DocStruct logical, Metadata identifierTopStruct) {
         boolean ergebnis = true;
         if (!identifierTopStruct.getValue().replaceAll(IDENTIFIER_VALIDATION_REGEX, "").equals("")) {
             String[] parameter = { identifierTopStruct.getType().getNameByLanguage(metadataLanguage),

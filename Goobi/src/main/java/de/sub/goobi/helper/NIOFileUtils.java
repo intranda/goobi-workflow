@@ -4,10 +4,9 @@ package de.sub.goobi.helper;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
- * 			- http://digiverso.com
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -342,7 +341,7 @@ public class NIOFileUtils implements StorageProviderInterface {
             }
             return fileOk;
         }
-    };
+    }
 
     public static final DirectoryStream.Filter<Path> imageOrObjectNameFilter = new DirectoryStream.Filter<Path>() {
         @Override
@@ -802,9 +801,14 @@ public class NIOFileUtils implements StorageProviderInterface {
 
     public static String getMimeTypeFromFile(Path path) {
         String mimeType = "";
-        if (StorageProvider.getInstance().isDirectory(path)) {
+        if (!ConfigurationHelper.getInstance().useS3() && StorageProvider.getInstance().isDirectory(path)) {
             return mimeType;
         }
+        String fileExtension = path.getFileName().toString();
+        if (!fileExtension.contains(".")) {
+            return mimeType;
+        }
+        fileExtension = fileExtension.substring(fileExtension.lastIndexOf(".") + 1).toLowerCase(); // .tar.gz will not work
         try {
             // first try to detect mimetype from OS map
             mimeType = Files.probeContentType(path);
@@ -817,11 +821,7 @@ public class NIOFileUtils implements StorageProviderInterface {
         }
         // we are on a mac, compare against list of known file formats
         if (StringUtils.isBlank(mimeType) || "application/octet-stream".equals(mimeType)) {
-            String fileExtension = path.getFileName().toString();
-            if (!fileExtension.contains(".")) {
-                return mimeType;
-            }
-            fileExtension = fileExtension.substring(fileExtension.lastIndexOf(".") + 1).toLowerCase(); // .tar.gz will not work
+
             switch (fileExtension) {
                 case "jpg":
                 case "jpeg":

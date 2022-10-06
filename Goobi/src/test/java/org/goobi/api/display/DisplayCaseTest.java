@@ -55,7 +55,7 @@ public class DisplayCaseTest extends AbstractTest {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
 
         process = MockProcess.createProcess();
 
@@ -87,7 +87,6 @@ public class DisplayCaseTest extends AbstractTest {
         assertNotNull(dc);
         assertEquals(DisplayType.readonly, dc.getDisplayType());
     }
-
 
     @Test
     public void testConstructorMetadataSelection() {
@@ -166,9 +165,9 @@ public class DisplayCaseTest extends AbstractTest {
         assertNotNull(dc);
         assertEquals(DisplayType.viaf, dc.getDisplayType());
         assertEquals("100__a; 700__a;", dc.getItemList().get(0).getSource());
-        assertEquals("001=NORM_IDENTIFIER; 0247_a=URI; 1001_a=NORM_NAME; 1001_d=NORM_LIFEPERIOD; 1001_q=NORM_SEX; 375__a=NORM_SEX;", dc.getItemList().get(0).getField());
+        assertEquals("001=NORM_IDENTIFIER; 0247_a=URI; 1001_a=NORM_NAME; 1001_d=NORM_LIFEPERIOD; 1001_q=NORM_SEX; 375__a=NORM_SEX;",
+                dc.getItemList().get(0).getField());
     }
-
 
     @Test
     public void testConstructorMetadataEasyDB() {

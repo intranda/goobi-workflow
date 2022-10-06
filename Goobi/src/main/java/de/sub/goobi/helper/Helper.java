@@ -4,10 +4,10 @@ package de.sub.goobi.helper;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
- * 
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
+ *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
  * 
@@ -75,7 +75,8 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.commons.lang.StringUtils;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.User;
 import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.enums.LogType;
@@ -85,7 +86,7 @@ import org.jdom2.Element;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.forms.SpracheForm;
-import de.sub.goobi.persistence.managers.ProcessManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import lombok.extern.log4j.Log4j2;
 
 @WebListener
@@ -122,11 +123,11 @@ public class Helper implements Serializable, ServletContextListener {
      * @return Paramter als String
      */
     @SuppressWarnings("rawtypes")
-    public static String getRequestParameter(String Parameter) {
+    public static String getRequestParameter(String parameter) {
         /* einen bestimmten übergebenen Parameter ermitteln */
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
         Map requestParams = context.getExternalContext().getRequestParameterMap();
-        String myParameter = (String) requestParams.get(Parameter);
+        String myParameter = (String) requestParams.get(parameter);
         if (myParameter == null) {
             myParameter = "";
         }
@@ -223,7 +224,7 @@ public class Helper implements Serializable, ServletContextListener {
         setMeldung(control, meldung, beschreibung, true, true);
     }
 
-    public static void addMessageToProcessLog(Integer processId, LogType type, String message) {
+    public static void addMessageToUserJournal(Integer userId, LogType type, String message) {
         LoginBean login = getLoginBean();
         String user = "- automatic -";
         if (login != null) {
@@ -232,17 +233,71 @@ public class Helper implements Serializable, ServletContextListener {
                 user = userObject.getNachVorname();
             }
         }
-        addMessageToProcessLog(processId, type, message, user);
+        addMessageToJournal(userId, type, message, user, EntryType.USER);
     }
 
+    public static void addMessageToInstitutionJournal(Integer institutionId, LogType type, String message) {
+        LoginBean login = getLoginBean();
+        String user = "- automatic -";
+        if (login != null) {
+            User userObject = login.getMyBenutzer();
+            if (userObject != null) {
+                user = userObject.getNachVorname();
+            }
+        }
+        addMessageToJournal(institutionId, type, message, user, EntryType.INSTITUTION);
+    }
+
+    public static void addMessageToProcessJournal(Integer processId, LogType type, String message) {
+        LoginBean login = getLoginBean();
+        String user = "- automatic -";
+        if (login != null) {
+            User userObject = login.getMyBenutzer();
+            if (userObject != null) {
+                user = userObject.getNachVorname();
+            }
+        }
+        addMessageToJournal(processId, type, message, user, EntryType.PROCESS);
+    }
+
+    public static void addMessageToProcessJournal(Integer processId, LogType type, String message, String username) {
+        addMessageToJournal(processId, type, message, username, EntryType.PROCESS);
+    }
+
+    /**
+     * Adds a message to the journal. The journal type is defined by the entryType variable.
+     * 
+     * @param objectId id of the process, user or institution object
+     * @param logType type of the message e.g. error or debug
+     * @param content message content
+     * @param sender name of the sender, either a user name or an application name e.g. 'Jon Doe' or 'http step' or '-automatic-'
+     * @param entryType object type, process, user or institution. Is used in combination with the objectId
+     */
+
+    public static void addMessageToJournal(Integer objectId, LogType logType, String content, String sender, EntryType entryType) {
+        JournalEntry logEntry = new JournalEntry(objectId, new Date(), sender, logType, content, entryType);
+        JournalManager.saveJournalEntry(logEntry);
+    }
+
+    /**
+     * 
+     * 
+     * @deprecated use addMessageToProcessJournal instead
+     */
+
+    @Deprecated
+    public static void addMessageToProcessLog(Integer processId, LogType type, String message) {
+        addMessageToProcessJournal(processId, type, message);
+    }
+
+    /**
+     * 
+     * 
+     * @deprecated use addMessageToProcessJournal instead
+     */
+    @Deprecated
     public static void addMessageToProcessLog(Integer processId, LogType type, String message, String username) {
-        LogEntry logEntry = new LogEntry();
-        logEntry.setContent(message);
-        logEntry.setCreationDate(new Date());
-        logEntry.setProcessId(processId);
-        logEntry.setType(type);
-        logEntry.setUserName(username);
-        ProcessManager.saveLogEntry(logEntry);
+        addMessageToProcessJournal(processId, type, message, username);
     }
 
     /**
@@ -252,10 +307,10 @@ public class Helper implements Serializable, ServletContextListener {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
 
         // Never forget: Strings are immutable
-        meldung = meldung.replaceAll("<", "&lt;");
-        meldung = meldung.replaceAll(">", "&gt;");
-        beschreibung = beschreibung.replaceAll("<", "&lt;");
-        beschreibung = beschreibung.replaceAll(">", "&gt;");
+        meldung = meldung.replace("<", "&lt;");
+        meldung = meldung.replace(">", "&gt;");
+        beschreibung = beschreibung.replace("<", "&lt;");
+        beschreibung = beschreibung.replace(">", "&gt;");
 
         String msg = meldung;
         String beschr = beschreibung;
@@ -557,13 +612,13 @@ public class Helper implements Serializable, ServletContextListener {
         if (desiredLanguage != null) {
             value = getString(new Locale(desiredLanguage.getLanguage()), dbTitel);
         } else {
-            value = getString(Locale.ENGLISH, dbTitel);
+            value = getString(Locale.ENGLISH, dbTitel); // value will never be null, since the method getString(...) always returns something
         }
-        if (value != null && parameterList != null && parameterList.length > 0) {
+        if (parameterList != null && parameterList.length > 0) {
             int parameterCount = 0;
             for (String parameter : parameterList) {
-                if (value != null && parameter != null) {
-                    value = value.replace("{" + parameterCount + "}", parameter);
+                if (parameter != null) {
+                    value = value.replace("{" + parameterCount + "}", parameter); // value will never be null given that parameter != null
                 }
                 parameterCount++;
             }
@@ -720,8 +775,7 @@ public class Helper implements Serializable, ServletContextListener {
             if (beanIterator.hasNext()) {
                 Bean<T> bean = (Bean<T>) beanIterator.next();
                 CreationalContext<T> ctx = bm.createCreationalContext(bean);
-                T instance = (T) bm.getReference(bean, clazz, ctx);
-                return instance;
+                return (T) bm.getReference(bean, clazz, ctx);
             }
         }
         return null;

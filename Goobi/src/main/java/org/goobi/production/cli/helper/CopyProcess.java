@@ -4,9 +4,9 @@ package org.goobi.production.cli.helper;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -146,7 +146,7 @@ public class CopyProcess {
     private List<String> possibleDigitalCollection;
     private boolean updateData = false;
 
-    public final static String DIRECTORY_SUFFIX = "_tif";
+    public static final String DIRECTORY_SUFFIX = "_tif";
 
     /* =============================================================== */
 
@@ -168,7 +168,7 @@ public class CopyProcess {
         } catch (IOException e) {
             log.error(e);
         }
-        ;
+
         this.prozessKopie = new Process();
         this.prozessKopie.setTitel("");
         this.prozessKopie.setIstTemplate(false);
@@ -210,7 +210,7 @@ public class CopyProcess {
         } catch (IOException e) {
             log.error(e);
         }
-        ;
+
         this.prozessKopie = new Process();
         this.prozessKopie.setTitel("");
         this.prozessKopie.setIstTemplate(false);
@@ -382,20 +382,20 @@ public class CopyProcess {
                     try {
                         if (field.getMetadata().equals("ListOfCreators")) {
                             /* bei Autoren die Namen zusammenstellen */
-                            String myautoren = "";
+                            StringBuilder authorBuilder = new StringBuilder();
                             if (myTempStruct.getAllPersons() != null) {
                                 for (Person p : myTempStruct.getAllPersons()) {
-                                    myautoren += p.getLastname();
+                                    authorBuilder.append(p.getLastname());
                                     if (StringUtils.isNotBlank(p.getFirstname())) {
-                                        myautoren += ", " + p.getFirstname();
+                                        authorBuilder.append(", ").append(p.getFirstname());
                                     }
-                                    myautoren += "; ";
+                                    authorBuilder.append("; ");
                                 }
-                                if (myautoren.endsWith("; ")) {
-                                    myautoren = myautoren.substring(0, myautoren.length() - 2);
+                                if (authorBuilder.toString().endsWith("; ")) {
+                                    authorBuilder.delete(authorBuilder.length() - 2, authorBuilder.length());
                                 }
                             }
-                            field.setWert(myautoren);
+                            field.setWert(authorBuilder.toString());
                         } else {
                             /* bei normalen Feldern die Inhalte auswerten */
                             MetadataType mdt = ughHelp.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), field.getMetadata());
@@ -415,7 +415,7 @@ public class CopyProcess {
     private void fillFieldsFromConfig() {
         for (AdditionalField field : this.additionalFields) {
             if (!field.isUghbinding() && field.getShowDependingOnDoctype(getDocType())) {
-                if (field.getSelectList() != null && ! field.getSelectList().isEmpty()) {
+                if (field.getSelectList() != null && !field.getSelectList().isEmpty()) {
                     field.setWert((String) field.getSelectList().get(0).getValue());
                 }
 
@@ -769,7 +769,7 @@ public class CopyProcess {
                     if (this.myRdf != null && this.myRdf.getDigitalDocument() != null
                             && this.myRdf.getDigitalDocument().getPhysicalDocStruct() != null) {
                         List<? extends Metadata> alleImagepfade = this.myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadataByType(mdt);
-                        if (alleImagepfade != null && ! alleImagepfade.isEmpty()) {
+                        if (alleImagepfade != null && !alleImagepfade.isEmpty()) {
                             for (Metadata md : alleImagepfade) {
                                 this.myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadata().remove(md);
                             }
@@ -807,7 +807,7 @@ public class CopyProcess {
         }
 
         // Adding process to history
-        if (!HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie)) {
+        if (Boolean.FALSE.equals(HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie))) {
             Helper.setFehlerMeldung("historyNotUpdated");
         } else {
             try {
@@ -880,7 +880,7 @@ public class CopyProcess {
         this.prozessKopie.writeMetadataFile(this.myRdf);
 
         // Adding process to history
-        if (!HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie)) {
+        if (Boolean.FALSE.equals(HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie))) {
             Helper.setFehlerMeldung("historyNotUpdated");
         } else {
             try {
@@ -907,7 +907,7 @@ public class CopyProcess {
                 md.setValue(s);
                 md.setParent(colStruct);
                 colStruct.addMetadata(md);
-            } catch (UghHelperException |DocStructHasNoTypeException |MetadataTypeNotAllowedException e) {
+            } catch (UghHelperException | DocStructHasNoTypeException | MetadataTypeNotAllowedException e) {
                 Helper.setFehlerMeldung(e.getMessage(), "");
                 log.error(e);
             }
@@ -920,13 +920,13 @@ public class CopyProcess {
     private void removeCollections(DocStruct colStruct) {
         try {
             MetadataType mdt = this.ughHelp.getMetadataType(this.prozessKopie.getRegelsatz().getPreferences(), "singleDigCollection");
-            ArrayList<Metadata> myCollections = new ArrayList<>(colStruct.getAllMetadataByType(mdt));
-            if (myCollections != null && ! myCollections.isEmpty()) {
+            ArrayList<Metadata> myCollections = new ArrayList<>(colStruct.getAllMetadataByType(mdt)); // implies that myCollections != null
+            if (!myCollections.isEmpty()) {
                 for (Metadata md : myCollections) {
                     colStruct.removeMetadata(md, true);
                 }
             }
-        } catch (UghHelperException |DocStructHasNoTypeException e) {
+        } catch (UghHelperException | DocStructHasNoTypeException e) {
             Helper.setFehlerMeldung(e.getMessage(), "");
             log.error(e);
         }
@@ -1150,7 +1150,7 @@ public class CopyProcess {
 
     @SuppressWarnings("rawtypes")
     public void CalcProzesstitel() {
-        String newTitle = "";
+        StringBuilder newTitleBuilder = new StringBuilder();
         String titeldefinition = "";
         ConfigProjects cp = null;
         try {
@@ -1209,7 +1209,7 @@ public class CopyProcess {
              * wenn der String mit ' anfängt und mit ' endet, dann den Inhalt so übernehmen
              */
             if (myString.startsWith("'") && myString.endsWith("'")) {
-                newTitle += myString.substring(1, myString.length() - 1);
+                newTitleBuilder.append(myString.substring(1, myString.length() - 1));
             } else {
                 /* andernfalls den string als Feldnamen auswerten */
                 for (Iterator it2 = this.additionalFields.iterator(); it2.hasNext();) {
@@ -1225,12 +1225,12 @@ public class CopyProcess {
 
                     /* den Inhalt zum Titel hinzufügen */
                     if (myField.getTitel().equals(myString) && myField.getShowDependingOnDoctype(getDocType()) && myField.getWert() != null) {
-                        newTitle += CalcProzesstitelCheck(myField.getTitel(), myField.getWert());
+                        newTitleBuilder.append(CalcProzesstitelCheck(myField.getTitel(), myField.getWert()));
                     }
                 }
             }
         }
-
+        String newTitle = newTitleBuilder.toString();
         if (newTitle.endsWith("_")) {
             newTitle = newTitle.substring(0, newTitle.length() - 1);
         }
@@ -1265,7 +1265,7 @@ public class CopyProcess {
     /* =============================================================== */
 
     public void CalcTiffheader() {
-        String tif_definition = "";
+        String tifDefinition = "";
         ConfigProjects cp = null;
         try {
             cp = new ConfigProjects(this.prozessVorlage.getProjekt().getTitel());
@@ -1274,23 +1274,23 @@ public class CopyProcess {
             return;
         }
 
-        tif_definition = cp.getParamString("tifheader/" + this.docType.toLowerCase(), "blabla");
+        tifDefinition = cp.getParamString("tifheader/" + this.docType.toLowerCase(), "blabla");
 
         /*
          * -------------------------------- evtuelle Ersetzungen --------------------------------
          */
-        tif_definition = tif_definition.replaceAll("\\[\\[", "<");
-        tif_definition = tif_definition.replaceAll("\\]\\]", ">");
+        tifDefinition = tifDefinition.replace("[[", "<");
+        tifDefinition = tifDefinition.replace("]]", ">");
 
         /*
          * -------------------------------- Documentname ist im allgemeinen = Prozesstitel --------------------------------
          */
         this.tifHeader_documentname = this.prozessKopie.getTitel();
-        this.tifHeader_imagedescription = "";
+        StringBuilder imageDescriptionBuilder = new StringBuilder(); // will be used to build this.tifHeader_imagedescription
         /*
          * -------------------------------- Imagedescription --------------------------------
          */
-        StringTokenizer tokenizer = new StringTokenizer(tif_definition, "+");
+        StringTokenizer tokenizer = new StringTokenizer(tifDefinition, "+");
         /* jetzt den Tiffheader parsen */
         while (tokenizer.hasMoreTokens()) {
             String myString = tokenizer.nextToken();
@@ -1298,10 +1298,10 @@ public class CopyProcess {
              * wenn der String mit ' anfaengt und mit ' endet, dann den Inhalt so übernehmen
              */
             if (myString.startsWith("'") && myString.endsWith("'") && myString.length() > 2) {
-                this.tifHeader_imagedescription += myString.substring(1, myString.length() - 1);
+                imageDescriptionBuilder.append(myString.substring(1, myString.length() - 1));
             } else if (myString.equals("$Doctype")) {
 
-                this.tifHeader_imagedescription += this.docType;
+                imageDescriptionBuilder.append(this.docType);
             } else {
                 /* andernfalls den string als Feldnamen auswerten */
                 for (Iterator<AdditionalField> it2 = this.additionalFields.iterator(); it2.hasNext();) {
@@ -1317,11 +1317,12 @@ public class CopyProcess {
 
                     /* den Inhalt zum Titel hinzufügen */
                     if (myField.getTitel().equals(myString) && myField.getShowDependingOnDoctype(getDocType()) && myField.getWert() != null) {
-                        this.tifHeader_imagedescription += CalcProzesstitelCheck(myField.getTitel(), myField.getWert());
+                        imageDescriptionBuilder.append(CalcProzesstitelCheck(myField.getTitel(), myField.getWert()));
                     }
                 }
             }
         }
+        this.tifHeader_imagedescription = imageDescriptionBuilder.toString();
     }
 
     private void addProperty(Template inVorlage, Templateproperty property) {

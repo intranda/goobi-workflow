@@ -86,11 +86,11 @@ public class ExportDmsTest extends AbstractTest {
         PowerMock.mockStatic(MetadatenHelper.class);
         EasyMock.expect(MetadatenHelper.getMetaFileType(EasyMock.anyString())).andReturn("metsmods").anyTimes();
         EasyMock.expect(MetadatenHelper.getFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class)))
-        .andReturn(new MetsMods(testProcess.getRegelsatz().getPreferences()))
-        .anyTimes();
+                .andReturn(new MetsMods(testProcess.getRegelsatz().getPreferences()))
+                .anyTimes();
         EasyMock.expect(MetadatenHelper.getExportFileformatByName(EasyMock.anyString(), EasyMock.anyObject(Ruleset.class)))
-        .andReturn(new MetsModsImportExport(testProcess.getRegelsatz().getPreferences()))
-        .anyTimes();
+                .andReturn(new MetsModsImportExport(testProcess.getRegelsatz().getPreferences()))
+                .anyTimes();
         PowerMock.replay(MetadatenHelper.class);
 
         PowerMock.mockStatic(Helper.class);

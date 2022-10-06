@@ -32,7 +32,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.goobi.beans.Batch;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.helper.exceptions.DAOException;
@@ -315,51 +315,41 @@ public class ProcessManager implements IManager, Serializable {
         return idList;
     }
 
-    public static void saveLogEntry(LogEntry entry) {
-        try {
-            ProcessMysqlHelper.saveLogEntry(entry);
-        } catch (SQLException e) {
-            log.error("Cannot not update process log for process with id " + entry.getProcessId(), e);
-        }
+    /**
+     *
+     * @deprecated use {@link JournalManager#saveJournalEntry(JournalEntry entry} instead
+     */
+    @Deprecated(since = "2022-09", forRemoval = true)
+    public static void saveLogEntry(JournalEntry entry) {
+        JournalManager.saveJournalEntry(entry);
     }
-
 
     /**
-     * Delete a single log entry from process log
-     * 
-     * @param entry to delete
+     *
+     * @deprecated use {@link JournalManager#deleteJournalEntry(JournalEntry entry)} instead
      */
-
-    public static void deleteLogEntry(LogEntry entry) {
-        try {
-            ProcessMysqlHelper.deleteLogEntry(entry);
-        } catch (SQLException e) {
-            log.error("Cannot not update process log for process with id " + entry.getProcessId(), e);
-        }
+    @Deprecated(since = "2022-09", forRemoval = true)
+    public static void deleteLogEntry(JournalEntry entry) {
+        JournalManager.deleteJournalEntry(entry);
     }
 
-
-    public static ResultSetHandler<Process> resultSetToProcessHandler = new ResultSetHandler<Process>() {
+    public static final ResultSetHandler<Process> resultSetToProcessHandler = new ResultSetHandler<Process>() {
         @Override
         public Process handle(ResultSet rs) throws SQLException {
             try {
-                if (rs.next()) {
+                if (rs.next()) { // implies that rs != null
                     try {
-                        Process o = convert(rs);
-                        return o;
+                        return convert(rs);
                     } catch (DAOException e) {
                         log.error(e);
                     }
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
     };
-
 
     public static ResultSetHandler<List<Process>> resultSetToProcessListHandler = new ResultSetHandler<List<Process>>() {
         @Override
@@ -368,18 +358,14 @@ public class ProcessManager implements IManager, Serializable {
             try {
                 while (rs.next()) {
                     try {
-                        Process o = convert(rs);
-                        if (o != null) {
-                            answer.add(o);
-                        }
+                        Process o = convert(rs); // implies that o != null
+                        answer.add(o);
                     } catch (DAOException e) {
                         log.error(e);
                     }
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }
@@ -413,7 +399,7 @@ public class ProcessManager implements IManager, Serializable {
         }
         p.setDocket(DocketManager.getDocketById(rs.getInt("docketID")));
 
-        p.setProcessLog(ProcessMysqlHelper.getLogEntriesForProcess(p.getId()));
+        p.setJournal(JournalManager.getLogEntriesForProcess(p.getId()));
 
         p.setMediaFolderExists(rs.getBoolean("mediaFolderExists"));
 

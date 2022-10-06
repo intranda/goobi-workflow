@@ -4,9 +4,9 @@ package de.unigoettingen.sub.search.opac;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -163,9 +163,8 @@ public class ConfigOpac {
                 if (searchFields.isEmpty()) {
                     searchFields = searchFieldMap;
                 }
-                ConfigOpacCatalogue coc = new ConfigOpacCatalogue(title, description, address, database, iktlist, port, charset, cbs, beautyList,
+                return new ConfigOpacCatalogue(title, description, address, database, iktlist, port, charset, cbs, beautyList,
                         opacType, protocol, searchFields);
-                return coc;
             }
         }
         return null;
@@ -255,9 +254,8 @@ public class ConfigOpac {
                 boolean containedWork = config.getBoolean("doctypes.type(" + i + ")[@isContainedWork]");
                 List<String> mappings = Arrays.asList(config.getStringArray("doctypes.type(" + i + ").mapping"));
                 String rulesetChildType = config.getString("doctypes.type(" + i + ")[@rulesetChildType]");
-                ConfigOpacDoctype cod = new ConfigOpacDoctype(inTitle, inRulesetType, inTifHeaderType, periodical, multiVolume, containedWork, labels,
+                return new ConfigOpacDoctype(inTitle, inRulesetType, inTifHeaderType, periodical, multiVolume, containedWork, labels,
                         mappings, rulesetChildType);
-                return cod;
             }
         }
         return null;

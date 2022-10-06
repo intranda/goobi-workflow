@@ -87,7 +87,7 @@ import ugh.exceptions.ReadException;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ FacesContext.class, ExternalContext.class, Application.class, UIViewRoot.class, Helper.class, MetadataManager.class,
-    ProcessManager.class })
+        ProcessManager.class })
 @PowerMockIgnore({ "javax.net.ssl.*" })
 public class MetadatenTest extends AbstractTest {
 
@@ -2095,7 +2095,7 @@ public class MetadatenTest extends AbstractTest {
             throws IOException, SwapException, InvalidImagesException, ContentLibException, ImageManipulatorException {
         MetadatenImagesHelper mih = EasyMock.createMock(MetadatenImagesHelper.class);
         List<String> files = StorageProvider.getInstance().list(process.getImagesTifDirectory(true));
-        EasyMock.expect(mih.getImageFiles(EasyMock.anyObject(), EasyMock.anyString())).andReturn(files).anyTimes();
+        EasyMock.expect(mih.getImageFiles(EasyMock.anyObject(), EasyMock.anyString(), EasyMock.anyBoolean())).andReturn(files).anyTimes();
         mih.scaleFile(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyInt(), EasyMock.anyInt());
         EasyMock.replay(mih);
         return mih;

@@ -4,9 +4,9 @@ package org.goobi.production.chart;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -197,7 +197,7 @@ public class ProjectStatusDraw {
         if (log.isDebugEnabled()) {
             log.debug(datePosition + " / " + duration);
         }
-        float dash1[] = { 2.0f };
+        float[] dash1 = { 2.0f };
         BasicStroke dashed = new BasicStroke(1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, dash1, 0.0f);
         g2d.setStroke(dashed);
         g2d.setColor(Color.black);
@@ -218,7 +218,7 @@ public class ProjectStatusDraw {
 
         GradientPaint verlauf = new GradientPaint(xpos - length / 2f, ypos, Color.white, xpos + (float) length, ypos, col);
         g2d.setPaint(verlauf);
-        g2d.fill(new Rectangle2D.Double(xpos + (double)padding, ypos - width / 2d, length - 2d * padding, width + 1d));
+        g2d.fill(new Rectangle2D.Double(xpos + (double) padding, ypos - width / 2d, length - 2d * padding, width + 1d));
 
     }
 

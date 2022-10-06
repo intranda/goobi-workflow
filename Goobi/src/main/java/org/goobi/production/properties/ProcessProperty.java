@@ -4,9 +4,9 @@ package org.goobi.production.properties;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -202,19 +202,16 @@ public class ProcessProperty implements IProperty, Serializable {
     }
 
     public void setValueList(List<String> valueList) {
-        this.value = "";
+        StringBuilder bld = new StringBuilder();
         for (String val : valueList) {
-            this.value = this.value + val + "; ";
+            bld.append(val).append("; ");
         }
+        this.value = bld.toString();
         this.readValue = value;
     }
 
     public boolean getBooleanValue() {
-        if (this.value != null && this.value.equalsIgnoreCase("true")) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.value != null && this.value.equalsIgnoreCase("true");
     }
 
     public void setBooleanValue(boolean val) {
@@ -231,16 +228,13 @@ public class ProcessProperty implements IProperty, Serializable {
 
         @Override
         public int compare(ProcessProperty o1, ProcessProperty o2) {
-            return  Integer.valueOf(o1.getContainer()).compareTo(Integer.valueOf(o2.getContainer()));
+            return Integer.compare(o1.getContainer(), o2.getContainer());
         }
 
     }
 
     public boolean getIsNew() {
-        if (this.name == null || this.name.length() == 0) {
-            return true;
-        }
-        return false;
+        return this.name == null || this.name.length() == 0;
     }
 
 }

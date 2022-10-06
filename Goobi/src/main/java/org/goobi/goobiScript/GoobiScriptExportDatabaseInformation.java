@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -84,7 +83,7 @@ public class GoobiScriptExportDatabaseInformation extends AbstractIGoobiScript i
             Path dest = null;
             try {
                 dest = Paths.get(p.getProcessDataDirectoryIgnoreSwapping(), p.getId() + "_db_export.xml");
-            } catch (IOException  e) {
+            } catch (IOException e) {
                 log.error(e);
                 gsr.setResultMessage("Cannot read process folder " + e.getMessage());
                 gsr.setResultType(GoobiScriptResultType.ERROR);

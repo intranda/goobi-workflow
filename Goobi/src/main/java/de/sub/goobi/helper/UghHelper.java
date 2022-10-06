@@ -4,9 +4,9 @@ package de.sub.goobi.helper;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -108,7 +108,7 @@ public class UghHelper {
                     return null;
                 }
             }
-            if ( ! all.isEmpty()) {
+            if (!all.isEmpty()) {
                 return all.get(0);
             } else {
                 return null;
@@ -144,7 +144,7 @@ public class UghHelper {
             }
         }
 
-        if ( ! all.isEmpty()) {
+        if (!all.isEmpty()) {
             return all.get(0);
         } else {
             return null;
@@ -177,7 +177,7 @@ public class UghHelper {
                 lastErrorMessage = e.getMessage();
             }
         }
-        if ( ! all.isEmpty()) {
+        if (!all.isEmpty()) {
             return all.get(0);
         } else {
             return null;
@@ -216,7 +216,7 @@ public class UghHelper {
         if (mdt == null) {
             return;
         }
-        if (inStruct != null &&  ! inStruct.getAllMetadataByType(mdt).isEmpty()) {
+        if (inStruct != null && !inStruct.getAllMetadataByType(mdt).isEmpty()) {
             for (Metadata md : inStruct.getAllMetadataByType(mdt)) {
                 inStruct.removeMetadata(md, true);
             }
@@ -248,7 +248,6 @@ public class UghHelper {
                     String str;
                     while ((str = in.readLine()) != null) {
                         if (str.length() > 0 && str.split(" ")[1].equals(inLanguage)) {
-                            in.close();
                             return str.split(" ")[0];
                         }
                     }

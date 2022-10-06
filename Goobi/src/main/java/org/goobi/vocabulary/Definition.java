@@ -44,11 +44,11 @@ import lombok.NonNull;
 @Data
 @XmlRootElement
 @NoArgsConstructor
-public class Definition implements Serializable{
+public class Definition implements Serializable {
 
     private static final long serialVersionUID = 4869232901046909915L;
 
-	private Integer id;
+    private Integer id;
 
     // e.g. 'title'
     @NonNull

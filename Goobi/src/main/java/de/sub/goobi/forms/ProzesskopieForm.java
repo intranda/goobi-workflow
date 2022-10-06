@@ -55,7 +55,8 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -94,6 +95,7 @@ import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.metadaten.TempImage;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.RulesetManager;
@@ -234,7 +236,7 @@ public class ProzesskopieForm implements Serializable {
         atstsl = "";
         opacSuchbegriff = "";
         this.guessedImages = 0;
-        if (ConfigurationHelper.getInstance().isResetProcesslog()) {
+        if (ConfigurationHelper.getInstance().isResetJournal()) {
             addToWikiField = "";
         }
 
@@ -250,8 +252,7 @@ public class ProzesskopieForm implements Serializable {
 
             return "";
         }
-        if (prozessVorlage.getProjekt().getProjectIsArchived()) {
-
+        if (Boolean.TRUE.equals(prozessVorlage.getProjekt().getProjectIsArchived())) {
             Helper.setFehlerMeldung("projectIsArchived");
             return "";
         }
@@ -393,7 +394,7 @@ public class ProzesskopieForm implements Serializable {
                             break;
                         case "export": //NOSONAR
                             configuredFolderNames
-                            .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
+                                    .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
                             break;
                         case "master":
                             if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
@@ -791,14 +792,10 @@ public class ProzesskopieForm implements Serializable {
 
         if (addToWikiField != null && !addToWikiField.equals("")) {
             User user = loginForm.getMyBenutzer();
-            LogEntry logEntry = new LogEntry();
-            logEntry.setContent(addToWikiField);
-            logEntry.setCreationDate(new Date());
-            logEntry.setProcessId(prozessKopie.getId());
-            logEntry.setType(LogType.INFO);
-            logEntry.setUserName(user.getNachVorname());
-            ProcessManager.saveLogEntry(logEntry);
-            prozessKopie.getProcessLog().add(logEntry);
+            JournalEntry logEntry =
+                    new JournalEntry(prozessKopie.getId(), new Date(), user.getNachVorname(), LogType.INFO, addToWikiField, EntryType.PROCESS);
+            JournalManager.saveJournalEntry(logEntry);
+            prozessKopie.getJournal().add(logEntry);
         }
 
         /*
@@ -954,7 +951,7 @@ public class ProzesskopieForm implements Serializable {
         }
 
         // Adding process to history
-        if (!HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie)) {
+        if (Boolean.FALSE.equals(HistoryAnalyserJob.updateHistoryForProzess(this.prozessKopie))) {
             Helper.setFehlerMeldung("historyNotUpdated");
             return "";
         } else {
@@ -969,7 +966,7 @@ public class ProzesskopieForm implements Serializable {
 
                     if ("intern".equals(image.getFoldername())) {
                         folder = Paths.get(prozessKopie.getProcessDataDirectory(),
-                                ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
+                                ConfigurationHelper.getInstance().getFolderForInternalJournalFiles());
                     } else if ("export".equals(image.getFoldername())) {
                         folder = Paths.get(prozessKopie.getExportDirectory());
                     } else {
@@ -984,15 +981,10 @@ public class ProzesskopieForm implements Serializable {
                     StorageProvider.getInstance().copyFile(source, destination);
 
                     if ("intern".equals(image.getFoldername()) || "export".equals(image.getFoldername())) {
-
-                        LogEntry entry = LogEntry.build(prozessKopie.getId())
-                                .withCreationDate(new Date())
-                                .withContent(image.getDescriptionText())
-                                .withType(LogType.FILE)
-                                .withUsername(Helper.getCurrentUser().getNachVorname());
-                        entry.setSecondContent(folder.toString());
-                        entry.setThirdContent(destination.toString());
-                        ProcessManager.saveLogEntry(entry);
+                        JournalEntry entry = new JournalEntry(prozessKopie.getId(), new Date(), Helper.getCurrentUser().getNachVorname(),
+                                LogType.FILE, image.getDescriptionText(), EntryType.PROCESS);
+                        entry.setFilename(destination.toString());
+                        JournalManager.saveJournalEntry(entry);
                     }
                 }
 
@@ -1498,7 +1490,7 @@ public class ProzesskopieForm implements Serializable {
                 }
             }
         }
-        String  newTitle =titleBuilder.toString();
+        String newTitle = titleBuilder.toString();
         if (newTitle.endsWith("_")) {
             newTitle = newTitle.substring(0, newTitle.length() - 1);
         }
@@ -1585,10 +1577,10 @@ public class ProzesskopieForm implements Serializable {
              * wenn der String mit ' anfaengt und mit ' endet, dann den Inhalt so uebernehmen
              */
             if (myString.startsWith("'") && myString.endsWith("'") && myString.length() > 2) {
-                sb.append( myString.substring(1, myString.length() - 1));
+                sb.append(myString.substring(1, myString.length() - 1));
             } else if (myString.equals("$Doctype")) {
                 /* wenn der Doctype angegeben werden soll */
-                sb.append( this.co.getDoctypeByName(this.docType).getTifHeaderType());
+                sb.append(this.co.getDoctypeByName(this.docType).getTifHeaderType());
             } else {
                 /* andernfalls den string als Feldnamen auswerten */
                 for (Iterator<AdditionalField> it2 = this.additionalFields.iterator(); it2.hasNext();) {
@@ -1607,14 +1599,14 @@ public class ProzesskopieForm implements Serializable {
 
                     /* den Inhalt zum Titel hinzufügen */
                     if (myField.getTitel().equals(myString) && myField.getShowDependingOnDoctype(getDocType()) && myField.getWert() != null) {
-                        sb.append(  CalcProcesstitelCheck(myField.getTitel(), myField.getWert()));
+                        sb.append(CalcProcesstitelCheck(myField.getTitel(), myField.getWert()));
                     }
 
                 }
             }
             // reduce to 255 character
         }
-        tifHeaderImagedescription=sb.toString();
+        tifHeaderImagedescription = sb.toString();
         int length = this.tifHeaderImagedescription.length();
         if (length > 255) {
             try {

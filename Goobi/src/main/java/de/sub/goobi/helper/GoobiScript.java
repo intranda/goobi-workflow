@@ -25,7 +25,6 @@
  */
 package de.sub.goobi.helper;
 
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -59,7 +58,7 @@ import ugh.exceptions.MetadataTypeNotAllowedException;
 
 @Log4j2
 public class GoobiScript {
-    public final static String DIRECTORY_SUFFIX = "_tif";
+    public static final String DIRECTORY_SUFFIX = "_tif";
 
     /**
      * executes the list of GoobiScript commands for all processes that were selected
@@ -175,7 +174,7 @@ public class GoobiScript {
                 Fileformat myRdf = proz.readMetadataFile();
                 myRdf.getDigitalDocument().addAllContentFiles();
                 proz.writeMetadataFile(myRdf);
-                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "ContentFiles updated using GoobiScript.");
+                Helper.addMessageToProcessJournal(proz.getId(), LogType.DEBUG, "ContentFiles updated using GoobiScript.");
                 log.info("ContentFiles updated using GoobiScript for process with ID " + proz.getId());
                 Helper.setMeldung("goobiScriptfield", "ContentFiles updated: ", proz.getTitel());
             } catch (ugh.exceptions.DocStructHasNoTypeException e) {
@@ -200,7 +199,7 @@ public class GoobiScript {
             task.initialize(p);
             LongRunningTaskManager.getInstance().addTask(task);
             LongRunningTaskManager.getInstance().executeTask(task);
-            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Swapping out started using GoobiScript.");
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Swapping out started using GoobiScript.");
             log.info("Swapping out started using GoobiScript for process with ID " + p.getId());
         }
         Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'swapOut' executed.");
@@ -218,7 +217,7 @@ public class GoobiScript {
             task.initialize(p);
             LongRunningTaskManager.getInstance().addTask(task);
             LongRunningTaskManager.getInstance().executeTask(task);
-            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Swapping in started using GoobiScript.");
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Swapping in started using GoobiScript.");
             log.info("Swapping in started using GoobiScript for process with ID " + p.getId());
         }
         Helper.setMeldung("goobiScriptfield", "", "GoobiScript 'swapIn' executed.");
@@ -237,7 +236,7 @@ public class GoobiScript {
                 if (StorageProvider.getInstance().isFileExists(tiffheaderfile)) {
                     StorageProvider.getInstance().deleteDir(tiffheaderfile);
                 }
-                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "TiffHeaderFile deleted using GoobiScript.");
+                Helper.addMessageToProcessJournal(proz.getId(), LogType.DEBUG, "TiffHeaderFile deleted using GoobiScript.");
                 log.info("TiffHeaderFile deleted using GoobiScript for process with ID " + proz.getId());
                 Helper.setMeldung("goobiScriptfield", "TiffHeaderFile deleted: ", proz.getTitel());
             } catch (Exception e) {
@@ -261,7 +260,7 @@ public class GoobiScript {
                 UghHelper ughhelp = new UghHelper();
                 MetadataType mdt = ughhelp.getMetadataType(proz, "pathimagefiles");
                 List<? extends ugh.dl.Metadata> alleImagepfade = myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadataByType(mdt);
-                if ( ! alleImagepfade.isEmpty()) {
+                if (!alleImagepfade.isEmpty()) {
                     for (Metadata md : alleImagepfade) {
                         myRdf.getDigitalDocument().getPhysicalDocStruct().getAllMetadata().remove(md);
                     }
@@ -274,7 +273,7 @@ public class GoobiScript {
                 }
                 myRdf.getDigitalDocument().getPhysicalDocStruct().addMetadata(newmd);
                 proz.writeMetadataFile(myRdf);
-                Helper.addMessageToProcessLog(proz.getId(), LogType.DEBUG, "ImagePath updated using GoobiScript.");
+                Helper.addMessageToProcessJournal(proz.getId(), LogType.DEBUG, "ImagePath updated using GoobiScript.");
                 log.info("ImagePath updated using GoobiScript for process with ID " + proz.getId());
                 Helper.setMeldung("goobiScriptfield", "ImagePath updated: ", proz.getTitel());
 

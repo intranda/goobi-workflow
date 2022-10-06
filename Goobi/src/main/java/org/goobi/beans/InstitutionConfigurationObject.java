@@ -24,15 +24,14 @@
  */
 package org.goobi.beans;
 
-
 import java.io.Serializable;
 
 import lombok.Data;
 
 @Data
-public class InstitutionConfigurationObject implements Serializable{
+public class InstitutionConfigurationObject implements Serializable {
     private static final long serialVersionUID = 7757549140685678598L;
-	private Integer id;
+    private Integer id;
     private Integer institution_id;
     private Integer object_id;
     private String object_type;

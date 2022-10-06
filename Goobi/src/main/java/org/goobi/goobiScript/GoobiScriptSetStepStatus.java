@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -106,7 +105,7 @@ public class GoobiScriptSetStepStatus extends AbstractIGoobiScript implements IG
                     String newStatusTitle = s.getBearbeitungsstatusEnum().getUntranslatedTitle();
                     String message = "Changed status of step '" + s.getTitel() + "' from' " + oldStatusTitle + " ' to '" + newStatusTitle
                             + "' using GoobiScript";
-                    Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, message + ".", username);
+                    Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, message + ".", username);
                     log.info(message + " for process with ID " + p.getId());
                     gsr.setResultMessage("Status of the step is set successfully.");
                     gsr.setResultType(GoobiScriptResultType.OK);

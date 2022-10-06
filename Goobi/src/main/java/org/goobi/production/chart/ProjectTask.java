@@ -27,7 +27,7 @@ import java.io.Serializable;
 
 public class ProjectTask implements IProjectTask, Serializable {
     private static final long serialVersionUID = 6638946547609335780L;
-	private String taskTitle;
+    private String taskTitle;
     private Integer taskStepsCompleted;
     private Integer taskStepsMax;
     private Integer taskConfiguredSteps;

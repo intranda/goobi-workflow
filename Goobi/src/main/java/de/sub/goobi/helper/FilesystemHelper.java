@@ -2,9 +2,9 @@
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -75,7 +75,7 @@ public class FilesystemHelper {
                 StorageProvider.getInstance().createDirectories(Paths.get(dirName));
             } else {
                 ShellScript createDirScript = new ShellScript(Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirMeta()));
-                createDirScript.run(Arrays.asList(new String[] { dirName }));
+                createDirScript.run(Arrays.asList(dirName));
             }
         }
     }
@@ -96,7 +96,7 @@ public class FilesystemHelper {
                 StorageProvider.getInstance().createDirectories(Paths.get(dirName));
             } else {
                 ShellScript createDirScript = new ShellScript(Paths.get(ConfigurationHelper.getInstance().getScriptCreateDirUserHome()));
-                createDirScript.run(Arrays.asList(new String[] { userName, dirName }));
+                createDirScript.run(Arrays.asList(userName, dirName));
             }
         }
         return StorageProvider.getInstance().isFileExists(Paths.get(dirName));
@@ -108,7 +108,7 @@ public class FilesystemHelper {
             ShellScript deleteSymLinkScript;
             try {
                 deleteSymLinkScript = new ShellScript(Paths.get(command));
-                deleteSymLinkScript.run(Arrays.asList(new String[] { symLink }));
+                deleteSymLinkScript.run(Arrays.asList(symLink));
             } catch (FileNotFoundException e) {
                 log.error("FileNotFoundException in deleteSymLink()", e);
                 Helper.setFehlerMeldung("Couldn't find script file, error", e.getMessage());
@@ -207,23 +207,21 @@ public class FilesystemHelper {
                     ocrfile = altoFolder.resolve(ocrFile + ".xml");
                 }
                 AltoDocument alto = AltoDocument.getDocumentFromFile(ocrfile.toFile());
-                String result = alto.getContent().replaceAll("\n", "<br/>");
-                return result;
+                return alto.getContent().replace("\n", "<br/>");
             } else if (sp.isFileExists(xmlFolder)) {
                 // try to return content from xml folder
                 ocrfile = xmlFolder.resolve(ocrFile + ".xml");
                 ConvertAbbyyToAltoStaX converter = new ConvertAbbyyToAltoStaX();
                 try (InputStream input = sp.newInputStream(ocrfile)) {
                     AltoDocument alto = converter.convertToASM(input, new Date(), ocrfile.getFileName().toString());
-                    String result = alto.getContent().replaceAll("\n", "<br/>");
-                    return result;
+                    return alto.getContent().replace("\n", "<br/>");
                 }
             }
 
         } catch (FileNotFoundException e) {
             try {
                 log.debug("no OCR file found for image " + inProcess.getImagesDirectory() + ocrFile);
-            } catch (IOException | SwapException  e1) {
+            } catch (IOException | SwapException e1) {
                 log.error(e1);
             }
         } catch (IOException | SwapException | XMLStreamException | JDOMException e) {
@@ -236,7 +234,7 @@ public class FilesystemHelper {
     public static void main(String[] args) throws IOException, XMLStreamException {
         ConvertAbbyyToAltoStaX converter = new ConvertAbbyyToAltoStaX();
         AltoDocument alto = converter.convertToASM(new File("/opt/digiverso/goobi/metadata/365/ocr/mybook_xml/00000121.xml"), new Date());
-        String result = alto.getContent().replaceAll("\n", "<br/>");
+        String result = alto.getContent().replace("\n", "<br/>");
         System.out.println(result);
     }
 

@@ -4,9 +4,9 @@ package de.unigoettingen.sub.search.opac;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -28,6 +28,8 @@ package de.unigoettingen.sub.search.opac;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,7 +131,7 @@ public class GetOpac {
     // STATE (Instance variables) *****************************************
     // This is now configured inside the Catalogue class.
     // TODO: Check if this should really be query specific
-    private String data_character_encoding = "iso-8859-1";
+    private String dataCharacterEncoding = "iso-8859-1";
 
     @Getter
     @Setter
@@ -282,8 +284,8 @@ public class GetOpac {
 
         // querySummary is used to check if cached result and sessionid
         // can be used again
-        String querySummary = query.getQueryUrl() + this.data_character_encoding + this.cat.getDataBase() + this.cat.getServerAddress()
-        + this.cat.getPort() + this.cat.getCbs();
+        String querySummary = query.getQueryUrl() + this.dataCharacterEncoding + this.cat.getDataBase() + this.cat.getServerAddress()
+                + this.cat.getPort() + this.cat.getCbs();
 
         // if we can not use the cached result
         if (!this.lastQuery.equals(querySummary)) {
@@ -332,8 +334,8 @@ public class GetOpac {
 
         // querySummary is used to check if cached result and sessionid
         // can be used again
-        String querySummary = query.getQueryUrl() + this.data_character_encoding + this.cat.getDataBase() + this.cat.getServerAddress()
-        + this.cat.getPort() + this.cat.getCbs();
+        String querySummary = query.getQueryUrl() + this.dataCharacterEncoding + this.cat.getDataBase() + this.cat.getServerAddress()
+                + this.cat.getPort() + this.cat.getCbs();
 
         // if we can not use the cached result
         if (!this.lastQuery.equals(querySummary)) {
@@ -413,8 +415,8 @@ public class GetOpac {
         // get pica longtitle
         int retrieveNumber = numberOfHits + 1;
         return retrieveDataFromOPAC(
-                DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL + this.data_character_encoding + SET_ID_URL + this.lastOpacResult.getSet()
-                + SESSIONID_URL + this.lastOpacResult.getSessionId(URL_CHARACTER_ENCODING) + SHOW_LONGTITLE_NR_URL + retrieveNumber);
+                DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL + this.dataCharacterEncoding + SET_ID_URL + this.lastOpacResult.getSet()
+                        + SESSIONID_URL + this.lastOpacResult.getSessionId(URL_CHARACTER_ENCODING) + SHOW_LONGTITLE_NR_URL + retrieveNumber);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -457,8 +459,8 @@ public class GetOpac {
     public OpacResponseHandler getResult(Query query) throws IOException, SAXException, ParserConfigurationException {
         String result = null;
 
-        String querySummary = query.getQueryUrl() + this.data_character_encoding + this.cat.getDataBase() + this.cat.getServerAddress()
-        + this.cat.getPort() + this.cat.getCbs();
+        String querySummary = query.getQueryUrl() + this.dataCharacterEncoding + this.cat.getDataBase() + this.cat.getServerAddress()
+                + this.cat.getPort() + this.cat.getCbs();
 
         if (this.verbose) {
             log.info("Searching the opac for " + query.getQueryUrl());
@@ -471,7 +473,7 @@ public class GetOpac {
             return this.lastOpacResult;
         }
 
-        result = retrieveDataFromOPAC(DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL_WITHOUT_LOCAL_DATA + this.data_character_encoding
+        result = retrieveDataFromOPAC(DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL_WITHOUT_LOCAL_DATA + this.dataCharacterEncoding
                 + SEARCH_URL_BEFORE_QUERY + this.sorting + query.getQueryUrl());
 
         try {
@@ -481,7 +483,7 @@ public class GetOpac {
             this.lastOpacResult = opacResult;
 
             return opacResult;
-        } catch(SAXException e) {
+        } catch (SAXException e) {
             throw new SAXException("Response could not be parsed as xml: '" + result + "'", e);
         }
 
@@ -593,7 +595,7 @@ public class GetOpac {
             Transformer transformer = tFac.newTransformer();
             StreamResult output = new StreamResult();
 
-            transformer.setOutputProperty(OutputKeys.ENCODING, this.data_character_encoding);
+            transformer.setOutputProperty(OutputKeys.ENCODING, this.dataCharacterEncoding);
             transformer.transform(source, output);
         } catch (Exception e) {
             log.error(e);
@@ -622,19 +624,27 @@ public class GetOpac {
 
         }
         try {
-            if (log.isDebugEnabled()) {
-                log.debug("use proxy configuration: " + ConfigurationHelper.getInstance().isUseProxy());
-            }
-            if (ConfigurationHelper.getInstance().isUseProxy()) {
-                HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
-                if (log.isDebugEnabled()) {
-                    log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
-                }
 
-                Builder builder = RequestConfig.custom();
-                builder.setProxy(proxy);
-                RequestConfig rc = builder.build();
-                opacRequest.setConfig(rc);
+            log.debug("use proxy configuration: " + ConfigurationHelper.getInstance().isUseProxy());
+
+            if (ConfigurationHelper.getInstance().isUseProxy()) {
+                try {
+                    URL ipAsURL = new URL(url);
+                    if (!ConfigurationHelper.getInstance().isProxyWhitelisted(ipAsURL)) {
+                        HttpHost proxy =
+                                new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
+                        log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
+
+                        Builder builder = RequestConfig.custom();
+                        builder.setProxy(proxy);
+                        RequestConfig rc = builder.build();
+                        opacRequest.setConfig(rc);
+                    } else {
+                        log.debug("url was on proxy whitelist, no proxy used: " + url);
+                    }
+                } catch (MalformedURLException e) {
+                    log.debug("could not convert into URL: ", url);
+                }
             }
 
             String result = this.opacClient.execute(opacRequest, HttpClientHelper.stringResponseHandler);
@@ -672,8 +682,8 @@ public class GetOpac {
      **********************************************************************/
 
     // TODO: rename this Method to camelCase convention
-    public void setData_character_encoding(String data_character_encoding) {
-        this.data_character_encoding = data_character_encoding;
+    public void setData_character_encoding(String dataCharacterEncoding) {
+        this.dataCharacterEncoding = dataCharacterEncoding;
     }
 
     public void sortByRelevance() {

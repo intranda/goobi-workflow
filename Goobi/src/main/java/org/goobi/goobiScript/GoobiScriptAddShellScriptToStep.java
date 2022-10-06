@@ -24,7 +24,6 @@
  */
 package org.goobi.goobiScript;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -105,19 +104,19 @@ public class GoobiScriptAddShellScriptToStep extends AbstractIGoobiScript implem
                     s.setTypScriptStep(true);
                     try {
                         ProcessManager.saveProcess(p);
-                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Added script to step '" + s.getTitel() + "' with label '"
+                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Added script to step '" + s.getTitel() + "' with label '"
                                 + s.getScriptname1() + "' and value '" + s.getTypAutomatischScriptpfad() + "' using GoobiScript.",
                                 username);
                         log.info("Added script to step '" + s.getTitel() + "' with label '" + s.getScriptname1() + "' and value '"
                                 + s.getTypAutomatischScriptpfad() + "' using GoobiScript for process with ID " + p.getId());
                         gsr.setResultMessage("Added script to step '" + s.getTitel() + "' with label '" + s.getScriptname1()
-                        + "' and value '" + s.getTypAutomatischScriptpfad() + "'.");
+                                + "' and value '" + s.getTypAutomatischScriptpfad() + "'.");
                         gsr.setResultType(GoobiScriptResultType.OK);
                     } catch (DAOException e) {
                         Helper.setFehlerMeldung("goobiScriptfield", "Error while saving process: " + p.getTitel(), e);
                         log.error("goobiScriptfield" + "Error while saving process: " + p.getTitel(), e);
                         gsr.setResultMessage("Error while adding script to step '" + s.getTitel() + "' with label '" + s.getScriptname1()
-                        + "' and value '" + s.getTypAutomatischScriptpfad() + "': " + e.getMessage());
+                                + "' and value '" + s.getTypAutomatischScriptpfad() + "': " + e.getMessage());
                         gsr.setResultType(GoobiScriptResultType.ERROR);
                         gsr.setErrorText(e.getMessage());
                     }

@@ -3,10 +3,10 @@ package org.goobi.production.flow.jobs;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -84,9 +84,9 @@ public class JobManager implements ServletContextListener {
 
         initializeJob(new HistoryAnalyserJob(), "dailyHistoryAnalyser", sched);
         initializeJob(new DelayJob(), "dailyDelayJob", sched);
-        
+
         initializeJob(new UploadVocabJob(), "dailyVocabJob", sched);
-        
+
         initializeMinutelyJob(new UploadVocabJob(), "goobiAuthorityServerUploadFrequencyInMinutes", sched);
     }
 
@@ -123,11 +123,12 @@ public class JobManager implements ServletContextListener {
      * 
      * @throws SchedulerException
      */
-    private static void initializeMinutelyJob(IGoobiJob goobiJob, String configuredMinutelyIntervalProperty, Scheduler sched) throws SchedulerException {
+    private static void initializeMinutelyJob(IGoobiJob goobiJob, String configuredMinutelyIntervalProperty, Scheduler sched)
+            throws SchedulerException {
 
         if (ConfigurationHelper.getInstance().getJobStartTime(configuredMinutelyIntervalProperty) != -1) {
-            int intervalInMinutes = (int)ConfigurationHelper.getInstance().getJobStartTime(configuredMinutelyIntervalProperty);
-            
+            int intervalInMinutes = (int) ConfigurationHelper.getInstance().getJobStartTime(configuredMinutelyIntervalProperty);
+
             log.debug("Initialize job '" + goobiJob.getJobName() + "'");
             JobDetail jobDetail = new JobDetail(goobiJob.getJobName(), null, goobiJob.getClass());
 
@@ -137,7 +138,7 @@ public class JobManager implements ServletContextListener {
             sched.scheduleJob(jobDetail, trigger);
         }
     }
-    
+
     /**
      * initializes given SimpleGoobiJob at given time
      * 
