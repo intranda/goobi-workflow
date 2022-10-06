@@ -146,7 +146,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
 
                 java.lang.Process exportValidationProcess = Runtime.getRuntime().exec(command);
                 Integer exitVal = exportValidationProcess.waitFor();
-                if (exitVal != 0) {
+                if (exitVal == 0) {
                     Helper.setMeldung(null, myProzess.getTitel() + ": ", "XML validation completed successfully");
                     if (!StorageProvider.getInstance().deleteDir(temporaryFile)) {
                         Helper.setFehlerMeldung("Export cancelled, prrocess: " + myProzess.getTitel(),
