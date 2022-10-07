@@ -387,6 +387,17 @@
                             rel="tooltip">
                             <f:ajax render="@form"></f:ajax>
                         </h:commandButton>
+                        
+                        <h:commandButton
+                            type="button"
+                            id="startValidationButtonAjax"
+                            style="display:none"
+                            action="#{Metadaten.Validate}"
+                            title="#{msgs.validieren}"
+                            rel="tooltip">
+                            <f:ajax render="@form"></f:ajax>
+                        </h:commandButton>
+                        
                         <h:commandButton
                             type="button"
                             id="automaticSave"

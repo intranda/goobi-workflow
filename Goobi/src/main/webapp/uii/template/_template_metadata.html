@@ -180,7 +180,8 @@
 			var saveMetsFileImage = document.getElementById("menu-form:saveMetsFileImage");
 
 			var ajaxSave = document.getElementById("menu-form:saveMetsFileButtonAjax");
-			var autoSave = document.getElementById("menu-form:automaticSave");
+			var ajaxValidation = document.getElementById("menu-form:startValidationButtonAjax");
+			var autoSave = document.getElementById("menu-form:automaticSave")
 
 			var exit = document.getElementById("exit");
 			var exitImage = document.getElementById("menu-form:exitImage");
@@ -192,6 +193,7 @@
 					saveMetsFileImage.style.display = 'block';
 
 					ajaxSave.disabled = true;
+					ajaxValidation.disabled = true;
 					autoSave.disabled = true;
 
 					exit.style.display = 'none';
@@ -207,6 +209,7 @@
 					saveMetsFileImage.style.display = 'none';
 
 					ajaxSave.disabled = false;
+					ajaxValidation.disabled = false;
 					autoSave.disabled = false;
 
 					exit.style.display = 'block';
