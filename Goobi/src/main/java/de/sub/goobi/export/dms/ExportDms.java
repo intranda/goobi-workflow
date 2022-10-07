@@ -44,6 +44,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
+import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
 
@@ -150,6 +151,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 final Pattern pExportFile = Pattern.compile("\\$?(?:\\(|\\{)EXPORTFILE(?:\\}|\\))");
                 command = pExportFile.matcher(command).replaceAll(Matcher.quoteReplacement(pathToGeneratedFile));
 
+                Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG, "Started export validation using command: " + command);
                 java.lang.Process exportValidationProcess = Runtime.getRuntime().exec(command);
                 Integer exitVal = exportValidationProcess.waitFor();
 
@@ -167,11 +169,14 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                     if (!StorageProvider.getInstance().deleteDir(temporaryFile)) {
                         Helper.setFehlerMeldung("Export cancelled, process: " + myProzess.getTitel(),
                                 "Temporarily exported file could not be cleared.");
+                        Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG,
+                                "Temporarily exported file could not be cleared: " + temporaryFile.toString());
                         problems.add("Export cancelled: Success folder could not be cleared.");
                         return false;
                     }
                 } else {
                     Helper.setFehlerMeldung("Export cancelled, XML Validation error for process: " + myProzess.getTitel(), exitVal.toString());
+                    Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG, "XML Validation error when executing: " + command);
                     log.error("Export cancelled, XML Validation error for command: " + command);
                     problems.add("Export cancelled XML Validation tool reports errorcode: " + exitVal.toString());
                     return false;
