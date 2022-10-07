@@ -685,9 +685,9 @@
   </MetadataType>
   <MetadataType>
     <Name>UseAndReproductionLicense</Name>
-    <language name="de">Lizenz</language>
-    <language name="en">License</language>
-    <language name="es">Licencia</language>
+    <language name="de">Nutzungslizenz</language>
+    <language name="en">Licence of use</language>
+    <language name="es">Licencia de uso</language>
   </MetadataType>
   <MetadataType>
     <Name>shelfmarksource</Name>
