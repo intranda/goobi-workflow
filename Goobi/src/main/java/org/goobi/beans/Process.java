@@ -2334,7 +2334,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @return true if the process is set up to perform a pre-export validation, false if not
      */
     public boolean isConfiguredWithExportValidator() {
-        if (getExportValidator().getLabel() != null) {
+        if (getExportValidator().getLabel() != null && getExportValidator().getCommand() != null) {
             return true;
         } else {
             return false;

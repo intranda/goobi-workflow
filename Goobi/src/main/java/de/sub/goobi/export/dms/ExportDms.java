@@ -149,36 +149,55 @@ public class ExportDms extends ExportMets implements IExportPlugin {
 
                 // replace {EXPORTFILE} keyword from configuration file
                 final Pattern pExportFile = Pattern.compile("\\$?(?:\\(|\\{)EXPORTFILE(?:\\}|\\))");
+                if (!pExportFile.matcher(command).matches()) {
+                    Helper.setFehlerMeldung("Export cancelled, process: " + myProzess.getTitel(),
+                            "Export validation command does not contain required {EXPORTFILE} tag. Aborting export. Command:" + command);
+                    Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG,
+                            "Export validation command does not contain required {EXPORTFILE} tag. Aborting export. Command:" + command);
+                    log.warn("Export validation and export cancelled. No {EXPORTFILE} tag in command: " + command);
+                    problems.add("Export cancelled: malformed export validation command.");
+                    return false;
+                }
                 command = pExportFile.matcher(command).replaceAll(Matcher.quoteReplacement(pathToGeneratedFile));
 
                 Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG, "Started export validation using command: " + command);
-                java.lang.Process exportValidationProcess = Runtime.getRuntime().exec(command);
-                Integer exitVal = exportValidationProcess.waitFor();
 
-                InputStream errorInputStream = exportValidationProcess.getErrorStream();
-                InputStreamReader errorStreamReader = new InputStreamReader(errorInputStream);
-                Stream<String> errorStream = new BufferedReader(errorStreamReader).lines();
-                String errorStreamAsString = errorStream.collect(Collectors.joining());
+                try {
+                    java.lang.Process exportValidationProcess = Runtime.getRuntime().exec(command);
+                    Integer exitVal = exportValidationProcess.waitFor();
 
-                // exitVal 0 indicates success, 1 indicates errors in the XML
-                // errorStreamAsString represents STDERR. It should be completely empty, or else the command failed
+                    InputStream errorInputStream = exportValidationProcess.getErrorStream();
+                    InputStreamReader errorStreamReader = new InputStreamReader(errorInputStream);
+                    Stream<String> errorStream = new BufferedReader(errorStreamReader).lines();
+                    String errorStreamAsString = errorStream.collect(Collectors.joining());
 
-                if (exitVal == 0 && errorStreamAsString.isBlank()) {
-                    Helper.setMeldung(null, myProzess.getTitel() + ": ", "XML validation completed successfully");
-                    // delete the now no longer required generated .xml
-                    if (!StorageProvider.getInstance().deleteDir(temporaryFile)) {
-                        Helper.setFehlerMeldung("Export cancelled, process: " + myProzess.getTitel(),
-                                "Temporarily exported file could not be cleared.");
-                        Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG,
-                                "Temporarily exported file could not be cleared: " + temporaryFile.toString());
-                        problems.add("Export cancelled: Success folder could not be cleared.");
+                    // exitVal 0 indicates success, 1 indicates errors in the XML
+                    // errorStreamAsString represents STDERR. It should be completely empty, or else the command failed
+
+                    if (exitVal == 0 && errorStreamAsString.isBlank()) {
+                        Helper.setMeldung(null, myProzess.getTitel() + ": ", "XML validation completed successfully");
+                        // delete the now no longer required generated .xml
+                        if (!StorageProvider.getInstance().deleteDir(temporaryFile)) {
+                            Helper.setFehlerMeldung("Export cancelled, process: " + myProzess.getTitel(),
+                                    "Temporarily exported file could not be cleared.");
+                            Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG,
+                                    "Temporarily exported file could not be cleared: " + temporaryFile.toString());
+                            log.error("Temporarily exported file could not be cleared: " + temporaryFile.toString());
+                            problems.add("Export cancelled: Success folder could not be cleared.");
+                            return false;
+                        }
+                    } else {
+                        Helper.setFehlerMeldung("Export cancelled, XML Validation error for process: " + myProzess.getTitel(), exitVal.toString());
+                        Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG, "XML Validation error when executing: " + command);
+                        log.error("Export cancelled, XML Validation error for command: " + command);
+                        problems.add("Export cancelled XML Validation tool reports errorcode: " + exitVal.toString());
                         return false;
                     }
-                } else {
-                    Helper.setFehlerMeldung("Export cancelled, XML Validation error for process: " + myProzess.getTitel(), exitVal.toString());
-                    Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG, "XML Validation error when executing: " + command);
-                    log.error("Export cancelled, XML Validation error for command: " + command);
-                    problems.add("Export cancelled XML Validation tool reports errorcode: " + exitVal.toString());
+                } catch (java.io.IOException e) {
+                    Helper.setFehlerMeldung("Export cancelled, XML Validation command could not be found. Command: " + command);
+                    Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG, "XML Validation command not found: " + command);
+                    log.error("Export cancelled, XML validation error. Command not found: " + command);
+                    problems.add("Export cancelled XML validation tool could not be found. Command: " + command);
                     return false;
                 }
             }
