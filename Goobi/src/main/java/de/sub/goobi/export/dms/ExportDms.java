@@ -149,7 +149,8 @@ public class ExportDms extends ExportMets implements IExportPlugin {
 
                 // replace {EXPORTFILE} keyword from configuration file
                 final Pattern pExportFile = Pattern.compile("\\$?(?:\\(|\\{)EXPORTFILE(?:\\}|\\))");
-                if (!pExportFile.matcher(command).matches()) {
+                final String ExportTag = "{EXPORTFILE}";
+                if (!command.contains(ExportTag)) {
                     Helper.setFehlerMeldung("Export cancelled, process: " + myProzess.getTitel(),
                             "Export validation command does not contain required {EXPORTFILE} tag. Aborting export. Command:" + command);
                     Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG,
