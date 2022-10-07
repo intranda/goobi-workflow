@@ -26,12 +26,23 @@ import lombok.extern.log4j.Log4j2;
  * 
  */
 
+/**
+ * This class provides helper methods for loading the Export Validation configuration file.
+ * 
+ * @author Janos Sebök
+ */
+
 @Log4j2
 public class ConfigExportValidation {
 
     private ConfigExportValidation() {
     }
 
+    /**
+     * Helper method for getting all the Export Validators that were set up in the config file.
+     * 
+     * @return A list containing all validly configured Export Validators, with labels, unique IDs and associated commands
+     */
     public static List<ExportValidator> getConfiguredExportValidators() {
         List<ExportValidator> configuredExportValidators = new ArrayList<>();
         XMLConfiguration config = getExportValidatorConfiguration();
@@ -48,6 +59,12 @@ public class ConfigExportValidation {
         return configuredExportValidators;
     }
 
+    /**
+     * External helper method to get the ID based on a certain label. This is important for making selection from a list work with JSF.
+     * 
+     * @param label The label for which to get the ID
+     * @return The ID associated with the label
+     */
     public static Integer getExportValidatorIdFromLabel(String label) {
         for (ExportValidator exportValidator : getConfiguredExportValidators()) {
             if (exportValidator.getLabel().equals(label)) {

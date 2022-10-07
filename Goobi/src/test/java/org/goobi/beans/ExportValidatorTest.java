@@ -1,4 +1,4 @@
-package de.sub.goobi.config;
+package org.goobi.beans;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -20,24 +20,28 @@ package de.sub.goobi.config;
  */
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
-
-import org.goobi.beans.ExportValidator;
 import org.junit.Test;
 
 import de.sub.goobi.AbstractTest;
 
-public class ConfigExportValidationTest extends AbstractTest {
+public class ExportValidatorTest extends AbstractTest {
 
     @Test
-    public void canReadEntriesFromExportValidationConfigFile() {
-        List<ExportValidator> validators = ConfigExportValidation.getConfiguredExportValidators();
-        assertEquals(2, validators.size());
+    public void exportValidatorConstructorNullTest() {
+        ExportValidator exportValidator = new ExportValidator(null);
+        assertEquals(Integer.valueOf(0), exportValidator.getId());
     }
 
     @Test
-    public void canGetCorrectIDFromExistantLabel() {
-        int id = ConfigExportValidation.getExportValidatorIdFromLabel("XML validity");
-        assertEquals(1, id);
+    public void exportValidatorConstructorValidLabelTest() {
+        ExportValidator exportValidator = new ExportValidator("XML validity");
+        assertEquals("/usr/bin/xmllint --noout {EXPORTFILE}", exportValidator.getCommand());
     }
+
+    @Test
+    public void exportValidatorConstructorInvalidLabelTest() {
+        ExportValidator exportValidator = new ExportValidator("XML");
+        assertEquals(null, exportValidator.getCommand());
+    }
+
 }

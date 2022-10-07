@@ -1,6 +1,5 @@
 package de.sub.goobi.export.dms;
 
-import java.io.BufferedReader;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -26,6 +25,7 @@ import java.io.BufferedReader;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;

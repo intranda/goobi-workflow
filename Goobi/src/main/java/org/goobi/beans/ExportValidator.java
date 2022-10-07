@@ -1,11 +1,5 @@
 package org.goobi.beans;
 
-import java.util.List;
-
-import de.sub.goobi.config.ConfigExportValidation;
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -29,6 +23,20 @@ import lombok.Setter;
  * exception statement from your version.
  */
 
+import java.util.List;
+
+import de.sub.goobi.config.ConfigExportValidation;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
+
+/**
+ * This class provides a simple data structure for holding required information on Export Validators
+ * 
+ * @author Janos Sebök
+ */
+
+@Log4j2
 public class ExportValidator {
     @Getter
     @Setter
@@ -43,6 +51,12 @@ public class ExportValidator {
     public ExportValidator() {
     }
 
+    /**
+     * Constructor to allow quickly building ExportValidator objects based on label.
+     * 
+     * @param label A unique Export Validator label to find the associated command for
+     * @return An ExportValidator bean with both the label and the command properly set up
+     */
     public ExportValidator(String label) {
         if (label == null) {
             this.id = Integer.valueOf(0);
@@ -53,7 +67,6 @@ public class ExportValidator {
     }
 
     private String findCommandByLabel(String label) {
-        String command = "";
         if (label == null) {
             return null;
         }
@@ -61,12 +74,12 @@ public class ExportValidator {
         if (configuredValidators != null) {
             for (ExportValidator exportValidator : configuredValidators) {
                 if (label.equals(exportValidator.label)) {
-                    command = exportValidator.command;
-                    break;
+                    return exportValidator.command;
                 }
             }
         }
-        return command;
+        log.warn(String.format("Label %s has no correctly associated command. Check goobi_exportValidation.xml!", label));
+        return null;
     }
 
 }

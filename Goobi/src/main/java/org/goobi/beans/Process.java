@@ -2328,6 +2328,11 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Tiny check to see whether a process is currently setup to perform XML Export Validation before the actual export.
+     * 
+     * @return true if the process is set up to perform a pre-export validation, false if not
+     */
     public boolean isConfiguredWithExportValidator() {
         if (getExportValidator().getLabel() != null) {
             return true;
