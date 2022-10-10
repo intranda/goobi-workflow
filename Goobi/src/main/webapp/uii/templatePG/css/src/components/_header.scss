@@ -16,11 +16,14 @@
 
   .stats {
     display: flex;
+    align-items: flex-start;
     list-style: none;
     gap: 1.5rem;
     li {
       display: flex;
+
       padding: 1rem 1.5rem;
+      border-radius: var(--border-radius);
     }
     #ajaxloader {
       width: 5.6rem;
@@ -29,7 +32,7 @@
       margin-right: 0.8rem;
     }
     button,
-    li:nth-child(3) {
+    &__date {
       color: var(--clr-white, #fff);
       display: flex;
       gap: 1.5rem;

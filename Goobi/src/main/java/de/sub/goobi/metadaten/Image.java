@@ -26,14 +26,11 @@ package de.sub.goobi.metadaten;
 import java.awt.Dimension;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -79,7 +76,6 @@ public @Data class Image {
     private static final String PLACEHOLDER_URL_VIDEO = "/uii/template/img/goobi_placeholder_video_large.png?version=1";
     private static final String PLACEHOLDER_URL_AUDIO = "/uii/template/img/goobi_placeholder_audio_large.png?version=1";
     private static final String PLACEHOLDER_URL_NOTFOUND = "/uii/template/img/goobi_placeholder_notFound_large.png?version=1";
-    //    private static final String PLACEHOLDER_URL_DEFAULT = "uii/template/img/thumbnail-placeholder.png?version=1";
 
     /**
      * The image format of the thumbnail urls. 'jpeg' per default
@@ -119,7 +115,7 @@ public @Data class Image {
      * Url and size information for different resolutions of this image. Used to create layer urls for pyramid image display
      * 
      */
-    private List<ImageLevel> imageLevels = null;
+    private List<ImageLevel> imageLevels = new ArrayList<>();
     /**
      * A list of sizes for the image levels to be displayed
      */
@@ -170,8 +166,6 @@ public @Data class Image {
             this.objectUrl = createIIIFUrl(process, imageFolderName, filename);
         } else if (Type.object.equals(this.type) || Type.x3dom.equals(this.type) || Type.object2vr.equals(this.type)) {
             this.objectUrl = create3DObjectUrl(process, imageFolderName, filename);
-            //        } else if (Type.unknown.equals(this.type)) {
-            //            this.objectUrl = new HelperForm().getServletPathWithHostAsUrl() + PLACEHOLDER_URL_NOTFOUND;
         } else if (Type.audio.equals(this.type) || Type.video.equals(this.type) || Type.unknown.equals(this.type)) {
             this.objectUrl = createMediaUrl(process, imageFolderName, filename);
         } else {
@@ -182,8 +176,8 @@ public @Data class Image {
     }
 
     /**
-     * Base constructor which only provides placeholder images. Inheriting classes may use this as base constructor
-     * and define 'objectUrl', 'bookmarkUrl', 'thumbnailUrl' and 'largeThumbnailUrl' themselves
+     * Base constructor which only provides placeholder images. Inheriting classes may use this as base constructor and define 'objectUrl',
+     * 'bookmarkUrl', 'thumbnailUrl' and 'largeThumbnailUrl' themselves
      * 
      * @param imagePath The path to the image file
      * @param order The order of the image within the goobi process
@@ -303,11 +297,6 @@ public @Data class Image {
      * @param size The size of this level
      */
     public void addImageLevel(String imageUrl, int size) {
-
-        if (imageLevels == null) {
-            this.imageLevels = new ArrayList<>();
-        }
-
         Dimension dim = getSize();
         if (dim == null || dim.getHeight() * dim.getWidth() == 0) {
             dim = new Dimension(size, size);
@@ -386,9 +375,8 @@ public @Data class Image {
      */
     public static String create3DObjectUrl(Process process, String imageFolderName, String imageName) {
         String contextPath = new HelperForm().getServletPathWithHostAsUrl();
-        String url = contextPath + "/api/view/object/" + process.getId() + "/" + Paths.get(imageFolderName).getFileName().toString() + "/" + imageName
-                + "/info.json";
-        return url;
+        return contextPath + "/api/view/object/" + process.getId() + "/" + Paths.get(imageFolderName).getFileName().toString() + "/" + imageName
+                + "/info.json"; // url
     }
 
     /**
@@ -424,12 +412,12 @@ public @Data class Image {
     public static String createIIIFUrl(Process process, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
         sb.append("/api/process/image/")
-        .append(process.getId())
-        .append("/")
-        .append(getImageFolderShort(imageFolderName))
-        .append("/")
-        .append(filename)
-        .append("/info.json");
+                .append(process.getId())
+                .append("/")
+                .append(getImageFolderShort(imageFolderName))
+                .append("/")
+                .append(filename)
+                .append("/info.json");
         return sb.toString();
     }
 
@@ -443,30 +431,22 @@ public @Data class Image {
     }
 
     private static String getImageFolderShort(String folder) {
-        String imageFolder = Paths.get(folder).getFileName().toString();
-        return imageFolder;
-        //        if (imageFolder.startsWith("master_") || imageFolder.startsWith("orig_")) {
-        //            return "master";
-        //        } else if (imageFolder.endsWith("_media") || imageFolder.endsWith("_tif")) {
-        //            return "media";
-        //        } else {
-        //            return imageFolder;
-        //        }
+        return Paths.get(folder).getFileName().toString();
     }
 
     public static String createThumbnailUrl(Process process, int size, String imageFolderName, String filename) {
         StringBuilder sb = new StringBuilder(new HelperForm().getServletPathWithHostAsUrl());
         sb.append("/api/process/image/")
-        .append(process.getId())
-        .append("/")
-        .append(getImageFolderShort(imageFolderName))
-        .append("/")
-        .append(filename)
-        .append("/")
-        .append("full/")
-        .append(size)
-        .append(",")
-        .append("/0/default.jpg");
+                .append(process.getId())
+                .append("/")
+                .append(getImageFolderShort(imageFolderName))
+                .append("/")
+                .append(filename)
+                .append("/")
+                .append("full/")
+                .append(size)
+                .append(",")
+                .append("/0/default.jpg");
         return sb.toString();
     }
 
@@ -556,7 +536,6 @@ public @Data class Image {
         //reset image levels to be recreated with updated sizes on getImageLevels()
         this.imageLevels = null;
     }
-    
 
     public static String getCleanedName(String path) {
         return Paths.get(path).getFileName().toString();

@@ -70,7 +70,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 @RunWith(PowerMockRunner.class)
 
 @PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class,
-    HistoryAnalyserJob.class, StepManager.class, Helper.class })
+        HistoryAnalyserJob.class, StepManager.class, Helper.class })
 public class ProzesskopieFormTest extends AbstractTest {
 
     private Process template;
@@ -88,7 +88,7 @@ public class ProzesskopieFormTest extends AbstractTest {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
         ConfigurationHelper.getInstance().setParameter("script_createDirMeta", "");
 
         this.template = MockProcess.createProcess();
@@ -332,8 +332,8 @@ public class ProzesskopieFormTest extends AbstractTest {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
         String fixture = "test";
-        form.setTifHeader_documentname(fixture);
-        assertEquals(fixture, form.getTifHeader_documentname());
+        form.setTifHeaderDocumentname(fixture);
+        assertEquals(fixture, form.getTifHeaderDocumentname());
     }
 
     @Test
@@ -341,8 +341,8 @@ public class ProzesskopieFormTest extends AbstractTest {
         ProzesskopieForm form = new ProzesskopieForm();
         assertNotNull(form);
         String fixture = "test";
-        form.setTifHeader_imagedescription(fixture);
-        assertEquals(fixture, form.getTifHeader_imagedescription());
+        form.setTifHeaderImagedescription(fixture);
+        assertEquals(fixture, form.getTifHeaderImagedescription());
     }
 
     @Test
@@ -418,7 +418,6 @@ public class ProzesskopieFormTest extends AbstractTest {
         //        FilesystemHelper.createDirectory(EasyMock.anyString());
         EasyMock.expect(ProcessManager.getProcessById(EasyMock.anyInt())).andReturn(null);
         //        EasyMock.expectLastCall().anyTimes();
-
 
         PowerMock.mockStatic(Helper.class);
         EasyMock.expect(Helper.getCurrentUser()).andReturn(null).anyTimes();

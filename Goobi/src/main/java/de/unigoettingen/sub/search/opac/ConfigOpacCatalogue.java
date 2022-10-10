@@ -4,9 +4,9 @@ package de.unigoettingen.sub.search.opac;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -68,7 +68,6 @@ public class ConfigOpacCatalogue {
     @Setter
     private IOpacPlugin opacPlugin;
 
-
     public ConfigOpacCatalogue(String title, String desciption, String address, String database, String iktlist, int port,
             List<ConfigOpacCatalogueBeautifier> inBeautifySetList, String opacType, Map<String, String> searchFields) {
         this.title = title;
@@ -92,40 +91,8 @@ public class ConfigOpacCatalogue {
         this.protocol = protocol;
     }
 
-    //    public String getTitle() {
-    //        return this.title;
-    //    }
-    //
-    //    public String getDescription() {
-    //        return this.description;
-    //    }
-    //
-    //    public String getAddress() {
-    //        return this.address;
-    //    }
-    //
-    //    public String getDatabase() {
-    //        return this.database;
-    //    }
-    //
-    //    public String getIktlist() {
-    //        return this.iktlist;
-    //    }
-    //
-    //    public int getPort() {
-    //        return this.port;
-    //    }
-    //
-    //    public String getCharset() {
-    //        return this.charset;
-    //    }
-
     public Node executeBeautifier(Node myHitlist) {
         /* Ausgabe des Opac-Ergebnissen in Datei */
-
-        //        if (!ConfigurationHelper.getInstance().getDebugFolder().equals("") && Files.isWritable(Paths.get(ConfigurationHelper.getInstance().getDebugFolder()))) {
-        //            debugMyNode(myHitlist, ConfigurationHelper.getInstance().getDebugFolder() + "/opacBeautifyBefore.xml");
-        //        }
 
         /*
          * --------------------- aus dem Dom-Node ein JDom-Object machen -------------------
@@ -138,7 +105,6 @@ public class ConfigOpacCatalogue {
         /* alle Records durchlaufen */
         List<Element> elements = doc.getRootElement().getChildren();
         for (Element el : elements) {
-            // Element el = (Element) it.next();
             /* in jedem Record den Beautifier anwenden */
             executeBeautifierForElement(el);
         }
@@ -232,15 +198,13 @@ public class ConfigOpacCatalogue {
 
             // check subfield
             if (mainFieldToChange != null && prooflist.isEmpty() && subfieldToChange == null) {
-                //                Element field = new Element("field");
-                //                field.setAttribute("tag", beautifier.getTagElementToChange().getTag());
+
                 subfieldToChange = new Element("subfield");
                 subfieldToChange.setAttribute("code", beautifier.getTagElementToChange().getSubtag());
                 mainFieldToChange.addContent(subfieldToChange);
-                //                elements.add(field);
             }
 
-            if (subfieldToChange!= null && prooflist.isEmpty()) {
+            if (subfieldToChange != null && prooflist.isEmpty()) {
                 if (beautifier.getTagElementToChange().getValue().equals("*")) {
                     subfieldToChange.setText(matchedValue);
                 } else {
@@ -268,35 +232,5 @@ public class ConfigOpacCatalogue {
         }
 
     }
-
-    //    /**
-    //     * @param cbs the cbs to set
-    //     */
-    //    public void setCbs(String cbs) {
-    //        this.cbs = cbs;
-    //    }
-    //
-    //    /**
-    //     * @return the cbs
-    //     */
-    //    public String getCbs() {
-    //        return this.cbs;
-    //    }
-    //
-    //    public String getOpacType() {
-    //        return opacType;
-    //    }
-    //
-    //    public void setOpacType(String opacType) {
-    //        this.opacType = opacType;
-    //    }
-    //
-    //    public String getProtocol() {
-    //        return protocol;
-    //    }
-    //
-    //    public void setProtocol(String protocol) {
-    //        this.protocol = protocol;
-    //    }
 
 }

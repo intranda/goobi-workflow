@@ -4,9 +4,9 @@ package de.sub.goobi.export.dms;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -34,13 +34,10 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FilenameUtils;
-//import lombok.extern.log4j.Log4j2;		//doesnt work?
 import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
@@ -75,11 +72,12 @@ import ugh.exceptions.WriteException;
 
 @Log4j2
 public class ExportDms extends ExportMets implements IExportPlugin {
+    private static final long serialVersionUID = -8965539133582826845L;
     protected boolean exportWithImages = true;
     @Setter
     protected boolean exportFulltext = true;
 
-    public final static String DIRECTORY_SUFFIX = "_tif";
+    public static final String DIRECTORY_SUFFIX = "_tif";
 
     public ExportDms() {
     }
@@ -123,8 +121,6 @@ public class ExportDms extends ExportMets implements IExportPlugin {
          */
         Fileformat gdzfile;
         Fileformat exportValidationFile;
-
-        //      Fileformat newfile;
         ExportFileformat newfile =
                 MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
 
@@ -148,61 +144,24 @@ public class ExportDms extends ExportMets implements IExportPlugin {
                 String command = myProzess.getExportValidator().getCommand();
 
                 // replace {EXPORTFILE} keyword from configuration file
-                final Pattern pExportFile = Pattern.compile("\\$?(?:\\(|\\{)EXPORTFILE(?:\\}|\\))");
-                final String ExportTag = "{EXPORTFILE}";
-                if (!command.contains(ExportTag)) {
+                final String exportTag = "{EXPORTFILE}";
+                if (!command.contains(exportTag)) {
                     Helper.setFehlerMeldung("Export cancelled, process: " + myProzess.getTitel(),
                             "Export validation command does not contain required {EXPORTFILE} tag. Aborting export. Command:" + command);
-                    Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG,
+                    Helper.addMessageToProcessJournal(myProzess.getId(), LogType.DEBUG,
                             "Export validation command does not contain required {EXPORTFILE} tag. Aborting export. Command:" + command);
                     log.warn("Export validation and export cancelled. No {EXPORTFILE} tag in command: " + command);
                     problems.add("Export cancelled: malformed export validation command.");
                     return false;
                 }
-                command = pExportFile.matcher(command).replaceAll(Matcher.quoteReplacement(pathToGeneratedFile));
+                command = command.replace(exportTag, pathToGeneratedFile);
 
-                Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG, "Started export validation using command: " + command);
+                Helper.addMessageToProcessJournal(myProzess.getId(), LogType.DEBUG, "Started export validation using command: " + command);
 
-                try {
-                    java.lang.Process exportValidationProcess = Runtime.getRuntime().exec(command);
-                    Integer exitVal = exportValidationProcess.waitFor();
-
-                    InputStream errorInputStream = exportValidationProcess.getErrorStream();
-                    InputStreamReader errorStreamReader = new InputStreamReader(errorInputStream);
-                    Stream<String> errorStream = new BufferedReader(errorStreamReader).lines();
-                    String errorStreamAsString = errorStream.collect(Collectors.joining());
-
-                    // exitVal 0 indicates success, 1 indicates errors in the XML
-                    // errorStreamAsString represents STDERR. It should be completely empty, or else the command failed
-
-                    if (exitVal == 0 && errorStreamAsString.isBlank()) {
-                        Helper.setMeldung(null, myProzess.getTitel() + ": ", "XML validation completed successfully");
-                        // delete the now no longer required generated .xml
-                        if (!StorageProvider.getInstance().deleteDir(temporaryFile)) {
-                            Helper.setFehlerMeldung("Export cancelled, process: " + myProzess.getTitel(),
-                                    "Temporarily exported file could not be cleared.");
-                            Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG,
-                                    "Temporarily exported file could not be cleared: " + temporaryFile.toString());
-                            log.error("Temporarily exported file could not be cleared: " + temporaryFile.toString());
-                            problems.add("Export cancelled: Success folder could not be cleared.");
-                            return false;
-                        }
-                    } else {
-                        Helper.setFehlerMeldung("Export cancelled, XML Validation error for process: " + myProzess.getTitel(), exitVal.toString());
-                        Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG, "XML Validation error when executing: " + command);
-                        log.error("Export cancelled, XML Validation error for command: " + command);
-                        problems.add("Export cancelled XML Validation tool reports errorcode: " + exitVal.toString());
-                        return false;
-                    }
-                } catch (java.io.IOException e) {
-                    Helper.setFehlerMeldung("Export cancelled, XML Validation command could not be found. Command: " + command);
-                    Helper.addMessageToProcessLog(myProzess.getId(), LogType.DEBUG, "XML Validation command not found: " + command);
-                    log.error("Export cancelled, XML validation error. Command not found: " + command);
-                    problems.add("Export cancelled XML validation tool could not be found. Command: " + command);
+                if (!executeValidation(myProzess, temporaryFile, command)) {
                     return false;
                 }
             }
-
             newfile.setDigitalDocument(gdzfile.getDigitalDocument());
             gdzfile = newfile;
 
@@ -398,6 +357,40 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         return true;
     }
 
+    private boolean executeValidation(Process myProzess, Path temporaryFile, String command) throws InterruptedException, IOException {
+        try {
+            java.lang.Process exportValidationProcess = Runtime.getRuntime().exec(command);
+            Integer exitVal = exportValidationProcess.waitFor();
+
+            InputStream errorInputStream = exportValidationProcess.getErrorStream();
+            InputStreamReader errorStreamReader = new InputStreamReader(errorInputStream);
+            Stream<String> errorStream = new BufferedReader(errorStreamReader).lines();
+            String errorStreamAsString = errorStream.collect(Collectors.joining());
+
+            // exitVal 0 indicates success, 1 indicates errors in the XML
+            // errorStreamAsString represents STDERR. It should be completely empty, or else the command failed
+            if (exitVal == 0 && errorStreamAsString.isBlank()) {
+                Helper.setMeldung(null, myProzess.getTitel() + ": ", "XML validation completed successfully");
+            } else {
+                Helper.setFehlerMeldung("Export cancelled, XML Validation error for process: " + myProzess.getTitel(), exitVal.toString());
+                Helper.addMessageToProcessJournal(myProzess.getId(), LogType.DEBUG, "XML Validation error when executing: " + command);
+                log.error("Export cancelled, XML Validation error for command: " + command);
+                problems.add("Export cancelled XML Validation tool reports errorcode: " + exitVal.toString());
+                return false;
+            }
+        } catch (java.io.IOException e) {
+            Helper.setFehlerMeldung("Export cancelled, XML Validation command could not be found. Command: " + command);
+            Helper.addMessageToProcessJournal(myProzess.getId(), LogType.DEBUG, "XML Validation command not found: " + command);
+            log.error("Export cancelled, XML validation error. Command not found: " + command);
+            problems.add("Export cancelled XML validation tool could not be found. Command: " + command);
+            return false;
+        } finally {
+            // delete the now no longer required generated .xml
+            StorageProvider.getInstance().deleteFile(temporaryFile);
+        }
+        return true;
+    }
+
     /**
      * run through all metadata and children of given docstruct to trim the strings calls itself recursively
      */
@@ -508,7 +501,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
         if (ConfigurationHelper.getInstance().isExportFilesFromOptionalMetsFileGroups()) {
 
             List<ProjectFileGroup> myFilegroups = myProzess.getProjekt().getFilegroups();
-            if (myFilegroups != null && myFilegroups.size() > 0) {
+            if (myFilegroups != null && !myFilegroups.isEmpty()) {
                 for (ProjectFileGroup pfg : myFilegroups) {
                     // check if source files exists
                     if (pfg.getFolder() != null && pfg.getFolder().length() > 0) {

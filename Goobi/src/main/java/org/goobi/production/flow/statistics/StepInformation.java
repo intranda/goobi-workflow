@@ -1,5 +1,7 @@
 package org.goobi.production.flow.statistics;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,7 +29,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class StepInformation {
+public class StepInformation implements Serializable {
+
+    private static final long serialVersionUID = -3522448652228806186L;
 
     // step identifier in workflow
     private String title = "";

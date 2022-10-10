@@ -66,8 +66,7 @@ public class DatabaseVersion {
             if (log.isTraceEnabled()) {
                 log.trace(sql.toString());
             }
-            int currentValue = new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
-            return currentValue;
+            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler);
         } catch (SQLException e) {
             log.error(e);
         } finally {
@@ -807,7 +806,6 @@ public class DatabaseVersion {
             createInstitionSql.append("`allowAllPlugins` tinyint(1), ");
             createInstitionSql.append("PRIMARY KEY (`id`) ");
             createInstitionSql.append(")  ENGINE=INNODB DEFAULT CHARSET=utf8mb4; ");
-            //            }
 
             DatabaseVersion.runSql(createInstitionSql.toString());
         }
@@ -2052,10 +2050,8 @@ public class DatabaseVersion {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            // log.debug(sql);
             new QueryRunner().update(connection, sql);
         } catch (SQLException e) {
-            //log.error(e);
             throw e;
         } finally {
             if (connection != null) {

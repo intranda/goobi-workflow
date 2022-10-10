@@ -43,17 +43,6 @@ public enum DisplayType {
     vocabularySearch,
     vocabularyList;
 
-    //    public IMetadataPlugin getPlugin() {
-    //        IMetadataPlugin plugin = null;
-    //        String pluginName = name().substring(0, 1).toUpperCase() + name().substring(1) + "Plugin";
-    //        try {
-    //            plugin = (IMetadataPlugin) Class.forName("de.intranda.goobi.plugins." + pluginName).newInstance();
-    //        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-    //            log.error("Metadata plugin for " + pluginName + " could not be loaded");
-    //        }
-    //        return plugin;
-    //    }
-
     private DisplayType() {
     }
 

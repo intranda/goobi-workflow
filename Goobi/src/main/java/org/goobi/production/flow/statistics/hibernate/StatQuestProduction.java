@@ -4,9 +4,9 @@ package org.goobi.production.flow.statistics.hibernate;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -91,33 +91,22 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
         }
 
         // we have to build a query from scratch by reading the ID's
-        List<Integer> IDlist = null;
+        List<Integer> idList = null;
         try {
-            IDlist = ProcessManager.getIdsForFilter(sqlFilter);
+            idList = ProcessManager.getIdsForFilter(sqlFilter);
         } catch (UnsupportedOperationException e) {
         }
-        if (IDlist == null || IDlist.size() == 0) {
+        if (idList == null || idList.isEmpty()) {
             return null;
         }
         String natSQL = "";
         // adding time restrictions
         if (stepname == null) {
 
-            natSQL = StatisticsFactory.getProduction(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, IDlist).getSQL(exactStepDone);
+            natSQL = StatisticsFactory.getProduction(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, idList).getSQL(exactStepDone);
         } else {
-            natSQL = StatisticsFactory.getProduction(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, IDlist).getSQL(stepname);
+            natSQL = StatisticsFactory.getProduction(this.timeFilterFrom, this.timeFilterTo, this.timeGrouping, idList).getSQL(stepname);
         }
-        //		Session session = Helper.getHibernateSession();
-        //
-        //		SQLQuery query = session.createSQLQuery(natSQL);
-        //
-        //		// needs to be there otherwise an exception is thrown
-        //		query.addScalar("volumes", StandardBasicTypes.INTEGER);
-        //		query.addScalar("pages", StandardBasicTypes.INTEGER);
-        //		query.addScalar("intervall", StandardBasicTypes.STRING);
-        //
-        //		@SuppressWarnings("rawtypes")
-        //		List list = query.list();
 
         @SuppressWarnings("unchecked")
         List<Object> list = ProcessManager.runSQL(natSQL);
@@ -148,14 +137,10 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
             Object[] objArr = (Object[]) obj;
             try {
 
-                // getting localized time group unit
-
-                // String identifier = timeGrouping.getTitle();
                 // setting row name with localized time group and the date/time extraction based on the group
 
                 dataRowChart.setName(new Converter(objArr[2]).getString() + "");
                 dataRow.setName(new Converter(objArr[2]).getString() + "");
-                // dataRow.setName(new Converter(objArr[2]).getString());
 
                 // building up row depending on requested output having different fields
                 switch (this.cu) {

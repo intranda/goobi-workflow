@@ -1,12 +1,12 @@
 DELEGATES_PREFERENCE=delegateValidatorList
 USER_BUILD_PREFERENCE=enabledBuildValidatorList
 USER_MANUAL_PREFERENCE=enabledManualValidatorList
-USER_PREFERENCE=overrideGlobalPreferencestruedisableAllValidationfalseversion1.2.800.v201904082137
+USER_PREFERENCE=overrideGlobalPreferencestruedisableAllValidationfalseversion1.2.801.v202007142017
 disabled=06target
 eclipse.preferences.version=1
 override=true
 suspend=false
-vals/org.eclipse.jst.jsf.facelet.ui.FaceletHTMLValidator/global=TF01
+vals/org.eclipse.jst.jsf.facelet.ui.FaceletHTMLValidator/global=FF01
 vals/org.eclipse.jst.jsf.facelet.ui.FaceletHTMLValidator/groups=0107include01113projectNature131org.eclipse.jdt.core.javanature0107include02111contentType111jsf.faceletF111contentType121jsf.facelet.compositeF0107exclude02113projectNature135org.jboss.tools.jst.web.kb.kbnature04file112webapp/ui/jsT02
 vals/org.eclipse.jst.jsf.ui.JSFAppConfigValidator/global=TT01
 vals/org.eclipse.jst.jsf.ui.JSFAppConfigValidator/groups=0107include01113projectNature150org.eclipse.wst.common.modulecore.ModuleCoreNature0107include01113projectNature131org.eclipse.jdt.core.javanature0107include01111contentType147org.eclipse.jst.jsf.facesconfig.facesConfigFileT0107exclude0104file112webapp/ui/jsT02

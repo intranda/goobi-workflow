@@ -3,10 +3,10 @@ package org.goobi.production.flow.statistics.enums;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -51,7 +51,7 @@ public enum TimeUnit {
     years("5", "years", "year", "year", true, 256.0),
     simpleSum("6", "alltime", "alltime", "alltime", false, -1.0);
 
-	@Getter
+    @Getter
     private String id;
     private String title;
     @Getter
@@ -111,7 +111,7 @@ public enum TimeUnit {
     }
 
     public static List<TimeUnit> getAllVisibleValues() {
-        ArrayList<TimeUnit> mylist = new ArrayList<TimeUnit>();
+        ArrayList<TimeUnit> mylist = new ArrayList<>();
         for (TimeUnit tu : TimeUnit.values()) {
             if (tu.visible) {
                 mylist.add(tu);
@@ -129,7 +129,7 @@ public enum TimeUnit {
      * @return
      */
     public List<String> getDateRow(Date start, Date end) {
-        List<String> dateRow = new ArrayList<String>();
+        List<String> dateRow = new ArrayList<>();
 
         Date nextDate = start;
 
@@ -156,7 +156,7 @@ public enum TimeUnit {
             case quarters:
                 return new DateTime(inDate).toString(getFormatter()) + "/" +
                 // TODO: Remove use of deprecated method
-                        Integer.toString((inDate.getMonth() - 1) / 3 + 1);
+                Integer.toString((inDate.getMonth() - 1) / 3 + 1);
         }
         return inDate.toString();
 

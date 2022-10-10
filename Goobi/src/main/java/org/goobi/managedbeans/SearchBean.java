@@ -1,13 +1,10 @@
-package org.goobi.managedbeans;
-
-import java.io.Serializable;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -26,6 +23,9 @@ import java.io.Serializable;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+package org.goobi.managedbeans;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -169,7 +169,7 @@ public class SearchBean implements Serializable {
         fieldnameList.add(new SelectItem("BATCH", Helper.getTranslation("batch")));
         fieldnameList.add(new SelectItem("METADATA", Helper.getTranslation("metadata")));
 
-        fieldnameList.add(new SelectItem("PROCESSLOG", Helper.getTranslation("processlog")));
+        fieldnameList.add(new SelectItem("JOURNAL", Helper.getTranslation("journal")));
 
         fieldnameList.add(new SelectItem("PROCESSDATE", Helper.getTranslation("search_PROCESSDATE")));
         fieldnameList.add(new SelectItem("STEPSTARTDATE", Helper.getTranslation("search_STEPSTARTDATE")));
@@ -241,13 +241,13 @@ public class SearchBean implements Serializable {
     }
 
     public String createFilter() {
-        String search = "";
+        StringBuilder searchBuilder = new StringBuilder();
 
         for (ExtendedSearchRow row : rowList) {
-            search += row.createSearchString();
+            searchBuilder.append(row.createSearchString());
         }
 
-        processBean.setFilter( search);
+        processBean.setFilter(searchBuilder.toString());
         processBean.setModusAnzeige("aktuell");
         return processBean.FilterAlleStart();
 
@@ -261,6 +261,5 @@ public class SearchBean implements Serializable {
         answer.add(new SelectItem("<", Helper.getTranslation("SMALLER")));
         return answer;
     }
-
 
 }

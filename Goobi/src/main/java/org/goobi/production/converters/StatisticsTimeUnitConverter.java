@@ -51,7 +51,7 @@ public class StatisticsTimeUnitConverter implements Converter<TimeUnit> {
      **************************************************************************************/
     @Override
     public String getAsString(FacesContext context, UIComponent component, TimeUnit value) throws ConverterException {
-        if (value == null || !(value instanceof TimeUnit)) {
+        if (!(value instanceof TimeUnit)) {
             return TimeUnit.days.getId();
         } else {
             return value.getId();

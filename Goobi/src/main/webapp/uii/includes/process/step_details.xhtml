@@ -114,8 +114,8 @@
                             </h:panelGroup>
                         </h:panelGroup>
 
-                        <h:outputText value="#{msgs.typ}:" />
-                        <h:panelGroup>
+                        <h:outputText value="#{msgs.typ}:" rendered="#{ProzessverwaltungForm.mySchritt.typeSpecified}" />
+                        <h:panelGroup rendered="#{ProzessverwaltungForm.mySchritt.typeSpecified}">
                             <h:outputText
                                 styleClass="block"
                                 value="#{msgs.metadaten}"
@@ -200,8 +200,8 @@
 
                         <h:outputText
                             value="#{msgs.script}:"
-                            rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep}" />
-                        <h:panelGroup rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep}">
+                            rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep and not empty ProzessverwaltungForm.mySchritt.allScriptPaths}" />
+                        <h:panelGroup rendered="#{ProzessverwaltungForm.mySchritt.typScriptStep and not empty ProzessverwaltungForm.mySchritt.allScriptPaths}">
                             <h:panelGroup styleClass="block">
                                 <h:outputText
                                     id="nameautomatisch"

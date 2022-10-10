@@ -15,7 +15,7 @@
     <composite:implementation>
         <div class="row">
             <h:panelGroup rendered="#{ProzessverwaltungForm.modusBearbeiten!='prozess'}">
-                <div class="#{NavigationForm.uiStatus['processLogBig']?'col-sm-12':'col-sm-6'}">
+                <div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-12':'col-sm-6'}">
                     <!-- Box für die Darstellung der Details -->
                     <h:form id="processdetails">
                         <div class="box box-color box-bordered">
@@ -128,14 +128,14 @@
                                     </h:commandLink>
 
                                     <!--  modal rendern  -->
-                                    <h:panelGroup
-                                        rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_General_Details_Edit') and item.temporaryMetadataFiles}">
+                                    <h:panelGroup rendered="#{ProzessverwaltungForm.modusAnzeige!='vorlagen' and LoginForm.hasRole('Workflow_General_Details_Edit') and item.temporaryMetadataFiles}">
                                         <a
                                             class="text_head"
                                             title="#{msgs.metadatenBearbeiten}"
                                             href="#"
                                             data-toggle="modal"
-                                            data-target="#myModal-#{count}"> <i class="btn fa fa-book"></i>
+                                            data-target="#myModal-#{count}">
+                                            <i class="btn fa fa-book"></i>
                                         </a>
                                     </h:panelGroup>
                                     <div
@@ -155,7 +155,8 @@
                                                         class="btn btn-blue pull-right"
                                                         title="#{msgs.cancel}"
                                                         data-toggle="tooltip"
-                                                        data-dismiss="modal"> <i class="fa fa-times"></i>
+                                                        data-dismiss="modal">
+                                                        <i class="fa fa-times"></i>
                                                     </a>
                                                     <h4
                                                         class="modal-title"
@@ -254,30 +255,31 @@
                                             </div>
                                         </div>
                                     </div>
-									<!-- Check if Export task exists -->
-									<div jsf:rel="tooltip" 
-										title="#{!ProzessverwaltungForm.myProzess.containsExportStep ? msgs.noExportTask : ''}" 
-										class="btn btn-mini" 
-										style="padding: 0;">
-	                                    <!-- DMS-Export-Schaltknopf -->
-	                                    <button
-	                                        jsf:action="#{ProzessverwaltungForm.ExportDMS}"
-	                                        jsf:id="action21"
-	                                        aria-label="#{msgs.exportDMS}"
-	                                        class="btn btn-mini font-light"
-	                                        title="#{msgs.exportDMS}"
-	                                        jsf:rel="tooltip"
-	                                        jsf:disabled="#{!ProzessverwaltungForm.myProzess.containsExportStep}"
-	                                        jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.myProzess.displayDMSButton}">
-	                                        <i class="fa fa-globe"></i>
-	                                        <f:passThroughAttribute
-	                                            name="data-toggle"
-	                                            value="tooltip" />
-	                                    </button>
-	                                    <f:passThroughAttribute
-	                                            name="data-toggle"
-	                                            value="tooltip" />
-	                                </div>
+                                    <!-- Check if Export task exists -->
+                                    <div
+                                        jsf:rel="tooltip"
+                                        title="#{!ProzessverwaltungForm.myProzess.containsExportStep ? msgs.noExportTask : ''}"
+                                        class="btn btn-mini"
+                                        style="padding: 0;">
+                                        <!-- DMS-Export-Schaltknopf -->
+                                        <button
+                                            jsf:action="#{ProzessverwaltungForm.ExportDMS}"
+                                            jsf:id="action21"
+                                            aria-label="#{msgs.exportDMS}"
+                                            class="btn btn-mini font-light"
+                                            title="#{msgs.exportDMS}"
+                                            jsf:rel="tooltip"
+                                            jsf:disabled="#{!ProzessverwaltungForm.myProzess.containsExportStep}"
+                                            jsf:rendered="#{!ProzessverwaltungForm.myProzess.istTemplate and LoginForm.hasRole('Workflow_Processes_Allow_Export') and ProzessverwaltungForm.myProzess.displayDMSButton}">
+                                            <i class="fa fa-globe"></i>
+                                            <f:passThroughAttribute
+                                                name="data-toggle"
+                                                value="tooltip" />
+                                        </button>
+                                        <f:passThroughAttribute
+                                            name="data-toggle"
+                                            value="tooltip" />
+                                    </div>
 
                                     <!-- DMS-Export-Schaltknopf greyed -->
                                     <button
@@ -369,7 +371,9 @@
                                     <h:outputText value="#{ProzessverwaltungForm.myProzess.erstellungsdatum}" />
 
                                     <h:outputText value="#{msgs.regelsatz}:" />
-                                    <h:outputText value="#{ProzessverwaltungForm.myProzess.regelsatz.titel}" title="#{ProzessverwaltungForm.myProzess.regelsatz.datei}" />
+                                    <h:outputText
+                                        value="#{ProzessverwaltungForm.myProzess.regelsatz.titel}"
+                                        title="#{ProzessverwaltungForm.myProzess.regelsatz.datei}" />
 
                                     <h:outputText value="#{msgs.docket}:" />
                                     <h:outputText value="#{ProzessverwaltungForm.myProzess.docket.name}" />
@@ -413,12 +417,12 @@
                     </h:form>
                 </div>
 
-                <div class="#{NavigationForm.uiStatus['processLogBig']?'col-sm-12':'col-sm-6'}">
+                <div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-12':'col-sm-6'}">
                     <!-- Box for process log -->
 
                     <h:form
                         styleClass="form-vertical form-bordered"
-                        id="processLog"
+                        id="processJournal"
                         enctype="multipart/form-data"
                         prependId="false">
                         <x:aliasBeansScope>
@@ -426,10 +430,13 @@
                                 alias="#{showBigButton}"
                                 value="true" />
                             <x:aliasBean
-                                alias="#{process}"
+                                alias="#{showFolderSelection}"
+                                value="true" />
+                            <x:aliasBean
+                                alias="#{bean}"
                                 value="#{ProzessverwaltungForm.myProzess}" />
                             <f:subview id="sublog">
-                                <ui:include src="../processLog.xhtml" />
+                                <ui:include src="../journal.xhtml" />
                             </f:subview>
                         </x:aliasBeansScope>
                     </h:form>
@@ -564,8 +571,9 @@
                                             type="button"
                                             class="btn btn-danger font-size-s margin-right-5"
                                             data-toggle="modal"
-                                            data-target="#deleteContentModal"> <i class="fa fa-trash-o margin-right-5"></i> <h:outputText
-                                                value="#{msgs.contentLoeschen}" />
+                                            data-target="#deleteContentModal">
+                                            <i class="fa fa-trash-o margin-right-5"></i>
+                                            <h:outputText value="#{msgs.contentLoeschen}" />
                                         </button>
 
                                         <button
@@ -573,8 +581,9 @@
                                             type="button"
                                             class="btn btn-danger font-size-s"
                                             data-toggle="modal"
-                                            data-target="#deleteModal"> <i class="fa fa-trash-o margin-right-5"></i> <h:outputText
-                                                value="#{msgs.loeschen}" />
+                                            data-target="#deleteModal">
+                                            <i class="fa fa-trash-o margin-right-5"></i>
+                                            <h:outputText value="#{msgs.loeschen}" />
                                         </button>
 
                                         <div

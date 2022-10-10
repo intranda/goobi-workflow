@@ -4,9 +4,9 @@ package org.goobi.beans;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -49,42 +49,20 @@ public class Ruleset implements Serializable, DatabaseObject {
     private Prefs mypreferences;
     private Boolean orderMetadataByRuleset = false;
 
-    //    private static Map<Integer, Prefs> loadedPrefs = new HashMap<Integer, Prefs>();
-
     @Override
     public void lazyLoad() {
         // nothing to load lazy here
     }
 
     public Prefs getPreferences() {
-        //        if (loadedPrefs.containsKey(id)) {
-        //            mypreferences = loadedPrefs.get(id);
-        //            validateRuleset();
-        //            return mypreferences;
-        //        }
         this.mypreferences = new Prefs();
         try {
             this.mypreferences.loadPrefs(ConfigurationHelper.getInstance().getRulesetFolder() + this.datei);
         } catch (PreferencesException e) {
             log.error(e);
         }
-        //        loadedPrefs.put(id, mypreferences);
         return this.mypreferences;
     }
-
-    //    private void validateRuleset() {
-    //        try {
-    //            new MetsMods(mypreferences);
-    //        } catch (Exception e) {
-    //            try {
-    //                this.mypreferences = new Prefs();
-    //                mypreferences.loadPrefs(ConfigurationHelper.getInstance().getRulesetFolder() + this.datei);
-    //                loadedPrefs.put(id, mypreferences);
-    //            } catch (PreferencesException e1) {
-    //                log.error(e1);
-    //            }
-    //        }
-    //    }
 
     public boolean isOrderMetadataByRuleset() {
         return orderMetadataByRuleset;

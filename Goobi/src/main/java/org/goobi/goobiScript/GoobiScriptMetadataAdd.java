@@ -1,3 +1,27 @@
+/**
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ * 
+ * Visit the websites for more information.
+ *             - https://goobi.io
+ *             - https://www.intranda.com
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * 
+ * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
+ * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
+ * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
+ * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
+ * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
+ * exception statement from your version.
+ */
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
@@ -104,7 +128,7 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                     }
                     break;
 
-                    // fist the first child element
+                // fist the first child element
                 case "child":
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -115,7 +139,7 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                     }
                     break;
 
-                    // any element in the hierarchy
+                // any element in the hierarchy
                 case "any":
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
@@ -126,7 +150,7 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                     }
                     break;
 
-                    // default "work", which is the first child or the main top element if it is not an anchor
+                // default "work", which is the first child or the main top element if it is not an anchor
                 default:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -148,7 +172,7 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
             addMetadata(dsList, parameters.get("field"), newvalue, p.getRegelsatz().getPreferences(), ignoreErrors);
             p.writeMetadataFile(ff);
             Thread.sleep(2000);
-            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                     "Metadata added using GoobiScript: " + parameters.get("field") + " - " + parameters.get("value"), username);
             log.info("Metadata added using GoobiScript for process with ID " + p.getId());
             gsr.setResultMessage("Metadata added successfully.");
@@ -156,7 +180,7 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e1) {
-            Helper.addMessageToProcessLog(p.getId(), LogType.ERROR,
+            Helper.addMessageToProcessJournal(p.getId(), LogType.ERROR,
                     "Problem while adding the metadata using GoobiScript for process with id: " + p.getId(), username);
             log.error("Problem while adding the metadata using GoobiScript for process with id: " + p.getId(), e1);
             gsr.setResultMessage("Error while adding metadata: " + e1.getMessage());

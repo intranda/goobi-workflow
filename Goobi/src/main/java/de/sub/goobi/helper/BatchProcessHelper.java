@@ -1,13 +1,10 @@
-package de.sub.goobi.helper;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
- * 			- http://digiverso.com
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -26,6 +23,9 @@ package de.sub.goobi.helper;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+package de.sub.goobi.helper;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -49,7 +49,9 @@ import lombok.extern.log4j.Log4j2;
 
 @Data
 @Log4j2
-public class BatchProcessHelper {
+public class BatchProcessHelper implements Serializable {
+
+    private static final long serialVersionUID = 8313940977308996834L;
 
     private List<Process> processes;
     private Process currentProcess;
@@ -201,7 +203,6 @@ public class BatchProcessHelper {
     }
 
     private void loadProcessProperties(Process process) {
-        //		this.pdao.refresh(this.currentProcess);
         this.containers = new TreeMap<>();
         this.processPropertyList = PropertyParser.getInstance().getPropertiesForProcess(this.currentProcess);
 

@@ -4,9 +4,9 @@ package io.goobi.workflow.xslt;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -101,15 +101,17 @@ public class XsltToPdf {
         this.writeExportToFile(os, out, xsltfile, type, dpi, true);
     }
 
-
-    public void startExport(Process process, OutputStream os, String xsltfile, IXsltPreparator inexport, String type, int dpi, boolean includeImage) throws IOException {
+    public void startExport(Process process, OutputStream os, String xsltfile, IXsltPreparator inexport, String type, int dpi, boolean includeImage)
+            throws IOException {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         inexport.startExport(process, out, null, includeImage);
 
         this.writeExportToFile(os, out, xsltfile, type, dpi, false);
     }
-    public void startExport(List<Process> processList, OutputStream os, String xsltfile, String type, int dpi, boolean includeImage) throws IOException {
+
+    public void startExport(List<Process> processList, OutputStream os, String xsltfile, String type, int dpi, boolean includeImage)
+            throws IOException {
 
         XsltPreparatorDocket inexport = new XsltPreparatorDocket();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -155,9 +157,6 @@ public class XsltToPdf {
 
         this.writeExportToFile(os, out, xsltfile, MimeConstants.MIME_PDF, 300, true);
     }
-
-
-
 
     /**
      * Generates the docket file (using the xslt file and the prepared byte output stream) and writes the byte output stream to the output stream. For

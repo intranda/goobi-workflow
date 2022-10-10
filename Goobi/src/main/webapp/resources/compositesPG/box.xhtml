@@ -1,6 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+  xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
@@ -8,15 +9,19 @@
 
 	<composite:interface>
 		<composite:attribute name="boxType" />
+		<composite:attribute name="scope" />
 		<composite:attribute name="icon" />
 		<composite:attribute name="title" />
 		<composite:attribute name="padding" default="true" />
+		<composite:attribute name="boxTitle" default="true" />
+		<composite:attribute name="addClass" />
 	</composite:interface>
 
 	<composite:implementation>
 
-	
-    <div class="box box--#{cc.attrs.boxType}">
+
+	<div class="box box--#{cc.attrs.boxType} #{cc.attrs.scope}">
+			<!--
       <div class="box-title">
 
         <h2>
@@ -24,11 +29,16 @@
           <h:outputText value="#{cc.attrs.title}" />
         </h2>
       </div>
+			-->
 
-      <div class="box-content #{cc.attrs.padding ? '' : 'p-0'}">
-  		<composite:insertChildren/>
+			<div class="box__content #{cc.attrs.padding ? 'box__content--padded' : 'p-0'} #{cc.attrs.addClass}">
+
+			<intranda:boxTitle rendered="#{cc.attrs.boxTitle}" title="#{cc.attrs.title}" icon="#{cc.attrs.icon}" />
+
+
+				<composite:insertChildren/>
+
       </div> <!-- box-content end -->
-
     </div> <!-- box end -->
 
 

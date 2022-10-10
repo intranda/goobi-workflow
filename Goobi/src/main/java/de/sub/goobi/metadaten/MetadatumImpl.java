@@ -192,7 +192,12 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         String scheme = request.getScheme(); // http
         String serverName = request.getServerName(); // hostname.com
         int serverPort = request.getServerPort(); // 80
-        String reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
+        String reqUrl = scheme + "://" + serverName + contextPath;
+        // if there is a port lower than the typical ones (443) don't show it in the url (http://mygoobi.io/xyz instead of http://mygoobi.io:80/xyz)
+        if (serverPort > 443) {
+        	reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
+        }
+       
         Client client = ClientBuilder.newClient();
         WebTarget base = client.target(reqUrl);
         WebTarget vocabularyBase = base.path("api").path("vocabulary");
@@ -200,7 +205,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         Entity<List<StringPair>> entitiy = Entity.json(vocabularySearchFields);
         records = voc.request().post(entitiy, new GenericType<List<VocabRecord>>() {
         });
-        if (records == null || records.size() == 0) {
+        if (records == null || records.isEmpty()) {
             showNotHits = true;
         } else {
             showNotHits = false;
@@ -259,35 +264,17 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
         } else if (metadataDisplaytype == DisplayType.vocabularyList) {
 
-            //            FacesContext context = FacesContextHelper.getCurrentFacesContext();
-            //
             String vocabularyName = myValues.getItemList().get(0).getSource();
-            //
-            //            HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-            //            String contextPath = request.getContextPath();
-            //
-            //            String scheme = request.getScheme(); // http
-            //            String serverName = request.getServerName(); // hostname.com
-            //            int serverPort = request.getServerPort(); // 80
-            //
-            //            String reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
-            //            Client client = ClientBuilder.newClient();
-            //            WebTarget base = client.target(reqUrl);
-            //            WebTarget vocabularyBase = base.path("api").path("vocabulary");
-            //            WebTarget voc = vocabularyBase.path(vocabularyName);
 
             String fields = myValues.getItemList().get(0).getField();
 
             if (StringUtils.isBlank(fields)) {
                 Vocabulary currentVocabulary = VocabularyManager.getVocabularyByTitle(vocabularyName);
                 VocabularyManager.getAllRecords(currentVocabulary);
-                //                Vocabulary currentVocabulary = voc.request().get(new GenericType<Vocabulary>() {
-                //                });
 
                 if (currentVocabulary != null && currentVocabulary.getId() != null) {
                     List<VocabRecord> recordList = currentVocabulary.getRecords();
                     Collections.sort(recordList);
-                    //                    currentVocabulary.setUrl(vocabularyBase.path("records").path("" + currentVocabulary.getId()).getUri().toString());
                     ArrayList<Item> itemList = new ArrayList<>(recordList.size() + 1);
                     List<SelectItem> selectItems = new ArrayList<>(recordList.size() + 1);
 
@@ -334,10 +321,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 }
                 List<VocabRecord> records = VocabularyManager.findRecords(vocabularyName, vocabularySearchFields);
                 Collections.sort(records);
-                //                Entity<List<StringPair>> entitiy = Entity.json(vocabularySearchFields);
-                //                List<VocabRecord> records = voc.request().post(entitiy, new GenericType<List<VocabRecord>>() {
-                //                });
-                if (records != null && records.size() > 0) {
+
+                if (records != null && !records.isEmpty()) {
                     ArrayList<Item> itemList = new ArrayList<>(records.size());
                     List<SelectItem> selectItems = new ArrayList<>(records.size());
                     for (VocabRecord vr : records) {
@@ -366,11 +351,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         String value = this.md.getValue();
         if (value != null) {
             for (Item i : myValues.getItemList()) {
-                if (i.getValue().equals(value)) {
-                    i.setSelected(true);
-                } else {
-                    i.setSelected(false);
-                }
+                i.setSelected(i.getValue().equals(value));
             }
         }
         return this.myValues.getItemList();
@@ -434,16 +415,16 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         for (Item i : this.myValues.getItemList()) {
             i.setSelected(false);
         }
-        String val = "";
+        StringBuilder bld = new StringBuilder();
         for (SelectItem sel : items) {
             for (Item i : this.myValues.getItemList()) {
                 if (i.getLabel().equals(sel.getValue())) {
                     i.setSelected(true);
-                    val += i.getValue();
+                    bld.append(i.getValue());
                 }
             }
         }
-        setWert(val);
+        setWert(bld.toString());
     }
 
     @Override
@@ -471,13 +452,16 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     values = "";
                 }
             }
-        } else {
+        } else { // if values == null || values.length() == 0
+            StringBuilder bld = new StringBuilder();
             for (Item i : this.myValues.getItemList()) {
                 if (i.isSelected()) {
-                    values = values + ";" + i.getValue();
+                    bld.append(";");
+                    bld.append(i.getValue());
                     this.selectedItems.add(i.getLabel());
                 }
             }
+            values = bld.toString();
             if (values != null) {
                 setWert(values);
             }
@@ -488,16 +472,17 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     @Override
     public void setSelectedItems(List<String> selectedItems) {
 
-        String val = "";
+        StringBuilder bld = new StringBuilder();
         for (String sel : selectedItems) {
             for (Item i : this.myValues.getItemList()) {
                 if (i.getLabel().equals(sel)) {
-                    val += i.getValue() + ";";
+                    bld.append(i.getValue());
+                    bld.append(";");
                 }
             }
         }
 
-        setWert(val);
+        setWert(bld.toString());
     }
 
     @Override
@@ -780,11 +765,11 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         && StringUtils.isNotBlank(ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl())) {
                     md.setAutorityFile(vocabulary, ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl(),
                             ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl()
-                            + ConfigurationHelper.getInstance().getGoobiAuthorityServerUser() + "/vocabularies/"
-                            + selectedVocabularyRecord.getVocabularyId() + "/records/" + selectedVocabularyRecord.getId());
+                                    + ConfigurationHelper.getInstance().getGoobiAuthorityServerUser() + "/vocabularies/"
+                                    + selectedVocabularyRecord.getVocabularyId() + "/records/" + selectedVocabularyRecord.getId());
                 } else {
                     md.setAutorityFile(vocabulary, vocabularyUrl,
-                            vocabularyUrl + "/vocabularies/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
+                            vocabularyUrl + "/jskos/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
                 }
                 break;
             default:
@@ -854,10 +839,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
      */
 
     public boolean isDisableMetadataField() {
-        if (metadataDisplaytype == DisplayType.dante || metadataDisplaytype == DisplayType.easydb) {
-            return true;
-        }
-        return false;
+        return metadataDisplaytype == DisplayType.dante || metadataDisplaytype == DisplayType.easydb;
     }
 
     @Override
@@ -869,12 +851,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     }
 
     private void initSearch() {
-        //        this.searchRequest = new SearchRequest();
-        //        List<String> possibleFields = this.getPossibleFields();
-        //        SearchQuery query = new SearchQuery(possibleFields.get(0), "", RelationalOperator.EQUAL);
-        //        SearchGroup group = new SearchGroup();
-        //        group.addFilter(query);
-        //        this.searchRequest.addSearchGroup(group);
+
     }
 
     public void linkProcess(RestProcess rp) {

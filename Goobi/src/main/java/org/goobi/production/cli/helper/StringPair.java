@@ -35,7 +35,9 @@ import lombok.NoArgsConstructor;
 @Data
 @XmlRootElement
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StringPair {
+public class StringPair implements Serializable {
+
+    private static final long serialVersionUID = -3660239476769496440L;
 
     @XmlElement(name = "key")
     private String one;
@@ -43,7 +45,6 @@ public class StringPair {
     private String two;
 
     public static class OneComparator implements Comparator<StringPair>, Serializable {
-
 
         private static final long serialVersionUID = -5579914817514299754L;
 

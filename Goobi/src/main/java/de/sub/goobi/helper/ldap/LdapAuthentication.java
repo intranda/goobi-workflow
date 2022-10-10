@@ -4,10 +4,9 @@ package de.sub.goobi.helper.ldap;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
- * 			- http://digiverso.com
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -76,12 +75,12 @@ public class LdapAuthentication {
 
     private String getUserDN(User inBenutzer) {
         String userDN = inBenutzer.getLdapGruppe().getUserDN();
-        userDN = userDN.replaceAll("\\{login\\}", inBenutzer.getLogin());
+        userDN = userDN.replace("{login}", inBenutzer.getLogin());
         if (inBenutzer.getLdaplogin() != null) {
-            userDN = userDN.replaceAll("\\{ldaplogin\\}", inBenutzer.getLdaplogin());
+            userDN = userDN.replace("{ldaplogin}", inBenutzer.getLdaplogin());
         }
-        userDN = userDN.replaceAll("\\{firstname\\}", inBenutzer.getVorname());
-        userDN = userDN.replaceAll("\\{lastname\\}", inBenutzer.getNachname());
+        userDN = userDN.replace("{firstname}", inBenutzer.getVorname());
+        userDN = userDN.replace("{lastname}", inBenutzer.getNachname());
         return userDN;
     }
 
@@ -590,7 +589,7 @@ public class LdapAuthentication {
                  */
                 BasicAttribute ntlmpassword = null;
                 try {
-                    byte hmm[] = MD4.mdfour(inNewPassword.getBytes("UnicodeLittleUnmarked"));
+                    byte[] hmm = MD4.mdfour(inNewPassword.getBytes("UnicodeLittleUnmarked"));
                     ntlmpassword = new BasicAttribute("sambaNTPassword", LdapUser.toHexString(hmm));
                 } catch (UnsupportedEncodingException e) {
                     // TODO: Make sure that the password isn't logged here

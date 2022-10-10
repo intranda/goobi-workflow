@@ -1,4 +1,5 @@
 package de.sub.goobi.metadaten.search;
+
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -49,7 +50,6 @@ public class EasydbSearchRequest {
     private List<EasydbSearchField> search = new ArrayList<>();
 
     private String format = "long"; // long, short
-    //        private List<String> include_fields = new ArrayList<>();
     private List<EasydbSortField> sort = new ArrayList<>();
 
     private List<String> objecttypes = new ArrayList<>();

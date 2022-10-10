@@ -1,11 +1,10 @@
-package de.sub.goobi.metadaten.search;
-import java.util.ArrayList;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *             - https://goobi.io
- *             - https://www.intranda.com
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -24,6 +23,9 @@ import java.util.ArrayList;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+package de.sub.goobi.metadaten.search;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -46,7 +48,8 @@ public class EasydbSearchField {
     // search type match:
     //        search element “match”
     //
-    //        This search element allows to match a given text. It can be used with all search types. Match ignores case and diacritical marks, and detects some writing variants. For instance, “fusse” will match “Füße”.
+    //        This search element allows to match a given text. It can be used with all search types. Match ignores case and diacritical marks,
+    //        and detects some writing variants. For instance, “fusse” will match “Füße”.
     //        Parameter   Value
     //        mode    search mode (string, optional): fulltext (default), token or wildcard
     //        string  text to match (string). Maximal length: 256 charcaters (*)
@@ -73,13 +76,16 @@ public class EasydbSearchField {
     //        to  upper end of the range (number/string, optional): inclusive
 
     // search element “nested”
-    //        This search element allows to retreive documents that match against a query for their nested documents. It is like a complex search that is performed at a certain path inside the main object type and returns objects from the main object type, but is run against the nested object type.
+    //        This search element allows to retreive documents that match against a query for their nested documents. It is like a complex search
+    //        that is performed at a certain path inside the main object type and returns objects from the main object type, but is run against
+    //        the nested object type.
     //        Parameter   Value
     //        path    path to a field of nested elements (string): the field must be of type Nested
     //        search  search elements for the sub-query (array of search elements)
 
     //  search element “complex”
-    //        This search element allows to specify more complex search expressions by nesting them in the global search. The normal search already allows some combinations, like “A or B or C”:
+    //        This search element allows to specify more complex search expressions by nesting them in the global search. The normal search already
+    //        allows some combinations, like “A or B or C”:
 
     private String type; // "match", "in", "range"
     private String bool; //  must (default), must_not or should
@@ -121,6 +127,5 @@ public class EasydbSearchField {
     public void setFieldType(String fieldType) {
         this.fieldType = fieldType;
     }
-
 
 }

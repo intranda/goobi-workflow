@@ -4,9 +4,9 @@ package org.goobi.production.flow.statistics.hibernate;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -215,7 +215,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
     }
 
     public DataRow getRefRow() {
-        if (this.flagReferenceCurve) {
+        if (Boolean.TRUE.equals(this.flagReferenceCurve)) {
             return referenceCurve(getDataRow(this.terminatingStep));
         } else {
             return requiredOutput();
@@ -223,7 +223,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
     }
 
     public DataRow getDataRow(String stepName) {
-        Boolean flagNoContent = true;
+        boolean flagNoContent = true;
         for (int i = 0; i < getDataTable().getDataRows().size(); i++) {
             flagNoContent = false;
             DataRow dr = getDataTable().getDataRows().get(i);
@@ -344,7 +344,6 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
      * @return DataTable
      */
     private DataTable buildDataTableFromSQL(String natSQL) {
-        //		Session session = Helper.getHibernateSession();
 
         if (this.commonWorkFlow == null) {
             return null;
@@ -358,16 +357,6 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
             headerRow.addValue(stepName, Double.parseDouble("0"));
         }
 
-        //		SQLQuery query = session.createSQLQuery(natSQL);
-        //
-        //		// needs to be there otherwise an exception is thrown
-        //		query.addScalar("stepCount", StandardBasicTypes.DOUBLE);
-        //		query.addScalar("stepName", StandardBasicTypes.STRING);
-        //		query.addScalar("intervall", StandardBasicTypes.STRING);
-        //
-        //		@SuppressWarnings("rawtypes")
-        //		List list = query.list();
-        //
         @SuppressWarnings("rawtypes")
         List list = ProcessManager.runSQL(natSQL);
         DataTable dtbl = new DataTable("");
@@ -483,7 +472,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
             }
         } else {
             this.selectedSteps = inSteps;
-            if (inSteps.size() > 0) {
+            if (!inSteps.isEmpty()) {
                 this.terminatingStep = inSteps.get(inSteps.size() - 1);
             }
         }
@@ -500,7 +489,7 @@ public class StatQuestProjectProgressData implements IStatisticalQuestionLimited
     /*
      * checks if testString is contained in workflow
      */
-    private Boolean isInWorkFlow(String testString) {
+    private boolean isInWorkFlow(String testString) {
         for (StepInformation step : this.commonWorkFlow) {
             if (step.getTitle().equals(testString)) {
                 return true;

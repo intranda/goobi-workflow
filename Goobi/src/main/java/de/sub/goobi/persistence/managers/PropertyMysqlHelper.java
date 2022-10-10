@@ -47,8 +47,7 @@ class PropertyMysqlHelper implements Serializable {
         Object[] param = { processId };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<Processproperty> ret = new QueryRunner().query(connection, sql.toString(), resultSetToPropertyListHandler, param);
-            return ret;
+            return new QueryRunner().query(connection, sql, resultSetToPropertyListHandler, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -87,9 +86,7 @@ class PropertyMysqlHelper implements Serializable {
                     return pe;
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
@@ -100,7 +97,7 @@ class PropertyMysqlHelper implements Serializable {
         public List<Processproperty> handle(ResultSet rs) throws SQLException {
             List<Processproperty> properties = new ArrayList<Processproperty>();
             try {
-                while (rs.next()) {
+                while (rs.next()) { // implies that rs != null, while the case rs == null will be thrown as an Exception
                     int id = rs.getInt("prozesseeigenschaftenID");
                     String title = rs.getString("Titel");
                     String value = rs.getString("Wert");
@@ -127,9 +124,7 @@ class PropertyMysqlHelper implements Serializable {
                     properties.add(pe);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return properties;
         }
@@ -167,9 +162,7 @@ class PropertyMysqlHelper implements Serializable {
                     properties.add(ve);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return properties;
         }
@@ -206,9 +199,7 @@ class PropertyMysqlHelper implements Serializable {
                     return ve;
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
@@ -247,9 +238,7 @@ class PropertyMysqlHelper implements Serializable {
                             properties.add(ve);
                         }
                     } finally {
-                        if (rs != null) {
-                            rs.close();
-                        }
+                        rs.close();
                     }
                     return properties;
                 }
@@ -286,9 +275,7 @@ class PropertyMysqlHelper implements Serializable {
                     return ve;
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
@@ -315,9 +302,9 @@ class PropertyMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString() + ", " + Arrays.toString(param));
+                log.trace(sql + ", " + Arrays.toString(param));
             }
-            Integer id = run.insert(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, param);
+            Integer id = run.insert(connection, sql, MySQLHelper.resultSetToIntegerHandler, param);
             if (id != null) {
                 pe.setId(id);
             }
@@ -369,9 +356,9 @@ class PropertyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString());
+                log.trace(sql);
             }
-            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -385,9 +372,9 @@ class PropertyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString());
+                log.trace(sql);
             }
-            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -401,9 +388,9 @@ class PropertyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
-                log.trace(sql.toString());
+                log.trace(sql);
             }
-            return new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToStringListHandler);
+            return new QueryRunner().query(connection, sql, MySQLHelper.resultSetToStringListHandler);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -417,8 +404,7 @@ class PropertyMysqlHelper implements Serializable {
         Object[] param = { templateId };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<Templateproperty> ret = new QueryRunner().query(connection, sql.toString(), resultSetToTemplatePropertyListHandler, param);
-            return ret;
+            return new QueryRunner().query(connection, sql, resultSetToTemplatePropertyListHandler, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -500,8 +486,7 @@ class PropertyMysqlHelper implements Serializable {
         Object[] param = { templateId };
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<Masterpieceproperty> ret = new QueryRunner().query(connection, sql.toString(), resultSetToMasterpiecePropertyListHandler, param);
-            return ret;
+            return new QueryRunner().query(connection, sql, resultSetToMasterpiecePropertyListHandler, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

@@ -1,15 +1,9 @@
-package org.goobi.api.rest;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *          - https://goobi.io
- *          - https://www.intranda.com
- *          - https://github.com/intranda/goobi-workflow
+ *             - https://goobi.io
+ *             - https://www.intranda.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -20,8 +14,18 @@ import java.util.HashMap;
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
+ * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
+ * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
+ * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
+ * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
+ * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
+ * exception statement from your version.
  */
+package org.goobi.api.rest;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,15 +73,15 @@ public class VocabularyResource {
 
     @GET
     @Path("{vocabulary}/{searchvalue}")
-    @Operation(summary="Searches for a term within all fields of a vocabulary", description="Searches for a term within all fields of a vocabulary")
-    @ApiResponse(responseCode="200", description="OK")
-    @ApiResponse(responseCode="400", description="Bad Request")
-    @ApiResponse(responseCode="500", description="Internal error")
+    @Operation(summary = "Searches for a term within all fields of a vocabulary",
+            description = "Searches for a term within all fields of a vocabulary")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "500", description = "Internal error")
     @Produces(MediaType.APPLICATION_JSON)
     public Response findRecords(@PathParam("vocabulary") String vocabulary, @PathParam("searchvalue") String searchvalue) {
         List<VocabRecord> records = VocabularyManager.findRecords(vocabulary, searchvalue);
-        Response response = Response.ok(records).build();
-        return response;
+        return Response.ok(records).build();
     }
 
     /**
@@ -91,16 +95,16 @@ public class VocabularyResource {
 
     @GET
     @Path("{vocabulary}/{fieldname}/{searchvalue}")
-    @Operation(summary="Searches for a term within all fields of a vocabulary", description="Searches for a term within all fields of a vocabulary")
-    @ApiResponse(responseCode="200", description="OK")
-    @ApiResponse(responseCode="400", description="Bad Request")
-    @ApiResponse(responseCode="500", description="Internal error")
+    @Operation(summary = "Searches for a term within all fields of a vocabulary",
+            description = "Searches for a term within all fields of a vocabulary")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "500", description = "Internal error")
     @Produces(MediaType.APPLICATION_JSON)
     public Response findRecords(@PathParam("vocabulary") String vocabulary, @PathParam("fieldname") String fieldname,
             @PathParam("searchvalue") String searchvalue) {
         List<VocabRecord> records = VocabularyManager.findRecords(vocabulary, searchvalue, fieldname);
-        Response response = Response.ok(records).build();
-        return response;
+        return Response.ok(records).build();
     }
 
     @POST
@@ -109,8 +113,7 @@ public class VocabularyResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response findRecords(@PathParam("vocabulary") String vocabulary, List<StringPair> data) {
         List<VocabRecord> records = VocabularyManager.findRecords(vocabulary, data);
-        Response response = Response.ok(records).build();
-        return response;
+        return Response.ok(records).build();
     }
 
     /**
@@ -120,16 +123,16 @@ public class VocabularyResource {
      */
     @GET
     @Path("{vocabulary}")
-    @Operation(summary="Returns a complete vocabulary including all records", description="Returns a complete vocabulary including all records. Can be used to display drop down lists in mets editor.")
-    @ApiResponse(responseCode="200", description="OK")
-    @ApiResponse(responseCode="400", description="Bad Request")
-    @ApiResponse(responseCode="500", description="Internal error")
+    @Operation(summary = "Returns a complete vocabulary including all records",
+            description = "Returns a complete vocabulary including all records. Can be used to display drop down lists in mets editor.")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "500", description = "Internal error")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getVocabularyByName(@PathParam("vocabulary") String vocabularyName) {
         Vocabulary vocabulary = VocabularyManager.getVocabularyByTitle(vocabularyName);
         VocabularyManager.getAllRecords(vocabulary);
-        Response response = Response.ok(vocabulary).build();
-        return response;
+        return Response.ok(vocabulary).build();
     }
 
     /**
@@ -139,23 +142,22 @@ public class VocabularyResource {
 
     @GET
     @Path("records/{vocabulary}/{record}")
-    @Operation(summary="Returns a vocabulary from URL", description="Returns a vocabulary from URL")
-    @ApiResponse(responseCode="200", description="OK")
-    @ApiResponse(responseCode="400", description="Bad Request")
-    @ApiResponse(responseCode="500", description="Internal error")
+    @Operation(summary = "Returns a vocabulary from URL", description = "Returns a vocabulary from URL")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "500", description = "Internal error")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRecord(@PathParam("vocabulary") Integer vocabularyId, @PathParam("record") Integer recordId) {
         VocabRecord record = VocabularyManager.getRecord(vocabularyId, recordId);
-        Response response = Response.ok(record).build();
-        return response;
+        return Response.ok(record).build();
     }
 
     @GET
     @Path("records/jskos/{vocabulary}/{record}")
-    @Operation(summary="Returns a jskos vocabulary", description="Returns a jskos vocabulary from URL and an ID")
-    @ApiResponse(responseCode="200", description="OK")
-    @ApiResponse(responseCode="400", description="Bad Request")
-    @ApiResponse(responseCode="500", description="Internal error")
+    @Operation(summary = "Returns a jskos vocabulary", description = "Returns a jskos vocabulary from URL and an ID")
+    @ApiResponse(responseCode = "200", description = "OK")
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "500", description = "Internal error")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRecordAsJskos(@Context UriInfo uriInfo, @PathParam("vocabulary") Integer vocabularyId, @PathParam("record") Integer recordId) {
         VocabRecord record = VocabularyManager.getRecord(vocabularyId, recordId);
@@ -182,7 +184,7 @@ public class VocabularyResource {
         schemaType.add("http://www.w3.org/2004/02/skos/core#ConceptScheme");
         schemaType.add("http://w3id.org/nkos/nkostype#list");
         schema.setType(schemaType);
-        Fields schemaPrefLabel  =jskosRecord.new Fields();
+        Fields schemaPrefLabel = jskosRecord.new Fields();
         schemaPrefLabel.setValues(prefLabel);
         schema.setPrefLabel(schemaPrefLabel);
         List<org.goobi.vocabulary.JskosRecord.Schema> inScheme = new ArrayList<>();
@@ -190,7 +192,7 @@ public class VocabularyResource {
         jskosRecord.setInScheme(inScheme);
 
         Publisher publisher = jskosRecord.new Publisher();
-        Fields publisherPrefLabel  =jskosRecord.new Fields();
+        Fields publisherPrefLabel = jskosRecord.new Fields();
         publisherPrefLabel.setValue("Goobi");
         publisher.setPrefLabel(publisherPrefLabel);
         publisher.setUri(uriInfo.getBaseUri().toString());
@@ -234,12 +236,11 @@ public class VocabularyResource {
                 jskosField.setValues(values);
             }
 
-            otherFieldValues.put(fieldName,jskosField);
+            otherFieldValues.put(fieldName, jskosField);
         }
         jskosRecord.setFields(otherFieldValues);
 
-        Response response = Response.ok(jskosRecord).build();
-        return response;
+        return Response.ok(jskosRecord).build();
     }
 
 }

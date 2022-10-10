@@ -1,15 +1,10 @@
-package de.sub.goobi.forms;
-
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -28,7 +23,10 @@ import java.lang.reflect.InvocationTargetException;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+package de.sub.goobi.forms;
 
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -92,13 +90,11 @@ public class HelperForm implements Serializable {
     // TODO: Change the defaults
     public String getApplicationHeaderTitle() {
 
-        String rueck = ConfigurationHelper.getInstance().getApplicationHeaderTitle();
-        return rueck;
+        return ConfigurationHelper.getInstance().getApplicationHeaderTitle();
     }
 
     public String getApplicationTitle() {
-        String rueck = ConfigurationHelper.getInstance().getApplicationTitle();
-        return rueck;
+        return ConfigurationHelper.getInstance().getApplicationTitle();
     }
 
     public String getApplicationWebsiteUrl() {
@@ -235,8 +231,7 @@ public class HelperForm implements Serializable {
         String scheme = request.getScheme(); // http
         String serverName = request.getServerName(); // hostname.com
         int serverPort = request.getServerPort(); // 80
-        String reqUrl = scheme + "://" + serverName + ":" + serverPort + "/itm/";
-        return reqUrl;
+        return scheme + "://" + serverName + ":" + serverPort + "/itm/";
     }
 
     public String getServletPathWithHostAsUrl() {
@@ -246,15 +241,13 @@ public class HelperForm implements Serializable {
         String serverName = request.getServerName(); // hostname.com
         int serverPort = request.getServerPort(); // 80
         String contextPath = request.getContextPath(); // /mywebapp
-        String reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
-        return reqUrl;
+        return scheme + "://" + serverName + ":" + serverPort + contextPath;
     }
 
     public String getContextPath() {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        String contextPath = request.getContextPath();
-        return contextPath;
+        return request.getContextPath();
     }
 
     public boolean getMessagesExist() {
@@ -280,11 +273,7 @@ public class HelperForm implements Serializable {
     public boolean getIsIE() {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-        if (request.getHeader("User-Agent").contains("MSIE")) {
-            return true;
-        } else {
-            return false;
-        }
+        return request.getHeader("User-Agent").contains("MSIE");
     }
 
     public String getUserAgent() {

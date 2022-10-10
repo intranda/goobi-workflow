@@ -1,14 +1,10 @@
-package org.goobi.managedbeans;
-
-import java.io.Serializable;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -27,21 +23,26 @@ import java.io.Serializable;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+package org.goobi.managedbeans;
+
+import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.inject.Named;
 
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.beans.Institution;
 
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.persistence.managers.InstitutionManager;
 import lombok.Getter;
 import lombok.Setter;
 
 @Named
 @WindowScoped
-public class InstitutionBean  extends BasicBean implements Serializable {
-
-
+public class InstitutionBean extends BasicBean implements Serializable {
 
     /**
      * 
@@ -58,6 +59,7 @@ public class InstitutionBean  extends BasicBean implements Serializable {
 
     /**
      * Create a new institution instance
+     * 
      * @return
      */
 
@@ -78,6 +80,7 @@ public class InstitutionBean  extends BasicBean implements Serializable {
         return FilterKein();
 
     }
+
     /**
      * Delete the current institution, return to institution overview
      * 
@@ -86,6 +89,11 @@ public class InstitutionBean  extends BasicBean implements Serializable {
     public String deleteInstitution() {
         // TODO check if a project is assigned to the institution. If this is the case, stay on this page
         // otherwise delete institution and return to overview
+
+        Path folder = Paths.get(ConfigurationHelper.getInstance().getGoobiFolder(), "uploads", "institution", institution.getShortName());
+        if (StorageProvider.getInstance().isFileExists(folder)) {
+            StorageProvider.getInstance().deleteDir(folder);
+        }
         InstitutionManager.deleteInstitution(institution);
         paginator.load();
         return FilterKein();
@@ -94,7 +102,7 @@ public class InstitutionBean  extends BasicBean implements Serializable {
     public String FilterKein() {
         InstitutionManager manager = new InstitutionManager();
         paginator = new DatabasePaginator(sortierung, filter, manager, "institution_all");
-        displayMode="";
+        displayMode = "";
         return "institution_all";
     }
 
@@ -103,9 +111,9 @@ public class InstitutionBean  extends BasicBean implements Serializable {
         return this.zurueck;
     }
 
-
     /**
      * Needed from the UI, don't use it in java code, use saveInstitution instead
+     * 
      * @return
      */
     @Deprecated
@@ -115,6 +123,7 @@ public class InstitutionBean  extends BasicBean implements Serializable {
 
     /**
      * Needed from the UI, don't use it in java code, use deleteInstitution instead
+     * 
      * @return
      */
     @Deprecated

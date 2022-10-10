@@ -1,13 +1,10 @@
-package de.sub.goobi.metadaten;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
- * 			- http://digiverso.com
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -26,16 +23,14 @@ package de.sub.goobi.metadaten;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+package de.sub.goobi.metadaten;
+
 import java.awt.Dimension;
 import java.awt.image.RenderedImage;
-import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -52,16 +47,10 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.config.RequestConfig.Builder;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.goobi.beans.Process;
 
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.HttpClientHelper;
 import de.sub.goobi.helper.NIOFileUtils;
 import de.sub.goobi.helper.S3FileUtils;
 import de.sub.goobi.helper.StorageProvider;
@@ -100,7 +89,7 @@ public class MetadatenImagesHelper {
         this.mydocument = inDocument;
     }
 
-    public void checkImageNames(Process myProzess, String directoryName)
+    public List<String> checkImageNames(Process myProzess, String directoryName)
             throws TypeNotAllowedForParentException, SwapException, DAOException, IOException {
         DocStruct physical = this.mydocument.getPhysicalDocStruct();
 
@@ -112,7 +101,7 @@ public class MetadatenImagesHelper {
         }
         if (physical == null) {
             createPagination(myProzess, directoryName);
-            return;
+            return Collections.emptyList();
         }
         // get image names in directory
 
@@ -126,7 +115,7 @@ public class MetadatenImagesHelper {
         List<String> imagenames = StorageProvider.getInstance().list(folder.toString(), NIOFileUtils.imageNameFilter);
         if (imagenames == null || imagenames.isEmpty()) {
             // no images found, return
-            return;
+            return Collections.emptyList();
         }
 
         // get image names in nets file
@@ -151,7 +140,7 @@ public class MetadatenImagesHelper {
         // if size differs, create new pagination
         if (imagenames.size() != imageNamesInMetsFile.size()) {
             createPagination(myProzess, directoryName);
-            return;
+            return Collections.emptyList();
         }
 
         List<String> imagesWithoutDocstruct = new LinkedList<>();
@@ -211,7 +200,7 @@ public class MetadatenImagesHelper {
 
         // both lists should have the same size
         if (pagesWithoutFiles.size() != imagesWithoutDocstruct.size()) {
-            return;
+            return Collections.emptyList();
         }
 
         int counter = pagesWithoutFiles.size();
@@ -224,6 +213,7 @@ public class MetadatenImagesHelper {
                         + currentPage.getAllMetadataByType(myPrefs.getMetadataTypeByName("physPageNumber")).get(0).getValue());
             }
         }
+        return imagenames;
     }
 
     /**
@@ -246,11 +236,11 @@ public class MetadatenImagesHelper {
 
         DocStruct logical = this.mydocument.getLogicalDocStruct();
         if (logical.getType().isAnchor()) {
-            if (logical.getAllChildren() != null && logical.getAllChildren().size() > 0) {
+            if (logical.getAllChildren() != null && !logical.getAllChildren().isEmpty()) {
                 logical = logical.getAllChildren().get(0);
             }
         }
-        MetadataType MDTypeForPath = this.myPrefs.getMetadataTypeByName("pathimagefiles");
+        MetadataType metadataTypeForPath = this.myPrefs.getMetadataTypeByName("pathimagefiles");
 
         /*--------------------------------
          * der physische Baum wird nur
@@ -264,9 +254,9 @@ public class MetadatenImagesHelper {
 
         // check for valid filepath
         try {
-            List<? extends Metadata> filepath = physicaldocstruct.getAllMetadataByType(MDTypeForPath);
+            List<? extends Metadata> filepath = physicaldocstruct.getAllMetadataByType(metadataTypeForPath);
             if (filepath == null || filepath.isEmpty()) {
-                Metadata mdForPath = new Metadata(MDTypeForPath);
+                Metadata mdForPath = new Metadata(metadataTypeForPath);
                 if (SystemUtils.IS_OS_WINDOWS) {
                     mdForPath.setValue("file:/" + mediaFolder);
                 } else {
@@ -547,7 +537,7 @@ public class MetadatenImagesHelper {
         if (physicaldocstruct.getAllChildren() != null) {
             for (DocStruct page : physicaldocstruct.getAllChildren()) {
                 List<? extends Metadata> pageNoMetadata = page.getAllMetadataByType(mdt);
-                if (pageNoMetadata == null || pageNoMetadata.size() == 0) {
+                if (pageNoMetadata == null || pageNoMetadata.isEmpty()) {
                     currentPhysicalOrder++;
                     break;
                 }
@@ -574,7 +564,6 @@ public class MetadatenImagesHelper {
         try {
             s3URI = new URI("s3://" + conf.getS3Bucket() + "/" + S3FileUtils.path2Key(inPath));
         } catch (URISyntaxException e) {
-            // TODO Auto-generated catch block
             log.error(e);
         }
         log.trace("start scaleFile");
@@ -590,7 +579,6 @@ public class MetadatenImagesHelper {
         JpegInterpreter pi = null;
         try {
             im = conf.useS3() && s3URI != null ? new ImageManager(s3URI) : new ImageManager(inPath.toUri());
-            //                im = new ImageManager(Paths.get(inFileName).toUri());
             log.trace("im");
             ImageInterpreter ii = im.getMyInterpreter();
             Dimension inputResolution = new Dimension((int) ii.getXResolution(), (int) ii.getYResolution());
@@ -622,7 +610,6 @@ public class MetadatenImagesHelper {
                 pi.close();
             }
         }
-
     }
 
     // Add a method to validate the image files
@@ -642,7 +629,8 @@ public class MetadatenImagesHelper {
          * die Seiten anlegen
          * --------------------------------*/
         Path dir = Paths.get(folder);
-        if (StorageProvider.getInstance().isFileExists(dir)) {
+
+        if (StorageProvider.getInstance().isDirectory(dir)) {
             List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.DATA_FILTER);
             List<String> dateien2 = StorageProvider.getInstance().list(dir.toString());
             //checks for fileName errors / empty folder
@@ -683,14 +671,12 @@ public class MetadatenImagesHelper {
                     String[] parameter = { title, curFile };
                     String value = Helper.getTranslation("wrongFileName", parameter);
                     Helper.setFehlerMeldung(value);
-                    //                    Helper.setFehlerMeldung("[" + title + "] Filename of image wrong - not an 8-digit-number: " + curFile);
                 }
                 return isValid;
             }
             return true;
         }
         Helper.setFehlerMeldung(Helper.getTranslation("noImageFolderFound", title));
-        //        Helper.setFehlerMeldung("[" + title + "] No image-folder found");
         return false;
     }
 
@@ -734,6 +720,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
+
         List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.imageNameFilter);
 
         /* alle Dateien durchlaufen */
@@ -745,7 +732,6 @@ public class MetadatenImagesHelper {
     }
 
     public List<String> getDataFiles(Process myProzess, String directory) throws InvalidImagesException {
-
         Path dir;
         try {
             if (directory == null) {
@@ -761,6 +747,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
         /* Verzeichnis einlesen */
+
         List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.DATA_FILTER);
 
         /* alle Dateien durchlaufen */
@@ -779,7 +766,7 @@ public class MetadatenImagesHelper {
      * @throws InvalidImagesException
      */
 
-    public List<String> getImageFiles(Process myProzess, String directory) throws InvalidImagesException {
+    public List<String> getImageFiles(Process myProzess, String directory, boolean useThumsbDir) throws InvalidImagesException {
         Path dir;
         try {
             dir = Paths.get(myProzess.getImagesDirectory() + directory);
@@ -787,7 +774,7 @@ public class MetadatenImagesHelper {
             throw new InvalidImagesException(e);
         }
 
-        if (!StorageProvider.getInstance().isDirectory(dir) && StringUtils.isNotBlank(directory)) {
+        if (useThumsbDir && !StorageProvider.getInstance().isDirectory(dir) && StringUtils.isNotBlank(directory)) {
             String thumbsFolder;
             try {
                 thumbsFolder = myProzess.getLargestThumbsDirectory(directory);
@@ -810,7 +797,6 @@ public class MetadatenImagesHelper {
                 int datasize = dateien.size();
                 for (int i = 0; i < pagessize; i++) {
                     DocStruct page = pagesList.get(i);
-                    //                for (DocStruct page : pagesList) {
                     // try to find media object based on complete name before trying to get it from filename prefix
                     String filename = page.getImageName();
                     boolean imageFound = false;
@@ -828,7 +814,6 @@ public class MetadatenImagesHelper {
 
                         for (int j = 0; j < datasize; j++) {
                             String currentImage = dateien.get(j);
-                            //                    for (String currentImage : dataList) {
                             String currentImagePrefix = currentImage.replace(Metadaten.getFileExtension(currentImage), "");
                             if (currentImagePrefix.equals(filenamePrefix)) {
                                 orderedFilenameList.add(currentImage);
@@ -837,11 +822,10 @@ public class MetadatenImagesHelper {
                         }
                     }
                 }
-                //                    orderedFilenameList.add(page.getImageName());
             }
+
             if (orderedFilenameList.size() == dateien.size()) {
                 return orderedFilenameList;
-
             } else {
                 Collections.sort(dateien, new GoobiImageFileComparator());
                 return dateien;
@@ -854,7 +838,7 @@ public class MetadatenImagesHelper {
     public List<String> getImageFiles(DocStruct physical) {
         List<String> orderedFileList = new ArrayList<>();
         List<DocStruct> pages = physical.getAllChildren();
-        if (pages != null && pages.size() > 0) {
+        if (pages != null && !pages.isEmpty()) {
             for (DocStruct page : pages) {
                 String filename = page.getImageName();
                 if (filename != null) {

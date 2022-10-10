@@ -4,9 +4,9 @@ package org.goobi.production.flow.statistics.hibernate;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -72,42 +72,16 @@ public class StatQuestStorage implements IStatisticalQuestionLimitedTimeframe {
 
         List<DataTable> allTables = new ArrayList<>();
 
-        //		IEvaluableFilter originalFilter;
-        //
-        //		if (dataSource instanceof IEvaluableFilter) {
-        //			originalFilter = (IEvaluableFilter) dataSource;
-        //		} else {
-        //			throw new UnsupportedOperationException(
-        //					"This implementation of IStatisticalQuestion needs an IDataSource for method getDataSets()");
-        //		}
-
         //gathering IDs from the filter passed by dataSource
-        List<Integer> IDlist = null;
-        //		try {
-        IDlist = ProcessManager.getIdsForFilter(filter);
-        //		} catch (UnsupportedOperationException e) {
-        //		}
-        //		if (IDlist == null || IDlist.size() == 0) {
-        //			return null;
-        //		}
+        List<Integer> idList = null;
+        idList = ProcessManager.getIdsForFilter(filter);
 
         // adding time restrictions
 
-        IStorage sqlGenerator = StatisticsFactory.getStorage(timeFilterFrom, timeFilterTo, timeGrouping, IDlist);
+        IStorage sqlGenerator = StatisticsFactory.getStorage(timeFilterFrom, timeFilterTo, timeGrouping, idList);
 
         String natSQL = sqlGenerator.getSQL();
 
-        //		Session session = Helper.getHibernateSession();
-        //
-        //		SQLQuery query = session.createSQLQuery(natSQL);
-        //
-        //		//needs to be there otherwise an exception is thrown
-        //		query.addScalar("storage", StandardBasicTypes.DOUBLE);
-        //		query.addScalar("intervall", StandardBasicTypes.STRING);
-        //
-        //		@SuppressWarnings("rawtypes")
-        //		List list = query.list();
-        //
         @SuppressWarnings("rawtypes")
         List list = ProcessManager.runSQL(natSQL);
         DataTable dtbl = new DataTable(StatisticsMode.getByClassName(this.getClass()).getTitle() + " " + Helper.getTranslation("statistics_inGB"));
@@ -170,7 +144,6 @@ public class StatQuestStorage implements IStatisticalQuestionLimitedTimeframe {
      */
     @Override
     public Boolean isRendererInverted(IRenderer inRenderer) {
-        //		return false;
         return inRenderer instanceof ChartRenderer;
     }
 

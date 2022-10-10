@@ -51,7 +51,7 @@ public class StatisticsResultOutputConverter implements Converter<ResultOutput> 
      **************************************************************************************/
     @Override
     public String getAsString(FacesContext context, UIComponent component, ResultOutput value) throws ConverterException {
-        if (value == null || !(value instanceof ResultOutput)) {
+        if (!(value instanceof ResultOutput)) {
             return ResultOutput.table.getId();
         } else {
             return value.getId();

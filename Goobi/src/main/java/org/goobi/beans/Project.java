@@ -4,9 +4,9 @@ package org.goobi.beans;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -164,13 +164,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
 
     @Override
     public void lazyLoad() {
-        //		try {
-        //			this.benutzer = null;
-        //			this.prozesse = null;
-        //			this.filegroups = null;
-        //		} catch (DAOException e) {
-        //			log.error("error during lazy loading of User", e);
-        //		}
+
     }
 
     public Project() {
@@ -208,7 +202,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
     }
 
     public boolean isDeleteAble() {
-        return (this.prozesse == null || this.prozesse.size() == 0);
+        return (this.prozesse == null || this.prozesse.isEmpty());
     }
 
     public List<ProjectFileGroup> getFilegroups() {
@@ -390,7 +384,7 @@ public class Project implements Serializable, DatabaseObject, Comparable<Project
         try {
             List<User> allUsers = UserManager.getUsers(null, "", null, null, null);
             for (User user : allUsers) {
-                if (user.getProjekte().contains(this)) {
+                if (user.getProjekte().contains(source)) {
                     user.getProjekte().add(this);
                     UserManager.addProjectAssignment(user, getId());
                 }

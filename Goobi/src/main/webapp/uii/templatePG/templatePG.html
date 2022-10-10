@@ -97,14 +97,19 @@
     <script src="template/js/plugins/bootbox/jquery.bootbox.js?v=#{HelperForm.buildVersion}"></script>
     <!-- Bootbox -->
     <script src="template/js/plugins/form/jquery.form.min.js?v=#{HelperForm.buildVersion}"></script>
+    <!-- Reactive rx -->
+     <script src="template/js/reactiveX/rx.lite.min.js"></script>
 
     <!-- Validation -->
     <script src="template/js/plugins/validation/jquery.validate.min.js?v=#{HelperForm.buildVersion}"></script>
     <script src="template/js/plugins/validation/additional-methods.min.js?v=#{HelperForm.buildVersion}"></script>
-      <!-- shortcuts -->
-      <script src="template/js/jquery.hotkeys.js?v=#{HelperForm.buildVersion}"></script>
+
+  <!-- shortcuts -->
+  <script src="template/js/jquery.hotkeys.js?v=#{HelperForm.buildVersion}"></script>
+
     <!-- Theme framework -->
     <!-- <script src="template/js/eakroko.js?v=#{HelperForm.buildVersion}"></script> -->
+
     <!-- Theme scripts -->
     <script src="template/js/application.js?v=#{HelperForm.buildVersion}"></script>
 
@@ -152,6 +157,19 @@
                     <div class="flow container-fluid">
 
                         <h:form id="header">
+
+											                  <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
+
+                                            <div class="d-none">
+
+                                                <o:socket channel="goobiscriptUpdateChannel">
+                                                    <f:ajax render="goobiScriptResults2" event="update"/>
+                                                </o:socket>
+                                                <o:commandScript name="updateGoobiScriptIndicator"  render="goobiScriptResults2" />
+
+                                            </div>
+	                                        </ui:fragment>
+
                             <o:socket channel="developerMessageChannel" connected="#{DevModeBean.developerMode}" onmessage="() => window.location.reload()" />
                             <header>
                                 <div class="flow page-header">
@@ -179,17 +197,15 @@
 	                                            <img src="template/img/goobi/ajaxloader2.gif" />
 	                                        </li>
 
-											<ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResults.size() gt 0}">
-                                                <o:socket channel="goobiscriptUpdateChannel" >
-                                                    <f:ajax render="goobiScriptResults2" event="update"/>
-                                                </o:socket>
-                                                <o:commandScript name="updateGoobiScriptIndicator" render="goobiScriptResults2" />
-	                                        	<li class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'}">
+											                  <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
+
+
+	                                        	<li class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'} stats__goobi-script">
 		                                            <button jsf:action="process_goobiScript" jsf:id="goobiScriptResults2" class="button-transparent">
 		                                                    <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}"></i>
 		                                                    <div class="details">
 		                                                        <span class="big">#{msgs.goobiScript_isActive}</span>
-		                                                        <span>#{SessionForm.gsm.numberOfFinishedScripts} / #{SessionForm.gsm.goobiScriptResults.size()}</span>
+		                                                        <span>#{SessionForm.gsm.numberOfFinishedScripts} / #{SessionForm.gsm.goobiScriptResultSize}</span>
 		                                                    </div>
 		                                                </button>
 		                                        </li>
@@ -197,7 +213,7 @@
 
 
 	                                        <h:panelGroup rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
-	                                            <li class='bg-neutral-400'>
+	                                            <li class='bg-neutral-400 stats__current-users'>
 	                                                <button jsf:action="currentUsers" jsf:id="currentUsers" class="button-no-style">
 	                                                    <i class="fa fa-users" style="margin-top:3px;"></i>
 	                                                    <div class="details">
@@ -208,14 +224,14 @@
 	                                                </button>
 	                                            </li>
 	                                        </h:panelGroup>
-	                                        <li class='bg-neutral-400'>
+	                                        <li class="bg-neutral-400 stats__date">
 	                                            <i class="fa fa-calendar" style="margin-top:3px;"></i>
 	                                            <div class="details">
 	                                                <span class="big">
 	                                                    <h:outputText value="#{SessionForm.currentTime}" />
 	                                                    <a tabindex="-1" href="#{HelperForm.itmPathAsUrl}" target="self" aria-label="itm">
-														<div style="height: 12px;width: 20px;display: inline-block;"></div>
-														</a>
+                                                        <div style="height: 12px;width: 20px;display: inline-block;"></div>
+                                                    </a>
 	                                                </span>
 	                                                <span>
 	                                                    <h:outputText value="#{SessionForm.date}">
@@ -257,7 +273,10 @@
                     </div>
                 </div>
             </div>
+
+
         </c:if>
+
 
         <!-- JAVASCRIPT -->
         <script src="template/js/dist/goobiWorkflowJS.min.js?v=#{HelperForm.buildVersion}"></script>
@@ -296,7 +315,7 @@
                                 $('.popover.fade.right.in').remove();
                             }
                             scrollDownScrollDowns();
-                        })
+                       })
                         if (window.noLoadImages === undefined) {
                             loadImages();
                         }
@@ -305,14 +324,25 @@
             });
 
 
-            /*
-            Initialize all BS Tooltips
-            [data-bs-toggle="tooltip"] => also grab legacy tool tips
-            */
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"], [data-toggle="tooltip"]'))
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-              return new bootstrap.Tooltip(tooltipTriggerEl)
-            })
+
+
+            function toggle_help(data) {
+              if (data.status === 'success') {
+                elements = document.getElementsByClassName("help-block");
+                    for (var i = 0; i < elements.length; i++) {
+                        elements[i].style.display = elements[i].style.display == 'block' ? 'none' : 'block';
+                    }
+                }
+            }
+
+            $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function () {
+                var myButton = $("a[id$=':navnext']")
+                if (myButton != null) {
+                    myButton.click();
+                }
+            });
+
+
 
             $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function () {
                 var myButton = $("a[id$=':navnext']")
@@ -333,8 +363,21 @@
             //set the config part
             myfaces.config.no_portlet_env = true;
 
+
+
+            /*
+            Initialize all BS Tooltips
+            [data-bs-toggle="tooltip"] => also grab legacy tool tips
+            */
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"], [data-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+              return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+
          // ]]>
         </script>
+
+
     </f:view>
 </h:body>
 </html>

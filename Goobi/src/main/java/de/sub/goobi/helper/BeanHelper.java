@@ -1,16 +1,10 @@
-package de.sub.goobi.helper;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
- * 			- http://digiverso.com
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -29,15 +23,21 @@ import java.nio.file.Paths;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+package de.sub.goobi.helper;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
-//import de.sub.goobi.beans.Schritteigenschaft;
 import org.goobi.beans.Processproperty;
 import org.goobi.beans.Step;
 import org.goobi.beans.Template;
@@ -58,7 +58,9 @@ import ugh.dl.Fileformat;
 import ugh.exceptions.UGHException;
 
 @Log4j2
-public class BeanHelper {
+public class BeanHelper implements Serializable {
+
+    private static final long serialVersionUID = 8661143513583015230L;
 
     public void EigenschaftHinzufuegen(Process inProzess, String inTitel, String inWert) {
         Processproperty eig = new Processproperty();
@@ -71,18 +73,6 @@ public class BeanHelper {
         }
         eigenschaften.add(eig);
     }
-
-    //	public void EigenschaftHinzufuegen(Step inSchritt, String inTitel, String inWert) {
-    //		Schritteigenschaft eig = new Schritteigenschaft();
-    //		eig.setTitel(inTitel);
-    //		eig.setWert(inWert);
-    //		eig.setSchritt(inSchritt);
-    //		List<Schritteigenschaft> eigenschaften = inSchritt.getEigenschaften();
-    //		if (eigenschaften == null) {
-    //			eigenschaften = new ArrayList<Schritteigenschaft>();
-    //		}
-    //		eigenschaften.add(eig);
-    //	}
 
     public void EigenschaftHinzufuegen(Template inVorlage, String inTitel, String inWert) {
         Templateproperty eig = new Templateproperty();
@@ -267,27 +257,27 @@ public class BeanHelper {
     }
 
     public String WerkstueckEigenschaftErmitteln(Process myProzess, String inEigenschaft) {
-        String Eigenschaft = "";
+        String werkstueckEigenschaft = "";
         for (Masterpiece myWerkstueck : myProzess.getWerkstueckeList()) {
             for (Masterpieceproperty eigenschaft : myWerkstueck.getEigenschaftenList()) {
                 if (eigenschaft.getTitel().equals(inEigenschaft)) {
-                    Eigenschaft = eigenschaft.getWert();
+                    werkstueckEigenschaft = eigenschaft.getWert();
                 }
             }
         }
-        return Eigenschaft;
+        return werkstueckEigenschaft;
     }
 
     public String ScanvorlagenEigenschaftErmitteln(Process myProzess, String inEigenschaft) {
-        String Eigenschaft = "";
+        String scanvorlagenEigenschaft = "";
         for (Template myVorlage : myProzess.getVorlagenList()) {
             for (Templateproperty eigenschaft : myVorlage.getEigenschaftenList()) {
                 if (eigenschaft.getTitel().equals(inEigenschaft)) {
-                    Eigenschaft = eigenschaft.getWert();
+                    scanvorlagenEigenschaft = eigenschaft.getWert();
                 }
             }
         }
-        return Eigenschaft;
+        return scanvorlagenEigenschaft;
     }
 
     /**
@@ -337,15 +327,10 @@ public class BeanHelper {
         }
 
         // add text to process log
-
-        LogEntry logEntry = new LogEntry();
-        logEntry.setContent("Changed process template to " + template.getTitel());
-        logEntry.setCreationDate(new Date());
-        logEntry.setProcessId(processToChange.getId());
-        logEntry.setType(LogType.DEBUG);
         User user = Helper.getCurrentUser();
-        logEntry.setUserName(user != null ? user.getNachVorname() : "");
-        processToChange.getProcessLog().add(logEntry);
+        JournalEntry logEntry =
+                new JournalEntry(processToChange.getId(), new Date(), user != null ? user.getNachVorname() : "", LogType.DEBUG, "Changed process template to " + template.getTitel(), EntryType.PROCESS);
+        processToChange.getJournal().add(logEntry);
 
         try {
             // if no open task was found, open first locked  task
@@ -417,7 +402,7 @@ public class BeanHelper {
         }
 
         // Create history events
-        if (!HistoryAnalyserJob.updateHistoryForProzess(newProcess)) {
+        if (Boolean.FALSE.equals(HistoryAnalyserJob.updateHistoryForProzess(newProcess))) {
             Helper.setFehlerMeldung("historyNotUpdated");
         } else {
             try {

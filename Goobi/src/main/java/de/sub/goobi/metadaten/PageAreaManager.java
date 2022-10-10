@@ -1,3 +1,28 @@
+/**
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ * 
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * 
+ * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
+ * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
+ * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
+ * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
+ * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
+ * exception statement from your version.
+ */
 package de.sub.goobi.metadaten;
 
 import java.util.ArrayList;
@@ -87,20 +112,24 @@ public class PageAreaManager {
             return "";
         }
         List<DocStruct> pageAreas = new ArrayList<>(page.getAllChildren());
-        if(this.newPageArea != null) {
+        if (this.newPageArea != null) {
             pageAreas.add(newPageArea);
         }
         for (DocStruct area : pageAreas) {
             String coordinates = MetadatenHelper.getSingleMetadataValue(area, "_COORDS").orElse(null);
-           
-            List<DocStruct> referencedLogStructs = Optional.ofNullable(area.getAllFromReferences()).orElse(Collections.emptyList()).stream().map(Reference::getSource).collect(Collectors.toList()); 
-            DocStruct logDocStruct = referencedLogStructs.isEmpty() ? null : referencedLogStructs.get(referencedLogStructs.size()-1);
-            
+
+            List<DocStruct> referencedLogStructs = Optional.ofNullable(area.getAllFromReferences())
+                    .orElse(Collections.emptyList())
+                    .stream()
+                    .map(Reference::getSource)
+                    .collect(Collectors.toList());
+            DocStruct logDocStruct = referencedLogStructs.isEmpty() ? null : referencedLogStructs.get(referencedLogStructs.size() - 1);
+
             JSONObject json = new JSONObject();
             String id = createPhysicalPageNumberForArea(area, page);
             area.setIdentifier(id);
             json.put("areaId", id);
-            if(logDocStruct != null) {
+            if (logDocStruct != null) {
                 json.put("logId", logDocStruct.getIdentifier());
                 if (logDocStruct != null && Objects.equals(logDocStruct, currentLogicalDocStruct)) {
                     json.put("highlight", true);
@@ -135,11 +164,11 @@ public class PageAreaManager {
         }
         return rectangles.toString();
     }
-    
+
     public String getNewPageAreaLabel() {
         return Optional.ofNullable(getNewPageArea())
-            .map(area -> Helper.getTranslation("mets_pageArea", MetadatenHelper.getSingleMetadataValue(area, "logicalPageNumber").orElse("")))
-            .orElse("");
+                .map(area -> Helper.getTranslation("mets_pageArea", MetadatenHelper.getSingleMetadataValue(area, "logicalPageNumber").orElse("")))
+                .orElse("");
     }
 
     public DocStruct createPageArea(DocStruct page, Integer x, Integer y, Integer w, Integer h)
@@ -175,30 +204,29 @@ public class PageAreaManager {
     }
 
     String createPhysicalPageNumberForArea(DocStruct pageAreaStruct, DocStruct page) {
-            String physicalPageNumber = page.getAllMetadata()
-                    .stream()
-                    .filter(md -> md.getType().getName().equalsIgnoreCase("physPageNumber"))
-                    .findAny()
-                    .map(Metadata::getValue)
-                    .orElse("uncounted");
-            List<DocStruct> pageAreas = new ArrayList<>(Optional.ofNullable(page.getAllChildren()).orElse(Collections.emptyList()));
-            int indexOfArea = pageAreas.size();
-            if(pageAreaStruct != null && pageAreas.contains(pageAreaStruct)) {
-                indexOfArea = pageAreas.indexOf(pageAreaStruct);
-            }
-            return physicalPageNumber + "_" + Integer.toString(indexOfArea + 1);
+        String physicalPageNumber = page.getAllMetadata()
+                .stream()
+                .filter(md -> md.getType().getName().equalsIgnoreCase("physPageNumber"))
+                .findAny()
+                .map(Metadata::getValue)
+                .orElse("uncounted");
+        List<DocStruct> pageAreas = new ArrayList<>(Optional.ofNullable(page.getAllChildren()).orElse(Collections.emptyList()));
+        int indexOfArea = pageAreas.size();
+        if (pageAreaStruct != null && pageAreas.contains(pageAreaStruct)) {
+            indexOfArea = pageAreas.indexOf(pageAreaStruct);
+        }
+        return physicalPageNumber + "_" + Integer.toString(indexOfArea + 1);
     }
 
     private String createLogicalPageNumberForArea(DocStruct pageAreaStruct) {
         if (pageAreaStruct.getDocstructType().equalsIgnoreCase("area") && pageAreaStruct.getParent() != null) {
             DocStruct page = pageAreaStruct.getParent();
-            String logicalPageNumber = page.getAllMetadata()
+            return page.getAllMetadata()
                     .stream()
                     .filter(md -> md.getType().getName().equalsIgnoreCase("logicalPageNumber"))
                     .findAny()
                     .map(Metadata::getValue)
                     .orElse("uncounted");
-            return logicalPageNumber;
         } else {
             throw new IllegalArgumentException("given docStruct is not page area or has no parent");
         }

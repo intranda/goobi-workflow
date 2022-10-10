@@ -334,25 +334,17 @@ public class SearchResultHelper {
 
             else if (!sc.getTableName().startsWith("metadata")) {
                 sb.append(sc.getTableName() + "." + sc.getColumnName() + ", ");
-                //                if (sc.getTableName().startsWith("projekte")) {
-                //                    includeProjects = true;
-                //                }
-
             }
         }
 
         int length = sb.length();
         sb = sb.replace(length - 2, length, "");
-        //        if (order.startsWith("projekte") && !includeProjects) {
-        //            sb.append(" FROM projekte, prozesse ");
-        //        } else {
         sb.append(" FROM prozesse LEFT JOIN projekte on projekte.ProjekteID = prozesse.ProjekteID ");
-        //        }
         sb.append("left join batches on prozesse.batchId = batches.id ");
 
         if (includeLog) {
             sb.append(
-                    " left join processlog log on log.processid = prozesse.ProzesseID  and log.id = (select max(id) from processlog where processid = prozesse.ProzesseID and type  = 'error') ");
+                    " left join journal log on log.processid = prozesse.ProzesseID  and log.id = (select max(id) from journal where processid = prozesse.ProzesseID and type  = 'error') ");
         }
 
         boolean leftJoin = false;
@@ -391,11 +383,7 @@ public class SearchResultHelper {
             }
             sql = sql + " projekte.projectIsArchived = false ";
         }
-        //        if (order.startsWith("projekte") && !includeProjects) {
-        //            sb.append(" WHERE projekte.ProjekteID = prozesse.ProjekteID AND ");
-        //        } else {
         sb.append(" WHERE ");
-        //        }
         sb.append(sql);
 
         if (order != null && !order.isEmpty()) {

@@ -4,10 +4,9 @@ package org.goobi.managedbeans;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
- * 			- http://digiverso.com
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -55,6 +54,7 @@ import org.goobi.production.enums.UserRole;
 import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.forms.SessionForm;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.helper.StorageProvider;
@@ -122,11 +122,11 @@ public class LoginBean implements Serializable {
         if (this.myBenutzer != null) {
             new MetadatenSperrung().alleBenutzerSperrungenAufheben(this.myBenutzer.getId());
         }
-
-        HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
-        Helper.getSessionBean().updateSessionUserName(mySession, this.myBenutzer);
         this.myBenutzer = null;
+        HttpSession mySession = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
         if (mySession != null) {
+            SessionForm sessionBean = Helper.getSessionBean();
+            sessionBean.updateSessionUserName(mySession, null);
             mySession.invalidate();
         }
         return "index";
@@ -145,7 +145,6 @@ public class LoginBean implements Serializable {
         }
         return "external_index";
     }
-
 
     public void logoutOpenId() {
         this.Ausloggen();
@@ -295,9 +294,9 @@ public class LoginBean implements Serializable {
             return "index";
         }
         this.myBenutzer = null;
-        Integer LoginID = Integer.valueOf(Helper.getRequestParameter("ID"));
+        Integer loginID = Integer.valueOf(Helper.getRequestParameter("ID"));
         try {
-            this.myBenutzer = UserManager.getUserById(LoginID);
+            this.myBenutzer = UserManager.getUserById(loginID);
             /* in der Session den Login speichern */
             HttpSession session = (HttpSession) FacesContextHelper.getCurrentFacesContext().getExternalContext().getSession(false);
             Helper.getSessionBean().updateSessionUserName(session, this.myBenutzer);
@@ -344,8 +343,7 @@ public class LoginBean implements Serializable {
                 myLdap.changeUserPassword(this.myBenutzer, this.passwortAendernAlt, this.passwortAendernNeu1);
             }
             User currentUser = UserManager.getUserById(this.myBenutzer.getId());
-            // TODO
-            // temp.setPasswortCrypt(this.passwortAendernNeu1);
+
             UserBean.saltAndSaveUserPassword(currentUser, this.passwortAendernNeu1);
 
             this.myBenutzer = currentUser;

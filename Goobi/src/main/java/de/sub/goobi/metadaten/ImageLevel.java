@@ -29,7 +29,7 @@ import lombok.Getter;
 
 public class ImageLevel implements Comparable<ImageLevel> {
 
-	@Getter
+    @Getter
     private String url;
     private Dimension size;
 

@@ -1,7 +1,33 @@
+/**
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ * 
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * 
+ * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
+ * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
+ * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
+ * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
+ * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
+ * exception statement from your version.
+ */
 package org.goobi.production.plugin;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -45,10 +71,12 @@ import lombok.extern.log4j.Log4j2;
 
 @Data
 @Log4j2
-public class PluginInstaller {
+public class PluginInstaller implements Serializable {
+    private static final long serialVersionUID = -5968198401348089489L;
+
     private static final String LINEBREAK = System.getProperty("line.separator");
-    public final static Set<String> endingWhitelist = Sets.newHashSet(".js", ".css", ".jar");
-    public final static Set<String> pathBlacklist = Sets.newHashSet("pom.xml");
+    public static final Set<String> endingWhitelist = Sets.newHashSet(".js", ".css", ".jar");
+    public static final Set<String> pathBlacklist = Sets.newHashSet("pom.xml");
     private static Namespace pomNs = Namespace.getNamespace("pom", "http://maven.apache.org/POM/4.0.0");
     private static XPathFactory xFactory = XPathFactory.instance();
     private static XPathExpression<Element> pluginNameXpath = xFactory.compile("//pom:properties/pom:jar.name", Filters.element(), null, pomNs);
@@ -61,52 +89,52 @@ public class PluginInstaller {
     private static Pattern typeExtractor = Pattern.compile("plugin_intranda_(.+?)_.*");
     private static String pluginPackagePath = ".plugin-packages";
 
-    private Path extractedArchivePath;
-    private Path goobiDirectory;
+    private transient Path extractedArchivePath;
+    private transient Path goobiDirectory;
     private PluginInstallInfo pluginInfo;
     private PluginPreInstallCheck check;
-    private Path uploadedArchiveFile;
+    private transient Path uploadedArchiveFile;
     private String archiveFileName;
 
     public void install() {
         this.saveArchiveFile();
         try (Stream<Path> walkStream = Files.walk(this.extractedArchivePath)) {
             walkStream.filter(Files::isRegularFile)
-            .forEach(path -> {
+                    .forEach(path -> {
 
-                Path relativePath = this.extractedArchivePath.relativize(path);
-                if (pathBlacklist.contains(relativePath.toString())) {
-                    return;
-                }
+                        Path relativePath = this.extractedArchivePath.relativize(path);
+                        if (pathBlacklist.contains(relativePath.toString())) {
+                            return;
+                        }
 
-                Path installPath = goobiDirectory.resolve(relativePath);
-                PluginInstallConflict conflict = this.check.getConflicts().get(relativePath.toString());
-                if (conflict == null) {
-                    try {
-                        Files.createDirectories(installPath.getParent());
-                        Files.copy(path, installPath, StandardCopyOption.REPLACE_EXISTING);
-                    } catch (IOException ioException) {
-                        log.error(ioException);
-                    }
-                    return;
-                }
+                        Path installPath = goobiDirectory.resolve(relativePath);
+                        PluginInstallConflict conflict = this.check.getConflicts().get(relativePath.toString());
+                        if (conflict == null) {
+                            try {
+                                Files.createDirectories(installPath.getParent());
+                                Files.copy(path, installPath, StandardCopyOption.REPLACE_EXISTING);
+                            } catch (IOException ioException) {
+                                log.error(ioException);
+                            }
+                            return;
+                        }
 
-                String fileContent;
-                if (conflict.getConflictsMode().equals("edit_existing_file")) {
-                    fileContent = conflict.getEditedExistingVersion();
-                } else {
-                    fileContent = conflict.getEditedUploadedVersion();
-                }
+                        String fileContent;
+                        if (conflict.getConflictsMode().equals("edit_existing_file")) {
+                            fileContent = conflict.getEditedExistingVersion();
+                        } else {
+                            fileContent = conflict.getEditedUploadedVersion();
+                        }
 
-                try {
-                    Charset charset = Charset.forName("UTF-8");
-                    StandardOpenOption truncate = StandardOpenOption.TRUNCATE_EXISTING;
-                    StandardOpenOption create = StandardOpenOption.CREATE;
-                    Files.write(installPath, Arrays.asList(fileContent.split("\n")), charset, truncate, create);
-                } catch (IOException ioException) {
-                    log.error(ioException);
-                }
-            });
+                        try {
+                            Charset charset = Charset.forName("UTF-8");
+                            StandardOpenOption truncate = StandardOpenOption.TRUNCATE_EXISTING;
+                            StandardOpenOption create = StandardOpenOption.CREATE;
+                            Files.write(installPath, Arrays.asList(fileContent.split("\n")), charset, truncate, create);
+                        } catch (IOException ioException) {
+                            log.error(ioException);
+                        }
+                    });
         } catch (IOException e) {
             log.error(e);
         }
@@ -190,15 +218,13 @@ public class PluginInstaller {
     private static String extractPluginTypeFromName(String name) {
         Matcher matcher = typeExtractor.matcher(name);
         matcher.find();
-        String type = matcher.group(1);
-        return type;
+        return matcher.group(1);
     }
 
     private static Document parsePomXml(Path pluginFolder, String pomFilePath) throws JDOMException, IOException {
         SAXBuilder saxBuilder = XmlTools.getSAXBuilder();
         Path pomPath = pluginFolder.resolve(pomFilePath);
-        Document pluginPomDocument = saxBuilder.build(pomPath.toFile());
-        return pluginPomDocument;
+        return saxBuilder.build(pomPath.toFile());
     }
 
     private static PluginPreInstallCheck checkPluginInstall(Path extractedPluginPath, PluginInstallInfo info, Path goobiDirectory,
@@ -206,29 +232,29 @@ public class PluginInstaller {
         Map<String, PluginInstallConflict> conflicts = new HashMap<>();
         try (Stream<Path> walkStream = Files.walk(extractedPluginPath)) {
             walkStream.filter(Files::isRegularFile)
-            .forEach(p -> {
-                String fileEnding = getFileEnding(p);
-                Path relativePath = extractedPluginPath.relativize(p);
-                if (endingWhitelist.contains(fileEnding)
-                        || pathBlacklist.contains(relativePath.toString())) {
-                    return;
-                }
-                Path installPath = goobiDirectory.resolve(relativePath);
-                if (checkForConflict(installPath, p)) {
-                    Path archivedArchiveFile =
-                            Paths.get(goobiDirectory.toString(), pluginPackagePath, archiveFileName);
-                    String archivedVersion = PluginInstaller.getContentFromFileInArchive(archivedArchiveFile, p.getFileName().toString());
-                    try {
-                        String existingVersion = Files.readAllLines(installPath).stream().collect(Collectors.joining("\n"));
-                        String uploadedVersion = Files.readAllLines(p).stream().collect(Collectors.joining("\n"));
-                        PluginInstallConflict conflict = new PluginInstallConflict(installPath.toString(), ResolveTactic.unknown,
-                                existingVersion, uploadedVersion, archivedVersion);
-                        conflicts.put(relativePath.toString(), conflict);
-                    } catch (IOException e) {
-                        //TODO: handle error
-                    }
-                }
-            });
+                    .forEach(p -> {
+                        String fileEnding = getFileEnding(p);
+                        Path relativePath = extractedPluginPath.relativize(p);
+                        if (endingWhitelist.contains(fileEnding)
+                                || pathBlacklist.contains(relativePath.toString())) {
+                            return;
+                        }
+                        Path installPath = goobiDirectory.resolve(relativePath);
+                        if (checkForConflict(installPath, p)) {
+                            Path archivedArchiveFile =
+                                    Paths.get(goobiDirectory.toString(), pluginPackagePath, archiveFileName);
+                            String archivedVersion = PluginInstaller.getContentFromFileInArchive(archivedArchiveFile, p.getFileName().toString());
+                            try {
+                                String existingVersion = Files.readAllLines(installPath).stream().collect(Collectors.joining("\n"));
+                                String uploadedVersion = Files.readAllLines(p).stream().collect(Collectors.joining("\n"));
+                                PluginInstallConflict conflict = new PluginInstallConflict(installPath.toString(), ResolveTactic.unknown,
+                                        existingVersion, uploadedVersion, archivedVersion);
+                                conflicts.put(relativePath.toString(), conflict);
+                            } catch (IOException e) {
+                                //TODO: handle error
+                            }
+                        }
+                    });
         } catch (IOException e) {
             log.error(e);
         }
@@ -253,7 +279,7 @@ public class PluginInstaller {
             TarArchiveEntry tarEntry;
             do {
                 tarEntry = (TarArchiveEntry) (tarInputStream.getNextEntry());
-                if (!(tarEntry == null) && !tarEntry.isDirectory() && tarEntry.getName().endsWith(fileName)) {
+                if (tarEntry != null && !tarEntry.isDirectory() && tarEntry.getName().endsWith(fileName)) {
                     content = IOUtils.toString(tarInputStream, StandardCharsets.UTF_8.name());
                     break;
                 }
@@ -434,11 +460,11 @@ public class PluginInstaller {
             } else {
                 // Otherwise a deleted line and an inserted line are generated.
                 fileContent
-                .add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], "deletion"));
+                        .add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], "deletion"));
                 lineTypes.add("deletion");
                 lineNumbers.add(String.valueOf(existingLineIndex + 1));
                 fileContent
-                .add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], "insertion"));
+                        .add(PluginInstaller.findDifferencesInLine(existingLines[existingLineIndex], uploadedLines[uploadedLineIndex], "insertion"));
                 lineTypes.add("insertion");
                 lineNumbers.add(String.valueOf(uploadedLineIndex + 1));
             }

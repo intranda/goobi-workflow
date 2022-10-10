@@ -1,3 +1,28 @@
+/**
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ * 
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * 
+ * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
+ * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
+ * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
+ * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
+ * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
+ * exception statement from your version.
+ */
 package de.sub.goobi.persistence.managers;
 
 import java.io.Serializable;
@@ -59,8 +84,7 @@ class VocabularyMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<Definition> ret = new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(Definition.class), vocabularyId);
-            return ret;
+            return new QueryRunner().query(connection, sql.toString(), new BeanListHandler<>(Definition.class), vocabularyId);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -143,7 +167,7 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             int numberOfProcessesWithTitle =
-                    new QueryRunner().query(connection, sql.toString(), MySQLHelper.resultSetToIntegerHandler, vocabulary.getTitle());
+                    new QueryRunner().query(connection, sql, MySQLHelper.resultSetToIntegerHandler, vocabulary.getTitle());
             return (numberOfProcessesWithTitle == 0);
         } finally {
             if (connection != null) {
@@ -293,7 +317,7 @@ class VocabularyMysqlHelper implements Serializable {
             try {
                 connection = MySQLHelper.getInstance().getConnection();
                 List<VocabRecord> records =
-                        new QueryRunner().query(connection, sql.toString(), VocabularyManager.vocabularyRecordListHandler, vocabulary.getId());
+                        new QueryRunner().query(connection, sql, VocabularyManager.vocabularyRecordListHandler, vocabulary.getId());
                 for (VocabRecord rec : records) {
                     setDefinitionsToRecord(rec, vocabulary);
                 }
@@ -313,7 +337,7 @@ class VocabularyMysqlHelper implements Serializable {
             Connection connection = null;
             try {
                 connection = MySQLHelper.getInstance().getConnection();
-                List<VocabRecord> records = new QueryRunner().query(connection, sql.toString(),
+                List<VocabRecord> records = new QueryRunner().query(connection, sql,
                         VocabularyManager.resultSetToVocabularyRecordListHandler, vocabulary.getId());
                 for (VocabRecord rec : records) {
                     // merge expected definitions with existing definitions
@@ -500,7 +524,7 @@ class VocabularyMysqlHelper implements Serializable {
                 if (subQuery.length() > 0) {
                     subQuery.append(" OR ");
                 }
-                subQuery.append("r.label ='" + fieldName + "'");
+                subQuery.append("r.label ='" + StringEscapeUtils.escapeSql(fieldName) + "'");
             }
             sb.append(subQuery.toString());
             sb.append(")");
@@ -511,7 +535,8 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner runner = new QueryRunner();
-            List<Integer> idList = runner.query(connection, sb.toString(), MySQLHelper.resultSetToIntegerListHandler, vocabularyName);
+            List<Integer> idList =
+                    runner.query(connection, sb.toString(), MySQLHelper.resultSetToIntegerListHandler, StringEscapeUtils.escapeSql(vocabularyName));
 
             if (idList.isEmpty()) {
                 return Collections.emptyList();
@@ -627,7 +652,7 @@ class VocabularyMysqlHelper implements Serializable {
             // order
             if (MySQLHelper.isJsonCapable()) {
                 String sqlPathToField = "SELECT REPLACE(JSON_SEARCH(attr, 'one', '" + vocabulary.getMainFieldName()
-                + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
+                        + "'), 'label','value') from vocabularyRecords WHERE vocabId= ? limit 1";
                 String field = runner.query(connection, sqlPathToField, MySQLHelper.resultSetToStringHandler, vocabulary.getId());
                 sb.append(" ORDER BY " + "JSON_EXTRACT(attr, " + field + ") ");
                 if (StringUtils.isNotBlank(vocabulary.getOrder())) {
@@ -795,7 +820,7 @@ class VocabularyMysqlHelper implements Serializable {
     }
 
     public static void batchUpdateRecords(List<VocabRecord> records, Integer vocabularyID) throws SQLException {
-        //        1.) delete old fields;
+        //        1.) delete old fields
         StringBuilder sql = new StringBuilder();
         sql.append("DELETE from vocabulary_record_data WHERE record_id IN (");
 
@@ -815,7 +840,7 @@ class VocabularyMysqlHelper implements Serializable {
             QueryRunner runner = new QueryRunner();
             connection = MySQLHelper.getInstance().getConnection();
             runner.execute(connection, sql.toString());
-            //        2.) insert new fields;
+            //        2.) insert new fields
             fieldsBatchInsertion(records, vocabularyID, connection, runner);
         } finally {
             if (connection != null) {
@@ -835,9 +860,8 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
 
-            Timestamp timeAltered = new QueryRunner().query(connection, sql, VocabularyManager.resultSetGetLastAlteredHandler, vocabulary.getId());
+            return new QueryRunner().query(connection, sql, VocabularyManager.resultSetGetLastAlteredHandler, vocabulary.getId());
 
-            return timeAltered;
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -878,9 +902,8 @@ class VocabularyMysqlHelper implements Serializable {
         try {
             connection = MySQLHelper.getInstance().getConnection();
 
-            Timestamp timeUploaded = new QueryRunner().query(connection, sql, VocabularyManager.resultSetGetLastUploadedHandler, vocabulary.getId());
+            return new QueryRunner().query(connection, sql, VocabularyManager.resultSetGetLastUploadedHandler, vocabulary.getId());
 
-            return timeUploaded;
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

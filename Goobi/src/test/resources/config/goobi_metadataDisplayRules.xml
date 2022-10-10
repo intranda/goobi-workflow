@@ -2,15 +2,32 @@
 <displayRules>
     <ruleSet>
         <context projectName="*">
+          <select ref="junitMetadata">
+                <item selected="false">
+                    <label>a</label>
+                    <value>a</value>
+                </item>
+                <item selected="false">
+                    <label>b</label>
+                    <value>b</value>
+                </item>
+        </select>
+          <select1 ref="TitleDocMain">
+                <item selected="false">
+                    <label>main title</label>
+                    <value>main title</value>
+                </item>
+                <item selected="false">
+                    <label>other title</label>
+                    <value>other title</value>
+                </item>
+        </select1>        
             <readonly ref="physPageNumber">
                 <label />
             </readonly>
             <readonly ref="URN">
                 <label />
             </readonly>
-            <textarea ref="TitleDocMain">
-                <label></label>
-            </textarea>
             <textarea ref="TitleDocMainShort">
                 <label></label>
             </textarea>

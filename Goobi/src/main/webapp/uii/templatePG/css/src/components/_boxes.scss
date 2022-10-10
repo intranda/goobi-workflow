@@ -1,5 +1,10 @@
 /* Base box */
 
+/* VARIABLES */
+.box {
+  --box-padding: 2rem;
+}
+
 .box {
   border: 2px solid var(--clr-neutral, #ddd);
   border-radius: var(--border-radius);
@@ -13,7 +18,7 @@
   //  margin: auto;
 }
 
-.box-title {
+.box__title {
   color: var(--clr-white, #fff);
   display: flex;
   justify-content: space-between;
@@ -41,8 +46,8 @@
   }
 }
 
-.box-content {
-  padding: 2rem;
+.box__content {
+  padding: var(--box-padding);
 
   // Apply a border-bottom to first level rows only
   // => nested rows will not have a border
@@ -55,17 +60,24 @@
   }
 }
 
-.box-content:not(.p-0) {
+.box__content--padded {
+  .box__title {
+    margin: calc(var(--box-padding) * -1);
+    margin-bottom: unset;
+  }
+
   tr {
-    /*
     border-left: 1px solid var(--clr-neutral-300);
     border-right: 1px solid var(--clr-neutral-300);
-    */
+  }
+
+  .no-borders tr {
+    border: 0;
   }
 }
 
 /* Box content without padding */
-.box-content.p-0 {
+.box__content.p-0 {
   /* prevent rows from overlapping boxes */
   .row,
   [class^="col-"] {
@@ -74,4 +86,91 @@
   .row > [class^="col-"] {
     padding: 1.6rem 0.8rem;
   }
+
+  .form-actions,
+  .box__actions,
+  .form__actions {
+    margin: 1.6rem;
+  }
+}
+
+/**
+ * TABS
+ * Some boxes have tabs => box content is changed using ajax calls
+ * */
+
+.box {
+  .tabs {
+    display: flex;
+    gap: 0.8rem;
+    padding: 2;
+    list-style: none;
+    margin-bottom: 0;
+    margin-right: 8px;
+    align-items: center;
+  }
+
+  .tab {
+    display: flex;
+    padding: 0.2em 0.8em;
+    border-radius: var(--border-radius);
+    border: 1px solid;
+    border-color: var(--clr-white);
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+
+  .tab:hover,
+  .tab.active {
+    background-color: var(--clr-white);
+    color: var(--clr-text-400);
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+
+  .tab:hover {
+    background-color: var(--clr-neutral-200);
+  }
+
+  .tab-content > .tab-pane {
+    display: none;
+
+    &.active {
+      display: block;
+    }
+  }
+}
+
+/* Layout for boxes with forms */
+.box.form-box {
+  .row {
+    border-bottom: 1px solid var(--clr-neutral-300);
+  }
+
+  .col-md-3,
+  .col-md-9 {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    // stretch nested boxes to full width
+    .box {
+      flex: 1;
+    }
+  }
+
+  .col-md-3 {
+    background: var(--clr-neutral-200);
+    border-right: 1px solid var(--clr-neutral-300);
+  }
+
+  .form__label i {
+    vertical-align: super;
+    font-size: var(--fs-100, 0.8rem);
+    color: var(--clr-neutral-400);
+  }
+}
+
+// Standalone help block under boxes, often these are nested boxes
+.box__help {
+  display: block;
+  flex: 1 1 100%;
+  margin-left: 1px;
 }

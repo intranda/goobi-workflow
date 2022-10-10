@@ -1,3 +1,28 @@
+/**
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ * 
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * 
+ * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
+ * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
+ * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
+ * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
+ * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
+ * exception statement from your version.
+ */
 package de.sub.goobi.metadaten.search;
 
 import java.net.URLEncoder;
@@ -16,13 +41,11 @@ import de.intranda.digiverso.normdataimporter.model.NormData;
 import de.intranda.digiverso.normdataimporter.model.NormDataRecord;
 import lombok.extern.log4j.Log4j2;
 
-
 /**
- * Import authority data from KulturNav (https://kulturnav.org/). The endpoint is queried and then
- * data are imported and mapped to the norm labels which Goobi understands
+ * Import authority data from KulturNav (https://kulturnav.org/). The endpoint is queried and then data are imported and mapped to the norm labels
+ * which Goobi understands
  *
- * @author Hemed Ali Al Ruwehy
- * 2021-03-03
+ * @author Hemed Ali Al Ruwehy 2021-03-03
  */
 @Log4j2
 public class KulturNavImporter extends JsonDataLoader {
@@ -32,14 +55,11 @@ public class KulturNavImporter extends JsonDataLoader {
     public KulturNavImporter() {
     }
 
-
     /**
      * Creates a norm data record based on the structure of the jsonMap
      *
-     * @param jsonMap          a JSON map
-     * @param defaultLabelList a default list of preferred values that will
-     *                         be shown to the search box. Default are values
-     *                         from getValueList()
+     * @param jsonMap a JSON map
+     * @param defaultLabelList a default list of preferred values that will be shown to the search box. Default are values from getValueList()
      * @return a record of type NormDataRecord
      */
     private static NormDataRecord createNormDataRecord(Map<String, Object> jsonMap,
@@ -65,7 +85,6 @@ public class KulturNavImporter extends JsonDataLoader {
         return normDataRecord;
     }
 
-
     /**
      * Extracts UUID from KulturNav Url, which is in the form: BASE_URL + "uuid"
      *
@@ -82,7 +101,6 @@ public class KulturNavImporter extends JsonDataLoader {
         return url;
     }
 
-
     /**
      * Creates a Norm data records based on the structure of the jsonMap
      *
@@ -94,8 +112,7 @@ public class KulturNavImporter extends JsonDataLoader {
     }
 
     /**
-     * KulturNav search string must be encoded and all white spaces must be
-     * interpreted as "%20" so that the backend can understand.
+     * KulturNav search string must be encoded and all white spaces must be interpreted as "%20" so that the backend can understand.
      *
      * @param searchString a URL to be encoded
      * @return an encoded URL
@@ -107,8 +124,8 @@ public class KulturNavImporter extends JsonDataLoader {
                 String[] tokens = searchString.split("\\s+");
                 for (String token : tokens) {
                     encodedString
-                    .append(URLEncoder.encode(token.trim(), "UTF-8"))
-                    .append(' ');
+                            .append(URLEncoder.encode(token.trim(), "UTF-8"))
+                            .append(' ');
                 }
                 return encodedString.toString()
                         .trim()
@@ -120,12 +137,9 @@ public class KulturNavImporter extends JsonDataLoader {
         return searchString;
     }
 
-
     /**
-     * Source is a fragment which restricts the search to a specific category,
-     * for example, an entity class or a dataset, e.g
-     * <code>entityType:Person,entity.dataset:508197af-6e36-4e4f-927c-79f8f63654b2</code>
-     * See more: http://kulturnav.org/info/api
+     * Source is a fragment which restricts the search to a specific category, for example, an entity class or a dataset, e.g
+     * <code>entityType:Person,entity.dataset:508197af-6e36-4e4f-927c-79f8f63654b2</code> See more: http://kulturnav.org/info/api
      *
      * @param source a source to parse
      * @return a source which is ready to be appended to KulturNav API endpoint
@@ -140,7 +154,6 @@ public class KulturNavImporter extends JsonDataLoader {
         }
         return "";
     }
-
 
     /**
      * Imports data from the given endpoint and return a list of norm data records.
@@ -157,12 +170,11 @@ public class KulturNavImporter extends JsonDataLoader {
         return records;
     }
 
-
     /**
      * Constructs summary Url to send it to KulturNav
      *
      * @param searchString a search string
-     * @param source       a source @see {{@link #parseSource(String)}}
+     * @param source a source @see {{@link #parseSource(String)}}
      * @return
      */
     public static String constructSearchUrl(String searchString, String source) {
@@ -185,13 +197,11 @@ public class KulturNavImporter extends JsonDataLoader {
         return sourceForPerson;
     }
 
-
     /**
-     * Reads source from config file <code>goobi_metadataDisplayRules.xml</code> where the
-     * display type is {@link DisplayType#kulturnav} for a given metadata ref (element name)
+     * Reads source from config file <code>goobi_metadataDisplayRules.xml</code> where the display type is {@link DisplayType#kulturnav} for a given
+     * metadata ref (element name)
      * <p>
-     * The structure could look like this:
-     * <code>
+     * The structure could look like this: <code>
      * <kulturnav ref="person">
      * <source>entityType:Person, entity.dataset:d519f76b-5ce5-4876-906e-7d31a76eb609</source>
      * </kulturnav>
@@ -215,7 +225,6 @@ public class KulturNavImporter extends JsonDataLoader {
         return source;
     }
 
-
     // Main method for easy debugging
     public static void main(String[] args) throws Exception {
         String encoded = parseSearchString("Almaas OR Øyvind 1939");
@@ -226,8 +235,5 @@ public class KulturNavImporter extends JsonDataLoader {
             System.out.println("--------------------");
             NormDataUtils.printRecord(normDataRecord);
         }
-        // System.out.println(fetchJsonString(" http://api.dante.gbv.de/search?query=Adolf"));
-        // System.out.println(fetchJsonString("https://jambo.uib.no/blackbox/suggest?q=Marcus"));
-        // System.out.println(fetchJsonString("https://arbeidsplassen.nav.no/stillinger/api/search"));
     }
 }

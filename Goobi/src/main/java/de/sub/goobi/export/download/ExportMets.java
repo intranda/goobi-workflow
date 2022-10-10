@@ -1,12 +1,3 @@
-package de.sub.goobi.export.download;
-
-import java.awt.Dimension;
-import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -32,6 +23,15 @@ import java.io.FileOutputStream;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+package de.sub.goobi.export.download;
+
+import java.awt.Dimension;
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -163,8 +163,8 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess) throws IOException, InterruptedException, DocStructHasNoTypeException, PreferencesException,
-    WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
-    TypeNotAllowedForParentException {
+            WriteException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException, SwapException, DAOException,
+            TypeNotAllowedForParentException {
 
         String benutzerHome = "";
         LoginBean login = Helper.getLoginBean();
@@ -177,7 +177,7 @@ public class ExportMets {
     }
 
     public void downloadMets(Process process) throws ReadException, PreferencesException, WriteException, IOException, InterruptedException,
-    SwapException, DAOException, TypeNotAllowedForParentException {
+            SwapException, DAOException, TypeNotAllowedForParentException {
         this.myPrefs = process.getRegelsatz().getPreferences();
         String atsPpnBand = process.getTitel();
         Fileformat gdzfile = process.readMetadataFile();
@@ -233,8 +233,8 @@ public class ExportMets {
      * @throws TypeNotAllowedForParentException
      */
     public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
-    WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
-    SwapException, DAOException, TypeNotAllowedForParentException {
+            WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
+            SwapException, DAOException, TypeNotAllowedForParentException {
 
         /*
          * -------------------------------- Read Document --------------------------------
@@ -244,7 +244,6 @@ public class ExportMets {
         Fileformat gdzfile = myProzess.readMetadataFile();
 
         String zielVerzeichnis = prepareUserDirectory(inZielVerzeichnis);
-        //    String zielVerzeichnis = Files.createTempDirectory("mets_export").toAbsolutePath().toString(); //only save file in /tmp/ directory
 
         String targetFileName = zielVerzeichnis + atsPpnBand + "_mets.xml";
         return writeMetsFile(myProzess, targetFileName, gdzfile, false);
@@ -328,7 +327,7 @@ public class ExportMets {
             mih.createPagination(myProzess, null);
             try {
                 myProzess.writeMetadataFile(gdzfile);
-            } catch (UGHException | IOException |  SwapException e) {
+            } catch (UGHException | IOException | SwapException e) {
                 log.error(e);
             }
         } else {
@@ -340,7 +339,7 @@ public class ExportMets {
          */
         DocStruct topElement = dd.getLogicalDocStruct();
         if (topElement.getType().isAnchor()) {
-            if (topElement.getAllChildren() == null || topElement.getAllChildren().size() == 0) {
+            if (topElement.getAllChildren() == null || topElement.getAllChildren().isEmpty()) {
                 throw new PreferencesException(
                         myProzess.getTitel() + ": the topstruct element is marked as anchor, but does not have any children for physical docstrucs");
             } else {
@@ -354,7 +353,7 @@ public class ExportMets {
 
         if (config.isExportValidateImages()) {
 
-            if (topElement.getAllToReferences("logical_physical") == null || topElement.getAllToReferences("logical_physical").size() == 0) {
+            if (topElement.getAllToReferences("logical_physical") == null || topElement.getAllToReferences("logical_physical").isEmpty()) {
                 if (dd.getPhysicalDocStruct() != null && dd.getPhysicalDocStruct().getAllChildren() != null) {
                     Helper.setMeldung(myProzess.getTitel()
                             + ": topstruct element does not have any referenced images yet; temporarily adding them for mets file creation");
@@ -463,7 +462,7 @@ public class ExportMets {
         List<ProjectFileGroup> myFilegroups = myProzess.getProjekt().getFilegroups();
 
         boolean useOriginalFiles = false;
-        if (myFilegroups != null && myFilegroups.size() > 0) {
+        if (myFilegroups != null && !myFilegroups.isEmpty()) {
             for (ProjectFileGroup pfg : myFilegroups) {
                 if (pfg.isUseOriginalFiles()) {
                     useOriginalFiles = true;
@@ -492,7 +491,7 @@ public class ExportMets {
             if (!filesInFolder.isEmpty()) {
                 // compare image names with files in mets file
                 List<DocStruct> pages = dd.getPhysicalDocStruct().getAllChildren();
-                if (pages != null && pages.size() > 0) {
+                if (pages != null && !pages.isEmpty()) {
                     for (DocStruct page : pages) {
                         Path completeNameInMets = Paths.get(page.getImageName());
                         String filenameInMets = completeNameInMets.getFileName().toString();
@@ -507,7 +506,7 @@ public class ExportMets {
                                 imageName = imageName.substring(0, dotIndex);
                             }
 
-                            if (filenameInMets.toLowerCase().equals(imageName.toLowerCase())) {
+                            if (filenameInMets.equalsIgnoreCase(imageName)) {
                                 // found matching filename
                                 page.setImageName(imageNameInFolder.toString());
                                 break;
@@ -550,7 +549,6 @@ public class ExportMets {
         mm.setIIIFUrl(vp.replace(myProzess.getProjekt().getMetsIIIFUrl()));
         mm.setSruUrl(vp.replace(myProzess.getProjekt().getMetsSruUrl()));
 
-        // if (!ConfigMain.getParameter("ImagePrefix", "\\d{8}").equals("\\d{8}")) {
         List<String> images = new ArrayList<>();
         if (config.isExportValidateImages()) {
             try {
@@ -648,9 +646,9 @@ public class ExportMets {
         v.setMimetype(projectFileGroup.getMimetype());
         //check for null to stop NullPointerException
         String projectFileSuffix = projectFileGroup.getSuffix();
-        if(projectFileSuffix != null) {
+        if (projectFileSuffix != null) {
             v.setFileSuffix(projectFileSuffix.trim());
-        }else {
+        } else {
             v.setFileSuffix(projectFileSuffix);
         }
         v.setFileExtensionsToIgnore(projectFileGroup.getIgnoreMimetypes());
@@ -908,7 +906,6 @@ public class ExportMets {
         if (!image.getFileName().toString().endsWith(".jp2")) {
             throw new IOException("No valid image reader found for 'jpeg2000'");
         }
-        //            if (image.getFileName().toString().matches("(?i).*\\.jp(2|x|2000)")) {
         Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("jpeg2000");
 
         while (readers.hasNext()) {
@@ -1165,18 +1162,14 @@ public class ExportMets {
      */
     private static String getShaString(MessageDigest messageDigest, String algorithmName) throws NoSuchAlgorithmException {
         BigInteger bigInt = new BigInteger(1, messageDigest.digest());
-        //        String sha256 = bigInt.toString(16).toLowerCase();
         StringBuilder sha256 = new StringBuilder(bigInt.toString(16).toLowerCase());
         if (algorithmName.equals("SHA-1")) {
             while (sha256.length() < 40) {
                 sha256.insert(0, "0");
-                //                sha256 = "0" + sha256;
             }
         } else if (algorithmName.equals("SHA-256")) {
             while (sha256.length() < 64) {
                 sha256.insert(0, "0");
-
-                //                sha256 = "0" + sha256;
             }
         } else {
             throw new NoSuchAlgorithmException("Only SHA-1 and SHA-256 supported");
@@ -1230,7 +1223,6 @@ public class ExportMets {
             throws IOException, DataFormatException, UnsupportedAudioFileException {
 
         addObjectIdentifier(doc, object, "local", file.getFileName().normalize().toString());
-        //  buildMPEGMetadata(doc, file, object);
 
         double duration = 0;
         String bitrate = null;

@@ -4,10 +4,9 @@ package io.goobi.workflow.xslt;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
- * 			- http://digiverso.com
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -47,7 +46,7 @@ import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.HistoryEvent;
 import org.goobi.beans.Institution;
 import org.goobi.beans.InstitutionConfigurationObject;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Masterpiece;
 import org.goobi.beans.Masterpieceproperty;
 import org.goobi.beans.Process;
@@ -214,19 +213,17 @@ public class XsltPreparatorDocket implements IXsltPreparator {
 
         // add user comments from the process log
         Element comment = new Element("comments", xmlns);
-        List<LogEntry> logEntry = process.getProcessLog();
-        for (LogEntry entry : logEntry) {
+        List<JournalEntry> logEntry = process.getJournal();
+        for (JournalEntry entry : logEntry) {
             Element commentLine = new Element("comment", xmlns);
             commentLine.setAttribute("type", entry.getType().getTitle());
             if (StringUtils.isNotBlank(entry.getUserName())) {
                 commentLine.setAttribute("user", entry.getUserName());
             }
             commentLine.setText(entry.getContent());
-            if (StringUtils.isNotBlank(entry.getSecondContent())) {
-                comment.setAttribute("secondField", entry.getSecondContent());
-            }
-            if (StringUtils.isNotBlank(entry.getThirdContent())) {
-                comment.setAttribute("thirdField", entry.getThirdContent());
+
+            if (StringUtils.isNotBlank(entry.getFilename())) {
+                comment.setAttribute("filename", entry.getFilename());
             }
             comment.addContent(commentLine);
         }
@@ -267,7 +264,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             property.addContent(label);
             processProperties.add(property);
         }
-        if (processProperties.size() != 0) {
+        if (!processProperties.isEmpty()) {
             Element properties = new Element("properties", xmlns);
             properties.addContent(processProperties);
             elements.add(properties);
@@ -349,7 +346,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                     }
                 }
             }
-            if (templateProperties.size() != 0) {
+            if (!templateProperties.isEmpty()) {
                 Element properties = new Element("properties", xmlns);
                 properties.addContent(templateProperties);
                 template.addContent(properties);
@@ -384,7 +381,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 property.addContent(label);
                 docProperties.add(property);
             }
-            if (docProperties.size() != 0) {
+            if (!docProperties.isEmpty()) {
                 Element properties = new Element("properties", xmlns);
                 properties.addContent(docProperties);
                 dd.addContent(properties);
@@ -510,7 +507,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 elements.add(representative);
 
                 // add all internal files
-                Path pIntern = Paths.get(process.getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalProcesslogFiles());
+                Path pIntern = Paths.get(process.getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalJournalFiles());
                 elements.add(getContentFiles(process, "intern", pIntern.toString()));
 
                 // add all files from export folder
@@ -524,16 +521,14 @@ public class XsltPreparatorDocket implements IXsltPreparator {
             }
             // all log files together with their comments
             Element logfiles = new Element("log", xmlns);
-            for (LogEntry entry : process.getProcessLog()) {
+            for (JournalEntry entry : process.getJournal()) {
                 if (entry.getType() == LogType.FILE) {
                     Element cf = new Element("file", xmlns);
-                    //cf.addContent(entry.getThirdContent());
                     if (entry.getContent() != null) {
                         cf.setAttribute("comment", entry.getContent());
                     }
-                    cf.setAttribute("path", entry.getThirdContent());
-
-                    Path imagePath = Paths.get(entry.getThirdContent());
+                    cf.setAttribute("path", entry.getFilename());
+                    Path imagePath = Paths.get(entry.getFilename());
                     Image image = new Image(process, "intern", imagePath.getFileName().toString(), 0, 3000);
                     cf.setAttribute("url", image.getThumbnailUrl());
 
@@ -805,15 +800,14 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         // prozesse.docketID
         if (process.getDocket() != null) {
             rootElement.addContent(getDocketData(process));
-            //            getDocketData(process, rootElement);
         }
 
         // ProjekteID
         rootElement.addContent(getProjectData(process));
 
         // process log
-        if (process.getProcessLog() != null && !process.getProcessLog().isEmpty()) {
-            rootElement.addContent(getProcessLogData(process));
+        if (process.getJournal() != null && !process.getJournal().isEmpty()) {
+            rootElement.addContent(getJournalData(process));
         }
 
         // process properties
@@ -1138,10 +1132,10 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      * @param process
      * @return
      */
-    private Element getProcessLogData(Process process) {
-        Element processLog = new Element("log", xmlns);
+    private Element getJournalData(Process process) {
+        Element journal = new Element("log", xmlns);
 
-        for (LogEntry entry : process.getProcessLog()) {
+        for (JournalEntry entry : process.getJournal()) {
             Element entryElement = new Element("entry", xmlns);
             // processlog.id
             entryElement.setAttribute("id", String.valueOf(entry.getId()));
@@ -1165,21 +1159,16 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 entryUserName.setText(entry.getUserName());
                 entryElement.addContent(entryUserName);
             }
-            // processlog.secondContent
-            if (StringUtils.isNotBlank(entry.getSecondContent())) {
-                Element secondContent = new Element("secondContent", xmlns);
-                entryElement.addContent(secondContent);
-                secondContent.setText(entry.getSecondContent());
-            }
-            // processlog.thirdContent
-            if (StringUtils.isNotBlank(entry.getThirdContent())) {
-                Element thirdContent = new Element("thirdContent", xmlns);
+
+            // processlog.filename
+            if (StringUtils.isNotBlank(entry.getFilename())) {
+                Element thirdContent = new Element("filename", xmlns);
                 entryElement.addContent(thirdContent);
-                thirdContent.setText(entry.getThirdContent());
+                thirdContent.setText(entry.getFilename());
             }
-            processLog.addContent(entryElement);
+            journal.addContent(entryElement);
         }
-        return processLog;
+        return journal;
     }
 
     /**
@@ -1248,25 +1237,25 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         // projekte.dmsImportRootPath
         Element dmsImportRootPath = new Element("dmsImportRootPath", xmlns);
         dmsImportRootPath
-                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportRootPath()) ? "" : process.getProjekt().getDmsImportRootPath());
+        .setText(StringUtils.isBlank(process.getProjekt().getDmsImportRootPath()) ? "" : process.getProjekt().getDmsImportRootPath());
         exportConfiguration.addContent(dmsImportRootPath);
 
         // projekte.dmsImportImagesPath
         Element dmsImportImagesPath = new Element("dmsImportImagesPath", xmlns);
         dmsImportImagesPath
-                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportImagesPath()) ? "" : process.getProjekt().getDmsImportImagesPath());
+        .setText(StringUtils.isBlank(process.getProjekt().getDmsImportImagesPath()) ? "" : process.getProjekt().getDmsImportImagesPath());
         exportConfiguration.addContent(dmsImportImagesPath);
 
         // projekte.dmsImportSuccessPath
         Element dmsImportSuccessPath = new Element("dmsImportSuccessPath", xmlns);
         dmsImportSuccessPath
-                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportSuccessPath()) ? "" : process.getProjekt().getDmsImportSuccessPath());
+        .setText(StringUtils.isBlank(process.getProjekt().getDmsImportSuccessPath()) ? "" : process.getProjekt().getDmsImportSuccessPath());
         exportConfiguration.addContent(dmsImportSuccessPath);
 
         // projekte.dmsImportErrorPath
         Element dmsImportErrorPath = new Element("dmsImportErrorPath", xmlns);
         dmsImportErrorPath
-                .setText(StringUtils.isBlank(process.getProjekt().getDmsImportErrorPath()) ? "" : process.getProjekt().getDmsImportErrorPath());
+        .setText(StringUtils.isBlank(process.getProjekt().getDmsImportErrorPath()) ? "" : process.getProjekt().getDmsImportErrorPath());
         exportConfiguration.addContent(dmsImportErrorPath);
 
         // projekte.dmsImportCreateProcessFolder
@@ -1285,25 +1274,25 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         // projekte.metsRightsOwnerLogo
         Element metsRightsOwnerLogo = new Element("metsRightsOwnerLogo", xmlns);
         metsRightsOwnerLogo
-                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerLogo()) ? "" : process.getProjekt().getMetsRightsOwnerLogo());
+        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerLogo()) ? "" : process.getProjekt().getMetsRightsOwnerLogo());
         metsConfiguration.addContent(metsRightsOwnerLogo);
 
         // projekte.metsRightsOwnerSite
         Element metsRightsOwnerSite = new Element("metsRightsOwnerSite", xmlns);
         metsRightsOwnerSite
-                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerSite()) ? "" : process.getProjekt().getMetsRightsOwnerSite());
+        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerSite()) ? "" : process.getProjekt().getMetsRightsOwnerSite());
         metsConfiguration.addContent(metsRightsOwnerSite);
 
         // projekte.metsRightsOwnerMail
         Element metsRightsOwnerMail = new Element("metsRightsOwnerMail", xmlns);
         metsRightsOwnerMail
-                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerMail()) ? "" : process.getProjekt().getMetsRightsOwnerMail());
+        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsOwnerMail()) ? "" : process.getProjekt().getMetsRightsOwnerMail());
         metsConfiguration.addContent(metsRightsOwnerMail);
 
         // projekte.metsDigiprovReference
         Element metsDigiprovReference = new Element("metsDigiprovReference", xmlns);
         metsDigiprovReference
-                .setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovReference()) ? "" : process.getProjekt().getMetsDigiprovReference());
+        .setText(StringUtils.isBlank(process.getProjekt().getMetsDigiprovReference()) ? "" : process.getProjekt().getMetsDigiprovReference());
         metsConfiguration.addContent(metsDigiprovReference);
 
         // projekte.metsDigiprovPresentation
@@ -1332,7 +1321,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         // projekte.metsPointerPathAnchor
         Element metsPointerPathAnchor = new Element("metsPointerPathAnchor", xmlns);
         metsPointerPathAnchor
-                .setText(StringUtils.isBlank(process.getProjekt().getMetsPointerPathAnchor()) ? "" : process.getProjekt().getMetsPointerPathAnchor());
+        .setText(StringUtils.isBlank(process.getProjekt().getMetsPointerPathAnchor()) ? "" : process.getProjekt().getMetsPointerPathAnchor());
         metsConfiguration.addContent(metsPointerPathAnchor);
 
         // projekte.metsPurl
@@ -1348,13 +1337,13 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         // projekte.metsRightsSponsor
         Element metsRightsSponsor = new Element("metsRightsSponsor", xmlns);
         metsRightsSponsor
-                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsor()) ? "" : process.getProjekt().getMetsRightsSponsor());
+        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsor()) ? "" : process.getProjekt().getMetsRightsSponsor());
         metsConfiguration.addContent(metsRightsSponsor);
 
         // projekte.metsRightsSponsorLogo
         Element metsRightsSponsorLogo = new Element("metsRightsSponsorLogo", xmlns);
         metsRightsSponsorLogo
-                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsorLogo()) ? "" : process.getProjekt().getMetsRightsSponsorLogo());
+        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsSponsorLogo()) ? "" : process.getProjekt().getMetsRightsSponsorLogo());
         metsConfiguration.addContent(metsRightsSponsorLogo);
 
         // projekte.metsRightsSponsorSiteURL
@@ -1366,7 +1355,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
         // projekte.metsRightsLicense
         Element metsRightsLicense = new Element("metsRightsLicense", xmlns);
         metsRightsLicense
-                .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsLicense()) ? "" : process.getProjekt().getMetsRightsLicense());
+        .setText(StringUtils.isBlank(process.getProjekt().getMetsRightsLicense()) ? "" : process.getProjekt().getMetsRightsLicense());
         metsConfiguration.addContent(metsRightsLicense);
         project.addContent(metsConfiguration);
 

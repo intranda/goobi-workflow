@@ -3,10 +3,10 @@ package de.unigoettingen.sub.search.opac;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -33,24 +33,24 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class ConfigOpacDoctype {
-	@Getter
+    @Getter
     private String title = "";
-	@Getter
+    @Getter
     private String rulesetType = "";
-	@Getter
+    @Getter
     private String tifHeaderType = "";
-	@Getter
+    @Getter
     private boolean periodical = false;
-	@Getter
+    @Getter
     private boolean multiVolume = false;
-	@Getter
+    @Getter
     private boolean containedWork = false;
-	@Getter
+    @Getter
     private Map<String, String> labels;
-	@Getter
-	@Setter
+    @Getter
+    @Setter
     private List<String> mappings;
-	@Getter
+    @Getter
     private String rulesetChildType;
 
     public ConfigOpacDoctype(String inTitle, String inRulesetType, String inTifHeaderType, boolean inPeriodical, boolean inMultiVolume,

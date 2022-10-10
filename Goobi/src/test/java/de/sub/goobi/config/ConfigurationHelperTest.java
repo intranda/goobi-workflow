@@ -24,8 +24,11 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -48,7 +51,7 @@ public class ConfigurationHelperTest extends AbstractTest {
         if (!Files.exists(goobiFolder)) {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
-        goobiMainFolder =goobiFolder.getParent().getParent().toString();
+        goobiMainFolder = goobiFolder.getParent().getParent().toString();
         ConfigurationHelper.CONFIG_FILE_NAME = goobiFolder.toString();
         ConfigurationHelper.resetConfigurationFile();
         ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiMainFolder);
@@ -105,6 +108,11 @@ public class ConfigurationHelperTest extends AbstractTest {
     @Test
     public void testGetPluginFolder() {
         assertEquals(goobiMainFolder + "plugins/", ConfigurationHelper.getInstance().getPluginFolder());
+    }
+
+    @Test
+    public void testGetLibFolder() {
+        assertEquals(goobiMainFolder + "lib/", ConfigurationHelper.getInstance().getLibFolder());
     }
 
     @Test
@@ -168,6 +176,13 @@ public class ConfigurationHelperTest extends AbstractTest {
     }
 
     @Test
+    public void testGetAdditionalProcessDirectories() {
+        assertEquals("", ConfigurationHelper.getInstance().getAdditionalProcessFolderName("fixture"));
+        assertEquals("existing", ConfigurationHelper.getInstance().getAdditionalProcessFolderName("existing"));
+
+    }
+
+    @Test
     public void testIsCreateMasterDirectory() {
         assertTrue(ConfigurationHelper.getInstance().isCreateMasterDirectory());
     }
@@ -180,6 +195,26 @@ public class ConfigurationHelperTest extends AbstractTest {
     @Test
     public void testGetNumberOfMetaBackups() {
         assertEquals(8, ConfigurationHelper.getInstance().getNumberOfMetaBackups());
+    }
+
+    @Test
+    public void testGetGoobiAuthorityServerPassword() {
+        assertEquals("testsecret", ConfigurationHelper.getInstance().getGoobiAuthorityServerPassword());
+    }
+
+    @Test
+    public void testGetGoobiAuthorityServerBackupFreq() {
+        assertEquals(0, ConfigurationHelper.getInstance().getGoobiAuthorityServerBackupFreq());
+    }
+
+    @Test
+    public void testGetGoobiAuthorityServerUser() {
+        assertEquals("user", ConfigurationHelper.getInstance().getGoobiAuthorityServerUser());
+    }
+
+    @Test
+    public void testGetGoobiAuthorityServerUrl() {
+        assertNull(ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl());
     }
 
     @Test
@@ -534,4 +569,370 @@ public class ConfigurationHelperTest extends AbstractTest {
         assertEquals(8080, ConfigurationHelper.getInstance().getProxyPort());
     }
 
+    // s3 settings
+    @Test
+    public void testGetS3Bucket() {
+        assertEquals(null, ConfigurationHelper.getInstance().getS3Bucket());
+    }
+
+    @Test
+    public void testGetS3AccessKeyID() {
+        assertEquals("", ConfigurationHelper.getInstance().getS3AccessKeyID());
+    }
+
+    @Test
+    public void testGetS3ConnectionRetries() {
+        assertEquals(10, ConfigurationHelper.getInstance().getS3ConnectionRetries());
+    }
+
+    @Test
+    public void testGetS3ConnectionTimeout() {
+        assertEquals(10000, ConfigurationHelper.getInstance().getS3ConnectionTimeout());
+    }
+
+    @Test
+    public void testGetS3Endpoint() {
+        assertEquals("", ConfigurationHelper.getInstance().getS3Endpoint());
+    }
+
+    @Test
+    public void testGetS3SecretAccessKey() {
+        assertEquals("", ConfigurationHelper.getInstance().getS3SecretAccessKey());
+    }
+
+    @Test
+    public void testGetS3SocketTimeout() {
+        assertEquals(10000, ConfigurationHelper.getInstance().getS3SocketTimeout());
+    }
+
+    @Test
+    public void testGetMinimumPasswordLength() {
+        assertEquals(8, ConfigurationHelper.getInstance().getMinimumPasswordLength());
+    }
+
+    @Test
+    public void testGetAdditionalUserRights() {
+        assertTrue(ConfigurationHelper.getInstance().getAdditionalUserRights().isEmpty());
+    }
+
+    @Test
+    public void testGetGeonamesCredentials() {
+        assertNull(ConfigurationHelper.getInstance().getGeonamesCredentials());
+    }
+
+    @Test
+    public void testAllowFolderLinkingForProcessLists() {
+        assertFalse(ConfigurationHelper.getInstance().isAllowFolderLinkingForProcessList());
+    }
+
+    @Test
+    public void testGetDatabaseLeftTruncationCharacter() {
+        assertEquals("%", ConfigurationHelper.getInstance().getDatabaseLeftTruncationCharacter());
+    }
+
+    @Test
+    public void testGetDatabaseRightTruncationCharacter() {
+        assertEquals("%", ConfigurationHelper.getInstance().getDatabaseRightTruncationCharacter());
+    }
+
+    @Test
+    public void testGetIngexFields() {
+        assertTrue(ConfigurationHelper.getInstance().getIndexFields().isEmpty());
+    }
+
+    @Test
+    public void testGetMetsEditorImageSizes() {
+        assertTrue(ConfigurationHelper.getInstance().getMetsEditorImageSizes().isEmpty());
+    }
+
+    @Test
+    public void testGetMetsEditorImageTileSizes() {
+        assertTrue(ConfigurationHelper.getInstance().getMetsEditorImageTileSizes().isEmpty());
+
+    }
+
+    @Test
+    public void testGetMetsEditorImageTileScales() {
+        assertTrue(ConfigurationHelper.getInstance().getMetsEditorImageTileScales().isEmpty());
+
+    }
+
+    @Test
+    public void testGetMaximalImageSize() {
+        assertEquals(15000, ConfigurationHelper.getInstance().getMaximalImageSize());
+    }
+
+    @Test
+    public void testGetMetsEditorUseImageTiles() {
+        assertTrue(ConfigurationHelper.getInstance().getMetsEditorUseImageTiles());
+    }
+
+    @Test
+    public void testProcesslistShowEditionData() {
+        assertFalse(ConfigurationHelper.getInstance().isProcesslistShowEditionData());
+    }
+
+    @Test
+    public void testGetExcludeMonitoringAgentNames() {
+        assertTrue(ConfigurationHelper.getInstance().getExcludeMonitoringAgentNames().isEmpty());
+    }
+
+    @Test
+    public void testStartInternalMessageBroker() {
+        assertFalse(ConfigurationHelper.getInstance().isStartInternalMessageBroker());
+    }
+
+    @Test
+    public void testGetNumberOfParallelMessages() {
+        assertEquals(1, ConfigurationHelper.getInstance().getNumberOfParallelMessages());
+
+    }
+
+    @Test
+    public void testGetMessageBrokerUrl() {
+        assertEquals("localhost", ConfigurationHelper.getInstance().getMessageBrokerUrl());
+
+    }
+
+    @Test
+    public void testGetMessageBrokerPort() {
+        assertEquals(61616, ConfigurationHelper.getInstance().getMessageBrokerPort());
+    }
+
+    @Test
+    public void testGetMessageBrokerUsername() {
+        assertEquals("user", ConfigurationHelper.getInstance().getMessageBrokerUsername());
+
+    }
+
+    @Test
+    public void testGetMessageBrokerPassword() {
+        assertEquals("password", ConfigurationHelper.getInstance().getMessageBrokerPassword());
+    }
+
+    @Test
+    public void testGetActiveMQConfigPath() {
+        assertEquals(goobiMainFolder + "config/" + "goobi_activemq.xml", ConfigurationHelper.getInstance().getActiveMQConfigPath());
+    }
+
+    // @Test
+    public void testUseH2DB() {
+        // not testable without mocking the sql connection
+        assertFalse(ConfigurationHelper.getInstance().isUseH2DB());
+    }
+
+    @Test
+    public void testUseFulltextSearch() {
+        assertFalse(ConfigurationHelper.getInstance().isUseFulltextSearch());
+    }
+
+    @Test
+    public void testGetFulltextSearchMode() {
+        assertEquals("BOOLEAN MODE", ConfigurationHelper.getInstance().getFulltextSearchMode());
+    }
+
+    @Test
+    public void testGetSqlTasksIndexname() {
+        assertNull(ConfigurationHelper.getInstance().getSqlTasksIndexname());
+    }
+
+    @Test
+    public void testAllowGravatar() {
+        assertTrue(ConfigurationHelper.getInstance().isAllowGravatar());
+    }
+
+    @Test
+    public void testEnableFinalizeTaskButton() {
+        assertTrue(ConfigurationHelper.getInstance().isEnableFinalizeTaskButton());
+    }
+
+    @Test
+    public void testUseOpenIDConnect() {
+        assertFalse(ConfigurationHelper.getInstance().isUseOpenIDConnect());
+    }
+
+    @Test
+    public void testOIDCAutoRedirect() {
+        assertFalse(ConfigurationHelper.getInstance().isOIDCAutoRedirect());
+    }
+
+    @Test
+    public void testGetOIDCAuthEndpoint() {
+        assertEquals("", ConfigurationHelper.getInstance().getOIDCAuthEndpoint());
+    }
+
+    @Test
+    public void testGetOIDCLogoutEndpoint() {
+        assertEquals("", ConfigurationHelper.getInstance().getOIDCLogoutEndpoint());
+    }
+
+    @Test
+    public void testUseOIDCSSOLogout() {
+        assertFalse(ConfigurationHelper.getInstance().isUseOIDCSSOLogout());
+    }
+
+    @Test
+    public void testGetOIDCIssuer() {
+        assertEquals("", ConfigurationHelper.getInstance().getOIDCIssuer());
+    }
+
+    @Test
+    public void testGetOIDCJWKSet() {
+        assertEquals("", ConfigurationHelper.getInstance().getOIDCJWKSet());
+    }
+
+    @Test
+    public void testGetOIDCClientID() {
+        assertEquals("", ConfigurationHelper.getInstance().getOIDCClientID());
+    }
+
+    @Test
+    public void testGetOIDCIdClaim() {
+        assertEquals("email", ConfigurationHelper.getInstance().getOIDCIdClaim());
+    }
+
+    @Test
+    public void testGetSsoHeaderName() {
+        assertEquals("Casauthn", ConfigurationHelper.getInstance().getSsoHeaderName());
+    }
+
+    @Test
+    public void testEnableHeaderLogin() {
+        assertFalse(ConfigurationHelper.getInstance().isEnableHeaderLogin());
+    }
+
+    @Test
+    public void testGetSsoParameterType() {
+        assertEquals("header", ConfigurationHelper.getInstance().getSsoParameterType());
+    }
+
+    @Test
+    public void testEnableExternalUserLogin() {
+        assertFalse(ConfigurationHelper.getInstance().isEnableExternalUserLogin());
+    }
+
+    @Test
+    public void testGetExternalUserDefaultstitutionName() {
+        assertNull(ConfigurationHelper.getInstance().getExternalUserDefaultInstitutionName());
+    }
+
+    @Test
+    public void testGetExternalUserDefaultAuthenticationType() {
+        assertNull(ConfigurationHelper.getInstance().getExternalUserDefaultAuthenticationType());
+    }
+
+    @Test
+    public void testRenderReimport() {
+        assertFalse(ConfigurationHelper.getInstance().isRenderReimport());
+    }
+
+    @Test
+    public void testAllowExternalQueue() {
+        assertFalse(ConfigurationHelper.getInstance().isAllowExternalQueue());
+    }
+
+    @Test
+    public void testRenderAccessibilityCss() {
+        assertFalse(ConfigurationHelper.getInstance().isRenderAccessibilityCss());
+    }
+
+    @Test
+    public void testGetExternalQueueType() {
+        assertEquals("ACTIVEMQ", ConfigurationHelper.getInstance().getExternalQueueType());
+    }
+
+    @Test
+    public void testUseLocalSQS() {
+        assertFalse(ConfigurationHelper.getInstance().isUseLocalSQS());
+    }
+
+    @Test
+    public void testGetHistoryImageSuffix() {
+        assertEquals(1, ConfigurationHelper.getInstance().getHistoryImageSuffix().length);
+    }
+
+    @Test
+    public void testDeveloping() {
+        assertFalse(ConfigurationHelper.getInstance().isDeveloping());
+    }
+
+    @Test
+    public void testShowSSOLogoutPage() {
+        assertFalse(ConfigurationHelper.getInstance().isShowSSOLogoutPage());
+    }
+
+    @Test
+    public void testGetPluginServerUrl() {
+        assertEquals("", ConfigurationHelper.getInstance().getPluginServerUrl());
+    }
+
+    @Test
+    public void testPlainIPIsOnProxyWhitelist() {
+        assertTrue(ConfigurationHelper.getInstance().isProxyWhitelisted("127.0.0.2"));
+    }
+
+    @Test
+    public void testPlainIPIsNotOnProxyWhitelist() {
+        assertFalse(ConfigurationHelper.getInstance().isProxyWhitelisted("999.0.0.1"));
+    }
+
+    @Test
+    public void testLocalhostIsOnProxyWhitelist() {
+        assertTrue(ConfigurationHelper.getInstance().isProxyWhitelisted("localhost"));
+    }
+
+    @Test
+    public void testLocalhostComplexURLIsOnProxyWhitelist() {
+        String ipToTest = "http://localhost:8080/itm/api?action=getPlugins";
+        try {
+            URL url = new URL(ipToTest);
+            assertTrue(ConfigurationHelper.getInstance().isProxyWhitelisted(url));
+        } catch (MalformedURLException e) {
+            fail("URL could not be converted.");
+        }
+    }
+
+    @Test
+    public void testLocalhostHTTPSURLIsProxyWhitelist() {
+        String ipToTest = "https://localhost:8984/databases";
+        try {
+            URL url = new URL(ipToTest);
+            assertTrue(ConfigurationHelper.getInstance().isProxyWhitelisted(url));
+        } catch (MalformedURLException e) {
+            fail("URL could not be converted.");
+        }
+    }
+
+    @Test
+    public void testComplexURLIsOnProxyWhitelist() {
+        String ipToTest = "http://127.0.0.2:8080/itm/api?action=getPlugins";
+        try {
+            URL url = new URL(ipToTest);
+            assertTrue(ConfigurationHelper.getInstance().isProxyWhitelisted(url));
+        } catch (MalformedURLException e) {
+            fail("URL could not be converted.");
+        }
+    }
+
+    @Test
+    public void testHTTPSURLIsProxyWhitelist() {
+        String ipToTest = "https://127.0.0.2:8984/databases";
+        try {
+            URL url = new URL(ipToTest);
+            assertTrue(ConfigurationHelper.getInstance().isProxyWhitelisted(url));
+        } catch (MalformedURLException e) {
+            fail("URL could not be converted.");
+        }
+    }
+
+    @Test
+    public void testComplexHTTPURLIsNotProxyWhitelist() {
+        String ipToTest = "http://127.0.0.3:8984/databases";
+        try {
+            URL url = new URL(ipToTest);
+            assertFalse(ConfigurationHelper.getInstance().isProxyWhitelisted(url));
+        } catch (MalformedURLException e) {
+            fail("URL could not be converted.");
+        }
+    }
 }

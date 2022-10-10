@@ -4,14 +4,14 @@
     <parent>
         <groupId>de.intranda.goobi.workflow</groupId>
         <artifactId>goobi-core</artifactId>
-        <version>22.07.3-SNAPSHOT</version>
+        <version>22.09.2-SNAPSHOT</version>
         <relativePath>../</relativePath>
     </parent>
 
 
     <groupId>de.intranda.goobi.workflow</groupId>
     <artifactId>goobi-core-ci</artifactId>
-    <version>22.07.3-SNAPSHOT</version>
+    <version>22.09.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
 
@@ -32,7 +32,7 @@
         <!-- The Sonar basedir is one level up... -->
         <sonar.projectBaseDir>..</sonar.projectBaseDir>
         <!-- Maximum number of Checkstyle validations before the run fails with an error -->
-        <checkstyle.max.violations>5000</checkstyle.max.violations>
+        <checkstyle.max.violations>400</checkstyle.max.violations>
     </properties>
 
 

@@ -1,5 +1,7 @@
 package org.goobi.production.properties;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,7 +30,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ShowStepCondition {
+public class ShowStepCondition implements Serializable {
+
+    private static final long serialVersionUID = 3318280280073133213L;
 
     private String name;
     private AccessCondition accessCondition = AccessCondition.READ;

@@ -36,7 +36,7 @@ public enum Type {
     METADATA("metadata"),
     HTML("html");
 
-	@Getter
+    @Getter
     private String name;
 
     private Type(String name) {
