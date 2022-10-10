@@ -34,10 +34,4 @@ public class ConfigExportValidationTest extends AbstractTest {
         List<ExportValidator> validators = ConfigExportValidation.getConfiguredExportValidators();
         assertEquals(2, validators.size());
     }
-
-    @Test
-    public void canGetCorrectIDFromExistantLabel() {
-        int id = ConfigExportValidation.getExportValidatorIdFromLabel("XML validity");
-        assertEquals(1, id);
-    }
 }

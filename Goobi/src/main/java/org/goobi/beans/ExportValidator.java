@@ -38,9 +38,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class ExportValidator {
-    @Getter
-    @Setter
-    private Integer id;
+
     @Getter
     @Setter
     private String label;
@@ -58,11 +56,9 @@ public class ExportValidator {
      * @return An ExportValidator bean with both the label and the command properly set up
      */
     public ExportValidator(String label) {
-        if (label == null) {
-            this.id = Integer.valueOf(0);
-        } else {
-            this.label = label;
-        }
+
+        this.label = label;
+
         this.command = findCommandByLabel(label);
     }
 
@@ -73,12 +69,12 @@ public class ExportValidator {
         List<ExportValidator> configuredValidators = ConfigExportValidation.getConfiguredExportValidators();
         if (configuredValidators != null) {
             for (ExportValidator exportValidator : configuredValidators) {
-                if (label.equals(exportValidator.label)) {
-                    return exportValidator.command;
+                if (label.equals(exportValidator.getLabel())) {
+                    return exportValidator.getCommand();
                 }
             }
         }
-        log.warn(String.format("Label %s has no correctly associated command. Check goobi_exportValidation.xml!", label));
+        log.warn("Label {} has no correctly associated command. Check goobi_exportValidation.xml!", label);
         return null;
     }
 

@@ -19,6 +19,7 @@ package org.goobi.beans;
  * 
  */
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ public class ExportValidatorTest extends AbstractTest {
     @Test
     public void exportValidatorConstructorNullTest() {
         ExportValidator exportValidator = new ExportValidator(null);
-        assertEquals(Integer.valueOf(0), exportValidator.getId());
+        assertNull(exportValidator.getLabel());
     }
 
     @Test
