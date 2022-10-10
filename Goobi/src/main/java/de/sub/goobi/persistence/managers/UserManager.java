@@ -250,7 +250,7 @@ public class UserManager implements IManager, Serializable {
         r.setUiMode(rs.getString("ui_mode"));
         r.setStatus(User.UserStatus.getStatusByName(rs.getString("userstatus")));
         r.setAdditionalData(MySQLHelper.convertStringToMap(rs.getString("additional_data")));
-
+        r.setJournal(JournalManager.getLogEntriesForUser(r.getId()));
         return r;
     }
 
