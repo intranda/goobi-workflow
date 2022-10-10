@@ -423,7 +423,7 @@ class ProcessMysqlHelper implements Serializable {
                     o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(), o.getRegelsatz().getId(),
                     o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatch() == null ? null : o.getBatch().getBatchId(),
                             o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
-                                    o.getExportValidator().getLabel() == null ? null : o.getExportValidator().getLabel() };
+                                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
 
         } else {
             return new Object[] { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(),
@@ -431,7 +431,7 @@ class ProcessMysqlHelper implements Serializable {
                     o.getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
                     o.getBatch() == null ? null : o.getBatch().getBatchId(), o.getDocket() == null ? null : o.getDocket().getId(),
                             o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
-                            o.getExportValidator().getLabel() == null ? null : o.getExportValidator().getLabel() };
+                            o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
         }
     }
 

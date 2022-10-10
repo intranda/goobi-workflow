@@ -1403,9 +1403,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public ExportValidator getExportValidator() {
-        if (exportValidator == null) {
-            exportValidator = new ExportValidator();
-        }
         return exportValidator;
     }
 
@@ -2252,7 +2249,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @return true if the process is set up to perform a pre-export validation, false if not
      */
     public boolean isConfiguredWithExportValidator() {
-        if (getExportValidator().getLabel() != null && getExportValidator().getCommand() != null) {
+        if (getExportValidator() != null && getExportValidator().getLabel() != null && getExportValidator().getCommand() != null) {
             return true;
         } else {
             return false;

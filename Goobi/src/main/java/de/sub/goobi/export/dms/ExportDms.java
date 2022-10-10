@@ -386,7 +386,9 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             return false;
         } finally {
             // delete the now no longer required generated .xml
-            StorageProvider.getInstance().deleteFile(temporaryFile);
+            if (StorageProvider.getInstance().isFileExists(temporaryFile)) {
+                StorageProvider.getInstance().deleteFile(temporaryFile);
+            }
         }
         return true;
     }
