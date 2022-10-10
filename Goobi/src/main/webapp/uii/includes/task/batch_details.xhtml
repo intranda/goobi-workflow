@@ -1,4 +1,11 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:x="http://myfaces.apache.org/tomahawk">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:jsf="http://xmlns.jcp.org/jsf"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk">
 
     <composite:interface>
     </composite:interface>
@@ -259,7 +266,7 @@
         <!-- Box for process log -->
         <h:form
             styleClass="form-vertical form-bordered"
-            id="processLog"
+            id="processJournal"
             enctype="multipart/form-data"
             prependId="false">
             <x:aliasBeansScope>
@@ -267,10 +274,13 @@
                     alias="#{showBigButton}"
                     value="true" />
                 <x:aliasBean
-                    alias="#{process}"
+                    alias="#{showFolderSelection}"
+                    value="true" />
+                <x:aliasBean
+                    alias="#{bean}"
                     value="#{AktuelleSchritteForm.batchHelper.currentStep.prozess}" />
                 <f:subview id="sublog">
-                    <ui:include src="../processLog.xhtml" />
+                    <ui:include src="../journal.xhtml" />
                 </f:subview>
             </x:aliasBeansScope>
         </h:form>

@@ -137,7 +137,7 @@ public class GoobiScriptCloneProcess extends AbstractIGoobiScript implements IGo
             gsr.setResultType(GoobiScriptResultType.OK);
 
         } catch (Exception e) {
-            Helper.addMessageToProcessLog(p.getId(), LogType.ERROR,
+            Helper.addMessageToProcessJournal(p.getId(), LogType.ERROR,
                     "Problem while cloning the process '" + p.getTitel() + "' under the new name '" + title + "'", username);
             log.error("Problem while cloning the process '" + p.getTitel() + "' under the new name '" + title + "'", e);
             gsr.setResultMessage("Error while cloning a process: " + e.getMessage());

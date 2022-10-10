@@ -121,7 +121,7 @@ Sequence for determining the right <project> element:
             <defaultdoctype>monograph</defaultdoctype>
             <metadatageneration use="true" />
             
-            <fileupload use="true">
+            <fileupload use="false">
                 <!-- The regex strings must be enclosed in slashes. -->
                 <!-- Primefaces does not accept regex without slashes -->
                 <!-- and does not output an error otherwise -->

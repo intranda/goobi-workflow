@@ -673,13 +673,13 @@ public class FilterHelper {
         }
     }
 
-    protected static String filterProcessLog(String tok, boolean negate) {
+    protected static String filterProcessJournal(String tok, boolean negate) {
         String query = "";
         if (!negate) {
-            query = "prozesse.ProzesseID in (select distinct processId from processlog where processlog.content like '" + leftTruncationCharacter
+            query = "prozesse.ProzesseID in (select distinct processId from journal where journal.content like '" + leftTruncationCharacter
                     + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
         } else {
-            query = "prozesse.ProzesseID not in (select distinct processId from processlog where processlog.content like '" + leftTruncationCharacter
+            query = "prozesse.ProzesseID not in (select distinct processId from journal where journal.content like '" + leftTruncationCharacter
                     + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
         }
 
@@ -1049,9 +1049,9 @@ public class FilterHelper {
                 filter = checkStringBuilder(filter, true);
                 filter.append(filterInstitution(tok, false));
 
-            } else if (tok.toLowerCase().startsWith(FilterString.PROCESSLOG)) {
+            } else if (tok.toLowerCase().startsWith(FilterString.JOURNAL)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(filterProcessLog(tok, false));
+                filter.append(filterProcessJournal(tok, false));
             } else if (tok.toLowerCase().startsWith(FilterString.BATCH) || tok.toLowerCase().startsWith(FilterString.GRUPPE)) {
                 try {
                     String substring = tok.substring(tok.indexOf(":") + 1);
@@ -1140,9 +1140,9 @@ public class FilterHelper {
             } else if (tok.toLowerCase().startsWith("-" + FilterString.WORKPIECE) || tok.toLowerCase().startsWith("-" + FilterString.WERKSTUECK)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(FilterHelper.filterWorkpiece(tok, true));
-            } else if (tok.toLowerCase().startsWith("-" + FilterString.PROCESSLOG)) {
+            } else if (tok.toLowerCase().startsWith("-" + FilterString.JOURNAL)) {
                 filter = checkStringBuilder(filter, true);
-                filter.append(filterProcessLog(tok, true));
+                filter.append(filterProcessJournal(tok, true));
             } else if (tok.toLowerCase().startsWith("-" + FilterString.INSTITUTION)) {
                 filter = checkStringBuilder(filter, true);
                 filter.append(filterInstitution(tok, true));
@@ -1238,9 +1238,9 @@ public class FilterHelper {
                 filter = checkStringBuilder(filter, false);
                 filter.append(FilterHelper.filterWorkpiece(tok, false));
 
-            } else if (tok.toLowerCase().startsWith("|" + FilterString.PROCESSLOG)) {
+            } else if (tok.toLowerCase().startsWith("|" + FilterString.JOURNAL)) {
                 filter = checkStringBuilder(filter, false);
-                filter.append(filterProcessLog(tok, false));
+                filter.append(filterProcessJournal(tok, false));
             } else if (tok.toLowerCase().startsWith("|" + FilterString.INSTITUTION)) {
                 filter = checkStringBuilder(filter, false);
                 filter.append(filterInstitution(tok, false));

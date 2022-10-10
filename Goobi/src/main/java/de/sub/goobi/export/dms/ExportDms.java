@@ -25,18 +25,23 @@ package de.sub.goobi.export.dms;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FilenameUtils;
 import org.goobi.beans.Process;
 import org.goobi.beans.ProjectFileGroup;
 import org.goobi.beans.User;
+import org.goobi.production.enums.LogType;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.interfaces.IExportPlugin;
 
@@ -115,11 +120,48 @@ public class ExportDms extends ExportMets implements IExportPlugin {
          * -------------------------------- Dokument einlesen --------------------------------
          */
         Fileformat gdzfile;
+        Fileformat exportValidationFile;
         ExportFileformat newfile =
                 MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
+
+        ExportFileformat exportValidationNewfile =
+                MetadatenHelper.getExportFileformatByName(myProzess.getProjekt().getFileFormatDmsExport(), myProzess.getRegelsatz());
+
         try {
             gdzfile = myProzess.readMetadataFile();
 
+            // Check for existing Export Validator, and if it exists, run the associated command
+            if (myProzess.isConfiguredWithExportValidator()) {
+                Helper.setMeldung(null, myProzess.getTitel() + ": ", "XML validation found");
+
+                exportValidationNewfile.setDigitalDocument(gdzfile.getDigitalDocument());
+                exportValidationFile = exportValidationNewfile;
+                trimAllMetadata(exportValidationFile.getDigitalDocument().getLogicalDocStruct());
+                Path temporaryFile = Paths.get(ConfigurationHelper.getInstance().getTemporaryFolder() + atsPpnBand + ".xml");
+                writeMetsFile(myProzess, temporaryFile.toString(), exportValidationFile, false);
+
+                String pathToGeneratedFile = ConfigurationHelper.getInstance().getTemporaryFolder() + atsPpnBand + ".xml";
+                String command = myProzess.getExportValidator().getCommand();
+
+                // replace {EXPORTFILE} keyword from configuration file
+                final String exportTag = "{EXPORTFILE}";
+                if (!command.contains(exportTag)) {
+                    Helper.setFehlerMeldung("Export cancelled, process: " + myProzess.getTitel(),
+                            "Export validation command does not contain required {EXPORTFILE} tag. Aborting export. Command:" + command);
+                    Helper.addMessageToProcessJournal(myProzess.getId(), LogType.DEBUG,
+                            "Export validation command does not contain required {EXPORTFILE} tag. Aborting export. Command:" + command);
+                    log.warn("Export validation and export cancelled. No {EXPORTFILE} tag in command: " + command);
+                    problems.add("Export cancelled: malformed export validation command.");
+                    return false;
+                }
+                command = command.replace(exportTag, pathToGeneratedFile);
+
+                Helper.addMessageToProcessJournal(myProzess.getId(), LogType.DEBUG, "Started export validation using command: " + command);
+
+                if (!executeValidation(myProzess, temporaryFile, command)) {
+                    return false;
+                }
+            }
             newfile.setDigitalDocument(gdzfile.getDigitalDocument());
             gdzfile = newfile;
 
@@ -311,6 +353,42 @@ public class ExportDms extends ExportMets implements IExportPlugin {
             }
 
             Helper.setMeldung(null, myProzess.getTitel() + ": ", "ExportFinished");
+        }
+        return true;
+    }
+
+    private boolean executeValidation(Process myProzess, Path temporaryFile, String command) throws InterruptedException, IOException {
+        try {
+            java.lang.Process exportValidationProcess = Runtime.getRuntime().exec(command);
+            Integer exitVal = exportValidationProcess.waitFor();
+
+            InputStream errorInputStream = exportValidationProcess.getErrorStream();
+            InputStreamReader errorStreamReader = new InputStreamReader(errorInputStream);
+            Stream<String> errorStream = new BufferedReader(errorStreamReader).lines();
+            String errorStreamAsString = errorStream.collect(Collectors.joining());
+
+            // exitVal 0 indicates success, 1 indicates errors in the XML
+            // errorStreamAsString represents STDERR. It should be completely empty, or else the command failed
+            if (exitVal == 0 && errorStreamAsString.isBlank()) {
+                Helper.setMeldung(null, myProzess.getTitel() + ": ", "XML validation completed successfully");
+            } else {
+                Helper.setFehlerMeldung("Export cancelled, XML Validation error for process: " + myProzess.getTitel(), exitVal.toString());
+                Helper.addMessageToProcessJournal(myProzess.getId(), LogType.DEBUG, "XML Validation error when executing: " + command);
+                log.error("Export cancelled, XML Validation error for command: " + command);
+                problems.add("Export cancelled XML Validation tool reports errorcode: " + exitVal.toString());
+                return false;
+            }
+        } catch (java.io.IOException e) {
+            Helper.setFehlerMeldung("Export cancelled, XML Validation command could not be found. Command: " + command);
+            Helper.addMessageToProcessJournal(myProzess.getId(), LogType.DEBUG, "XML Validation command not found: " + command);
+            log.error("Export cancelled, XML validation error. Command not found: " + command);
+            problems.add("Export cancelled XML validation tool could not be found. Command: " + command);
+            return false;
+        } finally {
+            // delete the now no longer required generated .xml
+            if (StorageProvider.getInstance().isFileExists(temporaryFile)) {
+                StorageProvider.getInstance().deleteFile(temporaryFile);
+            }
         }
         return true;
     }

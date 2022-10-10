@@ -83,7 +83,7 @@ public class GoobiScriptMoveWorkflowBackward extends AbstractIGoobiScript implem
                 step.setEditTypeEnum(StepEditType.ADMIN);
                 step.setBearbeitungszeitpunkt(new Date());
                 step.setBearbeitungsstatusDown();
-                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                         "Status changed using GoobiScript mass manipulation for step " + step.getTitel());
                 break;
             }

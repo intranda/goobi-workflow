@@ -55,7 +55,8 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.goobi.api.mail.SendMail;
-import org.goobi.beans.LogEntry;
+import org.goobi.beans.JournalEntry;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
 import org.goobi.beans.Step;
 import org.goobi.beans.User;
@@ -90,6 +91,7 @@ import de.sub.goobi.helper.exceptions.ExportFileException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.HistoryManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import de.sub.goobi.persistence.managers.StepManager;
@@ -134,7 +136,7 @@ public class HelperSchritte {
         currentStep.setBearbeitungsende(myDate);
         try {
             StepManager.saveStep(currentStep);
-            Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + currentStep.getTitel() + "' closed.");
+            Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG, "Step '" + currentStep.getTitel() + "' closed.");
         } catch (DAOException e) {
             log.error("An exception occurred while closing the step '" + currentStep.getTitel() + "' of process with ID " + processId, e);
         }
@@ -228,7 +230,8 @@ public class HelperSchritte {
                             }
                             try {
                                 StepManager.saveStep(myStep);
-                                Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG, "Step '" + myStep.getTitel() + "' opened.");
+                                Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG,
+                                        "Step '" + myStep.getTitel() + "' opened.");
                             } catch (DAOException e) {
                                 log.error("An exception occurred while saving a step for process with ID " + myStep.getProcessId(), e);
                             }
@@ -269,7 +272,7 @@ public class HelperSchritte {
                     HistoryEventType.stepInWork.getValue(), automaticStep.getProzess().getId());
             try {
                 StepManager.saveStep(automaticStep);
-                Helper.addMessageToProcessLog(currentStep.getProcessId(), LogType.DEBUG,
+                Helper.addMessageToProcessJournal(currentStep.getProcessId(), LogType.DEBUG,
                         "Step '" + automaticStep.getTitel() + "' started to work automatically.");
             } catch (DAOException e) {
                 log.error("An exception occurred while saving an automatic step for process with ID " + automaticStep.getProcessId(), e);
@@ -346,14 +349,14 @@ public class HelperSchritte {
                     case 99:
 
                         break;
-                    // return code 98: re-open task
+                        // return code 98: re-open task
                     case 98:
                         reOpenStep(step);
                         break;
-                    // return code 0: script returned without error
+                        // return code 0: script returned without error
                     case 0:
                         break;
-                    // everything else: error
+                        // everything else: error
                     default:
                         errorStep(step);
                         break outerloop;
@@ -378,23 +381,17 @@ public class HelperSchritte {
             Fileformat ff = po.readMetadataFile();
             if (ff == null) {
                 log.info("Metadata file is not readable for process with ID " + step.getProcessId());
-                LogEntry le = new LogEntry();
-                le.setProcessId(step.getProzess().getId());
-                le.setContent("Metadata file is not readable");
-                le.setType(LogType.ERROR);
-                le.setUserName("http step");
-                ProcessManager.saveLogEntry(le);
+                JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR, "Metadata file is not readable",
+                        EntryType.PROCESS);
+                JournalManager.saveJournalEntry(le);
             } else {
                 dd = ff.getDigitalDocument();
             }
         } catch (Exception e2) {
             log.info("An exception occurred while reading the metadata file for process with ID " + step.getProcessId(), e2);
-            LogEntry le = new LogEntry();
-            le.setProcessId(step.getProzess().getId());
-            le.setContent("error reading metadata file");
-            le.setType(LogType.ERROR);
-            le.setUserName("http step");
-            ProcessManager.saveLogEntry(le);
+            JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR, "error reading metadata file",
+                    EntryType.PROCESS);
+            JournalManager.saveJournalEntry(le);
         }
         VariableReplacer replacer = new VariableReplacer(dd, prefs, step.getProzess(), step);
         String bodyStr = null;
@@ -414,13 +411,9 @@ public class HelperSchritte {
             scsf = new SSLConnectionSocketFactory(SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build(),
                     NoopHostnameVerifier.INSTANCE);
         } catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e1) {
-            LogEntry le = new LogEntry();
-            le.setCreationDate(new Date());
-            le.setProcessId(step.getProzess().getId());
-            le.setContent("error executing http request: " + e1.getMessage());
-            le.setType(LogType.ERROR);
-            le.setUserName("http step");
-            ProcessManager.saveLogEntry(le);
+            JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR,
+                    "error executing http request: " + e1.getMessage(), EntryType.PROCESS);
+            JournalManager.saveJournalEntry(le);
             errorStep(step);
             log.error(e1);
             return;
@@ -465,45 +458,26 @@ public class HelperSchritte {
                 }
                 int statusCode = resp.getStatusLine().getStatusCode();
                 if (statusCode >= 400) {
-                    LogEntry le = new LogEntry();
-                    le.setCreationDate(new Date());
-                    le.setProcessId(step.getProzess().getId());
-                    le.setContent(String.format("Server returned status code %d, response body was: '%s'", statusCode, respStr));
-                    le.setType(LogType.ERROR);
-                    le.setUserName("http step");
-                    ProcessManager.saveLogEntry(le);
+                    JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR,
+                            String.format("Server returned status code %d, response body was: '%s'", statusCode, respStr), EntryType.PROCESS);
+                    JournalManager.saveJournalEntry(le);
                     errorStep(step);
                     log.error(respStr);
                     return;
                 }
-                LogEntry le = new LogEntry();
-                le.setCreationDate(new Date());
-                le.setProcessId(step.getProzess().getId());
-                le.setContent(respStr);
-                le.setType(LogType.INFO);
-                le.setUserName("http step");
-                ProcessManager.saveLogEntry(le);
+                JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.INFO, respStr, EntryType.PROCESS);
+                JournalManager.saveJournalEntry(le);
                 if (step.isHttpCloseStep()) {
                     CloseStepObjectAutomatic(step);
                 }
                 log.info(respStr);
             } else {
-                LogEntry le = new LogEntry();
-                le.setCreationDate(new Date());
-                le.setProcessId(step.getProzess().getId());
-                le.setContent("error executing http request");
-                le.setType(LogType.ERROR);
-                le.setUserName("http step");
-                ProcessManager.saveLogEntry(le);
+                JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR, "error executing http request", EntryType.PROCESS);
+                JournalManager.saveJournalEntry(le);
             }
         } catch (IOException e) {
-            LogEntry le = new LogEntry();
-            le.setCreationDate(new Date());
-            le.setProcessId(step.getProzess().getId());
-            le.setContent("error executing http request: " + e.getMessage());
-            le.setType(LogType.ERROR);
-            le.setUserName("http step");
-            ProcessManager.saveLogEntry(le);
+            JournalEntry le = new JournalEntry(step.getProzess().getId(), new Date(), "http step", LogType.ERROR, "error executing http request: " + e.getMessage(), EntryType.PROCESS);
+            JournalManager.saveJournalEntry(le);
             errorStep(step);
             log.error(e);
         }
@@ -566,13 +540,9 @@ public class HelperSchritte {
         } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
             String message = "Error while reading metadata for step " + step.getTitel();
             log.error(message, e);
-            LogEntry errorEntry = LogEntry.build(step.getProcessId())
-                    .withType(LogType.ERROR)
-                    .withContent(message)
-                    .withCreationDate(new Date())
-                    .withUsername("automatic");
-            ProcessManager.saveLogEntry(errorEntry);
-            Helper.addMessageToProcessLog(step.getProzess().getId(), LogType.ERROR, message);
+            JournalEntry errorEntry = new JournalEntry(step.getProzess().getId(), new Date(), "automatic", LogType.ERROR, message, EntryType.PROCESS);
+            JournalManager.saveJournalEntry(errorEntry);
+            Helper.addMessageToProcessJournal(step.getProzess().getId(), LogType.ERROR, message);
             return new ShellScriptReturnValue(-2, null, null);
         }
         ShellScriptReturnValue rueckgabe = null;
@@ -583,7 +553,7 @@ public class HelperSchritte {
             message.append("Calling the shell: ");
             message.append(script);
 
-            Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, message.toString());
+            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, message.toString());
 
             rueckgabe = ShellScript.callShell(parameterList, step.getProcessId());
             if (automatic) {
@@ -596,7 +566,7 @@ public class HelperSchritte {
                         if (!ivp.validate()) {
                             step.setBearbeitungsstatusEnum(StepStatus.OPEN);
                             StepManager.saveStep(step);
-                            Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG, "Step '" + step.getTitel() + "' opened.");
+                            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, "Step '" + step.getTitel() + "' opened.");
                         } else {
                             CloseStepObjectAutomatic(step);
                         }
@@ -611,17 +581,17 @@ public class HelperSchritte {
                         step.setBearbeitungsende(new Date());
                         SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.ERROR);
                         StepManager.saveStep(step);
-                        Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
+                        Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR,
                                 "Script for '" + step.getTitel() + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode()
-                                        + ". The script returned: " + rueckgabe.getErrorText());
+                                + ". The script returned: " + rueckgabe.getErrorText());
                         log.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
-                                + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
+                        + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
                     }
                 }
             }
         } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
             Helper.setFehlerMeldung("An exception occured while running a script", e.getMessage());
-            Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
+            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR,
                     "Exception while executing a script for '" + step.getTitel() + "': " + e.getMessage());
             log.error("Exception occurred while running a script for process with ID " + step.getProcessId(), e);
         }
@@ -669,19 +639,19 @@ public class HelperSchritte {
         try {
             boolean validate = dms.startExport(step.getProzess());
             if (validate) {
-                Helper.addMessageToProcessLog(step.getProcessId(), LogType.DEBUG,
+                Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG,
                         "The export for process with ID '" + step.getProcessId() + "' was done successfully.");
                 CloseStepObjectAutomatic(step);
             } else {
-                Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
-                        + "' was cancelled because of validation errors: " + dms.getProblems().toString());
+                Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
+                + "' was cancelled because of validation errors: " + dms.getProblems().toString());
                 errorStep(step);
             }
             return validate;
         } catch (DAOException | UGHException | SwapException | IOException | ExportFileException | DocStructHasNoTypeException | UghHelperException
                 | InterruptedException e) { //NOSONAR InterruptedException must not be re-thrown as it is handled in the export task
             log.error("Exception occurred while trying to export process with ID " + step.getProcessId(), e);
-            Helper.addMessageToProcessLog(step.getProcessId(), LogType.ERROR,
+            Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR,
                     "An exception occurred during the export for process with ID " + step.getProcessId() + ": " + e.getMessage());
             errorStep(step);
             return false;

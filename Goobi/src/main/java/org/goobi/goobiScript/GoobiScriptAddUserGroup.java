@@ -175,7 +175,7 @@ public class GoobiScriptAddUserGroup extends AbstractIGoobiScript implements IGo
         try {
             StepManager.saveStep(step);
             String message = "Added usergroup '" + group.getTitel() + "' to step '" + step.getTitel() + "' using GoobiScript.";
-            Helper.addMessageToProcessLog(process.getId(), LogType.DEBUG, message, username);
+            Helper.addMessageToProcessJournal(process.getId(), LogType.DEBUG, message, username);
             log.info(message + " The process id is " + process.getId());
             gsr.setResultMessage(message);
 

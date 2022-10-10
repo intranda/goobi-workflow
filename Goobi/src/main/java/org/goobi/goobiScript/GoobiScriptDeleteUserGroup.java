@@ -113,7 +113,7 @@ public class GoobiScriptDeleteUserGroup extends AbstractIGoobiScript implements 
                         myBenutzergruppe.remove(myGroup);
 
                         StepManager.removeUsergroupFromStep(s, myGroup);
-                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG,
+                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
                                 "Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel() + "' using GoobiScript.", username);
                         log.info("Deleted usergroup '" + myGroup.getTitel() + "' from step '" + s.getTitel()
                                 + "' using GoobiScript for process with ID " + p.getId());

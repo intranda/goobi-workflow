@@ -28,6 +28,7 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
@@ -81,6 +82,9 @@ public class UserManager implements IManager, Serializable {
 
     public static void hideUser(User o) throws DAOException {
         try {
+
+            JournalManager.deleteAllJournalEntries(o.getId(), EntryType.USER);
+
             StepMysqlHelper.removeUserFromAllSteps(o);
             UserMysqlHelper.deleteAllUsergroupAssignments(o);
             UserMysqlHelper.deleteAllProjectAssignments(o);
@@ -246,7 +250,7 @@ public class UserManager implements IManager, Serializable {
         r.setUiMode(rs.getString("ui_mode"));
         r.setStatus(User.UserStatus.getStatusByName(rs.getString("userstatus")));
         r.setAdditionalData(MySQLHelper.convertStringToMap(rs.getString("additional_data")));
-
+        r.setJournal(JournalManager.getLogEntriesForUser(r.getId()));
         return r;
     }
 

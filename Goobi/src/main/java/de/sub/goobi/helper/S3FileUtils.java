@@ -640,7 +640,7 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(path2Key(path)).withDelimiter("/");
         ObjectListing listing = s3.listObjects(req);
-        return !listing.getObjectSummaries().isEmpty();
+        return !listing.getCommonPrefixes().isEmpty() || !listing.getObjectSummaries().isEmpty();
     }
 
     @Override

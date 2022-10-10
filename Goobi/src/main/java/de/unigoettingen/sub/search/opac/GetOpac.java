@@ -28,6 +28,8 @@ package de.unigoettingen.sub.search.opac;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -283,7 +285,7 @@ public class GetOpac {
         // querySummary is used to check if cached result and sessionid
         // can be used again
         String querySummary = query.getQueryUrl() + this.dataCharacterEncoding + this.cat.getDataBase() + this.cat.getServerAddress()
-        + this.cat.getPort() + this.cat.getCbs();
+                + this.cat.getPort() + this.cat.getCbs();
 
         // if we can not use the cached result
         if (!this.lastQuery.equals(querySummary)) {
@@ -333,7 +335,7 @@ public class GetOpac {
         // querySummary is used to check if cached result and sessionid
         // can be used again
         String querySummary = query.getQueryUrl() + this.dataCharacterEncoding + this.cat.getDataBase() + this.cat.getServerAddress()
-        + this.cat.getPort() + this.cat.getCbs();
+                + this.cat.getPort() + this.cat.getCbs();
 
         // if we can not use the cached result
         if (!this.lastQuery.equals(querySummary)) {
@@ -414,7 +416,7 @@ public class GetOpac {
         int retrieveNumber = numberOfHits + 1;
         return retrieveDataFromOPAC(
                 DATABASE_URL + this.cat.getDataBase() + PICAPLUS_XML_URL + this.dataCharacterEncoding + SET_ID_URL + this.lastOpacResult.getSet()
-                + SESSIONID_URL + this.lastOpacResult.getSessionId(URL_CHARACTER_ENCODING) + SHOW_LONGTITLE_NR_URL + retrieveNumber);
+                        + SESSIONID_URL + this.lastOpacResult.getSessionId(URL_CHARACTER_ENCODING) + SHOW_LONGTITLE_NR_URL + retrieveNumber);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -458,7 +460,7 @@ public class GetOpac {
         String result = null;
 
         String querySummary = query.getQueryUrl() + this.dataCharacterEncoding + this.cat.getDataBase() + this.cat.getServerAddress()
-        + this.cat.getPort() + this.cat.getCbs();
+                + this.cat.getPort() + this.cat.getCbs();
 
         if (this.verbose) {
             log.info("Searching the opac for " + query.getQueryUrl());
@@ -622,19 +624,27 @@ public class GetOpac {
 
         }
         try {
-            if (log.isDebugEnabled()) {
-                log.debug("use proxy configuration: " + ConfigurationHelper.getInstance().isUseProxy());
-            }
-            if (ConfigurationHelper.getInstance().isUseProxy()) {
-                HttpHost proxy = new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
-                if (log.isDebugEnabled()) {
-                    log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
-                }
 
-                Builder builder = RequestConfig.custom();
-                builder.setProxy(proxy);
-                RequestConfig rc = builder.build();
-                opacRequest.setConfig(rc);
+            log.debug("use proxy configuration: " + ConfigurationHelper.getInstance().isUseProxy());
+
+            if (ConfigurationHelper.getInstance().isUseProxy()) {
+                try {
+                    URL ipAsURL = new URL(url);
+                    if (!ConfigurationHelper.getInstance().isProxyWhitelisted(ipAsURL)) {
+                        HttpHost proxy =
+                                new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
+                        log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
+
+                        Builder builder = RequestConfig.custom();
+                        builder.setProxy(proxy);
+                        RequestConfig rc = builder.build();
+                        opacRequest.setConfig(rc);
+                    } else {
+                        log.debug("url was on proxy whitelist, no proxy used: " + url);
+                    }
+                } catch (MalformedURLException e) {
+                    log.debug("could not convert into URL: ", url);
+                }
             }
 
             String result = this.opacClient.execute(opacRequest, HttpClientHelper.stringResponseHandler);
