@@ -177,6 +177,7 @@
 		var ajaxloader = document.getElementById("ajaxloader");
 		if (readOnlyMode === 'false') {
 			var saveButton = document.getElementById("menu-form:saveMetsFileButton");
+			var validationButton = document.getElementById("menu-form:startValidationButton");
 			var saveMetsFileImage = document.getElementById("menu-form:saveMetsFileImage");
 
 			var ajaxSave = document.getElementById("menu-form:saveMetsFileButtonAjax");
@@ -190,6 +191,7 @@
 				case "begin": // This is called right before ajax request is been sent.
 					ajaxloader.style.display = 'block';
 					saveButton.style.display = 'none';
+					validationButton.style.display = 'none';
 					saveMetsFileImage.style.display = 'block';
 
 					ajaxSave.disabled = true;
@@ -206,6 +208,7 @@
 				case "complete": // This is called right after ajax response is received.
 					ajaxloader.style.display = 'none';
 					saveButton.style.display = '';
+					validationButton.style.display = '';
 					saveMetsFileImage.style.display = 'none';
 
 					ajaxSave.disabled = false;
