@@ -259,7 +259,7 @@
             });
             
             $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+v', function() {  
-            	var myButton = document.getElementById("menu-form:startValidationButtonAjax");
+            	var myButton = document.getElementById("menu-form:startValidationButton");
             	if (myButton!=null) {
             		myButton.click();
             	} 
@@ -337,7 +337,7 @@
             
             $('input:checkbox').bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+v', function() {  
     			
-            	var myButton = document.getElementById("menu-form:startValidationButtonAjax");
+            	var myButton = document.getElementById("menu-form:startValidationButton");
             	console.log(myButton);
             	if (myButton!=null) {
             		myButton.click();

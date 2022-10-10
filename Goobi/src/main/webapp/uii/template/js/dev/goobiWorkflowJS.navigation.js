@@ -111,7 +111,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         } );
         
         $( document ).bind( 'keyup', _defaults.navigationShortcut + '+v', function() {
-            var myButton = document.getElementById( "meMenuActionsForm:startValidationButtonAjax" );
+            var myButton = document.getElementById( "meMenuActionsForm:startValidationButton" );
             if ( myButton != null ) {
                 myButton.click();
             }
@@ -188,7 +188,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         
         $( 'input:checkbox' ).bind( 'keyup', _defaults.navigationShortcut + '+v', function() {
             
-            var myButton = document.getElementById( "meMenuActionsForm:startValidationButtonAjax" );
+            var myButton = document.getElementById( "meMenuActionsForm:startValidationButton" );
             console.log( myButton );
             if ( myButton != null ) {
                 myButton.click();

@@ -136,7 +136,13 @@
                 
                 
                 <!-- VALIDATION -->
-                <li>
+                <li> 
+                    <button
+                            style="display: none"
+                            jsf:id="startValidationButton"
+                            jsf:action="#{Metadaten.Validate}">
+                    </button>
+                    
                     <button
                         class="btn btn--icon" 
                         jsf:id="startValidation" 
@@ -147,6 +153,16 @@
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         <f:passThroughAttribute name="data-placement" value="bottom" />
                     </button>
+
+                    <h:commandButton
+                            type="button"
+                            id="startValidationButtonAjax"
+                            style="display:none"
+                            action="#{Metadaten.Validate}"
+                            title="#{msgs.validieren}"
+                            rel="tooltip">
+                            <f:ajax render="@form"></f:ajax>
+                    </h:commandButton>
                 </li>
 
                 <!-- CONFIGURATION -->
@@ -332,8 +348,6 @@
 
                 <!-- SAVE -->
                 <c:if test="#{not Metadaten.nurLesenModus}">
-                    <li>                   
-                    </li>
                     <li>
                         <!-- This button and the hidden button below have to
                         work together to get the wanted effect here. This button
@@ -368,24 +382,6 @@
                             jsf:action="#{Metadaten.Reload}">
                         </button>
                         
-                        <button type="button"
-                        	style="display: none"
-                            class="btn btn--icon"  
-                            id="startValidationButtonSimulation"
-                            onclick="document.activeElement.blur();document.getElementById('meMenuActionsForm:startValidationButton').click();"
-                            title="#{msgs.validieren}"
-                            data-toggle="tooltip"
-                            data-placement="bottom">
-                            <i class="fa fa-check fa-lg" aria-hidden="true"></i>
-                        </button>
-     
-                        <button
-                            style="display: none"
-                            jsf:id="startValidationButton"
-                            jsf:action="#{Metadaten.Validate}">
-                        </button>
-                        
-
                         <h:panelGroup
                             style="display:none"
                             styleClass="navigationitem"
@@ -405,17 +401,7 @@
                             rel="tooltip">
                             <f:ajax render="@form"></f:ajax>
                         </h:commandButton>
-                        
-                        <h:commandButton
-                            type="button"
-                            id="startValidationButtonAjax"
-                            style="display:none"
-                            action="#{Metadaten.Validate}"
-                            title="#{msgs.validieren}"
-                            rel="tooltip">
-                            <f:ajax render="@form"></f:ajax>
-                        </h:commandButton>
-                        
+                                                
                         <h:commandButton
                             type="button"
                             id="automaticSave"
@@ -427,7 +413,6 @@
                             <f:passThroughAttribute
                                 name="data-placement"
                                 value="bottom" />
-
                         </h:commandButton>
 
                     </li>

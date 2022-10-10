@@ -177,11 +177,11 @@
 		var ajaxloader = document.getElementById("ajaxloader");
 		if (readOnlyMode === 'false') {
 			var saveButton = document.getElementById("menu-form:saveMetsFileButton");
-			var validationButton = document.getElementById("menu-form:startValidationButton");
+			// var validationButton = document.getElementById("menu-form:startValidationButton");
 			var saveMetsFileImage = document.getElementById("menu-form:saveMetsFileImage");
 
 			var ajaxSave = document.getElementById("menu-form:saveMetsFileButtonAjax");
-			var ajaxValidation = document.getElementById("menu-form:startValidationButtonAjax");
+			// var ajaxValidation = document.getElementById("menu-form:startValidationButtonAjax");
 
 			var autoSave = document.getElementById("menu-form:automaticSave")
 
@@ -196,7 +196,7 @@
 					saveMetsFileImage.style.display = 'block';
 
 					ajaxSave.disabled = true;
-					ajaxValidation.disabled = true;
+					// ajaxValidation.disabled = true;
 					autoSave.disabled = true;
 
 					exit.style.display = 'none';
@@ -209,11 +209,11 @@
 				case "complete": // This is called right after ajax response is received.
 					ajaxloader.style.display = 'none';
 					saveButton.style.display = '';
-					validationButton.style.display = '';
+					// validationButton.style.display = '';
 					saveMetsFileImage.style.display = 'none';
 
 					ajaxSave.disabled = false;
-					ajaxValidation.disabled = false;
+					// ajaxValidation.disabled = false;
 					autoSave.disabled = false;
 
 					exit.style.display = 'block';
