@@ -186,7 +186,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             }
         } );
         
-        $( 'input:checkbox' ).bind( 'keyup', _defaults.navigationShortcut + 'v', function() {
+        $( 'input:checkbox' ).bind( 'keyup', _defaults.navigationShortcut + '+v', function() {
             
             var myButton = document.getElementById( "meMenuActionsForm:startValidationButtonAjax" );
             console.log( myButton );
