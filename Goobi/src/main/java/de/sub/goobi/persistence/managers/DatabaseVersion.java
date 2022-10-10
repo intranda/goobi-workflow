@@ -52,7 +52,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 49;
+    public static final int EXPECTED_VERSION = 50;
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
 
@@ -372,6 +372,12 @@ public class DatabaseVersion {
                     }
                     updateToVersion49();
                     tempVersion++;
+                case 49://NOSONAR, no break on purpose to run through all cases
+                    if (log.isTraceEnabled()) {
+                        log.trace("Update database to version 50.");
+                    }
+                    updateToVersion50();
+                    tempVersion++;
                 default://NOSONAR, no break on purpose to run through all cases
                     // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
@@ -383,6 +389,16 @@ public class DatabaseVersion {
             log.error(e);
             log.warn("An Error occured trying to update Database to version " + (tempVersion + 1));
             updateDatabaseVersion(currentVersion, tempVersion);
+        }
+    }
+
+    private static void updateToVersion50() throws SQLException {
+        if (!DatabaseVersion.checkIfColumnExists("prozesse", "exportValidator")) {
+            try {
+                DatabaseVersion.runSql("ALTER TABLE prozesse ADD COLUMN exportValidator VARCHAR(255) DEFAULT NULL;");
+            } catch (SQLException e) {
+                log.error(e);
+            }
         }
     }
 
