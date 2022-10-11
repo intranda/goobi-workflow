@@ -101,7 +101,7 @@ class JournalMysqlHelper implements Serializable {
             connection = MySQLHelper.getInstance().getConnection();
             QueryRunner run = new QueryRunner();
             String sql = "DELETE FROM journal WHERE objectId = ? and entrytype = ?";
-            run.update(connection, sql, objectId, type);
+            run.update(connection, sql, objectId, type.getTitle());
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);

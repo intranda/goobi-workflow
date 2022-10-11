@@ -1067,6 +1067,10 @@ dropdown-menu>li>a {
     background: #ccc none repeat scroll 0 0 !important;
 }
 
+.box--scrolly .box-content {
+    overflow-y: scroll;
+}
+
 /* ------------- Action Box --------------- */
 .action-ul {
     padding-left: 0px;

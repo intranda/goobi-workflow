@@ -34,7 +34,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -260,16 +259,12 @@ public class MassImportForm implements Serializable {
             Element root = doc.getRootElement();
             /* alle Projekte durchlaufen */
             List<Element> projekte = root.getChildren();
-            for (Iterator<Element> iter = projekte.iterator(); iter.hasNext();) {
-                Element projekt = iter.next();
-
+            for (Element projekt : projekte) {
                 // collect default collections
-                if (projekt.getName().equals("default")) {
+                if ("default".equals(projekt.getName())) {
                     List<Element> myCols = projekt.getChildren("DigitalCollection");
-                    for (Iterator<Element> it2 = myCols.iterator(); it2.hasNext();) {
-                        Element col = it2.next();
-
-                        if (col.getAttribute("default") != null && col.getAttributeValue("default").equalsIgnoreCase("true")) {
+                    for (Element col : myCols) {
+                        if (col.getAttribute("default") != null && "true".equalsIgnoreCase(col.getAttributeValue("default"))) {
                             digitalCollections.add(col.getText());
                         }
 
@@ -278,15 +273,12 @@ public class MassImportForm implements Serializable {
                 } else {
                     // run through the projects
                     List<Element> projektnamen = projekt.getChildren("name");
-                    for (Iterator<Element> iterator = projektnamen.iterator(); iterator.hasNext();) {
-                        Element projektname = iterator.next();
+                    for (Element projektname : projektnamen) {
                         // all all collections to list
                         if (projektname.getText().equalsIgnoreCase(this.template.getProjekt().getTitel())) {
                             List<Element> myCols = projekt.getChildren("DigitalCollection");
-                            for (Iterator<Element> it2 = myCols.iterator(); it2.hasNext();) {
-                                Element col = it2.next();
-
-                                if (col.getAttribute("default") != null && col.getAttributeValue("default").equalsIgnoreCase("true")) {
+                            for (Element col : myCols) {
+                                if (col.getAttribute("default") != null && "true".equalsIgnoreCase(col.getAttributeValue("default"))) {
                                     digitalCollections.add(col.getText());
                                 }
 
@@ -296,10 +288,7 @@ public class MassImportForm implements Serializable {
                     }
                 }
             }
-        } catch (JDOMException e1) {
-            log.error("error while parsing digital collections", e1);
-            Helper.setFehlerMeldung("Error while parsing digital collections", e1);
-        } catch (IOException e1) {
+        } catch (JDOMException | IOException e1) {
             log.error("error while parsing digital collections", e1);
             Helper.setFehlerMeldung("Error while parsing digital collections", e1);
         }
@@ -447,7 +436,7 @@ public class MassImportForm implements Serializable {
                 if (localBatch != null && localBatch.getBatchId() != null) {
                     io.setBatch(localBatch);
                 }
-                if (io.getImportReturnValue().equals(ImportReturnValue.ExportFinished)) {
+                if (ImportReturnValue.ExportFinished.equals(io.getImportReturnValue())) {
                     Process p = JobCreation.generateProcess(io, this.template);
                     if (p == null) {
                         if (io.getImportFileName() != null && !io.getImportFileName().isEmpty() && selectedFilenames != null
@@ -814,6 +803,7 @@ public class MassImportForm implements Serializable {
         p.setProjekt(template.getProjekt());
         p.setRegelsatz(template.getRegelsatz());
         p.setDocket(template.getDocket());
+        p.setExportValidator(template.getExportValidator());
 
         BeanHelper bHelper = new BeanHelper();
         bHelper.SchritteKopieren(template, p);
