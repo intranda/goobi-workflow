@@ -972,6 +972,10 @@ public class ConfigurationHelper implements Serializable {
 
     }
 
+    public boolean isUseImageThumbnails() {
+        return getLocalBoolean("UseImageThumbnails", true);
+    }
+    
     public boolean getMetsEditorShowImageComments() {
         return isShowImageComments();
     }
@@ -1209,4 +1213,5 @@ public class ConfigurationHelper implements Serializable {
             }
         }
     }
+
 }
