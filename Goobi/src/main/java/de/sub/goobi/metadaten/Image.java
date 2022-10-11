@@ -72,6 +72,8 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public @Data class Image {
     private static final int LARGE_THUMBNAIL_SIZE_FACTOR = 3;
+    private static final String PLACEHOLDER_URL_PDF = "/uii/template/img/goobi_placeholder_pdf_large.png?version=1";
+    private static final String PLACEHOLDER_URL_EPUB = "/uii/template/img/goobi_placeholder_epub_large.png?version=1";
     private static final String PLACEHOLDER_URL_3D = "/uii/template/img/goobi_3d_object_placeholder_large.png?version=1";
     private static final String PLACEHOLDER_URL_VIDEO = "/uii/template/img/goobi_placeholder_video_large.png?version=1";
     private static final String PLACEHOLDER_URL_AUDIO = "/uii/template/img/goobi_placeholder_audio_large.png?version=1";
@@ -467,7 +469,9 @@ public @Data class Image {
         object,
         x3dom,
         object2vr,
-        unknown;
+        unknown,
+        pdf,
+        epub;
 
         /**
          * Determine the media type from the file extension of the given path
