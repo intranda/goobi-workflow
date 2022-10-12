@@ -532,7 +532,7 @@ public class MetadatenVerifizierung {
                         + Helper.getTranslation(METADATA_MISSING_ERROR) + " " + real + " " + Helper.getTranslation(METADATA_TIMES_ERROR));
                 try {
                     Metadata md = new Metadata(mdt);
-                    addErrorToDocStructAndMetadata(inStruct, md, language);
+                    addErrorToDocStructAndMetadata(inStruct, md, Helper.getTranslation(METADATA_MISSING_ERROR));
                 } catch (MetadataTypeNotAllowedException e) {
                     e.printStackTrace();
                 }
@@ -542,7 +542,7 @@ public class MetadatenVerifizierung {
                         + Helper.getTranslation(METADATA_TO_MANY_ERROR) + " " + real + " " + Helper.getTranslation(METADATA_TIMES_ERROR));
                 try {
                     Metadata md = new Metadata(mdt);
-                    addErrorToDocStructAndMetadata(inStruct, md, language);
+                    addErrorToDocStructAndMetadata(inStruct, md, Helper.getTranslation(METADATA_TO_MANY_ERROR));
                 } catch (MetadataTypeNotAllowedException e) {
                     e.printStackTrace();
                 }
@@ -552,7 +552,7 @@ public class MetadatenVerifizierung {
                         + Helper.getTranslation(METADATA_NOT_ENOUGH_ERROR));
                 try {
                     Metadata md = new Metadata(mdt);
-                    addErrorToDocStructAndMetadata(inStruct, md, language);
+                    addErrorToDocStructAndMetadata(inStruct, md, Helper.getTranslation(METADATA_NOT_ENOUGH_ERROR));
                 } catch (MetadataTypeNotAllowedException e) {
                     e.printStackTrace();
                 }
@@ -608,7 +608,9 @@ public class MetadatenVerifizierung {
                                 + Helper.getTranslation(METADATA_TIMES_ERROR));
                         try {
                             Metadata md = new Metadata(mdt);
-                            addErrorToDocStructAndMetadata(inStruct, md, language);
+                            addErrorToDocStructAndMetadata(inStruct, md,
+                                    Helper.getTranslation(METADATA_TO_MANY_ERROR) + " " + numberOfExistingFields + " "
+                                            + Helper.getTranslation(METADATA_TIMES_ERROR));
                         } catch (MetadataTypeNotAllowedException e) {
                             e.printStackTrace();
                         }
@@ -618,7 +620,7 @@ public class MetadatenVerifizierung {
                                 + Helper.getTranslation(METADATA_NOT_ENOUGH_ERROR));
                         try {
                             Metadata md = new Metadata(mdt);
-                            addErrorToDocStructAndMetadata(inStruct, md, language);
+                            addErrorToDocStructAndMetadata(inStruct, md, Helper.getTranslation(METADATA_NOT_ENOUGH_ERROR));
                         } catch (MetadataTypeNotAllowedException e) {
                             e.printStackTrace();
                         }
@@ -632,7 +634,7 @@ public class MetadatenVerifizierung {
                             }
                             try {
                                 Metadata md = new Metadata(mdt);
-                                addErrorToDocStructAndMetadata(inStruct, md, language);
+                                addErrorToDocStructAndMetadata(inStruct, md, Helper.getTranslation(METADATA_EMPTY_ERROR));
                             } catch (MetadataTypeNotAllowedException e) {
                                 e.printStackTrace();
                             }
@@ -643,7 +645,7 @@ public class MetadatenVerifizierung {
                                         + Helper.getTranslation(METADATA_EMPTY_ERROR));
                                 try {
                                     Metadata md = new Metadata(mdt);
-                                    addErrorToDocStructAndMetadata(inStruct, md, language);
+                                    addErrorToDocStructAndMetadata(inStruct, md, Helper.getTranslation(METADATA_EMPTY_ERROR));
                                 } catch (MetadataTypeNotAllowedException e) {
                                     e.printStackTrace();
                                 }
@@ -653,7 +655,7 @@ public class MetadatenVerifizierung {
                             if (md.getValue() == null || "".equals(md.getValue())) {
                                 inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                                         + Helper.getTranslation(METADATA_EMPTY_ERROR));
-                                addErrorToDocStructAndMetadata(inStruct, md, language);
+                                addErrorToDocStructAndMetadata(inStruct, md, Helper.getTranslation(METADATA_EMPTY_ERROR));
 
                             }
                         }
