@@ -843,9 +843,18 @@ public class MetadatenVerifizierung {
 
     private void addErrorToDocStructAndMetadata(DocStruct myStruct, Metadata md, String errorMessage) {
         myStruct.setValidationErrorPresent(true);
-        myStruct.setValidationMessage(Helper.getTranslation(errorMessage));
+        if (myStruct.getValidationMessage() != null && !myStruct.getValidationMessage().contains(errorMessage)) {
+            myStruct.setValidationMessage(
+                    myStruct.getValidationMessage() + " & " + errorMessage);
+        } else {
+            myStruct.setValidationMessage(Helper.getTranslation(errorMessage));
+        }
         md.setValidationErrorPresent(true);
-        md.setValidationMessage(Helper.getTranslation(errorMessage));
+        if (md.getValidationMessage() != null && !md.getValidationMessage().contains(errorMessage)) {
+            md.setValidationMessage(md.getValidationMessage() + " & " + errorMessage);
+        } else {
+            md.setValidationMessage(errorMessage);
+        }
     }
 
     private List<String> validateMetadatValues(DocStruct inStruct, String lang) {
