@@ -474,7 +474,7 @@ public class MetadatenVerifizierung {
                         String errorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                                 + Helper.getTranslation("MetadataNotConfiguredInDisplayRules", actualValue);
                         inList.add(errorMessage);
-                        addErrorToDocStructAndMetadata(inStruct, md, Helper.getTranslation("MetadataNotConfiguredInDisplayRules", actualValue));
+                        addErrorToDocStructAndMetadata(inStruct, md, errorMessage);
                     }
                 }
             }
@@ -492,6 +492,7 @@ public class MetadatenVerifizierung {
     private List<String> checkMandatoryValues(DocStruct inStruct, ArrayList<String> inList, String language) {
         DocStructType dst = inStruct.getType();
         List<MetadataType> allMDTypes = dst.getAllMetadataTypes();
+        String validationErrorMessage = "";
         for (MetadataType mdt : allMDTypes) {
             String number = dst.getNumberOfMetadataType(mdt);
             List<? extends Metadata> ll = null;
@@ -521,41 +522,30 @@ public class MetadatenVerifizierung {
                         inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                                 + Helper.getTranslation(METADATA_EMPTY_ERROR));
                         addErrorToDocStructAndMetadata(inStruct, md,
-                                mdt.getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_EMPTY_ERROR));
+                                mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                        + Helper.getTranslation(METADATA_EMPTY_ERROR));
                     }
                 }
 
             }
             /* jetzt die Typen prüfen */
             if ("1m".equals(number) && real != 1) {
-                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                        + Helper.getTranslation(METADATA_MISSING_ERROR) + " " + real + " " + Helper.getTranslation(METADATA_TIMES_ERROR));
-                try {
-                    Metadata md = new Metadata(mdt);
-                    addErrorToDocStructAndMetadata(inStruct, md, Helper.getTranslation(METADATA_MISSING_ERROR));
-                } catch (MetadataTypeNotAllowedException e) {
-                    e.printStackTrace();
-                }
+                validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                        + Helper.getTranslation(METADATA_MISSING_ERROR) + " " + real + " " + Helper.getTranslation(METADATA_TIMES_ERROR);
+                inList.add(validationErrorMessage);
+                addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
             }
             if ("1o".equals(number) && real > 1) {
-                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                        + Helper.getTranslation(METADATA_TO_MANY_ERROR) + " " + real + " " + Helper.getTranslation(METADATA_TIMES_ERROR));
-                try {
-                    Metadata md = new Metadata(mdt);
-                    addErrorToDocStructAndMetadata(inStruct, md, Helper.getTranslation(METADATA_TO_MANY_ERROR));
-                } catch (MetadataTypeNotAllowedException e) {
-                    e.printStackTrace();
-                }
+                validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                        + Helper.getTranslation(METADATA_TO_MANY_ERROR) + " " + real + " " + Helper.getTranslation(METADATA_TIMES_ERROR);
+                inList.add(validationErrorMessage);
+                addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
             }
             if ("+".equals(number) && real == 0) {
-                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                        + Helper.getTranslation(METADATA_NOT_ENOUGH_ERROR));
-                try {
-                    Metadata md = new Metadata(mdt);
-                    addErrorToDocStructAndMetadata(inStruct, md, Helper.getTranslation(METADATA_NOT_ENOUGH_ERROR));
-                } catch (MetadataTypeNotAllowedException e) {
-                    e.printStackTrace();
-                }
+                validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                        + Helper.getTranslation(METADATA_NOT_ENOUGH_ERROR);
+                inList.add(validationErrorMessage);
+                addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
             }
         }
 
@@ -602,61 +592,44 @@ public class MetadatenVerifizierung {
                     int numberOfExistingFields = mg.countMDofthisType(mdt.getName());
                     String expected = mg.getType().getNumberOfMetadataType(mdt);
                     if (("1m".equals(expected) || "1o".equals(expected)) && numberOfExistingFields > 1) {
-                        // to many fields
-                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                        // too many fields
+                        validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                                 + Helper.getTranslation(METADATA_TO_MANY_ERROR) + " " + numberOfExistingFields + " "
-                                + Helper.getTranslation(METADATA_TIMES_ERROR));
-                        try {
-                            Metadata md = new Metadata(mdt);
-                            addErrorToDocStructAndMetadata(inStruct, md,
-                                    Helper.getTranslation(METADATA_TO_MANY_ERROR) + " " + numberOfExistingFields + " "
-                                            + Helper.getTranslation(METADATA_TIMES_ERROR));
-                        } catch (MetadataTypeNotAllowedException e) {
-                            e.printStackTrace();
-                        }
+                                + Helper.getTranslation(METADATA_TIMES_ERROR);
+                        inList.add(validationErrorMessage);
+                        addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
                     } else if (("1m".equals(expected) || "+".equals(expected)) && numberOfExistingFields == 0) {
                         // required field empty
-                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                                + Helper.getTranslation(METADATA_NOT_ENOUGH_ERROR));
-                        try {
-                            Metadata md = new Metadata(mdt);
-                            addErrorToDocStructAndMetadata(inStruct, md, Helper.getTranslation(METADATA_NOT_ENOUGH_ERROR));
-                        } catch (MetadataTypeNotAllowedException e) {
-                            e.printStackTrace();
-                        }
+                        validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                + Helper.getTranslation(METADATA_NOT_ENOUGH_ERROR);
+                        inList.add(validationErrorMessage);
+                        addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
                     } else if ("1m".equals(expected) || "+".equals(expected)) {
                         // check if first field is filled
                         if (mdt.getIsPerson()) {
                             Person p = mg.getPersonByType(mdt.getName()).get(0);
                             if (StringUtils.isEmpty(p.getFirstname()) && StringUtils.isEmpty(p.getLastname())) {
-                                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                                        + Helper.getTranslation(METADATA_EMPTY_ERROR));
-                            }
-                            try {
-                                Metadata md = new Metadata(mdt);
-                                addErrorToDocStructAndMetadata(inStruct, md, Helper.getTranslation(METADATA_EMPTY_ERROR));
-                            } catch (MetadataTypeNotAllowedException e) {
-                                e.printStackTrace();
+                                // required field empty
+                                validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                        + Helper.getTranslation(METADATA_EMPTY_ERROR);
+                                inList.add(validationErrorMessage);
+                                addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
                             }
                         } else if (mdt.isCorporate()) {
                             Corporate c = mg.getCorporateByType(mdt.getName()).get(0);
                             if (StringUtils.isEmpty(c.getMainName())) {
-                                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                                        + Helper.getTranslation(METADATA_EMPTY_ERROR));
-                                try {
-                                    Metadata md = new Metadata(mdt);
-                                    addErrorToDocStructAndMetadata(inStruct, md, Helper.getTranslation(METADATA_EMPTY_ERROR));
-                                } catch (MetadataTypeNotAllowedException e) {
-                                    e.printStackTrace();
-                                }
+                                validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                        + Helper.getTranslation(METADATA_EMPTY_ERROR);
+                                inList.add(validationErrorMessage);
+                                addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
                             }
                         } else {
                             Metadata md = mg.getMetadataByType(mdt.getName()).get(0);
                             if (md.getValue() == null || "".equals(md.getValue())) {
-                                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                                        + Helper.getTranslation(METADATA_EMPTY_ERROR));
-                                addErrorToDocStructAndMetadata(inStruct, md, Helper.getTranslation(METADATA_EMPTY_ERROR));
-
+                                validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                        + Helper.getTranslation(METADATA_EMPTY_ERROR);
+                                inList.add(validationErrorMessage);
+                                addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
                             }
                         }
                     }
@@ -921,6 +894,15 @@ public class MetadatenVerifizierung {
         }
     }
 
+    private void addMessageToMetadatumByMetadataType(DocStruct struct, MetadataType mdt, String message) {
+        try {
+            Metadata md = new Metadata(mdt);
+            addErrorToDocStructAndMetadata(struct, md, message);
+        } catch (MetadataTypeNotAllowedException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * automatisch speichern lassen, wenn Änderungen nötig waren ================================================================
      */
@@ -951,7 +933,7 @@ public class MetadatenVerifizierung {
                     if (!"".equals(identifierTopStruct.getValue().replaceAll(IDENTIFIER_VALIDATION_REGEX, ""))) {
                         Helper.setFehlerMeldung(Helper.getTranslation("MetadataIdentifierError")
                                 + identifierTopStruct.getType().getNameByLanguage(language) + " in DocStruct "
-                                + uppermostStruct.getType().getNameByLanguage(language) + Helper.getTranslation("MetadataInvalidCharacter"));
+                                + uppermostStruct.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataInvalidCharacter"));
                         return false;
                     }
                     DocStruct firstChild = uppermostStruct.getAllChildren().get(0);
