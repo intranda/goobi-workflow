@@ -685,9 +685,9 @@
   </MetadataType>
   <MetadataType>
     <Name>UseAndReproductionLicense</Name>
-    <language name="de">Lizenz</language>
-    <language name="en">License</language>
-    <language name="es">Licencia</language>
+    <language name="de">Nutzungslizenz</language>
+    <language name="en">Licence of use</language>
+    <language name="es">Licencia de uso</language>
   </MetadataType>
   <MetadataType>
     <Name>shelfmarksource</Name>
@@ -6182,6 +6182,13 @@
         <ValueRegExp>s/reserved/In Copyright 1.0/</ValueRegExp>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@href='https://rightsstatements.org/vocab/InC/1.0/']</WriteXPath>
       </Metadata>
+      <Metadata>
+        <InternalName>UseAndReproductionLicense</InternalName>
+        <ValueCondition>/^reserved$/</ValueCondition>
+        <ValueRegExp>s/reserved/Wahrnehmung der Rechte durch die VG Wort (§ 51 VGG)/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='out of print work']</WriteXPath>
+      </Metadata>
+
       <Metadata>
         <InternalName>RestrictionOnAccessLicense</InternalName>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='restriction on access']</WriteXPath>

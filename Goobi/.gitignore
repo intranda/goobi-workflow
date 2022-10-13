@@ -16,3 +16,4 @@
 /install/plugins
 *.iml
 /.DS_Store
+/.metadata

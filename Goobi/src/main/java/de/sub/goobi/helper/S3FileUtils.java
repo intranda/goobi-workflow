@@ -1,3 +1,28 @@
+/**
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ * 
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * 
+ * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
+ * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
+ * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
+ * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
+ * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
+ * exception statement from your version.
+ */
 package de.sub.goobi.helper;
 
 import java.io.IOException;
@@ -290,12 +315,15 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public List<Path> listFiles(String folder) {
+        if (!folder.contains(".") && !folder.endsWith("/")) {
+            folder = folder + "/";
+        }
         StorageType storageType = getPathStorageType(folder);
         if (storageType == StorageType.LOCAL) {
             return nio.listFiles(folder);
         }
         String folderPrefix = string2Prefix(folder);
-        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(folderPrefix);
+        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(folderPrefix).withDelimiter("/");
         ObjectListing listing = s3.listObjects(req);
         Set<String> objs = new HashSet<>();
         for (S3ObjectSummary os : listing.getObjectSummaries()) {
@@ -346,7 +374,6 @@ public class S3FileUtils implements StorageProviderInterface {
                     filteredObjs.add(p);
                 }
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 log.error(e);
             }
         }
@@ -388,26 +415,17 @@ public class S3FileUtils implements StorageProviderInterface {
             return nio.list(folder, NIOFileUtils.folderFilter);
         }
         String folderPrefix = string2Prefix(folder);
-        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(folderPrefix);
+        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(folderPrefix).withDelimiter("/");
         ObjectListing listing = s3.listObjects(req);
         Set<String> objs = new HashSet<>();
-        for (S3ObjectSummary os : listing.getObjectSummaries()) {
-            String key = os.getKey().replace(folderPrefix, "");
+        for (String os : listing.getCommonPrefixes()) {
+            String key = os.replace(folderPrefix, "");
             int idx = key.indexOf('/');
             if (idx >= 0) {
                 objs.add(key.substring(0, key.indexOf('/')));
             }
         }
-        while (listing.isTruncated()) {
-            listing = s3.listNextBatchOfObjects(listing);
-            for (S3ObjectSummary os : listing.getObjectSummaries()) {
-                String key = os.getKey().replace(folderPrefix, "");
-                int idx = key.indexOf('/');
-                if (idx >= 0) {
-                    objs.add(key.substring(0, key.indexOf('/')));
-                }
-            }
-        }
+
         List<String> folders = new ArrayList<>(objs);
         Collections.sort(folders);
         return folders;
@@ -415,9 +433,14 @@ public class S3FileUtils implements StorageProviderInterface {
 
     @Override
     public void copyDirectory(final Path source, final Path target) throws IOException {
+        copyDirectory(source, target, true);
+    }
+
+    @Override
+    public void copyDirectory(final Path source, final Path target, boolean copyPermissions) throws IOException {
         StorageType storageType = getPathStorageType(source);
         if (storageType == StorageType.LOCAL) {
-            nio.copyDirectory(source, target);
+            nio.copyDirectory(source, target, copyPermissions);
             return;
         }
         String sourcePrefix = path2Prefix(source);
@@ -453,7 +476,7 @@ public class S3FileUtils implements StorageProviderInterface {
                     try {
                         Upload upload = transferManager.upload(getBucket(), key, is, om);
                         upload.waitForCompletion();
-                    } catch (AmazonClientException  e) {
+                    } catch (AmazonClientException e) {
                         log.error(e);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
@@ -508,7 +531,7 @@ public class S3FileUtils implements StorageProviderInterface {
         try {
             copy.waitForCompletion();
             s3.deleteObject(getBucket(), oldKey);
-        } catch (AmazonClientException  e) {
+        } catch (AmazonClientException e) {
             throw new IOException(e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -612,7 +635,12 @@ public class S3FileUtils implements StorageProviderInterface {
             return nio.isFileExists(path);
         }
         // handle prefix, too
-        return s3.doesObjectExist(getBucket(), path2Key(path)) || s3.listObjects(getBucket(), path2Prefix(path)).getObjectSummaries().size() > 0;
+        if (s3.doesObjectExist(getBucket(), path2Key(path))) {
+            return true;
+        }
+        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(path2Key(path)).withDelimiter("/");
+        ObjectListing listing = s3.listObjects(req);
+        return !listing.getCommonPrefixes().isEmpty() || !listing.getObjectSummaries().isEmpty();
     }
 
     @Override
@@ -621,8 +649,9 @@ public class S3FileUtils implements StorageProviderInterface {
         if (storageType == StorageType.LOCAL || storageType == StorageType.BOTH) {
             return nio.isDirectory(path);
         }
-        String prefix = path2Prefix(path);
-        return !s3.listObjects(getBucket(), prefix).getObjectSummaries().isEmpty();
+        ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(path2Key(path)).withDelimiter("/");
+        ObjectListing listing = s3.listObjects(req);
+        return !listing.getCommonPrefixes().isEmpty();
     }
 
     @Override
@@ -648,7 +677,8 @@ public class S3FileUtils implements StorageProviderInterface {
         if (om == null) {
             // check everything inside prefix.
             long lastModified = 0;
-            ObjectListing listing = s3.listObjects(getBucket(), path2Key(path));
+            ListObjectsRequest req = new ListObjectsRequest().withBucketName(getBucket()).withPrefix(path2Key(path)).withDelimiter("/");
+            ObjectListing listing = s3.listObjects(req);
             for (S3ObjectSummary os : listing.getObjectSummaries()) {
                 if (os.getLastModified().getTime() > lastModified) {
                     lastModified = os.getLastModified().getTime();
@@ -715,7 +745,7 @@ public class S3FileUtils implements StorageProviderInterface {
             Download dl = transferManager.download(getBucket(), path2Key(oldPath), newPath.toFile());
             try (S3Object obj = s3.getObject(getBucket(), path2Key(oldPath)); InputStream in = obj.getObjectContent()) {
                 dl.waitForCompletion();
-            } catch (AmazonClientException  e) {
+            } catch (AmazonClientException e) {
                 throw new IOException(e);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -922,4 +952,5 @@ public class S3FileUtils implements StorageProviderInterface {
         }
         return uri;
     }
+
 }

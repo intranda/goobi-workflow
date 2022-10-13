@@ -1,5 +1,7 @@
 package org.goobi.production.search.api;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang.StringUtils;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -25,7 +27,9 @@ import de.sub.goobi.helper.Helper;
 import lombok.Data;
 
 @Data
-public class ExtendedSearchRow {
+public class ExtendedSearchRow implements Serializable {
+
+    private static final long serialVersionUID = 4020492017029891060L;
 
     private String fieldName;
 
@@ -101,8 +105,8 @@ public class ExtendedSearchRow {
             value = "\"" + this.fieldOperand + this.stepStatus + ":" + this.stepName + "\" ";
         }
 
-        else if (fieldName.equals("PROCESSLOG") && !fieldValue.isEmpty()) {
-            value = "\"" + this.fieldOperand + FilterString.PROCESSLOG + fieldValue + "\" ";
+        else if (fieldName.equals("JOURNAL") && !fieldValue.isEmpty()) {
+            value = "\"" + this.fieldOperand + FilterString.JOURNAL + fieldValue + "\" ";
         }
 
         else if (fieldName.equals("INSTITUTION") && StringUtils.isNotBlank(institutionName)) {

@@ -1,3 +1,27 @@
+/**
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ * 
+ * Visit the websites for more information.
+ *             - https://goobi.io
+ *             - https://www.intranda.com
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * 
+ * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
+ * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
+ * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
+ * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
+ * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
+ * exception statement from your version.
+ */
 package org.goobi.goobiScript;
 
 import java.io.IOException;
@@ -70,7 +94,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
 
         boolean contentOnly = Boolean.parseBoolean(parameters.get("contentOnly"));
         boolean removeUnknownFiles =
-                StringUtils.isBlank(parameters.get("removeUnknownFiles")) ? false : Boolean.parseBoolean(parameters.get("removeUnknownFiles"));
+                StringUtils.isNotBlank(parameters.get("removeUnknownFiles")) && Boolean.parseBoolean(parameters.get("removeUnknownFiles"));
 
         Process p = ProcessManager.getProcessById(gsr.getProcessId());
         gsr.setProcessTitle(p.getTitel());
@@ -88,12 +112,12 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                         if (StorageProvider.getInstance().isFileExists(images)) {
                             StorageProvider.getInstance().deleteDir(images);
                         }
-                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Content deleted using GoobiScript.", username);
+                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Content deleted using GoobiScript.", username);
                         log.info("Content deleted using GoobiScript for process with ID " + gsr.getProcessId());
                         gsr.setResultMessage("Content for process deleted successfully.");
                         gsr.setResultType(GoobiScriptResultType.OK);
                     } catch (Exception e) {
-                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Problem occured while trying to delete content using GoobiScript.",
+                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Problem occured while trying to delete content using GoobiScript.",
                                 username);
                         log.error("Content for process cannot be deleted using GoobiScript for process with ID " + gsr.getProcessId());
                         gsr.setResultMessage("Content for process cannot be deleted: " + e.getMessage());
@@ -109,12 +133,12 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                                 StorageProvider.getInstance().deleteDir(path);
                             }
                         }
-                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Content deleted using GoobiScript.", username);
+                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Content deleted using GoobiScript.", username);
                         log.info("Content deleted using GoobiScript for process with ID " + gsr.getProcessId());
                         gsr.setResultMessage("Content for process deleted successfully.");
                         gsr.setResultType(GoobiScriptResultType.OK);
                     } catch (Exception e) {
-                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Problem occured while trying to delete content using GoobiScript.",
+                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Problem occured while trying to delete content using GoobiScript.",
                                 username);
                         log.error("Content for process cannot be deleted using GoobiScript for process with ID " + gsr.getProcessId());
                         gsr.setResultMessage("Content for process cannot be deleted: " + e.getMessage());
@@ -129,7 +153,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                         gsr.setResultMessage("Process deleted successfully.");
                         gsr.setResultType(GoobiScriptResultType.OK);
                     } catch (Exception e) {
-                        Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Problem occured while trying to delete process using GoobiScript.",
+                        Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Problem occured while trying to delete process using GoobiScript.",
                                 username);
                         log.error("Process cannot be deleted using GoobiScript for process with ID " + gsr.getProcessId());
                         gsr.setResultMessage("Process cannot be deleted: " + e.getMessage());
@@ -138,7 +162,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
                     }
                 }
             } else {
-                Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Problem occured while trying to delete process using GoobiScript.",
+                Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Problem occured while trying to delete process using GoobiScript.",
                         username);
                 log.error("Process cannot be deleted using GoobiScript for process with ID " + gsr.getProcessId());
                 String message = "Process cannot be deleted: missing permissions";
@@ -149,7 +173,7 @@ public class GoobiScriptDeleteProcess extends AbstractIGoobiScript implements IG
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (DAOException | SwapException | IOException e) {
-            Helper.addMessageToProcessLog(p.getId(), LogType.DEBUG, "Problem occured while trying to delete process using GoobiScript.", username);
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Problem occured while trying to delete process using GoobiScript.", username);
             log.error("Process cannot be deleted using GoobiScript for process with ID " + gsr.getProcessId());
             gsr.setResultMessage("Process cannot be deleted: " + e.getMessage());
             gsr.setResultType(GoobiScriptResultType.ERROR);

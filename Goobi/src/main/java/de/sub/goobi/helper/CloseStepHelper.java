@@ -144,7 +144,7 @@ public class CloseStepHelper {
                         try {
                             SendMail.getInstance().sendMailToAssignedUser(myStep, StepStatus.OPEN);
                             StepManager.saveStep(myStep);
-                            Helper.addMessageToProcessLog(currentStep.getProzess().getId(), LogType.DEBUG,
+                            Helper.addMessageToProcessJournal(currentStep.getProzess().getId(), LogType.DEBUG,
                                     "Step '" + myStep.getTitel() + "' opened.");
                         } catch (DAOException e) {
                             log.error("An exception occurred while saving a step for process with ID " + currentStep.getProzess().getId(), e);
@@ -185,7 +185,7 @@ public class CloseStepHelper {
                     HistoryEventType.stepInWork.getValue(), automaticStep.getProzess().getId());
             try {
                 StepManager.saveStep(automaticStep);
-                Helper.addMessageToProcessLog(currentStep.getProzess().getId(), LogType.DEBUG,
+                Helper.addMessageToProcessJournal(currentStep.getProzess().getId(), LogType.DEBUG,
                         "Step '" + automaticStep.getTitel() + "' started to work automatically.");
             } catch (DAOException e) {
                 log.error("An exception occurred while saving an automatic step for process with ID " + automaticStep.getProzess().getId(), e);
@@ -254,7 +254,7 @@ public class CloseStepHelper {
         currentStep.setBearbeitungsende(myDate);
         try {
             StepManager.saveStep(currentStep);
-            Helper.addMessageToProcessLog(currentStep.getProzess().getId(), LogType.DEBUG, "Step '" + currentStep.getTitel() + "' closed.");
+            Helper.addMessageToProcessJournal(currentStep.getProzess().getId(), LogType.DEBUG, "Step '" + currentStep.getTitel() + "' closed.");
         } catch (DAOException e) {
             log.error("An exception occurred while closing the step '" + currentStep.getTitel() + "' of process with ID "
                     + currentStep.getProzess().getId(), e);
@@ -288,7 +288,6 @@ public class CloseStepHelper {
         offen2 = (offen * 100) / (double) (offen + inBearbeitung + abgeschlossen);
         inBearbeitung2 = (inBearbeitung * 100) / (double) (offen + inBearbeitung + abgeschlossen);
         abgeschlossen2 = 100 - offen2 - inBearbeitung2;
-        // (abgeschlossen * 100) / (offen + inBearbeitung + abgeschlossen);
         java.text.DecimalFormat df = new java.text.DecimalFormat("#000");
         String value = df.format(abgeschlossen2) + df.format(inBearbeitung2) + df.format(offen2);
 

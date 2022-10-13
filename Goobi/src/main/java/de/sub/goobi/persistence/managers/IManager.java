@@ -1,5 +1,6 @@
 package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -25,10 +26,11 @@ import org.goobi.beans.Institution;
 
 import de.sub.goobi.helper.exceptions.DAOException;
 
-public interface IManager {
+public interface IManager extends Serializable {
     public int getHitSize(String order, String filter, Institution institution) throws DAOException;
 
-    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution) throws DAOException;
+    public List<? extends DatabaseObject> getList(String order, String filter, Integer start, Integer count, Institution institution)
+            throws DAOException;
 
     public List<Integer> getIdList(String order, String filter, Institution institution);
 }

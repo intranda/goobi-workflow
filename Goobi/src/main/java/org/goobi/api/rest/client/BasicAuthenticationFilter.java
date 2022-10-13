@@ -34,7 +34,6 @@ import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.xml.bind.DatatypeConverter;
 
-
 public class BasicAuthenticationFilter implements ClientRequestFilter {
 
     /**
@@ -46,7 +45,6 @@ public class BasicAuthenticationFilter implements ClientRequestFilter {
 
     private String username;
     private String password;
-
 
     public BasicAuthenticationFilter(String username, String password) {
         this.username = username;

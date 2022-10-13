@@ -4,9 +4,9 @@ package org.goobi.managedbeans;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -69,6 +71,7 @@ import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationT
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.persistence.managers.InstitutionManager;
@@ -98,8 +101,6 @@ public class UserBean extends BasicBean implements Serializable {
     private DatabasePaginator usergroupPaginator;
     @Getter
     private DatabasePaginator projectPaginator;
-    //    @Getter
-    //    private DatabasePaginator institutionPaginator;
     @Getter
     private boolean unsubscribedProjectsExist;
 
@@ -164,9 +165,10 @@ public class UserBean extends BasicBean implements Serializable {
     public String FilterAlleStart() {
         UserManager m = new UserManager();
         String sqlQuery = getBasicFilter();
+        StringBuilder sqlQueryBuilder = new StringBuilder(sqlQuery);
         if (this.filter != null && this.filter.length() != 0) {
             String[] searchParts = this.filter.trim().split("\\s+");
-            sqlQuery += " AND (";
+            sqlQueryBuilder.append(" AND (");
             for (int index = 0; index < searchParts.length; index++) {
                 String like = MySQLHelper.escapeString(searchParts[index]);
                 like = "\'%" + StringEscapeUtils.escapeSql(like) + "%\'";
@@ -180,12 +182,13 @@ public class UserBean extends BasicBean implements Serializable {
                         "BenutzerID IN (SELECT DISTINCT BenutzerID FROM benutzer, institution WHERE benutzer.institution_id = institution.id AND (institution.shortName LIKE "
                                 + like + " OR institution.longName LIKE " + like + "))";
                 String inName = "Vorname LIKE " + like + " OR Nachname LIKE " + like + " OR login LIKE " + like + " OR Standort LIKE " + like;
-                sqlQuery += inName + " OR " + inGroup + " OR " + inProject + " OR " + inInstitution;
+                sqlQueryBuilder.append(inName).append(" OR ").append(inGroup).append(" OR ").append(inProject).append(" OR ").append(inInstitution);
                 if (index < searchParts.length - 1) {
-                    sqlQuery += " OR ";
+                    sqlQueryBuilder.append(" OR ");
                 }
             }
-            sqlQuery += ")";
+            sqlQueryBuilder.append(")");
+            sqlQuery = sqlQueryBuilder.toString();
         }
 
         this.paginator = new DatabasePaginator(this.getSortTitle(), sqlQuery, m, "user_all");
@@ -217,10 +220,6 @@ public class UserBean extends BasicBean implements Serializable {
             sort = "benutzer.login";
         } else if (this.sortierung.startsWith("location")) {
             sort = "benutzer.Standort";
-            //} else if (this.sortierung.startsWith("group")) {
-            //    sort = "benutzergruppen.titel";
-            //} else if (this.sortierung.startsWith("projects")) {
-            //    sort = "projekte.Titel";
         } else if (this.sortierung.startsWith("institution")) {
             sort = "institution.shortName";
         }
@@ -250,66 +249,101 @@ public class UserBean extends BasicBean implements Serializable {
 
     public String Speichern() {
 
-        String bla = this.myClass.getLogin();
-
-        if (!LoginValide(bla)) {
+        String userName = myClass.getLogin();
+        if (!isLoginNameValid(userName)) {
             return "";
         }
 
-        Integer userId = this.myClass.getId();
         try {
-            /* prüfen, ob schon ein anderer Benutzer mit gleichem Login existiert */
-            String query = "login='" + bla + "'AND BenutzerID !=" + userId;
-            if (userId == null) {
-                query = "login='" + bla + "'AND BenutzerID is not null";
-            }
-            int num = new UserManager().getHitSize(null, query, null);
-            if (num == 0) {
 
-                // The new password must fulfill the minimum password length (read from default configuration file)
-                int minimumLength = ConfigurationHelper.getInstance().getMinimumPasswordLength();
-                if (myClass.getPasswort() != null && myClass.getPasswort().length() < minimumLength) {
-                    this.displayMode = "";
-                    Helper.setFehlerMeldung("neuesPasswortNichtLangGenug", "" + minimumLength);
-                    return "";
-                }
+            // If the user is created now, the id will be generated later in the database and is null now.
+            // Otherwise the user object has already a valid id.
+            Integer userId = this.myClass.getId();
+            boolean createNewUser = userId == null;
 
-                if (myClass.getId() == null && !AuthenticationType.OPENID.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())
-                        && myClass.getPasswort() != null) {
-                    myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
-                }
-                //if there is only one institution, then it is not shown in ui and the value may be null:
-                if (myClass.getInstitutionId() == null) {
-                    List<SelectItem> lstInst = getInstitutionsAsSelectList();
-                    if (lstInst.size() > 0) {
-                        Integer inst = (Integer) lstInst.get(0).getValue();
-                        myClass.setInstitutionId(inst);
-                    }
-                }
-
-                UserManager.saveUser(this.myClass);
-                paginator.load();
-
-                resetChangeLists();
-
-                if (this.displayMode.equals("") && userId == null) {
-                    this.displayMode = "tab2";
-                    return "user_edit";
-                } else {
-                    this.displayMode = "";
-                    return "user_all";
-                }
-            } else {
-                Helper.setFehlerMeldung("", Helper.getTranslation("loginBereitsVergeben"));
+            if (createNewUser && existsUserName(userName)) {
+                // new user should be created, but user name is already in use
+                Helper.setFehlerMeldung("", "Error: User name is already in use: " + userName);
+                return "";
+            } else if (!createNewUser && !existsUserId(userId)) {
+                // existing user should be edited, but does not exist
+                Helper.setFehlerMeldung("", "Error: User can not be found in the database.");
                 return "";
             }
-        } catch (DAOException e) {
-            Helper.setFehlerMeldung("Error, could not save", e.getMessage());
+
+            if (createNewUser && !isPasswordValid()) {
+                // The 'FehlerMeldung' is already set in isPasswordValid() if the password is too short.
+                return "";
+            }
+
+            updateInstitutionId();
+
+            return saveUserAndLoadPaginator(false);
+
+        } catch (DAOException daoException) {
+            Helper.setFehlerMeldung("", "Error: Could not save user " + userName + "; exception: ", daoException.getMessage());
             return "";
         }
     }
 
-    private boolean LoginValide(String inLogin) {
+    private boolean isPasswordValid() {
+        if (!AuthenticationType.OPENID.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())) {
+
+            // The new password must fulfill the minimum password length (read from default configuration file)
+            int minimumLength = ConfigurationHelper.getInstance().getMinimumPasswordLength();
+
+            if (myClass.getPasswort() == null || myClass.getPasswort().length() < minimumLength) {
+                this.displayMode = "";
+                Helper.setFehlerMeldung("neuesPasswortNichtLangGenug", "" + minimumLength);
+                return false;
+            }
+
+            myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
+        }
+        return true;
+
+    }
+
+    private void updateInstitutionId() throws DAOException {
+        // if there is only one institution, then it is not shown in ui and the value may be null:
+        if (myClass.getInstitutionId() == null) {
+            List<SelectItem> institutionList = this.getInstitutionsAsSelectList();
+            if (!institutionList.isEmpty()) {
+                Integer institution = (Integer) institutionList.get(0).getValue();
+                myClass.setInstitutionId(institution);
+            }
+        }
+    }
+
+    private String saveUserAndLoadPaginator(boolean creatingUser) throws DAOException {
+
+        UserManager.saveUser(this.myClass);
+        paginator.load();
+
+        this.resetChangeLists();
+
+        if (this.displayMode.equals("") && creatingUser) {
+            this.displayMode = "tab2";
+            return "user_edit";
+        } else {
+            this.displayMode = "";
+            return "user_all";
+        }
+    }
+
+    private boolean existsUserName(String userName) throws DAOException {
+        String query = "login='" + userName + "'";
+        int numberOfUsers = new UserManager().getHitSize(null, query, null);
+        return numberOfUsers > 0;
+    }
+
+    private boolean existsUserId(Integer userId) throws DAOException {
+        String query = "BenutzerID='" + userId + "'";
+        int numberOfUsers = new UserManager().getHitSize(null, query, null);
+        return numberOfUsers > 0;
+    }
+
+    private boolean isLoginNameValid(String inLogin) {
         boolean valide = true;
         String patternStr = "[A-Za-z0-9@_\\-.]*";
         Pattern pattern = Pattern.compile(patternStr);
@@ -342,8 +376,8 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     /**
-     * The function Loeschen() deletes a user account. Please note that deleting a user in goobi.production will not delete the user from a connected
-     * LDAP service.
+     * The function Loeschen() deletes a user account. Please note that deleting a user in goobi will not delete the user from a connected LDAP
+     * service.
      * 
      * @return a string indicating the screen showing up after the command has been performed.
      */
@@ -351,6 +385,11 @@ public class UserBean extends BasicBean implements Serializable {
         User currentUser = Helper.getCurrentUser();
         if (!currentUser.getId().equals(myClass.getId())) {
             try {
+                Path folder = Paths.get(ConfigurationHelper.getInstance().getGoobiFolder(), "uploads", "user", myClass.getLogin());
+                if (StorageProvider.getInstance().isFileExists(folder)) {
+                    StorageProvider.getInstance().deleteDir(folder);
+                }
+
                 UserManager.hideUser(myClass);
                 if (myClass.getLdapGruppe().getAuthenticationTypeEnum() == AuthenticationType.LDAP && !myClass.getLdapGruppe().isReadonly()) {
                     new LdapAuthentication().deleteUser(myClass);
@@ -451,11 +490,10 @@ public class UserBean extends BasicBean implements Serializable {
 
     public String AusProjektLoeschen() {
         int projektID = Integer.parseInt(Helper.getRequestParameter("ID"));
-        String strResult = AusProjektLoeschen(projektID);
+        String strResult = AusProjektLoeschen(projektID); // strResult == ""
 
-        if (strResult != null) {
-            removedFromProjects.get(myClass.getId()).add(projektID);
-        }
+        removedFromProjects.get(myClass.getId()).add(projektID);
+
         return strResult;
     }
 
@@ -513,8 +551,6 @@ public class UserBean extends BasicBean implements Serializable {
         if (!addedToGroups.containsKey(myClass.getId())) {
             resetChangeLists();
         }
-        //        updateInstitutionPaginator();
-
     }
 
     public Integer getLdapGruppeAuswahl() {
@@ -608,21 +644,14 @@ public class UserBean extends BasicBean implements Serializable {
         }
 
         // Get and create user
-        Integer LoginID = Integer.valueOf(Helper.getRequestParameter("ID"));
+        Integer loginID = Integer.valueOf(Helper.getRequestParameter("ID"));
         User userToResetPassword;
         try {
-            userToResetPassword = UserManager.getUserById(LoginID);
+            userToResetPassword = UserManager.getUserById(loginID);
         } catch (DAOException daoe) {
             Helper.setFehlerMeldung("could not read database", daoe.getMessage());
             return "user_all";
         }
-
-        /*
-        // Ask a last time before resetting password
-        if ("REALLY" == "CANCEL") {
-            return "index";
-        }
-         */
 
         // Create the random password and save it
         if (userToResetPassword != null) {

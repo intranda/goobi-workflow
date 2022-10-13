@@ -27,43 +27,43 @@
 				}
 				document.getElementById(id).setAttribute("aria-expanded", x);
         	}
+
         </script>
 		<div class="user">
 			<div class="nav icon-nav">
 				<!-- Icon to enable help texts -->
-				<div class="nav-item">
+				<div class="nav-item"
+						aria-label="#{msgs.showHelpMessages}"
+					>
 					<button
+						type="button"
 						class="nav-link btn-link"
 						jsf:id="showHelp"
-						aria-label="#{msgs.showHelpMessages}"
-						jsf:action="#{NavigationForm.Reload}"
 						title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
-						jsf:rel="tooltip"
-						data-placement="bottom">
-						<i class="fa #{not NavigationForm.showHelp?'fa-question':'fa-question-circle'}"></i>
-						<f:passThroughAttribute
-							name="data-toggle"
-							value="tooltip" />
+						>
+
+						<i class="fa #{not NavigationForm.showHelp ? 'fa-question' : 'fa-question-circle'}"></i>
 						<f:setPropertyActionListener
 							target="#{NavigationForm.showHelp}"
 							value="#{not NavigationForm.showHelp}" />
+						<f:ajax render="@this" execute="@form"
+							onevent="toggle_help" />
 					</button>
 				</div>
 
 				<!-- Language dropdown -->
 				<div
 						class="nav-item dropdown language-select"
-						data-toggle="tooltip"
 						title="#{msgs.spracheAendern}"
-						data-bs-toggle="tooltip"
-						data-bs-placement="bottom">
+						>
 
 					<a
 						class="nav-link dropdown-toggle"
 						href="#"
 						role="button"
 						data-bs-toggle="dropdown"
-						aria-expanded="false">
+						aria-expanded="false"
+						>
 
 						<!-- Language icon -->
 						<ui:include src="/uii/includes/svg/icon_language.xhtml" >

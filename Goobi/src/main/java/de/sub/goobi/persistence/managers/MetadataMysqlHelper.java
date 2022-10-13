@@ -144,9 +144,6 @@ class MetadataMysqlHelper implements Serializable {
                 run.update(connection, sqlString, param);
             }
 
-            //            sqlString = "INSERT INTO metadata_json (processid, value) VALUES (?,?)";
-            //            param = new Object[] { processid, gson.toJson(metadata) };
-            //            run.update(connection, sqlString, param);
         } finally {
             if (connection != null) {
                 MySQLHelper.closeConnection(connection);
@@ -241,16 +238,14 @@ class MetadataMysqlHelper implements Serializable {
         public List<StringPair> handle(ResultSet rs) throws SQLException {
             List<StringPair> answer = new ArrayList<>();
             try {
-                while (rs.next()) {
+                while (rs.next()) { // implies that rs != null
                     String name = rs.getString("name");
                     String value = rs.getString("value");
                     StringPair sp = new StringPair(name, value);
                     answer.add(sp);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }

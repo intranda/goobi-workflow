@@ -39,7 +39,7 @@ import de.sub.goobi.persistence.managers.DocketManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DocketManager.class)
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class DocketConverterTest extends AbstractTest {
 
     @Test

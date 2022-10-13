@@ -3,10 +3,10 @@ package org.goobi.beans;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -33,9 +33,9 @@ import java.util.List;
 import de.sub.goobi.beans.property.IGoobiProperty;
 import de.sub.goobi.helper.enums.PropertyType;
 import de.sub.goobi.persistence.managers.ProcessManager;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.AccessLevel;
 
 public class Processproperty implements Serializable, IGoobiProperty, Comparable<Processproperty> {
     private static final long serialVersionUID = -2356566712752716107L;
@@ -54,8 +54,8 @@ public class Processproperty implements Serializable, IGoobiProperty, Comparable
     @Getter
     @Setter
     private Boolean istObligatorisch;
-    @Getter (AccessLevel.PRIVATE)
-    @Setter (AccessLevel.PRIVATE)
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private Integer datentyp;
     @Getter
     @Setter
@@ -78,12 +78,12 @@ public class Processproperty implements Serializable, IGoobiProperty, Comparable
 
     @Override
     public Boolean isIstObligatorisch() {
-    	if (this.istObligatorisch == null) {
+        if (this.istObligatorisch == null) {
             this.istObligatorisch = false;
         }
         return this.istObligatorisch;
     }
-    
+
     /**
      * set datentyp to specific value from {@link PropertyType}
      * 
@@ -109,7 +109,7 @@ public class Processproperty implements Serializable, IGoobiProperty, Comparable
 
     public List<String> getValueList() {
         if (this.valueList == null) {
-            this.valueList = new ArrayList<String>();
+            this.valueList = new ArrayList<>();
         }
         return this.valueList;
     }
@@ -172,45 +172,58 @@ public class Processproperty implements Serializable, IGoobiProperty, Comparable
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Processproperty other = (Processproperty) obj;
         if (id != null && other.id != null && id.equals(other.id)) {
             return true;
         }
         if (container == null) {
-            if (other.container != null)
+            if (other.container != null) {
                 return false;
-        } else if (!container.equals(other.container))
+            }
+        } else if (!container.equals(other.container)) {
             return false;
+        }
         if (creationDate == null) {
-            if (other.creationDate != null)
+            if (other.creationDate != null) {
                 return false;
-        } else if (!creationDate.equals(other.creationDate))
+            }
+        } else if (!creationDate.equals(other.creationDate)) {
             return false;
+        }
         if (datentyp == null) {
-            if (other.datentyp != null)
+            if (other.datentyp != null) {
                 return false;
-        } else if (!datentyp.equals(other.datentyp))
+            }
+        } else if (!datentyp.equals(other.datentyp)) {
             return false;
-        if (processId != other.processId)
+        }
+        if (processId != other.processId) {
             return false;
+        }
         if (titel == null) {
-            if (other.titel != null)
+            if (other.titel != null) {
                 return false;
-        } else if (!titel.equals(other.titel))
+            }
+        } else if (!titel.equals(other.titel)) {
             return false;
+        }
         if (wert == null) {
-            if (other.wert != null)
+            if (other.wert != null) {
                 return false;
-        } else if (!wert.equals(other.wert))
+            }
+        } else if (!wert.equals(other.wert)) {
             return false;
+        }
         return true;
     }
-
 
 }

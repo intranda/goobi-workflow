@@ -46,7 +46,7 @@
         </type>
     	<type format="default" colorType="default" compression="default" embeddedColorProfile="both" minSize="0" maxSize="0">
     		<settings allowRenderWithJAI="false" allowSubSampling="true" scaleWithScalr="false" mergeWithJAI="false" 
-    		forceConvertToBuffered="false" forceConvertToRGB="false" forwardDirectlyIfPossible="true" preferredImageWriter="com.twelvemonkeys.imageio"></settings>
+    		forceConvertToBuffered="false" forceConvertToRGB="false" forwardDirectlyIfPossible="true" preferredImageWriter="com.github.jaiimageio"></settings>
     	</type>
     </imageTypeSettings>
     
@@ -135,7 +135,9 @@
 	<pdfTitlePage use="false"
 		configFile="file:///opt/digiverso/goobi/config/config_pdfTitlePage.xml" />
 
-    <restapi use="true" useWatermark="false"></restapi>
+    <restapi use="true" useWatermark="false">
+         <discloseContentLocation>false</discloseContentLocation>
+    </restapi>
 
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * path to 

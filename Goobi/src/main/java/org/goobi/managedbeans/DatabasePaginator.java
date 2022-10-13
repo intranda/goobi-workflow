@@ -4,9 +4,9 @@ package org.goobi.managedbeans;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -41,17 +41,17 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class DatabasePaginator implements Serializable {
     private static final long serialVersionUID = 1571881092118205104L;
-    protected List<? extends DatabaseObject> results;
+    protected transient List<? extends DatabaseObject> results;
     protected int pageSize = 10;
     protected int page = 0;
     @Getter
     protected int totalResults = 0;
     protected String order = "";
-    protected String filter = new String();
+    protected String filter = "";
     protected IManager manager;
     private String returnPage;
 
-    protected List<Integer> idList = new ArrayList<>();
+    protected transient List<Integer> idList = new ArrayList<>();
     protected Institution institution;
 
     public DatabasePaginator(String order, String filter, IManager manager, String returnPage) {
@@ -86,10 +86,6 @@ public class DatabasePaginator implements Serializable {
         return ret;
     }
 
-    // public List<? extends DatabaseObject> getList() {
-    // return hasNextPage() ? this.results.subList(0, this.pageSize) : this.results;
-    // }
-
     public int getFirstResultNumber() {
         return this.page * this.pageSize + 1;
     }
@@ -98,19 +94,6 @@ public class DatabasePaginator implements Serializable {
         int fullPage = getFirstResultNumber() + this.pageSize - 1;
         return getTotalResults() < fullPage ? getTotalResults() : fullPage;
     }
-
-    // public List<? extends DatabaseObject> getListReload() {
-    // try {
-    // results = manager.getList(order, filter, this.page * this.pageSize , pageSize);
-    // for (DatabaseObject d : results) {
-    // d.lazyLoad();
-    // }
-    //
-    // } catch (DAOException e) {
-    // log.error("Failed to load paginated results", e);
-    // }
-    // return results;
-    // }
 
     public List<? extends DatabaseObject> getList() {
         return this.results;

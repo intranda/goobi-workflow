@@ -4,9 +4,9 @@ package org.goobi.production.flow.statistics;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -68,7 +68,7 @@ import lombok.extern.log4j.Log4j2;
 public class StatisticsManager implements Serializable {
     private static final long serialVersionUID = -1070332559779545423L;
     /* simple JFreeChart Dataset for the old simple statistics */
-    private Dataset jfreeDataset;
+    private transient Dataset jfreeDataset;
     @Getter
     private String jfreeImage;
     /* internal StatisticsMode */
@@ -100,7 +100,7 @@ public class StatisticsManager implements Serializable {
     private Date calculatedEndDate = new Date();
     @Getter
     private List<StatisticsRenderingElement> renderingElements;
-    static private Locale myLocale = null;
+    private static Locale myLocale = null;
     private Boolean includeLoops = null;
     private String filter = "";
 
@@ -123,7 +123,7 @@ public class StatisticsManager implements Serializable {
         sourceTimeUnit = TimeUnit.months;
         myLocale = locale;
         /* for backward compatibility create old jfreechart datasets */
-        if (inMode.getIsSimple()) {
+        if (Boolean.TRUE.equals(inMode.getIsSimple())) {
             switch (inMode) {
 
                 case SIMPLE_RUNTIME_STEPS:
@@ -134,7 +134,6 @@ public class StatisticsManager implements Serializable {
                     } catch (IOException e) {
                         log.error(e);
                     }
-                    //				jfreeDataset = StatistikLaufzeitSchritte.getDiagramm(inDataSource.getSourceData());
                     break;
 
                 default:
@@ -155,7 +154,7 @@ public class StatisticsManager implements Serializable {
      * @return {@link Dataset} for charting
      ****************************************************************************/
     public Dataset getJfreeDataset() {
-        if (statisticMode.getIsSimple()) {
+        if (Boolean.TRUE.equals(statisticMode.getIsSimple())) {
             return jfreeDataset;
         } else {
             return new DefaultValueDataset();

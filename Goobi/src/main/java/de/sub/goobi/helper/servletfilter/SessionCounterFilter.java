@@ -4,9 +4,9 @@ package de.sub.goobi.helper.servletfilter;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -45,27 +45,24 @@ public class SessionCounterFilter implements Filter {
     ServletContext servletContext;
 
     @Inject
-    private  SessionForm sf ;
+    private SessionForm sf;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         servletContext = filterConfig.getServletContext();
     }
 
-
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest httpReq = (HttpServletRequest) request;
         try {
-            //            SessionForm sf = Helper.getSessionBean();
             sf.updateSessionLastAccess(httpReq.getSession());
         } catch (Exception e) {
 
         }
         chain.doFilter(request, response);
     }
-
 
     /**
      */

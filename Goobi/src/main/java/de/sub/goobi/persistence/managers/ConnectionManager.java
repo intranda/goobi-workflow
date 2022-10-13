@@ -1,12 +1,10 @@
-package de.sub.goobi.persistence.managers;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -25,7 +23,9 @@ package de.sub.goobi.persistence.managers;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+package de.sub.goobi.persistence.managers;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,18 +45,19 @@ import lombok.extern.log4j.Log4j2;
  * 
  */
 @Log4j2
-public class ConnectionManager {
+public class ConnectionManager implements Serializable {
 
-    private DataSource ds = null;
+    private static final long serialVersionUID = 5383856824401199510L;
+
+    private transient DataSource ds = null;
     @SuppressWarnings("rawtypes")
-    private static GenericObjectPool _pool = null;
+    private static GenericObjectPool _pool = null; // NOSONAR
 
     /**
      * @param config configuration from an XML file.
      */
     public ConnectionManager() {
         try {
-            //			connectToDB(config);
             connectToDB();
         } catch (Exception e) {
             log.error("Failed to construct ConnectionManager", e);
@@ -93,17 +94,17 @@ public class ConnectionManager {
      * @return Number of locked processes
      */
     public int getNumLockedProcesses() {
-        int num_locked_connections = 0;
+        int numLockedConnections = 0;
         Connection con = null;
-        PreparedStatement p_stmt = null;
+        PreparedStatement preparedStatement = null;
         ResultSet rs = null;
         try {
             con = this.ds.getConnection(); //NOSONAR as it is closed in the finally statement
-            p_stmt = con.prepareStatement("SHOW PROCESSLIST"); //NOSONAR as it is closed in the finally statement
-            rs = p_stmt.executeQuery(); //NOSONAR as it is closed in the finally statement
+            preparedStatement = con.prepareStatement("SHOW PROCESSLIST"); //NOSONAR as it is closed in the finally statement
+            rs = preparedStatement.executeQuery(); //NOSONAR as it is closed in the finally statement
             while (rs.next()) {
                 if (rs.getString("State") != null && rs.getString("State").equals("Locked")) {
-                    num_locked_connections++;
+                    numLockedConnections++;
                 }
             }
         } catch (Exception e) {
@@ -113,13 +114,13 @@ public class ConnectionManager {
         } finally {
             try {
                 rs.close();
-                p_stmt.close();
+                preparedStatement.close();
                 con.close();
             } catch (java.sql.SQLException ex) {
                 log.error(ex.toString());
             }
         }
-        return num_locked_connections;
+        return numLockedConnections;
     }
 
     public DataSource getDataSource() {

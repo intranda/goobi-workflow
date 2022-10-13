@@ -3,10 +3,10 @@ package de.sub.goobi.helper.tasks;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -33,7 +33,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class LongRunningTaskManager {
-    static LinkedList<LongRunningTask> tasks = new LinkedList<LongRunningTask>();
+    static LinkedList<LongRunningTask> tasks = new LinkedList<>();
     private static LongRunningTaskManager lrtm;
     @Getter
     @Setter
@@ -80,7 +80,7 @@ public class LongRunningTaskManager {
                 return;
             }
         }
-        if (tasks.size() > 0) {
+        if (!tasks.isEmpty()) {
             for (LongRunningTask lrt : tasks) {
                 if (lrt.getStatusProgress() == 0) {
                     lrt.execute();
@@ -161,7 +161,7 @@ public class LongRunningTaskManager {
      * abgeschlossene Tasks aus der Liste entfernen ================================================================
      */
     public void clearFinishedTasks() {
-        for (LongRunningTask lrt : new LinkedList<LongRunningTask>(tasks)) {
+        for (LongRunningTask lrt : new LinkedList<>(tasks)) {
             if (lrt.getStatusProgress() == 100) {
                 tasks.remove(lrt);
             }
@@ -172,7 +172,7 @@ public class LongRunningTaskManager {
      * alle Tasks aus der Liste entfernen ================================================================
      */
     public void clearAllTasks() {
-        for (LongRunningTask lrt : new LinkedList<LongRunningTask>(tasks)) {
+        for (LongRunningTask lrt : new LinkedList<>(tasks)) {
             if (lrt.getStatusProgress() == 100 || lrt.getStatusProgress() < 1) {
                 tasks.remove(lrt);
             }

@@ -23,19 +23,30 @@
 	<composite:implementation>
 
 		<div class="row" style="#{cc.attrs.style}">
+
 			<div class="#{cc.attrs.classLeft}" tabindex="-1">
-				<h:outputLabel for="#{cc.attrs.name}" value="#{cc.attrs.label}" styleClass="form-check-label"/>
-				<h:panelGroup rendered="#{cc.attrs.required or cc.attrs.displayAsRequired}">
-					<i class="fa fa-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip"/>
-				</h:panelGroup>
+
+				<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
+					<ui:param name="labelFor" value="#{cc.attrs.name}" />
+					<ui:param name="labelRequired" value="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
+					<ui:param name="labelLabel" value="#{cc.attrs.label}" />
+				</ui:include>
+
 			</div>
+
 			<div class="#{cc.attrs.classRight}" style="#{cc.attrs.styleRight}">
 					<h:selectBooleanCheckbox id="#{cc.attrs.name}" styleClass="form-check-input #{cc.attrs.fieldStyle}"
 					value="#{cc.attrs.field}" disabled="#{cc.attrs.disabled}" tabindex="#{cc.attrs.tabindex}" pt:aria-label="#{cc.attrs.label}"/>
-					<h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger" />
-					<intranda:formHelp content="#{cc.attrs.help}" />
+
+				<!-- Help messages, inline + warning -->
+				<ui:include src="/uii/templatePG/includes/forms/form_help.xhtml">
+					<ui:param name="msgFor" value="#{cc.attrs.name}" />
+					<ui:param name="helpContent" value="#{cc.attrs.help}" />
+				</ui:include>
+
 			</div>
-		</div>
+
+		</div> <!-- row end -->
 
 	</composite:implementation>
 

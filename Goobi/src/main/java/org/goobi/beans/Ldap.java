@@ -4,9 +4,9 @@ package org.goobi.beans;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -59,11 +59,11 @@ public class Ldap implements Serializable, DatabaseObject, IAuthenticationProvid
     private String sambaKickoffTime = "0";
 
     private String adminLogin = "CHANGE_ME_cn=administrator,ou=users,o=example,c=net";
-    private String adminPassword ="CHANGE_ME_password";
-    private String ldapUrl ="CHANGE_ME_http://localhost:389/";
+    private String adminPassword = "CHANGE_ME_password";
+    private String ldapUrl = "CHANGE_ME_http://localhost:389/";
     private String attributeToTest;
     private String valueOfAttribute;
-    private String nextFreeUnixId ="CHANGE_ME_cn=NextFreeUnixId,o=example,c=net";
+    private String nextFreeUnixId = "CHANGE_ME_cn=NextFreeUnixId,o=example,c=net";
     private String pathToRootCertificate;
     private String pathToPdcCertificate;
     private String encryptionType = "SHA";

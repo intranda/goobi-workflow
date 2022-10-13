@@ -4,9 +4,9 @@ package de.sub.goobi.config;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -51,26 +51,24 @@ public class ConfigProjects {
         this(projectTitle, new Helper().getGoobiConfigDirectory() + "goobi_projects.xml");
     }
 
-
-
     public ConfigProjects(String projectTitle, String configPfad) throws IOException {
         if (!Files.exists(Paths.get(configPfad))) {
             throw new IOException("File not found: " + configPfad);
         }
-        XMLConfiguration config = new XMLConfiguration();
-        config.setExpressionEngine(new XPathExpressionEngine());
-        config.setDelimiterParsingDisabled(true);
-        config.setReloadingStrategy(new FileChangedReloadingStrategy());
+        XMLConfiguration xmlConfig = new XMLConfiguration();
+        xmlConfig.setExpressionEngine(new XPathExpressionEngine());
+        xmlConfig.setDelimiterParsingDisabled(true);
+        xmlConfig.setReloadingStrategy(new FileChangedReloadingStrategy());
 
         try {
-            config.load(configPfad);
+            xmlConfig.load(configPfad);
         } catch (ConfigurationException e) {
             log.error(e);
         }
         String projectNameInFile = null;
         // get all project names from file
-        String getAllProjectNames ="//project/@name | //project/name";
-        String[] projectNames = config.getStringArray(getAllProjectNames);
+        String getAllProjectNames = "//project/@name | //project/name";
+        String[] projectNames = xmlConfig.getStringArray(getAllProjectNames);
         // check if current project matches an entry
 
         for (String name : projectNames) {
@@ -90,7 +88,6 @@ public class ConfigProjects {
             }
         }
 
-
         // if not, try to load 'default' project
         if (projectNameInFile == null) {
             for (String name : projectNames) {
@@ -105,10 +102,9 @@ public class ConfigProjects {
             projectNameInFile = projectNames[0];
         }
 
+        String projektTitel = "/project[@name='" + projectNameInFile + "'] | /project[name='" + projectNameInFile + "']";
 
-        String projektTitel = "/project[@name='"+ projectNameInFile + "'] | /project[name='"+ projectNameInFile + "']";
-
-        this.config = config.configurationAt(projektTitel);
+        this.config = xmlConfig.configurationAt(projektTitel);
 
         try {
             this.config.getBoolean("/createNewProcess/opac/@use");
@@ -128,17 +124,17 @@ public class ConfigProjects {
             String rueckgabe = this.config.getString(inParameter);
             return cleanXmlFormatedString(rueckgabe);
         } catch (RuntimeException e) {
-        	log.error(e);
+            log.error(e);
             return null;
         }
     }
 
     private String cleanXmlFormatedString(String inString) {
         if (inString != null) {
-            inString = inString.replaceAll("\t", " ");
-            inString = inString.replaceAll("\n", " ");
+            inString = inString.replace("\t", " ");
+            inString = inString.replace("\n", " ");
             while (inString.contains("  ")) {
-                inString = inString.replaceAll("  ", " ");
+                inString = inString.replace("  ", " ");
             }
         }
         return inString;
@@ -182,7 +178,7 @@ public class ConfigProjects {
         try {
             return this.config.getLong(inParameter);
         } catch (RuntimeException e) {
-        	log.error(e);
+            log.error(e);
             return 0;
         }
     }
@@ -196,7 +192,7 @@ public class ConfigProjects {
         try {
             return Arrays.asList(this.config.getStringArray(inParameter));
         } catch (RuntimeException e) {
-        	log.error(e);
+            log.error(e);
             return new ArrayList<>();
         }
     }
@@ -205,7 +201,7 @@ public class ConfigProjects {
         try {
             return config.configurationsAt(inParameter);
         } catch (RuntimeException e) {
-        	log.error(e);
+            log.error(e);
             return new ArrayList<>();
         }
     }

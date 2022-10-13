@@ -32,10 +32,10 @@ public enum ImportFormat {
     MARCXML("3", "marcxml"),
     DC("4", "dc");
 
-	@Getter
+    @Getter
     @Setter
     private String value;
-	@Getter
+    @Getter
     @Setter
     private String title;
 

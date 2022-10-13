@@ -1,15 +1,10 @@
-package org.goobi.production.flow.statistics.hibernate;
-
-import java.util.Date;
-import java.util.List;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -28,6 +23,10 @@ import java.util.List;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+package org.goobi.production.flow.statistics.hibernate;
+
+import java.util.Date;
+import java.util.List;
 
 import javax.enterprise.inject.Default;
 
@@ -67,6 +66,7 @@ public class SQLStepRequestByName extends SQLGenerator implements IStepRequestBy
      * 
      * @return SQLExpression for MySQL DBMS - default fields stepCount and intervall
      */
+    @Override
     public String getSQL(HistoryEventType typeSelection, String stepName, Boolean stepOrderGrouping, Boolean includeLoops) {
 
         String timeLimiter = "h.date";
@@ -133,7 +133,7 @@ public class SQLStepRequestByName extends SQLGenerator implements IStepRequestBy
      */
 
     private String addedSorting(Boolean include) {
-        if (include) {
+        if (Boolean.TRUE.equals(include)) {
             return ", table_1.stepOrder";
         } else {
             return "";
@@ -146,7 +146,7 @@ public class SQLStepRequestByName extends SQLGenerator implements IStepRequestBy
      * @return SQL snippet for Select clause
      */
     private String addedListing(Boolean include) {
-        if (include) {
+        if (Boolean.TRUE.equals(include)) {
             return ",table_1.stepName ";
         } else {
             return "";
@@ -159,7 +159,7 @@ public class SQLStepRequestByName extends SQLGenerator implements IStepRequestBy
      * @return SQL snippet for Group by clause
      */
     private String addedGrouping(Boolean include) {
-        if (include) {
+        if (Boolean.TRUE.equals(include)) {
             return ", table_1.stepName ";
         } else {
             return "";

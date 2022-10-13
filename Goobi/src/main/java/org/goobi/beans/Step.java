@@ -4,9 +4,9 @@ package org.goobi.beans;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.goobi.api.mail.SendMail;
 import org.goobi.api.mq.AutomaticThumbnailHandler;
 import org.goobi.api.mq.QueueType;
@@ -72,8 +73,8 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     @Getter
     @Setter
     private Integer reihenfolge;
-    @Getter (AccessLevel.PRIVATE)
-    @Setter (AccessLevel.PRIVATE)
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private Integer bearbeitungsstatus;
     @Getter
     @Setter
@@ -84,8 +85,8 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     @Getter
     @Setter
     private Date bearbeitungsende;
-    @Getter (AccessLevel.PRIVATE)
-    @Setter (AccessLevel.PRIVATE)
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private Integer editType;
     private User bearbeitungsbenutzer;
     // temporär
@@ -241,10 +242,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     @Getter
     private QueueType messageQueue;
 
-    //    @Getter
-    //    @Setter
-    //    private String messageId;
-
     public Step() {
         this.titel = "";
         this.eigenschaften = new ArrayList<>();
@@ -263,7 +260,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
         // Look for the next available order number
         List<Step> steps = process.getSchritte();
-        if (steps.size() == 0) {
+        if (steps.isEmpty()) {
             this.reihenfolge = 1;
             return;
         }
@@ -311,10 +308,10 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     }
 
     public JSONObject getAutoThumbnailSettingsJSON() {
-        //new JSONObject("{'Master':true,'Media':true, 'Sizes':[800] }");
-        Yaml yaml= new Yaml();
+        //new JSONObject("{'Master':true,'Media':true, 'Sizes':[800] }")
+        Yaml yaml = new Yaml();
         @SuppressWarnings("unchecked")
-        Map<String,Object> map= (Map<String, Object>) yaml.load(this.automaticThumbnailSettingsYaml);
+        Map<String, Object> map = (Map<String, Object>) yaml.load(this.automaticThumbnailSettingsYaml);
         return new JSONObject(map);
     }
 
@@ -327,10 +324,10 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
             if (!ConfigurationHelper.getInstance().isStartInternalMessageBroker()) {
                 AutomaticThumbnailHandler handler = new AutomaticThumbnailHandler();
                 handler.call(ticket);
-            }else {
+            } else {
                 TicketGenerator.submitInternalTicket(ticket, QueueType.SLOW_QUEUE, this.titel, this.getProcessId());
             }
-        }catch(Exception e) {
+        } catch (Exception e) {
             log.error(e);
         }
     }
@@ -500,9 +497,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
                 break;
             case LOCKED:
                 bearbeitungsstatus = 1;
-                //                if(this.typAutomaticThumbnail) {
-                //                    this.submitAutomaticThumbnailTicket();
-                //                }
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
                 break;
             case DONE:
@@ -521,9 +515,6 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
             case INFLIGHT:
             case INWORK:
                 bearbeitungsstatus = 1;
-                //                if(this.typAutomaticThumbnail) {
-                //                    this.submitAutomaticThumbnailTicket();
-                //                }
                 SendMail.getInstance().sendMailToAssignedUser(this, StepStatus.getStatusFromValue(bearbeitungsstatus));
                 break;
 
@@ -721,4 +712,11 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
         }
     }
 
+    public boolean isTypeSpecified() {
+        return typMetadaten || typImportFileUpload || typExportDMS || typBeimAnnehmenAbschliessen || typBeimAnnehmenModul
+                || typBeimAnnehmenModulUndAbschliessen || typImagesLesen || typImagesSchreiben || typBeimAbschliessenVerifizieren || typAutomatisch
+                || typScriptStep || StringUtils.isNotEmpty(typModulName) || StringUtils.isNotEmpty(stepPlugin)
+                || StringUtils.isNotEmpty(validationPlugin) || delayStep || batchStep || updateMetadataIndex || generateDocket || httpStep
+                || messageQueue != QueueType.NONE;
+    }
 }

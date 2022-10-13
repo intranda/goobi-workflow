@@ -105,7 +105,7 @@ public class DigitalCollections {
                         Element col = it2.next();
                         String collectionName = col.getText();
                         String defaultCollection = col.getAttributeValue("default");
-                        if (defaultCollection.equalsIgnoreCase("true")) {
+                        if ("true".equalsIgnoreCase(defaultCollection)) {
                             return collectionName;
                         }
                         if (StringUtils.isBlank(firstCollection)) {

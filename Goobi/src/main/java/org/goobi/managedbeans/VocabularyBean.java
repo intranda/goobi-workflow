@@ -1,3 +1,28 @@
+/**
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ * 
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * 
+ * Linking this library statically or dynamically with other modules is making a combined work based on this library. Thus, the terms and conditions
+ * of the GNU General Public License cover the whole combination. As a special exception, the copyright holders of this library give you permission to
+ * link this library with independent modules to produce an executable, regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and
+ * conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this
+ * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
+ * exception statement from your version.
+ */
 package org.goobi.managedbeans;
 
 import java.io.FileInputStream;
@@ -76,7 +101,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     @Getter
     @Setter
-    private Path importFile;
+    private transient Path importFile;
     @Getter
     private String filename;
 
@@ -90,14 +115,14 @@ public class VocabularyBean extends BasicBean implements Serializable {
     @Getter
     private List<SelectItem> allDefinitionNames;
 
-    private List<Row> rowsToImport;
+    private transient List<Row> rowsToImport;
 
     @Getter
     @Setter
     private String importType = "merge";
 
     private List<Definition> removedDefinitions = null;
-    private DataFormatter dataFormatter = new DataFormatter();
+    private transient DataFormatter dataFormatter = new DataFormatter();
 
     /**
      * Constructor for class
@@ -136,7 +161,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public String editRecords() {
         // load records of selected vocabulary
         // initial first page
-        //        VocabularyManager.getPaginatedRecords(currentVocabulary);
         VocabularyManager.getAllRecords(currentVocabulary);
         currentVocabulary.runFilter();
         currentVocabulary.setTotalNumberOfRecords(currentVocabulary.getRecords().size());
@@ -151,7 +175,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public String uploadToServerRecords() {
         VocabularyManager.getAllRecords(currentVocabulary);
         Boolean boOK = VocabularyUploader.upload(currentVocabulary);
-        if (boOK) {
+        if (Boolean.TRUE.equals(boOK)) {
             Helper.setMeldung(Helper.getTranslation("ExportFinished"));
             return "vocabulary_all";
         } else {
@@ -334,8 +358,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
         int columnCounter = 0;
         for (Definition definition : definitionList) {
             headerRow.createCell(columnCounter)
-            .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
-                    : definition.getLabel());
+                    .setCellValue(StringUtils.isNotBlank(definition.getLanguage()) ? definition.getLabel() + " (" + definition.getLanguage() + ")"
+                            : definition.getLabel());
             columnCounter = columnCounter + 1;
         }
 
@@ -422,7 +446,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
                         Cell cell = headerRow.getCell(i);
                         if (cell != null) {
                             String value = dataFormatter.formatCellValue(cell).trim();
-                            //String value = cell.getStringCellValue();
                             headerOrder.add(new MatchingField(value, i, CellReference.convertNumToColString(i), this));
                         }
                     }
@@ -655,7 +678,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
                 VocabularyManager.batchUpdateRecords(updateRecords, currentVocabulary.getId());
             }
         }
-        //  VocabularyManager.saveRecords(currentVocabulary);
         return FilterKein();
     }
 
@@ -708,7 +730,9 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     @Data
     @RequiredArgsConstructor
-    public class MatchingField {
+    public class MatchingField implements Serializable {
+
+        private static final long serialVersionUID = 7037009721345445066L;
 
         /**
          * Name of the header of the current column within the excel file

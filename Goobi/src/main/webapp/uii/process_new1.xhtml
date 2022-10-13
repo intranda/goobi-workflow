@@ -312,7 +312,7 @@
                                 <intranda:formInputText
                                     id="tiffheader1"
                                     label="#{msgs.tifheaderdocumentname}"
-                                    field="#{ProzesskopieForm.tifHeader_documentname}"
+                                    field="#{ProzesskopieForm.tifHeaderDocumentname}"
                                     help="#{msgs.help_import_TifHeader}"
                                     name="tifheader"
                                     fieldStyle="form-control"
@@ -322,7 +322,7 @@
                                 <intranda:formInputText
                                     id="tiffheader2"
                                     label="#{msgs.tifheaderimagedescription}"
-                                    field="#{ProzesskopieForm.tifHeader_imagedescription}"
+                                    field="#{ProzesskopieForm.tifHeaderImagedescription}"
                                     help="#{msgs.help_import_TifHeaderImagedescription}"
                                     name="imagedescription"
                                     fieldStyle="form-control"
@@ -351,11 +351,11 @@
                             </h:panelGroup>
 
                             <intranda:formInputTextArea
-                                id="processlog"
+                                id="journal"
                                 label="#{msgs.addToProcessLog}"
                                 field="#{ProzesskopieForm.addToWikiField}"
                                 help="#{msgs.help_import_AddToProcessLog}"
-                                name="addToProcessLog"
+                                name="addToJournal"
                                 fieldStyle="form-control"
                                 required="false" />
 

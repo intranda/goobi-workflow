@@ -73,8 +73,8 @@ import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.mock.MockUploadedFile;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ JobCreation.class, FacesContext.class, ExternalContext.class , Helper.class})
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*"})
+@PrepareForTest({ JobCreation.class, FacesContext.class, ExternalContext.class, Helper.class })
+@PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*", "javax.management.*" })
 public class MassImportFormTest extends AbstractTest {
 
     private Process template;
@@ -97,7 +97,7 @@ public class MassImportFormTest extends AbstractTest {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
 
         this.template = MockProcess.createProcess();
         this.template.setDocket(new Docket());

@@ -1,12 +1,10 @@
-package org.goobi.production.plugin;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -25,6 +23,9 @@ package org.goobi.production.plugin;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+package org.goobi.production.plugin;
+
+import java.io.Serializable;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +39,9 @@ import net.xeoh.plugins.base.PluginManager;
 import net.xeoh.plugins.base.impl.PluginManagerFactory;
 import net.xeoh.plugins.base.util.PluginManagerUtil;
 
-public class PluginLoader {
+public class PluginLoader implements Serializable {
+
+    private static final long serialVersionUID = -5922522891886118875L;
 
     public static List<IPlugin> getPluginList(PluginType inType) {
         PluginManagerUtil pmu = initialize(inType);
@@ -47,17 +50,7 @@ public class PluginLoader {
     }
 
     public static IPlugin getPluginByTitle(PluginType inType, String inTitle) {
-        // first, check if classes are known in default loader
-        //        Set<Class<? extends IPlugin>> loadedPlugins = new Reflections("de.intranda.goobi.*").getSubTypesOf(inType.getInterfaz());
-        //        for (Class<? extends IPlugin> clazz : loadedPlugins) {
-        //            try {
-        //                IPlugin plugin = clazz.getDeclaredConstructor().newInstance();
-        //                if (plugin.getTitle().equals(inTitle)) {
-        //                    return plugin;
-        //                }
-        //            } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException e) {
-        //            }
-        //        }
+
         PluginManagerUtil pmu = initialize(inType);
         Collection<IPlugin> plugins = pmu.getPlugins(inType.getInterfaz());
         for (IPlugin p : plugins) {

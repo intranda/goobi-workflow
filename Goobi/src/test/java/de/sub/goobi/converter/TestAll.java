@@ -3,9 +3,9 @@ package de.sub.goobi.converter;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -24,7 +24,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ DocketConverterTest.class, ProcessConverterTest.class, StatisticsCalculationUnitConverterTest.class,
-        StatisticsResultOutputConverterTest.class, StatisticsTimeUnitConverterTest.class })
+        StatisticsResultOutputConverterTest.class, StatisticsTimeUnitConverterTest.class, RectangleConverterTest.class,
+        RectangleCoordinateConverterTest.class })
 public class TestAll {
 
 }

@@ -28,6 +28,7 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.beans.DatabaseObject;
 import org.goobi.beans.Institution;
+import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Project;
 import org.goobi.beans.User;
 import org.goobi.beans.Usergroup;
@@ -81,6 +82,9 @@ public class UserManager implements IManager, Serializable {
 
     public static void hideUser(User o) throws DAOException {
         try {
+
+            JournalManager.deleteAllJournalEntries(o.getId(), EntryType.USER);
+
             StepMysqlHelper.removeUserFromAllSteps(o);
             UserMysqlHelper.deleteAllUsergroupAssignments(o);
             UserMysqlHelper.deleteAllProjectAssignments(o);
@@ -245,8 +249,8 @@ public class UserManager implements IManager, Serializable {
         r.setDashboardConfiguration(rs.getString("dashboard_configuration"));
         r.setUiMode(rs.getString("ui_mode"));
         r.setStatus(User.UserStatus.getStatusByName(rs.getString("userstatus")));
-        r.setAdditionalData (MySQLHelper.convertStringToMap(rs.getString("additional_data")));
-
+        r.setAdditionalData(MySQLHelper.convertStringToMap(rs.getString("additional_data")));
+        r.setJournal(JournalManager.getLogEntriesForUser(r.getId()));
         return r;
     }
 
@@ -254,13 +258,11 @@ public class UserManager implements IManager, Serializable {
         @Override
         public User handle(ResultSet rs) throws SQLException {
             try {
-                if (rs.next()) {
+                if (rs.next()) { // implies that rs != null
                     return convert(rs);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return null;
         }
@@ -272,15 +274,11 @@ public class UserManager implements IManager, Serializable {
             List<User> answer = new ArrayList<>();
             try {
                 while (rs.next()) {
-                    User o = convert(rs);
-                    if (o != null) {
-                        answer.add(o);
-                    }
+                    User o = convert(rs); // implies that o != null
+                    answer.add(o);
                 }
             } finally {
-                if (rs != null) {
-                    rs.close();
-                }
+                rs.close();
             }
             return answer;
         }

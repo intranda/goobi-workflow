@@ -1,14 +1,10 @@
-package org.goobi.managedbeans;
-
-import java.io.Serializable;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -27,7 +23,9 @@ import java.io.Serializable;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+package org.goobi.managedbeans;
 
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -95,17 +93,14 @@ public class DocketBean extends BasicBean implements Serializable {
         }
         return FilterKein();
     }
-    
+
     public String Cancel() {
         return "docket_all";
     }
-    
+
     private boolean hasAssignedProcesses(Docket d) {
         Integer number = ProcessManager.getNumberOfProcessesWithDocket(d.getId());
-        if (number != null && number > 0) {
-            return true;
-        }
-        return false;
+        return number != null && number > 0;
     }
 
     public String FilterKein() {

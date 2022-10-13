@@ -2,9 +2,9 @@
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -111,8 +111,8 @@ public class SpracheForm implements Serializable {
     /**
      * The procedure switchLanguage is used to alter the application’s interface language.
      * 
-     * @param langCodeCombined
-     *            This parameter can be either of form “‹language›” or of form “‹language›_‹country›”, e.g. “en” or “en_GB” are valid values.
+     * @param langCodeCombined This parameter can be either of form “‹language›” or of form “‹language›_‹country›”, e.g. “en” or “en_GB” are valid
+     *            values.
      */
     public void switchLanguage(String langCodeCombined) {
         String[] languageCode = langCodeCombined.split("_");

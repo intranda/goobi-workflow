@@ -129,38 +129,6 @@ public class GoobiDefaultQueueListener {
         };
         thread = new Thread(run);
         thread.setDaemon(true);
-        /*final MessageListener myListener = new MessageListener() {
-            @Override
-            public void onMessage(Message message) {
-                try {
-                    Optional<TaskTicket> optTicket = Optional.empty();
-                    if (message instanceof TextMessage) {
-                        TextMessage tm = (TextMessage) message;
-                        optTicket = Optional.of(gson.fromJson(tm.getText(), TaskTicket.class));
-                    }
-                    if (message instanceof BytesMessage) {
-                        BytesMessage bm = (BytesMessage) message;
-                        byte[] bytes = new byte[(int) bm.getBodyLength()];
-                        bm.readBytes(bytes);
-                    }
-                    if (optTicket.isPresent()) {
-                        PluginReturnValue result = handleTicket(optTicket.get());
-                        if (result == PluginReturnValue.FINISH) {
-                            //acknowledge message, it is done
-                            message.acknowledge();
-                        } else {
-                            //error or wait => put back to queue and retry by redeliveryPolicy
-                            sess.recover();
-                        }
-                    }
-                } catch (JMSException e) {
-                    // TODO Auto-generated catch block
-                    log.error(e);
-                }
-            }
-        };
-
-        cons.setMessageListener(myListener);*/
 
         conn.start();
         thread.start();

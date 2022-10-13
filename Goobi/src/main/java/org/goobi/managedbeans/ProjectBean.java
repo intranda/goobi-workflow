@@ -4,10 +4,9 @@ package org.goobi.managedbeans;
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
  * Visit the websites for more information.
- *     		- https://goobi.io
- * 			- https://www.intranda.com
- * 			- https://github.com/intranda/goobi-workflow
- * 			- http://digiverso.com
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -96,10 +95,10 @@ public class ProjectBean extends BasicBean implements Serializable {
     @Setter
     private ProjectFileGroup myFilegroup;
 
-    // lists accepting the preliminary actions of adding and delting filegroups
+    // lists accepting the preliminary actions of adding and deleting fileGroups
     // it needs the execution of commit fileGroups to make these changes permanent
-    private List<Integer> newFileGroups = new ArrayList<>();
-    private List<Integer> deletedFileGroups = new ArrayList<>();
+    private List<ProjectFileGroup> newFileGroups = new ArrayList<>();
+    private List<ProjectFileGroup> deletedFileGroups = new ArrayList<>();
 
     private StatisticsManager statisticsManager1 = null;
     private StatisticsManager statisticsManager2 = null;
@@ -121,9 +120,11 @@ public class ProjectBean extends BasicBean implements Serializable {
     @Setter
     private String newProjectTitle;
 
+    private static final String EMPTY_STRING = "";
+
     // making sure its cleaned up
     @Override
-    public void finalize() {
+    protected void finalize() {
         this.Cancel();
     }
 
@@ -132,10 +133,10 @@ public class ProjectBean extends BasicBean implements Serializable {
      * 
      * @param List <Integer> fileGroups
      */
-    private void deleteFileGroups(List<Integer> fileGroups) {
-        for (Integer id : fileGroups) {
+    private void deleteFileGroups(List<ProjectFileGroup> fileGroups) {
+        for (ProjectFileGroup fg : fileGroups) {
             for (ProjectFileGroup f : this.myProjekt.getFilegroups()) {
-                if (f.getId().equals(id)) {
+                if (f.getId().equals(fg.getId())) {
                     this.myProjekt.getFilegroups().remove(f);
                     ProjectManager.deleteProjectFileGroup(f);
                     break;
@@ -185,21 +186,16 @@ public class ProjectBean extends BasicBean implements Serializable {
         // call this to make saving and deleting permanent
 
         if (!checkProjectTitle()) {
-            return "";
+            return EMPTY_STRING;
         }
 
         //if there is only one institution, then it is not shown in ui and the value may not be set:
         if (getCurrentInstitutionID() == 0) {
             Integer inst;
-            try {
-                List<SelectItem> lstInst = getInstitutionsAsSelectList();
-                if (lstInst.size() > 0) {
-                    inst = (Integer) lstInst.get(0).getValue();
-                    setCurrentInstitutionID(inst);
-                }
-            } catch (DAOException e) {
-                Helper.setFehlerMeldung("could not save", e.getMessage());
-                return "";
+            List<SelectItem> lstInst = getInstitutionsAsSelectList();
+            if (!lstInst.isEmpty()) {
+                inst = (Integer) lstInst.get(0).getValue();
+                setCurrentInstitutionID(inst);
             }
         }
 
@@ -211,7 +207,7 @@ public class ProjectBean extends BasicBean implements Serializable {
             return FilterKein();
         } catch (DAOException e) {
             Helper.setFehlerMeldung("could not save", e.getMessage());
-            return "";
+            return EMPTY_STRING;
         }
     }
 
@@ -219,16 +215,16 @@ public class ProjectBean extends BasicBean implements Serializable {
         // call this to make saving and deleting permanent
         log.trace("Apply wird aufgerufen...");
         if (!checkProjectTitle()) {
-            return "";
+            return EMPTY_STRING;
         }
         this.commitFileGroups();
         try {
             ProjectManager.saveProject(this.myProjekt);
             paginator.load();
-            return "";
+            return EMPTY_STRING;
         } catch (DAOException e) {
             Helper.setFehlerMeldung("could not save", e.getMessage());
-            return "";
+            return EMPTY_STRING;
         }
     }
 
@@ -247,7 +243,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     public String Loeschen() {
         if (ProjectManager.getNumberOfProcessesForProject(myProjekt.getId()) != 0) {
             Helper.setFehlerMeldung("projectssAssignedError");
-            return "";
+            return EMPTY_STRING;
         }
 
         try {
@@ -256,7 +252,7 @@ public class ProjectBean extends BasicBean implements Serializable {
             displayMode = "";
         } catch (DAOException e) {
             Helper.setFehlerMeldung("could not delete", e.getMessage());
-            return "";
+            return EMPTY_STRING;
         }
 
         return FilterKein();
@@ -279,13 +275,13 @@ public class ProjectBean extends BasicBean implements Serializable {
     public String filegroupAdd() {
         this.myFilegroup = new ProjectFileGroup();
         this.myFilegroup.setProject(this.myProjekt);
-        this.newFileGroups.add(this.myFilegroup.getId());
-        return "";
+        this.newFileGroups.add(myFilegroup);
+        return EMPTY_STRING;
     }
 
     public String filegroupSave() {
         if (this.myProjekt.getFilegroups() == null) {
-            this.myProjekt.setFilegroups(new ArrayList<ProjectFileGroup>());
+            this.myProjekt.setFilegroups(new ArrayList<>());
         }
         if (!this.myProjekt.getFilegroups().contains(this.myFilegroup)) {
             this.myProjekt.getFilegroups().add(this.myFilegroup);
@@ -298,29 +294,30 @@ public class ProjectBean extends BasicBean implements Serializable {
             }
         }
         ProjectManager.saveProjectFileGroup(myFilegroup);
-        if (!this.newFileGroups.contains(this.myFilegroup.getId())) {
-            this.newFileGroups.add(this.myFilegroup.getId());
-        }
-
-        return "";
+        return EMPTY_STRING;
     }
 
     public String filegroupEdit() {
-        return "";
+        return EMPTY_STRING;
     }
 
     public String filegroupCancel() {
-        //        Cancel();
-        return "";
+        return EMPTY_STRING;
     }
 
     public String filegroupDelete() {
-        // to be deleted fileGroups ids are listed
+        // to be deleted fileGroups are listed
         // and deleted after a commit
-        this.deletedFileGroups.add(this.myFilegroup.getId());
-        // original line
-        // myProjekt.getFilegroups().remove(myFilegroup);
-        return "";
+
+        // only add file groups with ids to the deletion list
+        if (myFilegroup.getId() != null) {
+            this.deletedFileGroups.add(myFilegroup);
+        } else {
+            // otherwise only remove filegroup from list
+            myProjekt.getFilegroups().remove(myFilegroup);
+        }
+
+        return EMPTY_STRING;
 
     }
 
@@ -337,12 +334,12 @@ public class ProjectBean extends BasicBean implements Serializable {
      * 
      * @return modified ArrayList
      */
-    public ArrayList<ProjectFileGroup> getFileGroupList() {
-        ArrayList<ProjectFileGroup> filteredFileGroupList = new ArrayList<>(this.myProjekt.getFilegroups());
+    public List<ProjectFileGroup> getFileGroupList() {
+        List<ProjectFileGroup> filteredFileGroupList = new ArrayList<>(this.myProjekt.getFilegroups());
 
-        for (Integer id : this.deletedFileGroups) {
+        for (ProjectFileGroup deleted : deletedFileGroups) {
             for (ProjectFileGroup f : this.myProjekt.getFilegroups()) {
-                if (f.getId().equals(id)) {
+                if (f.getId().equals(deleted.getId())) {
                     filteredFileGroupList.remove(f);
                     break;
                 }
@@ -360,7 +357,7 @@ public class ProjectBean extends BasicBean implements Serializable {
         if (this.statisticsManager1 == null) {
             this.statisticsManager1 =
                     new StatisticsManager(StatisticsMode.PRODUCTION, FacesContextHelper.getCurrentFacesContext().getViewRoot().getLocale(),
-                            "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\"");
+                            "\"project:" + StringEscapeUtils.escapeSql(myProjekt.getTitel()) + "\""); //NOSONAR
         }
         return this.statisticsManager1;
     }
@@ -413,18 +410,7 @@ public class ProjectBean extends BasicBean implements Serializable {
                 null, null, true, false) + " AND prozesse.istTemplate = false ";
         Long images = ProcessManager.getSumOfFieldValue("sortHelperImages", projectFilter);
         Long volumes = ProcessManager.getCountOfFieldValue("sortHelperImages", projectFilter);
-        //		ProjectionList pl = Projections.projectionList();
-        //		pl.add(Projections.sum("sortHelperImages"));
-        //		pl.add(Projections.count("sortHelperImages"));
-        //		crit.setProjection(pl);
-        //		List list = crit.list();
-        //		Long images = 0l;
-        //		Long volumes = 0l;
-        //		for (Object obj : list) {
-        //			Object[] row = (Object[]) obj;
-        //			images = (Long) row[0];
-        //			volumes = (Long) row[1];
-        //		}
+
         this.myProjekt.setNumberOfPages(images.intValue());
         this.myProjekt.setNumberOfVolumes(volumes.intValue());
     }
@@ -440,8 +426,7 @@ public class ProjectBean extends BasicBean implements Serializable {
         if (volumes == 0) {
             return pages;
         }
-        int i = pages / volumes;
-        return i;
+        return pages / volumes;
     }
 
     /**
@@ -549,8 +534,7 @@ public class ProjectBean extends BasicBean implements Serializable {
         if (days < 1) {
             days = 1;
         }
-        double back = (double) this.myProjekt.getNumberOfVolumes() / (double) days;
-        return back;
+        return (double) this.myProjekt.getNumberOfVolumes() / (double) days;
     }
 
     /**
@@ -578,8 +562,7 @@ public class ProjectBean extends BasicBean implements Serializable {
         if (days < 1) {
             days = 1;
         }
-        double back = (double) this.myProjekt.getNumberOfPages() / (double) days;
-        return back;
+        return (double) this.myProjekt.getNumberOfPages() / (double) days;
     }
 
     /**
@@ -614,7 +597,7 @@ public class ProjectBean extends BasicBean implements Serializable {
                     this.projectProgressImage = "";
                 }
             } catch (Exception e) {
-                // this.projectProgressData = null;
+                log.error(e);
             }
         }
         return this.projectProgressData;
@@ -649,7 +632,7 @@ public class ProjectBean extends BasicBean implements Serializable {
     }
 
     private void calcProgressCharts() {
-        if (this.getProjectProgressInterface().isDataComplete()) {
+        if (getProjectProgressInterface().isDataComplete().booleanValue()) {
             ChartRenderer cr = new ChartRenderer();
             cr.setChartType(ChartType.LINE);
             cr.setDataTable(this.projectProgressData.getSelectedTable());
@@ -672,7 +655,7 @@ public class ProjectBean extends BasicBean implements Serializable {
      * Static Statistics
      *********************************************************/
 
-    public String getProjectStatImages() throws IOException, InterruptedException {
+    public String getProjectStatImages() throws IOException {
         if (this.projectStatImages == null) {
             this.projectStatImages = System.currentTimeMillis() + "images.png";
             calcProjectStats(this.projectStatImages, true);
@@ -687,7 +670,7 @@ public class ProjectBean extends BasicBean implements Serializable {
      * @throws InterruptedException
      */
 
-    public String getProjectStatVolumes() throws IOException, InterruptedException {
+    public String getProjectStatVolumes() throws IOException {
         if (this.projectStatVolumes == null) {
             this.projectStatVolumes = System.currentTimeMillis() + "volumes.png";
             calcProjectStats(this.projectStatVolumes, false);
@@ -695,7 +678,7 @@ public class ProjectBean extends BasicBean implements Serializable {
         return this.projectStatVolumes;
     }
 
-    private synchronized void calcProjectStats(String inName, Boolean countImages) throws IOException {
+    private synchronized void calcProjectStats(String inName, boolean countImages) throws IOException {
         int width = 750;
         Date start = this.myProjekt.getStartDate();
         Date end = this.myProjekt.getEndDate();
@@ -756,7 +739,7 @@ public class ProjectBean extends BasicBean implements Serializable {
                 facesContext.responseComplete();
 
             } catch (IOException e) {
-
+                log.error(e);
             }
         }
     }
@@ -764,48 +747,38 @@ public class ProjectBean extends BasicBean implements Serializable {
     @SuppressWarnings("deprecation")
     public void downloadStatisticsAsCsv() {
         FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
-        CSVPrinter csvFilePrinter = null;
         if (!facesContext.getResponseComplete()) {
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType("export.csv");
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"export.csv\"");
+            CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator("\n");
             try {
-                ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-                String contentType = servletContext.getMimeType("export.csv");
-                response.setContentType(contentType);
-                response.setHeader("Content-Disposition", "attachment;filename=\"export.csv\"");
+                try (CSVPrinter csvFilePrinter = new CSVPrinter(response.getWriter(), csvFileFormat)) {
+                    CSVRenderer csvr = this.myCurrentTable.getCsvRenderer();
 
-                CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator("\n");
-                csvFilePrinter = new CSVPrinter(response.getWriter(), csvFileFormat);
-                CSVRenderer csvr = this.myCurrentTable.getCsvRenderer();
-
-                // add all headers
-                List<Object> csvHead = new ArrayList<>();
-                csvHead.add(csvr.getDataTable().getUnitLabel());
-                for (String s : csvr.getDataTable().getDataRows().get(0).getLabels()) {
-                    csvHead.add(s);
-                }
-                csvFilePrinter.printRecord(csvHead);
-
-                // add all rows
-                for (DataRow dr : csvr.getDataTable().getDataRows()) {
-                    List<Object> csvColumns = new ArrayList<>();
-                    csvColumns.add(dr.getName());
-                    for (int j = 0; j < dr.getNumberValues(); j++) {
-                        csvColumns.add(dr.getValue(j));
+                    // add all headers
+                    List<Object> csvHead = new ArrayList<>();
+                    csvHead.add(csvr.getDataTable().getUnitLabel());
+                    for (String s : csvr.getDataTable().getDataRows().get(0).getLabels()) {
+                        csvHead.add(s);
                     }
-                    csvFilePrinter.printRecord(csvColumns);
-                }
+                    csvFilePrinter.printRecord(csvHead);
 
+                    // add all rows
+                    for (DataRow dr : csvr.getDataTable().getDataRows()) {
+                        List<Object> csvColumns = new ArrayList<>();
+                        csvColumns.add(dr.getName());
+                        for (int j = 0; j < dr.getNumberValues(); j++) {
+                            csvColumns.add(dr.getValue(j));
+                        }
+                        csvFilePrinter.printRecord(csvColumns);
+                    }
+                }
                 facesContext.responseComplete();
             } catch (Exception e) {
-
-            } finally {
-                try {
-                    if (csvFilePrinter != null) {
-                        csvFilePrinter.close();
-                    }
-                } catch (IOException e) {
-
-                }
+                log.error(e);
             }
         }
     }
@@ -869,16 +842,11 @@ public class ProjectBean extends BasicBean implements Serializable {
         }
     }
 
-    public List<SelectItem> getInstitutionsAsSelectList() throws DAOException {
+    public List<SelectItem> getInstitutionsAsSelectList() {
         List<SelectItem> institutions = new ArrayList<>();
         List<Institution> temp = null;
-        //        LoginBean login = (LoginBean) Helper.getManagedBeanValue("#{LoginForm}");
-        //        if (login != null && !login.hasRole(UserRole.Workflow_General_Show_All_Projects.name())) {
+
         temp = InstitutionManager.getAllInstitutionsAsList();
-        //        } else {
-        //            temp = ProjectManager.getAllProjects();
-        //
-        //        }
 
         for (Institution proj : temp) {
             institutions.add(new SelectItem(proj.getId(), proj.getShortName(), null));

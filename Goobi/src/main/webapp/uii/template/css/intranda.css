@@ -721,8 +721,8 @@ button.dropdown-item:hover {
 /* ------------- Tables --------------- */
 .table>tbody>tr>td {
     padding: 6px;
-    word-break: break-all;
 }
+
 
 .table.dataTable .sorting, .table.dataTable .sorting_desc, .table.dataTable .sorting_asc {
     padding-right: 10px;
@@ -794,7 +794,17 @@ button.dropdown-item:hover {
     max-width: 500px;
 }
 
-
+.table-borderless > tbody > tr > td,
+.table-borderless > tbody > tr > th,
+.table-borderless > tfoot > tr > td,
+.table-borderless > tfoot > tr > th,
+.table-borderless > thead > tr > td,
+.table-borderless > thead > tr > th {
+    border: none;
+}
+.table-borderless {
+    background: none !important;
+}
 
 .tableColumnWidthSmall {
     width: 80px;
@@ -1055,6 +1065,10 @@ dropdown-menu>li>a {
 
 .box.box-color.ultralightgrey .box-title {
     background: #ccc none repeat scroll 0 0 !important;
+}
+
+.box--scrolly .box-content {
+    overflow-y: scroll;
 }
 
 /* ------------- Action Box --------------- */
@@ -2604,3 +2618,13 @@ body .ui-fileupload .ui-fileupload-content {
 .space-to-bottom {
 	margin-bottom: 40px;
 }
+
+/* Utilities */
+.wb-normal {
+  word-break: normal !important;
+}
+
+.wb-all {
+  word-break: break-all !important;
+}
+

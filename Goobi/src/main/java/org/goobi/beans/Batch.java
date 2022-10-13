@@ -1,5 +1,6 @@
 package org.goobi.beans;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -29,7 +30,9 @@ import lombok.Data;
  */
 
 @Data
-public class Batch {
+public class Batch implements Serializable {
+
+    private static final long serialVersionUID = -1142562887294508206L;
 
     /**
      * internal id of the batch

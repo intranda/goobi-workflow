@@ -46,7 +46,7 @@ public class DigitalCollectionsTest extends AbstractTest {
             goobiFolder = Paths.get("target/test-classes/config/goobi_config.properties"); // to run mvn test from cli or in jenkins
         }
         ConfigurationHelper.resetConfigurationFile();
-        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString()+ "/");
+        ConfigurationHelper.getInstance().setParameter("goobiFolder", goobiFolder.getParent().getParent().toString() + "/");
     }
 
     @Test
@@ -58,6 +58,16 @@ public class DigitalCollectionsTest extends AbstractTest {
         List<String> fixture = DigitalCollections.possibleDigitalCollectionsForProcess(p);
         assertNotNull(fixture);
         assertEquals("Collection", fixture.get(0));
+    }
+
+    @Test
+    public void testDefaultDigitalCollectionForProcess() throws JDOMException, IOException {
+        Process p = new Process();
+        Project project = new Project();
+        project.setTitel("Project");
+        p.setProjekt(project);
+        String fixture = DigitalCollections.getDefaultDigitalCollectionForProcess(p);
+        assertEquals("Collection", fixture);
     }
 
 }
