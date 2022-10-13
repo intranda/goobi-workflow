@@ -37,6 +37,9 @@ import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.beans.Process;
+import org.goobi.vocabulary.Field;
+import org.goobi.vocabulary.VocabRecord;
+import org.goobi.vocabulary.Vocabulary;
 
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -45,6 +48,7 @@ import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
+import de.sub.goobi.persistence.managers.VocabularyManager;
 import lombok.Getter;
 import ugh.dl.Corporate;
 import ugh.dl.DigitalDocument;
@@ -208,6 +212,18 @@ public class MetadatenVerifizierung {
         List<String> select1List = checkSelectOneMenus(myProzess, dd.getLogicalDocStruct(), new ArrayList<>(), metadataLanguage);
         if (!select1List.isEmpty()) {
             for (String temp : select1List) {
+                Helper.setFehlerMeldung(
+                        this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataSelectOneInvalidElement"),
+                        temp);
+                problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
+                        + Helper.getTranslation("MetadataSelectOneInvalidElement") + ": " + temp);
+            }
+            ergebnis = false;
+        }
+
+        List<String> select2List = checkSelectFromVocabularyList(myProzess, dd.getLogicalDocStruct(), new ArrayList<>(), metadataLanguage);
+        if (!select2List.isEmpty()) {
+            for (String temp : select2List) {
                 Helper.setFehlerMeldung(
                         this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataSelectOneInvalidElement"),
                         temp);
@@ -483,6 +499,51 @@ public class MetadatenVerifizierung {
         if (inStruct.getAllChildren() != null) {
             for (DocStruct child : inStruct.getAllChildren()) {
                 checkSelectOneMenus(inProcess, child, inList, language);
+            }
+        }
+
+        return inList;
+    }
+
+    private List<String> checkSelectFromVocabularyList(Process inProcess, DocStruct inStruct, ArrayList<String> inList, String language) {
+        String projectTitle = inProcess.getProjekt().getTitel();
+        ConfigDisplayRules displayRules = ConfigDisplayRules.getInstance();
+        DocStructType dst = inStruct.getType();
+        List<MetadataType> allMDTypes = dst.getAllMetadataTypes();
+        for (MetadataType mdt : allMDTypes) {
+            DisplayType displayType = displayRules.getElementTypeByName(projectTitle, mdt.getName());
+            if (displayType == DisplayType.vocabularyList) {
+                List<Item> allowedItems = displayRules.getItemsByNameAndType(projectTitle, mdt.getName(), displayType);
+                if (allowedItems.get(0) == null) {
+                    break;
+                }
+                Vocabulary vocabulary = VocabularyManager.getVocabularyByTitle(allowedItems.get(0).getSource());
+                VocabularyManager.getAllRecords(vocabulary);
+                List<VocabRecord> records = vocabulary.getRecords();
+                List<String> allowedValues = new ArrayList<>();
+                for (VocabRecord record : records) {
+                    for (Field field : record.getFields()) {
+                        allowedValues.add(field.getValue());
+                    }
+                }
+                List<? extends Metadata> ll = null;
+                ll = inStruct.getAllMetadataByType(mdt);
+                for (Metadata md : ll) {
+                    String actualValue = md.getValue();
+                    if (!allowedValues.contains(actualValue)) {
+                        String errorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + ": "
+                                + Helper.getTranslation("VocabularySelectionInvalid", actualValue, allowedItems.get(0).getSource());
+                        inList.add(errorMessage);
+                        addErrorToDocStructAndMetadata(inStruct, md, errorMessage);
+                    }
+                }
+            }
+        }
+
+        // TODO: Is this necessary?
+        if (inStruct.getAllChildren() != null) {
+            for (DocStruct child : inStruct.getAllChildren()) {
+                checkSelectFromVocabularyList(inProcess, child, inList, language);
             }
         }
 
