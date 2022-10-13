@@ -118,7 +118,7 @@
         <lombok.version>1.18.24</lombok.version>
         <metadata-extractor.version>2.18.0</metadata-extractor.version>
         <mimepull.version>1.10.0</mimepull.version>
-        <omnifaces.version>3.13.4</omnifaces.version>
+        <omnifaces.version>3.14</omnifaces.version>
         <openpdf.version>1.3.30</openpdf.version>
         <pdfbox.version>2.0.26</pdfbox.version>
         <poi.version>5.2.3</poi.version>
