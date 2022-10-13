@@ -81,7 +81,7 @@
         <ugh-lido.version>0.0.14</ugh-lido.version>
 
         <!-- Be careful with updates here -->
-        <antlr4.version>4.10.1</antlr4.version>
+        <antlr4.version>4.11.1</antlr4.version>
         <avalon-framework.version>4.2.0</avalon-framework.version>
         <h2.version>1.4.200</h2.version>
         <oscache.version>2.3</oscache.version>
