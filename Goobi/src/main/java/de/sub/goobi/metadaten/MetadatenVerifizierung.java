@@ -221,14 +221,12 @@ public class MetadatenVerifizierung {
             ergebnis = false;
         }
 
-        List<String> select2List = checkSelectFromVocabularyList(myProzess, dd.getLogicalDocStruct(), new ArrayList<>(), metadataLanguage);
-        if (!select2List.isEmpty()) {
-            for (String temp : select2List) {
-                Helper.setFehlerMeldung(
-                        this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataSelectOneInvalidElement"),
-                        temp);
-                problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
-                        + Helper.getTranslation("MetadataSelectOneInvalidElement") + ": " + temp);
+        // check whether vocabulary values in metadata are in the configured vocabulary data lists
+        List<String> vocabularyErrors = checkSelectFromVocabularyList(myProzess, dd.getLogicalDocStruct(), new ArrayList<>(), metadataLanguage);
+        if (!vocabularyErrors.isEmpty()) {
+            for (String error : vocabularyErrors) {
+                Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + error);
+                problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + error);
             }
             ergebnis = false;
         }
@@ -262,7 +260,7 @@ public class MetadatenVerifizierung {
             ergebnis = false;
         }
 
-        List<String> expressionList = validateMetadatValues(dd.getLogicalDocStruct(), metadataLanguage);
+        List<String> expressionList = validateMetadataValues(dd.getLogicalDocStruct(), metadataLanguage);
         if (!expressionList.isEmpty()) {
             for (String text : expressionList) {
                 Helper.setFehlerMeldung(text);
@@ -918,13 +916,13 @@ public class MetadatenVerifizierung {
         }
     }
 
-    private List<String> validateMetadatValues(DocStruct inStruct, String lang) {
+    private List<String> validateMetadataValues(DocStruct inStruct, String lang) {
         List<String> errorList = new ArrayList<>();
         List<Metadata> metadataList = inStruct.getAllMetadata();
         if (metadataList != null) {
             for (Metadata md : metadataList) {
                 if (StringUtils.isNotBlank(md.getType().getValidationExpression())) {
-                    chckValidationExpression(inStruct, lang, errorList, md);
+                    checkValidationExpression(inStruct, lang, errorList, md);
                 }
             }
         }
@@ -933,7 +931,7 @@ public class MetadatenVerifizierung {
             for (MetadataGroup mg : groupList) {
                 for (Metadata md : mg.getMetadataList()) {
                     if (StringUtils.isNotBlank(md.getType().getValidationExpression())) {
-                        chckValidationExpression(inStruct, lang, errorList, md);
+                        checkValidationExpression(inStruct, lang, errorList, md);
                     }
                 }
             }
@@ -941,14 +939,14 @@ public class MetadatenVerifizierung {
 
         if (inStruct.getAllChildren() != null) {
             for (DocStruct child : inStruct.getAllChildren()) {
-                errorList.addAll(validateMetadatValues(child, lang));
+                errorList.addAll(validateMetadataValues(child, lang));
             }
         }
 
         return errorList;
     }
 
-    private void chckValidationExpression(DocStruct inStruct, String lang, List<String> errorList, Metadata md) {
+    private void checkValidationExpression(DocStruct inStruct, String lang, List<String> errorList, Metadata md) {
         String regularExpression = md.getType().getValidationExpression();
         if (StringUtils.isNotBlank(md.getValue()) && !md.getValue().matches(regularExpression)) {
             String errorMessage = md.getType().getValidationErrorMessages().get(lang);
