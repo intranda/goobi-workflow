@@ -1,7 +1,5 @@
 package de.sub.goobi.config;
 
-import java.io.IOException;
-import java.io.OutputStream;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -20,7 +18,10 @@ import java.io.OutputStream;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
+import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -58,8 +59,8 @@ public class ConfigurationHelper implements Serializable {
     private static String imagesPath = null;
     private static ConfigurationHelper instance;
     public static String CONFIG_FILE_NAME = "goobi_config.properties";
-    private PropertiesConfiguration config;
-    private PropertiesConfiguration configLocal;
+    private transient PropertiesConfiguration config;
+    private transient PropertiesConfiguration configLocal;
 
     private ConfigurationHelper() {
         try {
@@ -246,8 +247,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getGoobiFolder() {
-        String goobiFolder = config.getString("goobiFolder", "/opt/digiverso/goobi/");
-        return goobiFolder;
+        return config.getString("goobiFolder", "/opt/digiverso/goobi/");
     }
 
     private String getConfigLocalPath() {
@@ -298,8 +298,8 @@ public class ConfigurationHelper implements Serializable {
         return getGoobiFolder() + "config/";
     }
 
-    public String getFolderForInternalProcesslogFiles() {
-        return getLocalString("folder_processlog_internal", "intern");
+    public String getFolderForInternalJournalFiles() {
+        return getLocalString("folder_journal_internal", getLocalString("folder_processlog_internal", "intern"));
     }
 
     public String getDoneDirectoryName() {
@@ -328,7 +328,7 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getProcessImagesFallbackDirectoryName() {
-        return getLocalString("process.folder.images.fallback", ""); // "{processtitle}_jpeg"
+        return getLocalString("process.folder.images.fallback", "");
     }
 
     /**
@@ -730,8 +730,8 @@ public class ConfigurationHelper implements Serializable {
      * category in goobi_config.properties: PROCESSES AND PROCESS LOG
      */
 
-    public boolean isResetProcesslog() {
-        return getLocalBoolean("ProcessCreationResetLog", false);
+    public boolean isResetJournal() {
+        return getLocalBoolean("ProcessCreationResetJournal", getLocalBoolean("ProcessCreationResetLog", false));
     }
 
     public boolean isAllowWhitespacesInFolder() {
@@ -748,14 +748,6 @@ public class ConfigurationHelper implements Serializable {
 
     public int getBatchMaxSize() {
         return getLocalInt("batchMaxSize", 100);
-    }
-
-    public boolean isShowSecondLogField() {
-        return getLocalBoolean("ProcessLogShowSecondField", false);
-    }
-
-    public boolean isShowThirdLogField() {
-        return getLocalBoolean("ProcessLogShowThirdField", false);
     }
 
     public boolean isProcesslistShowEditionData() {
@@ -775,7 +767,6 @@ public class ConfigurationHelper implements Serializable {
      */
 
     public String getScriptCreateDirUserHome() {
-        //        return getScriptsFolder() + getLocalString("script_createDirUserHome", "script_createDirUserHome.sh");
         String s = getLocalString("script_createDirUserHome", "");
         if (s.isEmpty()) {
             return "";
@@ -785,7 +776,6 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getScriptCreateDirMeta() {
-        //        return getScriptsFolder() + getLocalString("script_createDirMeta", "script_createDirMeta.sh");
         String s = getLocalString("script_createDirMeta", "");
         if (s.isEmpty()) {
             return "";
@@ -795,7 +785,6 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getScriptCreateSymLink() {
-        // return getScriptsFolder() + getLocalString("script_createSymLink", "script_createSymLink.sh");
         String s = getLocalString("script_createSymLink", "");
         if (s.isEmpty()) {
             return "";
@@ -805,7 +794,6 @@ public class ConfigurationHelper implements Serializable {
     }
 
     public String getScriptDeleteSymLink() {
-        //  return getScriptsFolder() + getLocalString("script_deleteSymLink", "script_deleteSymLink.sh");
         String s = getLocalString("script_deleteSymLink", "");
         if (s.isEmpty()) {
             return "";
@@ -859,7 +847,7 @@ public class ConfigurationHelper implements Serializable {
      */
 
     public boolean isUseProxy() {
-        return getLocalBoolean("http_useProxy", false);
+        return getLocalBoolean("http_proxyEnabled", false);
     }
 
     public String getProxyUrl() {
@@ -868,6 +856,18 @@ public class ConfigurationHelper implements Serializable {
 
     public int getProxyPort() {
         return getLocalInt("http_proxyPort", 8080);
+    }
+
+    public List<String> getProxyWhitelist() {
+        return getLocalList("http_proxyIgnoreHost");
+    }
+
+    public boolean isProxyWhitelisted(String url) {
+        return getProxyWhitelist().contains(url);
+    }
+
+    public boolean isProxyWhitelisted(URL ipAsURL) {
+        return isProxyWhitelisted(ipAsURL.getHost());
     }
 
     /*
@@ -1004,6 +1004,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("MetsEditorShowMetadataPopup", true);
     }
 
+    public boolean isMetsEditorShowArchivedFolder() {
+        return getLocalBoolean("MetsEditorShowArchivedFolder", false);
+    }
+
     public long getMetsEditorLockingTime() {
         return getLocalLong("MetsEditorLockingTime", 30 * 60 * 1000);
     }
@@ -1014,6 +1018,10 @@ public class ConfigurationHelper implements Serializable {
 
     public String getPathToExiftool() {
         return getLocalString("ExportExiftoolPath", "/usr/bin/exiftool");
+    }
+
+    public boolean isUseImageThumbnails() {
+        return getLocalBoolean("UseImageThumbnails", true);
     }
 
     public boolean getMetsEditorShowImageComments() {
@@ -1047,10 +1055,6 @@ public class ConfigurationHelper implements Serializable {
     public String getTiffHeaderArtists() {
         return getLocalString("TiffHeaderArtists");
     }
-
-    //    public String getMetsEditorDefaultSuffix() {
-    //        return getLocalString("MetsEditorDefaultSuffix", "");
-    //    }
 
     // images
 
@@ -1109,8 +1113,7 @@ public class ConfigurationHelper implements Serializable {
         int size = getLocalInt("MaxImageFileSize", 4000);
         String unit = getLocalString("MaxImageFileSizeUnit", "MB");
         Double factor = getMemorySizeFactor(unit);
-        long byteSize = size * factor.longValue();
-        return byteSize;
+        return size * factor.longValue();
     }
 
     public boolean getMetsEditorUseImageTiles() {
@@ -1272,5 +1275,4 @@ public class ConfigurationHelper implements Serializable {
             }
         }
     }
-
 }
