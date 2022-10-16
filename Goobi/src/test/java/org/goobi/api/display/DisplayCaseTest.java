@@ -202,4 +202,15 @@ public class DisplayCaseTest extends AbstractTest {
         assertEquals("type=Person", dc.getItemList().get(0).getField());
     }
 
+    @Test
+    public void testConstructorMetadataConvertibleDate() {
+        MetadataType type = new MetadataType();
+        type.setName("GregorianDate");
+        DisplayCase dc = new DisplayCase(process, type);
+        assertNotNull(dc);
+        assertEquals(DisplayType.convertibleDate, dc.getDisplayType());
+        assertEquals("Testquelle", dc.getItemList().get(0).getSource());
+        assertEquals("1983-12-01", dc.getItemList().get(0).getField());
+
+    }
 }

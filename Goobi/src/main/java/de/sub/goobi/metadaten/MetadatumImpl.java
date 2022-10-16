@@ -195,9 +195,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         String reqUrl = scheme + "://" + serverName + contextPath;
         // if there is a port lower than the typical ones (443) don't show it in the url (http://mygoobi.io/xyz instead of http://mygoobi.io:80/xyz)
         if (serverPort > 443) {
-        	reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
+            reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
         }
-       
+
         Client client = ClientBuilder.newClient();
         WebTarget base = client.target(reqUrl);
         WebTarget vocabularyBase = base.path("api").path("vocabulary");
@@ -234,15 +234,13 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             setSource(myValues.getItemList().get(0).getSource());
             setField(myValues.getItemList().get(0).getField());
 
-        } else {
-            if (myValues.getItemList().size() == 1) {
-                Item item = myValues.getItemList().get(0);
-                if (item.isSelected()) {
-                    setDefaultValue(item.getValue());
-                }
-                setSource(item.getSource());
-                setField(item.getField());
+        } else if (myValues.getItemList().size() == 1) {
+            Item item = myValues.getItemList().get(0);
+            if (item.isSelected()) {
+                setDefaultValue(item.getValue());
             }
+            setSource(item.getSource());
+            setField(item.getField());
         }
 
         // initialize process search
@@ -344,6 +342,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             }
         }
 
+        // TODO: Initialize new metadata DisplayType
+
     }
 
     @Override
@@ -384,7 +384,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     /******************************************************
      *
-     * new functions for use of display configuration whithin xml files
+     * new functions for use of display configuration within xml files
      *
      *****************************************************/
 
@@ -687,7 +687,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     md.setValue(selectedRecord.getPreferredValue());
                 }
                 for (NormData normdata : selectedRecord.getNormdataList()) {
-                    if (normdata.getKey().equals("URI")) {
+                    if ("URI".equals(normdata.getKey())) {
                         md.setAutorityFile("dante", "https://uri.gbv.de/terminology/dante/", normdata.getValues().get(0).getText());
                     } else if (StringUtils.isBlank(selectedRecord.getPreferredValue()) && CollectionUtils.isEmpty(getLabelList())
                             && normdata.getKey().equals(field)) {
@@ -713,7 +713,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 // Set authority ID
                 if (CollectionUtils.isNotEmpty(selectedRecord.getNormdataList())) {
                     for (NormData normdata : selectedRecord.getNormdataList()) {
-                        if (normdata.getKey().equals("URI")) {
+                        if ("URI".equals(normdata.getKey())) {
                             String uriValue = normdata.getValues().get(0).getText();
                             md.setAutorityFile(DisplayType.kulturnav.name(), KulturNavImporter.BASE_URL, uriValue);
                             break;
@@ -737,9 +737,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 break;
             case gnd:
                 for (NormData normdata : currentData) {
-                    if (normdata.getKey().equals("NORM_IDENTIFIER")) {
+                    if ("NORM_IDENTIFIER".equals(normdata.getKey())) {
                         md.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
-                    } else if (normdata.getKey().equals("NORM_NAME")) {
+                    } else if ("NORM_NAME".equals(normdata.getKey())) {
                         String value = normdata.getValues().get(0).getText();
                         md.setValue(filter(value));
                     }

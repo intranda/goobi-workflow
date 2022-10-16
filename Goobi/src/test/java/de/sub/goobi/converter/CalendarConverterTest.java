@@ -1,5 +1,8 @@
 package de.sub.goobi.converter;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +30,12 @@ import org.junit.Test;
 import org.threeten.extra.chrono.BritishCutoverDate;
 import org.threeten.extra.chrono.JulianDate;
 
+import de.sub.goobi.metadaten.MetaConvertibleDate;
+import de.sub.goobi.metadaten.MetaConvertibleDate.DateType;
+
 public class CalendarConverterTest {
 
+    // A rough class for learning to use the 310 library. Currently just shows me how it handles certain dates mentioned in the Requirements document.
     @Test
     public void callExample() {
         // Day 1 JUL 02.09.1752 <-> Day 1 GRE 02.09.1752
@@ -84,7 +91,35 @@ public class CalendarConverterTest {
             System.out.println(ld);
             System.out.println(jd);
             System.out.println(bd);
+            System.out.println("Cutover:" + bd.getChronology().getCutover());
         }
     }
+
+    // Here follow the actual tests. They are meant to fail until the code is implemented in working order.
+
+    @Test
+    public void isBritishTest() {
+        // load some test date from resources
+        // date = getFromResource();
+        MetaConvertibleDate britishDate = new MetaConvertibleDate(date, DateType.BRITISH);
+        assertTrue(britishDate.isBritish());
+    }
+
+    @Test
+
+    public void convertSameToSameTest() {
+        MetaConvertibleDate britishDate = new MetaConvertibleDate("1752-09-02", DateType.GEORGIAN);
+
+    }
+
+    @Test
+    public void convertBritishToGeorgianSameTest() {
+        MetaConvertibleDate britishDate = new MetaConvertibleDate("1752-09-02", DateType.BRITISH);
+        MetaConvertibleDate georgianDate = britishDate.convert(DateType.GEORGIAN);
+        assertTrue(georgianDate.isGeorgian());
+        assertEquals("1752-09-02", georgianDate.getDate());
+    }
+
+    // TODO: B2J, G2B, G2J, J2B, J2G, using examples from the data in the reqs
 
 }
