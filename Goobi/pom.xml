@@ -93,6 +93,7 @@
         <cdi.version>2.0.SP1</cdi.version>
         <commons-csv.version>1.9.0</commons-csv.version>
         <commons-dbcp2.version>2.9.0</commons-dbcp2.version>
+        <commons-io.version>2.11.0</commons-io.version>        
         <commons-net.version>3.8.0</commons-net.version>
         <commons-pool2.version>2.11.1</commons-pool2.version>
         <deltaspike.version>1.9.6</deltaspike.version>
@@ -324,6 +325,11 @@
             <artifactId>commons-dbcp2</artifactId>
             <version>${commons-dbcp2.version}</version>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>        
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
