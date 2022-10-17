@@ -110,7 +110,7 @@
         <jersey.version>2.37</jersey.version>
         <jhove.version>1.20.1</jhove.version>
         <jna.version>5.11.0</jna.version>
-        <joda.version>2.11.2</joda.version>
+        <joda.version>2.12.0</joda.version>
         <junit.version>4.13.2</junit.version>
         <jsonpath.version>2.7.0</jsonpath.version>
         <jwks-rsa.version>0.21.2</jwks-rsa.version>
