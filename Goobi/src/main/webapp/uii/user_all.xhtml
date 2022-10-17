@@ -99,9 +99,11 @@
 								</div> <!-- SEARCH END -->
 
 								<!-- ### Table ### -->
-								<h:form id="myform" prependId="false">
+								<h:form id="myform" prependId="false" styleClass="table--scrollx">
+
+								<div class="table-wrapper">
 									<table role="grid" id="tableUserAll"
-										class="table table-bordered">
+										class="table table-bordered table-fixed">
 										<!-- ### Columnheader row ### -->
 										<thead>
 											<tr role="row">
@@ -138,7 +140,9 @@
 														ajaxRender="allUsers:myform" />
 												<intranda:columnheader
 														value="#{msgs.auswahl}"
-														sortable="false" />
+														sortable="false"
+														addClass="table-fixed__actions"
+														/>
 											</tr>
 										</thead>
 
@@ -244,6 +248,7 @@
 											</tr>
 										</ui:repeat>
 									</table>
+								</div>
 								<div class="form-actions">
 									<!-- Neu-Schaltknopf -->
 									<button jsf:id="newUser" class="btn btn-primary-400 me-auto"
