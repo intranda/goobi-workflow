@@ -50,7 +50,8 @@
                         rendered="#{cc.attrs.metadata.outputType == 'input' or cc.attrs.metadata.outputType == 'geonames'
                         or cc.attrs.metadata.outputType == 'gnd' or cc.attrs.metadata.outputType == 'dante'
                         or cc.attrs.metadata.outputType == 'viaf' or cc.attrs.metadata.outputType == 'kulturnav'
-                        or cc.attrs.metadata.outputType == 'easydb' or cc.attrs.metadata.outputType == 'vocabularySearch'}">
+                        or cc.attrs.metadata.outputType == 'easydb' or cc.attrs.metadata.outputType == 'vocabularySearch'
+                        or cc.attrs.metadata.outputType == 'convertibleDate'}">
                         <f:ajax
                             execute="@form"
                             event="valueChange" />
@@ -135,7 +136,27 @@
                             </h:selectOneMenu>
                         </div>
                     </ui:fragment>
-
+                    
+                    <!-- SELECT DateType-->
+                    <ui:fragment rendered="#{(cc.attrs.metadata.outputType == 'convertibleDate')}">
+                    	<div class="form-control form-control--select">
+                        	<h:selectOneMenu
+                            	id="convertibleDate"
+                                styleClass="focusable"
+                                pt:aria-label="#{cc.attrs.metadata.md.type.name}"
+                                value="#{cc.attrs.metadata.selectedItem}"
+                                disabled="#{cc.attrs.metadata.disableMetadataField}"
+                                readonly="#{Metadaten.nurLesenModus}">
+                                <f:selectItem itemValue="GRE" itemLabel="GRE" />
+  								<f:selectItem itemValue="JUL" itemLabel="JUL" />
+  								<f:selectItem itemValue="BRI" itemLabel="BRI" />
+  								<f:ajax
+                                    execute="@form"
+                                    event="valueChange" />
+                            </h:selectOneMenu>
+                        </div>
+                    </ui:fragment>
+                    
                     <!-- MULTISELECT -->
                     <h:selectManyListbox
                         id="multiSelect"
