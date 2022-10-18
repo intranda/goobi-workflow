@@ -1214,4 +1214,8 @@ public class ConfigurationHelper implements Serializable {
         }
     }
 
+    public int getMaxParallelThumbnailRequests() {
+        return getLocalInt("MaxParallelThumbailRequests", 100);
+    }
+
 }
