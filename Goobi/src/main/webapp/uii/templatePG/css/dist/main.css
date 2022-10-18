@@ -1467,4 +1467,8 @@ span.badge:not(:last-child) {
   border-right-width: 1px;
 }
 
+.batch-all tr td:empty {
+  display: none;
+}
+
 /*# sourceMappingURL=main.css.map */
