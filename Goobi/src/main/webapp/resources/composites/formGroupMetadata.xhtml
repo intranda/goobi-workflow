@@ -137,26 +137,8 @@
                         </div>
                     </ui:fragment>
                     
-                    <!-- SELECT DateType-->
-                    <ui:fragment rendered="#{(cc.attrs.metadata.outputType == 'convertibleDate')}">
-                    	<div class="form-control form-control--select">
-                        	<h:selectOneMenu
-                            	id="convertibleDate"
-                                styleClass="focusable"
-                                pt:aria-label="#{cc.attrs.metadata.md.type.name}"
-                                value="#{cc.attrs.metadata.selectedItem}"
-                                disabled="#{cc.attrs.metadata.disableMetadataField}"
-                                readonly="#{Metadaten.nurLesenModus}">
-                                <f:selectItem itemValue="GRE" itemLabel="GRE" />
-  								<f:selectItem itemValue="JUL" itemLabel="JUL" />
-  								<f:selectItem itemValue="BRI" itemLabel="BRI" />
-  								<f:ajax
-                                    execute="@form"
-                                    event="valueChange" />
-                            </h:selectOneMenu>
-                        </div>
-                    </ui:fragment>
-                    
+
+
                     <!-- MULTISELECT -->
                     <h:selectManyListbox
                         id="multiSelect"
@@ -302,6 +284,35 @@
                                 execute="@form"
                                 render="@form" />
                         </button>
+                        
+                        <!-- CONVERT -->
+						<button
+                           	jsf:id="actionConvert"
+                               class="btn btn--icon-light metadataButton"
+                               aria-label="#{msgs.convertToGregorianDate}"
+                               tabindex="0"
+                               type="button"
+                               jsf:action="#{Metadaten.Loeschen}"
+                               title="#{msgs.convertToGregorianDate}"
+                               jsf:rendered="#{(cc.attrs.metadata.outputType == 'convertibleDate')}">
+							<i class="fa fa-lg fa-calendar"
+                               	aria-hidden="true"></i>
+                            <x:updateActionListener
+                                property="#{Metadaten.curMetadatum}"
+                                value="#{cc.attrs.metadata}" />
+                            <f:param
+                                name="ID"
+                                value="#{cc.attrs.metadata.identifier}" />
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                            <f:passThroughAttribute
+                                name="data-placement"
+                                value="top" />
+                            <f:ajax
+                                execute="@form"
+                                render="@form" />
+                       	</button>
 
                         <!-- AUTHORITY ICON AND MODAL -->
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'geonames'}">
