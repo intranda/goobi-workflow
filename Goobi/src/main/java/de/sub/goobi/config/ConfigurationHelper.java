@@ -1074,10 +1074,6 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("MetsEditorEnableImageAssignment", true);
     }
 
-    public boolean isMetsEditorRenameImagesOnExit() {
-        return getLocalBoolean("MetsEditorRenameImagesOnExit", false);
-    }
-
     public boolean isMetsEditorValidateImages() {
         return getLocalBoolean("MetsEditorValidateImages", true);
     }
@@ -1112,8 +1108,8 @@ public class ConfigurationHelper implements Serializable {
     public long getMaximalImageFileSize() {
         int size = getLocalInt("MaxImageFileSize", 4000);
         String unit = getLocalString("MaxImageFileSizeUnit", "MB");
-        Double factor = getMemorySizeFactor(unit);
-        return size * factor.longValue();
+        long factor = getMemorySizeFactor(unit);
+        return (long) (size) * factor;
     }
 
     public boolean getMetsEditorUseImageTiles() {
@@ -1131,7 +1127,7 @@ public class ConfigurationHelper implements Serializable {
         return getLocalInt("MetsEditorMaxTitleLength", 0);
     }
 
-    public String getProcessTiteValidationlRegex() {
+    public String getProcessTitleValidationRegex() {
         return getLocalString("validateProcessTitelRegex", "[\\w-]*");
     }
 
@@ -1196,57 +1192,54 @@ public class ConfigurationHelper implements Serializable {
 
     // backup
 
-    public String getTypeOfBackup() {
-        return getLocalString("typeOfBackup", "renameFile");
-    }
-
-    public String getFormatOfMetsBackup() {
-        return getLocalString("formatOfMetaBackups");
-    }
-
     public int getNumberOfMetaBackups() {
         return getLocalInt("numberOfMetaBackups", 0);
     }
 
     // TODO: END OF UNDOCUMENTED GETTERS
 
-    // for junit tests
-    public void setParameter(String inParameter, String value) {
-        config.setProperty(inParameter, value);
+    /**
+     * This setter is only used by unit tests and makes manipulation of the configuration possible.
+     *
+     * @param key The key that should be set
+     * @param value The new value for that key
+     */
+    public void setParameter(String key, String value) {
+        config.setProperty(key, value);
         if (configLocal != null) {
-            configLocal.setProperty(inParameter, value);
+            configLocal.setProperty(key, value);
         }
     }
 
     /**
      * Returns the memory size of the given unit in bytes
      * 
-     * @param unit
+     * @param unit The text representing the data size unit
      * @return the memory size of the given unit in bytes
      */
-    private double getMemorySizeFactor(String unit) {
+    private long getMemorySizeFactor(String unit) {
         switch (unit.toUpperCase()) {
             case "TB":
             case "T":
-                return 1E12;
+                return (long) (1E12);
             case "GB":
             case "G":
-                return 1E9;
+                return (long) (1E9);
             case "MB":
             case "M":
-                return 1E6;
+                return (long) (1E6);
             case "KB":
             case "K":
-                return 1E3;
+                return (long) (1E3);
             case "TIB":
             case "TI":
-                return Math.pow(1024, 4);
+                return (long) (Math.pow(1024, 4));
             case "GIB":
             case "GI":
-                return Math.pow(1024, 3);
+                return (long) (Math.pow(1024, 3));
             case "MIB":
             case "MI":
-                return Math.pow(1024, 2);
+                return (long) (Math.pow(1024, 2));
             case "KIB":
             case "KI":
                 return 1024;

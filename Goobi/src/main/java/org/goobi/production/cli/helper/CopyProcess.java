@@ -515,7 +515,7 @@ public class CopyProcess {
             Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation("ProcessCreationErrorTitleEmpty"));
         }
 
-        String validateRegEx = ConfigurationHelper.getInstance().getProcessTiteValidationlRegex();
+        String validateRegEx = ConfigurationHelper.getInstance().getProcessTitleValidationRegex();
         if (!this.prozessKopie.getTitel().matches(validateRegEx)) {
             valide = false;
             Helper.setFehlerMeldung("UngueltigerTitelFuerVorgang");
@@ -585,7 +585,7 @@ public class CopyProcess {
                         Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation("ProcessCreationErrorTitleEmpty"));
             }
 
-            String validateRegEx = ConfigurationHelper.getInstance().getProcessTiteValidationlRegex();
+            String validateRegEx = ConfigurationHelper.getInstance().getProcessTitleValidationRegex();
             if (!this.prozessKopie.getTitel().matches(validateRegEx)) {
                 valide = false;
                 Helper.setFehlerMeldung("UngueltigerTitelFuerVorgang");

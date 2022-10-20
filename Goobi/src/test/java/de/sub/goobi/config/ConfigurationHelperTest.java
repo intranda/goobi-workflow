@@ -428,13 +428,8 @@ public class ConfigurationHelperTest extends AbstractTest {
     }
 
     @Test
-    public void testGetFormatOfMetsBackup() {
-        assertEquals("meta.*\\.xml.*+", ConfigurationHelper.getInstance().getFormatOfMetsBackup());
-    }
-
-    @Test
-    public void testGetProcessTiteValidationlRegex() {
-        assertEquals("[\\w-]*", ConfigurationHelper.getInstance().getProcessTiteValidationlRegex());
+    public void testGetProcessTitleValidationRegex() {
+        assertEquals("[\\w-]*", ConfigurationHelper.getInstance().getProcessTitleValidationRegex());
     }
 
     @Test
@@ -455,11 +450,6 @@ public class ConfigurationHelperTest extends AbstractTest {
     @Test
     public void testGetUserForImageReading() {
         assertEquals("root", ConfigurationHelper.getInstance().getUserForImageReading());
-    }
-
-    @Test
-    public void testGetTypeOfBackup() {
-        assertEquals("renameFile", ConfigurationHelper.getInstance().getTypeOfBackup());
     }
 
     @Test
@@ -531,11 +521,6 @@ public class ConfigurationHelperTest extends AbstractTest {
     @Test
     public void testGetGoobiModuleServerPort() {
         assertEquals(8000, ConfigurationHelper.getInstance().getGoobiModuleServerPort());
-    }
-
-    @Test
-    public void testIsMetsEditorRenameImagesOnExit() {
-        assertFalse(ConfigurationHelper.getInstance().isMetsEditorRenameImagesOnExit());
     }
 
     @Test

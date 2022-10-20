@@ -664,7 +664,7 @@ public class ProzesskopieForm implements Serializable {
             Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation("ProcessCreationErrorTitleEmpty")); //NOSONAR
         }
 
-        String validateRegEx = ConfigurationHelper.getInstance().getProcessTiteValidationlRegex();
+        String validateRegEx = ConfigurationHelper.getInstance().getProcessTitleValidationRegex();
         if (!this.prozessKopie.getTitel().matches(validateRegEx)) {
             valide = false;
             Helper.setFehlerMeldung(Helper.getTranslation("UngueltigerTitelFuerVorgang"));
