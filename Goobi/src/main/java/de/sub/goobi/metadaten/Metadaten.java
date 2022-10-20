@@ -1,5 +1,3 @@
-package de.sub.goobi.metadaten;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -25,6 +23,8 @@ package de.sub.goobi.metadaten;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+
+package de.sub.goobi.metadaten;
 
 import java.io.File;
 import java.io.IOException;
@@ -484,7 +484,7 @@ public class Metadaten implements Serializable {
     public enum MetadataTypes {
         PERSON,
         CORPORATE,
-        METATDATA
+        METADATA
     }
 
     /**
@@ -1843,7 +1843,7 @@ public class Metadaten implements Serializable {
          * -------------------------------- alle Metadaten und die DefaultDisplay-Werte anzeigen --------------------------------
          */
         List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, Helper.getMetadataLanguage(),
-                MetadataTypes.METATDATA, this.myProzess, displayHiddenMetadata);
+                MetadataTypes.METADATA, this.myProzess, displayHiddenMetadata);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
                 MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this);
@@ -4651,7 +4651,7 @@ public class Metadaten implements Serializable {
                 DocStruct ds = this.document.createDocStruct(dst);
 
                 List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, Helper.getMetadataLanguage(),
-                        MetadataTypes.METATDATA, this.myProzess, displayHiddenMetadata);
+                        MetadataTypes.METADATA, this.myProzess, displayHiddenMetadata);
                 if (myTempMetadata != null) {
                     for (Metadata metadata : myTempMetadata) {
                         addableMetadata.add(new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this));

@@ -1,5 +1,3 @@
-package de.sub.goobi.metadaten;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -18,6 +16,8 @@ package de.sub.goobi.metadaten;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
+
+package de.sub.goobi.metadaten;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

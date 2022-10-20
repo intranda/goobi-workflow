@@ -1,7 +1,3 @@
-package de.sub.goobi.config;
-
-import java.io.IOException;
-import java.io.OutputStream;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -20,6 +16,11 @@ import java.io.OutputStream;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
+
+package de.sub.goobi.config;
+
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.nio.file.FileSystems;
@@ -975,7 +976,7 @@ public class ConfigurationHelper implements Serializable {
     public boolean isUseImageThumbnails() {
         return getLocalBoolean("UseImageThumbnails", true);
     }
-    
+
     public boolean getMetsEditorShowImageComments() {
         return isShowImageComments();
     }
