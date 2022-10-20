@@ -1056,10 +1056,6 @@ public class ConfigurationHelper implements Serializable {
         return list;
     }
 
-    public String getTiffHeaderArtists() {
-        return getLocalString("TiffHeaderArtists");
-    }
-
     // images
 
     public String getImagePrefix() {

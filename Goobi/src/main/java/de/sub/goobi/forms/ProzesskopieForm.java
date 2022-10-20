@@ -35,7 +35,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -394,7 +393,7 @@ public class ProzesskopieForm implements Serializable {
                             break;
                         case "export": //NOSONAR
                             configuredFolderNames
-                            .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
+                                    .add(new SelectItem("export", Helper.getTranslation("process_log_file_FolderSelectionExportToViewer")));
                             break;
                         case "master":
                             if (ConfigurationHelper.getInstance().isUseMasterDirectory()) {
@@ -1211,20 +1210,6 @@ public class ProzesskopieForm implements Serializable {
                 }
             }
         }
-    }
-
-    public Collection<SelectItem> getArtists() {
-        ArrayList<SelectItem> artisten = new ArrayList<>();
-        StringTokenizer tokenizer = new StringTokenizer(ConfigurationHelper.getInstance().getTiffHeaderArtists(), "|");
-        boolean tempBol = true;
-        while (tokenizer.hasMoreTokens()) {
-            String tok = tokenizer.nextToken();
-            if (tempBol) {
-                artisten.add(new SelectItem(tok));
-            }
-            tempBol = !tempBol;
-        }
-        return artisten;
     }
 
     /*

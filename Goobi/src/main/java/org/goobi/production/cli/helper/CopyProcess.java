@@ -30,7 +30,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1013,20 +1012,6 @@ public class CopyProcess {
             bh.EigenschaftHinzufuegen(prozessKopie, "Template", prozessVorlage.getTitel());
             bh.EigenschaftHinzufuegen(prozessKopie, "TemplateID", String.valueOf(prozessVorlage.getId()));
         }
-    }
-
-    public Collection<SelectItem> getArtists() {
-        ArrayList<SelectItem> artisten = new ArrayList<>();
-        StringTokenizer tokenizer = new StringTokenizer(ConfigurationHelper.getInstance().getTiffHeaderArtists(), "|");
-        boolean tempBol = true;
-        while (tokenizer.hasMoreTokens()) {
-            String tok = tokenizer.nextToken();
-            if (tempBol) {
-                artisten.add(new SelectItem(tok));
-            }
-            tempBol = !tempBol;
-        }
-        return artisten;
     }
 
     /*

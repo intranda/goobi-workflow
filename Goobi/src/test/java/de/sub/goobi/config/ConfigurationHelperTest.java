@@ -263,11 +263,6 @@ public class ConfigurationHelperTest extends AbstractTest {
     }
 
     @Test
-    public void testGetTiffHeaderArtists() {
-        assertNotNull(ConfigurationHelper.getInstance().getTiffHeaderArtists());
-    }
-
-    @Test
     public void testGetScriptCreateDirMeta() {
         assertEquals(goobiMainFolder + "scripts/script_createDirMeta.sh", ConfigurationHelper.getInstance().getScriptCreateDirMeta());
     }
