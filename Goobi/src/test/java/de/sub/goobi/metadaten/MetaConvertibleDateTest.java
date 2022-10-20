@@ -34,41 +34,6 @@ public class MetaConvertibleDateTest {
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
-    // A list of dates to possibly test while developing this feature.
-    // TODO: Delete once all tests are implemented
-
-    /*
-        List<String> dates = new ArrayList<>();
-    
-        dates.add("1752-09-02");
-        dates.add("1752-09-03");
-        dates.add("1752-09-14");
-    
-        dates.add("1740-03-01");
-        dates.add("1741-03-12");
-        dates.add("1741-04-01");
-        dates.add("1741-04-12");
-    
-        dates.add("1751-12-31");
-        dates.add("1751-01-01");
-        dates.add("1752-01-01");
-        dates.add("1751-03-24");
-        dates.add("1752-03-24");
-        dates.add("1752-03-25");
-    
-        dates.add("1752-09-01");
-        dates.add("1752-09-02");
-        dates.add("1752-09-03");
-        dates.add("1752-09-04");
-        dates.add("1752-09-09");
-        dates.add("1752-09-13");
-        dates.add("1752-09-14");
-    
-        dates.add("1752-04-02");
-    */
-
-    // Here follow the actual tests. They are meant to fail until the code is implemented in working order.
-
     @Test
     // Dates have to be in YYYY-MM-DD format
     public void malformedDateTest() {
@@ -86,6 +51,8 @@ public class MetaConvertibleDateTest {
     public void isBritishTest() {
         MetaConvertibleDate britishDate = new MetaConvertibleDate("1744-09-02", DateType.BRITISH);
         assertTrue(britishDate.isBritish());
+        assertFalse(britishDate.isGregorian());
+        assertFalse(britishDate.isJulian());
     }
 
     @Test
@@ -101,6 +68,8 @@ public class MetaConvertibleDateTest {
         MetaConvertibleDate britishDate = new MetaConvertibleDate("1752-09-02", DateType.BRITISH);
         MetaConvertibleDate gregorianDate = britishDate.convert(DateType.GREGORIAN);
         assertTrue(gregorianDate.isGregorian());
+        assertFalse(gregorianDate.isBritish());
+        assertFalse(gregorianDate.isJulian());
         assertEquals("1752-09-02", gregorianDate.getDate());
     }
 
@@ -136,6 +105,8 @@ public class MetaConvertibleDateTest {
         MetaConvertibleDate gregorianDate = new MetaConvertibleDate("2022-10-17", DateType.GREGORIAN);
         MetaConvertibleDate julianDate = gregorianDate.convert(DateType.JULIAN);
         assertTrue(julianDate.isJulian());
+        assertFalse(julianDate.isGregorian());
+        assertFalse(julianDate.isBritish());
         assertEquals("2022-10-04", julianDate.getDate());
     }
 }

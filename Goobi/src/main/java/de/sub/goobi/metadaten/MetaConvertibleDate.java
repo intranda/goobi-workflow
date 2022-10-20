@@ -1,5 +1,24 @@
 package de.sub.goobi.metadaten;
 
+/**
+ * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
+ * 
+ * Visit the websites for more information.
+ *          - https://goobi.io
+ *          - https://www.intranda.com
+ *          - https://github.com/intranda/goobi-workflow
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59
+ * Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * 
+ */
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -10,6 +29,12 @@ import org.threeten.extra.chrono.JulianDate;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+/**
+ * This class provides a data structure to save a date as a string and its calendar type. It uses a primitive design to make working with it as easy
+ * as possible.
+ * 
+ * @author Janos Sebök
+ */
 @EqualsAndHashCode
 public class MetaConvertibleDate {
     public enum DateType {
@@ -18,7 +43,7 @@ public class MetaConvertibleDate {
         GREGORIAN;
     }
 
-    // Maybe use a java.time class instead of a string for compatibility?
+    // TODO: maybe use a java.time class instead of a string for compatibility?
     @Getter
     private String date;
     private DateType type;
@@ -40,8 +65,12 @@ public class MetaConvertibleDate {
         return this.type == DateType.GREGORIAN ? true : false;
     }
 
-    // TODO: real docstring
-    // When called, returns a new MetaConvertibleDate of the desired type.
+    /**
+     * Convert a date of a specific calendar into a given calendar. Currently more functions are available than are actually used in production.
+     * 
+     * @param toType A calendar type of the DateType ENUM
+     * @return A new calendar date
+     */
     public MetaConvertibleDate convert(DateType toType) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd");
         MetaConvertibleDate returnDate = new MetaConvertibleDate("0000-01-01", DateType.GREGORIAN);
@@ -73,12 +102,11 @@ public class MetaConvertibleDate {
         return returnDate;
     }
 
-    // // B2G, G2B, J2G, G2J
-    ///
-    // LocalDate ld = LocalDate.parse(date);
-    // JulianDate jd = JulianDate.from(ld);
-    // BritishCutoverDate bd = BritishCutoverDate.from(ld);
-    //
+    /**
+     * Checks whether date conforms to the YYYY-MM-DD format. Useful when no validation has been set.
+     * 
+     * @return true or false
+     */
     public boolean isValid() {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd");
         try {

@@ -1070,6 +1070,12 @@ public class Metadaten implements Serializable {
         return "";
     }
 
+    /**
+     * This method is called when the "convert date" button is clicked on the website. It will brute-force convert the currently present date (if it
+     * is present) into the Gregorian calendar. It assumes the date is presented in the Julian calender.
+     * 
+     * @return An error message if the saving times out.
+     */
     public String convertDate() {
         HoldingElement he = curMetadatum.getMd().getParent();
         if (he != null) {
