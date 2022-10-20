@@ -484,7 +484,7 @@ public class Metadaten implements Serializable {
     public enum MetadataTypes {
         PERSON,
         CORPORATE,
-        METADATA
+        METATDATA
     }
 
     /**
@@ -1837,7 +1837,7 @@ public class Metadaten implements Serializable {
          * -------------------------------- alle Metadaten und die DefaultDisplay-Werte anzeigen --------------------------------
          */
         List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(inStrukturelement, Helper.getMetadataLanguage(),
-                MetadataTypes.METADATA, this.myProzess, displayHiddenMetadata);
+                MetadataTypes.METATDATA, this.myProzess, displayHiddenMetadata);
         if (myTempMetadata != null) {
             for (Metadata metadata : myTempMetadata) {
                 MetadatumImpl meta = new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this);
@@ -4645,7 +4645,7 @@ public class Metadaten implements Serializable {
                 DocStruct ds = this.document.createDocStruct(dst);
 
                 List<? extends Metadata> myTempMetadata = this.metahelper.getMetadataInclDefaultDisplay(ds, Helper.getMetadataLanguage(),
-                        MetadataTypes.METADATA, this.myProzess, displayHiddenMetadata);
+                        MetadataTypes.METATDATA, this.myProzess, displayHiddenMetadata);
                 if (myTempMetadata != null) {
                     for (Metadata metadata : myTempMetadata) {
                         addableMetadata.add(new MetadatumImpl(metadata, 0, this.myPrefs, this.myProzess, this));
