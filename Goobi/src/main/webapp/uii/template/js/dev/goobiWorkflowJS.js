@@ -2,7 +2,13 @@ var goobiWorkflowJS = ( function() {
     'use strict';
     
     var _debug = false;
-    var _defaults = {};
+    var _defaults = {
+		metseditor: {
+			thumbnails: {
+				maxParallelRequests: 100
+			}
+		}
+	};
     
     var goobiWorkflow = {};
     
@@ -68,7 +74,7 @@ var goobiWorkflowJS = ( function() {
         goobiWorkflowJS.modals.init();
         
         // init thumbnails --> needs ajax reload
-        goobiWorkflowJS.thumbnails.init();
+        goobiWorkflowJS.thumbnails.init(_defaults.metseditor.thumbnails);
         
         // init jsf ajax listener
         goobiWorkflowJS.jsfAjax.init( _defaults );

@@ -81,10 +81,21 @@ public class DashboardBean implements Serializable {
     public String getPluginUi() {
         if (plugin == null) {
             return "";
-        } else if (PluginGuiType.FULL == plugin.getPluginGuiType()) {
-            ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
+        }
+        ExternalContext ec = FacesContextHelper.getCurrentFacesContext().getExternalContext();
+        // redirect to the plugin page
+        if (PluginGuiType.FULL == plugin.getPluginGuiType()) {
             try {
                 ec.redirect(ec.getRequestContextPath() + plugin.getGuiPath());
+            } catch (IOException e) {
+                log.error(e);
+            }
+        }
+        // redirect to index.xhtml, if the request comes from a different page
+        else if (PluginGuiType.PART == plugin.getPluginGuiType()
+                && !"/uii/index.xhtml".equals(FacesContextHelper.getCurrentFacesContext().getViewRoot().getViewId())) {
+            try {
+                ec.redirect(ec.getRequestContextPath() + "/uii/index.xhtml");
             } catch (IOException e) {
                 log.error(e);
             }

@@ -1024,6 +1024,10 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("UseImageThumbnails", true);
     }
 
+    public int getMaxParallelThumbnailRequests() {
+        return getLocalInt("MaxParallelThumbnailRequests", 100);
+    }
+
     public boolean getMetsEditorShowImageComments() {
         return isShowImageComments();
     }

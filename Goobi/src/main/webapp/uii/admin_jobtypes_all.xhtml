@@ -33,7 +33,11 @@
 
             <!-- Box content -->
             <div class="dataTables_wrapper">
-        			<h:dataTable value="#{JobTypesBean.jobTypes}" var="jobType" styleClass="table table-hover dataTable table-bordered responsive">
+                <div
+                    class="table-wrapper"
+                    jsf:rendered="#{not empty JobTypesBean.jobTypes}"
+                    >
+        			<h:dataTable value="#{JobTypesBean.jobTypes}" var="jobType" styleClass="table dataTable">
 	        				<h:column>
 	        					<f:facet name="header">#{msgs.name}</f:facet>
 	        					#{jobType.name}
@@ -79,6 +83,7 @@
                         </div>
 	                  </h:column>
 	              </h:dataTable>
+                </div>
 
               <div class="form-actions">
                 <button class="btn btn-primary me-auto" jsf:action="#{JobTypesBean.addNewJobType}">
