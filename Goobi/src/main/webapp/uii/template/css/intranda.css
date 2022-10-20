@@ -2628,3 +2628,20 @@ body .ui-fileupload .ui-fileupload-content {
   word-break: break-all !important;
 }
 
+/* View specific styles */
+/* process_all.xhtml */
+#processAll .dataTables_filter button {
+  height: 28px;
+}
+
+#processAll .dataTables_wrapper .dataTables_length {
+  min-width: 100px;
+}
+
+#processAll .dataTables_filter:first-of-type {
+  width: calc(100% - 400px);
+  max-width: 600px;
+  min-width: 250px;
+}
+
+
