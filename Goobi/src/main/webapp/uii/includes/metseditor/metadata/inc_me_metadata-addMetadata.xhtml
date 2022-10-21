@@ -127,24 +127,6 @@
 
                                 </ui:fragment>
                                 
-                                <!-- SELECT DateType-->
-                                <ui:fragment rendered="#{(Metadaten.outputType == 'convertibleDate')}">
-                                    <div class="form-control form-control--select">
-                                        <h:selectOneMenu
-                                            id="convertibleDateAdd"
-                                            styleClass="focusable"
-                                            value="#{Metadaten.metadatum.selectedItem}"
-                                            disabled="#{Metadaten.metadatum.disableMetadataField}"
-                                            readonly="#{Metadaten.nurLesenModus}">
-                                            <f:selectItem itemValue="GRE" itemLabel="GRE" />
-  											<f:selectItem itemValue="JUL" itemLabel="JUL" />
-  											<f:selectItem itemValue="BRI" itemLabel="BRI" />
-                                        </h:selectOneMenu>
-                                    </div>
-
-                                </ui:fragment>
-
-
                                 <!-- MULTISELECT -->
                                 <h:selectManyListbox
                                     id="mySelect"
