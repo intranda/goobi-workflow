@@ -74,12 +74,25 @@ td {
   // Contains search form + `show active users btn`
   form {
     display: flex;
+    flex-shrink: 0;
   }
 }
 
 .dataTables__filter-container {
-  flex-wrap: wrap;
+  width: 84%;
+  justify-content: flex-end;
   gap: var(--gap, 8px);
+
+  .search-form {
+    flex: 0 1 590px;
+  }
+}
+
+@media (max-width: 555px) {
+  .dataTables__filter-container {
+    width: 100%;
+    flex-wrap: wrap;
+  }
 }
 
 .dataTables__filter {
@@ -88,6 +101,10 @@ td {
   input,
   button:not(.btn--active-users) {
     border: 1px solid var(--clr-neutral-300);
+  }
+
+  &.-search-bar {
+    width: 100%;
   }
 }
 
