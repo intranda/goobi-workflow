@@ -2630,18 +2630,21 @@ body .ui-fileupload .ui-fileupload-content {
 
 /* View specific styles */
 /* process_all.xhtml */
-#processAll .dataTables_filter button {
-  height: 28px;
+#processAll .dataTables_filter button,
+#tasksAll .dataTables_filter button {
+height: 28px;
 }
 
-#processAll .dataTables_wrapper .dataTables_length {
-  min-width: 100px;
+#processAll .dataTables_wrapper .dataTables_length,
+#tasksAll .dataTables_wrapper .dataTables_length {
+min-width: 100px;
 }
 
-#processAll .dataTables_filter:first-of-type {
-  width: calc(100% - 400px);
-  max-width: 600px;
-  min-width: 250px;
+#processAll .dataTables_filter.-search-bar,
+#tasksAll .dataTables_filter.-search-bar {
+width: calc(100% - 400px);
+max-width: 600px;
+min-width: 250px;
 }
 
 
