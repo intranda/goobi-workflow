@@ -10,7 +10,6 @@
 	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<ui:param name="myPageTitle" value="#{msgs.benutzerverwaltung}" />
-
 	<ui:define name="breadcrumb">
 		<intranda:breadcrumb id="index"
 			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
@@ -49,7 +48,7 @@
 									<h:form id="isActiveUsers">
 
 										<!-- Show only active users -->
-										<div class="dataTables__filter">
+										<div class="dataTables__filter -active-users">
 											<button jsf:id="tableUserAllShowActiveUsers"
 												class="btn btn--active-users"
 												jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
@@ -65,10 +64,10 @@
 										</div>
 									</h:form>
 
-									<h:form id="searchform">
+									<h:form id="searchform" styleClass="search-form">
 
 										<!-- Filter by search term -->
-										<div class="dataTables__filter">
+										<div class="dataTables__filter -search-bar">
 											<div class="input-group input-group">
 												<span class="input-group-text"> <i
 													class="fa fa-search"></i>
