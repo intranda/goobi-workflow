@@ -63,16 +63,6 @@ public class MetaConvertibleDateTest {
         assertTrue(stillBritishDate.isBritish());
     }
 
-    @Test
-    public void convertBritishToGregorianSameTest() {
-        MetaConvertibleDate britishDate = new MetaConvertibleDate("1752-09-02", DateType.BRITISH);
-        MetaConvertibleDate gregorianDate = britishDate.convert(DateType.GREGORIAN);
-        assertTrue(gregorianDate.isGregorian());
-        assertFalse(gregorianDate.isBritish());
-        assertFalse(gregorianDate.isJulian());
-        assertEquals("1752-09-02", gregorianDate.getDate());
-    }
-
     // Test every possible useful conversion constellation:
     // B2G, G2B, J2G, G2J
 

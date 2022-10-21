@@ -83,7 +83,7 @@ public class MetaConvertibleDate {
         final int day = normalizedDate.getDayOfMonth();
         if (type == DateType.BRITISH && toType == DateType.GREGORIAN) {
             BritishCutoverDate britishDate = BritishCutoverDate.of(year, month, day);
-            LocalDate gregorianDate = LocalDate.parse(britishDate.format(dateFormatter));
+            LocalDate gregorianDate = LocalDate.from(britishDate);
             returnDate = new MetaConvertibleDate(gregorianDate.format(dateFormatter), DateType.GREGORIAN);
         }
         if (type == DateType.GREGORIAN && toType == DateType.BRITISH) {

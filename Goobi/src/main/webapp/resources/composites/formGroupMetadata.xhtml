@@ -287,15 +287,43 @@
                         
                         <!-- CONVERT -->
 						<button
-                           	jsf:id="actionConvert"
+                           	jsf:id="actionConvertFromJulian"
                                class="btn btn--icon-light metadataButton"
-                               aria-label="#{msgs.convertToGregorianDate}"
+                               aria-label="#{msgs.convertJulianToGregorianDate}"
                                tabindex="0"
                                type="button"
-                               jsf:action="#{Metadaten.convertDate}"
-                               title="#{msgs.convertToGregorianDate}"
+                               jsf:action="#{Metadaten.convertDate('JULIAN')}"
+                               title="#{msgs.convertJulianToGregorianDate}"
                                jsf:rendered="#{(cc.attrs.metadata.outputType == 'convertibleDate')}">
 							<i class="fa fa-lg fa-calendar"
+                               	aria-hidden="true"></i>
+                            <x:updateActionListener
+                                property="#{Metadaten.curMetadatum}"
+                                value="#{cc.attrs.metadata}" />
+                            <f:param
+                                name="ID"
+                                value="#{cc.attrs.metadata.identifier}" />
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                            <f:passThroughAttribute
+                                name="data-placement"
+                                value="top" />
+                            <f:ajax
+                                execute="@form"
+                                render="@form" />
+                       	</button>
+
+						<button
+                           	jsf:id="actionConvertFromBritish"
+                               class="btn btn--icon-light metadataButton"
+                               aria-label="#{msgs.convertBritishToGregorianDate}"
+                               tabindex="0"
+                               type="button"
+                               jsf:action="#{Metadaten.convertDate('BRITISH')}"
+                               title="#{msgs.convertBritishToGregorianDate}"
+                               jsf:rendered="#{(cc.attrs.metadata.outputType == 'convertibleDate')}">
+							<i class="fa fa-lg fa-calendar-o"
                                	aria-hidden="true"></i>
                             <x:updateActionListener
                                 property="#{Metadaten.curMetadatum}"

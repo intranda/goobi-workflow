@@ -1072,14 +1072,15 @@ public class Metadaten implements Serializable {
 
     /**
      * This method is called when the "convert date" button is clicked on the website. It will brute-force convert the currently present date (if it
-     * is present) into the Gregorian calendar. It assumes the date is presented in the Julian calender.
+     * is present) into the Gregorian calendar, assuming the given calendar corresponds to the parameter given.
      * 
+     * @param dateType Type of the date given (valid are BRITISH, JULIAN and GREGORIAN)
      * @return An error message if the saving times out.
      */
-    public String convertDate() {
+    public String convertDate(DateType dateType) {
         HoldingElement he = curMetadatum.getMd().getParent();
         if (he != null) {
-            MetaConvertibleDate currentDate = new MetaConvertibleDate(curMetadatum.getValue(), DateType.JULIAN);
+            MetaConvertibleDate currentDate = new MetaConvertibleDate(curMetadatum.getValue(), dateType);
             if (currentDate.isValid()) {
                 MetaConvertibleDate gregorianDate = currentDate.convert(DateType.GREGORIAN);
                 String gregorianDateString = gregorianDate.getDate();

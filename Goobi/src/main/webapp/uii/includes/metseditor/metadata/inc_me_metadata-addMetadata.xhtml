@@ -137,7 +137,7 @@
                                     readonly="#{Metadaten.nurLesenModus}">
                                     <f:selectItems value="#{Metadaten.metadatum.items}" />
                                 </h:selectManyListbox>
-
+								
                                 <!-- AUTHORITY DATA - NO DANTE, VIAF OR EASYDB -->
                                 <ui:fragment rendered="#{Metadaten.metadatum.normdata and Metadaten.outputType != 'dante' and Metadaten.outputType != 'viaf' and Metadaten.outputType != 'easydb'}">
                                     <div class="form-group form-group--inside">
