@@ -1135,19 +1135,33 @@ td .btn ~ .btn {
 }
 .dataTables__search__container form {
   display: flex;
+  flex-shrink: 0;
 }
 
 .dataTables__filter-container {
-  flex-wrap: wrap;
+  width: 84%;
+  justify-content: flex-end;
   gap: var(--gap, 8px);
 }
+.dataTables__filter-container .search-form {
+  flex: 0 1 590px;
+}
 
+@media (max-width: 555px) {
+  .dataTables__filter-container {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}
 .dataTables__filter {
   background-color: var(--clr-neutral-200);
 }
 .dataTables__filter input,
 .dataTables__filter button:not(.btn--active-users) {
   border: 1px solid var(--clr-neutral-300);
+}
+.dataTables__filter.-search-bar {
+  width: 100%;
 }
 
 .dataTables__actions {
