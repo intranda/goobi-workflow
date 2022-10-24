@@ -726,6 +726,18 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("SqlTasksIndexname", null);
     }
 
+    public List<SearchIndexField> getIndexFields() {
+        List<SearchIndexField> list = new ArrayList<>();
+        Iterator<String> it = getLocalKeys("index");
+        while (it.hasNext()) {
+            String keyName = it.next();
+            List<String> values = getLocalList(keyName);
+            SearchIndexField index = new SearchIndexField(keyName, values);
+            list.add(index);
+        }
+        return list;
+    }
+
     /*
      * category in goobi_config.properties: PROCESSES AND PROCESS LOG
      */
@@ -978,55 +990,65 @@ public class ConfigurationHelper implements Serializable {
         return queueName;
     }
 
-    // TODO: START OF UNDOCUMENTED GETTERS
-
-    // TODO: START OF METS EDITOR GETTERS
-
     /*
      * category in goobi_config.properties: METS EDITOR
      */
 
-    // general
-
-    public String getMetsEditorDefaultPagination() {
-        return getLocalString("MetsEditorDefaultPagination", "uncounted");
-    }
+    /*
+     * subcategory in goobi_config.properties/METS EDITOR: general properties
+     */
 
     public boolean isMetsEditorEnableDefaultInitialisation() {
         return getLocalBoolean("MetsEditorEnableDefaultInitialisation", true);
     }
 
-    public boolean isMetsEditorDisplayFileManipulation() {
-        return getLocalBoolean("MetsEditorDisplayFileManipulation", false);
+    public boolean isMetsEditorEnableImageAssignment() {
+        return getLocalBoolean("MetsEditorEnableImageAssignment", true);
     }
 
-    public boolean isMetsEditorShowMetadataPopup() {
-        return getLocalBoolean("MetsEditorShowMetadataPopup", true);
-    }
-
-    public boolean isMetsEditorShowArchivedFolder() {
-        return getLocalBoolean("MetsEditorShowArchivedFolder", false);
+    public String getMetsEditorDefaultPagination() {
+        return getLocalString("MetsEditorDefaultPagination", "uncounted");
     }
 
     public long getMetsEditorLockingTime() {
         return getLocalLong("MetsEditorLockingTime", 30 * 60 * 1000);
     }
 
-    public boolean isUseMetadataValidation() {
-        return getLocalBoolean("useMetadatenvalidierung", true);
+    public boolean isMetsEditorUseExternalOCR() {
+        return getLocalBoolean("MetsEditorUseExternalOCR", false);
     }
 
-    public String getPathToExiftool() {
-        return getLocalString("ExportExiftoolPath", "/usr/bin/exiftool");
+    public int getNumberOfMetaBackups() {
+        return getLocalInt("numberOfMetaBackups", 0);
     }
 
-    public boolean isUseImageThumbnails() {
-        return getLocalBoolean("UseImageThumbnails", true);
+    /*
+     * subcategory in goobi_config.properties/METS EDITOR: user interface
+     */
+
+    public boolean isMetsEditorShowOCRButton() {
+        return getLocalBoolean("showOcrButton", false);
     }
 
-    public int getMaxParallelThumbnailRequests() {
-        return getLocalInt("MaxParallelThumbnailRequests", 100);
+    public boolean isMetsEditorDisplayFileManipulation() {
+        return getLocalBoolean("MetsEditorDisplayFileManipulation", false);
     }
+
+    public boolean isMetsEditorShowArchivedFolder() {
+        return getLocalBoolean("MetsEditorShowArchivedFolder", false);
+    }
+
+    public boolean isMetsEditorShowMetadataPopup() {
+        return getLocalBoolean("MetsEditorShowMetadataPopup", true);
+    }
+
+    public int getMetsEditorMaxTitleLength() {
+        return getLocalInt("MetsEditorMaxTitleLength", 0);
+    }
+
+    /*
+     * subcategory in goobi_config.properties/METS EDITOR: images and thumbnails
+     */
 
     public boolean getMetsEditorShowImageComments() {
         return isShowImageComments();
@@ -1036,69 +1058,36 @@ public class ConfigurationHelper implements Serializable {
         return getLocalBoolean("ShowImageComments", false);
     }
 
-    public boolean isMetsEditorUseExternalOCR() {
-        return getLocalBoolean("MetsEditorUseExternalOCR", false);
+    public int getMetsEditorNumberOfImagesPerPage() {
+        return getLocalInt("MetsEditorNumberOfImagesPerPage", 96);
     }
 
-    public boolean isMetsEditorShowOCRButton() {
-        return getLocalBoolean("showOcrButton", false);
-    }
-
-    public List<SearchIndexField> getIndexFields() {
-        List<SearchIndexField> list = new ArrayList<>();
-        Iterator<String> it = getLocalKeys("index");
-        while (it.hasNext()) {
-            String keyName = it.next();
-            List<String> values = getLocalList(keyName);
-            SearchIndexField index = new SearchIndexField(keyName, values);
-            list.add(index);
-        }
-        return list;
-    }
-
-    // images
-
-    public String getImagePrefix() {
-        return getLocalString("ImagePrefix", "\\d{8}");
+    public boolean getMetsEditorUseImageTiles() {
+        return getLocalBoolean("MetsEditorUseImageTiles", true);
     }
 
     public String getImageSorting() {
         return getLocalString("ImageSorting", "number");
     }
 
+    public String getImagePrefix() {
+        return getLocalString("ImagePrefix", "\\d{8}");
+    }
+
     public String getUserForImageReading() {
         return getLocalString("UserForImageReading", "root");
     }
 
-    public boolean isMetsEditorEnableImageAssignment() {
-        return getLocalBoolean("MetsEditorEnableImageAssignment", true);
-    }
-
-    public boolean isMetsEditorValidateImages() {
-        return getLocalBoolean("MetsEditorValidateImages", true);
-    }
-
-    public int getMetsEditorNumberOfImagesPerPage() {
-        return getLocalInt("MetsEditorNumberOfImagesPerPage", 96);
+    public boolean isUseImageThumbnails() {
+        return getLocalBoolean("UseImageThumbnails", true);
     }
 
     public int getMetsEditorThumbnailSize() {
         return getLocalInt("MetsEditorThumbnailsize", 200);
     }
 
-    public List<String> getMetsEditorImageSizes() {
-        return getLocalList("MetsEditorImageSize");
-
-    }
-
-    public List<String> getMetsEditorImageTileSizes() {
-        return getLocalList("MetsEditorImageTileSize");
-
-    }
-
-    public List<String> getMetsEditorImageTileScales() {
-        return getLocalList("MetsEditorImageTileScale");
-
+    public int getMaxParallelThumbnailRequests() {
+        return getLocalInt("MaxParallelThumbnailRequests", 100);
     }
 
     public int getMaximalImageSize() {
@@ -1112,19 +1101,32 @@ public class ConfigurationHelper implements Serializable {
         return (long) (size) * factor;
     }
 
-    public boolean getMetsEditorUseImageTiles() {
-        return getLocalBoolean("MetsEditorUseImageTiles", true);
+    public List<String> getMetsEditorImageSizes() {
+        return getLocalList("MetsEditorImageSize");
+    }
 
+    public List<String> getMetsEditorImageTileSizes() {
+        return getLocalList("MetsEditorImageTileSize");
+    }
+
+    public List<String> getMetsEditorImageTileScales() {
+        return getLocalList("MetsEditorImageTileScale");
     }
 
     public String[] getHistoryImageSuffix() {
         return getLocalStringArray("historyImageSuffix", new String[] { ".tif" });
     }
 
-    // title
+    /*
+     * subcategory in goobi_config.properties/METS EDITOR: validation
+     */
 
-    public int getMetsEditorMaxTitleLength() {
-        return getLocalInt("MetsEditorMaxTitleLength", 0);
+    public boolean isUseMetadataValidation() {
+        return getLocalBoolean("useMetadatenvalidierung", true);
+    }
+
+    public boolean isMetsEditorValidateImages() {
+        return getLocalBoolean("MetsEditorValidateImages", true);
     }
 
     public String getProcessTitleValidationRegex() {
@@ -1135,46 +1137,24 @@ public class ConfigurationHelper implements Serializable {
         return getLocalString("ProcessTitleGenerationRegex", "[\\W]");
     }
 
-    // export
+    /*
+     * subcategory in goobi_config.properties/METS EDITOR: export
+     */
 
-    public boolean isExportWithoutTimeLimit() {
-        return getLocalBoolean("exportWithoutTimeLimit", true);
-    }
-
-    public boolean isAutomaticExportWithImages() {
-        return getLocalBoolean("automaticExportWithImages", true);
-    }
-
-    public boolean isAutomaticExportWithOcr() {
-        return getLocalBoolean("automaticExportWithOcr", true);
+    public String getPathToExiftool() {
+        return getLocalString("ExportExiftoolPath", "/usr/bin/exiftool");
     }
 
     public boolean isUseMasterDirectory() {
         return getLocalBoolean("useOrigFolder", true);
     }
 
-    public boolean isPdfAsDownload() {
-        return getLocalBoolean("pdfAsDownload", true);
-    }
-
-    public boolean isExportFilesFromOptionalMetsFileGroups() {
-        return getLocalBoolean("ExportFilesFromOptionalMetsFileGroups", false);
+    public boolean isExportWithoutTimeLimit() {
+        return getLocalBoolean("exportWithoutTimeLimit", true);
     }
 
     public boolean isExportValidateImages() {
         return getLocalBoolean("ExportValidateImages", true);
-    }
-
-    public boolean isExportInTemporaryFile() {
-        return getLocalBoolean("ExportInTemporaryFile", false);
-    }
-
-    public boolean isExportCreateUUIDsAsFileIDs() {
-        return getLocalBoolean("ExportCreateUUID", true);
-    }
-
-    public boolean isExportCreateTechnicalMetadata() {
-        return getLocalBoolean("ExportCreateTechnicalMetadata", false);
     }
 
     public Map<String, String> getExportWriteAdditionalMetadata() {
@@ -1190,13 +1170,33 @@ public class ConfigurationHelper implements Serializable {
         return answer;
     }
 
-    // backup
-
-    public int getNumberOfMetaBackups() {
-        return getLocalInt("numberOfMetaBackups", 0);
+    public boolean isExportFilesFromOptionalMetsFileGroups() {
+        return getLocalBoolean("ExportFilesFromOptionalMetsFileGroups", false);
     }
 
-    // TODO: END OF UNDOCUMENTED GETTERS
+    public boolean isExportInTemporaryFile() {
+        return getLocalBoolean("ExportInTemporaryFile", false);
+    }
+
+    public boolean isExportCreateUUIDsAsFileIDs() {
+        return getLocalBoolean("ExportCreateUUID", true);
+    }
+
+    public boolean isExportCreateTechnicalMetadata() {
+        return getLocalBoolean("ExportCreateTechnicalMetadata", false);
+    }
+
+    public boolean isAutomaticExportWithImages() {
+        return getLocalBoolean("automaticExportWithImages", true);
+    }
+
+    public boolean isAutomaticExportWithOcr() {
+        return getLocalBoolean("automaticExportWithOcr", true);
+    }
+
+    public boolean isPdfAsDownload() {
+        return getLocalBoolean("pdfAsDownload", true);
+    }
 
     /**
      * This setter is only used by unit tests and makes manipulation of the configuration possible.
