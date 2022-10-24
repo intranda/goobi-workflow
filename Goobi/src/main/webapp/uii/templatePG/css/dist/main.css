@@ -776,6 +776,8 @@ body {
 }
 .navbar .user .icon-nav .nav-link.btn-link {
   margin-inline-end: 0;
+  color: #fff;
+  text-decoration: none;
 }
 
 @media (max-width: 991px) {
