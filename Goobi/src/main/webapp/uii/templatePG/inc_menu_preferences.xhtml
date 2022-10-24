@@ -28,6 +28,70 @@
 				document.getElementById(id).setAttribute("aria-expanded", x);
         	}
 
+
+
+					// HANDLE TOOLTIPS
+
+					/* TODO: move tooltip fns into a module */
+
+					/* Locale switcher: Show and hide tooltips */
+					function toggleLangTooltip(target) {
+						const tooltip = bootstrap.Tooltip.getInstance(target)
+						const dropdownToggle = target.querySelector(".nav-link");
+						const dropdownIsExpanded = dropdownToggle.getAttribute('aria-expanded');
+
+						// Mutation observer
+						const observer = new MutationObserver((mutations, observerInstance) => {
+							mutations.forEach(mutation => {
+								// console.log(mutation, mutation.type)
+								if(mutation.attributeName === 'aria-expanded') {
+									if (dropdownIsExpanded === 'false') {
+										tooltip.disable();
+									}
+									if (dropdownIsExpanded === 'true') {
+										tooltip.enable();
+										// Stop watching for mutations
+										observerInstance.disconnect();
+									}
+								}
+							})
+						});
+
+						if (dropdownIsExpanded === 'true') {
+							tooltip.disable();
+							// Start watching for mutations on the dropdown toggle's attributes
+							observer.observe(dropdownToggle, {
+								attributes: true,
+							})
+						}
+
+						if (dropdownIsExpanded === 'false') {
+							// If a user clicks on the dropdown toggle while the dropdown is expanded
+							// => the tooltip is reenabled by the mutation observer (above)
+							// => we will then show the tooltip using this BS5 fn
+							tooltip.show();
+						}
+					}
+
+					/* Help toggle: Remove old tooltip + init new tooltip after rerendering the toggle */
+					const handleTooltip = (data) => {
+						/* Remove tooltips + recreate them if JSF Ajax gets in the way */
+
+						// get the element triggering the ajax call
+						const trigger = bootstrap.Tooltip.getInstance(data.source)
+
+						// remove associated tooltips
+						if (trigger) trigger?.tip?.remove();
+
+						// if ajax call is done, init a new tooltip
+            if (data.status === 'success') {
+							// get the rerendered trigger element
+							const tooltipTrigger = document.querySelector('[data-goobi="handle-tooltip"]')
+							// fire up a tooltip (new instances are enabled by default)
+							new bootstrap.Tooltip(tooltipTrigger)
+					}
+
+					}
         </script>
 		<div class="user">
 			<div class="nav icon-nav">
@@ -37,6 +101,10 @@
 						class="nav-link btn-link"
 						jsf:id="showHelp"
 						title="#{NavigationForm.showHelp?msgs.hideHelpMessages:msgs.showHelpMessages}"
+						aria-label="#{msgs.showHelpMessages}"
+						data-bs-toggle="tooltip"
+						data-bs-placement="bottom"
+						data-goobi="handle-tooltip"
 						>
 
 						<i class="fa #{not NavigationForm.showHelp ? 'fa-question' : 'fa-question-circle'}"></i>
@@ -44,13 +112,17 @@
 							target="#{NavigationForm.showHelp}"
 							value="#{not NavigationForm.showHelp}" />
 						<f:ajax render="@this" execute="@form"
-							onevent="toggle_help" />
+							onevent="function(data) { toggle_help(data); handleTooltip(data);}" />
 					</button>
 
 				<!-- Language dropdown -->
 				<div
 						class="nav-item dropdown language-select"
 						title="#{msgs.spracheAendern}"
+						data-bs-toggle="tooltip"
+						data-bs-placement="bottom"
+						data-bs-trigger="hover"
+						onclick="toggleLangTooltip(this)"
 						>
 
 					<a
@@ -85,9 +157,6 @@
 									<f:setPropertyActionListener
 										value="#{null}"
 										target="#{SessionForm.dateFormatter}" />
-									<!--
-									<h:graphicImage value="&#127760;" />
-									-->
 									<span>
 										<h:outputText value="#{msgs[availableLanguage.displayLanguageSelf]}" />
 									</span>
