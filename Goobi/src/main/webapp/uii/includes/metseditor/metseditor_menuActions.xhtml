@@ -146,6 +146,10 @@
                         <i class="fa fa-check fa-lg" aria-hidden="true"></i>
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         <f:passThroughAttribute name="data-placement" value="bottom" />
+                        <f:ajax
+
+                            onevent="function(data) {console.log('TEST')}"
+                            render="@form :pageContentCenter" />
                     </button>
                 </li>
 
