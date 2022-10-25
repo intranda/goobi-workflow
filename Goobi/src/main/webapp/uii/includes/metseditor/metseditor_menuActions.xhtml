@@ -133,8 +133,81 @@
                 
                 <li class="separator">
                 </li>
-                
-                
+
+
+                    <script>
+
+                        function restoreScrollPosCenter(data) {
+                            const contentCenter = document.querySelector('#pageContentCenter');
+
+                            if (data.status === 'begin') {
+
+                                // Get scroll position of the center div
+                                const centerScrollPos = contentCenter.scrollTop;
+
+                                // Get height and margin of error messages
+                                const messages = document.querySelector('#messages');
+                                const messagesStyles = getComputedStyle(messages);
+                                let messageHeight = messages.offsetHeight;
+                                messageHeight += parseInt(messagesStyles.marginTop)
+                                messageHeight += parseInt(messagesStyles.marginBottom)
+
+
+                                /*
+                                const validationErrors = contentCenter.querySelectorAll('.validation-error');
+                                let validationErrorsHeight = 0;
+
+                                validationErrors.forEach(valErr => {
+                                    const valErrStyles = getComputedStyle(valErr);
+                                    validationErrorsHeight += valErr.offsetHeight;
+                                    validationErrorsHeight += parseInt(valErrStyles.marginTop);
+                                    validationErrorsHeight += parseInt(valErrStyles.marginBottom);
+                                })
+                                */
+
+                                localStorage.setItem('csp', JSON.stringify(centerScrollPos - messageHeight))
+
+                            }
+
+                            if (data.status === 'success') {
+
+                                // Get height + margin of error messages
+                                const messages = document.querySelector('#messages');
+                                const messagesStyles = getComputedStyle(messages);
+                                let messageHeight = messages.offsetHeight;
+                                messageHeight += parseInt(messagesStyles.marginTop)
+                                messageHeight += parseInt(messagesStyles.marginBottom)
+
+                                /*
+                                const validationErrors = contentCenter.querySelectorAll('.validation-error');
+                                let validationErrorsHeight = 0;
+
+                                validationErrors.forEach(valErr => {
+                                    const valErrStyles = getComputedStyle(valErr);
+                                    validationErrorsHeight += valErr.offsetHeight;
+                                    validationErrorsHeight += parseInt(valErrStyles.marginTop);
+                                    validationErrorsHeight += parseInt(valErrStyles.marginBottom);
+                                })
+                                */
+
+                                // Get scroll pos from LS
+                                const oldPos = localStorage.getItem('csp')
+                                // Set new scroll pos
+                                contentCenter.scrollTop = JSON.parse(oldPos) + messageHeight;
+
+
+                            }
+                        }
+
+                        function restoreScrollPosLeft() {
+                           return null
+                        }
+
+                        function restoreScrollPos(data) {
+                            restoreScrollPosCenter(data)
+                        }
+
+                    </script>
                 <!-- VALIDATION -->
                 <li> 
                     <button
