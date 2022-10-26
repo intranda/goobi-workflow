@@ -8,18 +8,16 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
          * Initialize this module: Update the current view, 
          * save and restore scroll positions.
          * @param {Object} data -- jsf data obj, available in `<f:ajax>`
-         * @param {String} [view] -- name of a view, used to update goobiWorkflowConfig.currentView
+         * @param {Object.<string>} [opts] -- options to be passed
          */
-    	init: function(data, view) {
+      init: function(data, {view = goobiWorkflowConfig.currentView, saveScrollPos = true} = {}) {
         if ( _debug ) console.log( 'Init: goobiWorkflowJS.meScrollPos.init' );
+        if ( _debug ) console.log( 'view:', view, 'saveScrollPos:', saveScrollPos);
 
-        // If view is undefined, use the current view name
-        this.view = view || goobiWorkflowConfig.currentView;
-
-        // Update state => set goobiWorkflowConfig.currentView.
-        this.updateView(data, this.view)
-        // Restore scroll position
-        this.restoreScrollPosCenter(data)
+        // Set goobiWorkflowConfig.currentView
+        this.updateView(data, view)
+        // Save and restore scroll position
+        this.restoreScrollPosCenter(data, saveScrollPos)
       },
 
       /**
@@ -71,37 +69,46 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
        * Calculates, restores scroll positions, 
        * writes and recovers them from session storage.
        * @param {Object} data -- jsf data object, available in `<f:ajax>`
+       * @param {boolean} saveScrollPos -- determines if the current scroll position is stored in session storage
        */
-      restoreScrollPosCenter: function(data) {
+      restoreScrollPosCenter: function(data, saveScrollPos) {
         const contentCenter = document.querySelector('#pageContentCenter');
 
-        // Ajax call starts
-        if (data.status === 'begin') {
-          const view = goobiWorkflowConfig.currentView;
-          const key =  this.getScrollPosKey(view);
+        if(_debug) console.log('RESTORE SCROLL POS')
+        if(_debug) console.log({saveScrollPos})
 
-          // Restore previous scroll positions of all views
-          const restoredScrollPosAll = sessionStorage.getItem('gw_me_scrollPos');
+        // Save scroll position
+        if(saveScrollPos) {
+          // Ajax call starts
+          if (data.status === 'begin') {
+            const view = goobiWorkflowConfig.currentView;
+            const key =  this.getScrollPosKey(view);
 
-          // Current view: get scroll position of the center div
-          const centerScrollPos = contentCenter.scrollTop; // absolute position
-          const curScrollPos = centerScrollPos - this.getErrorMsgHeight();
+            // Restore previous scroll positions of all views
+            const restoredScrollPosAll = sessionStorage.getItem('gw_me_scrollPos');
 
-          let scrollPosAll = {};
-          if(restoredScrollPosAll) {
-            scrollPosAll = JSON.parse(restoredScrollPosAll);
+            // Current view: get scroll position of the center div
+            const centerScrollPos = contentCenter.scrollTop; // absolute position
+            const curScrollPos = centerScrollPos - this.getErrorMsgHeight();
+
+            let scrollPosAll = {};
+            if(restoredScrollPosAll) {
+              scrollPosAll = JSON.parse(restoredScrollPosAll);
+            }
+            // Assign a default scroll position
+            scrollPosAll.default = '0';
+
+            // Init or update current scroll position
+            scrollPosAll[key] = curScrollPos;
+
+            // Write updated scroll positions to session storage
+            sessionStorage.setItem('gw_me_scrollPos', JSON.stringify(scrollPosAll))
+
+            // Debugging
+            if(_debug) console.log({curScrollPos})
+            if(_debug) console.log('%cscrollPos saved', 'background: lime; color: #fff')
+            if(_debug) console.log({scrollPosAll})
           }
-          // Assign a default scroll position
-          scrollPosAll.default = '0';
-
-          // Init or update current scroll position
-          scrollPosAll[key] = curScrollPos;
-
-          // Write updated scroll positions to session storage
-          sessionStorage.setItem('gw_me_scrollPos', JSON.stringify(scrollPosAll))
-
-          // Debugging
-          if(_debug) console.log({scrollPosAll})
         }
 
         // Ajax call is done

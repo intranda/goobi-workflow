@@ -26,7 +26,7 @@
                             #{msgs.paginierung}
                             <x:updateActionListener value="Paginierung" property="#{Metadaten.modusAnsicht}" />
                             <f:ajax
-                                onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, 'Paginierung')}"
+                                onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'Paginierung'})}"
                                 render="@form :pageContentCenter" />
                         </h:commandLink>
                     </li>
@@ -38,7 +38,7 @@
                             #{msgs.strukturdaten}
                             <x:updateActionListener value="Strukturdaten" property="#{Metadaten.modusAnsicht}" />
                             <f:ajax
-                                onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, 'Strukturdaten')}"
+                                onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'Strukturdaten'})}"
                                 render="@form :pageContentCenter" />
                         </h:commandLink>
                     </li>
@@ -50,7 +50,7 @@
                             #{msgs.metadaten}
                             <x:updateActionListener value="Metadaten" property="#{Metadaten.modusAnsicht}" />
                             <f:ajax
-                                onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, 'Metadaten')}"
+                                onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'Metadaten'})}"
                                 render="@form :pageContentCenter" />
                         </h:commandLink>
                     </li>
@@ -62,7 +62,7 @@
                             #{msgs.fileManipulation}
                             <x:updateActionListener value="File" property="#{Metadaten.modusAnsicht}" />
                              <f:ajax
-                                onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, 'File')}"
+                                 onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {view: 'File'})}"
                                 render="@form :pageContentCenter" />
                         </h:commandLink>
                     </li>
