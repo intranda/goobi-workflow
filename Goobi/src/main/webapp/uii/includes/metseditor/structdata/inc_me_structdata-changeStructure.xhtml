@@ -69,6 +69,10 @@
                                 <h:outputText value="#{msgs.docstructAnAndereStelleSchieben}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <x:updateActionListener property="#{Metadaten.modusStrukturelementVerschieben}" value="true" />
+                                <f:ajax
+                                    onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
+                                    render=":pageContentCenter"
+                                />
                             </button>
                         </li>
                         <!-- ELEMENT IMPORT -->
@@ -83,6 +87,10 @@
                                 <h:outputText value="#{msgs.copyDocstructFromOtherProcess}" />
                                 <f:passThroughAttribute name="data-toggle" value="tooltip" />
                                 <x:updateActionListener property="#{Metadaten.modusCopyDocstructFromOtherProcess}" value="true" />
+                                <f:ajax
+                                    onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
+                                    render=":pageContentCenter"
+                                />
                             </button>
                         </li>
 
@@ -221,6 +229,15 @@
                                             onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                             <h:outputText value="#{msgs.nurMetadaten}" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
+
+                                            <!--
+                                            <f:ajax
+                                                onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
+                                                execute="@form"
+                                                render="@form :pageContentCenter @form :treeform"
+                                            />
+                                            -->
+
                                         </button>
 
                                         <button
@@ -232,6 +249,14 @@
                                             onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false">
                                             <h:outputText value="#{msgs.alsUnterelemente}" />
                                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
+
+                                            <!--
+                                            <f:ajax
+                                                onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
+                                                execute="@form"
+                                                render="@form :pageContentCenter @form :treeform"
+                                            />
+                                            -->
                                         </button>
                                     </div>
                                 </div>

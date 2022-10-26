@@ -398,6 +398,11 @@
                             style="display: none"
                             jsf:id="saveMetsFileButton"
                             jsf:action="#{Metadaten.Reload}">
+                            <f:ajax
+                                onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
+                                execute="@form"
+                                render="@form :pageContentCenter @form :treeform"
+                            />
                         </button>
 
                         <h:panelGroup
