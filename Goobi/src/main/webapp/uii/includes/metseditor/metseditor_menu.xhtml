@@ -1,11 +1,11 @@
-<ui:composition 
-    xmlns="http://www.w3.org/1999/xhtml" 
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:composite="http://xmlns.jcp.org/jsf/composite"
-    xmlns:h="http://xmlns.jcp.org/jsf/html" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:c="http://java.sun.com/jsp/jstl/core" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:x="http://myfaces.apache.org/tomahawk">
 
     <composite:interface />
@@ -18,14 +18,16 @@
             <h:inputHidden id="scrollPositionStructData"
                 value="#{NavigationForm.uiStatus.mets_scrollPositionStructData}" />
             <h:inputHidden id="scrollToThumb" value="#{NavigationForm.uiStatus.mets_scrollToThumb}" /> -->
-            
+
             <ul class="clean">
                 <ui:fragment rendered="#{LoginForm.hasRole('Task_Mets_Pagination')}">
                     <li class="#{Metadaten.modusAnsicht == 'Paginierung' ? 'active' : ''}">
                         <h:commandLink styleClass="focusable" action="#{Metadaten.AnsichtAendern}" id="gotoPagination">
                             #{msgs.paginierung}
                             <x:updateActionListener value="Paginierung" property="#{Metadaten.modusAnsicht}" />
-                            <f:ajax render="@form :pageContentCenter" />
+                            <f:ajax
+                                onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, 'Paginierung')}"
+                                render="@form :pageContentCenter" />
                         </h:commandLink>
                     </li>
                 </ui:fragment>
@@ -35,7 +37,9 @@
                         <h:commandLink styleClass="focusable" action="#{Metadaten.AnsichtAendern}" id="gotoStructure">
                             #{msgs.strukturdaten}
                             <x:updateActionListener value="Strukturdaten" property="#{Metadaten.modusAnsicht}" />
-                            <f:ajax render="@form :pageContentCenter" />
+                            <f:ajax
+                                onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, 'Strukturdaten')}"
+                                render="@form :pageContentCenter" />
                         </h:commandLink>
                     </li>
                 </ui:fragment>
@@ -45,7 +49,9 @@
                         <h:commandLink styleClass="focusable" action="#{Metadaten.AnsichtAendern}" id="gotoMetadata">
                             #{msgs.metadaten}
                             <x:updateActionListener value="Metadaten" property="#{Metadaten.modusAnsicht}" />
-                            <f:ajax render="@form :pageContentCenter" />
+                            <f:ajax
+                                onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, 'Metadaten')}"
+                                render="@form :pageContentCenter" />
                         </h:commandLink>
                     </li>
                 </ui:fragment>
@@ -55,11 +61,13 @@
                         <h:commandLink styleClass="focusable" action="#{Metadaten.AnsichtAendern}" id="gotoFile">
                             #{msgs.fileManipulation}
                             <x:updateActionListener value="File" property="#{Metadaten.modusAnsicht}" />
-                             <f:ajax render="@form :pageContentCenter" />
+                             <f:ajax
+                                onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, 'File')}"
+                                render="@form :pageContentCenter" />
                         </h:commandLink>
                     </li>
                 </ui:fragment>
-            </ul>            
+            </ul>
         </h:form>
     </composite:implementation>
-</ui:composition>           
+</ui:composition>
