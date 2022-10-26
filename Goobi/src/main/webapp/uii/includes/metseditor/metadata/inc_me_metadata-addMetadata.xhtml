@@ -79,12 +79,12 @@
                                     value="#{Metadaten.metadatum.value}"
                                     disabled="#{Metadaten.metadatum.disableMetadataField}"
                                     readonly="#{Metadaten.nurLesenModus}"
-                                    rendered="#{Metadaten.outputType == 'input' or 
-                                    	Metadaten.outputType == 'geonames' or 
-				                        Metadaten.outputType == 'gnd' or 
-				                        Metadaten.outputType == 'dante' or 
-				                        Metadaten.outputType == 'viaf' or 
-				                        Metadaten.outputType == 'easydb' or 
+                                    rendered="#{Metadaten.outputType == 'input' or
+                                    	Metadaten.outputType == 'geonames' or
+				                        Metadaten.outputType == 'gnd' or
+				                        Metadaten.outputType == 'dante' or
+				                        Metadaten.outputType == 'viaf' or
+				                        Metadaten.outputType == 'easydb' or
 				                        Metadaten.outputType == 'vocabularySearch'}">
                                 </x:inputText>
 
@@ -111,7 +111,7 @@
                                 </x:inputTextarea>
 
                                 <!-- SELECT -->
-                                <ui:fragment rendered="#{(Metadaten.outputType == 'select1' or 
+                                <ui:fragment rendered="#{(Metadaten.outputType == 'select1' or
                                 	Metadaten.outputType == 'vocabularyList')}">
                                     <div class="form-control form-control--select">
                                         <h:selectOneMenu
@@ -389,7 +389,11 @@
                                 <x:updateActionListener
                                     value=""
                                     property="#{Metadaten.metadatum.value}" />
-                                <f:ajax render=":pageContentCenter" />
+                                <f:ajax
+
+                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false}) }"
+                                    render=":pageContentCenter"
+                                />
                             </button>
                             <h:commandButton
                                 id="absenden"
@@ -398,6 +402,11 @@
                                 action="#{Metadaten.addNewMetadata}"
                                 value="#{msgs.dieAenderungenSpeichern}"
                                 role="button">
+
+                                <f:ajax
+                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false}) }"
+                                    execute="@form"
+                                    render=":pageContentCenter" />
                             </h:commandButton>
                         </div>
                     </div>
