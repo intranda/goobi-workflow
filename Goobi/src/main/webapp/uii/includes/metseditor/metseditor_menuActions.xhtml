@@ -463,7 +463,7 @@
                                 <h:commandLink
                                     id="saveAndExit"
                                     action="#{Metadaten.XMLschreiben}"
-                                    onclick="goobiWorkflowJS.displayProgressBar()">
+                                    onclick="goobiWorkflowJS.displayProgressBar(); goobiWorkflowJS.meScrollPos.destroyScrollPos()">
                                     <i class="fa fa-floppy-o" aria-hidden="true"></i>
                                     #{msgs.speichernZurueck}
                                     <f:passThroughAttribute name="data-toggle" value="tooltip" />
@@ -474,6 +474,7 @@
 
                         <li>
                             <h:commandLink
+                                onclick="goobiWorkflowJS.meScrollPos.destroyScrollPos()"
                                 id="exitOnly"
                                 action="#{Metadaten.goZurueck}"
                                 rendered="#{!Metadaten.checkForNewerTemporaryMetadataFiles}">

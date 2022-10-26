@@ -1,7 +1,7 @@
 var goobiWorkflowJS = ( function( goobiWorkflow ) {
     'use strict';
     
-    var _debug = true;
+    var _debug = false;
     
     goobiWorkflow.meScrollPos = {
         /**
@@ -65,14 +65,12 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         return messageHeight;
       },
 
-      /** Restore the previous scroll position of a view.
-       * Calculates, restores scroll positions, 
-       * writes and recovers them from session storage.
+      /** Store and restore the scroll position of a view. 
+       * This function is used in ajax calls.
        * @param {Object} data -- jsf data object, available in `<f:ajax>`
        * @param {boolean} saveScrollPos -- determines if the current scroll position is stored in session storage
        */
       restoreScrollPosCenter: function(data, saveScrollPos) {
-
         if(_debug) console.log({saveScrollPos})
 
         // Save scroll position
@@ -86,12 +84,11 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         // Ajax call is done
         if (data.status === 'success') {
           this.restoreScrollPos()
-
-
         }
       },
 
-      storeScrollPos: function() {
+    /** Get the current scroll position, and store it in session storage */
+    storeScrollPos: function() {
         if(_debug) console.log('RESTORE SCROLL POS')
 
         const contentCenter = document.querySelector('#pageContentCenter');
@@ -124,14 +121,21 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         if(_debug) console.table({scrollPosAll})
       },
 
+      /** Get previous scroll positions from session storage, and
+       * calculate + restore current scroll position based on these values.
+       */
       restoreScrollPos: function() {
         const contentCenter = document.querySelector('#pageContentCenter');
 
-        // Get scroll pos from session storage
+        // Get scroll position from session storage
         const view = goobiWorkflowConfig.currentView;
         const key = this.getScrollPosKey(view)
         const restoredScrollPosAll = JSON.parse(sessionStorage.getItem('gw_me_scrollPos'));
-        const oldPos = restoredScrollPosAll[key]
+
+        // Abort if session storage is empty
+        if(!restoredScrollPosAll) return;
+
+        const oldPos = restoredScrollPosAll[key];
 
         // Set box status (collapsed / open)
         goobiWorkflowJS.box.getBoxStatus();
@@ -145,6 +149,11 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
           console.log('contentCenter.scrollTop:', contentCenter.scrollTop)
         }
 
+      },
+
+      /** Delete scroll positions from local storage. */
+      destroyScrollPos: function() {
+        sessionStorage.removeItem('gw_me_scrollPos');
       }
 
     }
