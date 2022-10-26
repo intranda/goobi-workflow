@@ -88,6 +88,7 @@
                 <!-- TOGGLE IMAGE VIEW -->
                 <li class="#{Metadaten.treeProperties.showOcr ne 'true' and Metadaten.treeProperties.showThumbnails ne 'true' ? 'active' :''}">
                     <button
+                        onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()"
                         class="btn btn--icon"
                         jsf:id="showSinglePage"
                         aria-label="#{msgs.mets_showImagesOne}"
@@ -110,6 +111,7 @@
                 <!-- TOGGLE IMAGE VIEW -->
                 <li class="#{Metadaten.treeProperties.showThumbnails ne '' ? 'active' :''}">
                     <button
+                        onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()"
                         class="btn btn--icon"
                         jsf:id="showThumbnails"
                         aria-label="#{msgs.mets_showImagesThumbs}"
