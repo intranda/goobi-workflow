@@ -397,14 +397,17 @@
                         button above. It is called AFTER the javascript of the
                         button above has terminated. -->
                         <button
+                            onclick="goobiWorkflowJS.meScrollPos.storeScrollPos()"
                             style="display: none"
                             jsf:id="saveMetsFileButton"
                             jsf:action="#{Metadaten.Reload}">
+                            <!--
                             <f:ajax
                                 onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
                                 execute="@form"
                                 render="@form :pageContentCenter @form :treeform"
                             />
+                            -->
                         </button>
 
                         <h:panelGroup

@@ -91,6 +91,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
     storeScrollPos: function() {
         if(_debug) console.log('RESTORE SCROLL POS')
 
+        const contentLeft = document.querySelector('#pageContentLeft');
         const contentCenter = document.querySelector('#pageContentCenter');
         const view = goobiWorkflowConfig.currentView;
         const key =  this.getScrollPosKey(view);
@@ -109,7 +110,10 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         // Assign a default scroll position
         scrollPosAll.default = '0';
 
-        // Init or update current scroll position
+        // Init or update current scroll position of the left column
+        scrollPosAll.meLeft = contentLeft.scrollTop;
+
+        // Init or update current scroll position of the center column
         scrollPosAll[key] = curScrollPos;
 
         // Write updated scroll positions to session storage
@@ -125,6 +129,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
        * calculate + restore current scroll position based on these values.
        */
       restoreScrollPos: function() {
+        const contentLeft = document.querySelector('#pageContentLeft');
         const contentCenter = document.querySelector('#pageContentCenter');
 
         // Get scroll position from session storage
@@ -140,8 +145,11 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         // Set box status (collapsed / open)
         goobiWorkflowJS.box.getBoxStatus();
 
-        // Set new scroll pos
+        // Set new scroll positions
+        contentLeft.scrollTop = restoredScrollPosAll.meLeft;
         contentCenter.scrollTop = oldPos + this.getErrorMsgHeight();
+
+
 
         // Debugging
         if (_debug) {
