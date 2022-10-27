@@ -25,6 +25,7 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -36,10 +37,13 @@ import org.goobi.production.enums.LogType;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
+import ugh.dl.Corporate;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
+import ugh.dl.MetadataGroup;
 import ugh.dl.MetadataType;
+import ugh.dl.Person;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
@@ -63,6 +67,9 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                 "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
         addParameterToSampleCall(sb, "ignoreErrors", "true",
                 "Define if the further processing shall be cancelled for a Goobi process if an error occures (`false`) or if the processing should skip errors and move on (`true`).\\n# This is especially useful if the the value `any` was selected for the position.");
+        addParameterToSampleCall(sb, "type", "metadata",
+                "Define what type of metadata you would like to change. Possible values are `metadata` and `group`. Default is metadata.");
+        addParameterToSampleCall(sb, "group", "", "Internal name of the group. Use it when the metadata to change is located within a group.");
         return sb.toString();
     }
 
@@ -79,10 +86,14 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
             Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "newType");
             return new ArrayList<>();
         }
-
-        if (parameters.get("position") == null || parameters.get("position").equals("")) {
-            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "position");
+        if (StringUtils.isBlank(parameters.get("oldType"))) {
+            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "oldType");
             return new ArrayList<>();
+        }
+
+        if (StringUtils.isBlank(parameters.get("position"))) {
+            Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "position");
+            return Collections.emptyList();
         }
 
         // add all valid commands to list
@@ -122,7 +133,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                     }
                     break;
 
-                // fist the first child element
+                    // fist the first child element
                 case "child":
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -133,7 +144,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                     }
                     break;
 
-                // any element in the hierarchy
+                    // any element in the hierarchy
                 case "any":
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
@@ -147,7 +158,7 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
                     }
                     break;
 
-                // default "work", which is the first child or the main top element if it is not an anchor
+                    // default "work", which is the first child or the main top element if it is not an anchor
                 default:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -163,7 +174,11 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
             String oldMetadataType = parameters.get("oldType");
             String newMetadataType = parameters.get("newType");
 
-            boolean changed = changeMetadataType(dsList, oldMetadataType, newMetadataType, p.getRegelsatz().getPreferences(), ignoreErrors);
+            String group = parameters.get("group");
+            String type = parameters.get("type");
+
+            boolean changed =
+                    changeMetadataType(dsList, group, type, oldMetadataType, newMetadataType, p.getRegelsatz().getPreferences(), ignoreErrors);
             if (changed) {
                 p.writeMetadataFile(ff);
                 Thread.sleep(2000);
@@ -197,33 +212,101 @@ public class GoobiScriptMetadataChangeType extends AbstractIGoobiScript implemen
      * 
      * @throws MetadataTypeNotAllowedException if the new type does not exist or is not allowed
      */
-    private boolean changeMetadataType(List<DocStruct> dsList, String oldMetadataType, String newMetadataType, Prefs prefs, boolean ignoreErrors)
-            throws MetadataTypeNotAllowedException {
+    private boolean changeMetadataType(List<DocStruct> dsList, String group, String changeType, String oldMetadataType, String newMetadataType,
+            Prefs prefs, boolean ignoreErrors) throws MetadataTypeNotAllowedException {
         boolean metadataChanged = false;
+        if (StringUtils.isNotBlank(changeType) && "group".equals(changeType)) {
 
-        for (DocStruct ds : dsList) {
-            // search for all metadata with type of oldMetadataType
-            List<? extends Metadata> mdList = ds.getAllMetadataByType(prefs.getMetadataTypeByName(oldMetadataType));
-            if (mdList == null || mdList.isEmpty()) {
-                continue;
+            for (DocStruct ds : dsList) {
+                List<MetadataGroup> groups = ds.getAllMetadataGroupsByType(prefs.getMetadataGroupTypeByName(oldMetadataType));
+                for (MetadataGroup grp : groups) {
+                    try {
+                        // create a new group
+                        MetadataGroup newGroup = new MetadataGroup(prefs.getMetadataGroupTypeByName(oldMetadataType));
+                        // copy all metadata to new group
+                        for (Metadata md : grp.getMetadataList()) {
+                            try {
+                                Metadata newMd = new Metadata(md.getType());
+                                newMd.setValue(md.getValue());
+                                newMd.setAutorityFile(md.getAuthorityID(), md.getAuthorityURI(), md.getAuthorityValue());
+                                newGroup.addMetadata(newMd);
+                            } catch (MetadataTypeNotAllowedException e) {
+                                if (!ignoreErrors) {
+                                    throw e;
+                                }
+                            }
+                        }
+                        // copy persons to new group
+                        for (Person p : grp.getPersonList()) {
+                            try {
+                                Person newPerson = new Person(p.getType());
+                                newPerson.setLastname(p.getLastname());
+                                newPerson.setFirstname(p.getFirstname());
+                                newPerson.setAutorityFile(p.getAuthorityID(), p.getAuthorityURI(), p.getAuthorityValue());
+                                newGroup.addPerson(newPerson);
+                            } catch (MetadataTypeNotAllowedException e) {
+                                if (!ignoreErrors) {
+                                    throw e;
+                                }
+                            }
+                        }
+                        // copy corporations to new group
+                        for (Corporate c : grp.getCorporateList()) {
+                            try {
+                                Corporate newCorp = new Corporate(c.getType());
+                                newCorp.setMainName(c.getMainName());
+                                newCorp.setSubNames(c.getSubNames());
+                                newCorp.setPartName(c.getPartName());
+                                newCorp.setAutorityFile(c.getAuthorityID(), c.getAuthorityURI(), c.getAuthorityValue());
+                                newGroup.addCorporate(c);
+                            } catch (MetadataTypeNotAllowedException e) {
+                                if (!ignoreErrors) {
+                                    throw e;
+                                }
+                            }
+                        }
+                        ds.addMetadataGroup(newGroup);
+                        // delete old group
+                        ds.removeMetadataGroup(newGroup);
+
+                    } catch (MetadataTypeNotAllowedException e) {
+                        if (!ignoreErrors) {
+                            throw e;
+                        }
+                    }
+                }
             }
-            MetadataType type = prefs.getMetadataTypeByName(newMetadataType);
-
-            // for each metadata create new metadata with new type
-            for (Metadata oldMd : mdList) {
-                try {
-                    Metadata newMd = new Metadata(type);
-                    // copy value from existing metadata
-                    newMd.setValue(oldMd.getValue());
-                    newMd.setAutorityFile(oldMd.getAuthorityID(), oldMd.getAuthorityURI(), oldMd.getAuthorityValue());
-                    // add all new metadata
-                    ds.addMetadata(newMd);
-                    // delete oldMetadata from ds
-                    ds.removeMetadata(oldMd);
-                    metadataChanged = true;
-                } catch (MetadataTypeNotAllowedException e) {
-                    if (!ignoreErrors) {
-                        throw e;
+        } else {
+            for (DocStruct ds : dsList) {
+                List<Metadata> mdList = new ArrayList<>();
+                if (StringUtils.isNotBlank(group)) {
+                    List<MetadataGroup> groups = ds.getAllMetadataGroupsByType(prefs.getMetadataGroupTypeByName(group));
+                    for (MetadataGroup mg : groups) {
+                        mdList.addAll(mg.getMetadataByType(oldMetadataType));
+                    }
+                } else {
+                    mdList = (List<Metadata>) ds.getAllMetadataByType(prefs.getMetadataTypeByName(oldMetadataType));
+                }
+                if (mdList == null || mdList.isEmpty()) {
+                    continue;
+                }
+                MetadataType newType = prefs.getMetadataTypeByName(newMetadataType);
+                // for each metadata create new metadata with new type
+                for (Metadata oldMd : mdList) {
+                    try {
+                        Metadata newMd = new Metadata(newType);
+                        // copy value from existing metadata
+                        newMd.setValue(oldMd.getValue());
+                        newMd.setAutorityFile(oldMd.getAuthorityID(), oldMd.getAuthorityURI(), oldMd.getAuthorityValue());
+                        // add all new metadata
+                        oldMd.getParent().addMetadata(newMd);
+                        // delete oldMetadata from ds
+                        oldMd.getParent().removeMetadata(oldMd, true);
+                        metadataChanged = true;
+                    } catch (MetadataTypeNotAllowedException e) {
+                        if (!ignoreErrors) {
+                            throw e;
+                        }
                     }
                 }
             }
