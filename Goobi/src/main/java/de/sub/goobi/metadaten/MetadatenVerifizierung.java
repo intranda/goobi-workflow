@@ -27,7 +27,6 @@ package de.sub.goobi.metadaten;
  */
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
@@ -38,6 +37,9 @@ import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
 import org.goobi.api.display.helper.ConfigDisplayRules;
 import org.goobi.beans.Process;
+import org.goobi.vocabulary.Field;
+import org.goobi.vocabulary.VocabRecord;
+import org.goobi.vocabulary.Vocabulary;
 
 import de.sub.goobi.config.ConfigProjects;
 import de.sub.goobi.config.ConfigurationHelper;
@@ -46,6 +48,7 @@ import de.sub.goobi.helper.UghHelper;
 import de.sub.goobi.helper.exceptions.InvalidImagesException;
 import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
+import de.sub.goobi.persistence.managers.VocabularyManager;
 import lombok.Getter;
 import ugh.dl.Corporate;
 import ugh.dl.DigitalDocument;
@@ -115,7 +118,7 @@ public class MetadatenVerifizierung {
             Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
                     + Helper.getTranslation("MetadataDigitalDocumentError") + inProzess.getTitel(), e.getMessage());
             problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataDigitalDocumentError")
-            + ": " + e.getMessage());
+                    + ": " + e.getMessage());
             ergebnis = false;
         }
 
@@ -170,8 +173,7 @@ public class MetadatenVerifizierung {
             this.docStructsOhneSeiten = new ArrayList<>();
             this.checkDocStructsOhneSeiten(logical);
             if (!this.docStructsOhneSeiten.isEmpty()) {
-                for (Iterator<DocStruct> iter = this.docStructsOhneSeiten.iterator(); iter.hasNext();) {
-                    DocStruct ds = iter.next();
+                for (DocStruct ds : this.docStructsOhneSeiten) {
                     Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
                             + Helper.getTranslation("MetadataPaginationStructure") + ds.getType().getNameByLanguage(metadataLanguage));
                     problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
@@ -192,13 +194,12 @@ public class MetadatenVerifizierung {
                 ergebnis = false;
             }
             if (seitenOhneDocstructs != null && !seitenOhneDocstructs.isEmpty()) {
-                for (Iterator<String> iter = seitenOhneDocstructs.iterator(); iter.hasNext();) {
-                    String seite = iter.next();
+                for (String seite : seitenOhneDocstructs) {
                     Helper.setFehlerMeldung(
                             this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationPages"),
                             seite);
                     problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationPages")
-                    + ": " + seite);
+                            + ": " + seite);
                 }
                 ergebnis = false;
             }
@@ -210,8 +211,7 @@ public class MetadatenVerifizierung {
 
         List<String> select1List = checkSelectOneMenus(myProzess, dd.getLogicalDocStruct(), new ArrayList<>(), metadataLanguage);
         if (!select1List.isEmpty()) {
-            for (Iterator<String> iter = select1List.iterator(); iter.hasNext();) {
-                String temp = iter.next();
+            for (String temp : select1List) {
                 Helper.setFehlerMeldung(
                         this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataSelectOneInvalidElement"),
                         temp);
@@ -221,17 +221,26 @@ public class MetadatenVerifizierung {
             ergebnis = false;
         }
 
+        // check whether vocabulary values in metadata are in the configured vocabulary data lists
+        List<String> vocabularyErrors = checkSelectFromVocabularyList(myProzess, dd.getLogicalDocStruct(), new ArrayList<>(), metadataLanguage);
+        if (!vocabularyErrors.isEmpty()) {
+            for (String error : vocabularyErrors) {
+                Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + error);
+                problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + error);
+            }
+            ergebnis = false;
+        }
+
         /*
          * -------------------------------- auf mandatory Values der Metadaten prüfen --------------------------------
          */
         List<String> mandatoryList = checkMandatoryValues(dd.getLogicalDocStruct(), new ArrayList<>(), metadataLanguage);
         if (!mandatoryList.isEmpty()) {
-            for (Iterator<String> iter = mandatoryList.iterator(); iter.hasNext();) {
-                String temp = iter.next();
+            for (String temp : mandatoryList) {
                 Helper.setFehlerMeldung(
                         this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataMandatoryElement"), temp);
                 problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataMandatoryElement")
-                + ": " + temp);
+                        + ": " + temp);
             }
             ergebnis = false;
         }
@@ -242,8 +251,7 @@ public class MetadatenVerifizierung {
          */
         List<String> configuredList = checkConfiguredValidationValues(dd.getLogicalDocStruct(), new ArrayList<>(), inPrefs, metadataLanguage);
         if (!configuredList.isEmpty()) {
-            for (Iterator<String> iter = configuredList.iterator(); iter.hasNext();) {
-                String temp = iter.next();
+            for (String temp : configuredList) {
                 Helper.setFehlerMeldung(
                         this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataInvalidData"), temp);
                 problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataInvalidData") + ": "
@@ -252,7 +260,7 @@ public class MetadatenVerifizierung {
             ergebnis = false;
         }
 
-        List<String> expressionList = validateMetadatValues(dd.getLogicalDocStruct(), metadataLanguage);
+        List<String> expressionList = validateMetadataValues(dd.getLogicalDocStruct(), metadataLanguage);
         if (!expressionList.isEmpty()) {
             for (String text : expressionList) {
                 Helper.setFehlerMeldung(text);
@@ -309,7 +317,7 @@ public class MetadatenVerifizierung {
 
     private boolean checkIdentifier(String metadataLanguage, DocStruct logical, Metadata identifierTopStruct) {
         boolean ergebnis = true;
-        if (!identifierTopStruct.getValue().replaceAll(IDENTIFIER_VALIDATION_REGEX, "").equals("")) {
+        if (!"".equals(identifierTopStruct.getValue().replaceAll(IDENTIFIER_VALIDATION_REGEX, ""))) {
             String[] parameter = { identifierTopStruct.getType().getNameByLanguage(metadataLanguage),
                     logical.getType().getNameByLanguage(metadataLanguage) };
             String errorText = Helper.getTranslation(INVALID_CHARACTER_ERROR, parameter);
@@ -334,7 +342,7 @@ public class MetadatenVerifizierung {
             addErrorToDocStructAndMetadata(firstChild, identifierFirstChild, errorText);
 
         }
-        if (!identifierFirstChild.getValue().replaceAll(IDENTIFIER_VALIDATION_REGEX, "").equals("")) {
+        if (!"".equals(identifierFirstChild.getValue().replaceAll(IDENTIFIER_VALIDATION_REGEX, ""))) {
             String[] parameter = { identifierTopStruct.getType().getNameByLanguage(metadataLanguage),
                     firstChild.getType().getNameByLanguage(metadataLanguage) };
             Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
@@ -427,8 +435,7 @@ public class MetadatenVerifizierung {
         }
         /* alle Kinder des aktuellen DocStructs durchlaufen */
         if (inStruct.getAllChildren() != null) {
-            for (Iterator<DocStruct> iter = inStruct.getAllChildren().iterator(); iter.hasNext();) {
-                DocStruct child = iter.next();
+            for (DocStruct child : inStruct.getAllChildren()) {
                 checkDocStructsOhneSeiten(child);
             }
         }
@@ -443,19 +450,17 @@ public class MetadatenVerifizierung {
         }
 
         /* alle Seiten durchlaufen und prüfen ob References existieren */
-        for (Iterator<DocStruct> iter = boundbook.getAllChildren().iterator(); iter.hasNext();) {
-            DocStruct ds = iter.next();
+        for (DocStruct ds : boundbook.getAllChildren()) {
             List<Reference> refs = ds.getAllFromReferences();
             String physical = "";
             String logical = "";
             if (refs.isEmpty()) {
 
-                for (Iterator<Metadata> iter2 = ds.getAllMetadata().iterator(); iter2.hasNext();) {
-                    Metadata md = iter2.next();
-                    if (md.getType().getName().equals("logicalPageNumber")) {
+                for (Metadata md : ds.getAllMetadata()) {
+                    if ("logicalPageNumber".equals(md.getType().getName())) {
                         logical = " (" + md.getValue() + ")";
                     }
-                    if (md.getType().getName().equals("physPageNumber")) {
+                    if ("physPageNumber".equals(md.getType().getName())) {
                         physical = md.getValue();
                     }
                 }
@@ -483,7 +488,7 @@ public class MetadatenVerifizierung {
                         String errorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                                 + Helper.getTranslation("MetadataNotConfiguredInDisplayRules", actualValue);
                         inList.add(errorMessage);
-                        addErrorToDocStructAndMetadata(inStruct, md, Helper.getTranslation("MetadataNotConfiguredInDisplayRules", actualValue));
+                        addErrorToDocStructAndMetadata(inStruct, md, errorMessage);
                     }
                 }
             }
@@ -498,9 +503,55 @@ public class MetadatenVerifizierung {
         return inList;
     }
 
+    private List<String> checkSelectFromVocabularyList(Process inProcess, DocStruct inStruct, ArrayList<String> inList, String language) {
+        String projectTitle = inProcess.getProjekt().getTitel();
+        ConfigDisplayRules displayRules = ConfigDisplayRules.getInstance();
+        DocStructType dst = inStruct.getType();
+        List<MetadataType> allMDTypes = dst.getAllMetadataTypes();
+        for (MetadataType mdt : allMDTypes) {
+            DisplayType displayType = displayRules.getElementTypeByName(projectTitle, mdt.getName());
+            if (displayType == DisplayType.vocabularyList) {
+                List<Item> allowedItems = displayRules.getItemsByNameAndType(projectTitle, mdt.getName(), displayType);
+                if (allowedItems.get(0) == null) {
+                    break;
+                }
+                Vocabulary vocabulary = VocabularyManager.getVocabularyByTitle(allowedItems.get(0).getSource());
+                VocabularyManager.getAllRecords(vocabulary);
+                List<VocabRecord> records = vocabulary.getRecords();
+                List<String> allowedValues = new ArrayList<>();
+                for (VocabRecord record : records) {
+                    for (Field field : record.getFields()) {
+                        allowedValues.add(field.getValue());
+                    }
+                }
+                List<? extends Metadata> ll = null;
+                ll = inStruct.getAllMetadataByType(mdt);
+                for (Metadata md : ll) {
+                    String actualValue = md.getValue();
+                    if (!allowedValues.contains(actualValue)) {
+                        String errorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + ": "
+                                + Helper.getTranslation("VocabularySelectionInvalid", actualValue, allowedItems.get(0).getSource());
+                        inList.add(errorMessage);
+                        addErrorToDocStructAndMetadata(inStruct, md, errorMessage);
+                    }
+                }
+            }
+        }
+
+        // TODO: Is this necessary?
+        if (inStruct.getAllChildren() != null) {
+            for (DocStruct child : inStruct.getAllChildren()) {
+                checkSelectFromVocabularyList(inProcess, child, inList, language);
+            }
+        }
+
+        return inList;
+    }
+
     private List<String> checkMandatoryValues(DocStruct inStruct, ArrayList<String> inList, String language) {
         DocStructType dst = inStruct.getType();
         List<MetadataType> allMDTypes = dst.getAllMetadataTypes();
+        String validationErrorMessage = "";
         for (MetadataType mdt : allMDTypes) {
             String number = dst.getNumberOfMetadataType(mdt);
             List<? extends Metadata> ll = null;
@@ -509,7 +560,7 @@ public class MetadatenVerifizierung {
             int real = 0;
             real = ll.size();
 
-            if ((number.equals("1m") || number.equals("+")) && real == 1) {
+            if (("1m".equals(number) || "+".equals(number)) && real == 1) {
                 if (mdt.getIsPerson()) {
                     Person p = (Person) ll.get(0);
                     if (StringUtils.isEmpty(p.getFirstname()) && StringUtils.isEmpty(p.getLastname())) {
@@ -526,27 +577,34 @@ public class MetadatenVerifizierung {
                     }
                 } else {
                     Metadata md = ll.get(0);
-                    if (md.getValue() == null || md.getValue().equals("")) {
+                    if (md.getValue() == null || "".equals(md.getValue())) {
                         inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                                 + Helper.getTranslation(METADATA_EMPTY_ERROR));
                         addErrorToDocStructAndMetadata(inStruct, md,
-                                mdt.getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_EMPTY_ERROR));
+                                mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                        + Helper.getTranslation(METADATA_EMPTY_ERROR));
                     }
                 }
 
             }
             /* jetzt die Typen prüfen */
-            if (number.equals("1m") && real != 1) {
-                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                        + Helper.getTranslation(METADATA_MISSING_ERROR) + " " + real + " " + Helper.getTranslation(METADATA_TIMES_ERROR));
+            if ("1m".equals(number) && real != 1) {
+                validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                        + Helper.getTranslation(METADATA_MISSING_ERROR) + " " + real + " " + Helper.getTranslation(METADATA_TIMES_ERROR);
+                inList.add(validationErrorMessage);
+                addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
             }
-            if (number.equals("1o") && real > 1) {
-                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                        + Helper.getTranslation(METADATA_TO_MANY_ERROR) + " " + real + " " + Helper.getTranslation(METADATA_TIMES_ERROR));
+            if ("1o".equals(number) && real > 1) {
+                validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                        + Helper.getTranslation(METADATA_TO_MANY_ERROR) + " " + real + " " + Helper.getTranslation(METADATA_TIMES_ERROR);
+                inList.add(validationErrorMessage);
+                addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
             }
-            if (number.equals("+") && real == 0) {
-                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                        + Helper.getTranslation(METADATA_NOT_ENOUGH_ERROR));
+            if ("+".equals(number) && real == 0) {
+                validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                        + Helper.getTranslation(METADATA_NOT_ENOUGH_ERROR);
+                inList.add(validationErrorMessage);
+                addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
             }
         }
 
@@ -556,7 +614,7 @@ public class MetadatenVerifizierung {
             List<MetadataGroup> assignedGroups = inStruct.getAllMetadataGroupsByType(mgt);
             int realNumber = assignedGroups.size();
 
-            if ((allowedNumber.equals("1m") || allowedNumber.equals("+")) && realNumber == 1) {
+            if (("1m".equals(allowedNumber) || "+".equals(allowedNumber)) && realNumber == 1) {
                 // check if metadata has values
                 MetadataGroup group = assignedGroups.get(0);
                 boolean isEmpty = true;
@@ -571,15 +629,16 @@ public class MetadatenVerifizierung {
                             mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_EMPTY_ERROR));
                 }
             }
-            if (allowedNumber.equals("1m") && realNumber != 1) {
+            if ("1m".equals(allowedNumber) && realNumber != 1) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_MISSING_ERROR)
-                + " " + realNumber + Helper.getTranslation(METADATA_TIMES_ERROR));
+                        + " " + realNumber + Helper.getTranslation(METADATA_TIMES_ERROR));
+
             }
-            if (allowedNumber.equals("1o") && realNumber > 1) {
+            if ("1o".equals(allowedNumber) && realNumber > 1) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_TO_MANY_ERROR)
-                + " " + realNumber + " " + Helper.getTranslation(METADATA_TIMES_ERROR));
+                        + " " + realNumber + " " + Helper.getTranslation(METADATA_TIMES_ERROR));
             }
-            if (allowedNumber.equals("+") && realNumber == 0) {
+            if ("+".equals(allowedNumber) && realNumber == 0) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                         + Helper.getTranslation(METADATA_NOT_ENOUGH_ERROR));
             }
@@ -592,33 +651,44 @@ public class MetadatenVerifizierung {
                     int numberOfExistingFields = mg.countMDofthisType(mdt.getName());
                     String expected = mg.getType().getNumberOfMetadataType(mdt);
                     if (("1m".equals(expected) || "1o".equals(expected)) && numberOfExistingFields > 1) {
-                        // to many fields
-                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                        // too many fields
+                        validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
                                 + Helper.getTranslation(METADATA_TO_MANY_ERROR) + " " + numberOfExistingFields + " "
-                                + Helper.getTranslation(METADATA_TIMES_ERROR));
+                                + Helper.getTranslation(METADATA_TIMES_ERROR);
+                        inList.add(validationErrorMessage);
+                        addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
                     } else if (("1m".equals(expected) || "+".equals(expected)) && numberOfExistingFields == 0) {
                         // required field empty
-                        inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                                + Helper.getTranslation(METADATA_NOT_ENOUGH_ERROR));
+                        validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                + Helper.getTranslation(METADATA_NOT_ENOUGH_ERROR);
+                        inList.add(validationErrorMessage);
+                        addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
                     } else if ("1m".equals(expected) || "+".equals(expected)) {
                         // check if first field is filled
                         if (mdt.getIsPerson()) {
                             Person p = mg.getPersonByType(mdt.getName()).get(0);
                             if (StringUtils.isEmpty(p.getFirstname()) && StringUtils.isEmpty(p.getLastname())) {
-                                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                                        + Helper.getTranslation(METADATA_EMPTY_ERROR));
+                                // required field empty
+                                validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                        + Helper.getTranslation(METADATA_EMPTY_ERROR);
+                                inList.add(validationErrorMessage);
+                                addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
                             }
                         } else if (mdt.isCorporate()) {
                             Corporate c = mg.getCorporateByType(mdt.getName()).get(0);
                             if (StringUtils.isEmpty(c.getMainName())) {
-                                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                                        + Helper.getTranslation(METADATA_EMPTY_ERROR));
+                                validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                        + Helper.getTranslation(METADATA_EMPTY_ERROR);
+                                inList.add(validationErrorMessage);
+                                addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
                             }
                         } else {
                             Metadata md = mg.getMetadataByType(mdt.getName()).get(0);
-                            if (md.getValue() == null || md.getValue().equals("")) {
-                                inList.add(mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
-                                        + Helper.getTranslation(METADATA_EMPTY_ERROR));
+                            if (md.getValue() == null || "".equals(md.getValue())) {
+                                validationErrorMessage = mdt.getNameByLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
+                                        + Helper.getTranslation(METADATA_EMPTY_ERROR);
+                                inList.add(validationErrorMessage);
+                                addMessageToMetadatumByMetadataType(inStruct, mdt, validationErrorMessage);
                             }
                         }
                     }
@@ -668,7 +738,7 @@ public class MetadatenVerifizierung {
             /*
              * wenn das Metadatum des FirstChilds überprüfen werden soll, dann dieses jetzt (sofern vorhanden) übernehmen
              */
-            if (propDoctype != null && propDoctype.equals("firstchild")) {
+            if (propDoctype != null && "firstchild".equals(propDoctype)) {
                 if (myStruct.getAllChildren() != null && !myStruct.getAllChildren().isEmpty()) {
                     myStruct = myStruct.getAllChildren().get(0);
                 } else {
@@ -739,18 +809,16 @@ public class MetadatenVerifizierung {
                                 Helper.setFehlerMeldung("[" + this.myProzess.getTitel() + " " + myStruct.getType().getNameByLanguage(language) + "] "
                                         + Helper.getTranslation("MetadataPersonWithoutRole"));
                                 break;
-                            } else {
-                                if (p.getRole().equals(mdttemp.getName())) {
-                                    if (myValue.length() > 0) {
-                                        myValue.append("; ");
-                                    }
-                                    if (StringUtils.isNotBlank(p.getLastname())) {
-                                        myValue.append(p.getLastname());
-                                    }
-                                    if (StringUtils.isNotBlank(p.getFirstname())) {
-                                        myValue.append(", ");
-                                        myValue.append(p.getFirstname());
-                                    }
+                            } else if (p.getRole().equals(mdttemp.getName())) {
+                                if (myValue.length() > 0) {
+                                    myValue.append("; ");
+                                }
+                                if (StringUtils.isNotBlank(p.getLastname())) {
+                                    myValue.append(p.getLastname());
+                                }
+                                if (StringUtils.isNotBlank(p.getFirstname())) {
+                                    myValue.append(", ");
+                                    myValue.append(p.getFirstname());
                                 }
                             }
                         }
@@ -773,8 +841,8 @@ public class MetadatenVerifizierung {
          */
         List<DocStruct> children = myStruct.getAllChildren();
         if (children != null && !children.isEmpty()) {
-            for (Iterator<DocStruct> iter = children.iterator(); iter.hasNext();) {
-                checkCreateElementFrom(inFehlerList, inListOfFromMdts, iter.next(), mdt, language);
+            for (DocStruct child : children) {
+                checkCreateElementFrom(inFehlerList, inListOfFromMdts, child, mdt, language);
             }
         }
     }
@@ -787,9 +855,7 @@ public class MetadatenVerifizierung {
         /* startswith oder endswith */
         List<? extends Metadata> alleMetadaten = myStruct.getAllMetadataByType(mdt);
         if (alleMetadaten != null && !alleMetadaten.isEmpty()) {
-            for (Iterator<? extends Metadata> iter = alleMetadaten.iterator(); iter.hasNext();) {
-                Metadata md = iter.next();
-
+            for (Metadata md : alleMetadaten) {
                 /* prüfen, ob es mit korrekten Werten beginnt */
                 if (propStartswith != null) {
                     boolean isOk = false;
@@ -836,18 +902,27 @@ public class MetadatenVerifizierung {
 
     private void addErrorToDocStructAndMetadata(DocStruct myStruct, Metadata md, String errorMessage) {
         myStruct.setValidationErrorPresent(true);
-        myStruct.setValidationMessage(Helper.getTranslation(errorMessage));
+        if (myStruct.getValidationMessage() != null && !myStruct.getValidationMessage().contains(errorMessage)) {
+            myStruct.setValidationMessage(
+                    myStruct.getValidationMessage() + " & " + errorMessage);
+        } else {
+            myStruct.setValidationMessage(Helper.getTranslation(errorMessage));
+        }
         md.setValidationErrorPresent(true);
-        md.setValidationMessage(Helper.getTranslation(errorMessage));
+        if (md.getValidationMessage() != null && !md.getValidationMessage().contains(errorMessage)) {
+            md.setValidationMessage(md.getValidationMessage() + " & " + errorMessage);
+        } else {
+            md.setValidationMessage(errorMessage);
+        }
     }
 
-    private List<String> validateMetadatValues(DocStruct inStruct, String lang) {
+    private List<String> validateMetadataValues(DocStruct inStruct, String lang) {
         List<String> errorList = new ArrayList<>();
         List<Metadata> metadataList = inStruct.getAllMetadata();
         if (metadataList != null) {
             for (Metadata md : metadataList) {
                 if (StringUtils.isNotBlank(md.getType().getValidationExpression())) {
-                    chckValidationExpression(inStruct, lang, errorList, md);
+                    checkValidationExpression(inStruct, lang, errorList, md);
                 }
             }
         }
@@ -856,7 +931,7 @@ public class MetadatenVerifizierung {
             for (MetadataGroup mg : groupList) {
                 for (Metadata md : mg.getMetadataList()) {
                     if (StringUtils.isNotBlank(md.getType().getValidationExpression())) {
-                        chckValidationExpression(inStruct, lang, errorList, md);
+                        checkValidationExpression(inStruct, lang, errorList, md);
                     }
                 }
             }
@@ -864,14 +939,14 @@ public class MetadatenVerifizierung {
 
         if (inStruct.getAllChildren() != null) {
             for (DocStruct child : inStruct.getAllChildren()) {
-                errorList.addAll(validateMetadatValues(child, lang));
+                errorList.addAll(validateMetadataValues(child, lang));
             }
         }
 
         return errorList;
     }
 
-    private void chckValidationExpression(DocStruct inStruct, String lang, List<String> errorList, Metadata md) {
+    private void checkValidationExpression(DocStruct inStruct, String lang, List<String> errorList, Metadata md) {
         String regularExpression = md.getType().getValidationExpression();
         if (StringUtils.isNotBlank(md.getValue()) && !md.getValue().matches(regularExpression)) {
             String errorMessage = md.getType().getValidationErrorMessages().get(lang);
@@ -884,6 +959,15 @@ public class MetadatenVerifizierung {
                 addErrorToDocStructAndMetadata(inStruct, md, Helper.getTranslation(METADATA_REGEX_ERROR,
                         md.getType().getNameByLanguage(lang), md.getValue(), regularExpression));
             }
+        }
+    }
+
+    private void addMessageToMetadatumByMetadataType(DocStruct struct, MetadataType mdt, String message) {
+        try {
+            Metadata md = new Metadata(mdt);
+            addErrorToDocStructAndMetadata(struct, md, message);
+        } catch (MetadataTypeNotAllowedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -914,10 +998,10 @@ public class MetadatenVerifizierung {
                                 + uppermostStruct.getType().getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_EMPTY_ERROR));
                         return false;
                     }
-                    if (!identifierTopStruct.getValue().replaceAll(IDENTIFIER_VALIDATION_REGEX, "").equals("")) {
+                    if (!"".equals(identifierTopStruct.getValue().replaceAll(IDENTIFIER_VALIDATION_REGEX, ""))) {
                         Helper.setFehlerMeldung(Helper.getTranslation("MetadataIdentifierError")
                                 + identifierTopStruct.getType().getNameByLanguage(language) + " in DocStruct "
-                                + uppermostStruct.getType().getNameByLanguage(language) + Helper.getTranslation("MetadataInvalidCharacter"));
+                                + uppermostStruct.getType().getNameByLanguage(language) + " " + Helper.getTranslation("MetadataInvalidCharacter"));
                         return false;
                     }
                     DocStruct firstChild = uppermostStruct.getAllChildren().get(0);
@@ -925,7 +1009,7 @@ public class MetadatenVerifizierung {
                     if (identifierFirstChild.getValue() == null || identifierFirstChild.getValue().length() == 0) {
                         return false;
                     }
-                    if (!identifierFirstChild.getValue().replaceAll(IDENTIFIER_VALIDATION_REGEX, "").equals("")) {
+                    if (!"".equals(identifierFirstChild.getValue().replaceAll(IDENTIFIER_VALIDATION_REGEX, ""))) {
                         Helper.setFehlerMeldung(identifierTopStruct.getType().getNameByLanguage(language) + " in "
                                 + uppermostStruct.getType().getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_EMPTY_ERROR));
                         return false;
