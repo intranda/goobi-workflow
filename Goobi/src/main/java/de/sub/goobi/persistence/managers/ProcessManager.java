@@ -31,6 +31,7 @@ import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.goobi.beans.Batch;
 import org.goobi.beans.DatabaseObject;
+import org.goobi.beans.ExportValidator;
 import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.Process;
@@ -398,6 +399,12 @@ public class ProcessManager implements IManager, Serializable {
         } else {
         }
         p.setDocket(DocketManager.getDocketById(rs.getInt("docketID")));
+        String exportValidatorRs = rs.getString("exportValidator");
+        if ("".equals(exportValidatorRs) || exportValidatorRs == null) {
+            p.setExportValidator(null);
+        } else {
+            p.setExportValidator(new ExportValidator(rs.getString("exportValidator")));
+        }
 
         p.setJournal(JournalManager.getLogEntriesForProcess(p.getId()));
 

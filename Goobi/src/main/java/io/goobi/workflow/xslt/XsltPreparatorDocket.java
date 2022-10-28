@@ -334,7 +334,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 property.addContent(label);
 
                 templateProperties.add(property);
-                if (prop.getTitel().equals("Signatur")) {
+                if ("Signatur".equals(prop.getTitel())) {
                     Element secondProperty = new Element("property", xmlns);
                     secondProperty.setAttribute("propertyIdentifier", prop.getTitel() + "Encoded");
                     if (prop.getWert() != null) {
@@ -485,13 +485,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 elements.add(metsElement);
             }
 
-        } catch (SwapException e) {
-            log.error(e);
-        } catch (IOException e) {
-            log.error(e);
-        } catch (JDOMException e) {
-            log.error(e);
-        } catch (JaxenException e) {
+        } catch (SwapException | IOException | JDOMException | JaxenException e) {
             log.error(e);
         }
 
@@ -501,7 +495,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
                 Element representative = new Element("representative", xmlns);
                 Path repImagePath = Paths.get(process.getRepresentativeImageAsString());
                 String folderName;
-                if (process.getImagesTifDirectory(true).equals(repImagePath.getParent().toString() + "/")) {
+                if ((repImagePath.getParent().toString() + "/").equals(process.getImagesTifDirectory(true))) {
                     folderName = "media";
                 } else {
                     folderName = "master";
@@ -596,7 +590,7 @@ public class XsltPreparatorDocket implements IXsltPreparator {
      */
     public void XmlTransformation(OutputStream out, Document doc, String filename) throws XSLTransformException, IOException {
         Document docTrans = new Document();
-        if (filename != null && filename.equals("")) {
+        if (filename != null && "".equals(filename)) {
             XSLTransformer transformer;
             transformer = new XSLTransformer(filename);
             docTrans = transformer.transform(doc);

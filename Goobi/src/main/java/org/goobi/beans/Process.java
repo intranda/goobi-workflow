@@ -165,6 +165,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private Boolean selected = false;
     @Setter
     private Docket docket;
+    @Setter
+    private ExportValidator exportValidator = null;
 
     private String imagesTiffDirectory = null;
     private String imagesOrigDirectory = null;
@@ -255,8 +257,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     public boolean containsStepOfOrder(int order) {
-        for (int i = 0; i < this.schritte.size(); i++) {
-            if (this.schritte.get(i).getReihenfolge() == order) {
+        for (Step element : this.schritte) {
+            if (element.getReihenfolge() == order) {
                 return true;
             }
         }
@@ -265,8 +267,8 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     public boolean getContainsExportStep() {
         this.getSchritte();
-        for (int i = 0; i < this.schritte.size(); i++) {
-            if (this.schritte.get(i).isTypExportDMS() || this.schritte.get(i).isTypExportRus()) {
+        for (Step element : this.schritte) {
+            if (element.isTypExportDMS() || element.isTypExportRus()) {
                 return true;
             }
         }
@@ -303,7 +305,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         if (MetadatenSperrung.isLocked(this.id.intValue())) {
             String benutzerID = this.msp.getLockBenutzer(this.id.intValue());
             try {
-                rueckgabe = UserManager.getUserById(Integer.valueOf(benutzerID));
+                rueckgabe = UserManager.getUserById(Integer.parseInt(benutzerID));
             } catch (Exception e) {
                 Helper.setFehlerMeldung(Helper.getTranslation("userNotFound"), e);
             }
@@ -1355,7 +1357,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     public Step getFirstOpenStep() {
 
         for (Step s : getSchritteList()) {
-            if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) || s.getBearbeitungsstatusEnum().equals(StepStatus.INWORK)
+            if (StepStatus.OPEN.equals(s.getBearbeitungsstatusEnum()) || StepStatus.INWORK.equals(s.getBearbeitungsstatusEnum())
                     || s.getBearbeitungsstatusEnum() == StepStatus.INFLIGHT) {
                 return s;
             }
@@ -1369,13 +1371,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             method = this.getClass().getMethod(methodName);
             Object o = method.invoke(this);
             return (String) o;
-        } catch (SecurityException e) {
-
-        } catch (NoSuchMethodException e) {
-
-        } catch (IllegalArgumentException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InvocationTargetException e) {
+        } catch (SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
         }
 
         try {
@@ -1388,9 +1384,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                     return folder;
                 }
             }
-        } catch (SwapException e) {
-
-        } catch (IOException e) {
+        } catch (SwapException | IOException e) {
 
         }
 
@@ -1406,6 +1400,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             }
         }
         return docket;
+    }
+
+    public ExportValidator getExportValidator() {
+        return exportValidator;
     }
 
     @Override
@@ -1427,6 +1425,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         erstellungsdatum = new Date();
 
         setDocket(source.getDocket());
+        setExportValidator(source.getExportValidator());
         setInAuswahllisteAnzeigen(false);
         setIstTemplate(source.isIstTemplate());
         setProjectId(source.getProjectId());
@@ -1566,7 +1565,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
             int imageNo = 0;
             if (!getMetadataList().isEmpty()) {
                 for (StringPair sp : getMetadataList()) {
-                    if (sp.getOne().equals("_representative")) {
+                    if ("_representative".equals(sp.getOne())) {
                         imageNo = NumberUtils.toInt(sp.getTwo()) - 1;
                     }
                 }
@@ -1847,7 +1846,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
         Path folder = null;
         try {
-            if (uploadFolder.equals("intern")) {
+            if ("intern".equals(uploadFolder)) {
                 folder = Paths.get(getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalJournalFiles());
             } else {
                 folder = Paths.get(getExportDirectory());
@@ -2242,6 +2241,19 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
                 .filter(p -> p.endsWith(".xml"))
                 .map(p -> Paths.get(p).getFileName().toString().replace(".xml", ""))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Tiny check to see whether a process is currently setup to perform XML Export Validation before the actual export.
+     * 
+     * @return true if the process is set up to perform a pre-export validation, false if not
+     */
+    public boolean isConfiguredWithExportValidator() {
+        if (getExportValidator() != null && getExportValidator().getLabel() != null && getExportValidator().getCommand() != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

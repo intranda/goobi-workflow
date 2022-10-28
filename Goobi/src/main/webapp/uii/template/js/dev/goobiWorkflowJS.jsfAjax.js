@@ -67,7 +67,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             }
                             // reload alto-editor
                             if(data.source.id != "saveAltoChanges" && data.source.id != "altoEditorAutocompleteScript") {
-                            	console.log(data.source);
+                            	//console.log(data.source);
 	                            var altoEditorElement = document.querySelector('alto-editor')
 	                            if(altoEditorElement && altoEditorElement._tag) {
 	                            	altoEditorElement._tag.unmount(true)

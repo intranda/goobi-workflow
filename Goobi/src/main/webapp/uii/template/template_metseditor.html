@@ -206,6 +206,11 @@
             setRepresentativeImageText: "#{msgs.mets_setRepresentativeImage}",
             displayImageArea: #{Metadaten.bildAnzeigen},
             navigationShortcut: "#{LoginForm.myBenutzer.shortcutPrefix}",
+            metseditor: {
+                thumbnails: {
+                    maxParallelRequests : #{Metadaten.maxParallelThumbnailRequests}
+                }
+            }
         };
 
         $( document ).ready( function() {

@@ -447,7 +447,7 @@ public class LoginBean implements Serializable {
     }
 
     public boolean hasRole(String inRole) {
-        return roles != null && roles.contains(inRole);
+        return myBenutzer.isSuperAdmin() || (roles != null && roles.contains(inRole));
     }
 
     /**

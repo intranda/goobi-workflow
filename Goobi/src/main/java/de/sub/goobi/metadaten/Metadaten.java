@@ -3552,6 +3552,10 @@ public class Metadaten implements Serializable {
             return isImageHasOcr();
         }
     }
+    
+    public int getMaxParallelThumbnailRequests() {
+        return ConfigurationHelper.getInstance().getMaxParallelThumbnailRequests();
+    }
 
     public String getOcrResult() {
         String ocrResult = "";

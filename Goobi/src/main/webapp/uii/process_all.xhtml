@@ -61,8 +61,8 @@
 				document.getElementById(id).setAttribute("aria-expanded", x);
         	}
         </script>
-    	
-        <main>
+
+        <main id="processAll">
             <c:if test="#{LoginForm.hasRole('Workflow_Processes') or LoginForm.hasRole('Workflow_ProcessTemplates')}">
 
                 <div class="row">

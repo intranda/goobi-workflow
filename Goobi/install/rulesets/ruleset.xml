@@ -6183,6 +6183,13 @@
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@href='https://rightsstatements.org/vocab/InC/1.0/']</WriteXPath>
       </Metadata>
       <Metadata>
+        <InternalName>UseAndReproductionLicense</InternalName>
+        <ValueCondition>/^reserved$/</ValueCondition>
+        <ValueRegExp>s/reserved/Wahrnehmung der Rechte durch die VG Wort (§ 51 VGG)/</ValueRegExp>
+        <WriteXPath>./mods:mods/#mods:accessCondition[@type='out of print work']</WriteXPath>
+      </Metadata>
+
+      <Metadata>
         <InternalName>RestrictionOnAccessLicense</InternalName>
         <WriteXPath>./mods:mods/#mods:accessCondition[@type='restriction on access']</WriteXPath>
       </Metadata>
