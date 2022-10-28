@@ -97,7 +97,7 @@ public class ProzesskopieFormTest extends AbstractTest {
         this.template.setDocket(new Docket());
         this.template.setDocketId(0);
         this.template.setId(666);
-        this.template.setMetadatenKonfigurationID(0);
+        this.template.setMetadatenKonfigurationID(1);
         this.template.setIstTemplate(true);
 
         User user = new User();
@@ -391,6 +391,31 @@ public class ProzesskopieFormTest extends AbstractTest {
 
 
 
+    @Test
+    public void testImagesGuessed() throws Exception {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertEquals(0, form.getImagesGuessed().intValue());
+        form.setImagesGuessed(1);
+        assertEquals(1, form.getImagesGuessed().intValue());
+    }
+
+    @Test
+    public void testRulesetSelection() throws Exception {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertEquals(0, form.getRulesetSelection().intValue());
+        form.setProzessKopie(template);
+        assertEquals(11111, form.getRulesetSelection().intValue());
+    }
+
+    @Test
+    public void testCreateAtstsl() throws Exception {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertEquals("abcfix", form.createAtstsl("fix fixture fixture fixture fixture fixture", "abc def"));
+        assertEquals("abcdatit", form.createAtstsl("ätitle with umlauts", "abcdef"));
+        assertEquals("worwww", form.createAtstsl("wor w w w w w", ""));
+        assertEquals("longlolol", form.createAtstsl("longword longword longword longword longword", ""));
+        assertEquals("longwo", form.createAtstsl("longword word", ""));
+    }
 
 
     @SuppressWarnings("unchecked")
