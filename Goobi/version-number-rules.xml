@@ -55,5 +55,10 @@
                 <ignoreVersion type="regex">4.*</ignoreVersion>
             </ignoreVersions>
         </rule>
+        <rule groupId="org.omnifaces" artifactId="omnifaces">
+            <ignoreVersions>
+                <ignoreVersion type="regex">4.*</ignoreVersion>
+            </ignoreVersions>
+        </rule>
     </rules>
 </ruleset>

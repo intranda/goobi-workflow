@@ -40,6 +40,7 @@ import javax.ws.rs.core.Context;
 import org.goobi.api.rest.process.image.AbstractImageResource;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.metadaten.Image;
 import de.unigoettingen.sub.commons.contentlib.exceptions.IllegalRequestException;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding;
 import de.unigoettingen.sub.commons.util.PathConverter;
@@ -62,11 +63,8 @@ public class GoobiThumbnailResource extends AbstractImageResource {
 
     public void createImageURI(String processId, String foldername, String filename) {
         Path imagePath = metadataFolderPath.resolve(processId).resolve("thumbs").resolve(foldername).resolve(filename);
-        try {
-            this.imageURI = getUriFromPath(imagePath.toString());
-        } catch (URISyntaxException e) {
-            this.imageURI = imagePath.toUri();
-        }
+        this.imageURI = Image.toURI(imagePath);// getUriFromPath(imagePath.toString());
+
     }
 
     public void createResourceURI(HttpServletRequest request, String processId, String foldername, String filename) throws IllegalRequestException {

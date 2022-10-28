@@ -40,14 +40,14 @@
         <script
             type="text/javascript"
             src='template/js/plugins/tinymce/tinymce.min.js'></script>
-        
+
         <h:form
             id="myform"
             styleClass="form-horizontal form-bordered"
             rendered="#{LoginForm.hasRole('Admin_Vocabulary')}">
 
             <div class="row" role="main">
-                    <div class="box box-color lightgrey box-bordered col-sm-6">
+                    <div class="box box-color lightgrey box-bordered box--scrolly col-sm-6">
                         <div class="box-title">
                             <h2>
                                 <i class="fa fa-database box-icon-fix"></i>
@@ -59,7 +59,7 @@
 
                             <!-- table of records -->
                             <h:panelGroup id="recordList" styleClass="dataTables_wrapper">
-                                
+
                                 <div class="dataTables_length">
                                     <h:outputText value="#{msgs.treffer}: #{vocabularyBean.currentVocabulary.filteredRecords.size()}" />
                                     <h:outputText rendered="#{vocabularyBean.currentVocabulary.searchValue != null and vocabularyBean.currentVocabulary.searchValue ne ''}" value=" #{msgs.von} #{vocabularyBean.currentVocabulary.records.size()}" />
@@ -175,11 +175,11 @@
                                 </table>
                             </h:panelGroup>
                             <!-- // table of records -->
-                            
-                            
+
+
                             <!-- navigation buttons to flip through all records -->
                             <div class="form-actions">
-                                
+
                                 <!-- add new record -->
                                 <button jsf:id="new_record" jsf:action="#{vocabularyBean.addRecord}"
                                     class="btn btn-primary font-size-s"
@@ -187,7 +187,7 @@
                                     <i aria-hidden="true" class="fa fa-plus margin-right-5"/>
                                     <h:outputText value="#{msgs.vocabularyManager_addRecord}" />
                                 </button>
-                                
+
                                 <h:panelGroup
                                     rendered="#{vocabularyBean.currentVocabulary.pageNumberLast != 1}"
                                     id="pagination-area" styleClass="pull-right">
@@ -215,7 +215,7 @@
                                             forceId="true"
                                             value="#{msgs.seite} #{vocabularyBean.currentVocabulary.pageNumberCurrent} #{msgs.von} #{vocabularyBean.currentVocabulary.pageNumberLast}"
                                             onclick="document.getElementById('txtMoveTo2').style.display='inline';
-                                               document.getElementById('txtMoveTo1').style.display='none'; 
+                                               document.getElementById('txtMoveTo1').style.display='none';
                                                document.getElementById('txtMoveTo2').focus();
                                                document.getElementById('txtMoveTo2').select();" />
 
@@ -257,9 +257,9 @@
 
                             </div>
                             <!-- // navigation buttons to flip through all records -->
-                            
+
                         </div>
-                        
+
                         <!-- Cancel -->
                         <button
                             class="btn btn-cancel font-size-s margin-top-most"
@@ -270,9 +270,9 @@
                             jsf:immediate="true">
                             <h:outputText value="#{msgs.vocabularyManager_backToVocabularies}" />
                         </button>
-                                
+
                     </div>
-                    
+
                     <!-- Right area for editing a record -->
                     <div class="box box-color orange box-bordered col-sm-6">
                         <div class="box-title">
@@ -284,8 +284,8 @@
 
                         <div class="box-content nopadding">
 
-                            <intranda:formOutputText label="#{msgs.id}" 
-                                field="#{vocabularyBean.currentVocabRecord.id}" 
+                            <intranda:formOutputText label="#{msgs.id}"
+                                field="#{vocabularyBean.currentVocabRecord.id}"
                                 name="recordid" fieldStyle="form-control"/>
 
                             <ui:repeat var="field" value="#{vocabularyBean.currentVocabRecord.fields}">
@@ -343,15 +343,15 @@
                                     rendered="#{field.validationMessage!= null}"
                                     value="#{msgs[field.validationMessage]}" />
                             </ui:repeat>
-                            
+
                             <div class="form-actions">
                                 <!-- Delete -->
                                 <c:if test="#{vocabularyBean.currentVocabRecord.id != null}">
                                     <a id="delete" href="#" class="btn btn-danger font-size-s" data-toggle="modal" data-target="#deleteModal"> <i
-                                        class="fa fa-trash-o margin-right-5" title="#{msgs.vocabularyManager_deleteRecord}" /> 
+                                        class="fa fa-trash-o margin-right-5" title="#{msgs.vocabularyManager_deleteRecord}" />
                                         <h:outputText value="#{msgs.loeschen}" />
                                     </a>
-                    
+
                                     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                                         <div class="modal-dialog" role="document">
                                             <div class="modal-content">
@@ -374,7 +374,7 @@
                                         </div>
                                     </div>
                                 </c:if>
-                
+
                                 <!-- Save -->
                                 <button
                                     class="btn btn-success submitOnEnter pull-right font-size-s"
@@ -385,13 +385,13 @@
                                     <i class="fa fa-save margin-right-5"/>
                                     <h:outputText value="#{msgs.speichern}" />
                                 </button>
-                
+
                             </div>
                         </div>
 
                     </div>
                 	<!-- // Right area for editing a record -->
-                
+
             </div>
 
         </h:form>
@@ -427,9 +427,9 @@
                                 $( "#" + editor.id.replace( ":", "\\:" ) ).trigger( "change" );
                             } );
                         }
-                    
+
                     };
-                    
+
                     function initTinyMce() {
                         console.log( "Init tinyMce" );
                         tinymce.init( simpleTinyMceConfig );
@@ -447,7 +447,7 @@
                                 break;
                         }
                     } );
-                    
+
                     function renderInputFields( ajaxData ) {
                         if ( typeof tinyMCE !== 'undefined' ) {
                             if ( ajaxData === undefined || ajaxData.status == "begin" ) {

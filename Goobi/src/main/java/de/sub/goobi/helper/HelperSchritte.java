@@ -189,7 +189,7 @@ public class HelperSchritte {
         int offeneSchritteGleicherReihenfolge = 0;
         for (Step so : steps) {
             if (so.getReihenfolge().equals(currentStep.getReihenfolge())
-                    && !(so.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || so.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED))
+                    && !(StepStatus.DONE.equals(so.getBearbeitungsstatusEnum()) || StepStatus.DEACTIVATED.equals(so.getBearbeitungsstatusEnum()))
                     && !so.getId().equals(currentStep.getId())) {
                 offeneSchritteGleicherReihenfolge++;
             } else if (so.getReihenfolge() > currentStep.getReihenfolge()) {
@@ -206,13 +206,13 @@ public class HelperSchritte {
                     reihenfolge = myStep.getReihenfolge();
                 }
 
-                if (reihenfolge == myStep.getReihenfolge() && !(myStep.getBearbeitungsstatusEnum().equals(StepStatus.DONE)
-                        || myStep.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED))) {
+                if (reihenfolge == myStep.getReihenfolge() && !(StepStatus.DONE.equals(myStep.getBearbeitungsstatusEnum())
+                        || StepStatus.DEACTIVATED.equals(myStep.getBearbeitungsstatusEnum()))) {
                     /*
                      * open step, if it is locked, otherwise stop
                      */
 
-                    if (myStep.getBearbeitungsstatusEnum().equals(StepStatus.LOCKED)) {
+                    if (StepStatus.LOCKED.equals(myStep.getBearbeitungsstatusEnum())) {
                         myStep.setBearbeitungszeitpunkt(myDate);
                         myStep.setEditTypeEnum(StepEditType.AUTOMATIC);
                         if (myStep.isTypAutomaticThumbnail() && StringUtils.isNotBlank(myStep.getAutomaticThumbnailSettingsYaml())) {
@@ -239,10 +239,8 @@ public class HelperSchritte {
                     }
                     matched = true;
 
-                } else {
-                    if (matched) {
-                        break;
-                    }
+                } else if (matched) {
+                    break;
                 }
             }
         }
@@ -297,9 +295,9 @@ public class HelperSchritte {
         int abgeschlossen = 0;
         List<Step> stepsForProcess = StepManager.getStepsForProcess(processId);
         for (Step step : stepsForProcess) {
-            if (step.getBearbeitungsstatusEnum().equals(StepStatus.DONE) || step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) {
+            if (StepStatus.DONE.equals(step.getBearbeitungsstatusEnum()) || StepStatus.DEACTIVATED.equals(step.getBearbeitungsstatusEnum())) {
                 abgeschlossen++;
-            } else if (step.getBearbeitungsstatusEnum().equals(StepStatus.LOCKED)) {
+            } else if (StepStatus.LOCKED.equals(step.getBearbeitungsstatusEnum())) {
                 offen++;
             } else {
                 inBearbeitung++;
@@ -335,7 +333,7 @@ public class HelperSchritte {
                 log.debug("Starting script " + script + " for process with ID " + step.getProcessId());
             }
 
-            if (script != null && !script.equals(" ") && script.length() != 0) {
+            if (script != null && !" ".equals(script) && script.length() != 0) {
                 if (automatic && (count == size)) {
                     returnParameter = executeScriptForStepObject(step, script, true);
                 } else {
@@ -349,14 +347,14 @@ public class HelperSchritte {
                     case 99:
 
                         break;
-                        // return code 98: re-open task
+                    // return code 98: re-open task
                     case 98:
                         reOpenStep(step);
                         break;
-                        // return code 0: script returned without error
+                    // return code 0: script returned without error
                     case 0:
                         break;
-                        // everything else: error
+                    // everything else: error
                     default:
                         errorStep(step);
                         break outerloop;
@@ -552,8 +550,9 @@ public class HelperSchritte {
             log.info("Calling the shell: " + script + " for process with ID " + step.getProcessId());
 
             StringBuilder message = new StringBuilder();
-            message.append("Calling the shell: ");
-            message.append(script);
+            message.append("Calling the shell.\n");
+            message.append("Goobi workflow: " + script + "\n");
+            message.append("Final command: " + String.join(" ", parameterList));
 
             Helper.addMessageToProcessJournal(step.getProcessId(), LogType.DEBUG, message.toString());
 
@@ -576,19 +575,17 @@ public class HelperSchritte {
                         CloseStepObjectAutomatic(step);
                     }
 
-                } else {
-                    if (rueckgabe.getReturnCode() != 99 && rueckgabe.getReturnCode() != 98) {
-                        step.setEditTypeEnum(StepEditType.AUTOMATIC);
-                        step.setBearbeitungsstatusEnum(StepStatus.ERROR);
-                        step.setBearbeitungsende(new Date());
-                        SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.ERROR);
-                        StepManager.saveStep(step);
-                        Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR,
-                                "Script for '" + step.getTitel() + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode()
-                                + ". The script returned: " + rueckgabe.getErrorText());
-                        log.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
-                        + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
-                    }
+                } else if (rueckgabe.getReturnCode() != 99 && rueckgabe.getReturnCode() != 98) {
+                    step.setEditTypeEnum(StepEditType.AUTOMATIC);
+                    step.setBearbeitungsstatusEnum(StepStatus.ERROR);
+                    step.setBearbeitungsende(new Date());
+                    SendMail.getInstance().sendMailToAssignedUser(step, StepStatus.ERROR);
+                    StepManager.saveStep(step);
+                    Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR,
+                            "Script for '" + step.getTitel() + "' did not finish successfully. Return code: " + rueckgabe.getReturnCode()
+                                    + ". The script returned: " + rueckgabe.getErrorText());
+                    log.error("Script for '" + step.getTitel() + "' did not finish successfully for process with ID " + step.getProcessId()
+                            + ". Return code: " + rueckgabe.getReturnCode() + ". The script returned: " + rueckgabe.getErrorText());
                 }
             }
         } catch (Exception e) { //NOSONAR InterruptedException must not be re-thrown as it is not running in a separate thread
@@ -646,7 +643,7 @@ public class HelperSchritte {
                 CloseStepObjectAutomatic(step);
             } else {
                 Helper.addMessageToProcessJournal(step.getProcessId(), LogType.ERROR, "The export for process with ID '" + step.getProcessId()
-                + "' was cancelled because of validation errors: " + dms.getProblems().toString());
+                        + "' was cancelled because of validation errors: " + dms.getProblems().toString());
                 errorStep(step);
             }
             return validate;
@@ -676,7 +673,7 @@ public class HelperSchritte {
     }
 
     private void reOpenStep(Step step) {
-        if (!step.getBearbeitungsstatusEnum().equals(StepStatus.OPEN)) {
+        if (!StepStatus.OPEN.equals(step.getBearbeitungsstatusEnum())) {
             step.setBearbeitungsstatusEnum(StepStatus.OPEN);
             step.setEditTypeEnum(StepEditType.AUTOMATIC);
             step.setBearbeitungsende(new Date());
@@ -737,7 +734,7 @@ public class HelperSchritte {
             List<Element> metadataList = goobi.getChildren();
             addMetadata(metadataList, metadataPairs);
             for (Element el : root.getChildren("dmdSec", mets)) {
-                if (el.getAttributeValue("ID").equals("DMDPHYS_0000")) {
+                if ("DMDPHYS_0000".equals(el.getAttributeValue("ID"))) {
                     Element phys = el.getChild("mdWrap", mets)
                             .getChild("xmlData", mets)
                             .getChild("mods", mods)
@@ -761,18 +758,18 @@ public class HelperSchritte {
         for (Element goobimetadata : elements) {
             String metadataType = goobimetadata.getAttributeValue("name");
             String metadataValue = "";
-            if (goobimetadata.getAttributeValue("type") != null && goobimetadata.getAttributeValue("type").equals("person")) {
+            if (goobimetadata.getAttributeValue("type") != null && "person".equals(goobimetadata.getAttributeValue("type"))) {
                 Element displayName = goobimetadata.getChild("displayName", goobiNamespace);
-                if (displayName != null && !displayName.getValue().equals(",")) {
+                if (displayName != null && !",".equals(displayName.getValue())) {
                     metadataValue = displayName.getValue();
                 }
-            } else if (goobimetadata.getAttributeValue("type") != null && goobimetadata.getAttributeValue("type").equals("group")) {
+            } else if (goobimetadata.getAttributeValue("type") != null && "group".equals(goobimetadata.getAttributeValue("type"))) {
                 List<Element> groupMetadataList = goobimetadata.getChildren();
                 addMetadata(groupMetadataList, metadataPairs);
             } else {
                 metadataValue = goobimetadata.getValue();
             }
-            if (!metadataValue.equals("")) {
+            if (!"".equals(metadataValue)) {
 
                 if (metadataPairs.containsKey(metadataType)) {
                     List<String> oldValue = metadataPairs.get(metadataType);

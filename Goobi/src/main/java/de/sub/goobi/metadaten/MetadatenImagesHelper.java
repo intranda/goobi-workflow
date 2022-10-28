@@ -630,7 +630,7 @@ public class MetadatenImagesHelper {
          * --------------------------------*/
         Path dir = Paths.get(folder);
 
-        if (StorageProvider.getInstance().isFileExists(dir)) {
+        if (StorageProvider.getInstance().isDirectory(dir)) {
             List<String> dateien = StorageProvider.getInstance().list(dir.toString(), NIOFileUtils.DATA_FILTER);
             List<String> dateien2 = StorageProvider.getInstance().list(dir.toString());
             //checks for fileName errors / empty folder

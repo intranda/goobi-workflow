@@ -25,7 +25,10 @@
  */
 package org.goobi.beans;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.DirectoryStream;
@@ -51,7 +54,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -84,6 +89,7 @@ import de.sub.goobi.metadaten.ImageCommentHelper;
 import de.sub.goobi.metadaten.MetadatenHelper;
 import de.sub.goobi.metadaten.MetadatenSperrung;
 import de.sub.goobi.persistence.managers.DocketManager;
+import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
 import de.sub.goobi.persistence.managers.ProcessManager;
@@ -111,7 +117,7 @@ import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
 @Log4j2
-public class Process extends AbstractJournal implements Serializable, DatabaseObject, Comparable<Process> {
+public class Process implements Serializable, DatabaseObject, Comparable<Process>, IJournal {
     private static final long serialVersionUID = -6503348094655786275L;
     @Getter
     @Setter
@@ -159,9 +165,15 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     private Boolean selected = false;
     @Setter
     private Docket docket;
+    @Setter
+    private ExportValidator exportValidator = null;
 
     private String imagesTiffDirectory = null;
     private String imagesOrigDirectory = null;
+
+    @Getter
+    @Setter
+    private List<JournalEntry> journal = new ArrayList<>();
 
     private BeanHelper bhelp = new BeanHelper();
 
@@ -183,20 +195,29 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     @Getter
     @Setter
+    private String content = "";
+
+    @Getter
+    @Setter
     private boolean mediaFolderExists = false;
 
     private transient List<StringPair> metadataList = new ArrayList<>();
     private String representativeImage = null;
 
     private List<SelectItem> folderList = new ArrayList<>();
-
     @Getter
     @Setter
     private String currentFolder;
 
     @Getter
     @Setter
+    private transient Part uploadedFile = null;
+    @Getter
+    @Setter
     private String uploadFolder = "intern";
+
+    private transient Path tempFileToImport;
+    private String basename;
 
     @Getter
     private boolean showFileDeletionButton;
@@ -236,8 +257,8 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     public boolean containsStepOfOrder(int order) {
-        for (int i = 0; i < this.schritte.size(); i++) {
-            if (this.schritte.get(i).getReihenfolge() == order) {
+        for (Step element : this.schritte) {
+            if (element.getReihenfolge() == order) {
                 return true;
             }
         }
@@ -246,8 +267,8 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
 
     public boolean getContainsExportStep() {
         this.getSchritte();
-        for (int i = 0; i < this.schritte.size(); i++) {
-            if (this.schritte.get(i).isTypExportDMS() || this.schritte.get(i).isTypExportRus()) {
+        for (Step element : this.schritte) {
+            if (element.isTypExportDMS() || element.isTypExportRus()) {
                 return true;
             }
         }
@@ -284,7 +305,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         if (MetadatenSperrung.isLocked(this.id.intValue())) {
             String benutzerID = this.msp.getLockBenutzer(this.id.intValue());
             try {
-                rueckgabe = UserManager.getUserById(Integer.valueOf(benutzerID));
+                rueckgabe = UserManager.getUserById(Integer.parseInt(benutzerID));
             } catch (Exception e) {
                 Helper.setFehlerMeldung(Helper.getTranslation("userNotFound"), e);
             }
@@ -1336,7 +1357,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     public Step getFirstOpenStep() {
 
         for (Step s : getSchritteList()) {
-            if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN) || s.getBearbeitungsstatusEnum().equals(StepStatus.INWORK)
+            if (StepStatus.OPEN.equals(s.getBearbeitungsstatusEnum()) || StepStatus.INWORK.equals(s.getBearbeitungsstatusEnum())
                     || s.getBearbeitungsstatusEnum() == StepStatus.INFLIGHT) {
                 return s;
             }
@@ -1350,13 +1371,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             method = this.getClass().getMethod(methodName);
             Object o = method.invoke(this);
             return (String) o;
-        } catch (SecurityException e) {
-
-        } catch (NoSuchMethodException e) {
-
-        } catch (IllegalArgumentException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InvocationTargetException e) {
+        } catch (SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
         }
 
         try {
@@ -1369,9 +1384,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
                     return folder;
                 }
             }
-        } catch (SwapException e) {
-
-        } catch (IOException e) {
+        } catch (SwapException | IOException e) {
 
         }
 
@@ -1387,6 +1400,10 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             }
         }
         return docket;
+    }
+
+    public ExportValidator getExportValidator() {
+        return exportValidator;
     }
 
     @Override
@@ -1408,6 +1425,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         erstellungsdatum = new Date();
 
         setDocket(source.getDocket());
+        setExportValidator(source.getExportValidator());
         setInAuswahllisteAnzeigen(false);
         setIstTemplate(source.isIstTemplate());
         setProjectId(source.getProjectId());
@@ -1447,6 +1465,25 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             ProcessManager.saveProcess(this);
         } catch (DAOException e) {
             log.error("error on save: ", e);
+        }
+    }
+
+    @Override
+    public void addJournalEntry() {
+        if (uploadedFile != null) {
+            saveUploadedFile();
+        } else {
+            LoginBean loginForm = Helper.getLoginBean();
+
+            JournalEntry entry =
+                    new JournalEntry(id, new Date(), loginForm.getMyBenutzer().getNachVorname(), LogType.USER, content, EntryType.PROCESS);
+
+            entry.setEntryType(EntryType.PROCESS);
+            content = "";
+
+            journal.add(entry);
+
+            JournalManager.saveJournalEntry(entry);
         }
     }
 
@@ -1528,7 +1565,7 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
             int imageNo = 0;
             if (!getMetadataList().isEmpty()) {
                 for (StringPair sp : getMetadataList()) {
-                    if (sp.getOne().equals("_representative")) {
+                    if ("_representative".equals(sp.getOne())) {
                         imageNo = NumberUtils.toInt(sp.getTwo()) - 1;
                     }
                 }
@@ -1727,6 +1764,183 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
         }
 
         return answer;
+    }
+
+    /**
+     * Download a selected file
+     * 
+     * @param entry
+     */
+
+    @Override
+    public void downloadFile(JournalEntry entry) {
+        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
+        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+
+        Path path = entry.getFile();
+        if (path == null) {
+            path = Paths.get(entry.getFilename());
+        }
+        String fileName = path.getFileName().toString();
+        String contentType = facesContext.getExternalContext().getMimeType(fileName);
+        try {
+            int contentLength = (int) StorageProvider.getInstance().getFileSize(path);
+            response.reset();
+            response.setContentType(contentType);
+            response.setContentLength(contentLength);
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+            OutputStream output = response.getOutputStream();
+            try (InputStream inp = StorageProvider.getInstance().newInputStream(path)) {
+                IOUtils.copy(inp, output);
+            }
+            facesContext.responseComplete();
+        } catch (IOException e) {
+            log.error(e);
+        }
+    }
+
+    /**
+     * Delete a LogEntry and the file belonging to it
+     * 
+     * @param entry
+     */
+
+    @Override
+    public void deleteFile(JournalEntry entry) {
+        Path path = entry.getFile();
+        if (path == null) {
+            path = Paths.get(entry.getFilename());
+        }
+        // check if log entry has an id
+        if (entry.getId() != null) {
+            // if yes, delete entry
+            String filename = entry.getBasename();
+
+            journal.remove(entry);
+            JournalManager.deleteJournalEntry(entry);
+
+            // create a new entry to document the deletion
+
+            JournalEntry deletionInfo = new JournalEntry(id, new Date(), Helper.getCurrentUser().getNachVorname(), LogType.INFO,
+                    Helper.getTranslation("processlogFileDeleted", filename), EntryType.PROCESS);
+
+            journal.add(deletionInfo);
+            JournalManager.saveJournalEntry(deletionInfo);
+        }
+        // delete file
+        try {
+            StorageProvider.getInstance().deleteFile(path);
+        } catch (IOException e) {
+            log.error(e);
+        }
+
+    }
+
+    /**
+     * Save the previous uploaded file in the selected process directory and create a new LogEntry.
+     * 
+     */
+
+    @Override
+    public void saveUploadedFile() {
+
+        Path folder = null;
+        try {
+            if ("intern".equals(uploadFolder)) {
+                folder = Paths.get(getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalJournalFiles());
+            } else {
+                folder = Paths.get(getExportDirectory());
+            }
+            if (!StorageProvider.getInstance().isFileExists(folder)) {
+                StorageProvider.getInstance().createDirectories(folder);
+            }
+            Path destination = Paths.get(folder.toString(), basename);
+            StorageProvider.getInstance().move(tempFileToImport, destination);
+
+            JournalEntry entry = new JournalEntry(id, new Date(), Helper.getCurrentUser().getNachVorname(), LogType.FILE, content, EntryType.PROCESS);
+            entry.setFilename(destination.toString());
+            JournalManager.saveJournalEntry(entry);
+            journal.add(entry);
+
+        } catch (SwapException | IOException e) {
+            log.error(e);
+        }
+        uploadedFile = null;
+        content = "";
+    }
+
+    /**
+     * Upload a file and save it as a temporary file
+     * 
+     */
+    @Override
+    public void uploadFile() {
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        try {
+            if (this.uploadedFile == null) {
+                Helper.setFehlerMeldung("noFileSelected");
+                return;
+            }
+
+            basename = getFileName(this.uploadedFile);
+            if (basename.startsWith(".")) {
+                basename = basename.substring(1);
+            }
+            if (basename.contains("/")) {
+                basename = basename.substring(basename.lastIndexOf("/") + 1);
+            }
+            if (basename.contains("\\")) {
+                basename = basename.substring(basename.lastIndexOf("\\") + 1);
+            }
+            basename = Paths.get(basename).getFileName().toString();
+
+            tempFileToImport = Files.createTempFile(basename, ""); //NOSONAR, using temporary file is save here
+            inputStream = this.uploadedFile.getInputStream();
+            outputStream = new FileOutputStream(tempFileToImport.toString());
+
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = inputStream.read(buf)) > 0) {
+                outputStream.write(buf, 0, len);
+            }
+
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            Helper.setFehlerMeldung("uploadFailed");
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+
+        }
+    }
+
+    /**
+     * extract the filename for the uploaded file
+     * 
+     * @param part
+     * @return
+     */
+
+    private String getFileName(final Part part) {
+        for (String content : part.getHeader("content-disposition").split(";")) {
+            if (content.trim().startsWith("filename")) {
+                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
+            }
+        }
+        return "";
     }
 
     /**
@@ -2030,6 +2244,19 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     /**
+     * Tiny check to see whether a process is currently setup to perform XML Export Validation before the actual export.
+     * 
+     * @return true if the process is set up to perform a pre-export validation, false if not
+     */
+    public boolean isConfiguredWithExportValidator() {
+        if (getExportValidator() != null && getExportValidator().getLabel() != null && getExportValidator().getCommand() != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * 
      * @deprecated use getJournal() instead
      */
@@ -2050,23 +2277,8 @@ public class Process extends AbstractJournal implements Serializable, DatabaseOb
     }
 
     @Override
-    public Path getDownloadFolder() {
-        Path folder = null;
-        try {
-            if (uploadFolder.equals("intern")) {
-                folder = Paths.get(getProcessDataDirectory(), ConfigurationHelper.getInstance().getFolderForInternalJournalFiles());
-            } else {
-                folder = Paths.get(getExportDirectory());
-            }
-        } catch (IOException | SwapException e) {
-            log.error(e);
-        }
-        return folder;
-    }
-
-    @Override
-    public EntryType getEntryType() {
-        return EntryType.PROCESS;
+    public void addJournalEntryForAll() {
+        throw new UnsupportedOperationException();
     }
 
 }

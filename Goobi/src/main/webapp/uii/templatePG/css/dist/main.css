@@ -1070,6 +1070,10 @@ body {
   margin-bottom: 0;
 }
 
+.table-fixed {
+  --width-table-col: 200px;
+}
+
 tbody,
 td,
 tfoot,
@@ -1097,9 +1101,6 @@ th span {
   font-weight: bold;
 }
 
-td {
-  word-break: break-all;
-}
 td .btn-group .btn:not(:first-of-type) {
   margin-right: 0.8rem;
 }
@@ -1127,18 +1128,31 @@ td .btn ~ .btn {
 
 .dataTables__search__container {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   margin: 1.6rem 0;
 }
 .dataTables__search__container form {
   display: flex;
+  flex-shrink: 0;
 }
 
 .dataTables__filter-container {
+  width: 84%;
+  justify-content: flex-end;
   gap: var(--gap, 8px);
 }
+.dataTables__filter-container .search-form {
+  flex: 0 1 590px;
+}
 
+@media (max-width: 555px) {
+  .dataTables__filter-container {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+}
 .dataTables__filter {
   background-color: var(--clr-neutral-200);
 }
@@ -1146,8 +1160,12 @@ td .btn ~ .btn {
 .dataTables__filter button:not(.btn--active-users) {
   border: 1px solid var(--clr-neutral-300);
 }
+.dataTables__filter.-search-bar {
+  width: 100%;
+}
 
 .dataTables__actions {
+  --width-table-col: 110px;
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
@@ -1157,6 +1175,42 @@ td .btn ~ .btn {
   display: flex;
   align-items: center;
   gap: var(--gap, 8px);
+}
+
+.table-fixed {
+  table-layout: fixed;
+  width: 100%;
+  hyphens: auto;
+}
+
+.table-fixed th {
+  width: var(--width-table-col);
+}
+
+.table-fixed th button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.table-fixed td {
+  overflow-x: auto;
+}
+
+.table-fixed .table-fixed__actions {
+  --width-table-col: 120px;
+  width: var(--width-table-col);
+  min-width: var(--width-table-col);
+  max-width: var(--width-table-col);
+}
+
+/*
+.table--scrollx {
+  overflow-x: scroll;
+}
+*/
+.table-wrapper {
+  overflow-x: auto;
 }
 
 th {
@@ -1294,7 +1348,8 @@ span.badge {
   display: inline-block;
   background-color: transparent;
   border: 1px solid currentColor;
-  padding: 2px 4px;
+  padding: 4px;
+  font-size: 1.2rem;
   margin: 2px 4px;
 }
 button.badge i,
@@ -1424,6 +1479,10 @@ span.badge:not(:last-child) {
 .view-users__box--usergroup-1 .table__actions,
 .view-users__box--project-1 .table__actions {
   border-right-width: 1px;
+}
+
+.batch-all tr td:empty {
+  display: none;
 }
 
 /*# sourceMappingURL=main.css.map */

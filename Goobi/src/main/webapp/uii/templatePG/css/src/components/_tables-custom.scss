@@ -3,6 +3,10 @@
   margin-bottom: 0;
 }
 
+.table-fixed {
+  --width-table-col: 200px;
+}
+
 // Border color: all borders, one color
 tbody,
 td,
@@ -32,7 +36,6 @@ th span {
 }
 
 td {
-  word-break: break-all;
   .btn-group .btn:not(:first-of-type) {
     margin-right: 0.8rem;
   }
@@ -63,6 +66,7 @@ td {
 // Some tables come with a search bar:
 .dataTables__search__container {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   margin: 1.6rem 0;
@@ -70,11 +74,25 @@ td {
   // Contains search form + `show active users btn`
   form {
     display: flex;
+    flex-shrink: 0;
   }
 }
 
 .dataTables__filter-container {
+  width: 84%;
+  justify-content: flex-end;
   gap: var(--gap, 8px);
+
+  .search-form {
+    flex: 0 1 590px;
+  }
+}
+
+@media (max-width: 555px) {
+  .dataTables__filter-container {
+    width: 100%;
+    flex-wrap: wrap;
+  }
 }
 
 .dataTables__filter {
@@ -84,9 +102,14 @@ td {
   button:not(.btn--active-users) {
     border: 1px solid var(--clr-neutral-300);
   }
+
+  &.-search-bar {
+    width: 100%;
+  }
 }
 
 .dataTables__actions {
+  --width-table-col: 110px;
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
@@ -96,4 +119,42 @@ td {
   display: flex;
   align-items: center;
   gap: var(--gap, 8px);
+}
+
+.table-fixed {
+  table-layout: fixed;
+  width: 100%;
+
+  hyphens: auto;
+}
+
+.table-fixed th {
+  width: var(--width-table-col);
+}
+
+.table-fixed th button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.table-fixed td {
+  overflow-x: auto;
+}
+
+.table-fixed .table-fixed__actions {
+  --width-table-col: 120px;
+  width: var(--width-table-col);
+  min-width: var(--width-table-col);
+  max-width: var(--width-table-col);
+}
+
+/*
+.table--scrollx {
+  overflow-x: scroll;
+}
+*/
+
+.table-wrapper {
+  overflow-x: auto;
 }
