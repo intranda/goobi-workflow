@@ -30,7 +30,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
@@ -50,7 +49,7 @@ public class HttpClientHelper {
 
     public static ResponseHandler<byte[]> byteArrayResponseHandler = new ResponseHandler<byte[]>() {
         @Override
-        public byte[] handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+        public byte[] handleResponse(HttpResponse response) throws IOException {
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 log.error("Wrong status code : " + response.getStatusLine().getStatusCode());
                 return null;
@@ -66,7 +65,7 @@ public class HttpClientHelper {
 
     public static ResponseHandler<String> stringResponseHandler = new ResponseHandler<String>() {
         @Override
-        public String handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+        public String handleResponse(HttpResponse response) throws IOException {
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 log.error("Wrong status code : " + response.getStatusLine().getStatusCode());
                 return null;
@@ -82,7 +81,7 @@ public class HttpClientHelper {
 
     public static ResponseHandler<InputStream> streamResponseHandler = new ResponseHandler<InputStream>() {
         @Override
-        public InputStream handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+        public InputStream handleResponse(HttpResponse response) throws IOException {
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 log.error("Wrong status code : " + response.getStatusLine().getStatusCode());
                 return null;
@@ -95,7 +94,6 @@ public class HttpClientHelper {
             }
         }
     };
-
 
     private static void setupProxy(String url, HttpGet method) {
         if (ConfigurationHelper.getInstance().isUseProxy()) {
@@ -237,7 +235,7 @@ public class HttpClientHelper {
         try {
 
             method = new HttpGet(url);
-            if (parameter != null && parameter.length > 4) {
+            if (parameter.length > 4) {
                 httpclient = getClientWithBasicAuthentication(parameter);
 
             } else {
@@ -269,7 +267,9 @@ public class HttpClientHelper {
             log.error("Unable to connect to url " + url, e);
 
         } finally {
-            method.releaseConnection();
+            if (method != null) {
+                method.releaseConnection();
+            }
             if (httpclient != null) {
                 try {
                     httpclient.close();
