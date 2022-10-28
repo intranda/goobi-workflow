@@ -96,31 +96,8 @@ public class HttpClientHelper {
         }
     };
 
-    //  parameter:
-    // * first: url
-    // * second: username
-    // * third: password
-    // * forth: scope (e.g. "localhost")
-    // * fifth: port
-    public static String getStringFromUrl(String... parameter) {
-        String response = "";
-        if (parameter == null) {
-            return response;
-        }
-        CloseableHttpClient client = null;
-        String url = parameter[0];
-        HttpGet method = new HttpGet(url);
 
-        if (parameter.length > 4) {
-            CredentialsProvider credsProvider = new BasicCredentialsProvider();
-            credsProvider.setCredentials(new AuthScope(parameter[3], Integer.parseInt(parameter[4])),
-                    new UsernamePasswordCredentials(parameter[1], parameter[2]));
-            client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
-
-        } else {
-            client = HttpClientBuilder.create().build(); // client will never be null
-        }
-
+    private static void setupProxy(String url, HttpGet method) {
         if (ConfigurationHelper.getInstance().isUseProxy()) {
             try {
                 URL ipAsURL = new URL(url);
@@ -142,6 +119,40 @@ public class HttpClientHelper {
             }
 
         }
+    }
+
+    private static CloseableHttpClient getClientWithBasicAuthentication(String... parameter) {
+        CloseableHttpClient client;
+        CredentialsProvider credsProvider = new BasicCredentialsProvider();
+        credsProvider.setCredentials(new AuthScope(parameter[3], Integer.parseInt(parameter[4])),
+                new UsernamePasswordCredentials(parameter[1], parameter[2]));
+        client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
+        return client;
+    }
+
+    //  parameter:
+    // * first: url
+    // * second: username
+    // * third: password
+    // * forth: scope (e.g. "localhost")
+    // * fifth: port
+    public static String getStringFromUrl(String... parameter) {
+        String response = "";
+        if (parameter == null) {
+            return response;
+        }
+        CloseableHttpClient client = null;
+        String url = parameter[0];
+        HttpGet method = new HttpGet(url);
+
+        if (parameter.length > 4) {
+            client = getClientWithBasicAuthentication(parameter);
+
+        } else {
+            client = HttpClientBuilder.create().build(); // client will never be null
+        }
+
+        setupProxy(url, method);
 
         try {
             response = client.execute(method, HttpClientHelper.stringResponseHandler); // also implies that client != null
@@ -227,37 +238,14 @@ public class HttpClientHelper {
 
             method = new HttpGet(url);
             if (parameter != null && parameter.length > 4) {
-                CredentialsProvider credsProvider = new BasicCredentialsProvider();
-                credsProvider.setCredentials(new AuthScope(parameter[3], Integer.parseInt(parameter[4])),
-                        new UsernamePasswordCredentials(parameter[1], parameter[2]));
-                httpclient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
+                httpclient = getClientWithBasicAuthentication(parameter);
 
             } else {
                 httpclient = HttpClientBuilder.create().build();
 
             }
 
-            if (ConfigurationHelper.getInstance().isUseProxy()) {
-                try {
-                    URL ipAsURL = new URL(url);
-                    if (!ConfigurationHelper.getInstance().isProxyWhitelisted(ipAsURL)) {
-                        HttpHost proxy =
-                                new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
-                        log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
-
-                        Builder builder = RequestConfig.custom();
-                        builder.setProxy(proxy);
-
-                        RequestConfig rc = builder.build();
-
-                        method.setConfig(rc);
-                    } else {
-                        log.debug("url was on proxy whitelist, no proxy used: " + url);
-                    }
-                } catch (MalformedURLException e) {
-                    log.debug("could not convert into URL: ", url);
-                }
-            }
+            setupProxy(url, method);
 
             Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
             Builder builder = RequestConfig.custom();
