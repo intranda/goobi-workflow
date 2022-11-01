@@ -30,7 +30,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
@@ -50,7 +49,7 @@ public class HttpClientHelper {
 
     public static ResponseHandler<byte[]> byteArrayResponseHandler = new ResponseHandler<byte[]>() {
         @Override
-        public byte[] handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+        public byte[] handleResponse(HttpResponse response) throws IOException {
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 log.error("Wrong status code : " + response.getStatusLine().getStatusCode());
                 return null;
@@ -66,7 +65,7 @@ public class HttpClientHelper {
 
     public static ResponseHandler<String> stringResponseHandler = new ResponseHandler<String>() {
         @Override
-        public String handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+        public String handleResponse(HttpResponse response) throws IOException {
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 log.error("Wrong status code : " + response.getStatusLine().getStatusCode());
                 return null;
@@ -82,7 +81,7 @@ public class HttpClientHelper {
 
     public static ResponseHandler<InputStream> streamResponseHandler = new ResponseHandler<InputStream>() {
         @Override
-        public InputStream handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+        public InputStream handleResponse(HttpResponse response) throws IOException {
             if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 log.error("Wrong status code : " + response.getStatusLine().getStatusCode());
                 return null;
@@ -96,31 +95,7 @@ public class HttpClientHelper {
         }
     };
 
-    //  parameter:
-    // * first: url
-    // * second: username
-    // * third: password
-    // * forth: scope (e.g. "localhost")
-    // * fifth: port
-    public static String getStringFromUrl(String... parameter) {
-        String response = "";
-        if (parameter == null) {
-            return response;
-        }
-        CloseableHttpClient client = null;
-        String url = parameter[0];
-        HttpGet method = new HttpGet(url);
-
-        if (parameter.length > 4) {
-            CredentialsProvider credsProvider = new BasicCredentialsProvider();
-            credsProvider.setCredentials(new AuthScope(parameter[3], Integer.parseInt(parameter[4])),
-                    new UsernamePasswordCredentials(parameter[1], parameter[2]));
-            client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
-
-        } else {
-            client = HttpClientBuilder.create().build(); // client will never be null
-        }
-
+    private static void setupProxy(String url, HttpGet method) {
         if (ConfigurationHelper.getInstance().isUseProxy()) {
             try {
                 URL ipAsURL = new URL(url);
@@ -142,6 +117,40 @@ public class HttpClientHelper {
             }
 
         }
+    }
+
+    private static CloseableHttpClient getClientWithBasicAuthentication(String... parameter) {
+        CloseableHttpClient client;
+        CredentialsProvider credsProvider = new BasicCredentialsProvider();
+        credsProvider.setCredentials(new AuthScope(parameter[3], Integer.parseInt(parameter[4])),
+                new UsernamePasswordCredentials(parameter[1], parameter[2]));
+        client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
+        return client;
+    }
+
+    //  parameter:
+    // * first: url
+    // * second: username
+    // * third: password
+    // * forth: scope (e.g. "localhost")
+    // * fifth: port
+    public static String getStringFromUrl(String... parameter) {
+        String response = "";
+        if (parameter == null) {
+            return response;
+        }
+        CloseableHttpClient client = null;
+        String url = parameter[0];
+        HttpGet method = new HttpGet(url);
+
+        if (parameter.length > 4) {
+            client = getClientWithBasicAuthentication(parameter);
+
+        } else {
+            client = HttpClientBuilder.create().build(); // client will never be null
+        }
+
+        setupProxy(url, method);
 
         try {
             response = client.execute(method, HttpClientHelper.stringResponseHandler); // also implies that client != null
@@ -226,38 +235,15 @@ public class HttpClientHelper {
         try {
 
             method = new HttpGet(url);
-            if (parameter != null && parameter.length > 4) {
-                CredentialsProvider credsProvider = new BasicCredentialsProvider();
-                credsProvider.setCredentials(new AuthScope(parameter[3], Integer.parseInt(parameter[4])),
-                        new UsernamePasswordCredentials(parameter[1], parameter[2]));
-                httpclient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
+            if (parameter.length > 4) {
+                httpclient = getClientWithBasicAuthentication(parameter);
 
             } else {
                 httpclient = HttpClientBuilder.create().build();
 
             }
 
-            if (ConfigurationHelper.getInstance().isUseProxy()) {
-                try {
-                    URL ipAsURL = new URL(url);
-                    if (!ConfigurationHelper.getInstance().isProxyWhitelisted(ipAsURL)) {
-                        HttpHost proxy =
-                                new HttpHost(ConfigurationHelper.getInstance().getProxyUrl(), ConfigurationHelper.getInstance().getProxyPort());
-                        log.debug("Using proxy " + proxy.getHostName() + ":" + proxy.getPort());
-
-                        Builder builder = RequestConfig.custom();
-                        builder.setProxy(proxy);
-
-                        RequestConfig rc = builder.build();
-
-                        method.setConfig(rc);
-                    } else {
-                        log.debug("url was on proxy whitelist, no proxy used: " + url);
-                    }
-                } catch (MalformedURLException e) {
-                    log.debug("could not convert into URL: ", url);
-                }
-            }
+            setupProxy(url, method);
 
             Integer contentServerTimeOut = ConfigurationHelper.getInstance().getGoobiContentServerTimeOut();
             Builder builder = RequestConfig.custom();
@@ -281,7 +267,9 @@ public class HttpClientHelper {
             log.error("Unable to connect to url " + url, e);
 
         } finally {
-            method.releaseConnection();
+            if (method != null) {
+                method.releaseConnection();
+            }
             if (httpclient != null) {
                 try {
                     httpclient.close();

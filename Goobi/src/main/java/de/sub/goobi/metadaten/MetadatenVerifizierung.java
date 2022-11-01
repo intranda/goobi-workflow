@@ -50,6 +50,7 @@ import de.sub.goobi.helper.exceptions.SwapException;
 import de.sub.goobi.helper.exceptions.UghHelperException;
 import de.sub.goobi.persistence.managers.VocabularyManager;
 import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.Corporate;
 import ugh.dl.DigitalDocument;
 import ugh.dl.DocStruct;
@@ -66,6 +67,7 @@ import ugh.exceptions.DocStructHasNoTypeException;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 import ugh.exceptions.PreferencesException;
 
+@Log4j2
 public class MetadatenVerifizierung {
     UghHelper ughhelp = new UghHelper();
     List<DocStruct> docStructsOhneSeiten;
@@ -118,7 +120,7 @@ public class MetadatenVerifizierung {
             Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
                     + Helper.getTranslation("MetadataDigitalDocumentError") + inProzess.getTitel(), e.getMessage());
             problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataDigitalDocumentError")
-                    + ": " + e.getMessage());
+            + ": " + e.getMessage());
             ergebnis = false;
         }
 
@@ -199,7 +201,7 @@ public class MetadatenVerifizierung {
                             this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationPages"),
                             seite);
                     problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationPages")
-                            + ": " + seite);
+                    + ": " + seite);
                 }
                 ergebnis = false;
             }
@@ -240,7 +242,7 @@ public class MetadatenVerifizierung {
                 Helper.setFehlerMeldung(
                         this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataMandatoryElement"), temp);
                 problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataMandatoryElement")
-                        + ": " + temp);
+                + ": " + temp);
             }
             ergebnis = false;
         }
@@ -631,12 +633,12 @@ public class MetadatenVerifizierung {
             }
             if ("1m".equals(allowedNumber) && realNumber != 1) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_MISSING_ERROR)
-                        + " " + realNumber + Helper.getTranslation(METADATA_TIMES_ERROR));
+                + " " + realNumber + Helper.getTranslation(METADATA_TIMES_ERROR));
 
             }
             if ("1o".equals(allowedNumber) && realNumber > 1) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_TO_MANY_ERROR)
-                        + " " + realNumber + " " + Helper.getTranslation(METADATA_TIMES_ERROR));
+                + " " + realNumber + " " + Helper.getTranslation(METADATA_TIMES_ERROR));
             }
             if ("+".equals(allowedNumber) && realNumber == 0) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
@@ -967,7 +969,7 @@ public class MetadatenVerifizierung {
             Metadata md = new Metadata(mdt);
             addErrorToDocStructAndMetadata(struct, md, message);
         } catch (MetadataTypeNotAllowedException e) {
-            e.printStackTrace();
+            log.error(e);
         }
     }
 
