@@ -40,15 +40,6 @@
                 <!-- INPUT -->
                 <div class="#{cc.attrs.cols eq 2 ? 'col-9' : 'col-7'}">
                     <!-- TEXT INPUT -->
-                	<h:panelGroup layout="block"
-                		class="validation-error"
-                		rendered="#{cc.attrs.metadata.validationErrorPresent}">
-                		<i
-                    		class="fa fa-exclamation-circle"
-                    		aria-hidden="true">
-                    	</i>
-                		<h:outputText value="#{cc.attrs.metadata.validationMessage}" />
-            		</h:panelGroup>
                     <x:inputText
                         id="inputText"
                         pt:aria-label="#{cc.attrs.metadata.md.type.name}"
@@ -229,6 +220,15 @@
                                 event="valueChange" />
                         </h:inputText>
                     </ui:fragment>
+                	<h:panelGroup layout="block"
+                		class="validation-error"
+                		rendered="#{cc.attrs.metadata.validationErrorPresent}">
+                		<i
+                    		class="fa fa-exclamation-circle"
+                    		aria-hidden="true">
+                    	</i>
+                		<h:outputText value="#{cc.attrs.metadata.validationMessage}" />
+            		</h:panelGroup>
                 </div>
                 <!-- ACTIONS -->
                 <ui:fragment rendered="#{cc.attrs.cols eq 3}">
