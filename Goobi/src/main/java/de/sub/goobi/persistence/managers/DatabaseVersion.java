@@ -399,7 +399,11 @@ public class DatabaseVersion {
     private static void updateToVersion51() throws SQLException {
         if (DatabaseVersion.checkIfTableExists("processlog")) {
             try {
-                DatabaseVersion.runSql("RENAME TABLE processlog TO journal;");
+                if (MySQLHelper.isUsingH2()) {
+                    DatabaseVersion.runSql("alter table processlog rename to journal; ");
+                } else {
+                    DatabaseVersion.runSql("RENAME TABLE processlog TO journal;");
+                }
                 DatabaseVersion.runSql("ALTER TABLE journal DROP COLUMN secondContent;");
                 DatabaseVersion.runSql("ALTER TABLE journal CHANGE COLUMN thirdContent filename MEDIUMTEXT;");
                 DatabaseVersion.runSql("ALTER TABLE journal CHANGE COLUMN processID objectID int(10) NOT NULL;");

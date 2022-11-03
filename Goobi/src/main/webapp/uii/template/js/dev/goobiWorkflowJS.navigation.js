@@ -110,6 +110,13 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             }
         } );
         
+        $( document ).bind( 'keyup', _defaults.navigationShortcut + '+v', function() {
+            var myButton = document.getElementById( "meMenuActionsForm:startValidationButton" );
+            if ( myButton != null ) {
+                myButton.click();
+            }
+        } );
+        
         $( document ).bind( 'keyup', _defaults.navigationShortcut + '+space', function() {
             var hiddenImageNo = $( "#hiddenImageNo" ).val();
             if ( hiddenImageNo == null ) {
@@ -173,6 +180,15 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
         $( 'input:checkbox' ).bind( 'keyup', _defaults.navigationShortcut + '+return', function() {
             
             var myButton = document.getElementById( "meMenuActionsForm:saveMetsFileButtonAjax" );
+            console.log( myButton );
+            if ( myButton != null ) {
+                myButton.click();
+            }
+        } );
+        
+        $( 'input:checkbox' ).bind( 'keyup', _defaults.navigationShortcut + '+v', function() {
+            
+            var myButton = document.getElementById( "meMenuActionsForm:startValidationButton" );
             console.log( myButton );
             if ( myButton != null ) {
                 myButton.click();
