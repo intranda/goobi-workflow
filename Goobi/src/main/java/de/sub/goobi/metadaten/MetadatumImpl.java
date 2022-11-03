@@ -1,5 +1,6 @@
 package de.sub.goobi.metadaten;
 
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -21,6 +22,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.configuration.HierarchicalConfiguration;
@@ -197,14 +199,11 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         if (serverPort > 443) {
         	reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
         }
-       
-        Client client = ClientBuilder.newClient();
-        WebTarget base = client.target(reqUrl);
-        WebTarget vocabularyBase = base.path("api").path("vocabulary");
-        WebTarget voc = vocabularyBase.path(vocabularyName);
-        Entity<List<StringPair>> entitiy = Entity.json(vocabularySearchFields);
-        records = voc.request().post(entitiy, new GenericType<List<VocabRecord>>() {
-        });
+        UriBuilder ub = UriBuilder.fromUri(reqUrl);
+        vocabularyUrl = ub.path("api").path("vocabulary").path("records").build().toString();
+        
+        records = VocabularyManager.findRecords(vocabulary, vocabularySearchFields);
+
         if (records == null || records.isEmpty()) {
             showNotHits = true;
         } else {
@@ -212,7 +211,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         }
         Collections.sort(records);
 
-        vocabularyUrl = vocabularyBase.path("records").getUri().toString();
 
     }
 
