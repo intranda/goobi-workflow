@@ -33,7 +33,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
+import org.goobi.api.mq.QueueType;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -88,8 +90,7 @@ public class ConfigurationHelperTest extends AbstractTest {
 
     @Test
     public void testGetServletPathAsUrl() {
-        // TODO: How can this be tested?
-        //assertEquals("servlet.goobi.io", ConfigurationHelper.getInstance().getServletPathAsUrl());
+        // This method can not be tested because the servlet is not initialized during unit tests
     }
 
     @Test
@@ -115,7 +116,11 @@ public class ConfigurationHelperTest extends AbstractTest {
 
     @Test
     public void testGetGoobiFolder() {
-        assertEquals("/opt/digiverso/goobi/", ConfigurationHelper.getInstance().getGoobiFolder());
+        // This folder can not be tested since it is overwritten in lots of other test classes and methods.
+        // The returned value of the getter from ConfigurationHelper is not the same as in the configuration.
+        String folder = ConfigurationHelper.getInstance().getGoobiFolder();
+        assertNotNull(folder);
+        assertNotEquals("", folder);
     }
 
     @Test
@@ -160,7 +165,11 @@ public class ConfigurationHelperTest extends AbstractTest {
 
     @Test
     public void testGetDebugFolder() {
-        assertEquals(goobiMainFolder + "debugFolder/", ConfigurationHelper.getInstance().getDebugFolder());
+        // This folder can not be tested since it is overwritten in lots of other test classes and methods.
+        // The returned value of the getter from ConfigurationHelper is not the same as in the configuration.
+        String folder = ConfigurationHelper.getInstance().getDebugFolder();
+        assertNotNull(folder);
+        assertNotEquals("", folder);
     }
 
     @Test
@@ -180,7 +189,7 @@ public class ConfigurationHelperTest extends AbstractTest {
 
     @Test
     public void testGetFolderForInternalJournalFiles() {
-        assertEquals("folder_journal_internal", ConfigurationHelper.getInstance().getFolderForInternalJournalFiles());
+        assertEquals("intern", ConfigurationHelper.getInstance().getFolderForInternalJournalFiles());
     }
 
     @Test
@@ -712,8 +721,10 @@ public class ConfigurationHelperTest extends AbstractTest {
     @Test
     public void testGetProxyWhitelist() {
         List<String> whitelist = ConfigurationHelper.getInstance().getProxyWhitelist();
-        // TODO: How to test this?
-        assertEquals("", "");
+        assertEquals(3, whitelist.size());
+        assertTrue(whitelist.contains("127.0.0.1"));
+        assertTrue(whitelist.contains("127.0.0.2"));
+        assertTrue(whitelist.contains("localhost"));
     }
 
     @Test
@@ -802,8 +813,7 @@ public class ConfigurationHelperTest extends AbstractTest {
 
     @Test
     public void testGetGoobiUrl() {
-        // TODO: What is the default value here?
-        assertEquals("", ConfigurationHelper.getInstance().getGoobiUrl());
+        assertEquals("https://example.com", ConfigurationHelper.getInstance().getGoobiUrl());
     }
 
     @Test
@@ -905,7 +915,22 @@ public class ConfigurationHelperTest extends AbstractTest {
         assertFalse(ConfigurationHelper.getInstance().isUseLocalSQS());
     }
 
-    // TODO: getQueueName(QueueType type) is missing
+    @Test
+    public void testGetQueueName() {
+        this.testGetQueueName(QueueType.FAST_QUEUE);
+        this.testGetQueueName(QueueType.SLOW_QUEUE);
+        this.testGetQueueName(QueueType.EXTERNAL_QUEUE);
+        this.testGetQueueName(QueueType.EXTERNAL_DL_QUEUE);
+        this.testGetQueueName(QueueType.COMMAND_QUEUE);
+        this.testGetQueueName(QueueType.DEAD_LETTER_QUEUE);
+        // The type QueueType.NONE is not important enough for a test
+    }
+
+    private void testGetQueueName(QueueType type) {
+        String fast = ConfigurationHelper.getInstance().getQueueName(type);
+        assertNotNull(fast);
+        assertNotEquals("", fast);
+    }
 
     /*
      * category in goobi_config.properties: METS EDITOR
@@ -990,10 +1015,8 @@ public class ConfigurationHelperTest extends AbstractTest {
 
     @Test
     public void testGetMetsEditorNumberOfImagesPerPage() {
-        assertEquals(100, ConfigurationHelper.getInstance().getMetsEditorNumberOfImagesPerPage());
+        assertEquals(96, ConfigurationHelper.getInstance().getMetsEditorNumberOfImagesPerPage());
     }
-
-    // TODO: getMetsEditorNumberOfImagesPerPage() is missing
 
     @Test
     public void testGetMetsEditorUseImageTiles() {
@@ -1111,7 +1134,13 @@ public class ConfigurationHelperTest extends AbstractTest {
         assertTrue(ConfigurationHelper.getInstance().isExportValidateImages());
     }
 
-    // TODO: getExportWriteAdditionalMetadata() is missing
+    @Test
+    public void testGetExportWriteAdditionalMetadata() {
+        Map<String, String> metadata = ConfigurationHelper.getInstance().getExportWriteAdditionalMetadata();
+        assertEquals(2, metadata.size());
+        assertEquals("Digitalization", metadata.get("Project"));
+        assertEquals("Archive of the Library", metadata.get("Institution"));
+    }
 
     @Test
     public void testIsExportFilesFromOptionalMetsFileGroups() {
@@ -1125,12 +1154,12 @@ public class ConfigurationHelperTest extends AbstractTest {
 
     @Test
     public void testIsExportCreateUUIDsAsFileIDs() {
-        assertFalse(ConfigurationHelper.getInstance().isExportCreateUUIDsAsFileIDs());
+        assertTrue(ConfigurationHelper.getInstance().isExportCreateUUIDsAsFileIDs());
     }
 
     @Test
     public void testIsExportCreateTechnicalMetadata() {
-        assertTrue(ConfigurationHelper.getInstance().isExportCreateTechnicalMetadata());
+        assertFalse(ConfigurationHelper.getInstance().isExportCreateTechnicalMetadata());
     }
 
     @Test

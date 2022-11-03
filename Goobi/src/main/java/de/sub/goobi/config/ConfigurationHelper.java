@@ -200,7 +200,10 @@ public class ConfigurationHelper implements Serializable {
 
     public String getServletPathAsUrl() {
         FacesContext context = FacesContextHelper.getCurrentFacesContext();
-        return context.getExternalContext().getRequestContextPath() + "/";
+        if (context != null && context.getExternalContext() != null) {
+            return context.getExternalContext().getRequestContextPath() + "/";
+        }
+        return "";
     }
 
     public boolean isDeveloping() {
