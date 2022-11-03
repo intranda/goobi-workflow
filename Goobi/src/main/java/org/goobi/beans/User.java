@@ -1,6 +1,5 @@
 package org.goobi.beans;
 
-import java.io.FileOutputStream;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -27,46 +26,33 @@ import java.io.FileOutputStream;
  * exception statement from your version.
  */
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.goobi.api.mail.UserProjectConfiguration;
 import org.goobi.beans.JournalEntry.EntryType;
-import org.goobi.managedbeans.LoginBean;
-import org.goobi.production.enums.LogType;
 import org.goobi.security.authentication.IAuthenticationProvider.AuthenticationType;
 
 import de.sub.goobi.config.ConfigurationHelper;
-import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
-import de.sub.goobi.helper.StorageProvider;
 import de.sub.goobi.helper.encryption.DesEncrypter;
 import de.sub.goobi.helper.exceptions.DAOException;
 import de.sub.goobi.helper.ldap.LdapAuthentication;
 import de.sub.goobi.persistence.managers.InstitutionManager;
-import de.sub.goobi.persistence.managers.JournalManager;
 import de.sub.goobi.persistence.managers.ProjectManager;
 import de.sub.goobi.persistence.managers.UserManager;
 import de.sub.goobi.persistence.managers.UsergroupManager;
@@ -77,7 +63,7 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class User implements DatabaseObject, Serializable, IJournal {
+public class User extends AbstractJournal implements DatabaseObject, Serializable {
 
     private static final long serialVersionUID = -1540863402168133130L;
 
@@ -303,21 +289,6 @@ public class User implements DatabaseObject, Serializable, IJournal {
     // any additional data is hold in a map and gets stored in an xml column, it is searchable using xpath
     // individual values can be extracted: 'select ExtractValue(additional_data, '/root/key') from benutzer'
     private Map<String, String> additionalData = new HashMap<>();
-
-    @Getter
-    @Setter
-    private transient Part uploadedFile = null;
-    private transient Path tempFileToImport;
-    private String basename;
-
-    @Getter
-    @Setter
-    private String content = "";
-
-    @Getter
-    @Setter
-    private List<JournalEntry> journal = new ArrayList<>();
-
 
     @Override
     public void lazyLoad() {
@@ -762,232 +733,14 @@ public class User implements DatabaseObject, Serializable, IJournal {
         }
     }
 
-
     @Override
-    public void addJournalEntry() {
-        if (uploadedFile != null) {
-            saveUploadedFile();
-        } else {
-            LoginBean loginForm = Helper.getLoginBean();
-
-            JournalEntry entry =
-                    new JournalEntry(id, new Date(), loginForm.getMyBenutzer().getNachVorname(), LogType.USER, content, EntryType.INSTITUTION);
-
-            content = "";
-
-            journal.add(entry);
-
-            JournalManager.saveJournalEntry(entry);
-        }
-    }
-
-    /**
-     * List the files of a selected folder. If a LogEntry is used (because it was uploaded in the logfile area), it will be used. Otherwise a
-     * temporary LogEntry is created.
-     * 
-     * @return
-     */
-
-    @Override
-    public List<JournalEntry> getFilesInSelectedFolder() {
-
-        Path folder = Paths.get(ConfigurationHelper.getInstance().getGoobiFolder(), "uploads", "user", login);
-
-        List<Path> files = StorageProvider.getInstance().listFiles(folder.toString());
-        List<JournalEntry> answer = new ArrayList<>();
-        // check if LogEntry exist
-        for (Path file : files) {
-            boolean matchFound = false;
-            for (JournalEntry entry : journal) {
-                if (entry.getType() == LogType.FILE && StringUtils.isNotBlank(entry.getFilename()) && entry.getFilename().equals(file.toString())) {
-                    entry.setFile(file);
-                    answer.add(entry);
-                    matchFound = true;
-                    break;
-                }
-            }
-            // otherwise create one
-            if (!matchFound) {
-                JournalEntry entry = new JournalEntry(id, new Date(), "", LogType.USER, "", EntryType.INSTITUTION);
-                entry.setFilename(file.toString()); // absolute path
-                entry.setFile(file);
-                answer.add(entry);
-            }
-        }
-
-        return answer;
-    }
-
-    /**
-     * Download a selected file
-     * 
-     * @param entry
-     */
-
-    @Override
-    public void downloadFile(JournalEntry entry) {
-        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
-        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-
-        Path path = entry.getFile();
-        if (path == null) {
-            path = Paths.get(entry.getFilename());
-        }
-        String fileName = path.getFileName().toString();
-        String contentType = facesContext.getExternalContext().getMimeType(fileName);
-        try {
-            int contentLength = (int) StorageProvider.getInstance().getFileSize(path);
-            response.reset();
-            response.setContentType(contentType);
-            response.setContentLength(contentLength);
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-            OutputStream output = response.getOutputStream();
-            try (InputStream inp = StorageProvider.getInstance().newInputStream(path)) {
-                IOUtils.copy(inp, output);
-            }
-            facesContext.responseComplete();
-        } catch (IOException e) {
-            log.error(e);
-        }
-    }
-
-    /**
-     * Delete a LogEntry and the file belonging to it
-     * 
-     * @param entry
-     */
-
-    @Override
-    public void deleteFile(JournalEntry entry) {
-        Path path = entry.getFile();
-        if (path == null) {
-            path = Paths.get(entry.getFilename());
-        }
-        // check if log entry has an id
-        if (entry.getId() != null) {
-            // if yes, delete entry
-            String filename = entry.getBasename();
-
-            journal.remove(entry);
-            JournalManager.deleteJournalEntry(entry);
-
-            // create a new entry to document the deletion
-
-            JournalEntry deletionInfo = new JournalEntry(id, new Date(), Helper.getCurrentUser().getNachVorname(), LogType.INFO,
-                    Helper.getTranslation("processlogFileDeleted", filename), EntryType.INSTITUTION);
-
-            journal.add(deletionInfo);
-            JournalManager.saveJournalEntry(deletionInfo);
-        }
-        // delete file
-        try {
-            StorageProvider.getInstance().deleteFile(path);
-        } catch (IOException e) {
-            log.error(e);
-        }
-
-    }
-
-    /**
-     * Save the previous uploaded file in the selected directory and create a new JournalEntry.
-     * 
-     */
-
-    @Override
-    public void saveUploadedFile() {
-
-        Path folder = Paths.get(ConfigurationHelper.getInstance().getGoobiFolder(), "uploads", "user", login);
-        try {
-
-            if (!StorageProvider.getInstance().isFileExists(folder)) {
-                StorageProvider.getInstance().createDirectories(folder);
-            }
-            Path destination = Paths.get(folder.toString(), basename);
-            StorageProvider.getInstance().move(tempFileToImport, destination);
-
-            JournalEntry entry =
-                    new JournalEntry(id, new Date(), Helper.getCurrentUser().getNachVorname(), LogType.FILE, content, EntryType.INSTITUTION);
-            entry.setFilename(destination.toString());
-            JournalManager.saveJournalEntry(entry);
-            journal.add(entry);
-
-        } catch (IOException e) {
-            log.error(e);
-        }
-        uploadedFile = null;
-        content = "";
-    }
-
-    /**
-     * Upload a file and save it as a temporary file
-     * 
-     */
-    @Override
-    public void uploadFile() {
-        if (this.uploadedFile == null) {
-            Helper.setFehlerMeldung("noFileSelected");
-            return;
-        }
-
-        basename = getFileName(this.uploadedFile);
-        if (basename.startsWith(".")) {
-            basename = basename.substring(1);
-        }
-        if (basename.contains("/")) {
-            basename = basename.substring(basename.lastIndexOf("/") + 1);
-        }
-        if (basename.contains("\\")) {
-            basename = basename.substring(basename.lastIndexOf("\\") + 1);
-        }
-        basename = Paths.get(basename).getFileName().toString();
-
-        try {
-            tempFileToImport = Files.createTempFile(basename, ""); //NOSONAR, using temporary file is save here
-
-            try (InputStream inputStream = this.uploadedFile.getInputStream();
-                    OutputStream outputStream = new FileOutputStream(tempFileToImport.toString())) {
-
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = inputStream.read(buf)) > 0) {
-                    outputStream.write(buf, 0, len);
-                }
-            }
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-            Helper.setFehlerMeldung("uploadFailed");
-        }
-    }
-
-    /**
-     * extract the filename for the uploaded file
-     * 
-     * @param part
-     * @return
-     */
-
-    private String getFileName(final Part part) {
-        for (String contentDisposition : part.getHeader("content-disposition").split(";")) {
-            if (contentDisposition.trim().startsWith("filename")) {
-                return contentDisposition.substring(contentDisposition.indexOf('=') + 1).trim().replace("\"", "");
-            }
-        }
-        return "";
+    public Path getDownloadFolder() {
+        return Paths.get(ConfigurationHelper.getInstance().getGoobiFolder(), "uploads", "user", login);
     }
 
     @Override
-    public void addJournalEntryForAll() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void setUploadFolder(String uploadFolder) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public String getUploadFolder() {
-        throw new UnsupportedOperationException();
+    public EntryType getEntryType() {
+        return EntryType.USER;
     }
 
 }

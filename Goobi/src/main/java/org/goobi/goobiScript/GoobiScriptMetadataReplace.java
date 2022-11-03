@@ -25,12 +25,14 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
@@ -42,6 +44,7 @@ import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
+import ugh.dl.MetadataGroup;
 import ugh.dl.Prefs;
 
 @Log4j2
@@ -67,6 +70,8 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
                 "If the search term shall used used as regular expression set this value to `true` here.");
         addParameterToSampleCall(sb, "position", "work",
                 "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
+        addParameterToSampleCall(sb, "group", "", "If the metadata to change is in a group, set the internal name of the metadata group name here.");
+
         return sb.toString();
     }
 
@@ -74,19 +79,18 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("field") == null || parameters.get("field").equals("")) {
+        if (StringUtils.isBlank(parameters.get("field"))) {
             Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "field");
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
-        if (parameters.get("search") == null || parameters.get("search").equals("")) {
+        if (StringUtils.isBlank(parameters.get("search"))) {
             Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "search");
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
-
-        if (parameters.get("position") == null || parameters.get("position").equals("")) {
+        if (StringUtils.isBlank(parameters.get("position"))) {
             Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "position");
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
         // add all valid commands to list
@@ -175,14 +179,13 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
             field = replacer.replace(field);
             search = replacer.replace(search);
             replace = replacer.replace(replace);
-
+            String group = parameters.get("group");
             // now change the searched metadata and save the file
-            replaceMetadata(dsList, field, search, replace, p.getRegelsatz().getPreferences(),
-                    searchFieldIsRegularExpression);
+            replaceMetadata(dsList, group, field, search, replace, p.getRegelsatz().getPreferences(), searchFieldIsRegularExpression);
             p.writeMetadataFile(ff);
             Thread.sleep(2000);
-            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
-                    "Metadata changed using GoobiScript: " + parameters.get("field") + " - " + parameters.get("search") + " - " + parameters.get("replace"), username);
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Metadata changed using GoobiScript: " + parameters.get("field") + " - "
+                    + parameters.get("search") + " - " + parameters.get("replace"), username);
             log.info("Metadata changed using GoobiScript for process with ID " + p.getId());
             gsr.setResultMessage("Metadata changed successfully.");
             gsr.setResultType(GoobiScriptResultType.OK);
@@ -207,10 +210,20 @@ public class GoobiScriptMetadataReplace extends AbstractIGoobiScript implements 
      * @param prefs the {@link Preferences} to use
      * @param searchFieldIsRegularExpression interpret the search field as regular expression or as string
      */
-    private void replaceMetadata(List<DocStruct> dsList, String field, String search, String replace, Prefs prefs,
+    @SuppressWarnings("unchecked")
+    private void replaceMetadata(List<DocStruct> dsList, String groupName, String field, String search, String replace, Prefs prefs,
             boolean searchFieldIsRegularExpression) {
         for (DocStruct ds : dsList) {
-            List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
+            List<Metadata> mdlist = new ArrayList<>();
+            if (StringUtils.isNotBlank(groupName)) {
+                List<MetadataGroup> groups = ds.getAllMetadataGroupsByType(prefs.getMetadataGroupTypeByName(groupName));
+                for (MetadataGroup mg : groups) {
+                    mdlist.addAll(mg.getMetadataByType(field));
+                }
+            } else {
+                mdlist = (List<Metadata>) ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
+            }
+
             if (mdlist != null && !mdlist.isEmpty()) {
                 for (Metadata md : mdlist) {
                     if (searchFieldIsRegularExpression) {

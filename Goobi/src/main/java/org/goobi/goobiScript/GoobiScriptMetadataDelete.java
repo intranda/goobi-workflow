@@ -25,10 +25,12 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
 
+import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
@@ -40,6 +42,7 @@ import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
+import ugh.dl.MetadataGroup;
 import ugh.dl.Prefs;
 
 @Log4j2
@@ -62,6 +65,9 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
                 "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
         addParameterToSampleCall(sb, "ignoreValue", "false",
                 "Set this parameter to `true` if the deletion of the metadata shall take place independent of the current metadata value. In this case all metadata that match the defined `field` will be deleted.");
+        addParameterToSampleCall(sb, "type", "metadata",
+                "Define what type of metadata you would like to change. Possible values are `metadata` and `group`. Default is metadata.");
+        addParameterToSampleCall(sb, "group", "", "Internal name of the group. Use it when the metadata to change is located within a group.");
         return sb.toString();
     }
 
@@ -69,22 +75,18 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        // action:metadataDelete field:DocLanguage value:deutschTop position:top ignoreValue:true
-        // action:metadataDelete field:DocLanguage value:deutschChild position:child
-
-        if (parameters.get("field") == null || parameters.get("field").equals("")) {
+        if (StringUtils.isBlank(parameters.get("field"))) {
             Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "field");
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
-        if (parameters.get("value") == null || parameters.get("value").equals("")) {
+        if (StringUtils.isBlank(parameters.get("value"))) {
             Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "value");
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
-
-        if (parameters.get("position") == null || parameters.get("position").equals("")) {
+        if (StringUtils.isBlank(parameters.get("position"))) {
             Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "position");
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
         // add all valid commands to list
@@ -122,7 +124,7 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
                     }
                     break;
 
-                // fist the first child element
+                    // fist the first child element
                 case "child":
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -133,7 +135,7 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
                     }
                     break;
 
-                // any element in the hierarchy
+                    // any element in the hierarchy
                 case "any":
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
@@ -147,7 +149,7 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
                     }
                     break;
 
-                // default "work", which is the first child or the main top element if it is not an anchor
+                    // default "work", which is the first child or the main top element if it is not an anchor
                 default:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -166,9 +168,10 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
             String value = parameters.get("value");
             field = replacer.replace(field);
             value = replacer.replace(value);
-
+            String type = parameters.get("type");
+            String group = parameters.get("group");
             // now find the metadata field to delete
-            deleteMetadata(dsList, field, value, ignoreValue, p.getRegelsatz().getPreferences());
+            deleteMetadata(dsList, type, group, field, value, ignoreValue, p.getRegelsatz().getPreferences());
             p.writeMetadataFile(ff);
             Thread.sleep(2000);
             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
@@ -196,13 +199,32 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
      * @param ignoreValue a boolean that defines if the value of the metadata shall not be checked before deletion
      * @param prefs the {@link Preferences} to use
      */
-    private void deleteMetadata(List<DocStruct> dsList, String field, String value, boolean ignoreValue, Prefs prefs) {
-        for (DocStruct ds : dsList) {
-            List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
-            if (mdlist != null && !mdlist.isEmpty()) {
-                for (Metadata md : mdlist) {
-                    if (ignoreValue || md.getValue().equals(value)) {
-                        ds.getAllMetadata().remove(md);
+    private void deleteMetadata(List<DocStruct> dsList, String deletionType, String groupName, String metadataName, String value, boolean ignoreValue,
+            Prefs prefs) {
+        if (StringUtils.isNotBlank(deletionType) && "group".equals(deletionType)) {
+            for (DocStruct ds : dsList) {
+                List<MetadataGroup> groups = new ArrayList<>(ds.getAllMetadataGroupsByType(prefs.getMetadataGroupTypeByName(metadataName)));
+                for (MetadataGroup grp : groups) {
+                    ds.removeMetadataGroup(grp, true);
+                }
+            }
+        } else {
+            for (DocStruct ds : dsList) {
+                List<Metadata> mdlist = new ArrayList<>();
+                if (StringUtils.isNotBlank(groupName)) {
+                    List<MetadataGroup> groups = ds.getAllMetadataGroupsByType(prefs.getMetadataGroupTypeByName(groupName));
+                    for (MetadataGroup mg : groups) {
+                        mdlist.addAll(mg.getMetadataByType(metadataName));
+                    }
+                } else {
+                    mdlist = (List<Metadata>) ds.getAllMetadataByType(prefs.getMetadataTypeByName(metadataName));
+                }
+
+                if (mdlist != null && !mdlist.isEmpty()) {
+                    for (Metadata md : mdlist) {
+                        if (ignoreValue || md.getValue().equals(value)) {
+                            md.getParent().removeMetadata(md, true);
+                        }
                     }
                 }
             }

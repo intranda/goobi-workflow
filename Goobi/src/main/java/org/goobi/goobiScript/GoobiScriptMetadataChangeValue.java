@@ -25,10 +25,12 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
 
+import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
@@ -40,6 +42,7 @@ import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
+import ugh.dl.MetadataGroup;
 import ugh.dl.Prefs;
 
 @Log4j2
@@ -66,6 +69,7 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
                 "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
         addParameterToSampleCall(sb, "condition", "blue",
                 "Define a value here that shall be present in the metadata field. The metadata is only updated if this term can be found inside of the metadata value  (check if it is contained).");
+        addParameterToSampleCall(sb, "group", "", "If the metadata to change is in a group, set the internal name of the metadata group name here.");
         return sb.toString();
     }
 
@@ -73,20 +77,19 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("field") == null || parameters.get("field").equals("")) {
+        if (StringUtils.isBlank(parameters.get("field"))) {
             Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "field");
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
-        if ((parameters.get("prefix") == null || parameters.get("prefix").equals(""))
-                && (parameters.get("suffix") == null || parameters.get("suffix").equals(""))) {
+        if (StringUtils.isBlank(parameters.get("prefix")) && StringUtils.isBlank(parameters.get("suffix"))) {
             Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "prefix OR suffix");
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
-        if (parameters.get("position") == null || parameters.get("position").equals("")) {
+        if (StringUtils.isBlank(parameters.get("position"))) {
             Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "position");
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
         // add all valid commands to list
@@ -125,7 +128,7 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
                     }
                     break;
 
-                // fist the first child element
+                    // fist the first child element
                 case "child":
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -136,7 +139,7 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
                     }
                     break;
 
-                // any element in the hierarchy
+                    // any element in the hierarchy
                 case "any":
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
@@ -149,7 +152,7 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
                         dsList.add(physical);
                     }
                     break;
-                // default "work", which is the first child or the main top element if it is not an anchor
+                    // default "work", which is the first child or the main top element if it is not an anchor
                 default:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -163,6 +166,7 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
             String prefix = parameters.get("prefix");
             String suffix = parameters.get("suffix");
             String condition = parameters.get("condition");
+            String group = parameters.get("group");
             if (prefix == null) {
                 prefix = "";
             }
@@ -179,7 +183,7 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
             suffix = replacer.replace(suffix);
             condition = replacer.replace(condition);
 
-            changeMetadata(dsList, parameters.get("field"), prefix, suffix, condition, p.getRegelsatz().getPreferences());
+            changeMetadata(dsList,group, parameters.get("field"), prefix, suffix, condition, p.getRegelsatz().getPreferences());
             p.writeMetadataFile(ff);
             Thread.sleep(2000);
             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
@@ -203,15 +207,26 @@ public class GoobiScriptMetadataChangeValue extends AbstractIGoobiScript impleme
      * Method to change a given metadata from a {@link DocStruct}
      * 
      * @param dsList as List of structural elements to use
+     * @param group the internal name of the metadata group
      * @param field the metadata field that is used
      * @param prefix the prefix string that shall be added
      * @param suffix the suffix string that shall be added
      * @param condition a string which shall be contained in the string to restrict just to specific metadata
      * @param prefs the {@link Preferences} to use
      */
-    private void changeMetadata(List<DocStruct> dsList, String field, String prefix, String suffix, String condition, Prefs prefs) {
+    @SuppressWarnings("unchecked")
+    private void changeMetadata(List<DocStruct> dsList, String group, String field, String prefix, String suffix, String condition, Prefs prefs) {
         for (DocStruct ds : dsList) {
-            List<? extends Metadata> mdlist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
+            List<Metadata> mdlist = new ArrayList<>();
+            if (StringUtils.isNotBlank(group)) {
+                List<MetadataGroup> groups = ds.getAllMetadataGroupsByType(prefs.getMetadataGroupTypeByName(group));
+                for (MetadataGroup mg : groups) {
+                    mdlist.addAll(mg.getMetadataByType(field));
+                }
+            } else {
+                mdlist = (List<Metadata>) ds.getAllMetadataByType(prefs.getMetadataTypeByName(field));
+
+            }
             if (mdlist != null && !mdlist.isEmpty()) {
                 for (Metadata md : mdlist) {
                     if (condition.isEmpty() || md.getValue().contains(condition)) {

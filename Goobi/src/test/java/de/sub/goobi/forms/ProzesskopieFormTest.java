@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -55,6 +56,7 @@ import de.sub.goobi.AbstractTest;
 import de.sub.goobi.config.ConfigProjectsTest;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.Helper;
+import de.sub.goobi.helper.enums.StepStatus;
 import de.sub.goobi.mock.MockProcess;
 import de.sub.goobi.persistence.managers.MasterpieceManager;
 import de.sub.goobi.persistence.managers.MetadataManager;
@@ -70,7 +72,7 @@ import ugh.exceptions.TypeNotAllowedForParentException;
 @RunWith(PowerMockRunner.class)
 
 @PrepareForTest({ TemplateManager.class, MasterpieceManager.class, PropertyManager.class, ProcessManager.class, MetadataManager.class,
-        HistoryAnalyserJob.class, StepManager.class, Helper.class })
+    HistoryAnalyserJob.class, StepManager.class, Helper.class })
 public class ProzesskopieFormTest extends AbstractTest {
 
     private Process template;
@@ -95,7 +97,7 @@ public class ProzesskopieFormTest extends AbstractTest {
         this.template.setDocket(new Docket());
         this.template.setDocketId(0);
         this.template.setId(666);
-        this.template.setMetadatenKonfigurationID(0);
+        this.template.setMetadatenKonfigurationID(1);
         this.template.setIstTemplate(true);
 
         User user = new User();
@@ -108,11 +110,13 @@ public class ProzesskopieFormTest extends AbstractTest {
         step.setTitel("titel");
         step.setBenutzer(userList);
         step.setReihenfolge(1);
+        step.setBearbeitungsstatusEnum(StepStatus.DONE);
         stepList.add(step);
 
         secondStep = new Step();
         secondStep.setTitel("titel");
         secondStep.setReihenfolge(2);
+        secondStep.setBearbeitungsstatusEnum(StepStatus.OPEN);
         secondStep.setBenutzer(new ArrayList<>());
         stepList.add(secondStep);
         this.template.setSchritte(stepList);
@@ -146,6 +150,7 @@ public class ProzesskopieFormTest extends AbstractTest {
         secondStep.setBenutzer(userList);
         assertEquals("process_new1", form.Prepare());
         form.setOpacKatalog("KXP");
+        assertEquals("KXP", form.getOpacKatalog());
         form.setOpacSuchbegriff("517154005");
         assertEquals("", form.OpacAuswerten());
     }
@@ -371,6 +376,47 @@ public class ProzesskopieFormTest extends AbstractTest {
         form.setOpacSuchbegriff(fixture);
         assertEquals(fixture, form.getOpacSuchbegriff());
     }
+
+
+    @Test
+    public void testStandardFields() throws Exception {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertNotNull(form);
+        form.setProzessVorlage(template);
+        secondStep.setBenutzer(userList);
+        assertEquals("process_new1", form.Prepare());
+        assertEquals(5, form.getStandardFields().size());
+        assertTrue(form.getStandardFields().get("doctype").booleanValue());
+    }
+
+
+
+    @Test
+    public void testImagesGuessed() throws Exception {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertEquals(0, form.getImagesGuessed().intValue());
+        form.setImagesGuessed(1);
+        assertEquals(1, form.getImagesGuessed().intValue());
+    }
+
+    @Test
+    public void testRulesetSelection() throws Exception {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertEquals(0, form.getRulesetSelection().intValue());
+        form.setProzessKopie(template);
+        assertEquals(11111, form.getRulesetSelection().intValue());
+    }
+
+    @Test
+    public void testCreateAtstsl() throws Exception {
+        ProzesskopieForm form = new ProzesskopieForm();
+        assertEquals("abcfix", form.createAtstsl("fix fixture fixture fixture fixture fixture", "abc def"));
+        assertEquals("abcdatit", form.createAtstsl("ätitle with umlauts", "abcdef"));
+        assertEquals("worwww", form.createAtstsl("wor w w w w w", ""));
+        assertEquals("longlolol", form.createAtstsl("longword longword longword longword longword", ""));
+        assertEquals("longwo", form.createAtstsl("longword word", ""));
+    }
+
 
     @SuppressWarnings("unchecked")
     private void prepareMocking() throws Exception {
