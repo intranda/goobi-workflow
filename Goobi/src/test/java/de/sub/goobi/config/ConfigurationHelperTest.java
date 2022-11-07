@@ -616,8 +616,23 @@ public class ConfigurationHelperTest extends AbstractTest {
     }
 
     @Test
-    public void testGetJobStartTime() {
-        assertEquals(-1, ConfigurationHelper.getInstance().getJobStartTime("something"));
+    public void testGetJobStartTimeForDailyDelayJob() {
+        assertEquals(3600000, ConfigurationHelper.getInstance().getJobStartTime("dailyDelayJob"));
+    }
+
+    @Test
+    public void testGetJobStartTimeForDailyVocabJob() {
+        assertEquals(0, ConfigurationHelper.getInstance().getJobStartTime("dailyVocabJob"));
+    }
+
+    @Test
+    public void testGetJobStartTimeForDailyHistoryAnalyser() {
+        assertEquals(-1, ConfigurationHelper.getInstance().getJobStartTime("dailyHistoryAnalyser"));
+    }
+
+    @Test
+    public void testGetGoobi() {
+        assertEquals(1, ConfigurationHelper.getInstance().getJobStartTime("goobiAuthorityServerUploadFrequencyInMinutes"));
     }
 
     @Test
