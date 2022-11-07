@@ -16,7 +16,7 @@
 	<composite:implementation>
 
 
-    <!-- Example box -->
+  <!-- Example box -->
 
   <article class="flow">
 
@@ -121,11 +121,83 @@ const applyStyles = (e) => {
 }
 
 document.querySelectorAll('.switch > .btn').forEach((btn) => btn.addEventListener('click', applyStyles));
+// Apply box--blank styles on page load
 document.querySelector('.switch > .btn-blank').click();
 
 </script>
 
   </article>
 
+  <article class="flow">
+
+    <h3 class="description">Boxes with complex title bars, e.g. tabs.</h3>
+    <intranda:box
+      boxType="action"
+      scope="form-box"
+      boxTitle="false"
+      padding="false"
+      >
+
+      <!-- TITLE BAR -->
+      <intranda:boxTitle
+        title="#{myPageTitle}"
+        icon="fa-edit"
+        >
+        <!-- TABS -->
+        <ul class="tabs">
+          <li class="tab #{BenutzerverwaltungForm.displayMode eq ''?'active':''}">
+            <h:commandLink
+              id="tab1"
+              styleClass="tab__link"
+              value="active tab">
+              <f:ajax onevent="() => null" />
+            </h:commandLink>
+          </li>
+          <li class="tab">
+            <h:commandLink
+              id="tab2"
+              styleClass="tab__link"
+              value="not acive">
+              <f:ajax onevent="() => null" />
+            </h:commandLink>
+          </li>
+        </ul>
+      </intranda:boxTitle>
+
+  </intranda:box>
+
+    <!-- Code block -->
+		<pre class="code--box box-variant--tabs bg-primary text-white p-3" style="border-radius: var(--border-radius)">
+      <code class="microlight"></code>
+		</pre>
+
+    <script>
+      const boxCodeBoxTabs =`
+&lt;intranda:box
+  boxType=&quot;{%type%}&quot;
+  icon=&quot;fa-search&quot;
+  title=&quot;#{msgs.search}&quot;
+  padding=&quot;false&quot;&gt; // default: true
+  boxTitle=&quot;false&quot;&gt; // default: true
+
+  &lt;intranda:boxTitle
+    title=&quot;{#myPageTitle}&quot;
+    icon=&quot;fa-edit&quot;&gt;
+
+  &lt;!-- Your markup here --&gt;
+
+  &lt;!-- Find a live example in user_edit.xhtml --&gt;
+
+  &lt;/intranda:boxTitle&gt;
+
+  &lt;!-- Your markup here --&gt;
+
+&lt;/intranda:box&gt;`
+
+      const codeBlock = document.querySelector('.box-variant--tabs code')
+      codeBlock.textContent =  boxCodeBoxTabs.replace('{%type%}', 'blank');
+    </script>
+
+  </article>
 	</composite:implementation>
 </ui:composition>

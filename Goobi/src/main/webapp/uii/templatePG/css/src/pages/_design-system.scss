@@ -34,9 +34,20 @@
   }
 
   // Boxes
-  .switch {
-    --flow-space: 1.6rem;
-    display: flex;
-    gap: 8px;
+  section.boxes {
+    article {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      .box {
+        flex: 1;
+      }
+    }
+    .switch {
+      --flow-space: 1.6rem;
+      display: flex;
+      gap: 8px;
+    }
   }
 }
