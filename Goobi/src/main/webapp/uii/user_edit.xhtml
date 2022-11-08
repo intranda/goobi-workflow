@@ -55,7 +55,7 @@
 
           <intranda:box
             boxType="action"
-            scope="form-box"
+            scope="form-box edit-user"
             boxTitle="false"
             padding="false"
             >
@@ -66,7 +66,7 @@
               icon="fa-edit"
               >
               <ul class="tabs #{BenutzerverwaltungForm.myClass.id == null ? 'd-none': ''}">
-                <li class="tab #{BenutzerverwaltungForm.displayMode eq ''?'active':''}">
+                <li class="tab tab--1 #{BenutzerverwaltungForm.displayMode eq ''?'active':''}">
                   <h:commandLink
                     id="tab1"
                     styleClass="tab__link"
@@ -80,7 +80,7 @@
                       execute=":myform" />
                   </h:commandLink>
                 </li>
-                <li class="tab #{BenutzerverwaltungForm.displayMode eq 'tab2'?'active':''}">
+                <li class="tab tab--2 #{BenutzerverwaltungForm.displayMode eq 'tab2'?'active':''}">
                   <h:commandLink
                     id="tab2"
                     styleClass="tab__link"
@@ -95,7 +95,7 @@
                       execute=":myform" />
                   </h:commandLink>
                 </li>
-                <li class="tab #{BenutzerverwaltungForm.displayMode eq 'tab3'?'active':''}">
+                <li class="tab tab--3 #{BenutzerverwaltungForm.displayMode eq 'tab3'?'active':''}">
                 <h:commandLink
                   id="tab3"
                   styleClass="tab__link"
@@ -329,8 +329,7 @@
 
             <!-- ===================== User groups ====================== -->
 
-            <div class="row"
-                 style="border-bottom: 1px solid #DDDDDD;">
+            <div class="row">
 
               <h:outputLabel
                 styleClass="col-12 col-md-3 form__label"
@@ -353,7 +352,7 @@
 
                       <x:dataTable
                         id="newgroups"
-                        styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                        styleClass="table table-hover table-nomargin dataTable table-bordered-custom responsive"
                         var="item"
                         value="#{BenutzerverwaltungForm.usergroupPaginator.list}">
 
@@ -385,6 +384,7 @@
                         value="#{item.institution.shortName}" />
                       </x:column>
                       </x:dataTable>
+
 
                       <div
                         class="form__actions">
@@ -431,14 +431,22 @@
 
                         <x:dataTable
                           id="currentGroups"
-                          styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                          styleClass="
+                          table
+                          table-hover
+                          dataTable
+                          table-bordered-custom
+                          #{BenutzerverwaltungForm.unsubscribedGroupsExist ? '' : '-no-bb'}"
                           var="item"
                           value="#{BenutzerverwaltungForm.myClass.benutzergruppen}">
 
                           <h:column>
                             <h:outputText value="#{item.titel}" />
                           </h:column>
-                          <x:column styleClass="table__actions">
+                          <x:column>
+
+                          <div class="d-flex justify-content-between align-items-center">
+
                             <h:outputText value="#{item.institution.shortName}" />
                             <!-- Löschen-Schaltknopf -->
                             <button
@@ -451,9 +459,15 @@
                               <f:param name="ID" value="#{item.id}" />
                               <f:ajax render=":myform" />
                             </button>
+
+                          </div>
+
                           </x:column>
                         </x:dataTable>
 
+                          <script>
+                        console.log("#{BenutzerverwaltungForm.unsubscribedGroupsExist}")
+                          </script>
                         <div
                           class="box__actions"
                           jsf:rendered="#{BenutzerverwaltungForm.unsubscribedGroupsExist}"
@@ -598,7 +612,13 @@
 
                     <x:dataTable
                       id="currentProjects"
-                      styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                      styleClass="
+                        table
+                        table-hover
+                        table-nomargin
+                        dataTable
+                        table-bordered-custom
+                        #{BenutzerverwaltungForm.unsubscribedProjectsExist ? '' : '-no-bb'}"
                       var="item"
                       value="#{BenutzerverwaltungForm.myClass.projekte}">
 
@@ -606,7 +626,10 @@
                     <h:outputText
                       value="#{item.titel}" />
                     </h:column>
-                    <x:column styleClass="table__actions">
+                    <x:column>
+
+                    <div class="d-flex justify-content-between align-items-center">
+
                     <h:outputText
                       value="#{item.institution.shortName}" />
                     <!-- Löschen-Schaltknopf -->
@@ -623,7 +646,9 @@
                       <f:ajax
                         render=":myform" />
                     </button>
+                    </div>
                     </x:column>
+
                     </x:dataTable>
 
                     <div
