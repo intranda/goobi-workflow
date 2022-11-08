@@ -17,40 +17,47 @@
 
 		<div class="form-actions">
 
+			<!-- Cancel -->
+			<a jsf:id="cancel" class="btn btn-blank" jsf:immediate="true" jsf:action="#{cc.attrs.actionCancel}">
+			#{msgs.abbrechen} </a>
+
 			<!-- Save -->
-			<button class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most" jsf:id="absenden"
+			<button class="btn btn-success submitOnEnter" jsf:id="absenden"
 				type="submit" jsf:action="#{cc.attrs.form.Speichern}">
-				<i class="fa fa-save margin-right-5"></i>
-				<h:outputText value="#{msgs.speichern}" />
+				<i class="fa fa-save"></i>
+				<span>#{msgs.speichern}</span>
 			</button>
 
-			<!-- Cancel -->
-			<button jsf:id="cancel" class="btn margin-sides-10 font-size-s pull-right" jsf:immediate="true" jsf:action="#{cc.attrs.actionCancel}">
-			#{msgs.abbrechen} </button>
 
 
 			<!-- Delete -->
 			<c:if test="#{cc.attrs.object != null}">
+
 				<h:panelGroup rendered="#{(cc.attrs.grayeddelete != null) and (cc.attrs.grayeddelete == true)}">
-					<div title="#{cc.attrs.grayeddeletetooltip}"
-						jsf:rel="tooltip"
-						class="btn"
-						style="padding: 0; cursor: default;">
+					<div
+						class="trigger-delete"
+						title="#{cc.attrs.grayeddeletetooltip}"
+						data-bs-toggle="tooltip"
+						data-bs-placement="top"
+						>
 						<button
 							type="button"
-							class="btn btn-danger"
+							class="btn btn-hot"
 							jsf:disabled="#{true}">
-							<i class="fa fa-trash-o margin-right-5" />
+							<i class="fa fa-trash-o" />
+							<span>
 							<h:outputText value="#{msgs.loeschen}" />
+							</span>
 						</button>
-						<f:passThroughAttribute
-							name="data-toggle"
-							value="tooltip" />
 					</div>
 				</h:panelGroup>
+
 				<h:panelGroup rendered="#{(cc.attrs.grayeddelete == null) or (cc.attrs.grayeddelete == false)}">
-					<button id="delete" class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteModal"> <i
-						class="fa fa-trash-o margin-right-5" /> <h:outputText value="#{msgs.loeschen}" />
+					<button id="delete" class="btn btn-danger trigger-delete" type="button" data-toggle="modal" data-target="#deleteModal">
+						<i class="fa fa-trash-o margin-right-5" />
+						<span>
+							<h:outputText value="#{msgs.loeschen}" />
+						</span>
 					</button>
 
 					<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
