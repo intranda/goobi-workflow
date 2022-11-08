@@ -5,7 +5,8 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:x="http://myfaces.apache.org/tomahawk">
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<composite:interface>
 		<composite:attribute name="boxType" />
@@ -38,16 +39,23 @@
       </div>
 			-->
 
-			<div class="box__content">
 
-				<intranda:boxTitle rendered="#{cc.attrs.boxTitle}" title="#{cc.attrs.title}" icon="#{cc.attrs.icon}" />
+			<!-- Renders if a boxTitle = true -->
+			<h:panelGroup layout="block" class="box__content">
+
+					<intranda:boxTitle
+						title="#{cc.attrs.title}"
+						icon="#{cc.attrs.icon}"
+						rendered="#{cc.attrs.boxTitle}"
+						/>
+
+					<div class="#{cc.attrs.boxTitle ? 'box__data' : 'box__content-inner'}">
+						<composite:insertChildren />
+					</div>
+
+			</h:panelGroup>
 
 
-				<div class="box__data">
-					<composite:insertChildren/>
-				</div>
-
-      </div> <!-- box-content end -->
     </div> <!-- box end -->
 
 
