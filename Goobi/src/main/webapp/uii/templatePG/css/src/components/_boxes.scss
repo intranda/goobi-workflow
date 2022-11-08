@@ -7,7 +7,7 @@
 }
 
 .box.box--small {
-  --box-padding-title: 2px 0 2px 5px;
+  --box-padding-title: 2px 0 2px 10px;
 }
 
 .box {
@@ -81,6 +81,13 @@
     margin-bottom: unset;
   }
   */
+}
+
+.box--no-padding {
+  .form-actions {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
 }
 
 /* Box content without padding */
