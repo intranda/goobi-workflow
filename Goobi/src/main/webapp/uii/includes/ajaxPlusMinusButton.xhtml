@@ -7,7 +7,7 @@
 
 	<composite:implementation>
 
-		<button type="button" class="button-link font-black" jsf:rendered="#{!item.panelAusgeklappt}" title="#{item.titel}"  jsf:id="displayDetails"
+		<button type="button" class="button-link font-black collapse-custom" jsf:rendered="#{!item.panelAusgeklappt}" title="#{item.titel}"  jsf:id="displayDetails"
 		aria-haspopup="true" aria-expanded="false">
 			<i class="fa fa-angle-right margin-right-5"></i>
 			<h:outputText value="#{item.titelLokalisiert}" />
@@ -15,7 +15,7 @@
 			<f:ajax render=":myform" />
 		</button>
 		
-		<button type="button" class="button-link font-black" jsf:rendered="#{item.panelAusgeklappt}" title="#{item.titel}"  jsf:id="hideDetails"
+		<button type="button" class="button-link font-black collapse-custom" jsf:rendered="#{item.panelAusgeklappt}" title="#{item.titel}"  jsf:id="hideDetails"
 		aria-haspopup="true" aria-expanded="true">
 			<i class="fa fa-angle-down margin-right-5"></i>
 			<h:outputText value="#{item.titelLokalisiert}" />
