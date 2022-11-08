@@ -25,11 +25,7 @@
 	</ui:define>
 
 	<ui:define name="content">
-		<script type="text/javascript">
-			window.onload = function() {
-				document.getElementById('titel').focus();
-			}
-		</script>
+
 		<h:form id="myform" styleClass="form-horizontal form-bordered"
 			onkeypress="submitOnEnter(event);"
 			rendered="#{LoginForm.hasRole('Admin_Usergroups')}">
