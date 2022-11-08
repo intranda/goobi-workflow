@@ -61,18 +61,19 @@
           <div class="form-actions">
             <button
 				      disabled="disabled"
-              class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
+              class="btn btn-success"
               jsf:id="absenden"
               type="submit"
               jsf:action="#{ProzessverwaltungForm.FilterAlleStart}">
-              <i class="fa fa-search margin-right-5"></i>
-              <h:outputText value="#{msgs.search}" />
+              <i class="fa fa-search"></i>
+              <span>#{msgs.search}</span>
               <f:setPropertyActionListener
                 target="#{NavigationForm.aktuell}"
                 value="a22" />
             </button>
           </div>
         </h:form>
+
         </intranda:box>
 
          <div class="flow">
@@ -105,6 +106,7 @@ const boxCode =`
   icon=&quot;fa-search&quot;
   title=&quot;#{msgs.search}&quot;
   padding=&quot;false&quot;&gt; // default: true
+  sizeSmall=&quot;false&quot;&gt; // default: false
 
 &lt;!-- Your markup here --&gt;
 
@@ -140,7 +142,7 @@ document.querySelector('.switch > .btn-blank').click();
 
       <!-- TITLE BAR -->
       <intranda:boxTitle
-        title="#{myPageTitle}"
+        title="Box with tabs"
         icon="fa-edit"
         >
         <!-- TABS -->
@@ -179,6 +181,7 @@ document.querySelector('.switch > .btn-blank').click();
   title=&quot;#{msgs.search}&quot;
   padding=&quot;false&quot;&gt; // default: true
   boxTitle=&quot;false&quot;&gt; // default: true
+  boxTitle=&quot;false&quot;&gt; // default: true
 
   &lt;intranda:boxTitle
     title=&quot;{#myPageTitle}&quot;
@@ -194,10 +197,51 @@ document.querySelector('.switch > .btn-blank').click();
 
 &lt;/intranda:box&gt;`
 
-      const codeBlock = document.querySelector('.box-variant--tabs code')
-      codeBlock.textContent =  boxCodeBoxTabs.replace('{%type%}', 'blank');
+      document.querySelector('.box-variant--tabs code').textContent =  boxCodeBoxTabs.replace('{%type%}', 'blank');
     </script>
 
   </article>
+
+
+
+  <!-- SMALL BOXES -->
+  <article class="flow">
+
+    <h3 class="description">Boxes with a slimmer title bar, often nested in tables etc.</h3>
+    <intranda:box
+      boxType="hot"
+      icon="undefined"
+      title="I am a slim title"
+      sizeSmall="true"
+      >
+
+    </intranda:box>
+
+    <!-- Code block -->
+		<pre class="code--box box-variant--small bg-primary text-white p-3" style="border-radius: var(--border-radius)">
+      <code class="microlight"></code>
+		</pre>
+
+    <script>
+      const boxCodeBoxSmall =`
+&lt;intranda:box
+  boxType=&quot;hot&quot;
+  icon=&quot;undefined&quot; // default: undefined
+  title=&quot;I am a slim title&quot;
+  sizeSmall=&quot;true&quot;&gt; // default: true
+
+  &lt;!-- Your markup here --&gt;
+
+  &lt;!-- Find a live example in usergroup_all.xhtml --&gt;
+
+&lt;/intranda:box&gt;`
+
+      document.querySelector('.box-variant--small code').textContent =  boxCodeBoxSmall.replace('{%type%}', 'blank');
+    </script>
+
+  </article>
+
 	</composite:implementation>
 </ui:composition>
+
+
