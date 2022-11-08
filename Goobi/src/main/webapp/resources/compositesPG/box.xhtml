@@ -16,12 +16,18 @@
 		<composite:attribute name="scrollX" default="false" />
 		<composite:attribute name="boxTitle" default="true" />
 		<composite:attribute name="addClass" />
+		<composite:attribute name="sizeSmall" default="false"/>
 	</composite:interface>
 
 	<composite:implementation>
 
 
-	<div class="box box--#{cc.attrs.boxType} #{cc.attrs.scope}">
+	<div class="box
+		box--#{cc.attrs.boxType}
+		#{cc.attrs.scope}
+		#{cc.attrs.padding ? 'box--padded' : ''}
+		#{cc.attrs.sizeSmall ? 'box--small' : ''}
+		">
 			<!--
       <div class="box-title">
 
@@ -32,12 +38,14 @@
       </div>
 			-->
 
-			<div class="box__content #{cc.attrs.padding ? 'box__content--padded' : 'p-0'} #{cc.attrs.scrollX ? 'box__content--scrollx' : ''} #{cc.attrs.addClass}">
+			<div class="box__content">
 
-			<intranda:boxTitle rendered="#{cc.attrs.boxTitle}" title="#{cc.attrs.title}" icon="#{cc.attrs.icon}" />
+				<intranda:boxTitle rendered="#{cc.attrs.boxTitle}" title="#{cc.attrs.title}" icon="#{cc.attrs.icon}" />
 
 
-				<composite:insertChildren/>
+				<div class="box__data">
+					<composite:insertChildren/>
+				</div>
 
       </div> <!-- box-content end -->
     </div> <!-- box end -->
