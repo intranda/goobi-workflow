@@ -83,28 +83,23 @@
   */
 }
 
-.box--no-padding {
-  .form-actions {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
-}
-
 /* Box content without padding */
-.box__content.p-0 {
-  /* prevent rows from overlapping boxes */
-  .row,
-  [class^="col-"] {
-    margin: 0;
-  }
-  .row > [class^="col-"] {
-    padding: 1.6rem 0.8rem;
-  }
+.box--no-padding {
+  .box__content {
+    /* prevent rows from overlapping boxes */
+    .row,
+    [class^="col-"] {
+      margin: 0;
+    }
+    .row > [class^="col-"] {
+      padding: 1.6rem 0.8rem;
+    }
 
-  .form-actions,
-  .box__actions,
-  .form__actions {
-    margin: 1.6rem;
+    .form-actions,
+    .box__actions,
+    .form__actions {
+      margin: 1.6rem;
+    }
   }
 }
 
@@ -162,6 +157,7 @@
   .col-md-3,
   .col-md-9 {
     display: flex;
+
     align-items: center;
     flex-wrap: wrap;
     // stretch nested boxes to full width
