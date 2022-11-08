@@ -14,8 +14,8 @@
 	<composite:interface />
 
 	<composite:implementation>
-	
-  
+
+
     <!-- BACKGROUND COLORS -->
     <article class="flow">
       <h3 class="description">Backgrounds</h3>
@@ -35,7 +35,7 @@
         </div>
       </c:forEach>
 
-    </article>
+    </article> <!-- end colors -->
 
     <!-- TEXT COLORS -->
     <article class="flow">
@@ -60,9 +60,24 @@
 
       </c:forEach>
 
-    </article>
+    </article> <!-- end text colors -->
 
+    <!-- BADGE COLORS -->
+    <article class="flow">
+      <h3 class="description">Badges</h3>
+
+    <c:forEach var="badgeColor" items="#{badgeColors}">
+      <span
+        class="badge #{badgeColor[0]}"
+        style=""
+      >
+      Example Badge
+      </span>
+
+      </c:forEach>
+
+    </article> <!-- end badge colors -->
 
   	</composite:implementation>
 </ui:composition>
-  
+
