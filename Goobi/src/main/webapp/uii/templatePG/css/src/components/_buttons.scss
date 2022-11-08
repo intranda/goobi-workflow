@@ -42,13 +42,15 @@ span.badge {
   border: 1px solid currentColor;
   padding: 4px;
   font-size: 1.2rem;
+  font-weight: 400;
   margin: 2px 4px;
+  white-space: break-spaces;
 
   i {
     margin-inline-start: 4px;
   }
   &:not(:last-child) {
-    margin-inline-end: 8px;
+    margin-inline-end: 2px;
   }
 }
 
@@ -73,6 +75,20 @@ span.badge {
 .skip-main:focus {
   position: relative;
   top: 0px;
+}
+
+// Collapses
+.collapse-custom {
+  /* reset default btn styles */
+  background: transparent;
+  padding: 0;
+  margin-bottom: 8px;
+  border: 0;
+  box-shadow: none;
+  /* align fa-angle-... + text */
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
 // Overrides
