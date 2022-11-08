@@ -6,7 +6,7 @@
 $colors: (
   primary-400: #368ee0,
   primary-600: #1b67af,
-  // neutral-200: #f4f4f4,
+  neutral-100: #f1f1f1,
   neutral-200: #eee,
   neutral-210: #dddddd,
   // used for neutral boxes (box blank)
@@ -26,6 +26,15 @@ $colors: (
   text-400: #2a2a2a,
 );
 
+$colors-badges: (
+  light-red: #e51400,
+  light-green: #56af45,
+  light-orange: #f8a31f,
+  light-purple: #8947cc,
+  light-brown2: #74422b,
+  light-blue: #368ee0,
+);
+
 :root {
   // Generate a custom property for every entry in the $colors map; e.g:
   // `--clr-primary-400: #368ee0;`
@@ -33,9 +42,21 @@ $colors: (
   @each $name, $color in $colors {
     --clr-#{$name}: #{$color};
   }
+
+  // Vars for badges
+  @each $name, $color in $colors-badges {
+    --clr-badge-#{$name}: #{$color};
+  }
 }
 
-// Generate background utilities; e.g:
+// Badges
+@each $name, $color in $colors-badges {
+  .badge-#{$name} {
+    color: var(--clr-badge-#{$name});
+  }
+}
+
+// Background utilities; e.g:
 // `.bg-action`
 
 @each $name, $color in $colors {
@@ -109,24 +130,13 @@ $colors: (
         border-color: var(--clr-#{$name});
       }
     }
-  }
-}
-
-// Generate utilities for legacy classes
-$legacy-box-colors: (
-  // legacy .box modifiers
-  "lightgrey": var(--clr-info),
-  "box-color": var(--clr-primary-400),
-  "blue": var(--clr-primary-400),
-  "orange": var(--clr-action)
-);
-
-@each $name, $color in $legacy-box-colors {
-  .box.#{$name} {
-    border-color: $color;
-    & .box-title {
-      background-color: $color;
-      border-color: $color;
+    // bump up specificity for nested boxes
+    .box .box.box--#{$name} {
+      border-color: var(--clr-#{$name});
+      & .box__title {
+        background-color: var(--clr-#{$name});
+        border-color: var(--clr-#{$name});
+      }
     }
   }
 }
