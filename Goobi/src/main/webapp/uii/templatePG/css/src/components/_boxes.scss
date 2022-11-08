@@ -2,7 +2,12 @@
 
 /* VARIABLES */
 .box {
-  --box-padding: 2rem;
+  --box-padding: 1.6rem;
+  --box-padding-title: 7px 0 7px 10px;
+}
+
+.box.box--small {
+  --box-padding-title: 2px 0 2px 5px;
 }
 
 .box {
@@ -22,7 +27,7 @@
   color: var(--clr-white, #fff);
   display: flex;
   justify-content: space-between;
-  padding: 7px 0 7px 10px;
+  padding: var(--box-padding-title);
   border-bottom: 2px solid var(--clr-neutral, #ddd);
   background-color: var(--clr-neutral, #ddd);
 
@@ -46,7 +51,7 @@
   }
 }
 
-.box__content {
+.box--padded .box__data {
   padding: var(--box-padding);
 
   // Apply a border-bottom to first level rows only
@@ -58,13 +63,6 @@
   .row > [class^="col-"] .row > [class^="col-"] {
     padding: 0;
   }
-}
-
-.box__content--padded {
-  .box__title {
-    margin: calc(var(--box-padding) * -1);
-    margin-bottom: unset;
-  }
 
   tr {
     border-left: 1px solid var(--clr-neutral-300);
@@ -74,6 +72,15 @@
   .no-borders tr {
     border: 0;
   }
+}
+
+.box--padded {
+  /*
+  .box__title {
+    margin: calc(var(--box-padding) * -1);
+    margin-bottom: unset;
+  }
+  */
 }
 
 /* Box content without padding */

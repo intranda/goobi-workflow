@@ -3,6 +3,10 @@
   margin-bottom: 0;
 }
 
+.table .row {
+  width: 100%;
+}
+
 .table-fixed {
   --width-table-col: 200px;
 }
@@ -60,10 +64,13 @@ td {
 }
 
 .table-hover > tbody > tr:hover > * {
-  --bs-table-accent-bg: var(--clr-neutral-200);
+  --bs-table-accent-bg: #f8f8f8;
 }
 
 // Some tables come with a search bar:
+// both classes are used for the same purpose
+// => .dataTables__search__container is a legacy version
+.dataTables__search,
 .dataTables__search__container {
   display: flex;
   flex-wrap: wrap;
@@ -155,6 +162,8 @@ td {
 }
 */
 
+/* table-wrapper is the legacy version, do not use it anymore */
+.dataTables__table-wrapper,
 .table-wrapper {
   overflow-x: auto;
 }
