@@ -71,8 +71,8 @@ public class ExportPdf extends ExportMets {
 
     @Override
     public boolean startExport(Process myProzess, String inZielVerzeichnis) throws IOException, InterruptedException, PreferencesException,
-    WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
-    SwapException, DAOException, TypeNotAllowedForParentException {
+            WriteException, DocStructHasNoTypeException, MetadataTypeNotAllowedException, ExportFileException, UghHelperException, ReadException,
+            SwapException, DAOException, TypeNotAllowedForParentException {
 
         /*
          * -------------------------------- Read Document --------------------------------
@@ -115,7 +115,7 @@ public class ExportPdf extends ExportMets {
             pdf.setImagePath(imagesPath);
             pdf.setPdfPath(pdfPath);
             pdf.setAltoPath(altoPath);
-            log.debug("Taget directory: " + zielVerzeichnis);
+            log.debug("Target directory: " + zielVerzeichnis);
             log.debug("Using ContentServer2 base URL: " + myBasisUrl);
             pdf.initialize(myProzess);
             pdf.start();
