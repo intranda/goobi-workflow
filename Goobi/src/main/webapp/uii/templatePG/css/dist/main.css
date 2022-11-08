@@ -2,6 +2,7 @@
 :root {
   --clr-primary-400: #368ee0;
   --clr-primary-600: #1b67af;
+  --clr-neutral-100: #f1f1f1;
   --clr-neutral-200: #eee;
   --clr-neutral-210: #dddddd;
   --clr-neutral-300: #ccc;
@@ -16,6 +17,12 @@
   --clr-info: #666666;
   --clr-blank: transparent;
   --clr-text-400: #2a2a2a;
+  --clr-light-red: #e51400;
+  --clr-light-green: #56af45;
+  --clr-light-orange: #f8a31f;
+  --clr-light-purple: #8947cc;
+  --clr-light-brown2: #74422b;
+  --clr-light-blue: #368ee0;
 }
 
 .bg-primary-400 {
@@ -32,6 +39,14 @@
 
 .text-primary-600 {
   color: var(--text-primary-600);
+}
+
+.bg-neutral-100 {
+  background-color: var(--clr-neutral-100);
+}
+
+.text-neutral-100 {
+  color: var(--text-neutral-100);
 }
 
 .bg-neutral-200 {
@@ -154,6 +169,10 @@
   color: var(--clr-primary-600);
 }
 
+.text-neutral-100 {
+  color: var(--clr-neutral-100);
+}
+
 .text-neutral-200 {
   color: var(--clr-neutral-200);
 }
@@ -231,6 +250,18 @@
 .btn-primary-600:hover {
   background-color: #185a99;
   border-color: #185a99;
+  color: #fff;
+}
+
+.btn-neutral-100 {
+  background-color: var(--clr-neutral-100);
+  border-color: var(--clr-neutral-100);
+  color: #fff;
+}
+
+.btn-neutral-100:hover {
+  background-color: #e4e4e4;
+  border-color: #e4e4e4;
   color: #fff;
 }
 
@@ -405,6 +436,30 @@
   color: #fff;
 }
 
+.badge-light-red {
+  color: var(--clr-light-red);
+}
+
+.badge-light-green {
+  color: var(--clr-light-green);
+}
+
+.badge-light-orange {
+  color: var(--clr-light-orange);
+}
+
+.badge-light-purple {
+  color: var(--clr-light-purple);
+}
+
+.badge-light-brown2 {
+  color: var(--clr-light-brown2);
+}
+
+.badge-light-blue {
+  color: var(--clr-light-blue);
+}
+
 /* A base box can be colored using these utility classes
  * Essentially the box header and the box border will change colors
  * The class list should look like so: class="box box--action"
@@ -418,6 +473,14 @@
   border-color: var(--clr-primary-400);
 }
 
+.box .box.box--primary-400 {
+  border-color: var(--clr-primary-400);
+}
+.box .box.box--primary-400 .box__title {
+  background-color: var(--clr-primary-400);
+  border-color: var(--clr-primary-400);
+}
+
 .box.box--primary-600 {
   border-color: var(--clr-primary-600);
 }
@@ -426,10 +489,42 @@
   border-color: var(--clr-primary-600);
 }
 
+.box .box.box--primary-600 {
+  border-color: var(--clr-primary-600);
+}
+.box .box.box--primary-600 .box__title {
+  background-color: var(--clr-primary-600);
+  border-color: var(--clr-primary-600);
+}
+
+.box.box--neutral-100 {
+  border-color: var(--clr-neutral-100);
+}
+.box.box--neutral-100 .box__title {
+  background-color: var(--clr-neutral-100);
+  border-color: var(--clr-neutral-100);
+}
+
+.box .box.box--neutral-100 {
+  border-color: var(--clr-neutral-100);
+}
+.box .box.box--neutral-100 .box__title {
+  background-color: var(--clr-neutral-100);
+  border-color: var(--clr-neutral-100);
+}
+
 .box.box--neutral-200 {
   border-color: var(--clr-neutral-200);
 }
 .box.box--neutral-200 .box__title {
+  background-color: var(--clr-neutral-200);
+  border-color: var(--clr-neutral-200);
+}
+
+.box .box.box--neutral-200 {
+  border-color: var(--clr-neutral-200);
+}
+.box .box.box--neutral-200 .box__title {
   background-color: var(--clr-neutral-200);
   border-color: var(--clr-neutral-200);
 }
@@ -442,10 +537,26 @@
   border-color: var(--clr-neutral-210);
 }
 
+.box .box.box--neutral-210 {
+  border-color: var(--clr-neutral-210);
+}
+.box .box.box--neutral-210 .box__title {
+  background-color: var(--clr-neutral-210);
+  border-color: var(--clr-neutral-210);
+}
+
 .box.box--neutral-300 {
   border-color: var(--clr-neutral-300);
 }
 .box.box--neutral-300 .box__title {
+  background-color: var(--clr-neutral-300);
+  border-color: var(--clr-neutral-300);
+}
+
+.box .box.box--neutral-300 {
+  border-color: var(--clr-neutral-300);
+}
+.box .box.box--neutral-300 .box__title {
   background-color: var(--clr-neutral-300);
   border-color: var(--clr-neutral-300);
 }
@@ -458,10 +569,26 @@
   border-color: var(--clr-neutral-400);
 }
 
+.box .box.box--neutral-400 {
+  border-color: var(--clr-neutral-400);
+}
+.box .box.box--neutral-400 .box__title {
+  background-color: var(--clr-neutral-400);
+  border-color: var(--clr-neutral-400);
+}
+
 .box.box--neutral-600 {
   border-color: var(--clr-neutral-600);
 }
 .box.box--neutral-600 .box__title {
+  background-color: var(--clr-neutral-600);
+  border-color: var(--clr-neutral-600);
+}
+
+.box .box.box--neutral-600 {
+  border-color: var(--clr-neutral-600);
+}
+.box .box.box--neutral-600 .box__title {
   background-color: var(--clr-neutral-600);
   border-color: var(--clr-neutral-600);
 }
@@ -474,10 +601,26 @@
   border-color: var(--clr-white);
 }
 
+.box .box.box--white {
+  border-color: var(--clr-white);
+}
+.box .box.box--white .box__title {
+  background-color: var(--clr-white);
+  border-color: var(--clr-white);
+}
+
 .box.box--black {
   border-color: var(--clr-black);
 }
 .box.box--black .box__title {
+  background-color: var(--clr-black);
+  border-color: var(--clr-black);
+}
+
+.box .box.box--black {
+  border-color: var(--clr-black);
+}
+.box .box.box--black .box__title {
   background-color: var(--clr-black);
   border-color: var(--clr-black);
 }
@@ -490,10 +633,26 @@
   border-color: var(--clr-action);
 }
 
+.box .box.box--action {
+  border-color: var(--clr-action);
+}
+.box .box.box--action .box__title {
+  background-color: var(--clr-action);
+  border-color: var(--clr-action);
+}
+
 .box.box--hot {
   border-color: var(--clr-hot);
 }
 .box.box--hot .box__title {
+  background-color: var(--clr-hot);
+  border-color: var(--clr-hot);
+}
+
+.box .box.box--hot {
+  border-color: var(--clr-hot);
+}
+.box .box.box--hot .box__title {
   background-color: var(--clr-hot);
   border-color: var(--clr-hot);
 }
@@ -506,6 +665,14 @@
   border-color: var(--clr-primary);
 }
 
+.box .box.box--primary {
+  border-color: var(--clr-primary);
+}
+.box .box.box--primary .box__title {
+  background-color: var(--clr-primary);
+  border-color: var(--clr-primary);
+}
+
 .box.box--success {
   border-color: var(--clr-success);
 }
@@ -514,10 +681,26 @@
   border-color: var(--clr-success);
 }
 
+.box .box.box--success {
+  border-color: var(--clr-success);
+}
+.box .box.box--success .box__title {
+  background-color: var(--clr-success);
+  border-color: var(--clr-success);
+}
+
 .box.box--info {
   border-color: var(--clr-info);
 }
 .box.box--info .box__title {
+  background-color: var(--clr-info);
+  border-color: var(--clr-info);
+}
+
+.box .box.box--info {
+  border-color: var(--clr-info);
+}
+.box .box.box--info .box__title {
   background-color: var(--clr-info);
   border-color: var(--clr-info);
 }
@@ -539,36 +722,12 @@
   border-color: var(--clr-text-400);
 }
 
-.box.lightgrey {
-  border-color: var(--clr-info);
+.box .box.box--text-400 {
+  border-color: var(--clr-text-400);
 }
-.box.lightgrey .box-title {
-  background-color: var(--clr-info);
-  border-color: var(--clr-info);
-}
-
-.box.box-color {
-  border-color: var(--clr-primary-400);
-}
-.box.box-color .box-title {
-  background-color: var(--clr-primary-400);
-  border-color: var(--clr-primary-400);
-}
-
-.box.blue {
-  border-color: var(--clr-primary-400);
-}
-.box.blue .box-title {
-  background-color: var(--clr-primary-400);
-  border-color: var(--clr-primary-400);
-}
-
-.box.orange {
-  border-color: var(--clr-action);
-}
-.box.orange .box-title {
-  background-color: var(--clr-action);
-  border-color: var(--clr-action);
+.box .box.box--text-400 .box__title {
+  background-color: var(--clr-text-400);
+  border-color: var(--clr-text-400);
 }
 
 :root {
@@ -927,7 +1086,12 @@ body {
 /* Base box */
 /* VARIABLES */
 .box {
-  --box-padding: 2rem;
+  --box-padding: 1.6rem;
+  --box-padding-title: 7px 0 7px 10px;
+}
+
+.box.box--small {
+  --box-padding-title: 2px 0 2px 5px;
 }
 
 .box {
@@ -939,7 +1103,7 @@ body {
   color: var(--clr-white, #fff);
   display: flex;
   justify-content: space-between;
-  padding: 7px 0 7px 10px;
+  padding: var(--box-padding-title);
   border-bottom: 2px solid var(--clr-neutral, #ddd);
   background-color: var(--clr-neutral, #ddd);
 }
@@ -962,26 +1126,30 @@ body {
   margin: 0 10px 0 5px;
 }
 
-.box__content {
+.box--padded .box__data {
   padding: var(--box-padding);
 }
-.box__content > .row {
+.box--padded .box__data > .row {
   border-bottom: 1px solid var(--clr-neutral-300);
 }
-.box__content .row > [class^=col-] .row > [class^=col-] {
+.box--padded .box__data .row > [class^=col-] .row > [class^=col-] {
   padding: 0;
 }
-
-.box__content--padded .box__title {
-  margin: calc(var(--box-padding) * -1);
-  margin-bottom: unset;
-}
-.box__content--padded tr {
+.box--padded .box__data tr {
   border-left: 1px solid var(--clr-neutral-300);
   border-right: 1px solid var(--clr-neutral-300);
 }
-.box__content--padded .no-borders tr {
+.box--padded .box__data .no-borders tr {
   border: 0;
+}
+
+.box--padded {
+  /*
+  .box__title {
+    margin: calc(var(--box-padding) * -1);
+    margin-bottom: unset;
+  }
+  */
 }
 
 /* Box content without padding */
@@ -1125,9 +1293,10 @@ td .btn ~ .btn {
 }
 
 .table-hover > tbody > tr:hover > * {
-  --bs-table-accent-bg: var(--clr-neutral-200);
+  --bs-table-accent-bg: #f8f8f8;
 }
 
+.dataTables__search,
 .dataTables__search__container {
   display: flex;
   flex-wrap: wrap;
@@ -1135,6 +1304,7 @@ td .btn ~ .btn {
   align-items: center;
   margin: 1.6rem 0;
 }
+.dataTables__search form,
 .dataTables__search__container form {
   display: flex;
   flex-shrink: 0;
@@ -1211,6 +1381,8 @@ td .btn ~ .btn {
   overflow-x: scroll;
 }
 */
+/* table-wrapper is the legacy version, do not use it anymore */
+.dataTables__table-wrapper,
 .table-wrapper {
   overflow-x: auto;
 }
@@ -1360,7 +1532,7 @@ span.badge i {
 }
 button.badge:not(:last-child),
 span.badge:not(:last-child) {
-  margin-inline-end: 8px;
+  margin-inline-end: 2px;
 }
 
 .badge--primary-400 {
@@ -1382,6 +1554,19 @@ span.badge:not(:last-child) {
 .skip-main:focus {
   position: relative;
   top: 0px;
+}
+
+.collapse-custom {
+  /* reset default btn styles */
+  background: transparent;
+  padding: 0;
+  margin-bottom: 8px;
+  border: 0;
+  box-shadow: none;
+  /* align fa-angle-... + text */
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
 .btn-blank {
@@ -1426,7 +1611,15 @@ span.badge:not(:last-child) {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(var(--grid-size)));
 }
-#designSystem .switch {
+#designSystem section.boxes article {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+#designSystem section.boxes article .box {
+  flex: 1;
+}
+#designSystem section.boxes .switch {
   --flow-space: 1.6rem;
   display: flex;
   gap: 8px;

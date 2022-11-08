@@ -43,6 +43,9 @@
       .box {
         flex: 1;
       }
+      .box__content {
+        min-height: 16rem;
+      }
     }
     .switch {
       --flow-space: 1.6rem;
