@@ -29,3 +29,17 @@
 .background-color-F {
   background: none repeat scroll 0 0 #e51400;
 }
+
+.border-right {
+  border-right: 1px solid var(--gw-clr-border, var(--clr-neutral-300)) !important;
+}
+
+.border-bottom {
+  border-bottom: 1px solid var(--gw-clr-border, var(--clr-neutral-300)) !important;
+}
+
+.alert-info {
+  color: #055160;
+  background-color: #cff4fc;
+  border-color: #b6effb;
+}
