@@ -1,6 +1,11 @@
 :root {
-  --border-radius: 2px;
+  --gw-clr-border: var(--clr-neutral-300);
+  --gw-border: 1px solid var(--gw-clr-border);
+  --gw-border-radius: 2px;
   --flow-space: 1.6rem;
+
+  /* legacy: */
+  --border-radius: 2px;
 }
 
 html {

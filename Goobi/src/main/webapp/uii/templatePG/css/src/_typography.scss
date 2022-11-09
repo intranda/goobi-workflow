@@ -13,8 +13,15 @@
 }
 
 body {
-  // font-family: Goobi2, sans-serif;
+  font-family: Goobi2, sans-serif;
   font-size: var(--fs-400, 1.2rem);
+}
+
+// Styles for external UI elements
+body .ui-widget {
+  font-family: Goobi2, sans-serif;
+  font-size: 1.2rem;
+  color: var(--bs-body-color);
 }
 
 :root {
