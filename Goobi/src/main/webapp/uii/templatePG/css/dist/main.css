@@ -23,6 +23,7 @@
   --clr-badge-light-purple: #8947cc;
   --clr-badge-light-brown2: #74422b;
   --clr-badge-light-blue: #368ee0;
+  --clr-badge-light-greengrey: #617f7d;
 }
 
 .badge-light-red {
@@ -47,6 +48,10 @@
 
 .badge-light-blue {
   color: var(--clr-badge-light-blue);
+}
+
+.badge-light-greengrey {
+  color: var(--clr-badge-light-greengrey);
 }
 
 .bg-primary-400 {
@@ -756,6 +761,10 @@ hr {
   float: unset;
 }
 
+.heading-3 {
+  font-size: 1.8rem;
+}
+
 @font-face {
   font-family: "Goobi2";
   src: url("../../font/opensans-regular-webfont.eot");
@@ -817,6 +826,20 @@ body {
 
 .background-color-F {
   background: none repeat scroll 0 0 #e51400;
+}
+
+.border-right {
+  border-right: 1px solid var(--gw-clr-border, var(--clr-neutral-300)) !important;
+}
+
+.border-bottom {
+  border-bottom: 1px solid var(--gw-clr-border, var(--clr-neutral-300)) !important;
+}
+
+.alert-info {
+  color: #055160;
+  background-color: #cff4fc;
+  border-color: #b6effb;
 }
 
 .navbar {
@@ -1012,7 +1035,7 @@ body {
 }
 .page-header .stats {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   list-style: none;
   gap: 1.5rem;
 }
@@ -1152,25 +1175,20 @@ body {
   */
 }
 
-.box--no-padding .form-actions {
-  padding-left: 2rem;
-  padding-right: 2rem;
-}
-
 /* Box content without padding */
-.box__content.p-0 {
+.box--no-padding .box__content {
   /* prevent rows from overlapping boxes */
 }
-.box__content.p-0 .row,
-.box__content.p-0 [class^=col-] {
+.box--no-padding .box__content .row,
+.box--no-padding .box__content [class^=col-] {
   margin: 0;
 }
-.box__content.p-0 .row > [class^=col-] {
+.box--no-padding .box__content .row > [class^=col-] {
   padding: 1.6rem 0.8rem;
 }
-.box__content.p-0 .form-actions,
-.box__content.p-0 .box__actions,
-.box__content.p-0 .form__actions {
+.box--no-padding .box__content .form-actions,
+.box--no-padding .box__content .box__actions,
+.box--no-padding .box__content .form__actions {
   margin: 1.6rem;
 }
 
@@ -1262,6 +1280,22 @@ tr,
 .table,
 .box__content--padded tr {
   border-color: var(--clr-neutral-300);
+}
+
+.table-bordered-custom {
+  border-width: 0;
+  border-style: solid;
+  border-color: var(--clr-neutral-300);
+}
+
+.table-bordered-custom td:not(:last-child) {
+  border-right-width: 1px;
+  border-color: inherit;
+  border-style: inherit;
+}
+
+.table-bordered-custom.-no-bb tr:last-child td {
+  border-bottom-width: 0;
 }
 
 thead {
@@ -1688,6 +1722,10 @@ span.badge:not(:last-child) {
 .view-users__box--usergroup-1 .table__actions,
 .view-users__box--project-1 .table__actions {
   border-right-width: 1px;
+}
+
+.view-users .edit-user .form__label {
+  align-items: flex-start;
 }
 
 .batch-all tr td:empty {
