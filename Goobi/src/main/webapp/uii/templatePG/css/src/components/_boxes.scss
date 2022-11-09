@@ -98,7 +98,11 @@
     .form-actions,
     .box__actions,
     .form__actions {
-      margin: 1.6rem;
+      margin: var(--box-padding);
+    }
+
+    .dataTables__search__container {
+      margin: var(--box-padding);
     }
   }
 }
