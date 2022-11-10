@@ -1325,6 +1325,14 @@ grau: #dddddd
     margin: 3px;
 }
 
+.label-light-grey, .badge-light-grey {
+    background-color: white;
+    border:1px solid #777;
+    font-weight: normal;
+    color: #777;
+    margin: 3px;
+}
+
 .label-light-green2, .badge-light-green2 {
     background-color: white;
     border:1px solid #3B7F7B;
