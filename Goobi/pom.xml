@@ -88,7 +88,7 @@
         <shiro.version>1.10.0</shiro.version>
         <activemq.version>5.17.2</activemq.version>
         <aspectj.version>1.9.9.1</aspectj.version>
-        <aws.version>1.12.321</aws.version>
+        <aws.version>1.12.338</aws.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <cdi.version>2.0.SP1</cdi.version>
         <commons-csv.version>1.9.0</commons-csv.version>
@@ -100,18 +100,18 @@
         <el-impl.version>2.2.1-b05</el-impl.version>
         <freemarker.version>2.3.31</freemarker.version>
         <guava.version>31.1-jre</guava.version>
-        <gson.version>2.9.1</gson.version>
+        <gson.version>2.10</gson.version>
         <httpclient.version>4.5.13</httpclient.version>
         <httpcore.version>4.4.15</httpcore.version>
         <imageio-openjpeg.version>0.6.2</imageio-openjpeg.version>
         <javassist.version>3.29.2-GA</javassist.version>
         <java-jwt.version>3.19.1</java-jwt.version>
         <jaxb-impl.version>2.3.6</jaxb-impl.version>
-        <jackson.version>2.13.4</jackson.version>
+        <jackson.version>2.14.0</jackson.version>
         <jersey.version>2.37</jersey.version>
         <jhove.version>1.20.1</jhove.version>
         <jna.version>5.11.0</jna.version>
-        <joda.version>2.12.0</joda.version>
+        <joda.version>2.12.1</joda.version>
         <junit.version>4.13.2</junit.version>
         <jsonpath.version>2.7.0</jsonpath.version>
         <jwks-rsa.version>0.21.2</jwks-rsa.version>
@@ -128,14 +128,14 @@
         <spark.version>2.9.4</spark.version>
         <spring.version>5.3.23</spring.version>
         <sshj.version>0.34.0</sshj.version>
-        <swagger.version>2.2.4</swagger.version>
+        <swagger.version>2.2.6</swagger.version>
         <weld.version>3.1.9.Final</weld.version>
         <hk2.version>2.6.1</hk2.version>
         <xmlbeans.version>5.1.1</xmlbeans.version>
         <xmlgraphics-commons.version>2.7</xmlgraphics-commons.version>
         <xmpcore.version>6.1.11</xmpcore.version>
         <!-- used in goobi-plugin-step-barcode-scanner -->
-        <zxing.version>3.5.0</zxing.version>
+        <zxing.version>3.5.1</zxing.version>
     </properties>
 
 
@@ -313,7 +313,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.21</version>
+            <version>1.22</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -529,7 +529,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.13.4.2</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
