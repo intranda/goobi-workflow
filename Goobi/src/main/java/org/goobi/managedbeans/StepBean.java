@@ -1229,8 +1229,8 @@ public class StepBean extends BasicBean implements Serializable {
                 this.processProperty.getProzesseigenschaft().setProzess(this.mySchritt.getProzess());
             }
             PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
-            Helper.setMeldung("propertySaved");
         }
+        Helper.setMeldung("propertiesSaved");
         loadProcessProperties();
     }
 
