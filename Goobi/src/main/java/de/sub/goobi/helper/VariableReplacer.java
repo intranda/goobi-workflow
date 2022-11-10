@@ -316,7 +316,7 @@ public class VariableReplacer {
 
         // replace WerkstueckEigenschaft, usage: (product.PROPERTYTITLE)
 
-        for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)product\\.([^)]+)(?:\\}|\\))", inString)) {
+        for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)product\\.([^)}]+)(?:\\}|\\))", inString)) {
             String propertyTitle = r.group(1);
             for (Masterpiece ws : this.process.getWerkstueckeList()) {
                 for (Masterpieceproperty we : ws.getEigenschaftenList()) {
@@ -330,7 +330,7 @@ public class VariableReplacer {
 
         // replace Vorlageeigenschaft, usage: (template.PROPERTYTITLE)
 
-        for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)template\\.([^)]+)(?:\\}|\\))", inString)) {
+        for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)template\\.([^)}]+)(?:\\}|\\))", inString)) {
             String propertyTitle = r.group(1);
             for (Template v : this.process.getVorlagenList()) {
                 for (Templateproperty ve : v.getEigenschaftenList()) {
@@ -344,7 +344,7 @@ public class VariableReplacer {
 
         // replace Prozesseigenschaft, usage: (process.PROPERTYTITLE)
 
-        for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)process\\.([^)]+)(?:\\}|\\))", inString)) {
+        for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)process\\.([^)}]+)(?:\\}|\\))", inString)) {
             String propertyTitle = r.group(1);
             List<ProcessProperty> ppList = PropertyParser.getInstance().getPropertiesForProcess(this.process);
             for (ProcessProperty pe : ppList) {
@@ -355,7 +355,7 @@ public class VariableReplacer {
             }
         }
 
-        for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)db_meta\\.([^)]+)(?:\\}|\\))", inString)) {
+        for (MatchResult r : findRegexMatches("\\$?(?:\\(|\\{)db_meta\\.([^)}]+)(?:\\}|\\))", inString)) {
             String metadataName = r.group(1);
             String value = MetadataManager.getAllValuesForMetadata(process.getId(), metadataName);
             inString = inString.replace(r.group(), value);
