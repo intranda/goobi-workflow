@@ -293,10 +293,6 @@
                       </div>
 
                       </intranda:box>
-                    <!--
-                    </div>
-                  </div>
-                    -->
 
                           </h:panelGroup>
 
@@ -313,7 +309,7 @@
 
                               <div class="dataTables_wrapper">
 
-                                <x:dataTable id="fileformats" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{ProjekteForm.fileGroupList}">
+                              <x:dataTable id="fileformats" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item" value="#{ProjekteForm.fileGroupList}">
 
                               <h:column>
                               <div class="d-flex justify-content-between align-items-center">
@@ -346,6 +342,7 @@
                               </x:dataTable>
 
                                 <div class="form__actions ms-0 me-0">
+
                                   <!-- Neu-Schaltknopf -->
                                   <button jsf:id="newFileformat" class="me-auto btn btn-primary-400" jsf:action="#{ProjekteForm.filegroupAdd}" jsf:immediate="true">
                                     <i class="fa fa-plus"></i>
