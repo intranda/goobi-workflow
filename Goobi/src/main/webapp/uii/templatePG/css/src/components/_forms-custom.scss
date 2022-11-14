@@ -2,7 +2,7 @@ input,
 select,
 textarea {
   &:hover {
-    border-color: var(--clr-primary-400);
+    border-color: var(--clr-primary-400) !important;
   }
 }
 
@@ -25,13 +25,14 @@ th {
 }
 
 .form-group {
-  padding: 20px;
+  padding: 8px;
   margin-bottom: 0;
 }
 
 label,
 .form__label {
   font-size: var(--fs-500);
+  align-self: flex-start;
 }
 
 .form__help {

@@ -177,7 +177,9 @@
 
           <!-- metsRightsLicense -->
           <div class="row">
-            <h:outputLabel for="metsRightsLicense" styleClass="control-label col-12 col-md-3" value="#{msgs.metsRightsLicense}" />
+            <div class="col-12 col-md-3">
+              <h:outputLabel for="metsRightsLicense" styleClass="form__label" value="#{msgs.metsRightsLicense}" />
+            </div>
             <div class="col-12 col-md-9">
               <h:selectOneMenu id="metsRightsLicense" styleClass="form-select" value="#{ProjekteForm.myProjekt.metsRightsLicense}">
 
@@ -303,7 +305,7 @@
                           <intranda:box
                             title="#{msgs.metsfilegroups}"
                             icon="fa-table"
-                            boxType="neutral-600"
+                            boxType="neutral-500"
                             boxSmall="true">
 
 
@@ -319,7 +321,7 @@
                                 <div class="d-flex gap-2">
 
                                   <!-- Edit-Schaltknopf -->
-                                  <button jsf:id="edit" class="btn btn-neutral-600" title="#{msgs.filegroupBearbeiten}" jsf:rel="tooltip" jsf:action="#{ProjekteForm.filegroupEdit}">
+                                  <button jsf:id="edit" class="btn btn-neutral-500" title="#{msgs.filegroupBearbeiten}" jsf:rel="tooltip" jsf:action="#{ProjekteForm.filegroupEdit}">
                                     <i class="fa fa-edit"></i>
                                     <f:setPropertyActionListener target="#{ProjekteForm.myFilegroup}" value="#{item}" />
                                     <f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="filegroups" />
@@ -344,7 +346,7 @@
                                 <div class="form__actions ms-0 me-0">
 
                                   <!-- Neu-Schaltknopf -->
-                                  <button jsf:id="newFileformat" class="me-auto btn btn-primary-400" jsf:action="#{ProjekteForm.filegroupAdd}" jsf:immediate="true">
+                                  <button jsf:id="newFileformat" class="me-auto btn btn-neutral-500" jsf:action="#{ProjekteForm.filegroupAdd}" jsf:immediate="true">
                                     <i class="fa fa-plus"></i>
                                     <span>
                                     <h:outputText value="#{msgs.filegroupHinzufuegen}" />

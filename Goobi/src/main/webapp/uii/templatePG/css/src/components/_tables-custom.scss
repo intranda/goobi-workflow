@@ -7,6 +7,7 @@
   width: 100%;
 }
 
+.gw-table-fixed,
 .table-fixed {
   --width-table-col: 200px;
 }
@@ -86,6 +87,7 @@ td {
 // Some tables come with a search bar:
 // both classes are used for the same purpose
 // => .dataTables__search__container is a legacy version
+.gw-table__search,
 .dataTables__search,
 .dataTables__search__container {
   display: flex;
@@ -136,6 +138,7 @@ td {
   --width-table-col: 110px;
 }
 
+.gw-table-fixed__actions__btns,
 .table-fixed__actions__btns {
   display: flex;
   gap: 4px;
@@ -148,6 +151,7 @@ td {
   gap: var(--gap, 8px);
 }
 
+.gw-table-fixed table,
 .table-fixed {
   table-layout: fixed;
   width: 100%;
@@ -155,6 +159,7 @@ td {
   hyphens: auto;
 }
 
+.gw-table-fixed th,
 .table-fixed th {
   width: var(--width-table-col);
 }
@@ -169,6 +174,7 @@ td {
   overflow-x: auto;
 }
 
+.gw-table-fixed__actions,
 .table-fixed .table-fixed__actions {
   --width-table-col: 120px;
   width: var(--width-table-col);
@@ -176,13 +182,7 @@ td {
   max-width: var(--width-table-col);
 }
 
-/*
-.table--scrollx {
-  overflow-x: scroll;
-}
-*/
-
-/* table-wrapper is the legacy version, do not use it anymore */
+.gw-table__wrapper,
 .dataTables__table-wrapper,
 .table-fixed__table-wrapper,
 .table-wrapper {

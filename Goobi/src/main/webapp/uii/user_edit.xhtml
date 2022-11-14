@@ -37,9 +37,12 @@
   <ui:define name="content">
 
     <script type="text/javascript">
+      /*
       window.onload = function() {
-        document.querySelector('[id$=":nachname"]').focus();
+        document.querySelector('[id$="nachname"]').focus();
       }
+      */
+
     </script>
 
     <h:form
@@ -331,9 +334,13 @@
 
             <div class="row">
 
+              <div class="col-12 col-md-3 ">
+
               <h:outputLabel
-                styleClass="col-12 col-md-3 form__label"
+                styleClass="form__label"
                 value="#{msgs.benutzergruppen}" />
+
+              </div>
 
               <div class="col-12 col-md-9">
 
@@ -342,6 +349,7 @@
 
                     <intranda:box
                       boxType="action"
+                      boxSmall="true"
                       scope="view-users__box--usergroup-1"
                       title="#{msgs.benutzergruppen}"
                       icon="fa-table"
@@ -387,7 +395,7 @@
 
 
                       <div
-                        class="form__actions">
+                        class="box__actions">
                         <!-- Cancel-Schaltknopf -->
                         <button
                           jsf:id="cancel"
@@ -420,7 +428,8 @@
 
                   <!-- Nested box -->
                     <intranda:box
-                      boxType="blank"
+                      boxType="neutral-500"
+                      boxSmall="true"
                       scope="view-users__box--usergroup-2"
                       title="#{msgs.benutzergruppen}"
                       icon="fa-table"
@@ -465,9 +474,6 @@
                           </x:column>
                         </x:dataTable>
 
-                          <script>
-                        console.log("#{BenutzerverwaltungForm.unsubscribedGroupsExist}")
-                          </script>
                         <div
                           class="box__actions"
                           jsf:rendered="#{BenutzerverwaltungForm.unsubscribedGroupsExist}"
@@ -475,7 +481,7 @@
                           <!-- Neu-Schaltknopf -->
                           <button
                             jsf:id="addGroup"
-                            class="btn btn-blank me-auto"
+                            class="btn btn-neutral-500 me-auto"
                             jsf:action="#{BenutzergruppenForm.FilterKeinMitZurueck}"
                             jsf:immediate="true">
                             <i class="fa fa-plus"></i>
@@ -512,9 +518,12 @@
               class="row"
               style="border-bottom: 1px solid #DDDDDD;">
 
-              <h:outputLabel
-                styleClass="col-12 col-md-3 form__label"
-                value="#{msgs.projekte}" />
+
+              <div class="col-12 col-md-3">
+                <h:outputLabel
+                  styleClass="form__label"
+                  value="#{msgs.projekte}" />
+              </div>
 
               <div class="col-12 col-md-9">
 
@@ -600,7 +609,7 @@
 
                 <!-- Nested box -->
                 <intranda:box
-                  boxType="blank"
+                  boxType="neutral-500"
                   scope="view-users__box--project-2"
                   title="#{msgs.projekte}"
                   icon="fa-table"
@@ -658,7 +667,7 @@
                       <!-- Neu-Schaltknopf -->
                       <button
                         jsf:id="addToProject"
-                        class="btn btn-blank me-auto"
+                        class="btn btn-neutral-500 me-auto"
                         jsf:action="#{ProjekteForm.FilterKeinMitZurueck}"
                         jsf:immediate="true">
                         <i class="fa fa-plus me-auto"></i>
