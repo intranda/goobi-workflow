@@ -1,6 +1,14 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core" template="/uii/template/template.html" xmlns:o="http://omnifaces.org/ui"
-	xmlns:of="http://omnifaces.org/functions" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	template="/uii/templatePG/templatePG.html"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
 	<ui:param name="myPageTitle" value="#{msgs.regelsaetze}" />
 
@@ -17,22 +25,22 @@
 
 			<div class="row" role="main">
 				<div class="col-sm-12">
-					
-					<div class="box box-color box-bordered">
-						<div class="box-title"> 
-							<h2>
-								<i class="fa fa-wrench"></i> 
-								<h:outputText value="#{myPageTitle}" />
-							</h2> 
-						</div>
-						<div class="box-content nopadding">
-							<div class="dataTables_wrapper">
-								<div class="dataTables_length">
-									<h:outputText value="#{msgs.treffer}: #{RegelsaetzeForm.paginator.totalResults}" />
+
+					<intranda:box
+						title="#{myPageTitle}"
+						icon="fa-wrench"
+						boxType="primary"
+					>
+
+							<div class="dataTables__table-wrapper">
+								<div class="dataTables__search__container">
+									<div class="dataTables__search__length">
+										<h:outputText value="#{msgs.treffer}: #{RegelsaetzeForm.paginator.totalResults}" />
+									</div>
 								</div>
 
 								<!-- Datentabelle -->
-								<x:dataTable id="rulesets" styleClass="table table-hover table-nomargin dataTable table-bordered responsive" var="item"
+								<x:dataTable id="rulesets" styleClass="table table-hover dataTable table-bordered table-fixed" var="item"
 									value="#{RegelsaetzeForm.paginator.list}">
 
 									<h:column>
@@ -49,27 +57,33 @@
 										<h:outputText value="#{item.datei}" />
 									</h:column>
 
-									<x:column style="width:150px;">
+									<x:column headerClass="dataTables__actions">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
-										<!-- Bearbeiten-Schaltknopf -->
-										<button jsf:id="edit" class="btn margin-right-5" jsf:rel="tooltip" jsf:action="ruleset_edit" title="#{msgs.regelsatzBearbeiten}">
-											<i class="fa fa-pencil"></i>
-											<f:passThroughAttribute name="data-toggle" value="tooltip" />
-											<f:passThroughAttribute name="aria-label" value="#{msgs.regelsatzBearbeiten}" />
-											<f:passThroughAttribute name="role" value="button" />
-											<f:setPropertyActionListener target="#{RegelsaetzeForm.myRegelsatz}" value="#{item}" />
-										</button>
+
+										<div class="dataTables__actions__btns">
+											<!-- Bearbeiten-Schaltknopf -->
+											<button jsf:id="edit" class="btn btn-blank" jsf:rel="tooltip" jsf:action="ruleset_edit" title="#{msgs.regelsatzBearbeiten}">
+												<i class="fa fa-pencil"></i>
+												<f:passThroughAttribute name="data-toggle" value="tooltip" />
+												<f:passThroughAttribute name="aria-label" value="#{msgs.regelsatzBearbeiten}" />
+												<f:passThroughAttribute name="role" value="button" />
+												<f:setPropertyActionListener target="#{RegelsaetzeForm.myRegelsatz}" value="#{item}" />
+											</button>
+										</div>
+
 									</x:column>
 
 								</x:dataTable>
 
-								<div class="dataTables_info">
+								<div class="box__actions">
 									<!-- Neu-Schaltknopf -->
-									<button jsf:id="newRuleset"  class="btn btn-primary font-size-s" jsf:action="#{RegelsaetzeForm.Neu}" jsf:immediate="true">
-										<i class="fa fa-plus margin-right-5"></i>
+									<button jsf:id="newRuleset"  class="btn btn-primary-400 me-auto" jsf:action="#{RegelsaetzeForm.Neu}" jsf:immediate="true">
+										<i class="fa fa-plus"></i>
+										<span>
 										<h:outputText value="#{msgs.neuenRegelsatzAnlegen}" />
+										</span>
 									</button>
 								</div>
 								<div class="dataTables_paginate">
@@ -78,8 +92,7 @@
 									<!-- /paginator -->
 								</div>
 							</div>
-						</div>
-					</div>
+					</intranda:box>
 				</div>
 			</div>
 		</h:form>

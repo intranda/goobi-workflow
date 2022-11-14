@@ -131,8 +131,12 @@ td {
   }
 }
 
+.table-fixed__actions,
 .dataTables__actions {
   --width-table-col: 110px;
+}
+
+.table-fixed__actions__btns {
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
@@ -180,6 +184,7 @@ td {
 
 /* table-wrapper is the legacy version, do not use it anymore */
 .dataTables__table-wrapper,
+.table-fixed__table-wrapper,
 .table-wrapper {
   overflow-x: auto;
 }
