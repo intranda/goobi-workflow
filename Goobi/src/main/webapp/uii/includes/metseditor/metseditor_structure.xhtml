@@ -88,6 +88,20 @@
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         </button>     
                     </li>
+                    <ui:fragment rendered="#{!Metadaten.allImages.isEmpty()}">
+                        <li>
+                            <h:commandLink target="_blank"
+                                id="printpdf"
+                                action="#{Metadaten.downloadCurrentFolderAsPdf}"
+                                aria-label="#{msgs.download_pdf}"
+                                title="#{msgs.download_pdf}">
+                                <i class="fa fa-file-pdf-o"
+                                    aria-hidden="true"></i>
+                                <f:passThroughAttribute name="data-toggle"
+                                    value="tooltip" />
+                            </h:commandLink>
+                        </li>
+                    </ui:fragment>
                 </ul>
             </div>
 

@@ -338,7 +338,7 @@
                                     #{directory}
 									<x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
                                     <x:updateActionListener value="#{directory}" property="#{Metadaten.currentTifFolder}" />
-                                    <f:ajax execute="@form" render="@form :openseadragonform :thumbnailsForm" />
+                                    <f:ajax execute="@form" render="@form :openseadragonform :thumbnailsForm :treeform" />
                                     <f:passThroughAttribute name="data-renderimage" value="true" />
 								</button>
                             </li>
