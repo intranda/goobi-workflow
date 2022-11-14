@@ -100,7 +100,7 @@
 								<!-- ### Table ### -->
 								<h:form id="myform" prependId="false" styleClass="table--scrollx">
 
-								<div class="table-wrapper">
+								<div class="table-fixed__table-wrapper">
 									<table role="grid" id="tableUserAll"
 										class="table table-bordered table-fixed">
 										<!-- ### Columnheader row ### -->
@@ -141,7 +141,7 @@
 														value="#{msgs.auswahl}"
 														sortable="false"
 														addClass="table-fixed__actions"
-														/>
+												/>
 											</tr>
 										</thead>
 
@@ -192,56 +192,56 @@
 												</td>
 												<!-- ### Action Buttons ### -->
 												<td>
-													<div class="dataTables__actions">
-														<!-- Bearbeiten-Schaltknopf -->
-														<button jsf:id="edit" class="btn btn-blank"
-															jsf:rel="tooltip" jsf:action="user_edit"
-															title="#{msgs.benutzerBearbeiten}">
-															<i class="fa fa-pencil"></i>
-															<f:passThroughAttribute name="data-toggle"
-																value="tooltip" />
-															<f:passThroughAttribute name="aria-label"
-																value="#{msgs.benutzerBearbeiten}" />
-															<f:setPropertyActionListener
-																target="#{BenutzerverwaltungForm.myClass}"
-																value="#{item}" />
-															<f:setPropertyActionListener
-																target="#{BenutzerverwaltungForm.displayMode}" value="" />
-														</button>
+														<div class="table-fixed__actions__btns">
+															<!-- Bearbeiten-Schaltknopf -->
+															<button jsf:id="edit" class="btn btn-blank"
+																jsf:rel="tooltip" jsf:action="user_edit"
+																title="#{msgs.benutzerBearbeiten}">
+																<i class="fa fa-pencil"></i>
+																<f:passThroughAttribute name="data-toggle"
+																	value="tooltip" />
+																<f:passThroughAttribute name="aria-label"
+																	value="#{msgs.benutzerBearbeiten}" />
+																<f:setPropertyActionListener
+																	target="#{BenutzerverwaltungForm.myClass}"
+																	value="#{item}" />
+																<f:setPropertyActionListener
+																	target="#{BenutzerverwaltungForm.displayMode}" value="" />
+															</button>
 
-														<!-- Benutzerprofil laden-Schaltknopf -->
-														<button jsf:id="switch"
-															jsf:rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch')}"
-															class="btn btn-blank"
-															jsf:action="#{LoginForm.EinloggenAls}"
-															title="#{msgs.benutzerprofilLaden}">
-															<i class="fa fa-user-secret"></i>
-															<f:passThroughAttribute name="aria-label"
-																value="#{msgs.benutzerprofilLaden}" />
-															<f:passThroughAttribute name="data-toggle"
-																value="tooltip" />
-															<f:passThroughAttribute name="data-placement" value="top" />
-															<f:param name="ID" value="#{item.id}" />
-														</button>
+															<!-- Benutzerprofil laden-Schaltknopf -->
+															<button jsf:id="switch"
+																jsf:rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch')}"
+																class="btn btn-blank"
+																jsf:action="#{LoginForm.EinloggenAls}"
+																title="#{msgs.benutzerprofilLaden}">
+																<i class="fa fa-user-secret"></i>
+																<f:passThroughAttribute name="aria-label"
+																	value="#{msgs.benutzerprofilLaden}" />
+																<f:passThroughAttribute name="data-toggle"
+																	value="tooltip" />
+																<f:passThroughAttribute name="data-placement" value="top" />
+																<f:param name="ID" value="#{item.id}" />
+															</button>
 
-														<!-- Create new random password for user -->
-														<button jsf:id="createNewRandomPassword"
-															class="btn btn-blank" jsf:rel="tooltip"
-															title="#{msgs.createNewRandomPassword}"
-															jsf:rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords') and (item.ldapGruppe.authenticationType != 'ldap' or not item.ldapGruppe.readonly)}"
-															jsf:onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
-															jsf:action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}">
-															<i class="fa fa-key"></i>
-															<f:passThroughAttribute name="data-toggle"
-																value="tooltip" />
-															<f:setPropertyActionListener
-																target="#{BenutzerverwaltungForm.myClass}"
-																value="#{item}" />
-															<f:passThroughAttribute name="aria-label"
-																value="#{msgs.createNewRandomPassword}" />
-															<f:param name="ID" value="#{item.id}" />
-															<f:ajax render="globalMessage" />
-														</button>
+															<!-- Create new random password for user -->
+															<button jsf:id="createNewRandomPassword"
+																class="btn btn-blank" jsf:rel="tooltip"
+																title="#{msgs.createNewRandomPassword}"
+																jsf:rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords') and (item.ldapGruppe.authenticationType != 'ldap' or not item.ldapGruppe.readonly)}"
+																jsf:onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
+																jsf:action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}">
+																<i class="fa fa-key"></i>
+																<f:passThroughAttribute name="data-toggle"
+																	value="tooltip" />
+																<f:setPropertyActionListener
+																	target="#{BenutzerverwaltungForm.myClass}"
+																	value="#{item}" />
+																<f:passThroughAttribute name="aria-label"
+																	value="#{msgs.createNewRandomPassword}" />
+																<f:param name="ID" value="#{item.id}" />
+																<f:ajax render="globalMessage" />
+															</button>
 													</div>
 												</td>
 											</tr>
