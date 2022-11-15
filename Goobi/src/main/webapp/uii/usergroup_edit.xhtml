@@ -75,11 +75,11 @@
 								/>
 						</div> <!-- end col-md-3 -->
 
-						<div class="col-12 col-md-9 pt-0 pb-0">
+						<div class="col-12 col-md-9 p-0">
 
 							<h:panelGroup id="rolediv" styleClass="row border-0 " style="margin-left:0px;margin-right:0px;">
 
-								<div class="col-6 col-md-6 border-right">
+								<div class="col-12 col-lg-6 border-right">
 									<h3 tabindex="0" class="heading-3">#{msgs.usergroup_assignedRoles}</h3>
 
 									<ui:repeat
@@ -107,9 +107,15 @@
 											</button>
 				            </ui:repeat>
 
+										<div class="pb-4">
+											<h:message for="userRoles" showDetail="true" styleClass="help-inline font-danger" />
+											<intranda:formHelp content="#{msgs.helpUserRoles}" />
+										</div>
+
+
 								</div> <!-- end col -->
 
-								<div class="col-12 col-md-6">
+								<div class="col-12 col-lg-6">
 
 									<div class="col-12 pb-4 border-bottom">
 
@@ -166,9 +172,6 @@
 							</div> <!-- end col-md-9 -->
 						</div> <!-- end row -->
 
-						<h:message for="userRoles" showDetail="true"
-							styleClass="help-inline font-danger" />
-						<intranda:formHelp content="#{msgs.helpUserRoles}" />
 
 						<intranda:formButtonArea
 							id="buttons"
