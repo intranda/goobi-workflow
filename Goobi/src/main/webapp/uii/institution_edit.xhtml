@@ -5,9 +5,9 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/template/template.html"
+    template="/uii/templatePG/templatePG.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
@@ -36,31 +36,32 @@
     </ui:define>
 
     <ui:define name="content">
-        <script type="text/javascript">
-                                    window.onload = function() {
-                                        document.getElementById( 'titel' ).focus();
-                                    }
-                                </script>
+
         <h:form
             id="myform"
-            styleClass="form-horizontal form-bordered"
+            styleClass="form-horizontal form-bordered institutionEdit"
             onkeypress="submitOnEnter(event);"
             rendered="#{LoginForm.myBenutzer.superAdmin}"
             enctype="multipart/form-data">
+
             <div class="row">
-                <div class="col-sm-6">
-                    <div class="box box-color orange box-bordered">
-                        <div class="box-title">
-                            <h3>
-                                <i class="fa fa-building box-icon-fix"></i>
-                                <h:outputText value="#{myPageTitle}" />
-                                <h:outputText
-                                    value=": #{institutionBean.institution.shortName}"
-                                    rendered="#{institutionBean.institution.id != null}" />
-                            </h3>
+                <div class="col-md-12 col-lg-6 mb-4">
+
+                    <intranda:box
+                        boxType="action"
+                        boxTitle="false"
+                        formBox="true"
+                        padding="false"
+                        >
+
+
+                        <intranda:boxTitle
+                            title="#{myPageTitle}"
+                            icon="fa-building"
+                            >
 
                             <ul class="tabs">
-                                <li class="#{institutionBean.displayMode eq ''?'active':''}">
+                                <li class="tab #{institutionBean.displayMode eq ''?'active':''}">
                                     <h:commandLink
                                         action="#{NavigationForm.Reload}"
                                         value="#{msgs.instituiton_general}"
@@ -76,7 +77,7 @@
                                 <ui:fragment
                                     id="rulesets"
                                     rendered="#{not institutionBean.institution.allowAllRulesets}">
-                                    <li class="#{institutionBean.displayMode eq 'tab2'?'active':''}">
+                                    <li class="tab #{institutionBean.displayMode eq 'tab2'?'active':''}">
                                         <h:commandLink
                                             action="#{NavigationForm.Reload}"
                                             value="#{msgs.instituiton_ruleset}"
@@ -94,7 +95,7 @@
                                 <ui:fragment
                                     id="dockets"
                                     rendered="#{not institutionBean.institution.allowAllDockets}">
-                                    <li class="#{institutionBean.displayMode eq 'tab3'?'active':''}">
+                                    <li class="tab #{institutionBean.displayMode eq 'tab3'?'active':''}">
                                         <h:commandLink
                                             action="#{NavigationForm.Reload}"
                                             value="#{msgs.institution_docket}"
@@ -112,7 +113,7 @@
                                 <ui:fragment
                                     id="ldaps"
                                     rendered="#{not institutionBean.institution.allowAllAuthentications}">
-                                    <li class="#{institutionBean.displayMode eq 'tab4'?'active':''}">
+                                    <li class="tab #{institutionBean.displayMode eq 'tab4'?'active':''}">
                                         <h:commandLink
                                             action="#{NavigationForm.Reload}"
                                             value="#{msgs.instituiton_authentication}"
@@ -131,7 +132,7 @@
                                 <ui:fragment
                                     id="plugins"
                                     rendered="#{not institutionBean.institution.allowAllPlugins}">
-                                    <li class="#{institutionBean.displayMode eq 'tab5'?'active':''}">
+                                    <li class="tab #{institutionBean.displayMode eq 'tab5'?'active':''}">
                                         <h:commandLink
                                             action="#{NavigationForm.Reload}"
                                             value="#{msgs.instituiton_plugins}"
@@ -148,8 +149,8 @@
 
                             </ul>
 
-                        </div>
-                        <div class="box-content nopadding">
+                        </intranda:boxTitle>
+
                             <div class="tab-content">
 
                                 <div class="#{institutionBean.displayMode eq ''?'tab-pane active':'tab-pane'}">
@@ -266,10 +267,8 @@
                                     styleClass="#{institutionBean.displayMode eq 'tab5'?'tab-pane active':'tab-pane'}">
 
                                     <ui:fragment rendered="#{not institutionBean.institution.allowedAdministrationPlugins.isEmpty()}">
-                                        <h3 class="margin-left-10">
-                                            <h:outputText
-                                                value="#{msgs.instituiton_administrationPlugin}"
-                                                styleClass="text" />
+                                        <h3 class="heading-3">
+                                            #{msgs.instituiton_administrationPlugin}
                                         </h3>
                                         <ui:repeat
                                             value="#{institutionBean.institution.allowedAdministrationPlugins}"
@@ -287,10 +286,8 @@
 
 
                                     <ui:fragment rendered="#{not institutionBean.institution.allowedWorkflowPlugins.isEmpty()}">
-                                        <h3 class="margin-left-10">
-                                            <h:outputText
-                                                value="#{msgs.instituiton_workflowPlugin}"
-                                                styleClass="text" />
+                                        <h3 class="heading-3">
+                                            #{msgsinstituiton_workflowPlugin}
                                         </h3>
                                         <ui:repeat
                                             value="#{institutionBean.institution.allowedWorkflowPlugins}"
@@ -307,10 +304,8 @@
                                     </ui:fragment>
 
                                     <ui:fragment rendered="#{not institutionBean.institution.allowedStatisticsPlugins.isEmpty()}">
-                                        <h3 class="margin-left-10">
-                                            <h:outputText
-                                                value="#{msgs.instituiton_statisticsPlugin}"
-                                                styleClass="text" />
+                                        <h3 class="heading-3">
+                                            #{msgs.instituiton_statisticsPlugin}
                                         </h3>
                                         <ui:repeat
                                             var="item"
@@ -327,10 +322,8 @@
                                     </ui:fragment>
 
                                     <ui:fragment rendered="#{not institutionBean.institution.allowedDashboardPlugins.isEmpty()}">
-                                        <h3 class="margin-left-10">
-                                            <h:outputText
-                                                value="#{msgs.instituiton_dashboardPlugin}"
-                                                styleClass="text" />
+                                        <h3 class="heading-3">
+                                            #{msgs.instituiton_dashboardPlugin}
                                         </h3>
                                         <ui:repeat
                                             value="#{institutionBean.institution.allowedDashboardPlugins}"
@@ -351,37 +344,43 @@
 
                             </div>
 
-                            <div class="form-actions">
-                                <!-- Save -->
-                                <button
-                                    class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
-                                    jsf:id="absenden"
-                                    type="submit"
-                                    jsf:action="#{institutionBean.Speichern}">
-                                    <i class="fa fa-save margin-right-5"></i>
-                                    <h:outputText value="#{msgs.speichern}" />
-                                </button>
+                            <div class="box__actions">
 
                                 <!-- Cancel -->
-                                <button
-                                    class="btn margin-sides-10 font-size-s pull-right"
+                                <a
+                                    class="btn btn-blank"
                                     jsf:id="cancel"
                                     type="submit"
                                     jsf:action="#{institutionBean.FilterKein}"
                                     jsf:immediate="true">
                                     <h:outputText value="#{msgs.abbrechen}" />
+                                </a>
+
+                                <!-- Save -->
+                                <button
+                                    class="btn btn-success submitOnEnter"
+                                    jsf:id="absenden"
+                                    type="submit"
+                                    jsf:action="#{institutionBean.Speichern}">
+                                    <i class="fa fa-save"></i>
+                                    <span>
+                                        <h:outputText value="#{msgs.speichern}" />
+                                    </span>
                                 </button>
-                                <!-- delete -->
+
                                 <ui:fragment rendered="#{institutionBean.institution.id != null}">
                                     <button
                                         id="delete"
                                         type="button"
-                                        class="btn btn-danger"
+                                        class="btn btn-hot trigger-delete"
                                         data-toggle="modal"
                                         data-target="#deleteModal">
-                                        <i class="fa fa-trash-o margin-right-5" />
-                                        <h:outputText value="#{msgs.loeschen}" />
+                                        <i class="fa fa-trash-o" />
+                                        <span>
+                                            <h:outputText value="#{msgs.loeschen}" />
+                                        </span>
                                     </button>
+
                                     <div
                                         class="modal fade"
                                         id="deleteModal"
@@ -412,7 +411,9 @@
                                                         class="btn btn-danger"
                                                         jsf:action="#{institutionBean.Loeschen}">
                                                         <i class="fa fa-trash-o margin-right-5" />
+                                                        <span>
                                                         <h:outputText value="#{msgs.loeschen}" />
+                                                        </span>
                                                     </button>
                                                 </div>
                                             </div>
@@ -420,12 +421,11 @@
                                     </div>
                                 </ui:fragment>
                             </div>
-                        </div>
-                    </div>
+                    </intranda:box>
                 </div>
 
 
-                <div class="#{NavigationForm.uiStatus['journalBig']?'col-sm-12':'col-sm-6'}">
+                <div class="#{NavigationForm.uiStatus['journalBig']?'col-12':'col-md-12 col-lg-6'} d-flex flex-column mb-4">
                     <!-- Box for process log -->
                     <x:aliasBeansScope>
                         <x:aliasBean
@@ -438,7 +438,7 @@
                             alias="#{bean}"
                             value="#{institutionBean.institution}" />
                         <f:subview id="sublog">
-                            <ui:include src="includes/journal.xhtml" />
+                            <ui:include src="templatePG/includes/journal.xhtml" />
                         </f:subview>
                     </x:aliasBeansScope>
                     <!-- // Box for process log -->

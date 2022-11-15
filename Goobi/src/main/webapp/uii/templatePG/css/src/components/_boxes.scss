@@ -180,6 +180,16 @@
   }
 }
 
+.box.box--outline {
+  border-width: 1px;
+
+  .box__title {
+    background: transparent;
+    color: var(--bs-body-color);
+    border-width: 1px;
+  }
+}
+
 // Standalone help block under boxes, often these are nested boxes
 .box__help {
   display: block;

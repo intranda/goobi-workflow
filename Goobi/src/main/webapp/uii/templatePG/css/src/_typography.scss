@@ -15,6 +15,7 @@
 body {
   font-family: Goobi2, sans-serif;
   font-size: var(--fs-400, 1.2rem);
+  font-weight: 300;
 }
 
 // Styles for external UI elements
@@ -41,4 +42,8 @@ body .ui-widget {
 
 .fs-600 {
   font-size: var(--fs-600);
+}
+.institutionEdit .tab-pane .heading-3 {
+  padding-left: 0.8rem;
+  padding-top: 1.2rem;
 }

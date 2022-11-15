@@ -33,6 +33,8 @@ label,
 .form__label {
   font-size: var(--fs-500);
   align-self: flex-start;
+  overflow: hidden;
+  hyphens: auto;
 }
 
 .form__help {
