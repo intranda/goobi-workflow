@@ -76,6 +76,7 @@ import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.OrderedKeyMap;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IMetadataEditorExtension;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
 import org.jdom2.JDOMException;
 import org.omnifaces.util.Faces;
@@ -5141,4 +5142,11 @@ public class Metadaten implements Serializable {
             context.responseComplete();
         }
     }
+    
+    
+    private List<IMetadataEditorExtension> extensions;
+    
+//    private void readMetadataEditorExtensions() {
+//        extensions = PluginLoader.getPluginList(PluginType.MetadataEditor);
+//    }
 }
