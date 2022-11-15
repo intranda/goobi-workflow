@@ -158,11 +158,13 @@
 
               <div class="row">
                 <div
-                  class="col-12 col-md-3 form__label">
+                  class="col-12 col-md-3">
                   <h:outputLabel
                     for="loginAs"
                     value="#{msgs.login}"
-                    title="#{msgs.requiredField}">
+                    title="#{msgs.requiredField}"
+                    styleClass="form__label"
+                    >
 
                     <f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
                     <f:passThroughAttribute name="data-bs-placement" value="right" />
