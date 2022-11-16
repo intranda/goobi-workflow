@@ -53,7 +53,7 @@
 				</h:panelGroup>
 
 				<h:panelGroup rendered="#{(cc.attrs.grayeddelete == null) or (cc.attrs.grayeddelete == false)}">
-					<button id="delete" class="btn btn-danger trigger-delete" type="button" data-toggle="modal" data-target="#deleteModal">
+					<button id="delete" class="btn btn-hot trigger-delete" type="button" data-toggle="modal" data-target="#deleteModal">
 						<i class="fa fa-trash-o margin-right-5" />
 						<span>
 							<h:outputText value="#{msgs.loeschen}" />
@@ -73,7 +73,7 @@
 								</div>
 								<div class="modal-footer">
 									<button class="btn" data-dismiss="modal" aria-hidden="true">#{msgs.abbrechen}</button>
-									<button jsf:id="confirmDelete" class="btn btn-danger" jsf:action="#{cc.attrs.form.Loeschen}">
+									<button jsf:id="confirmDelete" class="btn btn-hot" jsf:action="#{cc.attrs.form.Loeschen}">
 										<i class="fa fa-trash-o margin-right-5" />
 										<h:outputText value="#{msgs.loeschen}" />
 									</button>

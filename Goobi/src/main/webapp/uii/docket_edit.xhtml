@@ -23,7 +23,9 @@
 			rendered="#{LoginForm.hasRole('Admin_Dockets')}">
 
 			<div class="row" role="main">
-				<div class="col-sm-12">
+				<div class="col-12">
+
+					<!--
 					<div class="box box-color orange box-bordered">
 						<div class="box-title">
 							<h2>
@@ -33,6 +35,15 @@
 							</h2>
 						</div>
 						<div class="box-content nopadding">
+					-->
+
+					<intranda:box
+						boxType="action"
+						formBox="true"
+						padding="false"
+						title="#{myPageTitle}"
+						icon="fa-print"
+						>
 
 							<intranda:formInputText
 								id="title"
@@ -60,11 +71,10 @@
 								actionCancel="#{DocketForm.Cancel}"
 								/>
 
-						</div>
-					</div>
-				</div>
+					</intranda:box>
 
-			</div>
+				</div> <!-- /col -->
+			</div> <!-- /row -->
 		</h:form>
 
     <script src="templatePG/js/modules/gwFocusOnLoad.js?v=#{HelperForm.buildVersion}"></script>
