@@ -1,10 +1,10 @@
 var goobiWorkflowJS = ( function( goobiWorkflow ) {
     'use strict';
     
-    var _debug = false;
+    var _debug = true;
     var _defaults = {
         navigationSelector: '#navigation',
-        navigationActionSelector: '#navigationActions'
+        navigationActionSelector: '.navigationActions'
     };
     
     goobiWorkflow.menu = {
@@ -30,7 +30,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             });
         }
     };
-
+    
     /**
      * @description Method to set the event listener to toggle box body.
      * @method _setSubmenuToggleEvent
@@ -40,7 +40,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
             console.log( 'EXECUTE: _setSubmenuToggleEvent' );
         }
 
-        $( 'body' ).on( 'click', '[data-show="submenu"]', function ( event ) {            
+        $( 'body' ).on( 'click', '[data-show="submenu"]', function ( event ) {
             if ( $( this ).next().is( ':visible' ) ) {
                 $( '.submenu' ).hide();
                 $( this ).next().hide();

@@ -21,7 +21,11 @@
     <ui:define name="metseditorMenu">
         <ui:include src="includes/metseditor/metseditor_menu.xhtml" />
     </ui:define>
-    
+
+    <!-- METSEDITOR MENU ACTIONS -->
+    <ui:define name="metseditorPlugins">
+        <ui:include src="includes/metseditor/metseditor_menuPlugins.xhtml" />
+    </ui:define>
     <!-- METSEDITOR MENU ACTIONS -->
     <ui:define name="metseditorMenuActions">
         <ui:include src="includes/metseditor/metseditor_menuActions.xhtml" />
@@ -31,7 +35,7 @@
     <ui:define name="metseditorStructure">
         <ui:include src="includes/metseditor/metseditor_structure.xhtml" />
     </ui:define>
-    
+
     <!-- METSEDITOR CONTENT -->
     <ui:define name="metseditorContent">
         <h:panelGroup id="logoutContainer">
@@ -44,7 +48,9 @@
             </h:panelGroup>
         </h:panelGroup>
         <o:socket channel="adminMessageChannel">
-            <f:ajax event="update" render="logoutContainer"/>
+            <f:ajax
+                event="update"
+                render="logoutContainer" />
         </o:socket>
 
         <h:messages
@@ -58,14 +64,20 @@
             showDetail="true"
             showSummary="true"
             tooltip="true" />
-            
-        <div class="alert alert-warning" jsf:rendered="#{Metadaten.myProzess.archivedImageFolders.size() gt 0}">
-            <h:outputText value="#{msgs.warningImageFoldersArchived}" escape="false" />
-            <ui:repeat var="folder" value="#{Metadaten.myProzess.archivedImageFolders}">#{folder}</ui:repeat>
+
+        <div
+            class="alert alert-warning"
+            jsf:rendered="#{Metadaten.myProzess.archivedImageFolders.size() gt 0}">
+            <h:outputText
+                value="#{msgs.warningImageFoldersArchived}"
+                escape="false" />
+            <ui:repeat
+                var="folder"
+                value="#{Metadaten.myProzess.archivedImageFolders}">#{folder}</ui:repeat>
         </div>
-            
+
         <ui:include src="includes/metseditor/metseditor_progress.xhtml" />
-            
+
         <ui:fragment rendered="#{Metadaten.modusAnsicht == 'Paginierung'}">
             <ui:include src="includes/metseditor/metseditor_pagination.xhtml" />
         </ui:fragment>
@@ -78,7 +90,7 @@
         <ui:fragment rendered="#{Metadaten.modusAnsicht == 'File'}">
             <ui:include src="includes/metseditor/metseditor_file.xhtml" />
         </ui:fragment>
-    <!-- MODALS -->
+        <!-- MODALS -->
         <h:form
             id="normdataForm"
             prependId="false">
@@ -92,13 +104,19 @@
             <ui:include src="includes/metseditor/modals/inc_me_modal_vocabulary.xhtml" />
             <ui:include src="includes/metseditor/modals/inc_me_modal_altoeditor.xhtml" />
             <ui:include src="includes/metseditor/modals/inc_me_modal_resetPagination.xhtml" />
-            
+
         </h:form>
+        <c:forEach
+            var="extension"
+            items="#{Metadaten.extensions}">
+            <ui:include src="#{extension.pagePath}" />
+        </c:forEach>
+
     </ui:define>
-    
+
     <!-- METSEDITOR IMAGE -->
     <ui:define name="metseditorImage">
         <ui:include src="includes/metseditor/metseditor_image.xhtml" />
     </ui:define>
-    
+
 </ui:composition>

@@ -78,6 +78,7 @@ import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
 import org.goobi.production.plugin.interfaces.IMetadataEditorExtension;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
+import org.goobi.production.plugin.interfaces.IPlugin;
 import org.jdom2.JDOMException;
 import org.omnifaces.util.Faces;
 
@@ -1564,6 +1565,8 @@ public class Metadaten implements Serializable {
         this.modusStrukturelementVerschieben = false;
         this.modusCopyDocstructFromOtherProcess = false;
 
+        readMetadataEditorExtensions();
+
         this.currentTifFolder = null;
         readAllTifFolders();
         /*
@@ -1770,7 +1773,7 @@ public class Metadaten implements Serializable {
         this.myProzess.setSortHelperMetadata(zaehlen.getNumberOfUghElements(this.logicalTopstruct, CountType.METADATA));
         try {
             this.myProzess
-                    .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
+            .setSortHelperImages(StorageProvider.getInstance().getNumberOfFiles(Paths.get(this.myProzess.getImagesOrigDirectory(true))));
             ProcessManager.saveProcess(this.myProzess);
         } catch (DAOException e) {
             Helper.setFehlerMeldung("fehlerNichtSpeicherbar", e);
@@ -3558,7 +3561,7 @@ public class Metadaten implements Serializable {
             return isImageHasOcr();
         }
     }
-    
+
     public int getMaxParallelThumbnailRequests() {
         return ConfigurationHelper.getInstance().getMaxParallelThumbnailRequests();
     }
@@ -4420,7 +4423,7 @@ public class Metadaten implements Serializable {
                 }
             } else {
                 Helper.setFehlerMeldung("File " + fileToDelete + " cannot be deleted from folder " + currentFolder.toString()
-                        + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
+                + " because number of files differs (" + totalNumberOfFiles + " vs. " + files.size() + ")");
             }
         }
 
@@ -5106,13 +5109,12 @@ public class Metadaten implements Serializable {
     public void refresh() {
         // do nothing, this is needed for jsf calls
     }
-    
-    
+
     public void downloadCurrentFolderAsPdf() throws IOException {
         if (allImages.isEmpty()) {
             return;
         }
-        
+
         Path imagesPath = Paths.get(imageFolderName);
         // put all selected images into a URL
         String imagesParameter = allImages.stream().map(Image::getImageName).collect(Collectors.joining("$"));
@@ -5142,11 +5144,16 @@ public class Metadaten implements Serializable {
             context.responseComplete();
         }
     }
-    
-    
+
+    @Getter
     private List<IMetadataEditorExtension> extensions;
-    
-//    private void readMetadataEditorExtensions() {
-//        extensions = PluginLoader.getPluginList(PluginType.MetadataEditor);
-//    }
+
+    private void readMetadataEditorExtensions() {
+        extensions = new ArrayList<>();
+        List<IPlugin> plugins = PluginLoader.getPluginList(PluginType.MetadataEditor);
+        for (IPlugin p : plugins) {
+            extensions.add((IMetadataEditorExtension) p);
+
+        }
+    }
 }
