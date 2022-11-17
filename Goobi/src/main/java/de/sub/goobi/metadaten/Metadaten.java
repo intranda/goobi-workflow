@@ -5148,11 +5148,17 @@ public class Metadaten implements Serializable {
     @Getter
     private List<IMetadataEditorExtension> extensions;
 
+    @Getter
+    @Setter
+    private IMetadataEditorExtension extension;
+    
     private void readMetadataEditorExtensions() {
         extensions = new ArrayList<>();
         List<IPlugin> plugins = PluginLoader.getPluginList(PluginType.MetadataEditor);
         for (IPlugin p : plugins) {
-            extensions.add((IMetadataEditorExtension) p);
+            IMetadataEditorExtension ext = (IMetadataEditorExtension) p;
+            ext.initializePlugin(this);
+            extensions.add(ext);
 
         }
     }

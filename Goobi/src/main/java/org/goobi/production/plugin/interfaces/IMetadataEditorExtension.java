@@ -20,6 +20,8 @@ package org.goobi.production.plugin.interfaces;
 
 import org.goobi.production.enums.PluginType;
 
+import de.sub.goobi.metadaten.Metadaten;
+
 public interface IMetadataEditorExtension extends IPlugin {
 
     /**
@@ -42,6 +44,14 @@ public interface IMetadataEditorExtension extends IPlugin {
     default PluginType getType() {
         return PluginType.MetadataEditor;
     }
+    
+    /**
+     * Initialize the extension
+     * 
+     * @param bean
+     */
+    
+    public void initializePlugin(Metadaten bean);
     
     
 }
