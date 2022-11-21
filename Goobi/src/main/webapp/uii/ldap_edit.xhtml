@@ -5,9 +5,9 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/template/template.html"
+    template="/uii/templatePG/templatePG.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
     <ui:param
         name="myPageTitle"
@@ -34,19 +34,30 @@
     </ui:define>
 
     <ui:define name="content">
-        <script type="text/javascript">
-                                    window.onload = function() {
-                                        document.getElementById( 'titel' ).focus();
-                                    }
-                                </script>
+
         <h:form
             id="myform"
             styleClass="form-horizontal form-bordered"
             onkeypress="submitOnEnter(event);"
             rendered="#{LoginForm.hasRole('Admin_Ldap')}">
-            <div class="row" role="main">
-                <div class="col-sm-12">
+
+            <main class="row">
+                <div class="col-12">
+
+                    <intranda:box
+                        boxType="action"
+                        boxTitle="false"
+                        padding="false"
+                        formBox="true"
+                        >
+
+                    <intranda:boxTitle
+                        title="#{myPageTitle}"
+                        >
+
+                    <!--
                     <div class="box box-color orange box-bordered">
+
                         <div class="box-title">
                             <h2>
                                 <i class="fa fa-key box-icon-fix"></i>
@@ -55,6 +66,9 @@
                                     value=": #{LdapGruppenForm.myLdapGruppe.titel}"
                                     rendered="#{LdapGruppenForm.myLdapGruppe.id != null}" />
                             </h2>
+                    -->
+
+
                             <ul class="tabs">
                                 <li class="#{LdapGruppenForm.displayMode eq ''?'active':''}">
                                     <h:commandLink
@@ -101,9 +115,11 @@
                                         </h:commandLink>
                                     </li>
                                 </ui:fragment>
-                            </ul>
-                        </div>
-                        <div class="box-content nopadding">
+
+                            </ul> <!-- /tabs -->
+
+                        </intranda:boxTitle>
+
                             <div class="tab-content">
                                 <div
                                     id="t7"
@@ -115,7 +131,9 @@
                                         field="#{LdapGruppenForm.myLdapGruppe.titel}"
                                         help="#{msgs.helpAuthentication_title}"
                                         name="titel"
-                                        fieldStyle="form-control" />
+                                        fieldStyle="form-control"
+                                        focusOnLoad="true"
+                                        />
 
 
 
@@ -423,7 +441,6 @@
                                             name="useTLS" />
                                     </div>
                                 </ui:fragment>
-                            </div>
 
                             <intranda:formButtonArea
                                 id="buttons"
@@ -431,12 +448,19 @@
                                 object="#{LdapGruppenForm.myLdapGruppe.id}"
                                 actionCancel="#{LdapGruppenForm.Cancel}" />
 
-                        </div>
-                    </div>
-                </div>
+                            </div>
+                    </intranda:box>
 
-            </div>
+                </div>
+            </main>
+
         </h:form>
+
+        <!-- Focus first input field on load -->
+        <script src="templatePG/js/modules/gwFocusOnLoad.js?v=#{HelperForm.buildVersion}"></script>
+        <script type="text/javascript">
+            gwFocusOnLoad.init()
+        </script>
 
     </ui:define>
 
