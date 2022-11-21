@@ -825,6 +825,7 @@ hr {
 body {
   font-family: Goobi2, sans-serif;
   font-size: var(--fs-400, 1.2rem);
+  font-weight: 300;
 }
 
 body .ui-widget {
@@ -850,6 +851,11 @@ body .ui-widget {
 
 .fs-600 {
   font-size: var(--fs-600);
+}
+
+.institutionEdit .tab-pane .heading-3 {
+  padding-left: 0.8rem;
+  padding-top: 1.2rem;
 }
 
 .flow > *:not(style) + * {
@@ -1207,7 +1213,7 @@ body .ui-widget {
   margin: 0 10px 0 5px;
 }
 
-.box--padded .box__data {
+.box--padded .box__body {
   padding: var(--box-padding);
   /*
   & > .row {
@@ -1220,11 +1226,11 @@ body .ui-widget {
   }
   */
 }
-.box--padded .box__data tr {
+.box--padded .box__body tr {
   border-left: 1px solid var(--clr-neutral-300);
   border-right: 1px solid var(--clr-neutral-300);
 }
-.box--padded .box__data .no-borders tr {
+.box--padded .box__body .no-borders tr {
   border: 0;
 }
 
@@ -1309,6 +1315,15 @@ body .ui-widget {
   vertical-align: super;
   font-size: var(--fs-100, 0.8rem);
   color: var(--clr-neutral-400);
+}
+
+.box.box--outline {
+  border-width: 1px;
+}
+.box.box--outline .box__title {
+  background: transparent;
+  color: var(--bs-body-color);
+  border-width: 1px;
 }
 
 .box__help {
@@ -1529,6 +1544,8 @@ label,
 .form__label {
   font-size: var(--fs-500);
   align-self: flex-start;
+  overflow: hidden;
+  hyphens: auto;
 }
 
 .form__help {
@@ -1704,6 +1721,45 @@ span.badge:not(:last-child) {
   background-color: var(--clr-neutral-300);
   border-color: var(--clr-neutral-300);
   color: var(--clr-text-400);
+}
+
+.processLog .gw-table-fixed {
+  overflow: auto;
+  width: auto;
+  height: 180px;
+}
+.processLog .gw-table-fixed.journal-big {
+  height: 72vh;
+}
+.processLog .first-row td:first-child {
+  width: 240px;
+}
+.processLog .log_color_error {
+  color: #ff0000;
+}
+.processLog .log_color_warn {
+  color: #ff6600;
+}
+.processLog .log_color_info {
+  color: #0033cc;
+}
+.processLog .log_color_debug {
+  color: #8e8d8e;
+}
+.processLog .log_color_user {
+  color: #006600;
+}
+.processLog .log_table_column_date {
+  min-width: 140px;
+}
+.processLog .log_file {
+  background: #368ee0;
+  border: none;
+  color: white;
+  margin-left: 10px;
+}
+.processLog .log_file_delete {
+  border: none;
 }
 
 #designSystem {
