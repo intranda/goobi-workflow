@@ -53,8 +53,8 @@
 				</h:panelGroup>
 
 				<h:panelGroup rendered="#{(cc.attrs.grayeddelete == null) or (cc.attrs.grayeddelete == false)}">
-					<button id="delete" class="btn btn-hot trigger-delete" type="button" data-toggle="modal" data-target="#deleteModal">
-						<i class="fa fa-trash-o margin-right-5" />
+					<button id="delete" class="btn btn-hot trigger-delete" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal">
+						<i class="fa fa-trash-o" />
 						<span>
 							<h:outputText value="#{msgs.loeschen}" />
 						</span>
@@ -63,7 +63,7 @@
 					<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 						<div class="modal-dialog" role="document">
 							<div class="modal-content">
-								<div class="modal-header">
+								<div class="modal-header bg-primary-400 text-white">
 									<h4 class="modal-title" id="myModalLabel">
 										<h:outputText value="#{msgs.loeschen}" />
 									</h4>
@@ -72,10 +72,12 @@
 									<p>#{msgs.sollDieserEintragWirklichGeloeschtWerden}</p>
 								</div>
 								<div class="modal-footer">
-									<button class="btn" data-dismiss="modal" aria-hidden="true">#{msgs.abbrechen}</button>
+									<button class="btn btn-blank" data-dismiss="modal" aria-hidden="true">#{msgs.abbrechen}</button>
 									<button jsf:id="confirmDelete" class="btn btn-hot" jsf:action="#{cc.attrs.form.Loeschen}">
 										<i class="fa fa-trash-o margin-right-5" />
-										<h:outputText value="#{msgs.loeschen}" />
+										<span>
+											<h:outputText value="#{msgs.loeschen}" />
+										</span>
 									</button>
 								</div>
 							</div>
