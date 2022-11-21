@@ -70,7 +70,7 @@
 
 
                             <ul class="tabs">
-                                <li class="#{LdapGruppenForm.displayMode eq ''?'active':''}">
+                                <li class="tab #{LdapGruppenForm.displayMode eq ''?'active':''}">
                                     <h:commandLink
                                         id="details"
                                         action="#{NavigationForm.Reload}"
@@ -85,7 +85,7 @@
                                     </h:commandLink>
                                 </li>
                                 <ui:fragment rendered="#{LdapGruppenForm.myLdapGruppe.authenticationType == 'ldap'}">
-                                    <li class="#{LdapGruppenForm.displayMode eq 'tab2'?'active':''}">
+                                    <li class="tab #{LdapGruppenForm.displayMode eq 'tab2'?'active':''}">
                                         <h:commandLink
                                             id="technicalData"
                                             action="#{NavigationForm.Reload}"
@@ -100,7 +100,7 @@
                                         </h:commandLink>
                                     </li>
 
-                                    <li class="#{LdapGruppenForm.displayMode eq 'tab3'?'active':''}">
+                                    <li class="tab #{LdapGruppenForm.displayMode eq 'tab3'?'active':''}">
                                         <h:commandLink
                                             id="authentication"
                                             action="#{NavigationForm.Reload}"
@@ -146,7 +146,6 @@
                                         help="#{msgs.helpLdapAuthenticationType}"
                                         name="typename"
                                         selectItems="#{LdapGruppenForm.allAuthenticationTypes}"
-                                        fieldStyle="form-control"
                                         required="true"
                                         var="item"
                                         itemLabel="#{item.label}"
@@ -447,7 +446,6 @@
                                 form="#{LdapGruppenForm}"
                                 object="#{LdapGruppenForm.myLdapGruppe.id}"
                                 actionCancel="#{LdapGruppenForm.Cancel}" />
-
                             </div>
                     </intranda:box>
 
