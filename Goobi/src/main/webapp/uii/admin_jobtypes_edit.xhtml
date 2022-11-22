@@ -55,9 +55,9 @@
 						<div class="col-12 col-md-3 label-col">
 							<label>#{msgs.steps}</label>
 						</div>
-						<div class="col-9">
+						<div class="col-9 p-0">
 							<div class="d-flex">
-								<div class="col-12 col-md-6">
+								<div class="col-12 col-md-6 gw-col-padding gw-border-right">
 									<h3 tabindex="0" class="fs-600">#{msgs.jobtypes_assignedSteps}</h3>
 									<ui:repeat var="stepTitle" value="#{JobTypesBean.currentJobType.stepNameList}">
 										<button class="badge text-primary-400"
@@ -68,7 +68,7 @@
 										   </button>
 									</ui:repeat>
 								</div>
-								<div class="col-12 col-md-6">
+								<div class="col-12 col-md-6 gw-col-padding">
 									<h3 tabindex="0" class="fs-600">#{msgs.jobtypes_availableSteps}</h3>
 									<ui:repeat var="stepTitle" value="#{JobTypesBean.availableStepTitles}">
 										<button class="badge text-primary-400"
@@ -82,28 +82,27 @@
 							</div>
 						</div> <!-- end row -->
 				    </div>
-				    <div class="form-actions">
-                        <button class="btn btn-hot"
-                            onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
-                            jsf:action="#{JobTypesBean.deleteCurrentJobType}"
-                            jsf:rendered="#{not JobTypesBean.currentJobTypeNew}">
-                            <i class="fa fa-trash"></i>
-                            <span>#{msgs.loeschen}</span>
-                        </button>
-					    <button class="btn btn-blank"
-                            jsf:immediate="true"
-                            jsf:action="#{JobTypesBean.cancelJobTypeEdit}">
+
+				    <div class="box__actions">
+					    <a
+								class="btn btn-blank"
+								jsf:immediate="true"
+								jsf:action="#{JobTypesBean.cancelJobTypeEdit}">
 					    	<span>#{msgs.cancel}</span>
-					    </button>
+					    </a>
 					    <button class="btn btn-success" jsf:action="#{JobTypesBean.saveCurrentJobType}">
 					    	<i class="fa fa-save"></i>
 					    	<span>#{msgs.save}</span>
 					    </button>
+							<button
+								class="btn btn-hot box__actions__delete"
+								onclick="if (!confirm('#{msgs.sollDerContentWirklichGeloeschtWerden}')) return false"
+								jsf:action="#{JobTypesBean.deleteCurrentJobType}"
+								jsf:rendered="#{not JobTypesBean.currentJobTypeNew}">
+								<i class="fa fa-trash"></i>
+								<span>#{msgs.loeschen}</span>
+							</button>
 				    </div>
-						<!--
-                </div>
-        	</div>
-						-->
 					</intranda:box>
         	</div>
         	</div>

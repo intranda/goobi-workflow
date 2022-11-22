@@ -196,3 +196,21 @@
   flex: 1 1 100%;
   margin-left: 1px;
 }
+
+// row of buttons in box `footers`
+// box__actions is default, rest: legacy classes
+.form-actions,
+.form__actions,
+.box__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin: 1.2rem 0;
+
+  // Push delete button to the left side
+  .trigger-delete,
+  &__delete {
+    order: -1;
+    margin-right: auto;
+  }
+}

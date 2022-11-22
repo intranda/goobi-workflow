@@ -9,20 +9,6 @@ textarea {
 th {
   font-weight: inherit;
 }
-.form-actions,
-.form__actions,
-.box__actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  margin: 1.2rem 0;
-
-  // Push delete button to the left side
-  .trigger-delete {
-    order: -1;
-    margin-right: auto;
-  }
-}
 
 .form-group {
   padding: 8px;

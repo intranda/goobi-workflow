@@ -887,7 +887,8 @@ body .ui-widget {
   background: none repeat scroll 0 0 #e51400;
 }
 
-.border-right {
+.border-right,
+.gw-border-right {
   border-right: 1px solid var(--gw-clr-border, var(--clr-neutral-300)) !important;
 }
 
@@ -903,6 +904,10 @@ body .ui-widget {
 
 .ff-goobi {
   font-family: Goobi2;
+}
+
+.gw-col-padding {
+  padding: var(--col-padding, 8px);
 }
 
 .navbar {
@@ -1332,6 +1337,23 @@ body .ui-widget {
   margin-left: 1px;
 }
 
+.form-actions,
+.form__actions,
+.box__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin: 1.2rem 0;
+}
+.form-actions .trigger-delete, .form-actions__delete,
+.form__actions .trigger-delete,
+.form__actions__delete,
+.box__actions .trigger-delete,
+.box__actions__delete {
+  order: -1;
+  margin-right: auto;
+}
+
 .table {
   margin-bottom: 0;
 }
@@ -1518,21 +1540,6 @@ textarea:hover {
 
 th {
   font-weight: inherit;
-}
-
-.form-actions,
-.form__actions,
-.box__actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  margin: 1.2rem 0;
-}
-.form-actions .trigger-delete,
-.form__actions .trigger-delete,
-.box__actions .trigger-delete {
-  order: -1;
-  margin-right: auto;
 }
 
 .form-group {

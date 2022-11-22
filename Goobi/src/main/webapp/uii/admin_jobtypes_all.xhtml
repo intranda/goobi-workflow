@@ -26,72 +26,68 @@
         <h:form rendered="#{LoginForm.hasRole('Admin_Jobtypes')}">
 
         <intranda:box
-          boxType="primary"
+          boxType="primary-400"
           icon="fa-gears"
           title="#{msgs.jobTypes}"
-          padding="false">
+          padding="true">
 
-            <!-- Box content -->
-            <div class="dataTables_wrapper">
-                <div
-                    class="table-wrapper"
-                    jsf:rendered="#{not empty JobTypesBean.jobTypes}"
-                    >
-        			<h:dataTable value="#{JobTypesBean.jobTypes}" var="jobType" styleClass="table dataTable">
-	        				<h:column>
-	        					<f:facet name="header">#{msgs.name}</f:facet>
-	        					#{jobType.name}
-	       					</h:column>
-	       					<h:column>
-	       						<f:facet name="header">#{msgs.steps}</f:facet>
-	                      <ui:repeat var="stepTitle" value="#{jobType.stepNames}">
-                           <span class="badge text-success">
-                               #{stepTitle}
-	                          </span>
-	                      </ui:repeat>
-	                  </h:column>
-                    <h:column>
-                        <f:facet name="header">#{msgs.status}</f:facet>
-                        <h:outputText rendered="#{jobType.paused}" value="#{msgs.jobtypes_paused}" />
-                        <h:outputText rendered="#{not jobType.paused}" value="#{msgs.jobtypes_running}" />
-                    </h:column>
-                  <h:column>
-                    <f:facet name="header">#{msgs.auswahl}</f:facet>
-										    <div class="dataTables__actions">
-                        <button class="btn btn-blank"
-                            aria-label="#{msgs.editJobType}"
-                            title="#{msgs.editJobType}"
-                            jsf:action="#{JobTypesBean.editJobType(jobType)}">
-                            <i class="fa fa-pencil"></i>
-                        </button>
-                        <button class="btn btn-blank"
-                            title="#{msgs.unPauseJobType}"
-                            aria-label="#{msgs.unPauseJobType}"
-                            jsf:rendered="#{jobType.paused}"
-                            jsf:action="#{JobTypesBean.unPauseJobType(jobType)}">
-                            <f:ajax render="@form" />
-                            <i class="fa fa-play"></i>
-                        </button>
-                        <button class="btn btn-blank"
-                            title="#{msgs.pauseJobType}"
-                            aria-label="#{msgs.pauseJobType}"
-                            jsf:rendered="#{not jobType.paused}"
-                            jsf:action="#{JobTypesBean.pauseJobType(jobType)}">
-                            <f:ajax render="@form" />
-                            <i class="fa fa-pause"></i>
-                        </button>
-                        </div>
+            <div class="gw-table gw-table-fixed">
+                <div class="gw-table__wrapper" jsf:rendered="#{not empty JobTypesBean.jobTypes}">
+                  <h:dataTable value="#{JobTypesBean.jobTypes}" var="jobType" styleClass="table table-hover table-bordered">
+                      <h:column>
+                        <f:facet name="header">#{msgs.name}</f:facet>
+                        #{jobType.name}
+                      </h:column>
+                      <h:column>
+                        <f:facet name="header">#{msgs.steps}</f:facet>
+                            <ui:repeat var="stepTitle" value="#{jobType.stepNames}">
+                               <span class="badge text-success">
+                                   #{stepTitle}
+                                </span>
+                            </ui:repeat>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">#{msgs.status}</f:facet>
+                            <h:outputText rendered="#{jobType.paused}" value="#{msgs.jobtypes_paused}" />
+                            <h:outputText rendered="#{not jobType.paused}" value="#{msgs.jobtypes_running}" />
+                        </h:column>
+                        <h:column headerClass="gw-table-fixed__actions">
+                          <f:facet name="header" headerClass="gw-table-fixed__actions" >#{msgs.auswahl}</f:facet>
+                          <div class="gw-table-fixed__actions__btns">
+                            <button class="btn btn-blank"
+                                aria-label="#{msgs.editJobType}"
+                                title="#{msgs.editJobType}"
+                                jsf:action="#{JobTypesBean.editJobType(jobType)}">
+                                <i class="fa fa-pencil"></i>
+                            </button>
+                            <button class="btn btn-blank"
+                                title="#{msgs.unPauseJobType}"
+                                aria-label="#{msgs.unPauseJobType}"
+                                jsf:rendered="#{jobType.paused}"
+                                jsf:action="#{JobTypesBean.unPauseJobType(jobType)}">
+                                <f:ajax render="@form" />
+                                <i class="fa fa-play"></i>
+                            </button>
+                            <button class="btn btn-blank"
+                                title="#{msgs.pauseJobType}"
+                                aria-label="#{msgs.pauseJobType}"
+                                jsf:rendered="#{not jobType.paused}"
+                                jsf:action="#{JobTypesBean.pauseJobType(jobType)}">
+                                <f:ajax render="@form" />
+                                <i class="fa fa-pause"></i>
+                            </button>
+                          </div>
 	                  </h:column>
 	              </h:dataTable>
                 </div>
 
-              <div class="form-actions">
+            </div>
+              <div class="box__actions">
                 <button class="btn btn-primary me-auto" jsf:action="#{JobTypesBean.addNewJobType}">
                    #{msgs.createNewJobType}
                 </button>
               </div>
 
-            </div>
         </intranda:box>
     </h:form>
 
