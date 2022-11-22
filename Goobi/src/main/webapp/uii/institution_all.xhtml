@@ -156,7 +156,9 @@
                                         <ui:fragment rendered="#{!item.allowAllPlugins}">
                                             <h:outputText
                                                 value="#{msgs.instituiton_administrationPlugin}: "
-                                                escape="false" />
+                                                escape="false"
+                                                styleClass="fw-bold"
+                                                />
                                             <x:dataList
                                                 var="intern"
                                                 value="#{item.allowedAdministrationPlugins}"
@@ -173,6 +175,7 @@
 
                                             <h:outputText
                                                 value=" &lt;br/&gt;#{msgs.instituiton_workflowPlugin}: "
+                                                styleClass="fw-bold"
                                                 escape="false" />
                                             <x:dataList
                                                 var="intern"
@@ -190,6 +193,7 @@
 
                                             <h:outputText
                                                 value="&lt;br/&gt;#{msgs.instituiton_statisticsPlugin}: "
+                                                styleClass="fw-bold"
                                                 escape="false" />
                                             <x:dataList
                                                 var="intern"
@@ -206,6 +210,7 @@
                                             </x:dataList>
                                             <h:outputText
                                                 value="&lt;br/&gt;#{msgs.instituiton_dashboardPlugin}: "
+                                                styleClass="fw-bold"
                                                 escape="false" />
                                             <x:dataList
                                                 var="intern"
