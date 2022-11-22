@@ -20,7 +20,7 @@ button,
   border-radius: var(--border-radius, 2px);
 
   i ~ * {
-    margin-inline-start: 0.8rem;
+    margin-inline-start: 0.4rem;
   }
 
   /*
@@ -63,6 +63,11 @@ span.badge {
   color: var(--clr-success);
 }
 */
+
+// badge default
+.badge {
+  color: var(--clr-neutral-400);
+}
 
 // Skip link
 .skip-main {

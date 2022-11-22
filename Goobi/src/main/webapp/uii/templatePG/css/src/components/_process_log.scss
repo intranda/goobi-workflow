@@ -1,13 +1,27 @@
+// Find markup in journal.xhtml
 .processLog {
+  .box__title {
+    padding-right: 1rem;
+  }
+  .actions > *:hover {
+    background-color: var(--clr-primary-400);
+  }
+
   .gw-table-fixed {
     overflow: auto;
     width: auto;
-    height: 180px;
+    height: 243px;
 
     &.journal-big {
-      height: 72vh;
+      height: 32vh;
     }
   }
+  th:last-child,
+  td:last-child {
+    border-right: 0px;
+    border-left: 0;
+  }
+
   .first-row td:first-child {
     width: 240px;
   }

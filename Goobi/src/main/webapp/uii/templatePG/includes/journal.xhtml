@@ -73,7 +73,7 @@
         </c:if>
 
         <intranda:box
-            scope="flex-grow-1 processLog"
+            scope="processLog"
             boxType="outline"
             boxTitle="false"
             >
@@ -278,6 +278,7 @@
                                                     styleClass="log_color_#{entry.type.title}" />
                                             </td>
                                             <td>
+                                                <div class="d-flex">
                                                 <h:outputText
                                                     value="#{entry.formattedContent}"
                                                     styleClass="log_color_#{entry.type.title}"
@@ -286,7 +287,7 @@
 
                                                     <button
                                                         jsf:id="downloadFile"
-                                                        class="log_file"
+                                                        class="log_file ms-2"
                                                         jsf:action="#{bean.downloadFile(entry)}"
                                                         title="#{msgs.downloadFile}">
                                                         <i class="fa #{entry.externalFile ? 'fa-globe' : 'fa-paperclip'} margin-right-less" />
@@ -299,12 +300,13 @@
                                                         jsf:id="deleteFile"
                                                         onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
                                                         jsf:rendered="#{LoginForm.hasRole('Workflow_Processes_Show_Journal_File_Deletion')}"
-                                                        class="log_file_delete btn-mini pull-right margin-right-10"
+                                                        class="log_file_delete btn-mini pull-right ms-auto"
                                                         jsf:action="#{bean.deleteFile(entry)}"
                                                         title="#{msgs.deleteFile}">
                                                         <i class="fa fa-trash-o" />
                                                     </button>
                                                 </h:panelGroup>
+                                                </div>
                                             </td>
                                         </tr>
                                     </h:panelGroup>

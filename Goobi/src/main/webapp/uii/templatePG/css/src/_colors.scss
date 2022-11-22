@@ -29,13 +29,24 @@ $colors: (
 
 $colors-badges: (
   light-red: #e51400,
+  light-blue: #368ee0,
   light-green: #56af45,
   light-orange: #f8a31f,
   light-purple: #8947cc,
-  light-brown2: #74422b,
-  light-blue: #368ee0,
+  light-lila: #500899,
   light-greengrey: #617f7d,
+  light-grey: #777,
+  light-green2: #3b7f7b,
+  light-brown1: #3e2115,
+  light-brown2: #74422b,
+);
+
+$colors-intranda-badges: (
+  intranda-ultralight: #bbbbbb,
+  intranda-red: #e51400,
+  intranda-orange: #f8a31f,
   intranda-green: #56af45,
+  intranda-blue: #368ee0,
 );
 
 :root {
@@ -54,8 +65,14 @@ $colors-badges: (
 
 // Badges
 @each $name, $color in $colors-badges {
-  .badge-#{$name} {
+  .badge.badge-#{$name} {
     color: var(--clr-badge-#{$name});
+  }
+}
+
+@each $name, $color in $colors-intranda-badges {
+  .badge.badge-intranda-#{$name} {
+    background-color: var(--clr-badge-#{$name});
   }
 }
 

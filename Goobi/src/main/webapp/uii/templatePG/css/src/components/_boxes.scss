@@ -53,7 +53,8 @@
 }
 
 .box--padded .box__body {
-  padding: var(--box-padding);
+  padding-left: var(--box-padding);
+  padding-right: var(--box-padding);
 
   // Apply a border-bottom to first level rows only
   // => nested rows will not have a border
