@@ -310,7 +310,9 @@
                             title="#{msgs.metsfilegroups}"
                             icon="fa-table"
                             boxType="neutral-500"
-                            boxSmall="true">
+                            boxSmall="true"
+                            padding="true"
+                            >
 
 
                               <div class="dataTables_wrapper">
@@ -347,7 +349,7 @@
 
                               </x:dataTable>
 
-                                <div class="form__actions ms-0 me-0">
+                                <div class="form__actions">
 
                                   <!-- Neu-Schaltknopf -->
                                   <button jsf:id="newFileformat" class="me-auto btn btn-neutral-500" jsf:action="#{ProjekteForm.filegroupAdd}" jsf:immediate="true">
