@@ -12,22 +12,16 @@
 }
 
 .box {
+  max-width: 100%;
   border: 2px solid var(--clr-neutral, #ddd);
   border-radius: var(--border-radius);
-  // margin-top: 1rem; // remove + use flow class on cols in
-}
-
-// Limit a box' size to half of the view port, and
-// put it in the center of the screen if there is only one box in the view
-.box {
-  //  max-width: 100rem;
-  //  margin: auto;
 }
 
 .box__title {
   color: var(--clr-white, #fff);
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   padding: var(--box-padding-title);
   border-bottom: 2px solid var(--clr-neutral, #ddd);
   background-color: var(--clr-neutral, #ddd);
@@ -52,23 +46,22 @@
   }
 }
 
-.box--padded .box__body {
-  padding-left: var(--box-padding);
-  padding-right: var(--box-padding);
+.box--padded .box__body,
+.box--no-padding .box--padded .box__body {
+  padding: var(--box-padding);
 
-  // Apply a border-bottom to first level rows only
-  // => nested rows will not have a border
-  //
-  /*
-  & > .row {
-    border-bottom: 1px solid var(--clr-neutral-300);
+  .gw-table__search,
+  .dataTables__search,
+  .dataTables__search__container {
+    margin-top: 0;
   }
 
-  // Do not apply padding onto neste cols
-  .row > [class^="col-"] .row > [class^="col-"] {
-    padding: 0;
+  .form-actions,
+  .form__actions,
+  .box__actions {
+    margin: 0;
+    margin-top: var(--box-padding);
   }
-  */
 
   tr {
     border-left: 1px solid var(--clr-neutral-300);
@@ -80,6 +73,9 @@
   }
 }
 
+.box--no-padding .box__body {
+  padding: 0;
+}
 /* Box content without padding */
 .box--no-padding {
   .box__content {

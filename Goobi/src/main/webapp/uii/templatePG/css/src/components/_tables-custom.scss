@@ -134,10 +134,12 @@ td {
 }
 
 .table-fixed__actions,
+.gw-table-fixed__actions,
 .dataTables__actions {
   --width-table-col: 110px;
 }
 
+.gw-table__actions__container,
 .gw-table-fixed__actions__btns,
 .table-fixed__actions__btns {
   display: flex;
@@ -159,8 +161,9 @@ td {
   hyphens: auto;
 }
 
+.table-fixed th,
 .gw-table-fixed th,
-.table-fixed th {
+.gw-table-fixed-no-th td {
   width: var(--width-table-col);
 }
 
