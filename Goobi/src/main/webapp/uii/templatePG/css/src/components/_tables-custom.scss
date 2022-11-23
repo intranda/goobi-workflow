@@ -101,6 +101,10 @@ td {
     display: flex;
     flex-shrink: 0;
   }
+
+  input {
+    background-color: #f6f6f6;
+  }
 }
 
 .dataTables__filter-container {
