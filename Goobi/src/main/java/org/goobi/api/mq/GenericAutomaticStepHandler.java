@@ -47,6 +47,7 @@ public class GenericAutomaticStepHandler implements TicketHandler<PluginReturnVa
         try {
             ScriptThreadWithoutHibernate myThread = new ScriptThreadWithoutHibernate(step);
             myThread.start();
+            myThread.join();
         } catch (Exception e) {
             return PluginReturnValue.ERROR;
         }
