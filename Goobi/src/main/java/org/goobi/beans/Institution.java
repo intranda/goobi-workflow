@@ -88,7 +88,7 @@ public class Institution extends AbstractJournal implements Serializable, Databa
     @Setter
     // any additional data is hold in a map and gets stored in an xml column, it is searchable using xpath
     // individual values can be extracted: 'select ExtractValue(additional_data, '/root/key') from benutzer'
-    protected Map<String, String> additionalData = new HashMap<>();
+    protected transient Map<String, String> additionalData = new HashMap<>();
 
     @Override
     public int compareTo(Institution o) {

@@ -80,6 +80,7 @@
                     </button>
 
                     <button
+                    
                         jsf:id="adapt_display_folders"
                         data-toggle="tooltip"
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'fileUpload' ? msgs.process_log_regularView : msgs.process_log_fileView}"
@@ -92,7 +93,8 @@
                     </button>
 
 
-                    <button
+                    <button                   
+                        jsf:rendered="#{showFolderSelection}"
                         jsf:id="adapt_display_comments"
                         data-toggle="tooltip"
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? msgs.process_log_regularView : msgs.showCommentArea}"
@@ -109,7 +111,7 @@
                         styleClass="form-control input pull-right margin-right-10"
                         style="width: auto;"
                         value="#{bean.currentFolder}"
-                        rendered="#{NavigationForm.uiStatus['toggleJournal']=='fileUpload'}">
+                        rendered="#{NavigationForm.uiStatus['toggleJournal']=='fileUpload' and showFolderSelection}">
                         <f:selectItems value="#{bean.visibleFolder}" />
                         <f:ajax render="@form" />
                     </x:selectOneMenu>
