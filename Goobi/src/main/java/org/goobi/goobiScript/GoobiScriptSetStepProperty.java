@@ -40,11 +40,11 @@ import de.sub.goobi.persistence.managers.ProcessManager;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class GoobiScriptSetTaskProperty extends AbstractIGoobiScript implements IGoobiScript {
+public class GoobiScriptSetStepProperty extends AbstractIGoobiScript implements IGoobiScript {
 
     @Override
     public String getAction() {
-        return "setTaskProperty";
+        return "setStepProperty";
     }
 
     @Override
