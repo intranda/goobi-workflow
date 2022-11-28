@@ -1,5 +1,8 @@
 /* Styles for Buttons, Badges, Links */
 
+/* ========================================
+ * Buttons
+/* ======================================== */
 .btn-link {
   text-decoration: none;
   background-color: transparent;
@@ -22,19 +25,17 @@ button,
   i ~ * {
     margin-inline-start: 0.4rem;
   }
-
-  /*
-  &.btn-hot {
-    margin-inline-end: auto;
-  }
-  */
-
-  & ~ .btn {
-    // margin-inline-start: 0.8rem;
-  }
 }
 
-// Badges
+/* ========================================
+ * Badges
+/* ======================================== */
+
+// default color (applied if no other color is defined)
+.badge {
+  color: var(--clr-neutral-400);
+}
+
 button.badge,
 span.badge {
   display: inline-block;
@@ -53,23 +54,16 @@ span.badge {
   }
 }
 
-// Badge colors
-/*
-.badge--primary-400 {
-  color: var(--clr-primary-400);
+// pillshaped badges
+[class^="badge badge-intranda-"] {
+  color: var(--clr-white);
+  border-radius: 12px;
 }
 
-.badge--success {
-  color: var(--clr-success);
-}
-*/
+/* ========================================
+ * Skip Link
+/* ======================================== */
 
-// badge default
-.badge {
-  color: var(--clr-neutral-400);
-}
-
-// Skip link
 .skip-main {
   position: absolute;
   top: -50px;
@@ -83,7 +77,10 @@ span.badge {
   top: 0px;
 }
 
-// Collapses
+/* ========================================
+ * Collapses
+/* ======================================== */
+
 .collapse-custom {
   /* reset default btn styles */
   background: transparent;
@@ -97,7 +94,10 @@ span.badge {
   align-items: center;
 }
 
-// Overrides
+/* ========================================
+ * BS Overrides
+/* ======================================== */
+
 .btn-blank {
   background-color: var(--clr-neutral-200);
   border-color: var(--clr-neutral-200);

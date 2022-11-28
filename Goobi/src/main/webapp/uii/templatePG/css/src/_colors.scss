@@ -48,7 +48,6 @@ $colors-badges: (
   light-green2: #3b7f7b,
   light-brown1: #3e2115,
   light-brown2: #74422b,
-  intranda-green: #56af45,
 );
 
 $colors-intranda-badges: (
@@ -56,41 +55,46 @@ $colors-intranda-badges: (
   intranda-red: #e51400,
   intranda-orange: #f8a31f,
   intranda-blue: #368ee0,
+  intranda-green: #56af45,
 );
 
 :root {
-  // Generate a custom property for every entry in the $colors map; e.g:
+  // generate a custom property for every entry in the above maps; e.g:
   // `--clr-primary-400: #368ee0;`
 
+  // general colors
   @each $name, $color in $colors {
     --clr-#{$name}: #{$color};
   }
 
+  // boxes
   @each $name, $color in $colors-boxes {
     --clr-box-#{$name}: #{$color};
   }
 
-  // Vars for badges
+  // badges
   @each $name, $color in $colors-badges {
     --clr-badge-#{$name}: #{$color};
   }
 
+  // pillshaped badges
   @each $name, $color in $colors-intranda-badges {
     --clr-badge-#{$name}: #{$color};
   }
 }
 
-// Badges
+// BADGES
+// outline badges
 @each $name, $color in $colors-badges {
   .badge.badge-#{$name} {
     color: var(--clr-badge-#{$name});
   }
 }
 
+// pillshaped badges
 @each $name, $color in $colors-intranda-badges {
   .badge.badge-#{$name} {
     background-color: var(--clr-badge-#{$name});
-    color: var(--bs-body-color);
   }
 }
 
