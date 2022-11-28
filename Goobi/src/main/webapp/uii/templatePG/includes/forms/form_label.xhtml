@@ -27,10 +27,14 @@
 				jsf:styleClass="form__label"
 			>
 				#{labelLabel}
+
+				<span jsf:styleClass="form__label__required">
 					<f:passThroughAttribute name="title" value="#{msgs.requiredField}" />
 					<f:passThroughAttribute name="data-bs-toggle" value="tooltip" />
 					<f:passThroughAttribute name="data-bs-placement" value="right" />
 					<i class="fa fa-asterisk form__required" />
+				</span>
+
 			</label>
 		</ui:fragment>
 

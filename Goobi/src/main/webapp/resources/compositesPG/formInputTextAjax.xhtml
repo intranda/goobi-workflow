@@ -28,15 +28,7 @@
 		<div class="row">
 			<div class="#{cc.attrs.classLeft}">
 
-			<!--
-			<div class="#{cc.attrs.classLeft} control-label">
-				<h:outputLabel for="#{cc.attrs.name}" value="#{cc.attrs.label}" />
-				<h:panelGroup rendered="#{cc.attrs.required or cc.attrs.displayAsRequired}">
-					<i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip"/>
-				</h:panelGroup>
-			</div>
-			-->
-
+				<!-- LABEL -->
 			<ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
 				<ui:param name="labelFor" value="#{cc.attrs.name}" />
 				<ui:param name="labelRequired" value="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
