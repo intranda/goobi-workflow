@@ -60,7 +60,7 @@
 								<div class="col-12 col-md-6 gw-col-padding gw-border-right">
 									<h3 tabindex="0" class="fs-600">#{msgs.jobtypes_assignedSteps}</h3>
 									<ui:repeat var="stepTitle" value="#{JobTypesBean.currentJobType.stepNameList}">
-										<button class="badge text-primary-400"
+										<button class="badge badge-light-blue"
 											   jsf:action="#{JobTypesBean.removeStepFromCurrentJobType(stepTitle)}">
 											   <f:ajax render="@form" execute="@form"/>
 											   #{stepTitle}
@@ -71,7 +71,7 @@
 								<div class="col-12 col-md-6 gw-col-padding">
 									<h3 tabindex="0" class="fs-600">#{msgs.jobtypes_availableSteps}</h3>
 									<ui:repeat var="stepTitle" value="#{JobTypesBean.availableStepTitles}">
-										<button class="badge text-primary-400"
+										<button class="badge badge-light-blue"
 											   jsf:action="#{JobTypesBean.addStepToCurrentJobType(stepTitle)}">
 											   <f:ajax render="@form" execute="@form"/>
 											   #{stepTitle}
