@@ -6,15 +6,23 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
+
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-12">
+
             <h3 class="mt-4">
                 <h:outputText value="#{msgs.message_queue_slowQueue}" />
             </h3>
-            <div class="dataTables_wrapper">
+
                 <h:form id="slow_queue">
+
+                <div class="col-12">
+
+                <div class="gw-table gw-table-fixed">
+                  <div class="gw-table__wrapper">
+
                     <h:dataTable
-                        styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                        styleClass="table table-hover table-bordered"
                         var="entry"
                         value="#{messageQueueBean.slowQueueContent}">
                         <h:column>
@@ -43,37 +51,49 @@
                             <h:outputText value="#{entry.value}" />
                         </h:column>
 
-                        <x:column>
+                        <x:column headerClass="gw-table-fixed__actions">
                             <f:facet name="header">
                                 <h:outputText value="#{msgs.auswahl}" />
                             </f:facet>
-                            <button
-                                jsf:action="#{messageQueueBean.clearQueue}"
-                                jsf:rel="tooltip"
-                                class="btn btn-blank"
-                                onclick="preventDoubleSubmit(this);"
-                                title="#{msgs.message_queue_cancel_ticket}">
-                                <i class="fa fa-trash-o" />
-                                <f:setPropertyActionListener
-                                    target="#{messageQueueBean.queueType}"
-                                    value="goobi_slow" />
-                                <f:setPropertyActionListener
-                                    target="#{messageQueueBean.messageType}"
-                                    value="#{entry.key}" />
-                            </button>
+                            <div clas="gw-table-fixed__actions__container">
+                                <button
+                                    jsf:action="#{messageQueueBean.clearQueue}"
+                                    jsf:rel="tooltip"
+                                    class="btn btn-blank"
+                                    onclick="preventDoubleSubmit(this);"
+                                    title="#{msgs.message_queue_cancel_ticket}">
+                                    <i class="fa fa-trash-o" />
+                                    <f:setPropertyActionListener
+                                        target="#{messageQueueBean.queueType}"
+                                        value="goobi_slow" />
+                                    <f:setPropertyActionListener
+                                        target="#{messageQueueBean.messageType}"
+                                        value="#{entry.key}" />
+                                </button>
+                            </div>
 
                         </x:column>
 
                     </h:dataTable>
 
+                  </div>
+                </div>
 
-                    <h:panelGroup id="slow-details">
+                </div>
 
 
-                        <br />
+                <h:panelGroup id="slow-details">
+
+
+
+                <div class="col-12 mt-4">
+
+                      <div class="gw-table gw-table-fixed">
+                      <div class="gw-table__wrapper">
+
                         <x:dataTable
                             rendered="#{messageQueueBean.messageType != null}"
-                            styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                            styleClass="table table-hover table-bordered"
                             var="ticket"
                             value="#{messageQueueBean.activeSlowQueryMesssages}">
 
@@ -121,38 +141,51 @@
                                     <br />
                                 </x:dataList>
                             </x:column>
-                            <x:column>
+                            <x:column headerClass="gw-table-fixed__actions">
                                 <f:facet name="header">
                                     <h:outputText value="#{msgs.auswahl}" />
                                 </f:facet>
+                                <div class="gw-table-fixed__actions__container">
                                 <button
                                     jsf:action="#{messageQueueBean.deleteMessage(ticket)}"
                                     jsf:rel="tooltip"
-                                    class="btn"
+                                    class="btn btn-blank"
                                     onclick="preventDoubleSubmit(this);"
                                     title="#{msgs.message_queue_cancel_ticket}">
                                     <i class="fa fa-trash-o" />
                                 </button>
+                                </div>
                             </x:column>
                         </x:dataTable>
-                    </h:panelGroup>
-                </h:form>
-            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                </h:panelGroup>
+
+              </h:form>
         </div>
-    </div>
-    <br />
+      </div>
 
 
+        <div class="row">
+          <div class="col-12">
 
-    <div class="row">
-        <div class="col-sm-12">
             <h3 class="mt-4">
                 <h:outputText value="#{msgs.message_queue_fastQueue}" />
             </h3>
-            <div class="dataTables_wrapper">
+
                 <h:form id="fast_queue">
+
+
+                <div class="col-12">
+
+                <div class="gw-table gw-table-fixed">
+                  <div class="gw-table__wrapper">
+
                     <h:dataTable
-                        styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                        styleClass="table table-hover table-bordered"
                         var="entry"
                         value="#{messageQueueBean.fastQueueContent}">
                         <h:column>
@@ -185,33 +218,45 @@
                             <h:outputText value="#{entry.value}" />
                         </h:column>
 
-                        <x:column>
+                        <x:column headerClass="gw-table-fixed__actions">
                             <f:facet name="header">
                                 <h:outputText value="#{msgs.auswahl}" />
                             </f:facet>
-                            <button
-                                jsf:action="#{messageQueueBean.clearQueue}"
-                                jsf:rel="tooltip"
-                                class="btn btn-blank"
-                                onclick="preventDoubleSubmit(this);"
-                                title="#{msgs.message_queue_cancel_ticket}">
-                                <i class="fa fa-trash-o" />
-                                <f:setPropertyActionListener
-                                    target="#{messageQueueBean.queueType}"
-                                    value="goobi_fast" />
-                                <f:setPropertyActionListener
-                                    target="#{messageQueueBean.messageType}"
-                                    value="#{entry.key}" />
-                            </button>
+
+                            <div class="gw-tables-fixed__actions__container">
+                                <button
+                                    jsf:action="#{messageQueueBean.clearQueue}"
+                                    jsf:rel="tooltip"
+                                    class="btn btn-blank"
+                                    onclick="preventDoubleSubmit(this);"
+                                    title="#{msgs.message_queue_cancel_ticket}">
+                                    <i class="fa fa-trash-o" />
+                                    <f:setPropertyActionListener
+                                        target="#{messageQueueBean.queueType}"
+                                        value="goobi_fast" />
+                                    <f:setPropertyActionListener
+                                        target="#{messageQueueBean.messageType}"
+                                        value="#{entry.key}" />
+                                </button>
+                            </div>
 
                         </x:column>
 
                     </h:dataTable>
+                  </div>
+                </div>
+
+                </div> <!-- /col-12 -->
 
                     <h:panelGroup id="fast-details">
 
 
-                        <br />
+
+                  <div class="col-12 mt-4">
+
+                    <div class="gw-table gw-table-fixed">
+                      <div class="gw-table__wrapper">
+
                         <x:dataTable
                             rendered="#{messageQueueBean.messageType != null}"
                             styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
@@ -284,9 +329,16 @@
                                 </button>
                             </x:column>
                         </x:dataTable>
-                    </h:panelGroup>
+
+                        </div> <!-- /gw-table__wrapper -->
+                      </div> <!-- /gw-table -->
+
+                  </div> <!-- /col-12 -->
+
+                  </h:panelGroup>
                 </h:form>
-            </div>
-        </div>
-    </div>
+
+            </div> <!-- /col-12 -->
+          </div> <!-- /row -->
+
 </ui:composition>
