@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -52,7 +53,10 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -79,6 +83,7 @@ import org.omnifaces.util.Faces;
 import com.google.gson.Gson;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.forms.HelperForm;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
@@ -5099,5 +5104,41 @@ public class Metadaten implements Serializable {
 
     public void refresh() {
         // do nothing, this is needed for jsf calls
+    }
+    
+    
+    public void downloadCurrentFolderAsPdf() throws IOException {
+        if (allImages.isEmpty()) {
+            return;
+        }
+        
+        Path imagesPath = Paths.get(imageFolderName);
+        // put all selected images into a URL
+        String imagesParameter = allImages.stream().map(Image::getImageName).collect(Collectors.joining("$"));
+
+        URI goobiContentServerUrl = UriBuilder.fromUri(new HelperForm().getServletPathWithHostAsUrl())
+                .path("api")
+                .path("process")
+                .path("image")
+                .path(Integer.toString(myProzess.getId()))
+                .path("media") //dummy, replaced by images parameter
+                .path("00000001.tif") //dummy, replaced by images parameter
+                .path(myProzess.getTitel() + ".pdf")
+                .queryParam("imageSource", imagesPath.toUri())
+                .queryParam("images", imagesParameter)
+                .build();
+
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        // generate the pdf and deliver it as download
+        if (!context.getResponseComplete()) {
+            HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+            String fileName = myProzess.getTitel() + ".pdf";
+            ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(fileName);
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
+            response.sendRedirect(goobiContentServerUrl.toString());
+            context.responseComplete();
+        }
     }
 }

@@ -2380,9 +2380,8 @@ public class ProcessBean extends BasicBean implements Serializable {
             }
 
             PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
-            Helper.setMeldung("propertiesSaved");
-
         }
+        Helper.setMeldung("propertiesSaved");
         loadProcessProperties();
     }
 

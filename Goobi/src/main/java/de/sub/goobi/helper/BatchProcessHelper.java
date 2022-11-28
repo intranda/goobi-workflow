@@ -135,7 +135,7 @@ public class BatchProcessHelper implements Serializable {
             PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
 
         }
-        Helper.setMeldung("propertySaved");
+        Helper.setMeldung("propertiesSaved");
     }
 
     public void saveCurrentPropertyForAll() {
@@ -179,7 +179,7 @@ public class BatchProcessHelper implements Serializable {
                 }
             }
         }
-        Helper.setMeldung("Properties saved");
+        Helper.setMeldung("propertiesSaved");
     }
 
     public int getSizeOfDisplayableMetadata() {

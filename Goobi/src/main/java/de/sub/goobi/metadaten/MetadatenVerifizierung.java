@@ -158,13 +158,7 @@ public class MetadatenVerifizierung {
             problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataMissingIdentifier"));
             ergebnis = false;
         }
-        /*
-         * -------------------------------- PathImagesFiles prüfen --------------------------------
-         */
-        if (!this.isValidPathImageFiles(dd.getPhysicalDocStruct(), inPrefs)) {
-            problems.add(Helper.getTranslation("InvalidImagePath"));
-            ergebnis = false;
-        }
+
 
         /*
          * -------------------------------- auf Docstructs ohne Seiten prüfen --------------------------------
