@@ -1441,7 +1441,7 @@ th {
 
 label,
 .form__label {
-  font-size: var(--fs-500);
+  font-size: var(--fs-400);
   align-self: flex-start;
   overflow: hidden;
   hyphens: auto;
@@ -1674,6 +1674,10 @@ span.badge:not(:last-child) {
 }
 .processLog .log_file_delete {
   border: none;
+}
+
+.tooltip {
+  font-size: var(--fs-400);
 }
 
 #designSystem {
