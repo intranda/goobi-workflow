@@ -137,16 +137,6 @@ public class MetadatenVerifizierungTest extends AbstractTest {
     }
 
     @Test
-    public void testVerificationErrorsNoPhysMetadata() throws Exception {
-        MetadatenVerifizierung mv = new MetadatenVerifizierung();
-        DocStruct phys = fileformat.getDigitalDocument().getPhysicalDocStruct();
-        Metadata md = phys.getAllMetadataByType(prefs.getMetadataTypeByName("pathimagefiles")).get(0);
-        phys.removeMetadata(md, true);
-        assertFalse(mv.validate(fileformat, prefs, process));
-        assertEquals("error", mv.getProblems().get(0));
-    }
-
-    @Test
     public void testVerificationErrorsDocstructWithoutPage() throws Exception {
         MetadatenVerifizierung mv = new MetadatenVerifizierung();
         DocStruct log = fileformat.getDigitalDocument().getLogicalDocStruct();
@@ -353,8 +343,8 @@ public class MetadatenVerifizierungTest extends AbstractTest {
         EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString())).andReturn("error").anyTimes();
         EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString())).andReturn("error").anyTimes();
         EasyMock.expect(Helper.getTranslation(EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString(), EasyMock.anyString()))
-                .andReturn("error")
-                .anyTimes();
+        .andReturn("error")
+        .anyTimes();
         EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
         EasyMock.expect(Helper.getLoginBean()).andReturn(null).anyTimes();
         EasyMock.expect(Helper.getRequestParameter(EasyMock.anyString())).andReturn("1").anyTimes();
