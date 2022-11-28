@@ -4,10 +4,11 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
-	template="/uii/template/template.html"
+	template="/uii/templatePG/templatePG.html"
 	xmlns:x="http://myfaces.apache.org/tomahawk"
-	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-    xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+  xmlns:jsf="http://xmlns.jcp.org/jsf">
+
 	<ui:param name="myPageTitle"
 		value="#{msgs.menu_administration_currentQueue}" />
 
@@ -25,52 +26,49 @@
 
 	<ui:define name="content">
     <main>
-		<div class="box box-bordered box-color">
-			<div class="box-title">
-				<h2>
-					<i class="fa fa-spinner"></i>
-					<h:outputText value="#{msgs.menu_administration_currentQueue}" />
-				</h2>
-			</div>
+
+		<intranda:box
+			boxType="primary"
+			title="#{msgs.menu_administration_currentQueue}"
+			icon="fa-spinner"
+		>
+
 			<ui:fragment rendered="#{not messageQueueBean.messageBrokerStart}">
-				<div class="box-content">
+				<div class="alert alert-info">
 					<h:outputText value="#{msgs.message_queue_queues_switched_off}" />
 				</div>
 			</ui:fragment>
+
 			<ui:fragment rendered="#{messageQueueBean.messageBrokerStart}">
-				<div class="box-content">
-					<h:form id="mqTabForm">
+					<h:form id="mqTabForm" prependId="false">
 						<ul class="nav nav-tabs" role="tablist">
-							<li role="presentation"
-								class="#{messageQueueBean.mode eq 'waiting' ? 'active' : ''}">
-								<h:commandLink id="queue" role="tab">
-									<h:outputText value="#{msgs.waiting}" />
-									<f:ajax render="mqTabContent @form" />
-									<f:setPropertyActionListener value="waiting" target="#{messageQueueBean.mode}"></f:setPropertyActionListener>
-								</h:commandLink>
+							<li role="presentation" class="nav-item #{messageQueueBean.mode eq 'waiting' ? 'active' : ''}">
+								<button class="nav-link active" id="process-queue-tab" data-bs-toggle="tab" data-bs-target="#tabContentProcessQueue" type="button" role="tab" aria-controls="tabContentProcessQueue" aria-selected="true">#{msgs.waiting}</button>
 							</li>
+
 							<li role="presentation"
-								class="#{messageQueueBean.mode eq 'error' ? 'active' : ''}">
-								<h:commandLink id="error" role="tab">
-									<h:outputText value="#{msgs.errors}" />
-									<f:ajax render="mqTabContent @form" />
-									<f:setPropertyActionListener value="error" target="#{messageQueueBean.mode}"></f:setPropertyActionListener>
-								</h:commandLink>
+								class="nav-item #{messageQueueBean.mode eq 'error' ? 'active' : ''}">
+								<button class="nav-link" id="error-tab" data-bs-toggle="tab" data-bs-target="#tabContentError" type="button" role="tab" aria-controls="profile" aria-selected="false">#{msgs.errors}</button>
 							</li>
 						</ul>
 					</h:form>
-					<h:panelGroup layout="block" id="mqTabContent">
-						<ui:fragment rendered="#{messageQueueBean.mode eq 'waiting'}">
-							<ui:include src="includes/messagequeue/mq_waiting.xhtml"></ui:include>
-						</ui:fragment>
-						<ui:fragment rendered="#{messageQueueBean.mode eq 'error'}">
-							<ui:include src="includes/messagequeue/mq_errors.xhtml"></ui:include>
-						</ui:fragment>
-					</h:panelGroup>
-				</div>
+
+					<div class="tab-content" id="myTabContent">
+						<div class="tab-pane fade show active" id="tabContentProcessQueue" role="tabpanel" aria-labelledby="process-queue-tab">
+							<ui:include src="templatePG/includes/messagequeue/mq_waiting.xhtml"></ui:include>
+						</div>
+						<div class="tab-pane fade" id="tabContentError" role="tabpanel" aria-labelledby="error-tab">
+							<ui:include src="templatePG/includes/messagequeue/mq_errors.xhtml"></ui:include>
+						</div>
+					</div>
+
 			</ui:fragment>
-		</div>
-        </main>
+
+		</intranda:box>
+
+    </main>
 	</ui:define>
 
 </ui:composition>
+
+

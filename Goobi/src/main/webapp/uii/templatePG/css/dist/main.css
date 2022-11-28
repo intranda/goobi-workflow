@@ -18,6 +18,7 @@
   --clr-info: #666666;
   --clr-blank: transparent;
   --clr-text-400: #2a2a2a;
+  --clr-text-400: #2a2a2a;
   --clr-box-primary: #368ee0;
   --clr-box-action: #e8860c;
   --clr-box-neutral: #666666;
@@ -319,6 +320,10 @@
 }
 
 .text-text-400 {
+  color: var(--clr-text-400);
+}
+
+.text-400 {
   color: var(--clr-text-400);
 }
 

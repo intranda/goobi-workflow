@@ -27,6 +27,10 @@ $colors: (
   text-400: #2a2a2a,
 );
 
+$colors-text: (
+  400: #2a2a2a,
+);
+
 $colors-boxes: (
   primary: #368ee0,
   action: #e8860c,
@@ -65,6 +69,11 @@ $colors-intranda-badges: (
   // general colors
   @each $name, $color in $colors {
     --clr-#{$name}: #{$color};
+  }
+
+  // text
+  @each $name, $color in $colors-text {
+    --clr-text-#{$name}: #{$color};
   }
 
   // boxes
@@ -116,6 +125,12 @@ $colors-intranda-badges: (
 @each $name, $color in $colors {
   .text-#{$name} {
     color: var(--clr-#{$name});
+  }
+}
+
+@each $name, $color in $colors-text {
+  .text-#{$name} {
+    color: var(--clr-text-#{$name});
   }
 }
 
