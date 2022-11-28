@@ -61,7 +61,7 @@ public enum StepStatus {
      */
     DEACTIVATED(5, "statusDeactivated", "red_10.gif", "red_15a.gif", "stepdeactivated", "status-deactivated"),
     /**
-     * deactivated = step is deactivated and gets activated maybe
+     * inflight = step is waiting in fast queue, slow queue or external queue for automatic execution
      */
     INFLIGHT(6, "statusInFlight", "yellow_10.gif", "yellow_15a.gif", "stepinflight", "status-inflight");
 
