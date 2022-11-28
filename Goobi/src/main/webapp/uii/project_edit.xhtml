@@ -309,7 +309,7 @@
                           <intranda:box
                             title="#{msgs.metsfilegroups}"
                             icon="fa-table"
-                            boxType="neutral-500"
+                            boxType="neutral"
                             boxSmall="true"
                             padding="true"
                             >
@@ -327,7 +327,7 @@
                                 <div class="d-flex gap-2">
 
                                   <!-- Edit-Schaltknopf -->
-                                  <button jsf:id="edit" class="btn btn-neutral-500" title="#{msgs.filegroupBearbeiten}" jsf:rel="tooltip" jsf:action="#{ProjekteForm.filegroupEdit}">
+                                  <button jsf:id="edit" class="btn btn-neutral-600" title="#{msgs.filegroupBearbeiten}" jsf:rel="tooltip" jsf:action="#{ProjekteForm.filegroupEdit}">
                                     <i class="fa fa-edit"></i>
                                     <f:setPropertyActionListener target="#{ProjekteForm.myFilegroup}" value="#{item}" />
                                     <f:setPropertyActionListener target="#{ProjekteForm.displayMode}" value="filegroups" />
@@ -352,7 +352,7 @@
                                 <div class="form__actions">
 
                                   <!-- Neu-Schaltknopf -->
-                                  <button jsf:id="newFileformat" class="me-auto btn btn-neutral-500" jsf:action="#{ProjekteForm.filegroupAdd}" jsf:immediate="true">
+                                  <button jsf:id="newFileformat" class="me-auto btn btn-neutral-600" jsf:action="#{ProjekteForm.filegroupAdd}" jsf:immediate="true">
                                     <i class="fa fa-plus"></i>
                                     <span>
                                     <h:outputText value="#{msgs.filegroupHinzufuegen}" />

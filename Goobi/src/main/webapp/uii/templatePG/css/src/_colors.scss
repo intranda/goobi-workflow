@@ -27,6 +27,15 @@ $colors: (
   text-400: #2a2a2a,
 );
 
+$colors-boxes: (
+  primary: #368ee0,
+  action: #e8860c,
+  neutral: #666666,
+  hot: #ba324f,
+  success: #198754,
+  dev: #f0f,
+);
+
 $colors-badges: (
   light-red: #e51400,
   light-blue: #368ee0,
@@ -55,6 +64,10 @@ $colors-intranda-badges: (
 
   @each $name, $color in $colors {
     --clr-#{$name}: #{$color};
+  }
+
+  @each $name, $color in $colors-boxes {
+    --clr-box-#{$name}: #{$color};
   }
 
   // Vars for badges
@@ -137,7 +150,7 @@ $colors-intranda-badges: (
  * $legacy-box-colors contains legacy classes, ignore them when building new boxes
  */
 
-@each $name, $color in $colors {
+@each $name, $color in $colors-boxes {
   @if $name == blank {
     .box.box--#{$name} {
       border-color: var(--clr-neutral-210);
@@ -149,18 +162,18 @@ $colors-intranda-badges: (
     }
   } @else {
     .box.box--#{$name} {
-      border-color: var(--clr-#{$name});
+      border-color: var(--clr-box-#{$name});
       & .box__title {
-        background-color: var(--clr-#{$name});
-        border-color: var(--clr-#{$name});
+        background-color: var(--clr-box-#{$name});
+        border-color: var(--clr-box-#{$name});
       }
     }
     // bump up specificity for nested boxes
     .box .box.box--#{$name} {
-      border-color: var(--clr-#{$name});
+      border-color: var(--clr-box-#{$name});
       & .box__title {
-        background-color: var(--clr-#{$name});
-        border-color: var(--clr-#{$name});
+        background-color: var(--clr-box-#{$name});
+        border-color: var(--clr-box-#{$name});
       }
     }
   }
