@@ -13,63 +13,66 @@
 }
 
 // Border color: all borders, one color
-tbody,
-td,
-tfoot,
-th,
-thead,
-tr,
-.table,
-.box__content--padded tr {
-  border-color: var(--clr-neutral-300);
-}
-
-.table-bordered-custom {
-  border-width: 0;
-  border-style: solid;
-  border-color: var(--clr-neutral-300);
-}
-
-.table-bordered-custom td:not(:last-child) {
-  border-right-width: 1px;
-  border-color: inherit;
-  border-style: inherit;
-}
-
-.table-bordered-custom.-no-bb tr:last-child td {
-  border-bottom-width: 0;
-}
-
-thead {
-  background-color: var(--clr-neutral-200);
-  button {
-    background-color: transparent;
-    border: 0;
+.gw-table {
+  tbody,
+  td,
+  tfoot,
+  th,
+  thead,
+  tr,
+  .table,
+  .box__content--padded tr {
+    border-color: var(--clr-neutral-300);
   }
-}
 
-.table > :not(:first-child) {
-  border-top: unset;
-}
-
-th span {
-  font-weight: bold;
-}
-
-td {
-  .btn-group .btn:not(:first-of-type) {
-    margin-right: 0.8rem;
+  thead {
+    background-color: var(--clr-neutral-200);
+    button {
+      background-color: transparent;
+      border: 0;
+    }
   }
-  .btn {
-    // Display a margin when buttons are stacked
-    margin-top: 1px;
 
-    & ~ .btn {
-      margin-inline-start: 0;
-      margin-inline-end: 0;
+  .table-bordered-custom {
+    border-width: 0;
+    border-style: solid;
+    border-color: var(--clr-neutral-300);
+  }
+
+  .table-bordered-custom td:not(:last-child) {
+    border-right-width: 1px;
+    border-color: inherit;
+    border-style: inherit;
+  }
+
+  .table-bordered-custom.-no-bb tr:last-child td {
+    border-bottom-width: 0;
+  }
+
+  .table > :not(:first-child) {
+    border-top: unset;
+  }
+
+  th span {
+    font-weight: bold;
+  }
+
+  td {
+    .btn-group .btn:not(:first-of-type) {
+      margin-right: 0.8rem;
+    }
+    .btn {
+      // Display a margin when buttons are stacked
+      margin-top: 1px;
+
+      & ~ .btn {
+        margin-inline-start: 0;
+        margin-inline-end: 0;
+      }
     }
   }
 }
+
 // Remove borders left + right if the table is in a box
 .box th:first-child,
 .box td:first-child {
