@@ -1,4 +1,3 @@
-@charset "UTF-8";
 :root {
   --clr-primary-400: #368ee0;
   --clr-primary-600: #1b67af;
@@ -1250,56 +1249,49 @@ body .ui-widget {
   --width-table-col: 200px;
 }
 
-tbody,
-td,
-tfoot,
-th,
-thead,
-tr,
-.table,
-.box__content--padded tr {
+.gw-table tbody,
+.gw-table td,
+.gw-table tfoot,
+.gw-table th,
+.gw-table thead,
+.gw-table tr,
+.gw-table .table,
+.gw-table .box__content--padded tr {
   border-color: var(--clr-neutral-300);
 }
-
-.table-bordered-custom {
+.gw-table thead {
+  background-color: var(--clr-neutral-200);
+}
+.gw-table thead button {
+  background-color: transparent;
+  border: 0;
+}
+.gw-table .table-bordered-custom {
   border-width: 0;
   border-style: solid;
   border-color: var(--clr-neutral-300);
 }
-
-.table-bordered-custom td:not(:last-child) {
+.gw-table .table-bordered-custom td:not(:last-child) {
   border-right-width: 1px;
   border-color: inherit;
   border-style: inherit;
 }
-
-.table-bordered-custom.-no-bb tr:last-child td {
+.gw-table .table-bordered-custom.-no-bb tr:last-child td {
   border-bottom-width: 0;
 }
-
-thead {
-  background-color: var(--clr-neutral-200);
-}
-thead button {
-  background-color: transparent;
-  border: 0;
-}
-
-.table > :not(:first-child) {
+.gw-table .table > :not(:first-child) {
   border-top: unset;
 }
-
-th span {
+.gw-table th span {
   font-weight: bold;
 }
-
-td .btn-group .btn:not(:first-of-type) {
+.gw-table td .btn-group .btn:not(:first-of-type) {
   margin-right: 0.8rem;
 }
-td .btn {
+.gw-table td .btn {
   margin-top: 1px;
 }
-td .btn ~ .btn {
+.gw-table td .btn ~ .btn {
   margin-inline-start: 0;
   margin-inline-end: 0;
 }
@@ -1736,80 +1728,6 @@ span.badge:not(:last-child) {
   gap: 8px;
 }
 
-/* ========================================
- * Styles for
- *
- * user_all.xhtml
- * user_config.xhtml
- * user_edit.xhtml
- * user_password.xhtml
- * ====================================== */
-/* ========================================
- * user_all.xhtml
- * ===================================== */
-/*
-.view-users {
-  &__box--usergroup-1,
-  &__box--usergroup-2,
-  &__box--project-1,
-  &__box--project-2 {
-    .table__actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    td {
-      vertical-align: middle;
-    }
-
-    tr td:first-child.table__actions {
-      justify-content: flex-start;
-      gap: var(--gap, 8px);
-    }
-  }
-
-  &__box--project-2,
-  &__box--usergroup-1,
-  &__box--usergroup-2 {
-    td:last-child {
-      border-left: 0;
-    }
-  }
-
-  &__box--project-1  {
-    .table__actions {
-      border-right-width: 1px;
-    }
-  }
-}
-
-.view-users__box--usergroup-1,
-.view-users__box--project-1 {
-  table {
-    table-layout: fixed;
-
-    tr,
-    td {
-      display: flex;
-      align-items: center;
-      min-height: 4rem;
-    }
-    td {
-      flex: 0 0 50%;
-    }
-  }
-  .table__actions {
-    border-right-width: 1px;
-  }
-}
-
-.view-users {
-  .edit-user .form__label {
-    align-items: flex-start;
-  }
-}
-*/
 .batch-all tr td:empty {
   display: none;
 }
@@ -1817,7 +1735,7 @@ span.badge:not(:last-child) {
 #usergroupAll th {
   --width-table-col: 310px;
 }
-#usergroupAll .table-fixed__actions {
+#usergroupAll .gw-table-fixed__actions {
   --width-table-col: 72px;
 }
 
