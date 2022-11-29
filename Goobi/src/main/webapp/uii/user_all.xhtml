@@ -43,32 +43,31 @@
 									</div>
 
 
-									<div class="dataTables__filter-container d-flex">
+									<div class="gw-table__filters">
 									<!-- SEARCH IN TABLE-->
 									<h:form id="isActiveUsers">
 
 										<!-- Show only active users -->
-										<div class="dataTables__filter -active-users">
-											<button jsf:id="tableUserAllShowActiveUsers"
-												class="btn btn--active-users"
-												jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
-												jsf:immediate="true">
-												<i
-													class="fa #{BenutzerverwaltungForm.hideInactiveUsers?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
-												<h:outputText styleClass="font-size-s"
-													value="#{msgs.nurAktiveNutzerZeigen}" />
-												<f:setPropertyActionListener
-													target="#{BenutzerverwaltungForm.hideInactiveUsers}"
-													value="#{not BenutzerverwaltungForm.hideInactiveUsers}" />
-											</button>
-										</div>
+										<button jsf:id="tableUserAllShowActiveUsers"
+											class="btn gw-table__filters__option"
+											jsf:action="#{BenutzerverwaltungForm.FilterAlleStart}"
+											jsf:immediate="true">
+											<i
+												class="fa #{BenutzerverwaltungForm.hideInactiveUsers?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
+											<h:outputText styleClass="font-size-s"
+												value="#{msgs.nurAktiveNutzerZeigen}" />
+											<f:setPropertyActionListener
+												target="#{BenutzerverwaltungForm.hideInactiveUsers}"
+												value="#{not BenutzerverwaltungForm.hideInactiveUsers}" />
+										</button>
+
 									</h:form>
 
-									<h:form id="searchform" styleClass="search-form">
 
 										<!-- Filter by search term -->
-										<div class="dataTables__filter -search-bar">
-											<div class="input-group input-group">
+										<div class="gw-table__filters__search-bar">
+										<h:form id="searchform" styleClass="search-form">
+											<div class="input-group">
 												<span class="input-group-text"> <i
 													class="fa fa-search"></i>
 												</span>
@@ -90,10 +89,11 @@
 											<!-- SUBMIT -->
 											<x:commandButton type="submit" id="FilterAlle" forceId="true"
 												style="display:none"
-												action="#{BenutzerverwaltungForm.FilterAlleStart}" />
+
+
+											</h:form>
 										</div>
 
-									</h:form>
 									</div> <!-- dataTables__filters-container end -->
 								</div> <!-- SEARCH END -->
 
