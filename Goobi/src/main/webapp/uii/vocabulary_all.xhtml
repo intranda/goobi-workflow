@@ -5,9 +5,9 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/template/template.html"
+    template="/uii/templatePG/templatePG.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
@@ -33,154 +33,161 @@
     <ui:define name="content">
 
         <h:outputText
-            styleClass="alert alert-danger block margin-top-most"
+            styleClass="alert alert-danger d-block"
             value="#{msgs.noAccessAllowed} Admin_Vocabulary"
             rendered="#{!LoginForm.hasRole('Admin_Vocabulary')}" />
 
         <h:form
-            rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
-            styleClass="form-horizontal form-bordered"
-            id="myform">
-            <div class="row" role="main">
-                <div class="col-sm-12">
-                    <div class="box box-color box-bordered">
-                        <div class="box-title">
-                            <h2>
-                                <i class="fa fa-database"></i>
-                                <h:outputText value="#{myPageTitle}" />
-                            </h2>
+          rendered="#{LoginForm.hasRole('Admin_Vocabulary')}"
+          id="myform">
+          <main class="row">
+            <div class="col-12">
+
+                  <intranda:box
+                    boxType="primary"
+                    title="#{myPageTitle}"
+                    icon="fa-database"
+                  >
+
+                    <div class="gw-table gw-table-fixed">
+
+                      <div class="gw-table__search">
+                        <div class="gw-table__search__length">
+                            <h:outputText value="#{msgs.treffer}: #{vocabularyBean.paginator.totalResults}" />
                         </div>
-                        <div class="box-content nopadding">
-                            <div class="dataTables_wrapper">
-                                <div class="dataTables_length" style="margin-bottom: 10px;">
-                                    <h:outputText value="#{msgs.treffer}: #{vocabularyBean.paginator.totalResults}" />
-                                </div>
-
-                                <div class="dataTables_filter">
-                                    <!-- show field definitions -->
-                                    <button jsf:id="tableShowFieldDefinitions"
-                                        class="btn searchfieldbuttongroup hidden-xs"
-                                        jsf:action="#{NavigationForm.Reload}"
-                                        >
-                                        <i class="fa #{NavigationForm.uiStatus.vocabulary_fields eq 'show'?'fa-check-square-o':'fa-square-o'} margin-right-5"></i>
-                                        <h:outputText styleClass="font-size-s"
-                                            value="#{msgs.vocabularyManager_showFieldDefinitions}" />
-                                        <f:setPropertyActionListener
-                                            target="#{NavigationForm.uiStatus.vocabulary_fields}"
-                                            value="#{NavigationForm.uiStatus.vocabulary_fields eq 'show'?'hide':'show'}" />
-                                    </button>
-                                </div>
-
-                                <x:dataTable
-                                    id="vocabularies"
-                                    styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
-                                    var="item"
-                                    value="#{vocabularyBean.paginator.list}">
-
-                                    <h:column>
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.vocabularyManager_vocabulary}" />
-                                        </f:facet>
-                                        <h:outputText value="#{item.title}" />
-                                    </h:column>
-                                    <h:column>
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.vocabularyManager_description}" />
-                                        </f:facet>
-                                        <h:outputText value="#{item.description}" />
-                                    </h:column>
-                                    <h:column rendered="#{NavigationForm.uiStatus.vocabulary_fields eq 'show'}">
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.vocabularyManager_definition}" />
-                                        </f:facet>										
-										<ui:repeat var="definition" value="#{item.struct}">
-											<h:outputText value="#{definition.label}" />
-											<h:outputText styleClass="font-light" value=" [#{definition.type}]" />
-											<h:outputText styleClass="font-light" value=" - [#{definition.language}]" rendered="#{definition.language.length()>0}"/>
-											<br/>
-										</ui:repeat>
-
-                                    </h:column>
-
-                                    <x:column style="width:180px;">
-                                        <f:facet name="header">
-                                            <h:outputText value="#{msgs.auswahl}" />
-                                        </f:facet>
-                                        <!-- edit vocabulary -->
-                                        <button
-                                            jsf:id="edit"
-                                            class="btn margin-right-5"
-                                            jsf:rel="tooltip"
-                                            jsf:action="#{vocabularyBean.editVocabulary}"
-                                            jsf:rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}"
-                                            title="#{msgs.vocabularyManager_editVocabulary}">
-                                            <i class="fa fa-pencil"></i>
-                                            <f:passThroughAttribute
-                                                name="data-toggle"
-                                                value="tooltip" />
-                                            <f:passThroughAttribute
-                                                name="aria-label"
-                                                value="#{msgs.vocabularyManager_editVocabulary}" />
-                                            <f:setPropertyActionListener
-                                                target="#{vocabularyBean.currentVocabulary}"
-                                                value="#{item}" />
-                                        </button>
-
-                                        <!-- edit records -->
-                                        <button
-                                            jsf:id="editRecords"
-                                            class="btn margin-right-5"
-                                            jsf:rel="tooltip"
-                                            jsf:action="#{vocabularyBean.editRecords}"
-                                            title="#{msgs.vocabularyManager_editRecords}">
-                                            <i class="fa fa-list-ul"></i>
-                                            <f:passThroughAttribute
-                                                name="data-toggle"
-                                                value="tooltip" />
-                                            <f:passThroughAttribute
-                                                name="aria-label"
-                                                value="#{msgs.vocabularyManager_editRecords}" />
-                                            <f:setPropertyActionListener
-                                                target="#{vocabularyBean.currentVocabulary}"
-                                                value="#{item}" />
-                                        </button>
-                                        
-                                        <!-- upload records to server -->
-                                        <h:commandLink id="uploadToServerRecords"
-                                            styleClass="btn margin-right-5" rel="tooltip"
-                                            action="#{vocabularyBean.uploadToServerRecords}"
-                                            rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management') and vocabularyBean.useAuthorityServer()}"
-                                            title="#{msgs.vocabularyManager_uploadToServerRecords}">
-                                            <i class="fa fa-database"></i>
-                                            <f:setPropertyActionListener
-                                                target="#{vocabularyBean.currentVocabulary}" value="#{item}" />
-                                        </h:commandLink>
-                                        
-                                    </x:column>
-                                </x:dataTable>
-
-
-                                <div class="dataTables_info">
-                                    <button
-                                        jsf:id="new"
-                                        class="btn btn-primary font-size-s"
-                                        jsf:action="#{vocabularyBean.newVocabulary}">
-                                        <i class="fa fa-plus margin-right-5"></i>
-                                        <h:outputText value="#{msgs.vocabularyManager_addNewVocabulary}" />
-                                    </button>
-                                </div>
-                                <div class="dataTables_paginate">
-                                    <!-- paginator -->
-                                    <intranda:tablePaginator
-                                        id="vocabulary"
-                                        paginator="#{vocabularyBean.paginator}" />
-                                    <!-- /paginator -->
-                                </div>
-                            </div>
+                        <div class="gw-table__filters">
+                          <!-- show field definitions -->
+                          <button jsf:id="tableShowFieldDefinitions"
+                            class="btn gw-table__filters__option searchfieldbuttongroup hidden-xs"
+                            jsf:action="#{NavigationForm.Reload}"
+                          >
+                            <i class="fa #{NavigationForm.uiStatus.vocabulary_fields eq 'show'?'fa-check-square-o':'fa-square-o'}"></i>
+                            <span>
+                            <h:outputText value="#{msgs.vocabularyManager_showFieldDefinitions}" />
+                            </span>
+                            <f:setPropertyActionListener
+                              target="#{NavigationForm.uiStatus.vocabulary_fields}"
+                              value="#{NavigationForm.uiStatus.vocabulary_fields eq 'show'?'hide':'show'}"
+                            />
+                          </button>
                         </div>
-                    </div>
+
+                      </div> <!-- /gw-table__search -->
+
+                      <div class="gw-table__wrapper">
+                        <x:dataTable
+                            id="vocabularies"
+                            styleClass="table table-hover table-nomargin dataTable table-bordered responsive"
+                            var="item"
+                            value="#{vocabularyBean.paginator.list}">
+
+                            <h:column>
+                              <f:facet name="header">
+                                <h:outputText value="#{msgs.vocabularyManager_vocabulary}" />
+                              </f:facet>
+                              <h:outputText value="#{item.title}" />
+                            </h:column>
+                            <h:column>
+                              <f:facet name="header">
+                                <h:outputText value="#{msgs.vocabularyManager_description}" />
+                              </f:facet>
+                              <h:outputText value="#{item.description}" />
+                            </h:column>
+                            <h:column rendered="#{NavigationForm.uiStatus.vocabulary_fields eq 'show'}">
+                              <f:facet name="header">
+                                  <h:outputText value="#{msgs.vocabularyManager_definition}" />
+                              </f:facet>
+                              <ui:repeat var="definition" value="#{item.struct}">
+                                <h:outputText value="#{definition.label}" />
+                                <h:outputText styleClass="font-light" value=" [#{definition.type}]" />
+                                <h:outputText styleClass="font-light" value=" - [#{definition.language}]" rendered="#{definition.language.length()>0}"/>
+                                <br/>
+                              </ui:repeat>
+
+                            </h:column>
+
+                            <x:column headerClass="gw-table-fixed__actions">
+                              <f:facet name="header">
+                                <h:outputText value="#{msgs.auswahl}" />
+                              </f:facet>
+
+                              <div class="gw-table__actions__container">
+                                <!-- edit vocabulary -->
+                                <button
+                                    jsf:id="edit"
+                                    class="btn btn-blank"
+                                    jsf:rel="tooltip"
+                                    jsf:action="#{vocabularyBean.editVocabulary}"
+                                    jsf:rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}"
+                                    title="#{msgs.vocabularyManager_editVocabulary}">
+                                    <i class="fa fa-pencil"></i>
+                                    <f:passThroughAttribute
+                                        name="data-toggle"
+                                        value="tooltip" />
+                                    <f:passThroughAttribute
+                                        name="aria-label"
+                                        value="#{msgs.vocabularyManager_editVocabulary}" />
+                                    <f:setPropertyActionListener
+                                        target="#{vocabularyBean.currentVocabulary}"
+                                        value="#{item}" />
+                                </button>
+
+                                <!-- edit records -->
+                                <button
+                                    jsf:id="editRecords"
+                                    class="btn btn-blank"
+                                    jsf:rel="tooltip"
+                                    jsf:action="#{vocabularyBean.editRecords}"
+                                    title="#{msgs.vocabularyManager_editRecords}">
+                                    <i class="fa fa-list-ul"></i>
+                                    <f:passThroughAttribute
+                                        name="data-toggle"
+                                        value="tooltip" />
+                                    <f:passThroughAttribute
+                                        name="aria-label"
+                                        value="#{msgs.vocabularyManager_editRecords}" />
+                                    <f:setPropertyActionListener
+                                        target="#{vocabularyBean.currentVocabulary}"
+                                        value="#{item}" />
+                                </button>
+
+                                <!-- upload records to server -->
+                                <h:commandLink id="uploadToServerRecords"
+                                    styleClass="btn btn-blank" rel="tooltip"
+                                    action="#{vocabularyBean.uploadToServerRecords}"
+                                    rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management') and vocabularyBean.useAuthorityServer()}"
+                                    title="#{msgs.vocabularyManager_uploadToServerRecords}">
+                                    <i class="fa fa-database"></i>
+                                    <f:setPropertyActionListener
+                                        target="#{vocabularyBean.currentVocabulary}" value="#{item}" />
+                                </h:commandLink>
+                              </div>
+
+                            </x:column>
+                            </x:dataTable>
+
+                          </div> <!-- /gw-table__wrapper -->
+                        </div> <!-- /gw-table -->
+
+
+                        <div class="box__actions">
+                            <button
+                              jsf:id="new"
+                              class="btn btn-primary-400 me-auto"
+                              jsf:action="#{vocabularyBean.newVocabulary}">
+                              <i class="fa fa-plus"></i>
+                              <span>
+                                <h:outputText value="#{msgs.vocabularyManager_addNewVocabulary}" />
+                              </span>
+                            </button>
+
+                          <intranda:tablePaginator id="vocabulary" paginator="#{vocabularyBean.paginator}" />
+                        </div>
+
+                    </intranda:box>
+
                 </div>
-            </div>
+            </main>
         </h:form>
     </ui:define>
 
