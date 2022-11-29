@@ -1,7 +1,7 @@
 #usergroupAll th {
   --width-table-col: 310px;
 }
-#usergroupAll .table-fixed__actions {
+#usergroupAll .gw-table-fixed__actions {
   --width-table-col: 72px;
 }
 
