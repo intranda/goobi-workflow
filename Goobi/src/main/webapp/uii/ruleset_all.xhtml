@@ -23,8 +23,8 @@
 	<ui:define name="content">
 		<h:form id="myform" rendered="#{LoginForm.hasRole('Admin_Rulesets')}">
 
-			<div class="row" role="main">
-				<div class="col-sm-12">
+			<main class="row">
+				<div class="col-12">
 
 					<intranda:box
 						title="#{myPageTitle}"
@@ -32,15 +32,17 @@
 						boxType="primary"
 					>
 
-							<div class="dataTables__table-wrapper">
-								<div class="dataTables__search__container">
-									<div class="dataTables__search__length">
+							<div class="gw-table gw-table-fixed">
+								<div class="gw-table__search">
+									<div class="gw-table__search__length">
 										<h:outputText value="#{msgs.treffer}: #{RegelsaetzeForm.paginator.totalResults}" />
 									</div>
 								</div>
 
 								<!-- Datentabelle -->
-								<x:dataTable id="rulesets" styleClass="table table-hover dataTable table-bordered table-fixed" var="item"
+							<div class="gw-table-fixed__wrapper">
+
+								<x:dataTable id="rulesets" styleClass="table table-hover table-bordered" var="item"
 									value="#{RegelsaetzeForm.paginator.list}">
 
 									<h:column>
@@ -62,7 +64,7 @@
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
 
-										<div class="gw-table-fixed__actions__btns">
+										<div class="gw-table__actions__container">
 											<!-- Bearbeiten-Schaltknopf -->
 											<button jsf:id="edit" class="btn btn-blank" jsf:rel="tooltip" jsf:action="ruleset_edit" title="#{msgs.regelsatzBearbeiten}">
 												<i class="fa fa-pencil"></i>
@@ -76,6 +78,8 @@
 									</x:column>
 
 								</x:dataTable>
+
+							</div>
 
 								<div class="box__actions">
 									<!-- Neu-Schaltknopf -->
@@ -92,7 +96,7 @@
 							</div>
 					</intranda:box>
 				</div>
-			</div>
+			</main>
 		</h:form>
 	</ui:define>
 </ui:composition>

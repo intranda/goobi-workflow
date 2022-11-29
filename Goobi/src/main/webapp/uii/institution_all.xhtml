@@ -35,7 +35,7 @@
             id="myform"
             rendered="#{LoginForm.myBenutzer.superAdmin}">
             <div class="row">
-                <div class="col-sm-12">
+                <div class="col-12">
 
                     <intranda:box
                         boxType="primary"
@@ -57,7 +57,7 @@
                                 <!-- Datentabelle -->
                                 <x:dataTable
                                     id="ldaps"
-                                    styleClass="table table-hover dataTable table-bordered"
+                                    styleClass="table table-hover table-bordered"
                                     var="item"
                                     value="#{institutionBean.paginator.list}">
 
@@ -236,7 +236,7 @@
                                             <h:outputText value="#{msgs.auswahl}" />
                                         </f:facet>
 
-                                        <div class="gw-table-fixed__actions__btns">
+                                        <div class="gw-table__actions__container">
                                             <!-- Bearbeiten-Schaltknopf -->
                                             <button
                                                 jsf:id="edit"

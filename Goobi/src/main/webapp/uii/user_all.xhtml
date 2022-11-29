@@ -33,11 +33,11 @@
 						padding="true"
 						>
 
-							<div class="dataTables">
+							<div class="gw-table gw-table-fixed">
 
 								<!-- SEARCH -->
-								<div class="dataTables__search__container">
-									<div class="dataTables__search__length">
+								<div class="gw-table__search">
+									<div class="gw-table__search__length">
 										<h:outputText
 											value="#{msgs.treffer}: #{BenutzerverwaltungForm.paginator.totalResults}" />
 									</div>
@@ -100,9 +100,8 @@
 								<!-- ### Table ### -->
 								<h:form id="myform" prependId="false" styleClass="table--scrollx">
 
-								<div class="table-fixed__table-wrapper">
-									<table role="grid" id="tableUserAll"
-										class="table table-bordered table-fixed table-hover">
+								<div class="gw-table__wrapper">
+									<table role="grid" id="tableUserAll" class="table table-bordered table-fixed table-hover">
 										<!-- ### Columnheader row ### -->
 										<thead>
 											<tr role="row">
@@ -140,7 +139,7 @@
 												<intranda:columnheader
 														value="#{msgs.auswahl}"
 														sortable="false"
-														addClass="table-fixed__actions"
+														addClass="gw-table-fixed__actions"
 												/>
 											</tr>
 										</thead>
@@ -192,7 +191,7 @@
 												</td>
 												<!-- ### Action Buttons ### -->
 												<td>
-														<div class="gw-table-fixed__actions__btns">
+														<div class="gw-table__actions__container">
 															<!-- Bearbeiten-Schaltknopf -->
 															<button jsf:id="edit" class="btn btn-blank"
 																jsf:rel="tooltip" jsf:action="user_edit"

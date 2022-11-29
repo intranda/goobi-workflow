@@ -35,9 +35,9 @@
 						title="#{myPageTitle}"
 						padding="true">
 
-							<div class="dataTables flow">
-								<div class="dataTables__search">
-								<div class="dataTables__search__length">
+							<div class="gw-table gw-table-fixed">
+								<div class="gw-table__search">
+								<div class="gw-table__search__length">
 									<h:outputText
 										value="#{msgs.treffer}: #{BenutzergruppenForm.paginator.totalResults}" />
 								</div>
@@ -45,9 +45,8 @@
 
 
 								<!-- Datentabelle -->
-								<div class="dataTables__table-wrapper">
-								<x:dataTable id="usergroups"
-									styleClass="table table-hover table-bordered table-fixed dataTable"
+								<div class="gw-table__wrapper">
+								<x:dataTable id="usergroups" styleClass="table table-hover table-bordered"
 									var="item" value="#{BenutzergruppenForm.paginator.list}">
 
 									<x:column>
@@ -108,12 +107,12 @@
 											</f:facet>
 											<h:outputText value="#{item.institution.shortName}" />
 									</x:column>
-									<x:column headerClass="table-fixed__actions">
+									<x:column headerClass="gw-table-fixed__actions">
 										<f:facet name="header">
 											<h:outputText value="#{msgs.auswahl}" />
 										</f:facet>
 
-										<div class="table-fixed__actions__btns">
+										<div class="gw-table__actions__container">
 											<!-- Bearbeiten-Schaltknopf -->
 											<button jsf:id="edit" class="btn btn-blank" jsf:rel="tooltip"
 												jsf:action="usergroup_edit"
