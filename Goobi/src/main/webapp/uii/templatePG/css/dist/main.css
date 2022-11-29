@@ -776,6 +776,12 @@ body .ui-widget {
   padding: var(--col-padding, 8px);
 }
 
+.break-words {
+  hyphens: auto;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
 .navbar {
   background-color: var(--clr-primary-400);
   font-size: var(--fs-400);
@@ -1749,6 +1755,49 @@ span.badge:not(:last-child) {
 #usergroupAll .table .row .box {
   flex: 1;
   margin-bottom: 8px;
+}
+
+.swagger-ui .scheme-container .servers-title,
+.swagger-ui .scheme-container .servers {
+  display: none;
+}
+
+.folder--line {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-top: 25px;
+}
+
+.folder--line span.text {
+  position: relative;
+  z-index: 10;
+  display: inline-block;
+  padding: 2px 20px 2px 0px;
+  background-color: #fff;
+  font-size: 24px;
+}
+
+.folder--line span.break-words {
+  display: inline-block;
+  z-index: 10;
+  padding: 2px 0px 2px 20px;
+  background-color: #fff;
+  margin-top: 10px;
+  margin-left: auto;
+}
+
+@media (min-width: 700px) {
+  .folder--line:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    left: 0;
+    height: 2px;
+    background-color: #eee;
+  }
 }
 
 /*# sourceMappingURL=main.css.map */
