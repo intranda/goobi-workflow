@@ -1751,4 +1751,9 @@ span.badge:not(:last-child) {
   margin-bottom: 8px;
 }
 
+.swagger-ui .scheme-container .servers-title,
+.swagger-ui .scheme-container .servers {
+  display: none;
+}
+
 /*# sourceMappingURL=main.css.map */
