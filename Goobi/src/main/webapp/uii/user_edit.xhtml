@@ -213,7 +213,7 @@
                     validator="#{BenutzerverwaltungForm.validateAuthenticationSelection}">
                   <f:ajax
                     event="change"
-                    render="myform:loginTypeArea" />
+                    render=":loginTypeArea @form" />
                   <f:selectItems
                     value="#{BenutzerverwaltungForm.ldapGruppeAuswahlListe}"
                     var="var"
