@@ -46,13 +46,19 @@
       id="myform"
       styleClass="form-horizontal form-bordered view-users"
       onkeypress="submitOnEnter(event);"
-      rendered="#{LoginForm.hasRole('Admin_Users')}">
+      rendered="#{LoginForm.hasRole('Admin_Users')}"
+      enctype="multipart/form-data">
+
       <f:passThroughAttribute name="autocomplete" value="off"/>
 
 
       <div class="row" role="main">
-        <div class="col-12 col-md-12">
 
+        <!--
+        <div class="col-12 col-md-12">
+        -->
+
+          <div class="#{NavigationForm.uiStatus['journalBig'] ? 'col-12' : 'col-12 col-md-6'}">
           <intranda:box
             boxType="action"
             scope="form-box"
@@ -114,10 +120,12 @@
 
 
           <!-- CONTENT -->
+
           <div class="tab-content">
 
             <!-- TAB 1 -->
             <div class="#{BenutzerverwaltungForm.displayMode eq ''?'tab-pane active':'tab-pane'}">
+            <f:subview id="subviewTab1">
 
               <intranda:formInputText
                 id="lastname"
@@ -213,7 +221,7 @@
                     validator="#{BenutzerverwaltungForm.validateAuthenticationSelection}">
                   <f:ajax
                     event="change"
-                    render="myform:loginTypeArea" />
+                    render="subviewTab1:loginTypeArea" />
                   <f:selectItems
                     value="#{BenutzerverwaltungForm.ldapGruppeAuswahlListe}"
                     var="var"
@@ -321,7 +329,9 @@
                 help="#{msgs.helpMassendownload}"
                 name="massendownload"
                 style="border-bottom: 1px solid #DDDDDD;" />
+            </f:subview>
           </div>
+
 
           <!-- TAB 2 -->
           <div
@@ -727,7 +737,27 @@
 
         </intranda:box>
     </div> <!-- col end -->
+
+    <div class="#{NavigationForm.uiStatus['journalBig'] ? 'col-12 pt-4' : 'col-12 col-md-6'}">
+
+        <x:aliasBeansScope>
+            <x:aliasBean
+                alias="#{showBigButton}"
+                value="true" />
+            <x:aliasBean
+                alias="#{showFolderSelection}"
+                value="false" />
+            <x:aliasBean
+                alias="#{bean}"
+                value="#{BenutzerverwaltungForm.myClass}" />
+            <f:subview id="sublog">
+                <ui:include src="templatePG/includes/journal.xhtml" />
+            </f:subview>
+        </x:aliasBeansScope>
+    </div>
+
   </div> <!-- row end -->
+
 
   </h:form>
 </ui:define>
