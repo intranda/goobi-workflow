@@ -46,17 +46,19 @@
       id="myform"
       styleClass="form-horizontal form-bordered view-users"
       onkeypress="submitOnEnter(event);"
-      rendered="#{LoginForm.hasRole('Admin_Users')}">
+      rendered="#{LoginForm.hasRole('Admin_Users')}"
+      enctype="multipart/form-data">
+
       <f:passThroughAttribute name="autocomplete" value="off"/>
 
 
       <div class="row" role="main">
 
-        <div class="col-12 col-md-12">
-
         <!--
-          <div class="#{NavigationForm.uiStatus['journalBig'] ? 'col-12' : 'col-12 col-md-6'}">
+        <div class="col-12 col-md-12">
         -->
+
+          <div class="#{NavigationForm.uiStatus['journalBig'] ? 'col-12' : 'col-12 col-md-6'}">
           <intranda:box
             boxType="action"
             scope="form-box"
@@ -736,7 +738,6 @@
         </intranda:box>
     </div> <!-- col end -->
 
-    <!--
     <div class="#{NavigationForm.uiStatus['journalBig'] ? 'col-12' : 'col-12 col-md-6'}">
 
         <x:aliasBeansScope>
@@ -754,7 +755,6 @@
             </f:subview>
         </x:aliasBeansScope>
     </div>
-    -->
 
   </div> <!-- row end -->
 
