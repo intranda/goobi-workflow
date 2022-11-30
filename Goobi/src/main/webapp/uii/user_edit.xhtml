@@ -114,10 +114,12 @@
 
 
           <!-- CONTENT -->
+
           <div class="tab-content">
 
             <!-- TAB 1 -->
             <div class="#{BenutzerverwaltungForm.displayMode eq ''?'tab-pane active':'tab-pane'}">
+            <f:subview id="subviewTab1">
 
               <intranda:formInputText
                 id="lastname"
@@ -213,7 +215,7 @@
                     validator="#{BenutzerverwaltungForm.validateAuthenticationSelection}">
                   <f:ajax
                     event="change"
-                    render=":loginTypeArea @form" />
+                    render="subviewTab1:loginTypeArea" />
                   <f:selectItems
                     value="#{BenutzerverwaltungForm.ldapGruppeAuswahlListe}"
                     var="var"
@@ -321,7 +323,9 @@
                 help="#{msgs.helpMassendownload}"
                 name="massendownload"
                 style="border-bottom: 1px solid #DDDDDD;" />
+            </f:subview>
           </div>
+
 
           <!-- TAB 2 -->
           <div
