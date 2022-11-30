@@ -47,7 +47,8 @@
 }
 
 .box--padded .box__body,
-.box--no-padding .box--padded .box__body {
+.box--no-padding .box--padded .box__body,
+.box__body.box__body--padded.box__body--padded {
   padding: var(--box-padding);
 
   .gw-table__search,

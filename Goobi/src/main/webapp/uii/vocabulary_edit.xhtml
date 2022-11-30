@@ -5,9 +5,9 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/template/template.html"
+    template="/uii/templatePG/templatePG.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param
@@ -43,79 +43,93 @@
             rendered="#{LoginForm.hasRole('Admin_Vocabulary_Management')}">
 
             <div class="row" role="main">
-                <div class="col-sm-12">
-                    <div class="box box-color orange box-bordered">
-                        <div class="box-title">
-                            <h2>
-                                <i class="fa fa-database box-icon-fix"></i>
-                                <h:outputText value="#{myPageTitle}" />
-                            </h2>
-                            
-                            <div class="actions">
-	                             <!-- download all records as csv/excel -->
-	                             <button
-	                                 jsf:id="downloadRecords"
-	                                 class="btn margin-right-5"
-	                                 jsf:rel="tooltip"
-	                                 jsf:action="#{vocabularyBean.downloadRecords}"
-	                                 title="#{msgs.vocabularyManager_downloadRecords}">
-	                                 <i class="fa fa-download"></i>
-	                                 <f:passThroughAttribute
-	                                     name="data-toggle"
-	                                     value="tooltip" />
-	                                 <f:passThroughAttribute
-	                                     name="aria-label"
-	                                     value="#{msgs.vocabularyManager_downloadRecords}" />
-	                             </button>
-	                             
-	                             <!-- import all records from excel -->
-	                             <button
-	                                 jsf:id="uploadRecords"
-	                                 class="btn margin-right-5"
-	                                 jsf:rel="tooltip"
-	                                 jsf:action="#{vocabularyBean.uploadRecords}"
-	                                 title="#{msgs.vocabularyManager_uploadRecords}">
-	                                 <i class="fa fa-upload"></i>
-	                                 <f:passThroughAttribute
-	                                     name="data-toggle"
-	                                     value="tooltip" />
-	                                 <f:passThroughAttribute
-	                                     name="aria-label"
-	                                     value="#{msgs.vocabularyManager_uploadRecords}" />
-	                             </button>
-							</div>                            
-                        </div>
-                        <div class="box-content nopadding">
+                <div class="col-12">
 
-                            <intranda:formInputText
-                                id="title"
-                                name="titel"
-                                label="#{msgs.vocabularyManager_vocabulary}"
-                                field="#{vocabularyBean.currentVocabulary.title}"
-                                help="#{msgs.help_vocabulary_title}"
-                                fieldStyle="form-control" />
+                    <intranda:box
+                        boxType="action"
+                        boxTitle="false"
+                        formBox="true"
+                        padding="false"
+                    >
+                    <intranda:boxTitle
+                        title="#{myPageTitle}"
+                        icon="fa-database"
+                    >
 
-                            <intranda:formInputTextArea
-                                id="file"
-                                name="fileName"
-                                label="#{msgs.vocabularyManager_description}"
-                                field="#{vocabularyBean.currentVocabulary.description}"
-                                help="#{msgs.help_vocabulary_description}"
-                                required="false"
-                                fieldStyle="form-control" 
+
+
+                        <div class="actions d-flex">
+                           <!-- download all records as csv/excel -->
+                           <button
+                               jsf:id="downloadRecords"
+                               class="btn d-flex align-items-center"
+                               jsf:rel="tooltip"
+                               jsf:action="#{vocabularyBean.downloadRecords}"
+                               title="#{msgs.vocabularyManager_downloadRecords}">
+                               <i class="fa fa-download"></i>
+                               <f:passThroughAttribute
+                                   name="data-toggle"
+                                   value="tooltip" />
+                               <f:passThroughAttribute
+                                   name="aria-label"
+                                   value="#{msgs.vocabularyManager_downloadRecords}" />
+                           </button>
+
+                           <!-- import all records from excel -->
+                           <button
+                               jsf:id="uploadRecords"
+                               class="btn d-flex align-items-center"
+                               jsf:rel="tooltip"
+                               jsf:action="#{vocabularyBean.uploadRecords}"
+                               title="#{msgs.vocabularyManager_uploadRecords}">
+                               <i class="fa fa-upload"></i>
+                               <f:passThroughAttribute
+                                   name="data-toggle"
+                                   value="tooltip" />
+                               <f:passThroughAttribute
+                                   name="aria-label"
+                                   value="#{msgs.vocabularyManager_uploadRecords}" />
+                           </button>
+                        </div> <!-- /actions -->
+
+                    </intranda:boxTitle>
+
+
+                    <intranda:formInputText
+                        id="title"
+                        name="titel"
+                        label="#{msgs.vocabularyManager_vocabulary}"
+                        field="#{vocabularyBean.currentVocabulary.title}"
+                        help="#{msgs.help_vocabulary_title}"
+                        fieldStyle="form-control" />
+
+                    <intranda:formInputTextArea
+                        id="file"
+                        name="fileName"
+                        label="#{msgs.vocabularyManager_description}"
+                        field="#{vocabularyBean.currentVocabulary.description}"
+                        help="#{msgs.help_vocabulary_description}"
+                        required="false"
+                        fieldStyle="form-control"
                                 aria-label="#{msgs.vocabularyManager_description}" />
 
-							<div style="margin-top:20px;border-top: 2px solid #E8860C; border-bottom: 1px solid #ddd;">
-								<h3>
-	                                <h:outputText value="#{msgs.vocabularyManager_fieldDefinitions}" style="margin-left:10px;"/>
-	                            </h3>
-							
-								<x:dataTable
-	                                styleClass="table table-hover dataTable table-bordered responsive"
-	                                value="#{vocabularyBean.currentVocabulary.struct}"
-	                                var="definition" rendered="#{vocabularyBean.currentVocabulary.struct.size() > 0}"
-	                                forceId="true"
-	                                style="margin-top:10px;background-color:white !important;">
+
+	      						<div style="margin-top:20px;border-top: 2px solid #E8860C; border-bottom: 1px solid #ddd;">
+
+                    <div class="box__body box__body--padded">
+                        <h3>
+                          <h:outputText value="#{msgs.vocabularyManager_fieldDefinitions}" />
+                        </h3>
+
+                    <div class="gw-table gw-table-fixed">
+                        <div class="gw-table__wrapper">
+
+                          <x:dataTable
+                            styleClass="table table-hover table-bordered"
+                            value="#{vocabularyBean.currentVocabulary.struct}"
+                            var="definition" rendered="#{vocabularyBean.currentVocabulary.struct.size() > 0}"
+                            forceId="true">
+
 	                                <h:column>
 	                                    <div class="input-group input-group">
 	                                        <f:facet name="header">
@@ -125,7 +139,7 @@
 	                                            id="description"
 	                                            name="descriptionName"
 	                                            styleClass="form-control"
-	                                            value="#{definition.label}" 
+	                                            value="#{definition.label}"
 	                                            >
 	                                            <f:passThroughAttribute
 			                                     name="aria-label"
@@ -142,7 +156,7 @@
 	                                    </f:facet>
 	                                    <h:selectOneMenu
 	                                        value="#{definition.language}"
-	                                        styleClass="form-control">
+	                                        styleClass="form-select">
 	                                        <f:selectItem
 	                                            itemLabel="-"
 	                                            itemValue="" />
@@ -162,7 +176,7 @@
 			                                     name="aria-label"
 			                                     value="#{msgs.vocabularyManager_languageSelection}" />
 	                                    </h:selectOneMenu>
-	                                    
+
 	                                     <f:facet name="footer">
 	                                         <intranda:formHelp content="#{msgs.help_vocabulary_languageSelecion}" />
 	                                    </f:facet>
@@ -173,7 +187,7 @@
 	                                    </f:facet>
 	                                    <h:selectOneMenu
 	                                        value="#{definition.type}"
-	                                        styleClass="form-control"
+	                                        styleClass="form-select"
 	                                        id="fieldname">
 	                                        <f:selectItems
 	                                            var="fieldname"
@@ -191,7 +205,7 @@
 	                                        <intranda:formHelp content="#{msgs.help_vocabulary_typeSelecion}" />
 	                                    </f:facet>
 	                                </h:column>
-	
+
 	                                <h:column>
 	                                    <f:facet name="header">
 	                                        <h:outputText value="#{msgs.vocabularyManager_validation}" />
@@ -207,7 +221,7 @@
 	                                        <intranda:formHelp content="#{msgs.help_vocabulary_fieldValidation}" />
 	                                    </f:facet>
 	                                </h:column>
-	                                <h:column>
+	                                <h:column headerClass="gw-col-check">
 	                                    <f:facet name="header">
 	                                        <h:outputText value="#{msgs.vocabularyManager_required}" />
 	                                    </f:facet>
@@ -220,7 +234,7 @@
 	                                        <intranda:formHelp content="#{msgs.help_vocabulary_fieldRequired}" />
 	                                    </f:facet>
 	                                </h:column>
-	                                <h:column>
+	                                <h:column headerClass="gw-col-check">
 	                                    <f:facet name="header">
 	                                        <h:outputText value="#{msgs.vocabularyManager_mainEntry}" />
 	                                    </f:facet>
@@ -234,7 +248,7 @@
 	                                        <intranda:formHelp content="#{msgs.help_vocabulary_fieldIsMainEntry}" />
 	                                    </f:facet>
 	                                </h:column>
-	                                <h:column>
+	                                <h:column headerClass="gw-col-check">
 	                                    <f:facet name="header">
 	                                        <h:outputText value="#{msgs.vocabularyManager_unique}" />
 	                                    </f:facet>
@@ -247,8 +261,8 @@
 	                                         <intranda:formHelp content="#{msgs.help_vocabulary_fieldIsUnique}" />
 	                                    </f:facet>
 	                                </h:column>
-	
- <h:column>
+
+ <h:column headerClass="gw-col-check">
                                         <f:facet name="header">
                                             <h:outputText value="#{msgs.vocabularyManager_titleField}" />
                                         </f:facet>
@@ -260,8 +274,8 @@
                                         <f:facet name="footer">
                                             <intranda:formHelp content="#{msgs.help_vocabulary_fieldTitleField}" />
                                         </f:facet>
-                                    </h:column>    
-    
+                                    </h:column>
+
 	                                <h:column>
 	                                    <f:facet name="header">
 	                                        <h:outputText value="#{msgs.vocabularyManager_select}" />
@@ -279,17 +293,17 @@
 	                                        <intranda:formHelp content="#{msgs.help_vocabulary_valueSelection}" />
 	                                    </f:facet>
 	                                </h:column>
-	
-	
-	                                <x:column style="width:150px;">
+
+
+	                                <x:column headerClass="gw-table-fixed__actions">
 	                                    <f:facet name="header">
 	                                        <h:outputText value="#{msgs.auswahl}" />
 	                                    </f:facet>
-	                                    <div class="input-group-btn">
+
+	                                    <div class="gw-table__actions__container">
 	                                        <button
 	                                            jsf:id="delete"
-	                                            class="btn btn-danger"
-	                                            style="height:25px;margin-left:5px; border:0; padding-top:3px;"
+	                                            class="btn btn-hot"
 	                                            title="#{msgs.vocabularyManager_deleteDefinition}"
 	                                            jsf:action="#{vocabularyBean.deleteDefinition}"
 	                                            onclick="if (!confirm('#{msgs.wirklichAusfuehren}')) return false"
@@ -297,77 +311,88 @@
 	                                            <f:setPropertyActionListener
 	                                                target="#{vocabularyBean.currentDefinition}"
 	                                                value="#{definition}" />
-	                                            <i
-	                                                class="fa fa-trash-o font-bold"
-	                                                style="color: white;"></i>
+	                                            <i class="fa fa-trash-o font-bold"></i>
 	                                        </button>
-	
 	                                    </div>
+
 	                                </x:column>
 	                            </x:dataTable>
-	
-	                            <button
-	                                jsf:id="new_def"
-	                                class="btn btn-primary font-size-s"
-	                                style="margin-top:10px; margin-left:5px; margin-bottom:10px; background: #368ee0;"
-	                                jsf:action="#{vocabularyBean.addDefinition}"
-	                                title="#{msgs.vocabularyManager_addDefinition}">
-	                                <i
-	                                    aria-hidden="true"
-	                                    class="fa fa-plus margin-right-5"></i>
-	                                <h:outputText value="#{msgs.vocabularyManager_addDefinition}" />
-	                            </button>
-                            </div>
-                            
-                            
-                            
-                            <div class="form-actions">
-                            	<!-- Save -->
-					            <button
-					                class="btn btn-success submitOnEnter pull-right font-size-s margin-bottom-most"
-					                style="margin-top:10px; margin-left:5px;"
-					                jsf:id="absenden"
-					                type="submit"
-					                jsf:action="#{vocabularyBean.saveVocabulary}">
-					                <i class="fa fa-save margin-right-5"></i>
-					                <h:outputText value="#{msgs.speichern}" />
-					            </button>
-					
+                        </div>
+                    </div>
+
+
+
+                      <div class="box__actions">
+                        <button
+                            jsf:id="new_def"
+                            class="btn btn-primary-400 me-auto"
+                            jsf:action="#{vocabularyBean.addDefinition}"
+                            title="#{msgs.vocabularyManager_addDefinition}">
+                            <i
+                                aria-hidden="true"
+                                class="fa fa-plus"></i>
+                            <span>
+                                <h:outputText value="#{msgs.vocabularyManager_addDefinition}" />
+                            </span>
+                        </button>
+                      </div> <!-- /box__actions -->
+
+                    </div> <!-- /box__body -->
+
+                    </div>
+
+                    <div class="box__body">
+                    <div class="box__actions">
 					            <!-- Cancel -->
-					            <button
-					                class="btn btn-cancel submitOnEnter pull-right font-size-s margin-bottom-most"
-					                style="margin-top:10px;"
+					            <a
+					                class="btn btn-blank submitOnEnter"
 					                jsf:id="abbrechen"
 					                jsf:type="cancel"
 					                jsf:action="#{vocabularyBean.cancelEdition}"
 					                jsf:immediate="true">
-					                <h:outputText value="#{msgs.abbrechen}" />
+                          <span>
+                            <h:outputText value="#{msgs.abbrechen}" />
+                          </span>
+					            </a>
+
+                      <!-- Save -->
+					            <button
+					                class="btn btn-success submitOnEnter"
+					                jsf:id="absenden"
+					                type="submit"
+					                jsf:action="#{vocabularyBean.saveVocabulary}">
+					                <i class="fa fa-save"></i>
+                          <span>
+                            <h:outputText value="#{msgs.speichern}" />
+                          </span>
 					            </button>
-					
+
 					            <button
 					                jsf:id="delete"
 					                jsf:action="#{vocabularyBean.deleteVocabulary}"
-					                style="margin-top:10px;"
-					                class="btn btn-danger font-size-s"
+					                class="btn btn-hot trigger-delete"
 					                onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
 					                jsf:rendered="#{vocabularyBean.currentVocabulary.id != null}">
-					                <i class="fa fa-trash-o margin-right-5"></i>
-					                <h:outputText value="#{msgs.loeschen}" />
+					                <i class="fa fa-trash-o"></i>
+                          <span>
+                            <h:outputText value="#{msgs.loeschen}" />
+                          </span>
 					            </button>
-                            </div>
-                            
-                        </div>
-                    </div>
-                </div>
 
-            </div>
+                    </div>
+                  </div>
+
+                </intranda:box>
+
+                </div>
+              </div>
 
 
             <!-- Information about the definitions -->
 
             <!-- new definition -->
 
-            
+
 
 
         </h:form>

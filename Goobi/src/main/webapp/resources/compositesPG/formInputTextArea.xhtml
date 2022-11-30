@@ -1,0 +1,52 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites">
+
+    <composite:interface>
+        <composite:attribute name="name" />
+        <composite:attribute name="label" />
+        <composite:attribute name="field" />
+        <composite:attribute name="help" />
+        <composite:attribute name="fieldStyle" />
+        <composite:attribute name="required" default="false" />
+        <composite:attribute name="displayAsRequired" default="false" />
+        <composite:attribute name="style" />
+        <composite:attribute name="readonly" default="false" />
+        <composite:attribute name="height" default="" />
+        <composite:attribute name="classLeft" default="col-12 col-md-3" />
+        <composite:attribute name="classRight" default="col-12 col-md-9" />
+        <composite:attribute name="tabindex" default="0" />
+    </composite:interface>
+
+    <composite:implementation>
+
+      <div class="row" style="#{cc.attrs.style}">
+
+          <div class="#{cc.attrs.classLeft} control-label" tabindex="-1">
+          <ui:include src="/uii/templatePG/includes/forms/form_label.xhtml">
+            <ui:param name="labelFor" value="#{cc.attrs.name}" />
+            <ui:param name="labelRequired" value="#{cc.attrs.required or cc.attrs.displayAsRequired}" />
+            <ui:param name="labelLabel" value="#{cc.attrs.label}" />
+          </ui:include>
+			  </div>
+
+        <div class="#{cc.attrs.classRight}">
+            <h:inputTextarea id="#{cc.attrs.name}" forceId="true" styleClass="#{cc.attrs.fieldStyle} metsEditorTextArea" value="#{cc.attrs.field}"
+                required="#{cc.attrs.required}" readonly="#{cc.attrs.readonly}" tabindex="#{cc.attrs.tabindex}" pt:aria-label="#{cc.attrs.label}"/>
+            <h:message for="#{cc.attrs.name}" showDetail="true" styleClass="help-inline font-danger" />
+            <intranda:formHelp content="#{cc.attrs.help}" />
+        </div>
+
+      </div> <!-- /row -->
+
+    </composite:implementation>
+
+</ui:composition>
+
+
