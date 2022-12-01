@@ -28,9 +28,6 @@ package de.sub.goobi.helper;
 
 import org.jdom2.input.SAXBuilder;
 
-import lombok.extern.log4j.Log4j2;
-
-@Log4j2
 public class XmlTools {
 
     public static SAXBuilder getSAXBuilder() {

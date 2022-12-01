@@ -124,7 +124,7 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
                     }
                     break;
 
-                    // fist the first child element
+                // fist the first child element
                 case "child":
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -135,7 +135,7 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
                     }
                     break;
 
-                    // any element in the hierarchy
+                // any element in the hierarchy
                 case "any":
                     dsList.add(ds);
                     dsList.addAll(ds.getAllChildrenAsFlatList());
@@ -149,7 +149,7 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
                     }
                     break;
 
-                    // default "work", which is the first child or the main top element if it is not an anchor
+                // default "work", which is the first child or the main top element if it is not an anchor
                 default:
                     if (ds.getType().isAnchor()) {
                         dsList.add(ds.getAllChildren().get(0));
@@ -199,6 +199,7 @@ public class GoobiScriptMetadataDelete extends AbstractIGoobiScript implements I
      * @param ignoreValue a boolean that defines if the value of the metadata shall not be checked before deletion
      * @param prefs the {@link Preferences} to use
      */
+    @SuppressWarnings("unchecked")
     private void deleteMetadata(List<DocStruct> dsList, String deletionType, String groupName, String metadataName, String value, boolean ignoreValue,
             Prefs prefs) {
         if (StringUtils.isNotBlank(deletionType) && "group".equals(deletionType)) {

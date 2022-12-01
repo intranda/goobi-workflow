@@ -404,10 +404,7 @@
                                 for="automatic"
                                 showDetail="true"
                                 styleClass="help-inline font-danger" />
-                            <h:outputText
-                                styleClass="block font-light"
-                                style="display:#{NavigationForm.showHelp ? 'block' : 'none'}"
-                                value="#{msgs.helpProcessStepAutomatic}" />
+                            <intranda:formHelp content="#{msgs.helpProcessStepAutomatic}" />
 
                             <span id="messageQueueDropDown"> <h:selectOneMenu
                                     id="messageQueue"
@@ -442,6 +439,11 @@
 		                        onclick="showThumbsSettings()"
 		                        value="#{ProzessverwaltungForm.mySchritt.typAutomaticThumbnail}"
 		                        />
+                            <h:message
+                                for="autoThumbnail"
+                                showDetail="true"
+                                styleClass="help-inline font-danger" />
+                            <intranda:formHelp content="#{msgs.helpProcessStepAutomaticThumbnail}" />
 		                    
 		                    <span id="thumbsSettings">
 		                    	<h:inputTextarea
@@ -474,10 +476,7 @@
                                 for="chkautomatisch"
                                 showDetail="true"
                                 styleClass="help-inline font-danger" />
-                            <h:outputText
-                                styleClass="block font-light"
-                                style="display:#{NavigationForm.showHelp ? 'block' : 'none'}"
-                                value="#{msgs.helpProcessScripts}" />
+                            <intranda:formHelp content="#{msgs.helpProcessScripts}" />
 
                             <x:panelGrid
                                 columns="2"
@@ -594,10 +593,7 @@
                                 for="chkhttp"
                                 showDetail="true"
                                 styleClass="help-inline font-danger" />
-                            <h:outputText
-                                styleClass="block font-light"
-                                style="display:#{NavigationForm.showHelp ? 'block' : 'none'}"
-                                value="#{msgs.helpHttpStep}" />
+                            <intranda:formHelp content="#{msgs.helpHttpStep}" />
 
 
                             <ui:fragment rendered="#{ProzessverwaltungForm.mySchritt.httpStep}">
@@ -615,10 +611,7 @@
                                         for="chkhttpclosestep"
                                         showDetail="true"
                                         styleClass="help-inline font-danger" />
-                                    <h:outputText
-                                        styleClass="block font-light"
-                                        style="display:#{NavigationForm.showHelp ? 'block' : 'none'}"
-                                        value="#{msgs.helpHttpCloseStep}" />
+                                    <intranda:formHelp content="#{msgs.helpHttpCloseStep}" />
                                 </div>
 
                                 <div

@@ -321,22 +321,22 @@ public class GoobiScriptTest extends AbstractTest {
     }
 
     //@Test
-    public void testExecuteSetTaskPropertyAction() {
+    public void testExecuteSetStepPropertyAction() {
         GoobiScript script = new GoobiScript();
-        script.execute(processList, "---\\naction: setTaskProperty");
-        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first");
-        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: test");
-        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: wrong \\nvalue: wrong");
-        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: readimages \\nvalue: wrong");
+        script.execute(processList, "---\\naction: setStepProperty");
+        script.execute(processList, "---\\naction: setStepProperty \\nsteptitle: first");
+        script.execute(processList, "---\\naction: setStepProperty \\nsteptitle: first \\nproperty: test");
+        script.execute(processList, "---\\naction: setStepProperty \\nsteptitle: first \\nproperty: wrong \\nvalue: wrong");
+        script.execute(processList, "---\\naction: setStepProperty \\nsteptitle: first \\nproperty: readimages \\nvalue: wrong");
 
-        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: readimages \\nvalue: true");
+        script.execute(processList, "---\\naction: setStepProperty \\nsteptitle: first \\nproperty: readimages \\nvalue: true");
 
-        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: metadata \\nvalue: false");
-        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: automatic \\nvalue: false");
-        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: batch \\nvalue: false");
-        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: writeimages \\nvalue: false");
-        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: validate \\nvalue: false");
-        script.execute(processList, "---\\naction: setTaskProperty \\nsteptitle: first \\nproperty: exportdms \\nvalue: false");
+        script.execute(processList, "---\\naction: setStepProperty \\nsteptitle: first \\nproperty: metadata \\nvalue: false");
+        script.execute(processList, "---\\naction: setStepProperty \\nsteptitle: first \\nproperty: automatic \\nvalue: false");
+        script.execute(processList, "---\\naction: setStepProperty \\nsteptitle: first \\nproperty: batch \\nvalue: false");
+        script.execute(processList, "---\\naction: setStepProperty \\nsteptitle: first \\nproperty: writeimages \\nvalue: false");
+        script.execute(processList, "---\\naction: setStepProperty \\nsteptitle: first \\nproperty: validate \\nvalue: false");
+        script.execute(processList, "---\\naction: setStepProperty \\nsteptitle: first \\nproperty: exportdms \\nvalue: false");
 
     }
 

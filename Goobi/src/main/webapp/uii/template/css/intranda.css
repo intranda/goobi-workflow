@@ -2640,7 +2640,7 @@ body .ui-fileupload .ui-fileupload-content {
 /* process_all.xhtml */
 #processAll .dataTables_filter button,
 #tasksAll .dataTables_filter button {
-height: 28px;
+/* height: 28px; */
 }
 
 #processAll .dataTables_wrapper .dataTables_length,

@@ -36,7 +36,6 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class BasicBean implements Serializable {
-    @SuppressWarnings("unused")
 
     private static final long serialVersionUID = 2950419497162710096L;
     @Getter

@@ -11,14 +11,14 @@
 	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
 	<ui:param name="myPageTitle"
-		value="#{msgs.menu_administration_plugins}" />
+		value="#{msgs.plugins}" />
 
 	<ui:define name="breadcrumb">
 		<intranda:breadcrumb id="index"
 			label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}"
 			action="index" navId="a0" />
 		<intranda:breadcrumb id="admin"
-			label="#{msgs.menu_administration_plugins}" action="plugins.xhtml"
+			label="#{myPageTitle}" action="plugins.xhtml"
 			noSeparator="#{true}" />
 	</ui:define>
 
@@ -39,7 +39,7 @@
 					<div class="box-title">
 						<h2>
 							<i class="fa fa-stethoscope"></i>
-							<h:outputText value="#{msgs.menu_administration_plugins} - #{HelperForm.version}" />
+							<h:outputText value="#{myPageTitle} - #{HelperForm.version}" />
 						</h2>
 					</div>
 					<div class="box-content">

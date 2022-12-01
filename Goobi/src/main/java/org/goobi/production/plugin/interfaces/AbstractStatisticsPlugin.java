@@ -29,6 +29,7 @@ import org.goobi.production.enums.PluginType;
 
 public abstract class AbstractStatisticsPlugin implements IStatisticPlugin {
 
+    private static final long serialVersionUID = -2861296480468396986L;
     protected String filter;
 
     @Override

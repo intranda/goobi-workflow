@@ -53,11 +53,13 @@ public class ProjectFileGroup implements Serializable {
     }
 
     public ProjectFileGroup(ProjectFileGroup source) {
-        setFolder(source.getFolder());
-        setMimetype(source.getMimetype());
         setName(source.getName());
         setPath(source.getPath());
+        setMimetype(source.getMimetype());
         setSuffix(source.getSuffix());
+        setFolder(source.getFolder());
+        setUseOriginalFiles(source.isUseOriginalFiles());
+        setIgnoreMimetypes(source.getIgnoreMimetypes());
     }
 
 }
