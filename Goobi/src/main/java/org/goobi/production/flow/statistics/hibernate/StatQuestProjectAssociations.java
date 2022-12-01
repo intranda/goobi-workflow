@@ -48,6 +48,8 @@ import de.sub.goobi.persistence.managers.ProcessManager;
  ****************************************************************************/
 public class StatQuestProjectAssociations implements IStatisticalQuestion {
 
+    private static final long serialVersionUID = 6334004036614755383L;
+
     /*
      * (non-Javadoc)
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)

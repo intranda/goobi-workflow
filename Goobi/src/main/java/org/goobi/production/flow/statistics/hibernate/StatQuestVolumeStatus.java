@@ -48,6 +48,8 @@ import de.sub.goobi.persistence.managers.StepManager;
  ****************************************************************************/
 public class StatQuestVolumeStatus implements IStatisticalQuestion {
 
+    private static final long serialVersionUID = -4062861318422569123L;
+
     /*
      * (non-Javadoc)
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
@@ -57,7 +59,7 @@ public class StatQuestVolumeStatus implements IStatisticalQuestion {
 
         List<Step> stepList = StepManager.getSteps(null,
                 " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND prozesse.ProzesseID in (select ProzesseID from prozesse where " + filter
-                + ")");
+                        + ")");
 
         StringBuilder title = new StringBuilder(StatisticsMode.getByClassName(this.getClass()).getTitle());
 
