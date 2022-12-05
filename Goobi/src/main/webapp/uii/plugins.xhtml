@@ -36,24 +36,60 @@
 		<main class="row">
 			<div class="col-12">
 
+			<h:form id="boxForm">
+
 			<intranda:box
 				boxType="primary"
-				title="#{msgs.menu_administration_plugins} - #{HelperForm.version}"
-				icon="fa-stethoscope"
+				boxTitle="false"
+				boxPadding="true"
 			>
 
 
-						<div class="nav nav-tabs" id="nav-tab" role="tablist">
+			<!-- TITLE BAR -->
+			<intranda:boxTitle
+				title="#{msgs.menu_administration_plugins} - #{HelperForm.version}"
+				icon="fa-stethoscope"
+			>
+				<ul class="tabs" >
+					<li class="tab tab--0 #{BenutzerverwaltungForm.displayMode eq ''?'active':''}">
+						<h:commandLink
+							id="tab0"
+							styleClass="tab__link"
+							action="#{NavigationForm.Reload}"
+							value="#{msgs.install_plugin_installed}">
+							<f:setPropertyActionListener
+								target="#{BenutzerverwaltungForm.displayMode}"
+								value="" />
+							<f:ajax
+								render="@form"
+								execute="@form" />
+						</h:commandLink>
+					</li>
+					<li class="tab tab--1 #{BenutzerverwaltungForm.displayMode eq 'tab1'?'active':''}">
+						<h:commandLink
+							id="tab1"
+							styleClass="tab__link"
+							action="#{NavigationForm.Reload}"
+							value="#{msgs.install_plugin_install_new}">
+							<f:setPropertyActionListener
+								target="#{BenutzerverwaltungForm.displayMode}"
+								value="tab1" />
+							<f:ajax
+								render="@form"
+								execute="@form" />
+						</h:commandLink>
+					</li>
+				</ul>
+			</intranda:boxTitle>
 
-							<button class="nav-link active" id="installedPluginsTab" data-bs-toggle="tab" data-bs-target="#installedPluginsContent" type="button" role="tab" aria-controls="installedPluginsContent" aria-selected="false">#{msgs.install_plugin_installed}</button>
+			<!-- BOX BODY -->
+			<div class="box__body">
 
-							<button class="nav-link" id="installNewTab" data-bs-toggle="tab" data-bs-target="#installNewContent" type="button" role="tab" aria-controls="installNewTabContent" aria-selected="true">#{msgs.install_plugin_install_new}</button>
+				<div id="pluginsTabContent" class="tab-content">
 
-						</div>
 
-						<div id="pluginsTabContent" class="tab-content">
-
-							<div class="tab-pane fade show active" id="installedPluginsContent" role="tabpanel" aria-labelledby="installedPluginsTab">
+							<!-- TAB 1 -->
+							<div class="#{BenutzerverwaltungForm.displayMode eq '' ? 'tab-pane active' : 'tab-pane'}">
 
 								<h:form id="plugins_form">
 
@@ -109,7 +145,8 @@
 							</div> <!-- /installed plugins tab -->
 
 
-							<div class="tab-pane fade" id="installNewContent" role="tabpanel" aria-labelledby="installNewTab">
+							<!-- Tab 2 -->
+							<div class="#{BenutzerverwaltungForm.displayMode eq 'tab1' ? 'tab-pane active' : 'tab-pane'}">
 
 								<h3 class="mt-4">#{msgs.install_plugin_install_new}</h3>
 
@@ -189,8 +226,11 @@
 							</div> <!-- /install new tab -->
 
 						</div>
+						</div>
 
 				</intranda:box>
+
+			</h:form>
 
 			</div>
 		</main>
