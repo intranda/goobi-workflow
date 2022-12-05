@@ -31,27 +31,26 @@ public interface IMetadataEditorExtension extends IPlugin {
      */
 
     public String getPagePath();
-    
+
     /**
-     *  returns the id of the modal to open
+     * returns the id of the modal to open
      * 
      * @return id
      */
-    
-    public String getModalId() ;
-    
 
+    public String getModalId();
+
+    @Override
     default PluginType getType() {
         return PluginType.MetadataEditor;
     }
-    
+
     /**
      * Initialize the extension
      * 
      * @param bean
      */
-    
+
     public void initializePlugin(Metadaten bean);
-    
-    
+
 }

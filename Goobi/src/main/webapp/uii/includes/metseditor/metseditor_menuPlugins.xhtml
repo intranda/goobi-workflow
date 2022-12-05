@@ -45,15 +45,19 @@
                                 <button
                                     jsf:id="openExtension"
                                     class="dropdown-item"
-                                    jsf:onclick="$('##{extension.modalId}').modal('show');"
+                                    jsf:onclick="setTimeout(function() {$('##{extension.modalId}').modal('show');}, 200 );"
                                     type="button">
                                     <i
                                         class="fa fa-plug"
                                         aria-hidden="true"></i>
                                     <h:outputText value="#{msgs[extension.title]}" />
-                                      <f:setPropertyActionListener value="#{extension}" target="#{Metadaten.extension}"/>
-                                      
-                                      <f:ajax render="#{extension.modalId}"/>
+                                    <f:setPropertyActionListener
+                                        value="#{extension}"
+                                        target="#{Metadaten.extension}" />
+
+                                    <f:ajax
+                                        execute="@this"
+                                        render="#{extension.modalId}" />
                                 </button>
                             </li>
 
