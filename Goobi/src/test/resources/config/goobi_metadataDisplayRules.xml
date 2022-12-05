@@ -127,6 +127,11 @@
                 <field>type=Person</field>
             </vocabularyList>
             
+            <convertibleDate ref="GregorianDate">
+            	<source>Testquelle</source>
+            	<field>1983-12-01</field>
+            </convertibleDate>
+            
         </context>
     </ruleSet>
 </displayRules>

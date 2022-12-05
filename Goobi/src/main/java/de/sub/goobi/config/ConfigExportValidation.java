@@ -1,17 +1,3 @@
-package de.sub.goobi.config;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
-import org.goobi.beans.ExportValidator;
-
-import lombok.extern.log4j.Log4j2;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -27,6 +13,20 @@ import lombok.extern.log4j.Log4j2;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
+
+package de.sub.goobi.config;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
+import org.goobi.beans.ExportValidator;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * This class provides helper methods for loading the Export Validation configuration file.
@@ -49,7 +49,7 @@ public class ConfigExportValidation {
         List<ExportValidator> configuredExportValidators = new ArrayList<>();
         XMLConfiguration config = getExportValidatorConfiguration();
         for (HierarchicalConfiguration subConfig : config.configurationsAt("/validation")) {
-            String label =  subConfig.getString("@label");
+            String label = subConfig.getString("@label");
             String command = subConfig.getString("@command");
             ExportValidator validator = new ExportValidator();
             validator.setLabel(label);

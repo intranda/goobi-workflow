@@ -1,5 +1,3 @@
-package org.goobi.api.display.helper;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -24,6 +22,9 @@ package org.goobi.api.display.helper;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+
+package org.goobi.api.display.helper;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -196,7 +197,7 @@ public final class ConfigDisplayRules {
             }
             Map<String, Map<String, List<Item>>> itemsByType = this.allValues.get(myproject);
             if (itemsByType == null) {
-                if (myproject.equals("*")) {
+                if ("*".equals(myproject)) {
                     return DisplayType.input;
                 } else {
                     return getElementTypeByName("*", myelementName);
@@ -214,7 +215,7 @@ public final class ConfigDisplayRules {
             }
         }
 
-        if (myproject.equals("*")) {
+        if ("*".equals(myproject)) {
             return DisplayType.input;
         } else {
             return getElementTypeByName("*", myelementName);
@@ -233,7 +234,7 @@ public final class ConfigDisplayRules {
         List<Item> values = new ArrayList<>();
         Map<String, Map<String, List<Item>>> itemsByType = this.allValues.get(projectTitle);
         if (itemsByType.isEmpty()) {
-            if (projectTitle.equals("*")) {
+            if ("*".equals(projectTitle)) {
                 values.add(new Item(projectTitle, "", false, "", ""));
 
             } else {
@@ -245,13 +246,13 @@ public final class ConfigDisplayRules {
             if (typeList.containsKey(elementName)) {
                 values = typeList.get(elementName);
 
-            } else if (projectTitle.equals("*")) {
+            } else if ("*".equals(projectTitle)) {
                 values.add(new Item(projectTitle, "", false, "", ""));
             } else {
                 return getElementsForMetadata("*", displayType, elementName);
             }
 
-        } else if (projectTitle.equals("*")) {
+        } else if ("*".equals(projectTitle)) {
             values.add(new Item(projectTitle, "", false, "", ""));
         } else {
             return getElementsForMetadata("*", displayType, elementName);

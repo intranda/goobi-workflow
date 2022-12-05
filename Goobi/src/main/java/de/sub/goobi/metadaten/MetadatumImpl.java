@@ -333,6 +333,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             }
         }
 
+        // TODO: Initialize new metadata DisplayType
+
     }
 
     @Override
@@ -373,7 +375,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     /******************************************************
      *
-     * new functions for use of display configuration whithin xml files
+     * new functions for use of display configuration within xml files
      *
      *****************************************************/
 

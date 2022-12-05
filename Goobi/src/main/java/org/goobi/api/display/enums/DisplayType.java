@@ -41,7 +41,8 @@ public enum DisplayType {
     viaf,
     easydb,
     vocabularySearch,
-    vocabularyList;
+    vocabularyList,
+    convertibleDate;
 
     private DisplayType() {
     }

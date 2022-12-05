@@ -1362,6 +1362,11 @@
             <artifactId>sshj</artifactId>
             <version>${sshj.version}</version>
         </dependency>
+        <dependency>
+			<groupId>org.threeten</groupId>
+  			<artifactId>threeten-extra</artifactId>
+  			<version>1.7.1</version>
+		</dependency>
     </dependencies>
 
 

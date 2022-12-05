@@ -1,11 +1,9 @@
-package org.goobi.api.display.helper;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
- *          - https://www.intranda.com 
+ *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
@@ -18,6 +16,9 @@ package org.goobi.api.display.helper;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
+
+package org.goobi.api.display.helper;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class NormDatabase {
     @Getter
     private String abbreviation;
 
-    private static List<NormDatabase> allNormdatabases = new ArrayList<NormDatabase>();
+    private static List<NormDatabase> allNormdatabases = new ArrayList<>();
 
     public NormDatabase(String path, String abbreviation) {
         this.path = path;
