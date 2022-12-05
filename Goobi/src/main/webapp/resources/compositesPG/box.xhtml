@@ -14,12 +14,14 @@
 		<composite:attribute name="icon" />
 		<composite:attribute name="title" />
 		<composite:attribute name="padding" default="true" />
+		<composite:attribute name="boxPadding" default="true" />
 		<composite:attribute name="scrollX" default="false" />
 		<composite:attribute name="boxTitle" default="true" />
 		<composite:attribute name="addClass" />
 		<composite:attribute name="sizeSmall" default="false"/>
 		<composite:attribute name="boxSmall" default="false"/>
 		<composite:attribute name="formBox" default="false"/>
+		<composite:attribute name="boxForm" default="false"/>
 	</composite:interface>
 
 	<composite:implementation>
@@ -29,9 +31,11 @@
 		box--#{cc.attrs.boxType}
 		#{cc.attrs.scope}
 		#{cc.attrs.padding ? 'box--padded' : 'box--no-padding'}
+		#{cc.attrs.boxPadding ? 'box--padded' : 'box--no-padding'}
 		#{cc.attrs.sizeSmall ? 'box--small' : ''}
 		#{cc.attrs.boxSmall ? 'box--small' : ''}
 		#{cc.attrs.formBox ? 'form-box' : ''}
+		#{cc.attrs.boxForm ? 'form-box' : ''}
 		">
 			<!--
       <div class="box-title">
