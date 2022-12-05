@@ -486,6 +486,13 @@ public class Metadaten implements Serializable {
 
     private boolean useThumbsDir = false;
 
+    @Getter
+    private List<IMetadataEditorExtension> extensions;
+
+    @Getter
+    @Setter
+    private IMetadataEditorExtension extension;
+
     public enum MetadataTypes {
         PERSON,
         CORPORATE,
@@ -5120,13 +5127,6 @@ public class Metadaten implements Serializable {
             context.responseComplete();
         }
     }
-
-    @Getter
-    private List<IMetadataEditorExtension> extensions;
-
-    @Getter
-    @Setter
-    private IMetadataEditorExtension extension;
 
     private void readMetadataEditorExtensions() {
         extensions = new ArrayList<>();

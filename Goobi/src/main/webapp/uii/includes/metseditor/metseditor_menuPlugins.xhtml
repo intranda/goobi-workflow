@@ -13,8 +13,7 @@
     <composite:interface />
 
     <composite:implementation>
-
-        <h:form id="meMenuPluginsForm">
+        <h:form id="meMenuPluginsForm" rendered="#{!Metadaten.extensions.isEmpty()}">
             <ul class="clean">
                 <li class="separator"></li>
 
