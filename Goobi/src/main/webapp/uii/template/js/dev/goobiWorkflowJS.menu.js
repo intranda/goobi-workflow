@@ -1,7 +1,7 @@
 var goobiWorkflowJS = ( function( goobiWorkflow ) {
     'use strict';
     
-    var _debug = true;
+    var _debug = false;
     var _defaults = {
         navigationSelector: '#navigation',
         navigationActionSelector: '.navigationActions'
