@@ -1,11 +1,11 @@
-<ui:composition 
-    xmlns="http://www.w3.org/1999/xhtml" 
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:composite="http://xmlns.jcp.org/jsf/composite" 
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:p="http://primefaces.org/ui"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -25,19 +25,19 @@
             </div>
             <div class="module__box-body">
                 <h:outputText value="#{msgs.mets_no_metadata_assigned}" rendered="#{empty Metadaten.corporates}" />
-            
-                <x:dataList 
-                    id="corporateList" 
-                    var="Item" 
-                    value="#{Metadaten.corporates}" 
+
+                <x:dataList
+                    id="corporateList"
+                    var="Item"
+                    value="#{Metadaten.corporates}"
                     rowCountVar="rowCount"
                     rowIndexVar="rowIndex">
                     <intranda:formGroupCorporate
-                        id="corporate" 
+                        id="corporate"
                         corporate="#{Item}"
                         index="#{rowIndex}" />
-                </x:dataList>            
-            
+                </x:dataList>
+
                 <ui:fragment rendered="#{Metadaten.sizeOfCorporates!=0}">
                     <div class="row">
                         <div class="col-auto mr-auto"></div>
@@ -48,10 +48,12 @@
                                 class="btn btn--gray"
                                 jsf:action="#{Metadaten.AddCorporate}">
                                 #{msgs.mets_corporate_createCorporate}
-                                <f:ajax render=":pageContentCenter" />
                                 <f:setPropertyActionListener
                                         value=""
                                         target="#{Metadaten.currentGroup}" />
+                                <f:ajax
+                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data) }"
+                                    render=":pageContentCenter" />
                             </button>
                         </div>
                     </div>
