@@ -34,13 +34,41 @@ import de.sub.goobi.config.ConfigurationHelper;
 import lombok.Getter;
 
 public enum QueueType {
-    FAST_QUEUE("goobi_fast", "GOOBI_INTERNAL_FAST_QUEUE"), //goobi-internal queue for jobs that don't run long (max 5s)
-    SLOW_QUEUE("goobi_slow", "GOOBI_INTERNAL_SLOW_QUEUE"), //goobi-internal queue for slower jobs. There may be multiple workers listening to this queue
-    EXTERNAL_QUEUE("goobi_external", "GOOBI_EXTERNAL_JOB_QUEUE"), //external queue mostly used for shell script execution
-    EXTERNAL_DL_QUEUE("goobi_external.DLQ", "GOOBI_EXTERNAL_JOB_DLQ"), //external queue mostly used for shell script execution
-    COMMAND_QUEUE("goobi_command", "GOOBI_EXTERNAL_COMMAND_QUEUE"), // the command queue is used by worker nodes to close steps and write to process logs
-    DEAD_LETTER_QUEUE("ActiveMQ.DLQ", "GOOBI_INTERNAL_DLQ"), // the dead letter queue. These are messages that could not be processed, even after retrying.
-    NONE("NO_QUEUE", ""); // This is an unknown queue / the "null" value for this enum
+
+    /**
+     * goobi-internal queue for jobs that don't run long (max 5s)
+     */
+    FAST_QUEUE("goobi_fast", "GOOBI_INTERNAL_FAST_QUEUE"),
+
+    /**
+     * goobi-internal queue for slower jobs. There may be multiple workers listening to this queue
+     */
+    SLOW_QUEUE("goobi_slow", "GOOBI_INTERNAL_SLOW_QUEUE"),
+
+    /**
+     * external queue mostly used for shell script execution
+     */
+    EXTERNAL_QUEUE("goobi_external", "GOOBI_EXTERNAL_JOB_QUEUE"),
+
+    /**
+     * external queue mostly used for shell script execution
+     */
+    EXTERNAL_DL_QUEUE("goobi_external.DLQ", "GOOBI_EXTERNAL_JOB_DLQ"),
+
+    /**
+     * the command queue is used by worker nodes to close steps and write to process logs
+     */
+    COMMAND_QUEUE("goobi_command", "GOOBI_EXTERNAL_COMMAND_QUEUE"),
+
+    /**
+     * the dead letter queue. These are messages that could not be processed, even after retrying.
+     */
+    DEAD_LETTER_QUEUE("ActiveMQ.DLQ", "GOOBI_INTERNAL_DLQ"),
+
+    /**
+     * This is an unknown queue / the "null" value for this enum
+     */
+    NONE("NO_QUEUE", "");
 
     private String queueName;
     @Getter

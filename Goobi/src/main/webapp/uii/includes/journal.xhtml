@@ -73,6 +73,7 @@
 
 
                     <button
+                        jsf:rendered="#{showFolderSelection}"
                         jsf:id="adapt_display_comments"
                         data-toggle="tooltip"
                         title="#{NavigationForm.uiStatus['toggleJournal']== 'imageComments' ? msgs.process_log_regularView : msgs.showCommentArea}"
@@ -89,7 +90,7 @@
                         styleClass="form-control input pull-right margin-right-10"
                         style="width: auto;"
                         value="#{bean.currentFolder}"
-                        rendered="#{NavigationForm.uiStatus['toggleJournal']=='fileUpload'}">
+                        rendered="#{NavigationForm.uiStatus['toggleJournal']=='fileUpload' and showFolderSelection}">
                         <f:selectItems value="#{bean.visibleFolder}" />
                         <f:ajax render="@form" />
                     </x:selectOneMenu>
@@ -201,7 +202,7 @@
                         class="#{NavigationForm.uiStatus['journalBig']?'':''}"
                         tabindex="0"
                         data-scrolldown="true"
-                        style="overflow: auto; width: auto; #{NavigationForm.uiStatus['journalBig']?'':'height: 180px;'}">
+                        style="overflow: auto; width: auto; #{NavigationForm.uiStatus['journalBig']?'':'height: 240px;'}">
                         <h:panelGroup rendered="#{bean.journal.size()>0}">
                             <table
                                 style="width: 100%"
@@ -323,7 +324,7 @@
                     <h:panelGroup id="fileList">
                         <div
                             class="#{NavigationForm.uiStatus['journalBig']?'':''}"
-                            style="overflow: auto; width: auto; #{NavigationForm.uiStatus['journalBig']?'min-height: 275px':'height: 275px;'}">
+                            style="overflow: auto; width: auto; #{NavigationForm.uiStatus['journalBig']?'min-height: 330px':'height: 330px;'}">
                             <table
                                 style="width: 100%"
                                 class="table table-hover table-bordered">

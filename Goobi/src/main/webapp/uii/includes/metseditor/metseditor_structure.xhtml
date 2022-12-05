@@ -88,6 +88,20 @@
                             <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         </button>     
                     </li>
+                    <ui:fragment rendered="#{!Metadaten.allImages.isEmpty()}">
+                        <li>
+                            <h:commandLink target="_blank"
+                                id="printpdf"
+                                action="#{Metadaten.downloadCurrentFolderAsPdf}"
+                                aria-label="#{msgs.download_pdf}"
+                                title="#{msgs.download_pdf}">
+                                <i class="fa fa-file-pdf-o"
+                                    aria-hidden="true"></i>
+                                <f:passThroughAttribute name="data-toggle"
+                                    value="tooltip" />
+                            </h:commandLink>
+                        </li>
+                    </ui:fragment>
                 </ul>
             </div>
 
@@ -113,6 +127,7 @@
                                 class="button-link #{item.node.selected ? 'table__structure-link-active' : 'table__structure-link'} #{item.node.validationErrorPresent ? 'has-validation-error' : ''}"
                                 jsf:action="#{Metadaten.loadRightFrame}">
                                 <i class="fa fa-file-o" aria-hidden="true"></i>
+                                <i jsf:rendered="#{item.node.validationErrorPresent}" class="fa fa-exclamation-circle" style="margin-left: 5px" aria-hidden="true"></i>
 
                                 <h:outputText styleClass="item-niveau" value="#{item.niveau}" rendered="#{Metadaten.treeProperties.showtreelevel}" />
                                 <f:passThroughAttribute name="data-trigger" value="hover" />
@@ -135,7 +150,6 @@
 	                                <h:outputText styleClass="page-info" value="#{item.node.lastImage.right}" rendered="#{item.node.lastImage != null}" />
 	                                <h:outputText styleClass="page-infoLight" value=")" />
                                 </h:panelGroup>
-                                <i jsf:rendered="#{item.node.validationErrorPresent}" class="fa fa-exclamation-circle" style="margin-left: 5px" aria-hidden="true"></i>                          
                                 <x:updateActionListener property="#{Metadaten.myStrukturelement}"
                                     value="#{item.node.struct}" />
                                 <f:ajax execute="@form"

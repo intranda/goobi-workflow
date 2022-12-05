@@ -32,7 +32,7 @@
 </ui:define>
 
 <ui:define name="content">
-<main>
+<main class="batch-all">
     <h:form
         id="myform"
         rendered="#{LoginForm.hasRole('Workflow_General_Batches')}"
@@ -45,7 +45,7 @@
                 boxType="primary"
                 icon="fa-archive"
                 title="#{msgs.batches}"
-                padding="true">
+                padding="false">
 
 
             <div class="form-group">

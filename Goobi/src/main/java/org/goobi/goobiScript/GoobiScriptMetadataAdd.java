@@ -25,6 +25,7 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
@@ -32,6 +33,7 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.goobi.beans.Process;
 import org.goobi.production.enums.GoobiScriptResultType;
 import org.goobi.production.enums.LogType;
@@ -43,6 +45,7 @@ import lombok.extern.log4j.Log4j2;
 import ugh.dl.DocStruct;
 import ugh.dl.Fileformat;
 import ugh.dl.Metadata;
+import ugh.dl.MetadataGroup;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
 
@@ -66,6 +69,10 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
                 "Define where in the hierarchy of the METS file the searched term shall be replaced. Possible values are: `work` `top` `child` `any` `physical`");
         addParameterToSampleCall(sb, "ignoreErrors", "true",
                 "Define if the further processing shall be cancelled for a Goobi process if an error occures (`false`) or if the processing should skip errors and move on (`true`).\\n# This is especially useful if the the value `any` was selected for the position.");
+        addParameterToSampleCall(sb, "type", "metadata",
+                "Define what type of metadata you would like to add. Possible values are `metadata` and `group`. Default is metadata.");
+        addParameterToSampleCall(sb, "group", "",
+                "Internal name of the group. Use it when the metadata to add is located within a group or if a new group should be added.");
         return sb.toString();
     }
 
@@ -73,22 +80,18 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
         super.prepare(processes, command, parameters);
 
-        // action:metadataAdd field:DocLanguage value:deutschTop position:top
-        // action:metadataAdd field:DocLanguage value:deutschChild position:child
-
-        if (parameters.get("field") == null || parameters.get("field").equals("")) {
+        if (StringUtils.isBlank(parameters.get("field"))) {
             Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "field");
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
-        if (parameters.get("value") == null || parameters.get("value").equals("")) {
+        if (StringUtils.isBlank(parameters.get("value"))) {
             Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "value");
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
-
-        if (parameters.get("position") == null || parameters.get("position").equals("")) {
+        if (StringUtils.isBlank(parameters.get("position"))) {
             Helper.setFehlerMeldungUntranslated("goobiScriptfield", "Missing parameter: ", "position");
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
         // add all valid commands to list
@@ -167,9 +170,10 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
             String newvalue = parameters.get("value");
             VariableReplacer replacer = new VariableReplacer(ff.getDigitalDocument(), p.getRegelsatz().getPreferences(), p, null);
             newvalue = replacer.replace(newvalue);
-
+            String type = parameters.get("type");
+            String group = parameters.get("group");
             // now add the new metadata and save the file
-            addMetadata(dsList, parameters.get("field"), newvalue, p.getRegelsatz().getPreferences(), ignoreErrors);
+            addMetadata(dsList, type, group, parameters.get("field"), newvalue, p.getRegelsatz().getPreferences(), ignoreErrors);
             p.writeMetadataFile(ff);
             Thread.sleep(2000);
             Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
@@ -199,31 +203,62 @@ public class GoobiScriptMetadataAdd extends AbstractIGoobiScript implements IGoo
      * @param value the information the shall be stored as metadata in the given field
      * @throws MetadataTypeNotAllowedException
      */
-    private void addMetadata(List<DocStruct> dsList, String field, String value, Prefs prefs, boolean ignoreErrors)
+    @SuppressWarnings("unchecked")
+    private void addMetadata(List<DocStruct> dsList, String addType, String groupName, String field, String value, Prefs prefs, boolean ignoreErrors)
             throws MetadataTypeNotAllowedException {
-        outer: for (DocStruct ds : dsList) {
-            String tmpValue = value;
-            if (tmpValue.contains("metadata.")) {
-                for (Matcher m = Pattern.compile("\\$?(?:\\(|\\{)metadata\\.([\\w.-]*)(?:\\}|\\))").matcher(tmpValue); m.find();) {
-                    String metadataName = m.group(1);
+        if (StringUtils.isNotBlank(addType) && "group".equals(addType)) {
+            for (DocStruct ds : dsList) {
+                MetadataGroup mg = new MetadataGroup(prefs.getMetadataGroupTypeByName(groupName));
+                ds.addMetadataGroup(mg);
+                Metadata mdColl = new Metadata(prefs.getMetadataTypeByName(field));
+                mdColl.setValue(value);
+                mg.addMetadata(mdColl);
+            }
+        } else {
+            outer: for (DocStruct ds : dsList) {
+                List<Metadata> metadatalist = new ArrayList<>();
+                String tmpValue = value;
+                if (tmpValue.contains("metadata.")) {
+                    for (Matcher m = Pattern.compile("\\$?(?:\\(|\\{)metadata\\.([\\w.-]*)(?:\\}|\\))").matcher(tmpValue); m.find();) {
+                        String metadataName = m.group(1);
+                        if (StringUtils.isNotBlank(groupName)) {
+                            for (MetadataGroup grp : ds.getAllMetadataGroupsByType(prefs.getMetadataGroupTypeByName(field))) {
+                                metadatalist.addAll(grp.getMetadataByType(metadataName));
+                            }
+                        } else {
+                            metadatalist = (List<Metadata>) ds.getAllMetadataByType(prefs.getMetadataTypeByName(metadataName));
+                        }
 
-                    List<? extends Metadata> metadatalist = ds.getAllMetadataByType(prefs.getMetadataTypeByName(metadataName));
-                    if (metadatalist != null && !metadatalist.isEmpty()) {
-                        Metadata md = metadatalist.get(0);
-                        tmpValue = tmpValue.replace(m.group(), md.getValue());
-                    } else {
-                        continue outer;
+                        if (metadatalist != null && !metadatalist.isEmpty()) {
+                            Metadata md = metadatalist.get(0);
+                            tmpValue = tmpValue.replace(m.group(), md.getValue());
+                        } else {
+                            continue outer;
+                        }
                     }
                 }
-            }
-
-            Metadata mdColl = new Metadata(prefs.getMetadataTypeByName(field));
-            mdColl.setValue(tmpValue);
-            try {
-                ds.addMetadata(mdColl);
-            } catch (MetadataTypeNotAllowedException e) {
-                if (!ignoreErrors) {
-                    throw e;
+                if (StringUtils.isNotBlank(groupName)) {
+                    try {
+                        for (MetadataGroup grp : ds.getAllMetadataGroupsByType(prefs.getMetadataGroupTypeByName(field))) {
+                            Metadata mdColl = new Metadata(prefs.getMetadataTypeByName(field));
+                            mdColl.setValue(tmpValue);
+                            grp.addMetadata(mdColl);
+                        }
+                    } catch (MetadataTypeNotAllowedException e) {
+                        if (!ignoreErrors) {
+                            throw e;
+                        }
+                    }
+                } else {
+                    Metadata mdColl = new Metadata(prefs.getMetadataTypeByName(field));
+                    mdColl.setValue(tmpValue);
+                    try {
+                        ds.addMetadata(mdColl);
+                    } catch (MetadataTypeNotAllowedException e) {
+                        if (!ignoreErrors) {
+                            throw e;
+                        }
+                    }
                 }
             }
         }

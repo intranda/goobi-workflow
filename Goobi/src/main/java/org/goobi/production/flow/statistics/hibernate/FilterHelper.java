@@ -676,11 +676,11 @@ public class FilterHelper {
     protected static String filterProcessJournal(String tok, boolean negate) {
         String query = "";
         if (!negate) {
-            query = "prozesse.ProzesseID in (select distinct processId from journal where journal.content like '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+            query = "prozesse.ProzesseID in (select distinct objectId from journal where journal.content like '" + leftTruncationCharacter
+                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "' and entrytype = 'process')";
         } else {
-            query = "prozesse.ProzesseID not in (select distinct processId from journal where journal.content like '" + leftTruncationCharacter
-                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "')";
+            query = "prozesse.ProzesseID not in (select distinct objectId from journal where journal.content like '" + leftTruncationCharacter
+                    + StringEscapeUtils.escapeSql(tok.substring(tok.indexOf(":") + 1)) + rightTruncationCharacter + "' and entrytype = 'process')";
         }
 
         return query;

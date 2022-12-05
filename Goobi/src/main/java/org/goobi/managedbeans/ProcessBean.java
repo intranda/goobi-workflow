@@ -409,7 +409,7 @@ public class ProcessBean extends BasicBean implements Serializable {
          */
         if (this.myProzess != null && this.myProzess.getTitel() != null) {
             if (!this.myProzess.getTitel().equals(this.myNewProcessTitle)) {
-                String validateRegEx = ConfigurationHelper.getInstance().getProcessTiteValidationlRegex();
+                String validateRegEx = ConfigurationHelper.getInstance().getProcessTitleValidationRegex();
                 if (!this.myNewProcessTitle.matches(validateRegEx)) {
                     this.modusBearbeiten = "prozess";
                     Helper.setFehlerMeldung(Helper.getTranslation("UngueltigerTitelFuerVorgang"));
@@ -483,7 +483,8 @@ public class ProcessBean extends BasicBean implements Serializable {
         } catch (JMSException e) {
             log.error("Error adding TaskTicket to queue", e);
 
-            JournalEntry errorEntry = new JournalEntry(myProzess.getId(), new Date(), "automatic", LogType.ERROR, "Error reading metadata for process" + this.myProzess.getTitel(), EntryType.PROCESS);
+            JournalEntry errorEntry = new JournalEntry(myProzess.getId(), new Date(), "automatic", LogType.ERROR,
+                    "Error reading metadata for process" + this.myProzess.getTitel(), EntryType.PROCESS);
             JournalManager.saveJournalEntry(errorEntry);
         }
     }
@@ -1163,13 +1164,15 @@ public class ProcessBean extends BasicBean implements Serializable {
         if (!p.isImageFolderInUse()) {
             WebDav myDav = new WebDav();
             myDav.DownloadToHome(p, 0, false);
-            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Process downloaded into home directory incl. writing access from process list.");
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
+                    "Process downloaded into home directory incl. writing access from process list.");
         } else {
             Helper.setMeldung(null, Helper.getTranslation("directory ") + " " + p.getTitel() + " " + Helper.getTranslation("isInUse"),
                     p.getImageFolderInUseUser().getNachVorname());
             WebDav myDav = new WebDav();
             myDav.DownloadToHome(p, 0, true);
-            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG, "Process downloaded into home directory with reading access from process list.");
+            Helper.addMessageToProcessJournal(p.getId(), LogType.DEBUG,
+                    "Process downloaded into home directory with reading access from process list.");
         }
     }
 
@@ -2377,9 +2380,8 @@ public class ProcessBean extends BasicBean implements Serializable {
             }
 
             PropertyManager.saveProcessProperty(processProperty.getProzesseigenschaft());
-            Helper.setMeldung("propertiesSaved");
-
         }
+        Helper.setMeldung("propertiesSaved");
         loadProcessProperties();
     }
 

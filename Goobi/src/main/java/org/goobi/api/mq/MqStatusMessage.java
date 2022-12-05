@@ -37,6 +37,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class MqStatusMessage implements DatabaseObject {
 
+    private static final long serialVersionUID = -7879522775677320907L;
+
     public enum MessageStatus {
         DONE("DONE"),
         ERROR("ERROR"),

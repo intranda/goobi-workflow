@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="#{SpracheForm.locale}" xmlns="http://www.w3.org/1999/xhtml" 
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+<html lang="#{SpracheForm.locale}" xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:h="http://xmlns.jcp.org/jsf/html" 
-    xmlns:c="http://java.sun.com/jstl/core" 
-    xmlns:x="http://myfaces.apache.org/tomahawk" 
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:c="http://java.sun.com/jstl/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:jsf="http://xmlns.jcp.org/jsf"
@@ -146,11 +146,11 @@
 	                                <div class="pull-right">
 	                                    <ui:insert name="info" />
 	                                    <ul class="stats">
-	
+
 	                                        <li id="ajaxloader" class='' style="display: none;margin-top: -20px;">
 	                                            <img src="template/img/goobi/ajaxloader2.gif" />
 	                                        </li>
-	
+
 											<ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
                                                 <o:socket channel="goobiscriptUpdateChannel" >
                                                     <f:ajax render="goobiScriptResults2" event="update"/>
@@ -166,8 +166,8 @@
 		                                                </button>
 		                                        </li>
 	                                        </ui:fragment>
-	                                        
-	                                        
+
+
 	                                        <h:panelGroup rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
 	                                            <li class='background-color-A'>
 	                                                <button jsf:action="currentUsers" jsf:id="currentUsers" class="button-no-style">
@@ -196,7 +196,7 @@
 	                                                </span>
 	                                            </div>
 	                                        </li>
-	                                        
+
 	                                    </ul>
 	                                </div>
 	                            </div>
@@ -204,12 +204,12 @@
                         </h:form>
                         <nav aria-label="navigationBreadcrumb">
 	                        <h:form style="margin:0px;" id="breadcrumb">
-	
+
 	                            <div class="breadcrumbs">
 	                                <ul>
 	                                    <ui:insert name="breadcrumb" />
 	                                </ul>
-	
+
 	                                <!--                                 <div class="close-bread" style="float: right;"> -->
 	                                <!--                                     <a href="#"> -->
 	                                <!--                                         <i class="fa fa-remove"></i> -->
@@ -223,7 +223,7 @@
                         		<h:messages escape="false" globalOnly="true" errorClass="alert alert-danger" infoClass="alert alert-info" warnClass="alert" showDetail="true" showSummary="true" tooltip="true" styleClass="messages" />
 			             	</h:panelGroup>
 			            </div>
-                        <div jsf:id="main-content" tabindex="-1">    
+                        <div jsf:id="main-content" tabindex="-1">
                             <ui:insert name="content" />
                         </div>
                     </div>
@@ -289,14 +289,14 @@
             });
 
         	function toggle_help(data) {
-        		if (data.status === 'success') { 
+        		if (data.status === 'success') {
         			elements = document.getElementsByClassName("help-block");
             	    for (var i = 0; i < elements.length; i++) {
             	        elements[i].style.display = elements[i].style.display == 'block' ? 'none' : 'block';
             	    }
         	    }
         	}
-        	
+
             $(document).bind('keyup', '#{LoginForm.myBenutzer.shortcutPrefix}+right', function () {
                 var myButton = $("a[id$=':navnext']")
                 if (myButton != null) {
@@ -310,7 +310,7 @@
                     myButton.click();
                 }
             });
-            
+
             window.myfaces = window.myfaces || {};
             myfaces.config = myfaces.config || {};
             //set the config part

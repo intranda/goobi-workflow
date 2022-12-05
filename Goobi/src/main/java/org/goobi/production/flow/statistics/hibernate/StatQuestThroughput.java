@@ -53,6 +53,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class StatQuestThroughput implements IStatisticalQuestionLimitedTimeframe {
 
+    private static final long serialVersionUID = 4042861398961616967L;
     private Date timeFilterFrom;
     private TimeUnit timeGrouping;
     private Date timeFilterTo;

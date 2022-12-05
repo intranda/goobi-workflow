@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -38,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +52,10 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -72,13 +75,16 @@ import org.goobi.managedbeans.LoginBean;
 import org.goobi.production.cli.helper.OrderedKeyMap;
 import org.goobi.production.enums.PluginType;
 import org.goobi.production.plugin.PluginLoader;
+import org.goobi.production.plugin.interfaces.IMetadataEditorExtension;
 import org.goobi.production.plugin.interfaces.IOpacPlugin;
+import org.goobi.production.plugin.interfaces.IPlugin;
 import org.jdom2.JDOMException;
 import org.omnifaces.util.Faces;
 
 import com.google.gson.Gson;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.forms.HelperForm;
 import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.FilesystemHelper;
 import de.sub.goobi.helper.Helper;
@@ -480,6 +486,13 @@ public class Metadaten implements Serializable {
     private boolean showImageComments = false;
 
     private boolean useThumbsDir = false;
+
+    @Getter
+    private List<IMetadataEditorExtension> extensions;
+
+    @Getter
+    @Setter
+    private IMetadataEditorExtension extension;
 
     public enum MetadataTypes {
         PERSON,
@@ -1586,6 +1599,8 @@ public class Metadaten implements Serializable {
         this.modusHinzufuegenPerson = false;
         this.modusStrukturelementVerschieben = false;
         this.modusCopyDocstructFromOtherProcess = false;
+
+        readMetadataEditorExtensions();
 
         this.currentTifFolder = null;
         readAllTifFolders();
@@ -3576,6 +3591,10 @@ public class Metadaten implements Serializable {
         }
     }
 
+    public int getMaxParallelThumbnailRequests() {
+        return ConfigurationHelper.getInstance().getMaxParallelThumbnailRequests();
+    }
+
     public String getOcrResult() {
         String ocrResult = "";
         if (ConfigurationHelper.getInstance().isMetsEditorUseExternalOCR()) {
@@ -4029,9 +4048,7 @@ public class Metadaten implements Serializable {
             }
         }
 
-        Iterator<String> iterator = alle.iterator();
-        while (iterator.hasNext()) {
-            String elem = iterator.next();
+        for (String elem : alle) {
             if (elem != null && elem.contains(pref) || "".equals(pref)) {
                 result.add(elem);
             }
@@ -5106,5 +5123,55 @@ public class Metadaten implements Serializable {
 
     public void refresh() {
         // do nothing, this is needed for jsf calls
+    }
+
+    public void downloadCurrentFolderAsPdf() throws IOException {
+        if (allImages.isEmpty()) {
+            return;
+        }
+
+        Path imagesPath = Paths.get(imageFolderName);
+        // put all selected images into a URL
+        String imagesParameter = allImages.stream().map(Image::getImageName).collect(Collectors.joining("$"));
+
+        URI goobiContentServerUrl = UriBuilder.fromUri(new HelperForm().getServletPathWithHostAsUrl())
+                .path("api")
+                .path("process")
+                .path("image")
+                .path(Integer.toString(myProzess.getId()))
+                .path("media") //dummy, replaced by images parameter
+                .path("00000001.tif") //dummy, replaced by images parameter
+                .path(myProzess.getTitel() + ".pdf")
+                .queryParam("imageSource", imagesPath.toUri())
+                .queryParam("images", imagesParameter)
+                .build();
+
+        FacesContext context = FacesContextHelper.getCurrentFacesContext();
+        // generate the pdf and deliver it as download
+        if (!context.getResponseComplete()) {
+            HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+            String fileName = myProzess.getTitel() + ".pdf";
+            ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
+            String contentType = servletContext.getMimeType(fileName);
+            response.setContentType(contentType);
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + fileName + "\"");
+            response.sendRedirect(goobiContentServerUrl.toString());
+            context.responseComplete();
+        }
+    }
+
+    private void readMetadataEditorExtensions() {
+        extensions = new ArrayList<>();
+        List<IPlugin> plugins = PluginLoader.getPluginList(PluginType.MetadataEditor);
+        for (IPlugin p : plugins) {
+            IMetadataEditorExtension ext = (IMetadataEditorExtension) p;
+            ext.initializePlugin(this);
+            extensions.add(ext);
+        }
+        if (!extensions.isEmpty()) {
+            extensions.sort((IMetadataEditorExtension o1, IMetadataEditorExtension o2) -> o1.getTitle().compareTo(o2.getTitle()));
+
+            extension = extensions.get(0);
+        }
     }
 }

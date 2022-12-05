@@ -11,11 +11,11 @@
 	xmlns:x="http://myfaces.apache.org/tomahawk"
 	xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG">
 
-    <ui:param name="myPageTitle" value="#{msgs.manageAutomaticTasks}" />
+    <ui:param name="myPageTitle" value="#{msgs.automaticTasks}" />
 
     <ui:define name="breadcrumb">
         <intranda:breadcrumb id="index" label="#{DashboardForm.plugin==null?msgs.startseite:msgs.dashboard}" action="index" navId="a0" />
-        <intranda:breadcrumb id="admin_jobtypes_all" label="#{msgs.manageAutomaticTasks}" action="admin_jobtypes_all.xhtml" noSeparator="#{true}" />
+        <intranda:breadcrumb id="admin_jobtypes_all" label="#{myPageTitle}" action="admin_jobtypes_all.xhtml" noSeparator="#{true}" />
     </ui:define>
 
     <ui:define name="info">
@@ -28,12 +28,16 @@
         <intranda:box
           boxType="primary"
           icon="fa-gears"
-          title="#{msgs.jobTypes}"
+          title="#{myPageTitle}"
           padding="false">
 
             <!-- Box content -->
             <div class="dataTables_wrapper">
-        			<h:dataTable value="#{JobTypesBean.jobTypes}" var="jobType" styleClass="table table-hover dataTable table-bordered responsive">
+                <div
+                    class="table-wrapper"
+                    jsf:rendered="#{not empty JobTypesBean.jobTypes}"
+                    >
+        			<h:dataTable value="#{JobTypesBean.jobTypes}" var="jobType" styleClass="table dataTable">
 	        				<h:column>
 	        					<f:facet name="header">#{msgs.name}</f:facet>
 	        					#{jobType.name}
@@ -79,6 +83,7 @@
                         </div>
 	                  </h:column>
 	              </h:dataTable>
+                </div>
 
               <div class="form-actions">
                 <button class="btn btn-primary me-auto" jsf:action="#{JobTypesBean.addNewJobType}">

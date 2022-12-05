@@ -16,11 +16,7 @@ import java.util.stream.Collectors;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.configuration.HierarchicalConfiguration;
@@ -197,22 +193,17 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         if (serverPort > 443) {
             reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
         }
+        UriBuilder ub = UriBuilder.fromUri(reqUrl);
+        vocabularyUrl = ub.path("api").path("vocabulary").path("records").build().toString();
 
-        Client client = ClientBuilder.newClient();
-        WebTarget base = client.target(reqUrl);
-        WebTarget vocabularyBase = base.path("api").path("vocabulary");
-        WebTarget voc = vocabularyBase.path(vocabularyName);
-        Entity<List<StringPair>> entitiy = Entity.json(vocabularySearchFields);
-        records = voc.request().post(entitiy, new GenericType<List<VocabRecord>>() {
-        });
+        records = VocabularyManager.findRecords(vocabulary, vocabularySearchFields);
+
         if (records == null || records.isEmpty()) {
             showNotHits = true;
         } else {
             showNotHits = false;
         }
         Collections.sort(records);
-
-        vocabularyUrl = vocabularyBase.path("records").getUri().toString();
 
     }
 

@@ -4,7 +4,7 @@
     <groupId>de.intranda.goobi.workflow</groupId>
     <artifactId>goobi-core</artifactId>
     <!-- When updating the version, make sure to also update the version in the submodules -->
-    <version>22.09.2-SNAPSHOT</version>
+    <version>22.10.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
 
@@ -56,7 +56,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <publicVersion>22.09.2-SNAPSHOT</publicVersion>
+        <publicVersion>22.10.4-SNAPSHOT</publicVersion>
         <!-- Use Java 11 for compiling -->
         <maven.compiler.release>11</maven.compiler.release>
 
@@ -74,43 +74,46 @@
         <sonar.test.exclusions>src/test/java/**/*</sonar.test.exclusions>
 
         <!-- intranda internal -->
-        <ics.version>3.6.0</ics.version>
+        <ics.version>3.7.1</ics.version>
         <normdataimporter.version>1.9.4</normdataimporter.version>
-        <ugh-core.version>5.0.13</ugh-core.version>
+        <ugh-core.version>5.0.14</ugh-core.version>
         <ugh-marc.version>1.3.2</ugh-marc.version>
         <ugh-lido.version>0.0.14</ugh-lido.version>
 
         <!-- Be careful with updates here -->
-        <antlr4.version>4.10.1</antlr4.version>
+        <antlr4.version>4.11.1</antlr4.version>
         <avalon-framework.version>4.2.0</avalon-framework.version>
         <h2.version>1.4.200</h2.version>
         <oscache.version>2.3</oscache.version>
-        <shiro.version>1.4.2</shiro.version>
+        <shiro.version>1.10.1</shiro.version>
         <activemq.version>5.17.2</activemq.version>
         <aspectj.version>1.9.9.1</aspectj.version>
-        <aws.version>1.12.312</aws.version>
+        <aws.version>1.12.357</aws.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <cdi.version>2.0.SP1</cdi.version>
         <commons-csv.version>1.9.0</commons-csv.version>
         <commons-dbcp2.version>2.9.0</commons-dbcp2.version>
-        <commons-net.version>3.8.0</commons-net.version>
+        <commons-io.version>2.11.0</commons-io.version>
+        <!-- JXPath is used at XPathExpressionEngine from org.apache.commons.configuration2 -->
+        <commons-jxpath.version>1.3</commons-jxpath.version>                
+        <commons-net.version>3.9.0</commons-net.version>
         <commons-pool2.version>2.11.1</commons-pool2.version>
         <deltaspike.version>1.9.6</deltaspike.version>
         <el-impl.version>2.2.1-b05</el-impl.version>
         <freemarker.version>2.3.31</freemarker.version>
         <guava.version>31.1-jre</guava.version>
-        <gson.version>2.9.1</gson.version>
+        <gson.version>2.10</gson.version>
         <httpclient.version>4.5.13</httpclient.version>
-        <httpcore.version>4.4.15</httpcore.version>
+        <httpcore.version>4.4.16</httpcore.version>
         <imageio-openjpeg.version>0.6.2</imageio-openjpeg.version>
         <javassist.version>3.29.2-GA</javassist.version>
         <java-jwt.version>3.19.1</java-jwt.version>
-        <jaxb-impl.version>2.3.6</jaxb-impl.version>
-        <jackson.version>2.13.4</jackson.version>
+        <jaxb-impl.version>2.3.7</jaxb-impl.version>
+        <jackson.version>2.14.1</jackson.version>
         <jersey.version>2.37</jersey.version>
         <jhove.version>1.20.1</jhove.version>
         <jna.version>5.11.0</jna.version>
-        <joda.version>2.11.2</joda.version>
+        <joda.version>2.12.2</joda.version>
         <junit.version>4.13.2</junit.version>
         <jsonpath.version>2.7.0</jsonpath.version>
         <jwks-rsa.version>0.21.2</jwks-rsa.version>
@@ -118,23 +121,23 @@
         <lombok.version>1.18.24</lombok.version>
         <metadata-extractor.version>2.18.0</metadata-extractor.version>
         <mimepull.version>1.10.0</mimepull.version>
-        <omnifaces.version>3.13.4</omnifaces.version>
+        <omnifaces.version>3.14.1</omnifaces.version>
         <openpdf.version>1.3.30</openpdf.version>
-        <pdfbox.version>2.0.26</pdfbox.version>
+        <pdfbox.version>2.0.27</pdfbox.version>
         <poi.version>5.2.3</poi.version>
         <powermock.version>2.0.9</powermock.version>
         <reflections.version>0.10.2</reflections.version>
         <spark.version>2.9.4</spark.version>
         <spring.version>5.3.23</spring.version>
         <sshj.version>0.34.0</sshj.version>
-        <swagger.version>2.2.3</swagger.version>
+        <swagger.version>2.2.7</swagger.version>
         <weld.version>3.1.9.Final</weld.version>
         <hk2.version>2.6.1</hk2.version>
         <xmlbeans.version>5.1.1</xmlbeans.version>
         <xmlgraphics-commons.version>2.7</xmlgraphics-commons.version>
         <xmpcore.version>6.1.11</xmpcore.version>
         <!-- used in goobi-plugin-step-barcode-scanner -->
-        <zxing.version>3.5.0</zxing.version>
+        <zxing.version>3.5.1</zxing.version>
     </properties>
 
 
@@ -300,6 +303,11 @@
     		<version>2.8.0</version>
 		</dependency>
         <dependency>
+            <groupId>commons-jxpath</groupId>
+            <artifactId>commons-jxpath</artifactId>
+            <version>${commons-jxpath.version}</version>
+        </dependency>
+        <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.15</version>
@@ -312,7 +320,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.21</version>
+            <version>1.22</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -324,6 +332,11 @@
             <artifactId>commons-dbcp2</artifactId>
             <version>${commons-dbcp2.version}</version>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>        
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
@@ -762,7 +775,7 @@
         <dependency>
             <groupId>org.jxls</groupId>
             <artifactId>jxls-reader</artifactId>
-            <version>2.0.6</version>
+            <version>2.1.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>asm</groupId>
@@ -818,7 +831,7 @@
 		<dependency>
 		    <groupId>software.aws.rds</groupId>
 		    <artifactId>aws-mysql-jdbc</artifactId>
-		    <version>1.1.0</version>
+		    <version>1.1.2</version>
 		</dependency>
         
         <dependency>
@@ -860,7 +873,7 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>11.0.0</version>
+            <version>12.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
@@ -880,7 +893,7 @@
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-core</artifactId>
-            <version>1.9.1</version>
+            <version>${shiro.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.taglibs</groupId>
@@ -1245,7 +1258,7 @@
         <dependency>
             <groupId>de.intranda.goobi</groupId>
             <artifactId>pdf-extraction</artifactId>
-            <version>2.5.6</version>
+            <version>2.5.7</version>
             <exclusions>
                 <exclusion>
                     <artifactId>bcprov-jdk14</artifactId>

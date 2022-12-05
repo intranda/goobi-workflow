@@ -40,9 +40,9 @@ import javax.ws.rs.core.Context;
 import org.goobi.api.rest.process.image.AbstractImageResource;
 
 import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.metadaten.Image;
 import de.unigoettingen.sub.commons.contentlib.exceptions.IllegalRequestException;
 import de.unigoettingen.sub.commons.contentlib.servlet.rest.ContentServerBinding;
-import de.unigoettingen.sub.commons.util.PathConverter;
 import lombok.extern.log4j.Log4j2;
 
 @javax.ws.rs.Path("process/thumbs/{processId}/{foldername}/{filename}")
@@ -62,11 +62,8 @@ public class GoobiThumbnailResource extends AbstractImageResource {
 
     public void createImageURI(String processId, String foldername, String filename) {
         Path imagePath = metadataFolderPath.resolve(processId).resolve("thumbs").resolve(foldername).resolve(filename);
-        try {
-            this.imageURI = getUriFromPath(imagePath.toString());
-        } catch (URISyntaxException e) {
-            this.imageURI = imagePath.toUri();
-        }
+        this.imageURI = Image.toURI(imagePath);
+
     }
 
     public void createResourceURI(HttpServletRequest request, String processId, String foldername, String filename) throws IllegalRequestException {
@@ -95,18 +92,4 @@ public class GoobiThumbnailResource extends AbstractImageResource {
     public String getGoobiURIPrefix() {
         return GoobiThumbnailResource.class.getAnnotation(javax.ws.rs.Path.class).value();
     }
-
-    private static URI getUriFromPath(String path) throws URISyntaxException {
-        URI uri = PathConverter.toURI(path);
-        if (!uri.isAbsolute() && path.startsWith("/")) {
-            String uriString = "file://" + path;
-            try {
-                uri = PathConverter.toURI(uriString);
-            } catch (URISyntaxException e) {
-                log.error("Failed to create absolute uri from " + path);
-            }
-        }
-        return uri;
-    }
-
 }

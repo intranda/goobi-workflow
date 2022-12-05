@@ -52,7 +52,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class DatabaseVersion {
 
-    public static final int EXPECTED_VERSION = 50;
+    public static final int EXPECTED_VERSION = 51;
 
     // TODO ALTER TABLE metadata add fulltext(value) after mysql is version 5.6 or higher
 
@@ -378,6 +378,10 @@ public class DatabaseVersion {
                     }
                     updateToVersion50();
                     tempVersion++;
+                case 50: //NOSONAR, no break on purpose to run through all cases
+                    log.trace("Update database to version 51.");
+                    updateToVersion51();
+                    tempVersion++;
                 default://NOSONAR, no break on purpose to run through all cases
                     // this has to be the last case
                     updateDatabaseVersion(currentVersion, tempVersion);
@@ -391,6 +395,28 @@ public class DatabaseVersion {
             updateDatabaseVersion(currentVersion, tempVersion);
         }
     }
+
+    private static void updateToVersion51() throws SQLException {
+        if (DatabaseVersion.checkIfTableExists("processlog")) {
+            try {
+                if (MySQLHelper.isUsingH2()) {
+                    DatabaseVersion.runSql("alter table processlog rename to journal; ");
+                } else {
+                    DatabaseVersion.runSql("RENAME TABLE processlog TO journal;");
+                }
+                DatabaseVersion.runSql("ALTER TABLE journal DROP COLUMN secondContent;");
+                DatabaseVersion.runSql("ALTER TABLE journal CHANGE COLUMN thirdContent filename MEDIUMTEXT;");
+                DatabaseVersion.runSql("ALTER TABLE journal CHANGE COLUMN processID objectID int(10) NOT NULL;");
+                DatabaseVersion.runSql("ALTER TABLE journal ADD COLUMN entrytype varchar(255) DEFAULT 'process';");
+                DatabaseVersion.runSql(
+                        "update benutzergruppen set roles = REPLACE (roles, 'Workflow_Processes_Show_Processlog_File_Deletion','Workflow_Processes_Show_Journal_File_Deletion');");
+                DatabaseVersion.runSql("update journal set username = '' where username is null;");
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+    }
+
 
     private static void updateToVersion50() throws SQLException {
         if (!DatabaseVersion.checkIfColumnExists("prozesse", "exportValidator")) {
@@ -868,7 +894,7 @@ public class DatabaseVersion {
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapAttribute())) {
                     DatabaseVersion.runSql("update ldapgruppen set attributeToTest = '" + ConfigurationHelper.getInstance().getLdapAttribute() + "'");
                     DatabaseVersion
-                            .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
+                    .runSql("update ldapgruppen set valueOfAttribute = '" + ConfigurationHelper.getInstance().getLdapAttributeValue() + "'");
                 }
 
                 DatabaseVersion.runSql("update ldapgruppen set nextFreeUnixId = '" + ConfigurationHelper.getInstance().getLdapNextId() + "'");
@@ -877,15 +903,15 @@ public class DatabaseVersion {
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getTruststoreToken())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
+                    .runSql("update ldapgruppen set keystorePassword = '" + ConfigurationHelper.getInstance().getTruststoreToken() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapRootCert())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
+                    .runSql("update ldapgruppen set pathToRootCertificate = '" + ConfigurationHelper.getInstance().getLdapRootCert() + "'");
                 }
                 if (StringUtils.isNotBlank(ConfigurationHelper.getInstance().getLdapPdcCert())) {
                     DatabaseVersion
-                            .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
+                    .runSql("update ldapgruppen set pathToPdcCertificate = '" + ConfigurationHelper.getInstance().getLdapPdcCert() + "'");
                 }
                 DatabaseVersion.runSql("update ldapgruppen set encryptionType = '" + ConfigurationHelper.getInstance().getLdapEncryption() + "'");
 

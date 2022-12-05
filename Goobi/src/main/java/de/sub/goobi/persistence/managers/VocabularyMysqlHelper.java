@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.StatementConfiguration;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -57,6 +58,10 @@ class VocabularyMysqlHelper implements Serializable {
      * 
      */
     private static final long serialVersionUID = 5141386688477409583L;
+
+    private static final Integer MAXIMAL_QUERY_RESULTS = 10_000;
+
+    private static final Integer QUERY_TIMEOUT_IN_SECONDS = 20;
 
     private static String vocabTable = "vocabulary";
 
@@ -714,8 +719,10 @@ class VocabularyMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            List<VocabRecord> records =
-                    new QueryRunner().query(connection, sb.toString(), VocabularyManager.vocabularyRecordListHandler, vocabularyName);
+            StatementConfiguration stmtConfig =
+                    new StatementConfiguration.Builder().maxRows(MAXIMAL_QUERY_RESULTS).queryTimeout(QUERY_TIMEOUT_IN_SECONDS).build();
+            QueryRunner queryRunner = new QueryRunner(stmtConfig);
+            List<VocabRecord> records = queryRunner.query(connection, sb.toString(), VocabularyManager.vocabularyRecordListHandler, vocabularyName);
             Vocabulary vocabulary = getVocabularyByTitle(vocabularyName);
             for (VocabRecord rec : records) {
                 setDefinitionsToRecord(rec, vocabulary);

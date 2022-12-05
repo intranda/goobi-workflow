@@ -343,8 +343,8 @@ public class SearchResultHelper {
         sb.append("left join batches on prozesse.batchId = batches.id ");
 
         if (includeLog) {
-            sb.append(
-                    " left join journal log on log.processid = prozesse.ProzesseID  and log.id = (select max(id) from journal where processid = prozesse.ProzesseID and type  = 'error') ");
+            sb.append(" left join journal log on log.objectID = prozesse.ProzesseID and log.entrytype = 'process' and log.id = ");
+            sb.append("(select max(id) from journal where objectID = prozesse.ProzesseID and log.entrytype = 'process' and type  = 'error') ");
         }
 
         boolean leftJoin = false;

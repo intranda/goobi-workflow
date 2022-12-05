@@ -25,10 +25,7 @@
  */
 package org.goobi.beans;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.DirectoryStream;
@@ -54,9 +51,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -117,7 +112,7 @@ import ugh.exceptions.UGHException;
 import ugh.exceptions.WriteException;
 
 @Log4j2
-public class Process implements Serializable, DatabaseObject, Comparable<Process>, IJournal {
+public class Process extends AbstractJournal implements Serializable, DatabaseObject, Comparable<Process>, IJournal {
     private static final long serialVersionUID = -6503348094655786275L;
     @Getter
     @Setter
@@ -166,14 +161,10 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     @Setter
     private Docket docket;
     @Setter
-    private ExportValidator exportValidator = null;
+    private transient ExportValidator exportValidator = null;
 
     private String imagesTiffDirectory = null;
     private String imagesOrigDirectory = null;
-
-    @Getter
-    @Setter
-    private List<JournalEntry> journal = new ArrayList<>();
 
     private BeanHelper bhelp = new BeanHelper();
 
@@ -195,10 +186,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     @Getter
     @Setter
-    private String content = "";
-
-    @Getter
-    @Setter
     private boolean mediaFolderExists = false;
 
     private transient List<StringPair> metadataList = new ArrayList<>();
@@ -211,13 +198,7 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
 
     @Getter
     @Setter
-    private transient Part uploadedFile = null;
-    @Getter
-    @Setter
     private String uploadFolder = "intern";
-
-    private transient Path tempFileToImport;
-    private String basename;
 
     @Getter
     private boolean showFileDeletionButton;
@@ -226,6 +207,9 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     private boolean pauseAutomaticExecution;
 
     private static final Object xmlWriteLock = new Object();
+
+    @Getter
+    private EntryType entryType = EntryType.PROCESS;
 
     public Process() {
         this.swappedOut = false;
@@ -1468,25 +1452,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
     }
 
-    @Override
-    public void addJournalEntry() {
-        if (uploadedFile != null) {
-            saveUploadedFile();
-        } else {
-            LoginBean loginForm = Helper.getLoginBean();
-
-            JournalEntry entry =
-                    new JournalEntry(id, new Date(), loginForm.getMyBenutzer().getNachVorname(), LogType.USER, content, EntryType.PROCESS);
-
-            entry.setEntryType(EntryType.PROCESS);
-            content = "";
-
-            journal.add(entry);
-
-            JournalManager.saveJournalEntry(entry);
-        }
-    }
-
     public List<StringPair> getMetadataList() {
         if (metadataList.isEmpty()) {
             metadataList = MetadataManager.getMetadata(id);
@@ -1729,6 +1694,12 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
      * @return
      */
 
+
+    @Override
+    public Path getDownloadFolder() {
+        return Paths.get(currentFolder);
+    }
+
     @Override
     public List<JournalEntry> getFilesInSelectedFolder() {
         if (StringUtils.isBlank(currentFolder)) {
@@ -1767,76 +1738,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
     }
 
     /**
-     * Download a selected file
-     * 
-     * @param entry
-     */
-
-    @Override
-    public void downloadFile(JournalEntry entry) {
-        FacesContext facesContext = FacesContextHelper.getCurrentFacesContext();
-        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-
-        Path path = entry.getFile();
-        if (path == null) {
-            path = Paths.get(entry.getFilename());
-        }
-        String fileName = path.getFileName().toString();
-        String contentType = facesContext.getExternalContext().getMimeType(fileName);
-        try {
-            int contentLength = (int) StorageProvider.getInstance().getFileSize(path);
-            response.reset();
-            response.setContentType(contentType);
-            response.setContentLength(contentLength);
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-            OutputStream output = response.getOutputStream();
-            try (InputStream inp = StorageProvider.getInstance().newInputStream(path)) {
-                IOUtils.copy(inp, output);
-            }
-            facesContext.responseComplete();
-        } catch (IOException e) {
-            log.error(e);
-        }
-    }
-
-    /**
-     * Delete a LogEntry and the file belonging to it
-     * 
-     * @param entry
-     */
-
-    @Override
-    public void deleteFile(JournalEntry entry) {
-        Path path = entry.getFile();
-        if (path == null) {
-            path = Paths.get(entry.getFilename());
-        }
-        // check if log entry has an id
-        if (entry.getId() != null) {
-            // if yes, delete entry
-            String filename = entry.getBasename();
-
-            journal.remove(entry);
-            JournalManager.deleteJournalEntry(entry);
-
-            // create a new entry to document the deletion
-
-            JournalEntry deletionInfo = new JournalEntry(id, new Date(), Helper.getCurrentUser().getNachVorname(), LogType.INFO,
-                    Helper.getTranslation("processlogFileDeleted", filename), EntryType.PROCESS);
-
-            journal.add(deletionInfo);
-            JournalManager.saveJournalEntry(deletionInfo);
-        }
-        // delete file
-        try {
-            StorageProvider.getInstance().deleteFile(path);
-        } catch (IOException e) {
-            log.error(e);
-        }
-
-    }
-
-    /**
      * Save the previous uploaded file in the selected process directory and create a new LogEntry.
      * 
      */
@@ -1867,80 +1768,6 @@ public class Process implements Serializable, DatabaseObject, Comparable<Process
         }
         uploadedFile = null;
         content = "";
-    }
-
-    /**
-     * Upload a file and save it as a temporary file
-     * 
-     */
-    @Override
-    public void uploadFile() {
-        InputStream inputStream = null;
-        OutputStream outputStream = null;
-        try {
-            if (this.uploadedFile == null) {
-                Helper.setFehlerMeldung("noFileSelected");
-                return;
-            }
-
-            basename = getFileName(this.uploadedFile);
-            if (basename.startsWith(".")) {
-                basename = basename.substring(1);
-            }
-            if (basename.contains("/")) {
-                basename = basename.substring(basename.lastIndexOf("/") + 1);
-            }
-            if (basename.contains("\\")) {
-                basename = basename.substring(basename.lastIndexOf("\\") + 1);
-            }
-            basename = Paths.get(basename).getFileName().toString();
-
-            tempFileToImport = Files.createTempFile(basename, ""); //NOSONAR, using temporary file is save here
-            inputStream = this.uploadedFile.getInputStream();
-            outputStream = new FileOutputStream(tempFileToImport.toString());
-
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = inputStream.read(buf)) > 0) {
-                outputStream.write(buf, 0, len);
-            }
-
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-            Helper.setFehlerMeldung("uploadFailed");
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-            if (outputStream != null) {
-                try {
-                    outputStream.close();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                }
-            }
-
-        }
-    }
-
-    /**
-     * extract the filename for the uploaded file
-     * 
-     * @param part
-     * @return
-     */
-
-    private String getFileName(final Part part) {
-        for (String content : part.getHeader("content-disposition").split(";")) {
-            if (content.trim().startsWith("filename")) {
-                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
-            }
-        }
-        return "";
     }
 
     /**

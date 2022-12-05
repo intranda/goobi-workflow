@@ -30,7 +30,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -516,7 +515,7 @@ public class CopyProcess {
             Helper.setFehlerMeldung(Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation("ProcessCreationErrorTitleEmpty"));
         }
 
-        String validateRegEx = ConfigurationHelper.getInstance().getProcessTiteValidationlRegex();
+        String validateRegEx = ConfigurationHelper.getInstance().getProcessTitleValidationRegex();
         if (!this.prozessKopie.getTitel().matches(validateRegEx)) {
             valide = false;
             Helper.setFehlerMeldung("UngueltigerTitelFuerVorgang");
@@ -586,7 +585,7 @@ public class CopyProcess {
                         Helper.getTranslation("UnvollstaendigeDaten") + " " + Helper.getTranslation("ProcessCreationErrorTitleEmpty"));
             }
 
-            String validateRegEx = ConfigurationHelper.getInstance().getProcessTiteValidationlRegex();
+            String validateRegEx = ConfigurationHelper.getInstance().getProcessTitleValidationRegex();
             if (!this.prozessKopie.getTitel().matches(validateRegEx)) {
                 valide = false;
                 Helper.setFehlerMeldung("UngueltigerTitelFuerVorgang");
@@ -1015,20 +1014,6 @@ public class CopyProcess {
         }
     }
 
-    public Collection<SelectItem> getArtists() {
-        ArrayList<SelectItem> artisten = new ArrayList<>();
-        StringTokenizer tokenizer = new StringTokenizer(ConfigurationHelper.getInstance().getTiffHeaderArtists(), "|");
-        boolean tempBol = true;
-        while (tokenizer.hasMoreTokens()) {
-            String tok = tokenizer.nextToken();
-            if (tempBol) {
-                artisten.add(new SelectItem(tok));
-            }
-            tempBol = !tempBol;
-        }
-        return artisten;
-    }
-
     /*
      * this is needed for GUI, render multiple select only if this is false if this is true use the only choice
      * 
@@ -1129,7 +1114,6 @@ public class CopyProcess {
      * Prozesstitel und andere Details generieren ================================================================
      */
 
-    @SuppressWarnings("rawtypes")
     public void CalcProzesstitel() {
         StringBuilder newTitleBuilder = new StringBuilder();
         String titeldefinition = "";
@@ -1281,7 +1265,7 @@ public class CopyProcess {
              */
             if (myString.startsWith("'") && myString.endsWith("'") && myString.length() > 2) {
                 imageDescriptionBuilder.append(myString.substring(1, myString.length() - 1));
-            } else if (myString.equals("$Doctype")) {
+            } else if ("$Doctype".equals(myString)) {
 
                 imageDescriptionBuilder.append(this.docType);
             } else {

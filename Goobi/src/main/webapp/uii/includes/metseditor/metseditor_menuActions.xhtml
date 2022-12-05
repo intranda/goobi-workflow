@@ -15,9 +15,7 @@
     <composite:implementation>
     	<script type="text/javascript">
         	function switchExpanded(id){
-        		console.log("called by: "+id);
 				var x = document.getElementById(id).getAttribute("aria-expanded"); 
-				console.log(x)
 				if (x == "true"){
 					x = "false"
 				} else {
@@ -136,7 +134,13 @@
                 
                 
                 <!-- VALIDATION -->
-                <li>
+                <li> 
+                    <button
+                            style="display: none"
+                            jsf:id="startValidationButton"
+                            jsf:action="#{Metadaten.Validate}">
+                    </button>
+                    
                     <button
                         class="btn btn--icon" 
                         jsf:id="startValidation" 
@@ -147,12 +151,22 @@
                         <f:passThroughAttribute name="data-toggle" value="tooltip" />
                         <f:passThroughAttribute name="data-placement" value="bottom" />
                     </button>
+
+                    <h:commandButton
+                            type="button"
+                            id="startValidationButtonAjax"
+                            style="display:none"
+                            action="#{Metadaten.Validate}"
+                            title="#{msgs.validieren}"
+                            rel="tooltip">
+                            <f:ajax render="@form"></f:ajax>
+                    </h:commandButton>
                 </li>
 
                 <!-- CONFIGURATION -->
                 <li>
                     <button 
-                    	id="configDropdown"
+                    	id="configDropdown2"
                         type="button" 
                         class="btn btn--clean"
                         aria-label="#{msgs.mets_configuration}" 
@@ -322,7 +336,7 @@
                                     #{directory}
 									<x:updateActionListener value="0" property="#{Metadaten.numberOfNavigation}" />
                                     <x:updateActionListener value="#{directory}" property="#{Metadaten.currentTifFolder}" />
-                                    <f:ajax execute="@form" render="@form :openseadragonform :thumbnailsForm" />
+                                    <f:ajax execute="@form" render="@form :openseadragonform :thumbnailsForm :treeform" />
                                     <f:passThroughAttribute name="data-renderimage" value="true" />
 								</button>
                             </li>
@@ -332,8 +346,6 @@
 
                 <!-- SAVE -->
                 <c:if test="#{not Metadaten.nurLesenModus}">
-                    <li>                   
-                    </li>
                     <li>
                         <!-- This button and the hidden button below have to
                         work together to get the wanted effect here. This button
@@ -367,7 +379,7 @@
                             jsf:id="saveMetsFileButton"
                             jsf:action="#{Metadaten.Reload}">
                         </button>
-
+                        
                         <h:panelGroup
                             style="display:none"
                             styleClass="navigationitem"
@@ -387,6 +399,7 @@
                             rel="tooltip">
                             <f:ajax render="@form"></f:ajax>
                         </h:commandButton>
+                                                
                         <h:commandButton
                             type="button"
                             id="automaticSave"
@@ -398,7 +411,6 @@
                             <f:passThroughAttribute
                                 name="data-placement"
                                 value="bottom" />
-
                         </h:commandButton>
 
                     </li>

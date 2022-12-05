@@ -3,6 +3,14 @@
 	<project name="default">
 		<number>10</number>
 		<createNewProcess>
+            <fileupload use="true">
+                <folder regex="/^.*$/" messageKey="uploadFileErrorIntern">intern</folder>
+                <folder regex="/^.*$/" messageKey="uploadFileErrorIntern">export</folder>
+                <folder regex="/^.*$/" messageKey="uploadFileErrorIntern">master</folder>
+                <folder regex="/^.*$/" messageKey="uploadFileErrorIntern">media</folder>
+                <folder regex="/^.*$/" messageKey="uploadFileErrorIntern">other</folder>
+            </fileupload>
+        
 			<itemlist>
 				<item from="werk" multiselect="true">
 					Artist
