@@ -1567,13 +1567,15 @@ span.badge {
   display: inline-block;
   background-color: transparent;
   border: 1px solid currentColor;
-  padding: 4px;
+  padding: 4px 8px;
   font-size: 1.2rem;
   font-weight: 400;
   margin: 2px 2px;
 }
-button.badge i,
-span.badge i {
+button.badge i ~ span,
+button.badge span ~ i,
+span.badge i ~ span,
+span.badge span ~ i {
   margin-inline-start: 4px;
 }
 button.badge:not(:last-child),

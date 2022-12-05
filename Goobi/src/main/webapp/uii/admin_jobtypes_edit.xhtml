@@ -63,7 +63,7 @@
 										<button class="badge badge-light-blue"
 											   jsf:action="#{JobTypesBean.removeStepFromCurrentJobType(stepTitle)}">
 											   <f:ajax render="@form" execute="@form"/>
-											   #{stepTitle}
+												 <span>#{stepTitle}</span>
 											   <i class="fa fa-minus margin-left-5"></i>
 										   </button>
 									</ui:repeat>
@@ -74,7 +74,7 @@
 										<button class="badge badge-light-blue"
 											   jsf:action="#{JobTypesBean.addStepToCurrentJobType(stepTitle)}">
 											   <f:ajax render="@form" execute="@form"/>
-											   #{stepTitle}
+												 <span>#{stepTitle}</span>
 											   <i class="fa fa-plus margin-left-5"></i>
 										   </button>
 									</ui:repeat>
