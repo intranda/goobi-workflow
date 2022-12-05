@@ -52,3 +52,9 @@
 .gw-col-padding {
   padding: var(--col-padding, 8px);
 }
+
+.break-words {
+  hyphens: auto;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
