@@ -776,6 +776,12 @@ body .ui-widget {
   padding: var(--col-padding, 8px);
 }
 
+.break-words {
+  hyphens: auto;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
 .navbar {
   background-color: var(--clr-primary-400);
   font-size: var(--fs-400);
@@ -1607,13 +1613,15 @@ span.badge {
   display: inline-block;
   background-color: transparent;
   border: 1px solid currentColor;
-  padding: 4px;
+  padding: 4px 8px;
   font-size: 1.2rem;
   font-weight: 400;
   margin: 2px 2px;
 }
-button.badge i,
-span.badge i {
+button.badge i ~ span,
+button.badge span ~ i,
+span.badge i ~ span,
+span.badge span ~ i {
   margin-inline-start: 4px;
 }
 button.badge:not(:last-child),
@@ -1800,6 +1808,44 @@ span.badge:not(:last-child) {
 .swagger-ui .scheme-container .servers-title,
 .swagger-ui .scheme-container .servers {
   display: none;
+}
+
+.folder--line {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-top: 25px;
+}
+
+.folder--line span.text {
+  position: relative;
+  z-index: 10;
+  display: inline-block;
+  padding: 2px 20px 2px 0px;
+  background-color: #fff;
+  font-size: 24px;
+}
+
+.folder--line span.break-words {
+  display: inline-block;
+  z-index: 10;
+  padding: 2px 0px 2px 20px;
+  background-color: #fff;
+  margin-top: 10px;
+  margin-left: auto;
+}
+
+@media (min-width: 700px) {
+  .folder--line:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    left: 0;
+    height: 2px;
+    background-color: #eee;
+  }
 }
 
 /*# sourceMappingURL=main.css.map */

@@ -86,10 +86,10 @@
 											<h:outputText value="#{msgs.status}" />
 										</f:facet>
 										<h:panelGroup  rendered="#{item.projectIsArchived}"  class="badge badge-intranda-red">
-											<i class="fa fa-lock"></i> #{msgs.inactive}
+											<i class="fa fa-lock"></i> <span>#{msgs.inactive}</span>
 										</h:panelGroup>
 										<h:panelGroup class="badge badge-intranda-green" rendered="#{!item.projectIsArchived}">
-												<i class="fa fa-unlock"></i> #{msgs.active}
+											<i class="fa fa-unlock"></i> <span>#{msgs.active}</span>
 										</h:panelGroup>
 									</h:column>
 

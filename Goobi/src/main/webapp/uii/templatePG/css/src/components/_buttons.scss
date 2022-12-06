@@ -41,14 +41,16 @@ span.badge {
   display: inline-block;
   background-color: transparent;
   border: 1px solid currentColor;
-  padding: 4px;
+  padding: 4px 8px;
   font-size: 1.2rem;
   font-weight: 400;
   margin: 2px 2px;
 
-  i {
+  i ~ span,
+  span ~ i {
     margin-inline-start: 4px;
   }
+
   &:not(:last-child) {
     margin-inline-end: 2px;
   }
