@@ -214,12 +214,14 @@
   width: var(--width-table-col);
 }
 
+.gw-table-fixed th button,
 .table-fixed th button {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
+.gw-table-fixed td,
 .table-fixed td {
   overflow-x: auto;
 }
