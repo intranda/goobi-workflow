@@ -17,6 +17,7 @@
         <script>
 
 function loadPlugin  (data, selector) {
+    console.log('run loadPlugin')
     if (data.status === 'success') {
         console.log(selector );
         $(selector).modal('show');
@@ -51,7 +52,7 @@ function loadPlugin  (data, selector) {
                             var="extension"
                             value="#{Metadaten.extensions}">
                             <li>
-<!--                                     jsf:onclick="setTimeout(function() {$('##{extension.modalId}').modal('show');}, 300 );" -->
+<!--                                   jsf:onclick="setTimeout(function() {$('##{extension.modalId}').modal('show');}, 300 );" -->
                                 <button
                                     jsf:id="openExtension"
                                     class="dropdown-item"
@@ -66,7 +67,7 @@ function loadPlugin  (data, selector) {
 
                                     <!-- onevent="loadPlugin(data, '##{extension.modalId}');" -->
                                     <f:ajax
-                                        onevent="goobiWorkflow.loadPlugin(data, '##{extension.modalId}');"
+                                        onevent="(data) => loadPlugin(data, '##{extension.modalId}')"
                                         execute="@this"
                                         render="#{extension.modalId}" />
                                 </button>
