@@ -958,59 +958,60 @@ body .ui-widget {
     left: -1px; /* align dropdown + menu icon */
   }
 }
-.page-header {
+.header__bottom {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
 }
-.page-header span {
+.header__bottom span {
   width: 100%;
 }
-.page-header h1 {
+.header__bottom h1 {
   font-size: 3rem;
   color: #2a2a2a;
   line-height: 3.2rem;
   font-weight: 400;
   margin: 2rem 0;
 }
-.page-header .stats {
+.header__bottom .stats {
   display: flex;
   align-items: stretch;
   list-style: none;
+  padding-left: 0;
   gap: 1.5rem;
 }
-.page-header .stats li {
+.header__bottom .stats li {
   display: flex;
   padding: 1rem 1.5rem;
   border-radius: var(--border-radius);
 }
-.page-header .stats #ajaxloader {
+.header__bottom .stats #ajaxloader {
   width: 5.6rem;
   height: 5.6rem;
   padding: 0;
   margin-right: 0.8rem;
 }
-.page-header .stats button, .page-header .stats__date {
+.header__bottom .stats button, .header__bottom .stats__date {
   color: var(--clr-white, #fff);
   display: flex;
   gap: 1.5rem;
 }
-.page-header .stats button {
+.header__bottom .stats button {
   background-color: transparent;
   border: none;
 }
-.page-header .stats .details {
+.header__bottom .stats .details {
   display: flex;
   flex-direction: column;
 }
-.page-header .stats .details span {
+.header__bottom .stats .details span {
   text-align: start;
 }
-.page-header .stats i {
+.header__bottom .stats i {
   font-size: 2.8rem;
 }
 @media (max-width: 767px) {
-  .page-header .stats {
+  .header__bottom .stats {
     display: none;
   }
 }
