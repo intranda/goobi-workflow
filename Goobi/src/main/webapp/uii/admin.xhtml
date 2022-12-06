@@ -1,5 +1,14 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" template="/uii/template/template.html" xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
-                xmlns:jsf="http://xmlns.jcp.org/jsf">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    template="/uii/templatePG/templatePG.html"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
 
     <ui:param name="myPageTitle" value="#{msgs.administrationsaufgaben}" />
 
@@ -14,40 +23,38 @@
     <ui:define name="content">
         <h:form rendered="#{LoginForm.hasRole('Admin_Administrative_Tasks')}">
 
-            <div class="row" role="main">
-                <div class="col-sm-12">
-                    <div class="box box-bordered box-color orange">
-                        <div class="box-title">
-                            <h2>
-                                <i class="fa fa-bullhorn"></i>
-                                <h:outputText id="id6" value="#{msgs.benutzerZumAusloggenAuffordern}" />
-                            </h2>
-                        </div>
-                        <div class="box-content">
+            <main>
+                <div class="col-12">
 
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <label class="control-label">#{msgs.message}:</label>
-                                </div>
-                                <div class="col-sm-9">
-                                    <h:inputTextarea styleClass="form-control focusable" value="#{SessionForm.logoutMessage}">
-                                    	<f:passThroughAttribute
-		                                     name="aria-label"
-		                                     value="#{msgs.message}" />
-                                    </h:inputTextarea>
-                                </div>
-                            </div>
+                    <intranda:box
+                        boxType="action"
+                        boxForm="true"
+                        boxPadding="false"
+                        title="#{msgs.benutzerZumAusloggenAuffordern}"
+                        icon="fa-bullhorn"
+                    >
 
-                            <hr class="margin-top-regular margin-bottom-regular" />
 
-                            <div class="margin-top-regular">
-                                <button class="btn btn-primary font-size-s pull-right" jsf:action="admin.xhtml" >
-                                    #{msgs.uebernehmen}
-                                </button>
-                            </div>
+                      <div class="row">
+                          <div class="col-12 col-md-3">
+                              <label class="control-label">#{msgs.message}:</label>
+                          </div>
+                          <div class="col-12 col-md-9">
+                            <h:inputTextarea styleClass="form-control focusable" value="#{SessionForm.logoutMessage}">
+                              <f:passThroughAttribute
+                               name="aria-label"
+                               value="#{msgs.message}" />
+                            </h:inputTextarea>
+                          </div>
+                      </div>
 
-                        </div>
-                    </div>
+                      <div class="box__actions">
+                        <button class="btn btn-primary-400" jsf:action="admin.xhtml">
+                          #{msgs.uebernehmen}
+                        </button>
+                      </div>
+
+                    </intranda:box>
 
 <!--                     <div class="box box-bordered box-small lightgrey"> -->
 <!--                         <div class="box-title"> -->
@@ -68,9 +75,9 @@
 <!--                             </div> -->
 <!--                         </div> -->
 <!--                     </div> -->
-                    
+
                 </div>
-            </div>
+            </main>
         </h:form>
     </ui:define>
 
