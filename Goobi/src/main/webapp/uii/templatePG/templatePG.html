@@ -158,93 +158,101 @@
 
                         <h:form id="header">
 
-											                  <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
+                        <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
 
-                                            <div class="d-none">
+                            <div class="d-none">
 
-                                                <o:socket channel="goobiscriptUpdateChannel">
-                                                    <f:ajax render="goobiScriptResults2" event="update"/>
-                                                </o:socket>
-                                                <o:commandScript name="updateGoobiScriptIndicator"  render="goobiScriptResults2" />
+                                <o:socket channel="goobiscriptUpdateChannel">
+                                    <f:ajax render="goobiScriptResults2" event="update"/>
+                                </o:socket>
+                                <o:commandScript name="updateGoobiScriptIndicator"  render="goobiScriptResults2" />
 
-                                            </div>
-	                                        </ui:fragment>
+                            </div>
+                          </ui:fragment>
 
                             <o:socket channel="developerMessageChannel" connected="#{DevModeBean.developerMode}" onmessage="() => window.location.reload()" />
-                            <header>
-                                <div class="flow page-header">
-                                    <h:panelGroup id="globalWarningMessage">
-                                        <h:panelGroup rendered="#{SessionForm.logoutMessage != ''}" styleClass="alert alert-danger block" style="line-height:40px;font-size:24px;">
-                                            <i class="fa fa-exclamation-triangle margin-right-10"></i>
-                                            <h:outputText value="#{SessionForm.logoutMessage}" />
-                                        </h:panelGroup>
+
+                            <header class="header">
+
+                              <div class="header__top">
+                                <h:panelGroup layout="block" id="globalWarningMessage" styleClass="mt-4">
+                                    <h:panelGroup layout="block" rendered="#{SessionForm.logoutMessage != ''}" styleClass="alert alert-danger" style="line-height:40px;font-size:24px;">
+                                      <i class="fa fa-exclamation-triangle"></i>
+                                      <span>
+                                        <h:outputText value="#{SessionForm.logoutMessage}" />
+                                      </span>
                                     </h:panelGroup>
-                                    <o:socket channel="adminMessageChannel">
-                                        <f:ajax event="update" render="globalWarningMessage"/>
-                                    </o:socket>
-	                                <div class="pull-left">
-	                                    <h1>
-	                                        <ui:insert name="title">
-	                                            <h:outputText value="#{myPageTitle}" />
-	                                        </ui:insert>
-	                                    </h1>
-	                                </div>
-	                                <div class="pull-right">
-	                                    <ui:insert name="info" />
-	                                    <ul class="stats">
+                                </h:panelGroup>
+                                <o:socket channel="adminMessageChannel">
+                                    <f:ajax event="update" render="globalWarningMessage"/>
+                                </o:socket>
+                              </div> <!-- /header__top -->
 
-	                                        <li id="ajaxloader" class='' style="display: none;">
-	                                            <img src="template/img/goobi/ajaxloader2.gif" />
-	                                        </li>
+	                            <div class="header__bottom">
+                                <h1>
+                                  <ui:insert name="title">
+                                    <h:outputText value="#{myPageTitle}" />
+                                  </ui:insert>
+                                </h1>
 
-											                  <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
+                                <ui:insert name="info" />
+	                                <ul class="stats">
 
+                                    <!-- LOADER -->
+                                    <li id="ajaxloader" class='' style="display: none;">
+                                        <img src="template/img/goobi/ajaxloader2.gif" />
+                                    </li>
 
-	                                        	<li class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'} stats__goobi-script">
-		                                            <button jsf:action="process_goobiScript" jsf:id="goobiScriptResults2" class="button-transparent">
-		                                                    <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}"></i>
-		                                                    <div class="details">
-		                                                        <span class="big">#{msgs.goobiScript_isActive}</span>
-		                                                        <span>#{SessionForm.gsm.numberOfFinishedScripts} / #{SessionForm.gsm.goobiScriptResultSize}</span>
-		                                                    </div>
-		                                                </button>
-		                                        </li>
-	                                        </ui:fragment>
+                                    <!-- GOOBI SCRIPT -->
+                                    <ui:fragment rendered="#{LoginForm.hasAnyGoobiScriptRole and SessionForm.gsm.goobiScriptResultSize gt 0}">
+	                                  <li class="#{SessionForm.gsm.hasErrors?'background-color-F':'background-color-D'} stats__goobi-script">
+                                      <button jsf:action="process_goobiScript" jsf:id="goobiScriptResults2" class="button-transparent">
+                                        <i class="fa fa-cog #{SessionForm.gsm.goobiScriptHasResults('WAITING') or SessionForm.gsm.goobiScriptHasResults('RUNNING')?'fa-spin':''}"></i>
+                                        <div class="details">
+                                          <span class="big">#{msgs.goobiScript_isActive}</span>
+                                          <span>#{SessionForm.gsm.numberOfFinishedScripts} / #{SessionForm.gsm.goobiScriptResultSize}</span>
+                                        </div>
+                                      </button>
+                                    </li>
+                                    </ui:fragment>
 
+                                    <!-- CURRENT USERS -->
+                                    <h:panelGroup rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
+                                      <li class='bg-neutral-400 stats__current-users'>
+                                        <button jsf:action="currentUsers" jsf:id="currentUsers">
+                                          <i class="fa fa-users"></i>
+                                          <div class="details">
+                                            <span>#{msgs.aktiveBenutzer}</span>
+                                            <span>#{SessionForm.numberOfSessions}</span>
+                                            <f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="" />
+                                          </div>
+                                        </button>
+                                      </li>
+                                    </h:panelGroup>
 
-	                                        <h:panelGroup rendered="#{!HelperForm.anonymized and LoginForm.hasRole('Statistics_CurrentUsers')}">
-	                                            <li class='bg-neutral-400 stats__current-users'>
-	                                                <button jsf:action="currentUsers" jsf:id="currentUsers" class="button-no-style">
-	                                                    <i class="fa fa-users" style="margin-top:3px;"></i>
-	                                                    <div class="details">
-	                                                        <span>#{msgs.aktiveBenutzer}</span>
-	                                                        <span class="big pull-left">#{SessionForm.numberOfSessions}</span>
-	                                                        <f:setPropertyActionListener target="#{NavigationForm.aktuell}" value="" />
-	                                                    </div>
-	                                                </button>
-	                                            </li>
-	                                        </h:panelGroup>
-	                                        <li class="bg-neutral-400 stats__date">
-	                                            <i class="fa fa-calendar" style="margin-top:3px;"></i>
-	                                            <div class="details">
-	                                                <span class="big">
-	                                                    <h:outputText value="#{SessionForm.currentTime}" />
-	                                                    <a tabindex="-1" href="#{HelperForm.itmPathAsUrl}" target="self" aria-label="itm">
-                                                        <div style="height: 12px;width: 20px;display: inline-block;"></div>
-                                                    </a>
-	                                                </span>
-	                                                <span>
-	                                                    <h:outputText value="#{SessionForm.date}">
-	                                                    	<f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
-		                                                </h:outputText>
-	                                                </span>
-	                                            </div>
-	                                        </li>
+                                    <!-- DATE -->
+                                    <li class="bg-neutral-400 stats__date">
+                                      <i class="fa fa-calendar"></i>
+                                      <div class="details">
+                                        <span class="big">
+                                        <h:outputText value="#{SessionForm.currentTime}" />
+                                        <a tabindex="-1" href="#{HelperForm.itmPathAsUrl}" target="self" aria-label="itm">
+                                          <div style="height: 12px;width: 20px;display: inline-block;"></div>
+                                        </a>
+                                        </span>
+                                        <span>
+                                        <h:outputText value="#{SessionForm.date}">
+                                          <f:convertDateTime locale="#{SpracheForm.locale}" type="both" dateStyle="medium"/>
+                                          </h:outputText>
+                                        </span>
+                                      </div>
+                                    </li>
 
-	                                    </ul>
-	                                </div>
-	                            </div>
-                            </header>
+                                  </ul>
+                                </div> <!-- /header__bottom -->
+
+                              </header>
+
                         </h:form>
                         <nav class="navigation-breadcrumb" aria-label="navigationBreadcrumb">
 	                        <h:form style="margin:0px;" id="breadcrumb">
