@@ -40,18 +40,22 @@
 
 			<intranda:box
 				boxType="primary"
-				boxTitle="false"
+				boxTitle="true"
 				boxPadding="true"
+				title="#{msgs.menu_administration_plugins} - #{HelperForm.version}"
+				icon="fa-stethoscope"
 			>
 
 
 			<!-- TITLE BAR -->
+
+			<!--
 			<intranda:boxTitle
 				title="#{msgs.menu_administration_plugins} - #{HelperForm.version}"
 				icon="fa-stethoscope"
 			>
 				<ul class="tabs" >
-					<li class="tab tab--0 #{BenutzerverwaltungForm.displayMode eq ''?'active':''}">
+					<li class="tab tab-0 #{BenutzerverwaltungForm.displayMode eq ''?'active':''}">
 						<h:commandLink
 							id="tab0"
 							styleClass="tab__link"
@@ -65,7 +69,7 @@
 								execute="@form" />
 						</h:commandLink>
 					</li>
-					<li class="tab tab--1 #{BenutzerverwaltungForm.displayMode eq 'tab1'?'active':''}">
+					<li class="tab tab-1 #{BenutzerverwaltungForm.displayMode eq 'tab1'?'active':''}">
 						<h:commandLink
 							id="tab1"
 							styleClass="tab__link"
@@ -81,14 +85,14 @@
 					</li>
 				</ul>
 			</intranda:boxTitle>
+			-->
 
 			<!-- BOX BODY -->
-			<div class="box__body">
 
 				<div id="pluginsTabContent" class="tab-content">
 
 
-							<!-- TAB 1 -->
+							<!-- TAB 0 -->
 							<div class="#{BenutzerverwaltungForm.displayMode eq '' ? 'tab-pane active' : 'tab-pane'}">
 
 								<h:form id="plugins_form">
@@ -145,7 +149,8 @@
 							</div> <!-- /installed plugins tab -->
 
 
-							<!-- Tab 2 -->
+							<!-- TAB 1 -->
+							<!--
 							<div class="#{BenutzerverwaltungForm.displayMode eq 'tab1' ? 'tab-pane active' : 'tab-pane'}">
 
 								<h3 class="mt-4">#{msgs.install_plugin_install_new}</h3>
@@ -223,9 +228,9 @@
 
 
 								</h:form>
-							</div> <!-- /install new tab -->
+							</div>
+							-->
 
-						</div>
 						</div>
 
 				</intranda:box>
