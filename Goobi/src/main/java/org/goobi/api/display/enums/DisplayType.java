@@ -42,7 +42,8 @@ public enum DisplayType {
     easydb,
     vocabularySearch,
     vocabularyList,
-    convertibleDate;
+    convertibleDate,
+    generate;
 
     private DisplayType() {
     }

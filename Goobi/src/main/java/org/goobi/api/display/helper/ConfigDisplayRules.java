@@ -102,40 +102,46 @@ public final class ConfigDisplayRules {
 
                         continue;
                     }
-                    List<HierarchicalConfiguration> items = metadataConfiguration.configurationsAt("item");
-                    List<Item> listOfItems = new ArrayList<>();
-                    if (items != null && !items.isEmpty()) {
-                        String source = metadataConfiguration.getString("source", "");
-                        String field = metadataConfiguration.getString("field", "");
-                        for (HierarchicalConfiguration item : items) {
-                            Item myItem = new Item(item.getString("label", ""), item.getString("value", ""), item.getBoolean("@selected", false),
-                                    source, field);
+                    if (type == DisplayType.generate) {
+                        // TODO
+
+
+                    } else {
+
+                        List<HierarchicalConfiguration> items = metadataConfiguration.configurationsAt("item");
+                        List<Item> listOfItems = new ArrayList<>();
+                        if (items != null && !items.isEmpty()) {
+                            String source = metadataConfiguration.getString("source", "");
+                            String field = metadataConfiguration.getString("field", "");
+                            for (HierarchicalConfiguration item : items) {
+                                Item myItem = new Item(item.getString("label", ""), item.getString("value", ""), item.getBoolean("@selected", false),
+                                        source, field);
+                                listOfItems.add(myItem);
+                            }
+                        } else {
+                            String defaultValue = metadataConfiguration.getString("label", "");
+                            Item myItem = new Item(defaultValue, defaultValue, true, metadataConfiguration.getString("source", ""),
+                                    metadataConfiguration.getString("field", ""));
                             listOfItems.add(myItem);
                         }
-                    } else {
-                        String defaultValue = metadataConfiguration.getString("label", "");
-                        Item myItem = new Item(defaultValue, defaultValue, true, metadataConfiguration.getString("source", ""),
-                                metadataConfiguration.getString("field", ""));
-                        listOfItems.add(myItem);
-                    }
-                    if (allValues.containsKey(projectName)) {
-                        Map<String, Map<String, List<Item>>> typeList = allValues.get(projectName);
-                        if (typeList.containsKey(type.name())) {
-                            Map<String, List<Item>> currentType = typeList.get(type.name());
-                            currentType.put(metadataName, listOfItems);
+                        if (allValues.containsKey(projectName)) {
+                            Map<String, Map<String, List<Item>>> typeList = allValues.get(projectName);
+                            if (typeList.containsKey(type.name())) {
+                                Map<String, List<Item>> currentType = typeList.get(type.name());
+                                currentType.put(metadataName, listOfItems);
+                            } else {
+                                Map<String, List<Item>> currentType = new HashMap<>();
+                                currentType.put(metadataName, listOfItems);
+                                typeList.put(type.name(), currentType);
+                            }
                         } else {
+                            Map<String, Map<String, List<Item>>> typeList = new HashMap<>();
                             Map<String, List<Item>> currentType = new HashMap<>();
                             currentType.put(metadataName, listOfItems);
                             typeList.put(type.name(), currentType);
+                            allValues.put(projectName, typeList);
                         }
-                    } else {
-                        Map<String, Map<String, List<Item>>> typeList = new HashMap<>();
-                        Map<String, List<Item>> currentType = new HashMap<>();
-                        currentType.put(metadataName, listOfItems);
-                        typeList.put(type.name(), currentType);
-                        allValues.put(projectName, typeList);
                     }
-
                 }
             }
 
