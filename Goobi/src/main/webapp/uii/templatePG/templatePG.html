@@ -63,49 +63,64 @@
 
     <!-- Bootstrap -->
 
-    <!-- BS 3 -->
-    <!--
-    <script src="template/js/bootstrap.min.js?v=#{HelperForm.buildVersion}"></script>
-    -->
-
     <!-- BS 5 -->
     <script src="templatePG/js/bootstrap.bundle.min.js?v=#{HelperForm.buildVersion}"></script>
-
 
     <!-- INTRANDA JS -->
     <script src="template/js/intranda.js?v=1.2"></script>
 
     <!-- jQuery -->
     <h:outputScript library="primefaces" name="jquery/jquery.js?v=#{HelperForm.buildVersion}" target="head" />
-    <!-- Mobile nav swipe -->
+
+    <!-- Mobile nav swipe ==> touchwipe: not in use -->
+    <!--
     <script src="template/js/plugins/touchwipe/touchwipe.min.js?v=#{HelperForm.buildVersion}"></script>
-    <!-- Nice Scroll -->
+    -->
+
+    <!-- Nice Scroll ==> not in use -->
+    <!--
     <script src="template/js/plugins/nicescroll/jquery.nicescroll.min.js?v=#{HelperForm.buildVersion}"></script>
-    <!-- imagesLoaded -->
+    -->
+
+    <!-- imagesLoaded => used in application.js -->
     <script src="template/js/plugins/imagesLoaded/jquery.imagesloaded.min.js?v=#{HelperForm.buildVersion}"></script>
+
     <!-- jQuery UI -->
     <script src="template/js/plugins/jquery-ui/jquery-ui.js?v=#{HelperForm.buildVersion}"></script>
-    <!-- slimScroll -->
+
+    <!-- slimScroll => used in application.js -->
     <script src="template/js/plugins/slimscroll/jquery.slimscroll.min.js?v=#{HelperForm.buildVersion}"></script>
 
 
 
 
 
+    <!--
+      ==> used in formInputSlider.xhtml, however the plugin only supports bs4!
     <script src="template/js/bootstrap-slider.js?v=#{HelperForm.buildVersion}"></script>
-    <!-- Bootbox -->
-    <script src="template/js/plugins/bootbox/jquery.bootbox.js?v=#{HelperForm.buildVersion}"></script>
-    <!-- Bootbox -->
-    <script src="template/js/plugins/form/jquery.form.min.js?v=#{HelperForm.buildVersion}"></script>
-    <!-- Reactive rx -->
-     <script src="template/js/reactiveX/rx.lite.min.js"></script>
+    -->
 
-    <!-- Validation -->
+    <!-- Bootbox => Version 4.3., not supported anymore + no comaptibility with BS5 -->
+    <!--
+    <script src="template/js/plugins/bootbox/jquery.bootbox.js?v=#{HelperForm.buildVersion}"></script>
+    -->
+
+    <!-- ajaxForm plugin => does not seem to be used anywhere -->
+    <!--
+    <script src="template/js/plugins/form/jquery.form.min.js?v=#{HelperForm.buildVersion}"></script>
+    -->
+
+    <!-- Reactive rx -->
+    <script src="template/js/reactiveX/rx.lite.min.js"></script>
+
+    <!-- Validation ==> not used -->
+    <!--
     <script src="template/js/plugins/validation/jquery.validate.min.js?v=#{HelperForm.buildVersion}"></script>
     <script src="template/js/plugins/validation/additional-methods.min.js?v=#{HelperForm.buildVersion}"></script>
+    -->
 
-  <!-- shortcuts -->
-  <script src="template/js/jquery.hotkeys.js?v=#{HelperForm.buildVersion}"></script>
+    <!-- shortcuts ==> used in several templates (also plugins) + _metseditor.xhtml -->
+    <script src="template/js/jquery.hotkeys.js?v=#{HelperForm.buildVersion}"></script>
 
     <!-- Theme framework -->
     <!-- <script src="template/js/eakroko.js?v=#{HelperForm.buildVersion}"></script> -->
@@ -375,7 +390,8 @@
 
             /*
             Initialize all BS Tooltips
-            [data-bs-toggle="tooltip"] => also grab legacy tool tips
+            [data-bs-toggle="tooltip"] => BS5
+            [data-toggle="tooltip"] => also grab legacy tool tips
             */
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"], [data-toggle="tooltip"]'))
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
