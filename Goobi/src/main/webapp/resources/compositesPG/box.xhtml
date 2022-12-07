@@ -10,6 +10,7 @@
 
 	<composite:interface>
 		<composite:attribute name="boxType" />
+		<composite:attribute name="boxId" default="defaultId"/>
 		<composite:attribute name="scope" />
 		<composite:attribute name="icon" />
 		<composite:attribute name="title" />
@@ -27,7 +28,9 @@
 	<composite:implementation>
 
 
-	<div class="box
+	<h:panelGroup
+		layout="block"
+		styleClass="box
 		box--#{cc.attrs.boxType}
 		#{cc.attrs.scope}
 		#{cc.attrs.padding ? 'box--padded' : 'box--no-padding'}
@@ -37,16 +40,6 @@
 		#{cc.attrs.formBox ? 'form-box' : ''}
 		#{cc.attrs.boxForm ? 'form-box' : ''}
 		">
-			<!--
-      <div class="box-title">
-
-        <h2>
-          <i class="fa #{cc.attrs.icon}"></i>
-          <h:outputText value="#{cc.attrs.title}" />
-        </h2>
-      </div>
-			-->
-
 
 			<!-- Renders if a boxTitle = true -->
 			<h:panelGroup layout="block" class="box__content">
@@ -64,7 +57,7 @@
 			</h:panelGroup>
 
 
-    </div> <!-- box end -->
+    </h:panelGroup> <!-- box end -->
 
 
 	</composite:implementation>
