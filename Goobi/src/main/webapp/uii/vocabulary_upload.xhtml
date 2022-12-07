@@ -172,6 +172,16 @@
 
                             <h:form id="vocabBoxActions" styleClass="box__actions">
 
+                              <!-- Cancel -->
+                              <a
+                                  class="btn btn-blank"
+                                  jsf:id="abbrechen"
+                                  type="cancel"
+                                  jsf:action="#{vocabularyBean.editVocabulary}"
+                                  jsf:immediate="true">
+                                  <h:outputText value="#{msgs.abbrechen}" />
+                              </a>
+
                               <!-- Save -->
                               <button
                                   jsf:rendered="#{vocabularyBean.headerOrder.size() gt 0}"
@@ -185,15 +195,6 @@
                                   </span>
                               </button>
 
-                              <!-- Cancel -->
-                              <button
-                                  class="btn btn-blank"
-                                  jsf:id="abbrechen"
-                                  type="cancel"
-                                  jsf:action="#{vocabularyBean.editVocabulary}"
-                                  jsf:immediate="true">
-                                  <h:outputText value="#{msgs.abbrechen}" />
-                              </button>
                             </h:form>
 
                             </div>
