@@ -40,6 +40,7 @@ import org.apache.commons.configuration.tree.ConfigurationNode;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
+import org.goobi.api.display.helper.MetadataGeneration.MetadataGenerationParameter;
 
 import de.sub.goobi.helper.Helper;
 import lombok.Getter;
@@ -103,8 +104,57 @@ public final class ConfigDisplayRules {
                         continue;
                     }
                     if (type == DisplayType.generate) {
-                        // TODO
+                        String condition = metadataConfiguration.getString("condition");
+                        String defaultValue = metadataConfiguration.getString("value", "");
 
+                        MetadataGeneration mg = new MetadataGeneration();
+                        mg.setCondition(condition);
+                        mg.setDefaultValue(defaultValue);
+
+                        List<HierarchicalConfiguration> items = metadataConfiguration.configurationsAt("item");
+
+                        if (items != null && !items.isEmpty()) {
+                            for (HierarchicalConfiguration item : items) {
+
+                                String parameterName = item.getString("label");
+                                String parameterType = item.getString("type");
+                                String field = item.getString("field");
+                                String regularExpression = item.getString("regularExpression");
+                                String replacement = item.getString("replacement");
+                                MetadataGenerationParameter param = mg.new MetadataGenerationParameter();
+                                param.setParameterName(parameterName);
+                                param.setType(parameterType);
+                                param.setField(field);
+                                param.setRegularExpression(regularExpression);
+                                param.setReplacement(replacement);
+                                mg.addParameter(param);
+                            }
+                        }
+                        // TODO allow multiple configuration entries for the same metadata. Use the first one with matching condition
+
+                        List<Item> listOfItems = new ArrayList<>();
+
+                        Item item = new Item(defaultValue, defaultValue, true, "", "");
+                        item.setAdditionalData(mg);
+                        listOfItems.add(item);
+
+                        if (allValues.containsKey(projectName)) {
+                            Map<String, Map<String, List<Item>>> typeList = allValues.get(projectName);
+                            if (typeList.containsKey(type.name())) {
+                                Map<String, List<Item>> currentType = typeList.get(type.name());
+                                currentType.put(metadataName, listOfItems);
+                            } else {
+                                Map<String, List<Item>> currentType = new HashMap<>();
+                                currentType.put(metadataName, listOfItems);
+                                typeList.put(type.name(), currentType);
+                            }
+                        } else {
+                            Map<String, Map<String, List<Item>>> typeList = new HashMap<>();
+                            Map<String, List<Item>> currentType = new HashMap<>();
+                            currentType.put(metadataName, listOfItems);
+                            typeList.put(type.name(), currentType);
+                            allValues.put(projectName, typeList);
+                        }
 
                     } else {
 

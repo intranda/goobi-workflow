@@ -2,7 +2,6 @@ package de.sub.goobi.metadaten;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
@@ -11,6 +10,7 @@ import org.goobi.api.display.helper.MetadataGeneration.MetadataGenerationParamet
 import org.goobi.beans.Process;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.xpath.XPathFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -78,13 +78,6 @@ public class MetadataGenerationTest extends AbstractTest {
     }
 
     @Test
-    public void testCurrentValue() {
-        MetadataGeneration mg = new MetadataGeneration();
-        mg.setCurrentValue("fixture");
-        assertEquals("fixture", mg.getCurrentValue());
-    }
-
-    @Test
     public void testParameter() {
         MetadataGeneration mg = new MetadataGeneration();
         MetadataGenerationParameter param = mg.new MetadataGenerationParameter();
@@ -110,15 +103,20 @@ public class MetadataGenerationTest extends AbstractTest {
     public void testGenerateValue() throws Exception {
         // preparation
 
+        XPathFactory xpfac = XPathFactory.instance();
+
         Fileformat ff = process.readMetadataFile();
         DigitalDocument dd = ff.getDigitalDocument();
         DocStruct ds = dd.getLogicalDocStruct();
+
+        Document doc = ModsHelper.generateModsSection(ds, prefs);
+        Element mods = doc.getRootElement();
+        Element metadataSection = mods.getChild("extension", ModsHelper.MODS_NAMESPACE).getChild("goobi", ModsHelper.GOOBI_NAMESPACE);
 
         MetadataGeneration mg = new MetadataGeneration();
         mg.setMetadataName("TitleDocMain");
         mg.setCondition("goobi:metadata[@name='TitleDocMain'][text()='main title']");
         mg.setDefaultValue("abcdef [FIRST VALUE] gehij [SECOND VALUE] klmn");
-        assertNull(mg.getCurrentValue());
 
         // successful replacement
         MetadataGenerationParameter param1 = mg.new MetadataGenerationParameter();
@@ -135,14 +133,18 @@ public class MetadataGenerationTest extends AbstractTest {
         param2.setReplacement("$1");
         mg.addParameter(param2);
 
-        mg.generateValue(process, dd, ds);
-        assertEquals("abcdef main title gehij main klmn", mg.getCurrentValue());
+        assertEquals("abcdef main title gehij main klmn", mg.generateValue(process, prefs, dd, xpfac, metadataSection));
 
         // no matching value found
         param1.setField("goobi:metadata[@name='nonExisting']");
         param2.setField("{meta.nonExisting}");
-        mg.generateValue(process, dd, ds);
-        assertEquals("abcdef [FIRST VALUE] gehij [SECOND VALUE] klmn", mg.getCurrentValue());
+        assertEquals("abcdef [FIRST VALUE] gehij [SECOND VALUE] klmn", mg.generateValue(process, prefs, dd, xpfac, metadataSection));
+
+        // second parameter is ignored, it is not used in the template text
+        param1.setField("goobi:metadata[@name='TitleDocMain']");
+        param2.setField("{meta.TitleDocMain}");
+        mg.setDefaultValue("abcdef [FIRST VALUE] gehij");
+        assertEquals("abcdef main title gehij", mg.generateValue(process, prefs, dd, xpfac, metadataSection));
 
     }
 

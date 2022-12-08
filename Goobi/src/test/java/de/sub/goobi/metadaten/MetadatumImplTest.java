@@ -224,4 +224,6 @@ public class MetadatumImplTest extends AbstractTest {
         assertEquals("https://example.com/1234", md.getUrl());
     }
 
+    // TODO test generateValue()
+
 }
