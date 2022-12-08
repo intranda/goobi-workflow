@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<displayRules xmlns="http://meta.goobi.org/displayRules" xmlns:tns="http://meta.goobi.org/displayRules">
+    <ruleSet>
+        <context projectName="*">
+ 
+            <readonly ref="physPageNumber">
+                <label />
+            </readonly>
+<!--
+            <textarea ref="TitleDocMain">
+                <label />
+            </textarea>
+-->
+            <textarea ref="_tei_text">
+                <label />
+            </textarea> 
+<!--
+            <process ref="DocLanguage">
+                <label></label>
+            </process>
+-->
+  
+ <!-- Geonames as selectable field, in ruleset the PlaceOfPublication has to have this attribute then: normdata="true" -->
+
+            <geonames ref="PlaceOfPublication1">
+                <label></label>
+		<source>DE; AT; CH;</source>
+            </geonames>
+<htmlInput ref="ImageFooter">
+</htmlInput>
+
+ <gnd ref="PlaceOfPublication2">
+                <label></label>
+            </gnd>
+
+
+<vocabularySearch ref="PlaceOfPublication">
+                <source>Publishers</source>
+                <field>Original value;Corrected value</field>
+</vocabularySearch>
+   
+<!--
+<vocabularyList ref="SizeSourcePrint">
+  <source>VokabularTest</source>
+<field>Titel=deutscher Titel;Beschreibung=text</field>
+</vocabularyList>
+-->
+
+<easydb ref="Format">
+  <source>1</source>
+  <field>simpleSearch</field>
+</easydb>
+
+            <!-- ## Goobi Link ## -->
+            <process ref="Comments">
+                <label></label>
+            </process>
+
+            <viaf ref="PlaceOfPublication2">
+                <!-- # Format: 'mmmiis' -->
+                <!-- # mmm - MARC main field -->
+                <!-- # ii - indicator 1 + 2 (_ if empty) -->
+                <!-- # s - MARC subfield -->
+                <source>210__a; 111__a; 100__a; 110__a; 150__a; 151__a;</source>
+
+                <!-- # Format: 'mmmiis=label' -->
+                <!-- # mmm - MARC main field -->
+                <!-- # ii - indicator 1 + 2 (_ if empty) -->
+                <!-- # s - MARC subfield -->
+                <!-- # label - label of the field, can be used as message key -->
+                <field>001=NORM_IDENTIFIER; 0247_a=URI;</field>
+            </viaf>
+
+            <viaf ref="City">
+                <source>210__a; 111__a; 100__a; 110__a; 150__a; 151__a;</source>
+                <field>001=NORM_IDENTIFIER; 0247_a=URI;</field>
+            </viaf>
+            <viaf ref="PersonName">
+                <source>100__a</source>
+                <field>001=NORM_IDENTIFIER; 0247_a=URI; 1001_a=NORM_NAME; 1001_d=NORM_LIFEPERIOD; 1001_q=NORM_SEX; 375__a=NORM_SEX;</field>
+            </viaf>
+
+
+            <dante ref="DocLanguage">
+                <source>css_color_names</source>
+                <field>NORM_LABEL_en, NORM_LABEL_de</field>
+            </dante>
+<!--
+            <select ref="AccessLicense">
+                <item selected="true">
+                    <label>Everyone</label>
+                    <value>Everyone</value>
+                </item>
+                <item selected="false">
+                    <label>Limited Access(in the organization)</label>
+                    <value>Limited Access</value>
+                </item>
+                <item selected="false">
+                    <label>Admin only</label>
+                    <value>Admin only</value>
+                </item>
+
+                <item selected="false">
+                    <label>Admin only2</label>
+                    <value>Admin only2</value>
+                </item>
+                <item selected="false">
+                    <label>Admin only3</label>
+                    <value>Admin only3</value>
+                </item>
+                <item selected="false">
+                    <label>Admin only4</label>
+                    <value>Admin only4</value>
+                </item>
+                <item selected="false">
+                    <label>Admin only5</label>
+                    <value>Admin only5</value>
+                </item>
+
+
+            </select>
+-->
+
+           <select ref="AccessLicense">
+                <item selected="true">
+                    <label>Rechte vorbehalten - Freier Zugang</label>
+                    <value>Rechte vorbehalten - Freier Zugang</value>
+                </item>
+                <item selected="false">
+                    <label>Public Domain Mark 1.0</label>
+                    <value>Public Domain Mark 1.0</value>
+                </item>
+                <item selected="false">
+                    <label>Rechte vorbehalten - Zugang nach Autorisierung</label>
+                    <value>Rechte vorbehalten - Zugang nach Autorisierung</value>
+                </item>
+            </select>
+
+            <select1 ref="IsPrivateCollection">
+                <item selected="false">
+                    <label>Yes</label>
+                    <value>Yes</value>
+                </item>
+                <item selected="true">
+                    <label>No</label>
+                    <value>No</value>
+                </item>
+            </select1>
+
+            <input ref="DigitalFileReference">
+                <label>Studio reference</label>
+            </input>
+
+
+
+<generate ref="TitleDocMain">
+	<condition>goobi:metadata[@name='genre'][text()='Letter']</condition>
+	<value>Letter from [ACTOR_FROM] to [ACTOR_TO] at [PLACE], [DATE]</value>
+
+	<item>
+		<label>ACTOR_FROM</label>
+		<type>xpath</type>
+		<field>goobi:metadata[@type='group'][@name='name'][goobi:metadata[@name='name_role_roleTerm'][text()='is created by (intellectual)']]/goobi:metadata[@name='name_displayForm']</field>
+		<regularExpression>(.+), .*</regularExpression>
+		<replacement>$1</replacement>
+	</item>
+	<item>
+		<label>ACTOR_TO</label>
+		<type>xpath</type>
+		<field>goobi:metadata[@type='group'][@name='name'][goobi:metadata[@name='name_role_roleTerm'][text()='is intended for']]/goobi:metadata[@name='name_displayForm']</field>
+		<regularExpression>(.+), .*</regularExpression>
+		<replacement>$1</replacement>
+	</item>
+	<item>
+		<label>PLACE</label>
+		<type>xpath</type>
+		<field>goobi:metadata[@type='group'][@name='location_related_place'][goobi:metadata[@name='location_holdingExternal_relation_type'][text()='is bound from']]/goobi:metadata[@name='location_physicalLocation_related_place']</field>
+	</item>
+	<item>
+		<label>DATE</label>
+		<type>variable</type>
+		<field>{meta.originInfo_dateCreated_start}</field>
+		<regularExpression>([0-9]{4})-[0-9]{2}-[(0-9]{2}</regularExpression>
+		<replacement>$1</replacement>
+	</item>
+</generate>
+
+
+
+
+
+	</context>
+    </ruleSet>
+</displayRules>

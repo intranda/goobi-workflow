@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets:mets OBJID="" xsi:schemaLocation="http://www.loc.gov/standards/premis/ http://www.loc.gov/standards/premis/v2/premis-v2-0.xsd http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.loc.gov/standards/mix/ http://www.loc.gov/standards/mix/mix.xsd" xmlns:mets="http://www.loc.gov/METS/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:goobi="http://meta.goobi.org/v1.5.1/" xmlns:xlink="http://www.w3.org/1999/xlink">
+   <mets:metsHdr CREATEDATE="2022-06-08T12:02:22Z">
+      <mets:agent OTHERTYPE="SOFTWARE" ROLE="CREATOR" TYPE="OTHER">
+         <mets:name>Goobi - e353d - 2020-08-02 20:03:17+0000</mets:name>
+         <mets:note>Goobi</mets:note>
+      </mets:agent>
+   </mets:metsHdr>
+   <mets:dmdSec ID="DMDLOG_0000">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:extension>
+                  <goobi:goobi>
+                     <goobi:metadata name="TitleDocMain">Letter from Jean Baptiste Laborde, Martinique, to an anonymous man, 16 April 1744</goobi:metadata>
+                     <goobi:metadata authority="dante" authorityURI="https://uri.gbv.de/terminology/dante/" name="genre" valueURI="http://uri.gbv.de/terminology/prizepapers_documenttype/7553ba10-bf5e-4aa6-847e-3ace9e2bf712">Letter</goobi:metadata>
+                     <goobi:metadata authority="dante" authorityURI="https://uri.gbv.de/terminology/dante/" name="genre_court_classification" valueURI="http://uri.gbv.de/terminology/prizepapers_document_court_classification/450283d6-a308-4245-89f7-1e68d4e7a4bf">Other</goobi:metadata>
+                     <goobi:metadata name="location_shelfLocator">HCA 32/0094/003/B0052</goobi:metadata>
+                     <goobi:metadata name="relatedItem_holding_identifier_uri">C14512385</goobi:metadata>
+                     <goobi:metadata authority="easydb" authorityURI="https://easydb.prizepapers.gbv.de/" name="relatedItem_journey" valueURI="https://easydb.prizepapers.gbv.de/7002eaf4-fc00-401f-975d-7241c5c1daa9">Journey of the 'Amphitrion', Jean Baptiste Laborde (master), from Martinique to Bordeaux, interrupted by capture by the 'Young Ceres', James Soper (commanding), 1744</goobi:metadata>
+                     <goobi:metadata authority="dante" authorityURI="https://uri.gbv.de/terminology/dante/" name="language_languageTerm" valueURI="http://id.loc.gov/vocabulary/iso639-2/fra">French</goobi:metadata>
+                     <goobi:metadata authority="dante" authorityURI="https://uri.gbv.de/terminology/dante/" name="language_scriptTerm" valueURI="http://uri.gbv.de/terminology/prizepapers_scripttype/46b61a9b-048f-4193-8894-25e7c00c8cd0">Handwriting</goobi:metadata>
+                     <goobi:metadata name="originInfo_dateCreated_start">1744-04-16</goobi:metadata>
+                     <goobi:metadata authority="dante" authorityURI="https://uri.gbv.de/terminology/dante/" name="subject_topic" valueURI="http://uri.gbv.de/terminology/prizepapers_subject/46662e2e-a42d-4cf3-ab2a-34a62d9a5a22">Finance and commerce</goobi:metadata>
+                     <goobi:metadata name="originInfo_electronic_place_placeTerm">London</goobi:metadata>
+                     <goobi:metadata name="originInfo_electronic_publisher">Prize Papers Project</goobi:metadata>
+                     <goobi:metadata name="originInfo_electronic_dateCaptured_start">2019</goobi:metadata>
+                     <goobi:metadata name="originInfo_electronic_edition">[Electronic ed.]</goobi:metadata>
+                     <goobi:metadata name="CatalogIDDigital">prizepapers_document_7c84a1a9-d543-45bc-adb7-137a921afc62</goobi:metadata>
+                     <goobi:metadata name="identifier_handle">https://hdl.handle.net/428894.vzg/prizepapers_document/7c84a1a9-d543-45bc-adb7-137a921afc62</goobi:metadata>
+                     <goobi:metadata name="singleDigCollection">Prize Papers Documents</goobi:metadata>
+                     <goobi:metadata name="location_physicalLocation">The National Archives, Kew</goobi:metadata>
+                     <goobi:metadata name="uuid">7c84a1a9-d543-45bc-adb7-137a921afc62</goobi:metadata>
+                     <goobi:metadata name="location_related_place" type="group">
+                        <goobi:metadata authority="dante" authorityURI="https://uri.gbv.de/terminology/dante/" name="location_physicalLocation_related_place" valueURI="http://uri.gbv.de/terminology/prizepapers_place/b90ce0af-7869-42b2-9c80-ca31b660d897">St. Pierre (Martinico)</goobi:metadata>
+                        <goobi:metadata authority="dante" authorityURI="https://uri.gbv.de/terminology/dante/" name="location_holdingExternal_relation_type" valueURI="http://uri.gbv.de/terminology/prizepapers_object_place_relation/8459ecc8-2388-4d0a-9789-542fb4ddb795">is created in</goobi:metadata>
+                     </goobi:metadata>
+                     <goobi:metadata name="name" type="group">
+                        <goobi:metadata authority="dante" authorityURI="https://uri.gbv.de/terminology/dante/" name="name_displayForm" valueURI="http://uri.gbv.de/terminology/prizepapers_actor/51206639-83fe-4ea2-b21f-a960cfb259ee">Jean Baptiste Laborde, master of the 'Amphitrion' in 1744</goobi:metadata>
+                        <goobi:metadata authority="dante" authorityURI="https://uri.gbv.de/terminology/dante/" name="name_role_roleTerm" valueURI="http://uri.gbv.de/terminology/prizepapers_object_actor_relation/5b767e33-b3c6-40a4-89dd-4b63723298c0">is created by (intellectual)</goobi:metadata>
+                     </goobi:metadata>
+                     <goobi:metadata name="location_related_place" type="group">
+                        <goobi:metadata authority="dante" authorityURI="https://uri.gbv.de/terminology/dante/" name="location_physicalLocation_related_place" valueURI="http://uri.gbv.de/terminology/prizepapers_place/b90ce0af-7869-42b2-9c80-ca31b660d897">St. Pierre (Martinico)</goobi:metadata>
+                        <goobi:metadata authority="dante" authorityURI="https://uri.gbv.de/terminology/dante/" name="location_holdingExternal_relation_type" valueURI="http://uri.gbv.de/terminology/prizepapers_object_place_relation/a3592e5e-e014-4533-a8d1-45d1bfca437e">is bound from</goobi:metadata>
+                     </goobi:metadata>
+                     <goobi:metadata name="relatedItem_document" type="group">
+                        <goobi:metadata name="relatedItem_document_identifier_uri">https://hdl.handle.net/428894.vzg/prizepapers_document/d3ac678a-1189-480c-b0fd-5f32fd857bfe</goobi:metadata>
+                        <goobi:metadata authority="dante" authorityURI="https://uri.gbv.de/terminology/dante/" name="relatedItem_document_othertypeuri" valueURI="http://uri.gbv.de/terminology/prizepapers_object_object_relation/7c8db12d-3441-4b73-9d91-dbad50f915a0">is inserted in</goobi:metadata>
+                     </goobi:metadata>
+                  </goobi:goobi>
+               </mods:extension>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="DMDPHYS_0000">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:extension>
+                  <goobi:goobi>
+                     <goobi:metadata name="pathimagefiles">file:///opt/digiverso/goobi/metadata/3993/images/HCA_32_0094_003_B0052_tif</goobi:metadata>
+                  </goobi:goobi>
+               </mods:extension>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:fileSec>
+      <mets:fileGrp USE="LOCAL">
+         <mets:file ID="FILE_0001" MIMETYPE="image/tiff">
+            <mets:FLocat LOCTYPE="URL" xlink:href="file:///opt/digiverso/goobi/metadata/3993/images/HCA_32_0094_003_B0052_media/94_3_0113.jpg"/>
+         </mets:file>
+         <mets:file ID="FILE_0002" MIMETYPE="image/tiff">
+            <mets:FLocat LOCTYPE="URL" xlink:href="file:///opt/digiverso/goobi/metadata/3993/images/HCA_32_0094_003_B0052_media/94_3_0114.jpg"/>
+         </mets:file>
+         <mets:file ID="FILE_0003" MIMETYPE="image/tiff">
+            <mets:FLocat LOCTYPE="URL" xlink:href="file:///opt/digiverso/goobi/metadata/3993/images/HCA_32_0094_003_B0052_media/94_3_0115.jpg"/>
+         </mets:file>
+      </mets:fileGrp>
+   </mets:fileSec>
+   <mets:structMap TYPE="LOGICAL">
+      <mets:div DMDID="DMDLOG_0000" ID="LOG_0000" TYPE="Document"/>
+   </mets:structMap>
+   <mets:structMap TYPE="PHYSICAL">
+      <mets:div DMDID="DMDPHYS_0000" ID="PHYS_0000" TYPE="BoundBook">
+         <mets:div ID="PHYS_0001" ORDER="1" ORDERLABEL="uncounted" TYPE="page">
+            <mets:fptr FILEID="FILE_0001"/>
+         </mets:div>
+         <mets:div ID="PHYS_0002" ORDER="2" ORDERLABEL="uncounted" TYPE="page">
+            <mets:fptr FILEID="FILE_0002"/>
+         </mets:div>
+         <mets:div ID="PHYS_0003" ORDER="3" ORDERLABEL="uncounted" TYPE="page">
+            <mets:fptr FILEID="FILE_0003"/>
+         </mets:div>
+      </mets:div>
+   </mets:structMap>
+   <mets:structLink>
+      <mets:smLink xlink:to="PHYS_0001" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0002" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0003" xlink:from="LOG_0000"/>
+   </mets:structLink>
+</mets:mets>

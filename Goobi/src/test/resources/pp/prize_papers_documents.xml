@@ -1,0 +1,939 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Prize Papers Documents - Goobi 3.0 -->
+
+<!-- CHANGELOG
+	================================================================================
+	13.12.2017 - XX.XX.2018, Timo
+		- Regelsatz erstellt
+	================================================================================ -->
+
+<Preferences>
+
+	<!-- ##########################################################################
+		 ##  Metadata types for the physical structure                           ##
+		 ########################################################################## -->
+
+	<!-- ##  DO NOT CHANGE  ## -->
+	<MetadataType>
+		<Name>physPageNumber</Name>
+		<language name="de">Physische Seitenzahl (Imagenummer)</language>
+		<language name="en">Physical page number</language>
+	</MetadataType>
+	<MetadataType>
+		<Name>logicalPageNumber</Name>
+		<language name="de">Logische Seitenzahl (gedruckte Zeitenzahl)</language>
+		<language name="en">Logical page number</language>
+	</MetadataType>
+	<MetadataType>
+		<Name>pagesize</Name>
+		<language name="de">Seitengröße / Format</language>
+		<language name="en">Format of book</language>
+	</MetadataType>
+	<MetadataType>
+		<Name>mediumsource</Name>
+		<language name="de">Vorlagenform</language>
+		<language name="en">Medium of source</language>
+	</MetadataType>
+	<MetadataType>
+		<Name>shelfmarksource</Name>
+		<language name="de">Signatur der Quelle</language>
+		<language name="en">Shelfmark of source media</language>
+	</MetadataType>
+	<MetadataType>
+		<Name>shelfmarkarchiveimageset</Name>
+		<language name="de">Signatur des Archivierungsimagesets</language>
+		<language name="en">Shelfmark of archive imageset</language>
+	</MetadataType>
+	<MetadataType>
+		<Name>imagedescr</Name>
+		<language name="de">ImageDescription (TIFF-Header)</language>
+		<language name="en">Image description of tiff header</language>
+	</MetadataType>
+	<MetadataType>
+		<Name>datedigit</Name>
+		<language name="de">Datum Digitalisierung</language>
+		<language name="en">Date digitalization</language>
+	</MetadataType>
+	<MetadataType>
+		<Name>pathimagefiles</Name>
+		<language name="de">Pfad der Imagedaten</language>
+		<language name="en">Path of image data</language>
+	</MetadataType>
+	<MetadataType>
+		<Name>copyrightimageset</Name>
+		<language name="de">Copyright</language>
+		<language name="en">Copyright</language>
+	</MetadataType>
+	<MetadataType>
+		<Name>singleDigCollection</Name>
+		<language name="de">Digitale Kollektion</language>
+		<language name="en">Digital collection</language>
+	</MetadataType>
+	<MetadataType>
+		<Name>PhysicalLocation</Name>
+		<language name="de">Aufbewahrungsort</language>
+		<language name="en">Physical location</language>
+	</MetadataType>
+	<MetadataType>
+		<Name>TSL_ATS</Name>
+		<language name="en">TSL/ATS</language>
+		<language name="de">TSL/ATS</language>
+	</MetadataType>
+	<MetadataType>
+		<Name>FormatSourcePrint</Name>
+		<language name="de">Ausmasse/Dimension (Quelle)</language>
+		<language name="en">Dimensions</language>
+	</MetadataType>
+
+	<!-- ##  DO NOT CHANGE  ## -->
+
+	<!-- ##########################################################################
+		 ##  Metadata types for the logical structure                            ##
+		 ########################################################################## -->
+
+	<!-- They are fully configurable; make sure, that modules within GOOBI will be
+		 reconfigured accordingly, if any changes are made here! -->
+
+	<!-- 
+		### Metadaten und Gruppen sind nach der Reihenfolge der MODS-Elemente in der "Outline" sortiert ###
+		### http://www.loc.gov/standards/mods/mods-outline-3-6.html ###
+		
+		MetadataType in Gruppen werden vor den Gruppen definiert.
+	-->
+
+
+	<!-- ## titleInfo ## -->
+	
+	<!--  Titel  -->
+	<MetadataType>
+		<Name>TitleDocMain</Name>
+		<language name="en">Title</language>
+	</MetadataType>
+
+
+
+	<!-- ## name ## -->
+	
+	<!-- Actor -->
+	<MetadataType>
+		<Name>name_displayForm</Name>
+		<language name="en">Actor</language>
+	</MetadataType>
+	
+	<!-- Relation type -->
+	<MetadataType>
+		<Name>name_role_roleTerm</Name>
+		<language name="en">Relation type</language>
+	</MetadataType>
+	
+	
+	<!-- Actor -->
+	<Group>
+		<Name>name</Name>
+		<language name="en">Actor</language>
+		<metadata num="1o" DefaultDisplay="true">name_displayForm</metadata>
+		<metadata num="1o" DefaultDisplay="true">name_role_roleTerm</metadata>
+	</Group>
+
+
+	<!-- ## genre ## -->
+	
+	<!-- Document type -->
+	<MetadataType normdata="true">
+		<Name>genre</Name>
+		<language name="en">Document type</language>
+	</MetadataType>
+	
+	<!-- Document court classification -->
+	<MetadataType normdata="true">
+		<Name>genre_court_classification</Name>
+		<language name="en">Document court classification</language>
+	</MetadataType>
+	
+	
+	
+	<!-- ## originInfo (Original) ## -->
+
+	<!-- Datum von (codiert) -->
+	<MetadataType>
+		<Name>originInfo_dateCreated_start</Name>
+		<language name="en">Date created (start, ISO-8601)</language>
+		<validationExpression>^(\d{4}(-\d{2}){0,2}){0,1}$</validationExpression>
+	</MetadataType>
+	
+	<!-- Datum bis (codiert) -->
+	<MetadataType>
+		<Name>originInfo_dateCreated_end</Name>
+		<language name="en">Date created (end, ISO-8601)</language>
+		<validationExpression>^(\d{4}(-\d{2}){0,2}){0,1}$</validationExpression>
+	</MetadataType>
+	
+	<!-- Datum (Text) -->
+	<MetadataType>
+		<Name>originInfo_dateCreated_text</Name>
+		<language name="en">Date created (text)</language>
+	</MetadataType>
+	
+
+	<!-- ## originInfo (Digitalisat) ## -->
+	
+	<!-- Digitalisat: Erscheinungsort -->
+	<MetadataType>
+		<Name>originInfo_electronic_place_placeTerm</Name>
+		<language name="en">Place of publication (digital form)</language>
+	</MetadataType>
+	
+	<!-- Digitalisat: Verlagsname -->
+	<MetadataType>
+		<Name>originInfo_electronic_publisher</Name>
+		<language name="en">Publisher (digital form)</language>
+	</MetadataType>
+	
+	<!-- Digitalisat: Jahr (codiert) -->
+	<MetadataType>
+		<Name>originInfo_electronic_dateCaptured_start</Name>
+		<language name="en">Date created (digital form)</language>
+		<validationExpression>^20[123]\d{1}$</validationExpression>
+	</MetadataType>
+	
+	<!-- Digitalisat: Ausgabevermerk -->
+	<MetadataType>
+		<Name>originInfo_electronic_edition</Name>
+		<language name="en">Edition (digital form)</language>
+	</MetadataType>
+
+
+	
+	<!-- ## language ## -->
+	
+	<!-- Sprache (ISO 639-2) -->
+	<MetadataType normdata="true">
+		<Name>language_languageTerm</Name>
+		<language name="en">Language</language>
+	</MetadataType>
+	
+	<!-- Script type -->
+	<MetadataType normdata="true">
+		<Name>language_scriptTerm</Name>
+		<language name="en">Script type</language>
+	</MetadataType>
+	
+	
+	<!-- ## physicalDescription ## -->
+	
+	<!-- Signs of handling -->
+	<MetadataType normdata="true">
+		<Name>physicalDescription_form</Name>
+		<language name="en">Signs of handling</language>
+	</MetadataType>
+	
+	<!-- Material -->
+	<MetadataType normdata="true">
+		<Name>physicalDescription_form_material</Name>
+		<language name="en">Material</language>
+	</MetadataType>
+	
+	<!-- Colour -->
+	<MetadataType normdata="true">
+		<Name>physicalDescription_colour</Name>
+		<language name="en">Colour</language>
+	</MetadataType>
+	
+	<!-- Colour edging -->
+	<MetadataType normdata="true">
+		<Name>physicalDescription_colour_edging</Name>
+		<language name="en">Colour edging</language>
+	</MetadataType>
+	
+	<!-- Format -->
+	<MetadataType normdata="true">
+		<Name>physicalDescription_extent</Name>
+		<language name="en">Format</language>
+	</MetadataType>
+	
+
+	
+	
+	<!-- ## abstract ## -->
+	
+	<!-- Inhaltsangabe -->
+	<MetadataType>
+		<Name>abstract</Name>
+		<language name="en">Description</language>
+	</MetadataType>
+	
+	
+	
+	<!-- ## note ## -->
+	
+	<!-- Anmerkung -->
+	<MetadataType>
+		<Name>note</Name>
+		<language name="en">Note</language>
+	</MetadataType>
+	
+	
+	
+	<!-- ## subject ## -->
+	
+	<!-- Anmerkung -->
+	<MetadataType normdata="true">
+		<Name>subject_topic</Name>
+		<language name="en">Subject</language>
+	</MetadataType>
+	
+	
+	
+	<!-- ## relatedItem ## -->
+	
+	<!-- TNA: Related Item  -->
+	<MetadataType>
+	    <Name>relatedItem_holding_identifier_uri</Name>
+		<language name="en">Related TNA discovery ID</language>
+		<!--  
+		<validationExpression>^http://discovery\.nationalarchives\.gov\.uk/browse/r/.+$</validationExpression>
+		-->
+	</MetadataType>
+	
+	<!-- Related journey  -->
+	<MetadataType>
+		<Name>relatedItem_journey</Name>
+		<language name="en">Related journey</language>
+	</MetadataType>
+	
+	<!-- Related court process  -->
+	<MetadataType>
+		<Name>relatedItem_court_process</Name>
+		<language name="en">Related court process</language>
+	</MetadataType>
+	
+	<!-- Related Item URI  -->
+	<MetadataType>
+		<Name>relatedItem_document_identifier_uri_search</Name>
+		<language name="en">Related document</language>
+	</MetadataType>
+	<MetadataType>
+		<Name>relatedItem_document_identifier_uri</Name>
+		<language name="en">Related document</language>
+	</MetadataType>
+	<!-- Relation type  -->
+	<MetadataType>
+		<Name>relatedItem_document_othertypeuri</Name>
+		<language name="en">Relation type</language>
+	</MetadataType>
+	
+	<!-- Related document -->
+	<Group>
+		<Name>relatedItem_document</Name>
+		<language name="en">Related document</language>
+		<metadata num="1m" DefaultDisplay="true">relatedItem_document_identifier_uri</metadata>
+		<metadata num="1m" DefaultDisplay="true">relatedItem_document_othertypeuri</metadata>
+	</Group>
+	
+
+
+	<!-- ## identifier ## -->
+	
+	<!-- Handle -->
+	<MetadataType>
+		<Name>identifier_handle</Name>
+		<language name="en">Handle</language>
+	</MetadataType>
+	
+	<!-- Former reference number -->
+	<MetadataType>
+		<Name>identifier_local_invalid</Name>
+		<language name="en">Former reference number</language>
+	</MetadataType>
+	
+	
+
+	<!-- ## location ## -->
+	
+	<!-- Physical location -->
+	<MetadataType>
+		<Name>location_physicalLocation</Name>
+		<language name="en">Physical location</language>
+	</MetadataType>
+	
+	<!-- Reference number -->
+	<MetadataType>
+		<Name>location_shelfLocator</Name>
+		<language name="en">Reference number</language>
+		<validationExpression>^((?!_).)*$</validationExpression>
+	</MetadataType>
+	
+	
+	<!-- Place -->
+	<MetadataType>
+		<Name>location_physicalLocation_related_place</Name>
+		<language name="en">Place</language>
+	</MetadataType>
+	
+	<!-- Relation type -->
+	<MetadataType>
+		<Name>location_holdingExternal_relation_type</Name>
+		<language name="en">Relation type</language>
+	</MetadataType>
+	
+	
+	<!-- Related Place -->
+	<Group>
+		<Name>location_related_place</Name>
+		<language name="en">Place</language>
+		<metadata num="1o" DefaultDisplay="true">location_physicalLocation_related_place</metadata>
+		<metadata num="1o" DefaultDisplay="true">location_holdingExternal_relation_type</metadata>
+	</Group>
+	
+	
+	
+	<!-- ## recordInfo ## -->
+	
+    <!-- Record ID -->
+	<MetadataType type="identifier">
+		<Name>CatalogIDDigital</Name>
+	    <language name="en">Record ID</language>
+	</MetadataType>
+
+	<!-- Record ID für untergeordnetes document -->
+	<MetadataType type="identifier">
+		<Name>recordInfo_recordIdentifier</Name>
+		<language name="en">Record ID</language>
+	</MetadataType>
+
+
+
+	<!-- ## Misc ## -->
+	<MetadataType>
+		<Name>uuid</Name>
+		<language name="en">UUID</language>
+	</MetadataType>
+	
+
+
+
+	<!-- ####################
+		 ##  Strukturtypen ##
+		 #################### -->
+
+	<!-- 
+		### Übergeordnete Strukturtypen ###
+	-->
+	
+	<!-- Document -->
+	<DocStrctType topStruct="true">
+		<Name>Document</Name>
+		<language name="en">Document</language>
+
+		<!-- ## Unterelemente ## -->
+		<allowedchildtype>Document_contained</allowedchildtype>
+		
+		<!-- ## Metadaten ## -->
+		
+		<metadata num="1m" DefaultDisplay="true">TitleDocMain</metadata>
+	
+		<metadata num="+" DefaultDisplay="true">genre</metadata>
+		<metadata num="1m" DefaultDisplay="true">genre_court_classification</metadata>
+		
+		<metadata num="1o" DefaultDisplay="true">location_shelfLocator</metadata>
+		<metadata num="*">identifier_local_invalid</metadata>
+		
+		<!-- technisch expandieren -->
+		<metadata num="1m" DefaultDisplay="true">relatedItem_holding_identifier_uri</metadata>
+		
+		<metadata num="1o" DefaultDisplay="true">relatedItem_journey</metadata>
+		<metadata num="1o" DefaultDisplay="true">relatedItem_court_process</metadata>
+		
+		<metadata num="+" DefaultDisplay="true">language_languageTerm</metadata>
+		<metadata num="*" DefaultDisplay="true">language_scriptTerm</metadata>
+		
+		<metadata num="1m" DefaultDisplay="true">originInfo_dateCreated_start</metadata>
+		<metadata num="1o" DefaultDisplay="true">originInfo_dateCreated_end</metadata>
+		<metadata num="1o" DefaultDisplay="true">originInfo_dateCreated_text</metadata>
+		
+		
+		<metadata num="*" DefaultDisplay="true">physicalDescription_form</metadata>
+		<metadata num="*" DefaultDisplay="true">physicalDescription_form_material</metadata>
+		<metadata num="*" DefaultDisplay="true">physicalDescription_colour</metadata>
+		<metadata num="*" DefaultDisplay="true">physicalDescription_colour_edging</metadata>
+		<metadata num="1o" DefaultDisplay="true">physicalDescription_extent</metadata>
+				
+	
+		<metadata num="1o" DefaultDisplay="true">abstract</metadata>
+		<metadata num="1o" DefaultDisplay="true">note</metadata>
+		
+		<metadata num="*" DefaultDisplay="true">subject_topic</metadata>
+		
+		<!-- Expandieren? -->
+		<metadata num="1m" DefaultDisplay="true">originInfo_electronic_place_placeTerm</metadata>
+		<metadata num="1m" DefaultDisplay="true">originInfo_electronic_publisher</metadata>
+		<metadata num="1m" DefaultDisplay="true">originInfo_electronic_dateCaptured_start</metadata>
+		<metadata num="1m" DefaultDisplay="true">originInfo_electronic_edition</metadata>
+		
+		<metadata num="1m">CatalogIDDigital</metadata>
+		
+		<metadata num="1m" DefaultDisplay="true">identifier_handle</metadata>
+
+		<metadata num="1m">singleDigCollection</metadata>
+		
+		<!-- Standartwerde ans Ende -->
+		<metadata num="1m" DefaultDisplay="true">location_physicalLocation</metadata>
+
+		<!-- ## Metadatengruppen ## -->
+		<metadata num="1o" DefaultDisplay="true">relatedItem_document_identifier_uri_search</metadata>
+		<group num="*">relatedItem_document</group>
+		<group num="*" DefaultDisplay="true">location_related_place</group>
+		<group num="*" DefaultDisplay="true">name</group>
+		
+		<!-- intern -->
+		<metadata num="1o">uuid</metadata>
+		
+		
+	</DocStrctType>
+
+
+	<!-- 
+		### Untergeordnete Strukturtypen ###
+	-->
+
+	<!-- Document -->
+	<DocStrctType topStruct="true">
+		<Name>Document_contained</Name>
+		<language name="en">Document</language>
+		
+		<!-- ## Unterelemente ## -->
+		<allowedchildtype>Document_contained</allowedchildtype>
+		
+		<!-- ## Metadaten ## -->
+		
+		<metadata num="1m" DefaultDisplay="true">TitleDocMain</metadata>
+		
+		<metadata num="+" DefaultDisplay="true">genre</metadata>
+		<metadata num="1o" DefaultDisplay="true">genre_court_classification</metadata>
+		
+		<metadata num="*" DefaultDisplay="true">language_languageTerm</metadata>
+		<metadata num="*" DefaultDisplay="true">language_scriptTerm</metadata>
+		
+		<metadata num="1m" DefaultDisplay="true">originInfo_dateCreated_start</metadata>
+		<metadata num="1o" DefaultDisplay="true">originInfo_dateCreated_end</metadata>
+		<!-- für den Export automatisch generieren falls nicht ausgefüllt TODO -->
+		<metadata num="1o" DefaultDisplay="true">originInfo_dateCreated_text</metadata>
+		
+		<metadata num="*" DefaultDisplay="true">physicalDescription_form_material</metadata>
+		<metadata num="*" DefaultDisplay="true">physicalDescription_colour</metadata>
+		<metadata num="*" DefaultDisplay="true">physicalDescription_colour_edging</metadata>
+		<metadata num="1o" DefaultDisplay="true">physicalDescription_extent</metadata>
+		
+		
+		<metadata num="1o" DefaultDisplay="true">abstract</metadata>
+		<metadata num="1o" DefaultDisplay="true">note</metadata>
+		
+		<metadata num="*" DefaultDisplay="true">subject_topic</metadata>
+		
+		<metadata num="1m">recordInfo_recordIdentifier</metadata>
+		<metadata num="1m" DefaultDisplay="true">identifier_handle</metadata>
+		
+		<!-- Standartwerde ans Ende -->
+	
+		<!-- ## Metadatengruppen ## -->
+		<metadata num="1o" DefaultDisplay="true">relatedItem_document_identifier_uri_search</metadata>
+		<group num="*">relatedItem_document</group>
+		<group num="*" DefaultDisplay="true">location_related_place</group>
+		<group num="*" DefaultDisplay="true">name</group>
+		
+		<!-- intern -->
+		<metadata num="1o">uuid</metadata>
+		
+	</DocStrctType>
+	
+
+	<!-- ##########################################################################
+		 ##  Physical document structure types                                   ##
+		 ########################################################################## -->
+
+	<!-- ##  DO NOT CHANGE  ## -->
+	<DocStrctType>
+		<Name>BoundBook</Name>
+		<language name="de">Gebundenes Buch</language>
+		<language name="en">Bound book</language>
+		<metadata num="1o">copyrightimageset</metadata>
+		<metadata num="1o">shelfmarksource</metadata>
+		<metadata num="1o">shelfmarkarchiveimageset</metadata>
+		<metadata num="1o">imagedescr</metadata>
+		<metadata num="1o">datedigit</metadata>
+		<metadata num="1o">pathimagefiles</metadata>
+		<metadata num="1o">FormatSourcePrint</metadata>
+		<metadata num="*">PhysicalLocation</metadata>
+		<allowedchildtype>page</allowedchildtype>
+		<allowedchildtype>video</allowedchildtype>
+	</DocStrctType>
+	<DocStrctType>
+		<Name>page</Name>
+		<language name="de">Seite</language>
+		<language name="en">Page</language>
+		<metadata num="1m">physPageNumber</metadata>
+		<metadata num="1m">logicalPageNumber</metadata>
+	</DocStrctType>
+	<DocStrctType>
+		<Name>video</Name>
+		<language name="de">Video</language>
+		<language name="en">Video</language>
+<!--		<metadata num="1o">_urn</metadata> -->
+		<metadata num="1m">logicalPageNumber</metadata>
+		<metadata num="1m">physPageNumber</metadata>
+	</DocStrctType>
+	
+	<!-- ##  DO NOT CHANGE  ## -->
+
+	<Formats>
+
+		<!-- ##########################################################################
+			 ##  MARC                                                                ##
+			 ########################################################################## -->
+
+		<Marc>
+
+			
+			
+		</Marc>
+
+
+		<!-- ##########################################################################
+			 ##  METS/MODS                                                           ##
+			 ########################################################################## -->
+
+		<METS>
+
+			<!-- ##########################################################################
+				 ##  Only the <AnchorIdentifierMetadataType> is needed for internal      ##
+				 ##  METS storing.                                                       ##
+				 ########################################################################## -->
+
+			<AnchorIdentifierMetadataType>CatalogIDDigital</AnchorIdentifierMetadataType>
+			<XPathAnchorQuery>./mods:mods/mods:relatedItem[@type='host']/mods:recordInfo/mods:recordIdentifier[@source='DE-611']</XPathAnchorQuery>
+
+			<NamespaceDefinition>
+				<URI>http://zvdd.gdz-cms.de/</URI>
+				<prefix>zvdd</prefix>
+			</NamespaceDefinition>
+			
+			<NamespaceDefinition>
+				<URI>http://www.europeana.eu/schemas/edm/</URI>
+				<prefix>edm</prefix>
+			</NamespaceDefinition>
+			
+			<NamespaceDefinition>
+				<URI>http://www.w3.org/1999/xlink</URI>
+				<prefix>xlink</prefix>
+			</NamespaceDefinition>
+
+
+			<!-- ##########################################################################
+				 ##  Metadata mapping definition                                         ##
+				 ########################################################################## -->
+
+
+			<!-- 
+				#########################
+				# Metadaten und Gruppen #
+				#########################
+			-->
+
+			<!-- ## titleInfo ## -->
+			<Metadata>
+				<InternalName>TitleDocMain</InternalName>
+				<WriteXPath>./mods:mods/mods:titleInfo/#mods:title</WriteXPath>
+			</Metadata>
+
+
+			<!-- ## name ## -->
+
+			<Group>
+				<InternalName>name</InternalName>
+				<WriteXPath>./mods:mods/#mods:name</WriteXPath>
+				<Metadata>
+					<InternalName>name_displayForm</InternalName>
+					<WriteXPath>./mods:displayForm</WriteXPath>
+				</Metadata>
+				<Metadata>
+					<InternalName>name_role_roleTerm</InternalName>
+					<WriteXPath>./mods:role/mods:roleTerm</WriteXPath>
+				</Metadata>
+			</Group>
+
+
+
+			<!-- ## genre ## -->
+
+			<Metadata>
+				<InternalName>genre_court_classification</InternalName>
+				<WriteXPath>./mods:mods/#mods:genre</WriteXPath>
+			</Metadata>
+			
+			<Metadata>
+				<InternalName>genre</InternalName>
+				<WriteXPath>./mods:mods/#mods:genre</WriteXPath>
+			</Metadata>
+
+
+			<!-- ## originInfo ## -->
+			
+			
+			<!-- Original -->
+			<Metadata>
+				<InternalName>originInfo_dateCreated_start</InternalName>
+				<WriteXPath>./mods:mods/mods:originInfo/#mods:dateCreated[@encoding='iso8601'][@point='start']</WriteXPath>
+			</Metadata>
+			<Metadata>
+				<InternalName>originInfo_dateCreated_end</InternalName>
+				<WriteXPath>./mods:mods/mods:originInfo/#mods:dateCreated[@encoding='iso8601'][@point='end']</WriteXPath>
+			</Metadata>
+			<Metadata>
+				<InternalName>originInfo_dateCreated_text</InternalName>
+				<WriteXPath>./mods:mods/mods:originInfo/#mods:dateCreated</WriteXPath>
+			</Metadata>
+			
+			<!-- Digitalisat -->
+			<Metadata>
+				<InternalName>originInfo_electronic_place_placeTerm</InternalName>
+				<WriteXPath>./mods:mods/mods:originInfo[@eventType='digitization']/#mods:place/mods:placeTerm[@type='text']</WriteXPath>
+			</Metadata>
+			<Metadata>
+				<InternalName>originInfo_electronic_publisher</InternalName>
+				<WriteXPath>./mods:mods/mods:originInfo[@eventType='digitization']/#mods:publisher</WriteXPath>
+			</Metadata>
+			<Metadata>
+				<InternalName>originInfo_electronic_dateCaptured_start</InternalName>
+				<WriteXPath>./mods:mods/mods:originInfo[@eventType='digitization']/#mods:dateCaptured[@encoding='iso8601']</WriteXPath>
+			</Metadata>
+			<Metadata>
+				<InternalName>originInfo_electronic_edition</InternalName>
+				<WriteXPath>./mods:mods/mods:originInfo[@eventType='digitization']/#mods:edition</WriteXPath>
+			</Metadata>
+
+			<!-- ## language ## -->
+			<Metadata>
+				<InternalName>language_languageTerm</InternalName>
+				<WriteXPath>./mods:mods/#mods:language/mods:languageTerm[@type='text']</WriteXPath>
+			</Metadata>
+
+			<Metadata>
+				<InternalName>language_scriptTerm</InternalName>
+				<WriteXPath>./mods:mods/#mods:language/mods:scriptTerm[@type='text']</WriteXPath>
+			</Metadata>
+			
+			
+
+			<!-- ## physicalDescription ## -->
+			
+			<Metadata>
+				<InternalName>physicalDescription_form</InternalName>
+				<WriteXPath>./mods:mods/mods:physicalDescription/#mods:form[@type='signs of handling']</WriteXPath>
+			</Metadata>
+			
+			<Metadata>
+				<InternalName>physicalDescription_form_material</InternalName>
+				<WriteXPath>./mods:mods/mods:physicalDescription/#mods:form[@type='material']</WriteXPath>
+			</Metadata>
+			
+			<Metadata>
+				<InternalName>physicalDescription_colour</InternalName>
+				<WriteXPath>./mods:mods/mods:physicalDescription/#mods:form[@type='colour']</WriteXPath>
+			</Metadata>
+			
+			<Metadata>
+				<InternalName>physicalDescription_colour_edging</InternalName>
+				<WriteXPath>./mods:mods/mods:physicalDescription/#mods:form[@type='colour edging']</WriteXPath>
+			</Metadata>
+			
+			<!-- mods:form um die URI unterzubringen -->
+			<Metadata>
+				<InternalName>physicalDescription_extent</InternalName>
+				<WriteXPath>./mods:mods/mods:physicalDescription/#mods:form[@type='format']</WriteXPath>
+			</Metadata>
+			
+						
+			<!-- ## abstract ## -->
+			
+			<Metadata>
+				<InternalName>abstract</InternalName>
+				<WriteXPath>./mods:mods/#mods:abstract</WriteXPath>
+			</Metadata>
+
+
+
+			<!-- ## note ## 
+			
+			<Metadata>
+				<InternalName>note</InternalName>
+				<WriteXPath>./mods:mods/#mods:note</WriteXPath>
+			</Metadata>
+			-->
+			
+			<!-- ## subject ## -->
+			<Metadata>
+				<InternalName>subject_topic</InternalName>
+				<WriteXPath>./mods:mods/#mods:subject/mods:topic</WriteXPath>
+			</Metadata>
+			
+
+
+
+			<!-- ##  relatedItem  ## -->
+			<Group>
+				<InternalName>relatedItem_document</InternalName>
+				<WriteXPath>./mods:mods/#mods:relatedItem[@otherType='document']</WriteXPath>
+				<Metadata>
+					<InternalName>relatedItem_document_othertypeuri</InternalName>
+					<WriteXPath>./mods:note</WriteXPath>
+				</Metadata>
+				<Metadata>
+					<InternalName>relatedItem_document_identifier_uri</InternalName>
+					<WriteXPath>./mods:identifier[@type='uri']</WriteXPath>
+				</Metadata>
+			</Group>
+			
+			<Metadata>
+				<InternalName>relatedItem_holding_identifier_uri</InternalName>
+				<WriteXPath>./mods:mods/#mods:relatedItem[@otherType='recorded in'][mods:genre='tna discovery record']/#mods:identifier[@type='local']</WriteXPath>
+			</Metadata>
+			
+			<Metadata>
+				<InternalName>relatedItem_journey</InternalName>
+				<WriteXPath>./mods:mods/#mods:relatedItem[@otherType='appeared in'][mods:genre='journey']/#mods:identifier[@type='uri']</WriteXPath>
+			</Metadata>
+			
+			<Metadata>
+				<InternalName>relatedItem_court_process</InternalName>
+				<WriteXPath>./mods:mods/#mods:relatedItem[@otherType='appeared in'][mods:genre='court process']/#mods:identifier[@type='uri']</WriteXPath>
+			</Metadata>
+			
+			
+			
+			
+			<!-- ##  identifier  ## -->
+			
+			<Metadata>
+				<InternalName>identifier_handle</InternalName>
+				<WriteXPath>./mods:mods/#mods:identifier[@type='uri']</WriteXPath>
+			</Metadata>
+			
+			<Metadata>
+				<InternalName>identifier_local_invalid</InternalName>
+				<WriteXPath>./mods:mods/#mods:identifier[@type='local'][@invalid='yes']</WriteXPath>
+			</Metadata>
+
+
+			
+			<!-- ## location ## -->
+			
+			<Metadata>
+				<InternalName>location_physicalLocation</InternalName>
+				<WriteXPath>./mods:mods/mods:location/#mods:physicalLocation</WriteXPath>
+			</Metadata>
+			<Metadata>
+				<InternalName>location_shelfLocator</InternalName>
+				<WriteXPath>./mods:mods/mods:location/#mods:shelfLocator</WriteXPath>
+			</Metadata>
+
+			<!-- wird auf originInfo gemappt -->
+			<Group>
+				<InternalName>location_related_place</InternalName>
+				<WriteXPath>./mods:mods/#mods:location</WriteXPath>
+				<Metadata>
+					<InternalName>location_physicalLocation_related_place</InternalName>
+					<WriteXPath>./mods:physicalLocation</WriteXPath>
+				</Metadata>
+				<Metadata>
+					<InternalName>location_holdingExternal_relation_type</InternalName>
+					<WriteXPath>./mods:holdingExternal/mods:relation_type</WriteXPath>
+				</Metadata>
+			</Group>
+			
+			
+			
+			<!-- ## accessCondition ## -->
+			<Metadata>
+				<InternalName>CatalogIDDigital</InternalName>
+				<ValueRegExp>s/(.*)/© Images reproduced by permission of The National Archives, London, England/</ValueRegExp>
+				<WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://portal.prizepapers.de/termsofuse']</WriteXPath>
+			</Metadata>
+			<Metadata>
+				<InternalName>recordInfo_recordIdentifier</InternalName>
+				<ValueRegExp>s/(.*)/© Images reproduced by permission of The National Archives, London, England/</ValueRegExp>
+				<WriteXPath>./mods:mods/#mods:accessCondition[@type='use and reproduction'][@xlink:href='https://portal.prizepapers.de/termsofuse']</WriteXPath>
+			</Metadata>
+			
+			
+			<!-- ## recordInfo ## -->
+			<Metadata>
+				<InternalName>CatalogIDDigital</InternalName>
+				<ValueRegExp>s/(.*)/Prize Papers Project/</ValueRegExp>
+				<WriteXPath>./mods:mods/mods:recordInfo/#mods:recordContentSource</WriteXPath>
+			</Metadata>
+			<Metadata>
+				<InternalName>CatalogIDDigital</InternalName>
+				<WriteXPath>./mods:mods/mods:recordInfo/#mods:recordIdentifier[@source='prize papers project goobi']</WriteXPath>
+			</Metadata>
+			<Metadata>
+				<InternalName>CatalogIDDigital</InternalName>
+				<ValueRegExp>s/(.*)/http:\/\/creativecommons.org\/licenses\/by\/4.0\//</ValueRegExp>
+				<WriteXPath>./mods:mods/mods:recordInfo/#mods:recordInfoNote[@type='license']</WriteXPath>
+			</Metadata>
+			
+			<Metadata>
+				<InternalName>recordInfo_recordIdentifier</InternalName>
+				<ValueRegExp>s/(.*)/Prize Papers Project/</ValueRegExp>
+				<WriteXPath>./mods:mods/mods:recordInfo/#mods:recordContentSource</WriteXPath>
+			</Metadata>
+			<Metadata>
+				<InternalName>recordInfo_recordIdentifier</InternalName>
+				<WriteXPath>./mods:mods/mods:recordInfo/#mods:recordIdentifier[@source='prize papers project goobi']</WriteXPath>
+			</Metadata>
+			<Metadata>
+				<InternalName>recordInfo_recordIdentifier</InternalName>
+				<ValueRegExp>s/(.*)/http:\/\/creativecommons.org\/licenses\/by\/4.0\//</ValueRegExp>
+				<WriteXPath>./mods:mods/mods:recordInfo/#mods:recordInfoNote[@type='license']</WriteXPath>
+			</Metadata>
+			
+
+
+
+			<!-- ##########################################################################
+				 ##  Physical document structure types                                   ##
+				 ########################################################################## -->
+
+			<!-- DO NOT CHANGE!! -->
+			<DocStruct>
+				<InternalName>BoundBook</InternalName>
+				<MetsType>physSequence</MetsType>
+			</DocStruct>
+			<DocStruct>
+				<InternalName>page</InternalName>
+				<MetsType>page</MetsType>
+			</DocStruct>
+			<!-- DO NOT CHANGE!! -->
+
+			<!-- ##########################################################################
+				 ##  Logical document structure types                                    ##
+				 ########################################################################## -->
+
+			<!-- The DocStructTypes below are mapped to zvdd at METS export. Please change
+				names to get the original DocStructTypes.-->
+
+			
+			<!-- document -->
+			<DocStruct>
+				<InternalName>Document</InternalName>
+				<MetsType>document</MetsType>
+			</DocStruct>
+			<DocStruct>
+				<InternalName>Document_contained</InternalName>
+				<MetsType>document</MetsType>
+			</DocStruct>
+			
+
+
+		</METS>
+	</Formats>
+</Preferences>
