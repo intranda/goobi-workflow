@@ -85,7 +85,8 @@
 				                        Metadaten.outputType == 'dante' or 
 				                        Metadaten.outputType == 'viaf' or 
 				                        Metadaten.outputType == 'easydb' or 
-				                        Metadaten.outputType == 'vocabularySearch'}">
+				                        Metadaten.outputType == 'vocabularySearch' or
+				                        Metadaten.outputType == 'convertibleDate'}">
                                 </x:inputText>
 
                                 <!-- TEXTAREA -->
@@ -125,8 +126,7 @@
                                     </div>
 
                                 </ui:fragment>
-
-
+                                
                                 <!-- MULTISELECT -->
                                 <h:selectManyListbox
                                     id="mySelect"
@@ -137,7 +137,7 @@
                                     readonly="#{Metadaten.nurLesenModus}">
                                     <f:selectItems value="#{Metadaten.metadatum.items}" />
                                 </h:selectManyListbox>
-
+								
                                 <!-- AUTHORITY DATA - NO DANTE, VIAF OR EASYDB -->
                                 <ui:fragment rendered="#{Metadaten.metadatum.normdata and Metadaten.outputType != 'dante' and Metadaten.outputType != 'viaf' and Metadaten.outputType != 'easydb'}">
                                     <div class="form-group form-group--inside">

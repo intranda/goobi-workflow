@@ -127,6 +127,29 @@
                 <field>type=Person</field>
             </vocabularyList>
             
+            <convertibleDate ref="GregorianDate">
+            	<source>Testquelle</source>
+            	<field>1983-12-01</field>
+            </convertibleDate>
+            
+            
+            <generate ref="junitGenerationMetadata">
+                <condition>goobi:metadata[@name='TitleDocMain'][text()='main title']</condition>
+                <value>abcdef [VALUE] gehij</value>
+                <item>
+                    <label>VALUE</label>
+                    <type>xpath</type>
+                    <field>goobi:metadata[@name='TitleDocMain']</field>
+                </item>
+            </generate>
+            <generate ref="junitGenerationMetadata">
+                <value>second entry without condition</value>
+                <item>
+                    <label>VALUE</label>
+                    <type>xpath</type>
+                    <field>goobi:metadata[@name='TitleDocMain']</field>
+                </item>
+            </generate>            
         </context>
     </ruleSet>
 </displayRules>

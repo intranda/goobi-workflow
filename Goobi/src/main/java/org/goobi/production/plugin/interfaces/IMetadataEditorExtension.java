@@ -1,5 +1,3 @@
-package de.sub.goobi.metadaten;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -18,14 +16,41 @@ package de.sub.goobi.metadaten;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+package org.goobi.production.plugin.interfaces;
 
-@RunWith(Suite.class)
-@SuiteClasses({ MetadatenSperrungTest.class, MetadatenTest.class, FileManipulationTest.class, MetadataGroupImplTest.class, MetadatumImplTest.class,
-        MetaPersonTest.class, PaginatorTest.class, TreeNodeStruct3Test.class, ImageTest.class, ImageLevelTest.class, MetaCorporateTest.class,
-        MetadatenVerifizierungTest.class, MetadataGenerationTest.class })
-public class TestAll {
+import org.goobi.production.enums.PluginType;
+
+import de.sub.goobi.metadaten.Metadaten;
+
+public interface IMetadataEditorExtension extends IPlugin {
+
+    /**
+     * Defines the relative URL to the xhtml modal of the plugin
+     * 
+     * @return path to the xhtml page
+     */
+
+    public String getPagePath();
+
+    /**
+     * returns the id of the modal to open
+     * 
+     * @return id
+     */
+
+    public String getModalId();
+
+    @Override
+    default PluginType getType() {
+        return PluginType.MetadataEditor;
+    }
+
+    /**
+     * Initialize the extension
+     * 
+     * @param bean
+     */
+
+    public void initializePlugin(Metadaten bean);
 
 }

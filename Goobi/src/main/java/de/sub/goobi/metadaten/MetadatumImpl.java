@@ -30,6 +30,7 @@ import org.geonames.WebService;
 import org.goobi.api.display.DisplayCase;
 import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
+import org.goobi.api.display.helper.MetadataGeneration;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.api.rest.model.RestMetadata;
 import org.goobi.api.rest.model.RestProcess;
@@ -40,6 +41,11 @@ import org.goobi.production.cli.helper.StringPair;
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.filter.Filters;
+import org.jdom2.xpath.XPathExpression;
+import org.jdom2.xpath.XPathFactory;
 
 import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.dante.DanteImport;
@@ -64,6 +70,7 @@ import ugh.dl.MetadataGroupType;
 import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
+import ugh.fileformats.mets.ModsHelper;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -163,6 +170,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     private boolean validationErrorPresent;
     private String validationMessage;
+
+    private List<MetadataGeneration> generationRules = new ArrayList<>();
 
     /**
      * Allgemeiner Konstruktor ()
@@ -331,8 +340,13 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     myValues.overwriteConfiguredElement(myProcess, md.getType());
                 }
             }
-        }
+        } else if (metadataDisplaytype == DisplayType.generate) {
+            for (Item item : myValues.getItemList()) {
+                MetadataGeneration mg = (MetadataGeneration) item.getAdditionalData();
+                generationRules.add(mg);
+            }
 
+        }
     }
 
     @Override
@@ -373,7 +387,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     /******************************************************
      *
-     * new functions for use of display configuration whithin xml files
+     * new functions for use of display configuration within xml files
      *
      *****************************************************/
 
@@ -1010,4 +1024,48 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     public void setSearchInViaf(boolean serachInViaf) {
 
     }
+
+    public void generateValue() {
+
+        XPathFactory xpfac = XPathFactory.instance();
+
+        // convert the current docstruct into a jdom2 document
+        Document doc = ModsHelper.generateModsSection(bean.getMyDocStruct(), myPrefs);
+        if (doc == null) {
+            Helper.setFehlerMeldung("mets_generation_error");
+            return;
+        }
+        Element mods = doc.getRootElement();
+        Element metadataSection = mods.getChild("extension", ModsHelper.MODS_NAMESPACE).getChild("goobi", ModsHelper.GOOBI_NAMESPACE);
+        MetadataGeneration rule = null;
+
+        for (MetadataGeneration mg : generationRules) {
+            // check if condition is set
+            if (rule != null) {
+                break;
+            }
+            if (StringUtils.isNotBlank(mg.getCondition())) {
+                // check if condition is fulfilled
+                XPathExpression<Element> xp =
+                        xpfac.compile(mg.getCondition(), Filters.element(), null, ModsHelper.MODS_NAMESPACE, ModsHelper.GOOBI_NAMESPACE);
+                Element test = xp.evaluateFirst(metadataSection);
+                if (test != null) {
+                    // condition does match
+                    rule = mg;
+                }
+            } else {
+                // no condition is set, use first rule
+                rule = mg;
+            }
+        }
+
+        if (rule == null) {
+            // no matching rule found, abort
+            return;
+        }
+
+        String currentValue = rule.generateValue(myProcess, myPrefs, bean.getDocument(), xpfac, metadataSection);
+        md.setValue(currentValue);
+    }
+
 }
