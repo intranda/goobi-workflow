@@ -115,7 +115,6 @@
         <jna.version>5.11.0</jna.version>
         <joda.version>2.12.1</joda.version>
         <junit.version>4.13.2</junit.version>
-        <weld-junit.version>4.0.0.Final</weld-junit.version>
         <jsonpath.version>2.7.0</jsonpath.version>
         <jwks-rsa.version>0.21.2</jwks-rsa.version>
         <log4j.version>2.19.0</log4j.version>
@@ -182,34 +181,6 @@
             <artifactId>weld-servlet-shaded</artifactId>
             <version>${weld.version}</version>
         </dependency>
-<dependency>
-    <groupId>org.jboss.weld.se</groupId>
-    <artifactId>weld-se-core</artifactId>
-    <version>${weld.version}</version>
-    <scope>test</scope>
-</dependency>
-<dependency>
-  <groupId>org.jboss.weld.module</groupId>
-  <artifactId>weld-web</artifactId>
-  <version>${weld.version}</version>
-  <scope>test</scope>
-</dependency>
-
-<!-- 
-<dependency>
-  <groupId>org.jboss.weld</groupId>
-  <artifactId>weld-junit4</artifactId>
-  <version>2.0.1.Final</version>
-  <scope>test</scope>
-</dependency>
--->
-    <dependency>
-        <groupId>org.jglue.cdi-unit</groupId>
-        <artifactId>cdi-unit</artifactId>
-        <version>4.1.0</version>
-        <scope>test</scope>
-    </dependency>
-        
         <dependency>
             <groupId>org.apache.deltaspike.core</groupId>
             <artifactId>deltaspike-core-api</artifactId>
@@ -229,26 +200,6 @@
             <groupId>org.apache.deltaspike.modules</groupId>
             <artifactId>deltaspike-jsf-module-impl</artifactId>
             <version>${deltaspike.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.deltaspike.modules</groupId>
-            <artifactId>deltaspike-test-control-module-api</artifactId>
-            <version>${deltaspike.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.deltaspike.modules</groupId>
-            <artifactId>deltaspike-test-control-module-impl</artifactId>
-            <version>${deltaspike.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.deltaspike.cdictrl</groupId>
-            <artifactId>deltaspike-cdictrl-weld</artifactId>
-            <version>${deltaspike.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -1113,8 +1064,7 @@
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
-        </dependency>     
-        
+        </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
