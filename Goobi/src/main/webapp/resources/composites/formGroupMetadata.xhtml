@@ -75,7 +75,7 @@
                         value="#{cc.attrs.metadata.value}"
                         disabled="#{cc.attrs.metadata.disableMetadataField}"
                         readonly="#{Metadaten.nurLesenModus}"
-                        rendered="#{cc.attrs.metadata.outputType == 'textarea'}">
+                        rendered="#{cc.attrs.metadata.outputType == 'textarea' or cc.attrs.metadata.outputType == 'generate'}">
                         <f:ajax
                             execute="@form"
                             event="valueChange" />
@@ -350,6 +350,33 @@
                                 execute="@form"
                                 render="@form" />
                        	</button>
+
+
+ <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'generate'}">
+ 
+<button
+                            class="btn btn--icon-light metadataButton"
+                            jsf:id="generate"
+                            aria-label="#{msgs.DELETE_CURRENT_METADATA}"
+                            tabindex="0"
+                            jsf:action="#{cc.attrs.metadata.generateValue}"
+                            title="#{msgs.metadatenLoeschen}"
+                            type="button">
+                            <i class="fa fa-lg fa-calculator"
+                                aria-hidden="true"></i>
+                        
+                            <f:passThroughAttribute
+                                name="data-toggle"
+                                value="tooltip" />
+                            <f:passThroughAttribute
+                                name="data-placement"
+                                value="top" />
+                            <f:ajax
+                                execute="@form"
+                                render="@form" />
+                        </button>
+ 
+ </ui:fragment>
 
                         <!-- AUTHORITY ICON AND MODAL -->
                         <ui:fragment rendered="#{cc.attrs.metadata.outputType == 'geonames'}">
