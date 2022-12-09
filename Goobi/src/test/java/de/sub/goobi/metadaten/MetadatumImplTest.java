@@ -32,10 +32,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.servlet.http.HttpServletRequest;
 
 import org.easymock.EasyMock;
 import org.goobi.api.display.Item;
+import org.goobi.api.display.enums.DisplayType;
 import org.goobi.beans.Process;
 import org.junit.Before;
 import org.junit.Rule;
@@ -47,6 +51,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.sub.goobi.AbstractTest;
+import de.sub.goobi.config.ConfigurationHelper;
+import de.sub.goobi.helper.FacesContextHelper;
 import de.sub.goobi.helper.Helper;
 import de.sub.goobi.metadaten.search.ViafSearch;
 import de.sub.goobi.mock.MockProcess;
@@ -67,6 +73,8 @@ public class MetadatumImplTest extends AbstractTest {
     @Before
     public void setUp() throws Exception {
 
+        ConfigurationHelper.setImagesPath("/some/path/");
+
         process = MockProcess.createProcess();
         prefs = process.getRegelsatz().getPreferences();
 
@@ -79,6 +87,25 @@ public class MetadatumImplTest extends AbstractTest {
         EasyMock.expect(Helper.getMetadataLanguage()).andReturn("en").anyTimes();
         EasyMock.expect(Helper.getTranslation(EasyMock.anyString())).andReturn("").anyTimes();
         PowerMock.replay(Helper.class);
+
+        PowerMock.mockStatic(ExternalContext.class);
+        PowerMock.mockStatic(FacesContext.class);
+
+        FacesContext facesContext = EasyMock.createMock(FacesContext.class);
+        ExternalContext externalContext = EasyMock.createMock(ExternalContext.class);
+        FacesContextHelper.setFacesContext(facesContext);
+        EasyMock.expect(facesContext.getExternalContext()).andReturn(externalContext).anyTimes();
+        HttpServletRequest servletRequest = EasyMock.createMock(HttpServletRequest.class);
+
+        EasyMock.expect(externalContext.getRequest()).andReturn(servletRequest).anyTimes();
+        EasyMock.expect(servletRequest.getScheme()).andReturn("https").anyTimes();
+        EasyMock.expect(servletRequest.getServerName()).andReturn("localhost").anyTimes();
+        EasyMock.expect(servletRequest.getServerPort()).andReturn(443).anyTimes();
+        EasyMock.expect(servletRequest.getContextPath()).andReturn("goobi").anyTimes();
+        EasyMock.replay(servletRequest);
+
+        EasyMock.replay(externalContext);
+        EasyMock.replay(facesContext);
     }
 
     @Test
@@ -224,6 +251,21 @@ public class MetadatumImplTest extends AbstractTest {
         assertEquals("https://example.com/1234", md.getUrl());
     }
 
-    // TODO test generateValue()
+    @Test
+    public void testGenerateValue() throws Exception {
+
+        Metadaten fixture = new Metadaten();
+        fixture.setMyBenutzerID("1");
+        fixture.setMyProzess(process);
+        fixture.XMLlesenStart();
+
+        Metadata m = new Metadata(prefs.getMetadataTypeByName("junitGenerationMetadata"));
+        MetadatumImpl md = new MetadatumImpl(m, 0, prefs, process, fixture);
+        assertEquals(DisplayType.generate.name(), md.getOutputType());
+        assertNull(md.getValue());
+        md.generateValue();
+        assertEquals("abcdef main title gehij", md.getValue());
+
+    }
 
 }

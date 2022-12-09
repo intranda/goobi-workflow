@@ -34,6 +34,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.goobi.api.display.enums.DisplayType;
+import org.goobi.api.display.helper.MetadataGeneration;
 import org.goobi.beans.Process;
 import org.junit.Before;
 import org.junit.Test;
@@ -214,4 +215,20 @@ public class DisplayCaseTest extends AbstractTest {
         assertEquals("1983-12-01", dc.getItemList().get(0).getField());
 
     }
+
+    @Test
+    public void testConstructorMetadataGenerate() {
+        MetadataType type = new MetadataType();
+        type.setName("junitGenerationMetadata");
+        DisplayCase dc = new DisplayCase(process, type);
+        assertNotNull(dc);
+        assertEquals(DisplayType.generate, dc.getDisplayType());
+        Item fixture = dc.getItemList().get(0);
+        assertEquals("abcdef [VALUE] gehij", fixture.getLabel());
+        assertEquals("abcdef [VALUE] gehij", fixture.getValue());
+        MetadataGeneration mg = (MetadataGeneration) fixture.getAdditionalData();
+        assertNotNull(mg);
+        assertEquals("goobi:metadata[@name='TitleDocMain'][text()='main title']", mg.getCondition());
+    }
+
 }

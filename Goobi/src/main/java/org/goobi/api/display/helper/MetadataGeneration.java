@@ -60,7 +60,8 @@ public class MetadataGeneration {
     }
 
     /**
-     * 
+     * Generate metadata value based on configured rule.
+     *
      * @param process
      * @param prefs
      * @param dd

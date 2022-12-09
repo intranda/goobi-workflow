@@ -1054,7 +1054,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     rule = mg;
                 }
             } else {
-                // no condition is set, use rule
+                // no condition is set, use first rule
                 rule = mg;
             }
         }
