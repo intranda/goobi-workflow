@@ -52,9 +52,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import de.sub.goobi.helper.exceptions.DAOException;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class VocabularyManager implements IManager, Serializable {
 
     /**
