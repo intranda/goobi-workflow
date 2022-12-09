@@ -93,8 +93,6 @@ public final class ConfigDisplayRules {
                 for (DisplayType type : DisplayType.values()) {
                     List<HierarchicalConfiguration> entries = hc.configurationsAt(type.name());
                     if (entries != null) {
-                        System.out.println(type.name() + ":  " + entries.size());
-
                         for (HierarchicalConfiguration metadataConfiguration : entries) {
                             String metadataName = metadataConfiguration.getString("@ref");
 
@@ -125,7 +123,6 @@ public final class ConfigDisplayRules {
                                         mg.addParameter(param);
                                     }
                                 }
-                                // TODO allow multiple configuration entries for the same metadata. Use the first one with matching condition
 
                                 Item item = new Item(defaultValue, defaultValue, true, "", "");
                                 item.setAdditionalData(mg);

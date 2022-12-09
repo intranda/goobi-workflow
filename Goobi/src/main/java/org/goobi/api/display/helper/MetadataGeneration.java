@@ -13,12 +13,14 @@ import org.jdom2.xpath.XPathFactory;
 import de.sub.goobi.helper.VariableReplacer;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import ugh.dl.DigitalDocument;
 import ugh.dl.Prefs;
 import ugh.fileformats.mets.ModsHelper;
 
 @Getter
 @Setter
+@Log4j2
 public class MetadataGeneration {
 
     // metadata name, e.g. TitleDocMain
@@ -51,7 +53,7 @@ public class MetadataGeneration {
         private String field;
 
         // manipulate the found value. e.g.
-        // ([0-9]{4})-([0-9]{2})-[(0-9]{2}) $1 to get a date
+        // ([0-9]{4})-([0-9]{2})-([(0-9]{2}) $1 to get a date
         // (.+), .* $1 to get the name from the string Jean Baptiste Laborde, master of the 'Amphitrion' in 1744
         private String regularExpression;
         private String replacement;
@@ -67,7 +69,6 @@ public class MetadataGeneration {
      * @return
      */
 
-
     public String generateValue(Process process, Prefs prefs, DigitalDocument dd, XPathFactory xpfac, Element metadataSection) {
         String currentValue = getDefaultValue();
 
@@ -77,12 +78,17 @@ public class MetadataGeneration {
         for (MetadataGenerationParameter param : getParameter()) {
             String parameterValue = null;
             if ("xpath".equals(param.getType())) {
-                // TODO exception handling
-                XPathExpression<Element> xp =
-                        xpfac.compile(param.getField(), Filters.element(), null, ModsHelper.MODS_NAMESPACE, ModsHelper.GOOBI_NAMESPACE);
-                Element test = xp.evaluateFirst(metadataSection);
-                if (test != null) {
-                    parameterValue = test.getValue();
+                try {
+                    XPathExpression<Element> xp =
+                            xpfac.compile(param.getField(), Filters.element(), null, ModsHelper.MODS_NAMESPACE, ModsHelper.GOOBI_NAMESPACE);
+                    Element test = xp.evaluateFirst(metadataSection);
+                    if (test != null) {
+                        parameterValue = test.getValue();
+                    }
+                } catch (IllegalArgumentException | IllegalStateException e) {
+                    log.error(e);
+                    return e.getMessage();
+
                 }
             } else if ("variable".equals(param.getType())) {
                 parameterValue = replacer.replace(param.getField());

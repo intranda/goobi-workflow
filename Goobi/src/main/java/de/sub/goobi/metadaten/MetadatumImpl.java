@@ -768,8 +768,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                         && StringUtils.isNotBlank(ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl())) {
                     md.setAutorityFile(vocabulary, ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl(),
                             ConfigurationHelper.getInstance().getGoobiAuthorityServerUrl()
-                            + ConfigurationHelper.getInstance().getGoobiAuthorityServerUser() + "/vocabularies/"
-                            + selectedVocabularyRecord.getVocabularyId() + "/records/" + selectedVocabularyRecord.getId());
+                                    + ConfigurationHelper.getInstance().getGoobiAuthorityServerUser() + "/vocabularies/"
+                                    + selectedVocabularyRecord.getVocabularyId() + "/records/" + selectedVocabularyRecord.getId());
                 } else {
                     md.setAutorityFile(vocabulary, vocabularyUrl,
                             vocabularyUrl + "/jskos/" + selectedVocabularyRecord.getVocabularyId() + "/" + selectedVocabularyRecord.getId());
@@ -1032,7 +1032,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         // convert the current docstruct into a jdom2 document
         Document doc = ModsHelper.generateModsSection(bean.getMyDocStruct(), myPrefs);
         if (doc == null) {
-            // TODO conversion error
+            Helper.setFehlerMeldung("mets_generation_error");
             return;
         }
         Element mods = doc.getRootElement();
