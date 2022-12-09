@@ -48,17 +48,22 @@ import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.persistence.managers.UserManager;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Path("/login")
 public class Login {
+
     @Context
+    @Setter
     private HttpServletRequest servletRequest;
     @Context
+    @Setter
     private HttpServletResponse servletResponse;
 
     @Inject
+    @Setter
     private SessionForm sessionForm;
 
     @POST
