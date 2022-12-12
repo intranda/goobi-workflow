@@ -34,6 +34,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
@@ -1104,16 +1106,28 @@ public class ConfigurationHelper implements Serializable {
         return (long) (size) * factor;
     }
 
-    public List<String> getMetsEditorImageSizes() {
-        return getLocalList("MetsEditorImageSize");
+    public List<Integer> getMetsEditorImageSizes() {
+        return getLocalList("MetsEditorImageSize").stream()
+        		.filter(Objects::nonNull)
+        		.filter(s -> s.matches("\\d{1,9}"))
+        		.map(Integer::parseInt)
+        		.collect(Collectors.toList());
     }
 
-    public List<String> getMetsEditorImageTileSizes() {
-        return getLocalList("MetsEditorImageTileSize");
+    public List<Integer> getMetsEditorImageTileSizes() {
+        return getLocalList("MetsEditorImageTileSize").stream()
+        		.filter(Objects::nonNull)
+        		.filter(s -> s.matches("\\d{1,9}"))
+        		.map(Integer::parseInt)
+        		.collect(Collectors.toList());
     }
 
-    public List<String> getMetsEditorImageTileScales() {
-        return getLocalList("MetsEditorImageTileScale");
+    public List<Integer> getMetsEditorImageTileScales() {
+        return getLocalList("MetsEditorImageTileScale").stream()
+        		.filter(Objects::nonNull)
+        		.filter(s -> s.matches("\\d{1,9}"))
+        		.map(Integer::parseInt)
+        		.collect(Collectors.toList());
     }
 
     public String[] getHistoryImageSuffix() {
