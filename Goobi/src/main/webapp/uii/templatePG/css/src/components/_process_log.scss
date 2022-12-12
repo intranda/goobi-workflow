@@ -16,6 +16,11 @@
       height: 32vh;
     }
   }
+
+  .gw-table-fixed,
+  &__footer {
+    margin: 0 calc(var(--box-padding) * -1);
+  }
   th:last-child,
   td:last-child {
     border-right: 0px;
@@ -59,4 +64,10 @@
   .log_file_delete {
     border: none;
   }
+}
+
+.box.box--outline .box__title {
+  background: transparent;
+  border-width: 1px;
+  color: var(--bs-body-color);
 }

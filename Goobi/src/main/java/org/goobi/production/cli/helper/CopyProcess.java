@@ -1114,7 +1114,6 @@ public class CopyProcess {
      * Prozesstitel und andere Details generieren ================================================================
      */
 
-    @SuppressWarnings("rawtypes")
     public void CalcProzesstitel() {
         StringBuilder newTitleBuilder = new StringBuilder();
         String titeldefinition = "";
@@ -1266,7 +1265,7 @@ public class CopyProcess {
              */
             if (myString.startsWith("'") && myString.endsWith("'") && myString.length() > 2) {
                 imageDescriptionBuilder.append(myString.substring(1, myString.length() - 1));
-            } else if (myString.equals("$Doctype")) {
+            } else if ("$Doctype".equals(myString)) {
 
                 imageDescriptionBuilder.append(this.docType);
             } else {

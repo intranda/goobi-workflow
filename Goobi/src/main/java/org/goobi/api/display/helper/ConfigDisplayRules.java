@@ -1,5 +1,3 @@
-package org.goobi.api.display.helper;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
@@ -24,6 +22,9 @@ package org.goobi.api.display.helper;
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+
+package org.goobi.api.display.helper;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,10 +36,10 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
-import org.apache.commons.configuration.tree.ConfigurationNode;
 import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
+import org.goobi.api.display.helper.MetadataGeneration.MetadataGenerationParameter;
 
 import de.sub.goobi.helper.Helper;
 import lombok.Getter;
@@ -89,55 +90,111 @@ public final class ConfigDisplayRules {
 
                 String projectName = hc.getString("@projectName");
 
-                List<ConfigurationNode> metadataList = hc.getRoot().getChildren();
-                for (ConfigurationNode metadata : metadataList) {
-                    DisplayType type = DisplayType.getByTitle(metadata.getName());
-                    String metadataName = (String) metadata.getAttribute(0).getValue();
-                    HierarchicalConfiguration metadataConfiguration = null;
-                    try {
-                        metadataConfiguration = hc.configurationAt(type + "[@ref='" + metadataName + "']");
-                    } catch (IllegalArgumentException e) {
-                        log.error("Configured display type '" + metadata.getName() + "' does not exist, use input instead.");
+                for (DisplayType type : DisplayType.values()) {
+                    List<HierarchicalConfiguration> entries = hc.configurationsAt(type.name());
+                    if (entries != null) {
+                        for (HierarchicalConfiguration metadataConfiguration : entries) {
+                            String metadataName = metadataConfiguration.getString("@ref");
 
-                        continue;
-                    }
-                    List<HierarchicalConfiguration> items = metadataConfiguration.configurationsAt("item");
-                    List<Item> listOfItems = new ArrayList<>();
-                    if (items != null && !items.isEmpty()) {
-                        String source = metadataConfiguration.getString("source", "");
-                        String field = metadataConfiguration.getString("field", "");
-                        for (HierarchicalConfiguration item : items) {
-                            Item myItem = new Item(item.getString("label", ""), item.getString("value", ""), item.getBoolean("@selected", false),
-                                    source, field);
-                            listOfItems.add(myItem);
-                        }
-                    } else {
-                        String defaultValue = metadataConfiguration.getString("label", "");
-                        Item myItem = new Item(defaultValue, defaultValue, true, metadataConfiguration.getString("source", ""),
-                                metadataConfiguration.getString("field", ""));
-                        listOfItems.add(myItem);
-                    }
-                    if (allValues.containsKey(projectName)) {
-                        Map<String, Map<String, List<Item>>> typeList = allValues.get(projectName);
-                        if (typeList.containsKey(type.name())) {
-                            Map<String, List<Item>> currentType = typeList.get(type.name());
-                            currentType.put(metadataName, listOfItems);
-                        } else {
-                            Map<String, List<Item>> currentType = new HashMap<>();
-                            currentType.put(metadataName, listOfItems);
-                            typeList.put(type.name(), currentType);
-                        }
-                    } else {
-                        Map<String, Map<String, List<Item>>> typeList = new HashMap<>();
-                        Map<String, List<Item>> currentType = new HashMap<>();
-                        currentType.put(metadataName, listOfItems);
-                        typeList.put(type.name(), currentType);
-                        allValues.put(projectName, typeList);
-                    }
+                            if (type == DisplayType.generate) {
+                                String condition = metadataConfiguration.getString("condition");
+                                String defaultValue = metadataConfiguration.getString("value", "");
 
+                                MetadataGeneration mg = new MetadataGeneration();
+                                mg.setCondition(condition);
+                                mg.setDefaultValue(defaultValue);
+
+                                List<HierarchicalConfiguration> items = metadataConfiguration.configurationsAt("item");
+
+                                if (items != null && !items.isEmpty()) {
+                                    for (HierarchicalConfiguration item : items) {
+
+                                        String parameterName = item.getString("label");
+                                        String parameterType = item.getString("type");
+                                        String field = item.getString("field");
+                                        String regularExpression = item.getString("regularExpression");
+                                        String replacement = item.getString("replacement");
+                                        MetadataGenerationParameter param = mg.new MetadataGenerationParameter();
+                                        param.setParameterName(parameterName);
+                                        param.setType(parameterType);
+                                        param.setField(field);
+                                        param.setRegularExpression(regularExpression);
+                                        param.setReplacement(replacement);
+                                        mg.addParameter(param);
+                                    }
+                                }
+
+                                Item item = new Item(defaultValue, defaultValue, true, "", "");
+                                item.setAdditionalData(mg);
+
+                                if (allValues.containsKey(projectName)) {
+                                    Map<String, Map<String, List<Item>>> typeList = allValues.get(projectName);
+                                    if (typeList.containsKey(type.name())) {
+                                        Map<String, List<Item>> currentType = typeList.get(type.name());
+                                        List<Item> exitingItems = currentType.get(metadataName);
+                                        if (exitingItems == null) {
+                                            exitingItems = new ArrayList<>();
+                                        }
+                                        exitingItems.add(item);
+                                        currentType.put(metadataName, exitingItems);
+                                    } else {
+                                        Map<String, List<Item>> currentType = new HashMap<>();
+                                        List<Item> listOfItems = new ArrayList<>();
+                                        listOfItems.add(item);
+                                        currentType.put(metadataName, listOfItems);
+                                        typeList.put(type.name(), currentType);
+                                    }
+                                } else {
+                                    Map<String, Map<String, List<Item>>> typeList = new HashMap<>();
+                                    Map<String, List<Item>> currentType = new HashMap<>();
+                                    List<Item> listOfItems = new ArrayList<>();
+                                    listOfItems.add(item);
+                                    currentType.put(metadataName, listOfItems);
+                                    typeList.put(type.name(), currentType);
+                                    allValues.put(projectName, typeList);
+                                }
+
+                            } else {
+
+                                List<HierarchicalConfiguration> items = metadataConfiguration.configurationsAt("item");
+                                List<Item> listOfItems = new ArrayList<>();
+                                if (items != null && !items.isEmpty()) {
+                                    String source = metadataConfiguration.getString("source", "");
+                                    String field = metadataConfiguration.getString("field", "");
+                                    for (HierarchicalConfiguration item : items) {
+                                        Item myItem = new Item(item.getString("label", ""), item.getString("value", ""),
+                                                item.getBoolean("@selected", false),
+                                                source, field);
+                                        listOfItems.add(myItem);
+                                    }
+                                } else {
+                                    String defaultValue = metadataConfiguration.getString("label", "");
+                                    Item myItem = new Item(defaultValue, defaultValue, true, metadataConfiguration.getString("source", ""),
+                                            metadataConfiguration.getString("field", ""));
+                                    listOfItems.add(myItem);
+                                }
+                                if (allValues.containsKey(projectName)) {
+                                    Map<String, Map<String, List<Item>>> typeList = allValues.get(projectName);
+                                    if (typeList.containsKey(type.name())) {
+                                        Map<String, List<Item>> currentType = typeList.get(type.name());
+                                        currentType.put(metadataName, listOfItems);
+                                    } else {
+                                        Map<String, List<Item>> currentType = new HashMap<>();
+                                        currentType.put(metadataName, listOfItems);
+                                        typeList.put(type.name(), currentType);
+                                    }
+                                } else {
+                                    Map<String, Map<String, List<Item>>> typeList = new HashMap<>();
+                                    Map<String, List<Item>> currentType = new HashMap<>();
+                                    currentType.put(metadataName, listOfItems);
+                                    typeList.put(type.name(), currentType);
+                                    allValues.put(projectName, typeList);
+                                }
+                            }
+                        }
+                    }
                 }
             }
-
         }
     }
 
@@ -196,7 +253,7 @@ public final class ConfigDisplayRules {
             }
             Map<String, Map<String, List<Item>>> itemsByType = this.allValues.get(myproject);
             if (itemsByType == null) {
-                if (myproject.equals("*")) {
+                if ("*".equals(myproject)) {
                     return DisplayType.input;
                 } else {
                     return getElementTypeByName("*", myelementName);
@@ -214,7 +271,7 @@ public final class ConfigDisplayRules {
             }
         }
 
-        if (myproject.equals("*")) {
+        if ("*".equals(myproject)) {
             return DisplayType.input;
         } else {
             return getElementTypeByName("*", myelementName);
@@ -233,7 +290,7 @@ public final class ConfigDisplayRules {
         List<Item> values = new ArrayList<>();
         Map<String, Map<String, List<Item>>> itemsByType = this.allValues.get(projectTitle);
         if (itemsByType.isEmpty()) {
-            if (projectTitle.equals("*")) {
+            if ("*".equals(projectTitle)) {
                 values.add(new Item(projectTitle, "", false, "", ""));
 
             } else {
@@ -245,13 +302,13 @@ public final class ConfigDisplayRules {
             if (typeList.containsKey(elementName)) {
                 values = typeList.get(elementName);
 
-            } else if (projectTitle.equals("*")) {
+            } else if ("*".equals(projectTitle)) {
                 values.add(new Item(projectTitle, "", false, "", ""));
             } else {
                 return getElementsForMetadata("*", displayType, elementName);
             }
 
-        } else if (projectTitle.equals("*")) {
+        } else if ("*".equals(projectTitle)) {
             values.add(new Item(projectTitle, "", false, "", ""));
         } else {
             return getElementsForMetadata("*", displayType, elementName);

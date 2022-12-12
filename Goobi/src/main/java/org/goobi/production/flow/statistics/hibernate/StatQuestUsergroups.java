@@ -50,6 +50,8 @@ import de.sub.goobi.persistence.managers.UsergroupManager;
  ****************************************************************************/
 public class StatQuestUsergroups implements IStatisticalQuestion {
 
+    private static final long serialVersionUID = -3191421984594146429L;
+
     /*
      * (non-Javadoc)
      * @see org.goobi.production.flow.statistics.IStatisticalQuestion#getDataTables(org.goobi.production.flow.statistics.IDataSource)
@@ -62,7 +64,7 @@ public class StatQuestUsergroups implements IStatisticalQuestion {
         } else {
             stepList = StepManager.getSteps(null,
                     " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND schritte.ProzesseID in (select ProzesseID from prozesse where " + filter
-                    + ")");
+                            + ")");
         }
 
         StringBuilder title = new StringBuilder(StatisticsMode.getByClassName(this.getClass()).getTitle());

@@ -48,9 +48,9 @@ import org.json.JSONObject;
 import de.sub.goobi.config.ConfigurationHelper;
 import de.sub.goobi.helper.RetryUtils;
 import de.sub.goobi.persistence.managers.VocabularyManager;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 
-@Log4j
+@Log4j2
 public class VocabularyUploader {
 
     static String vocabTable = "vocabularies";

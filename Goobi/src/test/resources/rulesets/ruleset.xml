@@ -295,6 +295,13 @@
     
     
 <!-- metadata for unit tests -->
+
+    <MetadataType normdata="true">
+        <Name>junitGenerationMetadata</Name>
+        <language name="de">junitGenerationMetadata</language>
+        <language name="en">junitGenerationMetadata</language>
+    </MetadataType>
+
     <MetadataType normdata="true">
         <Name>junitMetadata</Name>
         <language name="de">junitMetadata</language>
@@ -317,7 +324,9 @@
         <metadata num="*">junitMetadata</metadata>
         <metadata num="*">junitPerson</metadata>
         <metadata num="*">junitCorporate</metadata>
-    </Group>   
+    </Group> 
+    
+      
     
     
 	<!-- ##########################################################################
@@ -606,6 +615,7 @@
         <metadata num="*">junitMetadata</metadata>
         <metadata num="*">junitPerson</metadata>
         <metadata num="*">junitCorporate</metadata>
+        <metadata num="*">junitGenerationMetadata</metadata>
 	</DocStrctType>
 	<DocStrctType anchor="true">
 		<Name>Periodical</Name>

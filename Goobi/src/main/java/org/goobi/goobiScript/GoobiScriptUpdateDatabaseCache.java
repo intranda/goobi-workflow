@@ -130,7 +130,7 @@ public class GoobiScriptUpdateDatabaseCache extends AbstractIGoobiScript impleme
                     value = StorageProvider.getInstance().getNumberOfFiles(Paths.get(p.getImagesTifDirectory(true)));
                 }
                 if (value > 0) {
-                    ProcessManager.updateImages(value, p.getId());
+                    p.setSortHelperImages(value);
                 }
             }
 
