@@ -24,17 +24,9 @@
     ['primary', 'primary-400', ['#368ee0', 'rgb(54, 142, 224)', 'hsl(209, 73%, 55%)']],
     ['action', 'action', ['#e8860c', 'rgb(232, 134, 12))', 'hsl(33, 90%, 48%)']],
     ['success', 'success', ['#198754', '	rgb(25, 135, 84)', '	hsl(152, 69%, 31%)']],
-    ['hot', 'hot', ['#ba324f', 'rgb(186, 50, 79)', 'hsl(347, 58%, 46%)']],
-    ['dev', 'dev', ['#f0f', '#fff']]
+    ['hot', 'hot', ['#ba324f', 'rgb(186, 50, 79)', 'hsl(347, 58%, 46%)']]
   ]}" />
 
-
-  <style>
-  .btn-dev {
-    background-color: #{boxColors[5][2][0]};
-    color: #{boxColors[5][2][1]};
-  }
-  </style>
 
   <article class="flow">
 
@@ -123,8 +115,6 @@
 const boxCode =`
 &lt;intranda:box
   boxType=&quot;{%type%}&quot;
-  boxPadding=&quot;true&quot;&gt; // default: true
-  boxSmall=&quot;false&quot;&gt; // default: false
   icon=&quot;fa-search&quot;
   title=&quot;#{msgs.search}&quot;
 
@@ -198,7 +188,6 @@ document.querySelector('.switch > .btn-blank').click();
       const boxCodeBoxTabs =`
 &lt;intranda:box
   boxType=&quot;{%type%}&quot;
-  boxPadding=&quot;false&quot;&gt; // default: true
   boxTitle=&quot;false&quot;&gt; // default: true
   title=&quot;#{msgs.search}&quot;
   icon=&quot;fa-search&quot;
@@ -248,7 +237,6 @@ document.querySelector('.switch > .btn-blank').click();
   boxType=&quot;hot&quot;
   boxSmall=&quot;true&quot;&gt; // default: true
   title=&quot;I am a slim title&quot;
-  icon=&quot;undefined&quot; // default: undefined
 
   &lt;!-- Your markup here --&gt;
 

@@ -95,3 +95,11 @@
 .dataTables__paginator {
   gap: 8px;
 }
+
+// hightlight parts of code snippets
+.highlight {
+  background-color: yellow;
+  color: darkred;
+  border-radius: 2px;
+  padding: 1px;
+}
