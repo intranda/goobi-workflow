@@ -526,8 +526,11 @@ public @Data class Image {
 
     public List<String> getLayerSizes() {
         if (this.layerSizes == null || this.layerSizes.isEmpty()) {
-            this.layerSizes = ConfigurationHelper.getInstance().getMetsEditorImageSizes()
-            		.stream().map(i -> i.toString()).collect(Collectors.toList());
+            this.layerSizes = ConfigurationHelper.getInstance()
+                    .getMetsEditorImageSizes()
+                    .stream()
+                    .map(i -> i.toString())
+                    .collect(Collectors.toList());
         }
         return this.layerSizes;
     }

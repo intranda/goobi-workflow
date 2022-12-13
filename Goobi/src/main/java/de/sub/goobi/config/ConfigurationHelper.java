@@ -1108,26 +1108,26 @@ public class ConfigurationHelper implements Serializable {
 
     public List<Integer> getMetsEditorImageSizes() {
         return getLocalList("MetsEditorImageSize").stream()
-        		.filter(Objects::nonNull)
-        		.filter(s -> s.matches("\\d{1,9}"))
-        		.map(Integer::parseInt)
-        		.collect(Collectors.toList());
+                .filter(Objects::nonNull)
+                .filter(s -> s.matches("\\d{1,9}"))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
     }
 
     public List<Integer> getMetsEditorImageTileSizes() {
         return getLocalList("MetsEditorImageTileSize").stream()
-        		.filter(Objects::nonNull)
-        		.filter(s -> s.matches("\\d{1,9}"))
-        		.map(Integer::parseInt)
-        		.collect(Collectors.toList());
+                .filter(Objects::nonNull)
+                .filter(s -> s.matches("\\d{1,9}"))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
     }
 
     public List<Integer> getMetsEditorImageTileScales() {
         return getLocalList("MetsEditorImageTileScale").stream()
-        		.filter(Objects::nonNull)
-        		.filter(s -> s.matches("\\d{1,9}"))
-        		.map(Integer::parseInt)
-        		.collect(Collectors.toList());
+                .filter(Objects::nonNull)
+                .filter(s -> s.matches("\\d{1,9}"))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
     }
 
     public String[] getHistoryImageSuffix() {

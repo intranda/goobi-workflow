@@ -501,7 +501,7 @@ public class GoobiImageResource {
     }
 
     private Long getLastEdited(Path path) {
- 
+
         if (FILE_LAST_EDITED_TIMES.size() >= IMAGE_SIZES_MAX_SIZE) {
             List<String> keysToDelete =
                     FILE_LAST_EDITED_TIMES.keySet().stream().limit(IMAGE_SIZES_NUM_ENTRIES_TO_DELETE_ON_OVERFLOW).collect(Collectors.toList());
@@ -509,7 +509,7 @@ public class GoobiImageResource {
                 FILE_LAST_EDITED_TIMES.remove(key);
             }
         }
-        
+
         Long[] times = FILE_LAST_EDITED_TIMES.get(path.toString());
         if (times == null || times[1] < System.currentTimeMillis() - AVAILABLE_THUMBNAIL_FOLDERS_TTL) {
             long date;
@@ -714,7 +714,7 @@ public class GoobiImageResource {
                 availableThumbnailFolders.remove(key);
             }
         }
-        
+
         List<Path> thumbFolderPaths = getMatchingThumbnailFolders(imageFolder, thumbsFolder);
         availableThumbnailFolders.put(imageFolder.toString(),
                 thumbFolderPaths.stream()
@@ -731,8 +731,8 @@ public class GoobiImageResource {
         }
         List<ImageTile> tiles = new ArrayList<>();
         for (Integer size : tileSizes) {
-                ImageTile tile = new ImageTile(size, size, scales);
-                tiles.add(tile);
+            ImageTile tile = new ImageTile(size, size, scales);
+            tiles.add(tile);
         }
         return tiles;
     }
