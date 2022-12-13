@@ -111,153 +111,60 @@
       &lt;!-- TABLE WRAPPER --&gt;
       &lt;div class=&quot;gw-table__wrapper&quot;&gt;
 
-        &lt;!-- TABLE --&gt;
-        &lt;table role=&quot;grid&quot; id=&quot;tableUserAll&quot; class=&quot;table table-bordered table-fixed table-hover&quot;&gt;
-          &lt;!-- ### Columnheader row ### --&gt;
-          &lt;thead&gt;
-            &lt;tr role=&quot;row&quot;&gt;
-              &lt;intranda:columnheader
-                  name=&quot;name&quot;
-                  form=&quot;#{BenutzerverwaltungForm}&quot;
-                  value=&quot;#{msgs.benutzer}&quot;
-                  ajaxRender=&quot;allUsers:myform&quot; /&gt;
-              &lt;intranda:columnheader
-                  name=&quot;login&quot;
-                  form=&quot;#{BenutzerverwaltungForm}&quot;
-                  value=&quot;#{msgs.login}&quot;
-                  ajaxRender=&quot;allUsers:myform&quot; /&gt;
-              &lt;intranda:columnheader
-                  name=&quot;location&quot;
-                  form=&quot;#{BenutzerverwaltungForm}&quot;
-                  value=&quot;#{msgs.standort}&quot;
-                  ajaxRender=&quot;allUsers:myform&quot; /&gt;
-              &lt;intranda:columnheader
-                  name=&quot;group&quot;
-                  form=&quot;#{BenutzerverwaltungForm}&quot;
-                  value=&quot;#{msgs.benutzergruppen}&quot;
-                  ajaxRender=&quot;allUsers:myform&quot; /&gt;
-              &lt;intranda:columnheader
-                  name=&quot;projects&quot;
-                  form=&quot;#{BenutzerverwaltungForm}&quot;
-                  value=&quot;#{msgs.projekte}&quot;
-                  ajaxRender=&quot;allUsers:myform&quot; /&gt;
-              &lt;intranda:columnheader
-                  name=&quot;institution&quot;
-                  form=&quot;#{BenutzerverwaltungForm}&quot;
-                  value=&quot;#{msgs.institution}&quot;
-                  rendered=&quot;#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}&quot;
-                  ajaxRender=&quot;allUsers:myform&quot; /&gt;
-              &lt;intranda:columnheader
-                  value=&quot;#{msgs.auswahl}&quot;
-                  sortable=&quot;false&quot;
-                  addClass=&quot;gw-table-fixed__actions&quot;
-              /&gt;
-            &lt;/tr&gt;
-          &lt;/thead&gt;
+      &lt;!-- TABLE --&gt;
+      &lt;table role=&quot;grid&quot; id=&quot;tableUserAll&quot; class=&quot;table table-bordered table-fixed table-hover&quot;&gt;
 
-          &lt;!-- CONTENT ROWS --&gt;
-          &lt;ui:repeat var=&quot;item&quot;
-            value=&quot;#{BenutzerverwaltungForm.paginator.list}&quot;
-            varStatus=&quot;status&quot;&gt;
-            &lt;tr role=&quot;row&quot;&gt;
-              &lt;td&gt;
-                &lt;h:outputText
-                  value=&quot;#{item.nachname}, #{item.vorname}&quot;
-                  styleClass=&quot;userID_#{item.vorname}_#{item.nachname} #{not item.active?&#039;font-light&#039;:&#039;&#039;}&quot;
-                  title=&quot;#{item.login}&quot; /&gt;
-              &lt;/td&gt;
-              &lt;td&gt;
-                &lt;h:outputText value=&quot;#{item.login}&quot;
-                  styleClass=&quot;#{not item.active?&#039;font-light&#039;:&#039;&#039;}&quot; /&gt;
-              &lt;/td&gt;
-              &lt;td&gt;
-                &lt;h:outputText value=&quot;#{item.standort}&quot;
-                  styleClass=&quot;#{not item.active?&#039;font-light&#039;:&#039;&#039;}&quot; /&gt;
-              &lt;/td&gt;
-              &lt;td&gt;
-                &lt;x:dataList var=&quot;intern&quot;
-                  styleClass=&quot;#{not item.active?&#039;font-light&#039;:&#039;&#039;}&quot;
-                  rendered=&quot;#{item.benutzergruppenSize != 0}&quot;
-                  value=&quot;#{item.benutzergruppen}&quot; layout=&quot;ordered list&quot;
-                  rowCountVar=&quot;rowCount&quot; rowIndexVar=&quot;rowIndex&quot;&gt;
-                  &lt;h:outputText value=&quot;#{intern.titel}&quot; /&gt;
-                  &lt;h:outputText value=&quot;,&quot;
-                    rendered=&quot;#{rowIndex + 1 lt rowCount}&quot; /&gt;
-                &lt;/x:dataList&gt;
-              &lt;/td&gt;
-              &lt;td&gt;
-                &lt;x:dataList var=&quot;intern&quot;
-                  styleClass=&quot;#{not item.active?&#039;font-light&#039;:&#039;&#039;}&quot;
-                  rendered=&quot;#{item.projekteSize != 0}&quot;
-                  value=&quot;#{item.projekte}&quot; layout=&quot;ordered list&quot;
-                  rowCountVar=&quot;rowCount&quot; rowIndexVar=&quot;rowIndex&quot;&gt;
-                  &lt;h:outputText value=&quot;#{intern.titel}&quot; /&gt;
-                  &lt;h:outputText value=&quot;,&quot;
-                    rendered=&quot;#{rowIndex + 1 lt rowCount}&quot; /&gt;
-                &lt;/x:dataList&gt;
-              &lt;/td&gt;
-              &lt;td jsf:rendered=&quot;#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}&quot;&gt;
-                &lt;h:outputText value=&quot;#{item.institution.shortName}&quot;
-                  styleClass=&quot;#{not item.active?&#039;font-light&#039;:&#039;&#039;}&quot; /&gt;
-              &lt;/td&gt;
+      &lt;!-- COLUMNHEADER --&gt;
+        &lt;thead&gt;
+          &lt;tr role=&quot;row&quot;&gt;
+            &lt;intranda:columnheader
+                name=&quot;name&quot;
+                form=&quot;#{BenutzerverwaltungForm}&quot;
+                value=&quot;#{msgs.benutzer}&quot;
+                ajaxRender=&quot;allUsers:myform&quot; /&gt;
 
-              &lt;!-- ACTION BUTTONS --&gt;
-              &lt;td&gt;
-                  &lt;div class=&quot;gw-table__actions__container&quot;&gt;
-                    &lt;!-- Bearbeiten-Schaltknopf --&gt;
-                    &lt;button jsf:id=&quot;edit&quot; class=&quot;btn btn-blank&quot;
-                      jsf:rel=&quot;tooltip&quot; jsf:action=&quot;user_edit&quot;
-                      title=&quot;#{msgs.benutzerBearbeiten}&quot;&gt;
-                      &lt;i class=&quot;fa fa-pencil&quot;&gt;&lt;/i&gt;
-                      &lt;f:passThroughAttribute name=&quot;data-toggle&quot;
-                        value=&quot;tooltip&quot; /&gt;
-                      &lt;f:passThroughAttribute name=&quot;aria-label&quot;
-                        value=&quot;#{msgs.benutzerBearbeiten}&quot; /&gt;
-                      &lt;f:setPropertyActionListener
-                        target=&quot;#{BenutzerverwaltungForm.myClass}&quot;
-                        value=&quot;#{item}&quot; /&gt;
-                      &lt;f:setPropertyActionListener
-                        target=&quot;#{BenutzerverwaltungForm.displayMode}&quot; value=&quot;&quot; /&gt;
-                    &lt;/button&gt;
+                ...
+                ...
 
-                    &lt;!-- Benutzerprofil laden-Schaltknopf --&gt;
-                    &lt;button jsf:id=&quot;switch&quot;
-                      jsf:rendered=&quot;#{LoginForm.hasRole(&#039;Admin_Users_Allow_Switch&#039;)}&quot;
-                      class=&quot;btn btn-blank&quot;
-                      jsf:action=&quot;&quot;
-                      title=&quot;#{msgs.benutzerprofilLaden}&quot;&gt;
-                      &lt;i class=&quot;fa fa-user-secret&quot;&gt;&lt;/i&gt;
-                      &lt;f:passThroughAttribute name=&quot;aria-label&quot;
-                        value=&quot;#{msgs.benutzerprofilLaden}&quot; /&gt;
-                      &lt;f:passThroughAttribute name=&quot;data-toggle&quot;
-                        value=&quot;tooltip&quot; /&gt;
-                      &lt;f:passThroughAttribute name=&quot;data-placement&quot; value=&quot;top&quot; /&gt;
-                      &lt;f:param name=&quot;ID&quot; value=&quot;#{item.id}&quot; /&gt;
-                    &lt;/button&gt;
+            &lt;intranda:columnheader
+                value=&quot;#{msgs.auswahl}&quot;
+                sortable=&quot;false&quot;
+                addClass=&quot;gw-table-fixed__actions&quot;
+            /&gt;
+          &lt;/tr&gt;
+        &lt;/thead&gt;
 
-                    &lt;!-- Create new random password for user --&gt;
-                    &lt;button jsf:id=&quot;createNewRandomPassword&quot;
-                      class=&quot;btn btn-blank&quot; jsf:rel=&quot;tooltip&quot;
-                      title=&quot;#{msgs.createNewRandomPassword}&quot;
-                      jsf:rendered=&quot;#{LoginForm.hasRole(&#039;Admin_Users_Change_Passwords&#039;) and (item.ldapGruppe.authenticationType != &#039;ldap&#039; or not item.ldapGruppe.readonly)}&quot;
-                      jsf:onclick=&quot;if (!confirm(&#039;#{msgs.confirmUserPasswordReset}&#039;)) return false&quot;
-                      jsf:action=&quot;&quot;&gt;
-                      &lt;i class=&quot;fa fa-key&quot;&gt;&lt;/i&gt;
-                      &lt;f:passThroughAttribute name=&quot;data-toggle&quot;
-                        value=&quot;tooltip&quot; /&gt;
-                      &lt;f:setPropertyActionListener
-                        target=&quot;#{BenutzerverwaltungForm.myClass}&quot;
-                        value=&quot;#{item}&quot; /&gt;
-                      &lt;f:passThroughAttribute name=&quot;aria-label&quot;
-                        value=&quot;#{msgs.createNewRandomPassword}&quot; /&gt;
-                      &lt;f:param name=&quot;ID&quot; value=&quot;#{item.id}&quot; /&gt;
-                      &lt;f:ajax render=&quot;globalMessage&quot; /&gt;
-                    &lt;/button&gt;
-                &lt;/div&gt;
-              &lt;/td&gt;
-            &lt;/tr&gt;
-          &lt;/ui:repeat&gt;
-        &lt;/table&gt;
+        &lt;!-- CONTENT ROWS --&gt;
+        &lt;ui:repeat var=&quot;item&quot;
+          value=&quot;hello world&quot;
+          varStatus=&quot;status&quot;&gt;
+          &lt;tr role=&quot;row&quot;&gt;
+            &lt;td&gt;
+            ...
+            ...
+            &lt;/td&gt;
+
+            &lt;!-- ACTION BUTTONS --&gt;
+            &lt;td&gt;
+                &lt;div class=&quot;gw-table__actions__container&quot;&gt;
+
+                  &lt;button jsf:id=&quot;edit&quot; class=&quot;btn btn-blank&quot;
+                    &lt;i class=&quot;fa fa-pencil&quot;&gt;&lt;/i&gt;
+                  &lt;/button&gt;
+
+                  &lt;button jsf:id=&quot;switch&quot;
+                    &lt;i class=&quot;fa fa-user-secret&quot;&gt;&lt;/i&gt;
+                  &lt;/button&gt;
+
+                  &lt;button jsf:id=&quot;createNewRandomPassword&quot;
+                    class=&quot;btn btn-blank&quot;
+                    &lt;i class=&quot;fa fa-key&quot;&gt;&lt;/i&gt;
+                  &lt;/button&gt;
+              &lt;/div&gt;
+            &lt;/td&gt;
+          &lt;/tr&gt;
+        &lt;/ui:repeat&gt;
+      &lt;/table&gt;
 
       &lt;/div&gt;
 

@@ -1,0 +1,137 @@
+<ui:composition
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+  xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:f="http://xmlns.jcp.org/jsf/core"
+  xmlns:x="http://myfaces.apache.org/tomahawk"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+  xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+  xmlns:p="http://primefaces.org/ui"
+  xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<composite:interface />
+
+<composite:implementation>
+<c:set var="users" value="#{[
+  ['Draper, Don', 'testadmin', 'Rome and Göttingen, NY', 'Administration','Archive_Project, Manuscript_Project'],
+  ['Draper, Don', 'testadmin', 'Rome and Göttingen', 'Administration','Archive_Project, Manuscript_Project'],
+  ['Draper, Don', 'testadmin', 'Rome and Göttingen', 'Administration','Archive_Project, Manuscript_Project'],
+  ['Draper, Don', 'testadmin', 'Rome and Göttingen', 'Administration','Archive_Project, Manuscript_Project'],
+  ['Draper, Don', 'testadmin', 'Rome and Göttingen', 'Administration','Archive_Project, Manuscript_Project']
+  ]}"
+/>
+
+
+<table role="grid" id="tableUserAll" class="table table-bordered table-fixed table-hover">
+
+  <!-- COLUMNHEADER -->
+  <thead>
+    <tr role="row">
+      <intranda:columnheader
+        name="name"
+        form="#{BenutzerverwaltungForm}"
+        value="#{msgs.benutzer}"
+        ajaxRender="allUsers:myform" />
+      <intranda:columnheader
+        name="login"
+        form="#{BenutzerverwaltungForm}"
+        value="#{msgs.login}"
+        ajaxRender="allUsers:myform" />
+      <intranda:columnheader
+        name="location"
+        form="#{BenutzerverwaltungForm}"
+        value="#{msgs.standort}"
+        ajaxRender="allUsers:myform" />
+      <intranda:columnheader
+        name="group"
+        form="#{BenutzerverwaltungForm}"
+        value="#{msgs.benutzergruppen}"
+        ajaxRender="allUsers:myform" />
+      <intranda:columnheader
+        name="projects"
+        form="#{BenutzerverwaltungForm}"
+        value="#{msgs.projekte}"
+        ajaxRender="allUsers:myform" />
+      <intranda:columnheader
+        name="institution"
+        form="#{BenutzerverwaltungForm}"
+        value="#{msgs.institution}"
+        rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}"
+        ajaxRender="allUsers:myform" />
+      <intranda:columnheader
+        value="#{msgs.auswahl}"
+        sortable="false"
+        addClass="gw-table-fixed__actions"
+        />
+    </tr>
+  </thead>
+
+  <!-- CONTENT ROWS -->
+  <ui:repeat var="item"
+             value="#{users}"
+             varStatus="status">
+  <tr role="row">
+    <td>
+      <h:outputText
+        value="#{item[0]}"
+        title="#{item[1]}" />
+    </td>
+    <td>
+      <h:outputText value="#{item[1]}" />
+    </td>
+    <td>
+      <h:outputText value="#{item[2]}" />
+    </td>
+    <td>
+      <h:outputText value="#{item[3]}" />
+    </td>
+    <td>
+      <h:outputText value="#{item[4]}" />
+    </td>
+
+    <!-- ACTION BUTTONS -->
+    <td>
+      <div class="gw-table__actions__container">
+
+        <!-- Bearbeiten-Schaltknopf -->
+        <button jsf:id="edit" class="btn btn-blank"
+                              disabled="true"
+                              jsf:rel="tooltip" jsf:action="user_edit"
+                              title="#{msgs.benutzerBearbeiten}">
+          <i class="fa fa-pencil"></i>
+        </button>
+
+        <!-- Benutzerprofil laden-Schaltknopf -->
+        <button jsf:id="switch"
+                disabled="true"
+                jsf:rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch')}"
+                class="btn btn-blank"
+                jsf:action="#{LoginForm.EinloggenAls}"
+                title="#{msgs.benutzerprofilLaden}">
+          <i class="fa fa-user-secret"></i>
+        </button>
+
+        <!-- Create new random password for user -->
+        <button jsf:id="createNewRandomPassword"
+                disabled="true"
+                class="btn btn-blank" jsf:rel="tooltip"
+                title="#{msgs.createNewRandomPassword}"
+                >
+                <i class="fa fa-key"></i>
+                <f:passThroughAttribute name="data-toggle"
+                                        value="tooltip" />
+                <f:passThroughAttribute name="aria-label"
+                                        value="#{msgs.createNewRandomPassword}" />
+        </button>
+      </div>
+    </td>
+  </tr>
+  </ui:repeat>
+</table>
+
+
+</composite:implementation>
+</ui:composition>
+

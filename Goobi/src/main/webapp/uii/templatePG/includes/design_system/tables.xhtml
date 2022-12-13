@@ -16,9 +16,10 @@
 	<composite:implementation>
 
 
-  <!-- TYPOGRAPHY -->
+  <!-- TABLES -->
 
-    <!-- HEADING STYLES -->
+
+    <!-- SEARCH -->
     <article class="tables" style="grid-column: 1 / 3">
 
       <h3 class="description">
@@ -159,178 +160,45 @@
 
     </article>
 
+    <!-- Box actions -->
+    <article class="tables" style="grid-column: 3 / -1">
+      <h3 class="description">
+        Table actions and paginator
+      </h3>
+      <ui:include src="box_actions.xhtml">
+        <ui:param name="idPref" value="a" />
+      </ui:include>
+
+      <!-- Code block -->
+      <div class="mt-4">
+        <ui:include src="code_blocks/code_table_actions.xhtml">
+          <ui:param name="ID" value="codeTableActions" />
+        </ui:include>
+      </div>
+
+    </article>
 
 
     <article class="tables" style="grid-column: 1 / 3">
 
       <h3 class="description">
-        Table with min-width columns, width adjustable using a css prop: `--width-table-col`
+        Table with min-width columns: overflow-x is scrollable, width is adjustable using a css prop: `--width-table-col`
       </h3>
 
-							<div class="gw-table gw-table-fixed">
+      <div class="gw-table gw-table-fixed">
 
-								<div class="gw-table__wrapper">
+        <div class="gw-table__wrapper">
+          <ui:include src="table.xhtml" />
+        </div>
 
-									<table role="grid" id="tableUserAll" class="table table-bordered table-fixed table-hover">
+      </div>
 
-										<!-- COLUMNHEADER -->
-										<thead>
-											<tr role="row">
-												<intranda:columnheader
-														name="name"
-														form="#{BenutzerverwaltungForm}"
-														value="#{msgs.benutzer}"
-														ajaxRender="allUsers:myform" />
-												<intranda:columnheader
-														name="login"
-														form="#{BenutzerverwaltungForm}"
-														value="#{msgs.login}"
-														ajaxRender="allUsers:myform" />
-												<intranda:columnheader
-														name="location"
-														form="#{BenutzerverwaltungForm}"
-														value="#{msgs.standort}"
-														ajaxRender="allUsers:myform" />
-												<intranda:columnheader
-														name="group"
-														form="#{BenutzerverwaltungForm}"
-														value="#{msgs.benutzergruppen}"
-														ajaxRender="allUsers:myform" />
-												<intranda:columnheader
-														name="projects"
-														form="#{BenutzerverwaltungForm}"
-														value="#{msgs.projekte}"
-														ajaxRender="allUsers:myform" />
-												<intranda:columnheader
-														name="institution"
-														form="#{BenutzerverwaltungForm}"
-														value="#{msgs.institution}"
-														rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}"
-														ajaxRender="allUsers:myform" />
-												<intranda:columnheader
-														value="#{msgs.auswahl}"
-														sortable="false"
-														addClass="gw-table-fixed__actions"
-												/>
-											</tr>
-										</thead>
-
-										<!-- CONTENT ROWS -->
-										<ui:repeat var="item"
-											value="#{BenutzerverwaltungForm.paginator.list}"
-											varStatus="status">
-											<tr role="row">
-												<td>
-													<h:outputText
-														value="#{item.nachname}, #{item.vorname}"
-														styleClass="userID_#{item.vorname}_#{item.nachname} #{not item.active?'font-light':''}"
-														title="#{item.login}" />
-												</td>
-												<td>
-													<h:outputText value="#{item.login}"
-														styleClass="#{not item.active?'font-light':''}" />
-												</td>
-												<td>
-													<h:outputText value="#{item.standort}"
-														styleClass="#{not item.active?'font-light':''}" />
-												</td>
-												<td>
-													<x:dataList var="intern"
-														styleClass="#{not item.active?'font-light':''}"
-														rendered="#{item.benutzergruppenSize != 0}"
-														value="#{item.benutzergruppen}" layout="ordered list"
-														rowCountVar="rowCount" rowIndexVar="rowIndex">
-														<h:outputText value="#{intern.titel}" />
-														<h:outputText value=","
-															rendered="#{rowIndex + 1 lt rowCount}" />
-													</x:dataList>
-												</td>
-												<td>
-													<x:dataList var="intern"
-														styleClass="#{not item.active?'font-light':''}"
-														rendered="#{item.projekteSize != 0}"
-														value="#{item.projekte}" layout="ordered list"
-														rowCountVar="rowCount" rowIndexVar="rowIndex">
-														<h:outputText value="#{intern.titel}" />
-														<h:outputText value=","
-															rendered="#{rowIndex + 1 lt rowCount}" />
-													</x:dataList>
-												</td>
-												<td jsf:rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
-													<h:outputText value="#{item.institution.shortName}"
-														styleClass="#{not item.active?'font-light':''}" />
-												</td>
-
-												<!-- ACTION BUTTONS -->
-												<td>
-														<div class="gw-table__actions__container">
-
-															<!-- Bearbeiten-Schaltknopf -->
-															<button jsf:id="edit" class="btn btn-blank"
-                                disabled="true"
-																jsf:rel="tooltip" jsf:action="user_edit"
-																title="#{msgs.benutzerBearbeiten}">
-																<i class="fa fa-pencil"></i>
-																<f:passThroughAttribute name="data-toggle"
-																	value="tooltip" />
-																<f:passThroughAttribute name="aria-label"
-																	value="#{msgs.benutzerBearbeiten}" />
-																<f:setPropertyActionListener
-																	target="#{BenutzerverwaltungForm.myClass}"
-																	value="#{item}" />
-																<f:setPropertyActionListener
-																	target="#{BenutzerverwaltungForm.displayMode}" value="" />
-															</button>
-
-															<!-- Benutzerprofil laden-Schaltknopf -->
-															<button jsf:id="switch"
-                                disabled="true"
-																jsf:rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch')}"
-																class="btn btn-blank"
-																jsf:action="#{LoginForm.EinloggenAls}"
-																title="#{msgs.benutzerprofilLaden}">
-																<i class="fa fa-user-secret"></i>
-																<f:passThroughAttribute name="aria-label"
-																	value="#{msgs.benutzerprofilLaden}" />
-																<f:passThroughAttribute name="data-toggle"
-																	value="tooltip" />
-																<f:passThroughAttribute name="data-placement" value="top" />
-																<f:param name="ID" value="#{item.id}" />
-															</button>
-
-															<!-- Create new random password for user -->
-															<button jsf:id="createNewRandomPassword"
-                                disabled="true"
-																class="btn btn-blank" jsf:rel="tooltip"
-																title="#{msgs.createNewRandomPassword}"
-																jsf:rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords') and (item.ldapGruppe.authenticationType != 'ldap' or not item.ldapGruppe.readonly)}"
-																jsf:onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
-																jsf:action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}">
-																<i class="fa fa-key"></i>
-																<f:passThroughAttribute name="data-toggle"
-																	value="tooltip" />
-																<f:setPropertyActionListener
-																	target="#{BenutzerverwaltungForm.myClass}"
-																	value="#{item}" />
-																<f:passThroughAttribute name="aria-label"
-																	value="#{msgs.createNewRandomPassword}" />
-																<f:param name="ID" value="#{item.id}" />
-																<f:ajax render="globalMessage" />
-															</button>
-													</div>
-												</td>
-											</tr>
-										</ui:repeat>
-									</table>
-          </div>
-				</div>
-
-          <!-- Code block -->
-          <div class="mt-4">
-            <ui:include src="code_blocks/code_table.xhtml">
-              <ui:param name="ID" value="codeTable" />
-            </ui:include>
-          </div>
+      <!-- Code block -->
+      <div class="mt-4">
+        <ui:include src="code_blocks/code_table.xhtml">
+          <ui:param name="ID" value="codeTable" />
+        </ui:include>
+      </div>
 
     </article>
 
@@ -415,179 +283,19 @@
 								<!-- ### Table ### -->
 								<h:form id="myform" prependId="false" styleClass="table--scrollx">
 
+              <div class="gw-table gw-table-fixed">
 								<div class="gw-table__wrapper">
-									<table role="grid" id="tableUserAll" class="table table-bordered table-fixed table-hover">
-										<!-- ### Columnheader row ### -->
-										<thead>
-											<tr role="row">
-												<intranda:columnheader
-														name="name"
-														form="#{BenutzerverwaltungForm}"
-														value="#{msgs.benutzer}"
-														ajaxRender="allUsers:myform" />
-												<intranda:columnheader
-														name="login"
-														form="#{BenutzerverwaltungForm}"
-														value="#{msgs.login}"
-														ajaxRender="allUsers:myform" />
-												<intranda:columnheader
-														name="location"
-														form="#{BenutzerverwaltungForm}"
-														value="#{msgs.standort}"
-														ajaxRender="allUsers:myform" />
-												<intranda:columnheader
-														name="group"
-														form="#{BenutzerverwaltungForm}"
-														value="#{msgs.benutzergruppen}"
-														ajaxRender="allUsers:myform" />
-												<intranda:columnheader
-														name="projects"
-														form="#{BenutzerverwaltungForm}"
-														value="#{msgs.projekte}"
-														ajaxRender="allUsers:myform" />
-												<intranda:columnheader
-														name="institution"
-														form="#{BenutzerverwaltungForm}"
-														value="#{msgs.institution}"
-														rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}"
-														ajaxRender="allUsers:myform" />
-												<intranda:columnheader
-														value="#{msgs.auswahl}"
-														sortable="false"
-														addClass="gw-table-fixed__actions"
-												/>
-											</tr>
-										</thead>
-
-										<!-- ### Content rows ### -->
-										<ui:repeat var="item"
-											value="#{BenutzerverwaltungForm.paginator.list}"
-											varStatus="status">
-											<tr role="row">
-												<td>
-													<h:outputText
-														value="#{item.nachname}, #{item.vorname}"
-														styleClass="userID_#{item.vorname}_#{item.nachname} #{not item.active?'font-light':''}"
-														title="#{item.login}" />
-												</td>
-												<td>
-													<h:outputText value="#{item.login}"
-														styleClass="#{not item.active?'font-light':''}" />
-												</td>
-												<td>
-													<h:outputText value="#{item.standort}"
-														styleClass="#{not item.active?'font-light':''}" />
-												</td>
-												<td>
-													<x:dataList var="intern"
-														styleClass="#{not item.active?'font-light':''}"
-														rendered="#{item.benutzergruppenSize != 0}"
-														value="#{item.benutzergruppen}" layout="ordered list"
-														rowCountVar="rowCount" rowIndexVar="rowIndex">
-														<h:outputText value="#{intern.titel}" />
-														<h:outputText value=","
-															rendered="#{rowIndex + 1 lt rowCount}" />
-													</x:dataList>
-												</td>
-												<td>
-													<x:dataList var="intern"
-														styleClass="#{not item.active?'font-light':''}"
-														rendered="#{item.projekteSize != 0}"
-														value="#{item.projekte}" layout="ordered list"
-														rowCountVar="rowCount" rowIndexVar="rowIndex">
-														<h:outputText value="#{intern.titel}" />
-														<h:outputText value=","
-															rendered="#{rowIndex + 1 lt rowCount}" />
-													</x:dataList>
-												</td>
-												<td jsf:rendered="#{BenutzerverwaltungForm.getNumberOfInstitutions() gt 1}">
-													<h:outputText value="#{item.institution.shortName}"
-														styleClass="#{not item.active?'font-light':''}" />
-												</td>
-												<!-- ### Action Buttons ### -->
-												<td>
-														<div class="gw-table__actions__container">
-															<!-- Bearbeiten-Schaltknopf -->
-															<button jsf:id="edit" class="btn btn-blank"
-                                disabled="true"
-																jsf:rel="tooltip" jsf:action="user_edit"
-																title="#{msgs.benutzerBearbeiten}">
-																<i class="fa fa-pencil"></i>
-																<f:passThroughAttribute name="data-toggle"
-																	value="tooltip" />
-																<f:passThroughAttribute name="aria-label"
-																	value="#{msgs.benutzerBearbeiten}" />
-																<f:setPropertyActionListener
-																	target="#{BenutzerverwaltungForm.myClass}"
-																	value="#{item}" />
-																<f:setPropertyActionListener
-																	target="#{BenutzerverwaltungForm.displayMode}" value="" />
-															</button>
-
-															<!-- Benutzerprofil laden-Schaltknopf -->
-															<button jsf:id="switch"
-                                disabled="true"
-																jsf:rendered="#{LoginForm.hasRole('Admin_Users_Allow_Switch')}"
-																class="btn btn-blank"
-																jsf:action="#{LoginForm.EinloggenAls}"
-																title="#{msgs.benutzerprofilLaden}">
-																<i class="fa fa-user-secret"></i>
-																<f:passThroughAttribute name="aria-label"
-																	value="#{msgs.benutzerprofilLaden}" />
-																<f:passThroughAttribute name="data-toggle"
-																	value="tooltip" />
-																<f:passThroughAttribute name="data-placement" value="top" />
-																<f:param name="ID" value="#{item.id}" />
-															</button>
-
-															<!-- Create new random password for user -->
-															<button jsf:id="createNewRandomPassword"
-                                disabled="true"
-																class="btn btn-blank" jsf:rel="tooltip"
-																title="#{msgs.createNewRandomPassword}"
-																jsf:rendered="#{LoginForm.hasRole('Admin_Users_Change_Passwords') and (item.ldapGruppe.authenticationType != 'ldap' or not item.ldapGruppe.readonly)}"
-																jsf:onclick="if (!confirm('#{msgs.confirmUserPasswordReset}')) return false"
-																jsf:action="#{BenutzerverwaltungForm.createNewRandomPasswordForUser}">
-																<i class="fa fa-key"></i>
-																<f:passThroughAttribute name="data-toggle"
-																	value="tooltip" />
-																<f:setPropertyActionListener
-																	target="#{BenutzerverwaltungForm.myClass}"
-																	value="#{item}" />
-																<f:passThroughAttribute name="aria-label"
-																	value="#{msgs.createNewRandomPassword}" />
-																<f:param name="ID" value="#{item.id}" />
-																<f:ajax render="globalMessage" />
-															</button>
-													</div>
-												</td>
-											</tr>
-										</ui:repeat>
-									</table>
+                  <ui:include src="table.xhtml" />
 								</div>
-								<div class="form-actions">
-									<!-- Neu-Schaltknopf -->
-									<button jsf:id="newUser" class="btn btn-primary-400 me-auto"
-                    disabled="true"
-										jsf:action="#{BenutzerverwaltungForm.Neu}"
-										jsf:immediate="true">
-										<i class="fa fa-plus"></i>
-										<span>#{msgs.neuenBenutzerAnlegen}</span>
-										<f:setPropertyActionListener
-											target="#{BenutzerverwaltungForm.displayMode}" value="" />
-									</button>
+              </div>
+
+              <ui:include src="box_actions.xhtml">
+                <ui:param name="idPref" value="b" />
+              </ui:include>
 
 
-									<!-- paginator -->
-									<intranda:tablePaginator
-										id="users"
-										paginator="#{BenutzerverwaltungForm.paginator}"
-									/>
-
-								</div>
-
-								</h:form>
-							</div>
+            </h:form>
+          </div>
 
 					</intranda:box>
 
