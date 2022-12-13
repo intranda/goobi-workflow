@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
+import org.goobi.beans.Institution;
+import org.goobi.beans.User;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.ResultOutput;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
@@ -123,6 +125,13 @@ public class StatisticsManager implements Serializable {
         sourceTimeUnit = TimeUnit.months;
         myLocale = locale;
         /* for backward compatibility create old jfreechart datasets */
+        Institution inst = null;
+        User user = Helper.getCurrentUser();
+        if (user != null && !user.isSuperAdmin()) {
+            //             limit result to institution of current user
+            inst = user.getInstitution();
+        }
+
         if (Boolean.TRUE.equals(inMode.getIsSimple())) {
             switch (inMode) {
 
@@ -138,7 +147,7 @@ public class StatisticsManager implements Serializable {
 
                 default:
                     filter = FilterHelper.criteriaBuilder(filter, false, null, null, null, true, false);
-                    List<org.goobi.beans.Process> processList = ProcessManager.getProcesses(null, filter, 0, Integer.MAX_VALUE);
+                    List<org.goobi.beans.Process> processList = ProcessManager.getProcesses(null, filter, 0, Integer.MAX_VALUE, inst);
                     jfreeDataset = StatistikStatus.getDiagramm(processList);
                     break;
             }

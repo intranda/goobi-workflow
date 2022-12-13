@@ -28,7 +28,9 @@ package org.goobi.production.flow.statistics.hibernate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.goobi.beans.Institution;
 import org.goobi.beans.Step;
+import org.goobi.beans.User;
 import org.goobi.production.flow.statistics.IStatisticalQuestion;
 import org.goobi.production.flow.statistics.enums.CalculationUnit;
 import org.goobi.production.flow.statistics.enums.StatisticsMode;
@@ -56,10 +58,15 @@ public class StatQuestVolumeStatus implements IStatisticalQuestion {
      */
     @Override
     public List<DataTable> getDataTables(String filter, String originalFilter) {
-
+        Institution institution = null;
+        User user = Helper.getCurrentUser();
+        if (user != null && !user.isSuperAdmin()) {
+            institution = user.getInstitution();
+        }
         List<Step> stepList = StepManager.getSteps(null,
                 " (bearbeitungsstatus = 1 OR bearbeitungsstatus = 2) AND prozesse.ProzesseID in (select ProzesseID from prozesse where " + filter
-                        + ")");
+                        + ")",
+                institution);
 
         StringBuilder title = new StringBuilder(StatisticsMode.getByClassName(this.getClass()).getTitle());
 

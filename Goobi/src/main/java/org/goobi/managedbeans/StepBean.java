@@ -47,6 +47,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.goobi.api.mail.SendMail;
 import org.goobi.beans.ErrorProperty;
+import org.goobi.beans.Institution;
 import org.goobi.beans.JournalEntry;
 import org.goobi.beans.JournalEntry.EntryType;
 import org.goobi.beans.Process;
@@ -254,54 +255,54 @@ public class StepBean extends BasicBean implements Serializable {
 
         String answer = "prioritaet desc ";
 
-        if (this.sortierung.equals("schrittAsc")) {
+        if ("schrittAsc".equals(this.sortierung)) {
             answer += ", schritte.titel";
-        } else if (this.sortierung.equals("schrittDesc")) {
+        } else if ("schrittDesc".equals(this.sortierung)) {
             answer += ", schritte.titel desc";
         }
-        if (this.sortierung.equals("prozessAsc")) {
+        if ("prozessAsc".equals(this.sortierung)) {
             answer += ", prozesse.Titel";
         }
-        if (this.sortierung.equals("prozessDesc")) {
+        if ("prozessDesc".equals(this.sortierung)) {
             answer += ", prozesse.Titel desc";
         }
-        if (this.sortierung.equals("batchAsc")) {
+        if ("batchAsc".equals(this.sortierung)) {
             answer += ", prozesse.batchID";
         }
-        if (this.sortierung.equals("batchDesc")) {
+        if ("batchDesc".equals(this.sortierung)) {
             answer += ", prozesse.batchID desc";
         }
-        if (this.sortierung.equals("prozessdateAsc")) {
+        if ("prozessdateAsc".equals(this.sortierung)) {
 
             answer += ", prozesse.erstellungsdatum";
         }
-        if (this.sortierung.equals("prozessdateDesc")) {
+        if ("prozessdateDesc".equals(this.sortierung)) {
             answer += ", prozesse.erstellungsdatum desc";
         }
-        if (this.sortierung.equals("projektAsc")) {
+        if ("projektAsc".equals(this.sortierung)) {
             answer += " ,projekte.Titel";
         }
-        if (this.sortierung.equals("projektDesc")) {
+        if ("projektDesc".equals(this.sortierung)) {
             answer += ", projekte.Titel desc";
-        } else if (this.sortierung.equals("modulesAsc")) {
+        } else if ("modulesAsc".equals(this.sortierung)) {
             answer += ", typModulName";
-        } else if (this.sortierung.equals("modulesDesc")) {
+        } else if ("modulesDesc".equals(this.sortierung)) {
             answer += ", typModulName desc";
-        } else if (this.sortierung.equals("statusAsc")) {
+        } else if ("statusAsc".equals(this.sortierung)) {
             answer += ", bearbeitungsstatus";
-        } else if (this.sortierung.equals("statusDesc")) {
+        } else if ("statusDesc".equals(this.sortierung)) {
             answer += ", bearbeitungsstatus desc";
-        } else if (this.sortierung.equals("idAsc")) {
+        } else if ("idAsc".equals(this.sortierung)) {
             answer = "prozesse.ProzesseID";
-        } else if (this.sortierung.equals("idDesc")) {
+        } else if ("idDesc".equals(this.sortierung)) {
             answer = "prozesse.ProzesseID desc";
-        } else if (sortierung.equals("institutionAsc")) {
+        } else if ("institutionAsc".equals(sortierung)) {
             answer = "institution.shortName";
-        } else if (sortierung.equals("institutionDesc")) {
+        } else if ("institutionDesc".equals(sortierung)) {
             answer = "institution.shortName desc";
-        } else if (sortierung.equals("numberOfImagesAsc")) {
+        } else if ("numberOfImagesAsc".equals(sortierung)) {
             answer = "prozesse.sortHelperImages";
-        } else if (sortierung.equals("numberOfImagesDesc")) {
+        } else if ("numberOfImagesDesc".equals(sortierung)) {
             answer = "prozesse.sortHelperImages desc";
         }
 
@@ -372,7 +373,11 @@ public class StepBean extends BasicBean implements Serializable {
     public String TakeOverBatch() {
         // find all steps with same batch id and step status
         List<Step> currentStepsOfBatch = new ArrayList<>();
-
+        Institution institution = null;
+        User user = Helper.getCurrentUser();
+        if (user != null && !user.isSuperAdmin()) {
+            institution = user.getInstitution();
+        }
         String steptitle = this.mySchritt.getTitel();
         Integer batchNumber = null;
         if (mySchritt.getProzess().getBatch() != null) {
@@ -381,7 +386,8 @@ public class StepBean extends BasicBean implements Serializable {
         if (batchNumber != null) {
             // only steps with same title
             currentStepsOfBatch =
-                    StepManager.getSteps(null, "schritte.titel = '" + steptitle + "' and prozesse.batchID = " + batchNumber, 0, Integer.MAX_VALUE);
+                    StepManager.getSteps(null, "schritte.titel = '" + steptitle + "' and prozesse.batchID = " + batchNumber, 0, Integer.MAX_VALUE,
+                            institution);
 
         } else {
             return SchrittDurchBenutzerUebernehmen();
@@ -396,15 +402,14 @@ public class StepBean extends BasicBean implements Serializable {
         }
 
         // set current user, update dates, set symlink for each step in batch
-        User ben = Helper.getCurrentUser();
         for (Step s : currentStepsOfBatch) {
-            if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN)) {
+            if (StepStatus.OPEN.equals(s.getBearbeitungsstatusEnum())) {
 
                 s.setEditTypeEnum(StepEditType.MANUAL_MULTI);
                 s.setBearbeitungszeitpunkt(new Date());
-                if (ben != null) {
-                    s.setBearbeitungsbenutzer(ben);
-                    s.setUserId(ben.getId());
+                if (user != null) {
+                    s.setBearbeitungsbenutzer(user);
+                    s.setUserId(user.getId());
                 }
                 if (s.getBearbeitungsbeginn() == null) {
                     Date myDate = new Date();
@@ -425,7 +430,7 @@ public class StepBean extends BasicBean implements Serializable {
         }
         // set status, set history, save changes
         for (Step s : currentStepsOfBatch) {
-            if (s.getBearbeitungsstatusEnum().equals(StepStatus.OPEN)) {
+            if (StepStatus.OPEN.equals(s.getBearbeitungsstatusEnum())) {
                 s.setBearbeitungsstatusEnum(StepStatus.INWORK);
                 // overwrite 'mySchritt' with new status
                 if (mySchritt.getId().equals(s.getId())) {
@@ -450,7 +455,11 @@ public class StepBean extends BasicBean implements Serializable {
     public String BatchesEdit() {
         // find all steps with same batch id and step status
         List<Step> currentStepsOfBatch = new ArrayList<>();
-
+        Institution institution = null;
+        User user = Helper.getCurrentUser();
+        if (user != null && !user.isSuperAdmin()) {
+            institution = user.getInstitution();
+        }
         String steptitle = this.mySchritt.getTitel();
         Integer batchNumber = null;
         if (mySchritt.getProzess().getBatch() != null) {
@@ -460,9 +469,9 @@ public class StepBean extends BasicBean implements Serializable {
             // only steps with same title
             currentStepsOfBatch = StepManager.getSteps(null,
                     "schritte.titel = '" + steptitle
-                    + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
-                    + batchNumber + ")",
-                    0, Integer.MAX_VALUE);
+                            + "'  AND batchStep = true AND schritte.prozesseID in (select prozesse.prozesseID from prozesse where batchID = "
+                            + batchNumber + ")",
+                    0, Integer.MAX_VALUE, institution);
 
         } else {
             return "task_edit";
@@ -547,7 +556,7 @@ public class StepBean extends BasicBean implements Serializable {
         }
         if (processPropertyList != null) {
             for (ProcessProperty prop : processPropertyList) {
-                if (prop.getCurrentStepAccessCondition().equals(AccessCondition.WRITEREQUIRED) && StringUtils.isBlank(prop.getReadValue())) {
+                if (AccessCondition.WRITEREQUIRED.equals(prop.getCurrentStepAccessCondition()) && StringUtils.isBlank(prop.getReadValue())) {
                     Helper.setFehlerMeldung(
                             Helper.getTranslation("Eigenschaft") + " " + prop.getName() + " " + Helper.getTranslation("requiredValue"));
                     return "";
@@ -579,7 +588,7 @@ public class StepBean extends BasicBean implements Serializable {
     public List<Step> getPreviousStepsForProblemReporting() {
         return StepManager.getSteps("Reihenfolge desc",
                 " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge < " + this.mySchritt.getReihenfolge(), 0,
-                Integer.MAX_VALUE);
+                Integer.MAX_VALUE, null);
     }
 
     public int getSizeOfPreviousStepsForProblemReporting() {
@@ -626,7 +635,8 @@ public class StepBean extends BasicBean implements Serializable {
             se.setSchritt(temp);
             String message = Helper.getTranslation("KorrekturFuer") + " " + temp.getTitel() + ": " + this.problemMessage;
 
-            JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), ben != null?ben.getNachVorname(): "", LogType.ERROR, message, EntryType.PROCESS);
+            JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), ben != null ? ben.getNachVorname() : "",
+                    LogType.ERROR, message, EntryType.PROCESS);
 
             JournalManager.saveJournalEntry(logEntry);
 
@@ -642,11 +652,11 @@ public class StepBean extends BasicBean implements Serializable {
 
             List<Step> alleSchritteDazwischen =
                     StepManager.getSteps("Reihenfolge desc", " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge <= "
-                            + this.mySchritt.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
+                            + this.mySchritt.getReihenfolge() + "  AND Reihenfolge > " + temp.getReihenfolge(), 0, Integer.MAX_VALUE, null);
 
             for (Step step : alleSchritteDazwischen) {
 
-                if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) {
+                if (!StepStatus.DEACTIVATED.equals(step.getBearbeitungsstatusEnum())) {
                     step.setBearbeitungsstatusEnum(StepStatus.LOCKED);
                 }
                 step.setCorrectionStep();
@@ -685,7 +695,7 @@ public class StepBean extends BasicBean implements Serializable {
     public List<Step> getNextStepsForProblemSolution() {
 
         return StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId()
-                + " AND Reihenfolge > " + this.mySchritt.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE);
+                + " AND Reihenfolge > " + this.mySchritt.getReihenfolge() + " AND prioritaet = 10", 0, Integer.MAX_VALUE, null);
     }
 
     public int getSizeOfNextStepsForProblemSolution() {
@@ -719,12 +729,11 @@ public class StepBean extends BasicBean implements Serializable {
              */
             List<Step> alleSchritteDazwischen =
                     StepManager.getSteps("Reihenfolge", " schritte.prozesseID = " + this.mySchritt.getProzess().getId() + " AND Reihenfolge >= "
-                            + this.mySchritt.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0, Integer.MAX_VALUE);
+                            + this.mySchritt.getReihenfolge() + "  AND Reihenfolge <= " + temp.getReihenfolge(), 0, Integer.MAX_VALUE, null);
 
-            for (Iterator<Step> iter = alleSchritteDazwischen.iterator(); iter.hasNext();) {
+            for (Step step : alleSchritteDazwischen) {
 
-                Step step = iter.next();
-                if (!step.getBearbeitungsstatusEnum().equals(StepStatus.DEACTIVATED)) {
+                if (!StepStatus.DEACTIVATED.equals(step.getBearbeitungsstatusEnum())) {
                     step.setBearbeitungsstatusEnum(StepStatus.DONE);
                 }
                 step.setBearbeitungsende(now);
@@ -746,7 +755,7 @@ public class StepBean extends BasicBean implements Serializable {
                             + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage);
                 } else {
                     seg.setWert("[" + this.formatter.format(new Date()) + "] " + Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel()
-                    + ": " + this.solutionMessage);
+                            + ": " + this.solutionMessage);
                 }
                 seg.setSchritt(step);
                 seg.setType(PropertyType.messageImportant);
@@ -760,7 +769,8 @@ public class StepBean extends BasicBean implements Serializable {
              */
             String message = Helper.getTranslation("KorrekturloesungFuer") + " " + temp.getTitel() + ": " + this.solutionMessage;
 
-            JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), ben != null?ben.getNachVorname(): "", LogType.INFO, message, EntryType.PROCESS);
+            JournalEntry logEntry = new JournalEntry(mySchritt.getProzess().getId(), new Date(), ben != null ? ben.getNachVorname() : "",
+                    LogType.INFO, message, EntryType.PROCESS);
             JournalManager.saveJournalEntry(logEntry);
 
             ProcessManager.saveProcessInformation(this.mySchritt.getProzess());
@@ -823,12 +833,12 @@ public class StepBean extends BasicBean implements Serializable {
             String myID = element.substring(element.indexOf("[") + 1, element.indexOf("]")).trim();
 
             String sql = FilterHelper.criteriaBuilder("id:" + myID, false, false, false, false, false, true);
-            List<Step> stepList = StepManager.getSteps(sortList(), sql);
+            List<Step> stepList = StepManager.getSteps(sortList(), sql, null);
 
             for (Step step : stepList) {
-                if (step.getBearbeitungsstatusEnum().equals(StepStatus.INWORK)) {
+                if (StepStatus.INWORK.equals(step.getBearbeitungsstatusEnum())) {
                     this.mySchritt = step;
-                    if (!SchrittDurchBenutzerAbschliessen().equals("")) {
+                    if (!"".equals(SchrittDurchBenutzerAbschliessen())) {
                         geprueft.add(element);
                     }
                     this.mySchritt.setEditTypeEnum(StepEditType.MANUAL_MULTI);
@@ -955,9 +965,7 @@ public class StepBean extends BasicBean implements Serializable {
     public Step getMySchritt() {
         try {
             schrittPerParameterLaden();
-        } catch (NumberFormatException e) {
-            log.error(e);
-        } catch (DAOException e) {
+        } catch (NumberFormatException | DAOException e) {
             log.error(e);
         }
         return this.mySchritt;
@@ -1034,7 +1042,7 @@ public class StepBean extends BasicBean implements Serializable {
      */
     private void schrittPerParameterLaden() throws DAOException, NumberFormatException {
         String param = Helper.getRequestParameter("myid");
-        if (param != null && !param.equals("")) {
+        if (param != null && !"".equals(param)) {
             /*
              * wenn bisher noch keine aktuellen Schritte ermittelt wurden, dann dies jetzt nachholen, damit die Liste vollstÃ¤ndig ist
              */

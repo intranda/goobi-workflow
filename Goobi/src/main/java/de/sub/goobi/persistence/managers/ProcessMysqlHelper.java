@@ -245,7 +245,7 @@ class ProcessMysqlHelper implements Serializable {
             try {
                 connection = MySQLHelper.getInstance().getConnection();
                 QueryRunner run = new QueryRunner();
-                run.update(connection, sql,  o.getId());
+                run.update(connection, sql, o.getId());
             } finally {
                 if (connection != null) {
                     MySQLHelper.closeConnection(connection);
@@ -255,25 +255,19 @@ class ProcessMysqlHelper implements Serializable {
     }
 
     public static int getProcessCount(String order, String filter, Institution institution) throws SQLException {
-        boolean whereSet = false;
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT COUNT(ProzesseID) FROM prozesse left join batches on prozesse.batchID = batches.id ");
         sql.append("left JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
-        sql.append("left JOIN institution on projekte.institution_id = institution.id ");
-        if (filter != null && !filter.isEmpty()) {
-            sql.append(" WHERE " + filter);
-            whereSet = true;
-        }
         if (institution != null) {
-            if (whereSet) {
-                sql.append(" AND ");
-            } else {
-                sql.append(" WHERE ");
-            }
-            sql.append("projekte.institution_id = ");
+            sql.append("and projekte.institution_id = ");
             sql.append(institution.getId());
         }
+        sql.append(" left JOIN institution on projekte.institution_id = institution.id ");
+        if (filter != null && !filter.isEmpty()) {
+            sql.append(" WHERE " + filter);
+        }
+
         try {
             connection = MySQLHelper.getInstance().getConnection();
             if (log.isTraceEnabled()) {
@@ -287,12 +281,16 @@ class ProcessMysqlHelper implements Serializable {
         }
     }
 
-    public static List<Process> getProcesses(String order, String filter, Integer start, Integer count) throws SQLException {
+    public static List<Process> getProcesses(String order, String filter, Integer start, Integer count, Institution institution) throws SQLException {
         Connection connection = null;
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT prozesse.* FROM prozesse left join batches on prozesse.batchID = batches.id ");
         sql.append("left JOIN projekte on prozesse.ProjekteID = projekte.ProjekteID ");
-        sql.append("left JOIN institution on projekte.institution_id = institution.id ");
+        if (institution != null) {
+            sql.append("and projekte.institution_id = ");
+            sql.append(institution.getId());
+        }
+        sql.append(" left JOIN institution on projekte.institution_id = institution.id ");
 
         if (filter != null && !filter.isEmpty()) {
             sql.append(" WHERE " + filter);
@@ -422,16 +420,16 @@ class ProcessMysqlHelper implements Serializable {
             return new Object[] { o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(), o.isInAuswahllisteAnzeigen(),
                     o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime, o.getProjectId(), o.getRegelsatz().getId(),
                     o.getSortHelperDocstructs(), o.getSortHelperMetadata(), o.getBatch() == null ? null : o.getBatch().getBatchId(),
-                            o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
-                                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
+                    o.getDocket() == null ? null : o.getDocket().getId(), o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
+                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
 
         } else {
             return new Object[] { o.getId(), o.getTitel(), o.getAusgabename(), o.isIstTemplate(), o.isSwappedOutHibernate(),
                     o.isInAuswahllisteAnzeigen(), o.getSortHelperStatus(), o.getSortHelperImages(), o.getSortHelperArticles(), datetime,
                     o.getProjectId(), o.getRegelsatz().getId(), o.getSortHelperDocstructs(), o.getSortHelperMetadata(),
                     o.getBatch() == null ? null : o.getBatch().getBatchId(), o.getDocket() == null ? null : o.getDocket().getId(),
-                            o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
-                            o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
+                    o.isMediaFolderExists(), o.isPauseAutomaticExecution(),
+                    o.getExportValidator() == null ? null : o.getExportValidator().getLabel() };
         }
     }
 
