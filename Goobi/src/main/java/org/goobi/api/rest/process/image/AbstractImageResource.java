@@ -52,11 +52,8 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public abstract class AbstractImageResource extends ImageResource {
 
-    protected AbstractImageResource(ContainerRequestContext context,
-            HttpServletRequest request,
-            HttpServletResponse response,
-            String foldername,
-            String filename) {
+    protected AbstractImageResource(ContainerRequestContext context, HttpServletRequest request,
+            HttpServletResponse response, String foldername, String filename) {
         super(context, request, response, foldername, filename);
     }
 
@@ -73,7 +70,8 @@ public abstract class AbstractImageResource extends ImageResource {
     public ImageInformation getInfoAsJson() throws ContentLibException {
         ImageInformation info = super.getInfoAsJson();
         double heightToWidthRatio = info.getHeight() / (double) info.getWidth();
-        List<Dimension> sizes = getImageSizes(ConfigurationHelper.getInstance().getMetsEditorImageSizes(), heightToWidthRatio);
+        List<Dimension> sizes = getImageSizes(ConfigurationHelper.getInstance().getMetsEditorImageSizes(),
+                heightToWidthRatio);
         if (!sizes.isEmpty()) {
             info.setSizesFromDimensions(sizes);
         }
@@ -89,43 +87,24 @@ public abstract class AbstractImageResource extends ImageResource {
         return info;
     }
 
-    private List<ImageTile> getImageTiles(List<String> tileSizes, List<String> tileScales) {
+    private List<ImageTile> getImageTiles(List<Integer> tileSizes, List<Integer> scales) {
         List<ImageTile> tiles = new ArrayList<>();
-        List<Integer> scales = new ArrayList<>();
-        for (String scaleString : tileScales) {
-            try {
-                Integer scale = Integer.parseInt(scaleString);
-                scales.add(scale);
-            } catch (NullPointerException | NumberFormatException e) {
-                log.error("Unable to parse tile scale " + scaleString);
-            }
-        }
         if (scales.isEmpty()) {
             scales.add(1);
             scales.add(32);
         }
-        for (String sizeString : tileSizes) {
-            try {
-                Integer size = Integer.parseInt(sizeString);
-                ImageTile tile = new ImageTile(size, size, scales);
-                tiles.add(tile);
-            } catch (NullPointerException | NumberFormatException e) {
-                log.error("Unable to parse tile size " + sizeString);
-            }
+        for (Integer size : tileSizes) {
+            ImageTile tile = new ImageTile(size, size, scales);
+            tiles.add(tile);
         }
         return tiles;
     }
 
-    private List<Dimension> getImageSizes(List<String> sizeStrings, double heightToWidthRatio) {
+    private List<Dimension> getImageSizes(List<Integer> sizeInts, double heightToWidthRatio) {
         List<Dimension> sizes = new ArrayList<>();
-        for (String string : sizeStrings) {
-            try {
-                Integer size = Integer.parseInt(string);
-                Dimension imageSize = new Dimension(size, (int) (size * heightToWidthRatio));
-                sizes.add(imageSize);
-            } catch (NullPointerException | NumberFormatException e) {
-                log.error("Unable to parse image size " + string);
-            }
+        for (Integer size : sizeInts) {
+            Dimension imageSize = new Dimension(size, (int) (size * heightToWidthRatio));
+            sizes.add(imageSize);
         }
         return sizes;
     }
@@ -140,7 +119,8 @@ public abstract class AbstractImageResource extends ImageResource {
         URI uriBase = null;
         try {
             if (serverPort != 80) {
-                uriBase = new URI(scheme, null, server, serverPort, contextPath + servletPath + getGoobiURIPrefix(), null, null);
+                uriBase = new URI(scheme, null, server, serverPort, contextPath + servletPath + getGoobiURIPrefix(),
+                        null, null);
             } else {
                 uriBase = new URI(scheme, server, contextPath + servletPath + getGoobiURIPrefix(), null);
             }
