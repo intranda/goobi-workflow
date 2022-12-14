@@ -1,9 +1,9 @@
-package org.goobi.api.display.enums;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. - https://goobi.io - https://www.intranda.com
+ * Visit the websites for more information.
+ *             - https://goobi.io
+ *             - https://www.intranda.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -23,39 +23,31 @@ package org.goobi.api.display.enums;
  * exception statement from your version.
  */
 
-public enum DisplayType {
+package org.goobi.api.rest;
 
-    input,
-    select,
-    select1,
-    textarea,
-    readonly,
-    gnd,
-    person,
-    geonames,
-    corporate,
-    dante,
-    kulturnav,
-    process,
-    htmlInput,
-    viaf,
-    easydb,
-    vocabularySearch,
-    vocabularyList,
-    convertibleDate,
-    generate;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-    private DisplayType() {
+import org.junit.Test;
+
+import de.sub.goobi.AbstractTest;
+import io.swagger.v3.oas.models.info.Info;
+
+public class OpenApiResourceTest extends AbstractTest {
+
+    @Test
+    public void testConstructor() {
+        OpenApiResource fixture = new OpenApiResource();
+        assertNotNull(fixture);
     }
 
-    public static DisplayType getByTitle(String inName) {
-        if (inName != null) {
-            for (DisplayType type : DisplayType.values()) {
-                if (type.name().equals(inName)) {
-                    return type;
-                }
-            }
-        }
-        return input; // input is default
+    @Test
+    public void testGetInfo() {
+        OpenApiResource res = new OpenApiResource();
+        Info info = res.getInfo();
+        assertNotNull(info);
+        assertEquals("Goobi workflow REST API.", info.getTitle());
+        assertEquals("This documentation describes the Goobi workflow REST API.", info.getDescription());
     }
+
 }

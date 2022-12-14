@@ -1,9 +1,9 @@
-package org.goobi.api.display.enums;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. - https://goobi.io - https://www.intranda.com
+ * Visit the websites for more information.
+ *             - https://goobi.io
+ *             - https://www.intranda.com
  * 
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free
  * Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -23,39 +23,43 @@ package org.goobi.api.display.enums;
  * exception statement from your version.
  */
 
-public enum DisplayType {
+package org.goobi.api.rest;
 
-    input,
-    select,
-    select1,
-    textarea,
-    readonly,
-    gnd,
-    person,
-    geonames,
-    corporate,
-    dante,
-    kulturnav,
-    process,
-    htmlInput,
-    viaf,
-    easydb,
-    vocabularySearch,
-    vocabularyList,
-    convertibleDate,
-    generate;
+import static org.junit.Assert.assertNotNull;
 
-    private DisplayType() {
+import javax.ws.rs.core.Response;
+
+import org.goobi.beans.Process;
+import org.junit.Before;
+import org.junit.Test;
+
+import de.sub.goobi.AbstractTest;
+import de.sub.goobi.mock.MockProcess;
+
+public class MediaResourceTest extends AbstractTest {
+
+    private Process process;
+
+    @Before
+    public void setUp() throws Exception {
+
+        process = MockProcess.createProcess();
     }
 
-    public static DisplayType getByTitle(String inName) {
-        if (inName != null) {
-            for (DisplayType type : DisplayType.values()) {
-                if (type.name().equals(inName)) {
-                    return type;
-                }
-            }
-        }
-        return input; // input is default
+    @Test
+    public void testConstructor() {
+        MediaResource res = new MediaResource();
+        assertNotNull(res);
     }
+
+    @Test
+    public void testServeMediaContent() {
+        MediaResource res = new MediaResource();
+        Response response =
+                res.serveMediaContent("" + process.getId(), "testprocess_media",
+                        "00000001.tif");
+
+        assertNotNull(response);
+    }
+
 }
