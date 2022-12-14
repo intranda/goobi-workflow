@@ -230,7 +230,7 @@ public class ProjectBean extends BasicBean implements Serializable {
 
     private boolean checkProjectTitle() {
         if (StringUtils.isBlank(myProjekt.getTitel()) || !myProjekt.getTitel().equals(newProjectTitle)) {
-            if (ProjectManager.countProjectTitle(newProjectTitle, myProjekt.getInstitution()) != 0) {
+            if (ProjectManager.countProjectTitle(newProjectTitle, null) != 0) {
                 Helper.setFehlerMeldung("project_error_titleIsInUse");
                 return false;
             } else {
