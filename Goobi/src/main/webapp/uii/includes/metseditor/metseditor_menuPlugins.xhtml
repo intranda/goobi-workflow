@@ -14,6 +14,17 @@
 
     <composite:implementation>
         <h:form id="meMenuPluginsForm" rendered="#{!Metadaten.extensions.isEmpty()}">
+        <script>
+
+function loadPlugin  (data, selector) {
+    console.log('run loadPlugin')
+    if (data.status === 'success') {
+        console.log(selector );
+        $(selector).modal('show');
+    }
+}
+
+</script>
             <ul class="clean">
                 <li class="separator"></li>
 
@@ -41,10 +52,10 @@
                             var="extension"
                             value="#{Metadaten.extensions}">
                             <li>
+<!--                                   jsf:onclick="setTimeout(function() {$('##{extension.modalId}').modal('show');}, 300 );" -->
                                 <button
                                     jsf:id="openExtension"
                                     class="dropdown-item"
-                                    jsf:onclick="setTimeout(function() {$('##{extension.modalId}').modal('show');}, 200 );"
                                     type="button">
                                     <i
                                         class="fa fa-plug"
@@ -54,7 +65,9 @@
                                         value="#{extension}"
                                         target="#{Metadaten.extension}" />
 
+                                    <!-- onevent="loadPlugin(data, '##{extension.modalId}');" -->
                                     <f:ajax
+                                        onevent="(data) => loadPlugin(data, '##{extension.modalId}')"
                                         execute="@this"
                                         render="#{extension.modalId}" />
                                 </button>
