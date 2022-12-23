@@ -54,6 +54,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
  */
 public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe {
 
+    private static final long serialVersionUID = 6092367530887950685L;
     // default value time filter is open
     Date timeFilterFrom;
     Date timeFilterTo;
@@ -114,7 +115,7 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
         StringBuilder title = new StringBuilder(StatisticsMode.PRODUCTION.getTitle());
         title.append(" (");
         title.append(this.cu.getTitle());
-        if (stepname == null || stepname.equals("")) {
+        if (stepname == null || "".equals(stepname)) {
             title.append(")");
         } else {
             title.append(", " + stepname + " )");
@@ -153,14 +154,14 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
                         dataRow.addValue(CalculationUnit.pages.getTitle(), (new Converter(objArr[1]).getDouble()));
 
                     }
-                    break;
+                        break;
 
                     case volumes: {
                         dataRowChart.addValue(CalculationUnit.volumes.getTitle(), (new Converter(objArr[0]).getDouble()));
                         dataRow.addValue(CalculationUnit.volumes.getTitle(), (new Converter(objArr[0]).getDouble()));
 
                     }
-                    break;
+                        break;
 
                     case pages: {
 
@@ -168,7 +169,7 @@ public class StatQuestProduction implements IStatisticalQuestionLimitedTimeframe
                         dataRow.addValue(CalculationUnit.pages.getTitle(), (new Converter(objArr[1]).getDouble()));
 
                     }
-                    break;
+                        break;
 
                 }
 

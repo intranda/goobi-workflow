@@ -38,6 +38,7 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 @PluginImplementation
 @Log4j2
 public abstract class AbstractStepPlugin implements IStepPlugin {
+    private static final long serialVersionUID = 8371106700665992507L;
     protected String name = "Abstract Step Plugin";
     protected String version = "1.0";
     @Getter

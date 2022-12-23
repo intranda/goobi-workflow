@@ -25,7 +25,6 @@
 package org.goobi.goobiScript;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -61,30 +60,29 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
 
     @Override
     public List<GoobiScriptResult> prepare(List<Integer> processes, String command, Map<String, String> parameters) {
-        int swap1nr;
-        int swap2nr;
+
         super.prepare(processes, command, parameters);
 
-        if (parameters.get("swap1nr") == null || parameters.get("swap1nr").equals("")) {
+        if (parameters.get("swap1nr") == null || "".equals(parameters.get("swap1nr"))) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "swap1nr");
             return new ArrayList<>();
         }
-        if (parameters.get("swap2nr") == null || parameters.get("swap2nr").equals("")) {
+        if (parameters.get("swap2nr") == null || "".equals(parameters.get("swap2nr"))) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "swap2nr");
             return new ArrayList<>();
         }
-        if (parameters.get("swap1title") == null || parameters.get("swap1title").equals("")) {
+        if (parameters.get("swap1title") == null || "".equals(parameters.get("swap1title"))) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "swap1title");
             return new ArrayList<>();
         }
-        if (parameters.get("swap2title") == null || parameters.get("swap2title").equals("")) {
+        if (parameters.get("swap2title") == null || "".equals(parameters.get("swap2title"))) {
             Helper.setFehlerMeldung("goobiScriptfield", "Missing parameter: ", "swap2title");
             return new ArrayList<>();
         }
 
         try {
-            swap1nr = Integer.parseInt(parameters.get("swap1nr"));
-            swap2nr = Integer.parseInt(parameters.get("swap2nr"));
+            Integer.parseInt(parameters.get("swap1nr"));
+            Integer.parseInt(parameters.get("swap2nr"));
         } catch (NumberFormatException e1) {
             Helper.setFehlerMeldung("goobiScriptfield", "Invalid order number used: ", parameters.get("swap1nr") + " - " + parameters.get("swap2nr"));
             return new ArrayList<>();
@@ -110,8 +108,7 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
 
         Step s1 = null;
         Step s2 = null;
-        for (Iterator<Step> iterator = p.getSchritteList().iterator(); iterator.hasNext();) {
-            Step s = iterator.next();
+        for (Step s : p.getSchritteList()) {
             if (s.getTitel().equals(parameters.get("swap1title")) && s.getReihenfolge().intValue() == swap1nr) {
                 s1 = s;
             }
@@ -142,7 +139,7 @@ public class GoobiScriptSwapSteps extends AbstractIGoobiScript implements IGoobi
                 gsr.setErrorText(e.getMessage());
             }
         }
-        if (gsr.getResultType().equals(GoobiScriptResultType.RUNNING)) {
+        if (GoobiScriptResultType.RUNNING.equals(gsr.getResultType())) {
             gsr.setResultType(GoobiScriptResultType.OK);
         }
         gsr.updateTimestamp();

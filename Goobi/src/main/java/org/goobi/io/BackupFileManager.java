@@ -96,7 +96,7 @@ public abstract class BackupFileManager {
                 String messageFail = Helper.getTranslation("noBackupCreated");
                 Helper.setFehlerMeldung(messageFail);
             }
-            throw new IOException("A backup file could not be created. Please make sure that the required access rights are set.");
+            throw new IOException("The backup file could not be created. Please make sure that the required access rights are set.");
         }
 
         try {
@@ -109,7 +109,7 @@ public abstract class BackupFileManager {
             }
             // This exception should not be thrown because the important thing is that the backup file could be created.
             // Code that calls this method should not get confused with this thrown exception in case of success...
-            //throw new IOException(messageFail);  (NOSONAR)
+            //throw new IOException(messageFail); (NOSONAR)
         }
         return backupFileName;
     }
@@ -118,19 +118,30 @@ public abstract class BackupFileManager {
      * Creates a backup. It returns the name of the backup file because it contains a time stamp and is not reliably reproducible otherwise. It
      * returns null if the limit is set to 0.
      *
-     * @param path The path of the original file
+     * @param sourcePath The path of the original file
      * @param backupPath The path of the backup file (may be the same as the source path)
      * @param fileName The name of the original file (without directory)
      * @return The name of the created backup file or null in case of an error
      * @throws IOException if there was an error while creating the backup file
      */
-    private static String createBackupFile(String path, String backupPath, String fileName) throws IOException {
-        Path existingFile = Paths.get(path + fileName);
+    private static String createBackupFile(String sourcePath, String backupPath, String fileName) throws IOException {
+        Path existingFile = Paths.get(sourcePath + fileName);
         String backupFileName = fileName + "." + BackupFileManager.getCurrentTimestamp();
         Path backupFile = Paths.get(backupPath + backupFileName);
 
         if (!StorageProvider.getInstance().isFileExists(existingFile)) {
             return null;
+        }
+
+        Path backupPathObject = Paths.get(backupPath);
+        if (!StorageProvider.getInstance().isFileExists(backupPathObject)) {
+            try {
+                StorageProvider.getInstance().createDirectories(backupPathObject);
+                log.debug("Created backup directory " + backupPath + backupFileName);
+            } catch (IOException ioException) {
+                log.error("Error while creating backup directory " + backupPath);
+                throw ioException;
+            }
         }
 
         try {

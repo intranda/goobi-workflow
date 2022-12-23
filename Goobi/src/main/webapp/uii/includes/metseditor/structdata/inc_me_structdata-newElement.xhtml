@@ -221,8 +221,8 @@
                                 <label for="pageArea">#{msgs.pageArea}:</label>
                             </div>
                             <div class="col-6">
-                            	<h:inputText id="pageAreaName" pt:aria-label="#{msgs.pageArea}" 
-	                            	styleClass="form-control focusableChildCss" 
+                            	<h:inputText id="pageAreaName" pt:aria-label="#{msgs.pageArea}"
+	                            	styleClass="form-control focusableChildCss"
 	                            	value="#{Metadaten.pageArea}"
 	                            	disabled="true"></h:inputText>
                             </div>
@@ -252,9 +252,9 @@
                             </div>
 
                         </div>
-                        
-            
-                        
+
+
+
                     </h:panelGroup>
 
 
@@ -349,15 +349,19 @@
                     <div class="structdata__add-element">
                         <div class="row">
                             <div class="col-auto mr-auto">
-                            
-                				<button jsf:id="fastPagination" class="btn">
+
+                				<button jsf:id="fastPagination" class="btn" type="button">
                 					<i class="fa #{Metadaten.enableFastPagination == false?'fa fa-square-o':'fa fa-check-square-o'}" />
-					                <h:outputText value="#{msgs.mets_easyPagination}" 
+					                <h:outputText value="#{msgs.mets_easyPagination}"
 					                	styleClass="structdata__easyPagination" />
-					                <f:setPropertyActionListener value="#{not Metadaten.enableFastPagination}" 
+					                <f:setPropertyActionListener value="#{not Metadaten.enableFastPagination}"
 					                	target="#{Metadaten.enableFastPagination}" />
+                          <f:ajax
+                              onevent="data => goobiWorkflowJS.meScrollPos.init(data)"
+                              render=":pageContentCenter"
+                          />
 					            </button>
-                            
+
                             </div>
                             <div class="col-auto">
                                 <button

@@ -149,10 +149,8 @@ public class PluginsBean implements Serializable {
                     }
                     String folder = pluginDir.getFileName().toString();
                     plugins.put(folder, subDirList);
-                } else { // if plugin is directly inside directory
-                    if (pluginDir.getFileName().toString().endsWith("jar")) {
-                        dirList.add(getPluginInfo(pluginDir.toAbsolutePath(), stepPluginsInUse, instantiate));
-                    }
+                } else if (pluginDir.getFileName().toString().endsWith("jar")) {
+                    dirList.add(getPluginInfo(pluginDir.toAbsolutePath(), stepPluginsInUse, instantiate));
                 }
             }
             // if there were plugins inside the directory dirList will not be empty
@@ -227,12 +225,8 @@ public class PluginsBean implements Serializable {
     }
 
     public static int compareGoobiVersions(String goobiVersion, String runningVersion) {
-        int[] runningVersionFields = Arrays.stream(runningVersion.split("\\."))
-                .mapToInt(Integer::valueOf)
-                .toArray();
-        int[] submittedVersionFields = Arrays.stream(goobiVersion.split("\\."))
-                .mapToInt(Integer::valueOf)
-                .toArray();
+        int[] runningVersionFields = Arrays.stream(runningVersion.split("\\.")).mapToInt(Integer::valueOf).toArray();
+        int[] submittedVersionFields = Arrays.stream(goobiVersion.split("\\.")).mapToInt(Integer::valueOf).toArray();
         int majorDiff = runningVersionFields[0] - submittedVersionFields[0];
         if (majorDiff != 0) {
             return majorDiff;
@@ -241,15 +235,7 @@ public class PluginsBean implements Serializable {
         if (minorDiff != 0) {
             return minorDiff;
         }
-        if (runningVersionFields.length == 3 && submittedVersionFields.length == 3) {
-            return runningVersionFields[2] - submittedVersionFields[2];
-        }
-        if (runningVersionFields.length == 3) {
-            return 1;
-        }
-        if (submittedVersionFields.length == 3) {
-            return -1;
-        }
+        // ignore sub version when comparing version strings
         return minorDiff;
     }
 

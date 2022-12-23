@@ -1,6 +1,5 @@
 package org.goobi.api.display;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -27,7 +26,6 @@ import lombok.Data;
  */
 
 @Data
-@AllArgsConstructor
 public class Item {
     private String label;
     private String value;
@@ -35,5 +33,16 @@ public class Item {
 
     private String source;
     private String field;
+
+    private Object additionalData;
+
+    public Item(String label, String value, boolean selected, String source, String field) {
+        this.label = label;
+        this.value = value;
+        this.selected = selected;
+        this.source = source;
+        this.field = field;
+    }
+
 
 }

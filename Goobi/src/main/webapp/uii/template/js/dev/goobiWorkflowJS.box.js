@@ -4,7 +4,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
     var _debug = false;
     var _defaults = {};
     var _status = {};
-    
+
     goobiWorkflow.box = {
         /**
          * @description Method to initialize the box module.

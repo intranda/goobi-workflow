@@ -262,6 +262,15 @@ var goobiWorkflowJS = ( function() {
             }
         });
     };
+    
+    
+            
+	  goobiWorkflow.loadPlugin = function (data, selector) {
+		if (data.status === 'success') {
+			console.log(selector );
+			$(selector).modal('show');
+		}
+	};
 
     return goobiWorkflow;
     

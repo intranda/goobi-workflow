@@ -48,17 +48,22 @@ import de.sub.goobi.helper.JwtHelper;
 import de.sub.goobi.persistence.managers.UserManager;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Path("/login")
 public class Login {
+
     @Context
+    @Setter
     private HttpServletRequest servletRequest;
     @Context
+    @Setter
     private HttpServletResponse servletResponse;
 
     @Inject
+    @Setter
     private SessionForm sessionForm;
 
     @POST
@@ -120,32 +125,42 @@ public class Login {
     @ApiResponse(responseCode = "200", description = "OK")
     @ApiResponse(responseCode = "500", description = "Internal error")
     public String apacheHeaderLogin() throws IOException {
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "User tries to login via SSO Login.");
         ConfigurationHelper config = ConfigurationHelper.getInstance();
         if (!config.isEnableHeaderLogin()) {
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "SSO Login is deactivated. SSO Login trial of user is aborted.");
             return "";
         }
+        log.trace(LoginBean.LOGIN_LOG_PREFIX + "SSO Login is activated. User authentication is starting.");
         //the header we read the ssoID from is configurable
         String ssoHeaderName = config.getSsoHeaderName();
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Header name " + ssoHeaderName + " is used.");
         String ssoId = null;
         if ("header".equalsIgnoreCase(config.getSsoParameterType())) {
+            log.trace(LoginBean.LOGIN_LOG_PREFIX + "'header' option is used for SSO Login.");
             ssoId = servletRequest.getHeader(ssoHeaderName);
         } else {
+            log.trace(LoginBean.LOGIN_LOG_PREFIX + "'attribute' option is used for SSO Login.");
             ssoId = (String) servletRequest.getAttribute(ssoHeaderName);
         }
         LoginBean userBean = Helper.getLoginBeanFromSession(servletRequest.getSession());
         User user = UserManager.getUserBySsoId(ssoId);
         if (user == null) {
+            log.debug(LoginBean.LOGIN_LOG_PREFIX + "There is no user with ssoId \"" + ssoId + "\".");
             userBean.setSsoError("Could not find user in Goobi database. Please contact your admin to add your SSO ID to the database.");
             servletResponse.sendRedirect("/goobi/uii/logout.xhtml");
             return "";
         }
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "User \"" + user.getLogin() + "\" can be logged in via SSO:");
         userBean.setSsoError(null);
         user.lazyLoad();
         userBean.setMyBenutzer(user);
         userBean.setRoles(user.getAllUserRoles());
         userBean.setMyBenutzer(user);
+        log.trace(LoginBean.LOGIN_LOG_PREFIX + "User is added to the session bean now.");
         //add the user to the sessionform that holds information about all logged in users
         sessionForm.updateSessionUserName(servletRequest.getSession(), user);
+        log.debug(LoginBean.LOGIN_LOG_PREFIX + "Redirecting user to start page or dashboard.");
         servletResponse.sendRedirect("/goobi/index.xhtml");
         return "";
     }

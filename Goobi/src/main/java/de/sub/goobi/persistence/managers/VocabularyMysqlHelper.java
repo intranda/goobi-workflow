@@ -34,8 +34,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.StatementConfiguration;
 import org.apache.commons.dbutils.handlers.BeanHandler;
@@ -721,7 +719,8 @@ class VocabularyMysqlHelper implements Serializable {
         Connection connection = null;
         try {
             connection = MySQLHelper.getInstance().getConnection();
-            StatementConfiguration stmtConfig = new StatementConfiguration.Builder().maxRows(MAXIMAL_QUERY_RESULTS).queryTimeout(QUERY_TIMEOUT_IN_SECONDS).build();
+            StatementConfiguration stmtConfig =
+                    new StatementConfiguration.Builder().maxRows(MAXIMAL_QUERY_RESULTS).queryTimeout(QUERY_TIMEOUT_IN_SECONDS).build();
             QueryRunner queryRunner = new QueryRunner(stmtConfig);
             List<VocabRecord> records = queryRunner.query(connection, sb.toString(), VocabularyManager.vocabularyRecordListHandler, vocabularyName);
             Vocabulary vocabulary = getVocabularyByTitle(vocabularyName);

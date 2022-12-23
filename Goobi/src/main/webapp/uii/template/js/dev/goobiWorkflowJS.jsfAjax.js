@@ -35,7 +35,7 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                                 $('.btn-ajax-loader').addClass('in');
                             }
                             ajaxloader.style.display = 'block';
-                            if (data.source.dataset.renderimage=='true'){
+                            if (data?.source?.dataset.renderimage=='true'){
                                 // clean up object resources
                                 goobiWorkflowJS.object.freeJSResources();
                             }
@@ -59,14 +59,14 @@ var goobiWorkflowJS = ( function( goobiWorkflow ) {
                             goobiWorkflowJS.initBootstrapFeatures();
                             // init layout
                             goobiWorkflowJS.layout.init();
-                            if (data.source.dataset.renderimage=='true'){
+                            if (data?.source?.dataset.renderimage=='true'){
                                 // init object view
                                 goobiWorkflowJS.object.imageLoadHandler();
                                 // init thumbnails
                                 goobiWorkflowJS.thumbnails.init();
                             }
                             // reload alto-editor
-                            if(data.source.id != "saveAltoChanges" && data.source.id != "altoEditorAutocompleteScript") {
+                            if(data?.source?.id != "saveAltoChanges" && data?.source?.id != "altoEditorAutocompleteScript") {
                             	//console.log(data.source);
 	                            var altoEditorElement = document.querySelector('alto-editor')
 	                            if(altoEditorElement && altoEditorElement._tag) {

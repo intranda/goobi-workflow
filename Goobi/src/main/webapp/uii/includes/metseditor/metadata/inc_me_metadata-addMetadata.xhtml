@@ -85,7 +85,8 @@
 				                        Metadaten.outputType == 'dante' or 
 				                        Metadaten.outputType == 'viaf' or 
 				                        Metadaten.outputType == 'easydb' or 
-				                        Metadaten.outputType == 'vocabularySearch'}">
+				                        Metadaten.outputType == 'vocabularySearch' or
+				                        Metadaten.outputType == 'convertibleDate'}">
                                 </x:inputText>
 
                                 <!-- TEXTAREA -->
@@ -111,7 +112,7 @@
                                 </x:inputTextarea>
 
                                 <!-- SELECT -->
-                                <ui:fragment rendered="#{(Metadaten.outputType == 'select1' or 
+                                <ui:fragment rendered="#{(Metadaten.outputType == 'select1' or
                                 	Metadaten.outputType == 'vocabularyList')}">
                                     <div class="form-control form-control--select">
                                         <h:selectOneMenu
@@ -125,8 +126,7 @@
                                     </div>
 
                                 </ui:fragment>
-
-
+                                
                                 <!-- MULTISELECT -->
                                 <h:selectManyListbox
                                     id="mySelect"
@@ -137,7 +137,7 @@
                                     readonly="#{Metadaten.nurLesenModus}">
                                     <f:selectItems value="#{Metadaten.metadatum.items}" />
                                 </h:selectManyListbox>
-
+								
                                 <!-- AUTHORITY DATA - NO DANTE, VIAF OR EASYDB -->
                                 <ui:fragment rendered="#{Metadaten.metadatum.normdata and Metadaten.outputType != 'dante' and Metadaten.outputType != 'viaf' and Metadaten.outputType != 'easydb'}">
                                     <div class="form-group form-group--inside">
@@ -389,7 +389,11 @@
                                 <x:updateActionListener
                                     value=""
                                     property="#{Metadaten.metadatum.value}" />
-                                <f:ajax render=":pageContentCenter" />
+                                <f:ajax
+
+                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false}) }"
+                                    render=":pageContentCenter"
+                                />
                             </button>
                             <h:commandButton
                                 id="absenden"
@@ -398,6 +402,11 @@
                                 action="#{Metadaten.addNewMetadata}"
                                 value="#{msgs.dieAenderungenSpeichern}"
                                 role="button">
+
+                                <f:ajax
+                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data, {saveScrollPos: false}) }"
+                                    execute="@form"
+                                    render=":pageContentCenter" />
                             </h:commandButton>
                         </div>
                     </div>

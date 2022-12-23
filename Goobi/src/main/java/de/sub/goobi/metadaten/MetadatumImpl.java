@@ -1,6 +1,5 @@
 package de.sub.goobi.metadaten;
 
-import java.net.URI;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -17,11 +16,6 @@ import java.util.stream.Collectors;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -36,6 +30,7 @@ import org.geonames.WebService;
 import org.goobi.api.display.DisplayCase;
 import org.goobi.api.display.Item;
 import org.goobi.api.display.enums.DisplayType;
+import org.goobi.api.display.helper.MetadataGeneration;
 import org.goobi.api.display.helper.NormDatabase;
 import org.goobi.api.rest.model.RestMetadata;
 import org.goobi.api.rest.model.RestProcess;
@@ -46,6 +41,11 @@ import org.goobi.production.cli.helper.StringPair;
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.filter.Filters;
+import org.jdom2.xpath.XPathExpression;
+import org.jdom2.xpath.XPathFactory;
 
 import de.intranda.digiverso.normdataimporter.NormDataImporter;
 import de.intranda.digiverso.normdataimporter.dante.DanteImport;
@@ -70,6 +70,7 @@ import ugh.dl.MetadataGroupType;
 import ugh.dl.MetadataType;
 import ugh.dl.Prefs;
 import ugh.exceptions.MetadataTypeNotAllowedException;
+import ugh.fileformats.mets.ModsHelper;
 
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
@@ -170,6 +171,8 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     private boolean validationErrorPresent;
     private String validationMessage;
 
+    private List<MetadataGeneration> generationRules = new ArrayList<>();
+
     /**
      * Allgemeiner Konstruktor ()
      */
@@ -197,11 +200,11 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
         String reqUrl = scheme + "://" + serverName + contextPath;
         // if there is a port lower than the typical ones (443) don't show it in the url (http://mygoobi.io/xyz instead of http://mygoobi.io:80/xyz)
         if (serverPort > 443) {
-        	reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
+            reqUrl = scheme + "://" + serverName + ":" + serverPort + contextPath;
         }
         UriBuilder ub = UriBuilder.fromUri(reqUrl);
         vocabularyUrl = ub.path("api").path("vocabulary").path("records").build().toString();
-        
+
         records = VocabularyManager.findRecords(vocabulary, vocabularySearchFields);
 
         if (records == null || records.isEmpty()) {
@@ -210,7 +213,6 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             showNotHits = false;
         }
         Collections.sort(records);
-
 
     }
 
@@ -232,15 +234,13 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
             setSource(myValues.getItemList().get(0).getSource());
             setField(myValues.getItemList().get(0).getField());
 
-        } else {
-            if (myValues.getItemList().size() == 1) {
-                Item item = myValues.getItemList().get(0);
-                if (item.isSelected()) {
-                    setDefaultValue(item.getValue());
-                }
-                setSource(item.getSource());
-                setField(item.getField());
+        } else if (myValues.getItemList().size() == 1) {
+            Item item = myValues.getItemList().get(0);
+            if (item.isSelected()) {
+                setDefaultValue(item.getValue());
             }
+            setSource(item.getSource());
+            setField(item.getField());
         }
 
         // initialize process search
@@ -340,8 +340,13 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     myValues.overwriteConfiguredElement(myProcess, md.getType());
                 }
             }
-        }
+        } else if (metadataDisplaytype == DisplayType.generate) {
+            for (Item item : myValues.getItemList()) {
+                MetadataGeneration mg = (MetadataGeneration) item.getAdditionalData();
+                generationRules.add(mg);
+            }
 
+        }
     }
 
     @Override
@@ -382,7 +387,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
 
     /******************************************************
      *
-     * new functions for use of display configuration whithin xml files
+     * new functions for use of display configuration within xml files
      *
      *****************************************************/
 
@@ -685,7 +690,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                     md.setValue(selectedRecord.getPreferredValue());
                 }
                 for (NormData normdata : selectedRecord.getNormdataList()) {
-                    if (normdata.getKey().equals("URI")) {
+                    if ("URI".equals(normdata.getKey())) {
                         md.setAutorityFile("dante", "https://uri.gbv.de/terminology/dante/", normdata.getValues().get(0).getText());
                     } else if (StringUtils.isBlank(selectedRecord.getPreferredValue()) && CollectionUtils.isEmpty(getLabelList())
                             && normdata.getKey().equals(field)) {
@@ -711,7 +716,7 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 // Set authority ID
                 if (CollectionUtils.isNotEmpty(selectedRecord.getNormdataList())) {
                     for (NormData normdata : selectedRecord.getNormdataList()) {
-                        if (normdata.getKey().equals("URI")) {
+                        if ("URI".equals(normdata.getKey())) {
                             String uriValue = normdata.getValues().get(0).getText();
                             md.setAutorityFile(DisplayType.kulturnav.name(), KulturNavImporter.BASE_URL, uriValue);
                             break;
@@ -735,9 +740,9 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
                 break;
             case gnd:
                 for (NormData normdata : currentData) {
-                    if (normdata.getKey().equals("NORM_IDENTIFIER")) {
+                    if ("NORM_IDENTIFIER".equals(normdata.getKey())) {
                         md.setAutorityFile("gnd", "http://d-nb.info/gnd/", normdata.getValues().get(0).getText());
-                    } else if (normdata.getKey().equals("NORM_NAME")) {
+                    } else if ("NORM_NAME".equals(normdata.getKey())) {
                         String value = normdata.getValues().get(0).getText();
                         md.setValue(filter(value));
                     }
@@ -1019,4 +1024,48 @@ public class MetadatumImpl implements Metadatum, SearchableMetadata {
     public void setSearchInViaf(boolean serachInViaf) {
 
     }
+
+    public void generateValue() {
+
+        XPathFactory xpfac = XPathFactory.instance();
+
+        // convert the current docstruct into a jdom2 document
+        Document doc = ModsHelper.generateModsSection(bean.getMyDocStruct(), myPrefs);
+        if (doc == null) {
+            Helper.setFehlerMeldung("mets_generation_error");
+            return;
+        }
+        Element mods = doc.getRootElement();
+        Element metadataSection = mods.getChild("extension", ModsHelper.MODS_NAMESPACE).getChild("goobi", ModsHelper.GOOBI_NAMESPACE);
+        MetadataGeneration rule = null;
+
+        for (MetadataGeneration mg : generationRules) {
+            // check if condition is set
+            if (rule != null) {
+                break;
+            }
+            if (StringUtils.isNotBlank(mg.getCondition())) {
+                // check if condition is fulfilled
+                XPathExpression<Element> xp =
+                        xpfac.compile(mg.getCondition(), Filters.element(), null, ModsHelper.MODS_NAMESPACE, ModsHelper.GOOBI_NAMESPACE);
+                Element test = xp.evaluateFirst(metadataSection);
+                if (test != null) {
+                    // condition does match
+                    rule = mg;
+                }
+            } else {
+                // no condition is set, use first rule
+                rule = mg;
+            }
+        }
+
+        if (rule == null) {
+            // no matching rule found, abort
+            return;
+        }
+
+        String currentValue = rule.generateValue(myProcess, myPrefs, bean.getDocument(), xpfac, metadataSection);
+        md.setValue(currentValue);
+    }
+
 }

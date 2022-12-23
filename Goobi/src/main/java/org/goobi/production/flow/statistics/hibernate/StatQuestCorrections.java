@@ -51,6 +51,7 @@ import de.sub.goobi.persistence.managers.ProcessManager;
  ****************************************************************************/
 public class StatQuestCorrections implements IStatisticalQuestionLimitedTimeframe {
 
+    private static final long serialVersionUID = 2816273753644901605L;
     private Date timeFilterFrom;
     private TimeUnit timeGrouping;
     private Date timeFilterTo;
