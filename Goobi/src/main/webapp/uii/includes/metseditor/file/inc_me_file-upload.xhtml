@@ -1,12 +1,12 @@
-<ui:composition 
-    xmlns="http://www.w3.org/1999/xhtml" 
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-    xmlns:composite="http://xmlns.jcp.org/jsf/composite" 
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core" 
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:x="http://myfaces.apache.org/tomahawk"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites" 
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
     xmlns:p="http://primefaces.org/ui"
     xmlns:jsf="http://xmlns.jcp.org/jsf">
 
@@ -31,17 +31,17 @@
                                 <label>#{msgs.filename}:</label>
                             </div>
                             <div class="col-9">
-                                    <h:inputFile 
+                                    <h:inputFile
                                         id="fileupload"
                                         pt:aria-label="#{msgs.selectFile}"
                                         styleClass="form-control  form-control-file"
-                                        value="#{Metadaten.fileManipulation.uploadedFile}" 
+                                        value="#{Metadaten.fileManipulation.uploadedFile}"
                                         storage="file"
                                         required="false" />
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group form-group--flex">
                         <div class="row justify-content-between">
                             <div class="col-3">
@@ -50,17 +50,17 @@
                             <div class="col-9">
                                 <div class="form-control form-control--select">
                                     <h:selectOneMenu id="currentFolder1" styleClass="focusable" pt:aria-label="#{msgs.directory}" value="#{Metadaten.fileManipulation.currentFolder}">
-                                        <f:selectItems 
-                                            value="#{Metadaten.allTifFolders}" 
-                                            var="folder" 
-                                            itemLabel="#{folder}" 
+                                        <f:selectItems
+                                            value="#{Metadaten.allTifFolders}"
+                                            var="folder"
+                                            itemLabel="#{folder}"
                                             itemValue="#{folder}" />
                                     </h:selectOneMenu>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <ui:fragment rendered="#{Metadaten.allPages != null}">
                         <div class="form-group form-group--flex">
                             <div class="row justify-content-between">
@@ -85,7 +85,7 @@
                                 <label>#{msgs.newFileName}:</label>
                             </div>
                             <div class="col-9">
-                                <h:inputText 
+                                <h:inputText
                                     id="uploadedFileName"
                                     pt:aria-label="#{msgs.filename}"
                                     styleClass="form-control"
@@ -93,7 +93,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group form-group--flex">
                         <div class="row justify-content-between">
                             <div class="col-3">
@@ -124,17 +124,23 @@
                             </div>
                         </div>
                     </div>
-                
+
                     <hr />
 
                     <div class="row">
                         <div class="col-auto mr-auto"></div>
                         <div class="col-auto">
-                            <button 
-                                jsf:id="uploadFile" 
-                                class="btn btn--gray" 
+                            <button
+                                type="button"
+                                jsf:id="uploadFile"
+                                class="btn btn--gray"
                                 jsf:action="#{Metadaten.fileManipulation.uploadFile}">
                                 #{msgs.uploadFile}
+                                <f:ajax
+                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data)}"
+                                    execute="@form"
+                                    render=":pageContentCenter"
+                                />
                             </button>
                         </div>
                     </div>

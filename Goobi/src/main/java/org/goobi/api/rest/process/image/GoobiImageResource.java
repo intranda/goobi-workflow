@@ -148,13 +148,12 @@ public class GoobiImageResource {
         if (thumbnailFolder != null && StorageProvider.getInstance().isDirectory(thumbnailFolder)) {
             List<Integer> suggestedSizes = getThumbnailSizes(this.imageFolder, this.thumbnailFolder);
             if (suggestedSizes.isEmpty()) {
-                suggestedSizes =
-                        ConfigurationHelper.getInstance().getMetsEditorImageSizes().stream().map(Integer::parseInt).collect(Collectors.toList());
+                suggestedSizes = ConfigurationHelper.getInstance().getMetsEditorImageSizes();
             }
             sizes = getImageSizes(suggestedSizes, heightToWidthRatio);
         } else {
             sizes = getImageSizes(
-                    ConfigurationHelper.getInstance().getMetsEditorImageSizes().stream().map(Integer::parseInt).collect(Collectors.toList()),
+                    ConfigurationHelper.getInstance().getMetsEditorImageSizes(),
                     heightToWidthRatio);
         }
         if (!sizes.isEmpty()) {
@@ -502,7 +501,7 @@ public class GoobiImageResource {
     }
 
     private Long getLastEdited(Path path) {
- 
+
         if (FILE_LAST_EDITED_TIMES.size() >= IMAGE_SIZES_MAX_SIZE) {
             List<String> keysToDelete =
                     FILE_LAST_EDITED_TIMES.keySet().stream().limit(IMAGE_SIZES_NUM_ENTRIES_TO_DELETE_ON_OVERFLOW).collect(Collectors.toList());
@@ -510,7 +509,7 @@ public class GoobiImageResource {
                 FILE_LAST_EDITED_TIMES.remove(key);
             }
         }
-        
+
         Long[] times = FILE_LAST_EDITED_TIMES.get(path.toString());
         if (times == null || times[1] < System.currentTimeMillis() - AVAILABLE_THUMBNAIL_FOLDERS_TTL) {
             long date;
@@ -715,7 +714,7 @@ public class GoobiImageResource {
                 availableThumbnailFolders.remove(key);
             }
         }
-        
+
         List<Path> thumbFolderPaths = getMatchingThumbnailFolders(imageFolder, thumbsFolder);
         availableThumbnailFolders.put(imageFolder.toString(),
                 thumbFolderPaths.stream()
@@ -725,29 +724,15 @@ public class GoobiImageResource {
                         .collect(Collectors.toList()));
     }
 
-    private List<ImageTile> getImageTiles(List<String> tileSizes, List<String> tileScales) {
-        List<ImageTile> tiles = new ArrayList<>();
-        List<Integer> scales = new ArrayList<>();
-        for (String scaleString : tileScales) {
-            try {
-                Integer scale = Integer.parseInt(scaleString);
-                scales.add(scale);
-            } catch (NullPointerException | NumberFormatException e) {
-                log.error("Unable to parse tile scale " + scaleString);
-            }
-        }
+    private List<ImageTile> getImageTiles(List<Integer> tileSizes, List<Integer> scales) {
         if (scales.isEmpty()) {
             scales.add(1);
             scales.add(32);
         }
-        for (String sizeString : tileSizes) {
-            try {
-                Integer size = Integer.parseInt(sizeString);
-                ImageTile tile = new ImageTile(size, size, scales);
-                tiles.add(tile);
-            } catch (NullPointerException | NumberFormatException e) {
-                log.error("Unable to parse tile size " + sizeString);
-            }
+        List<ImageTile> tiles = new ArrayList<>();
+        for (Integer size : tileSizes) {
+            ImageTile tile = new ImageTile(size, size, scales);
+            tiles.add(tile);
         }
         return tiles;
     }

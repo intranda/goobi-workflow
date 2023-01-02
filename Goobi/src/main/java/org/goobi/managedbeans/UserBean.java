@@ -287,18 +287,25 @@ public class UserBean extends BasicBean implements Serializable {
     }
 
     private boolean isPasswordValid() {
-        if (!AuthenticationType.OPENID.equals(myClass.getLdapGruppe().getAuthenticationTypeEnum())) {
+        switch (myClass.getLdapGruppe().getAuthenticationTypeEnum()) {
+            case OPENID:
+                break;
+            case LDAP:
+                if (myClass.getLdapGruppe().isReadonly()) {
+                    break;
+                }
+                // fallthrough
+            case DATABASE:
+            default:
+                // The new password must fulfill the minimum password length (read from default configuration file)
+                int minimumLength = ConfigurationHelper.getInstance().getMinimumPasswordLength();
 
-            // The new password must fulfill the minimum password length (read from default configuration file)
-            int minimumLength = ConfigurationHelper.getInstance().getMinimumPasswordLength();
-
-            if (myClass.getPasswort() == null || myClass.getPasswort().length() < minimumLength) {
-                this.displayMode = "";
-                Helper.setFehlerMeldung("neuesPasswortNichtLangGenug", "" + minimumLength);
-                return false;
-            }
-
-            myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
+                if (myClass.getPasswort() == null || myClass.getPasswort().length() < minimumLength) {
+                    this.displayMode = "";
+                    Helper.setFehlerMeldung("neuesPasswortNichtLangGenug", "" + minimumLength);
+                    return false;
+                }
+                myClass.setEncryptedPassword(myClass.getPasswordHash(myClass.getPasswort()));
         }
         return true;
 

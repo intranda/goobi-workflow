@@ -23,6 +23,7 @@
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+
 package de.sub.goobi.metadaten;
 
 import static org.junit.Assert.assertEquals;
@@ -267,12 +268,12 @@ public class MetadatenTest extends AbstractTest {
         Metadata rep = null;
         Metadata rtl = null;
         for (Metadata md : fixture.getDocument().getLogicalDocStruct().getAllMetadata()) {
-            if (md.getType().getName().equals("_directionRTL")) {
+            if ("_directionRTL".equals(md.getType().getName())) {
                 rtl = md;
             }
         }
         for (Metadata md : fixture.getDocument().getPhysicalDocStruct().getAllMetadata()) {
-            if (md.getType().getName().equals("_representative")) {
+            if ("_representative".equals(md.getType().getName())) {
                 rep = md;
             }
         }
@@ -294,7 +295,7 @@ public class MetadatenTest extends AbstractTest {
         fixture.setCurrentRepresentativePage("1");
         fixture.setRepresentativeMetadata();
         for (Metadata md : fixture.getDocument().getPhysicalDocStruct().getAllMetadata()) {
-            if (md.getType().getName().equals("_representative")) {
+            if ("_representative".equals(md.getType().getName())) {
                 rep = md;
             }
         }
@@ -452,7 +453,7 @@ public class MetadatenTest extends AbstractTest {
         // remove existing title
         Metadata title = null;
         for (Metadata meta : fixture.getDocument().getLogicalDocStruct().getAllMetadata()) {
-            if (meta.getType().getName().equals("TitleDocMain")) {
+            if ("TitleDocMain".equals(meta.getType().getName())) {
                 title = meta;
                 break;
             }
@@ -485,7 +486,7 @@ public class MetadatenTest extends AbstractTest {
         // check result
         Corporate corp = null;
         for (Corporate existing : fixture.getDocument().getLogicalDocStruct().getAllCorporates()) {
-            if (existing.getType().getName().equals("junitCorporate")) {
+            if ("junitCorporate".equals(existing.getType().getName())) {
                 corp = existing;
             }
         }
@@ -1378,9 +1379,9 @@ public class MetadatenTest extends AbstractTest {
         Metadata md1 = null;
         Metadata md2 = null;
         for (Metadata md : logical.getAllMetadata()) {
-            if (md.getType().getName().equals("TitleDocMainShort")) {
+            if ("TitleDocMainShort".equals(md.getType().getName())) {
                 md1 = md;
-            } else if (md.getType().getName().equals("TitleDocSub1")) {
+            } else if ("TitleDocSub1".equals(md.getType().getName())) {
                 md2 = md;
             }
         }

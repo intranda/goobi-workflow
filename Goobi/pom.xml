@@ -4,7 +4,7 @@
     <groupId>de.intranda.goobi.workflow</groupId>
     <artifactId>goobi-core</artifactId>
     <!-- When updating the version, make sure to also update the version in the submodules -->
-    <version>22.10.2-SNAPSHOT</version>
+    <version>22.10.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
 
@@ -56,7 +56,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <publicVersion>22.10.2-SNAPSHOT</publicVersion>
+        <publicVersion>22.10.5-SNAPSHOT</publicVersion>
         <!-- Use Java 11 for compiling -->
         <maven.compiler.release>11</maven.compiler.release>
 
@@ -85,16 +85,18 @@
         <avalon-framework.version>4.2.0</avalon-framework.version>
         <h2.version>1.4.200</h2.version>
         <oscache.version>2.3</oscache.version>
-        <shiro.version>1.10.0</shiro.version>
+        <shiro.version>1.10.1</shiro.version>
         <activemq.version>5.17.2</activemq.version>
         <aspectj.version>1.9.9.1</aspectj.version>
-        <aws.version>1.12.338</aws.version>
+        <aws.version>1.12.357</aws.version>
         <bouncycastle.version>1.70</bouncycastle.version>
         <cdi.version>2.0.SP1</cdi.version>
         <commons-csv.version>1.9.0</commons-csv.version>
         <commons-dbcp2.version>2.9.0</commons-dbcp2.version>
-        <commons-io.version>2.11.0</commons-io.version>        
-        <commons-net.version>3.8.0</commons-net.version>
+        <commons-io.version>2.11.0</commons-io.version>
+        <!-- JXPath is used at XPathExpressionEngine from org.apache.commons.configuration2 -->
+        <commons-jxpath.version>1.3</commons-jxpath.version>                
+        <commons-net.version>3.9.0</commons-net.version>
         <commons-pool2.version>2.11.1</commons-pool2.version>
         <deltaspike.version>1.9.6</deltaspike.version>
         <el-impl.version>2.2.1-b05</el-impl.version>
@@ -102,16 +104,16 @@
         <guava.version>31.1-jre</guava.version>
         <gson.version>2.10</gson.version>
         <httpclient.version>4.5.13</httpclient.version>
-        <httpcore.version>4.4.15</httpcore.version>
+        <httpcore.version>4.4.16</httpcore.version>
         <imageio-openjpeg.version>0.6.2</imageio-openjpeg.version>
         <javassist.version>3.29.2-GA</javassist.version>
         <java-jwt.version>3.19.1</java-jwt.version>
-        <jaxb-impl.version>2.3.6</jaxb-impl.version>
-        <jackson.version>2.14.0</jackson.version>
+        <jaxb-impl.version>2.3.7</jaxb-impl.version>
+        <jackson.version>2.14.1</jackson.version>
         <jersey.version>2.37</jersey.version>
         <jhove.version>1.20.1</jhove.version>
         <jna.version>5.11.0</jna.version>
-        <joda.version>2.12.1</joda.version>
+        <joda.version>2.12.2</joda.version>
         <junit.version>4.13.2</junit.version>
         <jsonpath.version>2.7.0</jsonpath.version>
         <jwks-rsa.version>0.21.2</jwks-rsa.version>
@@ -119,7 +121,7 @@
         <lombok.version>1.18.24</lombok.version>
         <metadata-extractor.version>2.18.0</metadata-extractor.version>
         <mimepull.version>1.10.0</mimepull.version>
-        <omnifaces.version>3.14</omnifaces.version>
+        <omnifaces.version>3.14.1</omnifaces.version>
         <openpdf.version>1.3.30</openpdf.version>
         <pdfbox.version>2.0.27</pdfbox.version>
         <poi.version>5.2.3</poi.version>
@@ -128,7 +130,7 @@
         <spark.version>2.9.4</spark.version>
         <spring.version>5.3.23</spring.version>
         <sshj.version>0.34.0</sshj.version>
-        <swagger.version>2.2.6</swagger.version>
+        <swagger.version>2.2.7</swagger.version>
         <weld.version>3.1.9.Final</weld.version>
         <hk2.version>2.6.1</hk2.version>
         <xmlbeans.version>5.1.1</xmlbeans.version>
@@ -300,6 +302,11 @@
 			<artifactId>commons-configuration2</artifactId>
     		<version>2.8.0</version>
 		</dependency>
+        <dependency>
+            <groupId>commons-jxpath</groupId>
+            <artifactId>commons-jxpath</artifactId>
+            <version>${commons-jxpath.version}</version>
+        </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
@@ -824,7 +831,7 @@
 		<dependency>
 		    <groupId>software.aws.rds</groupId>
 		    <artifactId>aws-mysql-jdbc</artifactId>
-		    <version>1.1.1</version>
+		    <version>1.1.2</version>
 		</dependency>
         
         <dependency>
@@ -1355,6 +1362,11 @@
             <artifactId>sshj</artifactId>
             <version>${sshj.version}</version>
         </dependency>
+        <dependency>
+			<groupId>org.threeten</groupId>
+  			<artifactId>threeten-extra</artifactId>
+  			<version>1.7.1</version>
+		</dependency>
     </dependencies>
 
 

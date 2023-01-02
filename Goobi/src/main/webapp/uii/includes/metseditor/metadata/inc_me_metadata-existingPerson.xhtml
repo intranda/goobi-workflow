@@ -63,10 +63,12 @@
                                 jsf:action="#{Metadaten.HinzufuegenPerson}"
                                 type="button">
                                 #{msgs.neuePersonAnlegen}
-                                <f:ajax render=":pageContentCenter" />
                                 <f:setPropertyActionListener
                                     value=""
                                     target="#{Metadaten.currentGroup}" />
+                                <f:ajax
+                                    onevent="function(data){ goobiWorkflowJS.meScrollPos.init(data) }"
+                                    render=":pageContentCenter" />
                             </button>
                         </div>
                     </div>

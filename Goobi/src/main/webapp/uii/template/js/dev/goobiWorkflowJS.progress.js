@@ -1,8 +1,8 @@
 var goobiWorkflowJS = (function (goobiWorkflow) {
     'use strict';
 
-    var _debug = true;
-
+    var _debug = false;
+    
     goobiWorkflow.progress = {
         /**
          * @description Method to initialize the progress bar module.

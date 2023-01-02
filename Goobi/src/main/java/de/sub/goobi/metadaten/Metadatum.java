@@ -1,9 +1,7 @@
-package de.sub.goobi.metadaten;
-
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 
- * Visit the websites for more information. 
+ * Visit the websites for more information.
  *          - https://goobi.io
  *          - https://www.intranda.com
  *          - https://github.com/intranda/goobi-workflow
@@ -18,6 +16,9 @@ package de.sub.goobi.metadaten;
  * Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
+
+package de.sub.goobi.metadaten;
+
 import java.util.List;
 
 import javax.faces.model.SelectItem;

@@ -23,6 +23,7 @@
  * library, you may extend this exception to your version of the library, but you are not obliged to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
+
 package org.goobi.api.display;
 
 import static org.junit.Assert.assertEquals;
@@ -33,6 +34,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.goobi.api.display.enums.DisplayType;
+import org.goobi.api.display.helper.MetadataGeneration;
 import org.goobi.beans.Process;
 import org.junit.Before;
 import org.junit.Test;
@@ -200,6 +202,33 @@ public class DisplayCaseTest extends AbstractTest {
         assertEquals(DisplayType.vocabularyList, dc.getDisplayType());
         assertEquals("Subject terms", dc.getItemList().get(0).getSource());
         assertEquals("type=Person", dc.getItemList().get(0).getField());
+    }
+
+    @Test
+    public void testConstructorMetadataConvertibleDate() {
+        MetadataType type = new MetadataType();
+        type.setName("GregorianDate");
+        DisplayCase dc = new DisplayCase(process, type);
+        assertNotNull(dc);
+        assertEquals(DisplayType.convertibleDate, dc.getDisplayType());
+        assertEquals("Testquelle", dc.getItemList().get(0).getSource());
+        assertEquals("1983-12-01", dc.getItemList().get(0).getField());
+
+    }
+
+    @Test
+    public void testConstructorMetadataGenerate() {
+        MetadataType type = new MetadataType();
+        type.setName("junitGenerationMetadata");
+        DisplayCase dc = new DisplayCase(process, type);
+        assertNotNull(dc);
+        assertEquals(DisplayType.generate, dc.getDisplayType());
+        Item fixture = dc.getItemList().get(0);
+        assertEquals("abcdef [VALUE] gehij", fixture.getLabel());
+        assertEquals("abcdef [VALUE] gehij", fixture.getValue());
+        MetadataGeneration mg = (MetadataGeneration) fixture.getAdditionalData();
+        assertNotNull(mg);
+        assertEquals("goobi:metadata[@name='TitleDocMain'][text()='main title']", mg.getCondition());
     }
 
 }
