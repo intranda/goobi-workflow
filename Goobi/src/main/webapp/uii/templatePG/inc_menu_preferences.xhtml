@@ -31,7 +31,6 @@
 
 
 					// HANDLE TOOLTIPS
-
 					/* TODO: move tooltip fns into a module */
 
 					/* Locale switcher: Show and hide tooltips */
@@ -93,6 +92,7 @@
 
 					}
         </script>
+
 		<div class="user">
 			<div class="nav icon-nav">
 				<!-- Icon to enable help texts -->
@@ -149,8 +149,7 @@
 								<button
 									jsf:id="locale"
 									class="dropdown-item text_head btn-link"
-									jsf:action="#{SpracheForm.SpracheUmschalten}"
-									title="#{availableLanguage.displayLanguageTranslated}">
+									jsf:action="#{SpracheForm.SpracheUmschalten}">
 									<f:param
 										name="locale"
 										value="#{availableLanguage.id}" />
