@@ -1,0 +1,70 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+    xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<composite:interface>
+		<composite:attribute name="paginator"/>
+	</composite:interface>
+
+	<composite:implementation>
+
+		<h:panelGroup rendered="#{true}">
+
+			<div class="dataTables__paginator">
+
+				<button
+					type="button"
+					class="btn btn-blank">
+					<i class="fa fa-angle-double-left"></i>
+				</button>
+				<button
+					type="button"
+					class="btn btn-primary-400">
+					<i class="fa fa-angle-left"></i>
+					<h:outputText value=" #{msgs.pagePrevious}"/>
+				</button>
+
+				<div
+					type="button"
+					class="dataTables__paginator__page-count">
+					<!-- aktuelle Seite anzeigen -->
+					<x:outputText id="#{idPref}txtMoveTo1" forceId="true"
+						value="#{msgs.seite} 1 #{msgs.von} 2"
+						onclick="document.getElementById('#{idPref}txtMoveTo2').style.display='inline';
+			       document.getElementById('#{idPref}txtMoveTo1').style.display='none';
+			       document.getElementById('#{idPref}txtMoveTo2').focus();
+			       document.getElementById('#{idPref}txtMoveTo2').select();" />
+
+					<x:inputText id="#{idPref}txtMoveTo2" forceId="true"
+						value="1" style="display:none;width:30px"
+						required="true"
+						onblur="document.getElementById('#{idPref}txtMoveTo2').style.display='none';document.getElementById('#{idPref}txtMoveTo1').style.display='inline';"
+					/>
+				</div>
+
+				<button
+					type="button"
+					class="btn btn-primary-400" jsf:id="navnext">
+					<h:outputText value="#{msgs.pageNext} "/>
+							<i class="fa fa-angle-right"></i>
+				</button>
+				<button
+					type="button"
+					class="btn btn-blank"
+					aria-label="#{msgs.lastPage}"
+					jsf:id="#{idPref}navlast">
+					<i class="fa fa-angle-double-right"></i>
+				</button>
+			</div>
+		</h:panelGroup>
+
+	</composite:implementation>
+
+</ui:composition>
+
+

@@ -26,6 +26,7 @@
 <ui:define name="content">
 <main id="designSystem" class="flow">
 
+  <!-- hightlight code -->
   <script src="https://cdn.jsdelivr.net/npm/microlight@0.0.7/microlight.min.js"></script>
 
 
@@ -51,6 +52,14 @@
     ['badge-light-blue', ['--clr-badge-light-blue']]
   ]}" />
 
+  <c:set var="badgePillColors" value="#{[
+    ['badge-intranda-ultralight', ['--clr-badge-light-red']],
+    ['badge-intranda-red', ['--clr-badge-light-red']],
+    ['badge-intranda-orange', ['--clr-badge-light-orange']],
+    ['badge-intranda-blue', ['--clr-badge-light-purple']],
+    ['badge-intranda-green', ['--clr-badge-light-blue']]
+  ]}" />
+
   <!-- COLORS -->
   <section class="colors">
     <h2>Colors</h2>
@@ -69,11 +78,6 @@
   	<ui:include src="templatePG/includes/design_system/interactive_elements.xhtml" />
   </section>
 
-  <!-- Spacing -->
-  <section class="typography">
-    <h2>Spacing</h2>
-  </section>
-
   <!-- BOXES -->
   <section class="boxes">
     <h2>Boxes</h2>
@@ -83,6 +87,7 @@
   <!-- TABLES -->
   <section class="tables">
     <h2>Tables</h2>
+    <ui:include src="templatePG/includes/design_system/tables.xhtml" />
   </section>
 
   <!-- FORMS -->
@@ -90,77 +95,64 @@
     <h2>Forms</h2>
 
 
-<article class="flow">
-  <h3 class="description">Form Actions</h3>
+<article class="flow" style="grid-column: 1 / 3">
+  <h3 class="description">Forms in boxes</h3>
 
-	<intranda:box
-		boxType="blank"
-		icon="fa-puzzle-piece"
-		title="Example Form Actions"
-		padding="false">
+  <ui:include src="templatePG/includes/design_system/forms.xhtml" />
 
-    <form>
-      <div class="form-group">
-        <label for="exampleInputEmail1">Email address</label>
-        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
-        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-      </div>
-    </form>
-
-    <!-- FORM ACTIONS (save, cancel, delete)-->
-    <div class="form-actions">
-      <button class="btn btn-hot me-2"
-        onclick=""
-        jsf:action="#{yourBean.yourProp}"
-        jsf:rendered="#{not yourBean.yourProp}">
-        <i class="fa fa-trash ms-2"></i>
-        <span>#{msgs.loeschen}</span>
-      </button>
-      <button class="btn btn-primary-400 me-2" jsf:action="#{yourBean.yourProp}">
-        <i class="fa fa-save ms-2"></i>
-        <span>#{msgs.save}</span>
-      </button>
-      <button class="btn btn-blank"
-        jsf:immediate="true"
-        jsf:action="#{yourBean.yourMethod}">
-        <span>#{msgs.cancel}</span>
-      </button>
-    </div>
-
-  </intranda:box>
-
-      <!-- Code block -->
-<pre class="code--form-actions bg-primary text-white p-3" style="border-radius: var(--border-radius)">
-  <code class="microlight">
-
-&lt;!-- FORM ACTIONS (save, cancel, delete)--&gt;
-&lt;div class=&quot;form-actions&quot;&gt;
-  &lt;button class=&quot;btn btn-hot me-2&quot;
-    onclick=&quot;&quot;
-    jsf:action=&quot;#{yourBean.yourProp}&quot;
-    jsf:rendered=&quot;#{not yourBean.yourProp}&quot;&gt;
-    &lt;i class=&quot;fa fa-trash ms-2&quot;&gt;&lt;/i&gt;
-    &lt;span&gt;#{msgs.loeschen}&lt;/span&gt;
-  &lt;/button&gt;
-  &lt;button class=&quot;btn btn-primary-400 me-2&quot; jsf:action=&quot;#{yourBean.yourProp}&quot;&gt;
-    &lt;i class=&quot;fa fa-save ms-2&quot;&gt;&lt;/i&gt;
-    &lt;span&gt;#{msgs.save}&lt;/span&gt;
-  &lt;/button&gt;
-  &lt;button class=&quot;btn btn-blank&quot;
-    jsf:immediate=&quot;true&quot;
-    jsf:action=&quot;#{yourBean.yourMethod}&quot;&gt;
-    &lt;span&gt;#{msgs.cancel}&lt;/span&gt;
-  &lt;/button&gt;
-&lt;/div&gt;
-
-  </code>
-</pre>
+  <!-- Code block -->
+  <div class="mt-4">
+    <ui:include src="templatePG/includes/design_system/code_blocks/code_forms.xhtml">
+      <ui:param name="ID" value="codeForms" />
+    </ui:include>
+  </div>
 
 </article>
 
   </section>
 
 </main>
+
+
+<!-- Highlight important class names and attributes -->
+<script>
+
+  addEventListener("load", (event) => {
+
+    function highlight(str) {
+
+      const codeBlocks = document.querySelectorAll('code');
+      const regex = new RegExp(str)
+      const replacement = '<span class="highlight">' + str + '</span>';
+
+      codeBlocks.forEach(block => {
+        block.innerHTML = block.innerHTML.replace(regex, replacement)
+      })
+    }
+    [
+      'gw-table',
+      'gw-table-fixed',
+      'gw-table__search',
+      'gw-table__search__length',
+      'gw-table__filters',
+      'gw-table__filters__option',
+      'gw-table__filters__search-bar',
+      'gw-table__wrapper',
+      'gw-table-fixed__actions',
+      'gw-table__actions__container',
+      'box__actions',
+      'me-auto',
+      'boxPadding',
+      'formBox',
+      'boxSmall',
+      'boxTitle'
+
+    ].forEach(str => highlight(str))
+
+  });
+
+
+</script>
 
 </ui:define>
 </ui:composition>

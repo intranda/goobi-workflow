@@ -66,15 +66,34 @@
     <article class="flow">
       <h3 class="description">Badges</h3>
 
-    <c:forEach var="badgeColor" items="#{badgeColors}">
-      <span
-        class="badge #{badgeColor[0]}"
-        style=""
-      >
-      Example Badge
-      </span>
+      <div>
+        <c:forEach var="badgeColor" items="#{badgeColors}">
+          <span
+            class="badge #{badgeColor[0]}"
+            style=""
+          >
+          Example Badge
+          </span>
 
-      </c:forEach>
+          </c:forEach>
+      </div>
+
+    </article> <!-- end badge colors -->
+
+    <!-- BADGE COLORS -->
+    <article class="flow">
+      <h3 class="description">Pillshaped Badges</h3>
+
+      <div>
+        <c:forEach var="badgePillColor" items="#{badgePillColors}">
+          <span
+            class="badge #{badgePillColor[0]}"
+          >
+          Example Badge
+          </span>
+
+        </c:forEach>
+      </div>
 
     </article> <!-- end badge colors -->
 

@@ -36,15 +36,6 @@
 
   <ui:define name="content">
 
-    <script type="text/javascript">
-      /*
-      window.onload = function() {
-        document.querySelector('[id$="nachname"]').focus();
-      }
-      */
-
-    </script>
-
     <h:form
       id="myform"
       styleClass="form-horizontal form-bordered view-users"
@@ -52,16 +43,7 @@
       rendered="#{LoginForm.hasRole('Admin_Users')}"
       enctype="multipart/form-data">
 
-    <!--
-      <f:passThroughAttribute name="autocomplete" value="off"/>
-    -->
-
-
       <div class="row" role="main">
-
-        <!--
-        <div class="col-12 col-md-12">
-        -->
 
         <div class="#{NavigationForm.uiStatus['journalBig']?'col-12':'col-12 col-lg-6'}">
 

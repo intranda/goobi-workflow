@@ -1,0 +1,118 @@
+<ui:composition
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+  xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:f="http://xmlns.jcp.org/jsf/core"
+  xmlns:x="http://myfaces.apache.org/tomahawk"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
+  xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+  xmlns:p="http://primefaces.org/ui"
+  xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<composite:interface />
+
+<composite:implementation>
+
+
+<intranda:box
+  boxType="action"
+  boxForm="true"
+  boxPadding="false"
+  title="#{myPageTitle}"
+  icon="fa-edit"
+  >
+
+  <intranda:formInputText
+    id="lastname"
+    label="#{msgs.nachname}"
+    field="#{BenutzerverwaltungForm.myClass.nachname}"
+    help="#{msgs.helpNachname}"
+    name="nachname"
+  />
+
+  <intranda:formInputText
+    id="firstname"
+    label="#{msgs.vorname}"
+    field="#{BenutzerverwaltungForm.myClass.vorname}"
+    help="#{msgs.helpVorname}"
+    name="vorname"
+  />
+
+  <intranda:formInputText
+    id="location"
+    label="#{msgs.standort}"
+    field="#{BenutzerverwaltungForm.myClass.standort}"
+    help="#{msgs.helpStandort}"
+    name="standort"
+   />
+
+  <intranda:formInputDropDown
+    id="dashboard"
+    label="#{msgs.dashboard}"
+    field="#{BenutzerverwaltungForm.myClass.dashboardPlugin}"
+    help="#{msgs.helpUserDashboard}"
+    name="dashboardName"
+    selectItems="#{BenutzerverwaltungForm.myClass.availableDashboards}"
+    />
+
+  <intranda:formInputCheckBox
+    id="isActive"
+    label="#{msgs.istAktiv}"
+    field="#{BenutzerverwaltungForm.myClass.active}"
+    help="#{msgs.helpIstAktiv}"
+    name="istAktiv" />
+
+  <intranda:formInputCheckBox
+    id="usemassdownload"
+    label="#{msgs.massendownload}"
+    field="#{BenutzerverwaltungForm.myClass.mitMassendownload}"
+    help="#{msgs.helpMassendownload}"
+    name="massendownload" />
+
+
+  <div class="box__actions">
+
+        <!-- Cancel -->
+        <a
+          jsf:id="cancelEdition"
+          class="btn btn-blank"
+          jsf:immediate="true"
+          jsf:action="#{BenutzerverwaltungForm.cancelEdit}">
+          <h:outputText
+            value="#{msgs.abbrechen}" />
+        </a>
+
+        <!-- Save => should be the first btn in the form (subit on enter) -->
+        <button
+          class="btn btn-success submitOnEnter"
+          jsf:id="absenden"
+          type="submit"
+          jsf:action="#{BenutzerverwaltungForm.Speichern}">
+          <i class="fa fa-save"></i>
+          <span><h:outputText value="#{msgs.speichern}" /></span>
+        </button>
+
+        <!-- Delete -->
+        <button
+          jsf:id="deleteUser"
+          class="btn btn-hot trigger-delete"
+          onclick="if (!confirm('#{msgs.sollDieserEintragWirklichGeloeschtWerden}')) return false"
+          jsf:action="#{BenutzerverwaltungForm.Loeschen}">
+          <i class="fa fa-trash-o"></i>
+          <span><h:outputText value="#{msgs.loeschen}" /></span>
+        </button>
+
+    </div>
+
+  </intranda:box>
+
+
+
+
+
+
+</composite:implementation>
+</ui:composition>
+

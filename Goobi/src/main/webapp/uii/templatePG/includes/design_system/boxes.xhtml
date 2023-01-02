@@ -18,15 +18,26 @@
 
   <!-- Example box -->
 
+	<!-- BOX COLOR VARS -->
+	<c:set var="boxColors" value="#{[
+    ['neutral', 'neutral-600', ['#666666', 'rgb(102, 102, 102)', 'hsl(0, 0%, 40%)']],
+    ['primary', 'primary-400', ['#368ee0', 'rgb(54, 142, 224)', 'hsl(209, 73%, 55%)']],
+    ['action', 'action', ['#e8860c', 'rgb(232, 134, 12))', 'hsl(33, 90%, 48%)']],
+    ['success', 'success', ['#198754', '	rgb(25, 135, 84)', '	hsl(152, 69%, 31%)']],
+    ['hot', 'hot', ['#ba324f', 'rgb(186, 50, 79)', 'hsl(347, 58%, 46%)']]
+  ]}" />
+
+
   <article class="flow">
 
   <h3 class="description">Box variants - boxes can be styled using the &lt;intranda:box&gt; composite</h3>
 
 	<intranda:box
 		boxType="blank"
+    boxPadding="true"
 		icon="fa-search"
 		title="#{msgs.search}"
-		padding="false">
+		>
 
         <h:form
           id="myform"
@@ -82,10 +93,11 @@
       <div class="switch">
 
         <!-- Button styles -->
-        <button type="button" class="btn btn-blank" style="border: 2px solid var(--clr-neutral-400)">blank</button>
+        <button type="button" class="btn btn-blank" data-color="blank" style="border: 2px solid var(--clr-neutral-400)">blank</button>
+        <button type="button" class="btn btn-outline" data-color="outline" style="border: 1px solid var(--clr-neutral-400)">outline</button>
 
-        <c:forEach var="color" items="#{colors}">
-          <button type="button" class="btn btn-#{color[0]}">#{color[0]}</button>
+        <c:forEach var="color" items="#{boxColors}">
+        <button type="button" class="btn btn-#{color[1]}" data-color="#{color[0]}">#{color[0]}</button>
         </c:forEach>
 
       </div>
@@ -105,8 +117,6 @@ const boxCode =`
   boxType=&quot;{%type%}&quot;
   icon=&quot;fa-search&quot;
   title=&quot;#{msgs.search}&quot;
-  padding=&quot;false&quot;&gt; // default: true
-  sizeSmall=&quot;false&quot;&gt; // default: false
 
 &lt;!-- Your markup here --&gt;
 
@@ -115,10 +125,11 @@ const boxCode =`
 const applyStyles = (e) => {
   const box = document.querySelector('.boxes .box');
   const codeBlock = document.querySelector('.code--box code')
-  const clName = e.target.classList[1].replace('btn-', 'box--');
-  box.classList.remove(box.classList[1])
-  box.classList.add(clName)
-  codeBlock.textContent =  boxCode.replace('{%type%}', clName.replace('box--', ''));
+  console.log(box.classList)
+  const curBoxModifier = box.classList[1]
+  const newBoxModifier = e.target.dataset.color;
+  box.classList.replace(curBoxModifier, 'box--' + newBoxModifier)
+  codeBlock.textContent =  boxCode.replace('{%type%}', newBoxModifier);
   microlight.reset();
 }
 
@@ -177,11 +188,9 @@ document.querySelector('.switch > .btn-blank').click();
       const boxCodeBoxTabs =`
 &lt;intranda:box
   boxType=&quot;{%type%}&quot;
-  icon=&quot;fa-search&quot;
+  boxTitle=&quot;false&quot;&gt; // default: true
   title=&quot;#{msgs.search}&quot;
-  padding=&quot;false&quot;&gt; // default: true
-  boxTitle=&quot;false&quot;&gt; // default: true
-  boxTitle=&quot;false&quot;&gt; // default: true
+  icon=&quot;fa-search&quot;
 
   &lt;intranda:boxTitle
     title=&quot;{#myPageTitle}&quot;
@@ -210,9 +219,9 @@ document.querySelector('.switch > .btn-blank').click();
     <h3 class="description">Boxes with a slimmer title bar, often nested in tables etc.</h3>
     <intranda:box
       boxType="hot"
+      boxSmall="true"
       icon="undefined"
       title="I am a slim title"
-      sizeSmall="true"
       >
 
     </intranda:box>
@@ -226,9 +235,8 @@ document.querySelector('.switch > .btn-blank').click();
       const boxCodeBoxSmall =`
 &lt;intranda:box
   boxType=&quot;hot&quot;
-  icon=&quot;undefined&quot; // default: undefined
+  boxSmall=&quot;true&quot;&gt; // default: true
   title=&quot;I am a slim title&quot;
-  sizeSmall=&quot;true&quot;&gt; // default: true
 
   &lt;!-- Your markup here --&gt;
 
