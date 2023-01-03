@@ -92,7 +92,7 @@
 		
 		
 	<defaultRepositoryPathAlto value="file:///"
-		usage="true" />
+		usage="true" fontFile="NotoSansArabic-Regular.ttf"/>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * default 
 		color for highlighting inside the image as RGB *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
