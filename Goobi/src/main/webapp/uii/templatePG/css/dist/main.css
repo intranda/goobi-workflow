@@ -1066,6 +1066,7 @@ a:focus, a:hover, a:active {
 }
 
 .box__title {
+  margin: -0.3px;
   color: var(--clr-white, #fff);
   display: flex;
   justify-content: space-between;
@@ -1166,7 +1167,7 @@ a:focus, a:hover, a:active {
 .box .tabs {
   display: flex;
   gap: 0.8rem;
-  padding: 2;
+  padding: 2px;
   list-style: none;
   margin-bottom: 0;
   margin-right: 8px;
