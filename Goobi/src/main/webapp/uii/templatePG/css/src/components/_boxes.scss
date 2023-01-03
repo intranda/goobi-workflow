@@ -16,6 +16,7 @@
 }
 
 .box__title {
+  margin: -0.3px; // Fix a chrome bug => otherwise gaps between title + box border are visible when zooming in
   color: var(--clr-white, #fff);
   display: flex;
   justify-content: space-between;
@@ -110,7 +111,7 @@
   .tabs {
     display: flex;
     gap: 0.8rem;
-    padding: 2;
+    padding: 2px;
     list-style: none;
     margin-bottom: 0;
     margin-right: 8px;
