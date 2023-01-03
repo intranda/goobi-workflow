@@ -117,18 +117,19 @@
 <!-- Highlight important class names and attributes -->
 <script>
 
+  function highlight(str) {
+
+    const codeBlocks = document.querySelectorAll('code');
+    const regex = new RegExp(str)
+    const replacement = '<span class="highlight">' + str + '</span>';
+
+    codeBlocks.forEach(block => {
+      block.innerHTML = block.innerHTML.replace(regex, replacement)
+    })
+  }
+
   addEventListener("load", (event) => {
 
-    function highlight(str) {
-
-      const codeBlocks = document.querySelectorAll('code');
-      const regex = new RegExp(str)
-      const replacement = '<span class="highlight">' + str + '</span>';
-
-      codeBlocks.forEach(block => {
-        block.innerHTML = block.innerHTML.replace(regex, replacement)
-      })
-    }
     [
       'gw-table',
       'gw-table-fixed',
