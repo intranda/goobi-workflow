@@ -9,9 +9,7 @@ $colors: (
   neutral-100: #f1f1f1,
   neutral-200: #eee,
   neutral-210: #dddddd,
-  // used for neutral boxes (box blank)
   neutral-300: #ccc,
-  // Form elements border color
   neutral-400: #aaaaaa,
   neutral-500: #999999,
   neutral-600: #666666,
@@ -32,8 +30,8 @@ $colors-text: (
 );
 
 $colors-boxes: (
-  primary: #368ee0,
-  action: #e8860c,
+  primary: var(--clr-primary-400),
+  action: var(--clr-action),
   neutral: #666666,
   hot: #ba324f,
   success: #198754,

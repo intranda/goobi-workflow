@@ -8,17 +8,21 @@ Goobi workflow does not use the complete BS5 source. Only source files, which ar
 
 ## Custom Styles
 
-Custom styles are organized in sass files which are imported into `main.scss`. They are divided into three categories.
+Bootstrap 5 is extended with custom styles.
+Custom styles are organized in sass files which are imported into `main.scss`.
+They are divided into three categories:
 
 1. `Basics` includes basic style settings like colors, typography and utilities etc.
 2. `Components` includes styles for reusable components, e.g. navbar, boxes, forms, buttons.
 3. `Pages` includes styles unique to certain views. Views are scoped using a class, e.g.:
 
-### JSF Components
-
 ```xhtml
 <main class="plugins">...</main>
 ```
+
+## Accessibility: High Contrast mode
+
+Goobi workflow has a high contrast mode, which is called `WCAG compliant mode`. `WCAG compliant mode` can be set in the `user configuration`. `templagePG.xhtml` will then load additional styles overriding css color properties. The corresponding scss module is `accessibility.scss`.
 
 ## Build system
 
@@ -32,12 +36,12 @@ The build system uses two npm packages:
 ### Usage
 
 ```sh
-# Install sass, postcss (+ plugins), and bootstrap
+#: Install sass, postcss (+ plugins), and bootstrap
 npm install
 
-# Develop: watch src and compile css into dist (sass only)
+#: Develop: watch src and compile css into dist (sass files only)
 npm start
 
-# Build: compile sass and transform css with postcss
+#: Build: compile sass and transform css with postcss
 npm run css:build
 ```
