@@ -15,83 +15,9 @@
 
 	<composite:implementation>
 
-		<script type="text/javascript">
-        	function switchExpanded(id){
-        		console.log("called by: "+id);
-				var x = document.getElementById(id).getAttribute("aria-expanded");
-				console.log(x)
-				if (x == "true"){
-					x = "false"
-				} else {
-					x = "true"
-				}
-				document.getElementById(id).setAttribute("aria-expanded", x);
-        	}
+    <script src="templatePG/js/modules/gwNavigation.js?v=#{HelperForm.buildVersion}"></script>
 
-
-
-					// HANDLE TOOLTIPS
-					/* TODO: move tooltip fns into a module */
-
-					/* Locale switcher: Show and hide tooltips */
-					function toggleLangTooltip(target) {
-						const tooltip = bootstrap.Tooltip.getInstance(target)
-						const dropdownToggle = target.querySelector(".nav-link");
-						const dropdownIsExpanded = dropdownToggle.getAttribute('aria-expanded');
-
-						// Mutation observer
-						const observer = new MutationObserver((mutations, observerInstance) => {
-							mutations.forEach(mutation => {
-								// console.log(mutation, mutation.type)
-								if(mutation.attributeName === 'aria-expanded') {
-									if (dropdownIsExpanded === 'false') {
-										tooltip.disable();
-									}
-									if (dropdownIsExpanded === 'true') {
-										tooltip.enable();
-										// Stop watching for mutations
-										observerInstance.disconnect();
-									}
-								}
-							})
-						});
-
-						if (dropdownIsExpanded === 'true') {
-							tooltip.disable();
-							// Start watching for mutations on the dropdown toggle's attributes
-							observer.observe(dropdownToggle, {
-								attributes: true,
-							})
-						}
-
-						if (dropdownIsExpanded === 'false') {
-							// If a user clicks on the dropdown toggle while the dropdown is expanded
-							// => the tooltip is reenabled by the mutation observer (above)
-							// => we will then show the tooltip using this BS5 fn
-							tooltip.show();
-						}
-					}
-
-					/* Help toggle: Remove old tooltip + init new tooltip after rerendering the toggle */
-					const handleTooltip = (data) => {
-						/* Remove tooltips + recreate them if JSF Ajax gets in the way */
-
-						// get the element triggering the ajax call
-						const trigger = bootstrap.Tooltip.getInstance(data.source)
-
-						// remove associated tooltips
-						if (trigger) trigger?.tip?.remove();
-
-						// if ajax call is done, init a new tooltip
-            if (data.status === 'success') {
-							// get the rerendered trigger element
-							const tooltipTrigger = document.querySelector('[data-goobi="handle-tooltip"]')
-							// fire up a tooltip (new instances are enabled by default)
-							new bootstrap.Tooltip(tooltipTrigger)
-					}
-
-					}
-        </script>
+    <script src="templatePG/js/modules/gwHandleTooltip.js?v=#{HelperForm.buildVersion}"></script>
 
 		<div class="user">
 			<div class="nav icon-nav">
@@ -112,7 +38,7 @@
 							target="#{NavigationForm.showHelp}"
 							value="#{not NavigationForm.showHelp}" />
 						<f:ajax render="@this" execute="@form"
-							onevent="function(data) { toggle_help(data); handleTooltip(data);}" />
+							onevent="function(data) { toggle_help(data); gwHandleTooltip.init(data);}" />
 					</button>
 
 				<!-- Language dropdown -->
@@ -122,7 +48,7 @@
 						data-bs-toggle="tooltip"
 						data-bs-placement="bottom"
 						data-bs-trigger="hover"
-						onclick="toggleLangTooltip(this)"
+						onclick="gwNavigation.toggleLangTooltip(this)"
 						>
 
 					<a
@@ -236,5 +162,7 @@
 					</div> <!-- end nav-item user__account-menu dropdown -->
 				</c:if>
 			</div>
+
+
 	</composite:implementation>
 </ui:composition>
