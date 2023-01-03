@@ -352,6 +352,10 @@
                                                                 rendered="#{item.typAutomatisch}" />
                                                             <h:outputText
                                                                 styleClass="block"
+                                                                value="#{msgs.typeThumbnailStep}"
+                                                                rendered="#{item.typAutomaticThumbnail}" />
+                                                            <h:outputText
+                                                                styleClass="block"
                                                                 value="#{msgs.typScriptStep}"
                                                                 rendered="#{item.typScriptStep}" />
                                                             <h:outputText
@@ -378,7 +382,6 @@
                                                                 styleClass="block"
                                                                 value="#{msgs.updateMetadataIndex}"
                                                                 rendered="#{item.updateMetadataIndex}" />
-
                                                             <h:outputText
                                                                 styleClass="block"
                                                                 value="#{msgs.process_generateDocket}"
