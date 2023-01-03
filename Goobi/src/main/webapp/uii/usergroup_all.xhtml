@@ -33,7 +33,7 @@
 						boxType="primary"
 						icon="fa-users"
 						title="#{myPageTitle}"
-						padding="true">
+						boxPadding="true">
 
 							<div class="gw-table gw-table-fixed">
 								<div class="gw-table__search">
@@ -62,9 +62,9 @@
 
 													<intranda:box
 														boxType="neutral"
+														boxPadding="false"
+														boxSmall="true"
 														title="#{msgs.benutzer}"
-														padding="false"
-														sizeSmall="true"
 														>
 
 															<x:dataTable var="step" value="#{item.benutzer}"
@@ -80,8 +80,8 @@
 													<intranda:box
 														boxType="neutral"
 														title="#{msgs.usergroup_userRoles}"
-														padding="true"
-														sizeSmall="true"
+														boxPadding="true"
+														boxSmall="true"
 														>
 															<ui:repeat var="role" value="#{item.userRoles}" varStatus="row">
 																<h:outputText value="#{fn:startsWith(role,'goobiscript_') ? (msgs.goobiScriptAusfuehren).concat(': ').concat(fn:replace(role, 'goobiscript_', '')) : msgs[('rights_').concat(role)]}"

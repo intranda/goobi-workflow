@@ -10,19 +10,15 @@
 
 	<composite:interface>
 		<composite:attribute name="boxType" />
+		<composite:attribute name="boxTitle" default="true" />
+		<composite:attribute name="boxForm" default="false"/>
+		<composite:attribute name="boxPadding" default="true" />
+		<composite:attribute name="boxSmall" default="false"/>
 		<composite:attribute name="boxId" default="defaultId"/>
 		<composite:attribute name="scope" />
 		<composite:attribute name="icon" />
 		<composite:attribute name="title" />
-		<composite:attribute name="padding" default="true" />
-		<composite:attribute name="boxPadding" default="true" />
-		<composite:attribute name="scrollX" default="false" />
-		<composite:attribute name="boxTitle" default="true" />
 		<composite:attribute name="addClass" />
-		<composite:attribute name="sizeSmall" default="false"/>
-		<composite:attribute name="boxSmall" default="false"/>
-		<composite:attribute name="formBox" default="false"/>
-		<composite:attribute name="boxForm" default="false"/>
 	</composite:interface>
 
 	<composite:implementation>
@@ -30,18 +26,15 @@
 
 	<h:panelGroup
 		layout="block"
-		styleClass="box
+		styleClass="box TEST
 		box--#{cc.attrs.boxType}
 		#{cc.attrs.scope}
-		#{cc.attrs.padding ? 'box--padded' : 'box--no-padding'}
 		#{cc.attrs.boxPadding ? 'box--padded' : 'box--no-padding'}
-		#{cc.attrs.sizeSmall ? 'box--small' : ''}
 		#{cc.attrs.boxSmall ? 'box--small' : ''}
-		#{cc.attrs.formBox ? 'form-box' : ''}
 		#{cc.attrs.boxForm ? 'form-box' : ''}
 		">
 
-			<!-- Renders if a boxTitle = true -->
+			<!-- Renders if boxTitle = true -->
 			<h:panelGroup layout="block" class="box__content">
 
 					<intranda:boxTitle
