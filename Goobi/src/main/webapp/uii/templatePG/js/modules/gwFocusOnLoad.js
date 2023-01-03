@@ -10,25 +10,29 @@ var gwFocusOnLoad = ( function() {
 
     function init(selector) {
       if (_debug) console.log('%c### Initialized gwFocusOnload ###', 'color: #368ee0')
+
       window.addEventListener("DOMContentLoaded", _setFocus(selector));
     }
 
     function _setFocus(selector = _defaultSelector) {
       try {
-        document.querySelector(selector).focus();
+        const el = document.querySelector(selector);
+        el.focus();
+
+        // Debugging
+        if(_debug){
+          console.log('%c### Called _setFocus ###', 'color: #368ee0') 
+          console.log('selector:', selector)
+          console.log('queried element:', el)
+
+        } 
       }
       catch (error) {
         if (_debug) console.log(error)
       }
-
-      // Debugging
-      if (_debug) {
-        console.log('%c### Called _setFocus ###', 'color: #368ee0') 
-        console.log('selector:', selector)
-      }
     }
     
     return {
-        init
+      init
     }
 } )();
