@@ -18,8 +18,8 @@
   --clr-blank: transparent;
   --clr-text-400: #2a2a2a;
   --clr-text-400: #2a2a2a;
-  --clr-box-primary: #368ee0;
-  --clr-box-action: #e8860c;
+  --clr-box-primary: var(--clr-primary-400);
+  --clr-box-action: var(--clr-action);
   --clr-box-neutral: #666666;
   --clr-box-hot: #ba324f;
   --clr-box-success: #198754;
@@ -660,14 +660,6 @@ html {
   -webkit-font-smoothing: antialiased;
 }
 
-a {
-  text-decoration: none;
-  color: var(--clr-primary-400);
-}
-a:focus, a:hover, a:active {
-  color: var(--clr-primary-600);
-}
-
 hr {
   color: var(--clr-neutral-200);
 }
@@ -677,10 +669,6 @@ hr {
   float: unset;
 }
 
-.heading-3 {
-  font-size: 1.8rem;
-}
-
 @font-face {
   font-family: "Goobi2";
   src: url("../../font/opensans-regular-webfont.eot");
@@ -688,6 +676,14 @@ hr {
   font-weight: normal;
   font-style: normal;
 }
+:root {
+  --fs-200: 1rem;
+  --fs-400: 1.2rem;
+  --fs-500: 1.4rem;
+  --fs-600: 1.6rem;
+  --fs-800: 1.8rem;
+}
+
 body {
   font-family: Goobi2, sans-serif;
   font-size: var(--fs-400, 1.2rem);
@@ -700,11 +696,16 @@ body .ui-widget {
   color: var(--bs-body-color);
 }
 
-:root {
-  --fs-200: 1rem;
-  --fs-400: 1.2rem;
-  --fs-500: 1.4rem;
-  --fs-600: 1.6rem;
+a {
+  text-decoration: none;
+  color: var(--clr-primary-400);
+}
+a:focus, a:hover, a:active {
+  color: var(--clr-primary-600);
+}
+
+.heading-3 {
+  font-size: var(--fs-800);
 }
 
 .fs-200 {
@@ -1047,7 +1048,6 @@ body .ui-widget {
   display: block;
 }
 
-/* Base box */
 /* VARIABLES */
 .box {
   --box-padding: 1.6rem;
@@ -1352,37 +1352,6 @@ body .ui-widget {
   background-color: #f6f6f6;
 }
 
-/*
-.dataTables__filter-container {
-  width: 84%;
-  justify-content: flex-end;
-  gap: var(--gap, 8px);
-
-  .search-form {
-    flex: 0 1 590px;
-  }
-}
-
-@media (max-width: 555px) {
-  .dataTables__filter-container {
-    width: 100%;
-    flex-wrap: wrap;
-  }
-}
-
-.dataTables__filter {
-  background-color: var(--clr-neutral-200);
-
-  input,
-  button:not(.btn--active-users) {
-    border: 1px solid var(--clr-neutral-300);
-  }
-
-  &.-search-bar {
-    width: 100%;
-  }
-}
-*/
 .gw-table__filters {
   display: flex;
   justify-content: flex-end;
@@ -1427,7 +1396,7 @@ body .ui-widget {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--gap, 8px);
+  gap: 8px;
 }
 
 .gw-table-fixed table,
@@ -1784,6 +1753,47 @@ span.badge:not(:last-child) {
   display: flex;
   gap: 8px;
 }
+#designSystem .accordion-button {
+  background: transparent;
+  color: var(--bs-body-color);
+  border-width: 2px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-radius 0.15s ease;
+}
+#designSystem .accordion-button:not(.collapsed) {
+  color: #0c63e4;
+  background-color: #e7f1ff;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.13);
+}
+#designSystem .accordion-button::after {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-left: 8px;
+  content: "";
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-size: 1.25rem;
+  transition: transform 0.2s ease-in-out;
+  color: currentColor;
+}
+#designSystem .accordion-button:not(.collapsed)::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%230c63e4'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+  transform: rotate(-180deg);
+}
+
+.dataTables__paginator {
+  gap: 8px;
+}
+
+.highlight {
+  background-color: yellow;
+  color: darkred;
+  border-radius: 2px;
+  padding: 1px;
+}
 
 .batch-all tr td:empty {
   display: none;
@@ -1853,7 +1863,7 @@ span.badge:not(:last-child) {
 
 /* ========================================
  * vocabulary_upload.xhmtl
- * => quite specific styles
+ * => very specific styles (high specificity)
  * to override primefaces defaults
  * ===================================== */
 .select-radio td {

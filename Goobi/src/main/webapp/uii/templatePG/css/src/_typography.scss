@@ -12,6 +12,16 @@
   font-style: normal;
 }
 
+// Font sizes
+:root {
+  --fs-200: 1rem;
+  --fs-400: 1.2rem;
+  --fs-500: 1.4rem;
+  --fs-600: 1.6rem;
+  --fs-800: 1.8rem;
+}
+
+// Set font family and body text
 body {
   font-family: Goobi2, sans-serif;
   font-size: var(--fs-400, 1.2rem);
@@ -25,13 +35,24 @@ body .ui-widget {
   color: var(--bs-body-color);
 }
 
-:root {
-  --fs-200: 1rem;
-  --fs-400: 1.2rem;
-  --fs-500: 1.4rem;
-  --fs-600: 1.6rem;
+// Links
+a {
+  text-decoration: none;
+  color: var(--clr-primary-400);
+
+  &:focus,
+  &:hover,
+  &:active {
+    color: var(--clr-primary-600);
+  }
 }
 
+// Headings
+.heading-3 {
+  font-size: var(--fs-800);
+}
+
+// Utilities
 .fs-200 {
   font-size: var(--fs-200);
 }

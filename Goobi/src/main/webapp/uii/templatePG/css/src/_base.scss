@@ -13,17 +13,6 @@ html {
   -webkit-font-smoothing: antialiased;
 }
 
-a {
-  text-decoration: none;
-  color: var(--clr-primary-400);
-
-  &:focus,
-  &:hover,
-  &:active {
-    color: var(--clr-primary-600);
-  }
-}
-
 hr {
   color: var(--clr-neutral-200);
 }
@@ -33,8 +22,4 @@ hr {
 .pull-left,
 .pull-right {
   float: unset;
-}
-
-.heading-3 {
-  font-size: 1.8rem;
 }

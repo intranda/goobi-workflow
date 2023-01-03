@@ -1,5 +1,3 @@
-/* Base box */
-
 /* VARIABLES */
 .box {
   --box-padding: 1.6rem;
@@ -47,7 +45,7 @@
 }
 
 .box--padded .box__body,
-.box--no-padding .box--padded .box__body,
+.box--no-padding .box--padded .box__body, // boxes with padding nested in no-padding boxes
 .box__body.box__body--padded.box__body--padded {
   padding: var(--box-padding);
 
