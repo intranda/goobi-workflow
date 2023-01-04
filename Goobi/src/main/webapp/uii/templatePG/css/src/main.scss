@@ -1,8 +1,8 @@
-// BASICS
-@use "colors";
-@use "base";
-@use "typography";
-@use "utilities-custom";
+// BASE
+@use "base/colors-custom";
+@use "base/base-custom";
+@use "base/typography-custom";
+@use "base/utilities-custom";
 
 // COMPONENTS
 @use "components/nav-custom";
