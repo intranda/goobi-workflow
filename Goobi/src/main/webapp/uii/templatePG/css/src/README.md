@@ -5,19 +5,21 @@ Goobi workflow styles are based on [Bootstrap 5](https://getbootstrap.com/docs/5
 ## Bootstrap 5
 
 Goobi workflow does not use the complete BS5 source. Only source files, which are actually used are imported into `bootstrap.scss`.
+Bootstrap-Variables (colors, fonts, border-radius etc) are modified in `_overrides.scss`.
 
 ## Custom Styles
 
 Bootstrap 5 is extended with custom styles.
 Custom styles are organized in sass files which are imported into `main.scss`.
+
 They are divided into three categories:
 
-1. `Basics` includes basic style settings like colors, typography and utilities etc.
+1. `Base` includes basic styles like colors, typography and utilities etc.
 2. `Components` includes styles for reusable components, e.g. navbar, boxes, forms, buttons.
 3. `Pages` includes styles unique to certain views. Views are scoped using a class, e.g.:
 
 ```xhtml
-<main class="plugins">...</main>
+<main class="batch-all">...</main>
 ```
 
 ## Accessibility: High Contrast mode
@@ -28,10 +30,10 @@ Goobi workflow has a high contrast mode, which is called `WCAG compliant mode`. 
 
 The build system uses two npm packages:
 
-- [sass](https://sass-lang.com/): compile `scss` into css.
-- [postcss](https://postcss.org/): prefix + minify css.
+- [sass](https://sass-lang.com/): compile `SCSS` into css.
+- [PostCSS](https://postcss.org/): prefix + minify css.
 
-`postcss` is configured an run from a separate script: `runPostcss.js`.
+`PostCSS` is configured an run from a separate script: `runPostcss.js`.
 
 ### Usage
 
@@ -40,6 +42,8 @@ The build system uses two npm packages:
 npm install
 
 #: Develop: watch src and compile css into dist (sass files only)
+#: This tasks copies css into the corresponding Tomcat directory
+#: It might be necessary to adjust the file paths in `package.json`
 npm start
 
 #: Build: compile sass and transform css with postcss
