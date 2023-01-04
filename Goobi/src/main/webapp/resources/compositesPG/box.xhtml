@@ -16,7 +16,7 @@
 		<composite:attribute name="boxForm" default="false"/>
 		<composite:attribute name="boxPadding" default="true" />
 		<composite:attribute name="boxSmall" default="false"/>
-		<composite:attribute name="scope" />
+		<composite:attribute name="boxScope" />
 		<composite:attribute name="icon" />
 		<composite:attribute name="title" />
 	</composite:interface>
@@ -28,7 +28,7 @@
 		layout="block"
 		styleClass="box
 		box--#{cc.attrs.boxType}
-		#{cc.attrs.scope}
+		#{cc.attrs.boxScope}
 		#{cc.attrs.boxPadding ? 'box--padded' : 'box--no-padding'}
 		#{cc.attrs.boxSmall ? 'box--small' : ''}
 		#{cc.attrs.boxForm ? 'form-box' : ''}
