@@ -18,8 +18,8 @@
   "author": "intranda GmbH",
   "license": "ISC",
   "devDependencies": {
-    "autoprefixer": "^10.4.4",
-    "cssnano": "^5.1.7",
+    "autoprefixer": "10.4.4",
+    "cssnano": "5.1.7",
     "grunt": "^1.5.2",
     "grunt-contrib-concat": "*",
     "grunt-contrib-less": "*",
@@ -27,9 +27,9 @@
     "grunt-riot": "*",
     "grunt-sync": "*",
     "less-plugin-autoprefix": "*",
-    "postcss": "^8.4.12",
-    "postcss-cli": "^9.1.0",
-    "sass": "^1.49.11"
+    "postcss": "8.4.12",
+    "postcss-cli": "9.1.0",
+    "sass": "1.49.11"
   },
   "dependencies": {
     "bootstrap": "5.1.3"
