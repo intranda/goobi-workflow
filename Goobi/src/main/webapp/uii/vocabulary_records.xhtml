@@ -189,7 +189,7 @@
                                 </button>
 
                                 <h:panelGroup
-                                    rendered="#{vocabularyBean.currentVocabulary.pageNumberLast != 1}"
+                                    rendered="#{vocabularyBean.currentVocabulary.pageNumberLast > 1}"
                                     id="pagination-area" styleClass="pull-right">
 
                                     <h:commandLink
