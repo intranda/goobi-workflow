@@ -230,7 +230,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
     }
 
     /**
-     * method to to delete an existing vocabulay
+     * method to to delete an existing vocabulary
      * 
      * @return path to the vocabulary listing
      */
@@ -293,8 +293,40 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @return
      */
     public void saveRecordEdition() {
-        currentVocabRecord.setValid(true);
-        for (Field field : currentVocabRecord.getFields()) {
+
+        // If the new content is not valid, the vocabulary should not be saved.
+        if (!this.validateRecords()) {
+            return;
+        }
+
+        VocabularyManager.saveRecord(this.currentVocabulary.getId(), this.currentVocabRecord);
+
+        // The current vocabulary must be stored by its id because editRecords() reloads all vocabulary and initializes all entries with new objects.
+        // The old currentVocabRecord is not contained in the new list and would have no effect during the selection.
+        int id = this.currentVocabRecord.getId();
+        this.editRecords();
+        this.setCurrentVocabRecord(this.getVocabRecordById(id));
+    }
+
+    /**
+     * This method validates the currently edited vocabulary record. If fields are required, but are empty, the currentVocabRecord is set to
+     * 'invalid=false'. If there are data fields that have to be distinctive and are equal to the contents of fields of other vocabulary records, all
+     * of them are set to invalid too. If the currentVocabRecord is invalid, false is returned. If it is valid and can be stored in the database, true
+     * is returned.
+     *
+     * @return true If currentVocabRecord is valid and false if its fields are invalid or distinctive fields have the same content as fields of other
+     *         vocabulary records
+     */
+    private boolean validateRecords() {
+
+        // Only the invalid records should be set to 'valid=false' later
+        for (VocabRecord vocabulary : this.currentVocabulary.getRecords()) {
+            vocabulary.setValid(true);
+        }
+
+        boolean valid = true;
+
+        for (Field field : this.currentVocabRecord.getFields()) {
 
             // If the field is a text field, the value is trimmed to avoid leading or trailing whitespaces
             String type = field.getDefinition().getType();
@@ -303,34 +335,34 @@ public class VocabularyBean extends BasicBean implements Serializable {
             }
 
             field.setValidationMessage(null);
-            if (field.getDefinition().isRequired()) {
-                if (StringUtils.isBlank(field.getValue())) {
-                    currentVocabRecord.setValid(false);
-                    field.setValidationMessage("vocabularyManager_validation_fieldIsRequired");
-                }
+
+            // If field is required and empty, it gets marked as invalid
+            if (field.getDefinition().isRequired() && StringUtils.isBlank(field.getValue())) {
+                field.setValidationMessage("vocabularyManager_validation_fieldIsRequired");
+                this.currentVocabRecord.setValid(false);
+                valid = false;
             }
+
             if (field.getDefinition().isDistinctive() && StringUtils.isNotBlank(field.getValue())) {
-                requiredCheck: for (VocabRecord other : currentVocabulary.getRecords()) {
-                    if (!currentVocabRecord.equals(other)) {
-                        for (Field f : other.getFields()) {
-                            if (field.getDefinition().equals(f.getDefinition())) {
-                                if (field.getValue().equals(f.getValue())) {
-                                    currentVocabRecord.setValid(false);
-                                    field.setValidationMessage("vocabularyManager_validation_fieldIsNotUnique");
-                                    break requiredCheck;
-                                }
+                requiredCheck: for (VocabRecord other : this.currentVocabulary.getRecords()) {
+                    if (this.currentVocabRecord.equals(other)) {
+                        continue;
+                    }
+                    for (Field f : other.getFields()) {
+                        if (field.getDefinition().equals(f.getDefinition())) {
+                            if (field.getValue().equals(f.getValue())) {
+                                field.setValidationMessage("vocabularyManager_validation_fieldIsNotUnique");
+                                other.setValid(false);
+                                this.currentVocabRecord.setValid(false);
+                                valid = false;
+                                break requiredCheck;
                             }
                         }
                     }
                 }
-
             }
         }
-
-        VocabularyManager.saveRecord(currentVocabulary.getId(), currentVocabRecord);
-        VocabRecord temp = currentVocabRecord;
-        editRecords();
-        setCurrentVocabRecord(temp);
+        return valid;
     }
 
     /**
@@ -523,7 +555,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
     }
 
     /**
-     * navigate to the excel updoad area
+     * navigate to the excel upload area
      * 
      * @return path to the excel upload area
      */
@@ -819,9 +851,47 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @param currentVocabRecord the record to use
      */
     public void setCurrentVocabRecord(VocabRecord currentVocabRecord) {
-        if (this.currentVocabRecord == null || !this.currentVocabRecord.equals(currentVocabRecord)) {
-            this.currentVocabRecord = currentVocabRecord;
+        if (this.hasInvalidVocabRecords()) {
+            // The currentVocabRecord must be cached by its id because the list of vocabulary records is reloaded due to inconsistencies in the user interface
+            int id = this.currentVocabRecord.getId();
+            VocabularyManager.getAllRecords(this.currentVocabulary);
+            this.currentVocabRecord = this.getVocabRecordById(id);
+        } else {
+            if (this.currentVocabRecord == null || !this.currentVocabRecord.equals(currentVocabRecord)) {
+                this.currentVocabRecord = currentVocabRecord;
+            }
         }
+    }
+
+    /**
+     * Returns true if the current list of vocabulary records has invalid records and false if all are valid.
+     *
+     * @return true If there are invalid records and false otherwise
+     */
+    private boolean hasInvalidVocabRecords() {
+        for (VocabRecord record : this.currentVocabulary.getRecords()) {
+            if (!record.isValid()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the vocabulary record from the current vocabulary list with the given id. The advantage of this method in contrast to the one of the
+     * mysql-helper is that this method returns the same object and not an equal object. If the object can be found, the vocabulary record with that
+     * id is returned. Otherwise, null is returned.
+     * 
+     * @param id The id of the required vocabulary record
+     * @return The vocabulary record or null if it could not be found
+     */
+    private VocabRecord getVocabRecordById(int id) {
+        for (VocabRecord vocabulary : this.currentVocabulary.getRecords()) {
+            if (vocabulary.getId() == id) {
+                return vocabulary;
+            }
+        }
+        return null;
     }
 
 }
