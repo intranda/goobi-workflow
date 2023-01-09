@@ -5,9 +5,9 @@
     xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:o="http://omnifaces.org/ui"
     xmlns:of="http://omnifaces.org/functions"
-    template="/uii/template/template.html"
+    template="/uii/templatePG/templatePG.html"
     xmlns:x="http://myfaces.apache.org/tomahawk"
-    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/composites"
+    xmlns:intranda="http://xmlns.jcp.org/jsf/composite/compositesPG"
     xmlns:p="http://primefaces.org/ui"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
@@ -40,38 +40,29 @@
     </ui:define>
 
     <ui:define name="content">
-    <main>
-        <style>
-		.columnLabel {
-		    width: 30%;
-		}
-		
-		.columnValue {
-		    width: 70%;
-		}
-		</style>
+
+    <main id="batchEdit">
+
 
         <ui:include src="includes/calendarJavaScript.xhtml" />
 
-        <div class="row">
-            <div class="col-sm-12">
+          <div class="row">
+            <div class="col-12">
+
                 <h:form
                     id="batchDetails"
                     styleClass="form-horizontal form-bordered">
 
-                    <h:panelGroup
-                        styleClass="box box-color orange box-bordered"
-                        layout="block"
-                        rendered="#{NavigationForm.uiStatus.batch_edit == 'edit'}">
-                        <div class="box-title">
-                            <h2 class="tableColumnMaxWidthLonger">
-                                <i class="fa fa-table"></i>
-                                <h:outputText
-                                    value="#{msgs.batch}"
-                                    class="margin-right-5" />
-                            </h2>
-                        </div>
-                        <div class="box-content nopadding">
+                    <intranda:box
+                      id="batchEdit"
+                      rendered="#{NavigationForm.uiStatus.batch_edit == 'edit'}"
+                      boxType="action"
+                      boxForm="true"
+                      boxPadding="false"
+                      title="#{msgs.batch}"
+                      icon="fa-table"
+                    >
+
                             <intranda:formInputText
                                 id="batchId"
                                 name="batchId_name"
@@ -107,69 +98,71 @@
                                 help="#{msgs.helpEnddate}"
                                 required="false" />
 
-                        </div>
-                        <div class="form-actions">
+                        <div class="box__actions">
 
-                            <button
+                            <a
                                 jsf:id="cancel"
-                                class="btn margin-sides-10 font-size-s pull-right"
+                                class="btn btn-blank"
                                 jsf:immediate="true"
                                 jsf:action="#{NavigationForm.Reload}">
                                 <h:outputText value="#{msgs.abbrechen}" />
                                 <x:updateActionListener
                                     property="#{NavigationForm.uiStatus.batch_edit}"
                                     value="" />
-                            </button>
+                            </a>
 
 
                             <button
-                                class="btn btn-success pull-right font-size-s margin-bottom-most"
+                                class="btn btn-success"
                                 jsf:id="absenden"
                                 jsf:action="#{BatchForm.batchHelper.saveBatchDetails}">
-                                <i class="fa fa-save margin-right-5"></i>
-                                <h:outputText value="#{msgs.speichern}" />
+                                <i class="fa fa-save"></i>
+                                <span>
+                                  <h:outputText value="#{msgs.speichern}" />
+                                </span>
                                 <x:updateActionListener
                                     property="#{NavigationForm.uiStatus.batch_edit}"
                                     value="" />
                             </button>
 
                         </div>
-                    </h:panelGroup>
+                    </intranda:box>
 
 
-                    <h:panelGroup
-                        styleClass="box box-color box-bordered"
-                        layout="block"
-                        rendered="#{NavigationForm.uiStatus.batch_edit != 'edit'}">
-                        <div class="box-title">
-                            <h2 class="tableColumnMaxWidthLonger">
-                                <i class="fa fa-table"></i>
-                                <h:outputText
-                                    value="#{msgs.batch}"
-                                    class="margin-right-5" />
-                            </h2>
-                            <div class="actions">
-                                <button
-                                    jsf:id="edit"
-                                    title="#{msgs.eigenschaftBearbeiten}"
-                                    jsf:action="#{NavigationForm.Reload}"
-                                    class="btn btn-mini"
-                                    jsf:rel="tooltip">
-                                    <i
-                                        class="fa fa-pencil"
-                                        title="#{msgs.eigenschaftBearbeiten}"></i>
-                                    <f:passThroughAttribute
-                                        name="data-toggle"
-                                        value="tooltip" />
-                                    <x:updateActionListener
-                                        property="#{NavigationForm.uiStatus.batch_edit}"
-                                        value="edit" />
-                                </button>
-                            </div>
+                    <intranda:box
+                      id="batchOverview"
+                      rendered="#{NavigationForm.uiStatus.batch_edit != 'edit'}"
+                      boxType="primary"
+                      boxTitle="false"
+                    >
 
+                      <intranda:boxTitle
+                        title="#{msgs.batch}"
+                        icon="fa-table"
+                      >
+
+                        <div class="actions">
+                            <button
+                                jsf:id="edit"
+                                title="#{msgs.eigenschaftBearbeiten}"
+                                jsf:action="#{NavigationForm.Reload}"
+                                class="btn btn--title-action"
+                                jsf:rel="tooltip">
+                                <i
+                                    class="fa fa-pencil"
+                                    title="#{msgs.eigenschaftBearbeiten}"></i>
+                                <f:passThroughAttribute
+                                    name="data-toggle"
+                                    value="tooltip" />
+                                <x:updateActionListener
+                                    property="#{NavigationForm.uiStatus.batch_edit}"
+                                    value="edit" />
+                            </button>
                         </div>
-                        <div class="box-content nopadding">
 
+                        </intranda:boxTitle>
+
+                        <div class="box__body">
                             <h:panelGrid
                                 columns="2"
                                 styleClass="table table-hover table-bordered"
@@ -190,22 +183,23 @@
 
                             </h:panelGrid>
                         </div>
-                    </h:panelGroup>
+
+                      </intranda:box>
                 </h:form>
+
             </div>
+          </div>
 
 
+          <div class="row mt-4">
+            <div class="col-12 col-md-6">
+              <intranda:box
+                boxType="primary"
+                title="#{msgs.processesInThisBatch}"
+                icon="fa-tasks"
+              >
 
 
-            <div class="col-sm-6">
-                <div class="box box-color box-bordered">
-                    <div class="box-title">
-                        <h2>
-                            <i class="fa fa-tasks"></i>
-                            <h:outputText value="#{msgs.processesInThisBatch}" />
-                        </h2>
-                    </div>
-                    <div class="box-content">
                         <h:form
                             id="processForm"
                             rendered="#{LoginForm.hasRole('Workflow_General_Batches')}">
@@ -229,237 +223,237 @@
                                 <button
                                     jsf:id="select"
                                     jsf:action="#{NavigationForm.Reload}"
-                                    class="button-link blue">
+                                    class="btn btn-link">
                                     <h:outputText value="#{msgs.showDataForProcess}" />
                                 </button>
                             </div>
                         </h:form>
-                    </div>
-                </div>
+
+              </intranda:box>
+
             </div>
 
+            <div class="col-12 col-md-6">
             <h:form
                 rendered="#{LoginForm.hasRole('Workflow_General_Batches')}"
                 id="properties">
                 <h:panelGroup rendered="#{BatchForm.modusBearbeiten!='eigenschaft' and (BatchForm.batchHelper.propertyListSize gt 0 or BatchForm.batchHelper.sizeOfDisplayableMetadata gt 0)}">
 
-                    <div class="col-sm-6">
-                        <div class="box box-color box-bordered">
-                            <div class="box-title">
-                                <h2>
-                                    <i class="fa fa-list"></i>
-                                    <h:outputText value="#{msgs.eigenschaften}" />
-                                </h2>
-                            </div>
-                            <div class="box-content nopadding">
+                <intranda:box
+                  boxType="primary"
+                  title="#{msgs.eigenschaften}"
+                  icon="fa-list"
+                >
 
-                                <table class="table table-hover table-bordered">
+                  <table class="table table-hover table-bordered">
 
-                                    <x:dataList
-                                        id="container"
-                                        var="container"
-                                        value="#{BatchForm.batchHelper.containerList}"
-                                        rowCountVar="rowCount"
-                                        rowIndexVar="rowIndex">
-                                        <x:dataList
-                                            id="proc"
-                                            var="proc"
-                                            value="#{BatchForm.batchHelper.containerlessProperties}"
-                                            rowCountVar="propCount"
-                                            rowIndexVar="propInd">
-                                            <h:panelGroup rendered="#{container==0 }">
-                                                <tr>
-                                                    <td>
-                                                        <h:outputText value="#{proc.name}" />
-                                                    </td>
-                                                    <td>
-                                                        <x:dataList var="val" value="#{proc.valueList}" rendered="#{proc.type.name == 'listmultiselect'}">
-				                                        	<h:outputText value="#{val}" styleClass="badge badge-no-radius badge-light-grey"/>
-				                                        </x:dataList>
-                                        				<h:outputText
-                                                            value="#{proc.readValue}"
-                                                            rendered="#{proc.type.name == 'html'}"
-                                                            escape="false" />
-                                                        <h:outputText
-                                                            value="#{proc.readValue}"
-                                                            rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean' and proc.type.name != 'html' and proc.type.name != 'listmultiselect'}" />
-                                                        <h:outputLink
-                                                            pt:aria-label="#{proc.name}"
-                                                            value="#{proc.readValue}"
-                                                            title="#{proc.readValue}"
-                                                            target="_blank"
-                                                            rendered="#{proc.type.name == 'link'}">
-                                                            <h:outputText value="#{proc.readValue}" />
-                                                        </h:outputLink>
-                                                        <h:panelGroup rendered="#{proc.type.name == 'boolean'}">
-                                                            <h:panelGroup rendered="#{proc.readValue eq 'true'}">
-                                                                <i class="fa fa-check-square-o fa-lg"></i>
-                                                            </h:panelGroup>
-                                                            <h:panelGroup rendered="#{proc.readValue ne 'true'}">
-                                                                <i class="fa fa-square-o fa-lg"></i>
-                                                            </h:panelGroup>
-                                                        </h:panelGroup>
-                                                    </td>
-                                                    <td class="">
-                                                        <button
-                                                            jsf:id="editProperty"
-                                                            jsf:action="batch_edit"
-                                                            title="#{msgs.bearbeiten}"
-                                                            class="btn">
-                                                            <i
-                                                                class="fa fa-pencil"
-                                                                title="#{msgs.bearbeiten}"></i>
-                                                            <f:passThroughAttribute
-                                                                name="data-toggle"
-                                                                value="tooltip" />
-                                                            <f:setPropertyActionListener
-                                                                target="#{BatchForm.batchHelper.processProperty}"
-                                                                value="#{proc}" />
-                                                            <f:setPropertyActionListener
-                                                                target="#{BatchForm.batchHelper.container}"
-                                                                value="0" />
-                                                            <f:setPropertyActionListener
-                                                                target="#{BatchForm.modusBearbeiten}"
-                                                                value="eigenschaft" />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            </h:panelGroup>
+                      <x:dataList
+                          id="container"
+                          var="container"
+                          value="#{BatchForm.batchHelper.containerList}"
+                          rowCountVar="rowCount"
+                          rowIndexVar="rowIndex">
+                          <x:dataList
+                              id="proc"
+                              var="proc"
+                              value="#{BatchForm.batchHelper.containerlessProperties}"
+                              rowCountVar="propCount"
+                              rowIndexVar="propInd">
+                              <h:panelGroup rendered="#{container==0 }">
+                                  <tr>
+                                      <td>
+                                          <h:outputText value="#{proc.name}" />
+                                      </td>
+                                      <td>
+                                          <x:dataList var="val" value="#{proc.valueList}" rendered="#{proc.type.name == 'listmultiselect'}">
+                                    <h:outputText value="#{val}" styleClass="badge badge-no-radius badge-light-grey"/>
+                                  </x:dataList>
+                                  <h:outputText
+                                              value="#{proc.readValue}"
+                                              rendered="#{proc.type.name == 'html'}"
+                                              escape="false" />
+                                          <h:outputText
+                                              value="#{proc.readValue}"
+                                              rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean' and proc.type.name != 'html' and proc.type.name != 'listmultiselect'}" />
+                                          <h:outputLink
+                                              pt:aria-label="#{proc.name}"
+                                              value="#{proc.readValue}"
+                                              title="#{proc.readValue}"
+                                              target="_blank"
+                                              rendered="#{proc.type.name == 'link'}">
+                                              <h:outputText value="#{proc.readValue}" />
+                                          </h:outputLink>
+                                          <h:panelGroup rendered="#{proc.type.name == 'boolean'}">
+                                              <h:panelGroup rendered="#{proc.readValue eq 'true'}">
+                                                  <i class="fa fa-check-square-o fa-lg"></i>
+                                              </h:panelGroup>
+                                              <h:panelGroup rendered="#{proc.readValue ne 'true'}">
+                                                  <i class="fa fa-square-o fa-lg"></i>
+                                              </h:panelGroup>
+                                          </h:panelGroup>
+                                      </td>
+                                      <td class="">
+                                          <button
+                                              jsf:id="editProperty"
+                                              jsf:action="batch_edit"
+                                              title="#{msgs.bearbeiten}"
+                                              class="btn btn-blank">
+                                              <i
+                                                  class="fa fa-pencil"
+                                                  title="#{msgs.bearbeiten}"></i>
+                                              <f:passThroughAttribute
+                                                  name="data-toggle"
+                                                  value="tooltip" />
+                                              <f:setPropertyActionListener
+                                                  target="#{BatchForm.batchHelper.processProperty}"
+                                                  value="#{proc}" />
+                                              <f:setPropertyActionListener
+                                                  target="#{BatchForm.batchHelper.container}"
+                                                  value="0" />
+                                              <f:setPropertyActionListener
+                                                  target="#{BatchForm.modusBearbeiten}"
+                                                  value="eigenschaft" />
+                                          </button>
+                                      </td>
+                                  </tr>
+                              </h:panelGroup>
 
-                                        </x:dataList>
+                          </x:dataList>
 
-                                        <h:panelGroup rendered="#{rowIndex lt rowCount and rowIndex != 0}">
-                                            <tr>
-                                                <td colspan="3">
-                                                    <h:outputText
-                                                        value="&amp;nbsp;"
-                                                        escape="false" />
-                                                </td>
-                                            </tr>
-                                        </h:panelGroup>
+                          <h:panelGroup rendered="#{rowIndex lt rowCount and rowIndex != 0}">
+                              <tr>
+                                  <td colspan="3">
+                                      <h:outputText
+                                          value="&amp;nbsp;"
+                                          escape="false" />
+                                  </td>
+                              </tr>
+                          </h:panelGroup>
 
-                                        <x:dataList
-                                            var="process_item"
-                                            id="process_item"
-                                            value="#{BatchForm.batchHelper.containers[container].propertyList}"
-                                            rowCountVar="propCount"
-                                            rowIndexVar="propInd">
-                                            <h:panelGroup rendered="#{container!=0 }">
+                          <x:dataList
+                              var="process_item"
+                              id="process_item"
+                              value="#{BatchForm.batchHelper.containers[container].propertyList}"
+                              rowCountVar="propCount"
+                              rowIndexVar="propInd">
+                              <h:panelGroup rendered="#{container!=0 }">
 
-                                                <tr>
-                                                    <td>
-                                                        <h:outputText value="#{process_item.name}" />
-                                                    </td>
-                                                    <td>
-                                                    	<x:dataList var="val" value="#{proc.valueList}" rendered="#{proc.type.name == 'listmultiselect'}">
-				                                        	<h:outputText value="#{val}" styleClass="badge badge-no-radius badge-light-grey"/>
-				                                        </x:dataList>
-                                                        <h:outputText
-                                                            value="#{proc.readValue}"
-                                                            rendered="#{proc.type.name == 'html'}"
-                                                            escape="false" />
-                                                        <h:outputText
-                                                            value="#{proc.readValue}"
-                                                            rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean' and proc.type.name != 'html' and proc.type.name != 'listmultiselect'}" />
-                                                        <h:outputLink
-                                                            pt:aria-label="#{process_item.name}"
-                                                            value="#{process_item.readValue}"
-                                                            title="#{process_item.readValue}"
-                                                            target="_blank"
-                                                            rendered="#{process_item.type.name == 'link'}">
-                                                            <h:outputText value="#{process_item.readValue}" />
-                                                        </h:outputLink>
-                                                        <h:panelGroup rendered="#{process_item.type.name == 'boolean'}">
-                                                            <h:panelGroup rendered="#{process_item.readValue eq 'true'}">
-                                                                <i class="fa fa-check-square-o fa-lg"></i>
-                                                            </h:panelGroup>
-                                                            <h:panelGroup rendered="#{process_item.readValue ne 'true'}">
-                                                                <i class="fa fa-square-o fa-lg"></i>
-                                                            </h:panelGroup>
-                                                        </h:panelGroup>
-                                                    </td>
+                                  <tr>
+                                      <td>
+                                          <h:outputText value="#{process_item.name}" />
+                                      </td>
+                                      <td>
+                                        <x:dataList var="val" value="#{proc.valueList}" rendered="#{proc.type.name == 'listmultiselect'}">
+                                    <h:outputText value="#{val}" styleClass="badge badge-no-radius badge-light-grey"/>
+                                  </x:dataList>
+                                          <h:outputText
+                                              value="#{proc.readValue}"
+                                              rendered="#{proc.type.name == 'html'}"
+                                              escape="false" />
+                                          <h:outputText
+                                              value="#{proc.readValue}"
+                                              rendered="#{proc.type.name != 'link' and proc.type.name != 'boolean' and proc.type.name != 'html' and proc.type.name != 'listmultiselect'}" />
+                                          <h:outputLink
+                                              pt:aria-label="#{process_item.name}"
+                                              value="#{process_item.readValue}"
+                                              title="#{process_item.readValue}"
+                                              target="_blank"
+                                              rendered="#{process_item.type.name == 'link'}">
+                                              <h:outputText value="#{process_item.readValue}" />
+                                          </h:outputLink>
+                                          <h:panelGroup rendered="#{process_item.type.name == 'boolean'}">
+                                              <h:panelGroup rendered="#{process_item.readValue eq 'true'}">
+                                                  <i class="fa fa-check-square-o fa-lg"></i>
+                                              </h:panelGroup>
+                                              <h:panelGroup rendered="#{process_item.readValue ne 'true'}">
+                                                  <i class="fa fa-square-o fa-lg"></i>
+                                              </h:panelGroup>
+                                          </h:panelGroup>
+                                      </td>
 
-                                                    <h:panelGroup rendered="#{propInd ==0}">
+                                      <h:panelGroup rendered="#{propInd ==0}">
 
-                                                        <td rowspan="#{BatchForm.batchHelper.containers[container].propertyListSizeString}">
+                                          <td rowspan="#{BatchForm.batchHelper.containers[container].propertyListSizeString}">
 
-                                                            <!-- edit container -->
-                                                            <h:panelGroup>
-                                                                <button
-                                                                    jsf:id="editContainer"
-                                                                    jsf:action="batch_edit"
-                                                                    title="#{msgs.bearbeiten}"
-                                                                    class="btn">
-                                                                    <i
-                                                                        class="fa fa-pencil"
-                                                                        title="#{msgs.bearbeiten}"></i>
-                                                                    <f:passThroughAttribute
-                                                                        name="data-toggle"
-                                                                        value="tooltip" />
-                                                                    <f:setPropertyActionListener
-                                                                        target="#{BatchForm.batchHelper.container}"
-                                                                        value="#{container}" />
-                                                                    <f:setPropertyActionListener
-                                                                        target="#{BatchForm.modusBearbeiten}"
-                                                                        value="eigenschaft" />
-                                                                </button>
+                                              <!-- edit container -->
+                                              <h:panelGroup>
+                                                  <button
+                                                      jsf:id="editContainer"
+                                                      jsf:action="batch_edit"
+                                                      title="#{msgs.bearbeiten}"
+                                                      class="btn btn-blank">
+                                                      <i
+                                                          class="fa fa-pencil"
+                                                          title="#{msgs.bearbeiten}"></i>
+                                                      <f:passThroughAttribute
+                                                          name="data-toggle"
+                                                          value="tooltip" />
+                                                      <f:setPropertyActionListener
+                                                          target="#{BatchForm.batchHelper.container}"
+                                                          value="#{container}" />
+                                                      <f:setPropertyActionListener
+                                                          target="#{BatchForm.modusBearbeiten}"
+                                                          value="eigenschaft" />
+                                                  </button>
 
-                                                            </h:panelGroup>
-                                                        </td>
-                                                    </h:panelGroup>
-                                                </tr>
-                                            </h:panelGroup>
-                                        </x:dataList>
-                                    </x:dataList>
-                                    <!-- 
-			<h:outputText value="Nummer: #{container}" />
-				<h:outputText value="  Anzahl: #{BatchForm.batchHelper.containers[container]}" />
-				<br />
-				rendered="#{propInd + 1 == propCount}"
-		-->
-                                    <c:forEach items="#{BatchForm.batchHelper.displayableMetadataMap}" var="metadata">
-                                        <tr>
-                                           <td><h:outputText value="#{msgs[metadata.key]}"/> </td>
-                                           <td>
-                                                <c:forEach items="#{metadata.value}" var="metadataValue">
-                                                	<h:outputText value="#{msgs[metadataValue]}" rendered="#{metadata.key == 'DocStruct'}"/>
-                                                    <h:outputText value="#{metadataValue}" rendered="#{metadata.key != 'DocStruct'}"/>
-                                                    <br/>
-                                           	    </c:forEach>
-                                            </td>
-                                        </tr>
-                                    </c:forEach>
-                                </table>
+                                              </h:panelGroup>
+                                          </td>
+                                      </h:panelGroup>
+                                  </tr>
+                              </h:panelGroup>
+                          </x:dataList>
+                      </x:dataList>
+
+                      <!--
+                        <h:outputText value="Nummer: #{container}" />
+                        <h:outputText value="  Anzahl: #{BatchForm.batchHelper.containers[container]}" />
+                        <br />
+                      rendered="#{propInd + 1 == propCount}"
+                      -->
+
+                      <c:forEach items="#{BatchForm.batchHelper.displayableMetadataMap}" var="metadata">
+                          <tr>
+                             <td><h:outputText value="#{msgs[metadata.key]}"/> </td>
+                             <td>
+                                  <c:forEach items="#{metadata.value}" var="metadataValue">
+                                    <h:outputText value="#{msgs[metadataValue]}" rendered="#{metadata.key == 'DocStruct'}"/>
+                                      <h:outputText value="#{metadataValue}" rendered="#{metadata.key != 'DocStruct'}"/>
+                                      <br/>
+                                  </c:forEach>
+                              </td>
+                          </tr>
+                      </c:forEach>
+                  </table>
+              </intranda:box>
+
+                                <!--
                             </div>
                         </div>
                     </div>
+                        -->
                 </h:panelGroup>
             </h:form>
 
-
             <!-- // Box für die Bearbeitung der Details -->
-            <h:panelGroup rendered="#{BatchForm.modusBearbeiten=='eigenschaft'}">
+
+            <intranda:box
+              boxType="action"
+              rendered="#{BatchForm.modusBearbeiten=='eigenschaft'}"
+              title="#{msgs.eigenschaft}"
+              icon="fa-list"
+              boxPadding="false"
+              boxForm="true"
+            >
 
                 <h:form
-                    id="myform"
-                    styleClass="form-horizontal form-bordered"
-                    onkeypress="submitOnEnter(event);">
+                  id="myform"
+                  styleClass="form-horizontal form-bordered"
+                  onkeypress="submitOnEnter(event);">
 
-                    <div class="col-sm-6">
-
-                        <div class="box box-color box-bordered orange">
-                            <div class="box-title">
-                                <h2>
-                                    <i class="fa fa-list"></i>
-                                    <h:outputText value="#{msgs.eigenschaft}" />
-                                </h2>
-                            </div>
-                            <div class="box-content nopadding">
 
                                 <x:dataList
                                     var="myprocess_item"
                                     value="#{BatchForm.batchHelper.containerProperties}">
-
 
 
                                     <h:panelGroup>
@@ -478,36 +472,39 @@
                                     <!-- text -->
                                     <h:panelGroup rendered="#{((myprocess_item.type.name == 'text') or (myprocess_item.type.name == 'link') or (myprocess_item.type.name == 'null'))}">
 
-                                        <div class="form-group">
-                                            <h:outputLabel
-                                                for="value"
-                                                styleClass="control-label col-sm-3"
-                                                value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
-                                            <div class="col-sm-9">
-                                                <x:inputText
-                                                    id="value"
-                                                    forceId="true"
-                                                    styleClass="form-control"
-                                                    value="#{myprocess_item.value}"
-                                                    readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
-                                                </x:inputText>
-                                                <h:message
-                                                    for="value"
-                                                    showDetail="true"
-                                                    styleClass="help-inline font-danger" />
-                                                <intranda:formHelp content="#{msgs.helpPropertyValue}" />
-		                                    </div>
+                                      <div class="row">
+                                        <div class="col-12 col-md-3">
+                                          <h:outputLabel
+                                            for="value"
+                                            styleClass="control-label"
+                                            value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
                                         </div>
+                                          <div class="col-12 col-md-9">
+                                            <x:inputText
+                                              id="value"
+                                              forceId="true"
+                                              styleClass="form-control"
+                                              value="#{myprocess_item.value}"
+                                              readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                            </x:inputText>
+                                            <h:message
+                                              for="value"
+                                              showDetail="true"
+                                              styleClass="help-inline text-danger" />
+                                            <intranda:formHelp content="#{msgs.helpPropertyValue}" />
+		                                    </div>
+                                      </div>
                                     </h:panelGroup>
 
                                     <!-- numbers only -->
                                     <h:panelGroup rendered="#{myprocess_item.type.name == 'integer' or myprocess_item.type.name == 'number'}">
-                                        <div class="form-group">
+                                        <div class="row">
+                                          <div class="col-12 col-md-3">
                                             <h:outputLabel
                                                 for="number"
-                                                styleClass="control-label col-sm-3"
+                                                styleClass="control-label"
                                                 value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
-                                            <div class="col-sm-9">
+                                            <div class="col-12 col-md-9">
                                                 <x:inputText
                                                     id="number"
                                                     forceId="true"
@@ -519,21 +516,24 @@
                                                 <h:message
                                                     for="number"
                                                     showDetail="true"
-                                                    styleClass="help-inline font-danger" />
+                                                    styleClass="help-inline text-danger" />
                                                 <intranda:formHelp content="#{msgs.helpPropertyValue}" />
                                             </div>
+                                          </div>
                                         </div>
                                     </h:panelGroup>
 
 
                                     <!--  SelectOneMenu -->
                                     <h:panelGroup rendered="#{(myprocess_item.type.name == 'list')}">
-                                        <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-12 col-md-3">
                                             <h:outputLabel
                                                 for="select"
-                                                styleClass="control-label col-sm-3"
+                                                styleClass="control-label"
                                                 value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
-                                            <div class="col-sm-9">
+                                            </div>
+                                            <div class="col-12 col-md-9">
                                                 <h:selectOneMenu
                                                     id="select"
                                                     styleClass="form-control"
@@ -548,7 +548,7 @@
                                                 <h:message
                                                     for="select"
                                                     showDetail="true"
-                                                    styleClass="help-inline font-danger" />
+                                                    styleClass="help-inline text-danger" />
                                                 <intranda:formHelp content="#{msgs.helpPropertyValue}" />
                                             </div>
                                         </div>
@@ -556,51 +556,57 @@
 
                                     <!--  SelectManyMenu -->
                                     <h:panelGroup rendered="#{(myprocess_item.type.name == 'listmultiselect')}">
-                                        <div class="form-group">
+                                        <div class="row">
+                                          <div class="col-12 col-md-3">
                                             <h:outputLabel
                                                 for="selectmany"
-                                                styleClass="control-label col-sm-3"
+                                                styleClass="control-label"
                                                 value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
-                                            <div class="col-sm-9">
-                                                <h:selectManyListbox
-                                                    id="selectmany"
-                                                    value="#{myprocess_item.valueList}"
-                                                    size="5"
-                                                    styleClass="form-control"
-                                                    readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
-                                                    <f:selectItems
-                                                        value="#{myprocess_item.possibleValues}"
-                                                        var="myprocess_items"
-                                                        itemLabel="#{myprocess_items}"
-                                                        itemValue="#{myprocess_items}" />
-                                                </h:selectManyListbox>
-                                                <h:message
-                                                    for="selectmany"
-                                                    showDetail="true"
-                                                    styleClass="help-inline font-danger" />
-                                                <intranda:formHelp content="#{msgs.helpPropertyValue}" />
-                                            </div>
+                                          </div>
+                                          <div class="col-12 col-md-9">
+                                              <h:selectManyListbox
+                                                  id="selectmany"
+                                                  value="#{myprocess_item.valueList}"
+                                                  size="5"
+                                                  styleClass="form-control"
+                                                  readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                                  <f:selectItems
+                                                      value="#{myprocess_item.possibleValues}"
+                                                      var="myprocess_items"
+                                                      itemLabel="#{myprocess_items}"
+                                                      itemValue="#{myprocess_items}" />
+                                              </h:selectManyListbox>
+                                              <h:message
+                                                  for="selectmany"
+                                                  showDetail="true"
+                                                  styleClass="help-inline text-danger" />
+                                              <intranda:formHelp content="#{msgs.helpPropertyValue}" />
+                                          </div>
                                         </div>
                                     </h:panelGroup>
 
 
                                     <!-- Boolean  -->
                                     <h:panelGroup rendered="#{(myprocess_item.type.name == 'boolean')}">
-                                        <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-12 col-md-3">
                                             <h:outputLabel
                                                 for="boolean"
-                                                styleClass="control-label col-sm-3"
+                                                styleClass="control-label"
                                                 value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
-                                            <div class="col-sm-9">
+                                            </div>
+                                            <div class="col-12 col-md-9">
                                                 <h:selectBooleanCheckbox
                                                     id="boolean"
                                                     value="#{myprocess_item.booleanValue}"
-                                                    readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}">
+                                                    readonly="#{myprocess_item.showProcessGroupAccessCondition == 'READ'}"
+                                                    styleClass="form-check-input"
+                                                    >
                                                 </h:selectBooleanCheckbox>
                                                 <h:message
                                                     for="boolean"
                                                     showDetail="true"
-                                                    styleClass="help-inline font-danger" />
+                                                    styleClass="help-inline text-danger" />
                                                 <intranda:formHelp content="#{msgs.helpPropertyValue}" />
                                             </div>
                                         </div>
@@ -609,12 +615,14 @@
 
                                     <!--  Date   -->
                                     <h:panelGroup rendered="#{(myprocess_item.type.name == 'date')}">
-                                        <div class="form-group">
-                                            <h:outputLabel
-                                                for="date"
-                                                styleClass="control-label col-sm-3"
-                                                value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
-                                            <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-12 col-md-3">
+                                              <h:outputLabel
+                                                  for="date"
+                                                  styleClass="control-label"
+                                                  value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
+                                            </div>
+                                            <div class="col-12 col-md-9">
                                                 <p:calendar
                                                     id="date"
                                                     value="#{myprocess_item.dateValue}"
@@ -622,7 +630,7 @@
                                                 <h:message
                                                     for="date"
                                                     showDetail="true"
-                                                    styleClass="help-inline font-danger" />
+                                                    styleClass="help-inline text-danger" />
                                                 <intranda:formHelp content="#{msgs.helpPropertyValue}" />
                                             </div>
                                         </div>
@@ -630,12 +638,14 @@
 
                                     <!--  HTML   -->
                                     <h:panelGroup rendered="#{(myprocess_item.type.name == 'html')}">
-                                        <div class="form-group">
+                                        <div class="row">
+                                          <div class="col-12 col-md-3">
                                             <h:outputLabel
                                                 for="date"
                                                 styleClass="control-label col-sm-3"
                                                 value="#{!myprocess_item.isNew?myprocess_item.name:msgs.wert}" />
-                                            <div class="col-sm-9">
+                                          </div>
+                                            <div class="col-12 col-md-9">
                                                 <x:inputTextarea
                                                     id="valueArea"
                                                     forceId="true"
@@ -645,7 +655,7 @@
                                                 <h:message
                                                     for="valueArea"
                                                     showDetail="true"
-                                                    styleClass="help-inline font-danger" />
+                                                    styleClass="help-inline text-danger" />
                                                 <intranda:formHelp content="#{msgs.helpPropertyValue}" />
                                             </div>
                                         </div>
@@ -654,51 +664,67 @@
                                 </x:dataList>
 
                                 <h:panelGroup>
-                                    <div class="form-actions">
+                                    <div class="box__actions">
+
+                                        <a
+                                          jsf:id="cancel"
+                                          class="btn btn-blank"
+                                          jsf:action="#{NavigationForm.Reload}"
+                                          jsf:immediate="true">
+                                          <h:outputText value="#{msgs.abbrechen}" />
+                                          <f:setPropertyActionListener
+                                            target="#{BatchForm.modusBearbeiten}"
+                                            value=""
+                                        />
+                                        </a>
 
                                         <button
                                             jsf:id="saveAll"
-                                            class="btn btn-success submitOnEnter font-size-s margin-left-5 pull-right margin-bottom-more block"
+                                            class="btn btn-success submitOnEnter"
                                             jsf:action="#{BatchForm.batchHelper.saveCurrentPropertyForAll}">
-                                            <i class="fa fa-save margin-right-5"></i>
-                                            <h:outputText value="#{msgs.applyToAllProcesses}" />
+                                            <i class="fa fa-save"></i>
+                                          <span>
+                                              <h:outputText value="#{msgs.applyToAllProcesses}" />
+                                            </span>
                                             <f:setPropertyActionListener
-                                                target="#{BatchForm.modusBearbeiten}"
-                                                value="" />
+                                              target="#{BatchForm.modusBearbeiten}"
+                                              value="" />
                                         </button>
 
                                         <button
                                             jsf:id="saveCurrent"
                                             class="btn btn-success font-size-s submitOnEnter margin-left-5 pull-right margin-bottom-more block"
                                             jsf:action="#{BatchForm.batchHelper.saveCurrentProperty}">
-                                            <i class="fa fa-save margin-right-5"></i>
-                                            <h:outputText value="#{msgs.applyToThisProcess}" />
+                                            <i class="fa fa-save"></i>
+                                            <span>
+                                              <h:outputText value="#{msgs.applyToThisProcess}" />
+                                            </span>
                                             <f:setPropertyActionListener
                                                 target="#{BatchForm.modusBearbeiten}"
                                                 value="" />
                                         </button>
 
-                                        <button
-                                            jsf:id="cancel"
-                                            class="btn pull-right font-size-s margin-bottom-more margin-left-5"
-                                            jsf:action="#{NavigationForm.Reload}"
-                                            jsf:immediate="true">
-                                            <h:outputText value="#{msgs.abbrechen}" />
-                                            <f:setPropertyActionListener
-                                                target="#{BatchForm.modusBearbeiten}"
-                                                value="" />
-                                        </button>
 
                                     </div>
                                 </h:panelGroup>
 
+
+                        <!--
                             </div>
                         </div>
+
                     </div>
+                        -->
+
                 </h:form>
 
+                <!--
             </h:panelGroup>
+                -->
 
+          </intranda:box>
+
+            </div>
         </div>
         </main>
     </ui:define>
