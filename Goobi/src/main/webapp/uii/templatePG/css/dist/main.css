@@ -1225,9 +1225,10 @@ a:focus, a:hover, a:active {
   border-width: 1px;
 }
 .box.box--outline .box__title {
+  --box-padding-title: 8px 0 8px 10px;
   background: transparent;
-  color: var(--bs-body-color);
   border-width: 1px;
+  color: var(--bs-body-color);
 }
 
 .box__help {
