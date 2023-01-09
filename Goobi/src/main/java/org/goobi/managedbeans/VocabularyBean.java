@@ -58,6 +58,7 @@ import org.goobi.vocabulary.Definition;
 import org.goobi.vocabulary.Field;
 import org.goobi.vocabulary.VocabRecord;
 import org.goobi.vocabulary.Vocabulary;
+import org.goobi.vocabulary.VocabularyFieldValidator;
 import org.goobi.vocabulary.VocabularyUploader;
 import org.goobi.vocabulary.helper.ImportJsonVocabulary;
 import org.primefaces.event.FileUploadEvent;
@@ -294,7 +295,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
      */
     public void saveRecordEdition() {
         // If the new content is not valid, the vocabulary should not be saved.
-        if (!VocabularyBean.validateRecords(this.currentVocabulary, this.currentVocabRecord)) {
+        if (!VocabularyFieldValidator.validateRecords(this.currentVocabulary, this.currentVocabRecord)) {
             return;
         }
 
@@ -305,65 +306,6 @@ public class VocabularyBean extends BasicBean implements Serializable {
         int id = this.currentVocabRecord.getId();
         this.editRecords();
         this.setCurrentVocabRecord(this.getVocabRecordById(id));
-    }
-
-    /**
-     * This method validates the currently edited vocabulary record. If fields are required, but are empty, the currentVocabRecord is set to
-     * 'invalid=false'. If there are data fields that have to be distinctive and are equal to the contents of fields of other vocabulary records, all
-     * of them are set to invalid too. If the currentVocabRecord is invalid, false is returned. If it is valid and can be stored in the database, true
-     * is returned.
-     *
-     * @param vocabulary The current vocabulary to validate
-     * @param record The current vocabulary record to validate
-     * @return true If currentVocabRecord is valid and false if its fields are invalid or distinctive fields have the same content as fields of other
-     *         vocabulary records
-     */
-    private static boolean validateRecords(Vocabulary vocabulary, VocabRecord record) {
-
-        // Only the invalid records should be set to 'valid=false' later
-        for (VocabRecord currentRecord : vocabulary.getRecords()) {
-            currentRecord.setValid(true);
-        }
-
-        boolean valid = true;
-
-        for (Field field : record.getFields()) {
-
-            // If the field is a text field, the value is trimmed to avoid leading or trailing whitespaces
-            String type = field.getDefinition().getType();
-            if (type.equals("input") || type.equals("textarea") || type.equals("html")) {
-                field.setValue(field.getValue().trim());
-            }
-
-            field.setValidationMessage(null);
-
-            // If field is required and empty, it gets marked as invalid
-            if (field.getDefinition().isRequired() && StringUtils.isBlank(field.getValue())) {
-                field.setValidationMessage("vocabularyManager_validation_fieldIsRequired");
-                record.setValid(false);
-                valid = false;
-            }
-
-            if (field.getDefinition().isDistinctive() && StringUtils.isNotBlank(field.getValue())) {
-                requiredCheck: for (VocabRecord other : vocabulary.getRecords()) {
-                    if (record.equals(other)) {
-                        continue;
-                    }
-                    for (Field f : other.getFields()) {
-                        if (field.getDefinition().equals(f.getDefinition())) {
-                            if (field.getValue().equals(f.getValue())) {
-                                field.setValidationMessage("vocabularyManager_validation_fieldIsNotUnique");
-                                other.setValid(false);
-                                record.setValid(false);
-                                valid = false;
-                                break requiredCheck;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return valid;
     }
 
     /**
