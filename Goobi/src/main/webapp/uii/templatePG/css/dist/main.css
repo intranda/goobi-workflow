@@ -670,7 +670,7 @@ hr {
 }
 
 @font-face {
-  font-family: "Goobi2";
+  font-family: "Goobi";
   src: url("../../font/opensans-regular-webfont.eot");
   src: url("../../font/opensans-regular-webfont.eot?#iefix") format("embedded-opentype"), url("../../font/opensans-regular-webfont.woff2") format("woff2"), url("../../font/opensans-regular-webfont.woff") format("woff"), url("../../font/opensans-regular-webfont.ttf") format("truetype"), url("../../font/opensans-regular-webfont.svg#open_sansregular") format("svg");
   font-weight: normal;
@@ -685,13 +685,13 @@ hr {
 }
 
 body {
-  font-family: Goobi2, sans-serif;
+  font-family: Goobi, sans-serif;
   font-size: var(--fs-400, 1.2rem);
   font-weight: 300;
 }
 
 body .ui-widget {
-  font-family: Goobi2, sans-serif;
+  font-family: Goobi, sans-serif;
   font-size: 1.2rem;
   color: var(--bs-body-color);
 }
