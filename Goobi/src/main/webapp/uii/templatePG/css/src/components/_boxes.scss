@@ -35,14 +35,22 @@
   }
 
   .btn--title-action {
-    border: 1px solid currentColor;
+    color: #fff;
+    border: 1px solid #fff;
+
+    i {
+      color: currentColor;
+    }
 
     &:not(:last-child) {
       margin-inline-end: 0.8rem;
     }
 
     &:hover {
-      background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0 0);
+      background-color: #fff;
+      i {
+        color: var(--bs-body-color);
+      }
     }
   }
 

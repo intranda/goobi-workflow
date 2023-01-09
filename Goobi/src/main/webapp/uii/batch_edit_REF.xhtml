@@ -351,10 +351,10 @@
                                                         <h:outputText value="#{process_item.name}" />
                                                     </td>
                                                     <td>
-                                                        <x:dataList var="val" value="#{proc.valueList}" rendered="#{proc.type.name == 'listmultiselect'}">
+                                                    	<x:dataList var="val" value="#{proc.valueList}" rendered="#{proc.type.name == 'listmultiselect'}">
 				                                        	<h:outputText value="#{val}" styleClass="badge badge-no-radius badge-light-grey"/>
 				                                        </x:dataList>
-                                        				<h:outputText
+                                                        <h:outputText
                                                             value="#{proc.readValue}"
                                                             rendered="#{proc.type.name == 'html'}"
                                                             escape="false" />

@@ -764,9 +764,15 @@ a:focus, a:hover, a:active {
 }
 
 .alert-info {
+  /* BS 5
   color: #055160;
   background-color: #cff4fc;
   border-color: #b6effb;
+  */
+  /* BS 3 */
+  color: #31708f;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
 }
 
 .ff-goobi {
@@ -830,6 +836,9 @@ a:focus, a:hover, a:active {
   border-color: var(--clr-primary-600);
   background-color: var(--clr-primary-600);
   color: var(--clr-white);
+}
+.navbar .dropdown-toggle::after {
+  margin-left: 8px;
 }
 .navbar .navbar-toggler:focus {
   box-shadow: unset;
@@ -1051,7 +1060,7 @@ a:focus, a:hover, a:active {
 /* VARIABLES */
 .box {
   --box-padding: 1.6rem;
-  --box-padding-title: 7px 0 7px 10px;
+  --box-padding-title: 7px 10px 7px 10px;
 }
 
 .box.box--small {
@@ -1066,7 +1075,6 @@ a:focus, a:hover, a:active {
 }
 
 .box__title {
-  margin: -0.3px;
   color: var(--clr-white, #fff);
   display: flex;
   justify-content: space-between;
@@ -1083,6 +1091,22 @@ a:focus, a:hover, a:active {
 .box__title button .fa {
   color: currentColor;
   font-size: 1.4rem;
+}
+.box__title .btn--title-action {
+  color: #fff;
+  border: 1px solid #fff;
+}
+.box__title .btn--title-action i {
+  color: currentColor;
+}
+.box__title .btn--title-action:not(:last-child) {
+  margin-inline-end: 0.8rem;
+}
+.box__title .btn--title-action:hover {
+  background-color: #fff;
+}
+.box__title .btn--title-action:hover i {
+  color: var(--bs-body-color);
 }
 .box__title h2 {
   color: currentColor;
@@ -1466,11 +1490,19 @@ label,
   hyphens: auto;
 }
 
-.form__help {
+.form__help,
+.help-block {
   flex: 1 1 100%;
+  margin-top: 4px;
+}
+.form__help span,
+.help-block span {
+  color: var(--clr-neutral-600);
 }
 .form__help .text-danger,
-.form__help .help-block {
+.form__help .help-block,
+.help-block .text-danger,
+.help-block .help-block {
   margin-left: 1px;
 }
 
@@ -1820,8 +1852,15 @@ span.badge:not(:last-child) {
   margin-bottom: 8px;
 }
 
-.swagger-ui .scheme-container .servers-title,
-.swagger-ui .scheme-container .servers {
+.swagger-ui .scheme-container {
+  box-shadow: none !important;
+}
+.swagger-ui .info.info {
+  margin-top: 3.2rem;
+  margin-bottom: 0;
+}
+.swagger-ui .servers-title,
+.swagger-ui .servers {
   display: none;
 }
 

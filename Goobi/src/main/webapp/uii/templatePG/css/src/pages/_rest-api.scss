@@ -1,4 +1,13 @@
-.swagger-ui .scheme-container {
+.swagger-ui {
+  .scheme-container {
+    box-shadow: none !important;
+  }
+
+  .info.info {
+    margin-top: 3.2rem;
+    margin-bottom: 0;
+  }
+
   .servers-title,
   .servers {
     display: none;
