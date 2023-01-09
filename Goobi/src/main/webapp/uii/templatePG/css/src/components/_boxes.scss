@@ -1,7 +1,7 @@
 /* VARIABLES */
 .box {
   --box-padding: 1.6rem;
-  --box-padding-title: 7px 0 7px 10px;
+  --box-padding-title: 7px 10px 7px 10px;
 }
 
 .box.box--small {
@@ -16,7 +16,7 @@
 }
 
 .box__title {
-  margin: -0.3px; // Fix a chrome bug => otherwise gaps between title + box border are visible when zooming in
+  // margin: -0.3px; // Fix a chrome bug => otherwise gaps between title + box border are visible when zooming in
   color: var(--clr-white, #fff);
   display: flex;
   justify-content: space-between;
@@ -31,6 +31,18 @@
     .fa {
       color: currentColor;
       font-size: 1.4rem;
+    }
+  }
+
+  .btn--title-action {
+    border: 1px solid currentColor;
+
+    &:not(:last-child) {
+      margin-inline-end: 0.8rem;
+    }
+
+    &:hover {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0 0);
     }
   }
 
