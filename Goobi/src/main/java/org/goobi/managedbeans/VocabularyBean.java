@@ -146,7 +146,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
     /**
      * method to go to the vocabulary edition area
      * 
-     * @return path to vocabulary edition arey
+     * @return path to vocabulary edition area
      */
     public String editVocabulary() {
         removedDefinitions = new ArrayList<>();
@@ -293,9 +293,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @return
      */
     public void saveRecordEdition() {
-
         // If the new content is not valid, the vocabulary should not be saved.
-        if (!this.validateRecords()) {
+        if (!VocabularyBean.validateRecords(this.currentVocabulary, this.currentVocabRecord)) {
             return;
         }
 
@@ -314,19 +313,21 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * of them are set to invalid too. If the currentVocabRecord is invalid, false is returned. If it is valid and can be stored in the database, true
      * is returned.
      *
+     * @param vocabulary The current vocabulary to validate
+     * @param record The current vocabulary record to validate
      * @return true If currentVocabRecord is valid and false if its fields are invalid or distinctive fields have the same content as fields of other
      *         vocabulary records
      */
-    private boolean validateRecords() {
+    private static boolean validateRecords(Vocabulary vocabulary, VocabRecord record) {
 
         // Only the invalid records should be set to 'valid=false' later
-        for (VocabRecord vocabulary : this.currentVocabulary.getRecords()) {
-            vocabulary.setValid(true);
+        for (VocabRecord currentRecord : vocabulary.getRecords()) {
+            currentRecord.setValid(true);
         }
 
         boolean valid = true;
 
-        for (Field field : this.currentVocabRecord.getFields()) {
+        for (Field field : record.getFields()) {
 
             // If the field is a text field, the value is trimmed to avoid leading or trailing whitespaces
             String type = field.getDefinition().getType();
@@ -339,13 +340,13 @@ public class VocabularyBean extends BasicBean implements Serializable {
             // If field is required and empty, it gets marked as invalid
             if (field.getDefinition().isRequired() && StringUtils.isBlank(field.getValue())) {
                 field.setValidationMessage("vocabularyManager_validation_fieldIsRequired");
-                this.currentVocabRecord.setValid(false);
+                record.setValid(false);
                 valid = false;
             }
 
             if (field.getDefinition().isDistinctive() && StringUtils.isNotBlank(field.getValue())) {
-                requiredCheck: for (VocabRecord other : this.currentVocabulary.getRecords()) {
-                    if (this.currentVocabRecord.equals(other)) {
+                requiredCheck: for (VocabRecord other : vocabulary.getRecords()) {
+                    if (record.equals(other)) {
                         continue;
                     }
                     for (Field f : other.getFields()) {
@@ -353,7 +354,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
                             if (field.getValue().equals(f.getValue())) {
                                 field.setValidationMessage("vocabularyManager_validation_fieldIsNotUnique");
                                 other.setValid(false);
-                                this.currentVocabRecord.setValid(false);
+                                record.setValid(false);
                                 valid = false;
                                 break requiredCheck;
                             }
@@ -853,13 +854,12 @@ public class VocabularyBean extends BasicBean implements Serializable {
     public void setCurrentVocabRecord(VocabRecord currentVocabRecord) {
         if (this.hasInvalidVocabRecords()) {
             // The currentVocabRecord must be cached by its id because the list of vocabulary records is reloaded due to inconsistencies in the user interface
+            // TODO: This code block (reloading of records) gets unnecessary when vocabRecord.fields.value is only set after it was validated.
             int id = this.currentVocabRecord.getId();
             VocabularyManager.getAllRecords(this.currentVocabulary);
             this.currentVocabRecord = this.getVocabRecordById(id);
         } else {
-            if (this.currentVocabRecord == null || !this.currentVocabRecord.equals(currentVocabRecord)) {
-                this.currentVocabRecord = currentVocabRecord;
-            }
+            this.currentVocabRecord = currentVocabRecord;
         }
     }
 

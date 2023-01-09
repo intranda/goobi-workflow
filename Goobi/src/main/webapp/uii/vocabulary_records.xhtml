@@ -290,7 +290,11 @@
                                 name="recordid" fieldStyle="form-control"/>
 
                             <ui:repeat var="field" value="#{vocabularyBean.currentVocabRecord.fields}">
-
+                                <!--
+                                <h:inputText>
+                                    <f:validator validatorId="org.goobi.validator.TimeValidator" />
+                                </h:inputText>
+                                -->
                                 <!-- regular input field -->
                                 <intranda:formInputText
                                     name="field"
