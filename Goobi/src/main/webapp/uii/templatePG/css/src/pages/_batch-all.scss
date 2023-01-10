@@ -1,5 +1,11 @@
-.batch-all {
+#batchAll {
   tr td:empty {
     display: none;
+  }
+  .box__body {
+    .form-group {
+      padding-left: 0;
+      padding-right: 0;
+    }
   }
 }
