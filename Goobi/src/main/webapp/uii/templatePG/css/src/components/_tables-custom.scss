@@ -1,12 +1,3 @@
-// BS override, make table end at bottom of the box
-.table {
-  margin-bottom: 0;
-}
-
-.table .row {
-  width: 100%;
-}
-
 // Set table column width
 .gw-table-fixed,
 .table-fixed {
@@ -15,6 +6,27 @@
 
 .gw-col-check {
   --width-table-col: 100px;
+}
+
+/* ========================================
+ * BS OVERRIDES
+ * ====================================== */
+
+// remove margin and make table end at bottom of the box
+.table {
+  margin-bottom: 0;
+}
+
+.table > :not(caption) > * > * {
+  padding: 0.8rem;
+}
+
+/* ========================================
+ * Goobi tables
+ * ====================================== */
+
+.table .row {
+  width: 100%;
 }
 
 // Border color: all borders, one color
@@ -145,6 +157,10 @@
     flex-wrap: wrap;
   }
 }
+
+/* ========================================
+ * Fixed sized Goobi tables
+ * ====================================== */
 
 .table-fixed__actions,
 .gw-table-fixed__actions,
