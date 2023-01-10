@@ -27,7 +27,7 @@
 <ui:define name="content">
 <h:form id="myform" styleClass="form-horizontal form-bordered" onkeypress="submitOnEnter(event);" rendered="#{LoginForm.hasRole('Admin_Projects')}">
 
-<main class="row">
+<main id="projectEdit" class="row">
   <div class="col-12">
 
 
@@ -307,11 +307,12 @@
 
 
                           <intranda:box
-                            title="#{msgs.metsfilegroups}"
-                            icon="fa-table"
+                            boxScope="box-mets-filegroups"
                             boxType="neutral"
                             boxSmall="true"
                             boxPadding="true"
+                            title="#{msgs.metsfilegroups}"
+                            icon="fa-table"
                             >
 
 
