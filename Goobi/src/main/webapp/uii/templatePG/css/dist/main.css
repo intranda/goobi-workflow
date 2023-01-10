@@ -1700,6 +1700,12 @@ span.badge:not(:last-child) {
 .processLog .gw-table-fixed.journal-big {
   height: 32vh;
 }
+<<<<<<< HEAD
+=======
+.processLog .gw-table-fixed, .processLog__footer {
+  margin: 0 calc(var(--box-padding) * -1);
+}
+>>>>>>> develop
 .processLog th:last-child,
 .processLog td:last-child {
   border-right: 0px;
@@ -1736,8 +1742,15 @@ span.badge:not(:last-child) {
   border: none;
 }
 
+<<<<<<< HEAD
 .tooltip {
   font-size: var(--fs-400);
+=======
+.box.box--outline .box__title {
+  background: transparent;
+  border-width: 1px;
+  color: var(--bs-body-color);
+>>>>>>> develop
 }
 
 #designSystem {

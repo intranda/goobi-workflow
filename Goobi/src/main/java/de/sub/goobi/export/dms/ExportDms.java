@@ -77,7 +77,7 @@ public class ExportDms extends ExportMets implements IExportPlugin {
     @Setter
     protected boolean exportFulltext = true;
 
-    public static final String DIRECTORY_SUFFIX = "_tif";
+    public static final String DIRECTORY_SUFFIX = "_media";
 
     public ExportDms() {
     }
