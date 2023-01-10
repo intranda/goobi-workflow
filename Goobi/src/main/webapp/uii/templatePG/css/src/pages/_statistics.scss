@@ -1,0 +1,75 @@
+#statisticsView {
+  --gap: 8px;
+  .stats-box {
+    .row {
+      margin-bottom: 8px;
+    }
+  }
+  .box-body-padding-top-0 .box__body {
+    padding-top: 0;
+
+    .form-group {
+      padding-left: 0;
+    }
+  }
+
+  .tabs {
+    gap: 2px;
+    flex-wrap: wrap;
+    padding: 0;
+    margin-left: -1.6rem;
+    margin-bottom: 1.6rem;
+    li {
+      display: flex;
+      background-color: #ddd;
+
+      a {
+        padding: 8px;
+        color: var(--bs-body-color);
+      }
+      &:hover {
+        background-image: linear-gradient(rgba(255, 255, 255, 0.6) 0 0);
+      }
+      &.active {
+        background-color: #fff;
+      }
+    }
+  }
+
+  .form-check__wrapper {
+    display: flex;
+    gap: var(--gap);
+  }
+
+  /* ========================================
+   * CUSTOM TINY TABLE
+  /* ===================================== */
+
+  .standardTable {
+    border: 1px solid #dddddd;
+    line-height: 1.42857;
+    padding: 8px;
+    vertical-align: top;
+    border-spacing: 0;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+
+  .normdataTable {
+    vertical-align: top;
+    padding: 3px;
+  }
+
+  .standardTable_Header {
+    font-weight: bold;
+  }
+
+  .standardTable_Header,
+  .standardTable_Column,
+  .standardTable_ColumnRight {
+    border-top: 1px solid #dddddd;
+    line-height: 1.42857;
+    padding: 8px !important;
+    vertical-align: top;
+  }
+}

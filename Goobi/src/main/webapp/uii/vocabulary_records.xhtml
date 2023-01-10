@@ -200,8 +200,10 @@
                   </button>
 
                   <h:panelGroup
-                      rendered="#{vocabularyBean.currentVocabulary.pageNumberLast != 1}"
-                      id="pagination-area" styleClass="pull-right">
+                    rendered="#{vocabularyBean.currentVocabulary.pageNumberLast > 1}"
+                    id="pagination-area"
+                    styleClass="pull-right"
+                  >
 
 
 
