@@ -64,3 +64,39 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
+
+/* ========================================
+ * BS 5 Overrides
+ * ====================================== */
+
+.mt-2 {
+  margin-top: 0.4rem !important;
+}
+
+.mt-4 {
+  margin-top: 0.8rem !important;
+}
+
+.mb-2 {
+  margin-bottom: 0.4rem !important;
+}
+
+.mb-4 {
+  margin-bottom: 0.8rem !important;
+}
+
+.ms-2 {
+  margin-left: 0.4rem !important;
+}
+
+.ms-4 {
+  margin-left: 0.8rem !important;
+}
+
+.me-2 {
+  margin-right: 0.4rem !important;
+}
+
+.me-4 {
+  margin-right: 0.8rem !important;
+}
