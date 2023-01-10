@@ -789,6 +789,41 @@ a:focus, a:hover, a:active {
   overflow-wrap: break-word;
 }
 
+/* ========================================
+ * BS 5 Overrides
+ * ====================================== */
+.mt-2 {
+  margin-top: 0.4rem !important;
+}
+
+.mt-4 {
+  margin-top: 0.8rem !important;
+}
+
+.mb-2 {
+  margin-bottom: 0.4rem !important;
+}
+
+.mb-4 {
+  margin-bottom: 0.8rem !important;
+}
+
+.ms-2 {
+  margin-left: 0.4rem !important;
+}
+
+.ms-4 {
+  margin-left: 0.8rem !important;
+}
+
+.me-2 {
+  margin-right: 0.4rem !important;
+}
+
+.me-4 {
+  margin-right: 0.8rem !important;
+}
+
 .navbar {
   background-color: var(--clr-primary-400);
   font-size: var(--fs-400);
@@ -1279,14 +1314,6 @@ a:focus, a:hover, a:active {
   margin-right: auto;
 }
 
-.table {
-  margin-bottom: 0;
-}
-
-.table .row {
-  width: 100%;
-}
-
 .gw-table-fixed,
 .table-fixed {
   --width-table-col: 200px;
@@ -1294,6 +1321,24 @@ a:focus, a:hover, a:active {
 
 .gw-col-check {
   --width-table-col: 100px;
+}
+
+/* ========================================
+ * BS OVERRIDES
+ * ====================================== */
+.table {
+  margin-bottom: 0;
+}
+
+.table > :not(caption) > * > * {
+  padding: 0.8rem;
+}
+
+/* ========================================
+ * Goobi tables
+ * ====================================== */
+.table .row {
+  width: 100%;
 }
 
 .gw-table tbody,
@@ -1404,6 +1449,9 @@ a:focus, a:hover, a:active {
     flex-wrap: wrap;
   }
 }
+/* ========================================
+ * Fixed sized Goobi tables
+ * ====================================== */
 .table-fixed__actions,
 .gw-table-fixed__actions,
 .dataTables__actions {
@@ -1700,12 +1748,6 @@ span.badge:not(:last-child) {
 .processLog .gw-table-fixed.journal-big {
   height: 32vh;
 }
-<<<<<<< HEAD
-=======
-.processLog .gw-table-fixed, .processLog__footer {
-  margin: 0 calc(var(--box-padding) * -1);
-}
->>>>>>> develop
 .processLog th:last-child,
 .processLog td:last-child {
   border-right: 0px;
@@ -1742,15 +1784,8 @@ span.badge:not(:last-child) {
   border: none;
 }
 
-<<<<<<< HEAD
 .tooltip {
   font-size: var(--fs-400);
-=======
-.box.box--outline .box__title {
-  background: transparent;
-  border-width: 1px;
-  color: var(--bs-body-color);
->>>>>>> develop
 }
 
 #designSystem {
@@ -1842,8 +1877,12 @@ span.badge:not(:last-child) {
   padding: 1px;
 }
 
-.batch-all tr td:empty {
+#batchAll tr td:empty {
   display: none;
+}
+#batchAll .box__body .form-group {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 #usergroupAll th {
@@ -1866,11 +1905,13 @@ span.badge:not(:last-child) {
 }
 
 .swagger-ui .scheme-container {
+  padding: 0 !important;
+  margin: 0 !important;
   box-shadow: none !important;
 }
-.swagger-ui .info.info {
-  margin-top: 3.2rem;
-  margin-bottom: 0;
+.swagger-ui .info {
+  margin-top: 3.2rem !important;
+  margin-bottom: 0 !important;
 }
 .swagger-ui .servers-title,
 .swagger-ui .servers {
@@ -1965,6 +2006,10 @@ body .ui-button.ui-button-text-icon-left .ui-button-text {
   display: flex;
   gap: 12px;
   border-width: 0 !important;
+}
+
+#projectEdit .box-mets-filegroups td:empty {
+  display: none;
 }
 
 /*# sourceMappingURL=main.css.map */
