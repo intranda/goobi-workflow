@@ -59,8 +59,17 @@
     font-size: 1.5rem;
     line-height: 2.4rem;
     margin: 3px 0 3px 0;
+
+    display: flex;
+    align-items: center;
+
     .fa {
       margin: 0 10px 0 5px;
+    }
+    // FA compass icon is very small, if compared to other FA icons.
+    // => let's bumb up the font size!
+    .fa-compass {
+      font-size: 2rem;
     }
   }
 }

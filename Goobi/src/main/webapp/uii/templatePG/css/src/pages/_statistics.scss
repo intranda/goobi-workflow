@@ -1,3 +1,7 @@
+/* ===================================================
+ * MAIN VIEW + TEMPLATE (PLUGINS USE STATISICS.XHTML)
+/* ================================================ */
+
 #statisticsView {
   --gap: 8px;
   .stats-box {
@@ -71,5 +75,21 @@
     line-height: 1.42857;
     padding: 8px !important;
     vertical-align: top;
+  }
+}
+
+/* ========================================
+ * FINISHED TASKS PER YEAR
+/* ===================================== */
+
+#statisticsFinishedTasksPerYear {
+  --gw-clr-stats-400: #ae41e8;
+  --gw-clr-stats-600: #4ac748;
+
+  .fa-square--processes {
+    color: var(--gw-clr-stats-600);
+  }
+  .fa-square--images {
+    color: var(--gw-clr-stats-400);
   }
 }
