@@ -129,7 +129,6 @@
         <reflections.version>0.10.2</reflections.version>
         <spark.version>2.9.4</spark.version>
         <spring.version>5.3.23</spring.version>
-        <sshj.version>0.34.0</sshj.version>
         <swagger.version>2.2.7</swagger.version>
         <weld.version>3.1.9.Final</weld.version>
         <hk2.version>2.6.1</hk2.version>
@@ -1362,11 +1361,6 @@
                     <artifactId>jetty-all</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.hierynomus</groupId>
-            <artifactId>sshj</artifactId>
-            <version>${sshj.version}</version>
         </dependency>
         <dependency>
 			<groupId>org.threeten</groupId>
