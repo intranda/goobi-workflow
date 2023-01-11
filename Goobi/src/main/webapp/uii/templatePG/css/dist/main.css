@@ -1393,6 +1393,65 @@ span.badge:not(:last-child) {
   color: var(--clr-text-400);
 }
 
+.processLog .box__title {
+  padding-right: 1rem;
+}
+.processLog .actions > *:hover {
+  background-color: var(--clr-primary-400);
+}
+.processLog .gw-table-fixed {
+  overflow: auto;
+  width: auto;
+  height: 243px;
+}
+.processLog .gw-table-fixed.journal-big {
+  height: 32vh;
+}
+.processLog .gw-table-fixed, .processLog__footer {
+  margin: 0 calc(var(--box-padding) * -1);
+}
+.processLog th:last-child,
+.processLog td:last-child {
+  border-right: 0px;
+  border-left: 0;
+}
+.processLog .first-row td:first-child {
+  width: 240px;
+}
+.processLog .log_color_error {
+  color: #ff0000;
+}
+.processLog .log_color_warn {
+  color: #ff6600;
+}
+.processLog .log_color_info {
+  color: #0033cc;
+}
+.processLog .log_color_debug {
+  color: #8e8d8e;
+}
+.processLog .log_color_user {
+  color: #006600;
+}
+.processLog .log_table_column_date {
+  min-width: 140px;
+}
+.processLog .log_file {
+  background: #368ee0;
+  border: none;
+  color: white;
+  margin-left: 10px;
+}
+.processLog .log_file_delete {
+  border: none;
+}
+
+.box.box--outline .box__title {
+  background: transparent;
+  border-width: 1px;
+  color: var(--bs-body-color);
+}
+
 #designSystem {
   --flow-space: 4.8rem;
   counter-reset: heading;

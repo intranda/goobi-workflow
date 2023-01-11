@@ -124,7 +124,7 @@
                                                 </th>
                                             </ui:repeat>
                                             <th>
-                                                <h:outputText value="#{msgs.auswahl2}" />
+                                                <h:outputText value="#{msgs.auswahl}" />
                                             </th>
                                         </tr>
                                     </thead>
@@ -140,7 +140,7 @@
                                                     <button
                                                         jsf:id="switch"
                                                         class="btn #{record.valid ? vocabularyBean.currentVocabRecord != record?'':'btn-blue' : 'btn-red'} font-size-s vocabulary-left-column-entry"
-                                                        title="#{record.title}"
+                                                        title="#{msgs.bearbeiten}"
                                                         jsf:action="#{vocabularyBean.Reload}">
                                                         <i class="font-size-s fa fa-pencil" />
                                                         <f:setPropertyActionListener
@@ -171,7 +171,7 @@
                                 </button>
 
                                 <h:panelGroup
-                                    rendered="#{vocabularyBean.currentVocabulary.pageNumberLast != 1}"
+                                    rendered="#{vocabularyBean.currentVocabulary.pageNumberLast > 1}"
                                     id="pagination-area" styleClass="pull-right">
 
                                     <h:commandLink
