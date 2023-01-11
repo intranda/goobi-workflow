@@ -207,12 +207,9 @@
 }
 
 .box.box--outline {
-  border-width: 1px;
-
   .box__title {
     --box-padding-title: 8px 0 8px 10px;
     background: transparent;
-    border-width: 1px;
     color: var(--bs-body-color);
   }
 }
