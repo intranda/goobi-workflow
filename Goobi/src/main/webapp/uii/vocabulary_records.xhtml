@@ -105,25 +105,10 @@
                                 <table class="table table-hover table-nomargin dataTable table-bordered responsive">
                                     <thead>
                                         <tr role="row">
-                                            <th scope="col" role="columnheader" aria-sort="#{vocabularyBean.currentVocabulary.sortfield== 'idDesc' ? 'descending' : vocabularyBean.currentVocabulary.sortfield== 'idAsc' ? 'ascending' :'none'}">
-                                                <button
-                                                	jsf:id="changeOrderId"
-                                                    class="button-link"
-                                                    style="width: 100%; text-align: left;"
-                                                    jsf:action="#{vocabularyBean.currentVocabulary.changeOrder}"
-                                                    aria-label="#{msgs.id}">
-                                                    <h:outputText value="#{msgs.id}"/>
-                                                    <span class="pull-right table-sort-icon fa #{vocabularyBean.currentVocabulary.sortfield=='idDesc'?'fa-sort-desc':vocabularyBean.currentVocabulary.sortfield=='idAsc'?'fa-sort-asc':'fa-sort'}"></span>
-                                                    <f:setPropertyActionListener
-                                                        target="#{vocabularyBean.currentVocabulary.sortfield}"
-                                                        value="#{vocabularyBean.currentVocabulary.sortfield=='idAsc'?'idDesc':'idAsc'}" />
-                                                    <f:ajax render="@form" />
-                                                </button>
-                                            </th>
                                             <ui:repeat var="definition" value="#{vocabularyBean.currentVocabulary.mainFields}">
                                                 <th scope="col" role="columnheader" aria-sort="#{vocabularyBean.currentVocabulary.sortfield== definition.idAsString.concat('Desc') ? 'descending' : vocabularyBean.currentVocabulary.sortfield== definition.idAsString.concat('Asc') ? 'ascending' :'none'}">
                                                     <button
-                                                    	jsf:id="changeOrderLabel"
+                                                        jsf:id="changeOrderLabel"
                                                         class="button-link"
                                                         style="width: 100%; text-align: left;"
                                                         jsf:action="#{vocabularyBean.currentVocabulary.changeOrder}"
@@ -139,16 +124,13 @@
                                                 </th>
                                             </ui:repeat>
                                             <th>
-                                                <h:outputText value="#{msgs.auswahl2}" />
+                                                <h:outputText value="#{msgs.auswahl}" />
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <ui:repeat varStatus="status" var="record" value="#{vocabularyBean.currentVocabulary.paginatorList}">
                                             <tr>
-                                                <td class="maxWidth80">
-                                                    <h:outputText value="#{record.id}" />
-                                                </td>
                                                 <ui:repeat var="definition" value="#{vocabularyBean.currentVocabulary.mainFields}">
                                                     <td class="tableColumnOverflow maxWidth150">
                                                         <h:outputText value="#{record.getFieldValue(definition)}" />
@@ -158,7 +140,7 @@
                                                     <button
                                                         jsf:id="switch"
                                                         class="btn #{record.valid ? vocabularyBean.currentVocabRecord != record?'':'btn-blue' : 'btn-red'} font-size-s vocabulary-left-column-entry"
-                                                        title="#{record.title}"
+                                                        title="#{msgs.bearbeiten}"
                                                         jsf:action="#{vocabularyBean.Reload}">
                                                         <i class="font-size-s fa fa-pencil" />
                                                         <f:setPropertyActionListener
@@ -189,7 +171,7 @@
                                 </button>
 
                                 <h:panelGroup
-                                    rendered="#{vocabularyBean.currentVocabulary.pageNumberLast != 1}"
+                                    rendered="#{vocabularyBean.currentVocabulary.pageNumberLast > 1}"
                                     id="pagination-area" styleClass="pull-right">
 
                                     <h:commandLink

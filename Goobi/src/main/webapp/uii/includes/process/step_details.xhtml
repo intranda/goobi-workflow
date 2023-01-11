@@ -156,6 +156,10 @@
                                 styleClass="block"
                                 value="#{msgs.automatischerSchritt}"
                                 rendered="#{ProzessverwaltungForm.mySchritt.typAutomatisch}" />
+                             <h:outputText
+                                styleClass="block"
+                                value="#{msgs.typeThumbnailStep}"
+                                rendered="#{ProzessverwaltungForm.mySchritt.typAutomaticThumbnail}" />
                             <h:outputText
                                 styleClass="block"
                                 value="#{msgs.typScriptStep}"
@@ -431,7 +435,7 @@
                     	<h:outputLabel
                             for="autoThumbnail"
                             styleClass="control-label col-sm-3"
-                            value="Auto Thumbnail" />
+                            value="#{msgs.typeThumbnailStep}" />
                     	<div class="col-sm-9">
 		                    <x:selectBooleanCheckbox
 		                    	forceId="true"

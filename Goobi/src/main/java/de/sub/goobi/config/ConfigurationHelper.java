@@ -1,5 +1,6 @@
 package de.sub.goobi.config;
 
+import java.io.File;
 /**
  * This file is part of the Goobi Application - a Workflow tool for the support of mass digitization.
  * 

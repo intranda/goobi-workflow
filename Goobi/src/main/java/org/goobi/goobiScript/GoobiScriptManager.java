@@ -284,7 +284,7 @@ public class GoobiScriptManager {
                     int count = 1;
                     synchronized (goobiScriptResults) {
                         for (GoobiScriptResult gsr : goobiScriptResults) {
-                            XSSFRow row = sheet.createRow((short) count++);
+                            XSSFRow row = sheet.createRow(count);
                             row.createCell(0).setCellValue(gsr.getProcessId());
                             row.createCell(1).setCellValue(gsr.getProcessTitle());
                             row.createCell(2).setCellValue(gsr.getCommand());
@@ -293,6 +293,7 @@ public class GoobiScriptManager {
                             row.createCell(5).setCellValue(gsr.getResultType().toString());
                             row.createCell(6).setCellValue(gsr.getResultMessage());
                             row.createCell(7).setCellValue(gsr.getErrorText());
+                            count++;
                         }
                     }
 

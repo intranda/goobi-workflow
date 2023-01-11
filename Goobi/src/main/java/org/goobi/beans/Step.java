@@ -560,19 +560,19 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     public ArrayList<String> getAllScriptPaths() {
         ArrayList<String> answer = new ArrayList<>();
-        if (this.typAutomatischScriptpfad != null && !this.typAutomatischScriptpfad.equals("")) {
+        if (this.typAutomatischScriptpfad != null && !"".equals(this.typAutomatischScriptpfad)) {
             answer.add(this.typAutomatischScriptpfad);
         }
-        if (this.typAutomatischScriptpfad2 != null && !this.typAutomatischScriptpfad2.equals("")) {
+        if (this.typAutomatischScriptpfad2 != null && !"".equals(this.typAutomatischScriptpfad2)) {
             answer.add(this.typAutomatischScriptpfad2);
         }
-        if (this.typAutomatischScriptpfad3 != null && !this.typAutomatischScriptpfad3.equals("")) {
+        if (this.typAutomatischScriptpfad3 != null && !"".equals(this.typAutomatischScriptpfad3)) {
             answer.add(this.typAutomatischScriptpfad3);
         }
-        if (this.typAutomatischScriptpfad4 != null && !this.typAutomatischScriptpfad4.equals("")) {
+        if (this.typAutomatischScriptpfad4 != null && !"".equals(this.typAutomatischScriptpfad4)) {
             answer.add(this.typAutomatischScriptpfad4);
         }
-        if (this.typAutomatischScriptpfad5 != null && !this.typAutomatischScriptpfad5.equals("")) {
+        if (this.typAutomatischScriptpfad5 != null && !"".equals(this.typAutomatischScriptpfad5)) {
             answer.add(this.typAutomatischScriptpfad5);
         }
         return answer;
@@ -580,19 +580,19 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
 
     public HashMap<String, String> getAllScripts() {
         LinkedHashMap<String, String> answer = new LinkedHashMap<>();
-        if (this.typAutomatischScriptpfad != null && !this.typAutomatischScriptpfad.equals("")) {
+        if (this.typAutomatischScriptpfad != null && !"".equals(this.typAutomatischScriptpfad)) {
             answer.put(this.scriptname1, this.typAutomatischScriptpfad);
         }
-        if (this.typAutomatischScriptpfad2 != null && !this.typAutomatischScriptpfad2.equals("")) {
+        if (this.typAutomatischScriptpfad2 != null && !"".equals(this.typAutomatischScriptpfad2)) {
             answer.put(this.scriptname2, this.typAutomatischScriptpfad2);
         }
-        if (this.typAutomatischScriptpfad3 != null && !this.typAutomatischScriptpfad3.equals("")) {
+        if (this.typAutomatischScriptpfad3 != null && !"".equals(this.typAutomatischScriptpfad3)) {
             answer.put(this.scriptname3, this.typAutomatischScriptpfad3);
         }
-        if (this.typAutomatischScriptpfad4 != null && !this.typAutomatischScriptpfad4.equals("")) {
+        if (this.typAutomatischScriptpfad4 != null && !"".equals(this.typAutomatischScriptpfad4)) {
             answer.put(this.scriptname4, this.typAutomatischScriptpfad4);
         }
-        if (this.typAutomatischScriptpfad5 != null && !this.typAutomatischScriptpfad5.equals("")) {
+        if (this.typAutomatischScriptpfad5 != null && !"".equals(this.typAutomatischScriptpfad5)) {
             answer.put(this.scriptname5, this.typAutomatischScriptpfad5);
         }
         return answer;
@@ -715,7 +715,7 @@ public class Step implements Serializable, DatabaseObject, Comparable<Step> {
     public boolean isTypeSpecified() {
         return typMetadaten || typImportFileUpload || typExportDMS || typBeimAnnehmenAbschliessen || typBeimAnnehmenModul
                 || typBeimAnnehmenModulUndAbschliessen || typImagesLesen || typImagesSchreiben || typBeimAbschliessenVerifizieren || typAutomatisch
-                || typScriptStep || StringUtils.isNotEmpty(typModulName) || StringUtils.isNotEmpty(stepPlugin)
+                || typScriptStep || StringUtils.isNotEmpty(typModulName) || StringUtils.isNotEmpty(stepPlugin) || typAutomaticThumbnail
                 || StringUtils.isNotEmpty(validationPlugin) || delayStep || batchStep || updateMetadataIndex || generateDocket || httpStep
                 || messageQueue != QueueType.NONE;
     }
