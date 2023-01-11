@@ -148,7 +148,7 @@
 
                           </ui:repeat>
                           <th class="gw-table-fixed__actions">
-                              <h:outputText value="#{msgs.auswahl2}" />
+                              <h:outputText value="#{msgs.auswahl}" />
                           </th>
 
                         </tr>
@@ -170,8 +170,11 @@
                                 type="button"
                                 jsf:id="switch"
                                 class="btn #{record.valid ? vocabularyBean.currentVocabRecord != record ? 'btn-blank' : 'btn-primary-400' : 'btn-red'}"
-                                jsf:action="#{vocabularyBean.Reload}">
-                                <i class="font-size-s fa fa-pencil" />
+                                jsf:action="#{vocabularyBean.Reload}"
+                                title="#{msgs.bearbeiten}"
+                                data-bs-toggle="tooltip"
+                              >
+                              <i class="font-size-s fa fa-pencil" />
                                 <f:setPropertyActionListener
                                   value="#{record}"
                                   target="#{vocabularyBean.currentVocabRecord}" />
