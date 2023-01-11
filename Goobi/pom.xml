@@ -138,6 +138,7 @@
         <xmpcore.version>6.1.11</xmpcore.version>
         <!-- used in goobi-plugin-step-barcode-scanner -->
         <zxing.version>3.5.1</zxing.version>
+        <jsch.version>0.2.6</jsch.version>
     </properties>
 
 
@@ -940,6 +941,11 @@
             <artifactId>jwks-rsa</artifactId>
             <version>${jwks-rsa.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.mwiede</groupId>
+            <artifactId>jsch</artifactId>
+            <version>${jsch.version}</version>
+		</dependency>
                     <dependency>
                         <groupId>com.sparkjava</groupId>
                         <artifactId>spark-core</artifactId>
