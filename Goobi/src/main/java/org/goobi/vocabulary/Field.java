@@ -63,6 +63,7 @@ public class Field implements Serializable {
     }
 
     public void setValue(String value) {
+        System.out.println("Setter " + value);
         // The valid state must be checked. If the validation message was set in the VocabularyBean.validateRecords() method, this field values may not be set.
         if (this.validationMessage == null || this.validationMessage.length() == 0) {
             this.value = value;

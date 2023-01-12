@@ -290,12 +290,134 @@
                                 name="recordid" fieldStyle="form-control"/>
 
                             <ui:repeat var="field" value="#{vocabularyBean.currentVocabRecord.fields}">
-                                <!--
-                                <h:inputText>
-                                    <f:validator validatorId="org.goobi.validator.TimeValidator" />
-                                </h:inputText>
-                                -->
+                                <div class="form-group" style="">
+                                    <h:panelGroup rendered="#{field.definition.type eq 'input'}">
+                                        <div class="col-sm-3 control-label" tabindex="-1">
+                                            <h:outputLabel for="field1" value="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}">
+                                            </h:outputLabel>
+                                            <h:panelGroup rendered="#{field.definition.required}">
+                                                <i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip" />
+                                            </h:panelGroup>
+                                        </div>
+                                        <div class="col-sm-9" style="">
+                                            <x:inputText
+                                                id="field1"
+                                                forceId="true"
+                                                value="#{field.value}"
+                                                styleClass="form-control"
+                                                required="#{field.definition.required}"
+                                                rendered="#{field.definition.type eq 'input'}"
+                                                tabindex="0"
+                                                validator="#{vocabularyBean.validateFieldValue}">
+                                                <!--<f:validator validatorId="org.goobi.vocabulary.VocabularyFieldValidator" />-->
+                                            </x:inputText>
+                                            <h:message for="field1" showDetail="true" styleClass="help-inline font-danger" />
+                                        </div>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{field.definition.type eq 'textarea'}">
+                                        <div class="col-sm-3 control-label" tabindex="-1">
+                                            <h:outputLabel for="field2" value="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}">
+                                            </h:outputLabel>
+                                            <h:panelGroup rendered="#{field.definition.required}">
+                                                <i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip" />
+                                            </h:panelGroup>
+                                        </div>
+                                        <div class="col-sm-9" style="">
+                                            <x:inputTextarea
+                                                id="field2"
+                                                forceId="true"
+                                                value="#{field.value}"
+                                                styleClass="form-control"
+                                                required="#{field.definition.required}"
+                                                rendered="#{field.definition.type eq 'textarea'}"
+                                                tabindex="0"
+                                                validator="#{vocabularyBean.validateFieldValue}">
+                                                <!--<f:validator validatorId="org.goobi.vocabulary.VocabularyFieldValidator" />-->
+                                            </x:inputTextarea>
+                                            <h:message for="field2" showDetail="true" styleClass="help-inline font-danger" />
+                                        </div>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{field.definition.type eq 'select1'}">
+                                        <div class="col-sm-3 control-label" tabindex="-1">
+                                            <h:outputLabel for="field3" value="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}">
+                                            </h:outputLabel>
+                                            <h:panelGroup rendered="#{field.definition.required}">
+                                                <i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip" />
+                                            </h:panelGroup>
+                                        </div>
+                                        <div class="col-sm-9" style="">
+                                            <x:selectOneMenu
+                                                id="field3"
+                                                value="#{field.value}"
+                                                styleClass="form-control"
+                                                required="#{field.definition.required}"
+                                                rendered="#{field.definition.type eq 'select1'}"
+                                                tabindex="0"
+                                                validator="#{vocabularyBean.validateFieldValue}">
+                                                <f:selectItem itemValue="null" itemLabel="#{msgs.bitteAuswaehlen}" />
+                                                <f:selectItems value="#{field.definition.selecteableValues}" />
+                                                <!--<f:validator validatorId="org.goobi.vocabulary.VocabularyFieldValidator" />-->
+                                            </x:selectOneMenu>
+                                            <h:message for="field3" showDetail="true" styleClass="help-inline font-danger" />
+                                        </div>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{field.definition.type eq 'select'}">
+                                        <div class="col-sm-3 control-label" tabindex="-1">
+                                            <h:outputLabel for="field4" value="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}">
+                                            </h:outputLabel>
+                                            <h:panelGroup rendered="#{field.definition.required}">
+                                                <i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip" />
+                                            </h:panelGroup>
+                                        </div>
+                                        <div class="col-sm-9" style="">
+                                            <x:selectManyListbox
+                                                id="field4"
+                                                value="#{field.valueMultiSelect}"
+                                                styleClass="form-control"
+                                                required="#{field.definition.required}"
+                                                rendered="#{field.definition.type eq 'select'}"
+                                                tabindex="0"
+                                                validator="#{vocabularyBean.validateFieldValue}">
+                                                <f:selectItems
+                                                    value="#{field.definition.selectList}"
+                                                    var="var"
+                                                    itemLabel="#{var.itemLabel}"
+                                                    itemValue="#{var.itemValue}" /><!--Are the parameters 'var', 'itemLabel' and 'itemValue' required? -->
+                                                <!--<f:validator validatorId="org.goobi.vocabulary.VocabularyFieldValidator" />-->
+                                            </x:selectManyListbox>
+                                            <h:message for="field4" showDetail="true" styleClass="help-inline font-danger" />
+                                        </div>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{field.definition.type eq 'html'}">
+                                        <div class="col-sm-3 control-label" tabindex="-1">
+                                            <h:outputLabel for="field5" value="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}">
+                                            </h:outputLabel>
+                                            <h:panelGroup rendered="#{field.definition.required}">
+                                                <i class="fa fa-asterisk pull-right font-asterisk" title="#{msgs.requiredField}" data-toggle="tooltip" />
+                                            </h:panelGroup>
+                                        </div>
+                                        <div class="col-sm-9" style="">
+                                            <x:inputTextarea
+                                                id="field5"
+                                                forceId="true"
+                                                value="#{field.value}"
+                                                styleClass="editor form-control"
+                                                required="#{field.definition.required}"
+                                                rendered="#{field.definition.type eq 'html'}"
+                                                tabindex="0"
+                                                validator="#{vocabularyBean.validateFieldValue}">
+                                                <!--<f:validator validatorId="org.goobi.vocabulary.VocabularyFieldValidator" />-->
+                                            </x:inputTextarea>
+                                            <h:message for="field5" showDetail="true" styleClass="help-inline font-danger" />
+                                        </div>
+                                    </h:panelGroup>
+                                    <h:outputText
+                                        styleClass="help-inline font-danger"
+                                        rendered="#{field.validationMessage != null}"
+                                        value="#{msgs[field.validationMessage]}" />
+                                </div>
                                 <!-- regular input field -->
+                                <!--
                                 <intranda:formInputText
                                     name="field"
                                     label="#{field.label} #{field.definition.language != '' ? msgs[field.displayLanguageKey] : ''}"
@@ -304,7 +426,9 @@
                                     required="false"
                                     displayAsRequired="#{field.definition.required}"
                                     rendered="#{field.definition.type eq 'input'}" />
+                                -->
                                 <!-- text area field -->
+                                <!--
                                 <intranda:formInputTextArea
                                     name="field2"
                                     label="#{field.label} #{msgs[field.definition.language]}"
@@ -313,7 +437,9 @@
                                     required="false"
                                     displayAsRequired="#{field.definition.required}"
                                     rendered="#{field.definition.type eq 'textarea'}" />
+                                -->
                                 <!-- select1 field -->
+                                <!--
                                 <intranda:formInputDropDown
                                     name="field3"
                                     label="#{field.label} #{msgs[field.definition.language]}"
@@ -323,7 +449,9 @@
                                     required="false"
                                     displayAsRequired="#{field.definition.required}"
                                     fieldStyle="form-control"/>
+                                -->
                                 <!-- select field -->
+                                <!--
                                 <intranda:formInputSelectMany
                                     name="field4"
                                     label="#{field.label} #{msgs[field.definition.language]}"
@@ -333,7 +461,9 @@
                                     required="false"
                                     displayAsRequired="#{field.definition.required}"
                                     fieldStyle="form-control" />
+                                -->
                                 <!-- html field -->
+                                <!--
                                 <intranda:formInputTextArea
                                     name="field2"
                                     label="#{field.label} #{field.definition.language != '' ? msgs[field.definition.language] : ''}"
@@ -342,11 +472,7 @@
                                     required="false"
                                     displayAsRequired="#{field.definition.required}"
                                     rendered="#{field.definition.type eq 'html'}" />
-
-                                <h:outputText
-                                    styleClass="help-inline font-danger"
-                                    rendered="#{field.validationMessage!= null}"
-                                    value="#{msgs[field.validationMessage]}" />
+                                -->
                             </ui:repeat>
 
                             <div class="form-actions">

@@ -38,8 +38,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.faces.validator.ValidatorException;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
@@ -294,6 +297,7 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @return
      */
     public void saveRecordEdition() {
+        System.out.println("Saving...");
         // If the new content is not valid, the vocabulary should not be saved.
         if (!VocabularyFieldValidator.validateRecords(this.currentVocabulary, this.currentVocabRecord)) {
             return;
@@ -836,4 +840,22 @@ public class VocabularyBean extends BasicBean implements Serializable {
         return null;
     }
 
+    public void validateFieldValue(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+        java.util.Map<String, Object> attributes = component.getAttributes();
+        System.out.println("Number of attributes: " + attributes.size());
+        System.out.println("id" + attributes.get("id"));
+        System.out.println("value" + attributes.get("value"));
+        VocabularyBean bean = VocabularyFieldValidator.extractVocabularyBean(context);
+        Vocabulary vocabulary = bean.getCurrentVocabulary();
+        VocabRecord record = bean.getCurrentVocabRecord();
+        boolean success = VocabularyFieldValidator.validateRecords(vocabulary, record);
+        if (!success) {
+            // TODO: Replace this key by a custom key (depending on cause of error)
+            String messageKey = "vocabularyManager_validation_fieldIsRequired";
+            String translation = Helper.getTranslation(messageKey);
+            FacesMessage message = new FacesMessage(translation, translation);
+            message.setSeverity(FacesMessage.SEVERITY_ERROR);
+            throw new ValidatorException(message);
+        }
+    }
 }

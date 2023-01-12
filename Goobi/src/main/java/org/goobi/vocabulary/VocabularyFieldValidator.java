@@ -25,6 +25,8 @@
  */
 package org.goobi.vocabulary;
 
+import java.util.Map;
+
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
@@ -41,29 +43,20 @@ import org.goobi.managedbeans.VocabularyBean;
 import de.sub.goobi.helper.Helper;
 
 @FacesValidator("org.goobi.vocabulary.VocabularyFieldValidator")
-public class VocabularyFieldValidator implements Validator<Integer> {
+public class VocabularyFieldValidator implements Validator<String> {
 
     @Override
-    public void validate(FacesContext context, UIComponent component, Integer time) throws ValidatorException {
-
-        // TODO: What is with the time parameter? Can it be replaced by object? Or does it depend on attributes in JSF?
-        // TODO: The validation message should return or set an error description (for the case of different possible messages)
-        /*
-        if (time != 0) {
-        if (time < 10 || time > 30) {
-            FacesMessage message =
-                    new FacesMessage(Helper.getTranslation("metadataSaveTimeError"), Helper.getTranslation("metadataSaveTimeError"));
-            message.setSeverity(FacesMessage.SEVERITY_ERROR);
-            throw new ValidatorException(message);
-        }
-        }
-        */
+    public void validate(FacesContext context, UIComponent component, String value) throws ValidatorException {
+        Map<String, Object> attributes = component.getAttributes();
         VocabularyBean bean = VocabularyFieldValidator.extractVocabularyBean(context);
         Vocabulary vocabulary = bean.getCurrentVocabulary();
         VocabRecord record = bean.getCurrentVocabRecord();
         boolean success = VocabularyFieldValidator.validateRecords(vocabulary, record);
         if (!success) {
-            FacesMessage message = new FacesMessage(Helper.getTranslation("metadataSaveTimeError"), Helper.getTranslation("metadataSaveTimeError"));
+            // TODO: Replace this key by a custom key (depending on cause of error)
+            String messageKey = "vocabularyManager_validation_fieldIsRequired";
+            String translation = Helper.getTranslation(messageKey);
+            FacesMessage message = new FacesMessage(translation, translation);
             message.setSeverity(FacesMessage.SEVERITY_ERROR);
             throw new ValidatorException(message);
         }
@@ -134,7 +127,7 @@ public class VocabularyFieldValidator implements Validator<Integer> {
      * @param context The faces context object to get the bean from
      * @return The vocabulary bean
      */
-    private static VocabularyBean extractVocabularyBean(FacesContext context) {
+    public static VocabularyBean extractVocabularyBean(FacesContext context) {
         Application application = context.getApplication();
         ExpressionFactory expressionFactory = application.getExpressionFactory();
         ValueExpression expression = expressionFactory.createValueExpression(context.getELContext(), "#{vocabularyBean}", Object.class);
