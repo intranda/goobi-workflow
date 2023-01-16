@@ -291,22 +291,15 @@ public class VocabularyBean extends BasicBean implements Serializable {
     }
 
     /**
-     * Save the current records. First it gets validated, if all required fields are filled and if the unique fields are unique. If this is not the
-     * case, the records and fields are marked for the user and the saving is aborted. Otherwise the records get saved
-     * 
-     * @return
+     * Stores the current vocabulary record in the database. The validation is done when the setters of the field values are called by JSF. The
+     * validation is not necessary here anymore.
      */
     public void saveRecordEdition() {
-        System.out.println("Saving...");
-        // If the new content is not valid, the vocabulary should not be saved.
-        if (!VocabularyFieldValidator.validateRecords(this.currentVocabulary, this.currentVocabRecord)) {
-            return;
-        }
 
         VocabularyManager.saveRecord(this.currentVocabulary.getId(), this.currentVocabRecord);
 
-        // The current vocabulary must be stored by its id because editRecords() reloads all vocabulary and initializes all entries with new objects.
-        // The old currentVocabRecord is not contained in the new list and would have no effect during the selection.
+        // editRecords() reloads the list in the left vocabulary record menu. The id must be stored to keep the current record selected because the
+        // object reference gets lost during the reload
         int id = this.currentVocabRecord.getId();
         this.editRecords();
         this.setCurrentVocabRecord(this.getVocabRecordById(id));
@@ -798,29 +791,13 @@ public class VocabularyBean extends BasicBean implements Serializable {
      * @param currentVocabRecord the record to use
      */
     public void setCurrentVocabRecord(VocabRecord currentVocabRecord) {
-        if (this.hasInvalidVocabRecords()) {
-            // The currentVocabRecord must be cached by its id because the list of vocabulary records is reloaded due to inconsistencies in the user interface
-            // TODO: This code block (reloading of records) gets unnecessary when vocabRecord.fields.value is only set after it was validated.
-            int id = this.currentVocabRecord.getId();
-            VocabularyManager.getAllRecords(this.currentVocabulary);
-            this.currentVocabRecord = this.getVocabRecordById(id);
-        } else {
-            this.currentVocabRecord = currentVocabRecord;
-        }
-    }
 
-    /**
-     * Returns true if the current list of vocabulary records has invalid records and false if all are valid.
-     *
-     * @return true If there are invalid records and false otherwise
-     */
-    private boolean hasInvalidVocabRecords() {
+        // Set records to valid because validation errors are discarded
         for (VocabRecord record : this.currentVocabulary.getRecords()) {
-            if (!record.isValid()) {
-                return true;
-            }
+            record.setValid(true);
         }
-        return false;
+
+        this.currentVocabRecord = currentVocabRecord;
     }
 
     /**
@@ -841,18 +818,36 @@ public class VocabularyBean extends BasicBean implements Serializable {
     }
 
     public void validateFieldValue(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-        java.util.Map<String, Object> attributes = component.getAttributes();
-        System.out.println("Number of attributes: " + attributes.size());
-        System.out.println("id" + attributes.get("id"));
-        System.out.println("value" + attributes.get("value"));
+
+        // Collect some data about the current state of the frontend:
         VocabularyBean bean = VocabularyFieldValidator.extractVocabularyBean(context);
         Vocabulary vocabulary = bean.getCurrentVocabulary();
         VocabRecord record = bean.getCurrentVocabRecord();
-        boolean success = VocabularyFieldValidator.validateRecords(vocabulary, record);
+        // Get information about the field that should be set:
+        java.util.Map<String, Object> map = component.getAttributes();
+
+        String label = (String) (map.get("fieldLabelForValidator"));
+        Field field = record.getFieldByLabel(label);
+
+        String type = field.getDefinition().getType();
+        String valueThatShouldBeSet;
+        if (value == null || value.equals("null")) {
+            valueThatShouldBeSet = "";
+        } else {
+            // This is multiselect -> requires a string array
+            if (type.equals("select")) {
+                String[] array = (String[]) (value);
+                valueThatShouldBeSet = String.join("|", array);
+            } else {
+                valueThatShouldBeSet = value.toString().trim();
+            }
+        }
+
+        // Validate the currently set record:
+        boolean success = VocabularyFieldValidator.validateFieldInRecords(vocabulary, record, field, valueThatShouldBeSet);
         if (!success) {
-            // TODO: Replace this key by a custom key (depending on cause of error)
-            String messageKey = "vocabularyManager_validation_fieldIsRequired";
-            String translation = Helper.getTranslation(messageKey);
+            String errorMessageKey = field.getValidationMessage();
+            String translation = Helper.getTranslation(errorMessageKey);
             FacesMessage message = new FacesMessage(translation, translation);
             message.setSeverity(FacesMessage.SEVERITY_ERROR);
             throw new ValidatorException(message);

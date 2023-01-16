@@ -25,96 +25,63 @@
  */
 package org.goobi.vocabulary;
 
-import java.util.Map;
-
 import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import javax.faces.application.Application;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.validator.FacesValidator;
-import javax.faces.validator.Validator;
-import javax.faces.validator.ValidatorException;
 
 import org.apache.commons.lang.StringUtils;
 import org.goobi.managedbeans.VocabularyBean;
 
-import de.sub.goobi.helper.Helper;
-
-@FacesValidator("org.goobi.vocabulary.VocabularyFieldValidator")
-public class VocabularyFieldValidator implements Validator<String> {
-
-    @Override
-    public void validate(FacesContext context, UIComponent component, String value) throws ValidatorException {
-        Map<String, Object> attributes = component.getAttributes();
-        VocabularyBean bean = VocabularyFieldValidator.extractVocabularyBean(context);
-        Vocabulary vocabulary = bean.getCurrentVocabulary();
-        VocabRecord record = bean.getCurrentVocabRecord();
-        boolean success = VocabularyFieldValidator.validateRecords(vocabulary, record);
-        if (!success) {
-            // TODO: Replace this key by a custom key (depending on cause of error)
-            String messageKey = "vocabularyManager_validation_fieldIsRequired";
-            String translation = Helper.getTranslation(messageKey);
-            FacesMessage message = new FacesMessage(translation, translation);
-            message.setSeverity(FacesMessage.SEVERITY_ERROR);
-            throw new ValidatorException(message);
-        }
-    }
+public class VocabularyFieldValidator {
 
     /**
-     * This method validates the currently edited vocabulary record. If fields are required, but are empty, the currentVocabRecord is set to
-     * 'invalid=false'. If there are data fields that have to be distinctive and are equal to the contents of fields of other vocabulary records, all
-     * of them are set to invalid too. If the currentVocabRecord is invalid, false is returned. If it is valid and can be stored in the database, true
-     * is returned.
+     * This method validates a field of the currently edited vocabulary record. If fields are required, but are empty, the currentVocabRecord is set
+     * to 'invalid=false'. If there are data fields that have to be distinctive and are equal to the contents of fields of other vocabulary records,
+     * all of them are set to invalid too. If the currentVocabRecord is invalid, false is returned. If it is valid and can be stored in the database,
+     * true is returned. The given field and the value to set are the data that should be set in the frontend and must be validated. The
+     * validationMessage of all invalid fields is set to the key that can be translated (to get a readable validation error message). Otherwise, the
+     * validation message is set to an empty string.
      *
      * @param vocabulary The current vocabulary to validate
      * @param record The current vocabulary record to validate
-     * @return true If currentVocabRecord is valid and false if its fields are invalid or distinctive fields have the same content as fields of other
-     *         vocabulary records
+     * @param field The field to validate
+     * @param fieldValue The value that should be set to that field
+     * @return true If currentVocabRecord is valid and its fields are valid or false if they are invalid or distinctive fields have the same content
+     *         as fields of other vocabulary records
      */
-    public static boolean validateRecords(Vocabulary vocabulary, VocabRecord record) {
+    public static boolean validateFieldInRecords(Vocabulary vocabulary, VocabRecord record, Field field, String fieldValue) {
 
         // Only the invalid records should be set to 'valid=false' later
         for (VocabRecord currentRecord : vocabulary.getRecords()) {
             currentRecord.setValid(true);
         }
 
+        // If field is required and empty, it gets marked as invalid
+        if (field.getDefinition().isRequired() && StringUtils.isBlank(fieldValue)) {
+            field.setValidationMessage("vocabularyManager_validation_fieldIsRequired");
+            record.setValid(false);
+            return false;
+        }
+
+        field.setValidationMessage("");
         boolean valid = true;
 
-        for (Field field : record.getFields()) {
+        if (field.getDefinition().isDistinctive() && StringUtils.isNotBlank(fieldValue)) {
+            for (VocabRecord other : vocabulary.getRecords()) {
 
-            // If the field is a text field, the value is trimmed to avoid leading or trailing whitespaces
-            String type = field.getDefinition().getType();
-            if (type.equals("input") || type.equals("textarea") || type.equals("html")) {
-                field.setValue(field.getValue().trim());
-            }
+                if (record.equals(other)) {
+                    continue;
+                }
 
-            field.setValidationMessage(null);
-
-            // If field is required and empty, it gets marked as invalid
-            if (field.getDefinition().isRequired() && StringUtils.isBlank(field.getValue())) {
-                field.setValidationMessage("vocabularyManager_validation_fieldIsRequired");
-                record.setValid(false);
-                valid = false;
-            }
-
-            if (field.getDefinition().isDistinctive() && StringUtils.isNotBlank(field.getValue())) {
-                requiredCheck: for (VocabRecord other : vocabulary.getRecords()) {
-                    if (record.equals(other)) {
-                        continue;
-                    }
-                    for (Field f : other.getFields()) {
-                        if (field.getDefinition().equals(f.getDefinition())) {
-                            if (field.getValue().equals(f.getValue())) {
-                                field.setValidationMessage("vocabularyManager_validation_fieldIsNotUnique");
-                                other.setValid(false);
-                                record.setValid(false);
-                                valid = false;
-                                break requiredCheck;
-                            }
-                        }
-                    }
+                String otherFieldValue = other.getFieldValue(field.getDefinition());
+                if (fieldValue.equals(otherFieldValue)) {
+                    field.setValidationMessage("vocabularyManager_validation_fieldIsNotUnique");
+                    other.setValid(false);
+                    record.setValid(false);
+                    valid = false;
+                } else {
+                    other.setValid(true);
                 }
             }
         }
