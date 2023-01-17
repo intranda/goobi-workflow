@@ -4,7 +4,7 @@
     <groupId>de.intranda.goobi.workflow</groupId>
     <artifactId>goobi-core</artifactId>
     <!-- When updating the version, make sure to also update the version in the submodules -->
-    <version>22.11.1</version>
+    <version>22.12</version>
     <packaging>pom</packaging>
 
 
@@ -56,7 +56,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <publicVersion>22.11.1</publicVersion>
+        <publicVersion>22.12</publicVersion>
         <!-- Use Java 11 for compiling -->
         <maven.compiler.release>11</maven.compiler.release>
 
@@ -74,7 +74,7 @@
         <sonar.test.exclusions>src/test/java/**/*</sonar.test.exclusions>
 
         <!-- intranda internal -->
-        <ics.version>3.7.1</ics.version>
+        <ics.version>3.8.2</ics.version>
         <normdataimporter.version>1.9.4</normdataimporter.version>
         <ugh-core.version>5.0.14</ugh-core.version>
         <ugh-marc.version>1.3.2</ugh-marc.version>
@@ -129,7 +129,6 @@
         <reflections.version>0.10.2</reflections.version>
         <spark.version>2.9.4</spark.version>
         <spring.version>5.3.23</spring.version>
-        <sshj.version>0.34.0</sshj.version>
         <swagger.version>2.2.7</swagger.version>
         <weld.version>3.1.9.Final</weld.version>
         <hk2.version>2.6.1</hk2.version>
@@ -138,6 +137,7 @@
         <xmpcore.version>6.1.11</xmpcore.version>
         <!-- used in goobi-plugin-step-barcode-scanner -->
         <zxing.version>3.5.1</zxing.version>
+        <jsch.version>0.2.6</jsch.version>
     </properties>
 
 
@@ -940,6 +940,11 @@
             <artifactId>jwks-rsa</artifactId>
             <version>${jwks-rsa.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.mwiede</groupId>
+            <artifactId>jsch</artifactId>
+            <version>${jsch.version}</version>
+		</dependency>
                     <dependency>
                         <groupId>com.sparkjava</groupId>
                         <artifactId>spark-core</artifactId>
@@ -1356,11 +1361,6 @@
                     <artifactId>jetty-all</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.hierynomus</groupId>
-            <artifactId>sshj</artifactId>
-            <version>${sshj.version}</version>
         </dependency>
         <dependency>
 			<groupId>org.threeten</groupId>
