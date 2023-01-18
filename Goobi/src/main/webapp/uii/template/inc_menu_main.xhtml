@@ -338,10 +338,10 @@
 						</li>
 					</h:panelGroup>
 
-					<!-- Dropdown-Menü: "Controlling" / "Management" -->
+					<!-- Dropdown-Menü: "Statistiken" -->
 					<h:panelGroup rendered="#{LoginForm.hasRole('Statistics_Menu')}">
-						<li class="#{NavigationForm.parentMenu == 'menu_controlling' ? 'active' : ''} add-has-submenu-in-small-window">
-							<a href="#" class="rendered-in-small-window" style="display:none;">#{msgs.controlling}</a>
+						<li class="#{NavigationForm.parentMenu == 'menu_statistics' ? 'active' : ''} add-has-submenu-in-small-window">
+							<a href="#" class="rendered-in-small-window" style="display:none;">#{msgs.statistik}</a>
 							<button
 								id="nav-controlling"
 								type="button"
@@ -350,14 +350,14 @@
 								aria-haspopup="true"
 								aria-expanded="false"
 								onclick="switchExpanded(this.id)">
-								<span>#{msgs.controlling}</span>
+								<span>#{msgs.statistik}</span>
 								<span class="caret"></span>
 							</button>
 							<ul class="add-dropdown-menu-in-wide-window dropdown-menu">
 								<intranda:menuItem
 									id="a40"
-									parentMenu="menu_controlling"
-									label="#{msgs.statistik}"
+									parentMenu="menu_statistics"
+									label="#{msgs.general}"
 									action="statistics"
 									rendered="#{LoginForm.hasRole('Statistics_General')}"
 									icon="fa fa-bar-chart box-icon-fix-menu"
@@ -369,7 +369,7 @@
 										value="#{StatisticalQuestionBean.possiblePluginNames}"
 										id="plugin3">
 										<ui:fragment rendered="#{LoginForm.myBenutzer.superAdmin or LoginForm.myBenutzer.institution.isStatisticsPluginAllowed(statistics)}">
-											<li class="#{NavigationForm.aktuell == 'a41' and NavigationForm.parentMenu == 'menu_controlling' and StatisticalQuestionBean.currentPluginName == statistics ?'active':''}">
+											<li class="#{NavigationForm.aktuell == 'a41' and NavigationForm.parentMenu == 'menu_statistics' and StatisticalQuestionBean.currentPluginName == statistics ?'active':''}">
 												<h:commandLink
 													action="#{StatisticalQuestionBean.setStatisticalQuestion(statistics)}"
 													id="statistics">
@@ -382,7 +382,7 @@
 														value="a41" />
 													<f:setPropertyActionListener
 														target="#{NavigationForm.parentMenu}"
-														value="menu_controlling" />
+														value="menu_statistics" />
 												</h:commandLink>
 											</li>
 										</ui:fragment>
