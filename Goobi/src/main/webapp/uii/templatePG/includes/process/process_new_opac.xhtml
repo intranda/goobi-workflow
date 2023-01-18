@@ -1,0 +1,37 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:x="http://myfaces.apache.org/tomahawk"
+    xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+    <composite:interface>
+    </composite:interface>
+
+    <composite:implementation>
+        <div class="control-label col-sm-8">
+            <h:outputText value="#{msgs.feld}" />
+            <h:selectOneMenu
+                id="feldauswahl"
+                pt:aria-label="#{msgs.feld}"
+                value="#{ProzesskopieForm.opacSuchfeld}"
+                styleClass="form-control margin-sides-10 inline width-100">
+                <f:selectItems
+                    value="#{ProzesskopieForm.allSearchFields}"
+                    var="step"
+                    itemLabel="#{step.label}"
+                    itemValue="#{step.value}" />
+
+            </h:selectOneMenu>
+            <h:inputText
+                value="#{ProzesskopieForm.opacSuchbegriff}"
+                pt:aria-label="#{msgs.sucheImOpac}"
+                rendered="#{ProzesskopieForm.useOpac}"
+                styleClass="form-control inline width-300"
+                onkeypress="return checkOpac('OpacRequest',event)" />
+        </div>
+
+    </composite:implementation>
+</ui:composition>
