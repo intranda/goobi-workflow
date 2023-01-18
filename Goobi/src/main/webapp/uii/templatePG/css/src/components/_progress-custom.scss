@@ -1,15 +1,11 @@
-#processTable {
-  tr td:nth-of-type(2) {
-    span {
-      display: inline-block;
-      transform: translateY(50%);
-    }
-  }
-  .btn-group {
-    display: flex;
-    flex-direction: row-reverse;
-  }
+.progress__container {
+  display: flex;
+  max-width: 240px;
+  justify-content: center;
 }
+/* These styles are taken from intranda.css
+ */
+
 .progress-bar-success {
   background-color: #5cb85c;
 }
@@ -20,4 +16,180 @@
 
 .progress-bar-danger {
   background-color: #d9534f;
+}
+
+/* ------------- progress, color rectangles, buttons in list --------------- */
+.colors.small13 {
+  padding: 0;
+  margin: 0;
+}
+.colors.small13 > li {
+  height: 13px;
+  width: 13px;
+  list-style: none;
+}
+
+.btn.btn-very-small {
+  padding: 0 7px;
+}
+
+/* farben:
+
+grün: #339933
+gelb: #ffbf21
+orange: #e8860c
+rot: #e51400
+blau: #368ee0
+grau: #dddddd
+
+*/
+
+.status-done {
+  background: #339933 none repeat scroll 0 0;
+}
+
+.status-open {
+  background: #e8860c none repeat scroll 0 0;
+}
+
+.status-inwork,
+.status-inflight {
+  background: #ffbf21 none repeat scroll 0 0;
+}
+
+.status-locked {
+  background: #e51400 none repeat scroll 0 0;
+}
+
+.status-error {
+  background: #eee none repeat scroll 0 0;
+  background-image: linear-gradient(
+    45deg,
+    #e51400 25%,
+    transparent 25%,
+    transparent 50%,
+    #e51400 50%,
+    #e51400 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 7px 7px;
+  /*     border: 0.5px solid #e51400; */
+}
+
+.status-deactivated {
+  background: #ccc none repeat scroll 0 0;
+}
+
+.progressbar-status-error {
+  background-image: linear-gradient(
+    45deg,
+    #eee 25%,
+    transparent 25%,
+    transparent 50%,
+    #eee 50%,
+    #eee 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 10px 10px;
+}
+
+/*--------------- Easy Readability ---------------- */
+
+.easy-read-status-done {
+  background: black none repeat scroll 0 0;
+  border: 1px solid black;
+}
+
+.easy-read-status-open {
+  background: #ddd none repeat scroll 0 0;
+  border: 1px solid black;
+}
+
+.easy-read-status-inwork,
+.easy-read-status-inflight {
+  background: #bbb none repeat scroll 0 0;
+  border: 1px solid black;
+}
+
+.easy-read-status-locked {
+  background: white none repeat scroll 0 0;
+  border: 1px solid black;
+}
+
+.easy-read-status-error {
+  background: #eee none repeat scroll 0 0;
+  background-image: linear-gradient(
+    45deg,
+    black 25%,
+    transparent 25%,
+    transparent 50%,
+    black 50%,
+    black 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 7px 7px;
+  border: 1px solid black;
+}
+
+.easy-read-status-deactivated {
+  background: #eee none repeat scroll 0 0;
+  background-image: linear-gradient(
+    0deg,
+    #ccc 25%,
+    transparent 25%,
+    transparent 50%,
+    #ccc 50%,
+    #ccc 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 14px 14px;
+  border: 1px solid black;
+}
+
+.easy-read-progressbar-status-locked {
+  background: white none repeat scroll 0 0;
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  box-shadow: none;
+}
+
+.easy-read-progressbar-status-open {
+  background: #ccc none repeat scroll 0 0;
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  box-shadow: none;
+}
+
+.easy-read-progressbar-status-done {
+  background: black none repeat scroll 0 0;
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  box-shadow: none;
+}
+
+.easy-read-progressbar-status-error {
+  background-color: black;
+  background-image: linear-gradient(
+    45deg,
+    #eee 25%,
+    transparent 25%,
+    transparent 50%,
+    #eee 50%,
+    #eee 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 10px 10px;
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  box-shadow: none;
 }

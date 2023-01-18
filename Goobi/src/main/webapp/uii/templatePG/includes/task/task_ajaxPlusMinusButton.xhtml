@@ -1,0 +1,76 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:x="http://myfaces.apache.org/tomahawk" xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<composite:interface>
+	</composite:interface>
+
+	<composite:implementation>
+
+		<button
+			class="btn btn-blank"
+			jsf:rendered="#{!item.panelAusgeklappt}"
+			title="#{item.titel}"
+			data-bs-toggle="tooltip"
+			jsf:id="displayDetails"
+			aria-haspopup="true"
+			aria-expanded="false"
+			data-goobi="handle-tooltip"
+		>
+			<i class="fa fa-angle-right" />
+			<h:panelGroup rendered="#{item.typAutomatisch}">
+				<i class="fa fa-cogs" title="#{msgs.automatischerSchritt}" />
+			</h:panelGroup>
+			<h:panelGroup rendered="#{not item.typAutomatisch}">
+				<i class="fa fa-user-o" title="#{msgs.normalerSchritt}" />
+			</h:panelGroup>
+			<span>
+				<h:outputText value="#{item.titelLokalisiert}" />
+			</span>
+			<f:setPropertyActionListener target="#{item.panelAusgeklappt}" value="true"/>
+			<f:ajax
+				render="#{ajaxRender}"
+				onevent="(data) => {
+					gwHandleTooltip.init(data, {restore: false});
+					gwInitTooltips.init(document.querySelector('#tasks'))
+				}"
+			/>
+		</button>
+
+		<button
+			type="button"
+			class="btn btn-blank mb-2"
+			jsf:rendered="#{item.panelAusgeklappt}"
+			title="#{item.titel}"
+			data-bs-toggle="tooltip"
+			jsf:id="hideDetails"
+			aria-haspopup="true"
+			aria-expanded="true"
+			data-goobi="handle-tooltip"
+		>
+			<i class="fa fa-angle-down"></i>
+
+			<h:panelGroup rendered="#{item.typAutomatisch}">
+        <i class="fa fa-cogs" title="#{msgs.automatischerSchritt}"/>
+      </h:panelGroup>
+			<h:panelGroup rendered="#{not item.typAutomatisch}">
+				<i class="fa fa-user-o" title="#{msgs.normalerSchritt}"/>
+			</h:panelGroup>
+			<span>
+				<h:outputText value="#{item.titelLokalisiert}" />
+			</span>
+			<f:setPropertyActionListener target="#{item.panelAusgeklappt}" value="false"/>
+      <f:ajax
+				render="#{ajaxRender}"
+				onevent="(data) => {
+					gwHandleTooltip.init(data, {restore: false});
+					gwInitTooltips.init(document.querySelector('#tasks'))
+				}"
+				/>
+		</button>
+
+	</composite:implementation>
+
+</ui:composition>
+
+
