@@ -41,6 +41,7 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.SelectItem;
 import javax.faces.validator.ValidatorException;
 import javax.inject.Named;
@@ -124,6 +125,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
     @Getter
     @Setter
     private String importType = "merge";
+
+    private boolean resetResultsOnNextValidation = false;
 
     private List<Definition> removedDefinitions = null;
     private transient DataFormatter dataFormatter = new DataFormatter();
@@ -819,15 +822,24 @@ public class VocabularyBean extends BasicBean implements Serializable {
 
     public void validateFieldValue(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 
+        synchronized (this) {
+            // This boolean flag is set to true when the page (and the input form) is reloaded. This makes it possible to reset the validation results on
+            // the first executed validation of the current submit-trial
+            if (this.resetResultsOnNextValidation) {
+                // Only the invalid records should be set to 'valid=false' later
+                for (VocabRecord currentRecord : this.currentVocabulary.getRecords()) {
+                    currentRecord.setValid(true);
+                }
+                this.resetResultsOnNextValidation = false;
+            }
+        }
+
         // Collect some data about the current state of the frontend:
-        VocabularyBean bean = VocabularyFieldValidator.extractVocabularyBean(context);
-        Vocabulary vocabulary = bean.getCurrentVocabulary();
-        VocabRecord record = bean.getCurrentVocabRecord();
         // Get information about the field that should be set:
         java.util.Map<String, Object> map = component.getAttributes();
 
         String label = (String) (map.get("fieldLabelForValidator"));
-        Field field = record.getFieldByLabel(label);
+        Field field = this.currentVocabRecord.getFieldByLabel(label);
 
         String type = field.getDefinition().getType();
         String valueThatShouldBeSet;
@@ -844,7 +856,8 @@ public class VocabularyBean extends BasicBean implements Serializable {
         }
 
         // Validate the currently set record:
-        boolean success = VocabularyFieldValidator.validateFieldInRecords(vocabulary, record, field, valueThatShouldBeSet);
+        boolean success =
+                VocabularyFieldValidator.validateFieldInRecords(this.currentVocabulary, this.currentVocabRecord, field, valueThatShouldBeSet);
         if (!success) {
             String errorMessageKey = field.getValidationMessage();
             String translation = Helper.getTranslation(errorMessageKey);
@@ -852,5 +865,16 @@ public class VocabularyBean extends BasicBean implements Serializable {
             message.setSeverity(FacesMessage.SEVERITY_ERROR);
             throw new ValidatorException(message);
         }
+    }
+
+    /**
+     * This method is called when the vocabulary record edit-fields are displayed. This function resets the validation results when the table is
+     * reloaded. After that, the validation of all different vocabulary-record-fields can be executed independently and the union set of all results
+     * (errors) can be cached without getting cached errors of the previous validation.
+     *
+     * @param event The event object
+     */
+    public void resetValidationResults(ComponentSystemEvent event) {
+        this.resetResultsOnNextValidation = true;
     }
 }

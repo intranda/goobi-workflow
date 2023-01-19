@@ -25,13 +25,7 @@
  */
 package org.goobi.vocabulary;
 
-import javax.el.ExpressionFactory;
-import javax.el.ValueExpression;
-import javax.faces.application.Application;
-import javax.faces.context.FacesContext;
-
 import org.apache.commons.lang.StringUtils;
-import org.goobi.managedbeans.VocabularyBean;
 
 public class VocabularyFieldValidator {
 
@@ -51,11 +45,6 @@ public class VocabularyFieldValidator {
      *         as fields of other vocabulary records
      */
     public static boolean validateFieldInRecords(Vocabulary vocabulary, VocabRecord record, Field field, String fieldValue) {
-
-        // Only the invalid records should be set to 'valid=false' later
-        for (VocabRecord currentRecord : vocabulary.getRecords()) {
-            currentRecord.setValid(true);
-        }
 
         // If field is required and empty, it gets marked as invalid
         if (field.getDefinition().isRequired() && StringUtils.isBlank(fieldValue)) {
@@ -80,25 +69,10 @@ public class VocabularyFieldValidator {
                     other.setValid(false);
                     record.setValid(false);
                     valid = false;
-                } else {
-                    other.setValid(true);
                 }
             }
         }
         return valid;
-    }
-
-    /**
-     * Extracts and returns the vocabulary bean from the given faces context object.
-     *
-     * @param context The faces context object to get the bean from
-     * @return The vocabulary bean
-     */
-    public static VocabularyBean extractVocabularyBean(FacesContext context) {
-        Application application = context.getApplication();
-        ExpressionFactory expressionFactory = application.getExpressionFactory();
-        ValueExpression expression = expressionFactory.createValueExpression(context.getELContext(), "#{vocabularyBean}", Object.class);
-        return (VocabularyBean) expression.getValue(context.getELContext());
     }
 
 }

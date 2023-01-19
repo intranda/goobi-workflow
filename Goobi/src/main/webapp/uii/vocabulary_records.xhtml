@@ -451,6 +451,7 @@
                                 </c:if>
 
                                 <!-- Save -->
+                                <f:event listener="#{vocabularyBean.resetValidationResults}" type="preRenderView" />
                                 <button
                                     class="btn btn-success submitOnEnter pull-right font-size-s"
                                     style="margin-bottom:15px;"
