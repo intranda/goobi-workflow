@@ -370,7 +370,9 @@
 
                 </ui:fragment>
                 <ui:fragment rendered="#{NavigationForm.uiStatus['toggleJournal']=='imageComments'}">
-                    <ui:include src="imageComments.xhtml" />
+                    <ui:include src="imageComments.xhtml">
+                    	<ui:param name="process" value="#{bean}"></ui:param>
+                    </ui:include>
                 </ui:fragment>
 
             </div>
