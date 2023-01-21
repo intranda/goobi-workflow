@@ -4,7 +4,7 @@
     <groupId>de.intranda.goobi.workflow</groupId>
     <artifactId>goobi-core</artifactId>
     <!-- When updating the version, make sure to also update the version in the submodules -->
-    <version>22.12.2-SNAPSHOT</version>
+    <version>22.12.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
 
