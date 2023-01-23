@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
@@ -120,7 +121,7 @@ public class MetadatenVerifizierung {
             Helper.setFehlerMeldung(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): "
                     + Helper.getTranslation("MetadataDigitalDocumentError") + inProzess.getTitel(), e.getMessage());
             problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataDigitalDocumentError")
-            + ": " + e.getMessage());
+                    + ": " + e.getMessage());
             ergebnis = false;
         }
 
@@ -159,7 +160,6 @@ public class MetadatenVerifizierung {
             ergebnis = false;
         }
 
-
         /*
          * -------------------------------- auf Docstructs ohne Seiten prüfen --------------------------------
          */
@@ -195,7 +195,7 @@ public class MetadatenVerifizierung {
                             this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationPages"),
                             seite);
                     problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataPaginationPages")
-                    + ": " + seite);
+                            + ": " + seite);
                 }
                 ergebnis = false;
             }
@@ -236,7 +236,7 @@ public class MetadatenVerifizierung {
                 Helper.setFehlerMeldung(
                         this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataMandatoryElement"), temp);
                 problems.add(this.myProzess.getTitel() + " (" + this.myProzess.getId() + "): " + Helper.getTranslation("MetadataMandatoryElement")
-                + ": " + temp);
+                        + ": " + temp);
             }
             ergebnis = false;
         }
@@ -627,12 +627,12 @@ public class MetadatenVerifizierung {
             }
             if ("1m".equals(allowedNumber) && realNumber != 1) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_MISSING_ERROR)
-                + " " + realNumber + Helper.getTranslation(METADATA_TIMES_ERROR));
+                        + " " + realNumber + Helper.getTranslation(METADATA_TIMES_ERROR));
 
             }
             if ("1o".equals(allowedNumber) && realNumber > 1) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " " + Helper.getTranslation(METADATA_TO_MANY_ERROR)
-                + " " + realNumber + " " + Helper.getTranslation(METADATA_TIMES_ERROR));
+                        + " " + realNumber + " " + Helper.getTranslation(METADATA_TIMES_ERROR));
             }
             if ("+".equals(allowedNumber) && realNumber == 0) {
                 inList.add(mgt.getLanguage(language) + " in " + dst.getNameByLanguage(language) + " "
@@ -712,6 +712,10 @@ public class MetadatenVerifizierung {
             cp = new ConfigProjects(this.myProzess.getProjekt().getTitel());
         } catch (IOException e) {
             Helper.setFehlerMeldung("[" + this.myProzess.getTitel() + "] " + "IOException", e.getMessage());
+            return inFehlerList;
+        } catch (PatternSyntaxException exception) {
+            String message = Helper.getTranslation("projectErrorConfigurationHasInvalidTitle");
+            Helper.setFehlerMeldung("[" + this.myProzess.getTitel() + "] " + message + ": " + exception.getPattern());
             return inFehlerList;
         }
         List<HierarchicalConfiguration> validations = cp.getList("/validate/metadata");

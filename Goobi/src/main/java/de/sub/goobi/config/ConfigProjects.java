@@ -114,9 +114,9 @@ public class ConfigProjects {
     }
 
     /**
-     * Ermitteln eines bestimmten Paramters der Konfiguration als String
+     * Ermitteln eines bestimmten Parameters der Konfiguration als String
      * 
-     * @return Paramter als String
+     * @return Parameter als String
      */
     public String getParamString(String inParameter) {
         try {
@@ -141,9 +141,9 @@ public class ConfigProjects {
     }
 
     /**
-     * Ermitteln eines bestimmten Paramters der Konfiguration mit Angabe eines Default-Wertes
+     * Ermitteln eines bestimmten Parameters der Konfiguration mit Angabe eines Default-Wertes
      * 
-     * @return Paramter als String
+     * @return Parameter als String
      */
     public String getParamString(String inParameter, String inDefaultIfNull) {
         try {
@@ -157,9 +157,9 @@ public class ConfigProjects {
     }
 
     /**
-     * Ermitteln eines boolean-Paramters der Konfiguration
+     * Ermitteln eines boolean-Parameters der Konfiguration
      * 
-     * @return Paramter als String
+     * @return Parameter als String
      */
     public boolean getParamBoolean(String inParameter) {
         try {
@@ -170,9 +170,9 @@ public class ConfigProjects {
     }
 
     /**
-     * Ermitteln eines long-Paramters der Konfiguration
+     * Ermitteln eines long-Parameters der Konfiguration
      * 
-     * @return Paramter als Long
+     * @return Parameter als Long
      */
     public long getParamLong(String inParameter) {
         try {
@@ -184,9 +184,9 @@ public class ConfigProjects {
     }
 
     /**
-     * Ermitteln einer Liste von Paramtern der Konfiguration
+     * Ermitteln einer Liste von Parametern der Konfiguration
      * 
-     * @return Paramter als List
+     * @return Parameter als List
      */
     public List<String> getParamList(String inParameter) {
         try {
