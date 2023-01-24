@@ -143,7 +143,7 @@ public class PageAreaManager {
             String h = "";
             if (StringUtils.isNotBlank(coordinates)) {
 
-                Pattern pattern = Pattern.compile("(\\d+),(\\d+),(\\d+),(\\d+)");
+                Pattern pattern = Pattern.compile("([0-9-]+),([0-9-]+),([0-9-]+),([0-9-]+)");
                 Matcher matcher = pattern.matcher(coordinates);
 
                 if (matcher.matches()) {
